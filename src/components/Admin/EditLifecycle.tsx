@@ -1,14 +1,14 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useRouteMatch } from 'react-router';
 import { useUpdateNavigation } from '../../hooks';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { Lifecycle } from '../../models/graphql-schema';
 import { PageProps } from '../../pages';
-import LifecycleVisualizer from '../core/Lifecycle';
+import LifecycleVisualizer from '../core/LifecycleVisualizer';
 import LifecycleButton from '../core/LifecycleButton';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   wrapper: {
     display: 'flex',
     alignItems: 'center',

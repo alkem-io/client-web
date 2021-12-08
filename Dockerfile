@@ -22,7 +22,7 @@ ENV REACT_APP_BUILD_REVISION=${ARG_BUILD_REVISION}
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm i -g npm@latest
+RUN npm i -g npm@7.5.6
 RUN npm install
 
 # Everything for now
@@ -31,7 +31,7 @@ COPY . .
 RUN npm run-script build
 
 FROM nginx:alpine as production-build
-COPY ./.nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./.build/.nginx/nginx.conf /etc/nginx/nginx.conf
 
 ## Remove default nginx index page
 RUN rm -rf /usr/share/nginx/html/*

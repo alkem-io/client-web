@@ -1,46 +1,40 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserToGroupMutation,
   useRemoveUserFromGroupMutation,
-  useUsersWithCredentialsQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
 import { Member } from '../../../models/User';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { Loading } from '../../core';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
 import { EditMembers } from '../Community/EditMembers';
 
 interface EditCredentialsProps {
   credential: GroupCredentials;
   resourceId: string;
-  parentMembers: Member[];
+  parentMembers?: Member[];
+  parentCommunityId?: string;
 }
 
 export type GroupCredentials = AuthorizationCredential.UserGroupMember;
 
-export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMembers, resourceId }) => {
-  const { data, loading: loadingMembers } = useUsersWithCredentialsQuery({
-    variables: {
-      input: {
-        type: credential,
-        resourceID: resourceId,
-      },
-    },
-  });
-
-  const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);
+export const EditCredentials: FC<EditCredentialsProps> = ({
+  credential,
+  parentCommunityId,
+  resourceId,
+  parentMembers,
+}) => {
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserToGroupMutation({
+  const [grant, { loading: addingMember }] = useAssignUserToGroupMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserFromGroupMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserFromGroupMutation({
     onError: handleError,
   });
 
-  const handleAdd = (_member: Member) => {
+  const handleAdd = (_member: UserDisplayNameFragment) => {
     grant({
       variables: {
         input: {
@@ -74,16 +68,19 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentMe
     });
   };
 
-  const availableMembers = useMemo(() => {
-    return parentMembers.filter(p => members.findIndex(m => m.id === p.id) < 0);
-  }, [parentMembers, data]);
-
-  if (loadingMembers) {
-    return <Loading />;
-  }
+  const { available, current, loading } = useAvailableMembers(credential, resourceId, parentCommunityId, parentMembers);
 
   return (
-    <EditMembers members={members} availableMembers={availableMembers} onAdd={handleAdd} onRemove={handleRemove} />
+    <EditMembers
+      members={current}
+      availableMembers={available}
+      onAdd={handleAdd}
+      addingMember={addingMember}
+      onRemove={handleRemove}
+      removingMember={removingMember}
+      loadingMembers={loading}
+      loadingAvailableMembers={loading}
+    />
   );
 };
 export default EditCredentials;

@@ -1,6 +1,6 @@
-import { createStyles } from '../../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 
-const useProfileStyles = createStyles(theme => ({
+const useProfileStyles = makeStyles(theme => ({
   field: {
     marginBottom: theme.spacing(2),
   },

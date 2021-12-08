@@ -23,8 +23,8 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:latest
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }}
+          docker build -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
       - uses: Azure/aks-set-context@v1
         with:
           creds: ${{ secrets.AZURE_CRED_K8S }}
@@ -36,7 +36,7 @@ jobs:
           container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
           container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-          secret-name: ct-web-secret
+          secret-name: alkemio-web-secret
 
       - uses: Azure/k8s-deploy@v1
         with:
@@ -44,6 +44,6 @@ jobs:
             manifests/26-web-deployment-test.yaml
             manifests/30-web-service.yaml
           images: |
-            ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }}
+            ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
           imagepullsecrets: |
-            ct-web-secret
+            alkemio-web-secret

@@ -1,4 +1,4 @@
-import { Box, TextField } from '@material-ui/core';
+import { Box, TextField } from '@mui/material';
 import { ReactComponent as FileEarmarkPostIcon } from 'bootstrap-icons/icons/file-earmark-post.svg';
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
@@ -6,16 +6,15 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import Button from '../../components/core/Button';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { ContentCard } from '../../components/Project/Cards';
+import { ContentCard } from '../../components/composite/entities/Project/Cards';
 import { useUpdateNavigation } from '../../hooks';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { Project as ProjectType, User } from '../../models/graphql-schema';
 import { PageProps } from '../common';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   tag: {
     top: -theme.spacing(2),
     left: 0,
@@ -132,7 +131,6 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
           </Formik>
         </ContentCard>
       </Section>
-      <Divider />
     </>
   );
 };

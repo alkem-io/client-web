@@ -1,0 +1,14 @@
+fragment OrganizationDetails on Organization {
+  id
+  displayName
+  nameID
+  profile {
+    id
+    avatar
+    description
+    tagsets {
+      id
+      tags
+    }
+  }
+}

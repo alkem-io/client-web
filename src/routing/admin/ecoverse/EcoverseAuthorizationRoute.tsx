@@ -1,8 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { FourOuFour } from '../../../pages';
+import { Error404 } from '../../../pages';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import EcoverseAuthorizationPage from '../../../pages/Admin/Ecoverse/EcoverseAuthorizationPage';
+import { nameOfUrl } from '../../url-params';
 
 const EcoverseAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resourceId }) => {
   const { path, url } = useRouteMatch();
@@ -10,11 +11,11 @@ const EcoverseAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resour
 
   return (
     <Switch>
-      <Route exact path={`${path}/:role`}>
+      <Route exact path={`${path}/:${nameOfUrl.role}`}>
         <EcoverseAuthorizationPage paths={currentPaths} resourceId={resourceId} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

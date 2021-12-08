@@ -1,18 +1,15 @@
-import React, { FC, useMemo } from 'react';
-import { useUsersWithCredentialsQuery } from '../../../hooks/generated/graphql';
-import { Loading } from '../../core';
-import { EditMembers, EditMembersProps } from '../Community/EditMembers';
+import React, { FC } from 'react';
+import { useAvailableMembers, useUserContext } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import AuthorizationPageProps from '../../../pages/Admin/AuthorizationPageProps';
-import { useUserContext } from '../../../hooks';
-import { Member } from '../../../models/User';
+import { EditMembers, EditMembersProps } from '../Community/EditMembers';
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,
-    Pick<EditMembersProps, 'onAdd' | 'onRemove'> {
+    Pick<EditMembersProps, 'onAdd' | 'onRemove' | 'addingMember' | 'removingMember'> {
   credential: AuthorizationCredential;
   /** Members of the edited entity */
-  memberList: Member[];
+  parentCommunityId?: string;
 }
 
 export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
@@ -20,36 +17,26 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onRemove,
   credential,
   resourceId,
-  memberList,
+  parentCommunityId,
+  addingMember = false,
+  removingMember = false,
 }) => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const { data, loading } = useUsersWithCredentialsQuery({
-    variables: {
-      input: {
-        type: credential,
-        resourceID: resourceId,
-      },
-    },
-  });
-  const members = useMemo(() => data?.usersWithAuthorizationCredential || [], [data]);
-  const availableMembers = useMemo(
-    () => memberList.filter(p => members.findIndex(m => m.id === p.id) === -1),
-    [memberList, members]
-  );
-
-  if (loading) {
-    return <Loading />;
-  }
+  const { available, current, loading } = useAvailableMembers(credential, resourceId, parentCommunityId);
 
   return (
     <EditMembers
-      members={members}
-      availableMembers={availableMembers}
+      members={current}
+      availableMembers={available}
       executor={user}
       onAdd={onAdd}
       onRemove={onRemove}
+      addingMember={addingMember}
+      removingMember={removingMember}
+      loadingMembers={loading}
+      loadingAvailableMembers={loading}
     />
   );
 };

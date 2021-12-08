@@ -1,4 +1,4 @@
-import { Box, Container } from '@material-ui/core';
+import { Box, Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
@@ -57,7 +57,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
   });
 
   const organizations = useMemo(
-    () => organizationList?.organisations.map(e => ({ id: e.id, name: e.displayName })) || [],
+    () => organizationList?.organizations.map(e => ({ id: e.id, name: e.displayName })) || [],
     [organizationList]
   );
 
@@ -73,7 +73,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
           hostID: host,
           context: createContextInput(values),
           displayName: name,
-          tags: tagsets.map(x => x.tags.join()),
+          tags: tagsets.flatMap(x => x.tags),
         },
       },
     });
@@ -96,7 +96,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
           disabled={isLoading}
           variant="primary"
           onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
+          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
         />
       </Box>
     </Container>

@@ -1,0 +1,9 @@
+fragment AdminEcoverse on Ecoverse {
+  id
+  nameID
+  displayName
+  authorization {
+    id
+    myPrivileges
+  }
+}

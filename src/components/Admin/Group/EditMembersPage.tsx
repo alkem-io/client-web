@@ -1,19 +1,16 @@
+import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { Container } from '@material-ui/core';
 import { useUpdateNavigation } from '../../../hooks';
-import { Member } from '../../../models/User';
-import { PageProps } from '../../../pages';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
+import { PageProps } from '../../../pages';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';
+import { WithCommunity, WithOptionalMembersProps } from '../Community/CommunityTypes';
 
-import { WithCommunity } from '../Community/CommunityTypes';
-
-interface EditMembersPageProps extends PageProps, WithCommunity {
-  parentMembers: Member[];
+interface EditMembersPageProps extends WithOptionalMembersProps, PageProps, WithCommunity {
   groupId: string;
 }
 
-export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentMembers = [], groupId }) => {
+export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentCommunityId, groupId, parentMembers }) => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'members', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
@@ -22,6 +19,7 @@ export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentMembers
       <EditGroupCredentials
         credential={AuthorizationCredential.UserGroupMember}
         resourceId={groupId || ''}
+        parentCommunityId={parentCommunityId}
         parentMembers={parentMembers}
       />
     </Container>

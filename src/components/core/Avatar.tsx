@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 import React, { forwardRef, useEffect, useState } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { agnosticFunctor } from '../../utils/functor';
-import UserPopUp from '../Community/UserPopUp';
+import UserPopUp from '../composite/dialogs/UserPopUp';
 import Image from './Image';
 import Typography from './Typography';
-import { Theme, Tooltip } from '@material-ui/core';
+import { Theme, Tooltip } from '@mui/material';
 
-export const useAvatarStyles = createStyles<Theme, ClassProps>(theme => ({
+export const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
   avatarWrapper: {
     display: 'flex',
     alignItems: 'center',

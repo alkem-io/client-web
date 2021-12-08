@@ -1,8 +1,7 @@
 name: Build & Deploy to Dev
 
 on:
-  push:
-    branches: [develop]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -44,8 +43,8 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
-          docker build --build-arg ARG_GRAPHQL_ENDPOINT=${{ secrets.GRAPHQL_ENDPOINT_ARG }} --build-arg ARG_BUILD_VERSION=${{ steps.prep.outputs.version }} --build-arg ARG_BUILD_REVISION=${{ github.sha }} --build-arg ARG_BUILD_DATE=${{ steps.prep.outputs.created }} -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:latest
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }}
+          docker build --build-arg ARG_GRAPHQL_ENDPOINT=${{ secrets.GRAPHQL_ENDPOINT_ARG }} --build-arg ARG_BUILD_VERSION=${{ steps.prep.outputs.version }} --build-arg ARG_BUILD_REVISION=${{ github.sha }} --build-arg ARG_BUILD_DATE=${{ steps.prep.outputs.created }} -f Dockerfile . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:latest
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
 
       - uses: Azure/aks-set-context@v1
         with:
@@ -58,7 +57,7 @@ jobs:
           container-registry-url: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
           container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-          secret-name: ct-web-secret
+          secret-name: alkemio-web-secret
 
       - uses: Azure/k8s-deploy@v1
         with:
@@ -66,6 +65,6 @@ jobs:
             manifests/25-web-deployment-dev.yaml
             manifests/30-web-service.yaml
           images: |
-            ${{ secrets.REGISTRY_LOGIN_SERVER }}/ct-web:${{ github.sha }}
+            ${{ secrets.REGISTRY_LOGIN_SERVER }}/alkemio-web:${{ github.sha }}
           imagepullsecrets: |
-            ct-web-secret
+            alkemio-web-secret

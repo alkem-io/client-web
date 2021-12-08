@@ -1,0 +1,25 @@
+fragment CommunityPageMembers on User {
+  id
+  nameID
+  displayName
+  country
+  city
+  email
+  agent {
+    id
+    credentials {
+      id
+      type
+      resourceID
+    }
+  }
+  profile {
+    id
+    avatar
+    description
+    tagsets {
+      id
+      tags
+    }
+  }
+}

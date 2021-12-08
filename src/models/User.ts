@@ -1,5 +1,5 @@
 import { CountryType } from './constants';
-import { Organisation } from './graphql-schema';
+import { Organization } from './graphql-schema';
 import { Reference, Tagset } from './Profile';
 
 export interface UserModel {
@@ -22,7 +22,7 @@ export interface UserModel {
   };
   memberof?: {
     communities: Community[];
-    organisations: Organisation[];
+    organizations: Organization[];
   };
 }
 
@@ -54,7 +54,7 @@ export const defaultUser: UserModel = {
     references: [],
   },
   memberof: {
-    organisations: [],
+    organizations: [],
     communities: [],
   },
 };
@@ -62,9 +62,12 @@ export const defaultUser: UserModel = {
 /*
 Generated userForm interface for yup
 */
-export interface UserFromGenerated {
+export interface UserFormGenerated {
   firstName: string;
   email: string;
+  linkedin: string;
+  twitter: string;
+  github: string;
   displayName: string;
   avatar: string;
   tagsets: Tagset[];

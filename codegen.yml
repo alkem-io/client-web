@@ -24,6 +24,7 @@ generates:
         DateTime: Date
         JSON: string
         Markdown: string
+        MessageID: string
       strictScalars: true
   src/hooks/generated/graphql.ts:
     preset: import-types

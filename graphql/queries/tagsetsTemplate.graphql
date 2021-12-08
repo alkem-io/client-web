@@ -7,6 +7,12 @@ query tagsetsTemplate {
           placeholder
         }
       }
+      organizations {
+        tagsets {
+          name
+          placeholder
+        }
+      }
     }
   }
 }

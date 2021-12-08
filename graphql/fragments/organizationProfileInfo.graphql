@@ -1,7 +1,15 @@
-fragment OrganizationProfileInfo on Organisation {
+fragment OrganizationProfileInfo on Organization {
   id
   nameID
   displayName
+  contactEmail
+  domain
+  legalEntityName
+  website
+  verification {
+    id
+    status
+  }
   profile {
     id
     avatar

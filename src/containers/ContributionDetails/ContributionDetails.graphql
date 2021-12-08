@@ -1,0 +1,75 @@
+query ecoverseContributionDetails($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    nameID
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    context {
+      id
+      visual {
+        id
+        avatar
+        background
+        banner
+      }
+    }
+  }
+}
+
+query challengeContributionDetails($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    nameID
+    challenge(ID: $challengeId) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      context {
+        id
+        visual {
+          id
+          avatar
+          background
+          banner
+        }
+      }
+    }
+  }
+}
+
+query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    nameID
+    opportunity(ID: $opportunityId) {
+      id
+      nameID
+      displayName
+      parentId
+      parentNameID
+      tagset {
+        id
+        name
+        tags
+      }
+      context {
+        id
+        visual {
+          id
+          avatar
+          background
+          banner
+        }
+      }
+    }
+  }
+}

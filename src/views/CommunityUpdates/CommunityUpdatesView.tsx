@@ -1,4 +1,5 @@
 import {
+  Backdrop,
   Box,
   Card,
   CardActions,
@@ -10,14 +11,15 @@ import {
   Grid,
   GridProps,
   IconButton,
-  makeStyles,
   Tooltip,
   Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import { Skeleton } from '@material-ui/lab';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { Skeleton } from '@mui/material';
 import MDEditor from '@uiw/react-md-editor';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
@@ -28,28 +30,32 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useMarkdownInputField } from '../../components/Admin/Common/useMarkdownInputField';
+import ConfirmationDialog from '../../components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../components/core/Avatar';
 import Button from '../../components/core/Button';
 import { FontDownloadIcon } from '../../components/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../components/icons/FontDownloadOffIcon';
 import { useNotification } from '../../hooks';
-import { CommunicationMessageResult, User } from '../../models/graphql-schema';
+import { Message, User } from '../../models/graphql-schema';
 
 export interface CommunityUpdatesViewProps {
   entities: {
-    messages: CommunicationMessageResult[];
+    messages: Message[];
     members: User[];
   };
   state: {
     loadingMessages: boolean;
     submittingMessage: boolean;
+    removingMessage: boolean;
   };
   actions?: {
-    onSubmit?: (value: string) => Promise<string | undefined>;
+    onSubmit?: (message: string) => Promise<Message | undefined>;
+    onRemove?: (messageId: string) => Promise<string | undefined>;
   };
   options?: {
     canEdit?: boolean;
     canCopy?: boolean;
+    canRemove?: boolean;
     hideHeaders?: boolean;
     itemsPerRow?: number;
     disableElevation?: boolean;
@@ -82,33 +88,41 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, actions, state, options }) => {
-  // entities
-  const { messages, members } = entities;
-  const { loadingMessages } = state;
-  const { canEdit, itemsPerRow, hideHeaders, canCopy, disableCollapse, disableElevation } = options || {};
-  const orderedMessages = useMemo(() => orderBy(messages, x => x.timestamp, ['desc']), [messages]);
-  const initialValues = {
-    'community-update': '',
-  };
-  const validationSchema = yup.object().shape({
-    'community-update': yup.string(),
-  });
-  const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
-  const [stubMessageId, setStubMessageId] = useState<string | null>(null);
-  const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
-  const memberMap = useMemo(() => keyBy(members, m => m.id), [members]);
-
-  //effects
-  useEffect(() => {
-    setStubMessageId(id => (orderedMessages.find(m => m.id === id) ? null : id));
-  }, [setStubMessageId, orderedMessages]);
-
   // styling
   const styles = useStyles();
   // components
   const getMarkdownInput = useMarkdownInputField();
   const notify = useNotification();
   const { t } = useTranslation();
+  // entities
+  const { messages, members } = entities;
+  const { loadingMessages, removingMessage } = state;
+  const { canEdit, itemsPerRow, hideHeaders, canCopy, canRemove, disableCollapse, disableElevation } = options || {};
+  const orderedMessages = useMemo(() => orderBy(messages, x => x.timestamp, ['desc']), [messages]);
+  const initialValues = {
+    'community-update': '',
+  };
+  const validationSchema = yup.object().shape({
+    'community-update': yup.string().required(t('components.communityUpdates.msg-not-empty')),
+  });
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
+  const [stubMessageId, setStubMessageId] = useState<string | null>(null);
+  const [removedMessageId, setRemovedMessageId] = useState<string | null>(null);
+  const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
+  const memberMap = useMemo(() => keyBy(members, m => m.id), [members]);
+
+  const displayCardActions = canCopy || canRemove || !disableCollapse;
+  const lastItemIndex = orderedMessages.length - 1;
+
+  //effects
+  useEffect(() => {
+    setStubMessageId(id => (orderedMessages.find(m => m.id === id) ? null : id));
+  }, [setStubMessageId, orderedMessages]);
+
+  useEffect(() => {
+    setRemovedMessageId(id => (orderedMessages.find(m => m.id === id) ? id : null));
+  }, [setRemovedMessageId, orderedMessages]);
 
   return (
     <>
@@ -127,25 +141,26 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             const onSubmit = actions?.onSubmit;
             if (onSubmit) {
-              const messageId = await onSubmit(values['community-update']).finally(() => setSubmitting(false));
-              setStubMessageId(messageId || null);
+              const message = await onSubmit(values['community-update']).finally(() => setSubmitting(false));
+              setStubMessageId(message?.id || null);
             }
             resetForm({
               values: initialValues,
             });
           }}
         >
-          {({ handleSubmit, isSubmitting }) => {
+          {({ isValid, handleSubmit, isSubmitting, dirty }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    {getMarkdownInput({ name: 'community-update', rows: 30, label: '' })}
+                    {getMarkdownInput({ name: 'community-update', rows: 30, label: '', required: true })}
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
                     <Button
-                      text={t('components.communityUpdates.postAction')}
+                      text={t('components.communityUpdates.actions.add.buttonTitle')}
                       type={'submit'}
+                      disabled={isSubmitting || removingMessage || !isValid || !dirty}
                       startIcon={isSubmitting ? <CircularProgress size={24} /> : <PlayArrowIcon />}
                     />
                   </Grid>
@@ -171,20 +186,27 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 <Skeleton height={40} />
               </CardContent>
               <CardActions disableSpacing>
-                <IconButton disabled className={clsx(styles.expand)}>
+                <IconButton disabled className={clsx(styles.expand)} size="large">
                   <ExpandMoreIcon />
                 </IconButton>
               </CardActions>
             </Card>
           </Grid>
         )}
-        {orderedMessages.map(m => {
+        {orderedMessages.length === 0 && (
+          <Typography align={'center'} variant={'subtitle1'}>
+            {t('common.no-updates')}
+          </Typography>
+        )}
+        {orderedMessages.map((m, i) => {
           const expanded = reviewedMessageId === m.id;
           const reviewed = reviewedMessageSourceIds.indexOf(m.id) !== -1;
+          const removed = removedMessageId === m.id && state.removingMessage;
           const member = memberMap[m.sender];
           return (
             <Grid key={m.id} item xs={12} lg={(12 / (itemsPerRow || 2)) as keyof GridProps['lg']}>
-              <Card elevation={disableElevation ? 0 : 2}>
+              <Card elevation={disableElevation ? 0 : 2} style={{ position: 'relative' }}>
+                <Backdrop open={removed} style={{ position: 'absolute', zIndex: 1 }} />
                 <CardHeader
                   avatar={
                     member && (
@@ -207,6 +229,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                               reviewed ? ids.filter(id => id !== m.id) : [...ids, m.id]
                             );
                           }}
+                          size="large"
                         >
                           {reviewed ? <FontDownloadOffIcon /> : <FontDownloadIcon />}
                         </IconButton>
@@ -229,33 +252,49 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     {!(expanded || disableCollapse) && <Box className={styles.rootFade}></Box>}
                   </Collapse>
                 </CardContent>
-                <CardActions disableSpacing>
-                  {canCopy && (
-                    <Tooltip title="Copy content to clipboard" placement="right">
+                {displayCardActions && (
+                  <CardActions disableSpacing>
+                    {canCopy && (
                       <CopyToClipboard text={m.message} onCopy={() => notify('Post copied to clipboard', 'info')}>
-                        <IconButton>
-                          <FileCopyIcon />
-                        </IconButton>
+                        <Tooltip title="Copy content to clipboard" placement="right">
+                          <IconButton size="large">
+                            <FileCopyIcon />
+                          </IconButton>
+                        </Tooltip>
                       </CopyToClipboard>
-                    </Tooltip>
-                  )}
-                  {!disableCollapse && (
-                    <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
-                      <IconButton
-                        className={clsx(styles.expand, {
-                          [styles.expandOpen]: expanded,
-                        })}
-                        onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                      >
-                        <ExpandMoreIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                </CardActions>
+                    )}
+                    {canRemove && (
+                      <Tooltip title="Remove community update" placement="right">
+                        <IconButton
+                          onClick={() => {
+                            setRemovedMessageId(m.id);
+                            setShowConfirmationDialog(true);
+                          }}
+                          size="large"
+                        >
+                          <DeleteOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {!disableCollapse && (
+                      <Tooltip title={expanded ? 'View entire content' : 'Minimize'} placement="left">
+                        <IconButton
+                          className={clsx(styles.expand, {
+                            [styles.expandOpen]: expanded,
+                          })}
+                          onClick={() => setReviewedMessage(x => (x === m.id ? null : m.id))}
+                          aria-expanded={expanded}
+                          aria-label="show more"
+                          size="large"
+                        >
+                          <ExpandMoreIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                  </CardActions>
+                )}
               </Card>
-              {disableElevation && <Divider variant="inset" />}
+              {disableElevation && i !== lastItemIndex && <Divider variant="inset" />}
             </Grid>
           );
         })}
@@ -264,6 +303,23 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             <CircularProgress />
           </Grid>
         )}
+        <ConfirmationDialog
+          options={{ show: showConfirmationDialog }}
+          entities={{
+            titleId: 'components.communityUpdates.actions.remove.confirmationTitle',
+            contentId: 'components.communityUpdates.actions.remove.confirmationContent',
+            confirmButtonTextId: 'components.communityUpdates.actions.remove.confirmationButtonTitle',
+          }}
+          actions={{
+            onCancel: () => setShowConfirmationDialog(false),
+            onConfirm: () => {
+              setShowConfirmationDialog(false);
+              if (actions?.onRemove && removedMessageId) {
+                actions?.onRemove(removedMessageId);
+              }
+            },
+          }}
+        />
       </Grid>
     </>
   );

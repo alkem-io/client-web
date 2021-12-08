@@ -1,0 +1,11 @@
+query communityMembers($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    community(ID: $communityId) {
+      id
+      members {
+        ...UserDisplayName
+      }
+    }
+  }
+}

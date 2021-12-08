@@ -1,0 +1,64 @@
+fragment OpportunityInfo on Opportunity {
+  id
+  nameID
+  displayName
+  lifecycle {
+    id
+    state
+  }
+  context {
+    ...ContextDetails
+    aspects {
+      id
+      title
+      framing
+      explanation
+    }
+    ecosystemModel {
+      id
+      actorGroups {
+        id
+        name
+        description
+        actors {
+          id
+          name
+          description
+          value
+          impact
+        }
+      }
+    }
+  }
+  community {
+    id
+    members {
+      id
+      displayName
+    }
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+  projects {
+    ...ProjectDetails
+  }
+  relations {
+    id
+    type
+    actorRole
+    actorName
+    actorType
+    description
+  }
+  activity {
+    name
+    value
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}

@@ -1,13 +1,13 @@
-import { Theme } from '@material-ui/core/styles';
+import { Theme } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { agnosticFunctor } from '../../utils/functor';
 import Typography from './Typography';
 
-const useAvatarStyles = createStyles<Theme, ClassProps>(theme => ({
+const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
   container: {
-    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background.paper,
+    background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.background.default,
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
     flexGrow: 1,
@@ -40,25 +40,21 @@ interface ClassProps {
 interface AvatarContainerProps {
   className?: string;
   classes?: ClassProps;
-  title: string;
+  title?: string;
   itemsPerLine?: number;
   children: React.ReactNode[];
 }
 
-const AvatarContainer: FC<AvatarContainerProps> = ({
-  title = 'community members',
-  classes = {},
-  className,
-  children,
-  itemsPerLine = 10,
-}) => {
+const AvatarContainer: FC<AvatarContainerProps> = ({ title, classes = {}, className, children, itemsPerLine = 10 }) => {
   const styles = useAvatarStyles(classes);
 
   return (
     <div className={clsx(styles.container, className)}>
-      <Typography variant="caption" as="h4">
-        {title}
-      </Typography>
+      {title && (
+        <Typography variant="caption" as="h4">
+          {title}
+        </Typography>
+      )}
       <div className={clsx(styles.avatarContainer)}>
         {children.map((x, i) =>
           i + 1 === itemsPerLine ? (

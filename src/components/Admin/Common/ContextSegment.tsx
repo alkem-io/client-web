@@ -21,10 +21,30 @@ export const ContextSegment: FC<ContextSegmentProps> = () => {
   return (
     <>
       {getInputField({ name: 'tagline', label: t('components.contextSegment.tagline'), rows: 3 })}
-      {getMarkdownInput({ name: 'background', label: t('components.contextSegment.background'), rows: 10 })}
-      {getMarkdownInput({ name: 'impact', label: t('components.contextSegment.impact'), rows: 10 })}
-      {getMarkdownInput({ name: 'vision', label: t('components.contextSegment.vision'), rows: 10 })}
-      {getMarkdownInput({ name: 'who', label: t('components.contextSegment.who'), rows: 10 })}
+      {getMarkdownInput({
+        name: 'vision',
+        label: t('components.contextSegment.vision.title'),
+        tooltipLabel: t('components.contextSegment.vision.tooltip'),
+        rows: 10,
+      })}
+      {getMarkdownInput({
+        name: 'background',
+        label: t('components.contextSegment.background.title'),
+        tooltipLabel: t('components.contextSegment.background.tooltip'),
+        rows: 10,
+      })}
+      {getMarkdownInput({
+        name: 'impact',
+        label: t('components.contextSegment.impact.title'),
+        tooltipLabel: t('components.contextSegment.impact.tooltip'),
+        rows: 10,
+      })}
+      {getMarkdownInput({
+        name: 'who',
+        label: t('components.contextSegment.who.title'),
+        tooltipLabel: t('components.contextSegment.who.tooltip'),
+        rows: 10,
+      })}
     </>
   );
 };

@@ -6,35 +6,38 @@ import {
   useDeleteUserMutation,
   UserDetailsFragmentDoc,
   useUpdateUserMutation,
+  useUserQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { UserModel } from '../../../models/User';
 import { PageProps } from '../..';
 import { CreateUserInput } from '../../../models/graphql-schema';
 import { createUserNameID } from '../../../utils/createUserNameId';
-import { EditMode } from '../../../utils/editMode';
+import { EditMode } from '../../../models/editMode';
 import { Loading } from '../../../components/core/Loading/Loading';
-import { getUpdateUserInput } from '../../../components/UserProfile';
-import UserForm from '../../../components/UserProfile/UserForm';
+import UserForm from '../../../components/composite/forms/UserForm';
 import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';
 import { logger } from '../../../services/logging/winston/logger';
+import { getUpdateUserInput } from '../../User/EditUserProfilePage';
 
 interface UserPageProps extends PageProps {
-  user?: UserModel;
   mode: EditMode;
   title?: string;
 }
 
-export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, title = 'User', paths }) => {
+export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User', paths }) => {
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const history = useHistory();
+  const { userId } = useUrlParams();
+  const { data, loading } = useUserQuery({ variables: { id: userId }, fetchPolicy: 'cache-and-network' });
 
+  const user = data?.user as UserModel;
   const currentPaths = useMemo(
     () => [...paths, { name: user && user.displayName ? user.displayName : 'new', real: false }],
-    [paths]
+    [paths, user]
   );
 
   useUpdateNavigation({ currentPaths });
@@ -99,8 +102,6 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
 
   const isSaving = updateMutationLoading || createMutationLoading;
 
-  const handleCancel = () => history.goBack();
-
   const handleSave = async (editedUser: UserModel) => {
     const { id: userID, memberof, profile, ...rest } = editedUser;
 
@@ -160,17 +161,12 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, user, ti
     setModalOpened(false);
   };
 
+  if (loading) return <Loading text={'Loading user...'} />;
+
   return (
     <div>
       {isSaving && <Loading text={'Saving...'} />}
-      <UserForm
-        editMode={mode}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        title={title}
-        user={user}
-        onDelete={() => setModalOpened(true)}
-      />
+      <UserForm editMode={mode} onSave={handleSave} title={title} user={user} onDelete={() => setModalOpened(true)} />
       <UserRemoveModal
         show={isModalOpened}
         onCancel={closeModal}

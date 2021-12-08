@@ -4,6 +4,13 @@ fragment CommunityDetails on Community {
   applications {
     id
   }
+  communication {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
   members {
     ...GroupMembers
   }

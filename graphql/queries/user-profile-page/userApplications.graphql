@@ -1,0 +1,12 @@
+query userProfileApplications($input: MembershipUserInput!) {
+  membershipUser(membershipData: $input) {
+    applications {
+      id
+      state
+      displayName
+      ecoverseID
+      challengeID
+      opportunityID
+    }
+  }
+}

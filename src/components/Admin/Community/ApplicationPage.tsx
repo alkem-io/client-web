@@ -1,18 +1,12 @@
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { TFunction } from 'i18next';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TFunction } from 'i18next';
-import Dialog from '@material-ui/core/Dialog';
-import { DataGrid, GridColDef } from '@material-ui/data-grid';
-import { useUpdateNavigation } from '../../../hooks';
-import { PageProps } from '../../../pages';
-import { ApplicationInfoFragment } from '../../../models/graphql-schema';
-import Avatar from '../../core/Avatar';
-import { createStyles } from '../../../hooks/useTheme';
-import Typography from '../../core/Typography';
+import { useApolloErrorHandler, useUpdateNavigation } from '../../../hooks';
 import { useEventOnApplicationMutation } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import LifecycleButton from '../../core/LifecycleButton';
-import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
+import { ApplicationInfoFragment } from '../../../models/graphql-schema';
+import { PageProps } from '../../../pages';
+import { ApplicationDialog } from '../../composite';
 
 interface ApplicationViewmodel {
   id: string;
@@ -76,129 +70,13 @@ export const ApplicationPage: FC<ApplicationPageProps> = ({ paths, applications 
           }}
         />
       </div>
-      <ApplicationDialog
-        appChosen={appChosen}
-        onHide={() => setAppChosen(undefined)}
-        onSetNewState={setNewStateHandler}
-      />
+      {appChosen && (
+        <ApplicationDialog app={appChosen} onHide={() => setAppChosen(undefined)} onSetNewState={setNewStateHandler} />
+      )}
     </>
   );
 };
 export default ApplicationPage;
-
-const appStyles = createStyles(theme => ({
-  title: {
-    flexGrow: 1,
-  },
-  header: {
-    display: 'flex',
-    gap: theme.spacing(4),
-    alignItems: 'center',
-    justifyContent: 'center',
-
-    [theme.breakpoints.down('sm')]: {
-      flexWrap: 'wrap',
-      gap: theme.spacing(2),
-    },
-  },
-  profile: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(1),
-
-    [theme.breakpoints.down('sm')]: {
-      gap: 0,
-      flexGrow: 1,
-    },
-  },
-  userName: {
-    whiteSpace: 'nowrap',
-    display: 'flex',
-
-    [theme.breakpoints.down('sm')]: {
-      flexGrow: 1,
-      justifyContent: 'center',
-    },
-  },
-  body: {
-    display: 'flex',
-    flexDirection: 'column',
-    maxHeight: 400,
-    overflowY: 'auto',
-  },
-  questions: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(1),
-    margin: theme.spacing(1),
-  },
-  question: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-}));
-
-interface ApplicationModalProps {
-  appChosen?: ApplicationInfoFragment;
-  onHide: () => void;
-  onSetNewState: (appId: string, newState: string) => void;
-}
-
-const ApplicationDialog: FC<ApplicationModalProps> = ({ appChosen, onHide, onSetNewState }) => {
-  const styles = appStyles();
-
-  const appId = appChosen?.id || '';
-  const user = appChosen?.user;
-  const questions = appChosen?.questions || [];
-
-  const nextEvents = appChosen?.lifecycle.nextEvents || [];
-
-  const username = user?.displayName || '';
-  const avatarSrc = user?.profile?.avatar || '';
-
-  return (
-    <Dialog open={!!appChosen} maxWidth="md" fullWidth aria-labelledby="org-dialog-title">
-      <DialogTitle id="org-dialog-title" onClose={onHide}>
-        <div className={styles.title}>
-          <div className={styles.header}>
-            <div className={styles.profile}>
-              <Avatar src={avatarSrc} size={'lg'} />
-              <div className={styles.userName}>
-                <Typography variant={'h3'}>{username}</Typography>
-              </div>
-            </div>
-          </div>
-        </div>
-      </DialogTitle>
-      <DialogContent dividers>
-        <div className={styles.body}>
-          <div className={styles.questions}>
-            {questions.map(x => (
-              <div key={x.id} className={styles.question}>
-                <label>{x.name}</label>
-                <Typography weight={'boldLight'}>{x.value}</Typography>
-              </div>
-            ))}
-          </div>
-        </div>
-      </DialogContent>
-      {nextEvents.length > 0 && (
-        <DialogActions>
-          {nextEvents.map((x, i) => (
-            <LifecycleButton
-              key={i}
-              stateName={x}
-              onClick={() => {
-                onSetNewState(appId, x);
-                onHide();
-              }}
-            />
-          ))}
-        </DialogActions>
-      )}
-    </Dialog>
-  );
-};
 
 const colDef = (t: TFunction) =>
   [

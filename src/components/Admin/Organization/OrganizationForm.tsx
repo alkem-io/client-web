@@ -3,23 +3,31 @@ import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
+import { Grid } from '@mui/material';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
-import { OrganisationModel } from '../../../models/Organisation';
 import { Tagset } from '../../../models/Profile';
-import { Organisation, TagsetTemplate } from '../../../models/graphql-schema';
-import { EditMode } from '../../../utils/editMode';
+import { Organization, OrganizationVerificationEnum, TagsetTemplate } from '../../../models/graphql-schema';
+import { EditMode } from '../../../models/editMode';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
-import EditableAvatar from '../../EditableAvatar';
-import FormikInputField from '../Common/FormikInputField';
+import EditableAvatar from '../../composite/common/EditableAvatar';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
-import { useInputField } from '../Common/useInputField';
-import { Grid } from '@material-ui/core';
+import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
+import { organizationegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
+import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 
 const emptyOrganization = {
+  nameID: '',
   displayName: '',
+  contactEmail: '',
+  domain: '',
+  legalEntityName: '',
+  website: '',
+  verification: {
+    status: OrganizationVerificationEnum.NotVerified,
+  },
   profile: {
     description: '',
     avatar: '',
@@ -44,8 +52,7 @@ export const OrganizationForm: FC<Props> = ({
 }) => {
   const history = useHistory();
   const { t } = useTranslation();
-  const getInputField = useInputField();
-  const { data: config } = useTagsetsTemplateQuery({});
+  const { data: config } = useTagsetsTemplateQuery();
 
   useEffect(() => {}, [config]);
 
@@ -56,11 +63,16 @@ export const OrganizationForm: FC<Props> = ({
   const {
     displayName,
     nameID,
+    contactEmail,
+    domain,
+    legalEntityName,
+    website,
+    verification: { status: verificationStatus },
     profile: { id: profileId, description, references, avatar },
-  } = currentOrganization;
+  } = currentOrganization as Organization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
-    if (config) return config.configuration.template.users[0].tagsets || [];
+    if (config) return config.configuration.template.organizations[0].tagsets || [];
     return [];
   }, [config]);
 
@@ -80,35 +92,46 @@ export const OrganizationForm: FC<Props> = ({
   }, [currentOrganization, tagsetsTemplate]);
 
   const initialValues = {
-    displayName: displayName || '',
-    nameID: nameID || '',
-    description: description || '',
-    avatar: avatar || '',
-    tagsets: tagsets || [],
-    references: references || [],
+    name: displayName || emptyOrganization.displayName,
+    nameID: nameID || emptyOrganization.nameID,
+    description: description || emptyOrganization.profile.description,
+    avatar: avatar || emptyOrganization.profile.avatar,
+    tagsets: tagsets || emptyOrganization.profile.tagsets,
+    contactEmail: contactEmail || emptyOrganization.contactEmail,
+    domain: domain || emptyOrganization.domain,
+    legalEntityName: legalEntityName || emptyOrganization.legalEntityName,
+    website: website || emptyOrganization.website,
+    verified: verificationStatus || emptyOrganization.verification.status,
+    references: references || emptyOrganization.profile.references,
   };
 
   const validationSchema = yup.object().shape({
-    displayName: yup.string().required(t('forms.validations.required')),
-    nameID: yup.string().required(t('forms.validations.required')),
-    avatar: yup.string(),
-    description: yup.string().max(400),
+    name: nameSegmentSchema.fields?.name || yup.string(),
+    nameID: nameSegmentSchema.fields?.nameID || yup.string(),
+    avatar: profileSegmentSchema.fields?.avatar || yup.string(),
+    description: profileSegmentSchema.fields?.description || yup.string(),
+    contactEmail: organizationegmentSchema.fields?.contactEmail || yup.string(),
+    domain: organizationegmentSchema.fields?.domain || yup.string(),
+    legalEntityName: organizationegmentSchema.fields?.legalEntityName || yup.string(),
+    website: organizationegmentSchema.fields?.website || yup.string(),
+    verified: organizationegmentSchema.fields?.verified || yup.string(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
   });
 
   /**
    * @handleSubmit
-   * @param orgData instance of OrganisationModel
+   * @param orgData instance of OrganizationModel
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (orgData: OrganisationModel) => {
+  const handleSubmit = async (orgData: typeof initialValues) => {
     const { tagsets, avatar, references, description, ...otherData } = orgData;
 
-    const organization: Organisation = {
+    const organization: Organization = {
       ...currentOrganization,
       ...otherData,
+      displayName: otherData.name,
       profile: {
         description,
         avatar,
@@ -127,7 +150,7 @@ export const OrganizationForm: FC<Props> = ({
       <Button
         variant={editMode ? 'default' : 'primary'}
         onClick={handleBack}
-        text={t(`buttons.${editMode ? 'cancel' : 'back'}`)}
+        text={t(`buttons.${editMode ? 'cancel' : 'back'}` as const)}
       />
     </Grid>
   );
@@ -148,45 +171,20 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={values => handleSubmit(values)}
         >
-          {({ values: { displayName, nameID, references, tagsets, avatar, description }, handleSubmit }) => {
+          {({ values: { references, tagsets, avatar }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
                 <Section avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={profileId} />}>
                   <Header text={title} />
                   <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <FormikInputField
-                        name={'displayName'}
-                        title={'Display Name'}
-                        value={displayName}
-                        required={true}
-                        readOnly={isReadOnlyMode}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <FormikInputField
-                        name={'nameID'}
-                        title={'Name ID'}
-                        value={nameID}
-                        required={true}
-                        readOnly={isReadOnlyMode || isEditMode}
-                      />
-                    </Grid>
+                    <NameSegment disabled={isEditMode} required={!isEditMode} />
 
                     {!isCreateMode && (
                       <>
-                        <Grid item xs={12}>
-                          <FormikInputField
-                            name={'description'}
-                            title={'Description'}
-                            value={description}
-                            readOnly={isReadOnlyMode}
-                            placeholder={'Description'}
-                            multiline
-                          />
-                        </Grid>
+                        <ProfileSegment disabled={isReadOnlyMode} />
 
-                        {getInputField({ name: 'avatar', label: t('components.visualSegment.avatar') })}
+                        <OrganizationSegment disabled={isReadOnlyMode} />
+
                         <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
                         {isEditMode && (
                           <ProfileReferenceSegment

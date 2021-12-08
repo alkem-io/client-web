@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import React, { FC, useContext } from 'react';
 import Button from '../../core/Button';

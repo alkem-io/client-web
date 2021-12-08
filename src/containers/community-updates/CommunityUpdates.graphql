@@ -1,19 +1,39 @@
-query communityUpdates($communityId: UUID!) {
-  community(ID: $communityId) {
+query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
     id
-    displayName
-    updatesRoom {
+    community(ID: $communityId) {
       id
-      messages {
+      displayName
+      communication {
         id
-        message
-        sender
-        timestamp
+        updates {
+          id
+          messages {
+            ...MessageDetails
+          }
+        }
       }
     }
   }
 }
 
-mutation sendCommunityUpdate($msgData: CommunitySendMessageInput!) {
-  messageUpdateCommunity(msgData: $msgData)
+mutation sendUpdate($msgData: UpdatesSendMessageInput!) {
+  sendUpdate(messageData: $msgData) {
+    ...MessageDetails
+  }
+}
+
+mutation removeUpdateCommunity($msgData: UpdatesRemoveMessageInput!) {
+  removeUpdate(messageData: $msgData)
+}
+
+subscription onMessageReceived {
+  messageReceived {
+    roomId
+    roomName
+    communityId
+    message {
+      ...MessageDetails
+    }
+  }
 }

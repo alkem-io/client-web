@@ -1,4 +1,4 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { FieldArray, useField } from 'formik';
 import React, { FC, useCallback } from 'react';
 import * as yup from 'yup';
@@ -6,8 +6,6 @@ import { TagsetTemplate } from '../../../models/graphql-schema';
 import { Tagset } from '../../../models/Profile';
 import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
 import { TagsInput } from '../../core';
-
-import useProfileStyles from './useProfileStyles';
 
 interface TagsSegmentProps {
   tagsets: Tagset[];
@@ -70,7 +68,6 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   disabled = false,
   placeholder,
 }) => {
-  const styles = useProfileStyles();
   const [field, , helper] = useField(name);
   return (
     <Grid item xs={12}>
@@ -80,21 +77,10 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         variant={'outlined'}
         placeholder={placeholder}
         value={field.value}
-        className={styles.field}
         required={required}
         disabled={disabled}
-        onAdd={item => {
-          helper.setValue([...field.value, item]);
-        }}
-        onDelete={item => {
-          const index = (field.value as string[]).indexOf(item);
-          if (index > -1) {
-            helper.setValue([...field.value.slice(0, index), ...field.value.slice(index + 1)]);
-          }
-        }}
-        InputProps={{
-          readOnly,
-        }}
+        readOnly={readOnly}
+        onChange={items => helper.setValue(items)}
         InputLabelProps={{
           shrink: true,
         }}

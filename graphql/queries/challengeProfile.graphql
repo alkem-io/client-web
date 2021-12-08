@@ -2,57 +2,79 @@ query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   ecoverse(ID: $ecoverseId) {
     id
     challenge(ID: $challengeId) {
+      ...ChallengeProfile
+    }
+  }
+}
+
+fragment ChallengeProfile on Challenge {
+  id
+  nameID
+  displayName
+  activity {
+    id
+    name
+    value
+  }
+  leadOrganizations {
+    ...OrganizationDetails
+  }
+  lifecycle {
+    id
+    machineDef
+    state
+    nextEvents
+    stateIsFinal
+  }
+  context {
+    ...ContextDetails
+  }
+  community {
+    id
+    authorization{
+      id
+      myPrivileges
+    }
+    members {
+      id
+      displayName
+    }
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+  opportunities {
+    id
+    nameID
+    displayName
+    activity {
+      id
+      name
+      value
+    }
+    lifecycle {
+      id
+      state
+    }
+    context {
+      ...ContextDetails
+    }
+    projects {
       id
       nameID
       displayName
+      description
       lifecycle {
+        id
         state
       }
-      context {
-        ...ContextDetails
-      }
-      community {
-        members {
-          displayName
-        }
-      }
-
-      tagset {
-        name
-        tags
-      }
-      opportunities {
-        id
-        displayName
-        lifecycle {
-          state
-        }
-        nameID
-        context {
-          ...ContextDetails
-        }
-        projects {
-          id
-          nameID
-          displayName
-          description
-          lifecycle {
-            state
-          }
-        }
-        tagset {
-          name
-          tags
-        }
-      }
-      leadOrganisations {
-        id
-        displayName
-        profile {
-          id
-          avatar
-        }
-      }
+    }
+    tagset {
+      id
+      name
+      tags
     }
   }
 }

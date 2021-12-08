@@ -1,0 +1,87 @@
+fragment DiscussionDetails on Discussion {
+  id
+  title
+  description
+  createdBy
+  timestamp
+  category
+  commentsCount
+  authorization {
+    myPrivileges
+  }
+}
+
+fragment DiscussionDetailsNoAuth on Discussion {
+  id
+  title
+  description
+  createdBy
+  timestamp
+  category
+  commentsCount
+}
+
+query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    community(ID: $communityId) {
+      id
+      communication {
+        id
+        authorization {
+          myPrivileges
+        }
+        discussion(ID: $discussionId) {
+          ...DiscussionDetails
+          messages {
+            ...MessageDetails
+          }
+        }
+      }
+    }
+  }
+}
+
+query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    community(ID: $communityId) {
+      id
+      communication {
+        id
+        authorization {
+          myPrivileges
+        }
+        discussions {
+          ...DiscussionDetailsNoAuth
+        }
+      }
+    }
+  }
+}
+
+mutation postDiscussionComment($input: DiscussionSendMessageInput!) {
+  sendMessageToDiscussion(messageData: $input) {
+    ...MessageDetails
+  }
+}
+
+mutation createDiscussion($input: CommunicationCreateDiscussionInput!) {
+  createDiscussion(createData: $input) {
+    ...DiscussionDetails
+  }
+}
+
+query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
+  usersById(IDs: $ids) {
+    id
+    nameID
+    displayName
+    firstName
+    lastName
+    profile {
+      id
+      avatar
+    }
+  }
+}

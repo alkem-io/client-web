@@ -1,16 +1,15 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
-import Divider from '../core/Divider';
 import Typography from '../core/Typography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
-import FormikCheckboxField from './Common/FormikCheckboxField';
-import FormikSelect from './Common/FormikSelect';
-import { ProfileSegment, profileSegmentSchema } from './Common/ProfileSegment';
+import FormikCheckboxField from '../composite/forms/FormikCheckboxField';
+import FormikSelect from '../composite/forms/FormikSelect';
+import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
 import { VisualSegment, visualSegmentSchema } from './Common/VisualSegment';
@@ -91,8 +90,8 @@ const EcoverseEditForm: FC<Props> = ({
   };
 
   const validationSchema = yup.object().shape({
-    name: profileSegmentSchema.fields?.name || yup.string(),
-    nameID: profileSegmentSchema.fields?.nameID || yup.string(),
+    name: nameSegmentSchema.fields?.name || yup.string(),
+    nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     host: yup.string().required(t('forms.validations.required')),
     background: contextSegmentSchema.fields?.background || yup.string(),
     impact: contextSegmentSchema.fields?.impact || yup.string(),
@@ -124,7 +123,7 @@ const EcoverseEditForm: FC<Props> = ({
 
         return (
           <Grid container spacing={2}>
-            <ProfileSegment disabled={isEdit} required={!isEdit} />
+            <NameSegment disabled={isEdit} required={!isEdit} />
             <Grid item xs={12}>
               <FormikSelect
                 title={t('components.editEcoverseForm.host.title')}
@@ -155,8 +154,6 @@ const EcoverseEditForm: FC<Props> = ({
 
               <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
             </Grid>
-
-            <Divider />
           </Grid>
         );
       }}

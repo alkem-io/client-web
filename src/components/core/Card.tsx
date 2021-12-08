@@ -1,13 +1,12 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { Theme } from '@material-ui/core/styles';
-import { BreakpointValues } from '@material-ui/core/styles/createBreakpoints';
-import { createStyles } from '../../hooks/useTheme';
+import { Breakpoint, Theme } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
 import hexToRGBA from '../../utils/hexToRGBA';
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from '@mui/material/Tooltip';
 
 interface HeaderProps {
   text: string | React.ReactNode;
@@ -18,7 +17,7 @@ interface HeaderProps {
   tooltip?: boolean;
 }
 
-const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
+const useHeaderStyles = makeStyles<Theme, ClassProps>(theme => ({
   header: {
     display: 'flex',
     alignItems: 'center',
@@ -28,10 +27,10 @@ const useHeaderStyles = createStyles<Theme, ClassProps>(theme => ({
     minHeight: '58px',
     padding: props =>
       agnosticFunctor(props.color)(theme, {}) ||
-      `${theme.spacing(2)}px ${theme.spacing(6)}px ${theme.spacing(2)}px ${theme.spacing(4)}px`,
+      `${theme.spacing(2)} ${theme.spacing(6)} ${theme.spacing(2)} ${theme.spacing(4)}`,
 
     '& span': {
-      [theme.breakpoints.down('lg')]: {
+      [theme.breakpoints.down('xl')]: {
         minHeight: 0,
       },
     },
@@ -48,7 +47,7 @@ export const HeaderCaption: FC<HeaderProps> = ({ text, className, classes }) => 
   );
 };
 
-const usePrimaryTextStyles = createStyles<Theme, ClassProps>(theme => ({
+const usePrimaryTextStyles = makeStyles<Theme, ClassProps>(theme => ({
   primaryText: {
     display: 'flex',
     wordBreak: 'break-word',
@@ -68,7 +67,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
 
   if (tooltip) {
     return (
-      <Tooltip placement="right" id={`challenge-${text}-tooltip`} title={text || ''}>
+      <Tooltip placement="right" id={`challenge-${text}-tooltip`} title={text || ''} arrow>
         <div className={styles.primaryTextWrapper}>
           <Typography
             as="h4"
@@ -101,7 +100,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
   );
 };
 
-const useActionsStyle = createStyles(() => ({
+const useActionsStyle = makeStyles(() => ({
   container: {
     display: 'flex',
     alignItems: 'center',
@@ -135,7 +134,7 @@ export const CardActions: FC<CardActionsProps> = ({ actions }) => {
   );
 };
 
-const useTagStyles = createStyles<Theme, ClassProps>(theme => ({
+const useTagStyles = makeStyles<Theme, ClassProps>(theme => ({
   tag: {
     display: 'flex',
     alignItems: 'center',
@@ -154,11 +153,11 @@ export const CardTag: FC<CardTagProps> = ({ text, className, color, actions = 0,
   return <Tag className={clsx(styles.tag, className)} color={color} text={text} {...rest} />;
 };
 
-const useMatchedTermsStyles = createStyles(theme => ({
+const useMatchedTermsStyles = makeStyles(theme => ({
   tagsContainer: {
     display: 'flex',
     flexWrap: 'wrap',
-    maxHeight: `${theme.spacing(9)}px`,
+    maxHeight: theme.spacing(9),
     overflow: 'hidden',
   },
   title: {
@@ -170,8 +169,8 @@ const useMatchedTermsStyles = createStyles(theme => ({
     width: 'fit-content',
     borderRadius: 15,
     textTransform: 'uppercase',
-    marginRight: `${theme.spacing(1)}px`,
-    marginBottom: `${theme.spacing(1)}px`,
+    marginRight: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   primary: {
     backgroundColor: theme.palette.primary.main,
@@ -212,7 +211,7 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary'
   );
 };
 
-const useBodyStyles = createStyles<Theme, ClassProps>(theme => ({
+const useBodyStyles = makeStyles<Theme, ClassProps>(theme => ({
   body: {
     display: 'flex',
     width: '100%',
@@ -220,17 +219,17 @@ const useBodyStyles = createStyles<Theme, ClassProps>(theme => ({
     flexGrow: 1,
     background: props => agnosticFunctor(props.background)(theme, {}) || theme.palette.neutralLight.main,
     padding: props =>
-      agnosticFunctor(props.padding)(theme, {}) || `${theme.spacing(3)}px ${theme.spacing(3)}px ${theme.spacing(1)}px`,
+      agnosticFunctor(props.padding)(theme, {}) || `${theme.spacing(3)} ${theme.spacing(3)} ${theme.spacing(1)}`,
 
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down('xl')]: {
       background: props => agnosticFunctor(props.background)(theme, { md: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { md: true }) || theme.spacing(3),
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       background: props => agnosticFunctor(props.background)(theme, { sm: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { sm: true }) || theme.spacing(3),
     },
-    [theme.breakpoints.down('xs')]: {
+    [theme.breakpoints.down('md')]: {
       background: props => agnosticFunctor(props.background)(theme, { xs: true }) || theme.palette.neutralLight.main,
       padding: props => agnosticFunctor(props.padding)(theme, { xs: true }) || theme.spacing(3),
     },
@@ -238,11 +237,11 @@ const useBodyStyles = createStyles<Theme, ClassProps>(theme => ({
 }));
 
 export interface ClassProps {
-  background?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
-  padding?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
-  color?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
-  lineHeight?: string | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => string | boolean);
-  actions?: number | ((theme: Theme, media: Record<keyof BreakpointValues, boolean>) => number | boolean);
+  background?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
+  padding?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
+  color?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
+  lineHeight?: string | ((theme: Theme, media: Record<Breakpoint, boolean>) => string | boolean);
+  actions?: number | ((theme: Theme, media: Record<Breakpoint, boolean>) => number | boolean);
 }
 
 interface BodyProps {
@@ -253,7 +252,7 @@ interface BodyProps {
 export const Body: FC<BodyProps> = ({ children, className, classes = {} }) => {
   const styles = useBodyStyles(classes);
 
-  return <div className={clsx(styles.body, 'ct-card-body', className)}>{children}</div>;
+  return <div className={clsx(styles.body, 'alkemio-card-body', className)}>{children}</div>;
 };
 
 interface SectionProps {
@@ -263,7 +262,7 @@ interface SectionProps {
 }
 
 export const Section: FC<SectionProps> = ({ children, className }) => {
-  return <div className={clsx('ct-card-section', className)}>{children}</div>;
+  return <div className={clsx('alkemio-card-section', className)}>{children}</div>;
 };
 
 interface FooterProps {
@@ -273,7 +272,7 @@ interface FooterProps {
 }
 
 export const Footer: FC<FooterProps> = ({ children, className }) => {
-  return <div className={clsx('ct-card-footer', className)}>{children}</div>;
+  return <div className={clsx('alkemio-card-footer', className)}>{children}</div>;
 };
 
 export interface CardProps extends Record<string, unknown> {
@@ -298,7 +297,7 @@ export interface CardProps extends Record<string, unknown> {
   onClick?: () => any;
 }
 
-const useCardStyles = createStyles<Theme, ClassProps>(theme => ({
+const useCardStyles = makeStyles<Theme, ClassProps>(theme => ({
   root: {
     flexGrow: 1,
     display: 'flex',
@@ -318,7 +317,7 @@ const useCardStyles = createStyles<Theme, ClassProps>(theme => ({
     textTransform: 'uppercase',
     letterSpacing: theme.spacing(0.3),
     fontWeight: 800,
-    lineHeight: `${theme.spacing(4)}px`,
+    lineHeight: theme.spacing(4),
   },
 }));
 
@@ -345,7 +344,11 @@ const Card: FC<CardProps> = ({
   const isEcoverseLevel = level?.level === 'Ecoverse';
 
   return (
-    <div className={clsx(styles.root, onClick && styles.clickable, className, 'ct-card')} onClick={onClick} {...rest}>
+    <div
+      className={clsx(styles.root, onClick && styles.clickable, className, 'alkemio-card')}
+      onClick={onClick}
+      {...rest}
+    >
       {headerProps && <HeaderCaption {...headerProps} />}
 
       <Body {...bodyProps}>

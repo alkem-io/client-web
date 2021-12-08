@@ -1,46 +1,64 @@
-import React, { FC } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { FC, useMemo } from 'react';
+import { useUrlParams } from '../hooks';
 import { useEcoverseInfoQuery } from '../hooks/generated/graphql';
-import { EcoverseInfoQuery } from '../models/graphql-schema';
+import { AuthorizationPrivilege, EcoverseInfoFragment } from '../models/graphql-schema';
+
+interface EcoversePermissions {
+  viewerCanUpdate: boolean;
+}
 
 interface EcoverseContextProps {
-  ecoverse?: EcoverseInfoQuery;
+  ecoverse?: EcoverseInfoFragment;
   ecoverseId: string;
+  ecoverseNameId: string;
+  displayName: string;
+  isPrivate: boolean;
   loading: boolean;
-  toEcoverseId: (nameID: string) => string;
+  permissions: EcoversePermissions;
 }
 
 const EcoverseContext = React.createContext<EcoverseContextProps>({
-  loading: true,
+  loading: false,
+  isPrivate: false,
   ecoverseId: '',
-  toEcoverseId: (_textId: string) => {
-    throw new Error('Ecoverse Context not provided! (toId)');
+  ecoverseNameId: '',
+  displayName: '',
+  permissions: {
+    viewerCanUpdate: false,
   },
 });
 
-interface EcoverseProviderProps {
-  // ecoverseId: string;
-}
+interface EcoverseProviderProps {}
 
 const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
-  const { ecoverseId } = useParams<{ ecoverseId: string }>();
-  const { data: ecoverse, loading: ecoverseLoading } = useEcoverseInfoQuery({
-    variables: { ecoverseId },
+  const { ecoverseNameId = '' } = useUrlParams();
+  const { data, loading } = useEcoverseInfoQuery({
+    variables: { ecoverseId: ecoverseNameId },
     errorPolicy: 'all',
+    skip: !ecoverseNameId,
   });
-  const loading = ecoverseLoading;
+  const ecoverse = data?.ecoverse;
+  const ecoverseId = ecoverse?.id || '';
+  const displayName = ecoverse?.displayName || '';
+  const isPrivate = !Boolean(ecoverse?.authorization?.anonymousReadAccess ?? true);
 
-  const toEcoverseId = (_textId: string) => {
-    return ecoverse?.ecoverse.id || '';
-  };
+  const permissions = useMemo<EcoversePermissions>(
+    () => ({
+      viewerCanUpdate: ecoverse?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+    }),
+    [ecoverse]
+  );
 
   return (
     <EcoverseContext.Provider
       value={{
         ecoverse,
         ecoverseId,
+        ecoverseNameId,
+        permissions,
+        displayName,
+        isPrivate,
         loading,
-        toEcoverseId,
       }}
     >
       {children}

@@ -1,9 +1,8 @@
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 import { Path } from '../../context/NavigationProvider';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../hooks';
+import { useApolloErrorHandler, useChallenge, useNotification, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchOpportunitiesQuery,
   refetchOpportunityProfileInfoQuery,
@@ -15,37 +14,28 @@ import { useNavigateToEdit } from '../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
-import ProfileForm, { ProfileFormValuesType } from '../ProfileForm/ProfileForm';
+import ProfileForm, { ProfileFormValuesType } from '../composite/forms/ProfileForm';
 import FormMode from './FormMode';
-
-interface Params {
-  ecoverseId?: string;
-  challengeId?: string;
-  opportunityId?: string;
-}
 
 interface Props {
   mode: FormMode;
   paths: Path[];
   title: string;
-  challengeId: string;
 }
 
-const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
+const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   const { t } = useTranslation();
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const {
-    ecoverseId = '',
-    opportunityId: opportunityNameId = '',
-    challengeId: challengeNameId = '',
-  } = useParams<Params>();
+  const { challengeId } = useChallenge();
+
+  const { ecoverseNameId = '', opportunityNameId = '', challengeNameId = '' } = useUrlParams();
 
   const [createOpportunity, { loading: isCreating }] = useCreateOpportunityMutation({
-    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId, challengeId: challengeNameId })],
+    refetchQueries: [refetchOpportunitiesQuery({ ecoverseId: ecoverseNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
     onCompleted: data => {
       onSuccess('Successfully created');
@@ -56,12 +46,14 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [refetchOpportunityProfileInfoQuery({ ecoverseId, opportunityId: opportunityNameId })],
+    refetchQueries: [
+      refetchOpportunityProfileInfoQuery({ ecoverseId: ecoverseNameId, opportunityId: opportunityNameId }),
+    ],
     awaitRefetchQueries: true,
   });
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
-    variables: { ecoverseId: ecoverseId, opportunityId: opportunityNameId },
+    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
     skip: mode === FormMode.create,
   });
 
@@ -88,7 +80,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
               context: createContextInput(values),
               displayName: name,
               challengeID: challengeId,
-              tags: tagsets.map(x => x.tags.join()),
+              tags: tagsets.flatMap(x => x.tags),
             },
           },
         });
@@ -101,7 +93,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
               context: updateContextInput(values),
               displayName: name,
               ID: opportunityId,
-              tags: tagsets.map(x => x.tags.join()),
+              tags: tagsets.flatMap(x => x.tags),
             },
           },
         });
@@ -127,12 +119,9 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title, challengeId }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <Button
-          disabled={isLoading}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}`)}
-        />
+        <Button disabled={isLoading} color="primary" onClick={() => submitWired()}>
+          {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
+        </Button>
       </Grid>
     </Grid>
   );

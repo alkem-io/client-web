@@ -2,20 +2,12 @@
   "cookie": {
     "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
   },
-  "general": {
-    "ecoverse": "Ecoverse",
-    "challenge": "Challenge",
-    "opportunity": "Opportunity",
-    "group": "Group",
-    "organization": "Organization"
-  },
   "search": {
     "header": "Search",
-    "subheader": "Find relevant users, organisations, groups and not least Challenges!",
-    "alternativesubheader": "Need help? Find relevant users, organisations, groups and not least Challenges!",
+    "subheader": "Find relevant users, organizations, groups and not least Challenges!",
+    "alternativesubheader": "Need help? Find relevant users, organizations, groups and not least Challenges!",
     "body": "",
     "organization": {
-      "no-tags": "No tags available",
       "no-hosted": "None",
       "no-leading": "None"
     }
@@ -31,6 +23,7 @@
     "back": "Back",
     "edit": "Edit",
     "see-more": "See more",
+    "see-all": "See all",
     "home": "Home",
     "take-me-home": "Take me home",
     "close": "Close",
@@ -47,7 +40,16 @@
     "cancel-project": "Cancel project",
     "create-project": "Create project",
     "processing": "Processing...",
-    "details": "Details"
+    "details": "Details",
+    "settings": "Settings",
+    "member": "Member",
+    "profile": "Profile",
+    "view-profile": "View Profile",
+    "edit-photo": "Edit Photo"
+  },
+  "tooltips": {
+    "click-more-info": "Click for more information",
+    "click-delete": "Click to delete"
   },
   "authentication": {
     "sign-in": "Sign in",
@@ -55,6 +57,7 @@
     "sign-out": "Sign out",
     "log-out": "Log out",
     "log-in": "Log in",
+    "login": "Login",
     "register": "Register",
     "validation": {
       "fill-fields": "Please fill required fields!"
@@ -69,101 +72,157 @@
     "remove": "Remove",
     "email": "Email",
     "state": "State",
-    "ecoverse": "Ecoverse",
-    "ecoverses": "Ecoverses",
+    "ecoverse": "Hub",
+    "ecoverses": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
+    "organization": "Organization",
+    "organizations": "Organizations",
     "project": "Project",
     "projects": "Projects",
+    "group": "Group",
+    "groups": "Groups",
+    "user-group": "User group",
+    "user-groups": "User groups",
+    "user": "User",
+    "users": "Users",
+    "update": "Update",
+    "updates": "Updates",
+    "no-updates": "No updates",
+    "no-tags": "No tags available",
+    "membership": "Membership",
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "members": "Members",
+    "empty-string": "",
+    "discussion": "Discussion",
+    "discussions": "Discussions",
+    "dashboard": "Dashboard",
+    "context": "Context",
+    "community": "Community",
+    "canvases": "Canvases",
+    "settings": "Settings",
+    "search": "Search",
+    "notifications": "Notifications",
+    "my-profile": "My profile",
+    "my-memberships": "My memberships",
+    "social": "Social",
+    "lifecycle": "Lifecycle",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
       "female": "female"
     },
+    "verified-status": {
+      "verified": "Verified",
+      "not-verified": "Not verified"
+    },
     "enums": {
       "authorization-credentials": {
-        "GlobalAdmin": {
+        "GLOBAL_ADMIN": {
           "name": "Global Admin",
           "order": 0,
           "hidden": false
         },
-        "GlobalAdminCommunity": {
+        "GLOBAL_ADMIN_COMMUNITY": {
           "name": "Global Community Admin",
           "order": 1,
           "hidden": false
         },
-        "GlobalAdminChallenges": {
+        "GLOBAL_ADMIN_CHALLENGES": {
           "name": "Global Challenges Admin",
           "order": 2,
           "hidden": false
         },
-        "GlobalRegistered": {
+        "GLOBAL_REGISTERED": {
           "name": "Registered",
           "order": 999,
           "hidden": true
         },
-        "EcoverseAdmin": {
-          "name": "Ecoverse Admin",
+        "ECOVERSE_ADMIN": {
+          "name": "Hub Admin",
           "order": 3,
           "hidden": false
         },
-        "EcoverseHost": {
-          "name": "Ecoverse Host",
+        "ECOVERSE_HOST": {
+          "name": "Hub Host",
           "order": 4,
           "hidden": true
         },
-        "EcoverseMember": {
-          "name": "Ecoverse Member",
+        "ECOVERSE_MEMBER": {
+          "name": "Hub Member",
           "order": 5,
           "hidden": true
         },
-        "ChallengeAdmin": {
+        "CHALLENGE_ADMIN": {
           "name": "Challenge Admin",
           "order": 6,
           "hidden": false
         },
-        "ChallengeLead": {
+        "CHALLENGE_LEAD": {
           "name": "Challenge Lead",
           "order": 7,
           "hidden": true
         },
-        "ChallengeMember": {
+        "CHALLENGE_MEMBER": {
           "name": "Challenge Member",
           "order": 8,
           "hidden": true
         },
-        "OpportunityMember": {
-          "name": "Opportunity Member",
+        "OPPORTUNITY_ADMIN": {
+          "name": "Opportunity Admin",
           "order": 9,
           "hidden": true
         },
-        "OrganisationAdmin": {
-          "name": "Organisation Admin",
+        "OPPORTUNITY_MEMBER": {
+          "name": "Opportunity Member",
           "order": 10,
+          "hidden": true
+        },
+        "ORGANIZATION_OWNER": {
+          "name": "Organization Owner",
+          "order": 11,
           "hidden": false
         },
-        "OrganisationMember": {
-          "name": "Organisation Member",
-          "order": 11,
-          "hidden": true
-        },
-        "UserSelfManagement": {
-          "name": "User Self Management",
+        "ORGANIZATION_ADMIN": {
+          "name": "Organization Admin",
           "order": 12,
-          "hidden": true
+          "hidden": false
         },
-        "CommunityMember": {
-          "name": "Community Member",
+        "ORGANIZATION_MEMBER": {
+          "name": "Organization Member",
           "order": 13,
           "hidden": true
         },
-        "UserGroupMember": {
-          "name": "User Group Member",
+        "USER_SELF_MANAGEMENT": {
+          "name": "User Self Management",
           "order": 14,
           "hidden": true
+        },
+        "COMMUNITY_MEMBER": {
+          "name": "Community Member",
+          "order": 15,
+          "hidden": true
+        },
+        "USER_GROUP_MEMBER": {
+          "name": "User Group Member",
+          "order": 16,
+          "hidden": true
         }
+      },
+      "edit-mode": {
+        "new": "New",
+        "edit": "Edit",
+        "read-only": "Read only"
+      },
+      "discussion-category": {
+        "GENERAL": "General",
+        "IDEAS": "Ideas",
+        "QUESTIONS": "Questions",
+        "SHARING": "Sharing"
       }
     }
   },
@@ -173,12 +232,42 @@
     }
   },
   "components": {
+    "tags-component": {
+      "more": "+{{count}} more",
+      "no-tags": "The {{name}} has not been tagged yet."
+    },
+    "remove-modal": {
+      "title": "Confirm remove"
+    },
+    "application-dialog": {
+      "title": "Application details",
+      "created": "Created on {{date}}",
+      "updated": "Last updated on {{date}}"
+    },
+    "edit-members": {
+      "no-available-members": "No users available to add; please check members of containing community",
+      "user-not-found": "User not found!"
+    },
+    "application-button": {
+      "dialog-join-parent": {
+        "title": "Want to join the parent Hub?",
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
+      },
+      "dialog-parent-app-pending": {
+        "title": "Parent application pending!",
+        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Ecoverse name'>'{{ecoverseName}}'</strong> hub first. There is already an application pending for that <strong title='Ecoverse name'>'{{ecoverseName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+      }
+    },
+    "organization-verified": {
+      "verified": "Verified",
+      "not-verified": "Not verified"
+    },
     "card-filter": {
       "title": "Filter"
     },
     "backdrop": {
-      "private": "{{blockName}} are only visible for members.",
-      "authentication": "Please sign in to check out the {{blockName}}."
+      "private": "{{blockName}} are only visible to members.",
+      "authentication": "Please sign in to see details about the {{blockName}}."
     },
     "notifications": {
       "error": "Error",
@@ -199,10 +288,10 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-ecoverse members to challenges",
+      "read-access": "Allow read access for non-hub members to challenges",
       "read-access-title": "Visibility"
     },
-    "profileSegment": {
+    "nameSegment": {
       "name": "Name",
       "nameID": {
         "title": "NameID",
@@ -210,11 +299,23 @@
       }
     },
     "contextSegment": {
-      "background": "Background",
-      "impact": "Impact",
       "tagline": "Tagline",
-      "vision": "Vision",
-      "who": "Who"
+      "background": {
+        "title": "Background",
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
+      },
+      "vision": {
+        "title": "Vision",
+        "tooltip": "What does success look like? How will you know when you have achieved it?"
+      },
+      "who": {
+        "title": "Who",
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?"
+      }
     },
     "visualSegment": {
       "title": "Visual",
@@ -224,6 +325,38 @@
     },
     "tagsSegment": {
       "title": "Tags"
+    },
+    "profileSegment": {
+      "avatar": {
+        "name": "Avatar",
+        "placeholder": "Enter an avatar URL..."
+      },
+      "description": {
+        "name": "Description",
+        "placeholder": "Enter a description"
+      }
+    },
+    "organizationSegment": {
+      "contactEmail": {
+        "name": "Contact email",
+        "placeholder": "Enter a contact email"
+      },
+      "domain": {
+        "name": "Domain",
+        "placeholder": "Enter the domain"
+      },
+      "legalEntityName": {
+        "name": "Legal entity name",
+        "placeholder": "Enter the legal name of this organization"
+      },
+      "website": {
+        "name": "Website",
+        "placeholder": "Enter a website"
+      },
+      "verified": {
+        "name": "Verified status",
+        "placeholder": "Verified status"
+      }
     },
     "card": {
       "member": "Member",
@@ -249,8 +382,145 @@
     },
     "communityUpdates": {
       "title": "Let your community know what's next",
-      "postAction": "Post Update",
-      "updatesTitle": "Published updates"
+      "updatesTitle": "Published updates",
+      "msg-not-empty": "Message cannot be empty",
+      "actions": {
+        "add": {
+          "buttonTitle": "Post Update"
+        },
+        "remove": {
+          "confirmationTitle": "Removing update",
+          "confirmationContent": "Removing a community update is an irreversible. Are you sure you want to continue?",
+          "confirmationButtonTitle": "Yes"
+        }
+      }
+    },
+    "settingsButton": {
+      "tooltip": "Settings"
+    },
+    "profile": {
+      "fields": {
+        "bio": {
+          "title": "Bio"
+        },
+        "description": {
+          "title": "Description"
+        },
+        "phone": {
+          "title": "Phone"
+        },
+        "telephone": {
+          "title": "Telephone"
+        },
+        "mobile": {
+          "title": "Mobile"
+        },
+        "keywords": {
+          "title": "Keywords"
+        },
+        "skills": {
+          "title": "Skills"
+        },
+        "capabilities": {
+          "title": "Capabilities"
+        },
+        "links": {
+          "title": "Links"
+        },
+        "location": {
+          "title": "Location"
+        },
+        "website": {
+          "title": "Website"
+        },
+        "work": {
+          "title": "Work"
+        }
+      }
+    },
+    "associates": {
+      "title": "Associates ({{count}})",
+      "help": "Users associated with this organization"
+    },
+    "contributions": {
+      "title": "Contributions",
+      "help": "The Hubs and Challenges that this organization is contributing to"
+    },
+    "pending-applications": {
+      "title": "Pending Applications",
+      "help": "The Hubs and Challenges that this organization is contributing to"
+    },
+    "discussions-list": {
+      "name": "Discussions - {{community}}",
+      "title": "Discussions ({{count}})",
+      "help": "List of all discussions",
+      "posted": "{{name}} on {{- date}} - {{count}} comment",
+      "posted_plural": "{{name}} on {{- date}} - {{count}} comments"
+    },
+    "discussion": {
+      "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
+      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
+      "comment": "{{count}} Comment",
+      "comment_plural": "{{count}} Comments",
+      "contributed": "{{count}} Person contributed",
+      "contributed_plural": "{{count}} People contributed",
+      "cant-post": "You can't reply to this discussion",
+      "delete-discussion": "Delete discussion?",
+      "delete-comment": "Delete comment?"
+    },
+    "comment": {
+      "posted": "{{name}} on {{- date}}",
+      "reply": "Replay to this comment"
+    },
+    "discussions-layout": {
+      "buttons": {
+        "new-discussion": "Initiate new discussion"
+      }
+    },
+    "post-comment": {
+      "fields": {
+        "description": {
+          "title": "Comment on this discussion",
+          "placeholder": "Add further information on the discussion here"
+        }
+      },
+      "buttons": {
+        "post": "Post comment"
+      }
+    },
+    "new-discussion": {
+      "title": {
+        "title": "Title",
+        "placeholder": "Discussion title"
+      },
+      "category": {
+        "title": "Category"
+      },
+      "description": {
+        "title": "Further information",
+        "placeholder": "Add further information on the discussion here"
+      },
+      "buttons": {
+        "post": "Create discussion"
+      }
+    },
+    "members-view": {
+      "title": "Active community members"
+    },
+    "discussion-category-selector": {
+      "ALL": "SHOW ALL",
+      "GENERAL": "GENERAL",
+      "IDEAS": "IDEAS",
+      "QUESTIONS": "QUESTIONS",
+      "SHARING": "SHARING"
+    },
+    "community-section": {
+      "discussions": {
+        "no-data-create": "No discussions. Create a new discussion",
+        "no-data-join": "No discussions. Please join the community to create a discussion",
+        "explore": "Explore discussions"
+      }
     }
   },
   "navigation": {
@@ -266,16 +536,39 @@
     }
   },
   "pages": {
+    "challenge-explorer": {
+      "filter": {
+        "title": "Search through challenges",
+        "subtitle": "This section allows you to search through all the challenges of the hubs you are participating in."
+      },
+      "my": {
+        "title": "My challenges ({{count}})",
+        "subtitle": "This section shows you the challenges you are participating in.",
+        "help-text": "Shows different organizations you are apart of, including the role you have."
+      },
+      "hubs": {
+        "title": "{{name}} challenges ({{count}})",
+        "subtitle": "This section shows you the challenges specific for the {{name}} hub.",
+        "help-text": "Shows different organizations you are apart of, including the role you have."
+      }
+    },
+    "lead-organization": {
+      "search": {
+        "leading-placeholder": "Search in name or tags",
+        "available-placeholder": "Search in name"
+      }
+    },
     "activity": {
-      "title": "{{blockName}} activity",
-      "ecoverses": "Ecoverses",
+      "title": "{{blockName}} Activity",
+      "summary": "A summary of everything that happens on {{blockName}}",
+      "ecoverses": "Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
       "projects": "Projects",
       "members": "Members",
       "interests": "Interests",
       "users": "Users",
-      "organisations": "Organisations",
+      "organizations": "Organizations",
       "lifecycle-info": "Click to view lifecycle graph"
     },
     "home": {
@@ -283,19 +576,50 @@
         "welcome": {
           "header": "Where Open Innovation Happens",
           "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Realising societies potential. Building a better future, together."
+          "body": "Realising societies potential. Building a better future, together.",
+          "join": "Want to join the community and see more?"
         },
         "ecoverse": {
-          "header": "Explore the hosted Ecoverses!",
-          "subheader": "Each Ecoverse contains one or more Challenges.<br>Facilitated by a Host Organisation.<br>",
+          "header": "Explore the Challenge Hubs!",
+          "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
           "body": "Share context, build community, coordinate and collaborate. Connect."
+        },
+        "community": {
+          "header": "The most active members",
+          "subheader": "Alkemio has over {{count}} registered members",
+          "helpText": "Activity is calculated based on their contribution to challenges, profile completeness, etc."
+        },
+        "organizations": {
+          "header": "Organizations",
+          "subheader": "The entities that want to bring innnovation."
         }
       }
     },
+    "organization": {
+      "settings": {
+        "tooltip": "Organization settings"
+      },
+      "ecoverses": {
+        "title": "Challenge Hubs hosting",
+        "subtitle": "Challenge Hubs which this organization is hosting",
+        "no-data": "No Hubs are hosted at the moment"
+      },
+      "challenges": {
+        "title": "Challenges leading",
+        "subtitle": "Challenges which this organization is leading",
+        "no-data": "No challenges are being led at the moment"
+      },
+      "users": {
+        "no-data": "None"
+      },
+      "verified-status": {
+        "help": "Verification status: has the identity and information about this Organization been formally verified"
+      }
+    },
     "ecoverse": {
-      "title": "Ecoverse",
+      "title": "Hub",
       "application": {
-        "title": "Application to join $t(general.{{entity}}) \"{{name}}\"",
+        "title": "Application to join {{entity}} \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
         "finish": "Thank you for completing your application for ",
         "backButton": "Back",
@@ -303,10 +627,27 @@
         "errorBlockName": "the questions"
       },
       "sections": {
+        "dashboard": {
+          "organization": "Facilitating organization",
+          "activity": "Hub statistics",
+          "challenges": {
+            "title": "Challenges",
+            "help-text": "This shows the different challenges you can contribute to in this hub."
+          },
+          "community": "Community"
+        },
+        "header": {
+          "buttons": {
+            "settings": {
+              "tooltip": "Hub settings"
+            }
+          }
+        },
         "challenges": {
           "header": "Challenges",
           "subheader": "There is no final frontier",
-          "body": ""
+          "body": "",
+          "no-data": "No challenges available for this hub"
         },
         "community": {
           "header": "Community",
@@ -315,7 +656,7 @@
         },
         "projects": {
           "header": "Projects",
-          "subheader": "Recently initiated projects in the {{ecoverse}} Ecoverse",
+          "subheader": "Recently initiated projects in the {{ecoverse}} Hub",
           "new-project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
         }
       }
@@ -326,10 +667,24 @@
         "load-more": "And more ..."
       },
       "sections": {
+        "dashboard": {
+          "statistics": {
+            "title": "Opportunity statistics",
+            "help-text": "Opportunity statistics"
+          },
+          "opportunities": {
+            "title": "Opportunities",
+            "help-text": "Opportunities related to this challenge"
+          },
+          "projects": {
+            "title": "Projects",
+            "help-text": "Projects related to this challenge"
+          }
+        },
         "header": {
           "buttons": {
-            "edit": {
-              "tooltip": "Edit challenge context"
+            "settings": {
+              "tooltip": "Challenge settings"
             }
           }
         },
@@ -360,10 +715,20 @@
     "opportunity": {
       "title": "Opportunity",
       "sections": {
+        "dashboard": {
+          "statistics": {
+            "title": "Opportunity statistics",
+            "help-text": "Opportunity statistics"
+          },
+          "projects": {
+            "title": "Projects",
+            "help-text": "Projects related to this opportunity"
+          }
+        },
         "header": {
           "buttons": {
-            "edit": {
-              "tooltip": "Edit opportunity context"
+            "settings": {
+              "tooltip": "Opportunity settings"
             },
             "projects": {
               "text": "Projects"
@@ -430,11 +795,17 @@
           }
         },
         "community": {
-          "title": "Community",
-          "subtitle": "Connect with the users contributing, get updates and discuss!",
+          "header": "Community",
+          "subheader": "Connect with the users contributing, get updates and discuss!",
           "body": ""
         }
       }
+    },
+    "community": {
+      "leading-organizations": "Leading organizations",
+      "ecoverse-host": "Hub host",
+      "no-user-groups": "There are no user groups",
+      "no-updates": "There are no updates"
     },
     "login": {
       "title": "Sign in",
@@ -442,13 +813,13 @@
         "email": "Please enter your email address.",
         "password": "Please enter your password."
       },
-      "logo": "{{ecoverse}} ecoverse logo",
+      "logo": "{{ecoverse}} Hub logo",
       "register": "Don't have an account?",
       "recovery": "Forgot your password?"
     },
     "about": {
       "title": "Reimagining collaboration",
-      "description": "Leading the way in 21st century style collaboration and governance, CherryTwist facilitates ecoverses for multi stakeholder collaboration",
+      "description": "Alkemio puts the Challenges central, each Challenge providing a central, neutral place for collaboration.",
       "powered-by": "Powered by {{name}} v{{version}}"
     },
     "error": {
@@ -530,11 +901,36 @@
       }
     },
     "user-profile": {
-      "email-not-verified": " Please verify your <l>email</l>."
+      "email-not-verified": " Please verify your <l>email</l>.",
+      "tooltips": {
+        "settings": "User profile settings"
+      },
+      "member-of": "Member of",
+      "applications": {
+        "title": "Pending applications"
+      },
+      "communities": {
+        "title": "Communities",
+        "help": "Communities the user is part of"
+      },
+      "pending-applications": {
+        "title": "Pending Applications",
+        "help": "Applications Pending for this user"
+      },
+      "associated-organizations": {
+        "title": "Associated Organizations",
+        "help": "Organizations who the user is related to"
+      }
     },
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",
       "subheader": "Please sign-in or register to continue!"
+    },
+    "user-notfications-settings": {
+      "email-notifications": {
+        "title": "Email notifications",
+        "subheader": "Receive email notifications for the following events:"
+      }
     }
   },
   "operations": {
@@ -542,5 +938,27 @@
       "updated-successfuly": "Group {{name}} has been updated!",
       "deleted-successfuly": "Group {{name}} deleted successfully"
     }
+  },
+  "kratos": {
+    "errors": {
+      "401": "Unauthenticated",
+      "session": {
+        "default": "Can't get session information!"
+      }
+    },
+    "loading-flow": "Loading flow",
+    "loading-error": "Loading error"
+  },
+  "dashboard-updates-section": {
+    "title": "Updates",
+    "no-data": "No updates available."
+  },
+  "dashboard-discussions-section": {
+    "title": "Discussions",
+    "no-data-create": "No discussions available. Create a new discussion",
+    "no-data-join": "No discussions available. Please join the community to create a discussion"
+  },
+  "dashboard-community-section": {
+    "title": "Community"
   }
 }

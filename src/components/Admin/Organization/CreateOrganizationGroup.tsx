@@ -1,11 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
-import {
-  GroupDetailsFragmentDoc,
-  useCreateGroupOnOrganizationMutation,
-  useOrganizationNameQuery,
-} from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import { GroupDetailsFragmentDoc, useCreateGroupOnOrganizationMutation } from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useOrganization } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import CreateGroupForm from '../Common/CreateGroupForm';
@@ -13,11 +9,8 @@ import CreateGroupForm from '../Common/CreateGroupForm';
 export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   const history = useHistory();
   const { url } = useRouteMatch();
-  const { organizationId } = useParams<{ organizationId: string }>();
+  const { organizationId, organization } = useOrganization();
   const handleError = useApolloErrorHandler();
-
-  const { data: organizationQuery } = useOrganizationNameQuery({ variables: { id: organizationId } });
-  const organization = organizationQuery?.organisation;
 
   const redirectToCreatedGroup = (groupId: string) => {
     const newGroupPath = url.replace('/new', `/${groupId}`);
@@ -25,11 +18,11 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   };
 
   const [createGroup] = useCreateGroupOnOrganizationMutation({
-    onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganisation.id),
+    onCompleted: data => redirectToCreatedGroup(data.createGroupOnOrganization.id),
     onError: handleError,
     update: (cache, { data }) => {
       if (data && organization) {
-        const { createGroupOnOrganisation: newGroup } = data;
+        const { createGroupOnOrganization: newGroup } = data;
         cache.modify({
           id: cache.identify(organization),
           fields: {

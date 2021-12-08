@@ -1,17 +1,17 @@
 import React, { FC, useEffect } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useGlobalState } from '../../hooks';
-import { FourOuFour } from '../../pages';
+import { Error404 } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
 import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../state/global/ui/loginNavigationMachine';
 import RestrictedRoute from '../route.extensions';
-import ErrorRoute from './error';
-import LoginRoute from './login';
-import LogoutRoute from './logout';
-import RecoveryRoute from './recovery';
-import RegistrationRoute from './registration';
-import SettingsRoute from './settings';
-import VerifyRoute from './verify';
+import ErrorRoute from './ErrorRoute';
+import LoginRoute from './LoginRoute';
+import LogoutRoute from './LogoutRoute';
+import RecoveryRoute from './RecoveryRoute';
+import RegistrationRoute from './RegistrationRoute';
+import SettingsRoute from './SettingsRoute';
+import VerifyRoute from './VerifyRoute';
 
 export const IdentityRoute: FC = () => {
   const { path } = useRouteMatch();
@@ -54,7 +54,7 @@ export const IdentityRoute: FC = () => {
         <ErrorRoute />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

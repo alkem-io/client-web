@@ -1,21 +1,21 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { ListPage } from '../../components/Admin';
-import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityCredentials';
+import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityMembers';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
-import { WithCommunity, WithParentMembersProps } from '../../components/Admin/Community/CommunityTypes';
+import { WithCommunity } from '../../components/Admin/Community/CommunityTypes';
 import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCommunityGroup';
-import LeadingOrganisationPage from '../../components/Admin/Community/LeadingOrganisationPage';
-import { useDeleteUserGroup } from '../../hooks';
-import { FourOuFour } from '../../pages';
+import LeadingOrganizationPage from '../../components/Admin/Community/LeadingOrganizationPage';
+import { Error404, PageProps } from '../../pages';
+import CommunityGroupListPage from '../../pages/Admin/Community/CommunityListPage';
 import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
+import { nameOfUrl } from '../url-params';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
 import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
 
 type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
 
-interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {
+interface CommunityRouteProps extends PageProps, WithCommunity {
   credential: CommunityCredentials;
   resourceId: string;
   accessedFrom: AccessedFrom;
@@ -23,8 +23,8 @@ interface CommunityRouteProps extends WithParentMembersProps, WithCommunity {
 
 export const CommunityRoute: FC<CommunityRouteProps> = ({
   paths,
-  community,
-  parentMembers,
+  communityId,
+  parentCommunityId,
   credential,
   resourceId,
   accessedFrom,
@@ -36,62 +36,51 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
       <Route exact path={`${path}/members`}>
         <CommunityPage
           paths={paths}
-          parentMembers={parentMembers}
           credential={credential}
           resourceId={resourceId}
-          community={community}
+          communityId={communityId}
+          parentCommunityId={parentCommunityId}
         />
       </Route>
       <Route path={`${path}/groups`}>
-        <CommunityGroupsRoute paths={paths} community={community} parentMembers={parentMembers} />
+        <CommunityGroupsRoute paths={paths} communityId={communityId} parentCommunityId={parentCommunityId} />
       </Route>
       <Route path={`${path}/applications`}>
         {accessedFrom === 'ecoverse' && <EcoverseApplicationRoute paths={paths} />}
         {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
       </Route>
       <Route path={`${path}/updates`}>
-        <CommunityUpdatesPage paths={paths} community={community} />
+        <CommunityUpdatesPage paths={paths} communityId={communityId} />
       </Route>
       <Route path={`${path}/lead`}>
-        <LeadingOrganisationPage paths={paths} />
+        <LeadingOrganizationPage paths={paths} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );
 };
 
-interface CommunityGroupsRouteProps extends WithParentMembersProps, WithCommunity {}
+interface CommunityGroupsRouteProps extends PageProps, WithCommunity {}
 
-export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, community, parentMembers }) => {
+export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, communityId, parentCommunityId }) => {
   const { path, url } = useRouteMatch();
-
-  const { handleDelete } = useDeleteUserGroup();
-
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
-
-  const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` })) || [];
 
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        <ListPage
-          data={groupsList}
-          paths={currentPaths}
-          title={community ? `${community?.displayName} Groups` : 'Groups'}
-          onDelete={x => handleDelete(x.id)}
-          newLink={`${url}/new`}
-        />
+        <CommunityGroupListPage communityId={communityId || ''} paths={currentPaths} />
       </Route>
       <Route exact path={`${path}/new`}>
-        <CreateCommunityGroup paths={currentPaths} community={community} />
+        <CreateCommunityGroup paths={currentPaths} communityId={communityId} />
       </Route>
-      <Route path={`${path}/:groupId`}>
-        <EcoverseGroupRoute paths={currentPaths} parentMembers={parentMembers} />
+      <Route path={`${path}/:${nameOfUrl.groupId}`}>
+        <EcoverseGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />
       </Route>
       <Route path="*">
-        <FourOuFour />
+        <Error404 />
       </Route>
     </Switch>
   );

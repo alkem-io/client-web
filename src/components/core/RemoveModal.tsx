@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Dialog from '@material-ui/core/Dialog';
+import Dialog from '@mui/material/Dialog';
 import Button from './Button';
 import { DialogActions, DialogContent, DialogTitle } from '../core/dialog';
 
@@ -12,12 +12,14 @@ interface RelationRemoveModalProps {
   title?: string;
 }
 
-const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, title = 'Confirm remove', onConfirm }) => {
+const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, title, onConfirm }) => {
   const { t } = useTranslation();
+  const defaultTitle = t('components.remove-modal.title');
+
   return (
     <Dialog open={show} maxWidth="md" fullWidth aria-labelledby="remove-dialog-title">
       <DialogTitle id="remove-dialog-title" onClose={onCancel}>
-        {title}
+        {title || defaultTitle}
       </DialogTitle>
       <DialogContent dividers>{text}</DialogContent>
       <DialogActions>

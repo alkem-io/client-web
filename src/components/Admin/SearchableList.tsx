@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, List, ListItem, ListItemIcon, ListItemText, OutlinedInput } from '@material-ui/core';
+import { FormControl, InputLabel, List, ListItem, ListItemIcon, ListItemText, OutlinedInput } from '@mui/material';
 import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, ReactElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -107,9 +107,11 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
             to={`${item.url}${editSuffix}`}
             primary={item.value}
             icon={
-              <IconButton onClick={e => openModal(e, item)}>
-                <Icon component={Trash} color="negative" size={'sm'} />
-              </IconButton>
+              onDelete && (
+                <IconButton onClick={e => openModal(e, item)} size="large">
+                  <Icon component={Trash} color="negative" size={'sm'} />
+                </IconButton>
+              )
             }
           />
         ))}

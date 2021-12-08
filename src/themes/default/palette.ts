@@ -1,17 +1,31 @@
-import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@material-ui/core/styles/createPalette';
+import { PaletteColor, PaletteColorOptions, PaletteOptions } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
 
 export const paletteOptions: PaletteOptions = {
-  primary: { main: '#00BCD4' },
+  primary: { main: '#068293' },
+  secondary: { main: '#00a88f' },
+  text: {
+    primary: '#181828',
+  },
   positive: { main: '#00D4B4' },
   negative: { main: '#D40062' },
   neutral: { main: '#181828' },
-  neutralMedium: { main: '#B8BAC8' },
+  neutralMedium: {
+    light: grey[200],
+    main: grey[500],
+    dark: grey[600],
+  },
   neutralLight: { main: '#F9F9F9' },
-  background: { paper: '#FFF' },
+  background: { default: '#ffffff', paper: '#F9F9F9' },
   divider: '#00BCD440',
+  mode: 'light',
+  grey: {
+    main: grey[300],
+    dark: grey[400],
+  },
 };
 
-declare module '@material-ui/core/styles/createPalette' {
+declare module '@mui/material/styles/createPalette' {
   interface PaletteOptions {
     positive: PaletteColorOptions;
     negative: PaletteColorOptions;

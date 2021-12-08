@@ -1,24 +1,22 @@
+import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { Container } from '@material-ui/core';
 import { useRouteMatch } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';
-import { Member } from '../../../models/User';
 import { PageProps } from '../../../pages';
-import EditCommunityCredentials, { CommunityCredentials } from '../Authorization/EditCommunityCredentials';
+import EditCommunityMembers, { CommunityCredentials } from '../Authorization/EditCommunityMembers';
 import { WithCommunity } from './CommunityTypes';
 
 interface CommunityPageProps extends PageProps, WithCommunity {
-  parentMembers: Member[];
   credential: CommunityCredentials;
   resourceId: string;
 }
 
 export const CommunityPage: FC<CommunityPageProps> = ({
   paths,
-  parentMembers = [],
+  communityId,
+  parentCommunityId,
   credential,
   resourceId,
-  community,
 }) => {
   const { url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: false }], [paths]);
@@ -26,11 +24,11 @@ export const CommunityPage: FC<CommunityPageProps> = ({
 
   return (
     <Container maxWidth="xl">
-      <EditCommunityCredentials
+      <EditCommunityMembers
         credential={credential}
         resourceId={resourceId}
-        parentMembers={parentMembers}
-        communityId={community?.id || ''}
+        communityId={communityId || ''}
+        parentCommunityId={parentCommunityId}
       />
     </Container>
   );

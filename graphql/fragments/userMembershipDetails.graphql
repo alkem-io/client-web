@@ -20,7 +20,7 @@ fragment UserMembershipDetails on UserMembership {
       displayName
     }
   }
-  organisations {
+  organizations {
     id
     nameID
     displayName
@@ -29,5 +29,18 @@ fragment UserMembershipDetails on UserMembership {
       nameID
       displayName
     }
+  }
+  communities {
+    id
+    displayName
+  }
+  applications {
+    id
+    communityID
+    displayName
+    state
+    ecoverseID
+    challengeID
+    opportunityID
   }
 }

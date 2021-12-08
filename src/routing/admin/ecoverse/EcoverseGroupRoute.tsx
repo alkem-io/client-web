@@ -1,33 +1,22 @@
 import React, { FC } from 'react';
-import { useParams, useRouteMatch } from 'react-router-dom';
-import { WithParentMembersProps } from '../../../components/Admin/Community/CommunityTypes';
+import { WithCommunity } from '../../../components/Admin/Community/CommunityTypes';
+import { useUrlParams } from '../../../hooks';
 import { useEcoverseGroupQuery } from '../../../hooks/generated/graphql';
+import { PageProps } from '../../../pages';
 import { GroupRoute } from '../GroupRoute';
 
-interface GroupRouteProps extends WithParentMembersProps {}
+interface GroupRouteProps extends PageProps, WithCommunity {}
 
-interface EcoverseGroupParams {
-  groupId: string;
-  ecoverseId: string;
-}
-
-export const EcoverseGroupRoute: FC<GroupRouteProps> = ({ paths, parentMembers }) => {
-  const { path, url } = useRouteMatch();
-  const { groupId, ecoverseId } = useParams<EcoverseGroupParams>();
+export const EcoverseGroupRoute: FC<GroupRouteProps> = ({ paths, parentCommunityId }) => {
+  const { groupId, ecoverseNameId } = useUrlParams();
 
   const { data, loading } = useEcoverseGroupQuery({
-    variables: { ecoverseId, groupId },
+    variables: { ecoverseId: ecoverseNameId, groupId },
     fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   return (
-    <GroupRoute
-      loading={loading}
-      group={data?.ecoverse.group}
-      parentMembers={parentMembers}
-      paths={paths}
-      path={path}
-      url={url}
-    />
+    <GroupRoute loading={loading} group={data?.ecoverse.group} parentCommunityId={parentCommunityId} paths={paths} />
   );
 };

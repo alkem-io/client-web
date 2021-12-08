@@ -1,19 +1,35 @@
-import { FormControl, OutlinedInput } from '@material-ui/core';
-import React, { useMemo, useState } from 'react';
+import { Grid, MenuItem, TextField } from '@mui/material';
+import { orderBy } from 'lodash';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+interface sortItem<T> {
+  key: keyof T;
+  name: string;
+  order?: 'asc' | 'desc';
+  default?: boolean;
+}
 
 type FilterProps<T> = {
   data: T[];
   limitKeys?: Array<keyof T>;
+  includeKeys?: Array<keyof T>;
+  sort?: sortItem<T>[];
+  placeholder?: string;
   children: (filteredData: T[]) => void;
 };
 
-export function Filter<T>({ data, limitKeys = [], children }: FilterProps<T>): React.ReactElement {
+export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }: FilterProps<T>): React.ReactElement {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
+  const [sortBy, setSortBy] = useState<sortItem<T> | undefined>(undefined);
+
+  useEffect(() => {
+    const defaultSort = sort?.find(s => s.default);
+    if (defaultSort) setSortBy(defaultSort);
+  }, [sort]);
 
   const filteredData = useMemo(() => {
-    return data.filter(item => {
+    const filtered = data.filter(item => {
       if (!filterBy) return true;
       for (const key in item) {
         if (limitKeys.length) {
@@ -28,18 +44,53 @@ export function Filter<T>({ data, limitKeys = [], children }: FilterProps<T>): R
       }
       return false;
     });
-  }, [data, filterBy]);
+
+    if (sortBy) {
+      return orderBy(filtered, sortBy.key, sortBy.order);
+    }
+    return filtered;
+  }, [data, filterBy, sortBy]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFilterBy(value);
   };
 
+  const keyFromSortItem = (item?: sortItem<T>) => {
+    return item ? `${item.key}-${item.order}` : '';
+  };
+
   return (
     <>
-      <FormControl fullWidth size={'small'}>
-        <OutlinedInput placeholder={t('components.filter.placeholder')} onChange={handleSearch} />
-      </FormControl>
+      <Grid container item spacing={2} justifyContent="space-between" alignItems="center">
+        <Grid item xs={12} lg={sort ? 9 : 12}>
+          <TextField
+            placeholder={placeholder ?? t('components.filter.placeholder')}
+            onChange={handleSearch}
+            size="small"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        {sort && (
+          <Grid item xs={12} lg={3}>
+            <TextField
+              fullWidth
+              select
+              value={keyFromSortItem(sortBy)}
+              onChange={event => setSortBy(sort.find(s => keyFromSortItem(s) === (event.target.value as string)))}
+              inputProps={{ 'aria-label': 'Discussions sort order' }}
+              size="small"
+            >
+              {sort.map((s, i) => (
+                <MenuItem key={i} value={keyFromSortItem(s)}>
+                  {s.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+        )}
+      </Grid>
       {children(filteredData)}
     </>
   );

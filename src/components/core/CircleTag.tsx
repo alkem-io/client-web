@@ -1,13 +1,11 @@
 import clsx from 'clsx';
 import React from 'react';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import Typography from './Typography';
 
-const useCircleTagStyles = createStyles(theme => ({
+const useCircleTagStyles = makeStyles(theme => ({
   tag: {
     display: 'inline-flex',
-    width: 36,
-    height: 36,
     borderRadius: '50%',
     borderStyle: 'solid',
     borderWidth: 1,
@@ -30,10 +28,23 @@ const useCircleTagStyles = createStyles(theme => ({
     borderColor: theme.palette.neutralMedium.main,
     color: theme.palette.neutralMedium.main,
   },
-  tagText: {
+  'tagText-large': {
     textAlign: 'center',
     lineHeight: '32px', // - 2 * 2 borders
     width: '100%',
+  },
+  'tagText-small': {
+    textAlign: 'center',
+    lineHeight: '1.2rem', // - 2 * 2 borders
+    width: '100%',
+  },
+  small: {
+    width: 22,
+    height: 22,
+  },
+  large: {
+    width: 36,
+    height: 36,
   },
 }));
 
@@ -41,14 +52,20 @@ interface TagProps extends React.SVGProps<SVGSVGElement> {
   color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium'; //keyof Palette
   text: string;
   className?: string;
+  size?: 'small' | 'large'; // TODO [ATS]: Make it compatibile with MUI.
 }
 
-const CircleTag: React.FC<TagProps> = ({ text, color = 'neutral', className }): JSX.Element | null => {
+const CircleTag: React.FC<TagProps> = ({ text, color = 'neutral', className, size = 'large' }): JSX.Element | null => {
   const styles = useCircleTagStyles();
 
   return (
-    <span className={clsx(styles.tag, styles[color], className)}>
-      <Typography variant="body" color="inherit" weight="bold" className={styles.tagText}>
+    <span className={clsx(styles.tag, styles[color], styles[size], className)}>
+      <Typography
+        variant="body1"
+        color="inherit"
+        weight={size === 'small' ? 'regular' : 'bold'}
+        className={styles[`tagText-${size}`]}
+      >
         {text}
       </Typography>
     </span>

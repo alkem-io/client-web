@@ -1,40 +1,48 @@
+import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { useParams, useRouteMatch } from 'react-router';
-import { Container } from '@material-ui/core';
-import { useApolloErrorHandler, useEcoverse, useUpdateNavigation } from '../../../hooks';
+import { useTranslation } from 'react-i18next';
+import { useRouteMatch } from 'react-router';
+import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
+import { Loading } from '../../../components/core';
+import { useApolloErrorHandler, useChallenge, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsChallengeAdminMutation,
-  useEcoverseMembersQuery,
   useRemoveUserAsChallengeAdminMutation,
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
-import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
-import { Loading } from '../../../components/core';
-
-interface Params {
-  role: AuthorizationCredential;
-}
+import { UserDisplayNameFragment } from '../../../models/graphql-schema';
 
 const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
+  const { t } = useTranslation();
   const { url } = useRouteMatch();
-  const { role: credential } = useParams<Params>();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: credential, real: true }], [paths]);
+  const { role: credential } = useUrlParams();
+  const currentPaths = useMemo(
+    () => [
+      ...paths,
+      {
+        value: url,
+        name: t(`common.enums.authorization-credentials.${credential}.name` as const),
+        real: true,
+      },
+    ],
+    [paths]
+  );
+
   useUpdateNavigation({ currentPaths });
 
   const handleError = useApolloErrorHandler();
 
-  const [grant] = useAssignUserAsChallengeAdminMutation({
+  const [grant, { loading: addingMember }] = useAssignUserAsChallengeAdminMutation({
     onError: handleError,
   });
 
-  const [revoke] = useRemoveUserAsChallengeAdminMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsChallengeAdminMutation({
     onError: handleError,
   });
 
-  const handleAdd = (member: Member) => {
+  const handleAdd = (member: UserDisplayNameFragment) => {
     grant({
       variables: {
         input: {
@@ -68,13 +76,10 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
     });
   };
 
-  const { ecoverseId } = useEcoverse();
-  const { data, loading } = useEcoverseMembersQuery({
-    variables: { ecoverseId: ecoverseId },
-  });
-  const ecoMembers = data?.ecoverse?.community?.members || [];
+  const { challenge, loading: loadingChallenge } = useChallenge();
+  const communityId = challenge?.community?.id || '';
 
-  if (loading) {
+  if (loadingChallenge) {
     return <Loading />;
   }
 
@@ -85,7 +90,9 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
         onRemove={handleRemove}
         resourceId={resourceId}
         credential={credential}
-        memberList={ecoMembers}
+        parentCommunityId={communityId}
+        addingMember={addingMember}
+        removingMember={removingMember}
       />
     </Container>
   );

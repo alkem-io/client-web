@@ -2,7 +2,9 @@ query opportunityActorGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAM
   ecoverse(ID: $ecoverseId) {
     id
     opportunity(ID: $opportunityId) {
+      id
       context {
+        id
         ecosystemModel {
           id
           actorGroups {

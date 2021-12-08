@@ -1,7 +1,8 @@
 query organizationDetails($id: UUID_NAMEID!) {
-  organisation(ID: $id) {
+  organization(ID: $id) {
     id
     displayName
+    nameID
     profile {
       id
       avatar

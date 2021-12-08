@@ -1,0 +1,4 @@
+fragment UserDisplayName on User {
+  id
+  displayName
+}

@@ -1,16 +1,15 @@
 import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import Divider from '../../components/core/Divider';
 import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Tag from '../../components/core/Tag';
 import { useUpdateNavigation } from '../../hooks';
-import { createStyles } from '../../hooks/useTheme';
+import { makeStyles } from '@mui/styles';
 import { Project as ProjectType, User } from '../../models/graphql-schema';
 import { PageProps } from '../common';
 
-const useStyles = createStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   tag: {
     top: -theme.spacing(2),
     left: 0,
@@ -56,7 +55,6 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project }): React.ReactElem
         <SubHeader text={'How we envision the first steps'} />
         <Body />
       </Section>
-      <Divider />
     </>
   );
 };
