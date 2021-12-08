@@ -26,11 +26,12 @@ interface EcoverseChallengesViewProps {
 export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entities }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
-  const { ecoverse, hideChallenges } = entities;
+  const { ecoverse, permissions } = entities;
+  const { challengesReadAccess } = permissions;
   const { nameID: ecoverseNameId = '' } = ecoverse || {};
 
   return (
-    <MembershipBackdrop show={hideChallenges} blockName={t('pages.ecoverse.sections.challenges.header')}>
+    <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.ecoverse.sections.challenges.header')}>
       <EcoverseChallengesContainer
         entities={{
           ecoverseNameId,

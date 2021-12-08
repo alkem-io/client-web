@@ -50,7 +50,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
   const { ecoverseNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
-  const { isAuthenticated } = entities.permissions;
+  const { communityReadAccess } = entities.permissions;
   const tabNames = (Object.keys(routes) as Array<keyof OpportunityRoutesType>).reduce<OpportunityRoutesType>(
     (acc, curr) => {
       acc[curr] = pathGetter(curr);
@@ -61,7 +61,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
 
   return (
     <>
-      <Tabs value={match?.path} aria-label="basic tabs example">
+      <Tabs value={match?.path} aria-label="opportunity tabs">
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
@@ -76,15 +76,14 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
           value={pathGetter('context')}
           to={urlGetter('context')}
         />
-        {isAuthenticated && (
-          <NavigationTab
-            icon={<GroupOutlined />}
-            label={t('common.community')}
-            component={RouterLink}
-            value={pathGetter('community')}
-            to={urlGetter('community')}
-          />
-        )}
+        <NavigationTab
+          disabled={!communityReadAccess}
+          icon={<GroupOutlined />}
+          label={t('common.community')}
+          component={RouterLink}
+          value={pathGetter('community')}
+          to={urlGetter('community')}
+        />
         <NavigationTab
           icon={<ContentPasteOutlined />}
           label={t('common.projects')}
@@ -92,16 +91,16 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
           value={pathGetter('projects')}
           to={urlGetter('projects')}
         />
-        {isAuthenticated && (
-          <NavigationTab
-            icon={<ForumOutlined />}
-            label={t('common.discussions')}
-            component={RouterLink}
-            value={pathGetter('discussions')}
-            to={urlGetter('discussions')}
-          />
-        )}
         <NavigationTab
+          disabled={!communityReadAccess}
+          icon={<ForumOutlined />}
+          label={t('common.discussions')}
+          component={RouterLink}
+          value={pathGetter('discussions')}
+          to={urlGetter('discussions')}
+        />
+        <NavigationTab
+          disabled={!communityReadAccess}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           component={RouterLink}

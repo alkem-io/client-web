@@ -59,6 +59,7 @@ export interface OpportunityDashboardViewOptions {
   isNoRelations: boolean;
   isAspectAddAllowed: boolean;
   isAuthenticated: boolean;
+  communityReadAccess: boolean;
 }
 
 export interface OpportunityDashboardViewProps
@@ -79,6 +80,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const communityId = opportunity?.community?.id || '';
   const members = (opportunity?.community?.members || []) as User[]; // TODO [ATS]:
   const projects = opportunity?.projects || [];
+  const { communityReadAccess } = options;
 
   const { context, displayName } = opportunity;
   const { visual, tagline = '', vision = '' } = context ?? {};
@@ -101,10 +103,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             lifecycle={lifecycle}
             loading={loading}
           />
-          <SectionSpacer />
-          <DashboardUpdatesSection entities={{ ecoverseId: ecoverseId, communityId: communityId }} />
-          <SectionSpacer />
-          <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} />
+          {communityReadAccess && (
+            <>
+              <SectionSpacer />
+              <DashboardUpdatesSection entities={{ ecoverseId: ecoverseId, communityId: communityId }} />
+              <SectionSpacer />
+              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} />
+            </>
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
           <DashboardGenericSection
@@ -131,8 +137,12 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               })}
             </Grid>
           </DashboardGenericSection>
-          <SectionSpacer />
-          <DashboardCommunitySectionV2 members={members} />
+          {communityReadAccess && (
+            <>
+              <SectionSpacer />
+              <DashboardCommunitySectionV2 members={members} />
+            </>
+          )}
         </Grid>
       </Grid>
     </>

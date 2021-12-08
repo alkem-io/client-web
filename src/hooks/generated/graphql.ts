@@ -727,6 +727,10 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     community {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       members {
         id
         displayName
@@ -849,6 +853,10 @@ export const EcoverseInfoFragmentDoc = gql`
       members {
         id
       }
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
   ${EcoverseDetailsFragmentDoc}
@@ -950,6 +958,10 @@ export const OpportunityPageFragmentDoc = gql`
     }
     community {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       members {
         id
         nameID

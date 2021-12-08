@@ -19,7 +19,8 @@ interface EcoverseContextViewProps {
 
 export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities }) => {
   const { t } = useTranslation();
-  const { ecoverse, hideChallenges } = entities;
+  const { ecoverse, permissions } = entities;
+  const { challengesReadAccess } = permissions;
   const { context, displayName, tagset } = ecoverse || {};
 
   const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
@@ -46,7 +47,7 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities }) 
 
   return (
     <ContextLayout rightPanel={rightPanel}>
-      <MembershipBackdrop show={hideChallenges} blockName={t('pages.ecoverse.sections.challenges.header')}>
+      <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.ecoverse.sections.challenges.header')}>
         <ContextSection
           primaryAction={
             <ApplicationButtonContainer

@@ -605,7 +605,7 @@ export type MutationKeySpecifier = (
   | 'deleteActor'
   | 'deleteActorGroup'
   | 'deleteAspect'
-  | 'deleteCanvasOnContext'
+  | 'deleteCanvas'
   | 'deleteChallenge'
   | 'deleteDiscussion'
   | 'deleteEcoverse'
@@ -697,7 +697,7 @@ export type MutationFieldPolicy = {
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteAspect?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;

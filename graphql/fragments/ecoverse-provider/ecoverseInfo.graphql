@@ -10,5 +10,9 @@ fragment EcoverseInfo on Ecoverse {
     members {
       id
     }
+    authorization {
+      id
+      myPrivileges
+    }
   }
 }

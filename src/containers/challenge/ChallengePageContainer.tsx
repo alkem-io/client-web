@@ -8,7 +8,7 @@ import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
 import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import { ChallengeProfileFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import { Project } from '../../models/Project';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
@@ -22,6 +22,7 @@ export interface ChallengeContainerEntities {
   projects: Project[];
   permissions: {
     canEdit: boolean;
+    communityReadAccess: boolean;
   };
   isAuthenticated: boolean;
   isMember: boolean;
@@ -55,6 +56,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(ecoverseId, challengeId) || false,
+    communityReadAccess: (_challenge?.ecoverse?.challenge?.community?.authorization?.myPrivileges || []).some(
+      x => x === AuthorizationPrivilege.Read
+    ),
   };
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();

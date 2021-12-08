@@ -31,6 +31,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
       <EcoversePageContainer>
         {(entities, state) => {
           if (!entities || !state) return null;
+          const communityReadAccess = entities.permissions.communityReadAccess;
           return (
             <EcoverseTabs entities={entities}>
               {({ tabName, tabNames }) => (
@@ -57,6 +58,8 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                           members={entities?.ecoverse?.community?.members as User[]}
                           loading={state.loading}
                           isMember={entities.isMember}
+                          communityReadAccess={communityReadAccess}
+                          challengesReadAccess={entities.permissions.challengesReadAccess}
                         />
                       )}
                     </EcoverseChallengesContainer>

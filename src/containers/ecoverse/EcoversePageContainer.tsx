@@ -7,7 +7,7 @@ import { useEcoverse, useUserContext } from '../../hooks';
 import { useEcoversePageProjectsQuery, useEcoversePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Project } from '../../models/Project';
-import { EcoversePageFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, EcoversePageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
@@ -16,9 +16,10 @@ import { Discussion } from '../../models/discussion/discussion';
 export interface EcoverseContainerEntities {
   ecoverse?: EcoversePageFragment;
   isPrivate: boolean;
-  hideChallenges: boolean;
   permissions: {
     canEdit: boolean;
+    communityReadAccess: boolean;
+    challengesReadAccess: boolean;
   };
   projects: Project[];
   activity: ActivityItem[];
@@ -51,9 +52,9 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
 
   const { user, isAuthenticated } = useUserContext();
 
-  const permissions = {
-    canEdit: user?.isEcoverseAdmin(ecoverseId) || false,
-  };
+  const communityReadAccess = (_ecoverse?.ecoverse?.community?.authorization?.myPrivileges ?? []).some(
+    x => x === AuthorizationPrivilege.Read
+  );
 
   const { data: _projects, loading: loadingProjects } = useEcoversePageProjectsQuery({
     variables: { ecoverseId: ecoverseNameId },
@@ -112,7 +113,13 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
   const isMember = user?.ofEcoverse(ecoverseId) ?? false;
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
   const isPrivate = !(_ecoverse?.ecoverse?.authorization?.anonymousReadAccess ?? true);
-  const hideChallenges = isPrivate ? !isMember && !isGlobalAdmin : false;
+
+  const permissions = {
+    canEdit: user?.isEcoverseAdmin(ecoverseId) || false,
+    communityReadAccess,
+    // todo: use privileges instead when authorization on challenges is public
+    challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
+  };
 
   return (
     <>
@@ -121,7 +128,6 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
           ecoverse: _ecoverse?.ecoverse,
           discussionList,
           isPrivate,
-          hideChallenges,
           permissions,
           activity,
           projects,

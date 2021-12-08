@@ -51,7 +51,8 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
 
-  const { isAuthenticated, hideChallenges } = entities;
+  const { permissions: pagePermissions } = entities;
+  const { communityReadAccess, challengesReadAccess } = pagePermissions;
 
   const tabNames = (Object.keys(routes) as Array<keyof EcoverseRoutesType>).reduce<EcoverseRoutesType>((acc, curr) => {
     acc[curr] = pathGetter(curr);
@@ -81,37 +82,32 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           value={pathGetter('context')}
           to={urlGetter('context')}
         />
-        {isAuthenticated && (
-          <NavigationTab
-            disabled={!isAuthenticated}
-            icon={<GroupOutlined />}
-            label={t('common.community')}
-            component={RouterLink}
-            value={pathGetter('community')}
-            to={urlGetter('community')}
-          />
-        )}
-        {!hideChallenges && (
-          <NavigationTab
-            disabled={hideChallenges}
-            icon={<ContentPasteOutlined />}
-            label={t('common.challenges')}
-            component={RouterLink}
-            value={pathGetter('challenges')}
-            to={urlGetter('challenges')}
-          />
-        )}
-        {isAuthenticated && (
-          <NavigationTab
-            disabled={!isAuthenticated}
-            icon={<ForumOutlined />}
-            label={t('common.discussions')}
-            component={RouterLink}
-            value={pathGetter('discussions')}
-            to={urlGetter('discussions')}
-          />
-        )}
         <NavigationTab
+          disabled={!communityReadAccess}
+          icon={<GroupOutlined />}
+          label={t('common.community')}
+          component={RouterLink}
+          value={pathGetter('community')}
+          to={urlGetter('community')}
+        />
+        <NavigationTab
+          disabled={!challengesReadAccess}
+          icon={<ContentPasteOutlined />}
+          label={t('common.challenges')}
+          component={RouterLink}
+          value={pathGetter('challenges')}
+          to={urlGetter('challenges')}
+        />
+        <NavigationTab
+          disabled={!communityReadAccess}
+          icon={<ForumOutlined />}
+          label={t('common.discussions')}
+          component={RouterLink}
+          value={pathGetter('discussions')}
+          to={urlGetter('discussions')}
+        />
+        <NavigationTab
+          disabled={!communityReadAccess}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           component={RouterLink}

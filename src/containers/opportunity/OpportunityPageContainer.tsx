@@ -2,7 +2,12 @@ import { FC, useMemo, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationCredential, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import {
+  AuthorizationCredential,
+  AuthorizationPrivilege,
+  OpportunityPageFragment,
+  Reference,
+} from '../../models/graphql-schema';
 import { ContainerProps } from '../../models/container';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
@@ -27,6 +32,7 @@ export interface OpportunityContainerEntities {
     isNoRelations: boolean;
     isAspectAddAllowed: boolean;
     isAuthenticated: boolean;
+    communityReadAccess: boolean;
   };
   hideMeme: boolean;
   showInterestModal: boolean;
@@ -76,18 +82,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const userName = user?.user.displayName;
 
-  const permissions = useMemo(() => {
-    const isAdmin = user?.isOpportunityAdmin(ecoverseId, challengeId, opportunityId) || false;
-    return {
-      canEdit: isAdmin,
-      projectWrite: isAdmin,
-      editAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-      editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-      editActors: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-      removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-    };
-  }, [user, ecoverseId, challengeId, opportunityId]);
-
   const {
     data: query,
     loading: loadingOpportunity,
@@ -98,6 +92,21 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   });
 
   const opportunity = (query?.ecoverse.opportunity ?? {}) as OpportunityPageFragment;
+
+  const permissions = useMemo(() => {
+    const isAdmin = user?.isOpportunityAdmin(ecoverseId, challengeId, opportunityId) || false;
+    return {
+      canEdit: isAdmin,
+      projectWrite: isAdmin,
+      editAspect: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+      editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+      editActors: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+      removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
+      communityReadAccess: (opportunity?.community?.authorization?.myPrivileges ?? []).some(
+        x => x === AuthorizationPrivilege.Read
+      ),
+    };
+  }, [user, ecoverseId, challengeId, opportunityId]);
 
   const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
   const actorGroups = context?.ecosystemModel?.actorGroups ?? [];

@@ -35,6 +35,8 @@ export interface EcoverseDashboardView2Props {
   community?: any;
   loading: boolean;
   isMember?: boolean;
+  communityReadAccess?: boolean;
+  challengesReadAccess?: boolean;
 }
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
@@ -55,6 +57,8 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
   discussions,
   loading,
   isMember = false,
+  communityReadAccess = false,
+  challengesReadAccess = true,
 }) => {
   const { t } = useTranslation();
   const orgNameIds = useMemo(() => (organizationNameId ? [organizationNameId] : []), [organizationNameId]);
@@ -87,10 +91,14 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
           <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.activity')}>
             <ActivityView activity={activity} loading={loading} />
           </DashboardGenericSection>
-          <SectionSpacer />
-          <DashboardUpdatesSection entities={{ ecoverseId: ecoverseNameId, communityId }} />
-          <SectionSpacer />
-          <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+          {communityReadAccess && (
+            <>
+              <SectionSpacer />
+              <DashboardUpdatesSection entities={{ ecoverseId: ecoverseNameId, communityId }} />
+              <SectionSpacer />
+              <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+            </>
+          )}
         </Grid>
         <Grid item md={6} xs={12} spacing={SPACING}>
           <AssociatedOrganizationsView
@@ -98,46 +106,52 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             organizationNameIDs={orgNameIds}
           />
           <SectionSpacer />
-          <DashboardGenericSection
-            headerText={t('pages.ecoverse.sections.dashboard.challenges.title')}
-            helpText={t('pages.ecoverse.sections.dashboard.challenges.help-text')}
-            navText={t('buttons.see-all')}
-            navLink={'challenges'}
-          >
-            <Grid container item spacing={SPACING}>
-              {challenges.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => {
-                const _activity = x.activity ?? [];
-                const activities: ActivityItem[] = [
-                  {
-                    name: t('pages.activity.opportunities'),
-                    digit: getActivityCount(_activity, 'opportunities') || 0,
-                    color: 'primary',
-                  },
-                  {
-                    name: t('pages.activity.members'),
-                    digit: getActivityCount(_activity, 'members') || 0,
-                    color: 'positive',
-                  },
-                ];
-                return (
-                  <Grid key={i} item>
-                    <ContributionCard
-                      loading={loading}
-                      details={{
-                        name: x.displayName,
-                        activity: activities,
-                        tags: x.tagset?.tags ?? [],
-                        image: x.context?.visual?.background ?? '',
-                        url: buildChallengeUrl(ecoverseNameId, x.nameID),
-                      }}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </DashboardGenericSection>
-          <SectionSpacer />
-          <DashboardCommunitySectionV2 members={members} />
+          {challengesReadAccess && (
+            <DashboardGenericSection
+              headerText={t('pages.ecoverse.sections.dashboard.challenges.title')}
+              helpText={t('pages.ecoverse.sections.dashboard.challenges.help-text')}
+              navText={t('buttons.see-all')}
+              navLink={'challenges'}
+            >
+              <Grid container item spacing={SPACING}>
+                {challenges.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => {
+                  const _activity = x.activity ?? [];
+                  const activities: ActivityItem[] = [
+                    {
+                      name: t('pages.activity.opportunities'),
+                      digit: getActivityCount(_activity, 'opportunities') || 0,
+                      color: 'primary',
+                    },
+                    {
+                      name: t('pages.activity.members'),
+                      digit: getActivityCount(_activity, 'members') || 0,
+                      color: 'positive',
+                    },
+                  ];
+                  return (
+                    <Grid key={i} item>
+                      <ContributionCard
+                        loading={loading}
+                        details={{
+                          name: x.displayName,
+                          activity: activities,
+                          tags: x.tagset?.tags ?? [],
+                          image: x.context?.visual?.background ?? '',
+                          url: buildChallengeUrl(ecoverseNameId, x.nameID),
+                        }}
+                      />
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </DashboardGenericSection>
+          )}
+          {communityReadAccess && (
+            <>
+              <SectionSpacer />
+              <DashboardCommunitySectionV2 members={members} />
+            </>
+          )}
         </Grid>
       </Grid>
     </>

@@ -34,7 +34,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
   const { ecoverseNameId, ecoverseId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
-  const { challenge, activity, isMember, discussions } = entities;
+  const { challenge, activity, isMember, discussions, permissions } = entities;
 
   const { loading } = state;
 
@@ -48,6 +48,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const orgNameIds = leadOrganizations.map(x => x.nameID);
 
   const opportunities = challenge?.opportunities;
+  const { communityReadAccess } = permissions;
 
   if (loading || loadingEcoverseContext || loadingChallengeContext) return <Loading />;
 
@@ -82,10 +83,14 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.activity')}>
             <ActivityView activity={activity} loading={loading} />
           </DashboardGenericSection>
-          <SectionSpacer />
-          <DashboardUpdatesSection entities={{ ecoverseId: ecoverseNameId, communityId }} />
-          <SectionSpacer />
-          <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+          {communityReadAccess && (
+            <>
+              <SectionSpacer />
+              <DashboardUpdatesSection entities={{ ecoverseId: ecoverseNameId, communityId }} />
+              <SectionSpacer />
+              <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+            </>
+          )}
         </Grid>
         <Grid item md={6} xs={12} spacing={SPACING}>
           <AssociatedOrganizationsView
@@ -131,8 +136,12 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               })}
             </Grid>
           </DashboardGenericSection>
-          <SectionSpacer />
-          <DashboardCommunitySectionV2 members={members} />
+          {communityReadAccess && (
+            <>
+              <SectionSpacer />
+              <DashboardCommunitySectionV2 members={members} />
+            </>
+          )}
         </Grid>
       </Grid>
     </>
