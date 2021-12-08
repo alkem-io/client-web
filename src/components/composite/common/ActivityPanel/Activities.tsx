@@ -9,6 +9,7 @@ export interface ActivityItem {
   digit: number;
   color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
 }
+
 export const Activities: FC<{ items: ActivityItem[]; asList?: boolean }> = ({ items, asList = true, children }) => {
   return (
     <Grid container spacing={1}>

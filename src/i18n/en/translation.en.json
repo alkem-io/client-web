@@ -630,15 +630,6 @@
         "dashboard": {
           "organization": "Facilitating organization",
           "activity": "Hub statistics",
-          "updates": {
-            "title": "Updates",
-            "no-data": "No updates available."
-          },
-          "discussions": {
-            "title": "Discussions",
-            "no-data-create": "No discussions available. Create a new discussion",
-            "no-data-join": "No discussions available. Please join the community to create a discussion"
-          },
           "challenges": {
             "title": "Challenges",
             "help-text": "This shows the different challenges you can contribute to in this hub."
@@ -710,6 +701,16 @@
     "opportunity": {
       "title": "Opportunity",
       "sections": {
+        "dashboard": {
+          "statistics": {
+            "title": "Opportunity statistics",
+            "help-text": "Opportunity statistics"
+          },
+          "projects": {
+            "title": "Projects",
+            "help-text": "Projects related to this opportunity"
+          }
+        },
         "header": {
           "buttons": {
             "settings": {
@@ -933,5 +934,17 @@
     },
     "loading-flow": "Loading flow",
     "loading-error": "Loading error"
+  },
+  "dashboard-updates-section": {
+    "title": "Updates",
+    "no-data": "No updates available."
+  },
+  "dashboard-discussions-section": {
+    "title": "Discussions",
+    "no-data-create": "No discussions available. Create a new discussion",
+    "no-data-join": "No discussions available. Please join the community to create a discussion"
+  },
+  "dashboard-community-section": {
+    "title": "Community"
   }
 }

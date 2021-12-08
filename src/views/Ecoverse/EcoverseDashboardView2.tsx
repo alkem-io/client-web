@@ -1,25 +1,21 @@
-import React, { FC, useMemo } from 'react';
 import { Grid } from '@mui/material';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
-import Markdown from '../../components/core/Markdown';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
-import ActivityView from '../Activity/ActivityView';
-import { Discussion } from '../../models/discussion/discussion';
-import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
-import Link from '@mui/material/Link';
-import { RouterLink } from '../../components/core/RouterLink';
-import { Challenge, User } from '../../models/graphql-schema';
-import ContributionCard from '../../components/composite/common/cards/ContributionCard/ContributionCard';
-import getActivityCount from '../../utils/get-activity-count';
-import { buildChallengeUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
-import { AvatarsProvider } from '../../context/AvatarsProvider';
-import { AssociateCard } from '../../components/composite/common/cards';
-import SingleUpdateView from '../Updates/SingleUpdateView';
-import { CommunityUpdatesContainer } from '../../containers/community-updates/CommunityUpdates';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import ContributionCard from '../../components/composite/common/cards/ContributionCard/ContributionCard';
+import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
+import DashboardDiscussionsSection from '../../components/composite/common/sections/DashboardDiscussionsSection';
+import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
+import Markdown from '../../components/core/Markdown';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
+import { Discussion } from '../../models/discussion/discussion';
+import { Challenge, User } from '../../models/graphql-schema';
+import getActivityCount from '../../utils/get-activity-count';
+import { buildChallengeUrl } from '../../utils/urlBuilders';
+import ActivityView from '../Activity/ActivityView';
+import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 
 export interface EcoverseDashboardView2Props {
   title?: string;
@@ -40,9 +36,7 @@ export interface EcoverseDashboardView2Props {
   isMember?: boolean;
 }
 
-const DISCUSSIONS_NUMBER_IN_SECTION = 3;
 const CHALLENGES_NUMBER_IN_SECTION = 2;
-const MEMBERS_NUMBER_IN_SECTION = 12;
 const SPACING = 2;
 
 const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
@@ -63,9 +57,6 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
 }) => {
   const { t } = useTranslation();
   const orgNameIds = useMemo(() => (organizationNameId ? [organizationNameId] : []), [organizationNameId]);
-  const discussionsInCard = discussions
-    .slice(0, DISCUSSIONS_NUMBER_IN_SECTION)
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
   return (
     <>
@@ -99,60 +90,10 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             </DashboardGenericSection>
           </Grid>
           <Grid item xs={12}>
-            <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.updates.title')}>
-              <CommunityUpdatesContainer entities={{ ecoverseId: ecoverseNameId, communityId }}>
-                {entities => {
-                  if (!entities.messages.length) {
-                    return t('pages.ecoverse.sections.dashboard.updates.no-data');
-                  }
-
-                  const messages = [...entities.messages];
-                  const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
-                  const messageSender = {
-                    id: latestMessage.sender,
-                  };
-
-                  return (
-                    <AvatarsProvider users={[messageSender]}>
-                      {populatedUsers => (
-                        <SingleUpdateView
-                          author={{
-                            id: populatedUsers[0].id,
-                            displayName: populatedUsers[0].displayName,
-                            avatarUrl: populatedUsers[0].profile?.avatar ?? '',
-                            firstName: '',
-                            lastName: '',
-                            url: buildUserProfileUrl(populatedUsers[0].nameID),
-                          }}
-                          createdDate={new Date(latestMessage.timestamp)}
-                          content={latestMessage.message}
-                        />
-                      )}
-                    </AvatarsProvider>
-                  );
-                }}
-              </CommunityUpdatesContainer>
-            </DashboardGenericSection>
+            <DashboardUpdatesSection entities={{ ecoverseId: ecoverseNameId, communityId }} />
           </Grid>
           <Grid item xs={12}>
-            <DashboardGenericSection
-              headerText={t('pages.ecoverse.sections.dashboard.discussions.title')}
-              navText={t('buttons.see-all')}
-              navLink={'community/discussions'}
-            >
-              {discussionsInCard.map((item, index) => (
-                <DiscussionOverview key={index} discussion={item} />
-              ))}
-              {!discussionsInCard.length && (
-                <Link component={RouterLink} to={isMember ? 'community/discussions/new' : 'apply'}>
-                  {t(
-                    `pages.ecoverse.sections.dashboard.discussions.${
-                      isMember ? 'no-data-create' : 'no-data-join'
-                    }` as const
-                  )}
-                </Link>
-              )}
-            </DashboardGenericSection>
+            <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
           </Grid>
         </Grid>
         <Grid container item md={6} xs={12} spacing={SPACING}>
@@ -203,28 +144,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             </DashboardGenericSection>
           </Grid>
           <Grid item xs={12}>
-            <DashboardGenericSection
-              headerText={t('pages.ecoverse.sections.dashboard.community')}
-              navText={t('buttons.see-all')}
-              navLink={'community'}
-            >
-              <AvatarsProvider users={members} count={MEMBERS_NUMBER_IN_SECTION}>
-                {populated => (
-                  <Grid container spacing={SPACING}>
-                    {populated.map((x, i) => (
-                      <Grid key={i} item xs={3}>
-                        <AssociateCard
-                          avatarSrc={x.profile?.avatar || ''}
-                          displayName={x.displayName}
-                          tags={[]}
-                          url={x.nameID}
-                        />
-                      </Grid>
-                    ))}
-                  </Grid>
-                )}
-              </AvatarsProvider>
-            </DashboardGenericSection>
+            <DashboardCommunitySectionV2 members={members} />
           </Grid>
         </Grid>
       </Grid>

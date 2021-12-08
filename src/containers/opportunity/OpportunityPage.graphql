@@ -80,6 +80,13 @@ fragment OpportunityPage on Opportunity {
     displayName
     description
   }
+  community {
+    id
+    members {
+      id
+      nameID
+    }
+  }
 }
 
 query opportunityTemplate {
