@@ -9,7 +9,7 @@ import { toDirectedGraph } from '@xstate/graph';
 import { makeStyles } from '@mui/styles';
 import { Lifecycle, Maybe } from '../../../../models/graphql-schema';
 import Typography from '../../../core/Typography';
-import LifecycleVisualizer from '../../../core/Lifecycle';
+import LifecycleVisualizer from '../../../core/LifecycleVisualizer';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 
 export interface ActivityCardItemProps {

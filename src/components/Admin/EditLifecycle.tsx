@@ -5,7 +5,7 @@ import { useUpdateNavigation } from '../../hooks';
 import { makeStyles } from '@mui/styles';
 import { Lifecycle } from '../../models/graphql-schema';
 import { PageProps } from '../../pages';
-import LifecycleVisualizer from '../core/Lifecycle';
+import LifecycleVisualizer from '../core/LifecycleVisualizer';
 import LifecycleButton from '../core/LifecycleButton';
 
 const useStyles = makeStyles(theme => ({

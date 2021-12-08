@@ -952,6 +952,13 @@ export const OpportunityPageFragmentDoc = gql`
       displayName
       description
     }
+    community {
+      id
+      members {
+        id
+        nameID
+      }
+    }
   }
 `;
 export const UpdateUserPreferencesDocument = gql`

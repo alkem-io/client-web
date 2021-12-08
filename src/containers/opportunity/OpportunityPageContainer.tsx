@@ -11,6 +11,8 @@ import { replaceAll } from '../../utils/replaceAll';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 import { OpportunityProject } from '../../models/entities/opportunity';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
+import { Discussion } from '../../models/discussion/discussion';
 
 export interface OpportunityContainerEntities {
   opportunity: OpportunityPageFragment;
@@ -40,6 +42,7 @@ export interface OpportunityContainerEntities {
     incoming: OpportunityPageFragment['relations'];
     outgoing: OpportunityPageFragment['relations'];
   };
+  discussions: Discussion[];
 }
 
 export interface OpportunityContainerActions {
@@ -122,6 +125,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     history.push(`${url}/projects/${project?.nameID ?? 'new'}`);
   };
 
+  const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
+
   const activity: ActivityItem[] = useMemo(() => {
     return [
       {
@@ -191,9 +196,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
             incoming,
             outgoing,
           },
+          discussions: discussionList,
         },
         {
-          loading: loadingOpportunity || loadingTemplate,
+          loading: loadingOpportunity || loadingTemplate || loadingDiscussions,
           error: errorOpportunity || errorTemplate,
         },
         {

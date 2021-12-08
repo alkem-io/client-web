@@ -36,6 +36,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                       links: entities.links,
                       meme: entities.meme,
                       relations: entities.relations,
+                      discussions: entities.discussions,
                     }}
                     state={{
                       loading: state.loading,
