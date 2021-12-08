@@ -82,6 +82,10 @@ fragment OpportunityPage on Opportunity {
   }
   community {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     members {
       id
       nameID

@@ -736,9 +736,8 @@ export type DeleteAspectInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteCanvasOnContextInput = {
-  canvasID: Scalars['UUID'];
-  contextID: Scalars['UUID'];
+export type DeleteCanvasInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteChallengeInput = {
@@ -1146,7 +1145,7 @@ export type Mutation = {
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
   /** Deletes the specified Canvas. */
-  deleteCanvasOnContext: Canvas;
+  deleteCanvas: Canvas;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Deletes the specified Discussion. */
@@ -1399,8 +1398,8 @@ export type MutationDeleteAspectArgs = {
   deleteData: DeleteAspectInput;
 };
 
-export type MutationDeleteCanvasOnContextArgs = {
-  deleteData: DeleteCanvasOnContextInput;
+export type MutationDeleteCanvasArgs = {
+  deleteData: DeleteCanvasInput;
 };
 
 export type MutationDeleteChallengeArgs = {
@@ -6952,6 +6951,11 @@ export type OpportunityPageQuery = {
       community?: Maybe<{
         __typename?: 'Community';
         id: string;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        }>;
         members?: Maybe<Array<{ __typename?: 'User'; id: string; nameID: string }>>;
       }>;
     };
@@ -7023,6 +7027,11 @@ export type OpportunityPageFragment = {
   community?: Maybe<{
     __typename?: 'Community';
     id: string;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
     members?: Maybe<Array<{ __typename?: 'User'; id: string; nameID: string }>>;
   }>;
 };

@@ -59,6 +59,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                       isNoRelations: entities.permissions.isNoRelations,
                       isAspectAddAllowed: entities.permissions.isAspectAddAllowed,
                       isAuthenticated: entities.permissions.isAuthenticated,
+                      communityReadAccess: entities.permissions.communityReadAccess,
                     }}
                   />
                 </TabPanel>
