@@ -51,8 +51,8 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
 
-  const { hideChallenges: challengesReadAccess, permissions: pagePermissions } = entities;
-  const communityReadAccess = pagePermissions.communityReadAccess;
+  const { permissions: pagePermissions } = entities;
+  const { communityReadAccess, challengesReadAccess } = pagePermissions;
 
   const tabNames = (Object.keys(routes) as Array<keyof EcoverseRoutesType>).reduce<EcoverseRoutesType>((acc, curr) => {
     acc[curr] = pathGetter(curr);

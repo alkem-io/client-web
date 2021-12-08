@@ -36,7 +36,7 @@ export interface EcoverseDashboardView2Props {
   loading: boolean;
   isMember?: boolean;
   communityReadAccess?: boolean;
-  hideChallenges?: boolean;
+  challengesReadAccess?: boolean;
 }
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
@@ -58,7 +58,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
   loading,
   isMember = false,
   communityReadAccess = false,
-  hideChallenges = false,
+  challengesReadAccess = true,
 }) => {
   const { t } = useTranslation();
   const orgNameIds = useMemo(() => (organizationNameId ? [organizationNameId] : []), [organizationNameId]);
@@ -106,7 +106,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             organizationNameIDs={orgNameIds}
           />
           <SectionSpacer />
-          {hideChallenges && (
+          {challengesReadAccess && (
             <DashboardGenericSection
               headerText={t('pages.ecoverse.sections.dashboard.challenges.title')}
               helpText={t('pages.ecoverse.sections.dashboard.challenges.help-text')}
