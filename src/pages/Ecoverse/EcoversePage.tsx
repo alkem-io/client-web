@@ -57,6 +57,8 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                           members={entities?.ecoverse?.community?.members as User[]}
                           loading={state.loading}
                           isMember={entities.isMember}
+                          communityReadAccess={entities.permissions.communityReadAccess}
+                          hideChallenges={entities.isPrivate}
                         />
                       )}
                     </EcoverseChallengesContainer>

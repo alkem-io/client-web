@@ -2662,6 +2662,11 @@ export type EcoverseInfoFragment = {
     id: string;
     displayName: string;
     members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
   }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
@@ -5058,6 +5063,11 @@ export type EcoverseInfoQuery = {
       id: string;
       displayName: string;
       members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
     }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
@@ -6738,6 +6748,11 @@ export type EcoversePageQuery = {
       id: string;
       displayName: string;
       members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
     }>;
     tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
     host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;
@@ -6774,6 +6789,11 @@ export type EcoversePageFragment = {
     id: string;
     displayName: string;
     members?: Maybe<Array<{ __typename?: 'User'; id: string }>>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
   }>;
   tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
   host?: Maybe<{ __typename?: 'Organization'; id: string; displayName: string; nameID: string }>;

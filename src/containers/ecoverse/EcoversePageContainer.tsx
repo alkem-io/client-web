@@ -7,7 +7,7 @@ import { useEcoverse, useUserContext } from '../../hooks';
 import { useEcoversePageProjectsQuery, useEcoversePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Project } from '../../models/Project';
-import { EcoversePageFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, EcoversePageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
@@ -19,6 +19,7 @@ export interface EcoverseContainerEntities {
   hideChallenges: boolean;
   permissions: {
     canEdit: boolean;
+    communityReadAccess: boolean;
   };
   projects: Project[];
   activity: ActivityItem[];
@@ -51,8 +52,12 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
 
   const { user, isAuthenticated } = useUserContext();
 
+  const communityReadAccess = (_ecoverse?.ecoverse?.community?.authorization?.myPrivileges ?? []).some(
+    x => x === AuthorizationPrivilege.Read
+  );
   const permissions = {
     canEdit: user?.isEcoverseAdmin(ecoverseId) || false,
+    communityReadAccess,
   };
 
   const { data: _projects, loading: loadingProjects } = useEcoversePageProjectsQuery({

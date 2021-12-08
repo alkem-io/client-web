@@ -38,6 +38,8 @@ export interface EcoverseDashboardView2Props {
   community?: any;
   loading: boolean;
   isMember?: boolean;
+  communityReadAccess?: boolean;
+  hideChallenges?: boolean;
 }
 
 const DISCUSSIONS_NUMBER_IN_SECTION = 3;
@@ -60,6 +62,8 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
   discussions,
   loading,
   isMember = false,
+  communityReadAccess = false,
+  hideChallenges = false,
 }) => {
   const { t } = useTranslation();
   const orgNameIds = useMemo(() => (organizationNameId ? [organizationNameId] : []), [organizationNameId]);
@@ -98,62 +102,66 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
               <ActivityView activity={activity} loading={loading} />
             </DashboardGenericSection>
           </Grid>
-          <Grid item xs={12}>
-            <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.updates.title')}>
-              <CommunityUpdatesContainer entities={{ ecoverseId: ecoverseNameId, communityId }}>
-                {entities => {
-                  if (!entities.messages.length) {
-                    return t('pages.ecoverse.sections.dashboard.updates.no-data');
-                  }
+          {communityReadAccess && (
+            <Grid item xs={12}>
+              <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.updates.title')}>
+                <CommunityUpdatesContainer entities={{ ecoverseId: ecoverseNameId, communityId }}>
+                  {entities => {
+                    if (!entities.messages.length) {
+                      return t('pages.ecoverse.sections.dashboard.updates.no-data');
+                    }
 
-                  const messages = [...entities.messages];
-                  const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
-                  const messageSender = {
-                    id: latestMessage.sender,
-                  };
+                    const messages = [...entities.messages];
+                    const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
+                    const messageSender = {
+                      id: latestMessage.sender,
+                    };
 
-                  return (
-                    <AvatarsProvider users={[messageSender]}>
-                      {populatedUsers => (
-                        <SingleUpdateView
-                          author={{
-                            id: populatedUsers[0].id,
-                            displayName: populatedUsers[0].displayName,
-                            avatarUrl: populatedUsers[0].profile?.avatar ?? '',
-                            firstName: '',
-                            lastName: '',
-                            url: buildUserProfileUrl(populatedUsers[0].nameID),
-                          }}
-                          createdDate={new Date(latestMessage.timestamp)}
-                          content={latestMessage.message}
-                        />
-                      )}
-                    </AvatarsProvider>
-                  );
-                }}
-              </CommunityUpdatesContainer>
-            </DashboardGenericSection>
-          </Grid>
-          <Grid item xs={12}>
-            <DashboardGenericSection
-              headerText={t('pages.ecoverse.sections.dashboard.discussions.title')}
-              navText={t('buttons.see-all')}
-              navLink={'community/discussions'}
-            >
-              {discussionsInCard.map((item, index) => (
-                <DiscussionOverview key={index} discussion={item} />
-              ))}
-              {!discussionsInCard.length && (
-                <Link component={RouterLink} to={isMember ? 'community/discussions/new' : 'apply'}>
-                  {t(
-                    `pages.ecoverse.sections.dashboard.discussions.${
-                      isMember ? 'no-data-create' : 'no-data-join'
-                    }` as const
-                  )}
-                </Link>
-              )}
-            </DashboardGenericSection>
-          </Grid>
+                    return (
+                      <AvatarsProvider users={[messageSender]}>
+                        {populatedUsers => (
+                          <SingleUpdateView
+                            author={{
+                              id: populatedUsers[0].id,
+                              displayName: populatedUsers[0].displayName,
+                              avatarUrl: populatedUsers[0].profile?.avatar ?? '',
+                              firstName: '',
+                              lastName: '',
+                              url: buildUserProfileUrl(populatedUsers[0].nameID),
+                            }}
+                            createdDate={new Date(latestMessage.timestamp)}
+                            content={latestMessage.message}
+                          />
+                        )}
+                      </AvatarsProvider>
+                    );
+                  }}
+                </CommunityUpdatesContainer>
+              </DashboardGenericSection>
+            </Grid>
+          )}
+          {communityReadAccess && (
+            <Grid item xs={12}>
+              <DashboardGenericSection
+                headerText={t('pages.ecoverse.sections.dashboard.discussions.title')}
+                navText={t('buttons.see-all')}
+                navLink={'community/discussions'}
+              >
+                {discussionsInCard.map((item, index) => (
+                  <DiscussionOverview key={index} discussion={item} />
+                ))}
+                {!discussionsInCard.length && (
+                  <Link component={RouterLink} to={isMember ? 'community/discussions/new' : 'apply'}>
+                    {t(
+                      `pages.ecoverse.sections.dashboard.discussions.${
+                        isMember ? 'no-data-create' : 'no-data-join'
+                      }` as const
+                    )}
+                  </Link>
+                )}
+              </DashboardGenericSection>
+            </Grid>
+          )}
         </Grid>
         <Grid container item md={6} xs={12} spacing={SPACING}>
           <Grid item xs={12}>
@@ -162,70 +170,74 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
               organizationNameIDs={orgNameIds}
             />
           </Grid>
-          <Grid item xs={12}>
-            <DashboardGenericSection
-              headerText={t('pages.ecoverse.sections.dashboard.challenges.title')}
-              helpText={t('pages.ecoverse.sections.dashboard.challenges.help-text')}
-              navText={t('buttons.see-all')}
-              navLink={'challenges'}
-            >
-              <Grid container item spacing={SPACING}>
-                {challenges.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => {
-                  const _activity = x.activity ?? [];
-                  const activities: ActivityItem[] = [
-                    {
-                      name: t('pages.activity.opportunities'),
-                      digit: getActivityCount(_activity, 'opportunities') || 0,
-                      color: 'primary',
-                    },
-                    {
-                      name: t('pages.activity.members'),
-                      digit: getActivityCount(_activity, 'members') || 0,
-                      color: 'positive',
-                    },
-                  ];
-                  return (
-                    <Grid key={i} item>
-                      <ContributionCard
-                        loading={loading}
-                        details={{
-                          name: x.displayName,
-                          activity: activities,
-                          tags: x.tagset?.tags ?? [],
-                          image: x.context?.visual?.background ?? '',
-                          url: buildChallengeUrl(ecoverseNameId, x.nameID),
-                        }}
-                      />
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            </DashboardGenericSection>
-          </Grid>
-          <Grid item xs={12}>
-            <DashboardGenericSection
-              headerText={t('pages.ecoverse.sections.dashboard.community')}
-              navText={t('buttons.see-all')}
-              navLink={'community'}
-            >
-              <AvatarsProvider users={members} count={MEMBERS_NUMBER_IN_SECTION}>
-                {populated => (
-                  <Grid container spacing={SPACING}>
-                    {populated.map((x, i) => (
-                      <Grid key={i} item xs={3}>
-                        <AssociateCard
-                          avatarSrc={x.profile?.avatar || ''}
-                          displayName={x.displayName}
-                          tags={[]}
-                          url={x.nameID}
+          {!hideChallenges && (
+            <Grid item xs={12}>
+              <DashboardGenericSection
+                headerText={t('pages.ecoverse.sections.dashboard.challenges.title')}
+                helpText={t('pages.ecoverse.sections.dashboard.challenges.help-text')}
+                navText={t('buttons.see-all')}
+                navLink={'challenges'}
+              >
+                <Grid container item spacing={SPACING}>
+                  {challenges.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => {
+                    const _activity = x.activity ?? [];
+                    const activities: ActivityItem[] = [
+                      {
+                        name: t('pages.activity.opportunities'),
+                        digit: getActivityCount(_activity, 'opportunities') || 0,
+                        color: 'primary',
+                      },
+                      {
+                        name: t('pages.activity.members'),
+                        digit: getActivityCount(_activity, 'members') || 0,
+                        color: 'positive',
+                      },
+                    ];
+                    return (
+                      <Grid key={i} item>
+                        <ContributionCard
+                          loading={loading}
+                          details={{
+                            name: x.displayName,
+                            activity: activities,
+                            tags: x.tagset?.tags ?? [],
+                            image: x.context?.visual?.background ?? '',
+                            url: buildChallengeUrl(ecoverseNameId, x.nameID),
+                          }}
                         />
                       </Grid>
-                    ))}
-                  </Grid>
-                )}
-              </AvatarsProvider>
-            </DashboardGenericSection>
-          </Grid>
+                    );
+                  })}
+                </Grid>
+              </DashboardGenericSection>
+            </Grid>
+          )}
+          {communityReadAccess && (
+            <Grid item xs={12}>
+              <DashboardGenericSection
+                headerText={t('pages.ecoverse.sections.dashboard.community')}
+                navText={t('buttons.see-all')}
+                navLink={'community'}
+              >
+                <AvatarsProvider users={members} count={MEMBERS_NUMBER_IN_SECTION}>
+                  {populated => (
+                    <Grid container spacing={SPACING}>
+                      {populated.map((x, i) => (
+                        <Grid key={i} item xs={3}>
+                          <AssociateCard
+                            avatarSrc={x.profile?.avatar || ''}
+                            displayName={x.displayName}
+                            tags={[]}
+                            url={x.nameID}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  )}
+                </AvatarsProvider>
+              </DashboardGenericSection>
+            </Grid>
+          )}
         </Grid>
       </Grid>
     </>
