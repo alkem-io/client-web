@@ -667,6 +667,20 @@
         "load-more": "And more ..."
       },
       "sections": {
+        "dashboard": {
+          "statistics": {
+            "title": "Opportunity statistics",
+            "help-text": "Opportunity statistics"
+          },
+          "opportunities": {
+            "title": "Opportunities",
+            "help-text": "Opportunities related to this challenge"
+          },
+          "projects": {
+            "title": "Projects",
+            "help-text": "Projects related to this challenge"
+          }
+        },
         "header": {
           "buttons": {
             "settings": {
