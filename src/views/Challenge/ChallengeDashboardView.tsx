@@ -1,23 +1,23 @@
-import React, { FC } from 'react';
-import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
-import hexToRGBA from '../../utils/hexToRGBA';
 import Grid from '@mui/material/Grid';
-import Button from '../../components/core/Button';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import ChallengeCommunitySection from '../../components/composite/entities/Challenge/ChallengeCommunitySection';
-import BackdropWithMessage from '../../components/composite/common/Backdrops/BackdropWithMessage';
-import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
-import { useChallenge, useEcoverse } from '../../hooks';
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import { ContributionCard } from '../../components/composite/common/cards';
+import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
+import DashboardDiscussionsSection from '../../components/composite/common/sections/DashboardDiscussionsSection';
+import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
 import { Loading } from '../../components/core';
-import Icon from '../../components/core/Icon';
-import { ReactComponent as JournalBookmarkIcon } from 'bootstrap-icons/icons/journal-text.svg';
-import { OrganizationBanners } from '../../components/composite/entities/Organization/OrganizationBanners';
 import Markdown from '../../components/core/Markdown';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
+import { useChallenge, useEcoverse } from '../../hooks';
+import ActivityView from '../Activity/ActivityView';
+import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
+
+const CHALLENGES_NUMBER_IN_SECTION = 2;
+const SPACING = 2;
 
 interface ChallengeDashboardViewProps {
   entities: ChallengeContainerEntities;
@@ -42,10 +42,11 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const { loading } = state;
 
-  const { displayName: name = '', context, leadOrganizations = [] } = challenge || {};
+  const { displayName, context, leadOrganizations = [] } = challenge || {};
+  const communityId = challenge?.community?.id || '';
 
-  const { references, tagline, who = '', visual, vision = '' } = context || {};
-  const bannerImg = visual?.banner;
+  const { references, tagline = '', who = '', visual, vision = '' } = context || {};
+  const bannerUrl = visual?.banner;
   const video = references?.find(x => x.name === 'video');
 
   const challengeRefs = (challenge?.context?.references || []).filter(r => r.uri).slice(0, 3);
@@ -54,7 +55,98 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   return (
     <>
-      <Section
+      <Grid container spacing={SPACING}>
+        <Grid container item xs={12} md={6} spacing={SPACING}>
+          <Grid item xs={12}>
+            <DashboardGenericSection
+              bannerUrl={bannerUrl}
+              headerText={displayName}
+              primaryAction={
+                <ApplicationButtonContainer
+                  entities={{
+                    ecoverseId,
+                    ecoverseNameId,
+                    ecoverseName: ecoverse?.displayName || '',
+                    challengeId,
+                    challengeName: challenge?.displayName || '',
+                    challengeNameId,
+                  }}
+                >
+                  {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+                </ApplicationButtonContainer>
+              }
+              navText={t('buttons.see-more')}
+              navLink={'context'}
+            >
+              <Markdown children={tagline} />
+              <Markdown children={vision} />
+            </DashboardGenericSection>
+          </Grid>
+          <Grid item xs={12}>
+            <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.activity')}>
+              <ActivityView activity={activity} loading={loading} />
+            </DashboardGenericSection>
+          </Grid>
+          <Grid item xs={12}>
+            <DashboardUpdatesSection entities={{ ecoverseId: ecoverseNameId, communityId }} />
+          </Grid>
+          <Grid item xs={12}>
+            <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+          </Grid>
+        </Grid>
+        <Grid container item md={6} xs={12} spacing={SPACING}>
+          <Grid item xs={12}>
+            <AssociatedOrganizationsView
+              title={t('pages.ecoverse.sections.dashboard.organization')}
+              organizationNameIDs={orgNameIds}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <DashboardGenericSection
+              headerText={t('pages.ecoverse.sections.dashboard.challenges.title')}
+              helpText={t('pages.ecoverse.sections.dashboard.challenges.help-text')}
+              navText={t('buttons.see-all')}
+              navLink={'challenges'}
+            >
+              <Grid container item spacing={SPACING}>
+                {challenges.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => {
+                  const _activity = x.activity ?? [];
+                  const activities: ActivityItem[] = [
+                    {
+                      name: t('pages.activity.opportunities'),
+                      digit: getActivityCount(_activity, 'opportunities') || 0,
+                      color: 'primary',
+                    },
+                    {
+                      name: t('pages.activity.members'),
+                      digit: getActivityCount(_activity, 'members') || 0,
+                      color: 'positive',
+                    },
+                  ];
+                  return (
+                    <Grid key={i} item>
+                      <ContributionCard
+                        loading={loading}
+                        details={{
+                          name: x.displayName,
+                          activity: activities,
+                          tags: x.tagset?.tags ?? [],
+                          image: x.context?.visual?.background ?? '',
+                          url: buildChallengeUrl(ecoverseNameId, x.nameID),
+                        }}
+                      />
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </DashboardGenericSection>
+          </Grid>
+          <Grid item xs={12}>
+            <DashboardCommunitySectionV2 members={members} />
+          </Grid>
+        </Grid>
+      </Grid>
+      {/* <Section
         details={
           <ActivityCard
             title={t('pages.activity.title', { blockName: t('pages.challenge.title') })}
@@ -126,7 +218,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             body={who}
           />
         </DiscussionsProvider>
-      </BackdropWithMessage>
+      </BackdropWithMessage> */}
     </>
   );
 };
