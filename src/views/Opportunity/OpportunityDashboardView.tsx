@@ -1,25 +1,16 @@
 import { ApolloError } from '@apollo/client';
-import { Box } from '@mui/material';
+import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
-import { ReactComponent as PersonCheckIcon } from 'bootstrap-icons/icons/person-check.svg';
-import clsx from 'clsx';
 import React, { FC, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useRouteMatch } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import ActivityCard from '../../components/composite/common/ActivityPanel/ActivityCard';
-import AuthenticationBackdrop from '../../components/composite/common/Backdrops/AuthenticationBackdrop';
-import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
-import { RelationCard } from '../../components/composite/entities/Opportunity/Cards';
-import OpportunityCommunitySection from '../../components/composite/entities/Opportunity/OpportunityCommunitySection';
-import Button from '../../components/core/Button';
-import { CardContainer } from '../../components/core/CardContainer';
-import Icon from '../../components/core/Icon';
-import { RouterLink } from '../../components/core/RouterLink';
-import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
+import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardOpportunityStatistics from '../../components/composite/common/sections/DashboardOpportunityStatistics';
+import Markdown from '../../components/core/Markdown';
+import { Header as SectionHeader } from '../../components/core/Section';
+import { SectionSpacer } from '../../components/core/Section/Section';
 import Typography from '../../components/core/Typography';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import { useOpportunity } from '../../hooks';
 import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
@@ -97,15 +88,34 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { ecoverseId } = useOpportunity();
 
   const opportunity = entities.opportunity;
-  const { id, context, displayName } = opportunity;
+  const lifecycle = opportunity?.lifecycle;
 
-  const { visual } = context ?? {};
+  const { id, context, displayName } = opportunity;
+  const { visual, tagline = '', vision = '' } = context ?? {};
+  const banner = visual?.banner;
 
   const projectRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
-      <Section
+      <Grid container spacing={2}>
+        <Grid item xs={12} lg={6}>
+          <DashboardGenericSection bannerUrl={banner} headerText={displayName}>
+            <Typography component={Markdown} variant="body1" children={tagline}></Typography>
+            <SectionHeader text={t('components.contextSegment.vision.title')}></SectionHeader>
+            <Typography component={Markdown} variant="body1" children={vision}></Typography>
+          </DashboardGenericSection>
+          <SectionSpacer />
+          <DashboardOpportunityStatistics
+            headerText={'Opportunity Statistic'}
+            activities={entities.activity}
+            helpText={'Some help here'}
+            lifecycle={lifecycle}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}></Grid>
+      </Grid>
+      {/* <Section
         classes={{
           background: theme =>
             visual?.banner ? `url("${visual.banner}") no-repeat center center / cover` : theme.palette.neutral.main,
@@ -228,7 +238,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
 
       <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />
 
-      <div ref={projectRef} />
+      <div ref={projectRef} /> */}
     </>
   );
 };
