@@ -72,8 +72,8 @@
     "remove": "Remove",
     "email": "Email",
     "state": "State",
-    "ecoverse": "Hub",
-    "ecoverses": "Hubs",
+    "hub": "Hub",
+    "hubs": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
     "opportunity": "Opportunity",
@@ -561,7 +561,7 @@
     "activity": {
       "title": "{{blockName}} Activity",
       "summary": "A summary of everything that happens on {{blockName}}",
-      "ecoverses": "Hubs",
+      "hubs": "Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
       "projects": "Projects",
@@ -579,7 +579,7 @@
           "body": "Realising societies potential. Building a better future, together.",
           "join": "Want to join the community and see more?"
         },
-        "ecoverse": {
+        "hub": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
           "body": "Share context, build community, coordinate and collaborate. Connect."
@@ -599,7 +599,7 @@
       "settings": {
         "tooltip": "Organization settings"
       },
-      "ecoverses": {
+      "hubs": {
         "title": "Challenge Hubs hosting",
         "subtitle": "Challenge Hubs which this organization is hosting",
         "no-data": "No Hubs are hosted at the moment"
@@ -616,7 +616,7 @@
         "help": "Verification status: has the identity and information about this Organization been formally verified"
       }
     },
-    "ecoverse": {
+    "hub": {
       "title": "Hub",
       "application": {
         "title": "Application to join {{entity}} \"{{name}}\"",

@@ -4,7 +4,7 @@ import TranslationKey from '../../types/TranslationKey';
 const getApplicationTypeKey = (type: ApplicationTypeEnum): TranslationKey => {
   switch (type) {
     case ApplicationTypeEnum.ecoverse:
-      return 'common.ecoverse';
+      return 'common.hub';
     case ApplicationTypeEnum.challenge:
       return 'common.challenge';
     case ApplicationTypeEnum.opportunity:

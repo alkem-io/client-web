@@ -31,7 +31,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
     onCompleted: data => {
       const ecoverseId = data.createEcoverse.nameID;
       if (ecoverseId) {
-        notify('Ecoverse created successfuly!', 'success');
+        notify('Hub created successfuly!', 'success');
         navigateToEdit(ecoverseId);
       }
     },
