@@ -702,6 +702,10 @@
       "title": "Opportunity",
       "sections": {
         "dashboard": {
+          "statistics": {
+            "title": "Opportunity statistics",
+            "help-text": "Opportunity statistics"
+          },
           "projects": {
             "title": "Projects",
             "help-text": "Projects related to this opportunity"

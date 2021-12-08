@@ -96,9 +96,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           </DashboardGenericSection>
           <SectionSpacer />
           <DashboardOpportunityStatistics
-            headerText={'Opportunity Statistic'}
+            headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
+            helpText={t('pages.opportunity.sections.dashboard.statistics.help-text')}
             activities={entities.activity}
-            helpText={'Some help here'}
             lifecycle={lifecycle}
             loading={loading}
           />
@@ -136,131 +136,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           <DashboardCommunitySectionV2 members={members} />
         </Grid>
       </Grid>
-
-      {/* <Section
-        classes={{
-          background: theme =>
-            visual?.banner ? `url("${visual.banner}") no-repeat center center / cover` : theme.palette.neutral.main,
-          coverBackground: theme => hexToRGBA(theme.palette.neutral.main, 0.4),
-        }}
-        gutters={{
-          root: true,
-          content: true,
-          details: false,
-        }}
-        details={
-          <ActivityCard
-            title={t('pages.activity.title', { blockName: t('pages.opportunity.title') })}
-            lifecycle={opportunity.lifecycle}
-            items={entities.activity}
-            classes={{ padding: theme => theme.spacing(4) }}
-          />
-        }
-      >
-        <Box component={Body} display={'flex'} flexDirection={'column'} flexGrow={1}>
-          <Box display={'flex'} alignItems={'center'} flexGrow={1}>
-            <SectionHeader
-              text={displayName}
-              className={clsx('flex-grow-1', styles.title)}
-              classes={{
-                color: theme => theme.palette.neutralLight.main,
-              }}
-            />
-          </Box>
-          <Box flexDirection={'row'}>
-            <Button
-              as={RouterLink}
-              to={`${url}/projects`}
-              className={styles.offset}
-              inset
-              variant="semiTransparent"
-              text={t('pages.opportunity.sections.header.buttons.projects.text')}
-            />
-            <>
-              {entities.links.map((l, i) => (
-                <Button
-                  key={i}
-                  as="a"
-                  className={clsx(styles.offset, styles.link)}
-                  inset
-                  variant="semiTransparent"
-                  text={l.name}
-                  href={l.uri}
-                  target="_blank"
-                />
-              ))}
-            </>
-          </Box>
-        </Box>
-      </Section>
-      <AuthenticationBackdrop blockName={t('pages.opportunity.sections.community.header')}>
-        <DiscussionsProvider>
-          <OpportunityCommunitySection
-            title={t('pages.opportunity.sections.community.header')}
-            subTitle={t('pages.opportunity.sections.community.subheader')}
-            ecoverseId={ecoverseId}
-            opportunityId={id}
-            body={context?.who}
-            shuffle={true}
-          />
-        </DiscussionsProvider>
-      </AuthenticationBackdrop>
-
-      <Section hideDetails avatar={<Icon component={PersonCheckIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('pages.opportunity.sections.potential.header')}>
-          {options.isAuthenticated && !options.isMemberOfOpportunity && (
-            <Box marginLeft={4}>
-              <Button
-                text={t('pages.opportunity.sections.potential.buttons.apply.text')}
-                onClick={actions.onInterestOpen}
-              />
-            </Box>
-          )}
-        </SectionHeader>
-        <SubHeader text={t('pages.opportunity.sections.potential.subheader')} />
-      </Section>
-
-      {options.isNoRelations ? (
-        <Box display={'flex'} justifyContent={{ lg: 'center' }} alignItems={{ lg: 'center' }}>
-          <Icon component={PeopleIcon} size={'xl'} color={'neutralMedium'} />
-          <Typography variant={'h3'} color={'neutralMedium'}>
-            {t('pages.opportunity.sections.collaborators.missing-collaborators')}
-          </Typography>
-        </Box>
-      ) : (
-        <>
-          {entities.relations.incoming && entities.relations.incoming.length > 0 && (
-            <CardContainer
-              title={t('pages.opportunity.sections.collaborators.cards.users.title')}
-              xs={12}
-              md={6}
-              lg={4}
-              xl={3}
-            >
-              {entities.relations.incoming?.map((props, i) => (
-                <RelationCard key={i} opportunityId={id} isAdmin={options.removeRelations} {...props} />
-              ))}
-            </CardContainer>
-          )}
-          {entities.relations.outgoing && entities.relations.outgoing.length > 0 && (
-            <CardContainer
-              title={t('pages.opportunity.sections.collaborators.cards.groups.title')}
-              xs={12}
-              md={6}
-              lg={4}
-              xl={3}
-            >
-              {entities.relations.outgoing?.map((props, i) => (
-                <RelationCard key={i} opportunityId={id} isAdmin={options.removeRelations} {...props} />
-              ))}
-            </CardContainer>
-          )}
-        </>
-      )}
-
-      <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />
-
-      <div ref={projectRef} /> */}
     </>
   );
 };
