@@ -950,11 +950,11 @@
     "loading-error": "Loading error"
   },
   "dashboard-updates-section": {
-    "title": "Updates",
+    "title": "Updates ({{count}})",
     "no-data": "No updates available."
   },
   "dashboard-discussions-section": {
-    "title": "Discussions",
+    "title": "Discussions ({{count}})",
     "no-data-create": "No discussions available. Create a new discussion",
     "no-data-join": "No discussions available. Please join the community to create a discussion"
   },
