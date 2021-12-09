@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import { Grid } from '@mui/material';
+import { Button, Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
@@ -8,6 +8,7 @@ import DashboardCommunitySectionV2 from '../../components/composite/common/secti
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardOpportunityStatistics from '../../components/composite/common/sections/DashboardOpportunityStatistics';
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
+import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
 import Markdown from '../../components/core/Markdown';
 import { Header as SectionHeader } from '../../components/core/Section';
 import { SectionSpacer } from '../../components/core/Section/Section';
@@ -69,7 +70,7 @@ export interface OpportunityDashboardViewProps
     OpportunityDashboardViewOptions
   > {}
 
-const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities, state, options }) => {
+const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities, state, options, actions }) => {
   const { t } = useTranslation();
 
   const { ecoverseId } = useOpportunity();
@@ -81,7 +82,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
-  const { context, displayName } = opportunity;
+  const { id, context, displayName } = opportunity;
   const { visual, tagline = '', vision = '' } = context ?? {};
   const banner = visual?.banner;
 
@@ -90,7 +91,15 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
     <>
       <Grid container spacing={2}>
         <Grid item xs={12} lg={6}>
-          <DashboardGenericSection bannerUrl={banner} headerText={displayName}>
+          <DashboardGenericSection
+            bannerUrl={banner}
+            headerText={displayName}
+            primaryAction={
+              <Button onClick={actions.onInterestOpen} variant="contained">
+                {t('pages.opportunity.sections.potential.buttons.apply.text')}
+              </Button>
+            }
+          >
             <Typography component={Markdown} variant="body1" children={tagline}></Typography>
             <SectionHeader text={t('components.contextSegment.vision.title')}></SectionHeader>
             <Typography component={Markdown} variant="body1" children={vision}></Typography>
@@ -145,6 +154,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </Grid>
       </Grid>
+      <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />
     </>
   );
 };
