@@ -13,17 +13,17 @@ interface AssociatesViewProps {
   perRow?: 1 | 2 | 3 | 4 | 6 | 12;
 }
 
-export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = ASSOCIATE_CARDS_COUNT, perRow }) => {
+export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = ASSOCIATE_CARDS_COUNT, perRow = 6 }) => {
   const { t } = useTranslation();
 
-  const columnWidth = perRow ? 12 / perRow : undefined;
+  const columnWidth = 12 / perRow;
 
   return (
     <ProfileCard
       title={t('components.associates.title', { count: associates.length })}
       helpText={t('components.associates.help')}
     >
-      <Grid item container spacing={2}>
+      <Grid container spacing={2}>
         {associates.slice(0, count).map((x, i) => (
           <Grid key={i} item xs={columnWidth}>
             <AssociateCard {...x} />
