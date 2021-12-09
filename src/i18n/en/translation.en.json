@@ -964,5 +964,10 @@
   "aspect-edit": {
     "new": "New Aspect",
     "edit": "Edit Aspect"
+  },
+  "contributors-section": {
+    "title": "Contributors",
+    "users-title": "Users",
+    "organizations-title": "Organizations"
   }
 }

@@ -8246,6 +8246,10 @@ export const OrganizationsListDocument = gql`
       id
       nameID
       displayName
+      profile {
+        id
+        avatar
+      }
     }
   }
 `;
