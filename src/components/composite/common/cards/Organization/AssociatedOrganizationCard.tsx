@@ -101,7 +101,7 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
           loading ? (
             <Skeleton animation="wave" variant="rectangular" width={64} height={64} />
           ) : (
-            <Avatar variant="rounded" src={avatar} style={{ width: '64px', height: '64px' }}>
+            <Avatar variant="rounded" src={avatar} sx={{ width: '64px', height: '64px' }}>
               {name[0]}
             </Avatar>
           )
