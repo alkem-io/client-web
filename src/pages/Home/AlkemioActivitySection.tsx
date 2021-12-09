@@ -19,7 +19,7 @@ const AlkemioActivitySection = () => {
   ];
   const summary: ActivityItem[] = useMemo(
     () => [
-      { name: t('pages.activity.ecoverses'), isLoading: isActivityLoading, digit: ecoverseCount, color: 'neutral' },
+      { name: t('pages.activity.hubs'), isLoading: isActivityLoading, digit: ecoverseCount, color: 'neutral' },
       {
         name: t('pages.activity.challenges'),
         isLoading: isActivityLoading,

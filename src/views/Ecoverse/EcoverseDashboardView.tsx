@@ -51,7 +51,7 @@ export const EcoverseDashboardView: FC<EcoverseDashboardViewProps> = ({ entities
           )
         }
         details={
-          <ActivityCard title={t('pages.activity.title', { blockName: t('pages.ecoverse.title') })} items={activity} />
+          <ActivityCard title={t('pages.activity.title', { blockName: t('pages.hub.title') })} items={activity} />
         }
       >
         <SectionHeader text={name} />
@@ -74,11 +74,11 @@ export const EcoverseDashboardView: FC<EcoverseDashboardViewProps> = ({ entities
         </Body>
       </Section>
 
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
+      <AuthenticationBackdrop blockName={t('pages.hub.sections.community.header')}>
         <DiscussionsProvider>
           <EcoverseCommunitySection
-            title={t('pages.ecoverse.sections.community.header')}
-            subTitle={t('pages.ecoverse.sections.community.subheader')}
+            title={t('pages.hub.sections.community.header')}
+            subTitle={t('pages.hub.sections.community.subheader')}
             body={context?.who}
             shuffle={true}
           />

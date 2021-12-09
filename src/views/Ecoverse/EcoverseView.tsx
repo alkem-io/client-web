@@ -73,7 +73,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
           )
         }
         details={
-          <ActivityCard title={t('pages.activity.title', { blockName: t('pages.ecoverse.title') })} items={activity} />
+          <ActivityCard title={t('pages.activity.title', { blockName: t('pages.hub.title') })} items={activity} />
         }
       >
         <SectionHeader
@@ -83,7 +83,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
               <SettingsButton
                 color={'primary'}
                 to={buildAdminEcoverseUrl(ecoverseNameId)}
-                tooltip={t('pages.ecoverse.sections.header.buttons.settings.tooltip')}
+                tooltip={t('pages.hub.sections.header.buttons.settings.tooltip')}
               />
             )
           }
@@ -108,10 +108,10 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
       </Section>
       <MembershipBackdrop
         show={!permissions.challengesReadAccess}
-        blockName={t('pages.ecoverse.sections.challenges.header')}
+        blockName={t('pages.hub.sections.challenges.header')}
       >
         <Section avatar={<Icon component={CompassIcon} color="primary" size="xl" />}>
-          <SectionHeader text={t('pages.ecoverse.sections.challenges.header')} />
+          <SectionHeader text={t('pages.hub.sections.challenges.header')} />
           <SubHeader>
             <Markdown children={background} />
           </SubHeader>
@@ -130,7 +130,7 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
               return (
                 <Loading
                   text={t('components.loading.message', {
-                    blockName: t('pages.ecoverse.sections.challenges.header'),
+                    blockName: t('pages.hub.sections.challenges.header'),
                   })}
                 />
               );
@@ -138,14 +138,14 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
               return (
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
+                    <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />
                   </Grid>
                 </Grid>
               );
             if (cEntities?.challenges && cEntities?.challenges.length === 0) {
               return (
                 <Box paddingBottom={2} display="flex" justifyContent="center">
-                  <Typography>{t('pages.ecoverse.sections.challenges.no-data')}</Typography>
+                  <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
                 </Box>
               );
             }
@@ -180,23 +180,23 @@ export const EcoverseView: FC<EcoverseViewProps> = ({ entities }) => {
         </EcoverseChallengesContainer>
       </MembershipBackdrop>
 
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.community.header')}>
+      <AuthenticationBackdrop blockName={t('pages.hub.sections.community.header')}>
         <DiscussionsProvider>
           <EcoverseCommunitySection
-            title={t('pages.ecoverse.sections.community.header')}
-            subTitle={t('pages.ecoverse.sections.community.subheader')}
+            title={t('pages.hub.sections.community.header')}
+            subTitle={t('pages.hub.sections.community.subheader')}
             body={context?.who}
             shuffle={true}
           />
         </DiscussionsProvider>
       </AuthenticationBackdrop>
 
-      <AuthenticationBackdrop blockName={t('pages.ecoverse.sections.projects.header')}>
+      <AuthenticationBackdrop blockName={t('pages.hub.sections.projects.header')}>
         {projects.length > 0 && (
           <>
             <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
-              <SectionHeader text={t('pages.ecoverse.sections.projects.header')} tagText={'Work in progress'} />
-              <SubHeader text={t('pages.ecoverse.sections.projects.subheader', { ecoverse: name })} />
+              <SectionHeader text={t('pages.hub.sections.projects.header')} tagText={'Work in progress'} />
+              <SubHeader text={t('pages.hub.sections.projects.subheader', { ecoverse: name })} />
             </Section>
             {isAuthenticated && (
               <CardContainer cardHeight={380} xs={12} md={6} lg={4} xl={3}>
