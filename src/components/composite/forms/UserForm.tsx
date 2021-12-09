@@ -121,9 +121,9 @@ export const UserForm: FC<UserProps> = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
-    linkedin: yup.string().url('Linkedin url must be a valid URL'),
-    twitter: yup.string().url('Twitter url must be a valid URL'),
-    github: yup.string().url('Github url must be a valid URL'),
+    // linkedin: yup.string().url('Linkedin url must be a valid URL'),
+    // twitter: yup.string().url('Twitter url must be a valid URL'),
+    // github: yup.string().url('Github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
     bio: yup.string().max(400),
@@ -273,7 +273,7 @@ export const UserForm: FC<UserProps> = ({
                   readOnly={isReadOnlyMode}
                   disabled={isSubmitting}
                 />
-                <SocialSegment />
+                <SocialSegment isNew={editMode === EditMode.new} readOnly={isReadOnlyMode} disabled={isSubmitting} />
                 {isEditMode && (
                   <ProfileReferenceSegment
                     references={references}
