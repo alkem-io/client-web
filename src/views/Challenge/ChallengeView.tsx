@@ -187,7 +187,7 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
       </CardFilter>
       <BackdropWithMessage
         message={t('components.backdrop.authentication', {
-          blockName: t('pages.ecoverse.sections.community.header').toLocaleLowerCase(),
+          blockName: t('pages.hub.sections.community.header').toLocaleLowerCase(),
         })}
         show={!isAuthenticated}
       >
@@ -202,7 +202,7 @@ const ChallengeView: FC<ChallengeViewProps> = ({ entities, state }): React.React
         </DiscussionsProvider>
       </BackdropWithMessage>
       <BackdropWithMessage
-        message={t('components.backdrop.authentication', { blockName: t('pages.ecoverse.sections.projects.header') })}
+        message={t('components.backdrop.authentication', { blockName: t('pages.hub.sections.projects.header') })}
         show={!isAuthenticated}
       >
         <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>

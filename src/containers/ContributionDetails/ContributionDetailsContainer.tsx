@@ -53,7 +53,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     if (ecoverseData)
       return {
         name: ecoverseData.ecoverse.displayName,
-        type: 'ecoverse',
+        type: 'hub',
         image: ecoverseData.ecoverse.context?.visual?.banner,
         tags: ecoverseData.ecoverse.tagset?.tags || [],
         url: buildEcoverseUrl(ecoverseData.ecoverse.nameID),

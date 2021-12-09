@@ -88,7 +88,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             <Markdown children={vision} />
           </DashboardGenericSection>
           <SectionSpacer />
-          <DashboardGenericSection headerText={t('pages.ecoverse.sections.dashboard.activity')}>
+          <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>
             <ActivityView activity={activity} loading={loading} />
           </DashboardGenericSection>
           {communityReadAccess && (
@@ -102,14 +102,14 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
         </Grid>
         <Grid item md={6} xs={12} spacing={SPACING}>
           <AssociatedOrganizationsView
-            title={t('pages.ecoverse.sections.dashboard.organization')}
+            title={t('pages.hub.sections.dashboard.organization')}
             organizationNameIDs={orgNameIds}
           />
           <SectionSpacer />
           {challengesReadAccess && (
             <DashboardGenericSection
-              headerText={t('pages.ecoverse.sections.dashboard.challenges.title')}
-              helpText={t('pages.ecoverse.sections.dashboard.challenges.help-text')}
+              headerText={t('pages.hub.sections.dashboard.challenges.title')}
+              helpText={t('pages.hub.sections.dashboard.challenges.help-text')}
               navText={t('buttons.see-all')}
               navLink={'challenges'}
             >
