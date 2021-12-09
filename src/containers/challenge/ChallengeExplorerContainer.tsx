@@ -11,8 +11,8 @@ export type SimpleChallenge = {
 };
 
 export interface ChallengesOverviewContainerEntities {
-  userChallenges: SimpleChallenge[];
-  userHubs: SimpleEcoverseFragment[];
+  userChallenges?: SimpleChallenge[];
+  userHubs?: SimpleEcoverseFragment[];
 }
 
 export interface ChallengesOverviewContainerActions {}
@@ -41,19 +41,23 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ ch
     },
     skip: !user,
   });
-  const ecoverses = data?.membershipUser.ecoverses ?? [];
-  const userChallenges: SimpleChallenge[] = ecoverses.flatMap(x =>
-    x?.challenges.map(y => ({
-      id: y.id,
-      ecoverseId: x.ecoverseID,
-    }))
-  );
+  const ecoverses = data?.membershipUser.ecoverses;
+  const userChallenges: SimpleChallenge[] | undefined =
+    ecoverses &&
+    ecoverses.flatMap(x =>
+      x?.challenges.map(y => ({
+        id: y.id,
+        ecoverseId: x.ecoverseID,
+      }))
+    );
 
-  const userHubs: SimpleEcoverseFragment[] = ecoverses.map(({ ecoverseID, displayName, nameID }) => ({
-    ecoverseID,
-    displayName,
-    nameID,
-  }));
+  const userHubs: SimpleEcoverseFragment[] | undefined =
+    ecoverses &&
+    ecoverses.map(({ ecoverseID, displayName, nameID }) => ({
+      ecoverseID,
+      displayName,
+      nameID,
+    }));
 
   return <>{children({ userChallenges, userHubs }, { loading, error }, {})}</>;
 };
