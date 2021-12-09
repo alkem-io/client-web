@@ -2117,6 +2117,7 @@ export const DeleteEcoverseDocument = gql`
     deleteEcoverse(deleteData: $input) {
       id
       nameID
+      displayName
     }
   }
 `;

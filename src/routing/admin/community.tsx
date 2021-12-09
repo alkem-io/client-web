@@ -13,7 +13,7 @@ import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute
 import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
 import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
 
-type AccessedFrom = 'ecoverse' | 'challenge' | 'opportunity';
+type AccessedFrom = 'hub' | 'challenge' | 'opportunity';
 
 interface CommunityRouteProps extends PageProps, WithCommunity {
   credential: CommunityCredentials;
@@ -46,7 +46,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         <CommunityGroupsRoute paths={paths} communityId={communityId} parentCommunityId={parentCommunityId} />
       </Route>
       <Route path={`${path}/applications`}>
-        {accessedFrom === 'ecoverse' && <EcoverseApplicationRoute paths={paths} />}
+        {accessedFrom === 'hub' && <EcoverseApplicationRoute paths={paths} />}
         {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
       </Route>
       <Route path={`${path}/updates`}>

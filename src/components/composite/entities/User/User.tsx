@@ -14,6 +14,7 @@ const classes = {
 };
 
 const Root = styled('div')(({ theme }) => ({
+  cursor: 'pointer',
   [`& .${classes.cursorPointer}`]: {
     cursor: 'pointer',
   },
@@ -38,9 +39,9 @@ interface UserProps {
   onClick?: () => void;
 }
 
-const User = forwardRef<unknown, UserProps>(({ name, title, src, onClick }, ref) => {
+const User = forwardRef<HTMLDivElement, UserProps>(({ name, title, src, onClick }, ref) => {
   return (
-    <Root>
+    <Root ref={ref}>
       <Box display="flex" onClick={onClick}>
         <Box display="flex" flexDirection="column" flexWrap="nowrap">
           <Typography
@@ -60,7 +61,7 @@ const User = forwardRef<unknown, UserProps>(({ name, title, src, onClick }, ref)
             {title}
           </Typography>
         </Box>
-        <Avatar src={src} className={classes.cursorPointer} ref={ref as any} />
+        <Avatar src={src} />
       </Box>
     </Root>
   );

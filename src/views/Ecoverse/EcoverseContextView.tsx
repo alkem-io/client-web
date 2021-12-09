@@ -47,7 +47,7 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities }) 
 
   return (
     <ContextLayout rightPanel={rightPanel}>
-      <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.ecoverse.sections.challenges.header')}>
+      <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.hub.sections.challenges.header')}>
         <ContextSection
           primaryAction={
             <ApplicationButtonContainer

@@ -18,7 +18,7 @@ export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
       ...paths,
       {
         value: url,
-        name: t('common.ecoverses'),
+        name: t('common.hubs'),
         real: true,
       },
     ],

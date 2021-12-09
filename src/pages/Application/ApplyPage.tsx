@@ -115,12 +115,12 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
 
   return (
     <Container maxWidth="xl">
-      {error && <ErrorBlock blockName={t('pages.ecoverse.application.errorBlockName')} />}
-      {loading && <Loading text={t('pages.ecoverse.application.loading')} />}
+      {error && <ErrorBlock blockName={t('pages.hub.application.errorBlockName')} />}
+      {loading && <Loading text={t('pages.hub.application.loading')} />}
       {!loading && !hasApplied && (
         <Box marginY={4}>
           <Typography variant={'h2'}>
-            {t('pages.ecoverse.application.title', { name: communityName, entity: t(entityNameKey) })}
+            {t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}
           </Typography>
         </Box>
       )}
@@ -132,16 +132,16 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
       )}
       {!loading && !hasApplied && (
         <Box marginY={5}>
-          <Typography variant={'h3'}>{t('pages.ecoverse.application.subheader')}</Typography>
+          <Typography variant={'h3'}>{t('pages.hub.application.subheader')}</Typography>
         </Box>
       )}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>
           <Typography variant={'h3'}>
-            {t('pages.ecoverse.application.finish')}
+            {t('pages.hub.application.finish')}
             {communityName}
           </Typography>
-          <Button as={Link} to={backUrl} text={t('pages.ecoverse.application.backButton')} />
+          <Button as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
         </div>
       ) : (
         <>

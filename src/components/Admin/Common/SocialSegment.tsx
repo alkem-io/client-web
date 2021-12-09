@@ -10,9 +10,10 @@ import Twitter from '../../core/icons/Twitter';
 export interface SocialSegmentProps {
   readOnly?: boolean;
   disabled?: boolean;
+  isNew?: boolean;
 }
 
-const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly }) => {
+const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly, isNew }) => {
   const { t } = useTranslation();
 
   return (
@@ -70,8 +71,8 @@ const SocialSegment: FC<SocialSegmentProps> = ({ disabled, readOnly }) => {
           name={'email'}
           type={'email'}
           title={'Mail'}
-          readOnly={readOnly}
-          disabled={disabled}
+          readOnly={readOnly || !isNew}
+          disabled={disabled || !isNew}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

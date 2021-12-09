@@ -92,7 +92,7 @@ const PopUp: FC<Props> = ({
           {ecoverseName && (
             <Grid item>
               <Typography weight={'medium'} variant={'h4'}>
-                {t('common.ecoverse')}: {ecoverseName}
+                {t('common.hub')}: {ecoverseName}
               </Typography>
             </Grid>
           )}

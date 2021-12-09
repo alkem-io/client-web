@@ -31,7 +31,7 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
   const { nameID: ecoverseNameId = '' } = ecoverse || {};
 
   return (
-    <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.ecoverse.sections.challenges.header')}>
+    <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.hub.sections.challenges.header')}>
       <EcoverseChallengesContainer
         entities={{
           ecoverseNameId,
@@ -43,7 +43,7 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
             return (
               <Loading
                 text={t('components.loading.message', {
-                  blockName: t('pages.ecoverse.sections.challenges.header'),
+                  blockName: t('pages.hub.sections.challenges.header'),
                 })}
               />
             );
@@ -51,14 +51,14 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
             return (
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <ErrorBlock blockName={t('pages.ecoverse.sections.challenges.header')} />
+                  <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />
                 </Grid>
               </Grid>
             );
           if (cEntities?.challenges && cEntities?.challenges.length === 0) {
             return (
               <Box paddingBottom={2} display="flex" justifyContent="center">
-                <Typography>{t('pages.ecoverse.sections.challenges.no-data')}</Typography>
+                <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
               </Box>
             );
           }
