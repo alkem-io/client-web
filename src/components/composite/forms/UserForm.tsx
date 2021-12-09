@@ -183,7 +183,7 @@ export const UserForm: FC<UserProps> = ({
         handleSubmit(values).finally(() => setSubmitting(false));
       }}
     >
-      {({ values: { references, tagsets, avatar }, handleSubmit, isSubmitting, isValid, errors }) => {
+      {({ values: { references, tagsets, avatar }, handleSubmit, isSubmitting, errors }) => {
         logger.info(errors);
         return (
           <form noValidate onSubmit={handleSubmit}>
@@ -298,12 +298,7 @@ export const UserForm: FC<UserProps> = ({
                       </Grid>
                     )}
                     <Grid item>
-                      <Button
-                        variant="contained"
-                        type="submit"
-                        // onClick={e => handleSubmit(e as any)} // TODO [ATS] Update after the button is changed to native MUI
-                        disabled={isSubmitting || !isValid}
-                      >
+                      <Button variant="contained" type="submit" disabled={isSubmitting}>
                         {t('buttons.save')}
                       </Button>
                     </Grid>
