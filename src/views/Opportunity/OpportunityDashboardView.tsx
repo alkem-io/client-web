@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { ContributionCard } from '../../components/composite/common/cards';
 import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
-import DashboardDiscussionsSection from '../../components/composite/common/sections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardOpportunityStatistics from '../../components/composite/common/sections/DashboardOpportunityStatistics';
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
@@ -75,7 +74,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
 
   const { ecoverseId } = useOpportunity();
 
-  const { opportunity, discussions } = entities;
+  const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
   const communityId = opportunity?.community?.id || '';
   const members = (opportunity?.community?.members || []) as User[]; // TODO [ATS]:
@@ -107,8 +106,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             <>
               <SectionSpacer />
               <DashboardUpdatesSection entities={{ ecoverseId: ecoverseId, communityId: communityId }} />
-              <SectionSpacer />
-              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} />
+              {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
+              {/* <SectionSpacer />
+              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
             </>
           )}
         </Grid>

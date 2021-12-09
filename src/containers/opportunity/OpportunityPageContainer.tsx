@@ -1,23 +1,22 @@
-import { FC, useMemo, useState } from 'react';
-import { useHistory, useRouteMatch } from 'react-router';
-import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
+import { FC, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useHistory, useRouteMatch } from 'react-router';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
+import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
+import { ContainerProps } from '../../models/container';
+import { Discussion } from '../../models/discussion/discussion';
+import { OpportunityProject } from '../../models/entities/opportunity';
 import {
   AuthorizationCredential,
   AuthorizationPrivilege,
   OpportunityPageFragment,
   Reference,
 } from '../../models/graphql-schema';
-import { ContainerProps } from '../../models/container';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
-import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
-import { replaceAll } from '../../utils/replaceAll';
 import getActivityCount from '../../utils/get-activity-count';
+import { replaceAll } from '../../utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
-import { OpportunityProject } from '../../models/entities/opportunity';
-import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { Discussion } from '../../models/discussion/discussion';
 
 export interface OpportunityContainerEntities {
   opportunity: OpportunityPageFragment;
@@ -134,7 +133,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     history.push(`${url}/projects/${project?.nameID ?? 'new'}`);
   };
 
-  const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
+  // const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const activity: ActivityItem[] = useMemo(() => {
     return [
@@ -205,10 +204,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
             incoming,
             outgoing,
           },
-          discussions: discussionList,
+          discussions: [], //discussionList,
         },
         {
-          loading: loadingOpportunity || loadingTemplate || loadingDiscussions,
+          loading: loadingOpportunity || loadingTemplate, // || loadingDiscussions,
           error: errorOpportunity || errorTemplate,
         },
         {
