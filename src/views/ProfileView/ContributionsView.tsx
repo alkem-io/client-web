@@ -1,5 +1,6 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ContributionCardV2,
   CONTRIBUTION_CARD_HEIGHT_SPACING,
@@ -37,6 +38,7 @@ const SkeletonItem = () => (
 );
 
 export const ContributionsView: FC<ContributionViewProps> = ({ contributions, loading, ...rest }) => {
+  const { t } = useTranslation();
   return (
     <ProfileCard {...rest}>
       <Grid container spacing={1} justifyContent="space-between" alignItems="stretch">
@@ -65,6 +67,11 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
               </ContributionDetailsContainer>
             </Grid>
           ))}
+        {!contributions.length && (
+          <Grid item flexGrow={1} flexBasis={'50%'}>
+            {t('contributions-view.no-data', { name: rest.title })}
+          </Grid>
+        )}
       </Grid>
     </ProfileCard>
   );

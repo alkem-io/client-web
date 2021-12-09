@@ -234,7 +234,7 @@
   "components": {
     "tags-component": {
       "more": "+{{count}} more",
-      "no-tags": "The {{name}} has not been tagged yet."
+      "no-tags": "No tags available."
     },
     "remove-modal": {
       "title": "Confirm remove"
@@ -964,5 +964,11 @@
   "aspect-edit": {
     "new": "New Aspect",
     "edit": "Edit Aspect"
+  },
+  "contributions-view": {
+    "no-data": "No {{name, lowercase}} available"
+  },
+  "associated-organizations-view": {
+    "no-data": "No {{name, lowercase}} available"
   }
 }
