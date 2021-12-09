@@ -190,7 +190,7 @@ export const UserForm: FC<UserProps> = ({
             <Box marginTop={4} />
             <Grid container rowSpacing={4} direction="column">
               <Grid item xs={12}>
-                <Grid container>
+                <Grid container spacing={4}>
                   <Grid item xs={12} md="auto">
                     <Grid item container justifyContent="center">
                       <EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={currentUser.profile.id} />
