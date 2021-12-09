@@ -960,5 +960,9 @@
   },
   "dashboard-community-section": {
     "title": "Community"
+  },
+  "aspect-edit": {
+    "new": "New Aspect",
+    "edit": "Edit Aspect"
   }
 }

@@ -120,7 +120,7 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, contextI
   return (
     <Dialog open={show} maxWidth="lg" fullWidth aria-labelledby="aspect-edit-dialog-title">
       <DialogTitle id="aspect-edit-dialog-title" onClose={onHide}>
-        Edit Aspect
+        {t(`aspect-edit.${isCreate ? 'new' : 'edit'}` as const)}
       </DialogTitle>
       <DialogContent dividers className={styles.body}>
         <Formik

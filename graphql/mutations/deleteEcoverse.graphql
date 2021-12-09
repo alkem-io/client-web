@@ -2,5 +2,6 @@ mutation deleteEcoverse($input: DeleteEcoverseInput!) {
   deleteEcoverse(deleteData: $input) {
     id
     nameID
+    displayName
   }
 }
