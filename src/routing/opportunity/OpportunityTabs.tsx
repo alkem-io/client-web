@@ -1,7 +1,6 @@
 import {
   ContentPasteOutlined,
   DashboardOutlined,
-  ForumOutlined,
   GroupOutlined,
   SettingsOutlined,
   TocOutlined,
@@ -18,7 +17,7 @@ import { useOpportunity } from '../../hooks';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 
 const routes = {
-  discussions: '/community/discussions',
+  // discussions: '/community/discussions',
   community: '/community',
   dashboard: '/dashboard',
   projects: '/projects',
@@ -91,14 +90,14 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
           value={pathGetter('projects')}
           to={urlGetter('projects')}
         />
-        <NavigationTab
+        {/* <NavigationTab
           disabled={!communityReadAccess}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
           component={RouterLink}
           value={pathGetter('discussions')}
           to={urlGetter('discussions')}
-        />
+        /> */}
         <NavigationTab
           disabled={!communityReadAccess}
           icon={<WbIncandescentOutlined />}
