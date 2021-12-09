@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
@@ -9,6 +9,16 @@ import { useUserContext } from '../../hooks';
 import { buildChallengeUrl } from '../../utils/urlBuilders';
 import { Accordion } from '../../components/composite/common/Accordion/Accordion';
 import { CardContainer } from '../../components/core/CardContainer';
+import SearchComponent from '../../components/composite/common/SearchComponent/SearchComponent';
+import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import ChallengeExplorerSearchView, { ChallengeExplorerGroupByType } from './ChallengeExplorer/ChallengeExplorerSearchView';
+
+const groupByOptions = [
+  {
+    label: 'Hub',
+    value: 'hub',
+  },
+];
 
 export interface HubOverview {
   ecoverseID: string;
@@ -29,6 +39,7 @@ export interface ChallengeExplorerViewProps {
 export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChallenges, hubs }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
+  const [groupBy, setGroupBy] = useState<ChallengeExplorerGroupByType>('hub');
 
   return (
     <Box paddingY={2}>
@@ -68,6 +79,40 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
             </Accordion>
           </Grid>
         )}
+        <Grid item xs={12}>
+          <DashboardGenericSection
+            headerText={t('pages.challenge-explorer.search.title')}
+            subHeaderText={t('pages.challenge-explorer.search.subtitle')}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <SearchComponent placeholder={t('pages.challenge-explorer.search.placeholder')}>
+                  {terms => (
+                    <Box paddingTop={2}>
+                      <ChallengeExplorerSearchView terms={terms} groupBy={groupBy} />
+                    </Box>
+                  )}
+                </SearchComponent>
+              </Grid>
+              {/*<Grid item xs={2}>
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">Group by</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={groupBy}
+                    label="Group by"
+                    onChange={e => setGroupBy(e.target.value as ChallengeExplorerGroupByType)}
+                  >
+                    {groupByOptions.map(({ label, value }, i) => (
+                      <MenuItem key={i} value={value} disabled={true}>{label}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>*/}
+            </Grid>
+          </DashboardGenericSection>
+        </Grid>
         {hubs &&
           hubs.map(({ displayName: hubName, nameID: hubNameId }, i) => (
             <EcoverseChallengesContainer

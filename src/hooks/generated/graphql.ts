@@ -783,8 +783,40 @@ export const AllCommunityDetailsFragmentDoc = gql`
     displayName
   }
 `;
+export const ChallengeExplorerSearchResultFragmentDoc = gql`
+  fragment ChallengeExplorerSearchResult on Challenge {
+    id
+    displayName
+    nameID
+    ecoverseID
+    activity {
+      id
+      name
+      value
+    }
+    context {
+      id
+      visual {
+        id
+        background
+      }
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+`;
 export const SimpleEcoverseFragmentDoc = gql`
-  fragment SimpleEcoverse on MembershipUserResultEntryEcoverse {
+  fragment SimpleEcoverse on Ecoverse {
+    id
+    nameID
+    displayName
+  }
+`;
+export const SimpleEcoverseResultEntryFragmentDoc = gql`
+  fragment SimpleEcoverseResultEntry on MembershipUserResultEntryEcoverse {
     ecoverseID
     nameID
     displayName
@@ -9589,19 +9621,194 @@ export function refetchOpportunityContributionDetailsQuery(
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
+export const ChallengeExplorerSearchDocument = gql`
+  query ChallengeExplorerSearch($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      result {
+        ...ChallengeExplorerSearchResult
+      }
+    }
+  }
+  ${ChallengeExplorerSearchResultFragmentDoc}
+`;
+
+/**
+ * __useChallengeExplorerSearchQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useChallengeExplorerSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerSearchQuery, SchemaTypes.ChallengeExplorerSearchQueryVariables>(
+    ChallengeExplorerSearchDocument,
+    options
+  );
+}
+export function useChallengeExplorerSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeExplorerSearchQuery,
+    SchemaTypes.ChallengeExplorerSearchQueryVariables
+  >(ChallengeExplorerSearchDocument, options);
+}
+export type ChallengeExplorerSearchQueryHookResult = ReturnType<typeof useChallengeExplorerSearchQuery>;
+export type ChallengeExplorerSearchLazyQueryHookResult = ReturnType<typeof useChallengeExplorerSearchLazyQuery>;
+export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerSearchQuery,
+  SchemaTypes.ChallengeExplorerSearchQueryVariables
+>;
+export function refetchChallengeExplorerSearchQuery(variables?: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
+  return { query: ChallengeExplorerSearchDocument, variables: variables };
+}
+export const SimpleEcoverseDocument = gql`
+  query SimpleEcoverse($ID: UUID_NAMEID!) {
+    ecoverse(ID: $ID) {
+      ...SimpleEcoverse
+    }
+  }
+  ${SimpleEcoverseFragmentDoc}
+`;
+
+/**
+ * __useSimpleEcoverseQuery__
+ *
+ * To run a query within a React component, call `useSimpleEcoverseQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSimpleEcoverseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSimpleEcoverseQuery({
+ *   variables: {
+ *      ID: // value for 'ID'
+ *   },
+ * });
+ */
+export function useSimpleEcoverseQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SimpleEcoverseQuery, SchemaTypes.SimpleEcoverseQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SimpleEcoverseQuery, SchemaTypes.SimpleEcoverseQueryVariables>(
+    SimpleEcoverseDocument,
+    options
+  );
+}
+export function useSimpleEcoverseLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SimpleEcoverseQuery, SchemaTypes.SimpleEcoverseQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SimpleEcoverseQuery, SchemaTypes.SimpleEcoverseQueryVariables>(
+    SimpleEcoverseDocument,
+    options
+  );
+}
+export type SimpleEcoverseQueryHookResult = ReturnType<typeof useSimpleEcoverseQuery>;
+export type SimpleEcoverseLazyQueryHookResult = ReturnType<typeof useSimpleEcoverseLazyQuery>;
+export type SimpleEcoverseQueryResult = Apollo.QueryResult<
+  SchemaTypes.SimpleEcoverseQuery,
+  SchemaTypes.SimpleEcoverseQueryVariables
+>;
+export function refetchSimpleEcoverseQuery(variables?: SchemaTypes.SimpleEcoverseQueryVariables) {
+  return { query: SimpleEcoverseDocument, variables: variables };
+}
+export const ChallengeExplorerSearchEnricherDocument = gql`
+  query ChallengeExplorerSearchEnricher($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      nameID
+      displayName
+    }
+  }
+`;
+
+/**
+ * __useChallengeExplorerSearchEnricherQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerSearchEnricherQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerSearchEnricherQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerSearchEnricherQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useChallengeExplorerSearchEnricherQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerSearchEnricherQuery,
+    SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeExplorerSearchEnricherQuery,
+    SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
+  >(ChallengeExplorerSearchEnricherDocument, options);
+}
+export function useChallengeExplorerSearchEnricherLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerSearchEnricherQuery,
+    SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeExplorerSearchEnricherQuery,
+    SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
+  >(ChallengeExplorerSearchEnricherDocument, options);
+}
+export type ChallengeExplorerSearchEnricherQueryHookResult = ReturnType<typeof useChallengeExplorerSearchEnricherQuery>;
+export type ChallengeExplorerSearchEnricherLazyQueryHookResult = ReturnType<
+  typeof useChallengeExplorerSearchEnricherLazyQuery
+>;
+export type ChallengeExplorerSearchEnricherQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerSearchEnricherQuery,
+  SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
+>;
+export function refetchChallengeExplorerSearchEnricherQuery(
+  variables?: SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
+) {
+  return { query: ChallengeExplorerSearchEnricherDocument, variables: variables };
+}
 export const ChallengesOverviewPageDocument = gql`
   query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
     membershipUser(membershipData: $membershipData) {
       ecoverses {
         id
-        ...SimpleEcoverse
+        ...SimpleEcoverseResultEntry
         challenges {
           id
         }
       }
     }
   }
-  ${SimpleEcoverseFragmentDoc}
+  ${SimpleEcoverseResultEntryFragmentDoc}
 `;
 
 /**
