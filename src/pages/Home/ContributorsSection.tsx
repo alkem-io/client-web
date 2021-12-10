@@ -1,4 +1,3 @@
-import Typography from '@mui/material/Typography/Typography';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardContributorsSection, {
@@ -8,6 +7,9 @@ import { useUserContext } from '../../hooks';
 import { useOrganizationsListQuery, useUsersQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+
+const MAX_USERS_SHOWN = 12;
+const MAX_ORGANIZATIONS_SHOWN = 6;
 
 const ContributorsSection = () => {
   const { t } = useTranslation();
@@ -33,7 +35,7 @@ const ContributorsSection = () => {
             country: COUNTRIES_BY_CODE[u.country],
           },
         }))
-        .slice(0, 12), // take only the first 12 elements - 2 rows
+        .slice(0, MAX_USERS_SHOWN), // take only the first 12 elements - 2 rows
     [users]
   );
 
@@ -45,28 +47,27 @@ const ContributorsSection = () => {
           displayName: o.displayName,
           url: buildOrganizationUrl(o.nameID),
         }))
-        .slice(0, 6), // take only the first 6 elements - 1 row
-    [users]
+        .slice(0, MAX_ORGANIZATIONS_SHOWN), // take only the first 6 elements - 1 row
+    [organizations]
   );
 
   return (
     <DashboardContributorsSection
       headerText={t('contributors-section.title')}
+      subHeaderText={t('contributors-section.subheader')}
       userTitle={t('contributors-section.users-title')}
       organizationTitle={t('contributors-section.organizations-title')}
       entities={{
         users: usersDTO,
-        usersCount: users.length,
+        usersCount: users.length - MAX_USERS_SHOWN,
         user,
+        maxUsers: MAX_USERS_SHOWN,
         organizations: organizationsDTO,
-        organizationsCount: organizations.length,
+        organizationsCount: organizations.length - MAX_ORGANIZATIONS_SHOWN,
+        maxOrganizations: MAX_ORGANIZATIONS_SHOWN,
       }}
       loading={{ users: loading, organizations: loadingOrganizations }}
-    >
-      {!user && (
-        <Typography variant="body1">{t('components.backdrop.authentication', { blockName: 'community' })}</Typography>
-      )}
-    </DashboardContributorsSection>
+    ></DashboardContributorsSection>
   );
 };
 
