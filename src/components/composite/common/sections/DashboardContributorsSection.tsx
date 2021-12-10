@@ -1,5 +1,6 @@
-import { Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UserMetadata } from '../../../../hooks';
 import { SectionSpacer } from '../../../core/Section/Section';
 import SectionHeader from '../../../core/Section/SectionHeader';
@@ -14,8 +15,10 @@ export interface DashboardContributorsSectionSectionProps extends DashboardGener
   organizationTitle: string;
   entities: {
     users: ContributorCardProps[];
+    usersCount: number;
     user?: UserMetadata;
     organizations: ContributorCardProps[];
+    organizationsCount: number;
   };
   loading: {
     users?: boolean;
@@ -31,14 +34,14 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
   organizationTitle,
   ...props
 }) => {
-  const { users, organizations } = entities;
-
+  const { users, usersCount, organizations, organizationsCount } = entities;
+  const { t } = useTranslation();
   return (
     <Section {...props}>
       <SectionHeader text={userTitle} />
       <Grid container spacing={1} alignItems="center">
         {loading.users &&
-          Array.apply(null, { length: 6 } as any).map((_, i) => (
+          Array.apply(null, { length: 12 } as any).map((_, i) => (
             <Grid item flexBasis={'16.6%'} key={i}>
               <ContributorCardSkeleton />
             </Grid>
@@ -51,6 +54,9 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
           );
         })}
       </Grid>
+      <Box display="flex" justifyContent="end" paddingTop={2}>
+        <Typography>{t('dashboard-contributors-section.more', { count: usersCount })}</Typography>
+      </Box>
       <SectionSpacer />
       <SectionHeader text={organizationTitle} />
       <Grid container spacing={1} alignItems="center">
@@ -68,6 +74,9 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
           );
         })}
       </Grid>
+      <Box display="flex" justifyContent="end" paddingTop={2}>
+        <Typography>{t('dashboard-contributors-section.more', { count: organizationsCount })}</Typography>
+      </Box>
     </Section>
   );
 };

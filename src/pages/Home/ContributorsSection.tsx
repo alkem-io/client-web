@@ -56,8 +56,10 @@ const ContributorsSection = () => {
       organizationTitle={t('contributors-section.organizations-title')}
       entities={{
         users: usersDTO,
+        usersCount: users.length,
         user,
         organizations: organizationsDTO,
+        organizationsCount: organizations.length,
       }}
       loading={{ users: loading, organizations: loadingOrganizations }}
     >

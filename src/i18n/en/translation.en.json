@@ -975,5 +975,8 @@
   },
   "associated-organizations-view": {
     "no-data": "No {{name, lowercase}} available"
+  },
+  "dashboard-contributors-section": {
+    "more": "...plus {{count}} more"
   }
 }
