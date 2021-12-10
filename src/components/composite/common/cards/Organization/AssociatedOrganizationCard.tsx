@@ -6,6 +6,7 @@ import CircleTag from '../../../../core/CircleTag';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import VerifiedStatus from '../../VerifiedStatus/VerifiedStatus';
 
+const LINES_TO_SHOW = 4;
 export interface AssociatedOrganizationCardProps {
   name: string;
   avatar?: string;
@@ -29,6 +30,13 @@ const useStyles = makeStyles(theme =>
     cardHeaderAction: {
       margin: 0,
       paddingRight: theme.spacing(3),
+    },
+    multiLineEllipsis: {
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      display: '-webkit-box',
+      '-webkit-line-clamp': LINES_TO_SHOW,
+      '-webkit-box-orient': 'vertical',
     },
   })
 );
@@ -73,7 +81,9 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
               {loading ? (
                 <Skeleton animation="wave" width="80%" style={{ marginBottom: 2 }} />
               ) : (
-                <Typography variant="body2">{information}</Typography>
+                <Typography variant="body2" className={styles.multiLineEllipsis}>
+                  {information}
+                </Typography>
               )}
             </>
             <>
@@ -91,7 +101,7 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
           loading ? (
             <Skeleton animation="wave" variant="rectangular" width={64} height={64} />
           ) : (
-            <Avatar variant="rounded" src={avatar} style={{ width: '64px', height: '64px' }}>
+            <Avatar variant="rounded" src={avatar} sx={{ width: '64px', height: '64px' }}>
               {name[0]}
             </Avatar>
           )
@@ -100,7 +110,7 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
           !loading && (
             <Box display="flex" flexDirection="column" justifyContent="space-between">
               <Box display="flex">
-                <Typography>Members</Typography>
+                <Typography sx={{ marginRight: 1 }}>Members</Typography>
                 <CircleTag text={`${members}`} color="primary" size="small" />
               </Box>
               <VerifiedStatus verified={verified} />

@@ -72,8 +72,8 @@
     "remove": "Remove",
     "email": "Email",
     "state": "State",
-    "ecoverse": "Hub",
-    "ecoverses": "Hubs",
+    "hub": "Hub",
+    "hubs": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
     "opportunity": "Opportunity",
@@ -234,7 +234,7 @@
   "components": {
     "tags-component": {
       "more": "+{{count}} more",
-      "no-tags": "The {{name}} has not been tagged yet."
+      "no-tags": "No tags available."
     },
     "remove-modal": {
       "title": "Confirm remove"
@@ -562,7 +562,7 @@
     "activity": {
       "title": "{{blockName}} Activity",
       "summary": "A summary of everything that happens on {{blockName}}",
-      "ecoverses": "Hubs",
+      "hubs": "Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
       "projects": "Projects",
@@ -580,7 +580,7 @@
           "body": "Realising societies potential. Building a better future, together.",
           "join": "Want to join the community and see more?"
         },
-        "ecoverse": {
+        "hub": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
           "body": "Share context, build community, coordinate and collaborate. Connect."
@@ -600,7 +600,7 @@
       "settings": {
         "tooltip": "Organization settings"
       },
-      "ecoverses": {
+      "hubs": {
         "title": "Challenge Hubs hosting",
         "subtitle": "Challenge Hubs which this organization is hosting",
         "no-data": "No Hubs are hosted at the moment"
@@ -617,7 +617,7 @@
         "help": "Verification status: has the identity and information about this Organization been formally verified"
       }
     },
-    "ecoverse": {
+    "hub": {
       "title": "Hub",
       "application": {
         "title": "Application to join {{entity}} \"{{name}}\"",
@@ -670,8 +670,8 @@
       "sections": {
         "dashboard": {
           "statistics": {
-            "title": "Opportunity statistics",
-            "help-text": "Opportunity statistics"
+            "title": "Challenge statistics",
+            "help-text": "Challenge statistics"
           },
           "opportunities": {
             "title": "Opportunities",
@@ -951,15 +951,25 @@
     "loading-error": "Loading error"
   },
   "dashboard-updates-section": {
-    "title": "Updates",
+    "title": "Updates ({{count}})",
     "no-data": "No updates available."
   },
   "dashboard-discussions-section": {
-    "title": "Discussions",
+    "title": "Discussions ({{count}})",
     "no-data-create": "No discussions available. Create a new discussion",
     "no-data-join": "No discussions available. Please join the community to create a discussion"
   },
   "dashboard-community-section": {
     "title": "Community"
+  },
+  "aspect-edit": {
+    "new": "New Aspect",
+    "edit": "Edit Aspect"
+  },
+  "contributions-view": {
+    "no-data": "No {{name, lowercase}} available"
+  },
+  "associated-organizations-view": {
+    "no-data": "No {{name, lowercase}} available"
   }
 }

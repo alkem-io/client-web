@@ -43,7 +43,7 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
           communityId={ecoverse?.community?.id}
           credential={AuthorizationCredential.EcoverseMember}
           resourceId={ecoverseId}
-          accessedFrom="ecoverse"
+          accessedFrom="hub"
         />
       </Route>
       <Route path={`${path}/challenges`}>

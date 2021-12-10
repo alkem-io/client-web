@@ -1,5 +1,6 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import AssociatedOrganizationCard from '../../components/composite/common/cards/Organization/AssociatedOrganizationCard';
 import ProfileCard, { ProfileCardProps } from '../../components/composite/common/cards/ProfileCard/ProfileCard';
 import AssociatedOrganizationContainer from '../../containers/organization/AssociatedOrganizationContainer';
@@ -22,6 +23,8 @@ export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> =
   loading,
   ...rest
 }) => {
+  const { t } = useTranslation();
+
   return (
     <ProfileCard {...rest}>
       <Grid container spacing={1}>
@@ -45,6 +48,11 @@ export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> =
               )}
             </AssociatedOrganizationContainer>
           ))}
+        {!organizationNameIDs.length && (
+          <Grid item xs={12} md={dense ? 6 : 12}>
+            {t('associated-organizations-view.no-data', { name: rest.title })}{' '}
+          </Grid>
+        )}
       </Grid>
     </ProfileCard>
   );

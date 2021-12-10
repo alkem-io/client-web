@@ -170,10 +170,12 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
           }}
         </Formik>
       )}
-      {!hideHeaders && (
+      {!hideHeaders && orderedMessages.length > 0 && (
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h4">{t('components.communityUpdates.updatesTitle')}</Typography>
+            <Typography variant="h4" sx={{ marginBottom: 2 }}>
+              {t('components.communityUpdates.updatesTitle')}
+            </Typography>
           </Grid>
         </Grid>
       )}
@@ -193,10 +195,12 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             </Card>
           </Grid>
         )}
-        {orderedMessages.length === 0 && (
-          <Typography align={'center'} variant={'subtitle1'}>
-            {t('common.no-updates')}
-          </Typography>
+        {orderedMessages.length === 0 && !stubMessageId && (
+          <Grid item>
+            <Typography align={'center'} variant={'subtitle1'}>
+              {t('common.no-updates')}
+            </Typography>
+          </Grid>
         )}
         {orderedMessages.map((m, i) => {
           const expanded = reviewedMessageId === m.id;

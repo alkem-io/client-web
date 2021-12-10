@@ -24,7 +24,7 @@ const DashboardDiscussionsSection: FC<DashboardDiscussionsSectionProps> = ({ dis
 
   return (
     <DashboardGenericSection
-      headerText={t('dashboard-discussions-section.title')}
+      headerText={t('dashboard-discussions-section.title', { count: discussions.length })}
       navText={t('buttons.see-all')}
       navLink={'community/discussions'}
     >

@@ -59,7 +59,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
         onClose={() => setDropdownOpen(false)}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right',
+          horizontal: 'center',
         }}
         transformOrigin={{
           vertical: 'top',

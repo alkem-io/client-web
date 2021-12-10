@@ -5,7 +5,7 @@ import {
   useAdminEcoversesListQuery,
   useDeleteEcoverseMutation,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler, useNotification } from '../../../hooks';
 import { PageProps } from '../..';
 import Loading from '../../../components/core/Loading/Loading';
 import ListPage from '../../../components/Admin/ListPage';
@@ -17,6 +17,9 @@ interface EcoverseListProps extends PageProps {}
 export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
   const { url } = useRouteMatch();
   const handleError = useApolloErrorHandler();
+  const notify = useNotification();
+  const onSuccess = (message: string) => notify(message, 'success');
+
   const { data: ecoversesData, loading: loadingEcoverses } = useAdminEcoversesListQuery();
   const ecoverseList = useMemo(
     () =>
@@ -30,6 +33,7 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
     refetchQueries: [refetchAdminEcoversesListQuery()],
     awaitRefetchQueries: true,
     onError: handleError,
+    onCompleted: data => onSuccess(`Hub '${data.deleteEcoverse.displayName}' deleted successfuly`),
   });
 
   const handleDelete = (item: SearchableListItem) => {
