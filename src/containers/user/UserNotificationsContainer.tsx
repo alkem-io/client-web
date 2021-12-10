@@ -28,7 +28,9 @@ const limitNotifcationsTo = [
   UserPreferenceType.NotificationApplicationReceived,
   UserPreferenceType.NotificationApplicationSubmitted,
   UserPreferenceType.NotificationCommunicationUpdates,
+  UserPreferenceType.NotificationCommunicationDiscussionCreatedAdmin,
   UserPreferenceType.NotificationCommunicationDiscussionCreated,
+  UserPreferenceType.NotificationCommunicationDiscussionCreatedAdmin,
   UserPreferenceType.NotificationUserSignUp,
 ];
 
