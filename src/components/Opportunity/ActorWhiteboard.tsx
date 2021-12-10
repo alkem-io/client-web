@@ -1,13 +1,12 @@
-import React, { FC, useRef, useEffect, useState } from 'react';
 import Excalidraw, { serializeAsJSON } from '@excalidraw/excalidraw';
 import { ExcalidrawAPIRefValue, ExcalidrawProps } from '@excalidraw/excalidraw/types/types';
-import { NewWhiteboardActorModal } from './NewWhiteboardActorModal';
-import Button from '../core/Button';
-import { useApolloErrorHandler } from '../../hooks';
-import { Actor, EcosystemModel, Maybe } from '../../models/graphql-schema';
-import { useUpdateActorMutation, useUpdateEcosystemModelMutation } from '../../hooks/generated/graphql';
-import { isNil } from 'lodash';
 import { makeStyles } from '@mui/styles';
+import { isNil } from 'lodash';
+import React, { FC, useEffect, useRef, useState } from 'react';
+import { useApolloErrorHandler } from '../../hooks';
+import { useUpdateActorMutation, useUpdateEcosystemModelMutation } from '../../hooks/generated/graphql';
+import { Actor, EcosystemModel, Maybe } from '../../models/graphql-schema';
+import { NewWhiteboardActorModal } from './NewWhiteboardActorModal';
 
 interface ActorWhiteboardProps {
   actors: Actor[];
@@ -142,7 +141,6 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
         onExportToBackend: saveToBackend,
       },
     },
-
   };
 
   console.log('Initial ecosystemModel', ecosystemModel);
