@@ -969,6 +969,27 @@ export const OpportunityPageFragmentDoc = gql`
     }
   }
 `;
+export const AssociatedOrganizationDetailsFragmentDoc = gql`
+  fragment AssociatedOrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      description
+      avatar
+    }
+    verification {
+      id
+      status
+    }
+    activity {
+      id
+      name
+      value
+    }
+  }
+`;
 export const UpdateUserPreferencesDocument = gql`
   mutation updateUserPreferences($input: UpdateUserPreferenceInput!) {
     updateUserPreference(userPreferenceData: $input) {
@@ -10494,6 +10515,64 @@ export type OpportunityTemplateQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityTemplateQuery(variables?: SchemaTypes.OpportunityTemplateQueryVariables) {
   return { query: OpportunityTemplateDocument, variables: variables };
+}
+export const AssociatedOrganizationDocument = gql`
+  query associatedOrganization($organizationId: UUID_NAMEID!) {
+    organization(ID: $organizationId) {
+      ...AssociatedOrganizationDetails
+    }
+  }
+  ${AssociatedOrganizationDetailsFragmentDoc}
+`;
+
+/**
+ * __useAssociatedOrganizationQuery__
+ *
+ * To run a query within a React component, call `useAssociatedOrganizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAssociatedOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAssociatedOrganizationQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useAssociatedOrganizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AssociatedOrganizationQuery,
+    SchemaTypes.AssociatedOrganizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AssociatedOrganizationQuery, SchemaTypes.AssociatedOrganizationQueryVariables>(
+    AssociatedOrganizationDocument,
+    options
+  );
+}
+export function useAssociatedOrganizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AssociatedOrganizationQuery,
+    SchemaTypes.AssociatedOrganizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AssociatedOrganizationQuery, SchemaTypes.AssociatedOrganizationQueryVariables>(
+    AssociatedOrganizationDocument,
+    options
+  );
+}
+export type AssociatedOrganizationQueryHookResult = ReturnType<typeof useAssociatedOrganizationQuery>;
+export type AssociatedOrganizationLazyQueryHookResult = ReturnType<typeof useAssociatedOrganizationLazyQuery>;
+export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.AssociatedOrganizationQuery,
+  SchemaTypes.AssociatedOrganizationQueryVariables
+>;
+export function refetchAssociatedOrganizationQuery(variables?: SchemaTypes.AssociatedOrganizationQueryVariables) {
+  return { query: AssociatedOrganizationDocument, variables: variables };
 }
 export const AssignUserToOrganizationDocument = gql`
   mutation assignUserToOrganization($input: AssignOrganizationMemberInput!) {
