@@ -12,7 +12,7 @@ export interface ActivityItem {
 
 export const Activities: FC<{ items: ActivityItem[]; asList?: boolean }> = ({ items, asList = true, children }) => {
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
-  const maxHeightSteps = mediumScreen ? items.length : items.length / 2 + 1;
+  const maxHeightSteps = mediumScreen || asList ? items.length : items.length / 2 + 1;
   return (
     <Grid container spacing={1} direction="column" maxHeight={t => t.spacing(6 * maxHeightSteps)}>
       {items.map(({ name, isLoading, digit, color }, i) => (

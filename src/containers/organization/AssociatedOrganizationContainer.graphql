@@ -1,0 +1,25 @@
+query associatedOrganization($organizationId: UUID_NAMEID!) {
+  organization(ID: $organizationId) {
+    ...AssociatedOrganizationDetails
+  }
+}
+
+fragment AssociatedOrganizationDetails on Organization {
+  id
+  displayName
+  nameID
+  profile {
+    id
+    description
+    avatar
+  }
+  verification {
+    id
+    status
+  }
+  activity {
+    id
+    name
+    value
+  }
+}
