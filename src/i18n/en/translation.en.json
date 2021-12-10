@@ -967,6 +967,7 @@
   },
   "contributors-section": {
     "title": "Contributors",
+    "subheader": "Contributors subheader",
     "users-title": "Users",
     "organizations-title": "Organizations"
   },
