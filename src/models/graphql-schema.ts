@@ -5963,7 +5963,13 @@ export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrganizationsListQuery = {
   __typename?: 'Query';
-  organizations: Array<{ __typename?: 'Organization'; id: string; nameID: string; displayName: string }>;
+  organizations: Array<{
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    displayName: string;
+    profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string> };
+  }>;
 };
 
 export type ProjectProfileQueryVariables = Exact<{
