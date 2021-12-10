@@ -59,7 +59,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
         {!user && (
           <Grid item>
             <Typography variant="body1">
-              {t('components.backdrop.authentication', { blockName: 'Contributors' })}
+              {t('components.backdrop.authentication', { blockName: 'Users that are contributing' })}
             </Typography>
           </Grid>
         )}
