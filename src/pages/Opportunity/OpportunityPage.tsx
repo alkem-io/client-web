@@ -1,12 +1,9 @@
 import { TabContext, TabPanel } from '@mui/lab';
 import React, { FC } from 'react';
-import { Switch, useRouteMatch } from 'react-router-dom';
 import { OpportunityPageContainer } from '../../containers';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import { useUpdateNavigation } from '../../hooks';
-import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
 import OpportunityTabs from '../../routing/opportunity/OpportunityTabs';
-import RestrictedRoute from '../../routing/route.extensions';
 import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
 import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboardView';
 import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
@@ -16,7 +13,6 @@ import OpportunityCommunityPage from '../Community/OpportunityCommunityPage';
 interface OpportunityPageProps extends PageProps {}
 
 const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
-  const { path } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
 
   return (
@@ -108,13 +104,13 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                   <TabPanel value={tabNames['community']}>
                     <OpportunityCommunityPage paths={paths} />
                   </TabPanel>
-                  <TabPanel value={tabNames['discussions']}>
+                  {/* <TabPanel value={tabNames['discussions']}>
                     <Switch>
                       <RestrictedRoute path={`${path}/community/discussions`}>
                         <DiscussionsRoute paths={paths} />
                       </RestrictedRoute>
                     </Switch>
-                  </TabPanel>
+                  </TabPanel> */}
                   <TabPanel value={tabNames['canvases']}>Comming soon</TabPanel>
                 </TabContext>
               );

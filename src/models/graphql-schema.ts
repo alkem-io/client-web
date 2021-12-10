@@ -515,6 +515,10 @@ export type Context = {
   who?: Maybe<Scalars['String']>;
 };
 
+export type ContextCanvasesArgs = {
+  IDs?: Maybe<Array<Scalars['UUID']>>;
+};
+
 export type CreateActorGroupInput = {
   description?: Maybe<Scalars['String']>;
   ecosystemModelID: Scalars['UUID'];
@@ -1661,6 +1665,8 @@ export type OpportunityTemplate = {
 export type Organization = Groupable &
   Searchable & {
     __typename?: 'Organization';
+    /** The activity within this Organization. */
+    activity?: Maybe<Array<Nvp>>;
     /** The Agent representing this User. */
     agent?: Maybe<Agent>;
     /** The authorization rules for the entity */
@@ -5957,7 +5963,13 @@ export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
 
 export type OrganizationsListQuery = {
   __typename?: 'Query';
-  organizations: Array<{ __typename?: 'Organization'; id: string; nameID: string; displayName: string }>;
+  organizations: Array<{
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    displayName: string;
+    profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string> };
+  }>;
 };
 
 export type ProjectProfileQueryVariables = Exact<{
@@ -7062,6 +7074,33 @@ export type OpportunityTemplateQuery = {
       }>;
     };
   };
+};
+
+export type AssociatedOrganizationQueryVariables = Exact<{
+  organizationId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AssociatedOrganizationQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    displayName: string;
+    nameID: string;
+    profile: { __typename?: 'Profile'; id: string; description?: Maybe<string>; avatar?: Maybe<string> };
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+    activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+  };
+};
+
+export type AssociatedOrganizationDetailsFragment = {
+  __typename?: 'Organization';
+  id: string;
+  displayName: string;
+  nameID: string;
+  profile: { __typename?: 'Profile'; id: string; description?: Maybe<string>; avatar?: Maybe<string> };
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+  activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
 };
 
 export type AssignUserToOrganizationMutationVariables = Exact<{
