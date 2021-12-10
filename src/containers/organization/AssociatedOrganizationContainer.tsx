@@ -1,9 +1,10 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useUserCardRoleName, useUserContext } from '../../hooks';
-import { useOrganizationInfoQuery } from '../../hooks/generated/graphql';
+import { useAssociatedOrganizationQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { OrganizationVerificationEnum, User } from '../../models/graphql-schema';
+import getActivityCount from '../../utils/get-activity-count';
 import { buildOrganizationUrl } from '../../utils/urlBuilders';
 
 export interface OrganizationContainerEntities {
@@ -35,7 +36,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
 
   const { organizationNameId } = entities;
 
-  const { data, loading, error } = useOrganizationInfoQuery({
+  const { data, loading, error } = useAssociatedOrganizationQuery({
     variables: {
       organizationId: organizationNameId,
     },
@@ -49,7 +50,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
       {children(
         {
           name: data?.organization.displayName || '',
-          membersCount: data?.organization.members?.length || 0,
+          membersCount: getActivityCount(data?.organization.activity || [], 'members') || 0,
           information: data?.organization.profile.description,
           avatar: data?.organization.profile.avatar || '',
           verified: data?.organization.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
