@@ -3,5 +3,9 @@ query organizationsList {
     id
     nameID
     displayName
+    profile {
+      id
+      avatar
+    }
   }
 }

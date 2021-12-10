@@ -966,10 +966,18 @@
     "new": "New Aspect",
     "edit": "Edit Aspect"
   },
+  "contributors-section": {
+    "title": "Contributors",
+    "users-title": "Users",
+    "organizations-title": "Organizations"
+  },
   "contributions-view": {
     "no-data": "No {{name, lowercase}} available"
   },
   "associated-organizations-view": {
     "no-data": "No {{name, lowercase}} available"
+  },
+  "dashboard-contributors-section": {
+    "more": "...plus {{count}} more"
   }
 }

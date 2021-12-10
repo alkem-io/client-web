@@ -3,10 +3,9 @@ import React, { useMemo } from 'react';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUpdateNavigation } from '../../hooks';
 import AlkemioActivitySection from './AlkemioActivitySection';
-import CommunitySection from './CommunitySection';
+import ContributorsSection from './ContributorsSection';
 import EcoversesSection from './EcoversesSection';
 import LoginSection from './LoginSection';
-import OrganizationSection from './OrganizationSection';
 import WelcomeSection from './WelcomeSection';
 
 export const HomePage = () => {
@@ -26,9 +25,9 @@ export const HomePage = () => {
         <Grid item xs={12} md={6}>
           <AlkemioActivitySection />
           <SectionSpacer />
-          <CommunitySection />
-          <SectionSpacer />
-          <OrganizationSection />
+          <ContributorsSection />
+          {/* <SectionSpacer />
+          <OrganizationSection /> */}
         </Grid>
       </Grid>
     </>
