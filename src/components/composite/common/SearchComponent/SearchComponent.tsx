@@ -3,7 +3,7 @@ import { Chip } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete/Autocomplete';
 import TextField from '@mui/material/TextField/TextField';
 
-export interface ChallengeSearchProps {
+export interface SearchComponentProps {
   placeholder?: string;
   multiple?: boolean;
   fullWidth?: boolean;
@@ -12,7 +12,7 @@ export interface ChallengeSearchProps {
   children: (terms: string[]) => React.ReactNode;
 }
 
-const SearchComponent: FC<ChallengeSearchProps> = ({
+const SearchComponent: FC<SearchComponentProps> = ({
   placeholder,
   fullWidth = true,
   freeSolo = true,
@@ -50,14 +50,7 @@ const SearchComponent: FC<ChallengeSearchProps> = ({
             <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
           ))
         }
-        renderInput={params => (
-          <TextField
-            {...params}
-            margin="none"
-            variant="outlined"
-            placeholder={placeholder}
-          />
-        )}
+        renderInput={params => <TextField {...params} margin="none" variant="outlined" placeholder={placeholder} />}
       />
       {children(terms)}
     </>
