@@ -7,12 +7,12 @@ import { useUpdateNavigation } from '../../hooks';
 import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
 import OpportunityTabs from '../../routing/opportunity/OpportunityTabs';
 import RestrictedRoute from '../../routing/route.extensions';
+import OpportunityCanvasView from '../../views/Opportunity/OpportunityCanvasManagementView';
 import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
 import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboardView';
 import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
 import { PageProps } from '../common';
 import OpportunityCommunityPage from '../Community/OpportunityCommunityPage';
-import { ActorWhiteboard } from '../../components/Opportunity/ActorWhiteboard';
 
 interface OpportunityPageProps extends PageProps {}
 
@@ -117,10 +117,15 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                     </Switch>
                   </TabPanel>
                   <TabPanel value={tabNames['canvases']}>
-                    <ActorWhiteboard
-                      ecosystemModel={null}
-                      actors={[]}
-                    ></ActorWhiteboard>
+                    <OpportunityCanvasView
+                      entities={entities}
+                      state={{
+                        loading: state.loading,
+                        error: state.error,
+                      }}
+                      actions={undefined}
+                      options={undefined}
+                    />
                   </TabPanel>
                 </TabContext>
               );

@@ -1,25 +1,37 @@
 import React, { FC, useRef, useEffect, useState } from 'react';
 import Excalidraw, { serializeAsJSON } from '@excalidraw/excalidraw';
-import { createStyles } from '../../hooks/useTheme';
-import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
+import { ExcalidrawAPIRefValue, ExcalidrawProps } from '@excalidraw/excalidraw/types/types';
 import { NewWhiteboardActorModal } from './NewWhiteboardActorModal';
 import Button from '../core/Button';
 import { useApolloErrorHandler } from '../../hooks';
 import { Actor, EcosystemModel, Maybe } from '../../models/graphql-schema';
 import { useUpdateActorMutation, useUpdateEcosystemModelMutation } from '../../hooks/generated/graphql';
 import { isNil } from 'lodash';
+import { makeStyles } from '@mui/styles';
 
 interface ActorWhiteboardProps {
   actors: Actor[];
   ecosystemModel: Maybe<EcosystemModel>;
 }
 
-const useActorWhiteboardStyles = createStyles(_theme => ({
+const useActorWhiteboardStyles = makeStyles(_theme => ({
   container: {
     height: 600,
     excalidrawWrapper: true,
   },
 }));
+
+const initialExcalidrawState = {
+  type: 'excalidraw',
+  version: 2,
+  source: 'https://excalidraw.com',
+  elements: [],
+  appState: {
+    gridSize: null,
+    viewBackgroundColor: '#ffffff',
+  },
+  files: {},
+};
 
 const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel }) => {
   const excalidrawRef = useRef<ExcalidrawAPIRefValue>(null);
@@ -124,12 +136,13 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
       });
     }
   };
-  const UIOptions = {
+  const UIOptions: ExcalidrawProps['UIOptions'] = {
     canvasActions: {
       export: {
         onExportToBackend: saveToBackend,
       },
     },
+
   };
 
   console.log('Initial ecosystemModel', ecosystemModel);
@@ -140,18 +153,16 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
 
   return (
     <div className={styles.container}>
-      <Button variant="primary" onClick={showNewActorModalF} text="New Actor"></Button>
-      {initialData.elements ? (
-        <Excalidraw
-          ref={excalidrawRef}
-          initialData={initialData}
-          onChange={onChange}
-          onCollabButtonClick={() => window.alert('You clicked on collab button')}
-          UIOptions={UIOptions}
-        />
-      ) : (
-        <div></div>
-      )}
+      {/* <Button variant="primary" onClick={showNewActorModalF} text="New Actor"></Button> */}
+      <Excalidraw
+        ref={excalidrawRef}
+        initialData={initialExcalidrawState}
+        onChange={onChange}
+        onCollabButtonClick={() => window.alert('You clicked on collab button')}
+        UIOptions={UIOptions}
+        gridModeEnabled
+        viewModeEnabled
+      />
 
       <NewWhiteboardActorModal
         show={showNewActorModal}

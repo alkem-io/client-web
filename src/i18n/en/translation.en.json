@@ -807,6 +807,27 @@
       "no-user-groups": "There are no user groups",
       "no-updates": "There are no updates"
     },
+    "canvas": {
+      "header": "Available canvases",
+      "add-canvas": "Create canvas",
+      "no-canvases": "No canvases have been created yet. Be the first to add one.",
+      "state": {
+        "available": "You are free to work on this canvas",
+        "checkedout": "Someone else is already working on this canvas",
+        "unknown": "There is a checkout conflict with this canvas"
+      },
+      "state-actions": {
+        "check-out": "Check-out",
+        "check-in": "Check-in",
+        "save-as-template": "Save as template"
+      },
+      "create-dialog": {
+        "header": "Create a new canvas"
+      },
+      "template": {
+        "header": "Templates defined in Alkemio"
+      }
+    },
     "login": {
       "title": "Sign in",
       "validations": {

@@ -783,6 +783,49 @@ export const AllCommunityDetailsFragmentDoc = gql`
     displayName
   }
 `;
+export const CanvasSummaryFragmentDoc = gql`
+  fragment CanvasSummary on Canvas {
+    id
+    name
+    isTemplate
+  }
+`;
+export const ChechkoutDetailsFragmentDoc = gql`
+  fragment ChechkoutDetails on CanvasCheckout {
+    id
+    lockedBy
+    status
+    lifecycle {
+      id
+      nextEvents
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+`;
+export const CanvasDetailsFragmentDoc = gql`
+  fragment CanvasDetails on Canvas {
+    ...CanvasSummary
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+    checkout {
+      ...ChechkoutDetails
+    }
+  }
+  ${CanvasSummaryFragmentDoc}
+  ${ChechkoutDetailsFragmentDoc}
+`;
+export const CanvasValueFragmentDoc = gql`
+  fragment CanvasValue on Canvas {
+    id
+    value
+  }
+`;
 export const SimpleEcoverseFragmentDoc = gql`
   fragment SimpleEcoverse on MembershipUserResultEntryEcoverse {
     ecoverseID
@@ -3468,10 +3511,11 @@ export function useUpdateEcosystemModelMutation(
     SchemaTypes.UpdateEcosystemModelMutationVariables
   >
 ) {
+  const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
     SchemaTypes.UpdateEcosystemModelMutation,
     SchemaTypes.UpdateEcosystemModelMutationVariables
-  >(UpdateEcosystemModelDocument, baseOptions);
+  >(UpdateEcosystemModelDocument, options);
 }
 export type UpdateEcosystemModelMutationHookResult = ReturnType<typeof useUpdateEcosystemModelMutation>;
 export type UpdateEcosystemModelMutationResult = Apollo.MutationResult<SchemaTypes.UpdateEcosystemModelMutation>;
@@ -7448,6 +7492,90 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectsQuery(variables?: SchemaTypes.OpportunityAspectsQueryVariables) {
   return { query: OpportunityAspectsDocument, variables: variables };
 }
+export const OpportunityEcosystemDetailsDocument = gql`
+  query opportunityEcosystemDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunity(ID: $opportunityId) {
+        context {
+          ecosystemModel {
+            id
+            actorGroups {
+              id
+              name
+              description
+              actors {
+                id
+                name
+                description
+                value
+                impact
+              }
+            }
+            canvas {
+              id
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityEcosystemDetailsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityEcosystemDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityEcosystemDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityEcosystemDetailsQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityEcosystemDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityEcosystemDetailsQuery,
+    SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityEcosystemDetailsQuery,
+    SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  >(OpportunityEcosystemDetailsDocument, options);
+}
+export function useOpportunityEcosystemDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityEcosystemDetailsQuery,
+    SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityEcosystemDetailsQuery,
+    SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  >(OpportunityEcosystemDetailsDocument, options);
+}
+export type OpportunityEcosystemDetailsQueryHookResult = ReturnType<typeof useOpportunityEcosystemDetailsQuery>;
+export type OpportunityEcosystemDetailsLazyQueryHookResult = ReturnType<typeof useOpportunityEcosystemDetailsLazyQuery>;
+export type OpportunityEcosystemDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityEcosystemDetailsQuery,
+  SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+>;
+export function refetchOpportunityEcosystemDetailsQuery(
+  variables?: SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+) {
+  return { query: OpportunityEcosystemDetailsDocument, variables: variables };
+}
 export const OpportunityGroupsDocument = gql`
   query opportunityGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
@@ -9638,6 +9766,603 @@ export function refetchOpportunityContributionDetailsQuery(
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
+export const EcoverseCanvasesDocument = gql`
+  query ecoverseCanvases($ecoverseId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      context {
+        id
+        canvases {
+          ...CanvasDetails
+        }
+      }
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+`;
+
+/**
+ * __useEcoverseCanvasesQuery__
+ *
+ * To run a query within a React component, call `useEcoverseCanvasesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseCanvasesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseCanvasesQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *   },
+ * });
+ */
+export function useEcoverseCanvasesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseCanvasesQuery, SchemaTypes.EcoverseCanvasesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.EcoverseCanvasesQuery, SchemaTypes.EcoverseCanvasesQueryVariables>(
+    EcoverseCanvasesDocument,
+    options
+  );
+}
+export function useEcoverseCanvasesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.EcoverseCanvasesQuery,
+    SchemaTypes.EcoverseCanvasesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.EcoverseCanvasesQuery, SchemaTypes.EcoverseCanvasesQueryVariables>(
+    EcoverseCanvasesDocument,
+    options
+  );
+}
+export type EcoverseCanvasesQueryHookResult = ReturnType<typeof useEcoverseCanvasesQuery>;
+export type EcoverseCanvasesLazyQueryHookResult = ReturnType<typeof useEcoverseCanvasesLazyQuery>;
+export type EcoverseCanvasesQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoverseCanvasesQuery,
+  SchemaTypes.EcoverseCanvasesQueryVariables
+>;
+export function refetchEcoverseCanvasesQuery(variables?: SchemaTypes.EcoverseCanvasesQueryVariables) {
+  return { query: EcoverseCanvasesDocument, variables: variables };
+}
+export const EcoverseCanvasValuesDocument = gql`
+  query ecoverseCanvasValues($ecoverseId: UUID_NAMEID!, $canvasId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      context {
+        id
+        canvases(IDs: [$canvasId]) {
+          ...CanvasDetails
+          ...CanvasValue
+        }
+      }
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+  ${CanvasValueFragmentDoc}
+`;
+
+/**
+ * __useEcoverseCanvasValuesQuery__
+ *
+ * To run a query within a React component, call `useEcoverseCanvasValuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEcoverseCanvasValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEcoverseCanvasValuesQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      canvasId: // value for 'canvasId'
+ *   },
+ * });
+ */
+export function useEcoverseCanvasValuesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.EcoverseCanvasValuesQuery,
+    SchemaTypes.EcoverseCanvasValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.EcoverseCanvasValuesQuery, SchemaTypes.EcoverseCanvasValuesQueryVariables>(
+    EcoverseCanvasValuesDocument,
+    options
+  );
+}
+export function useEcoverseCanvasValuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.EcoverseCanvasValuesQuery,
+    SchemaTypes.EcoverseCanvasValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.EcoverseCanvasValuesQuery, SchemaTypes.EcoverseCanvasValuesQueryVariables>(
+    EcoverseCanvasValuesDocument,
+    options
+  );
+}
+export type EcoverseCanvasValuesQueryHookResult = ReturnType<typeof useEcoverseCanvasValuesQuery>;
+export type EcoverseCanvasValuesLazyQueryHookResult = ReturnType<typeof useEcoverseCanvasValuesLazyQuery>;
+export type EcoverseCanvasValuesQueryResult = Apollo.QueryResult<
+  SchemaTypes.EcoverseCanvasValuesQuery,
+  SchemaTypes.EcoverseCanvasValuesQueryVariables
+>;
+export function refetchEcoverseCanvasValuesQuery(variables?: SchemaTypes.EcoverseCanvasValuesQueryVariables) {
+  return { query: EcoverseCanvasValuesDocument, variables: variables };
+}
+export const ChallengeCanvasesDocument = gql`
+  query challengeCanvases($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        context {
+          id
+          canvases {
+            ...CanvasDetails
+          }
+        }
+      }
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+`;
+
+/**
+ * __useChallengeCanvasesQuery__
+ *
+ * To run a query within a React component, call `useChallengeCanvasesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeCanvasesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeCanvasesQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeCanvasesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ChallengeCanvasesQuery, SchemaTypes.ChallengeCanvasesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeCanvasesQuery, SchemaTypes.ChallengeCanvasesQueryVariables>(
+    ChallengeCanvasesDocument,
+    options
+  );
+}
+export function useChallengeCanvasesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeCanvasesQuery,
+    SchemaTypes.ChallengeCanvasesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeCanvasesQuery, SchemaTypes.ChallengeCanvasesQueryVariables>(
+    ChallengeCanvasesDocument,
+    options
+  );
+}
+export type ChallengeCanvasesQueryHookResult = ReturnType<typeof useChallengeCanvasesQuery>;
+export type ChallengeCanvasesLazyQueryHookResult = ReturnType<typeof useChallengeCanvasesLazyQuery>;
+export type ChallengeCanvasesQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeCanvasesQuery,
+  SchemaTypes.ChallengeCanvasesQueryVariables
+>;
+export function refetchChallengeCanvasesQuery(variables?: SchemaTypes.ChallengeCanvasesQueryVariables) {
+  return { query: ChallengeCanvasesDocument, variables: variables };
+}
+export const ChallengeCanvasValuesDocument = gql`
+  query challengeCanvasValues($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        context {
+          id
+          canvases(IDs: [$canvasId]) {
+            ...CanvasDetails
+            ...CanvasValue
+          }
+        }
+      }
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+  ${CanvasValueFragmentDoc}
+`;
+
+/**
+ * __useChallengeCanvasValuesQuery__
+ *
+ * To run a query within a React component, call `useChallengeCanvasValuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeCanvasValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeCanvasValuesQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
+ *      canvasId: // value for 'canvasId'
+ *   },
+ * });
+ */
+export function useChallengeCanvasValuesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeCanvasValuesQuery,
+    SchemaTypes.ChallengeCanvasValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeCanvasValuesQuery, SchemaTypes.ChallengeCanvasValuesQueryVariables>(
+    ChallengeCanvasValuesDocument,
+    options
+  );
+}
+export function useChallengeCanvasValuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeCanvasValuesQuery,
+    SchemaTypes.ChallengeCanvasValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeCanvasValuesQuery, SchemaTypes.ChallengeCanvasValuesQueryVariables>(
+    ChallengeCanvasValuesDocument,
+    options
+  );
+}
+export type ChallengeCanvasValuesQueryHookResult = ReturnType<typeof useChallengeCanvasValuesQuery>;
+export type ChallengeCanvasValuesLazyQueryHookResult = ReturnType<typeof useChallengeCanvasValuesLazyQuery>;
+export type ChallengeCanvasValuesQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeCanvasValuesQuery,
+  SchemaTypes.ChallengeCanvasValuesQueryVariables
+>;
+export function refetchChallengeCanvasValuesQuery(variables?: SchemaTypes.ChallengeCanvasValuesQueryVariables) {
+  return { query: ChallengeCanvasValuesDocument, variables: variables };
+}
+export const OpportunityCanvasesDocument = gql`
+  query opportunityCanvases($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunity(ID: $opportunityId) {
+        id
+        context {
+          id
+          canvases {
+            ...CanvasDetails
+          }
+        }
+      }
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+`;
+
+/**
+ * __useOpportunityCanvasesQuery__
+ *
+ * To run a query within a React component, call `useOpportunityCanvasesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityCanvasesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityCanvasesQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityCanvasesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityCanvasesQuery,
+    SchemaTypes.OpportunityCanvasesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityCanvasesQuery, SchemaTypes.OpportunityCanvasesQueryVariables>(
+    OpportunityCanvasesDocument,
+    options
+  );
+}
+export function useOpportunityCanvasesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityCanvasesQuery,
+    SchemaTypes.OpportunityCanvasesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityCanvasesQuery, SchemaTypes.OpportunityCanvasesQueryVariables>(
+    OpportunityCanvasesDocument,
+    options
+  );
+}
+export type OpportunityCanvasesQueryHookResult = ReturnType<typeof useOpportunityCanvasesQuery>;
+export type OpportunityCanvasesLazyQueryHookResult = ReturnType<typeof useOpportunityCanvasesLazyQuery>;
+export type OpportunityCanvasesQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityCanvasesQuery,
+  SchemaTypes.OpportunityCanvasesQueryVariables
+>;
+export function refetchOpportunityCanvasesQuery(variables?: SchemaTypes.OpportunityCanvasesQueryVariables) {
+  return { query: OpportunityCanvasesDocument, variables: variables };
+}
+export const OpportunityCanvasValuesDocument = gql`
+  query opportunityCanvasValues($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      opportunity(ID: $opportunityId) {
+        id
+        context {
+          id
+          canvases(IDs: [$canvasId]) {
+            ...CanvasDetails
+            ...CanvasValue
+          }
+        }
+      }
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+  ${CanvasValueFragmentDoc}
+`;
+
+/**
+ * __useOpportunityCanvasValuesQuery__
+ *
+ * To run a query within a React component, call `useOpportunityCanvasValuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityCanvasValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityCanvasValuesQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      opportunityId: // value for 'opportunityId'
+ *      canvasId: // value for 'canvasId'
+ *   },
+ * });
+ */
+export function useOpportunityCanvasValuesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityCanvasValuesQuery,
+    SchemaTypes.OpportunityCanvasValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityCanvasValuesQuery, SchemaTypes.OpportunityCanvasValuesQueryVariables>(
+    OpportunityCanvasValuesDocument,
+    options
+  );
+}
+export function useOpportunityCanvasValuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityCanvasValuesQuery,
+    SchemaTypes.OpportunityCanvasValuesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityCanvasValuesQuery,
+    SchemaTypes.OpportunityCanvasValuesQueryVariables
+  >(OpportunityCanvasValuesDocument, options);
+}
+export type OpportunityCanvasValuesQueryHookResult = ReturnType<typeof useOpportunityCanvasValuesQuery>;
+export type OpportunityCanvasValuesLazyQueryHookResult = ReturnType<typeof useOpportunityCanvasValuesLazyQuery>;
+export type OpportunityCanvasValuesQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityCanvasValuesQuery,
+  SchemaTypes.OpportunityCanvasValuesQueryVariables
+>;
+export function refetchOpportunityCanvasValuesQuery(variables?: SchemaTypes.OpportunityCanvasValuesQueryVariables) {
+  return { query: OpportunityCanvasValuesDocument, variables: variables };
+}
+export const CreateCanvasOnContextDocument = gql`
+  mutation createCanvasOnContext($input: CreateCanvasOnContextInput!) {
+    createCanvasOnContext(canvasData: $input) {
+      ...CanvasDetails
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+`;
+export type CreateCanvasOnContextMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateCanvasOnContextMutation,
+  SchemaTypes.CreateCanvasOnContextMutationVariables
+>;
+
+/**
+ * __useCreateCanvasOnContextMutation__
+ *
+ * To run a mutation, you first call `useCreateCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCanvasOnContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCanvasOnContextMutation, { data, loading, error }] = useCreateCanvasOnContextMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCanvasOnContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateCanvasOnContextMutation,
+    SchemaTypes.CreateCanvasOnContextMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateCanvasOnContextMutation,
+    SchemaTypes.CreateCanvasOnContextMutationVariables
+  >(CreateCanvasOnContextDocument, options);
+}
+export type CreateCanvasOnContextMutationHookResult = ReturnType<typeof useCreateCanvasOnContextMutation>;
+export type CreateCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.CreateCanvasOnContextMutation>;
+export type CreateCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateCanvasOnContextMutation,
+  SchemaTypes.CreateCanvasOnContextMutationVariables
+>;
+export const DeleteCanvasOnContextDocument = gql`
+  mutation deleteCanvasOnContext($input: DeleteCanvasOnContextInput!) {
+    deleteCanvasOnContext(deleteData: $input) {
+      ...CanvasSummary
+    }
+  }
+  ${CanvasSummaryFragmentDoc}
+`;
+export type DeleteCanvasOnContextMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCanvasOnContextMutation,
+  SchemaTypes.DeleteCanvasOnContextMutationVariables
+>;
+
+/**
+ * __useDeleteCanvasOnContextMutation__
+ *
+ * To run a mutation, you first call `useDeleteCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCanvasOnContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCanvasOnContextMutation, { data, loading, error }] = useDeleteCanvasOnContextMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteCanvasOnContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCanvasOnContextMutation,
+    SchemaTypes.DeleteCanvasOnContextMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteCanvasOnContextMutation,
+    SchemaTypes.DeleteCanvasOnContextMutationVariables
+  >(DeleteCanvasOnContextDocument, options);
+}
+export type DeleteCanvasOnContextMutationHookResult = ReturnType<typeof useDeleteCanvasOnContextMutation>;
+export type DeleteCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCanvasOnContextMutation>;
+export type DeleteCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCanvasOnContextMutation,
+  SchemaTypes.DeleteCanvasOnContextMutationVariables
+>;
+export const UpdateCanvasOnContextDocument = gql`
+  mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
+    updateCanvas(canvasData: $input) {
+      ...CanvasDetails
+      ...CanvasValue
+    }
+  }
+  ${CanvasDetailsFragmentDoc}
+  ${CanvasValueFragmentDoc}
+`;
+export type UpdateCanvasOnContextMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCanvasOnContextMutation,
+  SchemaTypes.UpdateCanvasOnContextMutationVariables
+>;
+
+/**
+ * __useUpdateCanvasOnContextMutation__
+ *
+ * To run a mutation, you first call `useUpdateCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCanvasOnContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCanvasOnContextMutation, { data, loading, error }] = useUpdateCanvasOnContextMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCanvasOnContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCanvasOnContextMutation,
+    SchemaTypes.UpdateCanvasOnContextMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCanvasOnContextMutation,
+    SchemaTypes.UpdateCanvasOnContextMutationVariables
+  >(UpdateCanvasOnContextDocument, options);
+}
+export type UpdateCanvasOnContextMutationHookResult = ReturnType<typeof useUpdateCanvasOnContextMutation>;
+export type UpdateCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCanvasOnContextMutation>;
+export type UpdateCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCanvasOnContextMutation,
+  SchemaTypes.UpdateCanvasOnContextMutationVariables
+>;
+export const CheckoutCanvasOnContextDocument = gql`
+  mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
+    eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
+      ...ChechkoutDetails
+    }
+  }
+  ${ChechkoutDetailsFragmentDoc}
+`;
+export type CheckoutCanvasOnContextMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CheckoutCanvasOnContextMutation,
+  SchemaTypes.CheckoutCanvasOnContextMutationVariables
+>;
+
+/**
+ * __useCheckoutCanvasOnContextMutation__
+ *
+ * To run a mutation, you first call `useCheckoutCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckoutCanvasOnContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkoutCanvasOnContextMutation, { data, loading, error }] = useCheckoutCanvasOnContextMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCheckoutCanvasOnContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CheckoutCanvasOnContextMutation,
+    SchemaTypes.CheckoutCanvasOnContextMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CheckoutCanvasOnContextMutation,
+    SchemaTypes.CheckoutCanvasOnContextMutationVariables
+  >(CheckoutCanvasOnContextDocument, options);
+}
+export type CheckoutCanvasOnContextMutationHookResult = ReturnType<typeof useCheckoutCanvasOnContextMutation>;
+export type CheckoutCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutCanvasOnContextMutation>;
+export type CheckoutCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CheckoutCanvasOnContextMutation,
+  SchemaTypes.CheckoutCanvasOnContextMutationVariables
+>;
 export const ChallengesOverviewPageDocument = gql`
   query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
     membershipUser(membershipData: $membershipData) {

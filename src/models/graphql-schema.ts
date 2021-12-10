@@ -515,6 +515,10 @@ export type Context = {
   who?: Maybe<Scalars['String']>;
 };
 
+export type ContextCanvasesArgs = {
+  IDs?: Maybe<Array<Scalars['UUID']>>;
+};
+
 export type CreateActorGroupInput = {
   description?: Maybe<Scalars['String']>;
   ecosystemModelID: Scalars['UUID'];
@@ -736,8 +740,9 @@ export type DeleteAspectInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteCanvasInput = {
-  ID: Scalars['UUID'];
+export type DeleteCanvasOnContextInput = {
+  canvasID: Scalars['UUID'];
+  contextID: Scalars['UUID'];
 };
 
 export type DeleteChallengeInput = {
@@ -1145,7 +1150,7 @@ export type Mutation = {
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
   /** Deletes the specified Canvas. */
-  deleteCanvas: Canvas;
+  deleteCanvasOnContext: Canvas;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Deletes the specified Discussion. */
@@ -1398,8 +1403,8 @@ export type MutationDeleteAspectArgs = {
   deleteData: DeleteAspectInput;
 };
 
-export type MutationDeleteCanvasArgs = {
-  deleteData: DeleteCanvasInput;
+export type MutationDeleteCanvasOnContextArgs = {
+  deleteData: DeleteCanvasOnContextInput;
 };
 
 export type MutationDeleteChallengeArgs = {
@@ -1660,6 +1665,8 @@ export type OpportunityTemplate = {
 export type Organization = Groupable &
   Searchable & {
     __typename?: 'Organization';
+    /** The activity within this Organization. */
+    activity?: Maybe<Array<Nvp>>;
     /** The Agent representing this User. */
     agent?: Maybe<Agent>;
     /** The authorization rules for the entity */
@@ -6565,6 +6572,420 @@ export type OpportunityContributionDetailsQuery = {
         visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
       }>;
     };
+  };
+};
+
+export type CanvasDetailsFragment = {
+  __typename?: 'Canvas';
+  id: string;
+  name: string;
+  isTemplate: boolean;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    anonymousReadAccess: boolean;
+  }>;
+  checkout?: Maybe<{
+    __typename?: 'CanvasCheckout';
+    id: string;
+    lockedBy: string;
+    status: CanvasCheckoutStateEnum;
+    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
+  }>;
+};
+
+export type CanvasSummaryFragment = { __typename?: 'Canvas'; id: string; name: string; isTemplate: boolean };
+
+export type CanvasValueFragment = { __typename?: 'Canvas'; id: string; value: string };
+
+export type ChechkoutDetailsFragment = {
+  __typename?: 'CanvasCheckout';
+  id: string;
+  lockedBy: string;
+  status: CanvasCheckoutStateEnum;
+  lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  }>;
+};
+
+export type EcoverseCanvasesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type EcoverseCanvasesQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    context?: Maybe<{
+      __typename?: 'Context';
+      id: string;
+      canvases?: Maybe<
+        Array<{
+          __typename?: 'Canvas';
+          id: string;
+          name: string;
+          isTemplate: boolean;
+          authorization?: Maybe<{
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+            anonymousReadAccess: boolean;
+          }>;
+          checkout?: Maybe<{
+            __typename?: 'CanvasCheckout';
+            id: string;
+            lockedBy: string;
+            status: CanvasCheckoutStateEnum;
+            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+            }>;
+          }>;
+        }>
+      >;
+    }>;
+  };
+};
+
+export type EcoverseCanvasValuesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID'];
+}>;
+
+export type EcoverseCanvasValuesQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    context?: Maybe<{
+      __typename?: 'Context';
+      id: string;
+      canvases?: Maybe<
+        Array<{
+          __typename?: 'Canvas';
+          id: string;
+          value: string;
+          name: string;
+          isTemplate: boolean;
+          authorization?: Maybe<{
+            __typename?: 'Authorization';
+            id: string;
+            myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+            anonymousReadAccess: boolean;
+          }>;
+          checkout?: Maybe<{
+            __typename?: 'CanvasCheckout';
+            id: string;
+            lockedBy: string;
+            status: CanvasCheckoutStateEnum;
+            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+            }>;
+          }>;
+        }>
+      >;
+    }>;
+  };
+};
+
+export type ChallengeCanvasesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCanvasesQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      context?: Maybe<{
+        __typename?: 'Context';
+        id: string;
+        canvases?: Maybe<
+          Array<{
+            __typename?: 'Canvas';
+            id: string;
+            name: string;
+            isTemplate: boolean;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              anonymousReadAccess: boolean;
+            }>;
+            checkout?: Maybe<{
+              __typename?: 'CanvasCheckout';
+              id: string;
+              lockedBy: string;
+              status: CanvasCheckoutStateEnum;
+              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+              authorization?: Maybe<{
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              }>;
+            }>;
+          }>
+        >;
+      }>;
+    };
+  };
+};
+
+export type ChallengeCanvasValuesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID'];
+}>;
+
+export type ChallengeCanvasValuesQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      context?: Maybe<{
+        __typename?: 'Context';
+        id: string;
+        canvases?: Maybe<
+          Array<{
+            __typename?: 'Canvas';
+            id: string;
+            value: string;
+            name: string;
+            isTemplate: boolean;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              anonymousReadAccess: boolean;
+            }>;
+            checkout?: Maybe<{
+              __typename?: 'CanvasCheckout';
+              id: string;
+              lockedBy: string;
+              status: CanvasCheckoutStateEnum;
+              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+              authorization?: Maybe<{
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              }>;
+            }>;
+          }>
+        >;
+      }>;
+    };
+  };
+};
+
+export type OpportunityCanvasesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCanvasesQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      context?: Maybe<{
+        __typename?: 'Context';
+        id: string;
+        canvases?: Maybe<
+          Array<{
+            __typename?: 'Canvas';
+            id: string;
+            name: string;
+            isTemplate: boolean;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              anonymousReadAccess: boolean;
+            }>;
+            checkout?: Maybe<{
+              __typename?: 'CanvasCheckout';
+              id: string;
+              lockedBy: string;
+              status: CanvasCheckoutStateEnum;
+              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+              authorization?: Maybe<{
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              }>;
+            }>;
+          }>
+        >;
+      }>;
+    };
+  };
+};
+
+export type OpportunityCanvasValuesQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  canvasId: Scalars['UUID'];
+}>;
+
+export type OpportunityCanvasValuesQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      context?: Maybe<{
+        __typename?: 'Context';
+        id: string;
+        canvases?: Maybe<
+          Array<{
+            __typename?: 'Canvas';
+            id: string;
+            value: string;
+            name: string;
+            isTemplate: boolean;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              anonymousReadAccess: boolean;
+            }>;
+            checkout?: Maybe<{
+              __typename?: 'CanvasCheckout';
+              id: string;
+              lockedBy: string;
+              status: CanvasCheckoutStateEnum;
+              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+              authorization?: Maybe<{
+                __typename?: 'Authorization';
+                id: string;
+                myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              }>;
+            }>;
+          }>
+        >;
+      }>;
+    };
+  };
+};
+
+export type CreateCanvasOnContextMutationVariables = Exact<{
+  input: CreateCanvasOnContextInput;
+}>;
+
+export type CreateCanvasOnContextMutation = {
+  __typename?: 'Mutation';
+  createCanvasOnContext: {
+    __typename?: 'Canvas';
+    id: string;
+    name: string;
+    isTemplate: boolean;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
+    checkout?: Maybe<{
+      __typename?: 'CanvasCheckout';
+      id: string;
+      lockedBy: string;
+      status: CanvasCheckoutStateEnum;
+      lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
+    }>;
+  };
+};
+
+export type DeleteCanvasOnContextMutationVariables = Exact<{
+  input: DeleteCanvasOnContextInput;
+}>;
+
+export type DeleteCanvasOnContextMutation = {
+  __typename?: 'Mutation';
+  deleteCanvasOnContext: { __typename?: 'Canvas'; id: string; name: string; isTemplate: boolean };
+};
+
+export type UpdateCanvasOnContextMutationVariables = Exact<{
+  input: UpdateCanvasDirectInput;
+}>;
+
+export type UpdateCanvasOnContextMutation = {
+  __typename?: 'Mutation';
+  updateCanvas: {
+    __typename?: 'Canvas';
+    id: string;
+    value: string;
+    name: string;
+    isTemplate: boolean;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
+    checkout?: Maybe<{
+      __typename?: 'CanvasCheckout';
+      id: string;
+      lockedBy: string;
+      status: CanvasCheckoutStateEnum;
+      lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      }>;
+    }>;
+  };
+};
+
+export type CheckoutCanvasOnContextMutationVariables = Exact<{
+  input: CanvasCheckoutEventInput;
+}>;
+
+export type CheckoutCanvasOnContextMutation = {
+  __typename?: 'Mutation';
+  eventOnCanvasCheckout: {
+    __typename?: 'CanvasCheckout';
+    id: string;
+    lockedBy: string;
+    status: CanvasCheckoutStateEnum;
+    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
   };
 };
 

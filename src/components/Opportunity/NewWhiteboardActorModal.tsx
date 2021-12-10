@@ -1,12 +1,9 @@
-import { nanoid } from 'nanoid';
+import { Button, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import { Form, Formik } from 'formik';
+import { nanoid } from 'nanoid';
 import React, { FC } from 'react';
-import Divider from '../core/Divider';
-import Button from '../core/Button';
+import FormikSelect from '../../components/composite/forms/FormikSelect';
 import { Actor } from '../../models/graphql-schema';
-import { FormikSelect } from '../../components/Admin/Common/FormikSelect';
-import { DialogContent, DialogTitle } from '../core/dialog';
-import { Dialog } from '@material-ui/core';
 
 const template = {
   type: 'excalidraw',
@@ -239,18 +236,17 @@ const NewWhiteboardActorModal: FC<NewWhiteboardActorModalProps> = ({ show, onHid
   };
 
   return (
-    <Dialog open={show}>
-      <DialogTitle id="add-actor-whiteboard" onClose={onHide}>
-        New Whiteboard
-      </DialogTitle>
+    <Dialog open={show} onClose={onHide}>
+      <DialogTitle id="add-actor-whiteboard">New Whiteboard</DialogTitle>
       <DialogContent>
         <Formik initialValues={initialValues} onSubmit={onSubmitAction} enableReinitialize validator={() => ({})}>
           {({ isSubmitting, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <label htmlFor="actor">Acctor: </label>
               <FormikSelect title="Actor" name="actor" values={actors}></FormikSelect>
-              <Divider />
-              <Button variant="primary" type="submit" disabled={isSubmitting} text="Add Actor"></Button>
+              <Button variant="text" type="submit" disabled={isSubmitting}>
+                Add Actor
+              </Button>
             </Form>
           )}
         </Formik>

@@ -5,6 +5,9 @@ const DialogContent = styled(MuiDialogContent)(({ theme }) => ({
   root: {
     padding: theme.spacing(2),
   },
+  '.MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
 }));
 
 export default DialogContent;

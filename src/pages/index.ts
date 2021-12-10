@@ -4,7 +4,7 @@ export * from './common';
 export * from './Ecoverse/EcoversePage';
 export * from './Errors/Error404';
 export * from './Errors/ErrorPage';
-export * from './Home/Home';
+export * from './home/Home';
 export * from './Messages/Messages';
 export * from './Opportunity/OpportunityPage';
 export * from './Project/Index';

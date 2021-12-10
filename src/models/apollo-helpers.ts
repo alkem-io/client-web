@@ -605,7 +605,7 @@ export type MutationKeySpecifier = (
   | 'deleteActor'
   | 'deleteActorGroup'
   | 'deleteAspect'
-  | 'deleteCanvas'
+  | 'deleteCanvasOnContext'
   | 'deleteChallenge'
   | 'deleteDiscussion'
   | 'deleteEcoverse'
@@ -697,7 +697,7 @@ export type MutationFieldPolicy = {
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteAspect?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -803,6 +803,7 @@ export type OpportunityTemplateFieldPolicy = {
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationKeySpecifier = (
+  | 'activity'
   | 'agent'
   | 'authorization'
   | 'contactEmail'
@@ -820,6 +821,7 @@ export type OrganizationKeySpecifier = (
   | OrganizationKeySpecifier
 )[];
 export type OrganizationFieldPolicy = {
+  activity?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;

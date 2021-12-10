@@ -1,0 +1,148 @@
+fragment CanvasDetails on Canvas {
+  ...CanvasSummary
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
+  }
+  checkout {
+    ...ChechkoutDetails
+  }
+}
+
+fragment CanvasSummary on Canvas {
+  id
+  name
+  isTemplate
+}
+
+fragment CanvasValue on Canvas {
+  id
+  value
+}
+
+fragment ChechkoutDetails on CanvasCheckout {
+  id
+  lockedBy
+  status
+  lifecycle {
+    id
+    nextEvents
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+query ecoverseCanvases($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    context {
+      id
+      canvases {
+        ...CanvasDetails
+      }
+    }
+  }
+}
+
+query ecoverseCanvasValues($ecoverseId: UUID_NAMEID!, $canvasId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    context {
+      id
+      canvases(IDs: [$canvasId]) {
+        ...CanvasDetails
+        ...CanvasValue
+      }
+    }
+  }
+}
+
+query challengeCanvases($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      context {
+        id
+        canvases {
+          ...CanvasDetails
+        }
+      }
+    }
+  }
+}
+
+query challengeCanvasValues($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      context {
+        id
+        canvases(IDs: [$canvasId]) {
+          ...CanvasDetails
+          ...CanvasValue
+        }
+      }
+    }
+  }
+}
+
+query opportunityCanvases($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      context {
+        id
+        canvases {
+          ...CanvasDetails
+        }
+      }
+    }
+  }
+}
+
+query opportunityCanvasValues($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      context {
+        id
+        canvases(IDs: [$canvasId]) {
+          ...CanvasDetails
+          ...CanvasValue
+        }
+      }
+    }
+  }
+}
+
+mutation createCanvasOnContext($input: CreateCanvasOnContextInput!) {
+  createCanvasOnContext(canvasData: $input) {
+    ...CanvasDetails
+  }
+}
+
+mutation deleteCanvasOnContext($input: DeleteCanvasOnContextInput!) {
+  deleteCanvasOnContext(deleteData: $input) {
+    ...CanvasSummary
+  }
+}
+
+mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
+  updateCanvas(canvasData: $input) {
+    ...CanvasDetails
+    ...CanvasValue
+  }
+}
+
+mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
+  eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
+    ...ChechkoutDetails
+  }
+}
