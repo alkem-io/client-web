@@ -1,6 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { Grid } from '@mui/material';
 import React, { FC, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import CanvasCreateDialog from '../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
 import CanvasDialog from '../../components/composite/dialogs/CanvasDialog/CanvasDialog';
 import { ICanvasActions } from '../../containers/canvas/CanvasActionsContainer';
@@ -13,6 +14,7 @@ import { CanvasListView } from './CanvasListView';
 export interface CanvasManagementViewEntities {
   // opportunity: OpportunityPageFragment;
   contextID: string;
+  contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasWithoutValue[];
 }
 
@@ -43,6 +45,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   const [activeCanvasId, setActiveCanvasId] = useState<string | undefined>(undefined);
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
+  const { t } = useTranslation();
 
   const loadCanvas = useCallback<typeof actions['onLoad']>(
     async canvas => {
@@ -75,7 +78,11 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <CanvasListView
-            entities={{ canvases: nonTemplateCanvases, headerTemplate: 'pages.canvas.header' }}
+            entities={{
+              canvases: nonTemplateCanvases,
+              headerTemplate: t('pages.canvas.header', { blockName: entities.contextSource }),
+              subheaderTemplate: t('pages.canvas.subheader'),
+            }}
             state={{
               loading: Boolean(state.loadingCanvases),
             }}
@@ -91,7 +98,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
         </Grid>
         <Grid item xs={12} md={6}>
           <CanvasListView
-            entities={{ canvases: templateCanvases, headerTemplate: 'pages.canvas.template.header' }}
+            entities={{ canvases: templateCanvases, headerTemplate: t('pages.canvas.template.header') }}
             state={{
               loading: Boolean(state.loadingCanvases),
             }}

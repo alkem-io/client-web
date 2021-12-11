@@ -808,7 +808,8 @@
       "no-updates": "There are no updates"
     },
     "canvas": {
-      "header": "Available canvases",
+      "header": "Canvases in this {{blockName}}",
+      "subheader": "Create your custom visualization and share it with others.",
       "add-canvas": "Create canvas",
       "no-canvases": "No canvases have been created yet. Be the first to add one.",
       "state": {

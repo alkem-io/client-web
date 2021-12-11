@@ -5,6 +5,7 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { FC, useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { Canvas } from '../../../../models/graphql-schema';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
@@ -91,7 +92,13 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
               title="Save to cloud"
               aria-label="Save to cloud"
               type="button"
-              onClick={() => actions.onUpdate({ ...data, elements: exportedElements, appState })}
+              onClick={async () => {
+                await actions.onUpdate({ ...data, elements: exportedElements, appState });
+                const element = document.body.getElementsByClassName('Modal__close')[0];
+                ReactDOM.findDOMNode(element)?.dispatchEvent(
+                  new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
+                );
+              }}
             >
               <div className="ToolIcon__label">Save to Alkemio</div>
             </button>

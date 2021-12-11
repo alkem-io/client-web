@@ -31,6 +31,7 @@ const OpportunityCanvasManagementView: FC<OpportunityCanvasManagementViewProps> 
               entities={{
                 ...canvasEntities,
                 contextID,
+                contextSource: 'opportunity',
               }}
               actions={actions}
               state={{

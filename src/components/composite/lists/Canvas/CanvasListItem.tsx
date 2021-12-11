@@ -12,7 +12,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Skeleton,
-  Tooltip,
+  Tooltip
 } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
