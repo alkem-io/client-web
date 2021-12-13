@@ -1,13 +1,11 @@
 import { Card, CardProps, Link } from '@mui/material';
 import React, { FC, useState } from 'react';
+import { FINAL_ELEVATION, INITAL_ELEVATION } from '../../../models/constants';
 import { RouterLink } from '../RouterLink';
 
 interface LinkCardProps extends CardProps {
   to: string;
 }
-
-const INITAL_ELEVATION = 1;
-const FINAL_ELEVATION = 8;
 
 const LinkCard: FC<LinkCardProps> = ({ to, ...rest }) => {
   const [elevation, setElevation] = useState(INITAL_ELEVATION);
