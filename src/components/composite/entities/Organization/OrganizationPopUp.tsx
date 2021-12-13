@@ -169,7 +169,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                 </TableBody>
               </Table>
               {ecoversesHosting.length === 0 && (
-                <div className={styles.centeredText}>{t('search.organization.no-hosted')}</div>
+                <div className={styles.centeredText}>{t('pages.search.organization.no-hosted')}</div>
               )}
             </div>
             <div className={clsx({ [styles.tableScrollable]: challengesLeading.length > 0 })}>
@@ -189,7 +189,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                 </TableBody>
               </Table>
               {challengesLeading.length === 0 && (
-                <div className={styles.centeredText}>{t('search.organization.no-leading')}</div>
+                <div className={styles.centeredText}>{t('pages.search.organization.no-leading')}</div>
               )}
             </div>
           </div>
