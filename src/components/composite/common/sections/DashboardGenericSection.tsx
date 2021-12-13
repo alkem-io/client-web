@@ -34,15 +34,14 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
           <SectionHeader text={headerText} helpText={helpText}>
             {primaryAction}
           </SectionHeader>
-          <SectionSpacer />
         </>
       )}
       {subHeaderText && (
         <>
           <SectionSubHeader text={subHeaderText} />
-          <SectionSpacer />
         </>
       )}
+      {(headerText || subHeaderText) && <SectionSpacer />}
       <Box paddingY={1}>
         {children}
         {secondaryAction}
