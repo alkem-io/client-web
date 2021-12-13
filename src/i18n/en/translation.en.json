@@ -537,9 +537,10 @@
   },
   "pages": {
     "challenge-explorer": {
-      "filter": {
-        "title": "Search through challenges",
-        "subtitle": "This section allows you to search through all the challenges of the hubs you are participating in."
+      "search": {
+        "title": "Explore challenges",
+        "subtitle": "This section allows you to search through all the challenges in Alkemio",
+        "placeholder": "Search for challenges in Alkemio..."
       },
       "my": {
         "title": "My challenges ({{count}})",

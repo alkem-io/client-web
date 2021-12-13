@@ -8,7 +8,7 @@ import { AUTH_LOGIN_PATH } from '../../../../models/constants';
 import { RouterLink } from '../../../core/RouterLink';
 import UserSegment from '../../entities/User/UserSegment';
 import LogoComponent from './LogoComponent';
-import SearchComponent from './SearchComponent';
+import TopSearchComponent from './TopSearchComponent';
 
 const SearchBar = () => {
   const { t } = useTranslation();
@@ -37,7 +37,7 @@ const SearchBar = () => {
               maxWidth: 512,
             }}
           >
-            <SearchComponent />
+            <TopSearchComponent />
           </Box>
         </Hidden>
         {!isAuthenticated && (

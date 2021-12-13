@@ -6528,6 +6528,72 @@ export type OpportunityContributionDetailsQuery = {
   };
 };
 
+export type ChallengeExplorerSearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type ChallengeExplorerSearchQuery = {
+  __typename?: 'Query';
+  search: Array<{
+    __typename?: 'SearchResultEntry';
+    result?: Maybe<
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          displayName: string;
+          nameID: string;
+          ecoverseID: string;
+          activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+          context?: Maybe<{
+            __typename?: 'Context';
+            id: string;
+            visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
+          }>;
+          tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+        }
+      | { __typename?: 'Opportunity' }
+      | { __typename?: 'Organization' }
+      | { __typename?: 'User' }
+      | { __typename?: 'UserGroup' }
+    >;
+  }>;
+};
+
+export type ChallengeExplorerSearchResultFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  displayName: string;
+  nameID: string;
+  ecoverseID: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+  context?: Maybe<{
+    __typename?: 'Context';
+    id: string;
+    visual?: Maybe<{ __typename?: 'Visual'; id: string; background: string }>;
+  }>;
+  tagset?: Maybe<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>;
+};
+
+export type SimpleEcoverseQueryVariables = Exact<{
+  ID: Scalars['UUID_NAMEID'];
+}>;
+
+export type SimpleEcoverseQuery = {
+  __typename?: 'Query';
+  ecoverse: { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+};
+
+export type SimpleEcoverseFragment = { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+
+export type ChallengeExplorerSearchEnricherQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeExplorerSearchEnricherQuery = {
+  __typename?: 'Query';
+  ecoverse: { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+};
+
 export type ChallengesOverviewPageQueryVariables = Exact<{
   membershipData: MembershipUserInput;
 }>;
@@ -6547,7 +6613,7 @@ export type ChallengesOverviewPageQuery = {
   };
 };
 
-export type SimpleEcoverseFragment = {
+export type SimpleEcoverseResultEntryFragment = {
   __typename?: 'MembershipUserResultEntryEcoverse';
   ecoverseID: string;
   nameID: string;
