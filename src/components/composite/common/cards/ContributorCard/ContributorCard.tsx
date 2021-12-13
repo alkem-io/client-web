@@ -1,7 +1,8 @@
-import { Avatar, Box, Skeleton, Tooltip } from '@mui/material';
+import { Avatar, Box, Paper, Skeleton, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC } from 'react';
+import React, { FC, useMemo, useState } from 'react';
+import { FINAL_ELEVATION, INITIAL_ELEVATION } from '../../../../../models/constants';
 import ConditionalLink from '../../../../core/ConditionalLink';
 import UserCard from '../user-card/UserCard';
 
@@ -24,10 +25,14 @@ const useStyles = makeStyles(_ =>
     avatar: {
       height: '100%',
       width: '100%',
+      '& > img': {
+        objectFit: 'contain',
+      },
     },
     wrapper: {
       minHeight: 64,
       minWidth: 64,
+      aspectRatio: '1/1',
     },
     text: {
       fontSize: 10,
@@ -45,39 +50,50 @@ const useStyles = makeStyles(_ =>
 export const ContributorCard: FC<ContributorCardProps> = props => {
   const styles = useStyles();
   const { displayName, avatar, url, tooltip } = props;
+  const [elevation, setElevation] = useState(INITIAL_ELEVATION);
 
-  const TooltipElement = ({ children }) =>
-    tooltip ? (
-      <Tooltip
-        arrow
-        title={
-          <UserCard
-            displayName={displayName}
-            avatarSrc={avatar}
-            tags={tooltip?.tags || []}
-            roleName={tooltip?.roleName}
-            city={tooltip?.city}
-            country={tooltip?.country}
-            url=""
-          />
-        }
-        classes={{ tooltip: styles.tooltip }}
-      >
-        {children}
-      </Tooltip>
-    ) : (
-      <>{children}</>
-    );
+  const TooltipElement = useMemo(
+    () =>
+      ({ children }) =>
+        tooltip ? (
+          <Tooltip
+            arrow
+            title={
+              <UserCard
+                displayName={displayName}
+                avatarSrc={avatar}
+                tags={tooltip?.tags || []}
+                roleName={tooltip?.roleName}
+                city={tooltip?.city}
+                country={tooltip?.country}
+                url=""
+              />
+            }
+            classes={{ tooltip: styles.tooltip }}
+          >
+            {children}
+          </Tooltip>
+        ) : (
+          <>{children}</>
+        ),
+    [displayName, avatar, tooltip]
+  );
 
   return (
     <ConditionalLink to={url} condition={Boolean(url)} aria-label="associate-card">
-      <Box className={styles.wrapper}>
-        <TooltipElement>
-          <Avatar variant="rounded" className={styles.avatar} src={avatar}>
-            {displayName[0]}
-          </Avatar>
-        </TooltipElement>
-      </Box>
+      <Paper
+        elevation={elevation}
+        onMouseOver={() => setElevation(FINAL_ELEVATION)}
+        onMouseOut={() => setElevation(INITIAL_ELEVATION)}
+      >
+        <Box className={styles.wrapper}>
+          <TooltipElement>
+            <Avatar variant="rounded" className={styles.avatar} src={avatar}>
+              {displayName[0]}
+            </Avatar>
+          </TooltipElement>
+        </Box>
+      </Paper>
     </ConditionalLink>
   );
 };
