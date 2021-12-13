@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-const SearchComponent = () => {
+const TopSearchComponent = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const [value, setValue] = useState<String>('');
@@ -42,4 +42,4 @@ const SearchComponent = () => {
     />
   );
 };
-export default SearchComponent;
+export default TopSearchComponent;

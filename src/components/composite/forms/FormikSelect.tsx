@@ -1,4 +1,13 @@
-import { FormControl, FormHelperText, InputLabel, MenuItem, OutlinedInput, Select, SelectProps } from '@mui/material';
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Select,
+  SelectProps,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useField } from 'formik';
 import React, { FC } from 'react';
@@ -8,6 +17,14 @@ const useStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(1),
     color: theme.palette.primary.main,
     fontSize: theme.typography.body1.fontSize,
+  },
+  input: {
+    display: 'flex',
+    alignItems: 'center',
+    '& .MuiListItemIcon-root': { minWidth: '36px' },
+    '&.MuiSelect-select': {
+      height: '1.4375em',
+    },
   },
 }));
 
@@ -32,7 +49,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
   const styles = useStyles();
 
   return (
-    <FormControl required={required} disabled={disabled} fullWidth variant="outlined" error={!!meta.error}>
+    <FormControl required={required} disabled={disabled} fullWidth>
       <InputLabel shrink={true}>{title}</InputLabel>
       <Select
         name={name}
@@ -42,12 +59,14 @@ export const FormikSelect: FC<FormikSelectProps> = ({
         onChange={field.onChange}
         variant={'outlined'}
         placeholder={placeholder}
-        input={<OutlinedInput name={name} notched label={title} placeholder={placeholder} />}
+        inputProps={{
+          className: styles.input,
+        }}
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>
-            {el.icon && <span className={styles.icon}>{el.icon}</span>}
-            {el.name}
+            {el.icon && <ListItemIcon>{el.icon}</ListItemIcon>}
+            <ListItemText>{el.name}</ListItemText>
           </MenuItem>
         ))}
       </Select>

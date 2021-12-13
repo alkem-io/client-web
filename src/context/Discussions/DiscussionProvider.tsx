@@ -1,5 +1,5 @@
 import { sortBy, uniq } from 'lodash';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useMemo } from 'react';
 import { useApolloErrorHandler, useEcoverse, useUrlParams } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
@@ -12,9 +12,8 @@ import {
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
 import { Discussion as DiscussionGraphql, Message, MessageDetailsFragment } from '../../models/graphql-schema';
-import { useCommunityContext } from '../CommunityProvider';
 import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
-import { useRouteMatch } from 'react-router-dom';
+import { useCommunityContext } from '../CommunityProvider';
 
 interface DiscussionContextProps {
   discussion?: Discussion;
@@ -39,14 +38,10 @@ interface DiscussionProviderProps {}
 const sortMessages = (messages: MessageDetailsFragment[] = []) => sortBy(messages, item => item.timestamp);
 
 const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
-  const { path } = useRouteMatch();
-  console.log(path);
   const handleError = useApolloErrorHandler();
   const { discussionId } = useUrlParams();
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
   const { communityId, loading: loadingCommunity } = useCommunityContext();
-
-  console.log(communityId, ecoverseNameId, discussionId);
 
   const { data, loading } = useCommunityDiscussionQuery({
     variables: { ecoverseId: ecoverseNameId, communityId: communityId, discussionId: discussionId },
@@ -55,7 +50,10 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const discussionData = data?.ecoverse.community?.communication?.discussion;
 
-  const senders = uniq(discussionData?.messages?.map(m => m.sender) || []);
+  const senders = useMemo(() => {
+    if (!discussionData) return [];
+    return uniq([...(discussionData.messages?.map(m => m.sender) || []), discussionData.createdBy]);
+  }, [discussionData]);
   const { getAuthor, authors, loading: loadingAuthors } = useAuthorsDetails(senders);
 
   const sortedMessages = sortMessages(discussionData?.messages || []);

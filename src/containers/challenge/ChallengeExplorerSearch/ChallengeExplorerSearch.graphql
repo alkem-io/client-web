@@ -1,0 +1,42 @@
+query ChallengeExplorerSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    result {
+      ...ChallengeExplorerSearchResult
+    }
+  }
+}
+
+fragment ChallengeExplorerSearchResult on Challenge {
+  id
+  displayName
+  nameID
+  ecoverseID
+  activity {
+    id
+    name
+    value
+  }
+  context {
+    id
+    visual {
+      id
+      background
+    }
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+}
+
+query SimpleEcoverse($ID: UUID_NAMEID!) {
+  ecoverse(ID: $ID) {
+    ...SimpleEcoverse
+  }
+}
+fragment SimpleEcoverse on Ecoverse {
+  id
+  nameID
+  displayName
+}

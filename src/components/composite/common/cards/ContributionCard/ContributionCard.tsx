@@ -13,7 +13,7 @@ import ActivitiesV2 from '../../Activities/ActivitiesV2';
 export interface ContributionCardDetails {
   name: string;
   // todo: merge type & tag to just string
-  type?: 'ecoverse' | 'challenge' | 'opportunity';
+  type?: 'hub' | 'challenge' | 'opportunity';
   tag?: string;
   activity?: ActivityItem[];
   tags: string[];
@@ -26,7 +26,7 @@ export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
 
 export interface ContributionCardProps {
   details?: ContributionCardDetails;
-  loading: boolean;
+  loading?: boolean;
 }
 
 const useStyles = makeStyles(theme =>

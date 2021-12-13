@@ -64,15 +64,15 @@ const EcoverseSectionV2 = () => {
 
   return (
     <DashboardHubSection
-      headerText={t('pages.home.sections.ecoverse.header')}
-      subHeaderText={t('pages.home.sections.ecoverse.subheader')}
+      headerText={t('pages.home.sections.hub.header')}
+      subHeaderText={t('pages.home.sections.hub.subheader')}
       entities={{
         hubs: ecoverses,
         user,
       }}
       loading={{ hubs: loading }}
     >
-      <Typography variant="body1">{t('pages.home.sections.ecoverse.body')}</Typography>
+      <Typography variant="body1">{t('pages.home.sections.hub.body')}</Typography>
       <SectionSpacer />
     </DashboardHubSection>
   );

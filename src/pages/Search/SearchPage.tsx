@@ -117,13 +117,14 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const termsFromUrl = useMemo(() => queryParam?.split(',').map(x => ({ id: x, name: x })) || [], [queryParam]);
   const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
 
-  useEffect(() => {
-    setTermsFromQuery(termsFromUrl);
-  }, [termsFromUrl, setTermsFromQuery]);
-
   const [results, setResults] = useState<ResultType[]>();
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   const [typesFilter, setTypesFilter] = useState<Filter>(filtersConfig.all);
+
+  useEffect(() => {
+    setTermsFromQuery(termsFromUrl);
+    setSearchTerms(termsFromUrl.map(x => x.name));
+  }, [termsFromUrl, setTermsFromQuery, setSearchTerms]);
 
   const resetState = () => {
     setTypesFilter(filtersConfig.all);
@@ -170,6 +171,10 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     searchQuery(termsFromQuery?.map(x => x.name) || [], typesFilter.value);
   }, [searchQuery, termsFromQuery]);
 
+  useEffect(() => {
+    searchQuery(searchTerms, typesFilter.value);
+  }, [searchQuery, searchTerms, typesFilter]);
+
   const handleFilterChange = (event: SelectChangeEvent<string>) => {
     const typename = event.target.value;
     const filterKey = Object.keys(filtersConfig).find(x => filtersConfig[x].typename === typename);
@@ -177,8 +182,6 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     if (filterKey) {
       const filter = filtersConfig[filterKey];
       setTypesFilter(filter);
-
-      searchQuery(searchTerms, filter.value);
     }
   };
 
