@@ -1,4 +1,5 @@
 import React, { FC, useMemo } from 'react';
+import { useHistory } from 'react-router';
 import { UserForm } from '../../components/composite/forms/UserForm';
 import { Loading } from '../../components/core';
 import { useApolloErrorHandler, useNotification, useUrlParams, useUserContext } from '../../hooks';
@@ -7,6 +8,7 @@ import { EditMode } from '../../models/editMode';
 import { UpdateUserInput, User } from '../../models/graphql-schema';
 import { UserModel } from '../../models/User';
 import { logger } from '../../services/logging/winston/logger';
+import { buildUserProfileUrl } from '../../utils/urlBuilders';
 
 interface EditUserProfilePageProps {}
 
@@ -28,6 +30,7 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
 };
 
 export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
+  const history = useHistory();
   const { userId } = useUrlParams();
   const { user: currentUser } = useUserContext();
 
@@ -84,6 +87,10 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
         input: getUpdateUserInput(userToUpdate),
       },
     });
+
+    if (currentUser) {
+      history.push(buildUserProfileUrl(currentUser.user.nameID));
+    }
   };
 
   return <UserForm title={'Profile'} user={{ ...user } as UserModel} editMode={editMode} onSave={handleSave} />;
