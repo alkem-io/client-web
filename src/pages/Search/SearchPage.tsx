@@ -1,13 +1,15 @@
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router';
 import { Box, Container, OutlinedInput } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import Grid from '@mui/material/Grid';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
+import Link from '@mui/material/Link';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { makeStyles } from '@mui/styles';
 import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   ChallengeSearchCard,
   OpportunitySearchCard,
@@ -20,11 +22,12 @@ import Icon from '../../components/core/Icon';
 import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Typography from '../../components/core/Typography';
-import { useUpdateNavigation } from '../../hooks';
+import { useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../../models/graphql-schema';
 import { PageProps } from '../common';
-import { useLocation } from 'react-router';
+import { RouterLink } from '../../components/core/RouterLink';
+import { AUTH_LOGIN_PATH } from '../../models/constants';
 
 const useStyles = makeStyles(() => ({
   formControl: {
@@ -109,12 +112,13 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
   const { t } = useTranslation();
   const styles = useStyles();
+  const { isAuthenticated } = useUserContext();
 
   const { search: params } = useLocation();
   const queryParams = new URLSearchParams(params);
-  const queryParam = queryParams.get('terms') ?? '';
+  const queryParam = queryParams.get('terms');
 
-  const termsFromUrl = useMemo(() => queryParam?.split(',').map(x => ({ id: x, name: x })) || [], [queryParam]);
+  const termsFromUrl = useMemo(() => (queryParam?.split(',') ?? []).map(x => ({ id: x, name: x })) || [], [queryParam]);
   const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
 
   const [results, setResults] = useState<ResultType[]>();
@@ -168,10 +172,18 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   );
 
   useEffect(() => {
+    if (!termsFromQuery || !termsFromQuery.length) {
+      return;
+    }
+
     searchQuery(termsFromQuery?.map(x => x.name) || [], typesFilter.value);
   }, [searchQuery, termsFromQuery]);
 
   useEffect(() => {
+    if (!searchTerms.length) {
+      return;
+    }
+
     searchQuery(searchTerms, typesFilter.value);
   }, [searchQuery, searchTerms, typesFilter]);
 
@@ -188,9 +200,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   return (
     <>
       <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
-        <SectionHeader text={t('search.header')} />
+        <SectionHeader text={t('pages.search.header')} />
         <Box marginBottom={2}>
-          <SubHeader text={t('search.alternativesubheader')} />
+          <SubHeader text={t('pages.search.alternativesubheader')} />
         </Box>
         <MultipleSelect
           label={'search for skills'}
@@ -200,6 +212,13 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           allowUnknownValues
         />
       </Section>
+      {!isAuthenticated && (
+        <Box display="flex" justifyContent="center" paddingBottom={2}>
+          <Link component={RouterLink} to={AUTH_LOGIN_PATH}>
+            {t('pages.search.user-not-logged')}
+          </Link>
+        </Box>
+      )}
       {isSearching && (
         <Container maxWidth="xl">
           <Loading />
@@ -231,11 +250,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
                   </FormControl>
                 </Grid>
                 <Grid item lg={9}>
-                  {results.length > 10 && (
-                    <Typography>
-                      There are more search results. Please use more specific search criteria to narrow down the results
-                    </Typography>
-                  )}
+                  {results.length > 10 && <Typography>{t('pages.search.more-results')}</Typography>}
                 </Grid>
               </Grid>
             </Box>
@@ -254,6 +269,11 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
                 return undefined;
               })}
             </CardContainer>
+          )}
+          {!results.length && !isSearching && (
+            <Box component={Typography} display="flex" justifyContent="center">
+              {t('pages.search.no-results')}
+            </Box>
           )}
         </>
       )}
