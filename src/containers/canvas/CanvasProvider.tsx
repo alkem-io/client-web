@@ -11,9 +11,18 @@ interface CanvasProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
 }
 
+export type TemplateQuery = {
+  [key in 'hubId' | 'challengeId' | 'opportunityId']?: string;
+};
+
+export interface ITemplateQueryResult {
+  query: TemplateQuery;
+  result: CanvasWithoutValue[];
+}
+
 export interface IProvidedEntities {
   canvases: CanvasWithoutValue[];
-  templates: Record<string, CanvasWithoutValue[]>;
+  templates: Record<string, ITemplateQueryResult>;
 }
 export interface IProvidedEntitiesState {
   loading: boolean;
@@ -53,9 +62,18 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
 
   const templates = useMemo(() => {
     return {
-      ecoverse: ecoverseData?.ecoverse.context?.canvases?.filter(c => c.isTemplate) || [],
-      challenge: challengeData?.ecoverse.challenge.context?.canvases?.filter(c => c.isTemplate) || [],
-      opportunity: opportunityData?.ecoverse.opportunity.context?.canvases?.filter(c => c.isTemplate) || [],
+      hub: {
+        query: { hubId: ecoverseId },
+        result: ecoverseData?.ecoverse.context?.canvases?.filter(c => c.isTemplate) || [],
+      },
+      challenge: {
+        query: { hubId: ecoverseId, challengeId: challengeId },
+        result: challengeData?.ecoverse.challenge.context?.canvases?.filter(c => c.isTemplate) || [],
+      },
+      opportunity: {
+        query: { hubId: ecoverseId, opportunityId: opportunityId },
+        result: opportunityData?.ecoverse.opportunity.context?.canvases?.filter(c => c.isTemplate) || [],
+      },
     };
   }, [ecoverseData, challengeData, opportunityData]);
 

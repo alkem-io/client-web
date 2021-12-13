@@ -12,12 +12,21 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Skeleton,
-  Tooltip
+  Tooltip,
+  alpha,
 } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import clsx from 'clsx';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CanvasWithoutValue } from '../../../../models/entities/canvas';
 import { AuthorizationPrivilege, CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
+
+const useStyles = makeStyles(theme => ({
+  active: {
+    background: alpha(theme.palette.primary.light, 0.5),
+  },
+}));
 
 interface CanvasListItemProps extends ListItemButtonProps {
   entities: {
@@ -28,6 +37,7 @@ interface CanvasListItemProps extends ListItemButtonProps {
   };
   options: {
     canDelete?: boolean;
+    isSelected?: boolean;
   };
 }
 
@@ -39,8 +49,12 @@ export const CanvasListItemSkeleton: FC<ListItemProps> = props => {
   );
 };
 
-export const CanvasItemState: FC<{ canvas?: CanvasWithoutValue }> = props => {
+export const CanvasItemState: FC<{ canvas?: CanvasWithoutValue; isSelected?: boolean }> = props => {
   const { t } = useTranslation();
+
+  if (props.isSelected) {
+    return <CircleIcon color="disabled" />;
+  }
 
   const { canvas } = props;
   switch (canvas?.checkout?.status) {
@@ -67,15 +81,17 @@ export const CanvasItemState: FC<{ canvas?: CanvasWithoutValue }> = props => {
 
 export const CanvasListItem: FC<CanvasListItemProps> = ({ entities, actions, options, ...rest }) => {
   const { canvas } = entities;
-  const { canDelete } = options;
+  const { canDelete, isSelected } = options;
   const { onDelete } = actions;
 
   const hasDeletePermissions = canvas.authorization?.myPrivileges?.some(x => x === AuthorizationPrivilege.Delete);
 
+  const styles = useStyles();
+
   return (
-    <ListItemButton {...rest}>
+    <ListItemButton {...rest} className={clsx(isSelected && styles.active)}>
       <ListItemAvatar sx={{ display: 'flex' }}>
-        <CanvasItemState canvas={canvas} />
+        <CanvasItemState canvas={canvas} isSelected={isSelected} />
       </ListItemAvatar>
       <ListItemText primary={canvas.name} />
       <ListItemSecondaryAction>

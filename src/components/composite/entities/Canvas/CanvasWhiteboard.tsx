@@ -11,6 +11,7 @@ import { Canvas } from '../../../../models/graphql-schema';
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
     height: '100%',
+    flexGrow: 1,
   },
   '@global': {
     '.excalidraw-modal-container': {
@@ -39,7 +40,7 @@ export interface CanvasWhiteboardEntities {
 }
 
 export interface CanvasWhiteboardActions {
-  onUpdate: (state: ExportedDataState) => void;
+  onUpdate?: (state: ExportedDataState) => void;
 }
 
 export interface CanvasWhiteboardOptions extends ExcalidrawProps {}
@@ -70,6 +71,17 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
   }, []);
 
   useEffect(() => {
+    const refreshOnDataChange = async () => {
+      try {
+        const excalidraw = await excalidrawRef.current?.readyPromise;
+        excalidraw?.updateScene(data);
+      } catch (ex) {}
+    };
+
+    refreshOnDataChange();
+  }, [data, excalidrawRef.current]);
+
+  useEffect(() => {
     const onScroll = async e => {
       setOffsetHeight(e.target.offsetHeight);
       const excalidraw = await excalidrawRef.current?.readyPromise;
@@ -78,6 +90,8 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
       }
     };
     window.addEventListener('scroll', onScroll, true);
+
+    return () => window.removeEventListener('scroll', onScroll);
   }, [offsetHeight]);
 
   const UIOptions: ExcalidrawProps['UIOptions'] = {
@@ -97,11 +111,13 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
               aria-label="Save to cloud"
               type="button"
               onClick={async () => {
-                await actions.onUpdate({ ...data, elements: exportedElements, appState });
-                const element = document.body.getElementsByClassName('Modal__close')[0];
-                ReactDOM.findDOMNode(element)?.dispatchEvent(
-                  new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
-                );
+                if (actions.onUpdate) {
+                  await actions.onUpdate({ ...data, elements: exportedElements, appState });
+                  const element = document.body.getElementsByClassName('Modal__close')[0];
+                  ReactDOM.findDOMNode(element)?.dispatchEvent(
+                    new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
+                  );
+                }
               }}
             >
               <div className="ToolIcon__label">Save to Alkemio</div>
@@ -114,7 +130,6 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
 
   return (
     <div className={styles.container}>
-      {/* <Button variant="primary" onClick={showNewActorModalF} text="New Actor"></Button> */}
       <Excalidraw
         ref={excalidrawRef}
         initialData={data}

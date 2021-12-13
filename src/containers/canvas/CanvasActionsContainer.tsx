@@ -88,16 +88,24 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   const loadCanvas = useCallback(
     async (
       canvas: Pick<Canvas, 'id'>,
-      externalOpportunityId?: string,
-      externalChallengeId?: string,
-      externalEcoverseId?: string
+      params?: {
+        hubId?: string;
+        challengeId?: string;
+        opportunityId?: string;
+      }
     ) => {
-      const queryOpportunityId = externalOpportunityId || opportunityId;
-      const queryChallengeId = externalChallengeId || challengeId;
-      const queryEcoverseId = externalEcoverseId || ecoverseId;
+      let queryOpportunityId: string | undefined = opportunityId;
+      let queryChallengeId: string | undefined = challengeId;
+      let queryEcoverseId: string | undefined = ecoverseId;
+
+      if (params) {
+        queryOpportunityId = params?.opportunityId;
+        queryChallengeId = params?.challengeId;
+        queryEcoverseId = params?.hubId;
+      }
 
       let canvases: Canvas[] | undefined = [];
-      if (queryOpportunityId && ecoverseId) {
+      if (queryOpportunityId && queryEcoverseId) {
         const result = await loadOpportunityCanvas({
           ecoverseId: queryEcoverseId,
           opportunityId: queryOpportunityId,

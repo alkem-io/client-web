@@ -6,6 +6,7 @@ import CanvasListItem, { CanvasListItemSkeleton } from './CanvasListItem';
 interface CanvasListProps extends ListProps {
   entities: {
     canvases: CanvasWithoutValue[];
+    selectedCanvasId?: string;
   };
   actions: {
     onSelect?: (canvas: CanvasWithoutValue) => void;
@@ -20,7 +21,7 @@ interface CanvasListProps extends ListProps {
 }
 
 export const CanvasList: FC<CanvasListProps> = ({ entities, actions, options, state }) => {
-  const { canvases } = entities;
+  const { canvases, selectedCanvasId } = entities;
   const { loading } = state;
 
   return (
@@ -37,7 +38,10 @@ export const CanvasList: FC<CanvasListProps> = ({ entities, actions, options, st
             actions={{
               onDelete: actions.onDelete,
             }}
-            options={options}
+            options={{
+              ...options,
+              isSelected: c.id === selectedCanvasId,
+            }}
           />
         ))}
     </List>

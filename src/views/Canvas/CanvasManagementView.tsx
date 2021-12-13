@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import CanvasCreateDialog from '../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
 import CanvasDialog from '../../components/composite/dialogs/CanvasDialog/CanvasDialog';
 import { ICanvasActions } from '../../containers/canvas/CanvasActionsContainer';
+import { ITemplateQueryResult } from '../../containers/canvas/CanvasProvider';
 import { useUserContext } from '../../hooks';
 import { CanvasWithoutValue } from '../../models/entities/canvas';
 import { AuthorizationPrivilege, Canvas, CanvasCheckoutStateEnum } from '../../models/graphql-schema';
@@ -16,7 +17,7 @@ export interface CanvasManagementViewEntities {
   contextID: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasWithoutValue[];
-  templates: Record<string, CanvasWithoutValue[]>;
+  templates: Record<string, ITemplateQueryResult>;
 }
 
 export interface CanvasManagementViewActions extends ICanvasActions {}
