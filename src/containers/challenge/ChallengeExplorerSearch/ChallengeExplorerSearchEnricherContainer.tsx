@@ -7,7 +7,7 @@ import { ContainerProps } from '../../../models/container';
 type EnrichInfo = {
   hubNameId?: string;
   hubDisplayName?: string;
-}
+};
 
 type EnrichedChallenge = ChallengeExplorerSearchResultFragment & EnrichInfo;
 
@@ -31,7 +31,10 @@ export interface ChallengeExplorerSearchEnricherContainerProps
   challenge: ChallengeExplorerSearchResultFragment;
 }
 
-const ChallengeExplorerSearchEnricherContainer: FC<ChallengeExplorerSearchEnricherContainerProps> = ({ challenge, children }) => {
+const ChallengeExplorerSearchEnricherContainer: FC<ChallengeExplorerSearchEnricherContainerProps> = ({
+  challenge,
+  children,
+}) => {
   const { data, loading, error } = useChallengeExplorerSearchEnricherQuery({
     variables: {
       ecoverseId: challenge.ecoverseID,
@@ -42,17 +45,9 @@ const ChallengeExplorerSearchEnricherContainer: FC<ChallengeExplorerSearchEnrich
   const enrichedChallenge: EnrichedChallenge = {
     ...challenge,
     hubNameId: hub?.nameID,
-    hubDisplayName: hub?.displayName
+    hubDisplayName: hub?.displayName,
   };
 
-  return (
-    <>
-      {children(
-        { challenge: enrichedChallenge },
-        { loading, error },
-        {}
-      )}
-    </>
-  );
+  return <>{children({ challenge: enrichedChallenge }, { loading, error }, {})}</>;
 };
 export default ChallengeExplorerSearchEnricherContainer;
