@@ -2,7 +2,7 @@ query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
   membershipUser(membershipData: $membershipData) {
     ecoverses {
       id
-      ...SimpleEcoverse
+      ...SimpleEcoverseResultEntry
       challenges {
         id
       }
@@ -10,7 +10,7 @@ query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
   }
 }
 
-fragment SimpleEcoverse on MembershipUserResultEntryEcoverse {
+fragment SimpleEcoverseResultEntry on MembershipUserResultEntryEcoverse {
   ecoverseID
   nameID
   displayName

@@ -537,9 +537,10 @@
   },
   "pages": {
     "challenge-explorer": {
-      "filter": {
-        "title": "Search through challenges",
-        "subtitle": "This section allows you to search through all the challenges of the hubs you are participating in."
+      "search": {
+        "title": "Explore challenges",
+        "subtitle": "This section allows you to search through all the challenges in Alkemio",
+        "placeholder": "Search for challenges in Alkemio..."
       },
       "my": {
         "title": "My challenges ({{count}})",
@@ -967,6 +968,7 @@
   },
   "contributors-section": {
     "title": "Contributors",
+    "subheader": "Making progress on Challenges needs many types of contributions, from users and organizations. Explore to see who is contributing where!",
     "users-title": "Users",
     "organizations-title": "Organizations"
   },

@@ -1,0 +1,7 @@
+query ChallengeExplorerSearchEnricher($ecoverseId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    nameID
+    displayName
+  }
+}

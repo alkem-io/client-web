@@ -4,11 +4,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGlobalState, useUserContext } from '../../../../hooks';
 import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
-import { AUTH_LOGIN_PATH } from '../../../../models/constants';
+import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
 import { RouterLink } from '../../../core/RouterLink';
 import UserSegment from '../../entities/User/UserSegment';
 import LogoComponent from './LogoComponent';
-import SearchComponent from './SearchComponent';
+import TopSearchComponent from './TopSearchComponent';
 
 const SearchBar = () => {
   const { t } = useTranslation();
@@ -37,22 +37,36 @@ const SearchBar = () => {
               maxWidth: 512,
             }}
           >
-            <SearchComponent />
+            <TopSearchComponent />
           </Box>
         </Hidden>
         {!isAuthenticated && (
-          <Button
-            aria-label="Login"
-            component={RouterLink}
-            to={AUTH_LOGIN_PATH}
-            sx={{
-              padding: theme => theme.spacing(0.5, 1),
-            }}
-            variant="text"
-            size="small"
-          >
-            {t('authentication.login')}
-          </Button>
+          <Box>
+            <Button
+              aria-label="Sign up"
+              component={RouterLink}
+              to={AUTH_REGISTER_PATH}
+              sx={{
+                padding: theme => theme.spacing(0.5, 1),
+              }}
+              variant="text"
+              size="small"
+            >
+              {t('authentication.sign-up')}
+            </Button>
+            <Button
+              aria-label="Login"
+              component={RouterLink}
+              to={AUTH_LOGIN_PATH}
+              sx={{
+                padding: theme => theme.spacing(0.5, 1),
+              }}
+              variant="text"
+              size="small"
+            >
+              {t('authentication.login')}
+            </Button>
+          </Box>
         )}
         {isUserSegmentVisible && user && <UserSegment userMetadata={user} emailVerified={verified} />}
         {/* <Grid container alignItems="center">

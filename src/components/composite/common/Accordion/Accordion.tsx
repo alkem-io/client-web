@@ -9,8 +9,8 @@ import HelpButton from '../../../core/HelpButton';
 
 export interface AccordionProps {
   title: string;
-  subtitle: string;
-  helpText: string;
+  subtitle?: string;
+  helpText?: string;
   ariaKey: string;
 }
 
@@ -34,10 +34,10 @@ export const Accordion: FC<AccordionProps> = ({ children, title, subtitle, helpT
               }}
             >
               {title}
-              <HelpButton helpText={helpText} fontSize="inherit" />
+              {helpText && <HelpButton helpText={helpText} fontSize="inherit" />}
             </Box>
           </Box>
-          <Typography variant="subtitle1">{subtitle}</Typography>
+          {subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
         </Box>
       </AccordionSummary>
       <AccordionDetails>{children}</AccordionDetails>

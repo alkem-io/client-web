@@ -19,6 +19,8 @@ export interface DashboardContributorsSectionSectionProps extends DashboardGener
     user?: UserMetadata;
     organizations: ContributorCardProps[];
     organizationsCount: number;
+    maxUsers: number;
+    maxOrganizations: number;
   };
   loading: {
     users?: boolean;
@@ -34,14 +36,15 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
   organizationTitle,
   ...props
 }) => {
-  const { users, usersCount, organizations, organizationsCount } = entities;
+  const { users, usersCount, maxUsers, organizations, organizationsCount, user, maxOrganizations } = entities;
   const { t } = useTranslation();
+
   return (
     <Section {...props}>
       <SectionHeader text={userTitle} />
       <Grid container spacing={1} alignItems="center">
         {loading.users &&
-          Array.apply(null, { length: 12 } as any).map((_, i) => (
+          Array.apply(null, { length: maxUsers } as any).map((_, i) => (
             <Grid item flexBasis={'16.6%'} key={i}>
               <ContributorCardSkeleton />
             </Grid>
@@ -53,15 +56,22 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
             </Grid>
           );
         })}
+        {!user && (
+          <Grid item>
+            <Typography variant="body1">
+              {t('components.backdrop.authentication', { blockName: 'Users that are contributing' })}
+            </Typography>
+          </Grid>
+        )}
       </Grid>
       <Box display="flex" justifyContent="end" paddingTop={2}>
-        <Typography>{t('dashboard-contributors-section.more', { count: usersCount })}</Typography>
+        {usersCount > 0 && <Typography>{t('dashboard-contributors-section.more', { count: usersCount })}</Typography>}
       </Box>
       <SectionSpacer />
       <SectionHeader text={organizationTitle} />
       <Grid container spacing={1} alignItems="center">
         {loading.organizations &&
-          Array.apply(null, { length: 6 } as any).map((_, i) => (
+          Array.apply(null, { length: maxOrganizations } as any).map((_, i) => (
             <Grid item flexBasis={'16.6%'} key={i}>
               <ContributorCardSkeleton />
             </Grid>
@@ -75,7 +85,9 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
         })}
       </Grid>
       <Box display="flex" justifyContent="end" paddingTop={2}>
-        <Typography>{t('dashboard-contributors-section.more', { count: organizationsCount })}</Typography>
+        {organizationsCount > 0 && (
+          <Typography>{t('dashboard-contributors-section.more', { count: organizationsCount })}</Typography>
+        )}
       </Box>
     </Section>
   );
