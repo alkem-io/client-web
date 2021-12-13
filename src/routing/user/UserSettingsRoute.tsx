@@ -12,7 +12,7 @@ interface UserSettingsProps extends PageProps {}
 
 export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
   const { path, url } = useRouteMatch();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'user settings', real: false }], [url]);
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'settings', real: false }], [url]);
   useUpdateNavigation({ currentPaths });
 
   return (
