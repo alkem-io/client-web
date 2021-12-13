@@ -1,15 +1,21 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams, useUserMetadata } from '../../hooks';
+import { useUpdateNavigation, useUrlParams, useUserMetadata } from '../../hooks';
 import AssociatedOrganizationsView from '../../views/ProfileView/AssociatedOrganizationsView';
+import { PageProps } from '../common';
+import { useRouteMatch } from 'react-router';
 
-export interface UserOrganizationsPageProps {}
+export interface UserOrganizationsPageProps extends PageProps {}
 
-const UserOrganizationsPage: FC<UserOrganizationsPageProps> = () => {
+const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
+  const { url } = useRouteMatch();
   const { userId } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userId);
+
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [url, paths]);
+  useUpdateNavigation({ currentPaths });
 
   return (
     <Grid container rowSpacing={4}>

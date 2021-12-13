@@ -1,16 +1,17 @@
 import React, { FC, useMemo } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useRouteMatch } from 'react-router';
 import { UserForm } from '../../components/composite/forms/UserForm';
 import { Loading } from '../../components/core';
-import { useApolloErrorHandler, useNotification, useUrlParams, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
 import { useCreateTagsetOnProfileMutation, useUpdateUserMutation, useUserQuery } from '../../hooks/generated/graphql';
 import { EditMode } from '../../models/editMode';
 import { UpdateUserInput, User } from '../../models/graphql-schema';
 import { UserModel } from '../../models/User';
 import { logger } from '../../services/logging/winston/logger';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
+import { PageProps } from '../common';
 
-interface EditUserProfilePageProps {}
+interface EditUserProfilePageProps extends PageProps {}
 
 // TODO [ATS] Need optimization this code is copy paste a few times.
 export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
@@ -29,10 +30,13 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
   };
 };
 
-export const EditUserProfilePage: FC<EditUserProfilePageProps> = () => {
+export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => {
   const history = useHistory();
   const { userId } = useUrlParams();
+  const { url } = useRouteMatch();
   const { user: currentUser } = useUserContext();
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'profile', real: true }], [url, paths]);
+  useUpdateNavigation({ currentPaths });
 
   const { data, loading } = useUserQuery({
     variables: {

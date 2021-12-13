@@ -1,18 +1,16 @@
 import React, { FC } from 'react';
-import { Error404 } from '../';
+import { Error404, PageProps } from '../';
 import { Loading } from '../../components/core';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
 
-interface UserProfileProps {
+interface UserProfileProps extends PageProps {
   edit?: boolean;
 }
 
-const currentPaths = [];
-
-export const UserProfilePage: FC<UserProfileProps> = () => {
-  useUpdateNavigation({ currentPaths });
+export const UserProfilePage: FC<UserProfileProps> = ({ paths }) => {
+  useUpdateNavigation({ currentPaths: paths });
 
   const { user: currentUser, verified } = useUserContext();
 
