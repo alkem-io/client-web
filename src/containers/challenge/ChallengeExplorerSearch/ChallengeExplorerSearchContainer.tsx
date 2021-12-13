@@ -25,7 +25,7 @@ export interface ChallengeSearchResultContainerProps
 }
 
 const ChallengeExplorerSearchContainer: FC<ChallengeSearchResultContainerProps> = ({ terms, children }) => {
-  const { data, loading ,error } = useChallengeExplorerSearchQuery({
+  const { data, loading, error } = useChallengeExplorerSearchQuery({
     variables: {
       searchData: {
         terms,
@@ -37,17 +37,8 @@ const ChallengeExplorerSearchContainer: FC<ChallengeSearchResultContainerProps> 
     skip: !terms.length,
   });
 
-  const challenges = (data?.search ?? [])
-    .map(x => x.result as ChallengeExplorerSearchResultFragment);
-  
-  return (
-    <>
-      {children(
-        { challenges },
-        { loading, error },
-        {}
-      )}
-    </>
-  );
+  const challenges = (data?.search ?? []).map(x => x.result as ChallengeExplorerSearchResultFragment);
+
+  return <>{children({ challenges }, { loading, error }, {})}</>;
 };
 export default ChallengeExplorerSearchContainer;

@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
 
 export interface ConditionalLinkProps {
-  to: string;
+  to?: string;
   condition: boolean;
 }
 

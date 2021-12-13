@@ -4,8 +4,8 @@ import { groupBy } from 'lodash';
 type GroupedData<T> = {
   key: keyof T;
   keyValue: string;
-  values: T[]
-}
+  values: T[];
+};
 
 export interface GroupByProps<T> {
   data: T[];
@@ -15,24 +15,16 @@ export interface GroupByProps<T> {
 
 const GroupBy = <T extends Object>({ data, groupKey, children }: GroupByProps<T>) => {
   if (!data.length) {
-    return (
-      <>
-        {children([])}
-      </>
-    );
+    return <>{children([])}</>;
   }
 
   const grouped = groupBy(data, groupKey);
   const groups = Object.keys(grouped).map(x => ({
     key: groupKey,
     keyValue: x,
-    values: grouped[x]
+    values: grouped[x],
   }));
 
-  return (
-    <>
-    {children(groups)}
-    </>
-  );
+  return <>{children(groups)}</>;
 };
 export default GroupBy;
