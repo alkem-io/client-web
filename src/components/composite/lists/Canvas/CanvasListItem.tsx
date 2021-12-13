@@ -39,11 +39,11 @@ export const CanvasListItemSkeleton: FC<ListItemProps> = props => {
   );
 };
 
-export const CanvasItemState: FC<{ canvas: CanvasWithoutValue }> = props => {
+export const CanvasItemState: FC<{ canvas?: CanvasWithoutValue }> = props => {
   const { t } = useTranslation();
 
   const { canvas } = props;
-  switch (canvas.checkout?.status) {
+  switch (canvas?.checkout?.status) {
     case CanvasCheckoutStateEnum.Available:
       return (
         <Tooltip title={t('pages.canvas.state.available')}>

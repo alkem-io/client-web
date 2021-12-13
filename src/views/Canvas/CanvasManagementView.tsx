@@ -16,6 +16,7 @@ export interface CanvasManagementViewEntities {
   contextID: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasWithoutValue[];
+  templates: Record<string, CanvasWithoutValue[]>;
 }
 
 export interface CanvasManagementViewActions extends ICanvasActions {}
@@ -42,7 +43,7 @@ export interface CanvasManagementViewProps
   > {}
 
 const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state }) => {
-  const [activeCanvasId, setActiveCanvasId] = useState<string | undefined>(undefined);
+  const [activeCanvas, setActiveCanvas] = useState<Canvas | undefined>(undefined);
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
   const { t } = useTranslation();
@@ -50,23 +51,31 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
   const loadCanvas = useCallback<typeof actions['onLoad']>(
     async canvas => {
       if (canvas && actions.onLoad) {
-        await actions.onLoad(canvas);
-        setActiveCanvasId(canvas?.id);
+        const loadedCanvas = await actions.onLoad(canvas);
+        setActiveCanvas(loadedCanvas);
+
+        return loadedCanvas;
       }
     },
-    [actions.onLoad, setActiveCanvasId]
+    [actions.onLoad, setActiveCanvas]
   );
 
-  const activeCanvas = useMemo(
-    () => entities.canvases.find(c => c.id === activeCanvasId) as Canvas,
-    [entities.canvases, activeCanvasId]
+  const actualActiveCanvas = useMemo(
+    () =>
+      activeCanvas
+        ? {
+            ...activeCanvas,
+            ...entities.canvases.find(c => c.id === activeCanvas?.id),
+          }
+        : undefined,
+    [activeCanvas, entities.canvases]
   );
 
   const isCanvasCheckedoutByMe =
-    activeCanvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut &&
-    activeCanvas.checkout.lockedBy === user?.user.id;
-  const isCanvasAvailable = activeCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
-  const doIHavePermissionsToEdit = activeCanvas?.authorization?.myPrivileges?.some(
+    actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut &&
+    actualActiveCanvas.checkout.lockedBy === user?.user.id;
+  const isCanvasAvailable = actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
+  const doIHavePermissionsToEdit = actualActiveCanvas?.authorization?.myPrivileges?.some(
     x => x === AuthorizationPrivilege.Update
   );
 
@@ -113,19 +122,19 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
         </Grid>
       </Grid>
       <CanvasDialog
-        entities={{ canvas: activeCanvas }}
+        entities={{ canvas: actualActiveCanvas }}
         actions={{
-          onCancel: () => setActiveCanvasId(undefined),
+          onCancel: () => setActiveCanvas(undefined),
           onCheckin: actions.onCheckin,
           onCheckout: actions.onCheckout,
           onMarkAsTemplate: canvas => {
             actions.onPromoteToTemplate(canvas);
-            setActiveCanvasId(undefined);
+            setActiveCanvas(undefined);
           },
           onUpdate: actions.onUpdate,
         }}
         options={{
-          show: Boolean(activeCanvasId),
+          show: Boolean(activeCanvas),
           canCheckout: isCanvasAvailable && doIHavePermissionsToEdit,
           canEdit: isCanvasCheckedoutByMe && doIHavePermissionsToEdit,
         }}
@@ -137,6 +146,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
       <CanvasCreateDialog
         entities={{
           contextID: entities.contextID,
+          templates: entities.templates,
         }}
         actions={{
           onCancel: () => setShowCreateCanvasDialog(false),
@@ -144,6 +154,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
             actions.onCreate(input);
             setShowCreateCanvasDialog(false);
           },
+          onLoad: actions.onLoad,
         }}
         options={{
           show: showCreateCanvasDialog,

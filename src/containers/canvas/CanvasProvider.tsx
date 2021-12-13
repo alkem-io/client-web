@@ -5,14 +5,15 @@ import {
   useEcoverseCanvasesQuery,
   useOpportunityCanvasesQuery,
 } from '../../hooks/generated/graphql';
-import { Canvas } from '../../models/graphql-schema';
+import { CanvasWithoutValue } from '../../models/entities/canvas';
 
 interface CanvasProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
 }
 
 export interface IProvidedEntities {
-  canvases: Omit<Canvas, 'value'>[];
+  canvases: CanvasWithoutValue[];
+  templates: Record<string, CanvasWithoutValue[]>;
 }
 export interface IProvidedEntitiesState {
   loading: boolean;
@@ -24,34 +25,45 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
   const { data: ecoverseData, loading: loadingEcoverse } = useEcoverseCanvasesQuery({
     variables: { ecoverseId },
     errorPolicy: 'all',
-    skip: !ecoverseId || Boolean(challengeId) || Boolean(opportunityId),
   });
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasesQuery({
     variables: { ecoverseId: ecoverseId, challengeId },
     errorPolicy: 'all',
-    skip: !ecoverseId || !challengeId || Boolean(opportunityId),
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCanvasesQuery({
     variables: { ecoverseId, opportunityId: opportunityId },
     errorPolicy: 'all',
-    skip: !ecoverseId || !opportunityId,
   });
 
   const canvases = useMemo(() => {
-    return (
-      ecoverseData?.ecoverse.context?.canvases ||
-      challengeData?.ecoverse.challenge.context?.canvases ||
-      opportunityData?.ecoverse.opportunity.context?.canvases ||
-      []
-    );
+    if (ecoverseId && !Boolean(challengeId) && !Boolean(opportunityId)) {
+      return ecoverseData?.ecoverse.context?.canvases || [];
+    }
+    if (ecoverseId && challengeId && !Boolean(opportunityId)) {
+      return challengeData?.ecoverse.challenge.context?.canvases || [];
+    }
+    if (ecoverseId && opportunityId) {
+      return opportunityData?.ecoverse.opportunity.context?.canvases || [];
+    }
+
+    return [] as CanvasWithoutValue[];
+  }, [ecoverseData, challengeData, opportunityData]);
+
+  const templates = useMemo(() => {
+    return {
+      ecoverse: ecoverseData?.ecoverse.context?.canvases?.filter(c => c.isTemplate) || [],
+      challenge: challengeData?.ecoverse.challenge.context?.canvases?.filter(c => c.isTemplate) || [],
+      opportunity: opportunityData?.ecoverse.opportunity.context?.canvases?.filter(c => c.isTemplate) || [],
+    };
   }, [ecoverseData, challengeData, opportunityData]);
 
   return (
     <>
       {children(
-        { canvases: canvases as Canvas[] },
+        // TODO: need to fix the typings
+        { canvases: canvases as any, templates: templates as any },
         { loading: loadingEcoverse || loadingChallenge || loadingOpportunity }
       )}
     </>

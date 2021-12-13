@@ -3,12 +3,12 @@ import { FC, useCallback, useMemo } from 'react';
 import { useUrlParams } from '../../hooks';
 import {
   CanvasDetailsFragmentDoc,
-  useChallengeCanvasValuesLazyQuery,
+  useChallengeCanvasValuesQuery,
   useCheckoutCanvasOnContextMutation,
   useCreateCanvasOnContextMutation,
   useDeleteCanvasOnContextMutation,
-  useEcoverseCanvasValuesLazyQuery,
-  useOpportunityCanvasValuesLazyQuery,
+  useEcoverseCanvasValuesQuery,
+  useOpportunityCanvasValuesQuery,
   useUpdateCanvasOnContextMutation,
 } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
@@ -24,7 +24,7 @@ import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
 export interface ICanvasActions {
   onCreate: (canvas: CreateCanvasOnContextInput) => Promise<void>;
   onDelete: (canvas: DeleteCanvasOnContextInput) => Promise<void>;
-  onLoad: (canvas: CanvasWithoutValue) => Promise<void>;
+  onLoad: (canvas: CanvasWithoutValue) => Promise<Canvas | undefined>;
   onCheckout: (canvas: Canvas) => void;
   onCheckin: (canvas: Canvas) => void;
   onUpdate: (canvas: Canvas) => void;
@@ -63,51 +63,66 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  const [loadEcoverseCanvas, { loading: loadingEcoverseCanvasValue }] = useEcoverseCanvasValuesLazyQuery({
+  const { loading: loadingEcoverseCanvasValue, refetch: loadEcoverseCanvas } = useEcoverseCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-and-network',
+    skip: true, // implement something similar to lazy query, but this will handle cache update & allow returning result
     onCompleted: data => modifyCanvasCache(data.ecoverse.context?.canvases?.find(x => x)),
   });
-  const [loadChallengeCanvas, { loading: loadingChallengeCanvasValue }] = useChallengeCanvasValuesLazyQuery({
+  const { loading: loadingChallengeCanvasValue, refetch: loadChallengeCanvas } = useChallengeCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-and-network',
+    skip: true, // implement something similar to lazy query, but this will handle cache update & allow returning result
     onCompleted: data => modifyCanvasCache(data.ecoverse.challenge?.context?.canvases?.find(x => x)),
   });
-  const [loadOpportunityCanvas, { loading: loadingOpportunityCanvasValue }] = useOpportunityCanvasValuesLazyQuery({
+  const { loading: loadingOpportunityCanvasValue, refetch: loadOpportunityCanvas } = useOpportunityCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-and-network',
+    skip: true, // implement something similar to lazy query, but this will handle cache update & allow returning result
     onCompleted: data => modifyCanvasCache(data.ecoverse.opportunity?.context?.canvases?.find(x => x)),
   });
 
   const loadCanvas = useCallback(
-    async (canvas: Pick<Canvas, 'id'>) => {
-      if (opportunityId && ecoverseId) {
-        await loadOpportunityCanvas({
-          variables: {
-            ecoverseId,
-            opportunityId,
-            canvasId: canvas.id,
-          },
+    async (
+      canvas: Pick<Canvas, 'id'>,
+      externalOpportunityId?: string,
+      externalChallengeId?: string,
+      externalEcoverseId?: string
+    ) => {
+      const queryOpportunityId = externalOpportunityId || opportunityId;
+      const queryChallengeId = externalChallengeId || challengeId;
+      const queryEcoverseId = externalEcoverseId || ecoverseId;
+
+      let canvases: Canvas[] | undefined = [];
+      if (queryOpportunityId && ecoverseId) {
+        const result = await loadOpportunityCanvas({
+          ecoverseId: queryEcoverseId,
+          opportunityId: queryOpportunityId,
+          canvasId: canvas.id,
         });
-      } else if (challengeId && ecoverseId) {
-        await loadChallengeCanvas({
-          variables: {
-            ecoverseId,
-            challengeId,
-            canvasId: canvas.id,
-          },
+
+        canvases = result.data.ecoverse?.opportunity?.context?.canvases as any;
+      } else if (queryChallengeId && queryEcoverseId) {
+        const result = await loadChallengeCanvas({
+          ecoverseId: queryEcoverseId,
+          challengeId: queryChallengeId,
+          canvasId: canvas.id,
         });
-      } else if (ecoverseId) {
-        await loadEcoverseCanvas({
-          variables: {
-            ecoverseId,
-            canvasId: canvas.id,
-          },
+
+        canvases = result.data.ecoverse?.challenge?.context?.canvases as any;
+      } else if (queryEcoverseId) {
+        const result = await loadEcoverseCanvas({
+          ecoverseId: queryEcoverseId,
+          canvasId: canvas.id,
         });
+        canvases = result.data.ecoverse?.context?.canvases as any;
       }
+
+      // return the first
+      return canvases?.find(x => x);
     },
     [loadEcoverseCanvas, loadChallengeCanvas, loadOpportunityCanvas, ecoverseId, challengeId, opportunityId]
   );

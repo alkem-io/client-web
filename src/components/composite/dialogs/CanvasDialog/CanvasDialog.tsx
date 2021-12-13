@@ -1,3 +1,4 @@
+import { serializeAsJSON } from '@excalidraw/excalidraw';
 import { CheckCircle } from '@mui/icons-material';
 import GradeIcon from '@mui/icons-material/Grade';
 import LockClockIcon from '@mui/icons-material/LockClock';
@@ -76,12 +77,8 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     actions.onCancel();
   };
 
-  if (!canvas) {
-    return <></>;
-  }
-
   const checkInOutButtonText =
-    canvas.checkout?.status === CanvasCheckoutStateEnum.Available
+    canvas?.checkout?.status === CanvasCheckoutStateEnum.Available
       ? 'pages.canvas.state-actions.check-out'
       : 'pages.canvas.state-actions.check-in';
 
@@ -108,7 +105,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             <ListItemIcon sx={{ justifyContent: 'center' }}>
               <CanvasItemState canvas={canvas} />
             </ListItemIcon>
-            <ListItemText primary={canvas.name} secondary={canvas.checkout?.status.toUpperCase()} />
+            <ListItemText primary={canvas?.name} secondary={canvas?.checkout?.status.toUpperCase()} />
             <ListItemSecondaryAction>
               {/* {options.canEdit && (
                 <IconButton
@@ -121,12 +118,12 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                   <SaveIcon />
                 </IconButton>
               )} */}
-              {(options.canCheckout || options.canEdit) && !canvas.isTemplate && (
+              {(options.canCheckout || options.canEdit) && !canvas?.isTemplate && (
                 <Button
                   startIcon={<GradeIcon />}
                   color="primary"
                   onClick={() => {
-                    actions.onMarkAsTemplate(canvas);
+                    canvas && actions.onMarkAsTemplate(canvas);
                   }}
                   disabled={state?.loading}
                 >
@@ -140,10 +137,10 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                   variant="contained"
                   color="primary"
                   onClick={() => {
-                    if (canvas.checkout?.status === CanvasCheckoutStateEnum.Available) {
-                      actions.onCheckout(canvas);
+                    if (canvas?.checkout?.status === CanvasCheckoutStateEnum.Available) {
+                      canvas && actions.onCheckout(canvas);
                     } else {
-                      actions.onCheckin(canvas);
+                      canvas && actions.onCheckin(canvas);
                     }
                   }}
                   disabled={state?.loading}
@@ -157,15 +154,18 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
       </DialogTitle>
       {state?.loading && <LinearProgress />}
       <DialogContent classes={{ root: styles.dialogContent }}>
-        <CanvasWhiteboard
-          entities={{ canvas }}
-          options={{
-            viewModeEnabled: !options.canEdit,
-          }}
-          actions={{
-            onUpdate: state => actions.onUpdate({ ...canvas, value: JSON.stringify(state) }),
-          }}
-        />
+        {canvas && (
+          <CanvasWhiteboard
+            entities={{ canvas }}
+            options={{
+              viewModeEnabled: !options.canEdit,
+            }}
+            actions={{
+              onUpdate: state =>
+                actions.onUpdate({ ...canvas, value: serializeAsJSON(state.elements, state.appState) }),
+            }}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

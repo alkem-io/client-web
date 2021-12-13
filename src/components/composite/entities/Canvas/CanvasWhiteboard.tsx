@@ -1,5 +1,5 @@
 import Excalidraw from '@excalidraw/excalidraw';
-import { ImportedDataState } from '@excalidraw/excalidraw/types/data/types';
+import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
 import { ExcalidrawAPIRefValue, ExcalidrawProps } from '@excalidraw/excalidraw/types/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
@@ -39,7 +39,7 @@ export interface CanvasWhiteboardEntities {
 }
 
 export interface CanvasWhiteboardActions {
-  onUpdate: (state: ImportedDataState) => void;
+  onUpdate: (state: ExportedDataState) => void;
 }
 
 export interface CanvasWhiteboardOptions extends ExcalidrawProps {}
@@ -63,7 +63,11 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
     setData(canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState);
   }, [canvas.value]);
 
-  useEffect(() => {}, [data, actions.onUpdate]);
+  useEffect(() => {
+    console.log('mount whiteboard');
+
+    return () => console.log('unmount whiteboard');
+  }, []);
 
   useEffect(() => {
     const onScroll = async e => {
@@ -115,6 +119,7 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
         ref={excalidrawRef}
         initialData={data}
         UIOptions={UIOptions}
+        isCollaborating={false}
         gridModeEnabled
         viewModeEnabled
         {...options}
