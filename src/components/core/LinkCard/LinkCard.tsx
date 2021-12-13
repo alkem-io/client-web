@@ -1,23 +1,23 @@
-import { Card, CardProps, Link } from '@mui/material';
+import { Card, CardProps } from '@mui/material';
 import React, { FC, useState } from 'react';
-import { FINAL_ELEVATION, INITAL_ELEVATION } from '../../../models/constants';
-import { RouterLink } from '../RouterLink';
+import { FINAL_ELEVATION, INITIAL_ELEVATION } from '../../../models/constants';
+import ConditionalLink from '../ConditionalLink';
 
 interface LinkCardProps extends CardProps {
-  to: string;
+  to?: string;
 }
 
 const LinkCard: FC<LinkCardProps> = ({ to, ...rest }) => {
-  const [elevation, setElevation] = useState(INITAL_ELEVATION);
+  const [elevation, setElevation] = useState(INITIAL_ELEVATION);
   return (
-    <Link component={RouterLink} to={to} underline="none">
+    <ConditionalLink condition={!!to} to={to}>
       <Card
         elevation={elevation}
         onMouseOver={() => setElevation(FINAL_ELEVATION)}
-        onMouseOut={() => setElevation(INITAL_ELEVATION)}
+        onMouseOut={() => setElevation(INITIAL_ELEVATION)}
         {...rest}
       />
-    </Link>
+    </ConditionalLink>
   );
 };
 export default LinkCard;

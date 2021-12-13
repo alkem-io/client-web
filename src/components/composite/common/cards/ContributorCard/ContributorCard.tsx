@@ -2,7 +2,7 @@ import { Avatar, Box, Paper, Skeleton, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, useMemo, useState } from 'react';
-import { FINAL_ELEVATION, INITAL_ELEVATION } from '../../../../../models/constants';
+import { FINAL_ELEVATION, INITIAL_ELEVATION } from '../../../../../models/constants';
 import ConditionalLink from '../../../../core/ConditionalLink';
 import UserCard from '../user-card/UserCard';
 
@@ -50,7 +50,7 @@ const useStyles = makeStyles(_ =>
 export const ContributorCard: FC<ContributorCardProps> = props => {
   const styles = useStyles();
   const { displayName, avatar, url, tooltip } = props;
-  const [elevation, setElevation] = useState(INITAL_ELEVATION);
+  const [elevation, setElevation] = useState(INITIAL_ELEVATION);
 
   const TooltipElement = useMemo(
     () =>
@@ -84,7 +84,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
       <Paper
         elevation={elevation}
         onMouseOver={() => setElevation(FINAL_ELEVATION)}
-        onMouseOut={() => setElevation(INITAL_ELEVATION)}
+        onMouseOut={() => setElevation(INITIAL_ELEVATION)}
       >
         <Box className={styles.wrapper}>
           <TooltipElement>

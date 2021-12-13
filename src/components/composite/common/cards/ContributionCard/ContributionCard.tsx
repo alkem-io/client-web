@@ -26,7 +26,7 @@ export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
 
 export interface ContributionCardProps {
   details?: ContributionCardDetails;
-  loading: boolean;
+  loading?: boolean;
 }
 
 const useStyles = makeStyles(theme =>

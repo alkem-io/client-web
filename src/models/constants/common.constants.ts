@@ -14,5 +14,5 @@ export const APPLICATION_STATE_NEW = 'new';
 export const APPLICATION_STATE_APPROVED = 'approved';
 export const APPLICATION_STATE_REJECTED = 'rejected';
 
-export const INITAL_ELEVATION = 1;
+export const INITIAL_ELEVATION = 1;
 export const FINAL_ELEVATION = 8;
