@@ -44,9 +44,9 @@ export const Routing: FC = () => {
       <Route path="/identity">
         <IdentityRoute />
       </Route>
-      <RestrictedRoute path="/search">
+      <Route path="/search">
         <SearchRoute />
-      </RestrictedRoute>
+      </Route>
       <RestrictedRoute path="/user">
         <UserRoute />
       </RestrictedRoute>
