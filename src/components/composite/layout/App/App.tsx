@@ -9,6 +9,7 @@ import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../../../model
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
 import Loading from '../../../core/Loading/Loading';
+import HideOnScroll from '../HideOnScroll';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
@@ -54,7 +55,9 @@ const App = ({ children }): React.ReactElement => {
   return addUpdateSubscription(
     <div id="app">
       <div id="main">
-        <TopBar />
+        <HideOnScroll>
+          <TopBar />
+        </HideOnScroll>
         <Main>
           <TopBarSpacer />
           {/*no point of showing just one item of the breadcrumbs*/}
