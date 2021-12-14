@@ -1,7 +1,7 @@
 import { AppBar } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useSelector } from '@xstate/react';
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { useGlobalState } from '../../../../hooks';
 import SearchBar, { SearchBarSpacer } from './SearchBar';
 import TopNavbar, { TopNavbarSpacer } from './TopNavbar';
@@ -12,15 +12,13 @@ const classes = {
   bar: `${PREFIX}-bar`,
 };
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled(AppBar)(({ theme }) => ({
   width: '100%',
-  [`& .${classes.bar}`]: {
-    backgroundColor: theme.palette.common.white,
-    boxShadow: 'unset',
-  },
+  backgroundColor: theme.palette.common.white,
+  boxShadow: 'unset',
 }));
 
-const TopBar = () => {
+const TopBar = forwardRef<HTMLDivElement>((_, ref) => {
   const {
     ui: { loginNavigationService },
   } = useGlobalState();
@@ -34,14 +32,12 @@ const TopBar = () => {
   }
 
   return (
-    <Root>
-      <AppBar position="fixed" className={classes.bar}>
-        <SearchBar />
-        <TopNavbar />
-      </AppBar>
+    <Root ref={ref} position="fixed" className={classes.bar}>
+      <SearchBar />
+      <TopNavbar />
     </Root>
   );
-};
+});
 
 export const TopBarSpacer = () => {
   return (

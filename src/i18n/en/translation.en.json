@@ -2,16 +2,6 @@
   "cookie": {
     "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
   },
-  "search": {
-    "header": "Search",
-    "subheader": "Find relevant users, organizations, groups and not least Challenges!",
-    "alternativesubheader": "Need help? Find relevant users, organizations, groups and not least Challenges!",
-    "body": "",
-    "organization": {
-      "no-hosted": "None",
-      "no-leading": "None"
-    }
-  },
   "buttons": {
     "learn-more": "Learn more",
     "apply": "Apply",
@@ -536,6 +526,19 @@
     }
   },
   "pages": {
+    "search": {
+      "header": "Search",
+      "subheader": "Find relevant users, organizations, groups and not least Challenges!",
+      "alternativesubheader": "Need help? Find relevant users, organizations, groups and not least Challenges!",
+      "body": "",
+      "organization": {
+        "no-hosted": "None",
+        "no-leading": "None"
+      },
+      "no-results": "No results",
+      "more-results": "There are more search results. Please use more specific search criteria to narrow down the results",
+      "user-not-logged": "Login or Register to include users in your search results"
+    },
     "challenge-explorer": {
       "search": {
         "title": "Explore challenges",

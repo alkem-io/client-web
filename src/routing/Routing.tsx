@@ -44,10 +44,10 @@ export const Routing: FC = () => {
       <Route path="/identity">
         <IdentityRoute />
       </Route>
-      <RestrictedRoute path="/search">
+      <Route path="/search">
         <SearchRoute />
-      </RestrictedRoute>
-      <RestrictedRoute path="/user">
+      </Route>
+      <RestrictedRoute path={`/user/:${nameOfUrl.userId}`}>
         <UserRoute />
       </RestrictedRoute>
       <Route path="/challenges">

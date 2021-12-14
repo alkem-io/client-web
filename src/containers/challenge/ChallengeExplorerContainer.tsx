@@ -3,7 +3,7 @@ import { ApolloError } from '@apollo/client';
 import { ContainerProps } from '../../models/container';
 import { SimpleEcoverseResultEntryFragment } from '../../models/graphql-schema';
 import { useChallengesOverviewPageQuery } from '../../hooks/generated/graphql';
-import { useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useUserContext } from '../../hooks';
 
 export type SimpleChallenge = {
   id: string;
@@ -30,10 +30,12 @@ export interface ChallengePageContainerProps
   > {}
 
 export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ children }) => {
+  const handleError = useApolloErrorHandler();
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
   const { data, loading, error } = useChallengesOverviewPageQuery({
+    onError: handleError,
     variables: {
       membershipData: {
         userID: user?.id || '',
