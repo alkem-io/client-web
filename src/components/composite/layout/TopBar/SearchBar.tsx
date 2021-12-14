@@ -55,7 +55,7 @@ const SearchBar = () => {
               {t('authentication.sign-up')}
             </Button>
             <Button
-              aria-label="Login"
+              aria-label="Sign in"
               component={RouterLink}
               to={AUTH_LOGIN_PATH}
               sx={{
@@ -64,7 +64,7 @@ const SearchBar = () => {
               variant="text"
               size="small"
             >
-              {t('authentication.login')}
+              {t('authentication.sign-in')}
             </Button>
           </Box>
         )}
