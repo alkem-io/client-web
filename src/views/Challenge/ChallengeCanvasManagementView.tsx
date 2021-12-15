@@ -29,7 +29,7 @@ const ChallengeCanvasManagementView: FC<ChallengeCanvasManagementViewProps> = ({
     <CanvasProvider>
       {(canvasEntities, canvasState) => (
         <CanvasActionsContainer>
-          {(_, __, actions) => (
+          {(_, actionsState, actions) => (
             <CanvasManagementView
               entities={{
                 ...canvasEntities,
@@ -41,6 +41,7 @@ const ChallengeCanvasManagementView: FC<ChallengeCanvasManagementViewProps> = ({
               actions={actions}
               state={{
                 ...canvasState,
+                ...actionsState,
                 loadingCanvases: state.loading,
               }}
               options={{

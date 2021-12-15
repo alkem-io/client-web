@@ -57,6 +57,8 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
 
   const loadCanvas = useCallback<typeof actions['onLoad']>(
     async canvas => {
+      setActiveCanvas(canvas as any);
+
       if (canvas && actions.onLoad) {
         const loadedCanvas = await actions.onLoad(canvas);
         setActiveCanvas(loadedCanvas);
@@ -152,14 +154,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
           canCheckout: isCanvasAvailable && doIHavePermissionsToEdit,
           canEdit: isCanvasCheckedoutByMe && doIHavePermissionsToEdit,
         }}
-        state={{
-          loading:
-            state.creatingCanvas ||
-            state.deletingCanvas ||
-            state.updatingCanvas ||
-            state.changingCanvasLockState ||
-            state.loadingCanvasValue,
-        }}
+        state={state}
       />
       <CanvasCreateDialog
         entities={{

@@ -65,17 +65,13 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
   }, [canvas.value]);
 
   useEffect(() => {
-    console.log('mount whiteboard');
-
-    return () => console.log('unmount whiteboard');
-  }, []);
-
-  useEffect(() => {
     const refreshOnDataChange = async () => {
       try {
         const excalidraw = await excalidrawRef.current?.readyPromise;
         excalidraw?.updateScene(data);
-      } catch (ex) {}
+      } catch (ex) {
+        // Excalidraw attempts to perform state updates on an unmounted component
+      }
     };
 
     refreshOnDataChange();

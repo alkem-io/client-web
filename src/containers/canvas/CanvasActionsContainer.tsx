@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import { FC, useCallback, useMemo } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { useUrlParams } from '../../hooks';
 import {
   CanvasDetailsFragmentDoc,
@@ -63,21 +63,22 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  const { loading: loadingEcoverseCanvasValue, refetch: loadEcoverseCanvas } = useEcoverseCanvasValuesQuery({
+  const [loadingCanvasValue, setLoadingCanvasValue] = useState<boolean>(false);
+  const { refetch: loadEcoverseCanvas } = useEcoverseCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-and-network',
     skip: true, // implement something similar to lazy query, but this will handle cache update & allow returning result
     onCompleted: data => modifyCanvasCache(data.ecoverse.context?.canvases?.find(x => x)),
   });
-  const { loading: loadingChallengeCanvasValue, refetch: loadChallengeCanvas } = useChallengeCanvasValuesQuery({
+  const { refetch: loadChallengeCanvas } = useChallengeCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-and-network',
     skip: true, // implement something similar to lazy query, but this will handle cache update & allow returning result
     onCompleted: data => modifyCanvasCache(data.ecoverse.challenge?.context?.canvases?.find(x => x)),
   });
-  const { loading: loadingOpportunityCanvasValue, refetch: loadOpportunityCanvas } = useOpportunityCanvasValuesQuery({
+  const { refetch: loadOpportunityCanvas } = useOpportunityCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-and-network',
@@ -94,6 +95,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
         opportunityId?: string;
       }
     ) => {
+      setLoadingCanvasValue(true);
       let queryOpportunityId: string | undefined = opportunityId;
       let queryChallengeId: string | undefined = challengeId;
       let queryEcoverseId: string | undefined = ecoverseId;
@@ -129,6 +131,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
         canvases = result.data.ecoverse?.context?.canvases as any;
       }
 
+      setLoadingCanvasValue(false);
       // return the first
       return canvases?.find(x => x);
     },
@@ -273,8 +276,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           deletingCanvas,
           changingCanvasLockState: checkingoutCanvas,
           updatingCanvas,
-          loadingCanvasValue:
-            loadingEcoverseCanvasValue || loadingChallengeCanvasValue || loadingOpportunityCanvasValue,
+          loadingCanvasValue,
         },
         actions
       )}

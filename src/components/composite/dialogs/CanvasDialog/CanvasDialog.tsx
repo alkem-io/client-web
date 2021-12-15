@@ -2,22 +2,13 @@ import { serializeAsJSON } from '@excalidraw/excalidraw';
 import { CheckCircle } from '@mui/icons-material';
 import GradeIcon from '@mui/icons-material/Grade';
 import LockClockIcon from '@mui/icons-material/LockClock';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  LinearProgress,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-} from '@mui/material';
+import { Box, Button, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Canvas, CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
+import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import { CanvasItemState } from '../../lists/Canvas/CanvasListItem';
@@ -39,7 +30,9 @@ interface CanvasDialogProps {
     canEdit?: boolean;
   };
   state?: {
-    loading?: boolean;
+    updatingCanvas?: boolean;
+    loadingCanvasValue?: boolean;
+    changingCanvasLockState?: boolean;
   };
 }
 
@@ -55,6 +48,9 @@ const useStyles = makeStyles(theme => ({
   dialogContent: {
     padding: theme.spacing(2),
     paddingTop: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }));
 
@@ -83,6 +79,8 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
       ? 'pages.canvas.state-actions.check-out'
       : 'pages.canvas.state-actions.check-in';
 
+  const loading = state?.changingCanvasLockState || state?.loadingCanvasValue || state?.updatingCanvas;
+
   return (
     <Dialog
       open={options.show}
@@ -110,12 +108,12 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             <ListItemSecondaryAction>
               {(options.canCheckout || options.canEdit) && !canvas?.isTemplate && (
                 <Button
-                  startIcon={state?.loading ? <CircularProgress /> : <GradeIcon />}
+                  startIcon={state?.updatingCanvas ? <Loading /> : <GradeIcon />}
                   color="primary"
                   onClick={() => {
                     canvas && actions.onMarkAsTemplate(canvas);
                   }}
-                  disabled={state?.loading}
+                  disabled={loading}
                 >
                   {t('pages.canvas.state-actions.save-as-template')}
                 </Button>
@@ -123,7 +121,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
               <Box p={0.5} display="inline-flex" />
               {(options.canCheckout || options.canEdit) && (
                 <Button
-                  startIcon={<CanvasOption canvas={canvas} />}
+                  startIcon={state?.updatingCanvas ? <Loading /> : <CanvasOption canvas={canvas} />}
                   variant="contained"
                   color="primary"
                   onClick={() => {
@@ -133,7 +131,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                       canvas && actions.onCheckin(canvas);
                     }
                   }}
-                  disabled={state?.loading}
+                  disabled={loading}
                 >
                   {t(checkInOutButtonText)}
                 </Button>
@@ -142,9 +140,8 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
           </ListItem>
         </List>
       </DialogTitle>
-      {state?.loading && <LinearProgress />}
       <DialogContent classes={{ root: styles.dialogContent }}>
-        {canvas && (
+        {canvas && canvas.value && (
           <CanvasWhiteboard
             entities={{ canvas }}
             options={{
@@ -156,6 +153,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             }}
           />
         )}
+        {!canvas?.value && state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
       </DialogContent>
     </Dialog>
   );

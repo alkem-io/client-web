@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  CircularProgress,
   DialogActions,
   Grid,
   ListSubheader,
@@ -21,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { ITemplateQueryResult, TemplateQuery } from '../../../../containers/canvas/CanvasProvider';
 import { CanvasWithoutValue } from '../../../../models/entities/canvas';
 import { Canvas, CreateCanvasOnContextInput } from '../../../../models/graphql-schema';
+import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import CanvasList from '../../lists/Canvas/CanvasList';
@@ -152,7 +152,7 @@ const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
           {!selectedCanvas && !state.canvasLoading && (
             <Typography variant="overline">{t('pages.canvas.create-dialog.no-template-selected')}</Typography>
           )}
-          {state.canvasLoading && <CircularProgress title="Loading canvas..." />}
+          {state.canvasLoading && <Loading text="Loading canvas..." />}
           {selectedCanvas && !state.canvasLoading && (
             <CanvasWhiteboard
               entities={{
@@ -247,6 +247,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
         name,
         value: selectedTemplate?.value,
       });
+      return;
     }
 
     let newSkipped = skipped;

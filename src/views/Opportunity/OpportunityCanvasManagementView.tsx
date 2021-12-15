@@ -29,7 +29,7 @@ const OpportunityCanvasManagementView: FC<OpportunityCanvasManagementViewProps> 
     <CanvasProvider>
       {(canvasEntities, canvasState) => (
         <CanvasActionsContainer>
-          {(_, __, actions) => (
+          {(_, actionsState, actions) => (
             <CanvasManagementView
               entities={{
                 ...canvasEntities,
@@ -40,6 +40,7 @@ const OpportunityCanvasManagementView: FC<OpportunityCanvasManagementViewProps> 
               actions={actions}
               state={{
                 ...canvasState,
+                ...actionsState,
                 loadingCanvases: state.loading,
               }}
               options={{
