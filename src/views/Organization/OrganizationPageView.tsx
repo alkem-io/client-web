@@ -47,10 +47,10 @@ export const OrganizationPageView: FC<OrganizationPageViewProps> = ({ entities }
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} xl={7}>
+      <Grid item xs={12} xl={6}>
         <OrganizationProfileView entity={entity} permissions={permissions} />
       </Grid>
-      <Grid item xs={12} xl={5}>
+      <Grid item xs={12} xl={6}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <AssociatesView associates={associates} />
