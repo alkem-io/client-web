@@ -1,6 +1,6 @@
 import { useSelector } from '@xstate/react/lib/useSelector';
 import { unionWith, uniqBy } from 'lodash';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useApolloErrorHandler, useGlobalState, useNotification, useUserContext } from '../../hooks';
 import {
   refetchCommunityUpdatesQuery,
@@ -47,9 +47,29 @@ export interface CommunityUpdatesEntities {
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
   const { communityId, ecoverseId } = entities;
+  const [newUpdateMessage, setNewUpdateMessage] = useState<Message>();
 
   const { data, loading } = useCommunityUpdatesQuery({ variables: { ecoverseId, communityId } });
   const updatesId = data?.ecoverse.community?.communication?.updates?.id || '';
+  const oldMessages = data?.ecoverse.community?.communication?.updates?.messages ?? [];
+  useOnMessageReceivedSubscription({
+    shouldResubscribe: true,
+    onSubscriptionData: options => {
+      if (options.subscriptionData.error) {
+        handleError(options.subscriptionData.error);
+        return;
+      }
+
+      const subData = options.subscriptionData.data?.messageReceived;
+      if (!subData) return;
+
+      // todo filter when communityId is provided
+      /*if (subData.communityId === communityId) {
+        setNewUpdateMessage(subData.message);
+      }*/
+      setNewUpdateMessage(subData.message);
+    },
+  });
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
@@ -79,7 +99,10 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     [sendUpdate, communityId, updatesId]
   );
 
-  const messages = data?.ecoverse.community?.communication?.updates?.messages || [];
+  const messages = useMemo(
+    () => [...oldMessages, ...((newUpdateMessage && [newUpdateMessage]) ?? [])],
+    [oldMessages, newUpdateMessage]
+  );
   const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
 
   return (
