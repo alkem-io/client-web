@@ -2,9 +2,10 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AvatarsProvider } from '../../../../context/AvatarsProvider';
+import { COUNTRIES_BY_CODE } from '../../../../models/constants';
 import { User } from '../../../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
-import { AssociateCard } from '../cards';
+import ContributorCard from '../cards/ContributorCard/ContributorCard';
 import DashboardGenericSection from './DashboardGenericSection';
 
 export interface DashboardCommunitySectionV2Props {
@@ -27,10 +28,14 @@ const DashboardCommunitySectionV2: FC<DashboardCommunitySectionV2Props> = ({ mem
           <Grid container spacing={2}>
             {populated.map((x, i) => (
               <Grid key={i} item xs={3}>
-                <AssociateCard
-                  avatarSrc={x.profile?.avatar || ''}
+                <ContributorCard
+                  avatar={x.profile?.avatar || ''}
                   displayName={x.displayName}
-                  tags={[]}
+                  tooltip={{
+                    tags: x.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
+                    city: x.city,
+                    country: COUNTRIES_BY_CODE[x.country],
+                  }}
                   url={buildUserProfileUrl(x.nameID)}
                 />
               </Grid>

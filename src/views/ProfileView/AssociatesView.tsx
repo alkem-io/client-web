@@ -1,14 +1,15 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AssociateCard } from '../../components/composite/common/cards/AssociateCard/AssociateCard';
+import ContributorCard, {
+  ContributorCardProps,
+} from '../../components/composite/common/cards/ContributorCard/ContributorCard';
 import ProfileCard from '../../components/composite/common/cards/ProfileCard/ProfileCard';
-import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
 
 const ASSOCIATE_CARDS_COUNT = 10;
 
 interface AssociatesViewProps {
-  associates: UserCardProps[];
+  associates: ContributorCardProps[];
   count?: number;
   perRow?: 1 | 2 | 3 | 4 | 6 | 12;
 }
@@ -26,7 +27,7 @@ export const AssociatesView: FC<AssociatesViewProps> = ({ associates, count = AS
       <Grid container spacing={2}>
         {associates.slice(0, count).map((x, i) => (
           <Grid key={i} item xs={columnWidth}>
-            <AssociateCard {...x} />
+            <ContributorCard {...x} />
           </Grid>
         ))}
         <Grid item container justifyContent="flex-end">
