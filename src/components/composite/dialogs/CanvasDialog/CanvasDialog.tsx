@@ -141,7 +141,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
         </List>
       </DialogTitle>
       <DialogContent classes={{ root: styles.dialogContent }}>
-        {canvas && canvas.value && (
+        {!state?.loadingCanvasValue && canvas && (
           <CanvasWhiteboard
             entities={{ canvas }}
             options={{
@@ -153,7 +153,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             }}
           />
         )}
-        {!canvas?.value && state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
+        {state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
       </DialogContent>
     </Dialog>
   );
