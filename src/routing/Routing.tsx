@@ -47,7 +47,7 @@ export const Routing: FC = () => {
       <Route path="/search">
         <SearchRoute />
       </Route>
-      <RestrictedRoute path="/user">
+      <RestrictedRoute path={`/user/:${nameOfUrl.userId}`}>
         <UserRoute />
       </RestrictedRoute>
       <Route path="/challenges">
