@@ -1,5 +1,10 @@
 import { Agent, AuthorizationCredential } from '../../models/graphql-schema';
 import TranslationKey from '../../types/TranslationKey';
+import {
+  ADMIN_TRANSLATION_KEY,
+  MEMBER_TRANSLATION_KEY,
+  OWNER_TRANSLATION_KEY,
+} from '../../models/constants/translation.contants';
 
 const ownerRoles = [AuthorizationCredential.OrganizationOwner];
 
@@ -17,18 +22,7 @@ const memberRoles = [
   AuthorizationCredential.OpportunityMember,
 ];
 
-const OWNER_TRANSLATION_KEY = 'common.owner';
-const ADMIN_TRANSLATION_KEY = 'common.admin';
-const MEMBER_TRANSLATION_KEY = 'common.member';
-
-const OWNER_SORT_ORDER = 1;
-const ADMIN_SORT_ORDER = 2;
-const MEMBER_SORT_ORDER = 3;
-
-const getUserRoleName = (
-  resourceId: string,
-  userAgent?: Agent
-): { key: TranslationKey; sortOrder: number } | undefined => {
+const getUserRoleTranslationKey = (resourceId: string, userAgent?: Agent): TranslationKey | undefined => {
   if (!userAgent) {
     return undefined;
   }
@@ -40,10 +34,10 @@ const getUserRoleName = (
   const isMember = memberRoles.some(x => rolesForResource.indexOf(x) !== -1);
 
   return (
-    (isOwner && { key: OWNER_TRANSLATION_KEY, sortOrder: OWNER_SORT_ORDER }) ||
-    (isAdmin && { key: ADMIN_TRANSLATION_KEY, sortOrder: ADMIN_SORT_ORDER }) ||
-    (isMember && { key: MEMBER_TRANSLATION_KEY, sortOrder: MEMBER_SORT_ORDER }) ||
+    (isOwner && OWNER_TRANSLATION_KEY) ||
+    (isAdmin && ADMIN_TRANSLATION_KEY) ||
+    (isMember && MEMBER_TRANSLATION_KEY) ||
     undefined
   );
 };
-export default getUserRoleName;
+export default getUserRoleTranslationKey;

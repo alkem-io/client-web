@@ -11,7 +11,7 @@ import SearchComponent from '../../components/composite/common/SearchComponent/S
 import { useTranslation } from 'react-i18next';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import getActivityCount from '../../utils/get-activity-count';
-import getUserRoleName from '../../utils/user-role-name/get-user-role-name';
+import getUserRoleTranslationKey from '../../utils/user-role-name/get-user-role-translation-key';
 
 export interface ContributorsPageProps {}
 
@@ -37,7 +37,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
       <ContributorsSearchContainer terms={searchTerms}>
         {({ users, organizations }, state) => {
           const orgModels: OrganizationCardProps[] = organizations.map(x => {
-            const roleTranslationKey = getUserRoleName(x.id, userAgent)?.key;
+            const roleTranslationKey = getUserRoleTranslationKey(x.id, userAgent);
             const roleName = roleTranslationKey ? t(roleTranslationKey) : undefined;
             return {
               name: x.displayName,

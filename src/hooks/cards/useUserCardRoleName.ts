@@ -1,6 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { User } from '../../models/graphql-schema';
-import getUserRoleName from '../../utils/user-role-name/get-user-role-name';
+import getUserRoleTranslationKey from '../../utils/user-role-name/get-user-role-translation-key';
+import {
+  ADMIN_TRANSLATION_KEY,
+  MEMBER_TRANSLATION_KEY,
+  OWNER_TRANSLATION_KEY,
+} from '../../models/constants/translation.contants';
+
+const OWNER_SORT_ORDER = 1;
+const ADMIN_SORT_ORDER = 2;
+const MEMBER_SORT_ORDER = 3;
 
 export type UserWithCardRole = User & { roleName: string };
 type UserWithCardRoleInfo = UserWithCardRole & { sortOrder: number };
@@ -15,12 +24,12 @@ const useUserCardRoleName = (users: User[], resourceId: string): UserWithCardRol
 
   return users
     .map(x => {
-      const roleInfo = getUserRoleName(resourceId, x?.agent);
+      const roleTranslationKey = getUserRoleTranslationKey(resourceId, x?.agent);
 
       return {
         ...x,
-        roleName: roleInfo && t(roleInfo.key),
-        sortOrder: roleInfo && roleInfo.sortOrder,
+        roleName: roleTranslationKey && t(roleTranslationKey),
+        sortOrder: roleTranslationKey && getSortOrder(roleTranslationKey),
       } as UserWithCardRoleInfo;
     })
     .sort(
@@ -33,3 +42,16 @@ const useUserCardRoleName = (users: User[], resourceId: string): UserWithCardRol
     });
 };
 export default useUserCardRoleName;
+
+const getSortOrder = (key: string): number => {
+  switch (key) {
+    case OWNER_TRANSLATION_KEY:
+      return OWNER_SORT_ORDER;
+    case ADMIN_TRANSLATION_KEY:
+      return ADMIN_SORT_ORDER;
+    case MEMBER_TRANSLATION_KEY:
+      return MEMBER_SORT_ORDER;
+    default:
+      return -1;
+  }
+};
