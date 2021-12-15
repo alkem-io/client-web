@@ -526,6 +526,23 @@
     }
   },
   "pages": {
+    "contributors": {
+      "search": {
+        "title": "Search through contributors",
+        "subtitle": "This section allows you to search through all contributors",
+        "placeholder": "Search for contributors in Alkemio"
+      },
+      "organizations": {
+        "title": "Organizations ({{count}})",
+        "subtitle": "This section shows the organizations that contributed to what you are searching on",
+        "help-text": "Shows different organizations you are part of, including the role you have"
+      },
+      "users": {
+        "title": "Users ({{count}})",
+        "subtitle": "This section shows the users that contributed to what you are searching on",
+        "help-text": ""
+      }
+    },
     "search": {
       "header": "Search",
       "subheader": "Find relevant users, organizations, groups and not least Challenges!",

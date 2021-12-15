@@ -9,6 +9,9 @@ export interface SearchComponentProps {
   fullWidth?: boolean;
   freeSolo?: boolean;
   disableCloseOnSelect?: boolean;
+  size?: 'small' | 'medium';
+  onChange?: (terms: string[]) => void;
+  // todo: remove
   children: (terms: string[]) => React.ReactNode;
 }
 
@@ -18,7 +21,9 @@ const SearchComponent: FC<SearchComponentProps> = ({
   freeSolo = true,
   multiple = true,
   disableCloseOnSelect = true,
+  size = 'small',
   children,
+  onChange,
 }) => {
   const [terms, setTerms] = useState<string[]>([]);
 
@@ -27,11 +32,19 @@ const SearchComponent: FC<SearchComponentProps> = ({
       return;
     }
 
+    const termsArray: string[] = [];
+
     if (Array.isArray(value)) {
       const trimmedValues = value.map(x => x.trim().toLowerCase());
-      setTerms(trimmedValues);
+      termsArray.push(...trimmedValues);
     } else {
-      setTerms([value]);
+      termsArray.push(value);
+    }
+
+    setTerms(termsArray);
+
+    if (onChange) {
+      onChange(termsArray);
     }
   };
   return (
@@ -44,6 +57,7 @@ const SearchComponent: FC<SearchComponentProps> = ({
         freeSolo={freeSolo}
         disableCloseOnSelect={disableCloseOnSelect}
         options={[]}
+        size={size}
         onChange={handleChange}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (

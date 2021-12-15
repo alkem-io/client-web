@@ -64,8 +64,7 @@ const TopNavbar = () => {
     },
     {
       title: 'contributors',
-      url: '/',
-      disabled: true,
+      url: '/contributors',
     },
     {
       title: 'admin',

@@ -1,30 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import TranslationKey from '../../types/TranslationKey';
-import { Agent, AuthorizationCredential, User } from '../../models/graphql-schema';
-
-const ownerRoles = [AuthorizationCredential.OrganizationOwner];
-
-const adminRoles = [
-  AuthorizationCredential.OrganizationAdmin,
-  AuthorizationCredential.EcoverseAdmin,
-  AuthorizationCredential.ChallengeAdmin,
-  AuthorizationCredential.OpportunityAdmin,
-];
-
-const memberRoles = [
-  AuthorizationCredential.OrganizationMember,
-  AuthorizationCredential.EcoverseMember,
-  AuthorizationCredential.ChallengeMember,
-  AuthorizationCredential.OpportunityMember,
-];
-
-const OWNER_TRANSLATION_KEY = 'common.owner';
-const ADMIN_TRANSLATION_KEY = 'common.admin';
-const MEMBER_TRANSLATION_KEY = 'common.member';
-
-const OWNER_SORT_ORDER = 1;
-const ADMIN_SORT_ORDER = 2;
-const MEMBER_SORT_ORDER = 3;
+import { User } from '../../models/graphql-schema';
+import getUserRoleName from '../../utils/user-role-name/get-user-role-name';
 
 export type UserWithCardRole = User & { roleName: string };
 type UserWithCardRoleInfo = UserWithCardRole & { sortOrder: number };
@@ -39,7 +15,7 @@ const useUserCardRoleName = (users: User[], resourceId: string): UserWithCardRol
 
   return users
     .map(x => {
-      const roleInfo = getUserCardRoleInfo(resourceId, x?.agent);
+      const roleInfo = getUserRoleName(resourceId, x?.agent);
 
       return {
         ...x,
@@ -57,25 +33,3 @@ const useUserCardRoleName = (users: User[], resourceId: string): UserWithCardRol
     });
 };
 export default useUserCardRoleName;
-
-const getUserCardRoleInfo = (
-  resourceId: string,
-  userAgent?: Agent
-): { key: TranslationKey; sortOrder: number } | undefined => {
-  if (!userAgent) {
-    return undefined;
-  }
-
-  const rolesForResource = (userAgent?.credentials || []).filter(x => x.resourceID === resourceId).map(x => x.type);
-
-  const isOwner = ownerRoles.some(x => rolesForResource.indexOf(x) !== -1);
-  const isAdmin = adminRoles.some(x => rolesForResource.indexOf(x) !== -1);
-  const isMember = memberRoles.some(x => rolesForResource.indexOf(x) !== -1);
-
-  return (
-    (isOwner && { key: OWNER_TRANSLATION_KEY, sortOrder: OWNER_SORT_ORDER }) ||
-    (isAdmin && { key: ADMIN_TRANSLATION_KEY, sortOrder: ADMIN_SORT_ORDER }) ||
-    (isMember && { key: MEMBER_TRANSLATION_KEY, sortOrder: MEMBER_SORT_ORDER }) ||
-    undefined
-  );
-};

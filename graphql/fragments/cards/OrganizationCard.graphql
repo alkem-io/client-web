@@ -1,0 +1,19 @@
+fragment OrganizationCard on Organization {
+  id
+  nameID
+  displayName
+  activity {
+    id
+    name
+    value
+  }
+  profile {
+    id
+    avatar
+    description
+  }
+  verification {
+    id
+    status
+  }
+}

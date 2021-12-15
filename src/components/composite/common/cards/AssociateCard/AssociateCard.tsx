@@ -32,7 +32,7 @@ const useStyles = makeStyles(_ =>
 
 export const AssociateCard: FC<AssociateCardProps> = props => {
   const styles = useStyles();
-  const { displayName, avatarSrc, url } = props;
+  const { displayName = '', avatarSrc, url } = props;
   // roleName - reintroduce the role name
 
   return (

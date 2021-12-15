@@ -40,6 +40,53 @@ export const ApplicationInfoFragmentDoc = gql`
     }
   }
 `;
+export const OrganizationCardFragmentDoc = gql`
+  fragment OrganizationCard on Organization {
+    id
+    nameID
+    displayName
+    activity {
+      id
+      name
+      value
+    }
+    profile {
+      id
+      avatar
+      description
+    }
+    verification {
+      id
+      status
+    }
+  }
+`;
+export const UserCardFragmentDoc = gql`
+  fragment UserCard on User {
+    id
+    nameID
+    displayName
+    country
+    city
+    agent {
+      id
+      credentials {
+        id
+        type
+        resourceID
+      }
+    }
+    profile {
+      id
+      avatar
+      tagsets {
+        id
+        name
+        tags
+      }
+    }
+  }
+`;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
@@ -781,6 +828,53 @@ export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
     id
     displayName
+  }
+`;
+export const OrganizationContributorFragmentDoc = gql`
+  fragment OrganizationContributor on Organization {
+    id
+    displayName
+    nameID
+    activity {
+      id
+      name
+      value
+    }
+    orgProfile: profile {
+      id
+      avatar
+      description
+    }
+    verification {
+      id
+      status
+    }
+  }
+`;
+export const UserContributorFragmentDoc = gql`
+  fragment UserContributor on User {
+    id
+    nameID
+    displayName
+    country
+    city
+    agent {
+      id
+      credentials {
+        id
+        type
+        resourceID
+      }
+    }
+    userProfile: profile {
+      id
+      avatar
+      tagsets {
+        id
+        name
+        tags
+      }
+    }
   }
 `;
 export const ChallengeExplorerSearchResultFragmentDoc = gql`
@@ -9646,6 +9740,68 @@ export function refetchOpportunityContributionDetailsQuery(
   variables?: SchemaTypes.OpportunityContributionDetailsQueryVariables
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
+}
+export const ContributorsSearchDocument = gql`
+  query ContributorsSearch($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      result {
+        ...UserContributor
+        ...OrganizationContributor
+      }
+    }
+  }
+  ${UserContributorFragmentDoc}
+  ${OrganizationContributorFragmentDoc}
+`;
+
+/**
+ * __useContributorsSearchQuery__
+ *
+ * To run a query within a React component, call `useContributorsSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorsSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorsSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useContributorsSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorsSearchQuery,
+    SchemaTypes.ContributorsSearchQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ContributorsSearchQuery, SchemaTypes.ContributorsSearchQueryVariables>(
+    ContributorsSearchDocument,
+    options
+  );
+}
+export function useContributorsSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorsSearchQuery,
+    SchemaTypes.ContributorsSearchQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ContributorsSearchQuery, SchemaTypes.ContributorsSearchQueryVariables>(
+    ContributorsSearchDocument,
+    options
+  );
+}
+export type ContributorsSearchQueryHookResult = ReturnType<typeof useContributorsSearchQuery>;
+export type ContributorsSearchLazyQueryHookResult = ReturnType<typeof useContributorsSearchLazyQuery>;
+export type ContributorsSearchQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorsSearchQuery,
+  SchemaTypes.ContributorsSearchQueryVariables
+>;
+export function refetchContributorsSearchQuery(variables?: SchemaTypes.ContributorsSearchQueryVariables) {
+  return { query: ContributorsSearchDocument, variables: variables };
 }
 export const ChallengeExplorerSearchDocument = gql`
   query ChallengeExplorerSearch($searchData: SearchInput!) {
