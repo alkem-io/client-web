@@ -44,6 +44,9 @@ interface CanvasListItemProps extends ListItemButtonProps {
 export const CanvasListItemSkeleton: FC<ListItemProps> = props => {
   return (
     <ListItem {...props}>
+      <ListItemAvatar sx={{ display: 'flex' }}>
+        <Skeleton variant="circular" sx={{ width: '1.2em' }} />
+      </ListItemAvatar>
       <ListItemText primary={<Skeleton variant="text" />} />
     </ListItem>
   );

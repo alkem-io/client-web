@@ -13,6 +13,8 @@ const styles = (theme: Theme) =>
     root: {
       margin: 0,
       padding: theme.spacing(2),
+      display: 'flex',
+      alignItems: 'center',
     },
     closeButton: {
       color: theme.palette.grey[500],

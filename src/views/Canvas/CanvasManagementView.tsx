@@ -1,9 +1,10 @@
 import { ApolloError } from '@apollo/client';
 import { Grid } from '@mui/material';
 import React, { FC, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import CanvasCreateDialog from '../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
 import CanvasDialog from '../../components/composite/dialogs/CanvasDialog/CanvasDialog';
+import ConfirmationDialog from '../../components/composite/dialogs/ConfirmationDialog';
 import { ICanvasActions } from '../../containers/canvas/CanvasActionsContainer';
 import { ITemplateQueryResult } from '../../containers/canvas/CanvasProvider';
 import { useUserContext } from '../../hooks';
@@ -18,6 +19,8 @@ export interface CanvasManagementViewEntities {
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasWithoutValue[];
   templates: Record<string, ITemplateQueryResult>;
+  templateListHeader?: string;
+  templateListSubheader?: string;
 }
 
 export interface CanvasManagementViewActions extends ICanvasActions {}
@@ -28,6 +31,7 @@ export interface ContextViewState {
   deletingCanvas?: boolean;
   changingCanvasLockState?: boolean;
   updatingCanvas?: boolean;
+  loadingCanvasValue?: boolean;
   error?: ApolloError;
 }
 
@@ -45,6 +49,8 @@ export interface CanvasManagementViewProps
 
 const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state }) => {
   const [activeCanvas, setActiveCanvas] = useState<Canvas | undefined>(undefined);
+  const [deletableCanvas, setDeletableCanvas] = useState<CanvasWithoutValue | undefined>(undefined);
+
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
   const { t } = useTranslation();
@@ -90,8 +96,9 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
           <CanvasListView
             entities={{
               canvases: nonTemplateCanvases,
-              headerTemplate: t('pages.canvas.header', { blockName: entities.contextSource }),
-              subheaderTemplate: t('pages.canvas.subheader'),
+              header: t('pages.canvas.header', { blockName: entities.contextSource }),
+              subheader: t('pages.canvas.subheader'),
+              noItemsMessage: t('pages.canvas.no-canvases'),
             }}
             state={{
               loading: Boolean(state.loadingCanvases),
@@ -99,7 +106,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
             actions={{
               onSelect: loadCanvas,
               onCreate: () => setShowCreateCanvasDialog(true),
-              onDelete: canvas => actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
+              onDelete: canvas => setDeletableCanvas(canvas), //actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
             }}
             options={{
               canDelete: true,
@@ -108,13 +115,19 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
         </Grid>
         <Grid item xs={12} md={6}>
           <CanvasListView
-            entities={{ canvases: templateCanvases, headerTemplate: t('pages.canvas.template.header') }}
+            entities={{
+              canvases: templateCanvases,
+              header: entities.templateListHeader || t('pages.canvas.template.header'),
+              subheader: entities.templateListSubheader,
+              noItemsMessage: t('pages.canvas.template.no-templates'),
+              howToMessage: t('pages.canvas.template.how-to'),
+            }}
             state={{
               loading: Boolean(state.loadingCanvases),
             }}
             actions={{
               onSelect: loadCanvas,
-              onDelete: canvas => actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
+              onDelete: canvas => setDeletableCanvas(canvas), //canvas => actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
             }}
             options={{
               canDelete: true,
@@ -141,7 +154,11 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
         }}
         state={{
           loading:
-            state.creatingCanvas || state.deletingCanvas || state.updatingCanvas || state.changingCanvasLockState,
+            state.creatingCanvas ||
+            state.deletingCanvas ||
+            state.updatingCanvas ||
+            state.changingCanvasLockState ||
+            state.loadingCanvasValue,
         }}
       />
       <CanvasCreateDialog
@@ -159,6 +176,34 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
         }}
         options={{
           show: showCreateCanvasDialog,
+        }}
+      />
+      <ConfirmationDialog
+        actions={{
+          onCancel: () => setDeletableCanvas(undefined),
+          onConfirm: async () => {
+            if (deletableCanvas) {
+              await actions.onDelete({ canvasID: deletableCanvas.id, contextID: entities.contextID });
+              setDeletableCanvas(undefined);
+            }
+          },
+        }}
+        entities={{
+          confirmButtonTextId: 'buttons.delete',
+          contentId: 'pages.canvas.delete.confirmation-text',
+          title: (
+            <Trans
+              i18nKey="pages.canvas.delete.confirmation-title"
+              values={{ blockName: deletableCanvas?.name }}
+              components={{ b: <strong /> }}
+            />
+          ),
+        }}
+        options={{
+          show: Boolean(deletableCanvas),
+        }}
+        state={{
+          isLoading: Boolean(state.deletingCanvas),
         }}
       />
     </>

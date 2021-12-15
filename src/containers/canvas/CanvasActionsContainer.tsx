@@ -36,7 +36,7 @@ export interface CanvasActionsContainerState {
   deletingCanvas?: boolean;
   changingCanvasLockState?: boolean;
   updatingCanvas?: boolean;
-  loadinggCanvasValue?: boolean;
+  loadingCanvasValue?: boolean;
 }
 
 export interface CanvasActionsContainerProps extends ContainerProps<{}, ICanvasActions, CanvasActionsContainerState> {}
@@ -273,7 +273,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           deletingCanvas,
           changingCanvasLockState: checkingoutCanvas,
           updatingCanvas,
-          loadinggCanvasValue:
+          loadingCanvasValue:
             loadingEcoverseCanvasValue || loadingChallengeCanvasValue || loadingOpportunityCanvasValue,
         },
         actions

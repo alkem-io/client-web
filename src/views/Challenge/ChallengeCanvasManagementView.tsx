@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import CanvasActionsContainer from '../../containers/canvas/CanvasActionsContainer';
 import { CanvasProvider } from '../../containers/canvas/CanvasProvider';
 import { ChallengeProfileFragment } from '../../models/graphql-schema';
@@ -22,6 +23,8 @@ const ChallengeCanvasManagementView: FC<ChallengeCanvasManagementViewProps> = ({
   const { challenge } = entities;
   const contextID = challenge.context?.id || '';
 
+  const { t } = useTranslation();
+
   return (
     <CanvasProvider>
       {(canvasEntities, canvasState) => (
@@ -32,6 +35,8 @@ const ChallengeCanvasManagementView: FC<ChallengeCanvasManagementViewProps> = ({
                 ...canvasEntities,
                 contextID,
                 contextSource: 'challenge',
+                templateListHeader: t('pages.canvas.challenge.templatesHeader'),
+                templateListSubheader: t('pages.canvas.challenge.templatesHeader'),
               }}
               actions={actions}
               state={{

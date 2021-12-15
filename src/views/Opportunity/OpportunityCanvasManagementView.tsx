@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import CanvasActionsContainer from '../../containers/canvas/CanvasActionsContainer';
 import { CanvasProvider } from '../../containers/canvas/CanvasProvider';
 import { OpportunityPageFragment } from '../../models/graphql-schema';
@@ -22,6 +23,8 @@ const OpportunityCanvasManagementView: FC<OpportunityCanvasManagementViewProps> 
   const { opportunity } = entities;
   const contextID = opportunity.context?.id || '';
 
+  const { t } = useTranslation();
+
   return (
     <CanvasProvider>
       {(canvasEntities, canvasState) => (
@@ -32,6 +35,7 @@ const OpportunityCanvasManagementView: FC<OpportunityCanvasManagementViewProps> 
                 ...canvasEntities,
                 contextID,
                 contextSource: 'opportunity',
+                templateListHeader: t('pages.canvas.opportunity.templatesHeader'),
               }}
               actions={actions}
               state={{

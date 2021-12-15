@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import CanvasActionsContainer from '../../containers/canvas/CanvasActionsContainer';
 import { CanvasProvider } from '../../containers/canvas/CanvasProvider';
 import { EcoversePageFragment } from '../../models/graphql-schema';
@@ -22,6 +23,8 @@ const HubCanvasManagementView: FC<HubCanvasManagementViewProps> = ({ entities, s
   const { hub } = entities;
   const contextID = hub.context?.id || '';
 
+  const { t } = useTranslation();
+
   return (
     <CanvasProvider>
       {(canvasEntities, canvasState) => (
@@ -32,6 +35,8 @@ const HubCanvasManagementView: FC<HubCanvasManagementViewProps> = ({ entities, s
                 ...canvasEntities,
                 contextID,
                 contextSource: 'hub',
+                templateListHeader: t('pages.canvas.hub.templatesHeader'),
+                templateListSubheader: t('pages.canvas.hub.templatesHeader'),
               }}
               actions={actions}
               state={{
