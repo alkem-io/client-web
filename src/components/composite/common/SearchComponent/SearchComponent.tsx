@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Chip } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete/Autocomplete';
 import TextField from '@mui/material/TextField/TextField';
@@ -11,8 +11,6 @@ export interface SearchComponentProps {
   disableCloseOnSelect?: boolean;
   size?: 'small' | 'medium';
   onChange?: (terms: string[]) => void;
-  // todo: remove
-  children: (terms: string[]) => React.ReactNode;
 }
 
 const SearchComponent: FC<SearchComponentProps> = ({
@@ -22,11 +20,8 @@ const SearchComponent: FC<SearchComponentProps> = ({
   multiple = true,
   disableCloseOnSelect = true,
   size = 'small',
-  children,
   onChange,
 }) => {
-  const [terms, setTerms] = useState<string[]>([]);
-
   const handleChange = (e, value: string[] | string | null) => {
     if (!value) {
       return;
@@ -41,33 +36,28 @@ const SearchComponent: FC<SearchComponentProps> = ({
       termsArray.push(value);
     }
 
-    setTerms(termsArray);
-
     if (onChange) {
       onChange(termsArray);
     }
   };
   return (
-    <>
-      <Autocomplete
-        aria-label="Filter"
-        id="card-filter"
-        multiple={multiple}
-        fullWidth={fullWidth}
-        freeSolo={freeSolo}
-        disableCloseOnSelect={disableCloseOnSelect}
-        options={[]}
-        size={size}
-        onChange={handleChange}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
-          ))
-        }
-        renderInput={params => <TextField {...params} margin="none" variant="outlined" placeholder={placeholder} />}
-      />
-      {children(terms)}
-    </>
+    <Autocomplete
+      aria-label="Filter"
+      id="card-filter"
+      multiple={multiple}
+      fullWidth={fullWidth}
+      freeSolo={freeSolo}
+      disableCloseOnSelect={disableCloseOnSelect}
+      options={[]}
+      size={size}
+      onChange={handleChange}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => (
+          <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
+        ))
+      }
+      renderInput={params => <TextField {...params} margin="none" variant="outlined" placeholder={placeholder} />}
+    />
   );
 };
 export default SearchComponent;
