@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  CircularProgress,
   DialogActions,
   Grid,
   ListSubheader,
@@ -25,24 +26,6 @@ import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import CanvasList from '../../lists/Canvas/CanvasList';
 import CanvasListItem from '../../lists/Canvas/CanvasListItem';
 
-interface CanvasCreateDialogProps {
-  entities: {
-    contextID: string;
-    templates: Record<string, ITemplateQueryResult>;
-  };
-  actions: {
-    onCancel: () => void;
-    onConfirm: (input: CreateCanvasOnContextInput) => void;
-    onLoad: (canvas: CanvasWithoutValue, query: TemplateQuery) => Promise<Canvas | undefined>;
-  };
-  options: {
-    show: boolean;
-  };
-  state?: {
-    loading: boolean;
-  };
-}
-
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
     background: theme.palette.background.default,
@@ -66,15 +49,33 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const steps = [
-  {
+type StepDefinition = { index: number; title: string; optional: boolean };
+const steps: Record<'name' | 'template' | 'completion', StepDefinition> = {
+  name: {
+    index: 0,
     title: 'Name',
+    optional: false,
   },
-  { title: 'Template' },
-  { title: 'Complete' },
-];
+  template: {
+    index: 1,
+    title: 'Template',
+    optional: true,
+  },
+  completion: { index: 2, title: 'Complete', optional: false },
+};
 
-const CanvasNamingStep: FC<{ onChange: (name: string) => void; name: string }> = ({ onChange, name }) => {
+const stepsArray = Object.values(steps).sort((s1, s2) => s1.index - s2.index);
+
+interface INamingStepProps {
+  actions: {
+    onNameChange: (name: string) => void;
+  };
+  entities: {
+    name: string;
+  };
+}
+
+const NamingStep: FC<INamingStepProps> = ({ actions, entities }) => {
   const { t } = useTranslation();
 
   return (
@@ -83,8 +84,8 @@ const CanvasNamingStep: FC<{ onChange: (name: string) => void; name: string }> =
       <Typography variant="body1">{t('pages.canvas.create-dialog.steps.naming')}</Typography>
       <Box p={1} />
       <TextField
-        value={name}
-        onChange={e => onChange(e.target.value)}
+        value={entities.name}
+        onChange={e => actions.onNameChange(e.target.value)}
         title="Name"
         label="Name"
         aria-label="canvas-name"
@@ -94,11 +95,23 @@ const CanvasNamingStep: FC<{ onChange: (name: string) => void; name: string }> =
   );
 };
 
-const CanvasTemplateStep: FC<{
-  onSelect: (canvas: CanvasWithoutValue, query: TemplateQuery) => void;
-  selectedCanvas?: Canvas;
-  templates: Record<string, ITemplateQueryResult>;
-}> = ({ onSelect, templates, selectedCanvas }) => {
+interface ITemplateStepProps {
+  actions: {
+    onTemplateSelected: (canvas: CanvasWithoutValue, query: TemplateQuery) => void;
+  };
+  entities: {
+    selectedCanvas?: Canvas;
+    templates: Record<string, ITemplateQueryResult>;
+  };
+  state: {
+    templatesLoading?: boolean;
+    canvasLoading?: boolean;
+  };
+}
+
+const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
+  const { templates, selectedCanvas } = entities;
+
   const { t } = useTranslation();
 
   return (
@@ -122,11 +135,11 @@ const CanvasTemplateStep: FC<{
                       selectedCanvasId: selectedCanvas?.id,
                     }}
                     actions={{
-                      onSelect: template => onSelect(template, templates[key].query),
+                      onSelect: template => actions.onTemplateSelected(template, templates[key].query),
                     }}
                     options={{}}
                     state={{
-                      loading: false,
+                      loading: state.templatesLoading,
                     }}
                   />
                 </Box>
@@ -136,10 +149,11 @@ const CanvasTemplateStep: FC<{
       </Grid>
       <Grid item xs={6}>
         <Box display="flex" justifyContent="center" alignItems="center" height={'100%'} minHeight={600} minWidth={450}>
-          {!selectedCanvas && (
+          {!selectedCanvas && !state.canvasLoading && (
             <Typography variant="overline">{t('pages.canvas.create-dialog.no-template-selected')}</Typography>
           )}
-          {selectedCanvas && (
+          {state.canvasLoading && <CircularProgress title="Loading canvas..." />}
+          {selectedCanvas && !state.canvasLoading && (
             <CanvasWhiteboard
               entities={{
                 canvas: selectedCanvas,
@@ -153,7 +167,15 @@ const CanvasTemplateStep: FC<{
   );
 };
 
-const CanvasCompletionStep: FC<{ name: string; canvas?: Canvas }> = ({ name, canvas }) => {
+interface ICompletionStepProps {
+  entities: {
+    name: string;
+    canvas?: Canvas;
+  };
+}
+
+const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
+  const { name, canvas } = entities;
   const { t } = useTranslation();
 
   return (
@@ -173,16 +195,29 @@ const CanvasCompletionStep: FC<{ name: string; canvas?: Canvas }> = ({ name, can
   );
 };
 
-const CreateCanvasSteps: FC<{
-  templates: Record<string, ITemplateQueryResult>;
-  contextID: string;
-  onConfirm: (input: CreateCanvasOnContextInput) => void;
-  onLoad: (canvas: CanvasWithoutValue, query: TemplateQuery) => Promise<Canvas | undefined>;
-}> = ({ templates, contextID, onLoad, onConfirm }) => {
+interface CreateCanvasStepsProps {
+  entities: {
+    templates: Record<string, ITemplateQueryResult>;
+    contextID: string;
+  };
+  actions: {
+    onConfirm: (input: CreateCanvasOnContextInput) => void;
+    onLoad: (canvas: CanvasWithoutValue, query: TemplateQuery) => Promise<Canvas | undefined>;
+  };
+  state: ITemplateStepProps['state'];
+}
+
+const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, state }) => {
+  const { templates, contextID } = entities;
+  const { onLoad, onConfirm } = actions;
+
   // form
   const [name, setName] = useState<string>('New Canvas');
   const [selectedTemplate, setSelectedTemplate] = useState<Canvas>();
 
+  const styles = useStyles();
+
+  // actions
   const onSelect = async (canvas: CanvasWithoutValue, query: TemplateQuery) => {
     if (canvas?.id === selectedTemplate?.id) {
       setSelectedTemplate(undefined);
@@ -192,21 +227,21 @@ const CreateCanvasSteps: FC<{
     setSelectedTemplate(loadedCanvas);
   };
 
-  const styles = useStyles();
+  const [activeStep, setActiveStep] = React.useState<StepDefinition>(steps.name);
+  const [skipped, setSkipped] = React.useState(new Set<StepDefinition>());
 
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [skipped, setSkipped] = React.useState(new Set());
-
-  const isStepOptional = step => {
-    return step === 1;
+  const isStepOptional = (step: StepDefinition) => {
+    return step.optional;
   };
 
-  const isStepSkipped = step => {
+  const isStepSkipped = (step: StepDefinition) => {
     return skipped.has(step);
   };
 
+  const findStepByIndex = (index: number) => Object.values(steps).find(s => s.index === index);
+
   const handleNext = () => {
-    if (activeStep === 2 && name) {
+    if (activeStep === steps.completion && name) {
       onConfirm({
         contextID,
         name,
@@ -220,12 +255,12 @@ const CreateCanvasSteps: FC<{
       newSkipped.delete(activeStep);
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setActiveStep(prevActiveStep => findStepByIndex(prevActiveStep.index + 1) as StepDefinition);
     setSkipped(newSkipped);
   };
 
   const handleBack = () => {
-    setActiveStep(prevActiveStep => prevActiveStep - 1);
+    setActiveStep(prevActiveStep => findStepByIndex(prevActiveStep.index - 1) as StepDefinition);
   };
 
   const handleSkip = () => {
@@ -235,11 +270,11 @@ const CreateCanvasSteps: FC<{
       throw new Error("You can't skip a step that isn't optional.");
     }
 
-    if (activeStep === 1) {
+    if (activeStep === steps.template) {
       setSelectedTemplate(undefined);
     }
 
-    setActiveStep(prevActiveStep => prevActiveStep + 1);
+    setActiveStep(prevActiveStep => findStepByIndex(prevActiveStep.index + 1) as StepDefinition);
     setSkipped(prevSkipped => {
       const newSkipped = new Set(prevSkipped.values());
       newSkipped.add(activeStep);
@@ -250,33 +285,37 @@ const CreateCanvasSteps: FC<{
   return (
     <>
       <Paper elevation={0} square>
-        <Stepper activeStep={activeStep} className={styles.stepper}>
-          {steps.map((label, index) => {
+        <Stepper activeStep={activeStep.index} className={styles.stepper}>
+          {stepsArray.map(step => {
             const stepProps: StepProps = {};
             const labelProps: StepLabelProps = {};
-            if (isStepOptional(index)) {
+            if (isStepOptional(step)) {
               labelProps.optional = <Typography variant="caption">Optional</Typography>;
             }
-            if (isStepSkipped(index)) {
+            if (isStepSkipped(step)) {
               stepProps.completed = false;
             }
             return (
-              <Step key={label.title.replaceAll(' ', '-')} {...stepProps}>
-                <StepLabel {...labelProps}>{label.title}</StepLabel>
+              <Step key={step.title.replaceAll(' ', '-')} {...stepProps}>
+                <StepLabel {...labelProps}>{step.title}</StepLabel>
               </Step>
             );
           })}
         </Stepper>
       </Paper>
       <DialogContent classes={{ root: styles.dialogContent }}>
-        {activeStep === 0 && <CanvasNamingStep onChange={setName} name={name} />}
-        {activeStep === 1 && (
-          <CanvasTemplateStep templates={templates} onSelect={onSelect} selectedCanvas={selectedTemplate} />
+        {activeStep === steps.name && <NamingStep entities={{ name }} actions={{ onNameChange: setName }} />}
+        {activeStep === steps.template && (
+          <TemplateStep
+            entities={{ templates, selectedCanvas: selectedTemplate }}
+            actions={{ onTemplateSelected: onSelect }}
+            state={state}
+          />
         )}
-        {activeStep === 2 && <CanvasCompletionStep name={name} canvas={selectedTemplate} />}
+        {activeStep === steps.completion && <CompletionStep entities={{ name, canvas: selectedTemplate }} />}
       </DialogContent>
       <DialogActions>
-        <Button color="inherit" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+        <Button color="inherit" disabled={activeStep === stepsArray[0]} onClick={handleBack} sx={{ mr: 1 }}>
           Back
         </Button>
         <Box sx={{ flex: '1 1 auto' }} />
@@ -286,11 +325,27 @@ const CreateCanvasSteps: FC<{
           </Button>
         )}
 
-        <Button onClick={handleNext}>{activeStep === steps.length - 1 ? 'Finish' : 'Next'}</Button>
+        <Button onClick={handleNext}>{activeStep === stepsArray[stepsArray.length - 1] ? 'Finish' : 'Next'}</Button>
       </DialogActions>
     </>
   );
 };
+
+interface CanvasCreateDialogProps {
+  entities: {
+    contextID: string;
+    templates: Record<string, ITemplateQueryResult>;
+  };
+  actions: {
+    onCancel: () => void;
+    onConfirm: (input: CreateCanvasOnContextInput) => void;
+    onLoad: (canvas: CanvasWithoutValue, query: TemplateQuery) => Promise<Canvas | undefined>;
+  };
+  options: {
+    show: boolean;
+  };
+  state?: CreateCanvasStepsProps['state'];
+}
 
 const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, options }) => {
   const { t } = useTranslation();
@@ -315,29 +370,7 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
       >
         {t('pages.canvas.create-dialog.header')}
       </DialogTitle>
-      <CreateCanvasSteps
-        templates={entities.templates}
-        onConfirm={actions.onConfirm}
-        onLoad={actions.onLoad}
-        contextID={entities.contextID}
-      />
-      {/* <DialogActions>
-        {state?.loading ? (
-          <Loading text={'Loading ...'} />
-        ) : (
-          <Button
-            onClick={() =>
-              actions.onConfirm({
-                contextID: entities.contextID,
-                name: newCanvas.name,
-              })
-            }
-            disabled={state?.loading}
-          >
-            Create
-          </Button>
-        )}
-      </DialogActions> */}
+      <CreateCanvasSteps entities={entities} actions={actions} state={{}} />
     </Dialog>
   );
 };

@@ -177,6 +177,10 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
         options={{
           show: showCreateCanvasDialog,
         }}
+        state={{
+          canvasLoading: state.loadingCanvasValue,
+          templatesLoading: state.loadingCanvases,
+        }}
       />
       <ConfirmationDialog
         actions={{

@@ -5,6 +5,7 @@ import LockClockIcon from '@mui/icons-material/LockClock';
 import {
   Box,
   Button,
+  CircularProgress,
   LinearProgress,
   List,
   ListItem,
@@ -107,20 +108,9 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             </ListItemIcon>
             <ListItemText primary={canvas?.name} secondary={canvas?.checkout?.status.toUpperCase()} />
             <ListItemSecondaryAction>
-              {/* {options.canEdit && (
-                <IconButton
-                  color="primary"
-                  onClick={() => {
-                    actions.onUpdate({ ...canvas, value: JSON.stringify(whiteboardState) });
-                  }}
-                  disabled={state?.loading}
-                >
-                  <SaveIcon />
-                </IconButton>
-              )} */}
               {(options.canCheckout || options.canEdit) && !canvas?.isTemplate && (
                 <Button
-                  startIcon={<GradeIcon />}
+                  startIcon={state?.loading ? <CircularProgress /> : <GradeIcon />}
                   color="primary"
                   onClick={() => {
                     canvas && actions.onMarkAsTemplate(canvas);
