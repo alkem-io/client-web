@@ -19,7 +19,7 @@ const DashboardLoginSection: FC<LoginSectionProps> = ({ infomationText, actionTe
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Typography variant="body1">{infomationText}</Typography>
           <SectionSpacer />
-          <Button LinkComponent={'a'} href={AUTH_LOGIN_PATH} sx={{ flexShrink: 0 }}>
+          <Button variant="contained" LinkComponent={'a'} href={AUTH_LOGIN_PATH} sx={{ flexShrink: 0 }}>
             {actionText}
           </Button>
         </Box>
