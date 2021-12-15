@@ -6306,7 +6306,14 @@ export type UserAvatarsQuery = {
     id: string;
     nameID: string;
     displayName: string;
-    profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
+    city: string;
+    country: string;
+    profile?: Maybe<{
+      __typename?: 'Profile';
+      id: string;
+      avatar?: Maybe<string>;
+      tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+    }>;
   }>;
 };
 
