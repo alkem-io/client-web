@@ -1,13 +1,15 @@
 import Excalidraw from '@excalidraw/excalidraw';
-import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
+import { ExportedDataState, ImportedDataState } from '@excalidraw/excalidraw/types/data/types';
 import { ExcalidrawAPIRefValue, ExcalidrawProps } from '@excalidraw/excalidraw/types/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce } from 'lodash';
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { useCombinedRefs } from '../../../../hooks/useCombinedRefs';
 import { Canvas } from '../../../../models/graphql-schema';
+import { CanvasLoadedEvent, CANVAS_LOADED_EVENT_NAME } from '../../../../types/events';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -24,7 +26,7 @@ const useActorWhiteboardStyles = makeStyles(theme => ({
   },
 }));
 
-const initialExcalidrawState = {
+const initialExcalidrawState: ImportedDataState = {
   type: 'excalidraw',
   version: 2,
   source: 'https://excalidraw.com',
@@ -33,7 +35,6 @@ const initialExcalidrawState = {
     gridSize: null,
     viewBackgroundColor: '#ffffff',
   },
-  files: {},
 };
 
 export interface CanvasWhiteboardEntities {
@@ -52,104 +53,118 @@ export interface CanvasWhiteboardProps {
   actions: CanvasWhiteboardActions;
 }
 
-const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, options }) => {
-  const { canvas } = entities;
+const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps>(
+  ({ entities, actions, options }, excalidrawRef) => {
+    const { canvas } = entities;
 
-  const excalidrawRef = useRef<ExcalidrawAPIRefValue>(null);
-  const styles = useActorWhiteboardStyles();
-  const [offsetHeight, setOffsetHeight] = useState(0);
+    const styles = useActorWhiteboardStyles();
+    const [offsetHeight, setOffsetHeight] = useState(0);
+    const innerRef = useRef<ExcalidrawAPIRefValue>(null);
+    const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue>(excalidrawRef, innerRef);
 
-  const [data, setData] = useState(canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState);
+    const [data, setData] = useState<ImportedDataState>(
+      canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState
+    );
 
-  useEffect(() => {
-    setData(canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState);
-  }, [canvas.value]);
+    useEffect(() => {
+      setData(canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState);
+    }, [canvas.value]);
 
-  const refreshOnDataChange = useCallback(
-    debounce(async debouncedData => {
-      try {
-        const excalidraw = await excalidrawRef.current?.readyPromise;
+    const refreshOnDataChange = useCallback(
+      debounce(async debouncedData => {
+        try {
+          const excalidraw = await combinedRef.current?.readyPromise;
 
-        excalidraw?.updateScene(debouncedData);
-        excalidraw?.scrollToContent();
-      } catch (ex) {
-        // Excalidraw attempts to perform state updates on an unmounted component
-      }
-    }, 200),
-    [excalidrawRef.current]
-  );
+          excalidraw?.updateScene(debouncedData);
+          excalidraw?.scrollToContent();
 
-  useEffect(() => {
-    // apparently when a canvas state is changed too fast
-    // it is not reflected by excalidraw (they don't have internal debounce for state change)
-    refreshOnDataChange(data);
-  }, [refreshOnDataChange, data]);
+          // don't have another way to signal that the canvas loading has finished
+          window.dispatchEvent(
+            new CustomEvent<CanvasLoadedEvent>(CANVAS_LOADED_EVENT_NAME, {
+              detail: {
+                canvasId: canvas.id,
+              },
+            })
+          );
+        } catch (ex) {
+          // Excalidraw attempts to perform state updates on an unmounted component
+        }
+      }, 200),
+      [combinedRef.current]
+    );
 
-  useEffect(() => {
-    const onScroll = async e => {
-      setOffsetHeight(e.target.offsetHeight);
-      const excalidraw = await excalidrawRef.current?.readyPromise;
-      if (excalidraw) {
-        excalidraw.refresh();
-      }
-    };
-    window.addEventListener('scroll', onScroll, true);
+    useEffect(() => {
+      // apparently when a canvas state is changed too fast
+      // it is not reflected by excalidraw (they don't have internal debounce for state change)
+      refreshOnDataChange(data);
+    }, [refreshOnDataChange, data]);
 
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [offsetHeight]);
+    useEffect(() => {
+      const onScroll = async e => {
+        setOffsetHeight(e.target.offsetHeight);
+        const excalidraw = await combinedRef.current?.readyPromise;
+        if (excalidraw) {
+          excalidraw.refresh();
+        }
+      };
+      window.addEventListener('scroll', onScroll, true);
 
-  const UIOptions: ExcalidrawProps['UIOptions'] = {
-    canvasActions: {
-      export: {
-        saveFileToDisk: false,
-        renderCustomUI: (exportedElements, appState) => (
-          <Box className={'Card'}>
-            <Box className={`Card-icon ${styles.excalidrawAlkemioBackground}`}>
-              <BackupIcon />
+      return () => window.removeEventListener('scroll', onScroll);
+    }, [offsetHeight]);
+
+    const UIOptions: ExcalidrawProps['UIOptions'] = {
+      canvasActions: {
+        export: {
+          saveFileToDisk: false,
+          renderCustomUI: (exportedElements, appState) => (
+            <Box className={'Card'}>
+              <Box className={`Card-icon ${styles.excalidrawAlkemioBackground}`}>
+                <BackupIcon />
+              </Box>
+              <h2>Save to the Alkemio</h2>
+              <Box className={'Card-details'}>Save the scene in Alkemio and share it with others.</Box>
+              <button
+                className={`ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon ${styles.excalidrawAlkemioBackground}`}
+                title="Save to Alkemio"
+                aria-label="Save to Alkemio"
+                type="button"
+                onClick={async () => {
+                  if (actions.onUpdate) {
+                    await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
+                    const element = document.body.getElementsByClassName('Modal__close')[0];
+                    ReactDOM.findDOMNode(element)?.dispatchEvent(
+                      new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
+                    );
+                  }
+                }}
+              >
+                <div className="ToolIcon__label">Save to Alkemio</div>
+              </button>
             </Box>
-            <h2>Save to the Alkemio cloud</h2>
-            <Box className={'Card-details'}>Save the scene in the Alkemio cloud and share it with others.</Box>
-            <button
-              className={`ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon ${styles.excalidrawAlkemioBackground}`}
-              title="Save to cloud"
-              aria-label="Save to cloud"
-              type="button"
-              onClick={async () => {
-                if (actions.onUpdate) {
-                  await actions.onUpdate({ ...data, elements: exportedElements, appState });
-                  const element = document.body.getElementsByClassName('Modal__close')[0];
-                  ReactDOM.findDOMNode(element)?.dispatchEvent(
-                    new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
-                  );
-                }
-              }}
-            >
-              <div className="ToolIcon__label">Save to Alkemio</div>
-            </button>
-          </Box>
-        ),
+          ),
+        },
       },
-    },
-  };
+    };
 
-  const { UIOptions: externalUIOptions, ...restOptions } = options || {};
+    const { UIOptions: externalUIOptions, ...restOptions } = options || {};
 
-  return (
-    <div className={styles.container}>
-      <Excalidraw
-        ref={excalidrawRef}
-        initialData={data}
-        UIOptions={{
-          ...UIOptions,
-          ...externalUIOptions,
-        }}
-        isCollaborating={false}
-        gridModeEnabled
-        viewModeEnabled
-        {...restOptions}
-      />
-    </div>
-  );
-};
+    return (
+      <div className={styles.container}>
+        <Excalidraw
+          ref={combinedRef as any}
+          initialData={data}
+          UIOptions={{
+            ...UIOptions,
+            ...externalUIOptions,
+          }}
+          isCollaborating={false}
+          gridModeEnabled
+          viewModeEnabled
+          {...restOptions}
+        />
+      </div>
+    );
+  }
+);
 
 export default CanvasWhiteboard;

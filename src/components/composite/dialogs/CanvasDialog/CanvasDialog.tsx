@@ -1,17 +1,36 @@
 import { serializeAsJSON } from '@excalidraw/excalidraw';
-import { CheckCircle } from '@mui/icons-material';
+import { ArrowDropDown, CheckCircle, Save } from '@mui/icons-material';
 import GradeIcon from '@mui/icons-material/Grade';
 import LockClockIcon from '@mui/icons-material/LockClock';
-import { Box, Button, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@mui/material';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  CircularProgress,
+  ClickAwayListener,
+  Grow,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+} from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Canvas, CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import { CanvasItemState } from '../../lists/Canvas/CanvasListItem';
+import TranslationKey from '../../../../types/TranslationKey';
+import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
+import { CanvasLoadedEvent, CANVAS_LOADED_EVENT_NAME } from '../../../../types/events';
 
 interface CanvasDialogProps {
   entities: {
@@ -44,6 +63,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     padding: `${theme.spacing(0)} ${theme.spacing(1)}`,
+    zIndex: 2,
   },
   dialogContent: {
     padding: theme.spacing(2),
@@ -54,30 +74,103 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const CanvasOption = ({ canvas }) => {
-  switch (canvas.checkout?.status) {
-    case CanvasCheckoutStateEnum.Available:
-      return <LockClockIcon />;
-    case CanvasCheckoutStateEnum.CheckedOut:
-      return <CheckCircle />;
-    default:
-      return <></>;
+type Option = {
+  titleId: TranslationKey;
+  enabledWhen: (canvas: Canvas, hasChanged?: boolean) => boolean;
+  icon: JSX.Element;
+};
+type CanvasOptionTypes = 'save' | 'checkin' | 'checkout';
+const canvasOptions: Record<CanvasOptionTypes, Option> = {
+  save: {
+    titleId: 'pages.canvas.state-actions.save',
+    enabledWhen: (canvas, hasChanged) =>
+      canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && Boolean(hasChanged),
+    icon: <Save />,
+  },
+  checkin: {
+    titleId: 'pages.canvas.state-actions.check-in',
+    enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut,
+    icon: <CheckCircle />,
+  },
+  checkout: {
+    titleId: 'pages.canvas.state-actions.check-out',
+    enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.Available,
+    icon: <LockClockIcon />,
+  },
+  // saveAndCheckin: {
+  //   titleId: 'pages.canvas.state-actions.save-and-check-in',
+  //   enabledWhen: (canvas, hasChanged) =>
+  //     canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && Boolean(hasChanged),
+  // },
+};
+
+const findMostSuitableOption = (canvas?: Canvas, hasChanged?: boolean) => {
+  if (!canvas) {
+    return 'checkout';
   }
+
+  if (canvasOptions.checkout.enabledWhen(canvas)) {
+    return 'checkout';
+  }
+
+  if (canvasOptions.save.enabledWhen(canvas, hasChanged)) {
+    return 'save';
+  }
+
+  return 'checkin';
 };
 
 const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state }) => {
   const { t } = useTranslation();
   const { canvas } = entities;
-  const styles = useStyles();
+  const [isDirty, setIsDirty] = useState(true);
+  const canvasRef = useRef<ExcalidrawAPIRefValue>(null);
 
-  const onClose = () => {
-    actions.onCancel();
+  // ui
+  const styles = useStyles();
+  const [selectedOption, setSelectedOption] = useState<CanvasOptionTypes>(findMostSuitableOption(canvas, isDirty));
+  const anchorRef = React.useRef<HTMLDivElement>(null);
+  const [optionPopperOpen, setOptionPopperOpen] = useState(false);
+
+  useEffect(() => {
+    const listener = (_: CustomEvent<CanvasLoadedEvent>) => {
+      // we have no reliable way to know when a canvas content has been changed,
+      // thus allowing the user to always be able to perform save even until we figure it out
+      // setIsDirty(false);
+    };
+
+    window.addEventListener(CANVAS_LOADED_EVENT_NAME, listener);
+
+    return () => window.removeEventListener(CANVAS_LOADED_EVENT_NAME, listener);
+  }, [setIsDirty]);
+
+  useEffect(() => {
+    setSelectedOption(findMostSuitableOption(canvas, isDirty));
+  }, [canvas, isDirty]);
+
+  const actionMap: { [key in keyof typeof canvasOptions]: (canvas) => void } = {
+    checkin: c => actions.onCheckin(c),
+    checkout: c => actions.onCheckout(c),
+    save: c => {
+      canvasRef.current?.readyPromise?.then(canvasApi => {
+        const appState = canvasApi.getAppState();
+        const elements = canvasApi.getSceneElements();
+        actions.onUpdate({ ...c, value: serializeAsJSON(elements, appState) });
+      });
+    },
   };
 
-  const checkInOutButtonText =
-    canvas?.checkout?.status === CanvasCheckoutStateEnum.Available
-      ? 'pages.canvas.state-actions.check-out'
-      : 'pages.canvas.state-actions.check-in';
+  const onClose = () => {
+    setOptionPopperOpen(false);
+    actions.onCancel();
+  };
+  const handlePopperClose = event => {
+    if (anchorRef.current && anchorRef.current?.contains(event.target)) {
+      return;
+    }
+
+    setOptionPopperOpen(false);
+  };
 
   const loading = state?.changingCanvasLockState || state?.loadingCanvasValue || state?.updatingCanvas;
 
@@ -105,7 +198,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
               <CanvasItemState canvas={canvas} />
             </ListItemIcon>
             <ListItemText primary={canvas?.name} secondary={canvas?.checkout?.status.toUpperCase()} />
-            <ListItemSecondaryAction>
+            <ListItemSecondaryAction sx={{ display: 'flex' }}>
               {(options.canCheckout || options.canEdit) && !canvas?.isTemplate && (
                 <Button
                   startIcon={state?.updatingCanvas ? <Loading /> : <GradeIcon />}
@@ -120,21 +213,71 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
               )}
               <Box p={0.5} display="inline-flex" />
               {(options.canCheckout || options.canEdit) && (
-                <Button
-                  startIcon={state?.updatingCanvas ? <Loading /> : <CanvasOption canvas={canvas} />}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    if (canvas?.checkout?.status === CanvasCheckoutStateEnum.Available) {
-                      canvas && actions.onCheckout(canvas);
-                    } else {
-                      canvas && actions.onCheckin(canvas);
-                    }
-                  }}
-                  disabled={loading}
-                >
-                  {t(checkInOutButtonText)}
-                </Button>
+                <>
+                  <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
+                    <Button
+                      startIcon={
+                        state?.updatingCanvas ? (
+                          <CircularProgress sx={{ width: '0.8em' }} />
+                        ) : (
+                          canvasOptions[selectedOption].icon
+                        )
+                      }
+                      onClick={() => actionMap[selectedOption](canvas)}
+                    >
+                      {t(canvasOptions[selectedOption].titleId)}
+                    </Button>
+                    <Button
+                      size="small"
+                      aria-controls={optionPopperOpen ? 'split-button-menu' : undefined}
+                      aria-expanded={optionPopperOpen ? 'true' : undefined}
+                      aria-label="select merge strategy"
+                      aria-haspopup="menu"
+                      onClick={() => {
+                        setOptionPopperOpen(x => !x);
+                      }}
+                    >
+                      <ArrowDropDown />
+                    </Button>
+                  </ButtonGroup>
+                  <Popper
+                    open={optionPopperOpen}
+                    anchorEl={anchorRef.current}
+                    role={undefined}
+                    transition
+                    disablePortal
+                  >
+                    {({ TransitionProps, placement }) => (
+                      <Grow
+                        {...TransitionProps}
+                        style={{
+                          transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+                        }}
+                      >
+                        <Paper>
+                          <ClickAwayListener onClickAway={handlePopperClose}>
+                            <MenuList id="split-button-menu">
+                              {Object.keys(canvasOptions).map((optionKey: string) => (
+                                <MenuItem
+                                  key={canvasOptions[optionKey].titleId}
+                                  disabled={!canvasOptions[optionKey].enabledWhen(canvas, isDirty)}
+                                  selected={optionKey === selectedOption}
+                                  onClick={_ => {
+                                    setSelectedOption(optionKey as CanvasOptionTypes);
+                                    setOptionPopperOpen(false);
+                                  }}
+                                >
+                                  <ListItemIcon>{canvasOptions[optionKey].icon}</ListItemIcon>
+                                  <ListItemText>{t(canvasOptions[optionKey].titleId)}</ListItemText>
+                                </MenuItem>
+                              ))}
+                            </MenuList>
+                          </ClickAwayListener>
+                        </Paper>
+                      </Grow>
+                    )}
+                  </Popper>
+                </>
               )}
             </ListItemSecondaryAction>
           </ListItem>
@@ -144,6 +287,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
         {!state?.loadingCanvasValue && canvas && (
           <CanvasWhiteboard
             entities={{ canvas }}
+            ref={canvasRef}
             options={{
               viewModeEnabled: !options.canEdit,
               UIOptions: options.canEdit

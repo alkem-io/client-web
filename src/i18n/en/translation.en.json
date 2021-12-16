@@ -825,7 +825,9 @@
       "state-actions": {
         "check-out": "Check-out",
         "check-in": "Check-in",
-        "save-as-template": "Save as template"
+        "save-as-template": "Save as template",
+        "save-and-check-in": "Save & Check-in",
+        "save": "Save"
       },
       "delete": {
         "confirmation-title": "Deleting <b>{{ blockName }}</b>",
