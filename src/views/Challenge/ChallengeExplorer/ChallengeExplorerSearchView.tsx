@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
-import { CardContainer } from '../../../components/core/CardContainer';
-import ChallengeExplorerSearchEnricherContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
-import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
-import getActivityCount from '../../../utils/get-activity-count';
-import ContributionCard from '../../../components/composite/common/cards/ContributionCard/ContributionCard';
-import { buildChallengeUrl } from '../../../utils/urlBuilders';
-import ChallengeExplorerSearchContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
 import { useTranslation } from 'react-i18next';
-import GroupBy from '../../../components/core/GroupBy/GroupBy';
-import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
 import { Accordion } from '../../../components/composite/common/Accordion/Accordion';
+import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
+import EntityContributionCard from '../../../components/composite/common/cards/ContributionCard/EntityContributionCard';
+import { CardContainer } from '../../../components/core/CardContainer';
+import GroupBy from '../../../components/core/GroupBy/GroupBy';
+import ChallengeExplorerSearchContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
+import ChallengeExplorerSearchEnricherContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
 import EcoverseNameResolver from '../../../containers/ecoverse/EcoverseNameResolver';
+import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
+import getActivityCount from '../../../utils/get-activity-count';
+import { buildChallengeUrl } from '../../../utils/urlBuilders';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -55,13 +55,13 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
                               },
                             ];
                             return (
-                              <ContributionCard
+                              <EntityContributionCard
+                                activities={activities}
                                 loading={state.loading}
                                 details={{
-                                  name: challenge.displayName,
-                                  activity: activities,
+                                  headerText: challenge.displayName,
                                   tags: challenge.tagset?.tags ?? [],
-                                  image: challenge.context?.visual?.background ?? '',
+                                  mediaUrl: challenge.context?.visual?.background ?? '',
                                   url: challenge.hubNameId && buildChallengeUrl(challenge.hubNameId, challenge.nameID),
                                 }}
                               />

@@ -3,7 +3,7 @@ import { Button, Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import { ContributionCard } from '../../components/composite/common/cards';
+import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardOpportunityStatistics from '../../components/composite/common/sections/DashboardOpportunityStatistics';
@@ -132,12 +132,12 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               {projects.slice(0, PROJECTS_NUMBER_IN_SECTION).map((x, i) => {
                 return (
                   <Grid key={i} item>
-                    <ContributionCard
+                    <EntityContributionCard
                       loading={loading}
+                      activities={[]}
                       details={{
-                        name: x.displayName,
-                        tags: ['no tags'],
-                        image: '',
+                        headerText: x.displayName,
+                        mediaUrl: '',
                         url: 'projects',
                       }}
                     />

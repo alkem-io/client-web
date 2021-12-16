@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accordion } from '../../components/composite/common/Accordion/Accordion';
-import { ContributionCard } from '../../components/composite/common/cards';
+import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import SearchComponent from '../../components/composite/common/SearchComponent/SearchComponent';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { CardContainer } from '../../components/core/CardContainer';
@@ -64,33 +64,23 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
                       }
                       const { displayName = '', activity, tags, context, url } = cardProps;
                       return (
-                        <ContributionCard
+                        <EntityContributionCard
                           key={i}
+                          activities={[
+                            {
+                              name: 'Opportunities',
+                              digit: getActivityCount(activity, 'opportunities') || 0,
+                              color: 'primary',
+                            },
+                            { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
+                          ]}
                           details={{
-                            name: displayName,
-                            activity: [
-                              {
-                                name: 'Opportunities',
-                                digit: getActivityCount(activity, 'opportunities') || 0,
-                                color: 'primary',
-                              },
-                              { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
-                            ],
+                            headerText: displayName,
                             tags: tags,
-                            image: context?.visual?.background || '',
+                            mediaUrl: context?.visual?.background || '',
                             url: url,
                           }}
                         />
-                        // <ChallengeCard
-                        //   key={i}
-                        //   id={cardProps.id}
-                        //   displayName={cardProps.displayName}
-                        //   activity={cardProps.activity}
-                        //   context={cardProps.context}
-                        //   isMember={cardProps.isMember}
-                        //   tags={cardProps.tags}
-                        //   url={cardProps.url}
-                        // />
                       );
                     }}
                   </ChallengeCardContainer>
@@ -156,22 +146,22 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
                   >
                     <CardContainer>
                       {cEntities.challenges.map(({ id, nameID, displayName, context, activity = [], tagset }, i) => (
-                        <ContributionCard
+                        <EntityContributionCard
                           key={i}
                           loading={loading}
+                          activities={[
+                            {
+                              name: 'Opportunities',
+                              digit: getActivityCount(activity, 'opportunities') || 0,
+                              color: 'primary',
+                            },
+                            { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
+                          ]}
                           details={{
-                            name: displayName,
-                            activity: [
-                              {
-                                name: 'Opportunities',
-                                digit: getActivityCount(activity, 'opportunities') || 0,
-                                color: 'primary',
-                              },
-                              { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
-                            ],
+                            headerText: displayName,
                             tags: tagset?.tags || [],
-                            tag: user?.ofChallenge(id) ? t('common.member') : '',
-                            image: context?.visual?.background || '',
+                            labelText: user?.ofChallenge(id) ? t('common.member') : '',
+                            mediaUrl: context?.visual?.background || '',
                             url: buildChallengeUrl(hubNameId, nameID),
                           }}
                         />
