@@ -3,8 +3,11 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import CanvasActionsContainer from '../../containers/canvas/CanvasActionsContainer';
 import { CanvasProvider } from '../../containers/canvas/CanvasProvider';
+import { useConfig } from '../../hooks';
+import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
 import { ChallengeProfileFragment } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
+import { Error404 } from '../../pages';
 import CanvasManagementView from '../Canvas/CanvasManagementView';
 
 export interface ChallengeContextViewEntities {
@@ -24,6 +27,10 @@ const ChallengeCanvasManagementView: FC<ChallengeCanvasManagementViewProps> = ({
   const contextID = challenge.context?.id || '';
 
   const { t } = useTranslation();
+
+  const { isFeatureEnabled } = useConfig();
+
+  if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)) return <Error404 />;
 
   return (
     <CanvasProvider>

@@ -13,7 +13,8 @@ import { useRouteMatch } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
 import { OpportunityContainerEntities } from '../../containers';
-import { useOpportunity } from '../../hooks';
+import { useConfig, useOpportunity } from '../../hooks';
+import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 
 const routes = {
@@ -57,6 +58,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
     },
     {} as OpportunityRoutesType
   );
+  const { isFeatureEnabled } = useConfig();
 
   return (
     <>
@@ -99,7 +101,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
           to={urlGetter('discussions')}
         /> */}
         <NavigationTab
-          disabled={!communityReadAccess}
+          disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           component={RouterLink}
