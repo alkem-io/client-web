@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { SectionSpacer } from '../../../../core/Section/Section';
-import { Activities, ActivityItem } from '../../ActivityPanel/Activities';
+import ActivitiesV2 from '../../Activities/ActivitiesV2';
+import { ActivityItem } from '../../ActivityPanel/Activities';
 import ContributionCardV2, { ContributionCardV2Props } from './ContributionCardV2';
 
 export interface HubContributionCardProps extends ContributionCardV2Props {
@@ -11,7 +12,7 @@ const HubContributionCard: FC<HubContributionCardProps> = ({ details, classes, l
   return (
     <ContributionCardV2 details={details} classes={classes} loading={loading}>
       <SectionSpacer double />
-      <Activities items={activities} />
+      <ActivitiesV2 activity={activities} />
       <SectionSpacer />
       {children}
     </ContributionCardV2>

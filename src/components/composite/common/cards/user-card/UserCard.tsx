@@ -14,8 +14,7 @@ import TagsComponent from '../../TagsComponent/TagsComponent';
 // todo: unify card height on a later stage
 // Per requirements in {@link https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/}
 export const USER_CARD_HEIGHT = 416;
-const IMAGE_HEIGHT = 188;
-const TAG_CONTAINER_HEIGHT = 82;
+const TAG_CONTAINER_HEIGHT = 72;
 const TAG_DISPLAY_COUNT = 3;
 const INITIAL_ELEVATION = 1;
 const FINAL_ELEVATION = 8;
@@ -23,13 +22,16 @@ const FINAL_ELEVATION = 8;
 // css per design -> https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/
 const useStyles = makeStyles(theme => ({
   avatar: {
-    height: IMAGE_HEIGHT,
-    width: IMAGE_HEIGHT,
+    height: '100%',
+    width: '100%',
   },
   imageContainer: {
     display: 'flex',
     justifyContent: 'center',
-    height: IMAGE_HEIGHT,
+    aspectRatio: '1/1',
+  },
+  card: {
+    minWidth: theme.spacing(32),
   },
   cardContent: {
     padding: 0,
@@ -41,6 +43,8 @@ const useStyles = makeStyles(theme => ({
   },
   tagBoxSize: {
     height: TAG_CONTAINER_HEIGHT,
+    display: 'flex',
+    flexDirection: 'column-reverse',
   },
   infoRowHeight: {
     height: (theme.typography.body1.fontSize as number) * (theme.typography.body1.lineHeight as number),
@@ -71,6 +75,7 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
         elevation={elevation}
         onMouseOver={() => setElevation(FINAL_ELEVATION)}
         onMouseOut={() => setElevation(INITIAL_ELEVATION)}
+        className={styles.card}
       >
         <Box padding={0.8} paddingBottom={1.5}>
           <div className={styles.imageContainer}>
@@ -87,15 +92,15 @@ const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, ta
           <CardContent className={styles.cardContent}>
             <Grid container spacing={1}>
               <Grid item>
-                <Typography color="textPrimary" variant={'h3'} noWrap={true}>
+                <Typography color="primary" variant={'h5'} noWrap={true} fontWeight={600}>
                   {displayName}
                 </Typography>
               </Grid>
-              <Grid container item>
+              <Grid item xs={12}>
                 <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" />
                 <InfoRow text={location || 'No location specified'} icon={LocationOnIcon} ariaLabel="Location" />
               </Grid>
-              <Grid item>
+              <Grid item xs={12} display="flex">
                 <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} />
               </Grid>
             </Grid>
