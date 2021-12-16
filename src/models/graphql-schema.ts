@@ -6616,6 +6616,17 @@ export type CommunicationUpdateMessageReceivedSubscription = {
   };
 };
 
+export type CommunicationDiscussionMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type CommunicationDiscussionMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  communicationDiscussionMessageReceived: {
+    __typename?: 'CommunicationDiscussionMessageReceived';
+    discussionID: string;
+    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+  };
+};
+
 export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;

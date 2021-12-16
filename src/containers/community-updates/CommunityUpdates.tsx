@@ -141,7 +141,7 @@ export function useCommunityUpdateSubscriptionSelector(initialMessages?: Message
 
   const messages =
     useSelector(communityUpdateService, state => {
-      return state.context.messagesByRoom[roomId || ''];
+      return state.context.messagesByUpdate[roomId || ''];
     }) || [];
 
   const zippedMessages = useMemo(() => {
