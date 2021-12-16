@@ -65,7 +65,7 @@ export const useGraphQLClient = (
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         // building the url plainly instead of using URL
         // URL forces the default protocol on the uri
-        const wsUrl = `${wsProtocol}//${window.location.hostname}:${window.location.port}/${graphQLEndpoint}`;
+        const wsUrl = `${wsProtocol}//${window.location.hostname}:${window.location.port}/graphql`;
         const wsLink = new WebSocketLink({
           uri: wsUrl,
           options: {
