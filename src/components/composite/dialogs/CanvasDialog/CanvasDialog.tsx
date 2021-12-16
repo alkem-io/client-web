@@ -1,12 +1,13 @@
 import { serializeAsJSON } from '@excalidraw/excalidraw';
+import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { ArrowDropDown, CheckCircle, Save } from '@mui/icons-material';
 import GradeIcon from '@mui/icons-material/Grade';
 import LockClockIcon from '@mui/icons-material/LockClock';
+import LoadingButton from '@mui/lab/LoadingButton';
 import {
   Box,
   Button,
   ButtonGroup,
-  CircularProgress,
   ClickAwayListener,
   Grow,
   List,
@@ -21,26 +22,26 @@ import {
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
+import { isEqual } from 'lodash';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CanvasWithoutValue } from '../../../../models/entities/canvas';
 import { Canvas, CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
+import { CanvasLoadedEvent, CANVAS_LOADED_EVENT_NAME } from '../../../../types/events';
+import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import { CanvasItemState } from '../../lists/Canvas/CanvasListItem';
-import TranslationKey from '../../../../types/TranslationKey';
-import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
-import { CanvasLoadedEvent, CANVAS_LOADED_EVENT_NAME } from '../../../../types/events';
-import { isEqual } from 'lodash';
 
 interface CanvasDialogProps {
   entities: {
-    canvas?: Canvas;
+    canvas?: CanvasWithoutValue & { value?: Canvas['value'] };
   };
   actions: {
     onCancel: () => void;
-    onCheckin: (canvas: Canvas) => void;
-    onCheckout: (canvas: Canvas) => void;
+    onCheckin: (canvas: CanvasWithoutValue) => void;
+    onCheckout: (canvas: CanvasWithoutValue) => void;
     onMarkAsTemplate: (canvas: Canvas) => void;
     onUpdate: (canvas: Canvas) => void;
   };
@@ -77,7 +78,7 @@ const useStyles = makeStyles(theme => ({
 
 type Option = {
   titleId: TranslationKey;
-  enabledWhen: (canvas: Canvas, hasChanged?: boolean) => boolean;
+  enabledWhen: (canvas: CanvasWithoutValue, hasChanged?: boolean) => boolean;
   icon: JSX.Element;
 };
 type CanvasOptionTypes = 'save' | 'checkin' | 'checkout';
@@ -105,7 +106,7 @@ const canvasOptions: Record<CanvasOptionTypes, Option> = {
   // },
 };
 
-const findMostSuitableOption = (canvas?: Canvas, hasChanged?: boolean) => {
+const findMostSuitableOption = (canvas?: CanvasWithoutValue, hasChanged?: boolean) => {
   if (!canvas) {
     return 'checkout';
   }
@@ -218,33 +219,35 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             <ListItemText primary={canvas?.name} secondary={canvas?.checkout?.status.toUpperCase()} />
             <ListItemSecondaryAction sx={{ display: 'flex' }}>
               {(options.canCheckout || options.canEdit) && !canvas?.isTemplate && (
-                <Button
-                  startIcon={state?.updatingCanvas ? <Loading /> : <GradeIcon />}
-                  color="primary"
+                <LoadingButton
+                  startIcon={<GradeIcon />}
+                  loadingPosition="start"
+                  loading={state?.changingCanvasLockState || state?.updatingCanvas}
                   onClick={() => {
-                    canvas && actions.onMarkAsTemplate(canvas);
+                    if (!canvas?.value) {
+                      return;
+                    }
+                    const canvasValue = canvas.value || '';
+                    actions.onMarkAsTemplate({ value: canvasValue, ...canvas });
                   }}
                   disabled={loading}
                 >
                   {t('pages.canvas.state-actions.save-as-template')}
-                </Button>
+                </LoadingButton>
               )}
               <Box p={0.5} display="inline-flex" />
               {(options.canCheckout || options.canEdit) && (
                 <>
                   <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-                    <Button
-                      startIcon={
-                        state?.updatingCanvas ? (
-                          <CircularProgress sx={{ width: '0.8em' }} />
-                        ) : (
-                          canvasOptions[selectedOption].icon
-                        )
-                      }
+                    <LoadingButton
+                      startIcon={canvasOptions[selectedOption].icon}
                       onClick={() => actionMap[selectedOption](canvas)}
+                      loadingPosition="start"
+                      variant="contained"
+                      loading={state?.changingCanvasLockState || state?.updatingCanvas}
                     >
                       {t(canvasOptions[selectedOption].titleId)}
-                    </Button>
+                    </LoadingButton>
                     <Button
                       size="small"
                       aria-controls={optionPopperOpen ? 'split-button-menu' : undefined}

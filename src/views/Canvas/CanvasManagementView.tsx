@@ -7,6 +7,7 @@ import CanvasDialog from '../../components/composite/dialogs/CanvasDialog/Canvas
 import ConfirmationDialog from '../../components/composite/dialogs/ConfirmationDialog';
 import { ICanvasActions } from '../../containers/canvas/CanvasActionsContainer';
 import { ITemplateQueryResult } from '../../containers/canvas/CanvasProvider';
+import CanvasValueContainer from '../../containers/canvas/CanvasValueContainer';
 import { useUserContext } from '../../hooks';
 import { CanvasWithoutValue } from '../../models/entities/canvas';
 import { AuthorizationPrivilege, Canvas, CanvasCheckoutStateEnum } from '../../models/graphql-schema';
@@ -48,36 +49,23 @@ export interface CanvasManagementViewProps
   > {}
 
 const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state }) => {
-  const [activeCanvas, setActiveCanvas] = useState<Canvas | undefined>(undefined);
+  const [activeCanvasId, setActiveCanvasId] = useState<string | undefined>(undefined);
   const [deletableCanvas, setDeletableCanvas] = useState<CanvasWithoutValue | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
   const { t } = useTranslation();
 
-  const loadCanvas = useCallback<typeof actions['onLoad']>(
-    async canvas => {
-      setActiveCanvas(canvas as any);
-
-      if (canvas && actions.onLoad) {
-        const loadedCanvas = await actions.onLoad(canvas);
-        setActiveCanvas(loadedCanvas);
-
-        return loadedCanvas;
-      }
+  const loadCanvas = useCallback(
+    (canvas: Pick<Canvas, 'id'>) => {
+      setActiveCanvasId(canvas.id);
     },
-    [actions.onLoad, setActiveCanvas]
+    [setActiveCanvasId]
   );
 
   const actualActiveCanvas = useMemo(
-    () =>
-      activeCanvas
-        ? {
-            ...activeCanvas,
-            ...entities.canvases.find(c => c.id === activeCanvas?.id),
-          }
-        : undefined,
-    [activeCanvas, entities.canvases]
+    () => (activeCanvasId ? entities.canvases.find(c => c.id === activeCanvasId) : undefined),
+    [activeCanvasId, entities.canvases]
   );
 
   const isCanvasCheckedoutByMe =
@@ -137,25 +125,29 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
           />
         </Grid>
       </Grid>
-      <CanvasDialog
-        entities={{ canvas: actualActiveCanvas }}
-        actions={{
-          onCancel: () => setActiveCanvas(undefined),
-          onCheckin: actions.onCheckin,
-          onCheckout: actions.onCheckout,
-          onMarkAsTemplate: canvas => {
-            actions.onPromoteToTemplate(canvas);
-            setActiveCanvas(undefined);
-          },
-          onUpdate: actions.onUpdate,
-        }}
-        options={{
-          show: Boolean(activeCanvas),
-          canCheckout: isCanvasAvailable && doIHavePermissionsToEdit,
-          canEdit: isCanvasCheckedoutByMe && doIHavePermissionsToEdit,
-        }}
-        state={state}
-      />
+      <CanvasValueContainer canvasId={activeCanvasId}>
+        {entities => (
+          <CanvasDialog
+            entities={{ canvas: entities.canvas }}
+            actions={{
+              onCancel: () => setActiveCanvasId(undefined),
+              onCheckin: actions.onCheckin,
+              onCheckout: actions.onCheckout,
+              onMarkAsTemplate: canvas => {
+                actions.onPromoteToTemplate(canvas);
+                setActiveCanvasId(undefined);
+              },
+              onUpdate: actions.onUpdate,
+            }}
+            options={{
+              show: Boolean(activeCanvasId),
+              canCheckout: isCanvasAvailable && doIHavePermissionsToEdit,
+              canEdit: isCanvasCheckedoutByMe && doIHavePermissionsToEdit,
+            }}
+            state={state}
+          />
+        )}
+      </CanvasValueContainer>
       <CanvasCreateDialog
         entities={{
           contextID: entities.contextID,
@@ -167,7 +159,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
             actions.onCreate(input);
             setShowCreateCanvasDialog(false);
           },
-          onLoad: actions.onLoad,
         }}
         options={{
           show: showCreateCanvasDialog,

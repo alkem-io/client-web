@@ -18,6 +18,7 @@ import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ITemplateQueryResult, TemplateQuery } from '../../../../containers/canvas/CanvasProvider';
+import CanvasValueContainer, { CanvasValueParams } from '../../../../containers/canvas/CanvasValueContainer';
 import { CanvasWithoutValue } from '../../../../models/entities/canvas';
 import { Canvas, CreateCanvasOnContextInput } from '../../../../models/graphql-schema';
 import { Loading } from '../../../core';
@@ -199,33 +200,23 @@ interface CreateCanvasStepsProps {
   entities: {
     templates: Record<string, ITemplateQueryResult>;
     contextID: string;
+    template?: Canvas;
+    name: string;
   };
   actions: {
     onConfirm: (input: CreateCanvasOnContextInput) => void;
-    onLoad: (canvas: CanvasWithoutValue, query: TemplateQuery) => Promise<Canvas | undefined>;
+    onNameChange: (name: string) => void;
+    onTemplateSelected: (canvas?: CanvasWithoutValue, query?: TemplateQuery) => void;
   };
   state: ITemplateStepProps['state'];
 }
 
 const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, state }) => {
-  const { templates, contextID } = entities;
-  const { onLoad, onConfirm } = actions;
+  const { templates, contextID, name, template } = entities;
+  const { onConfirm } = actions;
 
   // form
-  const [name, setName] = useState<string>('New Canvas');
-  const [selectedTemplate, setSelectedTemplate] = useState<Canvas>();
-
   const styles = useStyles();
-
-  // actions
-  const onSelect = async (canvas: CanvasWithoutValue, query: TemplateQuery) => {
-    if (canvas?.id === selectedTemplate?.id) {
-      setSelectedTemplate(undefined);
-      return;
-    }
-    const loadedCanvas = await onLoad(canvas, query);
-    setSelectedTemplate(loadedCanvas);
-  };
 
   const [activeStep, setActiveStep] = React.useState<StepDefinition>(steps.name);
   const [skipped, setSkipped] = React.useState(new Set<StepDefinition>());
@@ -242,11 +233,18 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
 
   const handleNext = () => {
     if (activeStep === steps.completion && name) {
+      let value: string | undefined = undefined;
+
+      if (template) {
+        value = (template as Canvas)?.value;
+      }
+
       onConfirm({
         contextID,
         name,
-        value: selectedTemplate?.value,
+        value: value,
       });
+
       return;
     }
 
@@ -272,7 +270,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
     }
 
     if (activeStep === steps.template) {
-      setSelectedTemplate(undefined);
+      actions.onTemplateSelected(undefined);
     }
 
     setActiveStep(prevActiveStep => findStepByIndex(prevActiveStep.index + 1) as StepDefinition);
@@ -305,15 +303,20 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
         </Stepper>
       </Paper>
       <DialogContent classes={{ root: styles.dialogContent }}>
-        {activeStep === steps.name && <NamingStep entities={{ name }} actions={{ onNameChange: setName }} />}
+        {activeStep === steps.name && (
+          <NamingStep entities={{ name }} actions={{ onNameChange: actions.onNameChange }} />
+        )}
         {activeStep === steps.template && (
           <TemplateStep
-            entities={{ templates, selectedCanvas: selectedTemplate }}
-            actions={{ onTemplateSelected: onSelect }}
-            state={state}
+            entities={{ templates, selectedCanvas: template }}
+            actions={{ onTemplateSelected: actions.onTemplateSelected }}
+            state={{
+              templatesLoading: state.templatesLoading,
+              canvasLoading: state.canvasLoading,
+            }}
           />
         )}
-        {activeStep === steps.completion && <CompletionStep entities={{ name, canvas: selectedTemplate }} />}
+        {activeStep === steps.completion && <CompletionStep entities={{ name, canvas: template }} />}
       </DialogContent>
       <DialogActions>
         <Button color="inherit" disabled={activeStep === stepsArray[0]} onClick={handleBack} sx={{ mr: 1 }}>
@@ -340,7 +343,6 @@ interface CanvasCreateDialogProps {
   actions: {
     onCancel: () => void;
     onConfirm: (input: CreateCanvasOnContextInput) => void;
-    onLoad: (canvas: CanvasWithoutValue, query: TemplateQuery) => Promise<Canvas | undefined>;
   };
   options: {
     show: boolean;
@@ -351,6 +353,9 @@ interface CanvasCreateDialogProps {
 const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, options }) => {
   const { t } = useTranslation();
   const styles = useStyles();
+
+  const [name, setName] = useState<string>('New Canvas');
+  const [selectedCanvasParams, setSelectedCanvasParams] = useState<CanvasValueParams>();
 
   return (
     <Dialog
@@ -371,7 +376,27 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
       >
         {t('pages.canvas.create-dialog.header')}
       </DialogTitle>
-      <CreateCanvasSteps entities={entities} actions={actions} state={{}} />
+      <CanvasValueContainer canvasId={selectedCanvasParams?.canvasId} params={selectedCanvasParams?.params}>
+        {(valueEntities1, state) => (
+          <CreateCanvasSteps
+            entities={{
+              ...entities,
+              name,
+              template: valueEntities1.canvas,
+            }}
+            actions={{
+              ...actions,
+              onNameChange: setName,
+              onTemplateSelected: (canvas, query) =>
+                setSelectedCanvasParams({
+                  canvasId: canvas?.id,
+                  params: query,
+                }),
+            }}
+            state={{ canvasLoading: state.loadingCanvasValue }}
+          />
+        )}
+      </CanvasValueContainer>
     </Dialog>
   );
 };

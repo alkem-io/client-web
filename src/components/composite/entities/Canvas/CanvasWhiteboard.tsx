@@ -8,6 +8,7 @@ import { debounce } from 'lodash';
 import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../hooks/useCombinedRefs';
+import { CanvasWithoutValue } from '../../../../models/entities/canvas';
 import { Canvas } from '../../../../models/graphql-schema';
 import { CanvasLoadedEvent, CANVAS_LOADED_EVENT_NAME } from '../../../../types/events';
 
@@ -38,7 +39,7 @@ const initialExcalidrawState: ImportedDataState = {
 };
 
 export interface CanvasWhiteboardEntities {
-  canvas: Canvas;
+  canvas: CanvasWithoutValue & { value?: Canvas['value'] };
 }
 
 export interface CanvasWhiteboardActions {
@@ -71,7 +72,6 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
           const excalidraw = await combinedRef.current?.readyPromise;
 
           excalidraw?.updateScene(debouncedData);
-          excalidraw?.scrollToContent();
 
           // don't have another way to signal that the canvas loading has finished
           window.dispatchEvent(
@@ -84,7 +84,7 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
         } catch (ex) {
           // Excalidraw attempts to perform state updates on an unmounted component
         }
-      }, 200),
+      }, 100),
       [combinedRef.current]
     );
 
@@ -93,6 +93,18 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
       // it is not reflected by excalidraw (they don't have internal debounce for state change)
       refreshOnDataChange(data);
     }, [refreshOnDataChange, data]);
+
+    useEffect(() => {
+      async function scrollToContent() {
+        const excalidraw = await combinedRef.current?.readyPromise;
+
+        excalidraw?.scrollToContent();
+      }
+
+      if (canvas.id) {
+        scrollToContent();
+      }
+    }, [canvas.id]);
 
     useEffect(() => {
       const onScroll = async e => {

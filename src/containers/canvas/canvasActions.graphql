@@ -136,8 +136,10 @@ mutation deleteCanvasOnContext($input: DeleteCanvasOnContextInput!) {
 
 mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
   updateCanvas(canvasData: $input) {
-    ...CanvasDetails
-    ...CanvasValue
+    id
+    value
+    name
+    isTemplate
   }
 }
 

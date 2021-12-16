@@ -6957,31 +6957,7 @@ export type UpdateCanvasOnContextMutationVariables = Exact<{
 
 export type UpdateCanvasOnContextMutation = {
   __typename?: 'Mutation';
-  updateCanvas: {
-    __typename?: 'Canvas';
-    id: string;
-    value: string;
-    name: string;
-    isTemplate: boolean;
-    authorization?: Maybe<{
-      __typename?: 'Authorization';
-      id: string;
-      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
-      anonymousReadAccess: boolean;
-    }>;
-    checkout?: Maybe<{
-      __typename?: 'CanvasCheckout';
-      id: string;
-      lockedBy: string;
-      status: CanvasCheckoutStateEnum;
-      lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Maybe<Array<string>> };
-      authorization?: Maybe<{
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
-      }>;
-    }>;
-  };
+  updateCanvas: { __typename?: 'Canvas'; id: string; value: string; name: string; isTemplate: boolean };
 };
 
 export type CheckoutCanvasOnContextMutationVariables = Exact<{

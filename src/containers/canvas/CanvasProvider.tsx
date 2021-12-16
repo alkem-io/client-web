@@ -12,8 +12,8 @@ interface CanvasProviderProps {
 }
 
 export type TemplateQuery = {
-  [key in 'hubId' | 'challengeId' | 'opportunityId']?: string;
-};
+  [key in 'challengeId' | 'opportunityId']?: string;
+} & { hubId: string };
 
 export interface ITemplateQueryResult {
   query: TemplateQuery;
@@ -38,11 +38,13 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasesQuery({
     variables: { ecoverseId: ecoverseId, challengeId },
+    skip: !Boolean(challengeId),
     errorPolicy: 'all',
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCanvasesQuery({
     variables: { ecoverseId, opportunityId: opportunityId },
+    skip: !Boolean(opportunityId),
     errorPolicy: 'all',
   });
 

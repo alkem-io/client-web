@@ -10333,12 +10333,12 @@ export type DeleteCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
 export const UpdateCanvasOnContextDocument = gql`
   mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
     updateCanvas(canvasData: $input) {
-      ...CanvasDetails
-      ...CanvasValue
+      id
+      value
+      name
+      isTemplate
     }
   }
-  ${CanvasDetailsFragmentDoc}
-  ${CanvasValueFragmentDoc}
 `;
 export type UpdateCanvasOnContextMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateCanvasOnContextMutation,
