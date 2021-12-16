@@ -55,7 +55,7 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
   return (
     <Section {...props}>
       {children}
-      <Grid container spacing={1} justifyContent="space-between" alignItems="stretch">
+      <Grid container spacing={2} justifyContent="space-between" alignItems="stretch">
         {hubs.map((ecoverse, i) => {
           const activity = ecoverse.activity || [];
 
@@ -65,7 +65,7 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
                 details={{
                   headerText: ecoverse.displayName,
                   descriptionText: ecoverse?.context?.tagline,
-                  mediaUrl: ecoverse?.context?.visual?.background,
+                  mediaUrl: ecoverse?.context?.visual?.banner,
                   labelText: getCardLabel(ecoverse.id, ecoverse.authorization?.anonymousReadAccess || false),
                   tags: ecoverse.tagset?.tags || [],
                   tagsFor: 'hub',

@@ -80,7 +80,7 @@ export const Routing: FC = () => {
       <Route path={`/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
           <CommunityProvider>
-            <EcoverseRoute paths={[{ value: '/', name: t('common.hubs'), real: true }]} />
+            <EcoverseRoute paths={[{ value: '/', name: t('common.home'), real: true }]} />
           </CommunityProvider>
         </EcoverseProvider>
       </Route>

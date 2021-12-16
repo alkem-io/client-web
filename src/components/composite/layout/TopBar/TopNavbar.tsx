@@ -27,8 +27,8 @@ const Root = styled('div')(({ theme }) => ({
     },
 
     '&.Mui-disabled': {
-      backgroundColor: alpha(grey[800], 0.6),
-      color: theme.palette.common.white,
+      backgroundColor: alpha(grey[800], 0.0),
+      color: theme.palette.grey[400],
       opacity: 0.7,
     },
   },

@@ -9164,9 +9164,16 @@ export const UserAvatarsDocument = gql`
       id
       nameID
       displayName
+      city
+      country
       profile {
         id
         avatar
+        tagsets {
+          id
+          name
+          tags
+        }
       }
     }
   }
