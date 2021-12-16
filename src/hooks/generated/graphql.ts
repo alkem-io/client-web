@@ -329,6 +329,11 @@ export const ContextDetailsFragmentDoc = gql`
     visual {
       ...ContextVisual
     }
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
   }
   ${ContextVisualFragmentDoc}
 `;
@@ -995,6 +1000,11 @@ export const OpportunityPageFragmentDoc = gql`
       who
       impact
       vision
+      authorization {
+        id
+        anonymousReadAccess
+        myPrivileges
+      }
       references {
         id
         name

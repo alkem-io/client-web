@@ -10,7 +10,7 @@ import { ITemplateQueryResult } from '../../containers/canvas/CanvasProvider';
 import CanvasValueContainer from '../../containers/canvas/CanvasValueContainer';
 import { useUserContext } from '../../hooks';
 import { CanvasWithoutValue } from '../../models/entities/canvas';
-import { AuthorizationPrivilege, Canvas, CanvasCheckoutStateEnum } from '../../models/graphql-schema';
+import { Canvas, CanvasCheckoutStateEnum } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { CanvasListView } from './CanvasListView';
 
@@ -37,7 +37,9 @@ export interface ContextViewState {
 }
 
 export interface CanvasManagementViewOptions {
-  isEditable?: boolean;
+  canUpdate?: boolean;
+  canCreate?: boolean;
+  canDelete?: boolean;
 }
 
 export interface CanvasManagementViewProps
@@ -48,7 +50,7 @@ export interface CanvasManagementViewProps
     CanvasManagementViewOptions
   > {}
 
-const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state }) => {
+const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state, options }) => {
   const [activeCanvasId, setActiveCanvasId] = useState<string | undefined>(undefined);
   const [deletableCanvas, setDeletableCanvas] = useState<CanvasWithoutValue | undefined>(undefined);
 
@@ -72,9 +74,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
     actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut &&
     actualActiveCanvas.checkout.lockedBy === user?.user.id;
   const isCanvasAvailable = actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
-  const doIHavePermissionsToEdit = actualActiveCanvas?.authorization?.myPrivileges?.some(
-    x => x === AuthorizationPrivilege.Update
-  );
 
   const nonTemplateCanvases = useMemo(() => entities.canvases.filter(c => c.isTemplate === false), [entities.canvases]);
   const templateCanvases = useMemo(() => entities.canvases.filter(c => c.isTemplate === true), [entities.canvases]);
@@ -99,7 +98,8 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
               onDelete: canvas => setDeletableCanvas(canvas), //actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
             }}
             options={{
-              canDelete: true,
+              canDelete: options.canDelete,
+              canCreate: options.canCreate,
             }}
           />
         </Grid>
@@ -120,7 +120,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
               onDelete: canvas => setDeletableCanvas(canvas), //canvas => actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
             }}
             options={{
-              canDelete: true,
+              canDelete: options.canDelete,
             }}
           />
         </Grid>
@@ -141,8 +141,8 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
             }}
             options={{
               show: Boolean(activeCanvasId),
-              canCheckout: isCanvasAvailable && doIHavePermissionsToEdit,
-              canEdit: isCanvasCheckedoutByMe && doIHavePermissionsToEdit,
+              canCheckout: isCanvasAvailable && options.canUpdate,
+              canEdit: isCanvasCheckedoutByMe && options.canUpdate,
             }}
             state={state}
           />

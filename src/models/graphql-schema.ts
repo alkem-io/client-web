@@ -2645,6 +2645,12 @@ export type ContextDetailsFragment = {
   who?: Maybe<string>;
   references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>>;
   visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+  authorization?: Maybe<{
+    __typename?: 'Authorization';
+    id: string;
+    myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    anonymousReadAccess: boolean;
+  }>;
 };
 
 export type ContextVisualFragment = {
@@ -2689,6 +2695,12 @@ export type EcoverseInfoFragment = {
     who?: Maybe<string>;
     references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
   }>;
 };
 
@@ -2710,6 +2722,12 @@ export type EcoverseDetailsFragment = {
     who?: Maybe<string>;
     references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
   }>;
 };
 
@@ -2815,6 +2833,12 @@ export type OpportunityInfoFragment = {
     }>;
     references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
   }>;
   community?: Maybe<{
     __typename?: 'Community';
@@ -3178,6 +3202,12 @@ export type CreateEcoverseMutation = {
         Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
       >;
       visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        anonymousReadAccess: boolean;
+      }>;
     }>;
   };
 };
@@ -3699,6 +3729,12 @@ export type UpdateEcoverseMutation = {
         Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
       >;
       visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        anonymousReadAccess: boolean;
+      }>;
     }>;
   };
 };
@@ -3880,6 +3916,12 @@ export type ChallengeApplicationQuery = {
           Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+          anonymousReadAccess: boolean;
+        }>;
       }>;
       community?: Maybe<{ __typename?: 'Community'; id: string }>;
     };
@@ -3951,6 +3993,12 @@ export type EcoverseApplicationQuery = {
         Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
       >;
       visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        anonymousReadAccess: boolean;
+      }>;
     }>;
     community?: Maybe<{ __typename?: 'Community'; id: string; displayName: string }>;
   };
@@ -4415,6 +4463,12 @@ export type ChallengeProfileQuery = {
           Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+          anonymousReadAccess: boolean;
+        }>;
       }>;
       community?: Maybe<{
         __typename?: 'Community';
@@ -4447,6 +4501,12 @@ export type ChallengeProfileQuery = {
               Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             >;
             visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+            authorization?: Maybe<{
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+              anonymousReadAccess: boolean;
+            }>;
           }>;
           projects?: Maybe<
             Array<{
@@ -4502,6 +4562,12 @@ export type ChallengeProfileFragment = {
     who?: Maybe<string>;
     references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
   }>;
   community?: Maybe<{
     __typename?: 'Community';
@@ -4534,6 +4600,12 @@ export type ChallengeProfileFragment = {
           Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+          anonymousReadAccess: boolean;
+        }>;
       }>;
       projects?: Maybe<
         Array<{
@@ -4579,6 +4651,12 @@ export type ChallengeProfileInfoQuery = {
           Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+          anonymousReadAccess: boolean;
+        }>;
       }>;
     };
   };
@@ -5115,6 +5193,12 @@ export type EcoverseInfoQuery = {
         Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
       >;
       visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        anonymousReadAccess: boolean;
+      }>;
     }>;
   };
 };
@@ -5524,6 +5608,12 @@ export type OpportunityInfoQuery = {
           Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+          anonymousReadAccess: boolean;
+        }>;
       }>;
       community?: Maybe<{
         __typename?: 'Community';
@@ -5777,6 +5867,12 @@ export type OpportunityProfileInfoQuery = {
           Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         >;
         visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+          anonymousReadAccess: boolean;
+        }>;
       }>;
     };
   };
@@ -7311,6 +7407,12 @@ export type EcoversePageQuery = {
         Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
       >;
       visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+      authorization?: Maybe<{
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        anonymousReadAccess: boolean;
+      }>;
     }>;
   };
 };
@@ -7350,6 +7452,12 @@ export type EcoversePageFragment = {
     who?: Maybe<string>;
     references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+      anonymousReadAccess: boolean;
+    }>;
   }>;
 };
 
@@ -7461,6 +7569,12 @@ export type OpportunityPageQuery = {
         who?: Maybe<string>;
         impact?: Maybe<string>;
         vision?: Maybe<string>;
+        authorization?: Maybe<{
+          __typename?: 'Authorization';
+          id: string;
+          anonymousReadAccess: boolean;
+          myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+        }>;
         references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
         aspects?: Maybe<
           Array<{ __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string }>
@@ -7539,6 +7653,12 @@ export type OpportunityPageFragment = {
     who?: Maybe<string>;
     impact?: Maybe<string>;
     vision?: Maybe<string>;
+    authorization?: Maybe<{
+      __typename?: 'Authorization';
+      id: string;
+      anonymousReadAccess: boolean;
+      myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+    }>;
     references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
     aspects?: Maybe<Array<{ __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string }>>;
     visual?: Maybe<{ __typename?: 'Visual'; id: string; banner: string }>;

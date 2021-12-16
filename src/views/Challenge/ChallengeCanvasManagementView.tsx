@@ -5,7 +5,7 @@ import CanvasActionsContainer from '../../containers/canvas/CanvasActionsContain
 import { CanvasProvider } from '../../containers/canvas/CanvasProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
-import { ChallengeProfileFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { Error404 } from '../../pages';
 import CanvasManagementView from '../Canvas/CanvasManagementView';
@@ -30,7 +30,21 @@ const ChallengeCanvasManagementView: FC<ChallengeCanvasManagementViewProps> = ({
 
   const { isFeatureEnabled } = useConfig();
 
-  if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)) return <Error404 />;
+  const hasReadPriviliges =
+    challenge.context?.authorization?.anonymousReadAccess ||
+    challenge.context?.authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Read);
+
+  if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPriviliges) return <Error404 />;
+
+  const hasCreatePriviliges = challenge.context?.authorization?.myPrivileges?.some(
+    p => p === AuthorizationPrivilege.Create
+  );
+  const hasDeletePriviliges = challenge.context?.authorization?.myPrivileges?.some(
+    p => p === AuthorizationPrivilege.Delete
+  );
+  const hasUpdatePriviliges = challenge.context?.authorization?.myPrivileges?.some(
+    p => p === AuthorizationPrivilege.Update
+  );
 
   return (
     <CanvasProvider>
@@ -52,7 +66,9 @@ const ChallengeCanvasManagementView: FC<ChallengeCanvasManagementViewProps> = ({
                 loadingCanvases: state.loading,
               }}
               options={{
-                isEditable: true,
+                canUpdate: hasUpdatePriviliges,
+                canCreate: hasCreatePriviliges,
+                canDelete: hasDeletePriviliges,
               }}
             />
           )}

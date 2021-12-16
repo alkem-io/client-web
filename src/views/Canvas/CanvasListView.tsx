@@ -25,6 +25,7 @@ interface CanvasListViewActions {
 
 interface CanvasListViewOptions {
   canDelete?: boolean;
+  canCreate?: boolean;
 }
 
 interface CanvasListViewProps
@@ -40,7 +41,8 @@ export const CanvasListView: FC<CanvasListViewProps> = ({ entities, state, actio
       subHeaderText={subheader}
       headerSpacing="none"
       primaryAction={
-        actions.onCreate && (
+        actions.onCreate &&
+        options.canCreate && (
           <Button onClick={actions.onCreate} variant="contained" color="primary" startIcon={<Add />}>
             {t('pages.canvas.add-canvas')}
           </Button>

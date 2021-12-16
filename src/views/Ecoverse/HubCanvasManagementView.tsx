@@ -5,7 +5,7 @@ import CanvasActionsContainer from '../../containers/canvas/CanvasActionsContain
 import { CanvasProvider } from '../../containers/canvas/CanvasProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
-import { EcoversePageFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, EcoversePageFragment } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { Error404 } from '../../pages';
 import CanvasManagementView from '../Canvas/CanvasManagementView';
@@ -30,7 +30,15 @@ const HubCanvasManagementView: FC<HubCanvasManagementViewProps> = ({ entities, s
 
   const { isFeatureEnabled } = useConfig();
 
-  if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)) return <Error404 />;
+  const hasReadPriviliges =
+    hub.context?.authorization?.anonymousReadAccess ||
+    hub.context?.authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Read);
+
+  if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPriviliges) return <Error404 />;
+
+  const hasCreatePriviliges = hub.context?.authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Create);
+  const hasDeletePriviliges = hub.context?.authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Delete);
+  const hasUpdatePriviliges = hub.context?.authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Update);
 
   return (
     <CanvasProvider>
@@ -52,7 +60,9 @@ const HubCanvasManagementView: FC<HubCanvasManagementViewProps> = ({ entities, s
                 loadingCanvases: state.loading,
               }}
               options={{
-                isEditable: true,
+                canUpdate: hasUpdatePriviliges,
+                canCreate: hasCreatePriviliges,
+                canDelete: hasDeletePriviliges,
               }}
             />
           )}
