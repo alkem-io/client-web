@@ -31,6 +31,7 @@ import { CanvasItemState } from '../../lists/Canvas/CanvasListItem';
 import TranslationKey from '../../../../types/TranslationKey';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { CanvasLoadedEvent, CANVAS_LOADED_EVENT_NAME } from '../../../../types/events';
+import { isEqual } from 'lodash';
 
 interface CanvasDialogProps {
   entities: {
@@ -160,10 +161,27 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     },
   };
 
-  const onClose = () => {
+  const onClose = async (event: Event) => {
     setOptionPopperOpen(false);
+
+    const canvasApi = await canvasRef.current?.readyPromise;
+    if (canvasApi) {
+      const elements = canvasApi.getSceneElements();
+      const appState = canvasApi.getAppState();
+      const value = serializeAsJSON(elements, appState);
+      if (!isEqual(canvas?.value, value)) {
+        if (
+          !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
+        ) {
+          event.stopPropagation();
+          event.preventDefault();
+          return;
+        }
+      }
+    }
     actions.onCancel();
   };
+
   const handlePopperClose = event => {
     if (anchorRef.current && anchorRef.current?.contains(event.target)) {
       return;

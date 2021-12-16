@@ -24,7 +24,7 @@ const styles = (theme: Theme) =>
 export interface DialogTitleProps extends WithStyles<typeof styles> {
   id?: string;
   children: React.ReactNode;
-  onClose?: () => void;
+  onClose?: (e: Event) => void;
 }
 
 const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
@@ -35,7 +35,7 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
         {children}
       </Typography>
       {onClose ? (
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose} size="medium">
+        <IconButton aria-label="close" className={classes.closeButton} onClick={e => onClose(e as any)} size="medium">
           <CloseIcon />
         </IconButton>
       ) : null}

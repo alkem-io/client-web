@@ -5,7 +5,7 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce } from 'lodash';
-import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../hooks/useCombinedRefs';
 import { Canvas } from '../../../../models/graphql-schema';
@@ -62,13 +62,8 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
     const innerRef = useRef<ExcalidrawAPIRefValue>(null);
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue>(excalidrawRef, innerRef);
 
-    const [data, setData] = useState<ImportedDataState>(
-      canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState
-    );
-
-    useEffect(() => {
-      setData(canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState);
-    }, [canvas.value]);
+    const value = canvas.value;
+    const data = useMemo(() => (value ? JSON.parse(value) : initialExcalidrawState), [value]);
 
     const refreshOnDataChange = useCallback(
       debounce(async debouncedData => {
