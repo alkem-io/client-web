@@ -3,7 +3,12 @@ const toPath = filePath => path.join(process.cwd(), filePath);
 
 module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
-  addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/preset-create-react-app'],
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/preset-create-react-app',
+    'storybook-react-i18next',
+  ],
 
   webpackFinal: async config => {
     return {

@@ -20,9 +20,12 @@ interface ChallengePageProps extends PageProps {}
 export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
   const { path } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
-  const { challengeId } = useChallenge();
+  const { challengeId, ecoverseId } = useChallenge();
   const requiredCredentials: CredentialForResource[] = challengeId
-    ? [{ credential: AuthorizationCredential.ChallengeMember, resourceId: challengeId }]
+    ? [
+        { credential: AuthorizationCredential.ChallengeMember, resourceId: challengeId },
+        { credential: AuthorizationCredential.EcoverseAdmin, resourceId: ecoverseId },
+      ]
     : [];
 
   return (
