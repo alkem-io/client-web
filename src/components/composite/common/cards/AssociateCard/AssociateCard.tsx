@@ -22,6 +22,7 @@ const useStyles = makeStyles(_ =>
     },
     tooltip: {
       background: 'transparent',
+      width: _.spacing(32),
     },
     skeleton: {
       minHeight: 64,
