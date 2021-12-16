@@ -146,6 +146,13 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             entities={{ canvas }}
             options={{
               viewModeEnabled: !options.canEdit,
+              UIOptions: options.canEdit
+                ? undefined
+                : {
+                    canvasActions: {
+                      export: false,
+                    },
+                  },
             }}
             actions={{
               onUpdate: state =>

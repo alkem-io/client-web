@@ -4,7 +4,8 @@ import { ExcalidrawAPIRefValue, ExcalidrawProps } from '@excalidraw/excalidraw/t
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import { debounce } from 'lodash';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Canvas } from '../../../../models/graphql-schema';
 
@@ -64,18 +65,25 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
     setData(canvas?.value ? JSON.parse(canvas?.value) : initialExcalidrawState);
   }, [canvas.value]);
 
-  useEffect(() => {
-    const refreshOnDataChange = async () => {
+  const refreshOnDataChange = useCallback(
+    debounce(async debouncedData => {
       try {
         const excalidraw = await excalidrawRef.current?.readyPromise;
-        excalidraw?.updateScene(data);
+
+        excalidraw?.updateScene(debouncedData);
+        excalidraw?.scrollToContent();
       } catch (ex) {
         // Excalidraw attempts to perform state updates on an unmounted component
       }
-    };
+    }, 200),
+    [excalidrawRef.current]
+  );
 
-    refreshOnDataChange();
-  }, [data, excalidrawRef.current]);
+  useEffect(() => {
+    // apparently when a canvas state is changed too fast
+    // it is not reflected by excalidraw (they don't have internal debounce for state change)
+    refreshOnDataChange(data);
+  }, [refreshOnDataChange, data]);
 
   useEffect(() => {
     const onScroll = async e => {
@@ -124,16 +132,21 @@ const CanvasWhiteboard: FC<CanvasWhiteboardProps> = ({ entities, actions, option
     },
   };
 
+  const { UIOptions: externalUIOptions, ...restOptions } = options || {};
+
   return (
     <div className={styles.container}>
       <Excalidraw
         ref={excalidrawRef}
         initialData={data}
-        UIOptions={UIOptions}
+        UIOptions={{
+          ...UIOptions,
+          ...externalUIOptions,
+        }}
         isCollaborating={false}
         gridModeEnabled
         viewModeEnabled
-        {...options}
+        {...restOptions}
       />
     </div>
   );
