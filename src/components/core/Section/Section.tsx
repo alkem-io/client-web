@@ -24,7 +24,7 @@ const Section: FC<SectionProps> = ({ bannerUrl, children }) => {
 
   return (
     <>
-      <Paper square>
+      <Paper elevation={0} square variant="outlined">
         {bannerUrl && (
           <Box position="relative" className={styles.bannerSize}>
             <img

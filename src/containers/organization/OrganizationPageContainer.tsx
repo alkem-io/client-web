@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { UserCardProps } from '../../components/composite/common/cards/user-card/UserCard';
+import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
 import { isSocialLink, SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
 import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
 import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
@@ -18,7 +18,7 @@ export interface OrganizationContainerEntities {
   links: string[];
   capabilities: string[];
   keywords: string[];
-  associates: UserCardProps[];
+  associates: ContributorCardProps[];
   contributions: ContributionItem[];
   permissions: {
     canEdit: boolean;
@@ -94,16 +94,18 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     ),
   };
 
-  const associates = useMemo(() => {
+  const associates = useMemo<ContributorCardProps[]>(() => {
     return (
-      usersWithRoles.map<UserCardProps>(x => ({
+      usersWithRoles.map<ContributorCardProps>(x => ({
         displayName: x.displayName,
         roleName: x.roleName,
-        avatarSrc: x.profile?.avatar || '',
-        tags: x.profile?.tagsets?.flatMap(x => x.tags) || [],
+        avatar: x.profile?.avatar || '',
+        tooltip: {
+          city: x.city,
+          country: COUNTRIES_BY_CODE[x.country],
+          tags: x.profile?.tagsets?.flatMap(x => x.tags) || [],
+        },
         url: buildUserProfileUrl(x.nameID),
-        city: x.city,
-        country: COUNTRIES_BY_CODE[x.country],
       })) || []
     );
   }, [usersWithRoles]);

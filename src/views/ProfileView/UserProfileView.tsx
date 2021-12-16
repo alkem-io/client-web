@@ -96,7 +96,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   }, [references]);
 
   return (
-    <Card className={styles.card} square>
+    <Card className={styles.card} square elevation={0} variant="outlined">
       <CardHeader
         classes={{
           action: styles.headerAction,

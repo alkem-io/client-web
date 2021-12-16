@@ -60,7 +60,8 @@ const App = ({ children }): React.ReactElement => {
         </HideOnScroll>
         <Main>
           <TopBarSpacer />
-          {paths.length > 0 && <Breadcrumbs paths={paths} />}
+          {/*no point of showing just one item of the breadcrumbs*/}
+          {paths.length > 1 && <Breadcrumbs paths={paths} />}
           {children}
         </Main>
         <Footer />

@@ -1,10 +1,9 @@
-import { CircularProgress, Dialog, DialogContent } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogContent } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../../../models/constants';
 import { buildLoginUrl } from '../../../../utils/urlBuilders';
-import Button from '../../../core/Button';
 import { DialogActions, DialogTitle } from '../../../core/dialog';
 
 export interface ApplicationButtonProps {
@@ -52,22 +51,24 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     }
     if (!isAuthenticated) {
       return (
-        <Button
-          text={t('buttons.apply-not-signed')}
-          as={RouterLink}
-          to={buildLoginUrl(applyUrl?.replace('/apply', ''))}
-        />
+        <Button variant="contained" component={RouterLink} to={buildLoginUrl(applyUrl?.replace('/apply', ''))}>
+          {t('buttons.apply-not-signed')}
+        </Button>
       );
     } else if (isMember) {
-      return <Button text={t('buttons.member')} disabled />;
+      return <Button disabled>{t('buttons.member')}</Button>;
     } else if (applicationState) {
       if (isApplicationPending(applicationState)) {
-        return <Button text={t('buttons.apply-pending')} disabled />;
+        return <Button disabled>{t('buttons.apply-pending')}</Button>;
       }
     } else if (isNotParentMember) {
-      return <Button text={t('buttons.apply')} onClick={handleClick} />;
+      return <Button onClick={handleClick}>{t('buttons.apply')}</Button>;
     }
-    return <Button text={t('buttons.apply')} as={RouterLink} to={applyUrl} />;
+    return (
+      <Button component={RouterLink} to={applyUrl || ''}>
+        {t('buttons.apply')}
+      </Button>
+    );
   }, [isAuthenticated, applicationState, applyUrl, parentApplicationState, loading]);
 
   const dialogVariant = useMemo(
@@ -93,11 +94,12 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
         </DialogContent>
         <DialogActions>
           <Button
-            text={t('buttons.apply')}
-            as={RouterLink}
-            to={isApplicationPending(parentApplicationState) ? applyUrl : parentApplyUrl}
-            variant="primary"
-          />
+            component={RouterLink}
+            to={(isApplicationPending(parentApplicationState) ? applyUrl : parentApplyUrl) || ''}
+            variant="contained"
+          >
+            {t('buttons.apply')}
+          </Button>
         </DialogActions>
       </Dialog>
     </>

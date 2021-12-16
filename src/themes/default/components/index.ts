@@ -7,10 +7,11 @@ import MuiDialog from './MuiDialog';
 import MuiDialogContent from './MuiDialogContent';
 import MuiIcon from './MuiIcon';
 import MuiLink from './MuiLInk';
+import MuiPaper from './MuiPaper';
 import MuiSkeleton from './MuiSkeleton';
 import MuiTab from './MuiTab';
-import type {} from '@mui/lab/themeAugmentation';
 import MuiTabPanel from './MuiTabPanel';
+import type {} from '@mui/lab/themeAugmentation';
 
 const componentsOverride = (theme: Theme): Components => ({
   MuiAvatar: MuiAvatar(theme),
@@ -21,6 +22,7 @@ const componentsOverride = (theme: Theme): Components => ({
   MuiDialogContent: MuiDialogContent(theme),
   MuiIcon: MuiIcon(theme),
   MuiLink: MuiLink(theme),
+  MuiPaper: MuiPaper(theme),
   MuiTab: MuiTab(theme),
   MuiSkeleton: MuiSkeleton(theme),
   MuiTabPanel: MuiTabPanel(theme),
