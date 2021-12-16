@@ -583,6 +583,17 @@
           "body": "Realising societies potential. Building a better future, together.",
           "join": "Want to join the community and see more?"
         },
+        "interested-in-collaboration": {
+          "header": "Get in touch",
+          "body": "Do you want to know how Alkemio can help you? <br /> Reach out."
+        },
+        "getting-started": {
+          "header": "Getting Started",
+          "subheader": "Here are some useful links that will have you get up to speed.",
+          "connecting-with-people": "Learn how to get in contact with other people on the platform",
+          "joining-a-challenge": "Eager to join a challenge. Learn how",
+          "what-can-i-do-here": "Want to learn more about the features and the platform capabilities?"
+        },
         "hub": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",

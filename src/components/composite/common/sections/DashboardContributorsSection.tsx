@@ -10,8 +10,8 @@ import ContributorCard, {
 } from '../cards/ContributorCard/ContributorCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 
-const MAX_USERS_TO_SHOWN = 6;
-const MAX_ORGANIZATIONS_TO_SHOWN = 6;
+const MAX_USERS_TO_SHOWN = 12;
+const MAX_ORGANIZATIONS_TO_SHOWN = 12;
 
 export interface DashboardContributorsSectionSectionProps extends DashboardGenericSectionProps {
   userTitle: string;
