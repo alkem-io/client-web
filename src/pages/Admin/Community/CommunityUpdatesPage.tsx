@@ -10,11 +10,6 @@ import { AvatarsProvider } from '../../../context/AvatarsProvider';
 import { useEcoverse, useUpdateNavigation } from '../../../hooks';
 import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';
 import { PageProps } from '../../common';
-import {
-  EcoverseCommunityMessagesQuery,
-  EcoverseCommunityMessagesQueryVariables,
-} from '../../../models/graphql-schema';
-import { EcoverseCommunityMessagesDocument } from '../../../hooks/generated/graphql';
 
 interface CommunityUpdatesPageProps extends PageProps, WithCommunity {}
 
@@ -31,14 +26,10 @@ export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, com
 
   return (
     <Container maxWidth="xl">
-      <CommunityUpdatesDataContainer<EcoverseCommunityMessagesQuery, EcoverseCommunityMessagesQueryVariables>
+      <CommunityUpdatesDataContainer
         entities={{
-          document: EcoverseCommunityMessagesDocument,
-          variables: {
-            ecoverseId,
-          },
-          messageSelector: data => data?.ecoverse.community?.communication?.updates?.messages || [],
-          roomIdSelector: data => data?.ecoverse.community?.communication?.updates?.id || '',
+          ecoverseId,
+          communityId,
         }}
       >
         {({ messages, senders }, { retrievingUpdateMessages }) => (

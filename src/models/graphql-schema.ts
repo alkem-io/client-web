@@ -4770,47 +4770,16 @@ export type EcoverseCommunityQuery = {
   };
 };
 
-export type ChallengeCommunityMessagesQueryVariables = Exact<{
+export type CommunityMessagesQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
 }>;
 
-export type ChallengeCommunityMessagesQuery = {
+export type CommunityMessagesQuery = {
   __typename?: 'Query';
   ecoverse: {
     __typename?: 'Ecoverse';
     id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      community?: Maybe<{
-        __typename?: 'Community';
-        id: string;
-        communication?: Maybe<{
-          __typename?: 'Communication';
-          id: string;
-          updates?: Maybe<{
-            __typename?: 'Updates';
-            id: string;
-            messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-            >;
-          }>;
-        }>;
-      }>;
-    };
-  };
-};
-
-export type EcoverseCommunityMessagesQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-}>;
-
-export type EcoverseCommunityMessagesQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    nameID: string;
     community?: Maybe<{
       __typename?: 'Community';
       id: string;
@@ -4826,37 +4795,6 @@ export type EcoverseCommunityMessagesQuery = {
         }>;
       }>;
     }>;
-  };
-};
-
-export type OpportunityCommunityMessagesQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityCommunityMessagesQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      community?: Maybe<{
-        __typename?: 'Community';
-        id: string;
-        communication?: Maybe<{
-          __typename?: 'Communication';
-          id: string;
-          updates?: Maybe<{
-            __typename?: 'Updates';
-            id: string;
-            messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-            >;
-          }>;
-        }>;
-      }>;
-    };
   };
 };
 

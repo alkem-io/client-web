@@ -1,5 +1,5 @@
 import { useSelector } from '@xstate/react/lib/useSelector';
-import { unionWith, uniqWith } from 'lodash';
+import { unionWith, uniqBy } from 'lodash';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useApolloErrorHandler, useGlobalState, useNotification } from '../../hooks';
 import {
@@ -9,9 +9,8 @@ import {
   useRemoveUpdateCommunityMutation,
   useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
-import { Message, Community, User, Ecoverse } from '../../models/graphql-schema';
+import { Message, Community, User, Ecoverse, Scalars } from '../../models/graphql-schema';
 import { ADD_MESSAGE } from '../../state/global/entities/communityUpdateMachine';
-import { DocumentNode, useQuery } from '@apollo/client';
 import { logger } from '../../services/logging/winston/logger';
 
 export interface CommunityUpdatesContainerProps {
@@ -145,28 +144,21 @@ export function useCommunityUpdateSubscriptionSelector(initialMessages?: Message
       return state.context.messagesByRoom[roomId || ''];
     }) || [];
 
-  // todo: timestamp comp is not very reliable; must emit just one message
-  const uniqCriteria = (a: Message, b: Message): boolean =>
-    a.message === b.message && a.sender === b.sender && Math.abs(a.timestamp - b.timestamp) < 300;
-
   const zippedMessages = useMemo(() => {
     // merge them based on timestamp... unfortunately there is an ID mismatch when
     // an event is reported live against an event retrieved from a room api
     const mergedMessages = unionWith(messages, initialMessages, (x1, x2) => x1.timestamp === x2.timestamp);
-    //const uniqMessages = uniqBy(mergedMessages, x => x.timestamp);
-    const uniqMessages = uniqWith(mergedMessages, uniqCriteria);
+    const uniqMessages = uniqBy(mergedMessages, x => x.timestamp);
     return uniqMessages;
   }, [initialMessages, messages]);
 
   return zippedMessages;
 }
 
-export interface CommunityUpdatesDataContainerProps<TQuery, TVariables> {
+export interface CommunityUpdatesDataContainerProps {
   entities: {
-    variables: TVariables;
-    document: DocumentNode;
-    messageSelector: (query?: TQuery) => Message[];
-    roomIdSelector: (query?: TQuery) => string;
+    ecoverseId?: Scalars['UUID_NAMEID'];
+    communityId?: Scalars['UUID'];
   };
   children: (entities: CommunityUpdatesDataEntities, loading: CommunityUpdatesDataState) => React.ReactNode;
 }
@@ -181,19 +173,21 @@ export interface CommunityUpdatesDataEntities {
 }
 
 // TODO - need to merge this into the CommunityUpdatesContainer once
-// the communityIds are present everywhere accross the application
+// the communityIds are present everywhere across the application
 // Need the container in order to conditionally use the subscription
-export const CommunityUpdatesDataContainer = <TQuery, TVariables>({
-  children,
-  entities,
-}: CommunityUpdatesDataContainerProps<TQuery, TVariables>) => {
-  const { document, variables, messageSelector, roomIdSelector } = entities;
-  const { data, loading } = useQuery<TQuery, TVariables>(document, { variables });
-  const messages = useMemo(() => messageSelector(data), [data, messageSelector]);
-  const roomId = roomIdSelector(data);
+export const CommunityUpdatesDataContainer = ({ children, entities }: CommunityUpdatesDataContainerProps) => {
+  const handleError = useApolloErrorHandler();
+  const { ecoverseId = '', communityId = '' } = entities;
+  const { data, loading } = useCommunityUpdatesQuery({
+    variables: { ecoverseId, communityId },
+    skip: !ecoverseId || !communityId,
+    onError: handleError,
+  });
+  const oldMessages = data?.ecoverse?.community?.communication?.updates?.messages ?? [];
+  const roomId = data?.ecoverse?.community?.communication?.updates?.id;
 
-  const updateMessages = useCommunityUpdateSubscriptionSelector(messages, roomId);
+  const messages = useCommunityUpdateSubscriptionSelector(oldMessages, roomId);
   const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
 
-  return <>{children({ messages: updateMessages, senders }, { retrievingUpdateMessages: loading })}</>;
+  return <>{children({ messages, senders }, { retrievingUpdateMessages: loading })}</>;
 };

@@ -8,30 +8,16 @@ import { AvatarsProvider } from '../../../../context/AvatarsProvider';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import SingleUpdateView from '../../../../views/Updates/SingleUpdateView';
 import DashboardGenericSection from './DashboardGenericSection';
-import {
-  EcoverseCommunityMessagesQuery,
-  EcoverseCommunityMessagesQueryVariables,
-} from '../../../../models/graphql-schema';
-import { EcoverseCommunityMessagesDocument } from '../../../../hooks/generated/graphql';
 
 export interface DashboardUpdatesSectionProps {
   entities: CommunityUpdatesContainerProps['entities'];
 }
 
-const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities }) => {
+const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: { ecoverseId, communityId } }) => {
   const { t } = useTranslation();
 
   return (
-    <CommunityUpdatesDataContainer<EcoverseCommunityMessagesQuery, EcoverseCommunityMessagesQueryVariables>
-      entities={{
-        document: EcoverseCommunityMessagesDocument,
-        variables: {
-          ecoverseId: entities.ecoverseId,
-        },
-        messageSelector: data => data?.ecoverse.community?.communication?.updates?.messages || [],
-        roomIdSelector: data => data?.ecoverse.community?.communication?.updates?.id || '',
-      }}
-    >
+    <CommunityUpdatesDataContainer entities={{ ecoverseId, communityId }}>
       {(entities, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);

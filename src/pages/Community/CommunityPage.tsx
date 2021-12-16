@@ -20,18 +20,8 @@ import Loading from '../../components/core/Loading/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useEcoverse, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
-import {
-  EcoverseCommunityMessagesDocument,
-  useCommunityPageQuery,
-  useOrganizationProfileInfoQuery,
-} from '../../hooks/generated/graphql';
-import {
-  CommunityPageMembersFragment,
-  EcoverseCommunityMessagesQuery,
-  EcoverseCommunityMessagesQueryVariables,
-  OrganizationDetailsFragment,
-  User,
-} from '../../models/graphql-schema';
+import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
+import { CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import { PageProps } from '../common';
@@ -187,16 +177,7 @@ const CommunityPage: FC<Props> = ({
       <Section avatar={<Icon component={ChatDotsIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.updates')} />
       </Section>
-      <CommunityUpdatesDataContainer<EcoverseCommunityMessagesQuery, EcoverseCommunityMessagesQueryVariables>
-        entities={{
-          document: EcoverseCommunityMessagesDocument,
-          variables: {
-            ecoverseId,
-          },
-          messageSelector: data => data?.ecoverse.community?.communication?.updates?.messages || [],
-          roomIdSelector: data => data?.ecoverse.community?.communication?.updates?.id || '',
-        }}
-      >
+      <CommunityUpdatesDataContainer entities={{ ecoverseId, communityId }}>
         {(entities, { retrievingUpdateMessages }) => {
           const hasUpdates = entities.messages && entities.messages.length > 0;
 
