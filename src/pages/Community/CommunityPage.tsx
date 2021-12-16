@@ -20,12 +20,22 @@ import Loading from '../../components/core/Loading/Loading';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 import { useEcoverse, useUpdateNavigation, useUserCardRoleName } from '../../hooks';
-import { useCommunityPageQuery, useOrganizationProfileInfoQuery } from '../../hooks/generated/graphql';
-import { CommunityPageMembersFragment, OrganizationDetailsFragment, User } from '../../models/graphql-schema';
+import {
+  EcoverseCommunityMessagesDocument,
+  useCommunityPageQuery,
+  useOrganizationProfileInfoQuery,
+} from '../../hooks/generated/graphql';
+import {
+  CommunityPageMembersFragment,
+  EcoverseCommunityMessagesQuery,
+  EcoverseCommunityMessagesQueryVariables,
+  OrganizationDetailsFragment,
+  User,
+} from '../../models/graphql-schema';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import { PageProps } from '../common';
-import { CommunityUpdatesContainer } from '../../containers/community-updates/CommunityUpdates';
+import { CommunityUpdatesDataContainer } from '../../containers/community-updates/CommunityUpdates';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -177,8 +187,17 @@ const CommunityPage: FC<Props> = ({
       <Section avatar={<Icon component={ChatDotsIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.updates')} />
       </Section>
-      <CommunityUpdatesContainer entities={{ ecoverseId, communityId }}>
-        {(entities, actions, loading) => {
+      <CommunityUpdatesDataContainer<EcoverseCommunityMessagesQuery, EcoverseCommunityMessagesQueryVariables>
+        entities={{
+          document: EcoverseCommunityMessagesDocument,
+          variables: {
+            ecoverseId,
+          },
+          messageSelector: data => data?.ecoverse.community?.communication?.updates?.messages || [],
+          roomIdSelector: data => data?.ecoverse.community?.communication?.updates?.id || '',
+        }}
+      >
+        {(entities, { retrievingUpdateMessages }) => {
           const hasUpdates = entities.messages && entities.messages.length > 0;
 
           if (!hasUpdates) {
@@ -205,7 +224,7 @@ const CommunityPage: FC<Props> = ({
                       disableCollapse: true,
                     }}
                     state={{
-                      loadingMessages: loading.retrievingUpdateMessages,
+                      loadingMessages: retrievingUpdateMessages,
                       submittingMessage: false,
                       removingMessage: false,
                     }}
@@ -215,7 +234,7 @@ const CommunityPage: FC<Props> = ({
             </Box>
           );
         }}
-      </CommunityUpdatesContainer>
+      </CommunityUpdatesDataContainer>
     </>
   );
 };

@@ -8,8 +8,8 @@ export type CommunicationMessageContext = {
   messagesByRoom: Record<string, Message[]>;
 };
 export type CommunicationMessageEvent =
-  | { type: typeof ADD_MESSAGE; payload: { message: Message; roomId: string } }
-  | { type: typeof REMOVE_MESSAGE; payload: { roomId: string; messageId: Message['id'] } };
+  | { type: typeof ADD_MESSAGE; payload: { message: Message; updatesID: string } }
+  | { type: typeof REMOVE_MESSAGE; payload: { updatesID: string; messageId: Message['id'] } };
 export type CommunicationMessageState =
   | { value: 'visible'; context: { messagesByRoom: {} } }
   | { value: 'hidden'; context: { messagesByRoom: {} } };
@@ -27,7 +27,7 @@ export const communicationMessageMachine = createMachine<CommunicationMessageCon
           actions: assign({
             messagesByRoom: (context, { payload }) => ({
               ...context.messagesByRoom,
-              [payload.roomId]: [payload.message, ...(context.messagesByRoom[payload.roomId] || [])],
+              [payload.updatesID]: [payload.message, ...(context.messagesByRoom[payload.updatesID] || [])],
             }),
           }),
         },
@@ -35,7 +35,9 @@ export const communicationMessageMachine = createMachine<CommunicationMessageCon
           actions: assign({
             messagesByRoom: (context, { payload }) => ({
               ...context.messagesByRoom,
-              [payload.roomId]: (context.messagesByRoom[payload.roomId] || []).filter(m => m.id !== payload.messageId),
+              [payload.updatesID]: (context.messagesByRoom[payload.updatesID] || []).filter(
+                m => m.id !== payload.messageId
+              ),
             }),
           }),
         },

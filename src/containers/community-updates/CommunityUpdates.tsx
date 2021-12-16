@@ -1,11 +1,11 @@
 import { useSelector } from '@xstate/react/lib/useSelector';
-import { unionWith, uniqBy } from 'lodash';
-import React, { FC, useCallback, useMemo, useState } from 'react';
-import { useApolloErrorHandler, useGlobalState, useNotification, useUserContext } from '../../hooks';
+import { unionWith, uniqWith } from 'lodash';
+import React, { FC, useCallback, useMemo } from 'react';
+import { useApolloErrorHandler, useGlobalState, useNotification } from '../../hooks';
 import {
   refetchCommunityUpdatesQuery,
   useCommunityUpdatesQuery,
-  useOnMessageReceivedSubscription,
+  useCommunicationUpdateMessageReceivedSubscription,
   useRemoveUpdateCommunityMutation,
   useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
@@ -43,33 +43,13 @@ export interface CommunityUpdatesEntities {
   senders: Pick<User, 'id'>[];
 }
 
-// todo: UpdatesProvider
+// todo: only actions are used from here; unify with CommunityUpdatesDataContainer
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
   const { communityId, ecoverseId } = entities;
-  const [newUpdateMessage, setNewUpdateMessage] = useState<Message>();
 
   const { data, loading } = useCommunityUpdatesQuery({ variables: { ecoverseId, communityId } });
   const updatesId = data?.ecoverse.community?.communication?.updates?.id || '';
-  const oldMessages = data?.ecoverse.community?.communication?.updates?.messages ?? [];
-  useOnMessageReceivedSubscription({
-    shouldResubscribe: true,
-    onSubscriptionData: options => {
-      if (options.subscriptionData.error) {
-        handleError(options.subscriptionData.error);
-        return;
-      }
-
-      const subData = options.subscriptionData.data?.messageReceived;
-      if (!subData) return;
-
-      // todo filter when communityId is provided
-      /*if (subData.communityId === communityId) {
-        setNewUpdateMessage(subData.message);
-      }*/
-      setNewUpdateMessage(subData.message);
-    },
-  });
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
@@ -99,10 +79,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     [sendUpdate, communityId, updatesId]
   );
 
-  const messages = useMemo(
-    () => [...oldMessages, ...((newUpdateMessage && [newUpdateMessage]) ?? [])],
-    [oldMessages, newUpdateMessage]
-  );
+  const messages = data?.ecoverse.community?.communication?.updates?.messages || [];
   const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
 
   return (
@@ -125,9 +102,8 @@ export function useUpdateSubscription() {
   const { entities } = useGlobalState();
   const { communityUpdateService } = entities;
   const notify = useNotification();
-  const { user } = useUserContext();
 
-  return useOnMessageReceivedSubscription({
+  return useCommunicationUpdateMessageReceivedSubscription({
     shouldResubscribe: true,
     onSubscriptionData: options => {
       if (options.subscriptionData.error) {
@@ -135,7 +111,7 @@ export function useUpdateSubscription() {
         return;
       }
 
-      const subData = options.subscriptionData.data?.messageReceived;
+      const subData = options.subscriptionData.data?.communicationUpdateMessageReceived;
       if (!subData) return;
 
       communityUpdateService.send({
@@ -143,13 +119,7 @@ export function useUpdateSubscription() {
         payload: subData,
       });
 
-      const communityId = subData.communityId;
-      let communityName = subData.roomName;
-      if (communityId) {
-        communityName = user?.communities[communityId] || communityName;
-      }
-
-      notify(`You just received an update in ${communityName}`);
+      notify('You just received an update');
     },
   });
 }
@@ -175,11 +145,16 @@ export function useCommunityUpdateSubscriptionSelector(initialMessages?: Message
       return state.context.messagesByRoom[roomId || ''];
     }) || [];
 
+  // todo: timestamp comp is not very reliable; must emit just one message
+  const uniqCriteria = (a: Message, b: Message): boolean =>
+    a.message === b.message && a.sender === b.sender && Math.abs(a.timestamp - b.timestamp) < 300;
+
   const zippedMessages = useMemo(() => {
     // merge them based on timestamp... unfortunately there is an ID mismatch when
     // an event is reported live against an event retrieved from a room api
     const mergedMessages = unionWith(messages, initialMessages, (x1, x2) => x1.timestamp === x2.timestamp);
-    const uniqMessages = uniqBy(mergedMessages, x => x.timestamp);
+    //const uniqMessages = uniqBy(mergedMessages, x => x.timestamp);
+    const uniqMessages = uniqWith(mergedMessages, uniqCriteria);
     return uniqMessages;
   }, [initialMessages, messages]);
 

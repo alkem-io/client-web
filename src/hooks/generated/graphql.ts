@@ -10052,12 +10052,10 @@ export type RemoveUpdateCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUpdateCommunityMutation,
   SchemaTypes.RemoveUpdateCommunityMutationVariables
 >;
-export const OnMessageReceivedDocument = gql`
-  subscription onMessageReceived {
-    messageReceived {
-      roomId
-      roomName
-      communityId
+export const CommunicationUpdateMessageReceivedDocument = gql`
+  subscription communicationUpdateMessageReceived {
+    communicationUpdateMessageReceived {
+      updatesID
       message {
         ...MessageDetails
       }
@@ -10067,34 +10065,37 @@ export const OnMessageReceivedDocument = gql`
 `;
 
 /**
- * __useOnMessageReceivedSubscription__
+ * __useCommunicationUpdateMessageReceivedSubscription__
  *
- * To run a query within a React component, call `useOnMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useOnMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCommunicationUpdateMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCommunicationUpdateMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useOnMessageReceivedSubscription({
+ * const { data, loading, error } = useCommunicationUpdateMessageReceivedSubscription({
  *   variables: {
  *   },
  * });
  */
-export function useOnMessageReceivedSubscription(
+export function useCommunicationUpdateMessageReceivedSubscription(
   baseOptions?: Apollo.SubscriptionHookOptions<
-    SchemaTypes.OnMessageReceivedSubscription,
-    SchemaTypes.OnMessageReceivedSubscriptionVariables
+    SchemaTypes.CommunicationUpdateMessageReceivedSubscription,
+    SchemaTypes.CommunicationUpdateMessageReceivedSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSubscription<
-    SchemaTypes.OnMessageReceivedSubscription,
-    SchemaTypes.OnMessageReceivedSubscriptionVariables
-  >(OnMessageReceivedDocument, options);
+    SchemaTypes.CommunicationUpdateMessageReceivedSubscription,
+    SchemaTypes.CommunicationUpdateMessageReceivedSubscriptionVariables
+  >(CommunicationUpdateMessageReceivedDocument, options);
 }
-export type OnMessageReceivedSubscriptionHookResult = ReturnType<typeof useOnMessageReceivedSubscription>;
-export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.OnMessageReceivedSubscription>;
+export type CommunicationUpdateMessageReceivedSubscriptionHookResult = ReturnType<
+  typeof useCommunicationUpdateMessageReceivedSubscription
+>;
+export type CommunicationUpdateMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CommunicationUpdateMessageReceivedSubscription>;
 export const CommunityDiscussionDocument = gql`
   query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
     ecoverse(ID: $ecoverseId) {
