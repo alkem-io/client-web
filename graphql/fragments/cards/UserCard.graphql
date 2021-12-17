@@ -1,0 +1,24 @@
+fragment UserCard on User {
+  id
+  nameID
+  displayName
+  country
+  city
+  agent {
+    id
+    credentials {
+      id
+      type
+      resourceID
+    }
+  }
+  profile {
+    id
+    avatar
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+}

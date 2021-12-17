@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Chip } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete/Autocomplete';
 import TextField from '@mui/material/TextField/TextField';
@@ -9,7 +9,8 @@ export interface SearchComponentProps {
   fullWidth?: boolean;
   freeSolo?: boolean;
   disableCloseOnSelect?: boolean;
-  children: (terms: string[]) => React.ReactNode;
+  size?: 'small' | 'medium';
+  onChange?: (terms: string[]) => void;
 }
 
 const SearchComponent: FC<SearchComponentProps> = ({
@@ -18,42 +19,45 @@ const SearchComponent: FC<SearchComponentProps> = ({
   freeSolo = true,
   multiple = true,
   disableCloseOnSelect = true,
-  children,
+  size = 'small',
+  onChange,
 }) => {
-  const [terms, setTerms] = useState<string[]>([]);
-
   const handleChange = (e, value: string[] | string | null) => {
     if (!value) {
       return;
     }
 
+    const termsArray: string[] = [];
+
     if (Array.isArray(value)) {
       const trimmedValues = value.map(x => x.trim().toLowerCase());
-      setTerms(trimmedValues);
+      termsArray.push(...trimmedValues);
     } else {
-      setTerms([value]);
+      termsArray.push(value);
+    }
+
+    if (onChange) {
+      onChange(termsArray);
     }
   };
   return (
-    <>
-      <Autocomplete
-        aria-label="Filter"
-        id="card-filter"
-        multiple={multiple}
-        fullWidth={fullWidth}
-        freeSolo={freeSolo}
-        disableCloseOnSelect={disableCloseOnSelect}
-        options={[]}
-        onChange={handleChange}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
-          ))
-        }
-        renderInput={params => <TextField {...params} margin="none" variant="outlined" placeholder={placeholder} />}
-      />
-      {children(terms)}
-    </>
+    <Autocomplete
+      aria-label="Filter"
+      id="card-filter"
+      multiple={multiple}
+      fullWidth={fullWidth}
+      freeSolo={freeSolo}
+      disableCloseOnSelect={disableCloseOnSelect}
+      options={[]}
+      size={size}
+      onChange={handleChange}
+      renderTags={(value, getTagProps) =>
+        value.map((option, index) => (
+          <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />
+        ))
+      }
+      renderInput={params => <TextField {...params} margin="none" variant="outlined" placeholder={placeholder} />}
+    />
   );
 };
 export default SearchComponent;
