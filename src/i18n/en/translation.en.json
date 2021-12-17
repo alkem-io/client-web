@@ -853,10 +853,10 @@
         "unknown": "There is a checkout conflict with this canvas"
       },
       "state-actions": {
-        "check-out": "Check-out",
+        "check-out": "Edit",
         "check-in": "Check-in",
         "save-as-template": "Save as template",
-        "save-and-check-in": "Save & Check-in",
+        "save-and-check-in": "Save & stop editing",
         "save": "Save"
       },
       "delete": {

@@ -1,6 +1,6 @@
 import { serializeAsJSON } from '@excalidraw/excalidraw';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
-import { ArrowDropDown, CheckCircle, Save } from '@mui/icons-material';
+import { ArrowDropDown, Save } from '@mui/icons-material';
 import GradeIcon from '@mui/icons-material/Grade';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -81,7 +81,7 @@ type Option = {
   enabledWhen: (canvas: CanvasWithoutValue, hasChanged?: boolean) => boolean;
   icon: JSX.Element;
 };
-type CanvasOptionTypes = 'save' | 'checkin' | 'checkout';
+type CanvasOptionTypes = 'save' | 'save-and-checkin' | 'checkout';
 const canvasOptions: Record<CanvasOptionTypes, Option> = {
   save: {
     titleId: 'pages.canvas.state-actions.save',
@@ -89,10 +89,11 @@ const canvasOptions: Record<CanvasOptionTypes, Option> = {
       canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && Boolean(hasChanged),
     icon: <Save />,
   },
-  checkin: {
-    titleId: 'pages.canvas.state-actions.check-in',
-    enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut,
-    icon: <CheckCircle />,
+  'save-and-checkin': {
+    titleId: 'pages.canvas.state-actions.save-and-check-in',
+    enabledWhen: (canvas, hasChanged) =>
+      canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && Boolean(hasChanged),
+    icon: <Save />,
   },
   checkout: {
     titleId: 'pages.canvas.state-actions.check-out',
@@ -119,7 +120,7 @@ const findMostSuitableOption = (canvas?: CanvasWithoutValue, hasChanged?: boolea
     return 'save';
   }
 
-  return 'checkin';
+  return 'save-and-checkin';
 };
 
 const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state }) => {
@@ -151,7 +152,14 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
   }, [canvas, isDirty]);
 
   const actionMap: { [key in keyof typeof canvasOptions]: (canvas) => void } = {
-    checkin: c => actions.onCheckin(c),
+    'save-and-checkin': c => {
+      canvasRef.current?.readyPromise?.then(async canvasApi => {
+        const appState = canvasApi.getAppState();
+        const elements = canvasApi.getSceneElements();
+        await actions.onUpdate({ ...c, value: serializeAsJSON(elements, appState) });
+        await actions.onCheckin(c);
+      });
+    },
     checkout: c => actions.onCheckout(c),
     save: c => {
       canvasRef.current?.readyPromise?.then(canvasApi => {
@@ -230,7 +238,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                     const canvasValue = canvas.value || '';
                     actions.onMarkAsTemplate({ value: canvasValue, ...canvas });
                   }}
-                  disabled={loading}
+                  disabled={loading || options.canEdit}
                 >
                   {t('pages.canvas.state-actions.save-as-template')}
                 </LoadingButton>

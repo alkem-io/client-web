@@ -149,7 +149,18 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   };
 
   const handlePromotionToTemplate = async (canvas: Canvas) => {
-    await handleUpdateCanvas({ ...canvas, isTemplate: true });
+    if (!canvas.id) {
+      throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
+    }
+
+    await updateCanvas({
+      variables: {
+        input: {
+          ID: canvas.id,
+          isTemplate: true,
+        },
+      },
+    });
   };
 
   const actions = useMemo<ICanvasActions>(
