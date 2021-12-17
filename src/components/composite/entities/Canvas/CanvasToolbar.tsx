@@ -15,6 +15,8 @@ export interface CanvasToolbarProps {
   options?: CanvasToolbarOptions;
 }
 
-const CanvasToolbar: FC<CanvasToolbarProps> = ({ entities, options }) => {
+const CanvasToolbar: FC<CanvasToolbarProps> = () => {
   return <Toolbar>{'test'}</Toolbar>;
 };
+
+export default CanvasToolbar;

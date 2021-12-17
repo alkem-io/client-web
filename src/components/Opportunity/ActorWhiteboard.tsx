@@ -49,9 +49,10 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
   const hideNewActorModal = () => {
     setShowNewActorModal(false);
   };
-  const showNewActorModalF = _e => {
-    setShowNewActorModal(true);
-  };
+
+  // const showNewActorModalF = _e => {
+  //   setShowNewActorModal(true);
+  // };
 
   useEffect(() => {
     const onScroll = async e => {
