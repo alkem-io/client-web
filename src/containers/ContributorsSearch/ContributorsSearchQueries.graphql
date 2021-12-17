@@ -1,0 +1,53 @@
+query ContributorsSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    result {
+      ...UserContributor
+      ...OrganizationContributor
+    }
+  }
+}
+
+fragment OrganizationContributor on Organization {
+  id
+  displayName
+  nameID
+  activity {
+    id
+    name
+    value
+  }
+  orgProfile: profile {
+    id
+    avatar
+    description
+  }
+  verification {
+    id
+    status
+  }
+}
+
+fragment UserContributor on User {
+  id
+  nameID
+  displayName
+  country
+  city
+  agent {
+    id
+    credentials {
+      id
+      type
+      resourceID
+    }
+  }
+  userProfile: profile {
+    id
+    avatar
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+}

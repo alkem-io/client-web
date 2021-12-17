@@ -18,6 +18,7 @@ import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import { UserRoute } from './user/UserRoute';
 import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
+import ContributorsPage from '../pages/Contributors/ContributorsPage';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -52,6 +53,9 @@ export const Routing: FC = () => {
       </RestrictedRoute>
       <Route path="/challenges">
         <ChallengeExplorerPage />
+      </Route>
+      <Route path="/contributors">
+        <ContributorsPage />
       </Route>
       <Route path={`/organization/:${nameOfUrl.organizationNameId}`}>
         <OrganizationProvider>

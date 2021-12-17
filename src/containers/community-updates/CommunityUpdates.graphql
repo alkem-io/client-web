@@ -27,11 +27,9 @@ mutation removeUpdateCommunity($msgData: UpdatesRemoveMessageInput!) {
   removeUpdate(messageData: $msgData)
 }
 
-subscription onMessageReceived {
-  messageReceived {
-    roomId
-    roomName
-    communityId
+subscription communicationUpdateMessageReceived {
+  communicationUpdateMessageReceived {
+    updatesID
     message {
       ...MessageDetails
     }

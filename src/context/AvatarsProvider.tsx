@@ -9,6 +9,10 @@ interface AvatarsProviderProps {
   children: (users: User[]) => React.ReactNode;
 }
 
+// todo refactor to provide necessary data and pass the loading down
+/***
+ * @deprecated Must be refactored
+ */
 export const AvatarsProvider: FC<AvatarsProviderProps> = ({ users = [], count = 20, children }) => {
   const targetCount = Math.min(users.length, count);
   const targetIds = users.slice(0, targetCount).map(x => x.id);

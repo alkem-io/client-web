@@ -100,9 +100,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               </Button>
             }
           >
-            <Typography component={Markdown} variant="body1" children={tagline}></Typography>
-            <SectionHeader text={t('components.contextSegment.vision.title')}></SectionHeader>
-            <Typography component={Markdown} variant="body1" children={vision}></Typography>
+            <Typography component={Markdown} variant="body1" children={tagline} />
+            <SectionHeader text={t('components.contextSegment.vision.title')} />
+            <Typography component={Markdown} variant="body1" children={vision} />
           </DashboardGenericSection>
           <SectionSpacer />
           <DashboardOpportunityStatistics

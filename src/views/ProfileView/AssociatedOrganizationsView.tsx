@@ -1,7 +1,7 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import AssociatedOrganizationCard from '../../components/composite/common/cards/Organization/AssociatedOrganizationCard';
+import OrganizationCard from '../../components/composite/common/cards/Organization/OrganizationCard';
 import ProfileCard, { ProfileCardProps } from '../../components/composite/common/cards/ProfileCard/ProfileCard';
 import AssociatedOrganizationContainer from '../../containers/organization/AssociatedOrganizationContainer';
 
@@ -34,7 +34,7 @@ export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> =
             <AssociatedOrganizationContainer key={i} entities={{ organizationNameId: oNameID }}>
               {(entities, state) => (
                 <Grid item xs={12} md={dense ? 6 : 12}>
-                  <AssociatedOrganizationCard
+                  <OrganizationCard
                     name={entities.name}
                     avatar={entities.avatar}
                     information={entities.information}

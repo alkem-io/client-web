@@ -288,26 +288,29 @@ export type CommunicationAdminRoomResultFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CommunicationMessageReceivedKeySpecifier = (
-  | 'communityId'
+export type CommunicationDiscussionMessageReceivedKeySpecifier = (
+  | 'discussionID'
   | 'message'
-  | 'roomId'
-  | 'roomName'
-  | 'userID'
-  | CommunicationMessageReceivedKeySpecifier
+  | CommunicationDiscussionMessageReceivedKeySpecifier
 )[];
-export type CommunicationMessageReceivedFieldPolicy = {
-  communityId?: FieldPolicy<any> | FieldReadFunction<any>;
+export type CommunicationDiscussionMessageReceivedFieldPolicy = {
+  discussionID?: FieldPolicy<any> | FieldReadFunction<any>;
   message?: FieldPolicy<any> | FieldReadFunction<any>;
-  roomId?: FieldPolicy<any> | FieldReadFunction<any>;
-  roomName?: FieldPolicy<any> | FieldReadFunction<any>;
-  userID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationRoomKeySpecifier = ('displayName' | 'id' | 'messages' | CommunicationRoomKeySpecifier)[];
 export type CommunicationRoomFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunicationUpdateMessageReceivedKeySpecifier = (
+  | 'message'
+  | 'updatesID'
+  | CommunicationUpdateMessageReceivedKeySpecifier
+)[];
+export type CommunicationUpdateMessageReceivedFieldPolicy = {
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatesID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunityKeySpecifier = (
   | 'applications'
@@ -1006,10 +1009,6 @@ export type RelationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type RoomInvitationReceivedKeySpecifier = ('roomId' | RoomInvitationReceivedKeySpecifier)[];
-export type RoomInvitationReceivedFieldPolicy = {
-  roomId?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type SearchResultEntryKeySpecifier = ('result' | 'score' | 'terms' | SearchResultEntryKeySpecifier)[];
 export type SearchResultEntryFieldPolicy = {
   result?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1033,14 +1032,14 @@ export type ServiceMetadataFieldPolicy = {
 };
 export type SubscriptionKeySpecifier = (
   | 'applicationReceived'
-  | 'messageReceived'
-  | 'roomNotificationReceived'
+  | 'communicationDiscussionMessageReceived'
+  | 'communicationUpdateMessageReceived'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
   applicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-  messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
-  roomNotificationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationUpdateMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = ('authorization' | 'id' | 'name' | 'tags' | TagsetKeySpecifier)[];
 export type TagsetFieldPolicy = {
@@ -1308,16 +1307,23 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CommunicationAdminRoomResultKeySpecifier);
     fields?: CommunicationAdminRoomResultFieldPolicy;
   };
-  CommunicationMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  CommunicationDiscussionMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | CommunicationMessageReceivedKeySpecifier
-      | (() => undefined | CommunicationMessageReceivedKeySpecifier);
-    fields?: CommunicationMessageReceivedFieldPolicy;
+      | CommunicationDiscussionMessageReceivedKeySpecifier
+      | (() => undefined | CommunicationDiscussionMessageReceivedKeySpecifier);
+    fields?: CommunicationDiscussionMessageReceivedFieldPolicy;
   };
   CommunicationRoom?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunicationRoomKeySpecifier | (() => undefined | CommunicationRoomKeySpecifier);
     fields?: CommunicationRoomFieldPolicy;
+  };
+  CommunicationUpdateMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CommunicationUpdateMessageReceivedKeySpecifier
+      | (() => undefined | CommunicationUpdateMessageReceivedKeySpecifier);
+    fields?: CommunicationUpdateMessageReceivedFieldPolicy;
   };
   Community?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunityKeySpecifier | (() => undefined | CommunityKeySpecifier);
@@ -1474,10 +1480,6 @@ export type StrictTypedTypePolicies = {
   Relation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RelationKeySpecifier | (() => undefined | RelationKeySpecifier);
     fields?: RelationFieldPolicy;
-  };
-  RoomInvitationReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RoomInvitationReceivedKeySpecifier | (() => undefined | RoomInvitationReceivedKeySpecifier);
-    fields?: RoomInvitationReceivedFieldPolicy;
   };
   SearchResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultEntryKeySpecifier | (() => undefined | SearchResultEntryKeySpecifier);
