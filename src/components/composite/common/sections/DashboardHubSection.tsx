@@ -58,7 +58,7 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
   return (
     <Section {...props}>
       {children}
-      <Grid container spacing={2} justifyContent="space-between" alignItems="stretch">
+      <Grid container spacing={2} alignItems="stretch">
         {hubs.map((ecoverse, i) => {
           const activity = ecoverse.activity || [];
 
