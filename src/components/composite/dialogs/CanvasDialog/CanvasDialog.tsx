@@ -100,11 +100,6 @@ const canvasOptions: Record<CanvasOptionTypes, Option> = {
     enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.Available,
     icon: <LockClockIcon />,
   },
-  // saveAndCheckin: {
-  //   titleId: 'pages.canvas.state-actions.save-and-check-in',
-  //   enabledWhen: (canvas, hasChanged) =>
-  //     canvas?.checkout?.status === CanvasCheckoutStateEnum.CheckedOut && Boolean(hasChanged),
-  // },
 };
 
 const findMostSuitableOption = (canvas?: CanvasWithoutValue, hasChanged?: boolean) => {
@@ -174,7 +169,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     setOptionPopperOpen(false);
 
     const canvasApi = await canvasRef.current?.readyPromise;
-    if (canvasApi) {
+    if (canvasApi && options.canEdit) {
       const elements = canvasApi.getSceneElements();
       const appState = canvasApi.getAppState();
       const value = serializeAsJSON(elements, appState);

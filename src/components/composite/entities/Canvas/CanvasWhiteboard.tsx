@@ -6,7 +6,6 @@ import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce } from 'lodash';
 import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../hooks/useCombinedRefs';
 import { CanvasWithoutValue } from '../../../../models/entities/canvas';
 import { Canvas } from '../../../../models/graphql-schema';
@@ -138,10 +137,8 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
                 onClick={async () => {
                   if (actions.onUpdate) {
                     await actions.onUpdate({ ...(data as ExportedDataState), elements: exportedElements, appState });
-                    const element = document.body.getElementsByClassName('Modal__close')[0];
-                    ReactDOM.findDOMNode(element)?.dispatchEvent(
-                      new MouseEvent('click', { view: window, cancelable: true, bubbles: true })
-                    );
+                    // const element = document.body.getElementsByClassName('Modal__close')[0];
+                    // document.dispatchEvent(new MouseEvent('click', { view: window, cancelable: true, bubbles: true }));
                   }
                 }}
               >
