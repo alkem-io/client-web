@@ -2486,6 +2486,38 @@ export type ApplicationInfoFragment = {
   questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
 };
 
+export type OrganizationCardFragment = {
+  __typename?: 'Organization';
+  id: string;
+  nameID: string;
+  displayName: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+  profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+};
+
+export type UserCardFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  displayName: string;
+  country: string;
+  city: string;
+  agent?: Maybe<{
+    __typename?: 'Agent';
+    id: string;
+    credentials?: Maybe<
+      Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+    >;
+  }>;
+  profile?: Maybe<{
+    __typename?: 'Profile';
+    id: string;
+    avatar?: Maybe<string>;
+    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+  }>;
+};
+
 export type ChallengeCardFragment = {
   __typename?: 'Challenge';
   id: string;
@@ -6467,6 +6499,84 @@ export type OpportunityContributionDetailsQuery = {
       }>;
     };
   };
+};
+
+export type ContributorsSearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type ContributorsSearchQuery = {
+  __typename?: 'Query';
+  search: Array<{
+    __typename?: 'SearchResultEntry';
+    result?: Maybe<
+      | { __typename?: 'Challenge' }
+      | { __typename?: 'Opportunity' }
+      | {
+          __typename?: 'Organization';
+          id: string;
+          displayName: string;
+          nameID: string;
+          activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+          orgProfile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        }
+      | {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          country: string;
+          city: string;
+          agent?: Maybe<{
+            __typename?: 'Agent';
+            id: string;
+            credentials?: Maybe<
+              Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+            >;
+          }>;
+          userProfile?: Maybe<{
+            __typename?: 'Profile';
+            id: string;
+            avatar?: Maybe<string>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+          }>;
+        }
+      | { __typename?: 'UserGroup' }
+    >;
+  }>;
+};
+
+export type OrganizationContributorFragment = {
+  __typename?: 'Organization';
+  id: string;
+  displayName: string;
+  nameID: string;
+  activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+  orgProfile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+};
+
+export type UserContributorFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  displayName: string;
+  country: string;
+  city: string;
+  agent?: Maybe<{
+    __typename?: 'Agent';
+    id: string;
+    credentials?: Maybe<
+      Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+    >;
+  }>;
+  userProfile?: Maybe<{
+    __typename?: 'Profile';
+    id: string;
+    avatar?: Maybe<string>;
+    tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+  }>;
 };
 
 export type ChallengeExplorerSearchQueryVariables = Exact<{
