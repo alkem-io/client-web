@@ -6,6 +6,7 @@ import { Tooltip, Typography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
+import Skeleton from '@mui/material/Skeleton';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -51,13 +52,14 @@ interface Props {
   count?: number;
   className?: any;
   keepInRow?: boolean;
+  loading?: boolean;
 }
 //  todo move in diff dir
-const TagsComponent: FC<Props> = ({ tags, tagsFor, count, className, keepInRow = false }) => {
+const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInRow = false, loading }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const tagsToDisplay = count && count > 0 ? tags.slice(0, count) : tags;
+  const tagsToDisplay = loading ? new Array(count).fill('') : count && count > 0 ? tags.slice(0, count) : tags;
   const moreTags = count ? tags.slice(count) : [];
   const moreTagsText = moreTags.length ? t('components.tags-component.more', { count: moreTags.length }) : '';
   const moreTagsTooltipTitle = moreTags.join(', ');
@@ -65,30 +67,36 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count, className, keepInRow =
   return (
     <div className={className}>
       <div className={styles.tagWrapper}>
-        {tags.length === 0 && (
+        {tags.length === 0 && !loading && (
           <Typography color="neutral.main" variant="subtitle2">
             {t('components.tags-component.no-tags', { name: tagsFor || 'item' })}
           </Typography>
         )}
-        {tagsToDisplay.map((x, i) => (
-          <Tooltip key={i} title={x} arrow placement="bottom">
-            <Chip
-              classes={{
-                iconSmall: styles.iconSmall,
-              }}
-              label={x}
-              variant="outlined"
-              color="primary"
-              size="small"
-              icon={<FiberManualRecordIcon fontSize="small" />}
-              className={clsx(styles.tagMargin, {
-                [styles[`count-${count}`]]: keepInRow && count && count <= 5,
-                [styles.maxWidth]: !keepInRow && (!count || count > 5),
-              })}
-            />
-          </Tooltip>
-        ))}
-        {moreTags.length > 0 && (
+        {tagsToDisplay.map((x, i) => {
+          return loading ? (
+            <Skeleton key={i} width={`${100 / count}%`}>
+              <Chip variant="outlined" color="primary" size="small" icon={<FiberManualRecordIcon fontSize="small" />} />
+            </Skeleton>
+          ) : (
+            <Tooltip key={i} title={x} arrow placement="bottom">
+              <Chip
+                classes={{
+                  iconSmall: styles.iconSmall,
+                }}
+                label={x}
+                variant="outlined"
+                color="primary"
+                size="small"
+                icon={<FiberManualRecordIcon fontSize="small" />}
+                className={clsx(styles.tagMargin, {
+                  [styles[`count-${count}`]]: keepInRow && count && count <= 5,
+                  [styles.maxWidth]: !keepInRow && (!count || count > 5),
+                })}
+              />
+            </Tooltip>
+          );
+        })}
+        {!loading && moreTags.length > 0 && (
           <Tooltip title={moreTagsTooltipTitle} arrow placement="bottom">
             <Chip
               classes={{
