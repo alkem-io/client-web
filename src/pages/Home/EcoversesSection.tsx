@@ -70,6 +70,9 @@ const EcoverseSectionV2 = () => {
         hubs: ecoverses,
         user,
       }}
+      options={{
+        itemBasis: '25%',
+      }}
       loading={{ hubs: loading }}
     >
       <Typography variant="body1">{t('pages.home.sections.hub.body')}</Typography>

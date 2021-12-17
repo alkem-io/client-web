@@ -52,18 +52,7 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
           contributions.map((x, i) => (
             <Grid item key={i} flexGrow={1} flexBasis={'50%'}>
               <ContributionDetailsContainer entities={x}>
-                {({ details = { name: 'blank', tags: [], url: '' } }, state) => (
-                  <ContributionCardV2
-                    details={{
-                      headerText: details?.name,
-                      labelText: details?.type,
-                      tags: details?.tags,
-                      url: details?.url || '',
-                      mediaUrl: details?.image,
-                    }}
-                    loading={state.loading}
-                  />
-                )}
+                {({ details }, state) => <ContributionCardV2 details={details} loading={state.loading} />}
               </ContributionDetailsContainer>
             </Grid>
           ))}
