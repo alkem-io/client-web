@@ -7267,17 +7267,6 @@ export type CommunicationUpdateMessageReceivedSubscription = {
   };
 };
 
-export type CommunicationDiscussionMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
-
-export type CommunicationDiscussionMessageReceivedSubscription = {
-  __typename?: 'Subscription';
-  communicationDiscussionMessageReceived: {
-    __typename?: 'CommunicationDiscussionMessageReceived';
-    discussionID: string;
-    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
-  };
-};
-
 export type DiscussionDetailsFragment = {
   __typename?: 'Discussion';
   id: string;
@@ -7415,6 +7404,17 @@ export type AuthorDetailsQuery = {
     lastName: string;
     profile?: Maybe<{ __typename?: 'Profile'; id: string; avatar?: Maybe<string> }>;
   }>;
+};
+
+export type CommunicationDiscussionMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type CommunicationDiscussionMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  communicationDiscussionMessageReceived: {
+    __typename?: 'CommunicationDiscussionMessageReceived';
+    discussionID: string;
+    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+  };
 };
 
 export type EcoversePageQueryVariables = Exact<{
