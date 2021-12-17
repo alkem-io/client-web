@@ -16,7 +16,7 @@ import { RouterLink } from '../../components/core/RouterLink';
 import { useChallenge, useConfig } from '../../hooks';
 import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
 import { ChallengeContainerEntities } from '../../containers/challenge/ChallengePageContainer';
-import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
+import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 
 const routes = {
   discussions: '/community/discussions',
@@ -97,7 +97,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
         />
         <NavigationTab
           icon={<ForumOutlined />}
-          disabled={!communityReadAccess}
+          disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           label={t('common.discussions')}
           component={RouterLink}
           value={pathGetter('discussions')}
