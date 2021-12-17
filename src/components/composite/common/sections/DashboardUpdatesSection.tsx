@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  CommunityUpdatesContainer,
   CommunityUpdatesContainerProps,
+  CommunityUpdatesDataContainer,
 } from '../../../../containers/community-updates/CommunityUpdates';
 import { AvatarsProvider } from '../../../../context/AvatarsProvider';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
@@ -13,12 +13,12 @@ export interface DashboardUpdatesSectionProps {
   entities: CommunityUpdatesContainerProps['entities'];
 }
 
-const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities }) => {
+const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: { ecoverseId, communityId } }) => {
   const { t } = useTranslation();
 
   return (
-    <CommunityUpdatesContainer entities={entities}>
-      {entities => {
+    <CommunityUpdatesDataContainer entities={{ ecoverseId, communityId }}>
+      {(entities, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
         const messageSender = {
@@ -27,10 +27,13 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities })
 
         return (
           <DashboardGenericSection headerText={t('dashboard-updates-section.title', { count: messages.length })}>
-            {messages.length > 0 ? (
+            {!messages.length && !retrievingUpdateMessages ? (
+              t('dashboard-updates-section.no-data')
+            ) : (
               <AvatarsProvider users={[messageSender]}>
                 {populatedUsers => (
                   <SingleUpdateView
+                    loading={retrievingUpdateMessages}
                     author={{
                       id: populatedUsers[0].id,
                       displayName: populatedUsers[0].displayName,
@@ -44,13 +47,11 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities })
                   />
                 )}
               </AvatarsProvider>
-            ) : (
-              t('dashboard-updates-section.no-data')
             )}
           </DashboardGenericSection>
         );
       }}
-    </CommunityUpdatesContainer>
+    </CommunityUpdatesDataContainer>
   );
 };
 export default DashboardUpdatesSection;

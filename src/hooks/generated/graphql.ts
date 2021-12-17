@@ -5736,78 +5736,11 @@ export type EcoverseCommunityQueryResult = Apollo.QueryResult<
 export function refetchEcoverseCommunityQuery(variables?: SchemaTypes.EcoverseCommunityQueryVariables) {
   return { query: EcoverseCommunityDocument, variables: variables };
 }
-export const ChallengeCommunityMessagesDocument = gql`
-  query challengeCommunityMessages($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+export const CommunityMessagesDocument = gql`
+  query communityMessages($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
     ecoverse(ID: $ecoverseId) {
       id
-      challenge(ID: $challengeId) {
-        community {
-          ...CommunityMessages
-        }
-      }
-    }
-  }
-  ${CommunityMessagesFragmentDoc}
-`;
-
-/**
- * __useChallengeCommunityMessagesQuery__
- *
- * To run a query within a React component, call `useChallengeCommunityMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeCommunityMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeCommunityMessagesQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      challengeId: // value for 'challengeId'
- *   },
- * });
- */
-export function useChallengeCommunityMessagesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeCommunityMessagesQuery,
-    SchemaTypes.ChallengeCommunityMessagesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ChallengeCommunityMessagesQuery,
-    SchemaTypes.ChallengeCommunityMessagesQueryVariables
-  >(ChallengeCommunityMessagesDocument, options);
-}
-export function useChallengeCommunityMessagesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeCommunityMessagesQuery,
-    SchemaTypes.ChallengeCommunityMessagesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ChallengeCommunityMessagesQuery,
-    SchemaTypes.ChallengeCommunityMessagesQueryVariables
-  >(ChallengeCommunityMessagesDocument, options);
-}
-export type ChallengeCommunityMessagesQueryHookResult = ReturnType<typeof useChallengeCommunityMessagesQuery>;
-export type ChallengeCommunityMessagesLazyQueryHookResult = ReturnType<typeof useChallengeCommunityMessagesLazyQuery>;
-export type ChallengeCommunityMessagesQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeCommunityMessagesQuery,
-  SchemaTypes.ChallengeCommunityMessagesQueryVariables
->;
-export function refetchChallengeCommunityMessagesQuery(
-  variables?: SchemaTypes.ChallengeCommunityMessagesQueryVariables
-) {
-  return { query: ChallengeCommunityMessagesDocument, variables: variables };
-}
-export const EcoverseCommunityMessagesDocument = gql`
-  query ecoverseCommunityMessages($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      nameID
-      community {
+      community(ID: $communityId) {
         ...CommunityMessages
       }
     }
@@ -5816,121 +5749,51 @@ export const EcoverseCommunityMessagesDocument = gql`
 `;
 
 /**
- * __useEcoverseCommunityMessagesQuery__
+ * __useCommunityMessagesQuery__
  *
- * To run a query within a React component, call `useEcoverseCommunityMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseCommunityMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCommunityMessagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseCommunityMessagesQuery({
+ * const { data, loading, error } = useCommunityMessagesQuery({
  *   variables: {
  *      ecoverseId: // value for 'ecoverseId'
+ *      communityId: // value for 'communityId'
  *   },
  * });
  */
-export function useEcoverseCommunityMessagesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoverseCommunityMessagesQuery,
-    SchemaTypes.EcoverseCommunityMessagesQueryVariables
-  >
+export function useCommunityMessagesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CommunityMessagesQuery, SchemaTypes.CommunityMessagesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.EcoverseCommunityMessagesQuery,
-    SchemaTypes.EcoverseCommunityMessagesQueryVariables
-  >(EcoverseCommunityMessagesDocument, options);
+  return Apollo.useQuery<SchemaTypes.CommunityMessagesQuery, SchemaTypes.CommunityMessagesQueryVariables>(
+    CommunityMessagesDocument,
+    options
+  );
 }
-export function useEcoverseCommunityMessagesLazyQuery(
+export function useCommunityMessagesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseCommunityMessagesQuery,
-    SchemaTypes.EcoverseCommunityMessagesQueryVariables
+    SchemaTypes.CommunityMessagesQuery,
+    SchemaTypes.CommunityMessagesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.EcoverseCommunityMessagesQuery,
-    SchemaTypes.EcoverseCommunityMessagesQueryVariables
-  >(EcoverseCommunityMessagesDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.CommunityMessagesQuery, SchemaTypes.CommunityMessagesQueryVariables>(
+    CommunityMessagesDocument,
+    options
+  );
 }
-export type EcoverseCommunityMessagesQueryHookResult = ReturnType<typeof useEcoverseCommunityMessagesQuery>;
-export type EcoverseCommunityMessagesLazyQueryHookResult = ReturnType<typeof useEcoverseCommunityMessagesLazyQuery>;
-export type EcoverseCommunityMessagesQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseCommunityMessagesQuery,
-  SchemaTypes.EcoverseCommunityMessagesQueryVariables
+export type CommunityMessagesQueryHookResult = ReturnType<typeof useCommunityMessagesQuery>;
+export type CommunityMessagesLazyQueryHookResult = ReturnType<typeof useCommunityMessagesLazyQuery>;
+export type CommunityMessagesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityMessagesQuery,
+  SchemaTypes.CommunityMessagesQueryVariables
 >;
-export function refetchEcoverseCommunityMessagesQuery(variables?: SchemaTypes.EcoverseCommunityMessagesQueryVariables) {
-  return { query: EcoverseCommunityMessagesDocument, variables: variables };
-}
-export const OpportunityCommunityMessagesDocument = gql`
-  query opportunityCommunityMessages($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      opportunity(ID: $opportunityId) {
-        community {
-          ...CommunityMessages
-        }
-      }
-    }
-  }
-  ${CommunityMessagesFragmentDoc}
-`;
-
-/**
- * __useOpportunityCommunityMessagesQuery__
- *
- * To run a query within a React component, call `useOpportunityCommunityMessagesQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityCommunityMessagesQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityCommunityMessagesQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityCommunityMessagesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityCommunityMessagesQuery,
-    SchemaTypes.OpportunityCommunityMessagesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.OpportunityCommunityMessagesQuery,
-    SchemaTypes.OpportunityCommunityMessagesQueryVariables
-  >(OpportunityCommunityMessagesDocument, options);
-}
-export function useOpportunityCommunityMessagesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityCommunityMessagesQuery,
-    SchemaTypes.OpportunityCommunityMessagesQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OpportunityCommunityMessagesQuery,
-    SchemaTypes.OpportunityCommunityMessagesQueryVariables
-  >(OpportunityCommunityMessagesDocument, options);
-}
-export type OpportunityCommunityMessagesQueryHookResult = ReturnType<typeof useOpportunityCommunityMessagesQuery>;
-export type OpportunityCommunityMessagesLazyQueryHookResult = ReturnType<
-  typeof useOpportunityCommunityMessagesLazyQuery
->;
-export type OpportunityCommunityMessagesQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityCommunityMessagesQuery,
-  SchemaTypes.OpportunityCommunityMessagesQueryVariables
->;
-export function refetchOpportunityCommunityMessagesQuery(
-  variables?: SchemaTypes.OpportunityCommunityMessagesQueryVariables
-) {
-  return { query: OpportunityCommunityMessagesDocument, variables: variables };
+export function refetchCommunityMessagesQuery(variables?: SchemaTypes.CommunityMessagesQueryVariables) {
+  return { query: CommunityMessagesDocument, variables: variables };
 }
 export const OpportunityCommunityDocument = gql`
   query opportunityCommunity($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
@@ -10208,12 +10071,10 @@ export type RemoveUpdateCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUpdateCommunityMutation,
   SchemaTypes.RemoveUpdateCommunityMutationVariables
 >;
-export const OnMessageReceivedDocument = gql`
-  subscription onMessageReceived {
-    messageReceived {
-      roomId
-      roomName
-      communityId
+export const CommunicationUpdateMessageReceivedDocument = gql`
+  subscription communicationUpdateMessageReceived {
+    communicationUpdateMessageReceived {
+      updatesID
       message {
         ...MessageDetails
       }
@@ -10223,34 +10084,81 @@ export const OnMessageReceivedDocument = gql`
 `;
 
 /**
- * __useOnMessageReceivedSubscription__
+ * __useCommunicationUpdateMessageReceivedSubscription__
  *
- * To run a query within a React component, call `useOnMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useOnMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCommunicationUpdateMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCommunicationUpdateMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useOnMessageReceivedSubscription({
+ * const { data, loading, error } = useCommunicationUpdateMessageReceivedSubscription({
  *   variables: {
  *   },
  * });
  */
-export function useOnMessageReceivedSubscription(
+export function useCommunicationUpdateMessageReceivedSubscription(
   baseOptions?: Apollo.SubscriptionHookOptions<
-    SchemaTypes.OnMessageReceivedSubscription,
-    SchemaTypes.OnMessageReceivedSubscriptionVariables
+    SchemaTypes.CommunicationUpdateMessageReceivedSubscription,
+    SchemaTypes.CommunicationUpdateMessageReceivedSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSubscription<
-    SchemaTypes.OnMessageReceivedSubscription,
-    SchemaTypes.OnMessageReceivedSubscriptionVariables
-  >(OnMessageReceivedDocument, options);
+    SchemaTypes.CommunicationUpdateMessageReceivedSubscription,
+    SchemaTypes.CommunicationUpdateMessageReceivedSubscriptionVariables
+  >(CommunicationUpdateMessageReceivedDocument, options);
 }
-export type OnMessageReceivedSubscriptionHookResult = ReturnType<typeof useOnMessageReceivedSubscription>;
-export type OnMessageReceivedSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.OnMessageReceivedSubscription>;
+export type CommunicationUpdateMessageReceivedSubscriptionHookResult = ReturnType<
+  typeof useCommunicationUpdateMessageReceivedSubscription
+>;
+export type CommunicationUpdateMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CommunicationUpdateMessageReceivedSubscription>;
+export const CommunicationDiscussionMessageReceivedDocument = gql`
+  subscription communicationDiscussionMessageReceived {
+    communicationDiscussionMessageReceived {
+      discussionID
+      message {
+        ...MessageDetails
+      }
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
+
+/**
+ * __useCommunicationDiscussionMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useCommunicationDiscussionMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCommunicationDiscussionMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunicationDiscussionMessageReceivedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCommunicationDiscussionMessageReceivedSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
+    SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
+    SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
+  >(CommunicationDiscussionMessageReceivedDocument, options);
+}
+export type CommunicationDiscussionMessageReceivedSubscriptionHookResult = ReturnType<
+  typeof useCommunicationDiscussionMessageReceivedSubscription
+>;
+export type CommunicationDiscussionMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionMessageReceivedSubscription>;
 export const CommunityDiscussionDocument = gql`
   query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
     ecoverse(ID: $ecoverseId) {

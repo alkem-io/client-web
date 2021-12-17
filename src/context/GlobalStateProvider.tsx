@@ -24,6 +24,12 @@ import {
   CommunicationMessageState,
   communicationMessageMachine,
 } from '../state/global/entities/communityUpdateMachine';
+import {
+  CommunicationDiscussionContext,
+  CommunicationDiscussionEvent,
+  communicationDiscussionMachine,
+  CommunicationDiscussionState,
+} from '../state/global/entities/communityDiscussionMachine';
 
 interface GlobalStateContextProps {
   ui: {
@@ -37,6 +43,12 @@ interface GlobalStateContextProps {
       CommunicationMessageEvent,
       CommunicationMessageState
     >;
+    communityDiscussionService: Interpreter<
+      CommunicationDiscussionContext,
+      any,
+      CommunicationDiscussionEvent,
+      CommunicationDiscussionState
+    >;
   };
   notificationsService: Interpreter<NotificationsContext, any, NotificationsEvent>;
 }
@@ -47,12 +59,19 @@ export const GlobalStateProvider = ({ children }) => {
   const userSegmentService = useInterpret(userSegmentMachine);
   const notificationsService = useInterpret(notificationMachine);
   const communityUpdateService = useInterpret(communicationMessageMachine);
+  const communityDiscussionService = useInterpret(communicationDiscussionMachine);
 
   const ui = useMemo(
     () => ({ loginNavigationService, userSegmentService }),
     [loginNavigationService, userSegmentService]
   );
-  const entities = useMemo(() => ({ communityUpdateService }), [communityUpdateService]);
+  const entities = useMemo(
+    () => ({
+      communityUpdateService,
+      communityDiscussionService,
+    }),
+    [communityUpdateService, communityDiscussionService]
+  );
 
   return (
     <GlobalStateContext.Provider
