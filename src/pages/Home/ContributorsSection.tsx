@@ -50,6 +50,8 @@ const ContributorsSection = () => {
       subHeaderText={t('contributors-section.subheader')}
       userTitle={t('contributors-section.users-title')}
       organizationTitle={t('contributors-section.organizations-title')}
+      navText={'See more...'}
+      navLink={'contributors'}
       entities={{
         users: usersDTO,
         user,

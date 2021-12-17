@@ -13,11 +13,10 @@ const styles = (theme: Theme) =>
     root: {
       margin: 0,
       padding: theme.spacing(2),
+      display: 'flex',
+      alignItems: 'center',
     },
     closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
       color: theme.palette.grey[500],
     },
   });
@@ -25,18 +24,18 @@ const styles = (theme: Theme) =>
 export interface DialogTitleProps extends WithStyles<typeof styles> {
   id?: string;
   children: React.ReactNode;
-  onClose?: () => void;
+  onClose?: (e: Event) => void;
 }
 
 const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   const { children, classes, onClose, ...other } = props;
   return (
     <MuiDialogTitle className={classes.root} {...other}>
-      <Typography component="div" variant="h6">
+      <Typography component="div" variant="h6" sx={{ flexGrow: 1 }}>
         {children}
       </Typography>
       {onClose ? (
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose} size="large">
+        <IconButton aria-label="close" className={classes.closeButton} onClick={e => onClose(e as any)} size="medium">
           <CloseIcon />
         </IconButton>
       ) : null}

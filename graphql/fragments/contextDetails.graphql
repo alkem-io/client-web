@@ -14,4 +14,9 @@ fragment ContextDetails on Context {
   visual {
     ...ContextVisual
   }
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
+  }
 }

@@ -4,6 +4,7 @@ import { OpportunityPageContainer } from '../../containers';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import { useUpdateNavigation } from '../../hooks';
 import OpportunityTabs from '../../routing/opportunity/OpportunityTabs';
+import OpportunityCanvasView from '../../views/Opportunity/OpportunityCanvasManagementView';
 import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
 import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboardView';
 import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
@@ -110,8 +111,19 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                         <DiscussionsRoute paths={paths} />
                       </RestrictedRoute>
                     </Switch>
-                  </TabPanel> */}
-                  <TabPanel value={tabNames['canvases']}>Comming soon</TabPanel>
+                  </TabPanel>
+                  */}
+                  <TabPanel value={tabNames['canvases']}>
+                    <OpportunityCanvasView
+                      entities={entities}
+                      state={{
+                        loading: state.loading,
+                        error: state.error,
+                      }}
+                      actions={undefined}
+                      options={undefined}
+                    />
+                  </TabPanel>
                 </TabContext>
               );
             }}

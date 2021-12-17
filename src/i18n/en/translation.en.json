@@ -842,6 +842,53 @@
       "no-user-groups": "There are no user groups",
       "no-updates": "There are no updates"
     },
+    "canvas": {
+      "header": "Canvases in this {{blockName}}",
+      "subheader": "Create your custom visualization and share it with others.",
+      "add-canvas": "Create canvas",
+      "no-canvases": "No canvases have been created yet. Be the first to add one.",
+      "state": {
+        "available": "You are free to work on this canvas",
+        "checkedout": "Someone else is already working on this canvas",
+        "unknown": "There is a checkout conflict with this canvas"
+      },
+      "state-actions": {
+        "check-out": "Edit",
+        "check-in": "Check-in",
+        "save-as-template": "Save as template",
+        "save-and-check-in": "Save & stop editing",
+        "save": "Save"
+      },
+      "delete": {
+        "confirmation-title": "Deleting <b>{{ blockName }}</b>",
+        "confirmation-text": "Are you sure you want to delete this canvas? The action is irreversible."
+      },
+      "create-dialog": {
+        "header": "Create a new canvas",
+        "steps": {
+          "naming": "Define a suitable name for your canvas. What will your canvas capture?",
+          "templating": "Choose from the list of templates if you want to use it as a blueprint for your canvas.",
+          "completing": "The canvas will be created with the following parameters"
+        },
+        "no-template-selected": "To see a preview of the template please select one."
+      },
+      "template": {
+        "header": "Templates defined in Alkemio",
+        "no-templates": "There are no templates defined here yet. Be the first to add one.",
+        "how-to": "To create a template create a new canvas or use an existing one and save it as a template."
+      },
+      "hub": {
+        "templatesHeader": "Templates defined in this hub",
+        "templatesSubheader": "The templates defined in this hub can be used in every challenge and opportunity that this hub hosts."
+      },
+      "challenge": {
+        "templatesHeader": "Templates defined in this challenge",
+        "templatesSubheader": "The templates defined in this challenge can be used in every opportunity that is in the scope of this challenge."
+      },
+      "opportunity": {
+        "templatesHeader": "Templates defined in this opportunity"
+      }
+    },
     "login": {
       "title": "Sign in",
       "validations": {
