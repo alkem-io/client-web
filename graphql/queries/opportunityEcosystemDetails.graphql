@@ -1,0 +1,29 @@
+query opportunityEcosystemDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    opportunity(ID: $opportunityId) {
+      context {
+        ecosystemModel {
+          id
+          actorGroups {
+            id
+            name
+            description
+            actors {
+              id
+              name
+              description
+              value
+              impact
+            }
+          }
+          canvas {
+            id
+            name
+            value
+          }
+        }
+      }
+    }
+  }
+}

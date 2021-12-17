@@ -5,7 +5,8 @@ import { useUpdateNavigation } from '../../hooks';
 import AlkemioActivitySection from './AlkemioActivitySection';
 import ContributorsSection from './ContributorsSection';
 import EcoversesSection from './EcoversesSection';
-import LoginSection from './LoginSection';
+import GettingStartedSection from './GettingStartedSection';
+import ShowInterestSection from './ShowInterestSection';
 import WelcomeSection from './WelcomeSection';
 
 export const HomePage = () => {
@@ -18,16 +19,21 @@ export const HomePage = () => {
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <WelcomeSection />
-          <LoginSection />
           <SectionSpacer />
-          <EcoversesSection />
+          <ShowInterestSection />
         </Grid>
         <Grid item xs={12} md={6}>
           <AlkemioActivitySection />
           <SectionSpacer />
-          <ContributorsSection />
+          <GettingStartedSection />
           {/* <SectionSpacer />
           <OrganizationSection /> */}
+        </Grid>
+        <Grid item xs={12}>
+          <EcoversesSection />
+        </Grid>
+        <Grid item xs={12}>
+          <ContributorsSection />
         </Grid>
       </Grid>
     </>

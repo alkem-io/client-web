@@ -1,17 +1,16 @@
 import { useSelector } from '@xstate/react/lib/useSelector';
 import { unionWith, uniqBy } from 'lodash';
 import React, { FC, useCallback, useMemo } from 'react';
-import { useApolloErrorHandler, useGlobalState, useNotification, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useGlobalState, useNotification } from '../../hooks';
 import {
   refetchCommunityUpdatesQuery,
   useCommunityUpdatesQuery,
-  useOnMessageReceivedSubscription,
+  useCommunicationUpdateMessageReceivedSubscription,
   useRemoveUpdateCommunityMutation,
   useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
-import { Message, Community, User, Ecoverse } from '../../models/graphql-schema';
+import { Message, Community, User, Ecoverse, Scalars } from '../../models/graphql-schema';
 import { ADD_MESSAGE } from '../../state/global/entities/communityUpdateMachine';
-import { DocumentNode, useQuery } from '@apollo/client';
 import { logger } from '../../services/logging/winston/logger';
 
 export interface CommunityUpdatesContainerProps {
@@ -43,7 +42,7 @@ export interface CommunityUpdatesEntities {
   senders: Pick<User, 'id'>[];
 }
 
-// todo: UpdatesProvider
+// todo: only actions are used from here; unify with CommunityUpdatesDataContainer
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
   const { communityId, ecoverseId } = entities;
@@ -102,9 +101,8 @@ export function useUpdateSubscription() {
   const { entities } = useGlobalState();
   const { communityUpdateService } = entities;
   const notify = useNotification();
-  const { user } = useUserContext();
 
-  return useOnMessageReceivedSubscription({
+  return useCommunicationUpdateMessageReceivedSubscription({
     shouldResubscribe: true,
     onSubscriptionData: options => {
       if (options.subscriptionData.error) {
@@ -112,7 +110,7 @@ export function useUpdateSubscription() {
         return;
       }
 
-      const subData = options.subscriptionData.data?.messageReceived;
+      const subData = options.subscriptionData.data?.communicationUpdateMessageReceived;
       if (!subData) return;
 
       communityUpdateService.send({
@@ -120,13 +118,7 @@ export function useUpdateSubscription() {
         payload: subData,
       });
 
-      const communityId = subData.communityId;
-      let communityName = subData.roomName;
-      if (communityId) {
-        communityName = user?.communities[communityId] || communityName;
-      }
-
-      notify(`You just received an update in ${communityName}`);
+      notify('You just received an update');
     },
   });
 }
@@ -149,7 +141,7 @@ export function useCommunityUpdateSubscriptionSelector(initialMessages?: Message
 
   const messages =
     useSelector(communityUpdateService, state => {
-      return state.context.messagesByRoom[roomId || ''];
+      return state.context.messagesByUpdate[roomId || ''];
     }) || [];
 
   const zippedMessages = useMemo(() => {
@@ -163,12 +155,10 @@ export function useCommunityUpdateSubscriptionSelector(initialMessages?: Message
   return zippedMessages;
 }
 
-export interface CommunityUpdatesDataContainerProps<TQuery, TVariables> {
+export interface CommunityUpdatesDataContainerProps {
   entities: {
-    variables: TVariables;
-    document: DocumentNode;
-    messageSelector: (query?: TQuery) => Message[];
-    roomIdSelector: (query?: TQuery) => string;
+    ecoverseId?: Scalars['UUID_NAMEID'];
+    communityId?: Scalars['UUID'];
   };
   children: (entities: CommunityUpdatesDataEntities, loading: CommunityUpdatesDataState) => React.ReactNode;
 }
@@ -183,19 +173,21 @@ export interface CommunityUpdatesDataEntities {
 }
 
 // TODO - need to merge this into the CommunityUpdatesContainer once
-// the communityIds are present everywhere accross the application
+// the communityIds are present everywhere across the application
 // Need the container in order to conditionally use the subscription
-export const CommunityUpdatesDataContainer = <TQuery, TVariables>({
-  children,
-  entities,
-}: CommunityUpdatesDataContainerProps<TQuery, TVariables>) => {
-  const { document, variables, messageSelector, roomIdSelector } = entities;
-  const { data, loading } = useQuery<TQuery, TVariables>(document, { variables });
-  const messages = useMemo(() => messageSelector(data), [data, messageSelector]);
-  const roomId = roomIdSelector(data);
+export const CommunityUpdatesDataContainer = ({ children, entities }: CommunityUpdatesDataContainerProps) => {
+  const handleError = useApolloErrorHandler();
+  const { ecoverseId = '', communityId = '' } = entities;
+  const { data, loading } = useCommunityUpdatesQuery({
+    variables: { ecoverseId, communityId },
+    skip: !ecoverseId || !communityId,
+    onError: handleError,
+  });
+  const oldMessages = data?.ecoverse?.community?.communication?.updates?.messages ?? [];
+  const roomId = data?.ecoverse?.community?.communication?.updates?.id;
 
-  const updateMessages = useCommunityUpdateSubscriptionSelector(messages, roomId);
+  const messages = useCommunityUpdateSubscriptionSelector(oldMessages, roomId);
   const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
 
-  return <>{children({ messages: updateMessages, senders }, { retrievingUpdateMessages: loading })}</>;
+  return <>{children({ messages, senders }, { retrievingUpdateMessages: loading })}</>;
 };

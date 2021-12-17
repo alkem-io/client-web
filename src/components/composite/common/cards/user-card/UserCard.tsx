@@ -5,17 +5,16 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import TagsComponent from '../../TagsComponent/TagsComponent';
+import Skeleton from '@mui/material/Skeleton';
+import ConditionalLink from '../../../../core/ConditionalLink';
 
 // todo: unify card height on a later stage
 // Per requirements in {@link https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/}
 export const USER_CARD_HEIGHT = 416;
-const IMAGE_HEIGHT = 188;
-const TAG_CONTAINER_HEIGHT = 82;
+const TAG_CONTAINER_HEIGHT = 72;
 const TAG_DISPLAY_COUNT = 3;
 const INITIAL_ELEVATION = 1;
 const FINAL_ELEVATION = 8;
@@ -23,13 +22,16 @@ const FINAL_ELEVATION = 8;
 // css per design -> https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/
 const useStyles = makeStyles(theme => ({
   avatar: {
-    height: IMAGE_HEIGHT,
-    width: IMAGE_HEIGHT,
+    height: '100%',
+    width: '100%',
   },
   imageContainer: {
     display: 'flex',
     justifyContent: 'center',
-    height: IMAGE_HEIGHT,
+    aspectRatio: '1/1',
+  },
+  card: {
+    minWidth: theme.spacing(32),
   },
   cardContent: {
     padding: 0,
@@ -41,6 +43,8 @@ const useStyles = makeStyles(theme => ({
   },
   tagBoxSize: {
     height: TAG_CONTAINER_HEIGHT,
+    display: 'flex',
+    flexDirection: 'column-reverse',
   },
   infoRowHeight: {
     height: (theme.typography.body1.fontSize as number) * (theme.typography.body1.lineHeight as number),
@@ -52,57 +56,80 @@ const useStyles = makeStyles(theme => ({
 
 /* todo add jobTitle */
 export interface UserCardProps {
-  avatarSrc: string;
-  displayName: string;
-  tags: string[];
-  url: string;
+  avatarSrc?: string;
+  displayName?: string;
+  tags?: string[];
+  url?: string;
   roleName?: string;
   city?: string;
   country?: string;
+  loading?: boolean;
 }
 
-const UserCard: FC<UserCardProps> = ({ avatarSrc, displayName, city, country, tags, url, roleName }) => {
+const UserCard: FC<UserCardProps> = ({
+  avatarSrc,
+  displayName = '',
+  city,
+  country,
+  tags = [],
+  url,
+  roleName,
+  loading,
+}) => {
   const styles = useStyles();
   const location = [city, country].filter(x => !!x).join(', ');
   const [elevation, setElevation] = useState(INITIAL_ELEVATION);
   return (
-    <Link component={RouterLink} to={url} underline="none" aria-label="user-card">
+    <ConditionalLink condition={!!url} to={url} aria-label="user-card">
       <Card
         elevation={elevation}
         onMouseOver={() => setElevation(FINAL_ELEVATION)}
         onMouseOut={() => setElevation(INITIAL_ELEVATION)}
+        className={styles.card}
       >
         <Box padding={0.8} paddingBottom={1.5}>
           <div className={styles.imageContainer}>
-            <Avatar
-              className={styles.avatar}
-              src={avatarSrc}
-              aria-label="User avatar"
-              alt={`${displayName}\`s avatar`}
-              variant="rounded"
-            >
-              {displayName[0]}
-            </Avatar>
+            {loading ? (
+              <Skeleton variant={'rectangular'}>
+                <Avatar
+                  className={styles.avatar}
+                  src={avatarSrc}
+                  aria-label="User avatar"
+                  alt={`${displayName}\`s avatar`}
+                  variant="rounded"
+                />
+              </Skeleton>
+            ) : (
+              <Avatar
+                className={styles.avatar}
+                src={avatarSrc}
+                aria-label="User avatar"
+                alt={`${displayName}\`s avatar`}
+                variant="rounded"
+              >
+                {displayName[0]}
+              </Avatar>
+            )}
           </div>
           <CardContent className={styles.cardContent}>
             <Grid container spacing={1}>
               <Grid item>
-                <Typography color="textPrimary" variant={'h3'} noWrap={true}>
+                <Typography color="primary" variant={'h5'} noWrap={true} fontWeight={600}>
                   {displayName}
                 </Typography>
               </Grid>
-              <Grid container item>
+              <Grid item xs={12}>
                 <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" />
                 <InfoRow text={location || 'No location specified'} icon={LocationOnIcon} ariaLabel="Location" />
               </Grid>
-              <Grid item>
+              <Grid item xs={12} display="flex">
                 <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} />
               </Grid>
             </Grid>
           </CardContent>
         </Box>
       </Card>
-    </Link>
+    </ConditionalLink>
   );
 };
 export default UserCard;
@@ -111,16 +138,17 @@ interface InfoRowProps {
   icon: typeof SvgIcon;
   ariaLabel: string;
   text?: string;
+  loading?: boolean;
 }
 
-const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel }) => {
+const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel, loading }) => {
   const styles = useStyles();
 
   return (
-    <Grid container alignItems={'center'} className={styles.infoRowHeight}>
-      <Icon className={styles.infoRowHeight} />
-      <Typography color="textPrimary" variant="body1" noWrap={true} aria-label={ariaLabel}>
-        {text}
+    <Grid item xs={12}>
+      <Typography color="textPrimary" variant="body1" noWrap={true} aria-label={ariaLabel} display="flex">
+        <Icon className={styles.infoRowHeight} />
+        {loading ? <Skeleton width="70%" /> : text}
       </Typography>
     </Grid>
   );

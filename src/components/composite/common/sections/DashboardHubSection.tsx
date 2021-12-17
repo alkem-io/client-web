@@ -7,7 +7,7 @@ import { UserMetadata } from '../../../../hooks';
 import { Ecoverse, Nvp } from '../../../../models/graphql-schema';
 import getActivityCount from '../../../../utils/get-activity-count';
 import { buildEcoverseUrl } from '../../../../utils/urlBuilders';
-import HubContributionCard from '../cards/ContributionCard/HubContributionCard';
+import EntityContributionCard from '../cards/ContributionCard/EntityContributionCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 
 interface DashboardHubSectionProps extends DashboardGenericSectionProps {
@@ -16,6 +16,9 @@ interface DashboardHubSectionProps extends DashboardGenericSectionProps {
       activity?: Pick<Nvp, 'name' | 'value'>[];
     })[];
     user?: UserMetadata;
+  };
+  options: {
+    itemBasis: '25%' | '33%' | '50%';
   };
   loading: {
     hubs?: boolean;
@@ -28,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, children, ...props }) => {
+const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, children, options, ...props }) => {
   const { hubs, user } = entities;
   const { t } = useTranslation();
   const styles = useStyles();
@@ -55,17 +58,23 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
   return (
     <Section {...props}>
       {children}
-      <Grid container spacing={1} justifyContent="space-between" alignItems="stretch">
+      <Grid container spacing={2} justifyContent="space-between" alignItems="stretch">
         {hubs.map((ecoverse, i) => {
           const activity = ecoverse.activity || [];
 
           return (
-            <Grid item flexGrow={1} flexBasis={'50%'} key={i}>
-              <HubContributionCard
+            <Grid
+              item
+              flexGrow={1}
+              flexBasis={options.itemBasis || '50%'}
+              maxWidth={{ xs: 'auto', sm: 'auto', md: i === hubs.length - 1 ? '50%' : 'auto' }}
+              key={i}
+            >
+              <EntityContributionCard
                 details={{
                   headerText: ecoverse.displayName,
                   descriptionText: ecoverse?.context?.tagline,
-                  mediaUrl: ecoverse?.context?.visual?.background,
+                  mediaUrl: ecoverse?.context?.visual?.banner,
                   labelText: getCardLabel(ecoverse.id, ecoverse.authorization?.anonymousReadAccess || false),
                   tags: ecoverse.tagset?.tags || [],
                   tagsFor: 'hub',

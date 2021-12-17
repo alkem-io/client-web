@@ -18,6 +18,7 @@ import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import { UserRoute } from './user/UserRoute';
 import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
+import ContributorsPage from '../pages/Contributors/ContributorsPage';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -44,14 +45,17 @@ export const Routing: FC = () => {
       <Route path="/identity">
         <IdentityRoute />
       </Route>
-      <RestrictedRoute path="/search">
+      <Route path="/search">
         <SearchRoute />
-      </RestrictedRoute>
-      <RestrictedRoute path="/user">
+      </Route>
+      <RestrictedRoute path={`/user/:${nameOfUrl.userId}`}>
         <UserRoute />
       </RestrictedRoute>
       <Route path="/challenges">
         <ChallengeExplorerPage />
+      </Route>
+      <Route path="/contributors">
+        <ContributorsPage />
       </Route>
       <Route path={`/organization/:${nameOfUrl.organizationNameId}`}>
         <OrganizationProvider>
@@ -76,7 +80,7 @@ export const Routing: FC = () => {
       <Route path={`/:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
           <CommunityProvider>
-            <EcoverseRoute paths={[{ value: '/', name: t('common.hubs'), real: true }]} />
+            <EcoverseRoute paths={[{ value: '/', name: t('common.home'), real: true }]} />
           </CommunityProvider>
         </EcoverseProvider>
       </Route>

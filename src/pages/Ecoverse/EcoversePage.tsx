@@ -14,6 +14,7 @@ import EcoverseCommunityPage from '../Community/EcoverseCommunityPage';
 import EcoverseDashboardView2 from '../../views/Ecoverse/EcoverseDashboardView2';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
+import HubCanvasManagementView from '../../views/Ecoverse/HubCanvasManagementView';
 
 interface EcoversePageProps extends PageProps {
   // tabName?: string;
@@ -26,6 +27,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
   const { isPrivate, ecoverseId } = useEcoverse();
   const discussionsRequiredCredentials: CredentialForResource[] =
     isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
+
   return (
     <DiscussionsProvider>
       <EcoversePageContainer>
@@ -83,7 +85,21 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                       </RestrictedRoute>
                     </Switch>
                   </TabPanel>
-                  <TabPanel value={tabNames['canvases']}>Coming soon</TabPanel>
+                  <TabPanel value={tabNames['canvases']}>
+                    {entities.ecoverse && (
+                      <HubCanvasManagementView
+                        entities={{
+                          hub: entities.ecoverse,
+                        }}
+                        state={{
+                          loading: state.loading,
+                          error: state.error,
+                        }}
+                        actions={undefined}
+                        options={undefined}
+                      />
+                    )}
+                  </TabPanel>
                 </TabContext>
               )}
             </EcoverseTabs>

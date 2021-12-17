@@ -7,15 +7,15 @@ import LinkCard from '../../../../core/LinkCard/LinkCard';
 import VerifiedStatus from '../../VerifiedStatus/VerifiedStatus';
 
 const LINES_TO_SHOW = 4;
-export interface AssociatedOrganizationCardProps {
-  name: string;
+export interface OrganizationCardProps {
+  name?: string;
   avatar?: string;
   information?: string;
   role?: string;
-  members: number;
-  verified: boolean;
-  loading: boolean;
-  url: string;
+  members?: number;
+  verified?: boolean;
+  loading?: boolean;
+  url?: string;
 }
 
 const useStyles = makeStyles(theme =>
@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
+const OrganizationCard: FC<OrganizationCardProps> = ({
   name,
   avatar,
   information,
@@ -67,58 +67,54 @@ const AssociatedOrganizationCard: FC<AssociatedOrganizationCardProps> = ({
           action: styles.cardHeaderAction,
         }}
         title={
-          loading ? (
-            <Skeleton animation="wave" width="80%" style={{ marginBottom: 2 }} />
-          ) : (
-            <Typography variant="h5" color="primary" fontWeight={600}>
-              {name}
-            </Typography>
-          )
+          <Typography variant="h5" color="primary" fontWeight={600}>
+            {loading ? <Skeleton width="80%" /> : name}
+          </Typography>
         }
         subheader={
           <>
-            <>
-              {loading ? (
-                <Skeleton animation="wave" width="80%" style={{ marginBottom: 2 }} />
-              ) : (
-                <Typography variant="body2" className={styles.multiLineEllipsis}>
-                  {information}
-                </Typography>
-              )}
-            </>
-            <>
-              {loading ? (
-                <Skeleton animation="wave" width="80%" style={{ marginBottom: 2 }} />
-              ) : (
-                <Typography variant="body2" color="primary">
-                  {role}
-                </Typography>
-              )}
-            </>
+            <Typography variant="body2" className={styles.multiLineEllipsis}>
+              {loading ? <Skeleton width="80%" /> : information}
+            </Typography>
+            <Typography variant="body2" color="primary">
+              {loading ? <Skeleton width="30%" /> : role}
+            </Typography>
           </>
         }
         avatar={
           loading ? (
-            <Skeleton animation="wave" variant="rectangular" width={64} height={64} />
+            <Skeleton variant="rectangular">
+              <Avatar variant="rounded" src={avatar} sx={{ width: '64px', height: '64px' }} />
+            </Skeleton>
           ) : (
             <Avatar variant="rounded" src={avatar} sx={{ width: '64px', height: '64px' }}>
-              {name[0]}
+              {name && name[0]}
             </Avatar>
           )
         }
         action={
-          !loading && (
-            <Box display="flex" flexDirection="column" justifyContent="space-between">
-              <Box display="flex">
-                <Typography sx={{ marginRight: 1 }}>Members</Typography>
+          <Box display="flex" flexDirection="column" justifyContent="space-between">
+            <Box display="flex">
+              <Typography sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : 'Members'}</Typography>
+              {loading ? (
+                <Skeleton variant="circular">
+                  <CircleTag text={`${members}`} color="primary" size="small" />
+                </Skeleton>
+              ) : (
                 <CircleTag text={`${members}`} color="primary" size="small" />
-              </Box>
-              <VerifiedStatus verified={verified} />
+              )}
             </Box>
-          )
+            {loading ? (
+              <Skeleton>
+                <VerifiedStatus verified={Boolean(verified)} />
+              </Skeleton>
+            ) : (
+              <VerifiedStatus verified={Boolean(verified)} />
+            )}
+          </Box>
         }
       />
     </LinkCard>
   );
 };
-export default AssociatedOrganizationCard;
+export default OrganizationCard;

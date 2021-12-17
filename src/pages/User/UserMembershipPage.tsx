@@ -1,15 +1,21 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUrlParams, useUserMetadata } from '../../hooks';
+import { useUpdateNavigation, useUrlParams, useUserMetadata } from '../../hooks';
 import { ContributionsView } from '../../views/ProfileView';
+import { PageProps } from '../common';
+import { useRouteMatch } from 'react-router';
 
-export interface UserMembershipPageProps {}
+export interface UserMembershipPageProps extends PageProps {}
 
-const UserMembershipPage: FC<UserMembershipPageProps> = () => {
+const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
   const { t } = useTranslation();
+  const { url } = useRouteMatch();
   const { userId } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userId);
+
+  const currentPaths = useMemo(() => [...paths, { value: url, name: 'membership', real: true }], [url, paths]);
+  useUpdateNavigation({ currentPaths });
 
   return (
     <Grid container rowSpacing={4}>

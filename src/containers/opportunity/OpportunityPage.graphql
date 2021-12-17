@@ -43,6 +43,11 @@ fragment OpportunityPage on Opportunity {
     who
     impact
     vision
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
     references {
       id
       name

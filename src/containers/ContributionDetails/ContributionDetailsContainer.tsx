@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { ContributionCardDetails } from '../../components/composite/common/cards';
+import { ContributionCardV2Details } from '../../components/composite/common/cards';
 import {
   useChallengeContributionDetailsQuery,
   useEcoverseContributionDetailsQuery,
@@ -10,7 +10,7 @@ import { ContributionItem } from '../../models/entities/contribution';
 import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 
 export interface EntityDetailsContainerEntities {
-  details?: ContributionCardDetails;
+  details?: ContributionCardV2Details;
 }
 
 export interface EntityDetailsContainerState {
@@ -52,34 +52,34 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
   const details = useMemo(() => {
     if (ecoverseData)
       return {
-        name: ecoverseData.ecoverse.displayName,
+        headerText: ecoverseData.ecoverse.displayName,
         type: 'hub',
-        image: ecoverseData.ecoverse.context?.visual?.banner,
+        mediaUrl: ecoverseData.ecoverse.context?.visual?.banner,
         tags: ecoverseData.ecoverse.tagset?.tags || [],
         url: buildEcoverseUrl(ecoverseData.ecoverse.nameID),
-      } as ContributionCardDetails;
+      } as ContributionCardV2Details;
 
     if (challengeData)
       return {
-        name: challengeData.ecoverse.challenge.displayName,
+        headerText: challengeData.ecoverse.challenge.displayName,
         type: 'challenge',
-        image: challengeData.ecoverse.challenge.context?.visual?.banner,
+        mediaUrl: challengeData.ecoverse.challenge.context?.visual?.banner,
         tags: challengeData.ecoverse.challenge.tagset?.tags || [],
         url: buildChallengeUrl(challengeData.ecoverse.nameID, challengeData.ecoverse.challenge.nameID),
-      } as ContributionCardDetails;
+      } as ContributionCardV2Details;
 
     if (opportunityData)
       return {
-        name: opportunityData.ecoverse.opportunity.displayName,
+        headerText: opportunityData.ecoverse.opportunity.displayName,
         type: 'opportunity',
-        image: opportunityData.ecoverse.opportunity.context?.visual?.banner,
+        mediaUrl: opportunityData.ecoverse.opportunity.context?.visual?.banner,
         tags: opportunityData.ecoverse.opportunity.tagset?.tags || [],
         url: buildOpportunityUrl(
           opportunityData.ecoverse.nameID,
           opportunityData.ecoverse.opportunity.parentNameID || '',
           opportunityData.ecoverse.opportunity.nameID
         ),
-      } as ContributionCardDetails;
+      } as ContributionCardV2Details;
   }, [ecoverseData, challengeData, opportunityData]);
 
   return (
