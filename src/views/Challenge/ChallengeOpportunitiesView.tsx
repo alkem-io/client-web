@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import OpportunityCard from '../../components/composite/entities/Challenge/OpportunityCard';
@@ -28,42 +28,55 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
 
   if (loadingChallengeContext || state.loading) return <Loading />;
 
+  const description = (
+    <Box paddingBottom={2} display="flex" justifyContent="center">
+      {t('pages.challenge.sections.opportunities.description')}
+    </Box>
+  );
+
   if (state.error) {
     return (
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
+      <>
+        {description}
+        <Box display="flex" justifyContent="center">
           <ErrorBlock blockName={t('common.opportunities')} />
-        </Grid>
-      </Grid>
+        </Box>
+      </>
     );
   }
 
   if (opportunities.length <= 0)
     return (
-      <Box paddingBottom={2} display="flex" justifyContent="center">
-        <Typography>{t('pages.challenge.sections.opportunities.body-missing')}</Typography>
-      </Box>
+      <>
+        {description}
+        <Box paddingBottom={2} display="flex" justifyContent="center">
+          <Typography>{t('pages.challenge.sections.opportunities.body-missing')}</Typography>
+        </Box>
+      </>
     );
   return (
-    <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
-      {filteredData => (
-        <CardContainer>
-          {filteredData.map((opp, i) => (
-            <OpportunityCard
-              key={i}
-              displayName={opp.displayName}
-              activity={opp.activity || []}
-              url={buildOpportunityUrl(ecoverseNameId, challengeNameId, opp.nameID)}
-              lifecycle={{ state: opp?.lifecycle?.state || '' }}
-              context={{
-                tagline: opp?.context?.tagline || '',
-                visual: { background: opp?.context?.visual?.background || '' },
-              }}
-              tags={opp?.tagset?.tags || []}
-            />
-          ))}
-        </CardContainer>
-      )}
-    </CardFilter>
+    <>
+      {description}
+      <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
+        {filteredData => (
+          <CardContainer>
+            {filteredData.map((opp, i) => (
+              <OpportunityCard
+                key={i}
+                displayName={opp.displayName}
+                activity={opp.activity || []}
+                url={buildOpportunityUrl(ecoverseNameId, challengeNameId, opp.nameID)}
+                lifecycle={{ state: opp?.lifecycle?.state || '' }}
+                context={{
+                  tagline: opp?.context?.tagline || '',
+                  visual: { background: opp?.context?.visual?.background || '' },
+                }}
+                tags={opp?.tagset?.tags || []}
+              />
+            ))}
+          </CardContainer>
+        )}
+      </CardFilter>
+    </>
   );
 };
