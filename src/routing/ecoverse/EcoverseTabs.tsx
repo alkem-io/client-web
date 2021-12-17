@@ -15,7 +15,7 @@ import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
 import { EcoverseContainerEntities } from '../../containers/ecoverse/EcoversePageContainer';
 import { useConfig, useEcoverse } from '../../hooks';
-import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
+import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 
 const routes = {
@@ -101,7 +101,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           to={urlGetter('challenges')}
         />
         <NavigationTab
-          disabled={!communityReadAccess}
+          disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
           component={RouterLink}

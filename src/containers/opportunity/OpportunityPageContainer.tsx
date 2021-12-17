@@ -105,7 +105,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
         x => x === AuthorizationPrivilege.Read
       ),
     };
-  }, [user, ecoverseId, challengeId, opportunityId]);
+  }, [user, opportunity, ecoverseId, challengeId, opportunityId]);
 
   const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
   const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
