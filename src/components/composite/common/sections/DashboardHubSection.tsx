@@ -67,7 +67,7 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
               item
               flexGrow={1}
               flexBasis={options.itemBasis || '50%'}
-              maxWidth={{ xs: 'auto', sm: 'auto', md: i === hubs.length - 1 ? '50%' : 'auto' }}
+              maxWidth={{ xs: 'auto', sm: 'auto', md: '50%', lg: '33%', xl: '25%' }}
               key={i}
             >
               <EntityContributionCard

@@ -1,4 +1,4 @@
-import { Box, Paper, Skeleton } from '@mui/material';
+import { Box, Paper, PaperProps, Skeleton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 
@@ -12,11 +12,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface SectionProps {
+export interface SectionProps {
   bannerUrl?: string;
+  classes?: {
+    section?: PaperProps['classes'];
+  };
 }
 
-const Section: FC<SectionProps> = ({ bannerUrl, children }) => {
+const Section: FC<SectionProps> = ({ bannerUrl, classes, children }) => {
   const styles = useStyles();
 
   // state
@@ -24,7 +27,7 @@ const Section: FC<SectionProps> = ({ bannerUrl, children }) => {
 
   return (
     <>
-      <Paper elevation={0} square variant="outlined">
+      <Paper elevation={0} square variant="outlined" classes={classes?.section}>
         {bannerUrl && (
           <Box position="relative" className={styles.bannerSize}>
             <img

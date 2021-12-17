@@ -1,11 +1,12 @@
-import clsx from 'clsx';
-import React, { useState } from 'react';
 import { Box, Button, Container, List } from '@mui/material';
-import { styled, alpha, emphasize } from '@mui/material/styles';
-import { RouterLink } from '../../../core/RouterLink';
-import { useUserContext } from '../../../../hooks';
 import { grey } from '@mui/material/colors';
+import { alpha, emphasize, styled } from '@mui/material/styles';
+import clsx from 'clsx';
+import React, { useMemo } from 'react';
+import { useRouteMatch } from 'react-router-dom';
+import { useUserContext } from '../../../../hooks';
 import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
+import { RouterLink } from '../../../core/RouterLink';
 
 const PREFIX = 'TopNavbar';
 
@@ -49,29 +50,34 @@ type MenuItem = {
 };
 
 const TopNavbar = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const { user } = useUserContext();
   const breakpoint = useCurrentBreakpoint();
 
-  const menuItems: MenuItem[] = [
-    {
-      title: 'home',
-      url: '/',
-    },
-    {
-      title: 'challenges',
-      url: '/challenges',
-    },
-    {
-      title: 'contributors',
-      url: '/contributors',
-    },
-    {
-      title: 'admin',
-      url: '/admin',
-      hidden: !Boolean(user?.isAdmin ?? false),
-    },
-  ];
+  const menuItems: MenuItem[] = useMemo(
+    () => [
+      {
+        title: 'home',
+        url: '/',
+      },
+      {
+        title: 'challenges',
+        url: '/challenges',
+      },
+      {
+        title: 'contributors',
+        url: '/contributors',
+      },
+      {
+        title: 'admin',
+        url: '/admin',
+        hidden: !Boolean(user?.isAdmin ?? false),
+      },
+    ],
+    [user?.isAdmin]
+  );
+
+  const match = useRouteMatch([...menuItems].reverse().map(x => x.url));
+  const selectedIndex = useMemo(() => menuItems.findIndex(x => x.url === match?.path), [menuItems, match]);
 
   return (
     <Root>
@@ -92,7 +98,6 @@ const TopNavbar = () => {
                   color="primary"
                   disabled={disabled}
                   hidden={hidden}
-                  onClick={() => setSelectedIndex(i)}
                 >
                   {title}
                 </Button>

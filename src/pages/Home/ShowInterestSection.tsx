@@ -1,10 +1,13 @@
 import { Box, Button, Typography } from '@mui/material';
-import React from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import { SectionProps } from '../../components/core/Section/Section';
 import { useConfig } from '../../hooks';
 
-const ShowInterestSection = () => {
+const ShowInterestSection: FC<{
+  classes?: SectionProps['classes'];
+}> = ({ classes }) => {
   const { platform } = useConfig();
   const { t } = useTranslation();
 
@@ -16,6 +19,7 @@ const ShowInterestSection = () => {
           Contact us
         </Button>
       }
+      classes={classes}
     >
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Typography
