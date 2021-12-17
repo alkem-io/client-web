@@ -1,4 +1,5 @@
 import { FC, useMemo } from 'react';
+import { useApolloErrorHandler } from '../../hooks';
 import {
   CanvasDetailsFragmentDoc,
   useCheckoutCanvasOnContextMutation,
@@ -35,7 +36,10 @@ export interface CanvasActionsContainerState {
 export interface CanvasActionsContainerProps extends ContainerProps<{}, ICanvasActions, CanvasActionsContainerState> {}
 
 const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) => {
-  const [createCanvas, { loading: creatingCanvas }] = useCreateCanvasOnContextMutation();
+  const handleError = useApolloErrorHandler();
+  const [createCanvas, { loading: creatingCanvas }] = useCreateCanvasOnContextMutation({
+    onError: handleError,
+  });
 
   const handleCreateCanvas = async (canvas: CreateCanvasOnContextInput) => {
     if (!canvas.contextID) {
@@ -70,7 +74,9 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  const [deleteCanvas, { loading: deletingCanvas }] = useDeleteCanvasOnContextMutation();
+  const [deleteCanvas, { loading: deletingCanvas }] = useDeleteCanvasOnContextMutation({
+    onError: handleError,
+  });
 
   const handleDeleteCanvas = async (canvas: DeleteCanvasOnContextInput) => {
     if (!canvas.contextID) {
@@ -93,7 +99,9 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  const [checkoutCanvas, { loading: checkingoutCanvas }] = useCheckoutCanvasOnContextMutation();
+  const [checkoutCanvas, { loading: checkingoutCanvas }] = useCheckoutCanvasOnContextMutation({
+    onError: handleError,
+  });
 
   const handleCheckoutCanvas = async (canvas: CanvasWithoutValue) => {
     if (!canvas.checkout?.id) {
@@ -130,7 +138,9 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasOnContextMutation();
+  const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasOnContextMutation({
+    onError: handleError,
+  });
   const handleUpdateCanvas = async (canvas: Canvas) => {
     if (!canvas.id) {
       throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
