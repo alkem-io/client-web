@@ -9,6 +9,7 @@ export interface DashboardGenericSectionProps {
   bannerUrl?: string;
   headerText?: string;
   helpText?: string;
+  headerSpacing?: 'double' | 'none' | 'default';
   primaryAction?: React.ReactNode;
   subHeaderText?: string;
   secondaryAction?: React.ReactNode;
@@ -21,6 +22,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   headerText,
   subHeaderText,
   helpText,
+  headerSpacing = 'default',
   primaryAction,
   secondaryAction,
   navText,
@@ -38,10 +40,13 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
       )}
       {subHeaderText && (
         <>
+          <SectionSpacer />
           <SectionSubHeader text={subHeaderText} />
         </>
       )}
-      {(headerText || subHeaderText) && <SectionSpacer />}
+      {(headerText || subHeaderText) && !(headerSpacing === 'none') && (
+        <SectionSpacer double={headerSpacing === 'double'} />
+      )}
       <Box paddingY={1}>
         {children}
         {secondaryAction}

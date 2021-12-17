@@ -50,7 +50,7 @@ const Footer: FC = ({ children }) => {
             <Grid item xs={12}>
               <Toolbar dense>
                 <Grid container justifyContent={'center'} wrap={'nowrap'} spacing={2}>
-                  <Grid container item justifyContent={'center'} spacing={2} wrap={'nowrap'}>
+                  <Grid container justifyContent={'center'} alignItems="center" spacing={2} wrap={'nowrap'}>
                     <Grid item>
                       <Link href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
                         Terms

@@ -1,8 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import HelpButton from '../HelpButton';
-
-const Spacer = () => <Box p={1} />;
+import { SectionSpacer } from './Section';
 
 interface SectionHeaderProps {
   text: string;
@@ -22,7 +21,7 @@ const SectionHeader: FC<SectionHeaderProps> = ({ text, helpText, children }) => 
         />
         {helpText && <HelpButton helpText={helpText} />}
       </Box>
-      <Spacer />
+      <SectionSpacer />
       {children}
     </Box>
   );

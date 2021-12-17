@@ -9,7 +9,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 interface ConfirmationDialogProps {
   entities: {
     titleId?: TranslationKey;
-    title?: string;
+    title?: string | React.ReactNode;
     contentId?: TranslationKey;
     content?: string;
     confirmButtonTextId?: TranslationKey;

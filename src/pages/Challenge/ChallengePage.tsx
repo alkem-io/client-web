@@ -13,6 +13,7 @@ import { ChallengeContextView } from '../../views/Challenge/ChallengeContextView
 import { ChallengeOpportunitiesView } from '../../views/Challenge/ChallengeOpportunitiesView';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import ChallengeCanvasManagementView from '../../views/Challenge/ChallengeCanvasManagementView';
 
 interface ChallengePageProps extends PageProps {}
 
@@ -55,7 +56,21 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
                       </RestrictedRoute>
                     </Switch>
                   </TabPanel>
-                  <TabPanel value={tabNames['canvases']}>Coming soon</TabPanel>
+                  <TabPanel value={tabNames['canvases']}>
+                    {entities.challenge && (
+                      <ChallengeCanvasManagementView
+                        entities={{
+                          challenge: entities.challenge,
+                        }}
+                        state={{
+                          loading: state.loading,
+                          error: state.error,
+                        }}
+                        actions={undefined}
+                        options={undefined}
+                      />
+                    )}
+                  </TabPanel>
                 </TabContext>
               )}
             </ChallengeTabs>

@@ -13,9 +13,10 @@ import {
 import { Tabs } from '@mui/material';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
-import { useChallenge } from '../../hooks';
+import { useChallenge, useConfig } from '../../hooks';
 import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
 import { ChallengeContainerEntities } from '../../containers/challenge/ChallengePageContainer';
+import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
 
 const routes = {
   discussions: '/community/discussions',
@@ -50,6 +51,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
   const { challengeNameId, ecoverseNameId, permissions } = useChallenge();
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
+  const { isFeatureEnabled } = useConfig();
 
   const tabNames = (Object.keys(routes) as Array<keyof ChallengeRoutesType>).reduce<ChallengeRoutesType>(
     (acc, curr) => {
@@ -102,7 +104,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
           to={urlGetter('discussions')}
         />
         <NavigationTab
-          disabled={!communityReadAccess}
+          disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           component={RouterLink}
