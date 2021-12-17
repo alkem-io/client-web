@@ -25,6 +25,7 @@ import { CommunityPageMembersFragment, OrganizationDetailsFragment, User } from 
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { CommunityUpdatesView } from '../../views/CommunityUpdates/CommunityUpdatesView';
 import { PageProps } from '../common';
+import { CommunityUpdatesDataContainer } from '../../containers/community-updates/CommunityUpdates';
 
 const useStyles = makeStyles(() => ({
   bannerImg: {
@@ -73,9 +74,6 @@ const CommunityPage: FC<Props> = ({
   });
   const community = data?.ecoverse.community;
   const groups = community?.groups || [];
-  const updates = community?.communication?.updates?.messages || [];
-  const updateSenders = updates.map(x => ({ id: x.sender }));
-  const hasUpdates = updates && updates.length > 0;
   const members = (community?.members || []) as CommunityPageMembersFragment[];
   const membersWithRole = useUserCardRoleName(members as User[], parentId);
 
@@ -179,36 +177,45 @@ const CommunityPage: FC<Props> = ({
       <Section avatar={<Icon component={ChatDotsIcon} color="primary" size="xl" />}>
         <SectionHeader text={t('common.updates')} />
       </Section>
-      {!hasUpdates && (
-        <Typography align={'center'} variant={'subtitle1'}>
-          {t('pages.community.no-updates')}
-        </Typography>
-      )}
-      {hasUpdates && (
-        <Box maxHeight={600} style={{ overflowY: 'auto', overflowX: 'clip' }}>
-          <AvatarsProvider users={updateSenders}>
-            {detailedUsers => (
-              <CommunityUpdatesView
-                entities={{
-                  members: detailedUsers,
-                  messages: updates,
-                }}
-                options={{
-                  hideHeaders: true,
-                  itemsPerRow: 1,
-                  disableElevation: true,
-                  disableCollapse: true,
-                }}
-                state={{
-                  loadingMessages: false,
-                  submittingMessage: false,
-                  removingMessage: false,
-                }}
-              />
-            )}
-          </AvatarsProvider>
-        </Box>
-      )}
+      <CommunityUpdatesDataContainer entities={{ ecoverseId, communityId }}>
+        {(entities, { retrievingUpdateMessages }) => {
+          const hasUpdates = entities.messages && entities.messages.length > 0;
+
+          if (!hasUpdates) {
+            return (
+              <Typography align={'center'} variant={'subtitle1'}>
+                {t('pages.community.no-updates')}
+              </Typography>
+            );
+          }
+
+          return (
+            <Box maxHeight={600} style={{ overflowY: 'auto', overflowX: 'clip' }}>
+              <AvatarsProvider users={entities.senders}>
+                {detailedUsers => (
+                  <CommunityUpdatesView
+                    entities={{
+                      members: detailedUsers,
+                      messages: entities.messages,
+                    }}
+                    options={{
+                      hideHeaders: true,
+                      itemsPerRow: 1,
+                      disableElevation: true,
+                      disableCollapse: true,
+                    }}
+                    state={{
+                      loadingMessages: retrievingUpdateMessages,
+                      submittingMessage: false,
+                      removingMessage: false,
+                    }}
+                  />
+                )}
+              </AvatarsProvider>
+            </Box>
+          );
+        }}
+      </CommunityUpdatesDataContainer>
     </>
   );
 };

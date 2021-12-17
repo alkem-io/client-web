@@ -433,18 +433,12 @@ export type CommunicationCreateDiscussionInput = {
   title: Scalars['String'];
 };
 
-export type CommunicationMessageReceived = {
-  __typename?: 'CommunicationMessageReceived';
-  /** The community to which this message corresponds */
-  communityId?: Maybe<Scalars['String']>;
+export type CommunicationDiscussionMessageReceived = {
+  __typename?: 'CommunicationDiscussionMessageReceived';
+  /** The identifier for the Discussion on which the message was sent. */
+  discussionID: Scalars['String'];
   /** The message that has been sent. */
   message: Message;
-  /** The identifier of the room */
-  roomId: Scalars['String'];
-  /** The public name of the room */
-  roomName: Scalars['String'];
-  /** The User that should receive the message */
-  userID: Scalars['String'];
 };
 
 export type CommunicationRoom = {
@@ -455,6 +449,14 @@ export type CommunicationRoom = {
   id: Scalars['String'];
   /** The messages that have been sent to the Room. */
   messages: Array<Message>;
+};
+
+export type CommunicationUpdateMessageReceived = {
+  __typename?: 'CommunicationUpdateMessageReceived';
+  /** The message that has been sent. */
+  message: Message;
+  /** The identifier for the Updates on which the message was sent. */
+  updatesID: Scalars['String'];
 };
 
 export type Community = Groupable & {
@@ -1986,12 +1988,6 @@ export type RevokeAuthorizationCredentialInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RoomInvitationReceived = {
-  __typename?: 'RoomInvitationReceived';
-  /** The roomId that the user has been added to */
-  roomId?: Maybe<Scalars['String']>;
-};
-
 export type SearchInput = {
   /** Restrict the search to only the specified challenges. Default is all Challenges. */
   challengesFilter?: Maybe<Array<Scalars['Float']>>;
@@ -2039,10 +2035,10 @@ export type Subscription = {
   __typename?: 'Subscription';
   /** Receive new applications with filtering. */
   applicationReceived: ApplicationReceived;
-  /** Receive new messages for rooms the currently authenticated User is a member of. */
-  messageReceived: CommunicationMessageReceived;
-  /** Receive new room invitations. */
-  roomNotificationReceived: RoomInvitationReceived;
+  /** Receive new Discussion messages on Communities the currently authenticated User is a member of. */
+  communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
+  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
 };
 
 export type SubscriptionApplicationReceivedArgs = {
@@ -4806,47 +4802,16 @@ export type EcoverseCommunityQuery = {
   };
 };
 
-export type ChallengeCommunityMessagesQueryVariables = Exact<{
+export type CommunityMessagesQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
 }>;
 
-export type ChallengeCommunityMessagesQuery = {
+export type CommunityMessagesQuery = {
   __typename?: 'Query';
   ecoverse: {
     __typename?: 'Ecoverse';
     id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      community?: Maybe<{
-        __typename?: 'Community';
-        id: string;
-        communication?: Maybe<{
-          __typename?: 'Communication';
-          id: string;
-          updates?: Maybe<{
-            __typename?: 'Updates';
-            id: string;
-            messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-            >;
-          }>;
-        }>;
-      }>;
-    };
-  };
-};
-
-export type EcoverseCommunityMessagesQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-}>;
-
-export type EcoverseCommunityMessagesQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    nameID: string;
     community?: Maybe<{
       __typename?: 'Community';
       id: string;
@@ -4862,37 +4827,6 @@ export type EcoverseCommunityMessagesQuery = {
         }>;
       }>;
     }>;
-  };
-};
-
-export type OpportunityCommunityMessagesQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityCommunityMessagesQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      community?: Maybe<{
-        __typename?: 'Community';
-        id: string;
-        communication?: Maybe<{
-          __typename?: 'Communication';
-          id: string;
-          updates?: Maybe<{
-            __typename?: 'Updates';
-            id: string;
-            messages?: Maybe<
-              Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-            >;
-          }>;
-        }>;
-      }>;
-    };
   };
 };
 
@@ -6781,15 +6715,24 @@ export type RemoveUpdateCommunityMutationVariables = Exact<{
 
 export type RemoveUpdateCommunityMutation = { __typename?: 'Mutation'; removeUpdate: string };
 
-export type OnMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
+export type CommunicationUpdateMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
 
-export type OnMessageReceivedSubscription = {
+export type CommunicationUpdateMessageReceivedSubscription = {
   __typename?: 'Subscription';
-  messageReceived: {
-    __typename?: 'CommunicationMessageReceived';
-    roomId: string;
-    roomName: string;
-    communityId?: Maybe<string>;
+  communicationUpdateMessageReceived: {
+    __typename?: 'CommunicationUpdateMessageReceived';
+    updatesID: string;
+    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+  };
+};
+
+export type CommunicationDiscussionMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type CommunicationDiscussionMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  communicationDiscussionMessageReceived: {
+    __typename?: 'CommunicationDiscussionMessageReceived';
+    discussionID: string;
     message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
   };
 };
