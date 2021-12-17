@@ -93,7 +93,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
           to={urlGetter('projects')}
         />
         {/* <NavigationTab
-          disabled={!communityReadAccess}
+          disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
           component={RouterLink}
