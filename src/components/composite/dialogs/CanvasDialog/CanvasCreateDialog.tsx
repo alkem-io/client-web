@@ -160,6 +160,14 @@ const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
                 canvas: selectedCanvas,
               }}
               actions={{}}
+              options={{
+                viewModeEnabled: true,
+                UIOptions: {
+                  canvasActions: {
+                    export: false,
+                  },
+                },
+              }}
             />
           )}
         </Box>
