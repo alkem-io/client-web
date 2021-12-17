@@ -7,7 +7,7 @@ import { UserMetadata } from '../../../../hooks';
 import { Ecoverse, Nvp } from '../../../../models/graphql-schema';
 import getActivityCount from '../../../../utils/get-activity-count';
 import { buildEcoverseUrl } from '../../../../utils/urlBuilders';
-import HubContributionCard from '../cards/ContributionCard/HubContributionCard';
+import EntityContributionCard from '../cards/ContributionCard/EntityContributionCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 
 interface DashboardHubSectionProps extends DashboardGenericSectionProps {
@@ -70,7 +70,7 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
               maxWidth={{ xs: 'auto', sm: 'auto', md: i === hubs.length - 1 ? '50%' : 'auto' }}
               key={i}
             >
-              <HubContributionCard
+              <EntityContributionCard
                 details={{
                   headerText: ecoverse.displayName,
                   descriptionText: ecoverse?.context?.tagline,

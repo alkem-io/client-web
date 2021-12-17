@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import ContributionCard from '../../components/composite/common/cards/ContributionCard/ContributionCard';
+import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
 import DashboardDiscussionsSection from '../../components/composite/common/sections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
@@ -129,14 +129,14 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
                     },
                   ];
                   return (
-                    <Grid key={i} item>
-                      <ContributionCard
+                    <Grid key={i} item flexGrow={0} flexBasis={'50%'}>
+                      <EntityContributionCard
                         loading={loading}
+                        activities={activities}
                         details={{
-                          name: x.displayName,
-                          activity: activities,
+                          headerText: x.displayName,
                           tags: x.tagset?.tags ?? [],
-                          image: x.context?.visual?.background ?? '',
+                          mediaUrl: x.context?.visual?.background ?? '',
                           url: buildChallengeUrl(ecoverseNameId, x.nameID),
                         }}
                       />
