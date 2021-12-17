@@ -100,7 +100,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             </>
           )}
         </Grid>
-        <Grid item md={6} xs={12} spacing={SPACING}>
+        <Grid item md={6} xs={12}>
           <AssociatedOrganizationsView
             title={t('pages.hub.sections.dashboard.organization')}
             organizationNameIDs={orgNameIds}

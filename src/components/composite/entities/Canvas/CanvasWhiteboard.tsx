@@ -119,6 +119,8 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
       return () => window.removeEventListener('scroll', onScroll);
     }, [offsetHeight]);
 
+    // This needs to be removed in case it crashes the export window
+    // We already have a Save button
     const UIOptions: ExcalidrawProps['UIOptions'] = {
       canvasActions: {
         export: {
