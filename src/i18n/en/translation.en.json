@@ -663,7 +663,8 @@
           "header": "Challenges",
           "subheader": "There is no final frontier",
           "body": "",
-          "no-data": "No challenges available for this hub"
+          "no-data": "No challenges available for this hub",
+          "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
         },
         "community": {
           "header": "Community",
@@ -714,6 +715,7 @@
           "body": ""
         },
         "opportunities": {
+          "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about.",
           "header": "Opportunities",
           "subheader": "Potential solutions for this challenge",
           "body-missing": "No opportunities found for this challenge"
