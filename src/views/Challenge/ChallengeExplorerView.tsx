@@ -43,6 +43,9 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
   const { t } = useTranslation();
   const { user } = useUserContext();
   const [groupBy] = useState<ChallengeExplorerGroupByType>('hub');
+  const [searchTerms, setSearchTerms] = useState<string[]>([]);
+
+  const onSearchHandler = (terms: string[]) => setSearchTerms(terms);
 
   return (
     <Box paddingY={2}>
@@ -96,13 +99,10 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <SearchComponent placeholder={t('pages.challenge-explorer.search.placeholder')}>
-                  {terms => (
-                    <Box paddingTop={2}>
-                      <ChallengeExplorerSearchView terms={terms} groupBy={groupBy} />
-                    </Box>
-                  )}
-                </SearchComponent>
+                <SearchComponent
+                  placeholder={t('pages.challenge-explorer.search.placeholder')}
+                  onChange={onSearchHandler}
+                />
               </Grid>
               {/* <Grid item xs={2}>
                 <FormControl fullWidth>
@@ -124,6 +124,11 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
               </Grid> */}
             </Grid>
           </DashboardGenericSection>
+        </Grid>
+        <Grid item xs={12}>
+          <Box paddingTop={2}>
+            <ChallengeExplorerSearchView terms={searchTerms} groupBy={groupBy} />
+          </Box>
         </Grid>
         {hubs &&
           hubs.map(({ displayName: hubName, nameID: hubNameId }, i) => (

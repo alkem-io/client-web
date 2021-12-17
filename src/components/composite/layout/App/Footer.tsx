@@ -39,7 +39,6 @@ const Footer: FC = ({ children }) => {
               xs={12}
               sm={false}
               justifyContent={'center'}
-              spacing={2}
               component={Box}
               textAlign="center"
               display={{ xs: 'block', sm: 'none' }}
