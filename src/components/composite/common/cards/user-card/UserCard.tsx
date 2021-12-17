@@ -113,8 +113,8 @@ const UserCard: FC<UserCardProps> = ({
           </div>
           <CardContent className={styles.cardContent}>
             <Grid container spacing={1}>
-              <Grid item>
-                <Typography color="primary" variant={'h5'} noWrap={true} fontWeight={600}>
+              <Grid item xs zeroMinWidth>
+                <Typography color="primary" variant={'h5'} noWrap fontWeight={600}>
                   {displayName}
                 </Typography>
               </Grid>
@@ -123,7 +123,7 @@ const UserCard: FC<UserCardProps> = ({
                 <InfoRow text={location || 'No location specified'} icon={LocationOnIcon} ariaLabel="Location" />
               </Grid>
               <Grid item xs={12} display="flex">
-                <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} />
+                <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} keepInRow />
               </Grid>
             </Grid>
           </CardContent>
@@ -145,11 +145,13 @@ const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel, loading }) => 
   const styles = useStyles();
 
   return (
-    <Grid item xs={12}>
-      <Typography color="textPrimary" variant="body1" noWrap={true} aria-label={ariaLabel} display="flex">
-        <Icon className={styles.infoRowHeight} />
-        {loading ? <Skeleton width="70%" /> : text}
-      </Typography>
+    <Grid item xs={12} zeroMinWidth>
+      <Box display="flex" alignItems="center">
+        <Icon className={styles.infoRowHeight} fontSize="small" />
+        <Typography color="textPrimary" variant="body1" noWrap aria-label={ariaLabel}>
+          {loading ? <Skeleton width="70%" /> : text}
+        </Typography>
+      </Box>
     </Grid>
   );
 };

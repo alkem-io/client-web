@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Section, { SectionSpacer } from '../../../core/Section/Section';
+import Section, { SectionProps, SectionSpacer } from '../../../core/Section/Section';
 import SectionHeader from '../../../core/Section/SectionHeader';
 import SectionSubHeader from '../../../core/Section/SectionSubheader';
 import { Box, Link } from '@mui/material';
@@ -15,6 +15,7 @@ export interface DashboardGenericSectionProps {
   secondaryAction?: React.ReactNode;
   navText?: string;
   navLink?: string;
+  classes?: SectionProps['classes'];
 }
 
 const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
@@ -27,10 +28,11 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   secondaryAction,
   navText,
   navLink,
+  classes,
   children,
 }) => {
   return (
-    <Section bannerUrl={bannerUrl}>
+    <Section bannerUrl={bannerUrl} classes={classes}>
       {headerText && (
         <>
           <SectionHeader text={headerText} helpText={helpText}>
