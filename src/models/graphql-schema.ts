@@ -3727,7 +3727,7 @@ export type UpdateEcosystemModelMutation = {
   updateEcosystemModel: {
     __typename?: 'EcosystemModel';
     id: string;
-    canvas?: Maybe<{ __typename?: 'Canvas'; value: string }>;
+    canvas?: Maybe<{ __typename?: 'Canvas'; id: string; value: string }>;
   };
 };
 

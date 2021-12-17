@@ -3636,6 +3636,7 @@ export const UpdateEcosystemModelDocument = gql`
     updateEcosystemModel(ecosystemModelData: $ecosystemModelData) {
       id
       canvas {
+        id
         value
       }
     }
