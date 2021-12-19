@@ -1,24 +1,26 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Avatar, Box, Typography, useTheme } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
-import { SectionProps } from '../../components/core/Section/Section';
-import { useConfig } from '../../hooks';
+import { SectionProps, SectionSpacer } from '../../components/core/Section/Section';
+import HandymanIcon from '@mui/icons-material/Handyman';
+
+import HelpIcon from '@mui/icons-material/Help';
 
 const ShowInterestSection: FC<{
   classes?: SectionProps['classes'];
 }> = ({ classes }) => {
-  const { platform } = useConfig();
   const { t } = useTranslation();
+  const theme = useTheme();
 
   return (
     <DashboardGenericSection
       headerText={t('pages.home.sections.interested-in-collaboration.header')}
-      primaryAction={
-        <Button LinkComponent={'a'} href={platform?.feedback || ''} target="_blank" sx={{ flexShrink: 0 }}>
-          Contact us
-        </Button>
-      }
+      // primaryAction={
+      //   <Button LinkComponent={'a'} href={platform?.feedback || ''} target="_blank" sx={{ flexShrink: 0 }}>
+      //     Contact us
+      //   </Button>
+      // }
       classes={classes}
     >
       <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -28,10 +30,32 @@ const ShowInterestSection: FC<{
             __html: t('pages.home.sections.interested-in-collaboration.body'),
           }}
         />
-        {/* <SectionSpacer double />
-        <Button LinkComponent={'a'} href={platform?.feedback || ''} target="_blank" sx={{ flexShrink: 0 }}>
-          Contact us
-        </Button> */}
+      </Box>
+      <SectionSpacer />
+      <Box display="flex" alignItems="center">
+        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+          <HelpIcon sx={{ color: theme.palette.background.default }} />
+        </Avatar>
+        <SectionSpacer />
+        <Typography
+          variant="body1"
+          dangerouslySetInnerHTML={{
+            __html: t('pages.home.sections.interested-in-collaboration.innovation-facilitator'),
+          }}
+        />
+      </Box>
+      <SectionSpacer />
+      <Box display="flex" alignItems="center">
+        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+          <HandymanIcon sx={{ color: theme.palette.background.default }} />
+        </Avatar>
+        <SectionSpacer />
+        <Typography
+          variant="body1"
+          dangerouslySetInnerHTML={{
+            __html: t('pages.home.sections.interested-in-collaboration.contributor'),
+          }}
+        />
       </Box>
     </DashboardGenericSection>
   );

@@ -50,8 +50,8 @@ const AlkemioActivitySection = () => {
 
   return (
     <DashboardActivitySection
-      headerText={t('pages.activity.title', { blockName: 'All' })}
-      bodyText={t('pages.activity.summary', { blockName: 'Alkemio' })}
+      headerText={t('pages.activity.title', { blockName: 'Platform' })}
+      bodyText={t('pages.activity.summary', { blockName: 'Alkemio Hub' })}
       activities={summary}
     />
   );

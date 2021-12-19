@@ -29,6 +29,11 @@ export const HomePage = () => {
         <Grid item xs={12} md={6} display="flex" flexDirection="column">
           <WelcomeSection />
           <SectionSpacer />
+          <AlkemioActivitySection />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <GettingStartedSection />
+          <SectionSpacer />
           <ShowInterestSection
             classes={{
               section: {
@@ -36,13 +41,6 @@ export const HomePage = () => {
               },
             }}
           />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <AlkemioActivitySection />
-          <SectionSpacer />
-          <GettingStartedSection />
-          {/* <SectionSpacer />
-          <OrganizationSection /> */}
         </Grid>
         <Grid item xs={12}>
           <EcoversesSection />
