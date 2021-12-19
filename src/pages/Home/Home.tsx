@@ -29,7 +29,7 @@ export const HomePage = () => {
         <Grid item xs={12} md={6} display="flex" flexDirection="column">
           <WelcomeSection />
           <SectionSpacer />
-          <ShowInterestSection
+          <AlkemioActivitySection
             classes={{
               section: {
                 root: styles.grow,
@@ -37,12 +37,16 @@ export const HomePage = () => {
             }}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
-          <AlkemioActivitySection />
-          <SectionSpacer />
+        <Grid item xs={12} md={6} display="flex" flexDirection="column">
           <GettingStartedSection />
-          {/* <SectionSpacer />
-          <OrganizationSection /> */}
+          <SectionSpacer />
+          <ShowInterestSection
+            classes={{
+              section: {
+                root: styles.grow,
+              },
+            }}
+          />
         </Grid>
         <Grid item xs={12}>
           <EcoversesSection />
