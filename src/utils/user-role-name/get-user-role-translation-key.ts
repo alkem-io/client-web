@@ -22,7 +22,10 @@ const memberRoles = [
   AuthorizationCredential.OpportunityMember,
 ];
 
-const getUserRoleTranslationKey = (resourceId: string, userAgent?: Agent): TranslationKey | undefined => {
+const getUserRoleTranslationKey = (
+  resourceId: string,
+  userAgent?: Pick<Agent, 'credentials'>
+): TranslationKey | undefined => {
   if (!userAgent) {
     return undefined;
   }

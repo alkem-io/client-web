@@ -1,49 +1,13 @@
-import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { FC } from 'react';
 import { PageProps } from '../common';
-import CommunityPage from './CommunityPage';
-import { useEcoverse, useUserContext } from '../../hooks';
-import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
-import { AuthorizationCredential } from '../../models/graphql-schema';
+import { useEcoverse } from '../../hooks';
+import CommunityPageV2 from './CommunityPageV2';
 
 const EcoverseCommunityPage: FC<PageProps> = ({ paths }) => {
-  const { t } = useTranslation();
-  const { user: userMetadata } = useUserContext();
-
   const { ecoverse } = useEcoverse();
-
   const ecoverseId = ecoverse?.id || '';
-  const ecoverseNameId = ecoverse?.nameID;
   const communityId = ecoverse?.community?.id;
-  const displayName = ecoverse?.displayName;
-  const tagline = ecoverse?.context?.tagline;
 
-  const settingsUrl = ecoverseNameId ? buildAdminEcoverseUrl(ecoverseNameId) : undefined;
-
-  const isAdmin = useMemo(
-    () =>
-      userMetadata?.hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-      userMetadata?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) ||
-      userMetadata?.isEcoverseAdmin(ecoverseId) ||
-      false,
-    [userMetadata, ecoverseId]
-  );
-
-  const membershipTitle = t('pages.community.ecoverse-host');
-  const ecoverseHostId = ecoverse?.host?.id;
-
-  return (
-    <CommunityPage
-      communityId={communityId}
-      parentId={ecoverseId}
-      parentDisplayName={displayName}
-      parentTagline={tagline}
-      membershipTitle={membershipTitle}
-      ecoverseHostId={ecoverseHostId}
-      permissions={{ edit: isAdmin }}
-      settingsUrl={settingsUrl}
-      paths={paths}
-    />
-  );
+  return <CommunityPageV2 paths={paths} ecoverseId={ecoverseId} communityId={communityId} />;
 };
 export default EcoverseCommunityPage;
