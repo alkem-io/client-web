@@ -53,6 +53,7 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
     },
     cardMedia: {
       backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
       backgroundSize: 'cover',
       background: theme.palette.neutralMedium.light,
       height: ({ mediaSize = 'medium' }) => mediaSizes[mediaSize],
