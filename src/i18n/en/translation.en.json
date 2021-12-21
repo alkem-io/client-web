@@ -663,7 +663,7 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Facilitating organization",
+          "organization": "Leading organization",
           "activity": "Hub statistics",
           "challenges": {
             "title": "Challenges",
@@ -704,6 +704,7 @@
       },
       "sections": {
         "dashboard": {
+          "organization": "Leading organizations",
           "statistics": {
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
