@@ -79,9 +79,18 @@ export const UserForm: FC<UserProps> = ({
     );
   }, [currentUser, tagsetsTemplate]);
 
-  const twitterRef = useMemo(() => references.find(x => x.name === SocialNetworkEnum.twitter), [references]);
-  const githubRef = useMemo(() => references.find(x => x.name === SocialNetworkEnum.github), [references]);
-  const linkedinRef = useMemo(() => references.find(x => x.name === SocialNetworkEnum.linkedin), [references]);
+  const twitterRef = useMemo(
+    () => references.find(x => x.name.toLowerCase() === SocialNetworkEnum.twitter),
+    [references]
+  );
+  const githubRef = useMemo(
+    () => references.find(x => x.name.toLowerCase() === SocialNetworkEnum.github),
+    [references]
+  );
+  const linkedinRef = useMemo(
+    () => references.find(x => x.name.toLowerCase() === SocialNetworkEnum.linkedin),
+    [references]
+  );
 
   const initialValues: UserFormGenerated = {
     displayName: displayName || '',
@@ -104,7 +113,7 @@ export const UserForm: FC<UserProps> = ({
             SocialNetworkEnum.github.toString(),
             SocialNetworkEnum.linkedin.toString(),
             SocialNetworkEnum.twitter.toString(),
-          ].includes(x.name)
+          ].includes(x.name.toLowerCase())
       ) || [],
     bio: bio || '',
     profileId: profileId || '',
