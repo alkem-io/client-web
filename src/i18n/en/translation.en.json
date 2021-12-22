@@ -704,6 +704,7 @@
       },
       "sections": {
         "dashboard": {
+          "organization": "Leading organizations",
           "statistics": {
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
@@ -840,7 +841,7 @@
     },
     "community": {
       "title": "{{name}} community page",
-      "subtitle": "This is a community",
+      "subtitle": "",
       "leading-organizations": {
         "title": "Leading organizations ({{count}})",
         "help-text": "Shows different organizations, including the role you have",

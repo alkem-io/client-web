@@ -94,7 +94,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
         </Grid>
         <Grid item md={6} xs={12} spacing={SPACING}>
           <AssociatedOrganizationsView
-            title={t('pages.hub.sections.dashboard.organization')}
+            title={t('pages.challenge.sections.dashboard.organization')}
             organizationNameIDs={orgNameIds}
           />
           <SectionSpacer />
