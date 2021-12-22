@@ -1,43 +1,15 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { PageProps } from '../common';
-import CommunityPage from './CommunityPage';
-import { useOpportunity, useUserContext } from '../../hooks';
-import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
-import { AuthorizationCredential } from '../../models/graphql-schema';
+import { useOpportunity } from '../../hooks';
+import CommunityPageV2 from './CommunityPageV2';
 
 const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
-  const { user: userMetadata } = useUserContext();
-
-  const { opportunity, challengeId, ecoverseId } = useOpportunity();
-
-  const opportunityId = opportunity?.id || '';
-  const opportunityNameId = opportunity?.nameID || '';
+  const { opportunity, ecoverseId } = useOpportunity();
   const communityId = opportunity?.community?.id;
-  const displayName = opportunity?.displayName;
-  const tagline = opportunity?.context?.tagline;
-
-  const settingsUrl = opportunityNameId
-    ? buildAdminOpportunityUrl(ecoverseId, challengeId, opportunityNameId)
-    : undefined;
-
-  const isAdmin = useMemo(
-    () =>
-      userMetadata?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) ||
-      userMetadata?.isChallengeAdmin(ecoverseId, challengeId) ||
-      false,
-    [userMetadata, opportunityId, ecoverseId]
-  );
+  const opportunityId = opportunity?.id;
 
   return (
-    <CommunityPage
-      communityId={communityId}
-      parentId={opportunityId}
-      parentDisplayName={displayName}
-      parentTagline={tagline}
-      permissions={{ edit: isAdmin }}
-      settingsUrl={settingsUrl}
-      paths={paths}
-    />
+    <CommunityPageV2 paths={paths} ecoverseId={ecoverseId} communityId={communityId} opportunityId={opportunityId} />
   );
 };
 export default OpportunityCommunityPage;

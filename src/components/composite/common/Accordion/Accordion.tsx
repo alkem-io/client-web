@@ -5,16 +5,18 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Box from '@mui/material/Box';
+import { Skeleton } from '@mui/material';
 import HelpButton from '../../../core/HelpButton';
 
 export interface AccordionProps {
   title: string;
   subtitle?: string;
   helpText?: string;
+  loading?: boolean;
   ariaKey: string;
 }
 
-export const Accordion: FC<AccordionProps> = ({ children, title, subtitle, helpText, ariaKey }) => {
+export const Accordion: FC<AccordionProps> = ({ children, title, subtitle, helpText, ariaKey, loading }) => {
   return (
     <MuiAccordion defaultExpanded={true}>
       <AccordionSummary
@@ -22,7 +24,7 @@ export const Accordion: FC<AccordionProps> = ({ children, title, subtitle, helpT
         aria-controls={`panel-${ariaKey}-content`}
         id={`panel-${ariaKey}-header`}
       >
-        <Box paddingY={2}>
+        <Box paddingY={2} sx={{ width: '100%' }}>
           <Box display="flex" alignItems="center">
             <Box
               component={Typography}
@@ -31,13 +33,14 @@ export const Accordion: FC<AccordionProps> = ({ children, title, subtitle, helpT
                 paddingBottom: t => t.spacing(0.5),
                 display: 'flex',
                 alignItems: 'center',
+                flexGrow: 1,
               }}
             >
-              {title}
-              {helpText && <HelpButton helpText={helpText} fontSize="inherit" />}
+              {loading ? <Skeleton width="80%" /> : title}
+              {helpText && (loading ? null : <HelpButton helpText={helpText} fontSize="inherit" />)}
             </Box>
           </Box>
-          {subtitle && <Typography variant="subtitle1">{subtitle}</Typography>}
+          {subtitle && <Typography variant="subtitle1">{loading ? <Skeleton width="60%" /> : subtitle}</Typography>}
         </Box>
       </AccordionSummary>
       <AccordionDetails>{children}</AccordionDetails>
