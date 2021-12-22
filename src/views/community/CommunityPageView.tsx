@@ -83,7 +83,13 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
                 )}
                 <Grid container>
                   {organizations.map((x, i) => (
-                    <Grid key={i} item xs={4}>
+                    <Grid
+                      key={i}
+                      item
+                      flexGrow={1}
+                      flexBasis="33%"
+                      maxWidth={{ xs: 'auto', sm: 'auto', md: 'auto', lg: '50%', xl: '33%' }}
+                    >
                       <OrganizationCard
                         url={x.url}
                         members={x.members}
@@ -123,7 +129,13 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
                   {filteredData => (
                     <Grid container spacing={3}>
                       {filteredData.map((x, i) => (
-                        <Grid key={i} item xs={3}>
+                        <Grid
+                          key={i}
+                          item
+                          flexGrow={1}
+                          flexBasis="25%"
+                          maxWidth={{ xs: 'auto', sm: 'auto', md: '50%', lg: '33%', xl: '25%' }}
+                        >
                           <UserCard
                             displayName={x.displayName}
                             tags={x.tags}

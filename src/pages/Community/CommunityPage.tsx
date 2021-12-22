@@ -24,7 +24,7 @@ export interface CommunityPageV2Props extends PageProps {
   opportunityId?: Scalars['UUID'];
 }
 
-const CommunityPageV2: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityId, challengeId, opportunityId }) => {
+const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityId, challengeId, opportunityId }) => {
   const { t } = useTranslation();
   const { url } = useRouteMatch();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
@@ -66,7 +66,7 @@ const CommunityPageV2: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communit
     </CommunityPageContainer>
   );
 };
-export default CommunityPageV2;
+export default CommunityPage;
 
 const toOrganizationCardProps = (
   data: OrganizationCardFragment,
