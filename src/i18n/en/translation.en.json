@@ -1077,5 +1077,9 @@
   },
   "dashboard-contributors-section": {
     "more": "...plus {{count}} more"
+  },
+  "associates-view": {
+    "less": "show less",
+    "more": "...plus {{count}} more"
   }
 }
