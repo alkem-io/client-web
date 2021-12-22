@@ -74,7 +74,7 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
       {({ isValid, dirty, isSubmitting }) => (
         <Form noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={9}>
+            <Grid item xs={12} md={9}>
               <FormikInputField
                 name="title"
                 title={t('components.new-discussion.title.title')}
@@ -82,7 +82,7 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
                 disabled={isSubmitting}
               />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={12} md={3}>
               <FormikSelect
                 title={t('components.new-discussion.category.title')}
                 name="category"
