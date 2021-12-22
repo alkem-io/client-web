@@ -20,6 +20,12 @@ import EditableAvatar from '../common/EditableAvatar';
 import CountrySelect from './CountrySelect';
 import { FormikInputField } from './FormikInputField';
 
+const socialNames = [
+  SocialNetworkEnum.github.toString(),
+  SocialNetworkEnum.linkedin.toString(),
+  SocialNetworkEnum.twitter.toString(),
+];
+
 interface UserProps {
   user?: UserModel;
   editMode?: EditMode;
@@ -106,15 +112,7 @@ export const UserForm: FC<UserProps> = ({
     phone: phone || '',
     avatar: avatar || '',
     tagsets: tagsets,
-    references:
-      references.filter(
-        x =>
-          ![
-            SocialNetworkEnum.github.toString(),
-            SocialNetworkEnum.linkedin.toString(),
-            SocialNetworkEnum.twitter.toString(),
-          ].includes(x.name.toLowerCase())
-      ) || [],
+    references: references.filter(x => !socialNames.includes(x.name.toLowerCase())) || [],
     bio: bio || '',
     profileId: profileId || '',
   };
@@ -130,11 +128,17 @@ export const UserForm: FC<UserProps> = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
-    // linkedin: yup.string().url('Linkedin url must be a valid URL'),
-    // twitter: yup.string().url('Twitter url must be a valid URL'),
-    // github: yup.string().url('Github url must be a valid URL'),
+    linkedin: yup.string().url('Linkedin url must be a valid URL'),
+    twitter: yup.string().url('Twitter url must be a valid URL'),
+    github: yup.string().url('Github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
-    references: referenceSegmentSchema,
+    references: referenceSegmentSchema.test('includesSocial', 'That social is already defined', array => {
+      if (!Array.isArray(array)) {
+        return false;
+      }
+      // todo error does not bubble/is not passed
+      return !array.some(x => socialNames.includes(x?.name.toLowerCase()));
+    }),
     bio: yup.string().max(400),
   });
 
