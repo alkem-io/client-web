@@ -3,13 +3,13 @@ import clsx from 'clsx';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, { Crop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
+import Resizer from 'react-image-file-resizer';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useUploadAvatarMutation } from '../../../hooks/generated/graphql';
 import Avatar, { AvatarProps, useAvatarStyles } from '../../core/Avatar';
 import { Spinner } from '../../core/Spinner';
 import UploadButton from '../../core/UploadButton';
-import 'react-image-crop/dist/ReactCrop.css';
-
 interface EditableAvatarProps extends AvatarProps {
   profileId?: string;
 }
@@ -60,8 +60,26 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
             onChange={e => {
               const file = e && e.target && e.target.files && e.target.files[0];
               if (file) {
-                setSelectedFile(file);
-                setDialogOpened(true);
+                try {
+                  Resizer.imageFileResizer(
+                    file,
+                    400,
+                    400,
+                    'JPEG',
+                    100,
+                    0,
+                    uri => {
+                      console.log(uri);
+                      setSelectedFile(uri as File);
+                      setDialogOpened(true);
+                    },
+                    'file',
+                    200,
+                    200
+                  );
+                } catch (err) {
+                  console.log(err);
+                }
               } //handleAvatarChange(file);
             }}
             small
