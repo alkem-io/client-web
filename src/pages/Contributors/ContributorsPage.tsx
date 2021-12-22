@@ -1,22 +1,25 @@
-import React, { FC, useState } from 'react';
 import Box from '@mui/material/Box';
-import ContributorsView from '../../views/Contributors/ContributorsView';
-import { useUserContext } from '../../hooks';
-import ContributorsSearchContainer from '../../containers/ContributorsSearch/ContributorsSearchContainer';
-import { OrganizationVerificationEnum, UserContributorFragment } from '../../models/graphql-schema';
+import React, { FC, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { UserCardProps } from '../../components/composite/common/cards';
 import { OrganizationCardProps } from '../../components/composite/common/cards/Organization/OrganizationCard';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import SearchComponent from '../../components/composite/common/SearchComponent/SearchComponent';
-import { useTranslation } from 'react-i18next';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import ContributorsSearchContainer from '../../containers/ContributorsSearch/ContributorsSearchContainer';
+import { useUpdateNavigation, useUserContext } from '../../hooks';
+import { OrganizationVerificationEnum, UserContributorFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import getUserRoleTranslationKey from '../../utils/user-role-name/get-user-role-translation-key';
+import ContributorsView from '../../views/Contributors/ContributorsView';
 
 export interface ContributorsPageProps {}
 
+const currentPaths = [];
 const ContributorsPage: FC<ContributorsPageProps> = () => {
   const { t } = useTranslation();
+
+  useUpdateNavigation({ currentPaths });
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
   const { isAuthenticated, user: userMetadata } = useUserContext();
