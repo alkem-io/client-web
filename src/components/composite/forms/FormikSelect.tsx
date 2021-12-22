@@ -65,7 +65,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>
-            {el.icon && <ListItemIcon>{el.icon}</ListItemIcon>}
+            {el.icon && <ListItemIcon sx={{ color: 'primary.main' }}>{el.icon}</ListItemIcon>}
             <ListItemText>{el.name}</ListItemText>
           </MenuItem>
         ))}
