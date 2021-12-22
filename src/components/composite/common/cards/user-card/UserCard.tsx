@@ -56,6 +56,7 @@ const useStyles = makeStyles(theme => ({
 
 /* todo add jobTitle */
 export interface UserCardProps {
+  id?: string;
   avatarSrc?: string;
   displayName?: string;
   tags?: string[];
@@ -91,13 +92,7 @@ const UserCard: FC<UserCardProps> = ({
           <div className={styles.imageContainer}>
             {loading ? (
               <Skeleton variant={'rectangular'}>
-                <Avatar
-                  className={styles.avatar}
-                  src={avatarSrc}
-                  aria-label="User avatar"
-                  alt={`${displayName}\`s avatar`}
-                  variant="rounded"
-                />
+                <Avatar className={styles.avatar} />
               </Skeleton>
             ) : (
               <Avatar
@@ -119,11 +114,22 @@ const UserCard: FC<UserCardProps> = ({
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" />
-                <InfoRow text={location || 'No location specified'} icon={LocationOnIcon} ariaLabel="Location" />
+                <InfoRow text={roleName || 'Member'} icon={PersonIcon} ariaLabel="Role name" loading={loading} />
+                <InfoRow
+                  text={location || 'No location specified'}
+                  icon={LocationOnIcon}
+                  ariaLabel="Location"
+                  loading={loading}
+                />
               </Grid>
               <Grid item xs={12} display="flex">
-                <TagsComponent tags={tags} count={TAG_DISPLAY_COUNT} className={styles.tagBoxSize} keepInRow />
+                <TagsComponent
+                  tags={tags}
+                  count={TAG_DISPLAY_COUNT}
+                  className={styles.tagBoxSize}
+                  keepInRow
+                  loading={loading}
+                />
               </Grid>
             </Grid>
           </CardContent>
@@ -148,7 +154,7 @@ const InfoRow: FC<InfoRowProps> = ({ icon: Icon, text, ariaLabel, loading }) => 
     <Grid item xs={12} zeroMinWidth>
       <Box display="flex" alignItems="center">
         <Icon className={styles.infoRowHeight} fontSize="small" />
-        <Typography color="textPrimary" variant="body1" noWrap aria-label={ariaLabel}>
+        <Typography color="textPrimary" variant="body1" noWrap aria-label={ariaLabel} display="flex" flexGrow={1}>
           {loading ? <Skeleton width="70%" /> : text}
         </Typography>
       </Box>

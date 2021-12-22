@@ -840,8 +840,22 @@
       }
     },
     "community": {
-      "leading-organizations": "Leading organizations",
-      "ecoverse-host": "Hub host",
+      "title": "{{name}} community page",
+      "subtitle": "",
+      "leading-organizations": {
+        "title": "Leading organizations ({{count}})",
+        "help-text": "Shows different organizations, including the role you have",
+        "no-data": "No organization is leading at this time"
+      },
+      "ecoverse-host": {
+        "title": "Hosting organization",
+        "help-text": "Shows different organizations, including the role you have"
+      },
+      "members": {
+        "title": "Members ({{count}})",
+        "help-text": "Shows members is this community, including the role they have",
+        "no-data": "No members available"
+      },
       "no-user-groups": "There are no user groups",
       "no-updates": "There are no updates"
     },

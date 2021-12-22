@@ -1,5 +1,6 @@
-import { UserWithCardRole } from '../../../../hooks';
+import { WithCardRole } from '../../../../hooks';
 import { ValueType } from '../filterFn';
+import { User } from '../../../../models/graphql-schema';
 
 export const userWithRoleValueGetter = ({
   id,
@@ -9,7 +10,7 @@ export const userWithRoleValueGetter = ({
   roleName,
   email,
   profile,
-}: UserWithCardRole): ValueType => ({
+}: WithCardRole<User>): ValueType => ({
   id,
   values: [
     displayName,

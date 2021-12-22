@@ -4766,11 +4766,10 @@ export function refetchEcoverseCardQuery(variables?: SchemaTypes.EcoverseCardQue
 export const UserCardDocument = gql`
   query userCard($id: UUID_NAMEID_EMAIL!) {
     user(ID: $id) {
-      __typename
-      ...UserDetails
+      ...UserCard
     }
   }
-  ${UserDetailsFragmentDoc}
+  ${UserCardFragmentDoc}
 `;
 
 /**
@@ -6086,92 +6085,6 @@ export type CommunityMembersQueryResult = Apollo.QueryResult<
 >;
 export function refetchCommunityMembersQuery(variables?: SchemaTypes.CommunityMembersQueryVariables) {
   return { query: CommunityMembersDocument, variables: variables };
-}
-export const CommunityPageDocument = gql`
-  query communityPage($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
-      id
-      community(ID: $communityId) {
-        id
-        displayName
-        groups {
-          id
-          name
-          profile {
-            id
-            avatar
-            description
-            tagsets {
-              id
-              name
-              tags
-            }
-          }
-        }
-        members {
-          ...CommunityPageMembers
-        }
-        communication {
-          id
-          updates {
-            id
-            messages {
-              id
-              message
-              sender
-              timestamp
-            }
-          }
-        }
-      }
-    }
-  }
-  ${CommunityPageMembersFragmentDoc}
-`;
-
-/**
- * __useCommunityPageQuery__
- *
- * To run a query within a React component, call `useCommunityPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useCommunityPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCommunityPageQuery({
- *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
- *      communityId: // value for 'communityId'
- *   },
- * });
- */
-export function useCommunityPageQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CommunityPageQuery, SchemaTypes.CommunityPageQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CommunityPageQuery, SchemaTypes.CommunityPageQueryVariables>(
-    CommunityPageDocument,
-    options
-  );
-}
-export function useCommunityPageLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CommunityPageQuery, SchemaTypes.CommunityPageQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CommunityPageQuery, SchemaTypes.CommunityPageQueryVariables>(
-    CommunityPageDocument,
-    options
-  );
-}
-export type CommunityPageQueryHookResult = ReturnType<typeof useCommunityPageQuery>;
-export type CommunityPageLazyQueryHookResult = ReturnType<typeof useCommunityPageLazyQuery>;
-export type CommunityPageQueryResult = Apollo.QueryResult<
-  SchemaTypes.CommunityPageQuery,
-  SchemaTypes.CommunityPageQueryVariables
->;
-export function refetchCommunityPageQuery(variables?: SchemaTypes.CommunityPageQueryVariables) {
-  return { query: CommunityPageDocument, variables: variables };
 }
 export const ConfigurationDocument = gql`
   query configuration {
@@ -10900,6 +10813,205 @@ export type CommunicationUpdateMessageReceivedSubscriptionHookResult = ReturnTyp
 >;
 export type CommunicationUpdateMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationUpdateMessageReceivedSubscription>;
+export const CommunityPageDocument = gql`
+  query CommunityPage($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      community(ID: $communityId) {
+        id
+        displayName
+        members {
+          ...UserCard
+        }
+      }
+    }
+  }
+  ${UserCardFragmentDoc}
+`;
+
+/**
+ * __useCommunityPageQuery__
+ *
+ * To run a query within a React component, call `useCommunityPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityPageQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      communityId: // value for 'communityId'
+ *   },
+ * });
+ */
+export function useCommunityPageQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CommunityPageQuery, SchemaTypes.CommunityPageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityPageQuery, SchemaTypes.CommunityPageQueryVariables>(
+    CommunityPageDocument,
+    options
+  );
+}
+export function useCommunityPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CommunityPageQuery, SchemaTypes.CommunityPageQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityPageQuery, SchemaTypes.CommunityPageQueryVariables>(
+    CommunityPageDocument,
+    options
+  );
+}
+export type CommunityPageQueryHookResult = ReturnType<typeof useCommunityPageQuery>;
+export type CommunityPageLazyQueryHookResult = ReturnType<typeof useCommunityPageLazyQuery>;
+export type CommunityPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityPageQuery,
+  SchemaTypes.CommunityPageQueryVariables
+>;
+export function refetchCommunityPageQuery(variables?: SchemaTypes.CommunityPageQueryVariables) {
+  return { query: CommunityPageDocument, variables: variables };
+}
+export const CommunityPageWithHostDocument = gql`
+  query CommunityPageWithHost($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      host {
+        ...OrganizationCard
+      }
+      community(ID: $communityId) {
+        id
+        displayName
+        members {
+          ...UserCard
+        }
+      }
+    }
+  }
+  ${OrganizationCardFragmentDoc}
+  ${UserCardFragmentDoc}
+`;
+
+/**
+ * __useCommunityPageWithHostQuery__
+ *
+ * To run a query within a React component, call `useCommunityPageWithHostQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityPageWithHostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityPageWithHostQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      communityId: // value for 'communityId'
+ *   },
+ * });
+ */
+export function useCommunityPageWithHostQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityPageWithHostQuery,
+    SchemaTypes.CommunityPageWithHostQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityPageWithHostQuery, SchemaTypes.CommunityPageWithHostQueryVariables>(
+    CommunityPageWithHostDocument,
+    options
+  );
+}
+export function useCommunityPageWithHostLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityPageWithHostQuery,
+    SchemaTypes.CommunityPageWithHostQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CommunityPageWithHostQuery, SchemaTypes.CommunityPageWithHostQueryVariables>(
+    CommunityPageWithHostDocument,
+    options
+  );
+}
+export type CommunityPageWithHostQueryHookResult = ReturnType<typeof useCommunityPageWithHostQuery>;
+export type CommunityPageWithHostLazyQueryHookResult = ReturnType<typeof useCommunityPageWithHostLazyQuery>;
+export type CommunityPageWithHostQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityPageWithHostQuery,
+  SchemaTypes.CommunityPageWithHostQueryVariables
+>;
+export function refetchCommunityPageWithHostQuery(variables?: SchemaTypes.CommunityPageWithHostQueryVariables) {
+  return { query: CommunityPageWithHostDocument, variables: variables };
+}
+export const ChallengeLeadingOrganizationsDocument = gql`
+  query ChallengeLeadingOrganizations($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    ecoverse(ID: $ecoverseId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        leadOrganizations {
+          ...OrganizationCard
+        }
+      }
+    }
+  }
+  ${OrganizationCardFragmentDoc}
+`;
+
+/**
+ * __useChallengeLeadingOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useChallengeLeadingOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeLeadingOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeLeadingOrganizationsQuery({
+ *   variables: {
+ *      ecoverseId: // value for 'ecoverseId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeLeadingOrganizationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeLeadingOrganizationsQuery,
+    SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeLeadingOrganizationsQuery,
+    SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
+  >(ChallengeLeadingOrganizationsDocument, options);
+}
+export function useChallengeLeadingOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeLeadingOrganizationsQuery,
+    SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeLeadingOrganizationsQuery,
+    SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
+  >(ChallengeLeadingOrganizationsDocument, options);
+}
+export type ChallengeLeadingOrganizationsQueryHookResult = ReturnType<typeof useChallengeLeadingOrganizationsQuery>;
+export type ChallengeLeadingOrganizationsLazyQueryHookResult = ReturnType<
+  typeof useChallengeLeadingOrganizationsLazyQuery
+>;
+export type ChallengeLeadingOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeLeadingOrganizationsQuery,
+  SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
+>;
+export function refetchChallengeLeadingOrganizationsQuery(
+  variables?: SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
+) {
+  return { query: ChallengeLeadingOrganizationsDocument, variables: variables };
+}
 export const CommunityDiscussionDocument = gql`
   query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
     ecoverse(ID: $ecoverseId) {

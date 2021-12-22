@@ -1,0 +1,40 @@
+query CommunityPage($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    community(ID: $communityId) {
+      id
+      displayName
+      members {
+        ...UserCard
+      }
+    }
+  }
+}
+
+query CommunityPageWithHost($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    host {
+      ...OrganizationCard
+    }
+    community(ID: $communityId) {
+      id
+      displayName
+      members {
+        ...UserCard
+      }
+    }
+  }
+}
+
+query ChallengeLeadingOrganizations($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  ecoverse(ID: $ecoverseId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      leadOrganizations {
+        ...OrganizationCard
+      }
+    }
+  }
+}
