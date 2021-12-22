@@ -704,6 +704,7 @@
       },
       "sections": {
         "dashboard": {
+          "organization": "Leading organizations",
           "statistics": {
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
