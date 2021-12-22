@@ -60,25 +60,8 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
             onChange={e => {
               const file = e && e.target && e.target.files && e.target.files[0];
               if (file) {
-                try {
-                  Resizer.imageFileResizer(
-                    file,
-                    400,
-                    400,
-                    'JPEG',
-                    100,
-                    0,
-                    uri => {
-                      setSelectedFile(uri as File);
-                      setDialogOpened(true);
-                    },
-                    'file',
-                    200,
-                    200
-                  );
-                } catch (err) {
-                  console.log(err);
-                }
+                setSelectedFile(file);
+                setDialogOpened(true);
               } //handleAvatarChange(file);
             }}
             small
@@ -112,19 +95,10 @@ const MAX_HEIGHT = 400;
 const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
   const [src, setSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState<Partial<Crop>>({ aspect: ASPECT_RATIO });
-  // const [imgUrl, setImgUrl] = useState<string>('');
   const imgRef = useRef<HTMLImageElement>();
 
-  // useEffect(() => {
-  //   return () => {
-
-  //     window.URL.revokeObjectURL(imgUrl);
-  //   };
-  // }, [imgUrl]);
-
-  const onCropChange = (crop: Crop, percentCrop: Crop) => {
+  const onCropChange = (crop: Crop, _percentCrop: Crop) => {
     // You could also use percentCrop:
-    console.log(crop);
     setCrop(crop);
   };
 
@@ -191,14 +165,27 @@ const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
     return new Promise<File>((resolve, reject) => {
       canvas.toBlob(
         blob => {
-          if (!blob) {
-            //reject(new Error('Canvas is empty'));
-            console.error('Canvas is empty');
-            return;
+          if (blob) {
+            try {
+              Resizer.imageFileResizer(
+                blob,
+                MAX_WIDTH,
+                MAX_HEIGHT,
+                'JPEG',
+                100,
+                0,
+                uri => {
+                  resolve(new File([uri as Blob], fileName, { type: 'image/jpeg' }));
+                },
+                'blob',
+                200,
+                200
+              );
+            } catch (err) {
+              console.error(err);
+              reject(err);
+            }
           }
-          // const fileUrl = window.URL.createObjectURL(blob);
-          // setImgUrl(fileUrl);
-          resolve(new File([blob], fileName, { type: 'image/jpeg' }));
         },
         'image/jpeg',
         1
