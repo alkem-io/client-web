@@ -81,14 +81,14 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
                     {t('pages.community.leading-organizations.no-data')}
                   </Box>
                 )}
-                <Grid container>
+                <Grid container spacing={3}>
                   {organizations.map((x, i) => (
                     <Grid
                       key={i}
                       item
                       flexGrow={1}
-                      flexBasis="33%"
-                      maxWidth={{ xs: 'auto', sm: 'auto', md: 'auto', lg: '50%', xl: '33%' }}
+                      flexBasis="100%"
+                      maxWidth={{ xs: 'auto', sm: 'auto', md: 'auto', lg: '50%', xl: '50%' }}
                     >
                       <OrganizationCard
                         url={x.url}
