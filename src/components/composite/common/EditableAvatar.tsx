@@ -69,7 +69,6 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
                     100,
                     0,
                     uri => {
-                      console.log(uri);
                       setSelectedFile(uri as File);
                       setDialogOpened(true);
                     },
