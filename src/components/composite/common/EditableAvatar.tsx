@@ -96,6 +96,7 @@ const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
   const [src, setSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState<Partial<Crop>>({ aspect: ASPECT_RATIO });
   const imgRef = useRef<HTMLImageElement>();
+  const { t } = useTranslation();
 
   const onCropChange = (crop: Crop, _percentCrop: Crop) => {
     // You could also use percentCrop:
@@ -225,9 +226,9 @@ const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose}>{t('buttons.cancel')}</Button>
         <Button variant="contained" onClick={handleSave}>
-          Save
+          {t('buttons.save')}
         </Button>
       </DialogActions>
     </Dialog>
