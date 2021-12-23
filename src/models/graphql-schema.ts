@@ -4200,28 +4200,23 @@ export type UserCardQueryVariables = Exact<{
 export type UserCardQuery = {
   __typename?: 'Query';
   user: {
-    __typename: 'User';
+    __typename?: 'User';
     id: string;
     nameID: string;
     displayName: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    gender: string;
     country: string;
     city: string;
-    phone: string;
-    accountUpn: string;
     agent?: Maybe<{
       __typename?: 'Agent';
-      credentials?: Maybe<Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>>;
+      id: string;
+      credentials?: Maybe<
+        Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+      >;
     }>;
     profile?: Maybe<{
       __typename?: 'Profile';
       id: string;
-      description?: Maybe<string>;
       avatar?: Maybe<string>;
-      references?: Maybe<Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }>>;
       tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
     }>;
   };
@@ -5014,74 +5009,6 @@ export type CommunityMembersQuery = {
       __typename?: 'Community';
       id: string;
       members?: Maybe<Array<{ __typename?: 'User'; id: string; displayName: string }>>;
-    }>;
-  };
-};
-
-export type CommunityPageQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityPageQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    community?: Maybe<{
-      __typename?: 'Community';
-      id: string;
-      displayName: string;
-      groups?: Maybe<
-        Array<{
-          __typename?: 'UserGroup';
-          id: string;
-          name: string;
-          profile?: Maybe<{
-            __typename?: 'Profile';
-            id: string;
-            avatar?: Maybe<string>;
-            description?: Maybe<string>;
-            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
-          }>;
-        }>
-      >;
-      members?: Maybe<
-        Array<{
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          displayName: string;
-          country: string;
-          city: string;
-          email: string;
-          agent?: Maybe<{
-            __typename?: 'Agent';
-            id: string;
-            credentials?: Maybe<
-              Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-            >;
-          }>;
-          profile?: Maybe<{
-            __typename?: 'Profile';
-            id: string;
-            avatar?: Maybe<string>;
-            description?: Maybe<string>;
-            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }>>;
-          }>;
-        }>
-      >;
-      communication?: Maybe<{
-        __typename?: 'Communication';
-        id: string;
-        updates?: Maybe<{
-          __typename?: 'Updates';
-          id: string;
-          messages?: Maybe<
-            Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
-          >;
-        }>;
-      }>;
     }>;
   };
 };
@@ -7264,6 +7191,123 @@ export type CommunicationUpdateMessageReceivedSubscription = {
     __typename?: 'CommunicationUpdateMessageReceived';
     updatesID: string;
     message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+  };
+};
+
+export type CommunityPageQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityPageQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      members?: Maybe<
+        Array<{
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          country: string;
+          city: string;
+          agent?: Maybe<{
+            __typename?: 'Agent';
+            id: string;
+            credentials?: Maybe<
+              Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+            >;
+          }>;
+          profile?: Maybe<{
+            __typename?: 'Profile';
+            id: string;
+            avatar?: Maybe<string>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+          }>;
+        }>
+      >;
+    }>;
+  };
+};
+
+export type CommunityPageWithHostQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityPageWithHostQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    host?: Maybe<{
+      __typename?: 'Organization';
+      id: string;
+      nameID: string;
+      displayName: string;
+      activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+      profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
+      verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+    }>;
+    community?: Maybe<{
+      __typename?: 'Community';
+      id: string;
+      displayName: string;
+      members?: Maybe<
+        Array<{
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          country: string;
+          city: string;
+          agent?: Maybe<{
+            __typename?: 'Agent';
+            id: string;
+            credentials?: Maybe<
+              Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+            >;
+          }>;
+          profile?: Maybe<{
+            __typename?: 'Profile';
+            id: string;
+            avatar?: Maybe<string>;
+            tagsets?: Maybe<Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>>;
+          }>;
+        }>
+      >;
+    }>;
+  };
+};
+
+export type ChallengeLeadingOrganizationsQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeLeadingOrganizationsQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      leadOrganizations: Array<{
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        displayName: string;
+        activity?: Maybe<Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>>;
+        profile: { __typename?: 'Profile'; id: string; avatar?: Maybe<string>; description?: Maybe<string> };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+      }>;
+    };
   };
 };
 

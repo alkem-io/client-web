@@ -17,10 +17,10 @@ const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, cont
         <Grid item>
           {loading ? (
             <Skeleton variant="rectangular">
-              <Avatar src={author.avatarUrl} />
+              <Avatar />
             </Skeleton>
           ) : (
-            <Avatar />
+            <Avatar src={author.avatarUrl} />
           )}
         </Grid>
         <Grid item xs>
