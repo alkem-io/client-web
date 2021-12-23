@@ -12,13 +12,27 @@ import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../../../models/User';
 import { logger } from '../../../services/logging/winston/logger';
 import ProfileReferenceSegment from '../../Admin/Common/ProfileReferenceSegment';
-import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
+import { referenceSegmentValidationObject } from '../../Admin/Common/ReferenceSegment';
 import SocialSegment from '../../Admin/Common/SocialSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import { Loading } from '../../core';
 import EditableAvatar from '../common/EditableAvatar';
 import CountrySelect from './CountrySelect';
 import { FormikInputField } from './FormikInputField';
+
+const socialNames = [
+  SocialNetworkEnum.github.toString(),
+  SocialNetworkEnum.linkedin.toString(),
+  SocialNetworkEnum.twitter.toString(),
+];
+
+const referenceSegmentWithSocialSchema = yup.array().of(
+  referenceSegmentValidationObject.shape({
+    name: yup
+      .string()
+      .test('includesSocial', 'Use the social section', value => !value || !socialNames.includes(value.toLowerCase())),
+  })
+);
 
 interface UserProps {
   user?: UserModel;
@@ -106,15 +120,7 @@ export const UserForm: FC<UserProps> = ({
     phone: phone || '',
     avatar: avatar || '',
     tagsets: tagsets,
-    references:
-      references.filter(
-        x =>
-          ![
-            SocialNetworkEnum.github.toString(),
-            SocialNetworkEnum.linkedin.toString(),
-            SocialNetworkEnum.twitter.toString(),
-          ].includes(x.name.toLowerCase())
-      ) || [],
+    references: references.filter(x => !socialNames.includes(x.name.toLowerCase())) || [],
     bio: bio || '',
     profileId: profileId || '',
   };
@@ -130,11 +136,11 @@ export const UserForm: FC<UserProps> = ({
       .string()
       .matches(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im, 'Phone number not in supported format'),
     avatar: yup.string(),
-    // linkedin: yup.string().url('Linkedin url must be a valid URL'),
-    // twitter: yup.string().url('Twitter url must be a valid URL'),
-    // github: yup.string().url('Github url must be a valid URL'),
+    linkedin: yup.string().url('Linkedin url must be a valid URL'),
+    twitter: yup.string().url('Twitter url must be a valid URL'),
+    github: yup.string().url('Github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
-    references: referenceSegmentSchema,
+    references: referenceSegmentWithSocialSchema,
     bio: yup.string().max(400),
   });
 
