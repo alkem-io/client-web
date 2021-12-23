@@ -12,7 +12,7 @@ import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../../../models/User';
 import { logger } from '../../../services/logging/winston/logger';
 import ProfileReferenceSegment from '../../Admin/Common/ProfileReferenceSegment';
-import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
+import { referenceSegmentValidationObject } from '../../Admin/Common/ReferenceSegment';
 import SocialSegment from '../../Admin/Common/SocialSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import { Loading } from '../../core';
@@ -25,6 +25,14 @@ const socialNames = [
   SocialNetworkEnum.linkedin.toString(),
   SocialNetworkEnum.twitter.toString(),
 ];
+
+const referenceSegmentWithSocialSchema = yup.array().of(
+  referenceSegmentValidationObject.shape({
+    name: yup
+      .string()
+      .test('includesSocial', 'Use the social section', value => !value || !socialNames.includes(value.toLowerCase())),
+  })
+);
 
 interface UserProps {
   user?: UserModel;
@@ -132,13 +140,7 @@ export const UserForm: FC<UserProps> = ({
     twitter: yup.string().url('Twitter url must be a valid URL'),
     github: yup.string().url('Github url must be a valid URL'),
     tagsets: tagsetSegmentSchema,
-    references: referenceSegmentSchema.test('includesSocial', 'That social is already defined', array => {
-      if (!Array.isArray(array)) {
-        return false;
-      }
-      // todo error does not bubble/is not passed
-      return !array.some(x => socialNames.includes(x?.name.toLowerCase()));
-    }),
+    references: referenceSegmentWithSocialSchema,
     bio: yup.string().max(400),
   });
 
