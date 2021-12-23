@@ -106,13 +106,19 @@ const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
     imgRef.current = img;
 
     const aspect = ASPECT_RATIO;
-    const width = img.width / aspect < img.height * aspect ? 100 : ((img.height * aspect) / img.width) * 100;
-    const height = img.width / aspect > img.height * aspect ? 100 : (img.width / aspect / img.height) * 100;
-    const y = (100 - height) / 2;
-    const x = (100 - width) / 2;
+    // calculate in ration
+    const widthRatio = img.width / aspect < img.height * aspect ? 1 : (img.height * aspect) / img.width;
+    const heightRatio = img.width / aspect > img.height * aspect ? 1 : img.width / aspect / img.height;
+
+    // calculate in pixels
+    const width = img.width * widthRatio;
+    const height = img.height * heightRatio;
+
+    const y = ((1 - heightRatio) / 2) * img.height;
+    const x = ((1 - widthRatio) / 2) * img.width;
 
     setCrop({
-      unit: '%',
+      unit: 'px',
       width,
       height,
       x,
