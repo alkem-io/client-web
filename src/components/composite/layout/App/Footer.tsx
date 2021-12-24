@@ -94,7 +94,7 @@ const Footer: FC = ({ children }) => {
               <Toolbar dense className={styles.footerSecondary}>
                 <Grid container justifyContent={'flex-start'}>
                   <Typography variant="caption" color="neutralMedium" weight="boldLight">
-                    © 2021 Cherrytwist Foundation
+                    © 2021 Alkemio Foundation
                   </Typography>
                 </Grid>
                 <Grid container justifyContent={'flex-end'}>

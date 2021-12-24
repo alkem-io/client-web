@@ -1,8 +1,8 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.12.3",
+  "version": "0.12.3p2",
   "description": "Alkemio client, enabling users to interact with the Challenge centric platform.",
-  "author": "Cherrytwist Foundation",
+  "author": "Alkemio Foundation",
   "repository": {
     "type": "git",
     "url": "https://github.com/alkem-io/Client.Web.git"
