@@ -36,9 +36,15 @@ const HubCanvasManagementView: FC<HubCanvasManagementViewProps> = ({ entities, s
 
   if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPriviliges) return <Error404 />;
 
-  const hasCreatePriviliges = hub.context?.authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Create);
+  const hasCreatePriviliges = hub.context?.authorization?.myPrivileges?.some(
+    p => p === AuthorizationPrivilege.CreateCanvas
+  );
   const hasDeletePriviliges = hub.context?.authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Delete);
-  const hasUpdatePriviliges = hub.context?.authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Update);
+  // Todo: need to decide who can edit what canvases, for now tie to CreateCanvas. May need to extend the information on a Canvas
+  // to include who created it etc.
+  const hasUpdatePriviliges = hub.context?.authorization?.myPrivileges?.some(
+    p => p === AuthorizationPrivilege.CreateCanvas
+  );
 
   return (
     <CanvasProvider>
