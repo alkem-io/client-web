@@ -8,9 +8,6 @@ import { useOrganizationsListQuery, useUsersQuery } from '../../hooks/generated/
 import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 
-const MAX_USERS_SHOWN = 12;
-const MAX_ORGANIZATIONS_SHOWN = 6;
-
 const ContributorsSection = () => {
   const { t } = useTranslation();
   // move this to a container
@@ -24,30 +21,26 @@ const ContributorsSection = () => {
 
   const usersDTO: DashboardContributorsSectionSectionProps['entities']['users'] = useMemo(
     () =>
-      users
-        .map(u => ({
-          avatar: u.profile?.avatar || '',
-          displayName: u.displayName,
-          url: buildUserProfileUrl(u.nameID),
-          tooltip: {
-            tags: u.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
-            city: u.city,
-            country: COUNTRIES_BY_CODE[u.country],
-          },
-        }))
-        .slice(0, MAX_USERS_SHOWN), // take only the first 12 elements - 2 rows
+      users.map(u => ({
+        avatar: u.profile?.avatar || '',
+        displayName: u.displayName,
+        url: buildUserProfileUrl(u.nameID),
+        tooltip: {
+          tags: u.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
+          city: u.city,
+          country: COUNTRIES_BY_CODE[u.country],
+        },
+      })),
     [users]
   );
 
   const organizationsDTO: DashboardContributorsSectionSectionProps['entities']['organizations'] = useMemo(
     () =>
-      organizations
-        .map(o => ({
-          avatar: o?.profile?.avatar || '',
-          displayName: o.displayName,
-          url: buildOrganizationUrl(o.nameID),
-        }))
-        .slice(0, MAX_ORGANIZATIONS_SHOWN), // take only the first 6 elements - 1 row
+      organizations.map(o => ({
+        avatar: o?.profile?.avatar || '',
+        displayName: o.displayName,
+        url: buildOrganizationUrl(o.nameID),
+      })),
     [organizations]
   );
 
@@ -57,14 +50,12 @@ const ContributorsSection = () => {
       subHeaderText={t('contributors-section.subheader')}
       userTitle={t('contributors-section.users-title')}
       organizationTitle={t('contributors-section.organizations-title')}
+      navText={'See more...'}
+      navLink={'contributors'}
       entities={{
         users: usersDTO,
-        usersCount: users.length - MAX_USERS_SHOWN,
         user,
-        maxUsers: MAX_USERS_SHOWN,
         organizations: organizationsDTO,
-        organizationsCount: organizations.length - MAX_ORGANIZATIONS_SHOWN,
-        maxOrganizations: MAX_ORGANIZATIONS_SHOWN,
       }}
       loading={{ users: loading, organizations: loadingOrganizations }}
     ></DashboardContributorsSection>

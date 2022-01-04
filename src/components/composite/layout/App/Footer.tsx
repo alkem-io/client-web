@@ -39,7 +39,6 @@ const Footer: FC = ({ children }) => {
               xs={12}
               sm={false}
               justifyContent={'center'}
-              spacing={2}
               component={Box}
               textAlign="center"
               display={{ xs: 'block', sm: 'none' }}
@@ -51,7 +50,7 @@ const Footer: FC = ({ children }) => {
             <Grid item xs={12}>
               <Toolbar dense>
                 <Grid container justifyContent={'center'} wrap={'nowrap'} spacing={2}>
-                  <Grid container item justifyContent={'center'} spacing={2} wrap={'nowrap'}>
+                  <Grid container justifyContent={'center'} alignItems="center" spacing={2} wrap={'nowrap'}>
                     <Grid item>
                       <Link href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
                         Terms
@@ -95,7 +94,7 @@ const Footer: FC = ({ children }) => {
               <Toolbar dense className={styles.footerSecondary}>
                 <Grid container justifyContent={'flex-start'}>
                   <Typography variant="caption" color="neutralMedium" weight="boldLight">
-                    © 2021 Cherrytwist Foundation
+                    © 2021 Alkemio Foundation
                   </Typography>
                 </Grid>
                 <Grid container justifyContent={'flex-end'}>

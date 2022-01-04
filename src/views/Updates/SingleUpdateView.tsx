@@ -1,28 +1,43 @@
 import React, { FC } from 'react';
+import { Grid, Skeleton, Avatar, Box } from '@mui/material';
 import { Author } from '../../models/discussion/author';
-import { Grid } from '@mui/material';
 import Markdown from '../../components/core/Markdown';
-import Avatar from '@mui/material/Avatar';
 
 export interface SingleUpdateViewProps {
   author: Author;
   createdDate: Date;
   content: string;
+  loading?: boolean;
 }
 
-const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, content }) => {
+const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, content, loading }) => {
   return (
     <>
       <Grid container spacing={1}>
         <Grid item>
-          <Avatar src={author.avatarUrl} />
+          {loading ? (
+            <Skeleton variant="rectangular">
+              <Avatar />
+            </Skeleton>
+          ) : (
+            <Avatar src={author.avatarUrl} />
+          )}
         </Grid>
         <Grid item xs>
-          <Grid item>{author.displayName}</Grid>
-          <Grid item>{createdDate.toLocaleString()}</Grid>
+          <Grid item>{loading ? <Skeleton /> : author.displayName}</Grid>
+          <Grid item>{loading ? <Skeleton /> : createdDate.toLocaleString()}</Grid>
         </Grid>
       </Grid>
-      <Markdown children={content} />
+      {loading ? (
+        <Box paddingY={1}>
+          <Skeleton sx={{ marginBottom: t => t.spacing(0.5) }} />
+          <Skeleton sx={{ marginBottom: t => t.spacing(0.5) }} />
+          <Skeleton sx={{ marginBottom: t => t.spacing(0.5) }} />
+          <Skeleton sx={{ marginBottom: t => t.spacing(0.5) }} />
+        </Box>
+      ) : (
+        <Markdown children={content} />
+      )}
     </>
   );
 };

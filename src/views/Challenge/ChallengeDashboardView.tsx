@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import { ContributionCard } from '../../components/composite/common/cards';
+import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
 import DashboardDiscussionsSection from '../../components/composite/common/sections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
@@ -94,7 +94,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
         </Grid>
         <Grid item md={6} xs={12} spacing={SPACING}>
           <AssociatedOrganizationsView
-            title={t('pages.hub.sections.dashboard.organization')}
+            title={t('pages.challenge.sections.dashboard.organization')}
             organizationNameIDs={orgNameIds}
           />
           <SectionSpacer />
@@ -120,14 +120,14 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
                   },
                 ];
                 return (
-                  <Grid key={i} item>
-                    <ContributionCard
+                  <Grid key={i} item flexGrow={0} flexBasis={'50%'}>
+                    <EntityContributionCard
+                      activities={activities}
                       loading={loading}
                       details={{
-                        name: x.displayName,
-                        activity: activities,
+                        headerText: x.displayName,
                         tags: x.tagset?.tags ?? [],
-                        image: x.context?.visual?.background ?? '',
+                        mediaUrl: x.context?.visual?.background ?? '',
                         url: buildOpportunityUrl(ecoverseNameId, challengeNameId, x.nameID),
                       }}
                     />

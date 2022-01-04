@@ -527,6 +527,23 @@
     }
   },
   "pages": {
+    "contributors": {
+      "search": {
+        "title": "Explore the users and organizations that are contributing!",
+        "subtitle": "Enter one or more search terms. Click on the cards in the search results to see the profiles.",
+        "placeholder": "Search for users and organizations"
+      },
+      "organizations": {
+        "title": "Organizations ({{count}})",
+        "subtitle": "Organizations matching the search terms entered.",
+        "help-text": "Click on the cards below to see where each Organization is contributing."
+      },
+      "users": {
+        "title": "Users ({{count}})",
+        "subtitle": "Users matching the search terms entered.",
+        "help-text": ""
+      }
+    },
     "search": {
       "header": "Search",
       "subheader": "Find relevant users, organizations, groups and not least Challenges!",
@@ -542,19 +559,19 @@
     },
     "challenge-explorer": {
       "search": {
-        "title": "Explore challenges",
-        "subtitle": "This section allows you to search through all the challenges in Alkemio",
-        "placeholder": "Search for challenges in Alkemio..."
+        "title": "Explore Challenges",
+        "subtitle": "This section allows you to search through all the Challenges hosted on Alkemio that are visible to you.",
+        "placeholder": "Search by terms for challenges in Alkemio..."
       },
       "my": {
         "title": "My challenges ({{count}})",
-        "subtitle": "This section shows you the challenges you are participating in.",
-        "help-text": "Shows different organizations you are apart of, including the role you have."
+        "subtitle": "This section shows you the challenges you are contributing to. ",
+        "help-text": "One card per Challenge membership, including the role you have in each."
       },
       "hubs": {
-        "title": "{{name}} challenges ({{count}})",
-        "subtitle": "This section shows you the challenges specific for the {{name}} hub.",
-        "help-text": "Shows different organizations you are apart of, including the role you have."
+        "title": "Challenges hosted by '{{name}}' Hub ({{count}})",
+        "subtitle": "This section shows you the Challenges hosted in the {{name}} hub, where you are a member.",
+        "help-text": "A Challenge Hub hosts one or more Challenges. You are member of the Hub below."
       }
     },
     "lead-organization": {
@@ -565,7 +582,7 @@
     },
     "activity": {
       "title": "{{blockName}} Activity",
-      "summary": "A summary of everything that happens on {{blockName}}",
+      "summary": "Key statistics for {{blockName}}",
       "hubs": "Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
@@ -584,10 +601,23 @@
           "body": "Realising societies potential. Building a better future, together.",
           "join": "Want to join the community and see more?"
         },
+        "interested-in-collaboration": {
+          "header": "Supporting Alkemio",
+          "body": "100% <a href='https://github.com/alkem-io'>open source</a>. Backed by a <a href='https://alkem.io'>non-profit foundation</a>.<br/>",
+          "innovation-facilitator": "Driving Innovation and want to know how Alkemio can help you? <br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
+          "contributor": "Ideas for Alkemio or suggestions for use cases? <br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!"
+        },
+        "getting-started": {
+          "header": "Getting Started",
+          "subheader": "Here are some suggestions to help get you up to speed.",
+          "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' >contributors</a>.",
+          "joining-a-challenge": "Eager to join a Challenge? Explore all <a href='./challenges' >Challenges</a>.",
+          "your-profile": "Keen to be found by other contributors? Fill out your <a href='./profile' >profile</a>.</br>"
+        },
         "hub": {
           "header": "Explore the Challenge Hubs!",
-          "subheader": "Each Hub contains one or more Challenges.<br>Facilitated by a Host Organization.<br>",
-          "body": "Share context, build community, coordinate and collaborate. Connect."
+          "subheader": "Each Hub contains one or more Challenges, facilitated by a Host Organization.<br>",
+          "body": "A Hub provides shared context and community for Challenges hosted there. Public or Private. A space to coordinate and collaborate. Connect."
         },
         "community": {
           "header": "The most active members",
@@ -652,7 +682,8 @@
           "header": "Challenges",
           "subheader": "There is no final frontier",
           "body": "",
-          "no-data": "No challenges available for this hub"
+          "no-data": "No challenges available for this hub",
+          "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
         },
         "community": {
           "header": "Community",
@@ -673,6 +704,7 @@
       },
       "sections": {
         "dashboard": {
+          "organization": "Leading organizations",
           "statistics": {
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
@@ -703,6 +735,7 @@
           "body": ""
         },
         "opportunities": {
+          "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about.",
           "header": "Opportunities",
           "subheader": "Potential solutions for this challenge",
           "body-missing": "No opportunities found for this challenge"
@@ -807,10 +840,71 @@
       }
     },
     "community": {
-      "leading-organizations": "Leading organizations",
-      "ecoverse-host": "Hub host",
+      "title": "{{name}} community page",
+      "subtitle": "",
+      "leading-organizations": {
+        "title": "Leading organizations ({{count}})",
+        "help-text": "Shows different organizations, including the role you have",
+        "no-data": "No organization is leading at this time"
+      },
+      "ecoverse-host": {
+        "title": "Hosting organization",
+        "help-text": "Shows different organizations, including the role you have"
+      },
+      "members": {
+        "title": "Members ({{count}})",
+        "help-text": "Shows members is this community, including the role they have",
+        "no-data": "No members available"
+      },
       "no-user-groups": "There are no user groups",
       "no-updates": "There are no updates"
+    },
+    "canvas": {
+      "header": "Canvases in this {{blockName}}",
+      "subheader": "Create your custom visualization and share it with others.",
+      "add-canvas": "Create canvas",
+      "no-canvases": "No canvases have been created yet. Be the first to add one.",
+      "state": {
+        "available": "You are free to work on this canvas",
+        "checkedout": "Someone else is already working on this canvas",
+        "unknown": "There is a checkout conflict with this canvas"
+      },
+      "state-actions": {
+        "check-out": "Edit",
+        "check-in": "Check-in",
+        "save-as-template": "Save as template",
+        "save-and-check-in": "Save & stop editing",
+        "save": "Save"
+      },
+      "delete": {
+        "confirmation-title": "Deleting <b>{{ blockName }}</b>",
+        "confirmation-text": "Are you sure you want to delete this canvas? The action is irreversible."
+      },
+      "create-dialog": {
+        "header": "Create a new canvas",
+        "steps": {
+          "naming": "Define a suitable name for your canvas. What will your canvas capture?",
+          "templating": "Choose from the list of templates if you want to use it as a blueprint for your canvas.",
+          "completing": "The canvas will be created with the following parameters"
+        },
+        "no-template-selected": "To see a preview of the template please select one."
+      },
+      "template": {
+        "header": "Templates defined in Alkemio",
+        "no-templates": "There are no templates defined here yet. Be the first to add one.",
+        "how-to": "To create a template create a new canvas or use an existing one and save it as a template."
+      },
+      "hub": {
+        "templatesHeader": "Templates defined in this hub",
+        "templatesSubheader": "The templates defined in this hub can be used in every challenge and opportunity that this hub hosts."
+      },
+      "challenge": {
+        "templatesHeader": "Templates defined in this challenge",
+        "templatesSubheader": "The templates defined in this challenge can be used in every opportunity that is in the scope of this challenge."
+      },
+      "opportunity": {
+        "templatesHeader": "Templates defined in this opportunity"
+      }
     },
     "login": {
       "title": "Sign in",
@@ -983,6 +1077,10 @@
     "no-data": "No {{name, lowercase}} available"
   },
   "dashboard-contributors-section": {
+    "more": "...plus {{count}} more"
+  },
+  "associates-view": {
+    "less": "show less",
     "more": "...plus {{count}} more"
   }
 }

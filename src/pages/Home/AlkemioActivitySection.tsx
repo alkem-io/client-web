@@ -1,11 +1,14 @@
-import React, { useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import DashboardActivitySection from '../../components/composite/common/sections/DashboardActivitySection';
+import { SectionProps } from '../../components/core/Section/Section';
 import { useGlobalActivityQuery } from '../../hooks/generated/graphql';
 import getActivityCount from '../../utils/get-activity-count';
 
-const AlkemioActivitySection = () => {
+const AlkemioActivitySection: FC<{
+  classes?: SectionProps['classes'];
+}> = ({ classes }) => {
   const { t } = useTranslation();
 
   const { data: activity, loading: isActivityLoading } = useGlobalActivityQuery({ fetchPolicy: 'no-cache' });
@@ -19,7 +22,7 @@ const AlkemioActivitySection = () => {
   ];
   const summary: ActivityItem[] = useMemo(
     () => [
-      { name: t('pages.activity.hubs'), isLoading: isActivityLoading, digit: ecoverseCount, color: 'neutral' },
+      { name: t('pages.activity.hubs'), isLoading: isActivityLoading, digit: ecoverseCount, color: 'primary' },
       {
         name: t('pages.activity.challenges'),
         isLoading: isActivityLoading,
@@ -36,13 +39,13 @@ const AlkemioActivitySection = () => {
         name: t('pages.activity.users'),
         isLoading: isActivityLoading,
         digit: userCount,
-        color: 'positive',
+        color: 'primary',
       },
       {
         name: t('pages.activity.organizations'),
         isLoading: isActivityLoading,
         digit: orgCount,
-        color: 'positive',
+        color: 'primary',
       },
     ],
     [globalActivity, isActivityLoading]
@@ -50,9 +53,10 @@ const AlkemioActivitySection = () => {
 
   return (
     <DashboardActivitySection
-      headerText={t('pages.activity.title', { blockName: 'All' })}
-      bodyText={t('pages.activity.summary', { blockName: 'Alkemio' })}
+      headerText={t('pages.activity.title', { blockName: 'Platform' })}
+      bodyText={t('pages.activity.summary', { blockName: 'Alkemio Hub' })}
       activities={summary}
+      classes={classes}
     />
   );
 };

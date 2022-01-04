@@ -1,9 +1,0 @@
-query ecoverseCommunityMessages($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
-    id
-    nameID
-    community {
-      ...CommunityMessages
-    }
-  }
-}

@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import { useSelector } from '@xstate/react';
 import React, { forwardRef } from 'react';
 import { useGlobalState } from '../../../../hooks';
+import HideOnScroll from '../HideOnScroll';
 import SearchBar, { SearchBarSpacer } from './SearchBar';
 import TopNavbar, { TopNavbarSpacer } from './TopNavbar';
 
@@ -18,7 +19,7 @@ const Root = styled(AppBar)(({ theme }) => ({
   boxShadow: 'unset',
 }));
 
-const TopBar = forwardRef<HTMLDivElement>((_, ref) => {
+const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
   const {
     ui: { loginNavigationService },
   } = useGlobalState();
@@ -32,10 +33,12 @@ const TopBar = forwardRef<HTMLDivElement>((_, ref) => {
   }
 
   return (
-    <Root ref={ref} position="fixed" className={classes.bar}>
-      <SearchBar />
-      <TopNavbar />
-    </Root>
+    <HideOnScroll>
+      <Root position="fixed" className={classes.bar}>
+        <SearchBar />
+        <TopNavbar />
+      </Root>
+    </HideOnScroll>
   );
 });
 

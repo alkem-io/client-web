@@ -14,10 +14,10 @@ export interface ContributionCardV2Details {
   labelText?: string;
   descriptionText?: string;
   tagsFor?: string;
-  tags: string[];
+  tags?: string[];
   mediaUrl?: string;
   mediaSize?: mediaSize;
-  url: string;
+  url?: string;
 }
 
 export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
@@ -28,7 +28,7 @@ export interface ContributionCardV2Props {
   classes?: {
     label?: string;
   };
-  loading: boolean;
+  loading?: boolean;
 }
 
 const mediaSizes: { [size in mediaSize]: number } = {
@@ -53,6 +53,7 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
     },
     cardMedia: {
       backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
       backgroundSize: 'cover',
       background: theme.palette.neutralMedium.light,
       height: ({ mediaSize = 'medium' }) => mediaSizes[mediaSize],
@@ -73,7 +74,7 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
   })
 );
 
-const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading, classes, children }) => {
+const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = false, classes, children }) => {
   const { headerText = '', labelText, tags = [], mediaUrl, mediaSize = 'medium', url = '', tagsFor } = details || {};
 
   const styles = useStyles({ mediaSize });

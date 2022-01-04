@@ -14,7 +14,8 @@ import { useRouteMatch } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
 import { EcoverseContainerEntities } from '../../containers/ecoverse/EcoversePageContainer';
-import { useEcoverse } from '../../hooks';
+import { useConfig, useEcoverse } from '../../hooks';
+import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 
 const routes = {
@@ -50,6 +51,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
   const { ecoverseNameId, permissions } = useEcoverse();
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
+  const { isFeatureEnabled } = useConfig();
 
   const { permissions: pagePermissions } = entities;
   const { communityReadAccess, challengesReadAccess } = pagePermissions;
@@ -99,7 +101,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           to={urlGetter('challenges')}
         />
         <NavigationTab
-          disabled={!communityReadAccess}
+          disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
           component={RouterLink}
@@ -107,7 +109,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           to={urlGetter('discussions')}
         />
         <NavigationTab
-          disabled={!communityReadAccess}
+          disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           component={RouterLink}

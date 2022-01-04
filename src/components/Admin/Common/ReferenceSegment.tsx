@@ -19,12 +19,11 @@ export interface ReferenceSegmentProps {
   onRemove?: (ref: Reference, remove: RemoveFunc) => void;
 }
 
-export const referenceSegmentSchema = yup.array().of(
-  yup.object().shape({
-    name: yup.string(),
-    uri: yup.string(),
-  })
-);
+export const referenceSegmentValidationObject = yup.object().shape({
+  name: yup.string(),
+  uri: yup.string(),
+});
+export const referenceSegmentSchema = yup.array().of(referenceSegmentValidationObject);
 
 export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
   references,

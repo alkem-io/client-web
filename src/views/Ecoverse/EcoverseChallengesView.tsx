@@ -31,67 +31,72 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
   const { nameID: ecoverseNameId = '' } = ecoverse || {};
 
   return (
-    <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.hub.sections.challenges.header')}>
-      <EcoverseChallengesContainer
-        entities={{
-          ecoverseNameId,
-        }}
-      >
-        {(cEntities, cState) => {
-          /* TODO: Move in separate component with its own loading logic */
-          if (cState?.loading)
-            return (
-              <Loading
-                text={t('components.loading.message', {
-                  blockName: t('pages.hub.sections.challenges.header'),
-                })}
-              />
-            );
-          if (cState?.error)
-            return (
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />
+    <>
+      <Box paddingBottom={2} display="flex" justifyContent="center">
+        {t('pages.hub.sections.challenges.description')}
+      </Box>
+      <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.hub.sections.challenges.header')}>
+        <EcoverseChallengesContainer
+          entities={{
+            ecoverseNameId,
+          }}
+        >
+          {(cEntities, cState) => {
+            /* TODO: Move in separate component with its own loading logic */
+            if (cState?.loading)
+              return (
+                <Loading
+                  text={t('components.loading.message', {
+                    blockName: t('pages.hub.sections.challenges.header'),
+                  })}
+                />
+              );
+            if (cState?.error)
+              return (
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />
+                  </Grid>
                 </Grid>
-              </Grid>
-            );
-          if (cEntities?.challenges && cEntities?.challenges.length === 0) {
+              );
+            if (cEntities?.challenges && cEntities?.challenges.length === 0) {
+              return (
+                <Box paddingBottom={2} display="flex" justifyContent="center">
+                  <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
+                </Box>
+              );
+            }
             return (
-              <Box paddingBottom={2} display="flex" justifyContent="center">
-                <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
-              </Box>
+              <CardFilter
+                data={cEntities?.challenges || []}
+                tagsValueGetter={entityTagsValueGetter}
+                valueGetter={entityValueGetter}
+              >
+                {filteredData => (
+                  <CardContainer>
+                    {filteredData.map((challenge, i) => (
+                      <ChallengeCard
+                        key={i}
+                        id={challenge.id}
+                        displayName={challenge.displayName}
+                        activity={challenge?.activity || []}
+                        context={{
+                          tagline: challenge?.context?.tagline || '',
+                          visual: { background: challenge?.context?.visual?.background || '' },
+                        }}
+                        isMember={user?.ofChallenge(challenge.id) || false}
+                        tags={challenge?.tagset?.tags || []}
+                        url={buildChallengeUrl(ecoverseNameId, challenge.nameID)}
+                      />
+                    ))}
+                  </CardContainer>
+                )}
+              </CardFilter>
             );
-          }
-          return (
-            <CardFilter
-              data={cEntities?.challenges || []}
-              tagsValueGetter={entityTagsValueGetter}
-              valueGetter={entityValueGetter}
-            >
-              {filteredData => (
-                <CardContainer>
-                  {filteredData.map((challenge, i) => (
-                    <ChallengeCard
-                      key={i}
-                      id={challenge.id}
-                      displayName={challenge.displayName}
-                      activity={challenge?.activity || []}
-                      context={{
-                        tagline: challenge?.context?.tagline || '',
-                        visual: { background: challenge?.context?.visual?.background || '' },
-                      }}
-                      isMember={user?.ofChallenge(challenge.id) || false}
-                      tags={challenge?.tagset?.tags || []}
-                      url={buildChallengeUrl(ecoverseNameId, challenge.nameID)}
-                    />
-                  ))}
-                </CardContainer>
-              )}
-            </CardFilter>
-          );
-        }}
-      </EcoverseChallengesContainer>
-    </MembershipBackdrop>
+          }}
+        </EcoverseChallengesContainer>
+      </MembershipBackdrop>
+    </>
   );
 };
 export default EcoverseChallengesView;

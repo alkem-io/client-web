@@ -12,7 +12,7 @@ const ActivitiesV2: FC<ActivitiesV2Props> = ({ activity }) => {
     <Grid container spacing={1} direction="column">
       {activity.map(({ digit, name }, i) => (
         <Grid key={i} item>
-          <Box component="span" paddingRight={0.25} fontWeight="bold">
+          <Box component="span" paddingRight={0.5} fontWeight="bold">
             {digit}
           </Box>
           {name}
