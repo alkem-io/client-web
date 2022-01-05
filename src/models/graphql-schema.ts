@@ -255,9 +255,13 @@ export type AuthorizationPolicyRuleCredential = {
 
 export enum AuthorizationPrivilege {
   Create = 'CREATE',
+  CreateCanvas = 'CREATE_CANVAS',
+  CreateHub = 'CREATE_HUB',
+  CreateOrganization = 'CREATE_ORGANIZATION',
   Delete = 'DELETE',
   Grant = 'GRANT',
   Read = 'READ',
+  ReadUsers = 'READ_USERS',
   Update = 'UPDATE',
 }
 
@@ -1816,6 +1820,8 @@ export type Query = {
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
+  /** The authorization policy for the platform */
+  authorization: Authorization;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */

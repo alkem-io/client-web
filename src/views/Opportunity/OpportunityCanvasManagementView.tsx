@@ -36,13 +36,15 @@ const OpportunityCanvasManagementView: FC<OpportunityCanvasManagementViewProps> 
   if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPriviliges) return <Error404 />;
 
   const hasCreatePriviliges = opportunity.context?.authorization?.myPrivileges?.some(
-    p => p === AuthorizationPrivilege.Create
+    p => p === AuthorizationPrivilege.CreateCanvas
   );
   const hasDeletePriviliges = opportunity.context?.authorization?.myPrivileges?.some(
     p => p === AuthorizationPrivilege.Delete
   );
+  // Todo: need to decide who can edit what canvases, for now tie to CreateCanvas. May need to extend the information on a Canvas
+  // to include who created it etc.
   const hasUpdatePriviliges = opportunity.context?.authorization?.myPrivileges?.some(
-    p => p === AuthorizationPrivilege.Update
+    p => p === AuthorizationPrivilege.CreateCanvas
   );
 
   return (
