@@ -1,4 +1,4 @@
-import { Configuration, V0alpha1Api } from '@ory/kratos-client';
+import { Configuration, V0alpha2Api } from '@ory/kratos-client';
 import { useMemo } from 'react';
 import { AuthenticationProviderConfigUnion, OryConfig } from '../../models/graphql-schema';
 import { useConfig } from '../useConfig';
@@ -13,6 +13,6 @@ export const useKratosClient = () => {
   return useMemo(() => {
     if (!authentication) return undefined;
     const config = authentication?.providers.map(x => x.config).find(x => isOryConfig(x));
-    return new V0alpha1Api(new Configuration({ basePath: config?.kratosPublicBaseURL }));
+    return new V0alpha2Api(new Configuration({ basePath: config?.kratosPublicBaseURL }));
   }, [authentication]);
 };

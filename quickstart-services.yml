@@ -46,7 +46,7 @@ services:
 
   kratos_migrate:
     container_name: alkemio_client_kratos_migrate
-    image: oryd/kratos:v0.7.6-alpha.1
+    image: oryd/kratos:v0.8.0-alpha.3
     environment:
       - DSN=mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(${DATABASE_HOST}:3306)/kratos?max_conns=20&max_idle_conns=4
     restart: on-failure
@@ -60,7 +60,7 @@ services:
 
   kratos:
     container_name: alkemio_client_kratos
-    image: oryd/kratos:v0.7.6-alpha.1
+    image: oryd/kratos:v0.8.0-alpha.3
     depends_on:
       - kratos_migrate
     ports:
@@ -80,7 +80,7 @@ services:
 
   oathkeeper:
     container_name: alkemio_client_oathkeeper
-    image: oryd/oathkeeper:v0.38
+    image: oryd/oathkeeper:v0.38.9-beta.1
     restart: always
     depends_on:
       - kratos
