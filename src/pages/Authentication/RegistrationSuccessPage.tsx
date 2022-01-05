@@ -41,32 +41,17 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
             <Link component={RouterLink} to={'/'}>
               <strong>Browse:</strong>
             </Link>{' '}
-            Review the set of hosted Ecoverses , as well as the Challenges within each Ecoverse.
+            Explore the Challenge Hubs, each with their own community around the hosted Challenges.
           </li>
           <li>
-            Apply to become a member of one or more Ecoverses. Your application is then reviewed based on your profile
-            and provided information.
+            Apply to become a member of one or more Challenge Hubs. Your application is then reviewed based on your
+            profile and provided information.
           </li>
           <li>
             <Link component={RouterLink} to={'/search'}>
               <strong>Search</strong>
             </Link>{' '}
-            for relevant Challenges, Users and Organizations.
-          </li>
-        </ul>
-      </Typography>
-
-      <Typography>
-        Once you have verified your email address you can apply to join one or more Eoverses.
-        <ul>
-          <li>
-            <strong>Contribute</strong>: After browsing the Challenges and Opportunites, join those that you want to
-            contribute to and apply to join them.
-          </li>
-          <li>
-            <Link component={RouterLink} to={'/search'}>
-              <strong>Connect to other members.</strong>
-            </Link>
+            for relevant Challenges and Contributors (Users and Organizations).
           </li>
         </ul>
       </Typography>
