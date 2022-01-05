@@ -1,10 +1,13 @@
-import { uniq } from 'lodash';
-import React, { FC, useContext, useMemo, useState } from 'react';
+import { uniq, merge } from 'lodash';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { useApolloErrorHandler, useEcoverse } from '../../hooks';
+import { ApolloError } from '@apollo/client';
+import { useApolloErrorHandler, useConfig, useEcoverse } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
+  CommunicationDiscussionMessageReceivedDocument,
   refetchCommunityDiscussionListQuery,
+  useCommunityDiscussionListLazyQuery,
   useCommunityDiscussionListQuery,
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
@@ -13,10 +16,12 @@ import { Discussion } from '../../models/discussion/discussion';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../models/enums/DiscussionCategoriesExt';
 import {
   AuthorizationPrivilege,
+  CommunicationDiscussionMessageReceivedSubscription,
   Discussion as DiscussionGraphql,
   DiscussionCategory,
 } from '../../models/graphql-schema';
 import { useCommunityContext } from '../CommunityProvider';
+import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 
 interface Permissions {
   canCreateDiscussion: boolean;
@@ -48,17 +53,76 @@ interface DiscussionProviderProps {}
 
 const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const history = useHistory();
+  const { isFeatureEnabled } = useConfig();
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
   const { communityId, communicationId, loading: loadingCommunity } = useCommunityContext();
   const { url } = useRouteMatch();
-  const { data, loading: loadingDiscussionList } = useCommunityDiscussionListQuery({
+
+  const {
+    data,
+    loading: loadingDiscussionList,
+    subscribeToMore,
+  } = useCommunityDiscussionListQuery({
     variables: {
       ecoverseId: ecoverseNameId,
       communityId: communityId || '',
     },
+    errorPolicy: 'all',
     skip: !ecoverseNameId || !communityId,
+    onError: handleError,
   });
+  const [discussionListLazy] = useCommunityDiscussionListLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: { ecoverseId: ecoverseNameId, communityId },
+    onError: handleError,
+  });
+
+  useEffect(() => {
+    if (!ecoverseNameId || !communityId || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+      return;
+    }
+
+    const unSubscribe = subscribeToMore<CommunicationDiscussionMessageReceivedSubscription>({
+      document: CommunicationDiscussionMessageReceivedDocument,
+      onError: err => handleError(new ApolloError({ errorMessage: err.message })),
+      updateQuery: (prev, { subscriptionData }) => {
+        const discussions = prev?.ecoverse?.community?.communication?.discussions;
+
+        if (!discussions) {
+          return prev;
+        }
+
+        const messageReceivedInfo = subscriptionData.data.communicationDiscussionMessageReceived;
+        const discussionIndex = discussions.findIndex(x => x.id === messageReceivedInfo.discussionID);
+
+        if (discussionIndex === -1) {
+          // fetch new data from the server
+          discussionListLazy();
+          return prev;
+        }
+
+        const updatedDiscussions = [...discussions];
+        const discussion = updatedDiscussions[discussionIndex];
+
+        updatedDiscussions[discussionIndex] = {
+          ...discussion,
+          commentsCount: discussion.commentsCount + 1,
+        };
+
+        return merge({}, prev, {
+          ecoverse: {
+            community: {
+              communication: {
+                discussions: updatedDiscussions,
+              },
+            },
+          },
+        });
+      },
+    });
+    return () => unSubscribe && unSubscribe();
+  }, [isFeatureEnabled, subscribeToMore, ecoverseNameId, communityId]);
 
   const discussions = data?.ecoverse.community?.communication?.discussions || [];
 
