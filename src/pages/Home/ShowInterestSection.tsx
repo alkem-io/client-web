@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { SectionProps, SectionSpacer } from '../../components/core/Section/Section';
 import HandymanIcon from '@mui/icons-material/Handyman';
-
-import HelpIcon from '@mui/icons-material/Help';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
 const ShowInterestSection: FC<{
   classes?: SectionProps['classes'];
@@ -23,24 +23,28 @@ const ShowInterestSection: FC<{
       // }
       classes={classes}
     >
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Typography
-          variant="body1"
-          dangerouslySetInnerHTML={{
-            __html: t('pages.home.sections.interested-in-collaboration.body'),
-          }}
-        />
-      </Box>
-      <SectionSpacer />
       <Box display="flex" alignItems="center">
         <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-          <HelpIcon sx={{ color: theme.palette.background.default }} />
+          <ConnectWithoutContactIcon sx={{ color: theme.palette.background.default }} />
         </Avatar>
         <SectionSpacer />
         <Typography
           variant="body1"
           dangerouslySetInnerHTML={{
             __html: t('pages.home.sections.interested-in-collaboration.innovation-facilitator'),
+          }}
+        />
+      </Box>
+      <SectionSpacer />
+      <Box display="flex" alignItems="center">
+        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+          <LightbulbIcon sx={{ color: theme.palette.background.default }} />
+        </Avatar>
+        <SectionSpacer />
+        <Typography
+          variant="body1"
+          dangerouslySetInnerHTML={{
+            __html: t('pages.home.sections.interested-in-collaboration.suggestions'),
           }}
         />
       </Box>
