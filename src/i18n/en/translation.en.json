@@ -582,7 +582,6 @@
     },
     "activity": {
       "title": "{{blockName}} Activity",
-      "summary": "Key statistics for {{blockName}}",
       "hubs": "Challenge Hubs",
       "challenges": "Challenges",
       "opportunities": "Opportunities",
@@ -602,10 +601,10 @@
           "join": "Want to join the community and see more?"
         },
         "interested-in-collaboration": {
-          "header": "Supporting Alkemio",
-          "body": "100% <a href='https://github.com/alkem-io'>open source</a>. Backed by a <a href='https://alkem.io'>non-profit foundation</a>.<br/>",
-          "innovation-facilitator": "Driving Innovation and want to know how Alkemio can help you? <br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
-          "contributor": "Ideas for Alkemio or suggestions for use cases? <br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!"
+          "header": "Alkemio and You",
+          "innovation-facilitator": "Are you driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
+          "suggestions": "Do you have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!",
+          "contributor": "Do you want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io'>open source</a>. Backed by a <a href='https://alkem.io'>non-profit foundation</a>."
         },
         "getting-started": {
           "header": "Getting Started",
@@ -616,8 +615,8 @@
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
-          "subheader": "Each Hub contains one or more Challenges, facilitated by a Host Organization.<br>",
-          "body": "A Hub provides shared context and community for Challenges hosted there. Public or Private. A space to coordinate and collaborate. Connect."
+          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
+          "body": "A Hub can be Public or Private, and has a facilitating Organization."
         },
         "community": {
           "header": "The most active members",
