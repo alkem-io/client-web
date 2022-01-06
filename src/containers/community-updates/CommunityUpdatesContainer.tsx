@@ -50,6 +50,7 @@ export interface CommunityUpdatesEntities {
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
+  const { isFeatureEnabled } = useConfig();
   const { communityId, ecoverseId } = entities;
   const { data, loading } = useCommunityUpdatesData(ecoverseId, communityId);
 
@@ -57,13 +58,15 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
+    refetchQueries: isFeatureEnabled(FEATURE_SUBSCRIPTIONS)
+      ? []
+      : [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
   });
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
     async message => {
       const update = await sendUpdate({
         variables: { msgData: { message, updatesID: updatesId } },
-        refetchQueries: [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
       });
       return update.data?.sendUpdate;
     },
