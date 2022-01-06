@@ -1,26 +1,26 @@
 import React from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
-import { CommunityUpdatesSubscriptionContainer } from '../../../../containers/community-updates/CommunityUpdates';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
 import { useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
 import { useServerMetadataQuery } from '../../../../hooks/generated/graphql';
-import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../../../models/constants';
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
 import Loading from '../../../core/Loading/Loading';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
+import useCommunityUpdatesNotifier from '../../../../hooks/subscription/CommunityUpdatesNotifier';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
 
   const { user, loading } = useUserContext();
-  const { loading: configLoading, isFeatureEnabled } = useConfig();
+  const { loading: configLoading } = useConfig();
   const { paths } = useNavigation();
 
   useUserScope(user);
+  useCommunityUpdatesNotifier();
 
   const { data } = useServerMetadataQuery({
     onCompleted: () => {
@@ -36,22 +36,11 @@ const App = ({ children }): React.ReactElement => {
     },
   });
 
-  const addUpdateSubscription = (children: React.ReactNode) => {
-    const communicationEnabled = isFeatureEnabled(FEATURE_COMMUNICATIONS);
-    const subscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
-
-    return communicationEnabled && subscriptionsEnabled ? (
-      <CommunityUpdatesSubscriptionContainer>{children}</CommunityUpdatesSubscriptionContainer>
-    ) : (
-      <>{children}</>
-    );
-  };
-
   if (loading || configLoading) {
     return <Loading text={'Loading Application ...'} />;
   }
 
-  return addUpdateSubscription(
+  return (
     <div id="app">
       <div id="main">
         <TopBar />
