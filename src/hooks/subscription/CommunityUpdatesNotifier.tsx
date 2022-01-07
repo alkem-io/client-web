@@ -1,12 +1,13 @@
-import { useApolloErrorHandler, useConfig, useNotification, useUserContext } from '../index';
+import { useApolloErrorHandler, useConfig, useNotification, useUserContext } from '..';
 import { useCommunicationUpdateMessageReceivedSubscription } from '../generated/graphql';
 import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { logger } from '../../services/logging/winston/logger';
 
 const useCommunityUpdatesNotifier = () => {
   const { isFeatureEnabled } = useConfig();
+  const { isAuthenticated } = useUserContext();
 
-  if (!isFeatureEnabled(FEATURE_COMMUNICATIONS) || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+  if (!isFeatureEnabled(FEATURE_COMMUNICATIONS) || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !isAuthenticated) {
     return;
   }
 
