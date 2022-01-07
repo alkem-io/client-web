@@ -17,8 +17,11 @@ import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
 import { logger } from './services/logging/winston/logger';
 import { env } from './types/env';
+import ServerMetadataProvider from './context/ServerMetadataProvider';
 
 const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
+// todo: change when finished
+const publicGraphQLEndpoint = '/api/public/graphql';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -64,27 +67,29 @@ const Root: FC = () => {
     <StyledEngineProvider injectFirst>
       <ThemeProvider>
         <GlobalStyles>
-          <ConfigProvider apiUrl={graphQLEndpoint}>
-            <SentryErrorBoundaryProvider>
-              <WinstonProvider logger={logger}>
-                <GlobalStateProvider>
-                  <BrowserRouter>
-                    <AuthenticationProvider>
-                      <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
-                        <NavigationProvider>
-                          <UserProvider>
-                            <App>
-                              <ScrollToTop />
-                              <Routing />
-                            </App>
-                          </UserProvider>
-                        </NavigationProvider>
-                      </AlkemioApolloProvider>
-                    </AuthenticationProvider>
-                  </BrowserRouter>
-                </GlobalStateProvider>
-              </WinstonProvider>
-            </SentryErrorBoundaryProvider>
+          <ConfigProvider url={publicGraphQLEndpoint}>
+            <ServerMetadataProvider url={publicGraphQLEndpoint}>
+              <SentryErrorBoundaryProvider>
+                <WinstonProvider logger={logger}>
+                  <GlobalStateProvider>
+                    <BrowserRouter>
+                      <AuthenticationProvider>
+                        <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
+                          <NavigationProvider>
+                            <UserProvider>
+                              <App>
+                                <ScrollToTop />
+                                <Routing />
+                              </App>
+                            </UserProvider>
+                          </NavigationProvider>
+                        </AlkemioApolloProvider>
+                      </AuthenticationProvider>
+                    </BrowserRouter>
+                  </GlobalStateProvider>
+                </WinstonProvider>
+              </SentryErrorBoundaryProvider>
+            </ServerMetadataProvider>
           </ConfigProvider>
         </GlobalStyles>
       </ThemeProvider>

@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { CommunityUpdatesSubscriptionContainer } from '../../../../containers/community-updates/CommunityUpdates';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
 import { useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
-import { useServerMetadataQuery } from '../../../../hooks/generated/graphql';
 import { FEATURE_COMMUNICATIONS, FEATURE_SUBSCRIPTIONS } from '../../../../models/constants';
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
@@ -12,6 +11,7 @@ import Loading from '../../../core/Loading/Loading';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
+import useServerMetadata from '../../../../hooks/useServerMetadata';
 
 const App = ({ children }): React.ReactElement => {
   const { t } = useTranslation();
@@ -22,19 +22,21 @@ const App = ({ children }): React.ReactElement => {
 
   useUserScope(user);
 
-  const { data } = useServerMetadataQuery({
-    onCompleted: () => {
+  const { services } = useServerMetadata();
+
+  useEffect(() => {
+    if (services.length) {
       console.table({
         clientName: process.env.REACT_APP_NAME,
         clientVersion: process.env.REACT_APP_VERSION,
-        serverName: data?.metadata.services[0].name,
-        serverVersion: data?.metadata.services[0].version,
+        serverName: services[0].name,
+        serverVersion: services[0].version,
         buildVersion: process.env.REACT_APP_BUILD_VERSION,
         buildDate: process.env.REACT_APP_BUILD_DATE,
         buildRevision: process.env.REACT_APP_BUILD_REVISION,
       });
-    },
-  });
+    }
+  }, [services]);
 
   const addUpdateSubscription = (children: React.ReactNode) => {
     const communicationEnabled = isFeatureEnabled(FEATURE_COMMUNICATIONS);

@@ -1,12 +1,12 @@
-import { Box } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { makeStyles } from '@mui/styles';
 import Button from '../../components/core/Button';
 import Typography from '../../components/core/Typography';
 import { useUpdateNavigation } from '../../hooks';
-import { useServerMetadataQuery } from '../../hooks/generated/graphql';
-import { makeStyles } from '@mui/styles';
+import useServerMetadata from '../../hooks/useServerMetadata';
 
 const useAboutStyles = makeStyles(theme => ({
   content: {
@@ -52,7 +52,7 @@ const useAboutStyles = makeStyles(theme => ({
 const currentPaths = [];
 export const AboutPage = () => {
   const styles = useAboutStyles();
-  const { data } = useServerMetadataQuery();
+  const { services } = useServerMetadata();
   const { t } = useTranslation();
 
   useUpdateNavigation({ currentPaths });
@@ -67,12 +67,12 @@ export const AboutPage = () => {
               <img src="/logo.png" className={styles.logo} alt="Alkemio" />
               <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
             </div>
-            {data && (
+            {services && (
               <Box marginBottom={4}>
                 <Typography color={'neutralMedium'}>
                   {t('pages.about.powered-by', {
-                    name: data?.metadata.services[0].name,
-                    version: data?.metadata.services[0].version,
+                    name: services[0].name,
+                    version: services[0].version,
                   })}
                 </Typography>
               </Box>

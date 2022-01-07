@@ -8700,6 +8700,11 @@ export function refetchSearchQuery(variables?: SchemaTypes.SearchQueryVariables)
 export const ServerMetadataDocument = gql`
   query serverMetadata {
     metadata {
+      activity {
+        id
+        name
+        value
+      }
       services {
         name
         version
