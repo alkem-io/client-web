@@ -7,18 +7,17 @@ const useCommunityUpdatesNotifier = () => {
   const { isFeatureEnabled } = useConfig();
   const { isAuthenticated } = useUserContext();
 
-  if (!isFeatureEnabled(FEATURE_COMMUNICATIONS) || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !isAuthenticated) {
-    return;
-  }
+  const shouldSkip =
+    !isFeatureEnabled(FEATURE_COMMUNICATIONS) || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !isAuthenticated;
 
   try {
-    CommunityUpdatesSubscriber();
+    useCommunityUpdatesSubscriber(shouldSkip);
   } catch (error) {
     logger.error('[Updates Notifier] Failed subscribing for community updates. Failing gracefully.');
   }
 };
 
-const CommunityUpdatesSubscriber = () => {
+const useCommunityUpdatesSubscriber = (shouldSkip: boolean) => {
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { user: userMetadata } = useUserContext();
@@ -26,6 +25,7 @@ const CommunityUpdatesSubscriber = () => {
 
   useCommunicationUpdateMessageReceivedSubscription({
     shouldResubscribe: true,
+    skip: shouldSkip,
     onSubscriptionData: options => {
       if (options.subscriptionData.error) {
         handleError(options.subscriptionData.error);
