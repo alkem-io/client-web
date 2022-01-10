@@ -18,7 +18,7 @@ const DashboardDiscussionsSection: FC<DashboardDiscussionsSectionProps> = ({ dis
 
   const discussionsInCard = useMemo(
     () =>
-      discussions.slice(0, DISCUSSIONS_NUMBER_IN_SECTION).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
+      discussions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, DISCUSSIONS_NUMBER_IN_SECTION),
     [discussions]
   );
 
