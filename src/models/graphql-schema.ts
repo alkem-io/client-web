@@ -2041,7 +2041,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   /** Receive new applications with filtering. */
   applicationReceived: ApplicationReceived;
-  /** Receive new Discussion messages on Communities the currently authenticated User is a member of. */
+  /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
@@ -2049,6 +2049,14 @@ export type Subscription = {
 
 export type SubscriptionApplicationReceivedArgs = {
   communityID: Scalars['String'];
+};
+
+export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
+  discussionIDs?: Maybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
+  updatesIDs?: Maybe<Array<Scalars['UUID']>>;
 };
 
 export type Tagset = {

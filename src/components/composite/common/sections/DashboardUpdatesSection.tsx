@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  CommunityUpdatesContainer,
   CommunityUpdatesContainerProps,
-  CommunityUpdatesDataContainer,
-} from '../../../../containers/community-updates/CommunityUpdates';
+} from '../../../../containers/community-updates/CommunityUpdatesContainer';
 import { AvatarsProvider } from '../../../../context/AvatarsProvider';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import SingleUpdateView from '../../../../views/Updates/SingleUpdateView';
@@ -17,8 +17,8 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
   const { t } = useTranslation();
 
   return (
-    <CommunityUpdatesDataContainer entities={{ ecoverseId, communityId }}>
-      {(entities, { retrievingUpdateMessages }) => {
+    <CommunityUpdatesContainer entities={{ ecoverseId, communityId }}>
+      {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
         const messageSender = {
@@ -51,7 +51,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
           </DashboardGenericSection>
         );
       }}
-    </CommunityUpdatesDataContainer>
+    </CommunityUpdatesContainer>
   );
 };
 export default DashboardUpdatesSection;
