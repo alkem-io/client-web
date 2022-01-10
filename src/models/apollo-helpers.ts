@@ -65,17 +65,6 @@ export type ApplicationFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ApplicationReceivedKeySpecifier = (
-  | 'applicationID'
-  | 'communityID'
-  | 'userID'
-  | ApplicationReceivedKeySpecifier
-)[];
-export type ApplicationReceivedFieldPolicy = {
-  applicationID?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
-  userID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ApplicationResultEntryKeySpecifier = (
   | 'challengeID'
   | 'communityID'
@@ -189,6 +178,11 @@ export type CanvasCheckoutFieldPolicy = {
   lockedBy?: FieldPolicy<any> | FieldReadFunction<any>;
   status?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CanvasContentUpdatedKeySpecifier = ('canvasID' | 'value' | CanvasContentUpdatedKeySpecifier)[];
+export type CanvasContentUpdatedFieldPolicy = {
+  canvasID?: FieldPolicy<any> | FieldReadFunction<any>;
+  value?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ChallengeKeySpecifier = (
   | 'activity'
   | 'agent'
@@ -264,6 +258,7 @@ export type CommunicationAdminRoomMembershipResultKeySpecifier = (
   | 'displayName'
   | 'extraMembers'
   | 'id'
+  | 'joinRule'
   | 'members'
   | 'missingMembers'
   | 'roomID'
@@ -273,6 +268,7 @@ export type CommunicationAdminRoomMembershipResultFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   extraMembers?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   missingMembers?: FieldPolicy<any> | FieldReadFunction<any>;
   roomID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -571,6 +567,7 @@ export type MetadataFieldPolicy = {
 export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
+  | 'adminCommunicationUpdateRoomsJoinRule'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsEcoverseAdmin'
   | 'assignUserAsGlobalAdmin'
@@ -663,6 +660,7 @@ export type MutationKeySpecifier = (
 export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1033,13 +1031,13 @@ export type ServiceMetadataFieldPolicy = {
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
-  | 'applicationReceived'
+  | 'canvasContentUpdated'
   | 'communicationDiscussionMessageReceived'
   | 'communicationUpdateMessageReceived'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
-  applicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdateMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1223,10 +1221,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationKeySpecifier | (() => undefined | ApplicationKeySpecifier);
     fields?: ApplicationFieldPolicy;
   };
-  ApplicationReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ApplicationReceivedKeySpecifier | (() => undefined | ApplicationReceivedKeySpecifier);
-    fields?: ApplicationReceivedFieldPolicy;
-  };
   ApplicationResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationResultEntryKeySpecifier | (() => undefined | ApplicationResultEntryKeySpecifier);
     fields?: ApplicationResultEntryFieldPolicy;
@@ -1268,6 +1262,10 @@ export type StrictTypedTypePolicies = {
   CanvasCheckout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasCheckoutKeySpecifier | (() => undefined | CanvasCheckoutKeySpecifier);
     fields?: CanvasCheckoutFieldPolicy;
+  };
+  CanvasContentUpdated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CanvasContentUpdatedKeySpecifier | (() => undefined | CanvasContentUpdatedKeySpecifier);
+    fields?: CanvasContentUpdatedFieldPolicy;
   };
   Challenge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeKeySpecifier | (() => undefined | ChallengeKeySpecifier);

@@ -10371,6 +10371,45 @@ export type CheckoutCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CheckoutCanvasOnContextMutation,
   SchemaTypes.CheckoutCanvasOnContextMutationVariables
 >;
+export const CanvasContentUpdatedDocument = gql`
+  subscription canvasContentUpdated {
+    canvasContentUpdated {
+      canvasID
+      value
+    }
+  }
+`;
+
+/**
+ * __useCanvasContentUpdatedSubscription__
+ *
+ * To run a query within a React component, call `useCanvasContentUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCanvasContentUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCanvasContentUpdatedSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCanvasContentUpdatedSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CanvasContentUpdatedSubscription,
+    SchemaTypes.CanvasContentUpdatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CanvasContentUpdatedSubscription,
+    SchemaTypes.CanvasContentUpdatedSubscriptionVariables
+  >(CanvasContentUpdatedDocument, options);
+}
+export type CanvasContentUpdatedSubscriptionHookResult = ReturnType<typeof useCanvasContentUpdatedSubscription>;
+export type CanvasContentUpdatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CanvasContentUpdatedSubscription>;
 export const ChallengeExplorerSearchDocument = gql`
   query ChallengeExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {
