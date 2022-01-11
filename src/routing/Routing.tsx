@@ -13,7 +13,7 @@ import { MessagesRoute } from './messages/MessagesRoute';
 import OrganizationRoute from './organization/OrganizationRoute';
 import ProfileRoute from './profile/ProfileRoute';
 import { Restricted } from './Restricted';
-import RestrictedRoute from './route.extensions';
+import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import { UserRoute } from './user/UserRoute';
@@ -27,30 +27,40 @@ export const Routing: FC = () => {
   return (
     <Switch>
       <Route path="/:url*(/+)" render={() => <Redirect to={pathname.slice(0, -1)} />} />
-      <RestrictedRoute
+      <Route
         path="/admin"
-        requiredCredentials={[
-          AuthorizationCredential.GlobalAdmin,
-          AuthorizationCredential.EcoverseAdmin,
-          AuthorizationCredential.OrganizationAdmin,
-          AuthorizationCredential.ChallengeAdmin,
-          AuthorizationCredential.GlobalAdminCommunity,
-          AuthorizationCredential.OrganizationOwner,
-          AuthorizationCredential.OpportunityAdmin,
-        ]}
         strict={false}
-      >
-        <AdminRoute />
-      </RestrictedRoute>
+        render={() => (
+          <RestrictedRoute
+            requiredCredentials={[
+              AuthorizationCredential.GlobalAdmin,
+              AuthorizationCredential.EcoverseAdmin,
+              AuthorizationCredential.OrganizationAdmin,
+              AuthorizationCredential.ChallengeAdmin,
+              AuthorizationCredential.GlobalAdminCommunity,
+              AuthorizationCredential.OrganizationOwner,
+              AuthorizationCredential.OpportunityAdmin,
+            ]}
+          >
+            <AdminRoute />
+          </RestrictedRoute>
+        )}
+      ></Route>
       <Route path="/identity">
         <IdentityRoute />
       </Route>
       <Route path="/search">
         <SearchRoute />
       </Route>
-      <RestrictedRoute path={`/user/:${nameOfUrl.userId}`}>
-        <UserRoute />
-      </RestrictedRoute>
+      <Route
+        path={`/user/:${nameOfUrl.userId}`}
+        render={() => (
+          <RestrictedRoute>
+            <UserRoute />
+          </RestrictedRoute>
+        )}
+      />
+
       <Route path="/challenges">
         <ChallengeExplorerPage />
       </Route>
@@ -62,9 +72,16 @@ export const Routing: FC = () => {
           <OrganizationRoute paths={[]} />
         </OrganizationProvider>
       </Route>
-      <RestrictedRoute exact path="/messages">
-        <MessagesRoute />
-      </RestrictedRoute>
+      <Route
+        exact
+        path="/messages"
+        render={() => (
+          <RestrictedRoute>
+            <MessagesRoute />
+          </RestrictedRoute>
+        )}
+      />
+
       <Route exact path="/about">
         <AboutPage />
       </Route>
