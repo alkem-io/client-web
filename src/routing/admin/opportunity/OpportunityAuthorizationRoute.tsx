@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { Error404 } from '../../../pages';
 import OpportunityAdminAuthorizationPage from '../../../pages/Admin/Opportunity/OpportunityAdminAuthorizationPage';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
@@ -11,14 +11,14 @@ const OpportunityAuthorizationRoute: FC<OpportunityAuthorizationRouteProps> = ({
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}/admins`}>
         <OpportunityAdminAuthorizationPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default OpportunityAuthorizationRoute;

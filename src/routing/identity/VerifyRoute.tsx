@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { useQueryParams } from '../../hooks';
 import VerificationPage from '../../pages/Authentication/VerificationPage';
 import VerificationSuccessPage from '../../pages/Authentication/VerificationSuccessPage';
@@ -12,14 +12,14 @@ export const VerifyRoute: FC<VerifyRouteProps> = () => {
   const { path } = useRouteMatch();
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <VerificationPage flow={flow} />
       </Route>
       <Route exact path={`${path}/success`}>
         <VerificationSuccessPage />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default VerifyRoute;

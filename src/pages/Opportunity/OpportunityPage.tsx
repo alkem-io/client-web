@@ -106,11 +106,11 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                     <OpportunityCommunityPage paths={paths} />
                   </TabPanel>
                   {/* <TabPanel value={tabNames['discussions']}>
-                    <Switch>
+                    <Routes>
                       <RestrictedRoute path={`${path}/community/discussions`}>
                         <DiscussionsRoute paths={paths} />
                       </RestrictedRoute>
-                    </Switch>
+                    </Routes>
                   </TabPanel>
                   */}
                   <TabPanel value={tabNames['canvases']}>

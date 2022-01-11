@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
@@ -35,7 +35,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
   );
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <ManagementPageTemplatePage
           data={managementData.opportunityLvl}
@@ -67,6 +67,6 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

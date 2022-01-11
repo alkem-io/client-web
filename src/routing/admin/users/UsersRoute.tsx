@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { Error404, PageProps } from '../../../pages';
 import { UserListPage } from '../../../pages/Admin/User/UserListPage';
 import { UserPage } from '../../../pages/Admin/User/UserPage';
@@ -12,7 +12,7 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <UserListPage paths={currentPaths} />
       </Route>
@@ -29,6 +29,6 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

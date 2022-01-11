@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { DiscussionProvider } from '../../context/Discussions/DiscussionProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
@@ -19,7 +19,7 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = () => {
   if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
   return (
     // DiscussionsProvider provided at EcoversePage
-    <Switch>
+    <Routes>
       <Route exact path={path}>
         <DiscussionListPage />
       </Route>
@@ -34,7 +34,7 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = () => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default DiscussionsRoute;

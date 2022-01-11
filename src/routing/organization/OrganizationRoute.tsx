@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router';
+import { Route, Routes, useRouteMatch } from 'react-router';
 import { Loading } from '../../components/core';
 import { useOrganization } from '../../hooks';
 import { Error404, PageProps } from '../../pages';
@@ -22,14 +22,14 @@ const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   }
 
   return (
-    <Switch>
+    <Routes>
       <Route path={path}>
         <OrganizationPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default OrganizationRoute;

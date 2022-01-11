@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { Error404, MessagesPage } from '../../pages';
 
 export const MessagesRoute: FC = () => {
@@ -7,13 +7,13 @@ export const MessagesRoute: FC = () => {
   const currentPaths = useMemo(() => [{ value: url, name: 'messages', real: true }], []);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <MessagesPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

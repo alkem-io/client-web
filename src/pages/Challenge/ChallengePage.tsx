@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Switch, useRouteMatch } from 'react-router';
+import { Routes, useRouteMatch } from 'react-router';
 import { TabContext, TabPanel } from '@mui/lab';
 import { useChallenge, useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../common';
@@ -51,7 +51,7 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
                     <ChallengeCommunityPage paths={paths} />
                   </TabPanel>
                   <TabPanel value={tabNames['discussions']}>
-                    <Switch>
+                    <Routes>
                       <Route
                         path={`${path}/community/discussions`}
                         render={() => (
@@ -60,7 +60,7 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
                           </RestrictedRoute>
                         )}
                       />
-                    </Switch>
+                    </Routes>
                   </TabPanel>
                   <TabPanel value={tabNames['canvases']}>
                     {entities.challenge && (

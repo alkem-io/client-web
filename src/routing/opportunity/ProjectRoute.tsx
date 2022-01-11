@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useHistory, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useHistory, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useApolloErrorHandler, useEcoverse, useOpportunity, useUrlParams } from '../../hooks';
 import {
@@ -17,7 +17,7 @@ interface ProjectRootProps extends PageProps {}
 export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
   const { path } = useRouteMatch();
   return (
-    <Switch>
+    <Routes>
       <Route
         exact
         path={`${path}new`}
@@ -41,7 +41,7 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 

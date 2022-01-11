@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage';
 import FormMode from '../../../components/Admin/FormMode';
 import { ChallengeProvider } from '../../../context/ChallengeProvider';
@@ -16,7 +16,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [paths]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <ChallengeListPage paths={currentPaths} />
       </Route>
@@ -31,6 +31,6 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

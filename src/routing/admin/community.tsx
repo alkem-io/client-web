@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityMembers';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity } from '../../components/Admin/Community/CommunityTypes';
@@ -32,7 +32,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
   const { path } = useRouteMatch();
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}/members`}>
         <CommunityPage
           paths={paths}
@@ -58,7 +58,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 
@@ -69,7 +69,7 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <CommunityGroupListPage communityId={communityId || ''} paths={currentPaths} />
       </Route>
@@ -82,6 +82,6 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

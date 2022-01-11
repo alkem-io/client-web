@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router';
+import { Route, Routes, useRouteMatch } from 'react-router';
 import { Redirect } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useOpportunity } from '../../hooks';
@@ -26,7 +26,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
   }
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={path}>
         <Redirect to={`${url}/dashboard`} />
       </Route>
@@ -40,7 +40,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default OpportunityRoute;

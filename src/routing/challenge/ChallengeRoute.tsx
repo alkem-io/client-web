@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router';
+import { Redirect, Route, Routes, useRouteMatch } from 'react-router';
 import Loading from '../../components/core/Loading/Loading';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
@@ -30,7 +30,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   }
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={path}>
         <Redirect to={`${url}/dashboard`} />
       </Route>
@@ -50,7 +50,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default ChallengeRoute;

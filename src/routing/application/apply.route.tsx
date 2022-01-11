@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Error404, PageProps } from '../../pages';
 import ApplyPage from '../../pages/Application/ApplyPage';
@@ -12,7 +12,7 @@ interface Props extends PageProps {
 const ApplyRoute: FC<Props> = ({ paths, type }) => {
   const { path } = useRouteMatch();
   return (
-    <Switch>
+    <Routes>
       <Route
         path={`${path}`}
         render={() => (
@@ -24,7 +24,7 @@ const ApplyRoute: FC<Props> = ({ paths, type }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default ApplyRoute;

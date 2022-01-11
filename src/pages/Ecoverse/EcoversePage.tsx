@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { TabContext, TabPanel } from '@mui/lab';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
 import { useEcoverse, useUpdateNavigation } from '../../hooks';
@@ -76,7 +76,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                     <EcoverseCommunityPage paths={paths} />
                   </TabPanel>
                   <TabPanel value={tabNames['discussions']}>
-                    <Switch>
+                    <Routes>
                       <Route
                         path={`${path}/community/discussions`}
                         render={() => (
@@ -85,7 +85,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                           </RestrictedRoute>
                         )}
                       />
-                    </Switch>
+                    </Routes>
                   </TabPanel>
                   <TabPanel value={tabNames['canvases']}>
                     {entities.ecoverse && (

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { useQueryParams } from '../../hooks';
 import { LOCAL_STORAGE_RETURN_URL_KEY, RETURN_URL } from '../../models/constants';
 import LoginPage from '../../pages/Authentication/LoginPage';
@@ -18,7 +18,7 @@ export const LoginRoute: FC = () => {
   }
 
   return (
-    <Switch>
+    <Routes>
       <Route
         exact
         path={`${path}`}
@@ -32,7 +32,7 @@ export const LoginRoute: FC = () => {
       <Route exact path={`${path}/success`}>
         <LoginSuccessPage />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 

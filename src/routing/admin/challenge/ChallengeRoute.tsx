@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
 import { useChallenge, useEcoverse } from '../../../hooks';
@@ -34,7 +34,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   );
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <ManagementPageTemplatePage
           data={managementData.challengeLvl}
@@ -69,6 +69,6 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

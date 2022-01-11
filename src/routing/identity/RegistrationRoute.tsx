@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { useQueryParams } from '../../hooks';
 import RegistrationPage from '../../pages/Authentication/RegistrationPage';
 import RegistrationSuccessPage from '../../pages/Authentication/RegistrationSuccessPage';
@@ -11,7 +11,7 @@ export const RegistrationRoute: FC = () => {
   const { path } = useRouteMatch();
 
   return (
-    <Switch>
+    <Routes>
       <Route
         exact
         path={`${path}`}
@@ -25,7 +25,7 @@ export const RegistrationRoute: FC = () => {
       <Route exact path={`${path}/success`}>
         <RegistrationSuccessPage />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default RegistrationRoute;

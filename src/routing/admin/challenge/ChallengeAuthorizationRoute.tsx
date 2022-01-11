@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { Error404 } from '../../../pages';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import ChallengeAuthorizationPage from '../../../pages/Admin/Challenge/ChallengeAuthorizationPage';
@@ -10,14 +10,14 @@ const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resou
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}/:${nameOfUrl.role}`}>
         <ChallengeAuthorizationPage paths={currentPaths} resourceId={resourceId} />
       </Route>
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default ChallengeAuthorizationRoute;

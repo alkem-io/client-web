@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { Error404 } from '../../pages';
 import GlobalAuthorizationPage from '../../pages/Admin/GlobalAuthorizationPage';
 import GlobalCommunityAuthorizationPage from '../../pages/Admin/GlobalCommunityAuthorizationPage';
@@ -11,7 +11,7 @@ const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}/:${nameOfUrl.role}`}>
         <GlobalAuthorizationPage paths={currentPaths} />
       </Route>
@@ -21,7 +21,7 @@ const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default GlobalAuthorizationRoute;

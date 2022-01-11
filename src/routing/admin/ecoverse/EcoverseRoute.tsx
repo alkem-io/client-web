@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import { useEcoverse, useTransactionScope } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
@@ -24,7 +24,7 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   );
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <ManagementPageTemplatePage
           data={managementData.ecoverseLvl}
@@ -55,6 +55,6 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

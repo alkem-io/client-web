@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { CreateOrganizationGroupPage } from '../../../components/Admin/Organization/CreateOrganizationGroup';
 import { Error404, PageProps } from '../../../pages';
 import { OrganizationGroupsPage } from '../../../pages/Admin/Organization/OrganizationGroupsPage';
@@ -11,7 +11,7 @@ export const OrganizationGroupsRoute: FC<PageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <OrganizationGroupsPage paths={currentPaths} />
       </Route>
@@ -24,6 +24,6 @@ export const OrganizationGroupsRoute: FC<PageProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

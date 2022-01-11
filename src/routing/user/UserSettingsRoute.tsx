@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Redirect, Route, Routes, useRouteMatch } from 'react-router-dom';
 import { Error404, PageProps } from '../../pages';
 import EditUserProfilePage from '../../pages/User/EditUserProfilePage';
 import UserMembershipPage from '../../pages/User/UserMembershipPage';
@@ -17,7 +17,7 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
 
   return (
     <UserTabs>
-      <Switch>
+      <Routes>
         <Route exact path={`${path}`}>
           <Redirect to={`${url}/profile`} />
         </Route>
@@ -36,7 +36,7 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
         <Route path="*">
           <Error404 />
         </Route>
-      </Switch>
+      </Routes>
     </UserTabs>
   );
 };

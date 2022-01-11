@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Redirect, Route, Routes, useRouteMatch } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
@@ -31,7 +31,7 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   }
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={path}>
         <Redirect to={`${url}/dashboard`} />
       </Route>
@@ -51,6 +51,6 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

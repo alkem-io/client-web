@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { WithCommunity, WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import EditMembersPage from '../../components/Admin/Group/EditMembersPage';
 import GroupPage from '../../components/Admin/Group/GroupPage';
@@ -21,7 +21,7 @@ export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCom
   if (loading) return <Loading text={'Loading group'} />;
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={path}>
         <GroupPage paths={paths} group={group} />
       </Route>
@@ -36,6 +36,6 @@ export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCom
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

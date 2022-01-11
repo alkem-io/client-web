@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { useOrganization } from '../../../hooks';
@@ -18,7 +18,7 @@ export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: displayName, real: true }], [paths, displayName]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <ManagementPageTemplatePage
           data={managementData.organizationLvl}
@@ -40,6 +40,6 @@ export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

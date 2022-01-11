@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { Error404, PageProps } from '../../../pages';
 import OrganizationCommunityPage from '../../../pages/Admin/Organization/OrganizationCommunityPage';
 
@@ -8,13 +8,13 @@ export const OrganizationMembersRoute: FC<PageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: true }], [paths, url]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <OrganizationCommunityPage paths={currentPaths} />
       </Route>
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

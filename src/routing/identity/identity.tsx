@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { useGlobalState } from '../../hooks';
 import { Error404 } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
@@ -28,7 +28,7 @@ export const IdentityRoute: FC = () => {
   }, []);
 
   return (
-    <Switch>
+    <Routes>
       <Route path={`${path}/login`}>
         <LoginRoute />
       </Route>
@@ -63,6 +63,6 @@ export const IdentityRoute: FC = () => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import ManagementPageTemplatePage from '../../pages/Admin/ManagementPageTemplatePage';
 import { useTransactionScope } from '../../hooks';
@@ -15,7 +15,7 @@ export const AdminRoute: FC = () => {
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <ManagementPageTemplatePage data={managementData.adminLvl} paths={currentPaths} />
       </Route>
@@ -34,6 +34,6 @@ export const AdminRoute: FC = () => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

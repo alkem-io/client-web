@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import { CommunityProvider } from '../context/CommunityProvider';
 import { EcoverseProvider } from '../context/EcoverseProvider';
 import { OrganizationProvider } from '../context/OrganizationProvider';
-import { CommunityProvider } from '../context/CommunityProvider';
 import { AuthorizationCredential } from '../models/graphql-schema';
 import { AboutPage, Error404, HomePage } from '../pages';
+import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
+import ContributorsPage from '../pages/Contributors/ContributorsPage';
 import { AdminRoute } from './admin/AdminRoute';
 import { EcoverseRoute } from './ecoverse/EcoverseRoute';
 import { IdentityRoute } from './identity/identity';
@@ -17,20 +19,15 @@ import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import { UserRoute } from './user/UserRoute';
-import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
-import ContributorsPage from '../pages/Contributors/ContributorsPage';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
-  const { pathname } = useLocation();
 
   return (
-    <Switch>
-      <Route path="/:url*(/+)" render={() => <Redirect to={pathname.slice(0, -1)} />} />
+    <Routes>
       <Route
         path="/admin"
-        strict={false}
-        render={() => (
+        element={
           <RestrictedRoute
             requiredCredentials={[
               AuthorizationCredential.GlobalAdmin,
@@ -44,23 +41,18 @@ export const Routing: FC = () => {
           >
             <AdminRoute />
           </RestrictedRoute>
-        )}
-      ></Route>
-      <Route path="/identity">
-        <IdentityRoute />
-      </Route>
-      <Route path="/search">
-        <SearchRoute />
-      </Route>
+        }
+      />
+      <Route path="/identity" element={<IdentityRoute />} />
+      <Route path="/search" element={<SearchRoute />}></Route>
       <Route
         path={`/user/:${nameOfUrl.userId}`}
-        render={() => (
+        element={
           <RestrictedRoute>
             <UserRoute />
           </RestrictedRoute>
-        )}
+        }
       />
-
       <Route path="/challenges">
         <ChallengeExplorerPage />
       </Route>
@@ -104,6 +96,6 @@ export const Routing: FC = () => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

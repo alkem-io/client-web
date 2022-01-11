@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
@@ -18,7 +18,7 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths]);
 
   return (
-    <Switch>
+    <Routes>
       <Route exact path={`${path}`}>
         <OpportunityList paths={currentPaths} />
       </Route>
@@ -33,6 +33,6 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };

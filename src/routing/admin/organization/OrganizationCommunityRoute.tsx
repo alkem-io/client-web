@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useRouteMatch } from 'react-router-dom';
 import { Error404, PageProps } from '../../../pages';
 import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
 import { OrganizationMembersRoute } from './OrganizationMembersRoute';
@@ -8,7 +8,7 @@ export const OrganizationCommunityRoute: FC<PageProps> = ({ paths }) => {
   const { path } = useRouteMatch();
 
   return (
-    <Switch>
+    <Routes>
       <Route path={`${path}/groups`}>
         <OrganizationGroupsRoute paths={paths} />
       </Route>
@@ -18,6 +18,6 @@ export const OrganizationCommunityRoute: FC<PageProps> = ({ paths }) => {
       <Route path="*">
         <Error404 />
       </Route>
-    </Switch>
+    </Routes>
   );
 };
