@@ -10,13 +10,15 @@ import {
 import { ContainerProps } from '../../models/container';
 import {
   Canvas,
+  CanvasContentUpdatedSubscription,
   CanvasValueFragment,
   ChallengeCanvasValuesQuery,
   EcoverseCanvasValuesQuery,
   OpportunityCanvasValuesQuery,
+  SubscriptionCanvasContentUpdatedArgs,
 } from '../../models/graphql-schema';
 import { TemplateQuery } from './CanvasProvider';
-import { ApolloError } from '@apollo/client';
+import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 
 export interface ICanvasValueEntities {
@@ -123,34 +125,43 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
       return;
     }
 
+    // 'prev' variable (TData) in updateQuery type is not useful, but also not used
+    type TypedSubscribeToMore<TQueryData> = (
+      options: SubscribeToMoreOptions<
+        TQueryData,
+        SubscriptionCanvasContentUpdatedArgs,
+        CanvasContentUpdatedSubscription
+      >
+    ) => () => void;
+    type EcoverseSubscribeToMore = TypedSubscribeToMore<EcoverseCanvasValuesQuery>;
+    type ChallengeSubscribeToMore = TypedSubscribeToMore<ChallengeCanvasValuesQuery>;
+    type OpportunitySubscribeToMore = TypedSubscribeToMore<OpportunityCanvasValuesQuery>;
+    let subscribeToMore: EcoverseSubscribeToMore | ChallengeSubscribeToMore | OpportunitySubscribeToMore;
+
     // todo: better type
-    // let subscribeToMore: <T>(options: any) => () => void;
-    let subscribeToMore: (options: any) => () => void;
-    // todo: better type
-    let getCanvasesFn: (state: any) => CanvasValueFragment[];
+    let getCanvasesFn: (
+      state: EcoverseCanvasValuesQuery | ChallengeCanvasValuesQuery | OpportunityCanvasValuesQuery
+    ) => CanvasValueFragment[];
 
     if (!skipEcoverse) {
       subscribeToMore = subEcoverse;
-      getCanvasesFn = (state: EcoverseCanvasValuesQuery) => state.ecoverse.context?.canvases ?? [];
+      getCanvasesFn = state => (state as EcoverseCanvasValuesQuery).ecoverse.context?.canvases ?? [];
     } else if (!skipChallenge) {
       subscribeToMore = subChallenge;
-      getCanvasesFn = (state: ChallengeCanvasValuesQuery) => state.ecoverse.challenge?.context?.canvases ?? [];
+      getCanvasesFn = state => (state as ChallengeCanvasValuesQuery).ecoverse.challenge?.context?.canvases ?? [];
     } else if (!skipOpportunity) {
       subscribeToMore = subOpportunity;
-      getCanvasesFn = (state: OpportunityCanvasValuesQuery) => state.ecoverse.opportunity?.context?.canvases ?? [];
+      getCanvasesFn = state => (state as OpportunityCanvasValuesQuery).ecoverse.opportunity?.context?.canvases ?? [];
     } else {
       // do not subscribe if data is not fetched
       return;
     }
 
-    // todo: better type
-    // const unSubscribe = subscribeToMore<CanvasContentUpdatedSubscription>({
     const unSubscribe = subscribeToMore({
       document: CanvasContentUpdatedDocument,
-      variables: { canvasIDs: [canvasId] },
+      variables: { canvasIDs: canvasId ? [canvasId] : undefined },
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       updateQuery: (prev, { subscriptionData }) => {
-        // todo dont subscribe if you are updating the canvas; checkout and stuff
         const canvases = getCanvasesFn(prev);
 
         if (!canvases) {
