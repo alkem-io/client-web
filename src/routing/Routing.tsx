@@ -26,7 +26,7 @@ export const Routing: FC = () => {
 
   return (
     <Switch>
-      <Redirect from="/:url*(/+)" to={pathname.slice(0, -1)} />
+      <Route path="/:url*(/+)" render={() => <Redirect to={pathname.slice(0, -1)} />} />
       <RestrictedRoute
         path="/admin"
         requiredCredentials={[
