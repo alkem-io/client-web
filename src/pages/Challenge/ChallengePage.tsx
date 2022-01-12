@@ -54,7 +54,6 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
                     <Switch>
                       <Route
                         path={`${path}/community/discussions`}
-                        requiredCredentials={requiredCredentials}
                         render={() => (
                           <RestrictedRoute requiredCredentials={requiredCredentials}>
                             <DiscussionsRoute paths={paths} />
