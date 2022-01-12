@@ -3,6 +3,7 @@ import { ApolloError } from '@apollo/client';
 import { ContainerProps } from '../../../models/container';
 import { useChallengeExplorerSearchQuery } from '../../../hooks/generated/graphql';
 import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
+import { useApolloErrorHandler } from '../../../hooks';
 
 export interface ChallengeSearchResultContainerEntities {
   challenges: ChallengeExplorerSearchResultFragment[];
@@ -25,6 +26,7 @@ export interface ChallengeSearchResultContainerProps
 }
 
 const ChallengeExplorerSearchContainer: FC<ChallengeSearchResultContainerProps> = ({ terms, children }) => {
+  const handleError = useApolloErrorHandler();
   const { data, loading, error } = useChallengeExplorerSearchQuery({
     variables: {
       searchData: {
@@ -33,7 +35,9 @@ const ChallengeExplorerSearchContainer: FC<ChallengeSearchResultContainerProps> 
         typesFilter: ['challenge'],
       },
     },
+    onError: handleError,
     fetchPolicy: 'no-cache',
+    errorPolicy: 'all',
     skip: !terms.length,
   });
 
