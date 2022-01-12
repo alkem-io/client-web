@@ -143,7 +143,7 @@ export const OrganizationForm: FC<Props> = ({
     onSave && onSave(organization);
   };
 
-  const handleBack = () => history.goBack();
+  const handleBack = () => history.back();
 
   const backButton = (
     <Grid item>

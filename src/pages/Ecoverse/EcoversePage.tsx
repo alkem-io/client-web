@@ -79,7 +79,6 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                     <Switch>
                       <Route
                         path={`${path}/community/discussions`}
-                        requiredCredentials={discussionsRequiredCredentials}
                         render={() => (
                           <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
                             <DiscussionsRoute paths={paths} />

@@ -121,7 +121,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
                     text={t('buttons.cancel-project')}
                     variant="transparent"
                     inset
-                    onClick={() => history.goBack()}
+                    onClick={() => history.back()}
                   />
                   <Box flexGrow={1} />
                   <Button type={'submit'} text={t('buttons.create-project')} variant="primary" disabled={!isValid} />
