@@ -17,9 +17,9 @@ import ScrollToTop from './routing/ScrollToTop';
 import { env } from './types/env';
 import ServerMetadataProvider from './context/ServerMetadataProvider';
 
-const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
-// todo: change when finished
-const publicGraphQLEndpoint = '/api/public/graphql';
+const domain = (env && env.REACT_APP_ALKEMIO_DOMAIN) ?? '';
+export const publicGraphQLEndpoint = domain + '/api/public/graphql';
+export const privateGraphQLEndpoint = domain + '/api/private/graphql';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -71,7 +71,7 @@ const Root: FC = () => {
                 <GlobalStateProvider>
                   <BrowserRouter>
                     <AuthenticationProvider>
-                      <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
+                      <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                         <NavigationProvider>
                           <UserProvider>
                             <App>
