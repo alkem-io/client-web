@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../pages';
 import { Path } from '../../context/NavigationProvider';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
@@ -13,14 +13,12 @@ interface Props {
 }
 
 export const ApplicationRoute: FC<Props> = ({ paths, applications }) => {
-  const { path } = useRouteMatch();
-
   return (
     <Routes>
-      <Route exact path={`${path}/:${nameOfUrl.applicationId}`}>
+      <Route path={`:${nameOfUrl.applicationId}`}>
         <ApplicationDetailsPage />
       </Route>
-      <Route path={path}>
+      <Route path={'/'}>
         <ApplicationPage paths={paths} applications={applications} />
       </Route>
       <Route path="*">

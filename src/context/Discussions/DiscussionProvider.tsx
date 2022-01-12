@@ -48,7 +48,7 @@ const sortMessages = (messages: MessageDetailsFragment[] = []) => sortBy(message
 const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
-  const { discussionId } = useUrlParams();
+  const { discussionId = '' } = useUrlParams();
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
   const { communityId, loading: loadingCommunity } = useCommunityContext();
 

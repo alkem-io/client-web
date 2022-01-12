@@ -1,15 +1,15 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Error404, PageProps } from '../../../pages';
 import OrganizationCommunityPage from '../../../pages/Admin/Organization/OrganizationCommunityPage';
 
 export const OrganizationMembersRoute: FC<PageProps> = ({ paths }) => {
-  const { path, url } = useRouteMatch();
+  const url = '';
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: true }], [paths, url]);
 
   return (
     <Routes>
-      <Route exact path={`${path}`}>
+      <Route>
         <OrganizationCommunityPage paths={currentPaths} />
       </Route>
       <Route path="*">

@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { Redirect, Route, Routes, useRouteMatch } from 'react-router';
+import { Route, Routes } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
@@ -14,8 +15,8 @@ interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   const { challengeId, displayName, loading } = useChallenge();
-  const { path, url } = useRouteMatch();
 
+  const url = '';
   const currentPaths = useMemo(
     () => (displayName ? [...paths, { value: url, name: displayName, real: true }] : paths),
     [paths, displayName]
@@ -31,20 +32,20 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route exact path={path}>
-        <Redirect to={`${url}/dashboard`} />
+      <Route>
+        <Navigate to={'dashboard'} />
       </Route>
-      <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
+      <Route path={`opportunities/:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
           <CommunityProvider>
             <OpportunityRoute paths={currentPaths} />
           </CommunityProvider>
         </OpportunityProvider>
       </Route>
-      <Route path={`${path}/apply`}>
+      <Route path={'apply'}>
         <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
       </Route>
-      <Route path={path}>
+      <Route path={'/'}>
         <ChallengePage paths={currentPaths} />
       </Route>
       <Route path="*">

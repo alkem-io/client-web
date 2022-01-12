@@ -1,7 +1,6 @@
 import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router';
 import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
 import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
@@ -9,14 +8,15 @@ import {
   useAssignUserAsGlobalAdminMutation,
   useRemoveUserAsGlobalAdminMutation,
 } from '../../hooks/generated/graphql';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
 import AuthorizationPageProps from './AuthorizationPageProps';
-import { UserDisplayNameFragment } from '../../models/graphql-schema';
 
 const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const { url } = useRouteMatch();
-  const { role: credential } = useUrlParams();
+  const url = '';
+  // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
+  const { role: credential = AuthorizationCredential.GlobalRegistered } = useUrlParams();
   const currentPaths = useMemo(
     () => [
       ...paths,

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useHistory, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useApolloErrorHandler, useEcoverse, useOpportunity, useUrlParams } from '../../hooks';
 import {
@@ -15,28 +15,24 @@ import { nameOfUrl } from '../url-params';
 interface ProjectRootProps extends PageProps {}
 
 export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
-  const { path } = useRouteMatch();
   return (
     <Routes>
       <Route
-        exact
-        path={`${path}new`}
-        strict={false}
-        render={() => (
+        path={'new'}
+        element={
           <RestrictedRoute requiredCredentials={[]}>
             <ProjectNewRoute paths={paths} />
           </RestrictedRoute>
-        )}
+        }
       />
 
       <Route
-        exact
-        path={`${path}:${nameOfUrl.projectNameId}`}
-        render={() => (
+        path={`:${nameOfUrl.projectNameId}`}
+        element={
           <RestrictedRoute>
             <ProjectIndex paths={paths} />
           </RestrictedRoute>
-        )}
+        }
       />
       <Route path="*">
         <Error404 />
@@ -46,14 +42,14 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
 };
 
 export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
-  const history = useHistory();
+  const url = '';
+  const navigate = useNavigate();
   const handleError = useApolloErrorHandler();
   const { opportunityId } = useOpportunity();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'New project', real: true }], [paths]);
   const [createProject, { loading: projectCreationLoading }] = useCreateProjectMutation({
     onCompleted: ({ createProject: _project }) => {
-      history.replace(url.split('/').reverse().slice(1).reverse().join('/'));
+      navigate(url.split('/').reverse().slice(1).reverse().join('/'), { replace: true });
     },
     onError: handleError,
     refetchQueries: ['opportunityProfile', 'challengeProfile', 'ecoverseDetails'],
@@ -101,8 +97,8 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
 };
 
 const ProjectIndex: FC<ProjectRootProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
-  const { projectNameId } = useUrlParams();
+  const url = '';
+  const { projectNameId = '' } = useUrlParams();
   const { ecoverseNameId } = useEcoverse();
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({

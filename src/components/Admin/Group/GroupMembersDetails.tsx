@@ -38,7 +38,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           );
         }}
       </AvatarsProvider>
-      {editLink && <Button small as={Link} to={editLink} text={t('buttons.edit-members')} />}
+      {editLink && <Button small as={Link} to={'members'} text={t('buttons.edit-members')} />}
     </>
   );
 };

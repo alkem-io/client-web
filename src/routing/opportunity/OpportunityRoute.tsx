@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router';
-import { Redirect } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
+import { Navigate } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useOpportunity } from '../../hooks';
 import { Error404, OpportunityPage, PageProps } from '../../pages';
@@ -9,9 +9,8 @@ import { ProjectRoute } from './ProjectRoute';
 interface OpportunityRootProps extends PageProps {}
 
 const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
-  const { path, url } = useRouteMatch();
   const { opportunity, displayName, loading } = useOpportunity();
-
+  const url = '';
   const currentPaths = useMemo(
     () => (displayName ? [...paths, { value: url, name: displayName, real: true }] : paths),
     [paths, displayName]
@@ -27,14 +26,14 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route exact path={path}>
-        <Redirect to={`${url}/dashboard`} />
+      <Route path={'/'}>
+        <Navigate to={'dashboard'} />
       </Route>
       {/* /projects should be matched by the generic route, not this one. */}
-      <Route strict path={`${path}/projects/`}>
+      <Route path={'projects/'}>
         <ProjectRoute paths={currentPaths} />
       </Route>
-      <Route path={path}>
+      <Route path={'/'}>
         <OpportunityPage paths={currentPaths} />
       </Route>
       <Route path="*">

@@ -19,7 +19,7 @@ const OrganizationContext = React.createContext<OrganizationContextProps>({
 });
 
 const OrganizationProvider: FC = ({ children }) => {
-  const { organizationNameId: organizationId } = useUrlParams();
+  const { organizationNameId: organizationId = '' } = useUrlParams();
   const { data, loading } = useOrganizationInfoQuery({
     variables: { organizationId },
     errorPolicy: 'all',

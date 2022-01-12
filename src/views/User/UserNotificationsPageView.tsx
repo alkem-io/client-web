@@ -7,7 +7,7 @@ import {
   FormGroup,
   Grid,
   Skeleton,
-  Routes,
+  Switch,
 } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +62,7 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
                     <FormControlLabel
                       key={i}
                       control={
-                        <Routes
+                        <Switch
                           checked={p.value !== 'false'}
                           name={p.definition.type}
                           onChange={(event, checked) => updatePreference(event.target.name, checked, p.id)}

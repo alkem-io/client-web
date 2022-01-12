@@ -10,7 +10,6 @@ import {
 import { Tabs } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { RouterLink } from '../../components/core/RouterLink';
 import { EcoverseContainerEntities } from '../../containers/ecoverse/EcoversePageContainer';
@@ -45,9 +44,10 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
-  const { path, url } = useRouteMatch();
+  const url = '';
+  const path = '';
   const { t } = useTranslation();
-  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
+  // const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const { ecoverseNameId, permissions } = useEcoverse();
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
@@ -61,10 +61,11 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
     return acc;
   }, {} as EcoverseRoutesType);
 
+  // TODO fix tab value.
   return (
     <>
       <Tabs
-        value={match?.path}
+        value={'match?.path'}
         aria-label="Ecoverse tabs"
         variant="scrollable"
         scrollButtons={'auto'}
@@ -126,7 +127,8 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           />
         )}
       </Tabs>
-      {children({ pathGetter, urlGetter, tabName: match?.path || 'dashboard', tabNames })}
+      {/* // TODO Fix tabName */}
+      {children({ pathGetter, urlGetter, tabName: '' || 'dashboard', tabNames })}
     </>
   );
 };

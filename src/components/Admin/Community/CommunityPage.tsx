@@ -1,6 +1,5 @@
 import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import EditCommunityMembers, { CommunityCredentials } from '../Authorization/EditCommunityMembers';
@@ -18,7 +17,8 @@ export const CommunityPage: FC<CommunityPageProps> = ({
   credential,
   resourceId,
 }) => {
-  const { url } = useRouteMatch();
+  // const url = '';
+  const url = '';
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 

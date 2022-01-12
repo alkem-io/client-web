@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import OrganizationList from '../../../components/Admin/Organization/OrganizationList';
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { OrganizationProvider } from '../../../context/OrganizationProvider';
@@ -9,19 +9,18 @@ import { nameOfUrl } from '../../url-params';
 import { OrganizationRoute } from './OrganizationRoute';
 
 export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
-  const { path, url } = useRouteMatch();
-
+  const url = '';
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths]);
 
   return (
     <Routes>
-      <Route exact path={`${path}`}>
+      <Route>
         <OrganizationList paths={currentPaths} />
       </Route>
-      <Route path={`${path}/new`}>
+      <Route path={'new'}>
         <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:${nameOfUrl.organizationNameId}`}>
+      <Route path={`:${nameOfUrl.organizationNameId}`}>
         <OrganizationProvider>
           <OrganizationRoute paths={currentPaths} />
         </OrganizationProvider>

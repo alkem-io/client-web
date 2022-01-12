@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { ListPage } from '../../../components/Admin';
 import { Loading } from '../../../components/core';
 import { useDeleteUserGroup, useEcoverse } from '../../../hooks';
@@ -11,7 +11,7 @@ interface CommunityGroupListPageProps extends PageProps {
 }
 
 export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ paths, communityId }) => {
-  const { url } = useRouteMatch();
+  const url = '';
   const { ecoverseId, loading: loadingEcoverse } = useEcoverse();
 
   const { data, loading } = useCommunityGroupsQuery({

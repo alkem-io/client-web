@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { useOrganization } from '../../../hooks';
@@ -11,7 +11,7 @@ import OrganizationAuthorizationRoute from './OrganizationAuthorizationRoute';
 import { OrganizationCommunityRoute } from './OrganizationCommunityRoute';
 
 export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
-  const { path, url } = useRouteMatch();
+  const url = '';
 
   const { displayName, organizationNameId, loading } = useOrganization();
 
@@ -19,7 +19,7 @@ export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route exact path={`${path}`}>
+      <Route>
         <ManagementPageTemplatePage
           data={managementData.organizationLvl}
           paths={currentPaths}
@@ -28,13 +28,13 @@ export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
           loading={loading}
         />
       </Route>
-      <Route exact path={`${path}/edit`}>
+      <Route path={'edit'}>
         <OrganizationPage mode={EditMode.edit} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/community`}>
+      <Route path={'community'}>
         <OrganizationCommunityRoute paths={currentPaths} />
       </Route>
-      <Route path={`${path}/authorization`}>
+      <Route path={'authorization'}>
         <OrganizationAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path="*">

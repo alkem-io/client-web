@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { PageProps } from '../..';
 import { ListPage } from '../../../components/Admin/ListPage';
 import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../hooks';
@@ -12,8 +12,8 @@ export const OrganizationGroupsPage: FC<PageProps> = ({ paths }) => {
   const notify = useNotification();
   const notifySuccess = () => notify('Group deleted successfully!', 'success');
 
-  const { url } = useRouteMatch();
-  const { organizationNameId } = useUrlParams();
+  const url = '';
+  const { organizationNameId = '' } = useUrlParams();
 
   const { data } = useOrganizationGroupsQuery({ variables: { id: organizationNameId } });
   const groups = data?.organization?.groups?.map(g => ({ id: g.id, value: g.name, url: `${url}/${g.id}` }));

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Redirect, Route, useLocation } from 'react-router-dom';
+import { Navigate, Route, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading/Loading';
 import { useAuthenticationContext, useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
@@ -28,7 +28,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
   }
 
   if (!isAuthenticated) {
-    return <Redirect to={`/identity/required?returnUrl=${encodeURI(pathname)}`} />;
+    return <Navigate to={`/identity/required?returnUrl=${encodeURI(pathname)}`} />;
   }
 
   // if the user has any of the credentials - get him through
@@ -44,7 +44,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
     (requiredCredentials.map(toCredentialForResource).every(x => !user.hasCredentials(x.credential, x.resourceId)) &&
       requiredCredentials.length !== 0)
   ) {
-    return <Redirect to={`/restricted?origin=${encodeURI(pathname)}`} />;
+    return <Navigate to={`/restricted?origin=${encodeURI(pathname)}`} />;
   }
 
   return (

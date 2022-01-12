@@ -10,7 +10,7 @@ import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { buildChallengeUrl, buildEcoverseUrl } from '../../utils/urlBuilders';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
-  const { ecoverseNameId, challengeNameId } = useUrlParams();
+  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
 
   const {
     data: challengeData,

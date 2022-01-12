@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { FC, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import Button from '../../components/core/Button';
@@ -18,7 +18,7 @@ interface RegisterPageProps {
 }
 
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { registrationFlow, getRegistrationFlow, loading } = useKratos();
 
@@ -45,7 +45,7 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
             type={'submit'}
             small
             block
-            onClick={() => history.push(AUTH_LOGIN_PATH)}
+            onClick={() => navigate(AUTH_LOGIN_PATH, { replace: true })}
             text={t('authentication.sign-in')}
           />
         </Grid>

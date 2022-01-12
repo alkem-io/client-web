@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useRouteMatch } from 'react-router';
+import { useNavigate } from 'react-router';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
@@ -68,8 +68,9 @@ export interface OpportunityPageContainerProps
 
 const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
-  const history = useHistory();
-  const { url } = useRouteMatch();
+  const navigate = useNavigate();
+  // const url = '';
+  const url = '';
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
@@ -130,7 +131,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
   const onProjectTransition = (project?: any) => {
-    history.push(`${url}/projects/${project?.nameID ?? 'new'}`);
+    navigate(`${url}/projects/${project?.nameID ?? 'new'}`, { replace: true });
   };
 
   // const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();

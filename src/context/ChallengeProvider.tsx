@@ -33,7 +33,7 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
 interface ChallengeProviderProps {}
 
 const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
-  const { ecoverseNameId, challengeNameId } = useUrlParams();
+  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
   const { data, loading } = useChallengeInfoQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     errorPolicy: 'all',

@@ -1,22 +1,22 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../pages';
 import OrganizationAdminAuthorizationPage from '../../../pages/Admin/Organization/OrganizationAdminAuthorizationPage';
-import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import OrganizationOwnerAuthorizationPage from '../../../pages/Admin/Organization/OrganizationOwnerAuthorizationPage';
+import AuthorizationRouteProps from '../AuthorizationRouteProps';
 
 interface OrganizationAuthorizationRouteProps extends AuthorizationRouteProps {}
 
 const OrganizationAuthorizationRoute: FC<OrganizationAuthorizationRouteProps> = ({ paths }) => {
-  const { path, url } = useRouteMatch();
+  const url = '';
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (
     <Routes>
-      <Route exact path={`${path}/admins`}>
+      <Route path={'admins'}>
         <OrganizationAdminAuthorizationPage paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/owners`}>
+      <Route path={'owners'}>
         <OrganizationOwnerAuthorizationPage paths={currentPaths} />
       </Route>
       <Route path="*">

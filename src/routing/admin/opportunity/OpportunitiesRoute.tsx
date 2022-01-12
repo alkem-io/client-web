@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
@@ -13,19 +13,19 @@ interface Props extends PageProps {}
 
 export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
-  const { path, url } = useRouteMatch();
+  const url = '';
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths]);
 
   return (
     <Routes>
-      <Route exact path={`${path}`}>
+      <Route>
         <OpportunityList paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/new`}>
+      <Route path={'new'}>
         <EditOpportunity title={t('navigation.admin.opportunity.create')} mode={FormMode.create} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:${nameOfUrl.opportunityNameId}`}>
+      <Route path={`:${nameOfUrl.opportunityNameId}`}>
         <OpportunityProvider>
           <OpportunityRoute paths={currentPaths} />
         </OpportunityProvider>

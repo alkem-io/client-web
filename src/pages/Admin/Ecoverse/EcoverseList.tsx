@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import {
   refetchAdminEcoversesListQuery,
   useAdminEcoversesListQuery,
@@ -15,7 +15,7 @@ import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 interface EcoverseListProps extends PageProps {}
 
 export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
+  const url = '';
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Error404, PageProps } from '../../pages';
 import ApplyPage from '../../pages/Application/ApplyPage';
@@ -10,16 +10,14 @@ interface Props extends PageProps {
 }
 
 const ApplyRoute: FC<Props> = ({ paths, type }) => {
-  const { path } = useRouteMatch();
   return (
     <Routes>
       <Route
-        path={`${path}`}
-        render={() => (
+        element={
           <RestrictedRoute>
             <ApplyPage paths={paths} type={type} />
           </RestrictedRoute>
-        )}
+        }
       />
       <Route path="*">
         <Error404 />

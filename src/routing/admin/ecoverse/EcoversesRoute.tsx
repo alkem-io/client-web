@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
 import { useTransactionScope } from '../../../hooks';
 import { Error404, PageProps } from '../../../pages';
@@ -12,7 +12,7 @@ import { EcoverseRoute } from './EcoverseRoute';
 export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   useTransactionScope({ type: 'admin' });
-  const { path, url } = useRouteMatch();
+  const url = '';
   const currentPaths = useMemo(
     () => [
       ...paths,
@@ -27,13 +27,13 @@ export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route exact path={`${path}`}>
+      <Route>
         <EcoverseList paths={currentPaths} />
       </Route>
-      <Route path={`${path}/new`}>
+      <Route path={'new'}>
         <NewEcoverse paths={currentPaths} />
       </Route>
-      <Route path={`${path}/:${nameOfUrl.ecoverseNameId}`}>
+      <Route path={`:${nameOfUrl.ecoverseNameId}`}>
         <EcoverseProvider>
           <EcoverseRoute paths={currentPaths} />
         </EcoverseProvider>

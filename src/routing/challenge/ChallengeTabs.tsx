@@ -1,22 +1,7 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router-dom';
-import {
-  ContentPasteOutlined,
-  DashboardOutlined,
-  ForumOutlined,
-  GroupOutlined,
-  SettingsOutlined,
-  TocOutlined,
-  WbIncandescentOutlined,
-} from '@mui/icons-material';
-import { Tabs } from '@mui/material';
-import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import { RouterLink } from '../../components/core/RouterLink';
-import { useChallenge, useConfig } from '../../hooks';
-import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
 import { ChallengeContainerEntities } from '../../containers/challenge/ChallengePageContainer';
-import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
+import { useChallenge } from '../../hooks';
 
 const routes = {
   discussions: '/community/discussions',
@@ -45,27 +30,26 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
-  const { path, url } = useRouteMatch();
   const { t } = useTranslation();
-  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
+  // const match = useMatch(Object.values(routes).map(x => `${path}${x}`));
   const { challengeNameId, ecoverseNameId, permissions } = useChallenge();
-  const urlGetter = useMemo(() => createGetter(routes, url), [url]);
-  const pathGetter = useMemo(() => createGetter(routes, path), [path]);
-  const { isFeatureEnabled } = useConfig();
+  // const urlGetter = useMemo(() => createGetter(routes, url), [url]);
+  // const pathGetter = useMemo(() => createGetter(routes, path), [path]);
+  // const { isFeatureEnabled } = useConfig();
 
-  const tabNames = (Object.keys(routes) as Array<keyof ChallengeRoutesType>).reduce<ChallengeRoutesType>(
-    (acc, curr) => {
-      acc[curr] = pathGetter(curr);
-      return acc;
-    },
-    {} as ChallengeRoutesType
-  );
+  // const tabNames = (Object.keys(routes) as Array<keyof ChallengeRoutesType>).reduce<ChallengeRoutesType>(
+  //   (acc, curr) => {
+  //     acc[curr] = pathGetter(curr);
+  //     return acc;
+  //   },
+  //   {} as ChallengeRoutesType
+  // );
 
   const { communityReadAccess } = entities.permissions;
 
   return (
     <>
-      <Tabs value={match?.path} aria-label="Challenge tabs">
+      {/* <Tabs value={''} aria-label="Challenge tabs">
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
@@ -121,7 +105,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
           />
         )}
       </Tabs>
-      {children({ pathGetter, urlGetter, tabName: match?.path || 'dashboard', tabNames })}
+      {children({ pathGetter, urlGetter, tabName: match?.path || 'dashboard', tabNames })} */}
     </>
   );
 };

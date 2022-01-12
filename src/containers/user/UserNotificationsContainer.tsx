@@ -35,7 +35,7 @@ const limitNotifcationsTo = [
 ];
 
 const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ children }) => {
-  const { userId } = useUrlParams();
+  const { userId = '' } = useUrlParams();
 
   const handleError = useApolloErrorHandler();
   const { data, loading } = useUserNotificationsPreferencesQuery({

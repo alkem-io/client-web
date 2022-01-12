@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Grid } from '@mui/material';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
@@ -50,7 +50,7 @@ export const OrganizationForm: FC<Props> = ({
   onSave,
   title = 'Organization',
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: config } = useTagsetsTemplateQuery();
 
@@ -143,7 +143,7 @@ export const OrganizationForm: FC<Props> = ({
     onSave && onSave(organization);
   };
 
-  const handleBack = () => history.back();
+  const handleBack = () => navigate(-1);
 
   const backButton = (
     <Grid item>

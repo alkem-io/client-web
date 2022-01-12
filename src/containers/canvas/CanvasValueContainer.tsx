@@ -1,3 +1,4 @@
+import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
 import { cloneDeep } from 'lodash';
 import { FC, useEffect, useMemo } from 'react';
 import { useApolloErrorHandler, useConfig, useNotification, useUrlParams, useUserContext } from '../../hooks';
@@ -5,8 +6,9 @@ import {
   CanvasContentUpdatedDocument,
   useChallengeCanvasValuesQuery,
   useEcoverseCanvasValuesQuery,
-  useOpportunityCanvasValuesQuery,
+  useOpportunityCanvasValuesQuery
 } from '../../hooks/generated/graphql';
+import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { ContainerProps } from '../../models/container';
 import {
   Canvas,
@@ -15,11 +17,9 @@ import {
   ChallengeCanvasValuesQuery,
   EcoverseCanvasValuesQuery,
   OpportunityCanvasValuesQuery,
-  SubscriptionCanvasContentUpdatedArgs,
+  SubscriptionCanvasContentUpdatedArgs
 } from '../../models/graphql-schema';
 import { TemplateQuery } from './CanvasProvider';
-import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
-import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 
 export interface ICanvasValueEntities {
   canvas?: Canvas;
@@ -42,7 +42,11 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   const { isFeatureEnabled } = useConfig();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
-  const { ecoverseNameId: ecoverseId, challengeNameId: challengeId, opportunityNameId: opportunityId } = useUrlParams();
+  const {
+    ecoverseNameId: ecoverseId = '',
+    challengeNameId: challengeId = '',
+    opportunityNameId: opportunityId = '',
+  } = useUrlParams();
   let queryOpportunityId: string | undefined = opportunityId;
   let queryChallengeId: string | undefined = challengeId;
   let queryEcoverseId: string | undefined = ecoverseId;

@@ -1,5 +1,4 @@
 import React, { ReactNode, useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
 
 const createGetter = function <T>(r: T, url: string) {
   return (key: keyof T) => `${url}${r[key]}`;
@@ -16,8 +15,9 @@ function NavigationTabs<T extends Record<string, string>>({
   routes,
   children,
 }: NavigationTabsProps<T>): React.ReactElement {
-  const { path, url } = useRouteMatch();
-  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
+  const url = '';
+  const path = '';
+  // const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const urlGetter = useMemo(() => createGetter(routes, url), [url]);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
 
@@ -33,7 +33,8 @@ function NavigationTabs<T extends Record<string, string>>({
     [routes]
   );
 
-  return <>{children(result, match?.path)}</>;
+  // TODO return correct path
+  return <>{children(result, '')}</>;
 }
 
 export default NavigationTabs;

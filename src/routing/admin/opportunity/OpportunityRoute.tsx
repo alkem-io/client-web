@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
@@ -17,7 +17,7 @@ interface Props extends PageProps {}
 
 export const OpportunityRoute: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
-  const { path, url } = useRouteMatch();
+  const url = '';
   const { challenge, loading: loadingChallenge } = useChallenge();
   const {
     opportunity,
@@ -36,7 +36,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route exact path={`${path}`}>
+      <Route>
         <ManagementPageTemplatePage
           data={managementData.opportunityLvl}
           paths={currentPaths}
@@ -45,10 +45,10 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
           loading={loadingOpportunity || loadingChallenge}
         />
       </Route>
-      <Route exact path={`${path}/edit`}>
+      <Route path={'edit'}>
         <EditOpportunity title={t('navigation.admin.opportunity.edit')} mode={FormMode.update} paths={currentPaths} />
       </Route>
-      <Route path={`${path}/community`}>
+      <Route path={'community'}>
         <CommunityRoute
           paths={currentPaths}
           communityId={opportunity?.community?.id}
@@ -58,10 +58,10 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
           accessedFrom="opportunity"
         />
       </Route>
-      <Route path={`${path}/lifecycle`}>
+      <Route path={'lifecycle'}>
         <OpportunityLifecycleRoute paths={currentPaths} />
       </Route>
-      <Route path={`${path}/authorization`}>
+      <Route path={'authorization'}>
         <OpportunityAuthorizationRoute paths={currentPaths} />
       </Route>
       <Route path="*">

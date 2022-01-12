@@ -1,5 +1,5 @@
-import React, { FC, useMemo } from 'react';
-import { Redirect, Route, Routes, useRouteMatch } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Navigate, Route } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
@@ -10,15 +10,15 @@ import ApplyRoute from '../application/apply.route';
 import ChallengeRoute from '../challenge/ChallengeRoute';
 import { nameOfUrl } from '../url-params';
 
-export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
-  const { path, url } = useRouteMatch();
+const currentPaths = [];
 
+export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { ecoverse, displayName, loading: ecoverseLoading } = useEcoverse();
 
-  const currentPaths = useMemo(
-    () => (ecoverse ? [...paths, { value: url, name: displayName, real: true }] : paths),
-    [paths, displayName]
-  );
+  // const currentPaths = useMemo(
+  //   () => (ecoverse ? [...paths, { value: url, name: displayName, real: true }] : paths),
+  //   [paths, displayName]
+  // );
 
   const loading = ecoverseLoading;
 
@@ -31,26 +31,26 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   }
 
   return (
-    <Routes>
-      <Route exact path={path}>
-        <Redirect to={`${url}/dashboard`} />
+    <Route path={'/'}>
+      <Navigate to={'dashboard'} />
+      <Route path={'challenges'}>
+        <Route path={`:${nameOfUrl.challengeNameId}`}>
+          <ChallengeProvider>
+            <CommunityProvider>
+              <ChallengeRoute paths={currentPaths} />
+            </CommunityProvider>
+          </ChallengeProvider>
+        </Route>
       </Route>
-      <Route path={`${path}/challenges/:${nameOfUrl.challengeNameId}`}>
-        <ChallengeProvider>
-          <CommunityProvider>
-            <ChallengeRoute paths={currentPaths} />
-          </CommunityProvider>
-        </ChallengeProvider>
-      </Route>
-      <Route path={`${path}/apply`}>
+      <Route path={'apply'}>
         <ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />
       </Route>
-      <Route path={path}>
+      <Route>
         <EcoversePage paths={currentPaths} />
       </Route>
       <Route path="*">
         <Error404 />
       </Route>
-    </Routes>
+    </Route>
   );
 };

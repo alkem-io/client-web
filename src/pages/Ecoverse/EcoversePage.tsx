@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { TabContext, TabPanel } from '@mui/lab';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
 import { useEcoverse, useUpdateNavigation } from '../../hooks';
@@ -22,7 +22,6 @@ interface EcoversePageProps extends PageProps {
 }
 
 const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
-  const { path } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
   const { isPrivate, ecoverseId } = useEcoverse();
   const discussionsRequiredCredentials: CredentialForResource[] =
@@ -78,8 +77,8 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                   <TabPanel value={tabNames['discussions']}>
                     <Routes>
                       <Route
-                        path={`${path}/community/discussions`}
-                        render={() => (
+                        path={'community/discussions'}
+                        element={() => (
                           <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
                             <DiscussionsRoute paths={paths} />
                           </RestrictedRoute>

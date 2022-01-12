@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
@@ -26,7 +25,8 @@ export interface CommunityPageV2Props extends PageProps {
 
 const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityId, challengeId, opportunityId }) => {
   const { t } = useTranslation();
-  const { url } = useRouteMatch();
+  // const url = '';
+  const url = '';
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 

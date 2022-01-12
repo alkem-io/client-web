@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
@@ -15,7 +15,7 @@ import { useEcoverse } from '../../../hooks';
 interface ChallengeListProps extends PageProps {}
 
 export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
+  const url = '';
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
   const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({

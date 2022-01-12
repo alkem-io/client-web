@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
@@ -15,10 +15,10 @@ import { useEcoverse } from '../../../hooks';
 interface OpportunityListProps extends PageProps {}
 
 export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
+  const url = '';
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
-  const { challengeNameId } = useUrlParams();
+  const { challengeNameId = '' } = useUrlParams();
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
   });

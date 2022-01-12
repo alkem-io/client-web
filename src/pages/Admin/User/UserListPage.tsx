@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
@@ -10,7 +10,7 @@ import { useDeleteUserMutation, useUsersQuery } from '../../../hooks/generated/g
 interface UserListPageProps extends PageProps {}
 
 export const UserListPage: FC<UserListPageProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
+  const url = '';
 
   const { data, loading } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
 

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
 import { useChallenge, useEcoverse } from '../../../hooks';
@@ -16,7 +16,7 @@ import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const { path, url } = useRouteMatch();
+  const url = '';
   const { ecoverse, loading: loadingEcoverse } = useEcoverse();
   const {
     challenge,
@@ -35,7 +35,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route exact path={`${path}`}>
+      <Route>
         <ManagementPageTemplatePage
           data={managementData.challengeLvl}
           paths={currentPaths}
@@ -44,10 +44,10 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
           loading={loading}
         />
       </Route>
-      <Route path={`${path}/edit`}>
+      <Route path={'edit'}>
         <EditChallengePage mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
       </Route>
-      <Route path={`${path}/community`}>
+      <Route path={'community'}>
         <CommunityRoute
           paths={currentPaths}
           communityId={challenge?.community?.id}
@@ -57,13 +57,13 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
           accessedFrom="challenge"
         />
       </Route>
-      <Route path={`${path}/opportunities`}>
+      <Route path={'opportunities'}>
         <OpportunitiesRoute paths={currentPaths} />
       </Route>
-      <Route path={`${path}/authorization`}>
+      <Route path={'authorization'}>
         <ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />
       </Route>
-      <Route path={`${path}/lifecycle`}>
+      <Route path={'lifecycle'}>
         <ChallengeLifecycleRoute paths={currentPaths} />
       </Route>
       <Route path="*">

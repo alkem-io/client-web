@@ -19,7 +19,6 @@ import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import { UserRoute } from './user/UserRoute';
-
 export const Routing: FC = () => {
   const { t } = useTranslation();
 
@@ -45,57 +44,44 @@ export const Routing: FC = () => {
       />
       <Route path="/identity" element={<IdentityRoute />} />
       <Route path="/search" element={<SearchRoute />}></Route>
+      <Route path={`/user/:${nameOfUrl.userId}`} element={<RestrictedRoute></RestrictedRoute>}>
+        <UserRoute />
+      </Route>
+      <Route path="/challenges" element={<ChallengeExplorerPage />} />
+      <Route path="/contributors" element={<ContributorsPage />} />
+
       <Route
-        path={`/user/:${nameOfUrl.userId}`}
+        path={`/organization/:${nameOfUrl.organizationNameId}`}
         element={
-          <RestrictedRoute>
-            <UserRoute />
-          </RestrictedRoute>
+          <OrganizationProvider>
+            <OrganizationRoute paths={[]} />
+          </OrganizationProvider>
         }
       />
-      <Route path="/challenges">
-        <ChallengeExplorerPage />
-      </Route>
-      <Route path="/contributors">
-        <ContributorsPage />
-      </Route>
-      <Route path={`/organization/:${nameOfUrl.organizationNameId}`}>
-        <OrganizationProvider>
-          <OrganizationRoute paths={[]} />
-        </OrganizationProvider>
-      </Route>
       <Route
-        exact
         path="/messages"
-        render={() => (
+        element={
           <RestrictedRoute>
             <MessagesRoute />
           </RestrictedRoute>
-        )}
+        }
       />
 
-      <Route exact path="/about">
-        <AboutPage />
-      </Route>
-      <Route exact path="/profile">
-        <ProfileRoute />
-      </Route>
-      <Route exact path="/restricted">
-        <Restricted />
-      </Route>
-      <Route exact path="/">
-        <HomePage />
-      </Route>
-      <Route path={`/:${nameOfUrl.ecoverseNameId}`}>
-        <EcoverseProvider>
-          <CommunityProvider>
-            <EcoverseRoute paths={[{ value: '/', name: t('common.home'), real: true }]} />
-          </CommunityProvider>
-        </EcoverseProvider>
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/profile" element={<ProfileRoute />} />
+      <Route path="/restricted" element={<Restricted />}></Route>
+      <Route path="/" element={<HomePage />}></Route>
+      <Route
+        path={`/:${nameOfUrl.ecoverseNameId}`}
+        element={
+          <EcoverseProvider>
+            <CommunityProvider>
+              <EcoverseRoute paths={[{ value: '/', name: t('common.home'), real: true }]} />
+            </CommunityProvider>
+          </EcoverseProvider>
+        }
+      ></Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

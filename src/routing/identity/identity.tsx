@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { useGlobalState } from '../../hooks';
 import { Error404 } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
@@ -14,8 +14,6 @@ import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
 
 export const IdentityRoute: FC = () => {
-  const { path } = useRouteMatch();
-
   const {
     ui: { loginNavigationService },
   } = useGlobalState();
@@ -28,41 +26,34 @@ export const IdentityRoute: FC = () => {
   }, []);
 
   return (
-    <Routes>
-      <Route path={`${path}/login`}>
+    <>
+      <Route path={'login'}>
         <LoginRoute />
       </Route>
-      <Route exact path={`${path}/logout`}>
+      <Route path={'logout'}>
         <LogoutRoute />
       </Route>
-      <Route path={`${path}/registration`}>
+      <Route path={'registration'}>
         <RegistrationRoute />
       </Route>
-      <Route path={`${path}/verify`}>
+      <Route path={'verify'}>
         <VerifyRoute />
       </Route>
-      <Route exact path={`${path}/recovery`}>
+      <Route path={'recovery'}>
         <RecoveryRoute />
       </Route>
-      <Route
-        exact
-        path={`${path}/settings`}
-        render={() => (
-          <RestrictedRoute>
-            <SettingsRoute />
-          </RestrictedRoute>
-        )}
-      />
-
-      <Route exact path={`${path}/required`}>
+      <Route path={'settings'} element={<RestrictedRoute />}>
+        <SettingsRoute />
+      </Route>
+      <Route path={'required'}>
         <AuthRequiredPage />
       </Route>
-      <Route exact path={`${path}/error`}>
+      <Route path={'error'}>
         <ErrorRoute />
       </Route>
       <Route path="*">
         <Error404 />
       </Route>
-    </Routes>
+    </>
   );
 };

@@ -1,7 +1,6 @@
 import { Theme, useMediaQuery } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router-dom';
 import DiscussionCategorySelector from '../../components/composite/entities/Communication/DiscussionCategorySelector';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../context/CommunityProvider';
@@ -11,7 +10,6 @@ import { DiscussionListView } from '../../views/Discussions/DiscussionsListView'
 interface DiscussionsPageProps {}
 
 export const DiscussionListPage: FC<DiscussionsPageProps> = () => {
-  const { url } = useRouteMatch();
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
@@ -22,7 +20,7 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = () => {
   return (
     <DiscussionsLayout
       title={t('components.discussions-list.name', { community: communityName })}
-      newUrl={`${url}/new`}
+      newUrl={'new'}
       canCreateDiscussion={permissions.canCreateDiscussion}
       categorySelector={
         <DiscussionCategorySelector

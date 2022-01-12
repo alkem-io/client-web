@@ -42,7 +42,7 @@ const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) =>
 
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseNameId, challengeNameId } = useUrlParams();
+  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
 
   const { data: _challenge } = useChallengeNameQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },

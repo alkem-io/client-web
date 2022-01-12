@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { useDeleteOrganizationMutation, useOrganizationsListQuery } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { PageProps } from '../../../pages';
@@ -9,7 +9,7 @@ import { SearchableListItem } from '../SearchableList';
 interface OrganizationListProps extends PageProps {}
 
 export const OrganizationList: FC<OrganizationListProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
+  const url = '';
 
   const { data: organizationsListQuery } = useOrganizationsListQuery();
 

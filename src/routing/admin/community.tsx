@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityMembers';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity } from '../../components/Admin/Community/CommunityTypes';
@@ -29,11 +29,9 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
   resourceId,
   accessedFrom,
 }) => {
-  const { path } = useRouteMatch();
-
   return (
     <Routes>
-      <Route exact path={`${path}/members`}>
+      <Route path={'members'}>
         <CommunityPage
           paths={paths}
           credential={credential}
@@ -42,17 +40,17 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
           parentCommunityId={parentCommunityId}
         />
       </Route>
-      <Route path={`${path}/groups`}>
+      <Route path={'groups'}>
         <CommunityGroupsRoute paths={paths} communityId={communityId} parentCommunityId={parentCommunityId} />
       </Route>
-      <Route path={`${path}/applications`}>
+      <Route path={'applications'}>
         {accessedFrom === 'hub' && <EcoverseApplicationRoute paths={paths} />}
         {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
       </Route>
-      <Route path={`${path}/updates`}>
+      <Route path={'updates'}>
         <CommunityUpdatesPage paths={paths} communityId={communityId} />
       </Route>
-      <Route path={`${path}/lead`}>
+      <Route path={'lead'}>
         <LeadingOrganizationPage paths={paths} />
       </Route>
       <Route path="*">
@@ -65,18 +63,18 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
 interface CommunityGroupsRouteProps extends PageProps, WithCommunity {}
 
 export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, communityId, parentCommunityId }) => {
-  const { path, url } = useRouteMatch();
+  const url = '';
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   return (
     <Routes>
-      <Route exact path={`${path}`}>
+      <Route>
         <CommunityGroupListPage communityId={communityId || ''} paths={currentPaths} />
       </Route>
-      <Route exact path={`${path}/new`}>
+      <Route path={'new'}>
         <CreateCommunityGroup paths={currentPaths} communityId={communityId} />
       </Route>
-      <Route path={`${path}/:${nameOfUrl.groupId}`}>
+      <Route path={`:${nameOfUrl.groupId}`}>
         <EcoverseGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />
       </Route>
       <Route path="*">

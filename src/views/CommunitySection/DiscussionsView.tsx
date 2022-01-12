@@ -2,7 +2,7 @@ import Link from '@mui/material/Link';
 import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router';
+
 import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
 import ConditionalLink from '../../components/core/ConditionalLink';
 import { RouterLink } from '../../components/core/RouterLink';
@@ -26,7 +26,7 @@ interface DiscussionsProps {
 export const DiscussionsView: FC<DiscussionsProps> = ({ discussions, canCreate }) => {
   const { t } = useTranslation();
   const styles = useDiscussionsStyles();
-  const { url } = useRouteMatch();
+  const url = '';
 
   let messagesComponent = (
     <ConditionalLink to={buildNewDiscussionUrl(url)} condition={canCreate}>
