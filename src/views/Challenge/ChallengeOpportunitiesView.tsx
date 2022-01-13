@@ -1,19 +1,18 @@
 import { Box, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import OpportunityCard from '../../components/composite/entities/Challenge/OpportunityCard';
+import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import { Loading } from '../../components/core';
 import CardFilter from '../../components/core/card-filter/CardFilter';
 import {
   entityTagsValueGetter,
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
-import { CardContainer } from '../../components/core/CardContainer';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { useChallenge } from '../../hooks';
 import { Opportunity } from '../../models/graphql-schema';
-import { buildOpportunityUrl } from '../../utils/urlBuilders';
+import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 interface ChallengeOpportunitiesViewProps {
   entities: ChallengeContainerEntities;
@@ -59,22 +58,13 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
       {description}
       <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
         {filteredData => (
-          <CardContainer>
+          <CardLayoutContainer>
             {filteredData.map((opp, i) => (
-              <OpportunityCard
-                key={i}
-                displayName={opp.displayName}
-                activity={opp.activity || []}
-                url={buildOpportunityUrl(ecoverseNameId, challengeNameId, opp.nameID)}
-                lifecycle={{ state: opp?.lifecycle?.state || '' }}
-                context={{
-                  tagline: opp?.context?.tagline || '',
-                  visual: { background: opp?.context?.visual?.background || '' },
-                }}
-                tags={opp?.tagset?.tags || []}
-              />
+              <CardLayoutItem key={i} flexBasis={'50%'}>
+                <OpportunityCard opportunity={opp} ecoverseNameId={ecoverseNameId} challengeNameId={challengeNameId} />
+              </CardLayoutItem>
             ))}
-          </CardContainer>
+          </CardLayoutContainer>
         )}
       </CardFilter>
     </>

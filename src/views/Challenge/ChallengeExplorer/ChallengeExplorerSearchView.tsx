@@ -1,16 +1,14 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Accordion } from '../../../components/composite/common/Accordion/Accordion';
-import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
-import EntityContributionCard from '../../../components/composite/common/cards/ContributionCard/EntityContributionCard';
-import { CardContainer } from '../../../components/core/CardContainer';
 import GroupBy from '../../../components/core/GroupBy/GroupBy';
 import ChallengeExplorerSearchContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
 import ChallengeExplorerSearchEnricherContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
 import EcoverseNameResolver from '../../../containers/ecoverse/EcoverseNameResolver';
 import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
-import getActivityCount from '../../../utils/get-activity-count';
-import { buildChallengeUrl } from '../../../utils/urlBuilders';
+import ChallengeCard, {
+  ChallengeCardProps,
+} from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import { CardLayoutContainer, CardLayoutItem } from '../../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -20,8 +18,6 @@ export interface ChallengeExplorerSearchViewProps {
 }
 
 const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ terms, groupBy }) => {
-  const { t } = useTranslation();
-
   const groupKey = getGroupKey(groupBy);
 
   if (!groupKey) {
@@ -37,39 +33,20 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
               <EcoverseNameResolver key={keyValue} ecoverseId={keyValue}>
                 {({ displayName }) => (
                   <Accordion title={displayName} ariaKey={keyValue}>
-                    <CardContainer>
+                    <CardLayoutContainer>
                       {values.map((value, i) => (
                         <ChallengeExplorerSearchEnricherContainer key={i} challenge={value}>
-                          {({ challenge }, state) => {
-                            const _activity = value.activity ?? [];
-                            const activities: ActivityItem[] = [
-                              {
-                                name: t('pages.activity.opportunities'),
-                                digit: getActivityCount(_activity, 'opportunities') || 0,
-                                color: 'primary',
-                              },
-                              {
-                                name: t('pages.activity.members'),
-                                digit: getActivityCount(_activity, 'members') || 0,
-                                color: 'positive',
-                              },
-                            ];
-                            return (
-                              <EntityContributionCard
-                                activities={activities}
-                                loading={state.loading}
-                                details={{
-                                  headerText: challenge.displayName,
-                                  tags: challenge.tagset?.tags ?? [],
-                                  mediaUrl: challenge.context?.visual?.background ?? '',
-                                  url: challenge.hubNameId && buildChallengeUrl(challenge.hubNameId, challenge.nameID),
-                                }}
+                          {({ challenge }) => (
+                            <CardLayoutItem>
+                              <ChallengeCard
+                                challenge={challenge as ChallengeCardProps['challenge']}
+                                ecoverseNameId={challenge.ecoverseID}
                               />
-                            );
-                          }}
+                            </CardLayoutItem>
+                          )}
                         </ChallengeExplorerSearchEnricherContainer>
                       ))}
-                    </CardContainer>
+                    </CardLayoutContainer>
                   </Accordion>
                 )}
               </EcoverseNameResolver>

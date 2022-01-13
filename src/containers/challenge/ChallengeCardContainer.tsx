@@ -1,13 +1,11 @@
+import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerProps } from '../../models/container';
-import { ChallengeCardProps } from '../../components/composite/entities/Ecoverse/ChallengeCard';
-import { FC, useMemo } from 'react';
 import { useChallengeCardQuery } from '../../hooks/generated/graphql';
-import { useUserContext } from '../../hooks';
-import { buildChallengeUrl } from '../../utils/urlBuilders';
+import { ChallengeCardProps } from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 
 export interface ChallengeCardContainerEntities {
-  cardProps?: ChallengeCardProps;
+  challenge?: ChallengeCardProps['challenge'];
 }
 
 export interface ChallengeCardContainerActions {}
@@ -28,39 +26,14 @@ export const ChallengeCardContainer: FC<ChallengeCardContainerProps> = ({
   ecoverseNameId,
   challengeNameId,
 }) => {
-  const { user: userMetadata, loading: userLoading } = useUserContext();
-
-  const {
-    data,
-    loading: challengeLoading,
-    error,
-  } = useChallengeCardQuery({
+  const { data, loading, error } = useChallengeCardQuery({
     variables: {
       ecoverseId: ecoverseNameId,
       challengeId: challengeNameId,
     },
     skip: !ecoverseNameId || !challengeNameId,
   });
-  const ecoverse = data?.ecoverse;
-  const challenge = data?.ecoverse.challenge;
+  const challenge = data?.ecoverse.challenge as ChallengeCardProps['challenge'];
 
-  const cardProps = useMemo(() => {
-    if (!challenge) {
-      return undefined;
-    }
-
-    return {
-      id: challenge?.id,
-      displayName: challenge?.displayName,
-      context: challenge?.context,
-      isMember: userMetadata?.ofChallenge(challenge?.id) ?? false,
-      activity: challenge?.activity,
-      tags: challenge?.tagset?.tags,
-      url: (ecoverse && challenge && buildChallengeUrl(ecoverse?.nameID, challenge.nameID)) ?? '',
-    } as ChallengeCardProps;
-  }, [challenge]);
-
-  const loading = userLoading || challengeLoading;
-
-  return <>{children({ cardProps }, { loading, error }, {})}</>;
+  return <>{children({ challenge }, { loading, error }, {})}</>;
 };
