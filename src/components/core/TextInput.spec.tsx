@@ -34,15 +34,13 @@ describe('TextIpnut component', () => {
 
   test('disabled="true" input', () => {
     // act
-    const { container } = render(
-      <TextArea onChange={onChange} value={value} label={label} inset={true} small={true} disabled={true} />
-    );
+    render(<TextArea onChange={onChange} value={value} label={label} inset={true} small={true} disabled={true} />);
     userEvent.type(screen.getByRole('textbox'), 'Hello,{enter}World!');
 
     // assert
     expect(screen.getByRole('textbox')).toHaveValue(value);
     expect(onChange).toHaveBeenCalledTimes(0);
-    expect(container.querySelector('textarea')).toHaveAttribute('disabled');
+    expect(screen.getByRole('textbox')).toHaveAttribute('disabled');
   });
 
   test('TextArea onChange event', async () => {

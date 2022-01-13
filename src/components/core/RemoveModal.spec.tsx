@@ -23,20 +23,18 @@ describe('RemoveModal - main', () => {
 
   test('renders correct modal text', () => {
     // arrange
-    const wrapper = render(<RemoveModal show={show} onCancel={onCancel} onConfirm={onConfirm} text={text} />);
+    render(<RemoveModal show={show} onCancel={onCancel} onConfirm={onConfirm} text={text} />);
 
     // assert
-    expect(wrapper.getByText(text)).toBeInTheDocument();
+    expect(screen.getByText(text)).toBeInTheDocument();
   });
 
   test('renders correct modal title', () => {
     // arrange
-    const wrapper = render(
-      <RemoveModal show={show} onCancel={onCancel} onConfirm={onConfirm} text={text} title={title} />
-    );
+    render(<RemoveModal show={show} onCancel={onCancel} onConfirm={onConfirm} text={text} title={title} />);
 
     // assert
-    expect(wrapper.getByText(title)).toBeInTheDocument();
+    expect(screen.getByText(title)).toBeInTheDocument();
   });
 
   test('calls modal cancel button', () => {
@@ -72,11 +70,9 @@ describe('RemoveModal - negative', () => {
     const title = 'confirm';
     const onCancel = jest.fn();
     const onConfirm = jest.fn();
-    const wrapper = render(
-      <RemoveModal show={show} onCancel={onCancel} onConfirm={onConfirm} text={text} title={title} />
-    );
+    render(<RemoveModal show={show} onCancel={onCancel} onConfirm={onConfirm} text={text} title={title} />);
 
     // assert
-    expect(wrapper.queryAllByRole('dialog')).toHaveLength(0);
+    expect(screen.queryAllByRole('dialog')).toHaveLength(0);
   });
 });
