@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Navigate, Route, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading/Loading';
 import { useAuthenticationContext, useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
@@ -18,7 +18,7 @@ interface RestrictedRoutePros {
   requiredCredentials?: RequiredCredential[];
 }
 
-const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredentials = [], ...rest }) => {
+const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredentials = [] }) => {
   const { pathname } = useLocation();
   const { user, loading: userLoading } = useUserContext();
   const { isAuthenticated, loading: loadingAuthContext } = useAuthenticationContext();
@@ -33,7 +33,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
 
   // if the user has any of the credentials - get him through
   if (!user || adminCredentials.some(x => user.hasCredentials(x))) {
-    return <Route {...rest}>{children}</Route>;
+    return <>{children}</>;
   }
 
   const toCredentialForResource = (x: RequiredCredential): CredentialForResource =>
@@ -47,11 +47,7 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
     return <Navigate to={`/restricted?origin=${encodeURI(pathname)}`} />;
   }
 
-  return (
-    // Show the component only when the user is logged in
-    // Otherwise, redirect the user to /signin page
-    <Route {...rest}>{children}</Route>
-  );
+  return <>{children}</>;
 };
 
 export default RestrictedRoute;

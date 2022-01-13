@@ -16,24 +16,18 @@ export const AdminRoute: FC = () => {
 
   return (
     <Routes>
-      <Route>
-        <ManagementPageTemplatePage data={managementData.adminLvl} paths={currentPaths} />
+      <Route path={'/'}>
+        <Route
+          index
+          element={<ManagementPageTemplatePage data={managementData.adminLvl} paths={currentPaths} />}
+        ></Route>
+        <Route path={'users'} element={<UsersRoute paths={currentPaths} />}></Route>
+        <Route path={'authorization'} element={<GlobalAuthorizationRoute paths={currentPaths} />}></Route>
+        <Route path={'hubs'} element={<EcoversesRoute paths={currentPaths} />}></Route>
+        <Route path={'organizations'} element={<OrganizationsRoute paths={currentPaths} />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'users'}>
-        <UsersRoute paths={currentPaths} />
-      </Route>
-      <Route path={'authorization'}>
-        <GlobalAuthorizationRoute paths={currentPaths} />
-      </Route>
-      <Route path={'hubs'}>
-        <EcoversesRoute paths={currentPaths} />
-      </Route>
-      <Route path={'organizations'}>
-        <OrganizationsRoute paths={currentPaths} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

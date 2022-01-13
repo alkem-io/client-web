@@ -17,19 +17,17 @@ export const LoginRoute: FC = () => {
   }
 
   return (
-    <>
+    <Routes>
       <Route
+        path={'/'}
         element={
           <NotAuthenticatedRoute>
             <LoginPage flow={flow} />
           </NotAuthenticatedRoute>
         }
       />
-
-      <Route path={'success'}>
-        <LoginSuccessPage />
-      </Route>
-    </>
+      <Route path={'success'} element={<LoginSuccessPage />}></Route>
+    </Routes>
   );
 };
 

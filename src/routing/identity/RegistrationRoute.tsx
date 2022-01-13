@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useQueryParams } from '../../hooks';
 import RegistrationPage from '../../pages/Authentication/RegistrationPage';
 import RegistrationSuccessPage from '../../pages/Authentication/RegistrationSuccessPage';
@@ -10,7 +10,7 @@ export const RegistrationRoute: FC = () => {
   const flow = params.get('flow') || undefined;
 
   return (
-    <>
+    <Routes>
       <Route
         element={
           <NotAuthenticatedRoute>
@@ -18,11 +18,8 @@ export const RegistrationRoute: FC = () => {
           </NotAuthenticatedRoute>
         }
       />
-
-      <Route path={'success'}>
-        <RegistrationSuccessPage />
-      </Route>
-    </>
+      <Route path={'success'} element={<RegistrationSuccessPage />}></Route>
+    </Routes>
   );
 };
 export default RegistrationRoute;

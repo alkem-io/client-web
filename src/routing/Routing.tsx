@@ -19,7 +19,6 @@ import { Restricted } from './Restricted';
 import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
-import { UserRoute } from './user/UserRoute';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -38,55 +37,54 @@ export const Routing: FC = () => {
             </EcoverseProvider>
           }
         ></Route>
+        <Route
+          path="/admin/*"
+          element={
+            <RestrictedRoute
+              requiredCredentials={[
+                AuthorizationCredential.GlobalAdmin,
+                AuthorizationCredential.EcoverseAdmin,
+                AuthorizationCredential.OrganizationAdmin,
+                AuthorizationCredential.ChallengeAdmin,
+                AuthorizationCredential.GlobalAdminCommunity,
+                AuthorizationCredential.OrganizationOwner,
+                AuthorizationCredential.OpportunityAdmin,
+              ]}
+            >
+              <AdminRoute />
+            </RestrictedRoute>
+          }
+        />
+        <Route path="/search" element={<SearchRoute />}></Route>
+        <Route path="/identity/*" element={<IdentityRoute />} />
+        <Route path={`/user/:${nameOfUrl.userId}`} element={<RestrictedRoute></RestrictedRoute>}>
+          {/* <UserRoute /> */}
+        </Route>
+        <Route path="/challenges" element={<ChallengeExplorerPage />} />
+        <Route path="/contributors" element={<ContributorsPage />} />
+
+        <Route
+          path={`/organization/:${nameOfUrl.organizationNameId}`}
+          element={
+            <OrganizationProvider>
+              <OrganizationRoute paths={[]} />
+            </OrganizationProvider>
+          }
+        />
+        <Route
+          path="/messages"
+          element={
+            <RestrictedRoute>
+              <MessagesRoute />
+            </RestrictedRoute>
+          }
+        />
+
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/profile" element={<ProfileRoute />} />
+        <Route path="/restricted" element={<Restricted />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route
-        path="/admin"
-        element={
-          <RestrictedRoute
-            requiredCredentials={[
-              AuthorizationCredential.GlobalAdmin,
-              AuthorizationCredential.EcoverseAdmin,
-              AuthorizationCredential.OrganizationAdmin,
-              AuthorizationCredential.ChallengeAdmin,
-              AuthorizationCredential.GlobalAdminCommunity,
-              AuthorizationCredential.OrganizationOwner,
-              AuthorizationCredential.OpportunityAdmin,
-            ]}
-          >
-            <AdminRoute />
-          </RestrictedRoute>
-        }
-      />
-      <Route path="/identity" element={<IdentityRoute />} />
-      <Route path="/search" element={<SearchRoute />}></Route>
-      <Route path={`/user/:${nameOfUrl.userId}`} element={<RestrictedRoute></RestrictedRoute>}>
-        {/* <UserRoute /> */}
-      </Route>
-      <Route path="/challenges" element={<ChallengeExplorerPage />} />
-      <Route path="/contributors" element={<ContributorsPage />} />
-
-      <Route
-        path={`/organization/:${nameOfUrl.organizationNameId}`}
-        element={
-          <OrganizationProvider>
-            <OrganizationRoute paths={[]} />
-          </OrganizationProvider>
-        }
-      />
-      <Route
-        path="/messages"
-        element={
-          <RestrictedRoute>
-            <MessagesRoute />
-          </RestrictedRoute>
-        }
-      />
-
-      <Route path="/about" element={<AboutPage />} />
-      <Route path="/profile" element={<ProfileRoute />} />
-      <Route path="/restricted" element={<Restricted />}></Route>
-
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

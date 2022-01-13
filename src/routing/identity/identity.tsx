@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useGlobalState } from '../../hooks';
 import { Error404 } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
@@ -26,34 +26,23 @@ export const IdentityRoute: FC = () => {
   }, []);
 
   return (
-    <>
-      <Route path={'login'}>
-        <LoginRoute />
-      </Route>
-      <Route path={'logout'}>
-        <LogoutRoute />
-      </Route>
-      <Route path={'registration'}>
-        <RegistrationRoute />
-      </Route>
-      <Route path={'verify'}>
-        <VerifyRoute />
-      </Route>
-      <Route path={'recovery'}>
-        <RecoveryRoute />
-      </Route>
-      <Route path={'settings'} element={<RestrictedRoute />}>
-        <SettingsRoute />
-      </Route>
-      <Route path={'required'}>
-        <AuthRequiredPage />
-      </Route>
-      <Route path={'error'}>
-        <ErrorRoute />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </>
+    <Routes>
+      <Route path={'login/*'} element={<LoginRoute />}></Route>
+      <Route path={'logout/*'} element={<LogoutRoute />}></Route>
+      <Route path={'registration/*'} element={<RegistrationRoute />}></Route>
+      <Route path={'verify/*'} element={<VerifyRoute />}></Route>
+      <Route path={'recovery/*'} element={<RecoveryRoute />}></Route>
+      <Route path={'required/*'} element={<AuthRequiredPage />}></Route>
+      <Route path={'error/*'} element={<ErrorRoute />}></Route>
+      <Route
+        path={'settings'}
+        element={
+          <RestrictedRoute>
+            <SettingsRoute />
+          </RestrictedRoute>
+        }
+      ></Route>
+      <Route path="*" element={<Error404 />}></Route>
+    </Routes>
   );
 };
