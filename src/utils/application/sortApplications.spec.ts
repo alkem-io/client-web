@@ -57,8 +57,9 @@ const data = (): TestData[] =>
     },
   ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each
 
-describe('sortApplications', () =>
+describe('sortApplications', () => {
   test.concurrent.each(data())('%s', async ({ data, result }) => {
     const sorted = (data as ApplicationWithType[]).sort(sortApplications);
     expect(sorted.map(x => x.id)).toEqual(result);
-  }));
+  });
+});

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerProps } from '../../models/container';
 import { useContributorsSearchQuery } from '../../hooks/generated/graphql';
-import { useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useUserContext } from '../../hooks';
 import { OrganizationContributorFragment, UserContributorFragment } from '../../models/graphql-schema';
 
 export interface ContributorsSearchContainerEntities {
@@ -31,6 +31,7 @@ const typeFilterNonAuth = ['organization'];
 
 const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ terms, children }) => {
   const { isAuthenticated } = useUserContext();
+  const handleError = useApolloErrorHandler();
   const { data, loading, error } = useContributorsSearchQuery({
     variables: {
       searchData: {
@@ -39,6 +40,7 @@ const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ ter
         typesFilter: isAuthenticated ? typeFilterAuth : typeFilterNonAuth,
       },
     },
+    onError: handleError,
     fetchPolicy: 'no-cache',
     skip: !terms.length,
   });

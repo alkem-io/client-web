@@ -1,5 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import { fireEvent, render, screen, waitFor } from '../../../../utils/test/test-utils';
+import { fireEvent, render, screen } from '../../../../utils/test/test-utils';
 import { ApplicationButton } from './ApplicationButton';
 
 describe.skip('ApplicationButton component', () => {
@@ -162,7 +162,7 @@ describe.skip('ApplicationButton component', () => {
 
     fireEvent.click(button);
 
-    await waitFor(() => screen.getByRole('dialog'));
+    await screen.findByRole('dialog');
 
     const dialog = screen.getByRole('dialog');
     expect(dialog).toBeInTheDocument();
@@ -199,7 +199,7 @@ describe.skip('ApplicationButton component', () => {
 
     fireEvent.click(button);
 
-    await waitFor(() => screen.getByRole('dialog'));
+    await screen.findByRole('dialog');
 
     const dialog = screen.getByRole('dialog');
     expect(dialog).toBeInTheDocument();

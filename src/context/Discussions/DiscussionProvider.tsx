@@ -1,8 +1,10 @@
-import { sortBy, uniq } from 'lodash';
-import React, { FC, useContext, useMemo } from 'react';
-import { useApolloErrorHandler, useEcoverse, useUrlParams } from '../../hooks';
+import { sortBy, uniq, merge } from 'lodash';
+import React, { FC, useContext, useEffect, useMemo } from 'react';
+import { ApolloError } from '@apollo/client';
+import { useApolloErrorHandler, useConfig, useEcoverse, useUrlParams } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
+  CommunicationDiscussionMessageReceivedDocument,
   MessageDetailsFragmentDoc,
   refetchCommunityDiscussionListQuery,
   useCommunityDiscussionQuery,
@@ -11,9 +13,15 @@ import {
 } from '../../hooks/generated/graphql';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
-import { Discussion as DiscussionGraphql, Message, MessageDetailsFragment } from '../../models/graphql-schema';
+import {
+  CommunicationDiscussionMessageReceivedSubscription,
+  Discussion as DiscussionGraphql,
+  Message,
+  MessageDetailsFragment,
+} from '../../models/graphql-schema';
 import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
 import { useCommunityContext } from '../CommunityProvider';
+import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 
 interface DiscussionContextProps {
   discussion?: Discussion;
@@ -39,14 +47,53 @@ const sortMessages = (messages: MessageDetailsFragment[] = []) => sortBy(message
 
 const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const handleError = useApolloErrorHandler();
+  const { isFeatureEnabled } = useConfig();
   const { discussionId } = useUrlParams();
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
   const { communityId, loading: loadingCommunity } = useCommunityContext();
 
-  const { data, loading } = useCommunityDiscussionQuery({
+  const { data, loading, subscribeToMore } = useCommunityDiscussionQuery({
     variables: { ecoverseId: ecoverseNameId, communityId: communityId, discussionId: discussionId },
     skip: !communityId || !ecoverseNameId || !discussionId,
+    errorPolicy: 'all',
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    onError: handleError,
   });
+
+  useEffect(() => {
+    if (!isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+      return;
+    }
+
+    const unSubscribe = subscribeToMore<CommunicationDiscussionMessageReceivedSubscription>({
+      document: CommunicationDiscussionMessageReceivedDocument,
+      onError: err => handleError(new ApolloError({ errorMessage: err.message })),
+      updateQuery: (prev, { subscriptionData }) => {
+        const discussion = prev?.ecoverse?.community?.communication?.discussion;
+
+        if (!discussion) {
+          return prev;
+        }
+
+        const currentMessages = discussion.messages ?? [];
+        const newMessage = subscriptionData.data.communicationDiscussionMessageReceived.message;
+
+        return merge({}, prev, {
+          ecoverse: {
+            community: {
+              communication: {
+                discussion: {
+                  messages: [...currentMessages, newMessage],
+                },
+              },
+            },
+          },
+        });
+      },
+    });
+    return () => unSubscribe && unSubscribe();
+  }, [isFeatureEnabled, subscribeToMore]);
 
   const discussionData = data?.ecoverse.community?.communication?.discussion;
 
@@ -82,7 +129,10 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const handlePostComment = async (discussionId: string, post: string) => {
     await postComment({
-      update(cache, { data }) {
+      update: (cache, { data }) => {
+        if (isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+          return;
+        }
         cache.modify({
           id: cache.identify({
             id: discussionId,

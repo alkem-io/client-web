@@ -1,7 +1,7 @@
 import { StyledEngineProvider } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { WinstonProvider } from 'winston-react';
 import App from './components/composite/layout/App/App';
 import AlkemioApolloProvider from './context/ApolloProvider';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
@@ -11,14 +11,15 @@ import { NavigationProvider } from './context/NavigationProvider';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
-import { makeStyles } from '@mui/styles';
 import './i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
-import { logger } from './services/logging/winston/logger';
 import { env } from './types/env';
+import ServerMetadataProvider from './context/ServerMetadataProvider';
 
-const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
+const domain = (env && env.REACT_APP_ALKEMIO_DOMAIN) ?? '';
+export const publicGraphQLEndpoint = domain + '/api/public/graphql';
+export const privateGraphQLEndpoint = domain + '/api/private/graphql';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
@@ -64,13 +65,13 @@ const Root: FC = () => {
     <StyledEngineProvider injectFirst>
       <ThemeProvider>
         <GlobalStyles>
-          <ConfigProvider apiUrl={graphQLEndpoint}>
-            <SentryErrorBoundaryProvider>
-              <WinstonProvider logger={logger}>
+          <ConfigProvider url={publicGraphQLEndpoint}>
+            <ServerMetadataProvider url={publicGraphQLEndpoint}>
+              <SentryErrorBoundaryProvider>
                 <GlobalStateProvider>
                   <BrowserRouter>
                     <AuthenticationProvider>
-                      <AlkemioApolloProvider apiUrl={graphQLEndpoint}>
+                      <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                         <NavigationProvider>
                           <UserProvider>
                             <App>
@@ -83,8 +84,8 @@ const Root: FC = () => {
                     </AuthenticationProvider>
                   </BrowserRouter>
                 </GlobalStateProvider>
-              </WinstonProvider>
-            </SentryErrorBoundaryProvider>
+              </SentryErrorBoundaryProvider>
+            </ServerMetadataProvider>
           </ConfigProvider>
         </GlobalStyles>
       </ThemeProvider>

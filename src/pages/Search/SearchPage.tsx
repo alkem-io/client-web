@@ -22,7 +22,7 @@ import Icon from '../../components/core/Icon';
 import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Typography from '../../components/core/Typography';
-import { useUpdateNavigation, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../../models/graphql-schema';
 import { PageProps } from '../common';
@@ -108,6 +108,7 @@ interface FilterConfig {
 type ResultType = (User | UserGroup | Organization | Challenge | Opportunity) & { score: number; terms: string[] };
 
 const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
+  const handleError = useApolloErrorHandler();
   useUpdateNavigation({ currentPaths: paths });
 
   const { t } = useTranslation();
@@ -150,6 +151,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
   const [search, { loading: isSearching }] = useSearchLazyQuery({
     fetchPolicy: 'no-cache',
+    onError: handleError,
     onCompleted: data => {
       const updatedResult = toResultType(data);
       setResults(updatedResult);
