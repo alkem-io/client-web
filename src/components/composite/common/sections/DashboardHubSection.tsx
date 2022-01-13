@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { UserMetadata } from '../../../../hooks';
 import { EcoversesQuery } from '../../../../models/graphql-schema';
-import { CardWrapperItem, CardWrapper } from '../../../core/CardWrapper/CardWrapper';
+import { CardLayoutItem, CardLayoutContainer } from '../../../core/CardLayoutContainer/CardLayoutContainer';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import HubCard from '../cards/HubCard/HubCard';
 
@@ -23,13 +23,13 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
   return (
     <Section {...props}>
       {children}
-      <CardWrapper>
+      <CardLayoutContainer>
         {hubs.map((ecoverse, i) => (
-          <CardWrapperItem key={i}>
+          <CardLayoutItem key={i}>
             <HubCard ecoverse={ecoverse} />
-          </CardWrapperItem>
+          </CardLayoutItem>
         ))}
-      </CardWrapper>
+      </CardLayoutContainer>
     </Section>
   );
 };

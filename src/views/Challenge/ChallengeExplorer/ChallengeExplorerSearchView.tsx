@@ -8,7 +8,7 @@ import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-s
 import ChallengeCard, {
   ChallengeCardProps,
 } from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import { CardWrapper, CardWrapperItem } from '../../../components/core/CardWrapper/CardWrapper';
+import { CardLayoutContainer, CardLayoutItem } from '../../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -33,20 +33,20 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
               <EcoverseNameResolver key={keyValue} ecoverseId={keyValue}>
                 {({ displayName }) => (
                   <Accordion title={displayName} ariaKey={keyValue}>
-                    <CardWrapper>
+                    <CardLayoutContainer>
                       {values.map((value, i) => (
                         <ChallengeExplorerSearchEnricherContainer key={i} challenge={value}>
                           {({ challenge }) => (
-                            <CardWrapperItem>
+                            <CardLayoutItem>
                               <ChallengeCard
                                 challenge={challenge as ChallengeCardProps['challenge']}
                                 ecoverseNameId={challenge.ecoverseID}
                               />
-                            </CardWrapperItem>
+                            </CardLayoutItem>
                           )}
                         </ChallengeExplorerSearchEnricherContainer>
                       ))}
-                    </CardWrapper>
+                    </CardLayoutContainer>
                   </Accordion>
                 )}
               </EcoverseNameResolver>

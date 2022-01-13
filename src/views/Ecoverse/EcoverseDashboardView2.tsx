@@ -15,7 +15,7 @@ import { Challenge, User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import { CardWrapper, CardWrapperItem } from '../../components/core/CardWrapper/CardWrapper';
+import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 export interface EcoverseDashboardView2Props {
   title?: string;
@@ -112,13 +112,13 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
               navText={t('buttons.see-all')}
               navLink={'challenges'}
             >
-              <CardWrapper>
+              <CardLayoutContainer>
                 {challenges.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => (
-                  <CardWrapperItem key={i} flexBasis={'50%'}>
+                  <CardLayoutItem key={i} flexBasis={'50%'}>
                     <ChallengeCard challenge={x} ecoverseNameId={ecoverseNameId} />
-                  </CardWrapperItem>
+                  </CardLayoutItem>
                 ))}
-              </CardWrapper>
+              </CardLayoutContainer>
             </DashboardGenericSection>
           )}
           {communityReadAccess && (

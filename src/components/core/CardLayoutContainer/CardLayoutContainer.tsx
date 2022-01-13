@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Grid } from '@mui/material';
 
-export const CardWrapper: FC = ({ children }) => {
+export const CardLayoutContainer: FC = ({ children }) => {
   return (
     <Grid container spacing={2} alignItems="stretch">
       {children}
@@ -9,11 +9,11 @@ export const CardWrapper: FC = ({ children }) => {
   );
 };
 
-interface CardWrapperItemProps {
+interface CardLayoutItemProps {
   flexBasis?: '25%' | '33%' | '50%';
 }
 
-export const CardWrapperItem: FC<CardWrapperItemProps> = ({ children, flexBasis = '25%' }) => {
+export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = '25%' }) => {
   return (
     <Grid
       item

@@ -14,7 +14,7 @@ import {
 import ErrorBlock from '../../components/core/ErrorBlock';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
-import { CardWrapperItem, CardWrapper } from '../../components/core/CardWrapper/CardWrapper';
+import { CardLayoutItem, CardLayoutContainer } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 interface EcoverseChallengesViewProps {
   entities: EcoverseContainerEntities;
@@ -70,13 +70,13 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
                 valueGetter={entityValueGetter}
               >
                 {filteredData => (
-                  <CardWrapper>
+                  <CardLayoutContainer>
                     {filteredData.map((challenge, i) => (
-                      <CardWrapperItem key={i} flexBasis={'50%'}>
+                      <CardLayoutItem key={i} flexBasis={'50%'}>
                         <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseNameId} />
-                      </CardWrapperItem>
+                      </CardLayoutItem>
                     ))}
-                  </CardWrapper>
+                  </CardLayoutContainer>
                 )}
               </CardFilter>
             );

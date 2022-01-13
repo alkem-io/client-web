@@ -16,7 +16,7 @@ import { User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
-import { CardWrapper, CardWrapperItem } from '../../components/core/CardWrapper/CardWrapper';
+import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -102,13 +102,13 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navText={t('buttons.see-all')}
             navLink={'opportunities'}
           >
-            <CardWrapper>
+            <CardLayoutContainer>
               {opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => (
-                <CardWrapperItem key={i} flexBasis={'50%'}>
+                <CardLayoutItem key={i} flexBasis={'50%'}>
                   <OpportunityCard opportunity={x} ecoverseNameId={ecoverseNameId} challengeNameId={challengeNameId} />
-                </CardWrapperItem>
+                </CardLayoutItem>
               ))}
-            </CardWrapper>
+            </CardLayoutContainer>
           </DashboardGenericSection>
           {communityReadAccess && (
             <>

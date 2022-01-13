@@ -12,7 +12,7 @@ import ErrorBlock from '../../components/core/ErrorBlock';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { useChallenge } from '../../hooks';
 import { Opportunity } from '../../models/graphql-schema';
-import { CardWrapper, CardWrapperItem } from '../../components/core/CardWrapper/CardWrapper';
+import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 interface ChallengeOpportunitiesViewProps {
   entities: ChallengeContainerEntities;
@@ -58,13 +58,13 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
       {description}
       <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
         {filteredData => (
-          <CardWrapper>
+          <CardLayoutContainer>
             {filteredData.map((opp, i) => (
-              <CardWrapperItem key={i} flexBasis={'50%'}>
+              <CardLayoutItem key={i} flexBasis={'50%'}>
                 <OpportunityCard opportunity={opp} ecoverseNameId={ecoverseNameId} challengeNameId={challengeNameId} />
-              </CardWrapperItem>
+              </CardLayoutItem>
             ))}
-          </CardWrapper>
+          </CardLayoutContainer>
         )}
       </CardFilter>
     </>

@@ -11,7 +11,7 @@ import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import { CardWrapper, CardWrapperItem } from '../../components/core/CardWrapper/CardWrapper';
+import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 // const groupByOptions = [
 //   {
@@ -54,19 +54,19 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
               helpText={t('pages.challenge-explorer.my.help-text')}
               ariaKey="my-challenges"
             >
-              <CardWrapper>
+              <CardLayoutContainer>
                 {myChallenges.map(({ ecoverseId, id: challengeId }, i) => (
                   <ChallengeCardContainer key={i} ecoverseNameId={ecoverseId} challengeNameId={challengeId}>
                     {({ challenge }) =>
                       challenge && (
-                        <CardWrapperItem>
+                        <CardLayoutItem>
                           <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseId} />
-                        </CardWrapperItem>
+                        </CardLayoutItem>
                       )
                     }
                   </ChallengeCardContainer>
                 ))}
-              </CardWrapper>
+              </CardLayoutContainer>
             </Accordion>
           </Grid>
         )}
@@ -127,13 +127,13 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
                     helpText={t('pages.challenge-explorer.hubs.help-text')}
                     ariaKey={hubName}
                   >
-                    <CardWrapper>
+                    <CardLayoutContainer>
                       {cEntities.challenges.map((challenge, i) => (
-                        <CardWrapperItem key={i}>
+                        <CardLayoutItem key={i}>
                           <ChallengeCard challenge={challenge} ecoverseNameId={hubNameId} />
-                        </CardWrapperItem>
+                        </CardLayoutItem>
                       ))}
-                    </CardWrapper>
+                    </CardLayoutContainer>
                   </Accordion>
                 </Grid>
               )}
