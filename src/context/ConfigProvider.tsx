@@ -1,76 +1,66 @@
-import axios from 'axios';
-import { print } from 'graphql/language/printer';
 import React, { FC, useEffect, useState } from 'react';
 import Loading from '../components/core/Loading/Loading';
 import { ConfigurationDocument } from '../hooks/generated/graphql';
+import { ConfigurationQuery } from '../models/graphql-schema';
+import queryRequest from '../utils/query-request/query-request';
+import { Configuration } from '../models/configuration';
+import { logger } from '../services/logging/winston/logger';
 import { ErrorPage } from '../pages';
-import { ConfigurationFragment, ConfigurationQuery } from '../models/graphql-schema';
 
-export interface ConfigContext {
-  config?: ConfigurationFragment;
+export interface ConfigContextProps {
+  config?: Configuration;
   loading: boolean;
+  error?: Error;
 }
 
-interface Props {
-  apiUrl: string;
+interface ConfigProviderProps {
+  url: string;
 }
 
-const configContext = React.createContext<ConfigContext>({
-  loading: true,
+const ConfigContext = React.createContext<ConfigContextProps>({
+  config: undefined,
+  loading: false,
+  error: undefined,
 });
 
-const ConfigProvider: FC<Props> = ({ children, apiUrl }) => {
-  const [config, setConfig] = useState<ConfigurationFragment>();
+const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
+  const [config, setConfig] = useState<Configuration | undefined>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
   useEffect(() => {
-    setLoading(true);
-    // graphql client is not initialized
-    const queryConfig = async (url: string) => {
-      const result = await axios.post<{ data: ConfigurationQuery }>(
-        url,
-        {
-          query: print(ConfigurationDocument),
-        },
-        {
-          responseType: 'json',
-          withCredentials: true,
-        }
-      );
-      if (result) {
-        return result.data.data.configuration;
-      }
-    };
-
-    if (apiUrl) {
-      queryConfig(apiUrl)
-        .then(result => {
-          if (result) {
-            setConfig(result);
-          }
-        })
-        .catch(ex => {
-          setError(ex);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+    if (!url) {
+      return;
     }
-  }, [apiUrl]);
+
+    queryRequest<ConfigurationQuery>(url, ConfigurationDocument)
+      .then(r => setConfig(r.data.data.configuration))
+      .catch((err: Error) => {
+        setError(err);
+        logger.error(err.message);
+      })
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  if (loading) {
+    return <Loading text={'Loading configuration ...'} />;
+  }
+
+  if (error) {
+    return <ErrorPage error={error} />;
+  }
 
   return (
-    <configContext.Provider
+    <ConfigContext.Provider
       value={{
         config,
         loading,
+        error,
       }}
     >
-      {loading && <Loading text={'Loading configuration ...'} />}
-      {error && <ErrorPage error={error} />}
-      {!loading && !error && children}
-    </configContext.Provider>
+      {children}
+    </ConfigContext.Provider>
   );
 };
 
-export { ConfigProvider, configContext };
+export { ConfigProvider, ConfigContext };
