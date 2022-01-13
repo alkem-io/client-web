@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { useQueryParams } from '../../hooks';
 import RegistrationPage from '../../pages/Authentication/RegistrationPage';
 import RegistrationSuccessPage from '../../pages/Authentication/RegistrationSuccessPage';
-import { NotAuthenticatedRoute } from '../route.extensions';
+import { NotAuthenticatedRoute } from '../NotAuthenticatedRoute';
 
 export const RegistrationRoute: FC = () => {
   const params = useQueryParams();
@@ -12,9 +12,16 @@ export const RegistrationRoute: FC = () => {
 
   return (
     <Switch>
-      <NotAuthenticatedRoute exact path={`${path}`}>
-        <RegistrationPage flow={flow} />
-      </NotAuthenticatedRoute>
+      <Route
+        exact
+        path={`${path}`}
+        render={() => (
+          <NotAuthenticatedRoute>
+            <RegistrationPage flow={flow} />
+          </NotAuthenticatedRoute>
+        )}
+      />
+
       <Route exact path={`${path}/success`}>
         <RegistrationSuccessPage />
       </Route>
