@@ -1,4 +1,5 @@
 const env = (prod, dev) => (process.env.NODE_ENV === 'production' ? prod : dev);
+
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
@@ -12,7 +13,7 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'react', 'jest'],
-  extends: ['react-app', 'react-app/jest', 'prettier', 'prettier/prettier'],
+  extends: ['react-app', 'react-app/jest', 'prettier', 'prettier/prettier', 'plugin:storybook/recommended'],
   env: {
     browser: true,
     es6: true,
@@ -20,7 +21,13 @@ module.exports = {
     serviceworker: true,
   },
   rules: {
-    quotes: ['error', 'single', { avoidEscape: true }],
+    quotes: [
+      'error',
+      'single',
+      {
+        avoidEscape: true,
+      },
+    ],
     'no-multiple-empty-lines': 'error',
     'no-console': env(1, 0),
     'no-debugger': env(1, 0),
