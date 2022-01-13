@@ -93,16 +93,6 @@ export type ApplicationEventInput = {
   eventName: Scalars['String'];
 };
 
-export type ApplicationReceived = {
-  __typename?: 'ApplicationReceived';
-  /** The identifier of the application */
-  applicationID: Scalars['String'];
-  /** The community that was applied to */
-  communityID: Scalars['String'];
-  /** The ID of the user that applied. */
-  userID: Scalars['String'];
-};
-
 export type ApplicationResultEntry = {
   __typename?: 'ApplicationResultEntry';
   /** ID for the Challenge being applied to, if any. Or the Challenge containing the Opportunity being applied to. */
@@ -263,6 +253,7 @@ export enum AuthorizationPrivilege {
   Read = 'READ',
   ReadUsers = 'READ_USERS',
   Update = 'UPDATE',
+  UpdateCanvas = 'UPDATE_CANVAS',
 }
 
 export type Canvas = {
@@ -303,6 +294,14 @@ export enum CanvasCheckoutStateEnum {
   Available = 'AVAILABLE',
   CheckedOut = 'CHECKED_OUT',
 }
+
+export type CanvasContentUpdated = {
+  __typename?: 'CanvasContentUpdated';
+  /** The identifier for the Canvas. */
+  canvasID: Scalars['String'];
+  /** The updated content. */
+  value: Scalars['String'];
+};
 
 export type Challenge = Searchable & {
   __typename?: 'Challenge';
@@ -408,6 +407,8 @@ export type CommunicationAdminRoomMembershipResult = {
   extraMembers: Array<Scalars['String']>;
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
+  /** The access mode for the room. */
+  joinRule: Scalars['String'];
   /** Name of the room */
   members: Array<Scalars['String']>;
   /** Members of the community that are missing from the room */
@@ -424,6 +425,10 @@ export type CommunicationAdminRoomResult = {
   id: Scalars['String'];
   /** The members of the orphaned room */
   members: Array<Scalars['String']>;
+};
+
+export type CommunicationAdminUpdateRoomsJoinRuleInput = {
+  isPublic: Scalars['Boolean'];
 };
 
 export type CommunicationCreateDiscussionInput = {
@@ -1081,6 +1086,8 @@ export type Mutation = {
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
+  /** Allow updating the rule for joining rooms: public or invite. */
+  adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as an Ecoverse Admin. */
@@ -1263,6 +1270,10 @@ export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
 
 export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
   orphanedRoomData: CommunicationAdminRemoveOrphanedRoomInput;
+};
+
+export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
+  changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -2039,16 +2050,16 @@ export type ServiceMetadata = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  /** Receive new applications with filtering. */
-  applicationReceived: ApplicationReceived;
+  /** Receive updated content of a canvas */
+  canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
 };
 
-export type SubscriptionApplicationReceivedArgs = {
-  communityID: Scalars['String'];
+export type SubscriptionCanvasContentUpdatedArgs = {
+  canvasIDs?: Maybe<Array<Scalars['UUID']>>;
 };
 
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
@@ -7060,6 +7071,13 @@ export type CheckoutCanvasOnContextMutation = {
       myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
     }>;
   };
+};
+
+export type CanvasContentUpdatedSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type CanvasContentUpdatedSubscription = {
+  __typename?: 'Subscription';
+  canvasContentUpdated: { __typename?: 'CanvasContentUpdated'; canvasID: string; value: string };
 };
 
 export type ChallengeExplorerSearchQueryVariables = Exact<{
