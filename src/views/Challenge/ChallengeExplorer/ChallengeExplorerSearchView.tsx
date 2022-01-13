@@ -26,34 +26,36 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
 
   return (
     <ChallengeExplorerSearchContainer terms={terms}>
-      {({ challenges }) => (
-        <GroupBy data={challenges} groupKey={groupKey}>
-          {groups => {
-            return groups.map(({ keyValue, values }) => (
-              <EcoverseNameResolver key={keyValue} ecoverseId={keyValue}>
-                {({ displayName }) => (
-                  <Accordion title={displayName} ariaKey={keyValue}>
-                    <CardLayoutContainer>
-                      {values.map((value, i) => (
-                        <ChallengeExplorerSearchEnricherContainer key={i} challenge={value}>
-                          {({ challenge }) => (
-                            <CardLayoutItem>
-                              <ChallengeCard
-                                challenge={challenge as ChallengeCardProps['challenge']}
-                                ecoverseNameId={challenge.ecoverseID}
-                              />
-                            </CardLayoutItem>
-                          )}
-                        </ChallengeExplorerSearchEnricherContainer>
-                      ))}
-                    </CardLayoutContainer>
-                  </Accordion>
-                )}
-              </EcoverseNameResolver>
-            ));
-          }}
-        </GroupBy>
-      )}
+      {({ challenges }) =>
+        challenges.length > 0 && (
+          <GroupBy data={challenges} groupKey={groupKey}>
+            {groups => {
+              return groups.map(({ keyValue, values }) => (
+                <EcoverseNameResolver key={keyValue} ecoverseId={keyValue}>
+                  {({ displayName }) => (
+                    <Accordion title={displayName} ariaKey={keyValue}>
+                      <CardLayoutContainer>
+                        {values.map((value, i) => (
+                          <ChallengeExplorerSearchEnricherContainer key={i} challenge={value}>
+                            {({ challenge }) => (
+                              <CardLayoutItem>
+                                <ChallengeCard
+                                  challenge={challenge as ChallengeCardProps['challenge']}
+                                  ecoverseNameId={challenge.ecoverseID}
+                                />
+                              </CardLayoutItem>
+                            )}
+                          </ChallengeExplorerSearchEnricherContainer>
+                        ))}
+                      </CardLayoutContainer>
+                    </Accordion>
+                  )}
+                </EcoverseNameResolver>
+              ));
+            }}
+          </GroupBy>
+        )
+      }
     </ChallengeExplorerSearchContainer>
   );
 };

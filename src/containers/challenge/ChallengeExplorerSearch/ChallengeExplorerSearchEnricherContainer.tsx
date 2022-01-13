@@ -41,7 +41,6 @@ const ChallengeExplorerSearchEnricherContainer: FC<ChallengeExplorerSearchEnrich
     variables: {
       ecoverseId: challenge.ecoverseID,
     },
-    errorPolicy: 'all',
     onError: handleError,
   });
 
