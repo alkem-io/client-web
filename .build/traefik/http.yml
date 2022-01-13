@@ -5,7 +5,7 @@ http:
         servers:
           - url: 'http://alkemio_server:4000/'
 
-    alkemio-web-service:
+    alkemio-web-client:
       loadBalancer:
         servers:
           - url: 'http://host.docker.internal:3001/'
@@ -31,10 +31,22 @@ http:
           - url: 'http://ipfs:8080/'
 
   middlewares:
-    strip-admin-prefix:
+    strip-api-private-non-interactive-prefix:
       stripPrefix:
         prefixes:
-          - /admin
+          - /api/private/non-interactive
+        forceSlash: false
+
+    strip-api-private-prefix:
+      stripPrefix:
+        prefixes:
+          - /api/private
+        forceSlash: false
+
+    strip-api-public-prefix:
+      stripPrefix:
+        prefixes:
+          - /api/public
         forceSlash: false
 
     strip-kratos-admin-prefix:
@@ -56,11 +68,27 @@ http:
       entryPoints:
         - 'web'
 
-    graphql-admin:
-      rule: 'PathPrefix(`/admin/graphql`)'
+    api-private-non-interactive-graphql:
+      rule: 'PathPrefix(`/api/private/non-interactive/graphql`)'
       service: 'alkemio-server'
       middlewares:
-        - strip-admin-prefix
+        - strip-api-private-non-interactive-prefix
+      entryPoints:
+        - 'web'
+
+    api-private-graphql:
+      rule: 'PathPrefix(`/api/private/graphql`)'
+      service: 'oathkeeper-proxy'
+      middlewares:
+        - strip-api-private-prefix
+      entryPoints:
+        - 'web'
+
+    api-public-graphql:
+      rule: 'PathPrefix(`/api/public/graphql`)'
+      service: 'alkemio-server'
+      middlewares:
+        - strip-api-public-prefix
       entryPoints:
         - 'web'
 
@@ -88,7 +116,7 @@ http:
 
     alkemiowebroute:
       rule: 'PathPrefix(`/`)'
-      service: 'alkemio-web-service'
+      service: 'alkemio-web-client'
       entryPoints:
         - 'web'
 

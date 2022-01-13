@@ -3,6 +3,7 @@ import { ApolloError } from '@apollo/client';
 import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
 import { useChallengeExplorerSearchEnricherQuery } from '../../../hooks/generated/graphql';
 import { ContainerProps } from '../../../models/container';
+import { useApolloErrorHandler } from '../../../hooks';
 
 type EnrichInfo = {
   hubNameId?: string;
@@ -35,10 +36,13 @@ const ChallengeExplorerSearchEnricherContainer: FC<ChallengeExplorerSearchEnrich
   challenge,
   children,
 }) => {
+  const handleError = useApolloErrorHandler();
   const { data, loading, error } = useChallengeExplorerSearchEnricherQuery({
     variables: {
       ecoverseId: challenge.ecoverseID,
     },
+    errorPolicy: 'all',
+    onError: handleError,
   });
 
   const hub = data?.ecoverse;
