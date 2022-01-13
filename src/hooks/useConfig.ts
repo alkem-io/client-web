@@ -1,8 +1,8 @@
 import { useContext, useMemo } from 'react';
-import { configContext } from '../context/ConfigProvider';
+import { ConfigContext } from '../context/ConfigProvider';
 
 export const useConfig = () => {
-  const context = useContext(configContext);
+  const context = useContext(ConfigContext);
 
   return useMemo(
     () => ({

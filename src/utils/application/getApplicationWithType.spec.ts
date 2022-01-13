@@ -11,13 +11,6 @@ type TestData = {
 
 const data = (): TestData[] =>
   [
-    //edge case
-    { name: '1', data: { id: 'app-id' }, exceptionMsg: "'ecoverseID' parameter expected" },
-    {
-      name: '2',
-      data: { id: 'app-id', ecoverseID: 'eco', opportunityID: 'opp' },
-      exceptionMsg: "'challengeID' parameter expected when 'ecoverseID' and 'opportunityID' are provided",
-    },
     // normal case
     {
       name: '3',
@@ -42,12 +35,24 @@ const data = (): TestData[] =>
     },
   ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each
 
-describe('getApplicationWithType', () =>
-  test.concurrent.each(data())('%s', async ({ data, result, exceptionMsg }) => {
-    if (exceptionMsg) {
-      expect(() => getApplicationWithType(data as ApplicationResultEntry)).toThrowError(exceptionMsg);
-    } else {
-      const appWithType = getApplicationWithType(data as ApplicationResultEntry);
-      expect(appWithType).toEqual(result);
-    }
-  }));
+const exceptionData = (): TestData[] =>
+  [
+    //edge case
+    { name: '1', data: { id: 'app-id' }, exceptionMsg: "'ecoverseID' parameter expected" },
+    {
+      name: '2',
+      data: { id: 'app-id', ecoverseID: 'eco', opportunityID: 'opp' },
+      exceptionMsg: "'challengeID' parameter expected when 'ecoverseID' and 'opportunityID' are provided",
+    },
+  ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each;
+
+describe('getApplicationWithType', () => {
+  test.concurrent.each(data())('%s', async ({ data, result }) => {
+    const appWithType = getApplicationWithType(data as ApplicationResultEntry);
+    expect(appWithType).toEqual(result);
+  });
+
+  test.concurrent.each(exceptionData())('%s', async ({ data, exceptionMsg }) => {
+    expect(() => getApplicationWithType(data as ApplicationResultEntry)).toThrowError(exceptionMsg);
+  });
+});

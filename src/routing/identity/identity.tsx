@@ -4,7 +4,7 @@ import { useGlobalState } from '../../hooks';
 import { Error404 } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
 import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../state/global/ui/loginNavigationMachine';
-import RestrictedRoute from '../route.extensions';
+import RestrictedRoute from '../RestrictedRoute';
 import ErrorRoute from './ErrorRoute';
 import LoginRoute from './LoginRoute';
 import LogoutRoute from './LogoutRoute';
@@ -44,9 +44,16 @@ export const IdentityRoute: FC = () => {
       <Route exact path={`${path}/recovery`}>
         <RecoveryRoute />
       </Route>
-      <RestrictedRoute exact path={`${path}/settings`}>
-        <SettingsRoute />
-      </RestrictedRoute>
+      <Route
+        exact
+        path={`${path}/settings`}
+        render={() => (
+          <RestrictedRoute>
+            <SettingsRoute />
+          </RestrictedRoute>
+        )}
+      />
+
       <Route exact path={`${path}/required`}>
         <AuthRequiredPage />
       </Route>

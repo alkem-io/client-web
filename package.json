@@ -21,15 +21,15 @@
     "@ory/kratos-client": "^0.8.0-alpha.2",
     "@sentry/react": "^6.9.0",
     "@sentry/tracing": "^6.9.0",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.3",
-    "@testing-library/user-event": "^12.6.0",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^26.0.20",
     "@types/lodash": "^4.14.172",
     "@types/node": "^14.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@types/react-router-dom": "^5.1.7",
+    "@types/react-router-dom": "^5.3.2",
     "@types/yup": "^0.29.11",
     "@uiw/react-md-editor": "^3.4.10",
     "@xstate/graph": "^1.3.0",
@@ -42,8 +42,7 @@
     "cross-env": "^7.0.3",
     "d3": "^7.0.0",
     "dotenv-flow": "^3.2.0",
-    "eslint": "^7.17.0",
-    "eslint-plugin-jest": "^24.1.3",
+    "eslint-plugin-jest": "^25.3.4",
     "formik": "^2.2.6",
     "graphql": "^15.4.0",
     "i18next": "^20.0.0",
@@ -56,17 +55,19 @@
     "react": "^17.0.2",
     "react-cookie-consent": "^6.2.4",
     "react-copy-to-clipboard": "^5.0.3",
-    "react-dom": "^17.0.1",
+    "react-dom": "^17.0.2",
     "react-i18next": "^11.15.1",
     "react-image-crop": "^9.0.5",
     "react-image-file-resizer": "^0.4.7",
     "react-jss": "^10.5.0",
     "react-markdown": "^6.0.2",
+    "react-router": "^5.2.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "5.0.0",
     "react-visibility-sensor": "^5.1.1",
     "remark-gfm": "^1.0.0",
     "replace-special-characters": "^1.2.5",
+    "subscriptions-transport-ws": "^0.11.0",
     "typescript": "~4.1.3",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.0",
@@ -112,23 +113,27 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.1",
     "@graphql-codegen/typescript-operations": "^2.1.1",
     "@graphql-codegen/typescript-react-apollo": "^3.1.1",
-    "@storybook/addon-actions": "^6.4.9",
-    "@storybook/addon-essentials": "^6.4.9",
-    "@storybook/addon-links": "^6.4.9",
-    "@storybook/node-logger": "^6.4.9",
-    "@storybook/preset-create-react-app": "^3.2.0",
-    "@storybook/react": "^6.4.9",
+    "@storybook/addon-actions": "^6.4.12",
+    "@storybook/addon-essentials": "^6.4.12",
+    "@storybook/addon-links": "^6.4.12",
+    "@storybook/builder-webpack5": "^6.4.12",
+    "@storybook/manager-webpack5": "^6.4.12",
+    "@storybook/node-logger": "^6.4.12",
+    "@storybook/preset-create-react-app": "^4.0.0",
+    "@storybook/react": "^6.4.12",
     "@testing-library/react-hooks": "^5.1.0",
     "@types/apollo-upload-client": "^14.1.0",
     "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/uuid": "^8.3.1",
     "coveralls": "^3.1.1",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-storybook": "^0.5.5",
     "gulp": "^4.0.2",
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
-    "prettier": "2.3.2",
-    "storybook-react-i18next": "^1.0.13"
+    "prettier": "^2.5.1",
+    "storybook-react-i18next": "^1.0.13",
+    "webpack": "^5.66.0"
   },
   "husky": {
     "hooks": {
@@ -150,17 +155,5 @@
   "engines": {
     "node": ">=14.17.3",
     "npm": ">=7"
-  },
-  "eslintConfig": {
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ],
-        "rules": {
-          "import/no-anonymous-default-export": "off"
-        }
-      }
-    ]
   }
 }
