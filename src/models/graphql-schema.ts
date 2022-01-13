@@ -6208,6 +6208,7 @@ export type ServerMetadataQuery = {
   __typename?: 'Query';
   metadata: {
     __typename?: 'Metadata';
+    activity: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>;
     services: Array<{ __typename?: 'ServiceMetadata'; name?: Maybe<string>; version?: Maybe<string> }>;
   };
 };
