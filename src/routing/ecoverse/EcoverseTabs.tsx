@@ -7,71 +7,53 @@ import {
   TocOutlined,
   WbIncandescentOutlined,
 } from '@mui/icons-material';
-import { Tabs } from '@mui/material';
+import { Box, Tabs } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Outlet, useMatch } from 'react-router-dom';
+import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import { RouterLink } from '../../components/core/RouterLink';
-import { EcoverseContainerEntities } from '../../containers/ecoverse/EcoversePageContainer';
 import { useConfig, useEcoverse } from '../../hooks';
+import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
-import { nameOfUrl } from '../url-params';
 
 const routes = {
-  discussions: '/community/discussions',
-  community: '/community',
-  dashboard: '/dashboard',
-  challenges: '/challenges',
-  canvases: '/canvases',
-  settings: '/settings',
-  context: '/context',
-  root: '/',
+  discussions: 'community/discussions',
+  community: 'community',
+  dashboard: 'dashboard',
+  challenges: 'challenges',
+  canvases: 'canvases',
+  settings: 'settings',
+  context: 'context',
 };
 
 export type EcoverseRoutesType = typeof routes;
 
 export interface EcoverseTabsProps {
-  // children: (e: {
-  //   pathGetter: (key: keyof typeof routes) => string;
-  //   urlGetter: (key: keyof typeof routes) => string;
-  //   tabName: string;
-  //   tabNames: EcoverseRoutesType;
-  // }) => React.ReactNode;
   // entities?: EcoverseContainerEntities;
 }
-const createGetter = function <T>(r: T, url: string) {
-  return (key: keyof T) => `${url}${r[key]}`;
-};
 
 const EcoverseTabs: FC<EcoverseTabsProps> = () => {
-  const url = '';
-  const path = '';
   const { t } = useTranslation();
-  const match = useMatch(`:${nameOfUrl.ecoverseNameId}`);
-  debugger;
-  // const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
+  const resolved = useResolvedPath('./');
+  const matchPatterns = useMemo(
+    () => Object.values(routes).map(x => resolvePath(x, resolved.pathname)?.pathname),
+    [routes, resolved, resolvePath]
+  );
+
+  const routeMatch = useRouteMatch(matchPatterns);
+  const currentTab = routeMatch?.pattern?.path;
+
   const { ecoverseNameId, permissions } = useEcoverse();
-  const urlGetter = useMemo(() => createGetter(routes, url), [url]);
-  const pathGetter = useMemo(() => createGetter(routes, path), [path]);
   const { isFeatureEnabled } = useConfig();
 
-  // const { permissions: pagePermissions } = entities;
-  // const { communityReadAccess, challengesReadAccess } = pagePermissions;
   const communityReadAccess = true;
   const challengesReadAccess = true;
 
-  const tabNames = (Object.keys(routes) as Array<keyof EcoverseRoutesType>).reduce<EcoverseRoutesType>((acc, curr) => {
-    acc[curr] = pathGetter(curr);
-    return acc;
-  }, {} as EcoverseRoutesType);
-
-  // TODO fix tab value.
   return (
     <>
       <Tabs
-        value={'match?.path'}
+        value={currentTab}
         aria-label="Ecoverse tabs"
         variant="scrollable"
         scrollButtons={'auto'}
@@ -80,59 +62,53 @@ const EcoverseTabs: FC<EcoverseTabsProps> = () => {
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
-          component={RouterLink}
-          value={pathGetter('dashboard')}
+          value={resolvePath('dashboard', resolved.pathname)?.pathname}
           to={'dashboard'}
         />
         <NavigationTab
           icon={<TocOutlined />}
           label={t('common.context')}
-          component={RouterLink}
-          value={pathGetter('context')}
+          value={resolvePath('context', resolved.pathname)?.pathname}
           to={'context'}
         />
         <NavigationTab
           disabled={!communityReadAccess}
           icon={<GroupOutlined />}
           label={t('common.community')}
-          component={RouterLink}
-          value={pathGetter('community')}
+          value={resolvePath('community', resolved.pathname)?.pathname}
           to={'community'}
         />
         <NavigationTab
           disabled={!challengesReadAccess}
           icon={<ContentPasteOutlined />}
           label={t('common.challenges')}
-          component={RouterLink}
-          value={pathGetter('challenges')}
+          value={resolvePath('challenges', resolved.pathname)?.pathname}
           to={'challenges'}
         />
         <NavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
-          component={RouterLink}
-          value={pathGetter('discussions')}
-          to={'discussions'}
+          value={resolvePath(routes['discussions'], resolved.pathname)?.pathname}
+          to={routes['discussions']}
         />
         <NavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
-          component={RouterLink}
-          value={pathGetter('canvases')}
+          value={resolvePath('canvases', resolved.pathname)?.pathname}
           to={'canvases'}
         />
         {permissions.viewerCanUpdate && (
           <NavigationTab
             icon={<SettingsOutlined />}
             label={t('common.settings')}
-            component={RouterLink}
-            value={pathGetter('settings')}
+            value={resolvePath('settings', resolved.pathname)?.pathname}
             to={buildAdminEcoverseUrl(ecoverseNameId)}
           />
         )}
       </Tabs>
+      <Box paddingTop={3} />
       <Outlet />
     </>
   );

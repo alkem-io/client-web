@@ -24,29 +24,17 @@ const UserTabs: FC<UserTabsProps> = ({ children }) => {
       <NavigationTabs routes={routes}>
         {(routesObj, value) => (
           <Tabs value={value} sx={{ marginBottom: 4 }}>
-            <NavigationTab
-              icon={<GroupOutlined />}
-              label={t('common.my-profile')}
-              component={RouterLink}
-              {...routesObj['profile']}
-            />
+            <NavigationTab icon={<GroupOutlined />} label={t('common.my-profile')} {...routesObj['profile']} />
             <NavigationTab
               icon={<ContentPasteOutlined />}
               label={t('common.membership')}
-              component={RouterLink}
               {...routesObj['membership']}
             />
 
-            <NavigationTab
-              icon={<ForumOutlined />}
-              label={t('common.organizations')}
-              component={RouterLink}
-              {...routesObj['organizations']}
-            />
+            <NavigationTab icon={<ForumOutlined />} label={t('common.organizations')} {...routesObj['organizations']} />
             <NavigationTab
               icon={<SettingsOutlined />}
               label={t('common.notifications')}
-              component={RouterLink}
               {...routesObj['notifications']}
             />
           </Tabs>
