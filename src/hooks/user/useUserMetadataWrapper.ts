@@ -10,6 +10,7 @@ export interface UserMetadata {
   hasCredentials: (credential: AuthorizationCredential, resourceId?: string) => boolean;
   ofChallenge: (id: string) => boolean;
   ofEcoverse: (id: string) => boolean;
+  ofOpportunity: (id: string) => boolean;
   isEcoverseAdmin: (ecoverseId: string) => boolean;
   isChallengeAdmin: (ecoverseId: string, challengeId: string) => boolean;
   isOpportunityAdmin: (ecoverseId: string, challengeId: string, opportunityId: string) => boolean;
@@ -125,6 +126,7 @@ export const useUserMetadataWrapper = () => {
         hasCredentials,
         ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
         ofEcoverse: (id: string) => hasCredentials(AuthorizationCredential.EcoverseMember, id),
+        ofOpportunity: (id: string) => hasCredentials(AuthorizationCredential.OpportunityMember, id),
         isEcoverseAdmin,
         isChallengeAdmin,
         isOpportunityAdmin,

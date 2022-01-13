@@ -1,9 +1,7 @@
 import Grid from '@mui/material/Grid';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
 import DashboardDiscussionsSection from '../../components/composite/common/sections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
@@ -15,10 +13,10 @@ import ApplicationButtonContainer from '../../containers/application/Application
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { useChallenge, useEcoverse } from '../../hooks';
 import { User } from '../../models/graphql-schema';
-import getActivityCount from '../../utils/get-activity-count';
-import { buildOpportunityUrl } from '../../utils/urlBuilders';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
+import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
+import { CardWrapper, CardWrapperItem } from '../../components/core/CardWrapper/CardWrapper';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -104,37 +102,13 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navText={t('buttons.see-all')}
             navLink={'opportunities'}
           >
-            <Grid container item spacing={SPACING}>
-              {opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => {
-                const _activity = x.activity ?? [];
-                const activities: ActivityItem[] = [
-                  {
-                    name: t('pages.activity.projects'),
-                    digit: getActivityCount(_activity, 'projects') || 0,
-                    color: 'primary',
-                  },
-                  {
-                    name: t('pages.activity.members'),
-                    digit: getActivityCount(_activity, 'members') || 0,
-                    color: 'positive',
-                  },
-                ];
-                return (
-                  <Grid key={i} item flexGrow={0} flexBasis={'50%'}>
-                    <EntityContributionCard
-                      activities={activities}
-                      loading={loading}
-                      details={{
-                        headerText: x.displayName,
-                        tags: x.tagset?.tags ?? [],
-                        mediaUrl: x.context?.visual?.background ?? '',
-                        url: buildOpportunityUrl(ecoverseNameId, challengeNameId, x.nameID),
-                      }}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
+            <CardWrapper>
+              {opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => (
+                <CardWrapperItem key={i} flexBasis={'50%'}>
+                  <OpportunityCard opportunity={x} ecoverseNameId={ecoverseNameId} challengeNameId={challengeNameId} />
+                </CardWrapperItem>
+              ))}
+            </CardWrapper>
           </DashboardGenericSection>
           {communityReadAccess && (
             <>

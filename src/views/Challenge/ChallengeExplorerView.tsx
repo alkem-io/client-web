@@ -3,18 +3,15 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accordion } from '../../components/composite/common/Accordion/Accordion';
-import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import SearchComponent from '../../components/composite/common/SearchComponent/SearchComponent';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
-import { CardContainer } from '../../components/core/CardContainer';
 import { ChallengeCardContainer } from '../../containers/challenge/ChallengeCardContainer';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
-import { useUserContext } from '../../hooks';
-import getActivityCount from '../../utils/get-activity-count';
-import { buildChallengeUrl } from '../../utils/urlBuilders';
 import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
+import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import { CardWrapper, CardWrapperItem } from '../../components/core/CardWrapper/CardWrapper';
 
 // const groupByOptions = [
 //   {
@@ -41,7 +38,6 @@ export interface ChallengeExplorerViewProps {
 
 export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChallenges, hubs }) => {
   const { t } = useTranslation();
-  const { user } = useUserContext();
   const [groupBy] = useState<ChallengeExplorerGroupByType>('hub');
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
 
@@ -56,39 +52,21 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
               title={t('pages.challenge-explorer.my.title', { count: myChallenges.length })}
               subtitle={t('pages.challenge-explorer.my.subtitle')}
               helpText={t('pages.challenge-explorer.my.help-text')}
-              ariaKey="my"
+              ariaKey="my-challenges"
             >
-              <CardContainer>
+              <CardWrapper>
                 {myChallenges.map(({ ecoverseId, id: challengeId }, i) => (
                   <ChallengeCardContainer key={i} ecoverseNameId={ecoverseId} challengeNameId={challengeId}>
-                    {({ cardProps }) => {
-                      if (!cardProps) {
-                        return null;
-                      }
-                      const { displayName = '', activity, tags, context, url } = cardProps;
-                      return (
-                        <EntityContributionCard
-                          key={i}
-                          activities={[
-                            {
-                              name: 'Opportunities',
-                              digit: getActivityCount(activity, 'opportunities') || 0,
-                              color: 'primary',
-                            },
-                            { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
-                          ]}
-                          details={{
-                            headerText: displayName,
-                            tags: tags,
-                            mediaUrl: context?.visual?.background || '',
-                            url: url,
-                          }}
-                        />
-                      );
-                    }}
+                    {({ challenge }) =>
+                      challenge && (
+                        <CardWrapperItem>
+                          <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseId} />
+                        </CardWrapperItem>
+                      )
+                    }
                   </ChallengeCardContainer>
                 ))}
-              </CardContainer>
+              </CardWrapper>
             </Accordion>
           </Grid>
         )}
@@ -138,7 +116,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
                 ecoverseNameId: hubNameId,
               }}
             >
-              {(cEntities, { loading }) => (
+              {cEntities => (
                 <Grid item xs={12}>
                   <Accordion
                     title={t('pages.challenge-explorer.hubs.title', {
@@ -149,29 +127,13 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
                     helpText={t('pages.challenge-explorer.hubs.help-text')}
                     ariaKey={hubName}
                   >
-                    <CardContainer>
-                      {cEntities.challenges.map(({ id, nameID, displayName, context, activity = [], tagset }, i) => (
-                        <EntityContributionCard
-                          key={i}
-                          loading={loading}
-                          activities={[
-                            {
-                              name: 'Opportunities',
-                              digit: getActivityCount(activity, 'opportunities') || 0,
-                              color: 'primary',
-                            },
-                            { name: 'Members', digit: getActivityCount(activity, 'members') || 0, color: 'positive' },
-                          ]}
-                          details={{
-                            headerText: displayName,
-                            tags: tagset?.tags || [],
-                            labelText: user?.ofChallenge(id) ? t('common.member') : '',
-                            mediaUrl: context?.visual?.background || '',
-                            url: buildChallengeUrl(hubNameId, nameID),
-                          }}
-                        />
+                    <CardWrapper>
+                      {cEntities.challenges.map((challenge, i) => (
+                        <CardWrapperItem key={i}>
+                          <ChallengeCard challenge={challenge} ecoverseNameId={hubNameId} />
+                        </CardWrapperItem>
                       ))}
-                    </CardContainer>
+                    </CardWrapper>
                   </Accordion>
                 </Grid>
               )}

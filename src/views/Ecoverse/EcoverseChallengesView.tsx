@@ -4,19 +4,17 @@ import Typography from '@mui/material/Typography';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
-import ChallengeCard from '../../components/composite/entities/Ecoverse/ChallengeCard';
+import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import { Loading } from '../../components/core';
 import CardFilter from '../../components/core/card-filter/CardFilter';
 import {
   entityTagsValueGetter,
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
-import { CardContainer } from '../../components/core/CardContainer';
 import ErrorBlock from '../../components/core/ErrorBlock';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
-import { useUserContext } from '../../hooks';
-import { buildChallengeUrl } from '../../utils/urlBuilders';
+import { CardWrapperItem, CardWrapper } from '../../components/core/CardWrapper/CardWrapper';
 
 interface EcoverseChallengesViewProps {
   entities: EcoverseContainerEntities;
@@ -25,7 +23,6 @@ interface EcoverseChallengesViewProps {
 
 export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entities }) => {
   const { t } = useTranslation();
-  const { user } = useUserContext();
   const { ecoverse, permissions } = entities;
   const { challengesReadAccess } = permissions;
   const { nameID: ecoverseNameId = '' } = ecoverse || {};
@@ -73,23 +70,13 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
                 valueGetter={entityValueGetter}
               >
                 {filteredData => (
-                  <CardContainer>
+                  <CardWrapper>
                     {filteredData.map((challenge, i) => (
-                      <ChallengeCard
-                        key={i}
-                        id={challenge.id}
-                        displayName={challenge.displayName}
-                        activity={challenge?.activity || []}
-                        context={{
-                          tagline: challenge?.context?.tagline || '',
-                          visual: { background: challenge?.context?.visual?.background || '' },
-                        }}
-                        isMember={user?.ofChallenge(challenge.id) || false}
-                        tags={challenge?.tagset?.tags || []}
-                        url={buildChallengeUrl(ecoverseNameId, challenge.nameID)}
-                      />
+                      <CardWrapperItem key={i} flexBasis={'50%'}>
+                        <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseNameId} />
+                      </CardWrapperItem>
                     ))}
-                  </CardContainer>
+                  </CardWrapper>
                 )}
               </CardFilter>
             );
