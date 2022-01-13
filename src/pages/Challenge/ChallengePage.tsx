@@ -5,7 +5,7 @@ import { useChallenge, useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../common';
 import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
 import ChallengeTabs from '../../routing/challenge/ChallengeTabs';
-import RestrictedRoute, { CredentialForResource } from '../../routing/route.extensions';
+import RestrictedRoute, { CredentialForResource } from '../../routing/RestrictedRoute';
 import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
 import ChallengeCommunityPage from '../Community/ChallengeCommunityPage';
 import { ChallengeDashboardView } from '../../views/Challenge/ChallengeDashboardView';
@@ -14,6 +14,7 @@ import { ChallengeOpportunitiesView } from '../../views/Challenge/ChallengeOppor
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import ChallengeCanvasManagementView from '../../views/Challenge/ChallengeCanvasManagementView';
+import { Route } from 'react-router-dom';
 
 interface ChallengePageProps extends PageProps {}
 
@@ -51,9 +52,14 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
                   </TabPanel>
                   <TabPanel value={tabNames['discussions']}>
                     <Switch>
-                      <RestrictedRoute path={`${path}/community/discussions`} requiredCredentials={requiredCredentials}>
-                        <DiscussionsRoute paths={paths} />
-                      </RestrictedRoute>
+                      <Route
+                        path={`${path}/community/discussions`}
+                        render={() => (
+                          <RestrictedRoute requiredCredentials={requiredCredentials}>
+                            <DiscussionsRoute paths={paths} />
+                          </RestrictedRoute>
+                        )}
+                      />
                     </Switch>
                   </TabPanel>
                   <TabPanel value={tabNames['canvases']}>

@@ -9,7 +9,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { Project as ProjectType } from '../../models/graphql-schema';
 import { Error404, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../../pages';
-import RestrictedRoute from '../route.extensions';
+import RestrictedRoute from '../RestrictedRoute';
 import { nameOfUrl } from '../url-params';
 
 interface ProjectRootProps extends PageProps {}
@@ -18,12 +18,26 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
   const { path } = useRouteMatch();
   return (
     <Switch>
-      <RestrictedRoute exact path={`${path}new`} requiredCredentials={[]} strict={false}>
-        <ProjectNewRoute paths={paths} />
-      </RestrictedRoute>
-      <RestrictedRoute exact path={`${path}:${nameOfUrl.projectNameId}`}>
-        <ProjectIndex paths={paths} />
-      </RestrictedRoute>
+      <Route
+        exact
+        path={`${path}new`}
+        strict={false}
+        render={() => (
+          <RestrictedRoute requiredCredentials={[]}>
+            <ProjectNewRoute paths={paths} />
+          </RestrictedRoute>
+        )}
+      />
+
+      <Route
+        exact
+        path={`${path}:${nameOfUrl.projectNameId}`}
+        render={() => (
+          <RestrictedRoute>
+            <ProjectIndex paths={paths} />
+          </RestrictedRoute>
+        )}
+      />
       <Route path="*">
         <Error404 />
       </Route>

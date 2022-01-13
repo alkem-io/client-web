@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom';
+import { Redirect, Route, useLocation } from 'react-router-dom';
 import Loading from '../components/core/Loading/Loading';
 import { useAuthenticationContext, useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
@@ -14,7 +14,7 @@ export interface CredentialForResource {
 
 type RequiredCredential = AuthorizationCredential | CredentialForResource;
 
-interface RestrictedRoutePros extends RouteProps {
+interface RestrictedRoutePros {
   requiredCredentials?: RequiredCredential[];
 }
 
@@ -46,18 +46,6 @@ const RestrictedRoute: FC<RestrictedRoutePros> = ({ children, requiredCredential
   ) {
     return <Redirect to={`/restricted?origin=${encodeURI(pathname)}`} />;
   }
-
-  return (
-    // Show the component only when the user is logged in
-    // Otherwise, redirect the user to /signin page
-    <Route {...rest}>{children}</Route>
-  );
-};
-
-export const NotAuthenticatedRoute: FC<RouteProps> = ({ children, ...rest }) => {
-  const { isAuthenticated } = useAuthenticationContext();
-
-  if (isAuthenticated) return <Redirect to={'/'} />;
 
   return (
     // Show the component only when the user is logged in

@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
-import { Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { TabContext, TabPanel } from '@mui/lab';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
 import { useEcoverse, useUpdateNavigation } from '../../hooks';
 import { AuthorizationCredential, User } from '../../models/graphql-schema';
 import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
 import EcoverseTabs from '../../routing/ecoverse/EcoverseTabs';
-import RestrictedRoute, { CredentialForResource } from '../../routing/route.extensions';
+import RestrictedRoute, { CredentialForResource } from '../../routing/RestrictedRoute';
 import EcoverseChallengesView from '../../views/Ecoverse/EcoverseChallengesView';
 import EcoverseContextView from '../../views/Ecoverse/EcoverseContextView';
 import { PageProps } from '../common';
@@ -77,12 +77,14 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                   </TabPanel>
                   <TabPanel value={tabNames['discussions']}>
                     <Switch>
-                      <RestrictedRoute
+                      <Route
                         path={`${path}/community/discussions`}
-                        requiredCredentials={discussionsRequiredCredentials}
-                      >
-                        <DiscussionsRoute paths={paths} />
-                      </RestrictedRoute>
+                        render={() => (
+                          <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
+                            <DiscussionsRoute paths={paths} />
+                          </RestrictedRoute>
+                        )}
+                      />
                     </Switch>
                   </TabPanel>
                   <TabPanel value={tabNames['canvases']}>
