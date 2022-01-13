@@ -3,9 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import Button from '../../components/core/Button';
 import Section from '../../components/core/Section';
 import Typography from '../../components/core/Typography';
-import { env } from '../../types/env';
-
-const graphQLEndpoint = (env && env.REACT_APP_GRAPHQL_ENDPOINT) || '/graphql';
+import { privateGraphQLEndpoint } from '../../root';
 
 export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
   const { t } = useTranslation();
@@ -26,7 +24,7 @@ export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
           />
         </Typography>
         <Typography as="h2" variant="h3" color="neutral">
-          {t('pages.error.line2', { graphQLEndpoint })}
+          {t('pages.error.line2', { graphQLEndpoint: privateGraphQLEndpoint })}
         </Typography>
         <Typography as="h5" variant="h5" color="neutralMedium">
           {t('pages.error.line3')}
