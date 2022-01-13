@@ -111,7 +111,7 @@ services:
 
   alkemio_server:
     container_name: alkemio_client_server
-    image: alkemio/server:v0.15.0
+    image: alkemio/server:v0.17.0
     depends_on:
       - mysql_db
       - ipfs
@@ -196,7 +196,7 @@ services:
       - 'host.docker.internal:host-gateway'
     container_name: alkemio_client_notifications
     hostname: notifications
-    image: alkemio/notifications:v0.3.2
+    image: alkemio/notifications:v0.4.5
     environment:
       - RABBITMQ_HOST
       - LOGGING_CONSOLE_ENABLED
