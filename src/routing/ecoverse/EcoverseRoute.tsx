@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Navigate, Route } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
@@ -9,6 +9,7 @@ import { Ecoverse as EcoversePage, Error404, PageProps } from '../../pages';
 import ApplyRoute from '../application/apply.route';
 import ChallengeRoute from '../challenge/ChallengeRoute';
 import { nameOfUrl } from '../url-params';
+import EcoverseTabs from './EcoverseTabs';
 
 const currentPaths = [];
 
@@ -31,26 +32,31 @@ export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   }
 
   return (
-    <Route path={'/'}>
-      <Navigate to={'dashboard'} />
-      <Route path={'challenges'}>
-        <Route path={`:${nameOfUrl.challengeNameId}`}>
-          <ChallengeProvider>
-            <CommunityProvider>
-              <ChallengeRoute paths={currentPaths} />
-            </CommunityProvider>
-          </ChallengeProvider>
+    <Routes>
+      <Route path={'/'} element={<EcoverseTabs />}>
+        <Route path={'dashboard'} element={<div>Dashboard</div>} />
+        <Route path={'context'} element={<div>context</div>} />
+        <Route path={'community'} element={<div>community</div>} />
+        <Route path={'discussions'} element={<div>discussions</div>} />
+        <Route path={'canvases'} element={<div>canvases</div>} />
+        <Route path={'challenges'}>
+          <Route
+            path={`:${nameOfUrl.challengeNameId}`}
+            element={
+              <ChallengeProvider>
+                <CommunityProvider>
+                  <ChallengeRoute paths={currentPaths} />
+                </CommunityProvider>
+              </ChallengeProvider>
+            }
+          ></Route>
         </Route>
+        {/* <Route path="*">
+          <Error404 />
+        </Route> */}
       </Route>
-      <Route path={'apply'}>
-        <ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />
-      </Route>
-      <Route>
-        <EcoversePage paths={currentPaths} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Route>
+      <Route path={'apply'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />}></Route>
+      {/* <Navigate to={'dashboard'} /> */}
+    </Routes>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
@@ -11,8 +11,9 @@ import Footer from './Footer';
 import Main from './Main';
 import useServerMetadata from '../../../../hooks/useServerMetadata';
 import useCommunityUpdatesNotifier from '../../../../hooks/subscription/CommunityUpdatesNotifier';
+import { Outlet } from 'react-router-dom';
 
-const App = ({ children }): React.ReactElement => {
+const App: FC = () => {
   const { t } = useTranslation();
 
   const { user, loading } = useUserContext();
@@ -50,7 +51,7 @@ const App = ({ children }): React.ReactElement => {
           <TopBarSpacer />
           {/*no point of showing just one item of the breadcrumbs*/}
           {paths.length > 1 && <Breadcrumbs paths={paths} />}
-          {children}
+          <Outlet />
         </Main>
         <Footer />
       </div>

@@ -74,10 +74,8 @@ const Root: FC = () => {
                       <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                         <NavigationProvider>
                           <UserProvider>
-                            <App>
-                              <ScrollToTop />
-                              <Routing />
-                            </App>
+                            <ScrollToTop />
+                            <Routing />
                           </UserProvider>
                         </NavigationProvider>
                       </AlkemioApolloProvider>

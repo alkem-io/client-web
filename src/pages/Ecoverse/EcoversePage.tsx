@@ -34,76 +34,77 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
           if (!entities || !state) return null;
           const communityReadAccess = entities.permissions.communityReadAccess;
           return (
-            <EcoverseTabs entities={entities}>
-              {({ tabName, tabNames }) => (
-                <TabContext value={tabName}>
-                  <TabPanel value={tabNames['dashboard']}>
-                    <EcoverseChallengesContainer
-                      entities={{
-                        ecoverseNameId: entities?.ecoverse?.nameID || '',
-                      }}
-                    >
-                      {cEntities => (
-                        <EcoverseDashboardView2
-                          title={entities?.ecoverse?.displayName}
-                          bannerUrl={entities?.ecoverse?.context?.visual?.banner}
-                          tagline={entities?.ecoverse?.context?.tagline}
-                          vision={entities?.ecoverse?.context?.vision}
-                          ecoverseId={entities?.ecoverse?.id}
-                          ecoverseNameId={entities?.ecoverse?.nameID}
-                          communityId={entities?.ecoverse?.community?.id}
-                          organizationNameId={entities?.ecoverse?.host?.nameID}
-                          activity={entities.activity}
-                          challenges={cEntities.challenges}
-                          discussions={entities.discussionList}
-                          members={entities?.ecoverse?.community?.members as User[]}
-                          loading={state.loading}
-                          isMember={entities.isMember}
-                          communityReadAccess={communityReadAccess}
-                          challengesReadAccess={entities.permissions.challengesReadAccess}
-                        />
-                      )}
-                    </EcoverseChallengesContainer>
-                  </TabPanel>
-                  <TabPanel sx={{ paddingLeft: 0, paddingRight: 0 }} value={tabNames['context']}>
-                    <EcoverseContextView entities={entities} state={state} />
-                  </TabPanel>
-                  <TabPanel value={tabNames['challenges']}>
-                    <EcoverseChallengesView entities={entities} state={state} />
-                  </TabPanel>
-                  <TabPanel value={tabNames['community']}>
-                    <EcoverseCommunityPage paths={paths} />
-                  </TabPanel>
-                  <TabPanel value={tabNames['discussions']}>
-                    <Routes>
-                      <Route
-                        path={'community/discussions'}
-                        element={() => (
-                          <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
-                            <DiscussionsRoute paths={paths} />
-                          </RestrictedRoute>
-                        )}
-                      />
-                    </Routes>
-                  </TabPanel>
-                  <TabPanel value={tabNames['canvases']}>
-                    {entities.ecoverse && (
-                      <HubCanvasManagementView
-                        entities={{
-                          hub: entities.ecoverse,
-                        }}
-                        state={{
-                          loading: state.loading,
-                          error: state.error,
-                        }}
-                        actions={undefined}
-                        options={undefined}
-                      />
-                    )}
-                  </TabPanel>
-                </TabContext>
-              )}
-            </EcoverseTabs>
+            <div>Ecoverse Page</div>
+            // <EcoverseTabs entities={entities}>
+            //   {({ tabName, tabNames }) => (
+            //     <TabContext value={tabName}>
+            //       <TabPanel value={tabNames['dashboard']}>
+            //         <EcoverseChallengesContainer
+            //           entities={{
+            //             ecoverseNameId: entities?.ecoverse?.nameID || '',
+            //           }}
+            //         >
+            //           {cEntities => (
+            //             <EcoverseDashboardView2
+            //               title={entities?.ecoverse?.displayName}
+            //               bannerUrl={entities?.ecoverse?.context?.visual?.banner}
+            //               tagline={entities?.ecoverse?.context?.tagline}
+            //               vision={entities?.ecoverse?.context?.vision}
+            //               ecoverseId={entities?.ecoverse?.id}
+            //               ecoverseNameId={entities?.ecoverse?.nameID}
+            //               communityId={entities?.ecoverse?.community?.id}
+            //               organizationNameId={entities?.ecoverse?.host?.nameID}
+            //               activity={entities.activity}
+            //               challenges={cEntities.challenges}
+            //               discussions={entities.discussionList}
+            //               members={entities?.ecoverse?.community?.members as User[]}
+            //               loading={state.loading}
+            //               isMember={entities.isMember}
+            //               communityReadAccess={communityReadAccess}
+            //               challengesReadAccess={entities.permissions.challengesReadAccess}
+            //             />
+            //           )}
+            //         </EcoverseChallengesContainer>
+            //       </TabPanel>
+            //       <TabPanel sx={{ paddingLeft: 0, paddingRight: 0 }} value={tabNames['context']}>
+            //         <EcoverseContextView entities={entities} state={state} />
+            //       </TabPanel>
+            //       <TabPanel value={tabNames['challenges']}>
+            //         <EcoverseChallengesView entities={entities} state={state} />
+            //       </TabPanel>
+            //       <TabPanel value={tabNames['community']}>
+            //         <EcoverseCommunityPage paths={paths} />
+            //       </TabPanel>
+            //       <TabPanel value={tabNames['discussions']}>
+            //         <Routes>
+            //           <Route
+            //             path={'community/discussions'}
+            //             element={() => (
+            //               <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
+            //                 <DiscussionsRoute paths={paths} />
+            //               </RestrictedRoute>
+            //             )}
+            //           />
+            //         </Routes>
+            //       </TabPanel>
+            //       <TabPanel value={tabNames['canvases']}>
+            //         {entities.ecoverse && (
+            //           <HubCanvasManagementView
+            //             entities={{
+            //               hub: entities.ecoverse,
+            //             }}
+            //             state={{
+            //               loading: state.loading,
+            //               error: state.error,
+            //             }}
+            //             actions={undefined}
+            //             options={undefined}
+            //           />
+            //         )}
+            //       </TabPanel>
+            //     </TabContext>
+            //   )}
+            // </EcoverseTabs>
           );
         }}
       </EcoversePageContainer>
