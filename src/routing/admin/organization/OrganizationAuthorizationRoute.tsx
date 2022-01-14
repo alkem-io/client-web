@@ -13,12 +13,8 @@ const OrganizationAuthorizationRoute: FC<OrganizationAuthorizationRouteProps> = 
 
   return (
     <Routes>
-      <Route path={'admins'}>
-        <OrganizationAdminAuthorizationPage paths={currentPaths} />
-      </Route>
-      <Route path={'owners'}>
-        <OrganizationOwnerAuthorizationPage paths={currentPaths} />
-      </Route>
+      <Route path={'admins'} element={<OrganizationAdminAuthorizationPage paths={currentPaths} />}></Route>
+      <Route path={'owners'} element={<OrganizationOwnerAuthorizationPage paths={currentPaths} />}></Route>
       <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );

@@ -31,28 +31,33 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
 }) => {
   return (
     <Routes>
-      <Route path={'members'}>
-        <CommunityPage
-          paths={paths}
-          credential={credential}
-          resourceId={resourceId}
-          communityId={communityId}
-          parentCommunityId={parentCommunityId}
-        />
-      </Route>
-      <Route path={'groups'}>
-        <CommunityGroupsRoute paths={paths} communityId={communityId} parentCommunityId={parentCommunityId} />
-      </Route>
-      <Route path={'applications'}>
-        {accessedFrom === 'hub' && <EcoverseApplicationRoute paths={paths} />}
-        {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
-      </Route>
-      <Route path={'updates'}>
-        <CommunityUpdatesPage paths={paths} communityId={communityId} />
-      </Route>
-      <Route path={'lead'}>
-        <LeadingOrganizationPage paths={paths} />
-      </Route>
+      <Route
+        path={'members'}
+        element={
+          <CommunityPage
+            paths={paths}
+            credential={credential}
+            resourceId={resourceId}
+            communityId={communityId}
+            parentCommunityId={parentCommunityId}
+          />
+        }
+      ></Route>
+      <Route
+        path={'groups'}
+        element={<CommunityGroupsRoute paths={paths} communityId={communityId} parentCommunityId={parentCommunityId} />}
+      ></Route>
+      <Route
+        path={'applications'}
+        element={
+          <>
+            {accessedFrom === 'hub' && <EcoverseApplicationRoute paths={paths} />}
+            {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
+          </>
+        }
+      ></Route>
+      <Route path={'updates'} element={<CommunityUpdatesPage paths={paths} communityId={communityId} />}></Route>
+      <Route path={'lead'} element={<LeadingOrganizationPage paths={paths} />}></Route>
       <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );

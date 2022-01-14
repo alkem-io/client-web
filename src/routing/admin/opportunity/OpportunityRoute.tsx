@@ -36,35 +36,46 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <ManagementPageTemplatePage
-          data={managementData.opportunityLvl}
-          paths={currentPaths}
-          title={displayName}
-          entityUrl={buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}
-          loading={loadingOpportunity || loadingChallenge}
-        />
+      <Route path={'/'}>
+        <Route
+          index
+          element={
+            <ManagementPageTemplatePage
+              data={managementData.opportunityLvl}
+              paths={currentPaths}
+              title={displayName}
+              entityUrl={buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}
+              loading={loadingOpportunity || loadingChallenge}
+            />
+          }
+        ></Route>
+        <Route
+          path={'edit'}
+          element={
+            <EditOpportunity
+              title={t('navigation.admin.opportunity.edit')}
+              mode={FormMode.update}
+              paths={currentPaths}
+            />
+          }
+        ></Route>
+        <Route
+          path={'community'}
+          element={
+            <CommunityRoute
+              paths={currentPaths}
+              communityId={opportunity?.community?.id}
+              parentCommunityId={challenge?.community?.id}
+              credential={AuthorizationCredential.OpportunityMember}
+              resourceId={opportunityId}
+              accessedFrom="opportunity"
+            />
+          }
+        ></Route>
+        <Route path={'lifecycle'} element={<OpportunityLifecycleRoute paths={currentPaths} />}></Route>
+        <Route path={'authorization'} element={<OpportunityAuthorizationRoute paths={currentPaths} />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'edit'}>
-        <EditOpportunity title={t('navigation.admin.opportunity.edit')} mode={FormMode.update} paths={currentPaths} />
-      </Route>
-      <Route path={'community'}>
-        <CommunityRoute
-          paths={currentPaths}
-          communityId={opportunity?.community?.id}
-          parentCommunityId={challenge?.community?.id}
-          credential={AuthorizationCredential.OpportunityMember}
-          resourceId={opportunityId}
-          accessedFrom="opportunity"
-        />
-      </Route>
-      <Route path={'lifecycle'}>
-        <OpportunityLifecycleRoute paths={currentPaths} />
-      </Route>
-      <Route path={'authorization'}>
-        <OpportunityAuthorizationRoute paths={currentPaths} />
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

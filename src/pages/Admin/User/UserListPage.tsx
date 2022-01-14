@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
@@ -10,13 +9,11 @@ import { useDeleteUserMutation, useUsersQuery } from '../../../hooks/generated/g
 interface UserListPageProps extends PageProps {}
 
 export const UserListPage: FC<UserListPageProps> = ({ paths }) => {
-  const url = '';
-
   const { data, loading } = useUsersQuery({ fetchPolicy: 'cache-and-network' });
 
   const users = data?.users || [];
 
-  const userList = users.map(u => ({ id: u.id, value: `${u.displayName} (${u.email})`, url: `${url}/${u.id}/edit` }));
+  const userList = users.map(u => ({ id: u.id, value: `${u.displayName} (${u.email})`, url: `${u.id}/edit` }));
   const handleError = useApolloErrorHandler();
 
   const [deleteUser] = useDeleteUserMutation({
@@ -40,25 +37,5 @@ export const UserListPage: FC<UserListPageProps> = ({ paths }) => {
   }
   return <ListPage data={userList} paths={paths} onDelete={handleDelete} />;
 };
-
-// interface Props<TEntities, TActions> {
-//   entities: TEntities;
-//   actions: TActions;
-// }
-
-// interface Entities {
-//   users: UserModel[];
-// }
-
-// interface Actions {
-//   onDelete?: () => void;
-// }
-
-// interface UserProps extends Props<Entities, Actions> {
-
-// }
-
-// interface CompositeEntities extends Entities {
-// }
 
 export default UserListPage;

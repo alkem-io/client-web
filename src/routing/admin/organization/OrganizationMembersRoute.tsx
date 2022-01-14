@@ -9,10 +9,10 @@ export const OrganizationMembersRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <OrganizationCommunityPage paths={currentPaths} />
+      <Route path={'/'}>
+        <Route index element={<OrganizationCommunityPage paths={currentPaths} />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

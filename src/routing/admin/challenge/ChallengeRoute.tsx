@@ -35,38 +35,50 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <ManagementPageTemplatePage
-          data={managementData.challengeLvl}
-          paths={currentPaths}
-          title={displayName}
-          entityUrl={buildChallengeUrl(ecoverseNameId, challengeNameId)}
-          loading={loading}
-        />
+      <Route path={'/'}>
+        <Route
+          index
+          element={
+            <ManagementPageTemplatePage
+              data={managementData.challengeLvl}
+              paths={currentPaths}
+              title={displayName}
+              entityUrl={buildChallengeUrl(ecoverseNameId, challengeNameId)}
+              loading={loading}
+            />
+          }
+        ></Route>
+        <Route
+          path={'edit'}
+          element={
+            <EditChallengePage
+              mode={FormMode.update}
+              paths={currentPaths}
+              title={t('navigation.admin.challenge.edit')}
+            />
+          }
+        ></Route>
+        <Route
+          path={'community'}
+          element={
+            <CommunityRoute
+              paths={currentPaths}
+              communityId={challenge?.community?.id}
+              parentCommunityId={ecoverse?.community?.id}
+              credential={AuthorizationCredential.ChallengeMember}
+              resourceId={challengeId}
+              accessedFrom="challenge"
+            />
+          }
+        ></Route>
+        <Route path={'opportunities'} element={<OpportunitiesRoute paths={currentPaths} />}></Route>
+        <Route
+          path={'authorization'}
+          element={<ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />}
+        ></Route>
+        <Route path={'lifecycle'} element={<ChallengeLifecycleRoute paths={currentPaths} />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'edit'}>
-        <EditChallengePage mode={FormMode.update} paths={currentPaths} title={t('navigation.admin.challenge.edit')} />
-      </Route>
-      <Route path={'community'}>
-        <CommunityRoute
-          paths={currentPaths}
-          communityId={challenge?.community?.id}
-          parentCommunityId={ecoverse?.community?.id}
-          credential={AuthorizationCredential.ChallengeMember}
-          resourceId={challengeId}
-          accessedFrom="challenge"
-        />
-      </Route>
-      <Route path={'opportunities'}>
-        <OpportunitiesRoute paths={currentPaths} />
-      </Route>
-      <Route path={'authorization'}>
-        <ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />
-      </Route>
-      <Route path={'lifecycle'}>
-        <ChallengeLifecycleRoute paths={currentPaths} />
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

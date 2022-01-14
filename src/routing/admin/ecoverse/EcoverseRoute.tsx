@@ -25,34 +25,39 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <ManagementPageTemplatePage
-          data={managementData.ecoverseLvl}
-          paths={currentPaths}
-          title={ecoverse?.displayName}
-          entityUrl={buildEcoverseUrl(ecoverseNameId)}
-          loading={loadingEcoverse}
-        />
+      <Route path={'/'}>
+        <Route
+          index
+          element={
+            <ManagementPageTemplatePage
+              data={managementData.ecoverseLvl}
+              paths={currentPaths}
+              title={ecoverse?.displayName}
+              entityUrl={buildEcoverseUrl(ecoverseNameId)}
+              loading={loadingEcoverse}
+            />
+          }
+        ></Route>
+        <Route path={'edit'} element={<EditEcoverse paths={currentPaths} />}></Route>
+        <Route
+          path={'community'}
+          element={
+            <CommunityRoute
+              paths={currentPaths}
+              communityId={ecoverse?.community?.id}
+              credential={AuthorizationCredential.EcoverseMember}
+              resourceId={ecoverseId}
+              accessedFrom="hub"
+            />
+          }
+        ></Route>
+        <Route path={'challenges'} element={<ChallengesRoute paths={currentPaths} />}></Route>
+        <Route
+          path={'authorization'}
+          element={<EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />}
+        ></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'edit'}>
-        <EditEcoverse paths={currentPaths} />
-      </Route>
-      <Route path={'community'}>
-        <CommunityRoute
-          paths={currentPaths}
-          communityId={ecoverse?.community?.id}
-          credential={AuthorizationCredential.EcoverseMember}
-          resourceId={ecoverseId}
-          accessedFrom="hub"
-        />
-      </Route>
-      <Route path={'challenges'}>
-        <ChallengesRoute paths={currentPaths} />
-      </Route>
-      <Route path={'authorization'}>
-        <EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

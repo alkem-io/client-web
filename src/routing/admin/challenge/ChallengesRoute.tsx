@@ -17,18 +17,28 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <ChallengeListPage paths={currentPaths} />
+      <Route path={'/'}>
+        <Route index element={<ChallengeListPage paths={currentPaths} />}></Route>
+        <Route
+          path={'new'}
+          element={
+            <EditChallengePage
+              mode={FormMode.create}
+              paths={currentPaths}
+              title={t('navigation.admin.challenge.create')}
+            />
+          }
+        ></Route>
+        <Route
+          path={`:${nameOfUrl.challengeNameId}`}
+          element={
+            <ChallengeProvider>
+              <ChallengeRoute paths={currentPaths} />
+            </ChallengeProvider>
+          }
+        ></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'new'}>
-        <EditChallengePage mode={FormMode.create} paths={currentPaths} title={t('navigation.admin.challenge.create')} />
-      </Route>
-      <Route path={`:${nameOfUrl.challengeNameId}`}>
-        <ChallengeProvider>
-          <ChallengeRoute paths={currentPaths} />
-        </ChallengeProvider>
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

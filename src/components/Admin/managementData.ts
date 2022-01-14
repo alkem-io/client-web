@@ -5,19 +5,19 @@ export const managementData = {
     {
       name: 'Hubs',
       buttons: [
-        { description: 'Manage', url: '/hubs' },
-        { description: 'New', url: '/hubs/new' },
+        { description: 'Manage', url: 'hubs' },
+        { description: 'New', url: 'hubs/new' },
       ],
     },
     {
       name: 'Users',
-      buttons: [{ description: 'Manage', url: '/users' }],
+      buttons: [{ description: 'Manage', url: 'users' }],
     },
     {
       name: 'Organizations',
       buttons: [
-        { description: 'Manage', url: '/organizations' },
-        { description: 'New', url: '/organizations/new' },
+        { description: 'Manage', url: 'organizations' },
+        { description: 'New', url: 'organizations/new' },
       ],
     },
     {
@@ -25,11 +25,11 @@ export const managementData = {
       buttons: [
         {
           description: 'Global admins',
-          url: `/authorization/${AuthorizationCredential.GlobalAdmin}`,
+          url: `authorization/${AuthorizationCredential.GlobalAdmin}`,
         },
         {
           description: 'Global community admins',
-          url: `/authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
+          url: `authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
         },
       ],
     },
@@ -37,22 +37,22 @@ export const managementData = {
   ecoverseLvl: [
     {
       name: 'Info',
-      buttons: [{ description: 'Edit', url: '/edit' }],
+      buttons: [{ description: 'Edit', url: 'edit' }],
     },
     {
       name: 'Community',
       buttons: [
-        { description: 'Members', url: '/community/members' },
-        { description: 'Groups', url: '/community/groups' },
-        { description: 'Applications', url: '/community/applications' },
-        { description: 'Updates', url: '/community/updates' },
+        { description: 'Members', url: 'community/members' },
+        { description: 'Groups', url: 'community/groups' },
+        { description: 'Applications', url: 'community/applications' },
+        { description: 'Updates', url: 'community/updates' },
       ],
     },
     {
       name: 'Challenges',
       buttons: [
-        { description: 'Manage', url: '/challenges' },
-        { description: 'New', url: '/challenges/new' },
+        { description: 'Manage', url: 'challenges' },
+        { description: 'New', url: 'challenges/new' },
       ],
     },
     {
@@ -60,7 +60,7 @@ export const managementData = {
       buttons: [
         {
           description: 'Hub admins',
-          url: `/authorization/${AuthorizationCredential.EcoverseAdmin}`,
+          url: `authorization/${AuthorizationCredential.EcoverseAdmin}`,
         },
       ],
     },
@@ -69,25 +69,25 @@ export const managementData = {
     {
       name: 'Context',
       buttons: [
-        { description: 'Edit', url: '/edit' },
-        { description: 'Lifecycle', url: '/lifecycle' },
+        { description: 'Edit', url: 'edit' },
+        { description: 'Lifecycle', url: 'lifecycle' },
       ],
     },
     {
       name: 'Community',
       buttons: [
-        { description: 'Members', url: '/community/members' },
-        { description: 'Groups', url: '/community/groups' },
-        { description: 'Applications', url: '/community/applications' },
-        { description: 'Lead Organizations', url: '/community/lead' },
-        { description: 'Updates', url: '/community/updates' },
+        { description: 'Members', url: 'community/members' },
+        { description: 'Groups', url: 'community/groups' },
+        { description: 'Applications', url: 'community/applications' },
+        { description: 'Lead Organizations', url: 'community/lead' },
+        { description: 'Updates', url: 'community/updates' },
       ],
     },
     {
       name: 'Opportunities',
       buttons: [
-        { description: 'Manage', url: '/opportunities' },
-        { description: 'New', url: '/opportunities/new' },
+        { description: 'Manage', url: 'opportunities' },
+        { description: 'New', url: 'opportunities/new' },
       ],
     },
     {
@@ -95,7 +95,7 @@ export const managementData = {
       buttons: [
         {
           description: 'Challenge admins',
-          url: `/authorization/${AuthorizationCredential.ChallengeAdmin}`,
+          url: `authorization/${AuthorizationCredential.ChallengeAdmin}`,
         },
       ],
     },
@@ -104,17 +104,17 @@ export const managementData = {
     {
       name: 'Opportunity info',
       buttons: [
-        { description: 'Edit', url: '/edit' },
-        { description: 'Lifecycle', url: '/lifecycle' },
+        { description: 'Edit', url: 'edit' },
+        { description: 'Lifecycle', url: 'lifecycle' },
       ],
     },
     {
       name: 'Community',
       buttons: [
-        { description: 'Members', url: '/community/members' },
-        { description: 'Groups', url: '/community/groups' },
-        { description: 'Applications', url: '/community/applications' },
-        { description: 'Updates', url: '/community/updates' },
+        { description: 'Members', url: 'community/members' },
+        { description: 'Groups', url: 'community/groups' },
+        { description: 'Applications', url: 'community/applications' },
+        { description: 'Updates', url: 'community/updates' },
       ],
     },
     {
@@ -122,7 +122,7 @@ export const managementData = {
       buttons: [
         {
           description: 'Opportunity admins',
-          url: '/authorization/admins',
+          url: 'authorization/admins',
         },
       ],
     },
@@ -130,20 +130,20 @@ export const managementData = {
   organizationLvl: [
     {
       name: 'Organization Context',
-      buttons: [{ description: 'Edit', url: '/edit' }],
+      buttons: [{ description: 'Edit', url: 'edit' }],
     },
     {
       name: 'Community',
       buttons: [
-        { description: 'Members', url: '/community/members' },
-        { description: 'Groups', url: '/community/groups' },
+        { description: 'Members', url: 'community/members' },
+        { description: 'Groups', url: 'community/groups' },
       ],
     },
     {
       name: 'Authorization',
       buttons: [
-        { description: 'Admins', url: '/authorization/admins' },
-        { description: 'Owners', url: '/authorization/owners' },
+        { description: 'Admins', url: 'authorization/admins' },
+        { description: 'Owners', url: 'authorization/owners' },
       ],
     },
   ],

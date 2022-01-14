@@ -12,12 +12,11 @@ const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route path={`:${nameOfUrl.role}`}>
-        <GlobalAuthorizationPage paths={currentPaths} />
-      </Route>
-      <Route path={`community/:${nameOfUrl.role}`}>
-        <GlobalCommunityAuthorizationPage paths={currentPaths} />
-      </Route>
+      <Route path={`:${nameOfUrl.role}`} element={<GlobalAuthorizationPage paths={currentPaths} />}></Route>
+      <Route
+        path={`community/:${nameOfUrl.role}`}
+        element={<GlobalCommunityAuthorizationPage paths={currentPaths} />}
+      ></Route>
       <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );

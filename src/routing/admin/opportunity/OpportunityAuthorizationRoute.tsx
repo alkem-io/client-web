@@ -12,9 +12,7 @@ const OpportunityAuthorizationRoute: FC<OpportunityAuthorizationRouteProps> = ({
 
   return (
     <Routes>
-      <Route path={'admins'}>
-        <OpportunityAdminAuthorizationPage paths={currentPaths} />
-      </Route>
+      <Route path={'admins'} element={<OpportunityAdminAuthorizationPage paths={currentPaths} />}></Route>
       <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );

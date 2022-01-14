@@ -32,23 +32,21 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <Navigate to={'dashboard'} />
-      </Route>
-      <Route path={`opportunities/:${nameOfUrl.opportunityNameId}`}>
-        <OpportunityProvider>
-          <CommunityProvider>
-            <OpportunityRoute paths={currentPaths} />
-          </CommunityProvider>
-        </OpportunityProvider>
-      </Route>
-      <Route path={'apply'}>
-        <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
-      </Route>
       <Route path={'/'}>
-        <ChallengePage paths={currentPaths} />
+        <Route index element={<Navigate to={'dashboard'} />}></Route>
+        <Route path={'*'} element={<ChallengePage paths={currentPaths} />}></Route>
+        <Route
+          path={`opportunities/:${nameOfUrl.opportunityNameId}`}
+          element={
+            <OpportunityProvider>
+              <CommunityProvider>
+                <OpportunityRoute paths={currentPaths} />
+              </CommunityProvider>
+            </OpportunityProvider>
+          }
+        ></Route>
+        <Route path={'apply'} element={<ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />}></Route>
       </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

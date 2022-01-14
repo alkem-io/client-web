@@ -11,9 +11,10 @@ const EcoverseAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resour
 
   return (
     <Routes>
-      <Route path={`:${nameOfUrl.role}`}>
-        <EcoverseAuthorizationPage paths={currentPaths} resourceId={resourceId} />
-      </Route>
+      <Route
+        path={`:${nameOfUrl.role}`}
+        element={<EcoverseAuthorizationPage paths={currentPaths} resourceId={resourceId} />}
+      ></Route>
       <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );

@@ -19,18 +19,28 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <OpportunityList paths={currentPaths} />
+      <Route path={'/'}>
+        <Route index element={<OpportunityList paths={currentPaths} />}></Route>
+        <Route
+          path={'new'}
+          element={
+            <EditOpportunity
+              title={t('navigation.admin.opportunity.create')}
+              mode={FormMode.create}
+              paths={currentPaths}
+            />
+          }
+        ></Route>
+        <Route
+          path={`:${nameOfUrl.opportunityNameId}`}
+          element={
+            <OpportunityProvider>
+              <OpportunityRoute paths={currentPaths} />
+            </OpportunityProvider>
+          }
+        ></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'new'}>
-        <EditOpportunity title={t('navigation.admin.opportunity.create')} mode={FormMode.create} paths={currentPaths} />
-      </Route>
-      <Route path={`:${nameOfUrl.opportunityNameId}`}>
-        <OpportunityProvider>
-          <OpportunityRoute paths={currentPaths} />
-        </OpportunityProvider>
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

@@ -19,17 +19,19 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = () => {
     // DiscussionsProvider provided at EcoversePage
     <Routes>
       <Route path={'/'}>
-        <DiscussionListPage />
+        <Route index element={<DiscussionListPage />}></Route>
+        <Route path={'new'} element={<NewDiscussionPage />}></Route>
+        <Route
+          path={`:${nameOfUrl.discussionId}`}
+          element={
+            <DiscussionProvider>
+              <DiscussionPage />
+            </DiscussionProvider>
+          }
+        >
+          <Route path="*" element={<Error404 />}></Route>
+        </Route>
       </Route>
-      <Route path={'new'}>
-        <NewDiscussionPage />
-      </Route>
-      <Route path={`:${nameOfUrl.discussionId}`}>
-        <DiscussionProvider>
-          <DiscussionPage />
-        </DiscussionProvider>
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

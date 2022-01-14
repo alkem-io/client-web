@@ -7,12 +7,8 @@ import { OrganizationMembersRoute } from './OrganizationMembersRoute';
 export const OrganizationCommunityRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Routes>
-      <Route path={'groups'}>
-        <OrganizationGroupsRoute paths={paths} />
-      </Route>
-      <Route path={'members'}>
-        <OrganizationMembersRoute paths={paths} />
-      </Route>
+      <Route path={'groups/*'} element={<OrganizationGroupsRoute paths={paths} />}></Route>
+      <Route path={'members/*'} element={<OrganizationMembersRoute paths={paths} />}></Route>
       <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );

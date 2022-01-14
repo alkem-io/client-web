@@ -12,15 +12,17 @@ interface Props extends PageProps {
 const ApplyRoute: FC<Props> = ({ paths, type }) => {
   return (
     <Routes>
-      <Route
-        path={'/'}
-        element={
-          <RestrictedRoute>
-            <ApplyPage paths={paths} type={type} />
-          </RestrictedRoute>
-        }
-      />
-      <Route path="*" element={<Error404 />}></Route>
+      <Route path={'/'}>
+        <Route
+          index
+          element={
+            <RestrictedRoute>
+              <ApplyPage paths={paths} type={type} />
+            </RestrictedRoute>
+          }
+        />
+        <Route path="*" element={<Error404 />}></Route>
+      </Route>
     </Routes>
   );
 };

@@ -27,18 +27,19 @@ export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <EcoverseList paths={currentPaths} />
+      <Route path={'/'}>
+        <Route index element={<EcoverseList paths={currentPaths} />}></Route>
+        <Route path={'new'} element={<NewEcoverse paths={currentPaths} />}></Route>
+        <Route
+          path={`:${nameOfUrl.ecoverseNameId}`}
+          element={
+            <EcoverseProvider>
+              <EcoverseRoute paths={currentPaths} />
+            </EcoverseProvider>
+          }
+        ></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'new'}>
-        <NewEcoverse paths={currentPaths} />
-      </Route>
-      <Route path={`:${nameOfUrl.ecoverseNameId}`}>
-        <EcoverseProvider>
-          <EcoverseRoute paths={currentPaths} />
-        </EcoverseProvider>
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

@@ -27,7 +27,7 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
     challengesListQuery?.ecoverse?.challenge?.opportunities?.map(o => ({
       id: o.id,
       value: o.displayName,
-      url: `${url}/${o.nameID}`,
+      url: `${o.nameID}`,
     })) || [];
 
   const [deleteOpportunity] = useDeleteOpportunityMutation({

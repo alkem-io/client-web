@@ -25,7 +25,7 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
     () =>
       ecoversesData?.ecoverses
         .filter(x => (x.authorization?.myPrivileges ?? []).find(y => y === AuthorizationPrivilege.Update))
-        .map(searchableListItemMapper(url)) || [],
+        .map(searchableListItemMapper()) || [],
     [ecoversesData]
   );
 

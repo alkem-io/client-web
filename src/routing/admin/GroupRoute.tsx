@@ -23,17 +23,20 @@ export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCom
   return (
     <Routes>
       <Route path={'/'}>
-        <GroupPage paths={paths} group={group} />
+        <Route index element={<GroupPage paths={paths} group={group} />}></Route>
+        <Route
+          path={'members'}
+          element={
+            <EditMembersPage
+              paths={currentPaths}
+              parentCommunityId={parentCommunityId}
+              groupId={group?.id || ''}
+              parentMembers={parentMembers}
+            />
+          }
+        ></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'members'}>
-        <EditMembersPage
-          paths={currentPaths}
-          parentCommunityId={parentCommunityId}
-          groupId={group?.id || ''}
-          parentMembers={parentMembers}
-        />
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

@@ -15,13 +15,11 @@ interface Props {
 export const ApplicationRoute: FC<Props> = ({ paths, applications }) => {
   return (
     <Routes>
-      <Route path={`:${nameOfUrl.applicationId}`}>
-        <ApplicationDetailsPage />
-      </Route>
       <Route path={'/'}>
-        <ApplicationPage paths={paths} applications={applications} />
+        <Route index element={<ApplicationPage paths={paths} applications={applications} />}></Route>
+        <Route path={`:${nameOfUrl.applicationId}`} element={<ApplicationDetailsPage />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

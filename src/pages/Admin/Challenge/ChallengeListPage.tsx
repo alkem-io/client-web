@@ -28,7 +28,7 @@ export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
     challengesListQuery?.ecoverse?.challenges?.map(c => ({
       id: c.id,
       value: c.displayName,
-      url: `${url}/${c.nameID}`,
+      url: `${c.nameID}`,
     })) || [];
 
   const [deleteChallenge] = useDeleteChallengeMutation({

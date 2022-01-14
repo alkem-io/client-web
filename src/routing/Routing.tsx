@@ -5,7 +5,6 @@ import App from '../components/composite/layout/App/App';
 import { CommunityProvider } from '../context/CommunityProvider';
 import { EcoverseProvider } from '../context/EcoverseProvider';
 import { OrganizationProvider } from '../context/OrganizationProvider';
-import { AuthorizationCredential } from '../models/graphql-schema';
 import { AboutPage, Error404, HomePage } from '../pages';
 import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
 import ContributorsPage from '../pages/Contributors/ContributorsPage';
@@ -19,6 +18,7 @@ import { Restricted } from './Restricted';
 import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
+import UserRoute from './user/UserRoute';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -37,29 +37,17 @@ export const Routing: FC = () => {
             </EcoverseProvider>
           }
         ></Route>
-        <Route
-          path="/admin/*"
-          element={
-            <RestrictedRoute
-              requiredCredentials={[
-                AuthorizationCredential.GlobalAdmin,
-                AuthorizationCredential.EcoverseAdmin,
-                AuthorizationCredential.OrganizationAdmin,
-                AuthorizationCredential.ChallengeAdmin,
-                AuthorizationCredential.GlobalAdminCommunity,
-                AuthorizationCredential.OrganizationOwner,
-                AuthorizationCredential.OpportunityAdmin,
-              ]}
-            >
-              <AdminRoute />
-            </RestrictedRoute>
-          }
-        />
+        <Route path="/admin/*" element={<AdminRoute />} />
         <Route path="/search" element={<SearchRoute />}></Route>
         <Route path="/identity/*" element={<IdentityRoute />} />
-        <Route path={`/user/:${nameOfUrl.userId}`} element={<RestrictedRoute></RestrictedRoute>}>
-          {/* <UserRoute /> */}
-        </Route>
+        <Route
+          path={`/user/:${nameOfUrl.userId}`}
+          element={
+            <RestrictedRoute>
+              <UserRoute />
+            </RestrictedRoute>
+          }
+        ></Route>
         <Route path="/challenges" element={<ChallengeExplorerPage />} />
         <Route path="/contributors" element={<ContributorsPage />} />
 

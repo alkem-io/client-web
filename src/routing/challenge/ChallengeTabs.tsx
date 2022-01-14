@@ -1,7 +1,22 @@
-import React, { FC } from 'react';
+import {
+  ContentPasteOutlined,
+  DashboardOutlined,
+  ForumOutlined,
+  GroupOutlined,
+  SettingsOutlined,
+  TocOutlined,
+  WbIncandescentOutlined,
+} from '@mui/icons-material';
+import { Tabs } from '@mui/material';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useResolvedPath } from 'react-router-dom';
+import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { ChallengeContainerEntities } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge } from '../../hooks';
+import { useChallenge, useConfig } from '../../hooks';
+import useRouteMatch from '../../hooks/routing/useRouteMatch';
+import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
+import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
 
 const routes = {
   discussions: '/community/discussions',
@@ -19,7 +34,6 @@ export type ChallengeRoutesType = typeof routes;
 export interface ChallengeTabsProps {
   children: (e: {
     pathGetter: (key: keyof typeof routes) => string;
-    urlGetter: (key: keyof typeof routes) => string;
     tabName: string;
     tabNames: ChallengeRoutesType;
   }) => React.ReactNode;
@@ -31,81 +45,74 @@ const createGetter = function <T>(r: T, url: string) {
 
 const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
   const { t } = useTranslation();
-  // const match = useMatch(Object.values(routes).map(x => `${path}${x}`));
+  const resolved = useResolvedPath('./');
+  const match = useRouteMatch(Object.values(routes).map(x => `${resolved.pathname}${x}`));
   const { challengeNameId, ecoverseNameId, permissions } = useChallenge();
-  // const urlGetter = useMemo(() => createGetter(routes, url), [url]);
-  // const pathGetter = useMemo(() => createGetter(routes, path), [path]);
-  // const { isFeatureEnabled } = useConfig();
+  const pathGetter = useMemo(() => createGetter(routes, resolved.pathname), [resolved]);
+  const { isFeatureEnabled } = useConfig();
 
-  // const tabNames = (Object.keys(routes) as Array<keyof ChallengeRoutesType>).reduce<ChallengeRoutesType>(
-  //   (acc, curr) => {
-  //     acc[curr] = pathGetter(curr);
-  //     return acc;
-  //   },
-  //   {} as ChallengeRoutesType
-  // );
+  const tabNames = (Object.keys(routes) as Array<keyof ChallengeRoutesType>).reduce<ChallengeRoutesType>(
+    (acc, curr) => {
+      acc[curr] = pathGetter(curr);
+      return acc;
+    },
+    {} as ChallengeRoutesType
+  );
 
   const { communityReadAccess } = entities.permissions;
 
   return (
     <>
-      {/* <Tabs value={''} aria-label="Challenge tabs">
+      <Tabs value={match?.pathname} aria-label="Challenge tabs">
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
-          component={RouterLink}
           value={pathGetter('dashboard')}
-          to={urlGetter('dashboard')}
+          to={'dashboard'}
         />
         <NavigationTab
           icon={<TocOutlined />}
           label={t('common.context')}
-          component={RouterLink}
           value={pathGetter('context')}
-          to={urlGetter('context')}
+          to={'context'}
         />
         <NavigationTab
           disabled={!communityReadAccess}
           icon={<GroupOutlined />}
           label={t('common.community')}
-          component={RouterLink}
           value={pathGetter('community')}
-          to={urlGetter('community')}
+          to={'community'}
         />
         <NavigationTab
           icon={<ContentPasteOutlined />}
           label={t('common.opportunities')}
-          component={RouterLink}
           value={pathGetter('opportunities')}
-          to={urlGetter('opportunities')}
+          to={'opportunities'}
         />
         <NavigationTab
           icon={<ForumOutlined />}
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           label={t('common.discussions')}
-          component={RouterLink}
           value={pathGetter('discussions')}
-          to={urlGetter('discussions')}
+          to={'discussions'}
         />
         <NavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
-          component={RouterLink}
           value={pathGetter('canvases')}
-          to={urlGetter('canvases')}
+          to={'canvases'}
         />
         {permissions.viewerCanUpdate && (
           <NavigationTab
             icon={<SettingsOutlined />}
             label={t('common.settings')}
-            component={RouterLink}
             value={pathGetter('settings')}
             to={buildAdminChallengeUrl(ecoverseNameId, challengeNameId)}
           />
         )}
       </Tabs>
-      {children({ pathGetter, urlGetter, tabName: match?.path || 'dashboard', tabNames })} */}
+      {children({ pathGetter, tabName: resolved?.pathname || 'dashboard', tabNames })}
     </>
   );
 };

@@ -12,16 +12,12 @@ export const OrganizationGroupsRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <OrganizationGroupsPage paths={currentPaths} />
+      <Route path={'/'}>
+        <Route index element={<OrganizationGroupsPage paths={currentPaths} />}></Route>
+        <Route path={'new'} element={<CreateOrganizationGroupPage paths={currentPaths} />}></Route>
+        <Route path={`:${nameOfUrl.groupId}`} element={<OrganizationGroupRoute paths={currentPaths} />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'new'}>
-        <CreateOrganizationGroupPage paths={currentPaths} />
-      </Route>
-      <Route path={`:${nameOfUrl.groupId}`}>
-        <OrganizationGroupRoute paths={currentPaths} />
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };
