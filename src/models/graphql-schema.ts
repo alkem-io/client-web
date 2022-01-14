@@ -7463,7 +7463,7 @@ export type ChallengeExplorerSearchQuery = {
             | {
                 __typename?: 'Context';
                 id: string;
-                visual?: { __typename?: 'Visual'; id: string; background: string } | undefined;
+                visual?: { __typename?: 'Visual'; id: string; background: string; banner: string } | undefined;
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -7487,7 +7487,7 @@ export type ChallengeExplorerSearchResultFragment = {
     | {
         __typename?: 'Context';
         id: string;
-        visual?: { __typename?: 'Visual'; id: string; background: string } | undefined;
+        visual?: { __typename?: 'Visual'; id: string; background: string; banner: string } | undefined;
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;

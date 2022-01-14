@@ -942,6 +942,7 @@ export const ChallengeExplorerSearchResultFragmentDoc = gql`
       visual {
         id
         background
+        banner
       }
     }
     tagset {
