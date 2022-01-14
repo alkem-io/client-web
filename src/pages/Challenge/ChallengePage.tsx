@@ -52,7 +52,7 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
                   <TabPanel value={tabNames['discussions']}>
                     <Routes>
                       <Route
-                        path={'community/discussions'}
+                        path={'community/discussions/*'}
                         element={<RestrictedRoute requiredCredentials={requiredCredentials}></RestrictedRoute>}
                       >
                         <DiscussionsRoute paths={paths} />

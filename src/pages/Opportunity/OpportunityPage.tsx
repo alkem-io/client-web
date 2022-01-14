@@ -111,7 +111,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                   <TabPanel value={tabNames['discussions']}>
                     <Routes>
                       <Route
-                        path={'community/discussions'}
+                        path={'community/discussions/*'}
                         element={
                           <RestrictedRoute>
                             <DiscussionsRoute paths={paths} />

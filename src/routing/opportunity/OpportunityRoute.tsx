@@ -30,6 +30,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
         <Route index element={<Navigate to={'dashboard'} />}></Route>
         {/* /projects should be matched by the generic route, not this one. */}
         <Route path={'projects/'} element={<ProjectRoute paths={currentPaths} />}></Route>
+        {/* TODO use NavigationTabs and refactor the routing similar to the UserSettingsRoute.
+          Split the opportunity page per tab
+        */}
         <Route path={'*'} element={<OpportunityPage paths={currentPaths} />}></Route>
       </Route>
       <Route path="*" element={<Error404 />}></Route>

@@ -44,10 +44,11 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
-  const { pathname: path } = useResolvedPath('.');
+  // TODO use NavigationTabs and refactor the routing similar to the UserSettingsRoute.
+  const { pathname: path } = useResolvedPath('./');
 
   const { t } = useTranslation();
-  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
+  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}/*`));
   const { ecoverseNameId, permissions } = useEcoverse();
   const urlGetter = useMemo(() => createGetter(routes, ''), []);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
@@ -64,7 +65,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
   return (
     <>
       <Tabs
-        value={match?.pathname}
+        value={match?.pathnameBase}
         aria-label="Ecoverse tabs"
         variant="scrollable"
         scrollButtons={'auto'}
@@ -119,7 +120,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           />
         )}
       </Tabs>
-      {children({ pathGetter, urlGetter, tabName: match?.pathname || 'dashboard', tabNames })}
+      {children({ pathGetter, urlGetter, tabName: match?.pathnameBase || 'dashboard', tabNames })}
     </>
   );
 };

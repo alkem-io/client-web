@@ -42,8 +42,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
     <ListItemButton
       disableGutters
       onClick={() => {
-        // TODO: Fix
-        // navigate(buildDiscussionUrl(url, id), { replace: true });
+        navigate(id);
       }}
     >
       <ListItemIcon sx={{ justifyContent: 'center' }}>

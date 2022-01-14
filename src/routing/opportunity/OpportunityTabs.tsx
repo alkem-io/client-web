@@ -44,9 +44,10 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
-  const { pathname: path } = useResolvedPath('.');
+  // TODO use NavigationTabs and refactor the routing similar to the UserSettingsRoute.
+  const { pathname: path } = useResolvedPath('./');
   const { t } = useTranslation();
-  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
+  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}/*`)); // Match underlying routes because of the discussions sub route.
   const { ecoverseNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
   const urlGetter = useMemo(() => createGetter(routes, ''), []);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
@@ -63,7 +64,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
 
   return (
     <>
-      <Tabs value={match?.pathname} aria-label="opportunity tabs">
+      <Tabs value={match?.pathnameBase} aria-label="opportunity tabs">
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
@@ -112,7 +113,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
           />
         )}
       </Tabs>
-      {children({ pathGetter, urlGetter, tabName: match?.pathname || 'dashboard', tabNames })}
+      {children({ pathGetter, urlGetter, tabName: match?.pathnameBase || 'dashboard', tabNames })}
     </>
   );
 };

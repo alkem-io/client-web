@@ -1,6 +1,5 @@
 import { styled, Tab, TabProps } from '@mui/material';
-import React, { FC, forwardRef } from 'react';
-import { useResolvedPath } from 'react-router-dom';
+import React, { forwardRef } from 'react';
 import { RouterLink } from '../RouterLink';
 
 interface NagivationTabProps extends TabProps {

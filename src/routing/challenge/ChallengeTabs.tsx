@@ -43,9 +43,10 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
-  const { pathname: path } = useResolvedPath('.');
+  // TODO use NavigationTabs and refactor the routing similar to the UserSettingsRoute.
+  const { pathname: path } = useResolvedPath('./');
   const { t } = useTranslation();
-  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
+  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}/*`));
   const { challengeNameId, ecoverseNameId, permissions } = useChallenge();
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
   const { isFeatureEnabled } = useConfig();
@@ -65,7 +66,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
 
   return (
     <>
-      <Tabs value={match?.pathname} aria-label="Challenge tabs">
+      <Tabs value={match?.pathnameBase} aria-label="Challenge tabs">
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
@@ -114,7 +115,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
           />
         )}
       </Tabs>
-      {children({ pathGetter, tabName: match?.pathname || 'dashboard', tabNames })}
+      {children({ pathGetter, tabName: match?.pathnameBase || 'dashboard', tabNames })}
     </>
   );
 };

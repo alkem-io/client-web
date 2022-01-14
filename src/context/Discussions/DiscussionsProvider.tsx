@@ -21,7 +21,6 @@ import {
   Discussion as DiscussionGraphql,
   DiscussionCategory,
 } from '../../models/graphql-schema';
-import { buildDiscussionsUrl, buildDiscussionUrl } from '../../utils/urlBuilders';
 import { useCommunityContext } from '../CommunityProvider';
 
 interface Permissions {
@@ -153,10 +152,9 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   );
 
   const [createDiscussion, { loading: creatingDiscussion }] = useCreateDiscussionMutation({
-    // TODO: Navigate
-    // onCompleted: data => {
-    //   history.replace(buildDiscussionUrl(url, data.createDiscussion.id));
-    // },
+    onCompleted: data => {
+      navigate(data.createDiscussion.id, { replace: true });
+    },
     onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
@@ -167,8 +165,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   });
 
   const [deleteDiscussion, { loading: deletingDiscussion }] = useDeleteDiscussionMutation({
-    // TODO: Navigate
-    // onCompleted: () => navigate(buildDiscussionsUrl(), ),
+    onCompleted: () => navigate('..'),
     onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
