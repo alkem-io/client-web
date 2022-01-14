@@ -40,7 +40,7 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
 };
 
 export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const navigate = useNavigate();
   const handleError = useApolloErrorHandler();
   const { opportunityId } = useOpportunity();
@@ -95,7 +95,7 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
 };
 
 const ProjectIndex: FC<ProjectRootProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const { projectNameId = '' } = useUrlParams();
   const { ecoverseNameId } = useEcoverse();
 

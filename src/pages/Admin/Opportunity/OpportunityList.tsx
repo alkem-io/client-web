@@ -16,7 +16,7 @@ import { useResolvedPath } from 'react-router-dom';
 interface OpportunityListProps extends PageProps {}
 
 export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
   const { challengeNameId = '' } = useUrlParams();

@@ -7,7 +7,7 @@ import { nameOfUrl } from '../url-params';
 import AuthorizationRouteProps from './AuthorizationRouteProps';
 
 const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (

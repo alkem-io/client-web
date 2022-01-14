@@ -12,7 +12,7 @@ import { EcoverseRoute } from './EcoverseRoute';
 export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   useTransactionScope({ type: 'admin' });
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(
     () => [
       ...paths,

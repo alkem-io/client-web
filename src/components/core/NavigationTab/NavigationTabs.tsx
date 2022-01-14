@@ -17,7 +17,7 @@ function NavigationTabs<T extends Record<string, string>>({
   routes,
   children,
 }: NavigationTabsProps<T>): React.ReactElement {
-  const { pathname: path } = useResolvedPath('./');
+  const { pathname: path } = useResolvedPath('.');
 
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const urlGetter = useMemo(() => createGetter(routes, ''), []);

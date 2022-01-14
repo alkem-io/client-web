@@ -28,7 +28,7 @@ interface Props extends PageProps {
 }
 
 const EditLifecycle: FC<Props> = ({ paths, data, id, onSetNewState }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const styles = useStyles();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'lifecycle', real: true }], [paths, url]);
   useUpdateNavigation({ currentPaths });

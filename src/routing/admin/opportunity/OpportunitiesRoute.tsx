@@ -13,7 +13,7 @@ interface Props extends PageProps {}
 
 export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths]);
 

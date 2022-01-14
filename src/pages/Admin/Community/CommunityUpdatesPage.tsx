@@ -12,7 +12,7 @@ import { PageProps } from '../../common';
 interface CommunityUpdatesPageProps extends PageProps, WithCommunity {}
 
 export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, communityId }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'updates', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 

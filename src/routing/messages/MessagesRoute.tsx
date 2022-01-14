@@ -3,7 +3,7 @@ import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { Error404, MessagesPage } from '../../pages';
 
 export const MessagesRoute: FC = () => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [{ value: url, name: 'messages', real: true }], []);
 
   return (

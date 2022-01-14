@@ -16,7 +16,7 @@ import { useResolvedPath } from 'react-router-dom';
 interface ChallengeListProps extends PageProps {}
 
 export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
   const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({

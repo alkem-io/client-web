@@ -10,7 +10,7 @@ import { useResolvedPath } from 'react-router-dom';
 interface OrganizationListProps extends PageProps {}
 
 export const OrganizationList: FC<OrganizationListProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
 
   const { data: organizationsListQuery } = useOrganizationsListQuery();
 

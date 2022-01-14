@@ -7,7 +7,7 @@ import { nameOfUrl } from '../../url-params';
 import { OrganizationGroupRoute } from './OrganizationGroupRoute';
 
 export const OrganizationGroupsRoute: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   return (

@@ -34,7 +34,7 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
 export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => {
   const navigate = useNavigate();
   const { userId = '' } = useUrlParams();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
 
   const { user: currentUser } = useUserContext();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'profile', real: true }], [url, paths]);

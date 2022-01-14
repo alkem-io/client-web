@@ -12,7 +12,7 @@ import { nameOfUrl } from '../url-params';
 
 export const EcoverseRoute: FC<PageProps> = ({ paths }) => {
   const { ecoverse, displayName, loading: ecoverseLoading } = useEcoverse();
-  const resolved = useResolvedPath('./');
+  const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (ecoverse ? [...paths, { value: resolved.pathname, name: displayName, real: true }] : paths),
     [paths, displayName]

@@ -9,7 +9,7 @@ import { nameOfUrl } from '../../url-params';
 import { OrganizationRoute } from './OrganizationRoute';
 
 export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths]);
 
   return (

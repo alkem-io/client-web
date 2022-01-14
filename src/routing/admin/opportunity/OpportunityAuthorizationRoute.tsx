@@ -7,7 +7,7 @@ import AuthorizationRouteProps from '../AuthorizationRouteProps';
 interface OpportunityAuthorizationRouteProps extends AuthorizationRouteProps {}
 
 const OpportunityAuthorizationRoute: FC<OpportunityAuthorizationRouteProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (

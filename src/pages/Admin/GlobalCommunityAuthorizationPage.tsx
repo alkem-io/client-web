@@ -15,7 +15,7 @@ import { useResolvedPath } from 'react-router-dom';
 
 const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalAdminCommunity } = useUrlParams();
   const currentPaths = useMemo(

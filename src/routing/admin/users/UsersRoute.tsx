@@ -7,7 +7,7 @@ import { UserPage } from '../../../pages/Admin/User/UserPage';
 import { nameOfUrl } from '../../url-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
 

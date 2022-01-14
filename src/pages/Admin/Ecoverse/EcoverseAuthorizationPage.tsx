@@ -17,7 +17,7 @@ import { useResolvedPath } from 'react-router-dom';
 
 const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.EcoverseMember } = useUrlParams();
   const currentPaths = useMemo(

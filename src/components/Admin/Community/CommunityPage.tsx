@@ -18,7 +18,7 @@ export const CommunityPage: FC<CommunityPageProps> = ({
   credential,
   resourceId,
 }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 

@@ -16,7 +16,7 @@ interface ChallengeRootProps extends PageProps {}
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   const { challengeId, displayName, loading } = useChallenge();
 
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [...paths, { value: url, name: displayName, real: true }] : paths),
     [paths, displayName]

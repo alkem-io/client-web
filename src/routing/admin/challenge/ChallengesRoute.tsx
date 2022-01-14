@@ -11,7 +11,7 @@ import { ChallengeRoute } from './ChallengeRoute';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'challenges', real: true }], [paths]);
 

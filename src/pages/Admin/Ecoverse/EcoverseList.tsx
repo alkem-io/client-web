@@ -16,7 +16,7 @@ import { useResolvedPath } from 'react-router-dom';
 interface EcoverseListProps extends PageProps {}
 
 export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');

@@ -43,7 +43,7 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
-  const { pathname: path } = useResolvedPath('./');
+  const { pathname: path } = useResolvedPath('.');
   const { t } = useTranslation();
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const { challengeNameId, ecoverseNameId, permissions } = useChallenge();

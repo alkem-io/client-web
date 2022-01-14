@@ -13,7 +13,7 @@ interface Props extends WithOptionalMembersProps, WithCommunity {
 }
 
 export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCommunityId, parentMembers }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const groupName = group?.name || '';
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: groupName, real: true }], [paths, groupName]);

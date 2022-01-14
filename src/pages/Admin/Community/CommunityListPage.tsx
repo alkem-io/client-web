@@ -12,7 +12,7 @@ interface CommunityGroupListPageProps extends PageProps {
 }
 
 export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ paths, communityId }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const { ecoverseId, loading: loadingEcoverse } = useEcoverse();
 
   const { data, loading } = useCommunityGroupsQuery({

@@ -44,7 +44,7 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
-  const { pathname: path } = useResolvedPath('./');
+  const { pathname: path } = useResolvedPath('.');
   const { t } = useTranslation();
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const { ecoverseNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();

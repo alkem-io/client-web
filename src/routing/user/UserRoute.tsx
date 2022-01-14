@@ -5,7 +5,7 @@ import { UserProfilePage } from '../../pages/User/UserProfilePage';
 import UserSettingsRoute from './UserSettingsRoute';
 
 export const UserRoute: FC = () => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [{ value: url, name: 'user profile', real: true }], [url]);
 
   return (

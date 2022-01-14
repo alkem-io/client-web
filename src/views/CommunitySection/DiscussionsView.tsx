@@ -27,7 +27,7 @@ interface DiscussionsProps {
 export const DiscussionsView: FC<DiscussionsProps> = ({ discussions, canCreate }) => {
   const { t } = useTranslation();
   const styles = useDiscussionsStyles();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
 
   let messagesComponent = (
     <ConditionalLink to={buildNewDiscussionUrl(url)} condition={canCreate}>

@@ -10,7 +10,7 @@ export interface UserMembershipPageProps extends PageProps {}
 
 const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const { userId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userId);
 

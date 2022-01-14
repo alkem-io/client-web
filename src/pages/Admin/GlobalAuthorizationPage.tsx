@@ -15,7 +15,7 @@ import AuthorizationPageProps from './AuthorizationPageProps';
 
 const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalRegistered } = useUrlParams();
   const currentPaths = useMemo(

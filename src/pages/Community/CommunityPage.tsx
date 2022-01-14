@@ -27,7 +27,7 @@ export interface CommunityPageV2Props extends PageProps {
 const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityId, challengeId, opportunityId }) => {
   const { t } = useTranslation();
 
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 

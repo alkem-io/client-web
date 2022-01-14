@@ -13,7 +13,7 @@ import { UsersRoute } from './users/UsersRoute';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
 
   return (

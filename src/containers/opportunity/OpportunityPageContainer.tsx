@@ -71,7 +71,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);

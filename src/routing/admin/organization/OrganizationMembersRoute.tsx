@@ -4,7 +4,7 @@ import { Error404, PageProps } from '../../../pages';
 import OrganizationCommunityPage from '../../../pages/Admin/Organization/OrganizationCommunityPage';
 
 export const OrganizationMembersRoute: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: true }], [paths, url]);
 
   return (

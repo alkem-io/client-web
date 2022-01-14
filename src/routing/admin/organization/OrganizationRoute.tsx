@@ -11,7 +11,7 @@ import OrganizationAuthorizationRoute from './OrganizationAuthorizationRoute';
 import { OrganizationCommunityRoute } from './OrganizationCommunityRoute';
 
 export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
 
   const { displayName, organizationNameId, loading } = useOrganization();
 

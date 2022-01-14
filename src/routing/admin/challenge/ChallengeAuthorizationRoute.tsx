@@ -6,7 +6,7 @@ import { nameOfUrl } from '../../url-params';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
 
 const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resourceId = '' }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (

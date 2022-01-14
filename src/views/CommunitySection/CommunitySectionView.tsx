@@ -62,7 +62,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   shuffle = false,
   parentEntityId,
 }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const { t } = useTranslation();
   const styles = useCommunityStyles();
   const [tabValue, setTabValue] = useState('members');

@@ -10,7 +10,7 @@ interface OpportunityRootProps extends PageProps {}
 
 const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
   const { opportunity, displayName, loading } = useOpportunity();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [...paths, { value: url, name: displayName, real: true }] : paths),
     [paths, displayName]

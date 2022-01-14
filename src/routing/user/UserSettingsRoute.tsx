@@ -11,7 +11,7 @@ import UserTabs from './UserTabs';
 interface UserSettingsProps extends PageProps {}
 
 export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'settings', real: false }], [url]);
   useUpdateNavigation({ currentPaths });
 

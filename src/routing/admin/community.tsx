@@ -66,7 +66,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
 interface CommunityGroupsRouteProps extends PageProps, WithCommunity {}
 
 export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, communityId, parentCommunityId }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   return (

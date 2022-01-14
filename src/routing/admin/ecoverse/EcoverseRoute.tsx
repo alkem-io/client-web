@@ -16,7 +16,7 @@ interface EcoverseAdminRouteProps extends PageProps {}
 export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
   const { ecoverseId, ecoverseNameId, ecoverse, loading: loadingEcoverse } = useEcoverse();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: ecoverse?.displayName || '', real: true }],

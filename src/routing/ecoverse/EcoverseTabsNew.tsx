@@ -35,7 +35,7 @@ export interface EcoverseTabsProps {
 
 const EcoverseTabsNew: FC<EcoverseTabsProps> = () => {
   const { t } = useTranslation();
-  const resolved = useResolvedPath('./');
+  const resolved = useResolvedPath('.');
   const matchPatterns = useMemo(
     () => Object.values(routes).map(x => resolvePath(x, resolved.pathname)?.pathname),
     [routes, resolved, resolvePath]

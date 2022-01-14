@@ -7,7 +7,7 @@ import { Error404, PageProps } from '../../pages';
 import OrganizationPage from '../../pages/Organization/OrganizationPage';
 
 const OrganizationRoute: FC<PageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const { organization, displayName, loading } = useOrganization();
 
   const rootPaths = useMemo(() => [{ value: '/', name: 'organization', real: false }], [paths]);

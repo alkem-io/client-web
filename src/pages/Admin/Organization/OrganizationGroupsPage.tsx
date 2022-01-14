@@ -13,7 +13,7 @@ export const OrganizationGroupsPage: FC<PageProps> = ({ paths }) => {
   const notify = useNotification();
   const notifySuccess = () => notify('Group deleted successfully!', 'success');
 
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const { organizationNameId = '' } = useUrlParams();
 
   const { data } = useOrganizationGroupsQuery({ variables: { id: organizationNameId } });

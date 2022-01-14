@@ -9,7 +9,7 @@ import { useResolvedPath } from 'react-router-dom';
 export interface UserNotificationsPageProps extends PageProps {}
 
 const UserNotificationsPage: FC<UserNotificationsPageProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'notifications', real: true }], [url, paths]);
   useUpdateNavigation({ currentPaths });
 

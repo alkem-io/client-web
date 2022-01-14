@@ -16,7 +16,7 @@ import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('./');
+  const { pathname: url } = useResolvedPath('.');
   const { ecoverse, loading: loadingEcoverse } = useEcoverse();
   const {
     challenge,
