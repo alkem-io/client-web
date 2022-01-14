@@ -60,7 +60,7 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
         {filteredData => (
           <CardLayoutContainer>
             {filteredData.map((opp, i) => (
-              <CardLayoutItem key={i} flexBasis={'50%'}>
+              <CardLayoutItem key={i}>
                 <OpportunityCard opportunity={opp} ecoverseNameId={ecoverseNameId} challengeNameId={challengeNameId} />
               </CardLayoutItem>
             ))}
