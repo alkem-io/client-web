@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useNavigate } from 'react-router';
+import { useResolvedPath } from 'react-router-dom';
 import { UserForm } from '../../components/composite/forms/UserForm';
 import { Loading } from '../../components/core';
 import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
@@ -33,7 +34,7 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
 export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => {
   const navigate = useNavigate();
   const { userId = '' } = useUrlParams();
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
 
   const { user: currentUser } = useUserContext();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'profile', real: true }], [url, paths]);

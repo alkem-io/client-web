@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { Error404, PageProps } from '../../../pages';
 import OrganizationCommunityPage from '../../../pages/Admin/Organization/OrganizationCommunityPage';
 
 export const OrganizationMembersRoute: FC<PageProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'members', real: true }], [paths, url]);
 
   return (

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
 import { useTransactionScope } from '../../../hooks';
 import { Error404, PageProps } from '../../../pages';
@@ -12,7 +12,7 @@ import { EcoverseRoute } from './EcoverseRoute';
 export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   useTransactionScope({ type: 'admin' });
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const currentPaths = useMemo(
     () => [
       ...paths,

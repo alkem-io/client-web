@@ -6,13 +6,14 @@ import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../h
 import { useDeleteGroupMutation, useOrganizationGroupsQuery } from '../../../hooks/generated/graphql';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
 import removeFromCache from '../../../utils/apollo-cache/removeFromCache';
+import { useResolvedPath } from 'react-router-dom';
 
 export const OrganizationGroupsPage: FC<PageProps> = ({ paths }) => {
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const notifySuccess = () => notify('Group deleted successfully!', 'success');
 
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const { organizationNameId = '' } = useUrlParams();
 
   const { data } = useOrganizationGroupsQuery({ variables: { id: organizationNameId } });

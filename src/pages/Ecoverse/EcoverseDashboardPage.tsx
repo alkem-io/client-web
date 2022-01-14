@@ -1,18 +1,15 @@
 import React, { FC } from 'react';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
-import { useEcoverse, useUpdateNavigation } from '../../hooks';
+import { useUpdateNavigation } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import EcoverseDashboardView2 from '../../views/Ecoverse/EcoverseDashboardView2';
 import { PageProps } from '../common';
 
 export interface EcoverseDashboardPageProps extends PageProps {}
 
-const PREFIX = 'EcoverseDashboardPage';
-
 const EcoverseDashboardPage: FC<EcoverseDashboardPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
-  const { isPrivate, ecoverseId } = useEcoverse();
 
   return (
     <EcoversePageContainer>

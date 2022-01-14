@@ -11,11 +11,12 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useEcoverse } from '../../../hooks';
+import { useResolvedPath } from 'react-router-dom';
 
 interface ChallengeListProps extends PageProps {}
 
 export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
   const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({

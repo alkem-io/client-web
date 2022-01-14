@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { CommunityCredentials } from '../../components/Admin/Authorization/EditCommunityMembers';
 import CommunityPage from '../../components/Admin/Community/CommunityPage';
 import { WithCommunity } from '../../components/Admin/Community/CommunityTypes';
@@ -66,7 +66,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
 interface CommunityGroupsRouteProps extends PageProps, WithCommunity {}
 
 export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, communityId, parentCommunityId }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
 
   return (

@@ -41,7 +41,7 @@ export const Routing: FC = () => {
         <Route path="/search" element={<SearchRoute />}></Route>
         <Route path="/identity/*" element={<IdentityRoute />} />
         <Route
-          path={`/user/:${nameOfUrl.userId}`}
+          path={`/user/:${nameOfUrl.userId}/*`}
           element={
             <RestrictedRoute>
               <UserRoute />
@@ -52,7 +52,7 @@ export const Routing: FC = () => {
         <Route path="/contributors" element={<ContributorsPage />} />
 
         <Route
-          path={`/organization/:${nameOfUrl.organizationNameId}`}
+          path={`/organization/:${nameOfUrl.organizationNameId}/*`}
           element={
             <OrganizationProvider>
               <OrganizationRoute paths={[]} />

@@ -16,13 +16,11 @@ import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvid
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import HubCanvasManagementView from '../../views/Ecoverse/HubCanvasManagementView';
 
-interface EcoversePageProps extends PageProps {
-  // tabName?: string;
-  // tabNames: EcoverseRoutesType;
-}
+interface EcoversePageProps extends PageProps {}
 
 const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
   useUpdateNavigation({ currentPaths: paths });
+
   const { isPrivate, ecoverseId } = useEcoverse();
   const discussionsRequiredCredentials: CredentialForResource[] =
     isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
@@ -111,4 +109,4 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
   );
 };
 
-export { EcoversePage as Ecoverse };
+export { EcoversePage };

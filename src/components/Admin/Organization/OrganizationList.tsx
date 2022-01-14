@@ -5,11 +5,12 @@ import { useApolloErrorHandler } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import { ListPage } from '../ListPage';
 import { SearchableListItem } from '../SearchableList';
+import { useResolvedPath } from 'react-router-dom';
 
 interface OrganizationListProps extends PageProps {}
 
 export const OrganizationList: FC<OrganizationListProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
 
   const { data: organizationsListQuery } = useOrganizationsListQuery();
 

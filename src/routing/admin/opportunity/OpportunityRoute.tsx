@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
@@ -17,7 +17,7 @@ interface Props extends PageProps {}
 
 export const OpportunityRoute: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const { challenge, loading: loadingChallenge } = useChallenge();
   const {
     opportunity,

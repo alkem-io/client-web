@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, useResolvedPath } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useApolloErrorHandler, useEcoverse, useOpportunity, useUrlParams } from '../../hooks';
 import {
@@ -40,7 +40,7 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
 };
 
 export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const navigate = useNavigate();
   const handleError = useApolloErrorHandler();
   const { opportunityId } = useOpportunity();
@@ -95,7 +95,7 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
 };
 
 const ProjectIndex: FC<ProjectRootProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const { projectNameId = '' } = useUrlParams();
   const { ecoverseNameId } = useEcoverse();
 

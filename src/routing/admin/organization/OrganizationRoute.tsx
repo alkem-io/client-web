@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { useOrganization } from '../../../hooks';
@@ -11,7 +11,7 @@ import OrganizationAuthorizationRoute from './OrganizationAuthorizationRoute';
 import { OrganizationCommunityRoute } from './OrganizationCommunityRoute';
 
 export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
 
   const { displayName, organizationNameId, loading } = useOrganization();
 

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { EditMode } from '../../../models/editMode';
 import { Error404, PageProps } from '../../../pages';
 import { UserListPage } from '../../../pages/Admin/User/UserListPage';
@@ -7,7 +7,7 @@ import { UserPage } from '../../../pages/Admin/User/UserPage';
 import { nameOfUrl } from '../../url-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
 

@@ -5,7 +5,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useResolvedPath } from 'react-router-dom';
 import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
@@ -62,7 +62,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   shuffle = false,
   parentEntityId,
 }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const { t } = useTranslation();
   const styles = useCommunityStyles();
   const [tabValue, setTabValue] = useState('members');

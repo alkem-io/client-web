@@ -19,14 +19,13 @@ import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } fr
 import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
 
 const routes = {
-  discussions: '/community/discussions',
-  community: '/community',
-  dashboard: '/dashboard',
-  opportunities: '/opportunities',
-  canvases: '/canvases',
-  settings: '/settings',
-  context: '/context',
-  root: '/',
+  discussions: 'community/discussions',
+  community: 'community',
+  dashboard: 'dashboard',
+  opportunities: 'opportunities',
+  canvases: 'canvases',
+  settings: 'settings',
+  context: 'context',
 };
 
 export type ChallengeRoutesType = typeof routes;
@@ -44,20 +43,23 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
+  const { pathname: path } = useResolvedPath('./');
   const { t } = useTranslation();
-  const resolved = useResolvedPath('./');
-  const match = useRouteMatch(Object.values(routes).map(x => `${resolved.pathname}${x}`));
+  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
   const { challengeNameId, ecoverseNameId, permissions } = useChallenge();
-  const pathGetter = useMemo(() => createGetter(routes, resolved.pathname), [resolved]);
+  const pathGetter = useMemo(() => createGetter(routes, path), [path]);
   const { isFeatureEnabled } = useConfig();
 
-  const tabNames = (Object.keys(routes) as Array<keyof ChallengeRoutesType>).reduce<ChallengeRoutesType>(
-    (acc, curr) => {
-      acc[curr] = pathGetter(curr);
-      return acc;
-    },
-    {} as ChallengeRoutesType
+  const tabNames = useMemo(
+    () =>
+      (Object.keys(routes) as Array<keyof ChallengeRoutesType>).reduce<ChallengeRoutesType>((acc, curr) => {
+        acc[curr] = pathGetter(curr);
+        return acc;
+      }, {} as ChallengeRoutesType),
+    [pathGetter]
   );
+
+  console.log(tabNames);
 
   const { communityReadAccess } = entities.permissions;
 
@@ -112,7 +114,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({ entities, children }) => {
           />
         )}
       </Tabs>
-      {children({ pathGetter, tabName: resolved?.pathname || 'dashboard', tabNames })}
+      {children({ pathGetter, tabName: match?.pathname || 'dashboard', tabNames })}
     </>
   );
 };

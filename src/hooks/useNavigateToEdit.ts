@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useResolvedPath } from 'react-router-dom';
 
 export const useNavigateToEdit = () => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const navigate = useNavigate();
 
   return useCallback(

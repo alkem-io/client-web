@@ -11,11 +11,12 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 import { useEcoverse } from '../../../hooks';
+import { useResolvedPath } from 'react-router-dom';
 
 interface OpportunityListProps extends PageProps {}
 
 export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
   const { challengeNameId = '' } = useUrlParams();

@@ -2,6 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { useResolvedPath } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
@@ -69,8 +70,8 @@ export interface OpportunityPageContainerProps
 const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  // const url = '';
-  const url = '';
+
+  const { pathname: url } = useResolvedPath('./');
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);

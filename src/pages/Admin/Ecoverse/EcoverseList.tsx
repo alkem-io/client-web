@@ -11,11 +11,12 @@ import Loading from '../../../components/core/Loading/Loading';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../../components/Admin/SearchableList';
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
+import { useResolvedPath } from 'react-router-dom';
 
 interface EcoverseListProps extends PageProps {}
 
 export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');

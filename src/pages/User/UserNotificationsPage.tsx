@@ -4,11 +4,12 @@ import UserNotificationsPageView from '../../views/User/UserNotificationsPageVie
 import { PageProps } from '../common';
 
 import { useUpdateNavigation } from '../../hooks';
+import { useResolvedPath } from 'react-router-dom';
 
 export interface UserNotificationsPageProps extends PageProps {}
 
 const UserNotificationsPage: FC<UserNotificationsPageProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'notifications', real: true }], [url, paths]);
   useUpdateNavigation({ currentPaths });
 

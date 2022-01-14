@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { WithCommunity, WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
 import EditMembersPage from '../../components/Admin/Group/EditMembersPage';
 import GroupPage from '../../components/Admin/Group/GroupPage';
@@ -13,7 +13,7 @@ interface Props extends WithOptionalMembersProps, WithCommunity {
 }
 
 export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCommunityId, parentMembers }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const groupName = group?.name || '';
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: groupName, real: true }], [paths, groupName]);

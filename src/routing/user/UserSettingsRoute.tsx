@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { useUpdateNavigation } from '../../hooks';
 import { Error404, PageProps } from '../../pages';
 import EditUserProfilePage from '../../pages/User/EditUserProfilePage';
@@ -11,29 +11,21 @@ import UserTabs from './UserTabs';
 interface UserSettingsProps extends PageProps {}
 
 export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'settings', real: false }], [url]);
   useUpdateNavigation({ currentPaths });
 
   return (
     <UserTabs>
       <Routes>
-        <Route>
-          <Navigate to={`${url}/profile`} />
+        <Route path={'/'}>
+          <Route index element={<Navigate to={'profile'} />}></Route>
+          <Route path={'profile'} element={<EditUserProfilePage paths={currentPaths} />}></Route>
+          <Route path={'membership'} element={<UserMembershipPage paths={currentPaths} />}></Route>
+          <Route path={'organizations'} element={<UserOrganizationsPage paths={currentPaths} />}></Route>
+          <Route path={'notifications'} element={<UserNotificationsPage paths={currentPaths} />}></Route>
+          <Route path="*" element={<Error404 />}></Route>
         </Route>
-        <Route path={'profile'}>
-          <EditUserProfilePage paths={currentPaths} />
-        </Route>
-        <Route path={'membership'}>
-          <UserMembershipPage paths={currentPaths} />
-        </Route>
-        <Route path={'organizations'}>
-          <UserOrganizationsPage paths={currentPaths} />
-        </Route>
-        <Route path={'notifications'}>
-          <UserNotificationsPage paths={currentPaths} />
-        </Route>
-        <Route path="*" element={<Error404 />}></Route>
       </Routes>
     </UserTabs>
   );

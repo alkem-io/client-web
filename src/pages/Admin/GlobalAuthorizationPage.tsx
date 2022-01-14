@@ -1,6 +1,7 @@
 import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useResolvedPath } from 'react-router-dom';
 import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
 import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
@@ -14,7 +15,7 @@ import AuthorizationPageProps from './AuthorizationPageProps';
 
 const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.GlobalRegistered } = useUrlParams();
   const currentPaths = useMemo(

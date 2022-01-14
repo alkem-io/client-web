@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import { useEcoverse, useTransactionScope } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
@@ -16,7 +16,7 @@ interface EcoverseAdminRouteProps extends PageProps {}
 export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
   const { ecoverseId, ecoverseNameId, ecoverse, loading: loadingEcoverse } = useEcoverse();
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: ecoverse?.displayName || '', real: true }],

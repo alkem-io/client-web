@@ -15,6 +15,7 @@ import {
 import { OrganizationCardProps } from '../../components/composite/common/cards/Organization/OrganizationCard';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+import { useResolvedPath } from 'react-router-dom';
 
 export interface CommunityPageV2Props extends PageProps {
   ecoverseId?: Scalars['UUID_NAMEID'];
@@ -25,8 +26,8 @@ export interface CommunityPageV2Props extends PageProps {
 
 const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityId, challengeId, opportunityId }) => {
   const { t } = useTranslation();
-  // const url = '';
-  const url = '';
+
+  const { pathname: url } = useResolvedPath('./');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 

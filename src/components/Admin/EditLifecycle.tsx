@@ -6,6 +6,7 @@ import { Lifecycle } from '../../models/graphql-schema';
 import { PageProps } from '../../pages';
 import LifecycleVisualizer from '../core/LifecycleVisualizer';
 import LifecycleButton from '../core/LifecycleButton';
+import { useResolvedPath } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -27,8 +28,7 @@ interface Props extends PageProps {
 }
 
 const EditLifecycle: FC<Props> = ({ paths, data, id, onSetNewState }) => {
-  // const url = '';
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const styles = useStyles();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'lifecycle', real: true }], [paths, url]);
   useUpdateNavigation({ currentPaths });

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { managementData } from '../../components/Admin/managementData';
 import { useTransactionScope } from '../../hooks';
 import { AuthorizationCredential } from '../../models/graphql-schema';
@@ -13,7 +13,7 @@ import { UsersRoute } from './users/UsersRoute';
 
 export const AdminRoute: FC = () => {
   useTransactionScope({ type: 'admin' });
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const currentPaths = useMemo(() => [{ value: url, name: 'admin', real: true }], []);
 
   return (

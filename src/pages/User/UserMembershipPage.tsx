@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useResolvedPath } from 'react-router-dom';
 import { useUpdateNavigation, useUrlParams, useUserMetadata } from '../../hooks';
 import { ContributionsView } from '../../views/ProfileView';
 import { PageProps } from '../common';
@@ -9,7 +10,7 @@ export interface UserMembershipPageProps extends PageProps {}
 
 const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
   const { t } = useTranslation();
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
   const { userId = '' } = useUrlParams();
   const { user: userMetadata, loading } = useUserMetadata(userId);
 

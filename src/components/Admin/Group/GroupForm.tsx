@@ -27,8 +27,6 @@ interface GroupFormProps {
 }
 
 export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, onCancel, onDelete }) => {
-  // const url = '';
-
   const isReadOnlyMode = false;
   const isEditMode = true;
   const { t } = useTranslation();

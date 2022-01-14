@@ -6,11 +6,10 @@ import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import NavigationTabs from '../../components/core/NavigationTab/NavigationTabs';
 
 const routes = {
-  profile: '/profile',
-  membership: '/membership',
-  organizations: '/organizations',
-  notifications: '/notifications',
-  root: '/',
+  profile: 'profile',
+  membership: 'membership',
+  organizations: 'organizations',
+  notifications: 'notifications',
 };
 
 export interface UserTabsProps {}

@@ -13,10 +13,11 @@ import {
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
 import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
+import { useResolvedPath } from 'react-router-dom';
 
 const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
-  const url = '';
+  const { pathname: url } = useResolvedPath('./');
 
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
   const { role: credential = AuthorizationCredential.ChallengeMember } = useUrlParams();
@@ -56,7 +57,7 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
       },
       refetchQueries: [
         refetchUsersWithCredentialsQuery({
-          input: { type: credential , resourceID: resourceId },
+          input: { type: credential, resourceID: resourceId },
         }),
       ],
       awaitRefetchQueries: true,
