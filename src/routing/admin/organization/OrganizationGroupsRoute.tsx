@@ -15,7 +15,7 @@ export const OrganizationGroupsRoute: FC<PageProps> = ({ paths }) => {
       <Route path={'/'}>
         <Route index element={<OrganizationGroupsPage paths={currentPaths} />}></Route>
         <Route path={'new'} element={<CreateOrganizationGroupPage paths={currentPaths} />}></Route>
-        <Route path={`:${nameOfUrl.groupId}`} element={<OrganizationGroupRoute paths={currentPaths} />}></Route>
+        <Route path={`:${nameOfUrl.groupId}/*`} element={<OrganizationGroupRoute paths={currentPaths} />}></Route>
         <Route path="*" element={<Error404 />}></Route>
       </Route>
     </Routes>
