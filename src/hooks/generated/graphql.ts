@@ -103,6 +103,7 @@ export const ChallengeCardFragmentDoc = gql`
       visual {
         id
         background
+        banner
       }
     }
     tagset {
@@ -4088,7 +4089,7 @@ export type AllOpportunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.AllOpportunitiesQuery,
   SchemaTypes.AllOpportunitiesQueryVariables
 >;
-export function refetchAllOpportunitiesQuery(variables?: SchemaTypes.AllOpportunitiesQueryVariables) {
+export function refetchAllOpportunitiesQuery(variables: SchemaTypes.AllOpportunitiesQueryVariables) {
   return { query: AllOpportunitiesDocument, variables: variables };
 }
 export const ApplicationByEcoverseDocument = gql`
@@ -4156,7 +4157,7 @@ export type ApplicationByEcoverseQueryResult = Apollo.QueryResult<
   SchemaTypes.ApplicationByEcoverseQuery,
   SchemaTypes.ApplicationByEcoverseQueryVariables
 >;
-export function refetchApplicationByEcoverseQuery(variables?: SchemaTypes.ApplicationByEcoverseQueryVariables) {
+export function refetchApplicationByEcoverseQuery(variables: SchemaTypes.ApplicationByEcoverseQueryVariables) {
   return { query: ApplicationByEcoverseDocument, variables: variables };
 }
 export const ChallengeApplicationDocument = gql`
@@ -4225,7 +4226,7 @@ export type ChallengeApplicationQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationQuery,
   SchemaTypes.ChallengeApplicationQueryVariables
 >;
-export function refetchChallengeApplicationQuery(variables?: SchemaTypes.ChallengeApplicationQueryVariables) {
+export function refetchChallengeApplicationQuery(variables: SchemaTypes.ChallengeApplicationQueryVariables) {
   return { query: ChallengeApplicationDocument, variables: variables };
 }
 export const ChallengeApplicationsDocument = gql`
@@ -4293,7 +4294,7 @@ export type ChallengeApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeApplicationsQuery,
   SchemaTypes.ChallengeApplicationsQueryVariables
 >;
-export function refetchChallengeApplicationsQuery(variables?: SchemaTypes.ChallengeApplicationsQueryVariables) {
+export function refetchChallengeApplicationsQuery(variables: SchemaTypes.ChallengeApplicationsQueryVariables) {
   return { query: ChallengeApplicationsDocument, variables: variables };
 }
 export const EcoverseApplicationDocument = gql`
@@ -4359,7 +4360,7 @@ export type EcoverseApplicationQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseApplicationQuery,
   SchemaTypes.EcoverseApplicationQueryVariables
 >;
-export function refetchEcoverseApplicationQuery(variables?: SchemaTypes.EcoverseApplicationQueryVariables) {
+export function refetchEcoverseApplicationQuery(variables: SchemaTypes.EcoverseApplicationQueryVariables) {
   return { query: EcoverseApplicationDocument, variables: variables };
 }
 export const EcoverseApplicationsDocument = gql`
@@ -4423,7 +4424,7 @@ export type EcoverseApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseApplicationsQuery,
   SchemaTypes.EcoverseApplicationsQueryVariables
 >;
-export function refetchEcoverseApplicationsQuery(variables?: SchemaTypes.EcoverseApplicationsQueryVariables) {
+export function refetchEcoverseApplicationsQuery(variables: SchemaTypes.EcoverseApplicationsQueryVariables) {
   return { query: EcoverseApplicationsDocument, variables: variables };
 }
 export const EcoverseNameIdDocument = gql`
@@ -4475,7 +4476,7 @@ export type EcoverseNameIdQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseNameIdQuery,
   SchemaTypes.EcoverseNameIdQueryVariables
 >;
-export function refetchEcoverseNameIdQuery(variables?: SchemaTypes.EcoverseNameIdQueryVariables) {
+export function refetchEcoverseNameIdQuery(variables: SchemaTypes.EcoverseNameIdQueryVariables) {
   return { query: EcoverseNameIdDocument, variables: variables };
 }
 export const ChallengeNameIdDocument = gql`
@@ -4532,7 +4533,7 @@ export type ChallengeNameIdQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameIdQuery,
   SchemaTypes.ChallengeNameIdQueryVariables
 >;
-export function refetchChallengeNameIdQuery(variables?: SchemaTypes.ChallengeNameIdQueryVariables) {
+export function refetchChallengeNameIdQuery(variables: SchemaTypes.ChallengeNameIdQueryVariables) {
   return { query: ChallengeNameIdDocument, variables: variables };
 }
 export const OpportunityNameIdDocument = gql`
@@ -4596,7 +4597,7 @@ export type OpportunityNameIdQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityNameIdQuery,
   SchemaTypes.OpportunityNameIdQueryVariables
 >;
-export function refetchOpportunityNameIdQuery(variables?: SchemaTypes.OpportunityNameIdQueryVariables) {
+export function refetchOpportunityNameIdQuery(variables: SchemaTypes.OpportunityNameIdQueryVariables) {
   return { query: OpportunityNameIdDocument, variables: variables };
 }
 export const ChallengeCardDocument = gql`
@@ -4653,7 +4654,7 @@ export type ChallengeCardQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCardQuery,
   SchemaTypes.ChallengeCardQueryVariables
 >;
-export function refetchChallengeCardQuery(variables?: SchemaTypes.ChallengeCardQueryVariables) {
+export function refetchChallengeCardQuery(variables: SchemaTypes.ChallengeCardQueryVariables) {
   return { query: ChallengeCardDocument, variables: variables };
 }
 export const ChallengeCardsDocument = gql`
@@ -4708,7 +4709,7 @@ export type ChallengeCardsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCardsQuery,
   SchemaTypes.ChallengeCardsQueryVariables
 >;
-export function refetchChallengeCardsQuery(variables?: SchemaTypes.ChallengeCardsQueryVariables) {
+export function refetchChallengeCardsQuery(variables: SchemaTypes.ChallengeCardsQueryVariables) {
   return { query: ChallengeCardsDocument, variables: variables };
 }
 export const EcoverseCardDocument = gql`
@@ -4760,7 +4761,7 @@ export type EcoverseCardQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseCardQuery,
   SchemaTypes.EcoverseCardQueryVariables
 >;
-export function refetchEcoverseCardQuery(variables?: SchemaTypes.EcoverseCardQueryVariables) {
+export function refetchEcoverseCardQuery(variables: SchemaTypes.EcoverseCardQueryVariables) {
   return { query: EcoverseCardDocument, variables: variables };
 }
 export const UserCardDocument = gql`
@@ -4803,7 +4804,7 @@ export function useUserCardLazyQuery(
 export type UserCardQueryHookResult = ReturnType<typeof useUserCardQuery>;
 export type UserCardLazyQueryHookResult = ReturnType<typeof useUserCardLazyQuery>;
 export type UserCardQueryResult = Apollo.QueryResult<SchemaTypes.UserCardQuery, SchemaTypes.UserCardQueryVariables>;
-export function refetchUserCardQuery(variables?: SchemaTypes.UserCardQueryVariables) {
+export function refetchUserCardQuery(variables: SchemaTypes.UserCardQueryVariables) {
   return { query: UserCardDocument, variables: variables };
 }
 export const ChallengeInfoDocument = gql`
@@ -4860,7 +4861,7 @@ export type ChallengeInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeInfoQuery,
   SchemaTypes.ChallengeInfoQueryVariables
 >;
-export function refetchChallengeInfoQuery(variables?: SchemaTypes.ChallengeInfoQueryVariables) {
+export function refetchChallengeInfoQuery(variables: SchemaTypes.ChallengeInfoQueryVariables) {
   return { query: ChallengeInfoDocument, variables: variables };
 }
 export const ChallengeActivityDocument = gql`
@@ -4922,7 +4923,7 @@ export type ChallengeActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeActivityQuery,
   SchemaTypes.ChallengeActivityQueryVariables
 >;
-export function refetchChallengeActivityQuery(variables?: SchemaTypes.ChallengeActivityQueryVariables) {
+export function refetchChallengeActivityQuery(variables: SchemaTypes.ChallengeActivityQueryVariables) {
   return { query: ChallengeActivityDocument, variables: variables };
 }
 export const ChallengeApplicationTemplateDocument = gql`
@@ -5054,7 +5055,7 @@ export type ChallengeGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeGroupsQuery,
   SchemaTypes.ChallengeGroupsQueryVariables
 >;
-export function refetchChallengeGroupsQuery(variables?: SchemaTypes.ChallengeGroupsQueryVariables) {
+export function refetchChallengeGroupsQuery(variables: SchemaTypes.ChallengeGroupsQueryVariables) {
   return { query: ChallengeGroupsDocument, variables: variables };
 }
 export const ChallengeLeadOrganizationsDocument = gql`
@@ -5123,7 +5124,7 @@ export type ChallengeLeadOrganizationsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeLeadOrganizationsQueryVariables
 >;
 export function refetchChallengeLeadOrganizationsQuery(
-  variables?: SchemaTypes.ChallengeLeadOrganizationsQueryVariables
+  variables: SchemaTypes.ChallengeLeadOrganizationsQueryVariables
 ) {
   return { query: ChallengeLeadOrganizationsDocument, variables: variables };
 }
@@ -5192,7 +5193,7 @@ export type ChallengeLifecycleQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeLifecycleQuery,
   SchemaTypes.ChallengeLifecycleQueryVariables
 >;
-export function refetchChallengeLifecycleQuery(variables?: SchemaTypes.ChallengeLifecycleQueryVariables) {
+export function refetchChallengeLifecycleQuery(variables: SchemaTypes.ChallengeLifecycleQueryVariables) {
   return { query: ChallengeLifecycleDocument, variables: variables };
 }
 export const ChallengeMembersDocument = gql`
@@ -5258,7 +5259,7 @@ export type ChallengeMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeMembersQuery,
   SchemaTypes.ChallengeMembersQueryVariables
 >;
-export function refetchChallengeMembersQuery(variables?: SchemaTypes.ChallengeMembersQueryVariables) {
+export function refetchChallengeMembersQuery(variables: SchemaTypes.ChallengeMembersQueryVariables) {
   return { query: ChallengeMembersDocument, variables: variables };
 }
 export const ChallengeNameDocument = gql`
@@ -5318,7 +5319,7 @@ export type ChallengeNameQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeNameQuery,
   SchemaTypes.ChallengeNameQueryVariables
 >;
-export function refetchChallengeNameQuery(variables?: SchemaTypes.ChallengeNameQueryVariables) {
+export function refetchChallengeNameQuery(variables: SchemaTypes.ChallengeNameQueryVariables) {
   return { query: ChallengeNameDocument, variables: variables };
 }
 export const ChallengeProfileDocument = gql`
@@ -5377,7 +5378,7 @@ export type ChallengeProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileQuery,
   SchemaTypes.ChallengeProfileQueryVariables
 >;
-export function refetchChallengeProfileQuery(variables?: SchemaTypes.ChallengeProfileQueryVariables) {
+export function refetchChallengeProfileQuery(variables: SchemaTypes.ChallengeProfileQueryVariables) {
   return { query: ChallengeProfileDocument, variables: variables };
 }
 export const ChallengeProfileInfoDocument = gql`
@@ -5452,7 +5453,7 @@ export type ChallengeProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeProfileInfoQuery,
   SchemaTypes.ChallengeProfileInfoQueryVariables
 >;
-export function refetchChallengeProfileInfoQuery(variables?: SchemaTypes.ChallengeProfileInfoQueryVariables) {
+export function refetchChallengeProfileInfoQuery(variables: SchemaTypes.ChallengeProfileInfoQueryVariables) {
   return { query: ChallengeProfileInfoDocument, variables: variables };
 }
 export const ChallengeUserIdsDocument = gql`
@@ -5514,7 +5515,7 @@ export type ChallengeUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeUserIdsQuery,
   SchemaTypes.ChallengeUserIdsQueryVariables
 >;
-export function refetchChallengeUserIdsQuery(variables?: SchemaTypes.ChallengeUserIdsQueryVariables) {
+export function refetchChallengeUserIdsQuery(variables: SchemaTypes.ChallengeUserIdsQueryVariables) {
   return { query: ChallengeUserIdsDocument, variables: variables };
 }
 export const ChallengesDocument = gql`
@@ -5582,7 +5583,7 @@ export type ChallengesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesQuery,
   SchemaTypes.ChallengesQueryVariables
 >;
-export function refetchChallengesQuery(variables?: SchemaTypes.ChallengesQueryVariables) {
+export function refetchChallengesQuery(variables: SchemaTypes.ChallengesQueryVariables) {
   return { query: ChallengesDocument, variables: variables };
 }
 export const AllCommunitiesDocument = gql`
@@ -5646,7 +5647,7 @@ export type AllCommunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.AllCommunitiesQuery,
   SchemaTypes.AllCommunitiesQueryVariables
 >;
-export function refetchAllCommunitiesQuery(variables?: SchemaTypes.AllCommunitiesQueryVariables) {
+export function refetchAllCommunitiesQuery(variables: SchemaTypes.AllCommunitiesQueryVariables) {
   return { query: AllCommunitiesDocument, variables: variables };
 }
 export const ChallengeCommunityDocument = gql`
@@ -5712,7 +5713,7 @@ export type ChallengeCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCommunityQuery,
   SchemaTypes.ChallengeCommunityQueryVariables
 >;
-export function refetchChallengeCommunityQuery(variables?: SchemaTypes.ChallengeCommunityQueryVariables) {
+export function refetchChallengeCommunityQuery(variables: SchemaTypes.ChallengeCommunityQueryVariables) {
   return { query: ChallengeCommunityDocument, variables: variables };
 }
 export const ChallengesWithCommunityDocument = gql`
@@ -5778,7 +5779,7 @@ export type ChallengesWithCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesWithCommunityQuery,
   SchemaTypes.ChallengesWithCommunityQueryVariables
 >;
-export function refetchChallengesWithCommunityQuery(variables?: SchemaTypes.ChallengesWithCommunityQueryVariables) {
+export function refetchChallengesWithCommunityQuery(variables: SchemaTypes.ChallengesWithCommunityQueryVariables) {
   return { query: ChallengesWithCommunityDocument, variables: variables };
 }
 export const EcoverseCommunityDocument = gql`
@@ -5836,7 +5837,7 @@ export type EcoverseCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseCommunityQuery,
   SchemaTypes.EcoverseCommunityQueryVariables
 >;
-export function refetchEcoverseCommunityQuery(variables?: SchemaTypes.EcoverseCommunityQueryVariables) {
+export function refetchEcoverseCommunityQuery(variables: SchemaTypes.EcoverseCommunityQueryVariables) {
   return { query: EcoverseCommunityDocument, variables: variables };
 }
 export const CommunityMessagesDocument = gql`
@@ -5895,7 +5896,7 @@ export type CommunityMessagesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityMessagesQuery,
   SchemaTypes.CommunityMessagesQueryVariables
 >;
-export function refetchCommunityMessagesQuery(variables?: SchemaTypes.CommunityMessagesQueryVariables) {
+export function refetchCommunityMessagesQuery(variables: SchemaTypes.CommunityMessagesQueryVariables) {
   return { query: CommunityMessagesDocument, variables: variables };
 }
 export const OpportunityCommunityDocument = gql`
@@ -5961,7 +5962,7 @@ export type OpportunityCommunityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCommunityQuery,
   SchemaTypes.OpportunityCommunityQueryVariables
 >;
-export function refetchOpportunityCommunityQuery(variables?: SchemaTypes.OpportunityCommunityQueryVariables) {
+export function refetchOpportunityCommunityQuery(variables: SchemaTypes.OpportunityCommunityQueryVariables) {
   return { query: OpportunityCommunityDocument, variables: variables };
 }
 export const CommunityGroupsDocument = gql`
@@ -6021,7 +6022,7 @@ export type CommunityGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityGroupsQuery,
   SchemaTypes.CommunityGroupsQueryVariables
 >;
-export function refetchCommunityGroupsQuery(variables?: SchemaTypes.CommunityGroupsQueryVariables) {
+export function refetchCommunityGroupsQuery(variables: SchemaTypes.CommunityGroupsQueryVariables) {
   return { query: CommunityGroupsDocument, variables: variables };
 }
 export const CommunityMembersDocument = gql`
@@ -6083,7 +6084,7 @@ export type CommunityMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityMembersQuery,
   SchemaTypes.CommunityMembersQueryVariables
 >;
-export function refetchCommunityMembersQuery(variables?: SchemaTypes.CommunityMembersQueryVariables) {
+export function refetchCommunityMembersQuery(variables: SchemaTypes.CommunityMembersQueryVariables) {
   return { query: CommunityMembersDocument, variables: variables };
 }
 export const ConfigurationDocument = gql`
@@ -6186,7 +6187,7 @@ export type EcoverseInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseInfoQuery,
   SchemaTypes.EcoverseInfoQueryVariables
 >;
-export function refetchEcoverseInfoQuery(variables?: SchemaTypes.EcoverseInfoQueryVariables) {
+export function refetchEcoverseInfoQuery(variables: SchemaTypes.EcoverseInfoQueryVariables) {
   return { query: EcoverseInfoDocument, variables: variables };
 }
 export const EcoverseActivityDocument = gql`
@@ -6244,7 +6245,7 @@ export type EcoverseActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseActivityQuery,
   SchemaTypes.EcoverseActivityQueryVariables
 >;
-export function refetchEcoverseActivityQuery(variables?: SchemaTypes.EcoverseActivityQueryVariables) {
+export function refetchEcoverseActivityQuery(variables: SchemaTypes.EcoverseActivityQueryVariables) {
   return { query: EcoverseActivityDocument, variables: variables };
 }
 export const EcoverseApplicationTemplateDocument = gql`
@@ -6370,7 +6371,7 @@ export type EcoverseGroupQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseGroupQuery,
   SchemaTypes.EcoverseGroupQueryVariables
 >;
-export function refetchEcoverseGroupQuery(variables?: SchemaTypes.EcoverseGroupQueryVariables) {
+export function refetchEcoverseGroupQuery(variables: SchemaTypes.EcoverseGroupQueryVariables) {
   return { query: EcoverseGroupDocument, variables: variables };
 }
 export const EcoverseGroupsListDocument = gql`
@@ -6431,7 +6432,7 @@ export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseGroupsListQuery,
   SchemaTypes.EcoverseGroupsListQueryVariables
 >;
-export function refetchEcoverseGroupsListQuery(variables?: SchemaTypes.EcoverseGroupsListQueryVariables) {
+export function refetchEcoverseGroupsListQuery(variables: SchemaTypes.EcoverseGroupsListQueryVariables) {
   return { query: EcoverseGroupsListDocument, variables: variables };
 }
 export const EcoverseHostReferencesDocument = gql`
@@ -6497,7 +6498,7 @@ export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseHostReferencesQuery,
   SchemaTypes.EcoverseHostReferencesQueryVariables
 >;
-export function refetchEcoverseHostReferencesQuery(variables?: SchemaTypes.EcoverseHostReferencesQueryVariables) {
+export function refetchEcoverseHostReferencesQuery(variables: SchemaTypes.EcoverseHostReferencesQueryVariables) {
   return { query: EcoverseHostReferencesDocument, variables: variables };
 }
 export const EcoverseMembersDocument = gql`
@@ -6558,7 +6559,7 @@ export type EcoverseMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseMembersQuery,
   SchemaTypes.EcoverseMembersQueryVariables
 >;
-export function refetchEcoverseMembersQuery(variables?: SchemaTypes.EcoverseMembersQueryVariables) {
+export function refetchEcoverseMembersQuery(variables: SchemaTypes.EcoverseMembersQueryVariables) {
   return { query: EcoverseMembersDocument, variables: variables };
 }
 export const EcoverseNameDocument = gql`
@@ -6610,7 +6611,7 @@ export type EcoverseNameQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseNameQuery,
   SchemaTypes.EcoverseNameQueryVariables
 >;
-export function refetchEcoverseNameQuery(variables?: SchemaTypes.EcoverseNameQueryVariables) {
+export function refetchEcoverseNameQuery(variables: SchemaTypes.EcoverseNameQueryVariables) {
   return { query: EcoverseNameDocument, variables: variables };
 }
 export const EcoverseUserIdsDocument = gql`
@@ -6667,7 +6668,7 @@ export type EcoverseUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseUserIdsQuery,
   SchemaTypes.EcoverseUserIdsQueryVariables
 >;
-export function refetchEcoverseUserIdsQuery(variables?: SchemaTypes.EcoverseUserIdsQueryVariables) {
+export function refetchEcoverseUserIdsQuery(variables: SchemaTypes.EcoverseUserIdsQueryVariables) {
   return { query: EcoverseUserIdsDocument, variables: variables };
 }
 export const EcoverseVisualDocument = gql`
@@ -6724,7 +6725,7 @@ export type EcoverseVisualQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseVisualQuery,
   SchemaTypes.EcoverseVisualQueryVariables
 >;
-export function refetchEcoverseVisualQuery(variables?: SchemaTypes.EcoverseVisualQueryVariables) {
+export function refetchEcoverseVisualQuery(variables: SchemaTypes.EcoverseVisualQueryVariables) {
   return { query: EcoverseVisualDocument, variables: variables };
 }
 export const EcoversesDocument = gql`
@@ -6882,7 +6883,7 @@ export type GroupMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.GroupMembersQuery,
   SchemaTypes.GroupMembersQueryVariables
 >;
-export function refetchGroupMembersQuery(variables?: SchemaTypes.GroupMembersQueryVariables) {
+export function refetchGroupMembersQuery(variables: SchemaTypes.GroupMembersQueryVariables) {
   return { query: GroupMembersDocument, variables: variables };
 }
 export const MeDocument = gql`
@@ -7040,7 +7041,7 @@ export type MembershipOrganizationQueryResult = Apollo.QueryResult<
   SchemaTypes.MembershipOrganizationQuery,
   SchemaTypes.MembershipOrganizationQueryVariables
 >;
-export function refetchMembershipOrganizationQuery(variables?: SchemaTypes.MembershipOrganizationQueryVariables) {
+export function refetchMembershipOrganizationQuery(variables: SchemaTypes.MembershipOrganizationQueryVariables) {
   return { query: MembershipOrganizationDocument, variables: variables };
 }
 export const MembershipUserDocument = gql`
@@ -7093,7 +7094,7 @@ export type MembershipUserQueryResult = Apollo.QueryResult<
   SchemaTypes.MembershipUserQuery,
   SchemaTypes.MembershipUserQueryVariables
 >;
-export function refetchMembershipUserQuery(variables?: SchemaTypes.MembershipUserQueryVariables) {
+export function refetchMembershipUserQuery(variables: SchemaTypes.MembershipUserQueryVariables) {
   return { query: MembershipUserDocument, variables: variables };
 }
 export const OpportunitiesDocument = gql`
@@ -7153,7 +7154,7 @@ export type OpportunitiesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunitiesQuery,
   SchemaTypes.OpportunitiesQueryVariables
 >;
-export function refetchOpportunitiesQuery(variables?: SchemaTypes.OpportunitiesQueryVariables) {
+export function refetchOpportunitiesQuery(variables: SchemaTypes.OpportunitiesQueryVariables) {
   return { query: OpportunitiesDocument, variables: variables };
 }
 export const OpportunityInfoDocument = gql`
@@ -7210,7 +7211,7 @@ export type OpportunityInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityInfoQuery,
   SchemaTypes.OpportunityInfoQueryVariables
 >;
-export function refetchOpportunityInfoQuery(variables?: SchemaTypes.OpportunityInfoQueryVariables) {
+export function refetchOpportunityInfoQuery(variables: SchemaTypes.OpportunityInfoQueryVariables) {
   return { query: OpportunityInfoDocument, variables: variables };
 }
 export const OpportunityActivityDocument = gql`
@@ -7275,7 +7276,7 @@ export type OpportunityActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityActivityQuery,
   SchemaTypes.OpportunityActivityQueryVariables
 >;
-export function refetchOpportunityActivityQuery(variables?: SchemaTypes.OpportunityActivityQueryVariables) {
+export function refetchOpportunityActivityQuery(variables: SchemaTypes.OpportunityActivityQueryVariables) {
   return { query: OpportunityActivityDocument, variables: variables };
 }
 export const OpportunityActorGroupsDocument = gql`
@@ -7354,7 +7355,7 @@ export type OpportunityActorGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityActorGroupsQuery,
   SchemaTypes.OpportunityActorGroupsQueryVariables
 >;
-export function refetchOpportunityActorGroupsQuery(variables?: SchemaTypes.OpportunityActorGroupsQueryVariables) {
+export function refetchOpportunityActorGroupsQuery(variables: SchemaTypes.OpportunityActorGroupsQueryVariables) {
   return { query: OpportunityActorGroupsDocument, variables: variables };
 }
 export const OpportunityAspectsDocument = gql`
@@ -7424,7 +7425,7 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityAspectsQuery,
   SchemaTypes.OpportunityAspectsQueryVariables
 >;
-export function refetchOpportunityAspectsQuery(variables?: SchemaTypes.OpportunityAspectsQueryVariables) {
+export function refetchOpportunityAspectsQuery(variables: SchemaTypes.OpportunityAspectsQueryVariables) {
   return { query: OpportunityAspectsDocument, variables: variables };
 }
 export const OpportunityEcosystemDetailsDocument = gql`
@@ -7507,7 +7508,7 @@ export type OpportunityEcosystemDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityEcosystemDetailsQueryVariables
 >;
 export function refetchOpportunityEcosystemDetailsQuery(
-  variables?: SchemaTypes.OpportunityEcosystemDetailsQueryVariables
+  variables: SchemaTypes.OpportunityEcosystemDetailsQueryVariables
 ) {
   return { query: OpportunityEcosystemDetailsDocument, variables: variables };
 }
@@ -7571,7 +7572,7 @@ export type OpportunityGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityGroupsQuery,
   SchemaTypes.OpportunityGroupsQueryVariables
 >;
-export function refetchOpportunityGroupsQuery(variables?: SchemaTypes.OpportunityGroupsQueryVariables) {
+export function refetchOpportunityGroupsQuery(variables: SchemaTypes.OpportunityGroupsQueryVariables) {
   return { query: OpportunityGroupsDocument, variables: variables };
 }
 export const OpportunityLifecycleDocument = gql`
@@ -7639,7 +7640,7 @@ export type OpportunityLifecycleQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityLifecycleQuery,
   SchemaTypes.OpportunityLifecycleQueryVariables
 >;
-export function refetchOpportunityLifecycleQuery(variables?: SchemaTypes.OpportunityLifecycleQueryVariables) {
+export function refetchOpportunityLifecycleQuery(variables: SchemaTypes.OpportunityLifecycleQueryVariables) {
   return { query: OpportunityLifecycleDocument, variables: variables };
 }
 export const OpportunityNameDocument = gql`
@@ -7695,7 +7696,7 @@ export type OpportunityNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityNameQuery,
   SchemaTypes.OpportunityNameQueryVariables
 >;
-export function refetchOpportunityNameQuery(variables?: SchemaTypes.OpportunityNameQueryVariables) {
+export function refetchOpportunityNameQuery(variables: SchemaTypes.OpportunityNameQueryVariables) {
   return { query: OpportunityNameDocument, variables: variables };
 }
 export const OpportunityProfileInfoDocument = gql`
@@ -7767,7 +7768,7 @@ export type OpportunityProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityProfileInfoQuery,
   SchemaTypes.OpportunityProfileInfoQueryVariables
 >;
-export function refetchOpportunityProfileInfoQuery(variables?: SchemaTypes.OpportunityProfileInfoQueryVariables) {
+export function refetchOpportunityProfileInfoQuery(variables: SchemaTypes.OpportunityProfileInfoQueryVariables) {
   return { query: OpportunityProfileInfoDocument, variables: variables };
 }
 export const OpportunityRelationsDocument = gql`
@@ -7834,7 +7835,7 @@ export type OpportunityRelationsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityRelationsQuery,
   SchemaTypes.OpportunityRelationsQueryVariables
 >;
-export function refetchOpportunityRelationsQuery(variables?: SchemaTypes.OpportunityRelationsQueryVariables) {
+export function refetchOpportunityRelationsQuery(variables: SchemaTypes.OpportunityRelationsQueryVariables) {
   return { query: OpportunityRelationsDocument, variables: variables };
 }
 export const OpportunityUserIdsDocument = gql`
@@ -7899,7 +7900,7 @@ export type OpportunityUserIdsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityUserIdsQuery,
   SchemaTypes.OpportunityUserIdsQueryVariables
 >;
-export function refetchOpportunityUserIdsQuery(variables?: SchemaTypes.OpportunityUserIdsQueryVariables) {
+export function refetchOpportunityUserIdsQuery(variables: SchemaTypes.OpportunityUserIdsQueryVariables) {
   return { query: OpportunityUserIdsDocument, variables: variables };
 }
 export const OpportunityWithActivityDocument = gql`
@@ -7975,7 +7976,7 @@ export type OpportunityWithActivityQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityWithActivityQuery,
   SchemaTypes.OpportunityWithActivityQueryVariables
 >;
-export function refetchOpportunityWithActivityQuery(variables?: SchemaTypes.OpportunityWithActivityQueryVariables) {
+export function refetchOpportunityWithActivityQuery(variables: SchemaTypes.OpportunityWithActivityQueryVariables) {
   return { query: OpportunityWithActivityDocument, variables: variables };
 }
 export const OrganizationGroupDocument = gql`
@@ -8038,7 +8039,7 @@ export type OrganizationGroupQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationGroupQuery,
   SchemaTypes.OrganizationGroupQueryVariables
 >;
-export function refetchOrganizationGroupQuery(variables?: SchemaTypes.OrganizationGroupQueryVariables) {
+export function refetchOrganizationGroupQuery(variables: SchemaTypes.OrganizationGroupQueryVariables) {
   return { query: OrganizationGroupDocument, variables: variables };
 }
 export const OrganizationInfoDocument = gql`
@@ -8093,7 +8094,7 @@ export type OrganizationInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationInfoQuery,
   SchemaTypes.OrganizationInfoQueryVariables
 >;
-export function refetchOrganizationInfoQuery(variables?: SchemaTypes.OrganizationInfoQueryVariables) {
+export function refetchOrganizationInfoQuery(variables: SchemaTypes.OrganizationInfoQueryVariables) {
   return { query: OrganizationInfoDocument, variables: variables };
 }
 export const OrganizationDetailsDocument = gql`
@@ -8174,7 +8175,7 @@ export type OrganizationDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationDetailsQuery,
   SchemaTypes.OrganizationDetailsQueryVariables
 >;
-export function refetchOrganizationDetailsQuery(variables?: SchemaTypes.OrganizationDetailsQueryVariables) {
+export function refetchOrganizationDetailsQuery(variables: SchemaTypes.OrganizationDetailsQueryVariables) {
   return { query: OrganizationDetailsDocument, variables: variables };
 }
 export const OrganizationGroupsDocument = gql`
@@ -8235,7 +8236,7 @@ export type OrganizationGroupsQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationGroupsQuery,
   SchemaTypes.OrganizationGroupsQueryVariables
 >;
-export function refetchOrganizationGroupsQuery(variables?: SchemaTypes.OrganizationGroupsQueryVariables) {
+export function refetchOrganizationGroupsQuery(variables: SchemaTypes.OrganizationGroupsQueryVariables) {
   return { query: OrganizationGroupsDocument, variables: variables };
 }
 export const OrganizationNameDocument = gql`
@@ -8290,7 +8291,7 @@ export type OrganizationNameQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationNameQuery,
   SchemaTypes.OrganizationNameQueryVariables
 >;
-export function refetchOrganizationNameQuery(variables?: SchemaTypes.OrganizationNameQueryVariables) {
+export function refetchOrganizationNameQuery(variables: SchemaTypes.OrganizationNameQueryVariables) {
   return { query: OrganizationNameDocument, variables: variables };
 }
 export const OrganizationProfileInfoDocument = gql`
@@ -8348,7 +8349,7 @@ export type OrganizationProfileInfoQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationProfileInfoQuery,
   SchemaTypes.OrganizationProfileInfoQueryVariables
 >;
-export function refetchOrganizationProfileInfoQuery(variables?: SchemaTypes.OrganizationProfileInfoQueryVariables) {
+export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.OrganizationProfileInfoQueryVariables) {
   return { query: OrganizationProfileInfoDocument, variables: variables };
 }
 export const OrganizationsListDocument = gql`
@@ -8463,7 +8464,7 @@ export type ProjectProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.ProjectProfileQuery,
   SchemaTypes.ProjectProfileQueryVariables
 >;
-export function refetchProjectProfileQuery(variables?: SchemaTypes.ProjectProfileQueryVariables) {
+export function refetchProjectProfileQuery(variables: SchemaTypes.ProjectProfileQueryVariables) {
   return { query: ProjectProfileDocument, variables: variables };
 }
 export const ProjectsDocument = gql`
@@ -8514,7 +8515,7 @@ export function useProjectsLazyQuery(
 export type ProjectsQueryHookResult = ReturnType<typeof useProjectsQuery>;
 export type ProjectsLazyQueryHookResult = ReturnType<typeof useProjectsLazyQuery>;
 export type ProjectsQueryResult = Apollo.QueryResult<SchemaTypes.ProjectsQuery, SchemaTypes.ProjectsQueryVariables>;
-export function refetchProjectsQuery(variables?: SchemaTypes.ProjectsQueryVariables) {
+export function refetchProjectsQuery(variables: SchemaTypes.ProjectsQueryVariables) {
   return { query: ProjectsDocument, variables: variables };
 }
 export const ProjectsChainHistoryDocument = gql`
@@ -8581,7 +8582,7 @@ export type ProjectsChainHistoryQueryResult = Apollo.QueryResult<
   SchemaTypes.ProjectsChainHistoryQuery,
   SchemaTypes.ProjectsChainHistoryQueryVariables
 >;
-export function refetchProjectsChainHistoryQuery(variables?: SchemaTypes.ProjectsChainHistoryQueryVariables) {
+export function refetchProjectsChainHistoryQuery(variables: SchemaTypes.ProjectsChainHistoryQueryVariables) {
   return { query: ProjectsChainHistoryDocument, variables: variables };
 }
 export const RelationsDocument = gql`
@@ -8637,7 +8638,7 @@ export function useRelationsLazyQuery(
 export type RelationsQueryHookResult = ReturnType<typeof useRelationsQuery>;
 export type RelationsLazyQueryHookResult = ReturnType<typeof useRelationsLazyQuery>;
 export type RelationsQueryResult = Apollo.QueryResult<SchemaTypes.RelationsQuery, SchemaTypes.RelationsQueryVariables>;
-export function refetchRelationsQuery(variables?: SchemaTypes.RelationsQueryVariables) {
+export function refetchRelationsQuery(variables: SchemaTypes.RelationsQueryVariables) {
   return { query: RelationsDocument, variables: variables };
 }
 export const SearchDocument = gql`
@@ -8694,7 +8695,7 @@ export function useSearchLazyQuery(
 export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
 export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
 export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
-export function refetchSearchQuery(variables?: SchemaTypes.SearchQueryVariables) {
+export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
   return { query: SearchDocument, variables: variables };
 }
 export const ServerMetadataDocument = gql`
@@ -8879,7 +8880,7 @@ export type UserApplicationDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserApplicationDetailsQuery,
   SchemaTypes.UserApplicationDetailsQueryVariables
 >;
-export function refetchUserApplicationDetailsQuery(variables?: SchemaTypes.UserApplicationDetailsQueryVariables) {
+export function refetchUserApplicationDetailsQuery(variables: SchemaTypes.UserApplicationDetailsQueryVariables) {
   return { query: UserApplicationDetailsDocument, variables: variables };
 }
 export const UserProfileApplicationsDocument = gql`
@@ -8943,7 +8944,7 @@ export type UserProfileApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserProfileApplicationsQuery,
   SchemaTypes.UserProfileApplicationsQueryVariables
 >;
-export function refetchUserProfileApplicationsQuery(variables?: SchemaTypes.UserProfileApplicationsQueryVariables) {
+export function refetchUserProfileApplicationsQuery(variables: SchemaTypes.UserProfileApplicationsQueryVariables) {
   return { query: UserProfileApplicationsDocument, variables: variables };
 }
 export const UserNotificationsPreferencesDocument = gql`
@@ -9015,7 +9016,7 @@ export type UserNotificationsPreferencesQueryResult = Apollo.QueryResult<
   SchemaTypes.UserNotificationsPreferencesQueryVariables
 >;
 export function refetchUserNotificationsPreferencesQuery(
-  variables?: SchemaTypes.UserNotificationsPreferencesQueryVariables
+  variables: SchemaTypes.UserNotificationsPreferencesQueryVariables
 ) {
   return { query: UserNotificationsPreferencesDocument, variables: variables };
 }
@@ -9061,7 +9062,7 @@ export function useUserLazyQuery(
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<SchemaTypes.UserQuery, SchemaTypes.UserQueryVariables>;
-export function refetchUserQuery(variables?: SchemaTypes.UserQueryVariables) {
+export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
 }
 export const UserApplicationsDocument = gql`
@@ -9124,7 +9125,7 @@ export type UserApplicationsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserApplicationsQuery,
   SchemaTypes.UserApplicationsQueryVariables
 >;
-export function refetchUserApplicationsQuery(variables?: SchemaTypes.UserApplicationsQueryVariables) {
+export function refetchUserApplicationsQuery(variables: SchemaTypes.UserApplicationsQueryVariables) {
   return { query: UserApplicationsDocument, variables: variables };
 }
 export const UserAvatarsDocument = gql`
@@ -9188,7 +9189,7 @@ export type UserAvatarsQueryResult = Apollo.QueryResult<
   SchemaTypes.UserAvatarsQuery,
   SchemaTypes.UserAvatarsQueryVariables
 >;
-export function refetchUserAvatarsQuery(variables?: SchemaTypes.UserAvatarsQueryVariables) {
+export function refetchUserAvatarsQuery(variables: SchemaTypes.UserAvatarsQueryVariables) {
   return { query: UserAvatarsDocument, variables: variables };
 }
 export const UserProfileDocument = gql`
@@ -9247,7 +9248,7 @@ export type UserProfileQueryResult = Apollo.QueryResult<
   SchemaTypes.UserProfileQuery,
   SchemaTypes.UserProfileQueryVariables
 >;
-export function refetchUserProfileQuery(variables?: SchemaTypes.UserProfileQueryVariables) {
+export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryVariables) {
   return { query: UserProfileDocument, variables: variables };
 }
 export const UsersDocument = gql`
@@ -9408,7 +9409,7 @@ export type UsersWithCredentialsQueryResult = Apollo.QueryResult<
   SchemaTypes.UsersWithCredentialsQuery,
   SchemaTypes.UsersWithCredentialsQueryVariables
 >;
-export function refetchUsersWithCredentialsQuery(variables?: SchemaTypes.UsersWithCredentialsQueryVariables) {
+export function refetchUsersWithCredentialsQuery(variables: SchemaTypes.UsersWithCredentialsQueryVariables) {
   return { query: UsersWithCredentialsDocument, variables: variables };
 }
 export const UsersWithCredentialsSimpleListDocument = gql`
@@ -9472,7 +9473,7 @@ export type UsersWithCredentialsSimpleListQueryResult = Apollo.QueryResult<
   SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
 >;
 export function refetchUsersWithCredentialsSimpleListQuery(
-  variables?: SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
+  variables: SchemaTypes.UsersWithCredentialsSimpleListQueryVariables
 ) {
   return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
 }
@@ -9547,7 +9548,7 @@ export type EcoverseContributionDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseContributionDetailsQueryVariables
 >;
 export function refetchEcoverseContributionDetailsQuery(
-  variables?: SchemaTypes.EcoverseContributionDetailsQueryVariables
+  variables: SchemaTypes.EcoverseContributionDetailsQueryVariables
 ) {
   return { query: EcoverseContributionDetailsDocument, variables: variables };
 }
@@ -9629,7 +9630,7 @@ export type ChallengeContributionDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeContributionDetailsQueryVariables
 >;
 export function refetchChallengeContributionDetailsQuery(
-  variables?: SchemaTypes.ChallengeContributionDetailsQueryVariables
+  variables: SchemaTypes.ChallengeContributionDetailsQueryVariables
 ) {
   return { query: ChallengeContributionDetailsDocument, variables: variables };
 }
@@ -9713,7 +9714,7 @@ export type OpportunityContributionDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityContributionDetailsQueryVariables
 >;
 export function refetchOpportunityContributionDetailsQuery(
-  variables?: SchemaTypes.OpportunityContributionDetailsQueryVariables
+  variables: SchemaTypes.OpportunityContributionDetailsQueryVariables
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
 }
@@ -9776,7 +9777,7 @@ export type ContributorsSearchQueryResult = Apollo.QueryResult<
   SchemaTypes.ContributorsSearchQuery,
   SchemaTypes.ContributorsSearchQueryVariables
 >;
-export function refetchContributorsSearchQuery(variables?: SchemaTypes.ContributorsSearchQueryVariables) {
+export function refetchContributorsSearchQuery(variables: SchemaTypes.ContributorsSearchQueryVariables) {
   return { query: ContributorsSearchDocument, variables: variables };
 }
 export const EcoverseCanvasesDocument = gql`
@@ -9837,7 +9838,7 @@ export type EcoverseCanvasesQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseCanvasesQuery,
   SchemaTypes.EcoverseCanvasesQueryVariables
 >;
-export function refetchEcoverseCanvasesQuery(variables?: SchemaTypes.EcoverseCanvasesQueryVariables) {
+export function refetchEcoverseCanvasesQuery(variables: SchemaTypes.EcoverseCanvasesQueryVariables) {
   return { query: EcoverseCanvasesDocument, variables: variables };
 }
 export const EcoverseCanvasValuesDocument = gql`
@@ -9904,7 +9905,7 @@ export type EcoverseCanvasValuesQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoverseCanvasValuesQuery,
   SchemaTypes.EcoverseCanvasValuesQueryVariables
 >;
-export function refetchEcoverseCanvasValuesQuery(variables?: SchemaTypes.EcoverseCanvasValuesQueryVariables) {
+export function refetchEcoverseCanvasValuesQuery(variables: SchemaTypes.EcoverseCanvasValuesQueryVariables) {
   return { query: EcoverseCanvasValuesDocument, variables: variables };
 }
 export const ChallengeCanvasesDocument = gql`
@@ -9969,7 +9970,7 @@ export type ChallengeCanvasesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCanvasesQuery,
   SchemaTypes.ChallengeCanvasesQueryVariables
 >;
-export function refetchChallengeCanvasesQuery(variables?: SchemaTypes.ChallengeCanvasesQueryVariables) {
+export function refetchChallengeCanvasesQuery(variables: SchemaTypes.ChallengeCanvasesQueryVariables) {
   return { query: ChallengeCanvasesDocument, variables: variables };
 }
 export const ChallengeCanvasValuesDocument = gql`
@@ -10040,7 +10041,7 @@ export type ChallengeCanvasValuesQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeCanvasValuesQuery,
   SchemaTypes.ChallengeCanvasValuesQueryVariables
 >;
-export function refetchChallengeCanvasValuesQuery(variables?: SchemaTypes.ChallengeCanvasValuesQueryVariables) {
+export function refetchChallengeCanvasValuesQuery(variables: SchemaTypes.ChallengeCanvasValuesQueryVariables) {
   return { query: ChallengeCanvasValuesDocument, variables: variables };
 }
 export const OpportunityCanvasesDocument = gql`
@@ -10108,7 +10109,7 @@ export type OpportunityCanvasesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCanvasesQuery,
   SchemaTypes.OpportunityCanvasesQueryVariables
 >;
-export function refetchOpportunityCanvasesQuery(variables?: SchemaTypes.OpportunityCanvasesQueryVariables) {
+export function refetchOpportunityCanvasesQuery(variables: SchemaTypes.OpportunityCanvasesQueryVariables) {
   return { query: OpportunityCanvasesDocument, variables: variables };
 }
 export const OpportunityCanvasValuesDocument = gql`
@@ -10179,7 +10180,7 @@ export type OpportunityCanvasValuesQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityCanvasValuesQuery,
   SchemaTypes.OpportunityCanvasValuesQueryVariables
 >;
-export function refetchOpportunityCanvasValuesQuery(variables?: SchemaTypes.OpportunityCanvasValuesQueryVariables) {
+export function refetchOpportunityCanvasValuesQuery(variables: SchemaTypes.OpportunityCanvasValuesQueryVariables) {
   return { query: OpportunityCanvasValuesDocument, variables: variables };
 }
 export const CreateCanvasOnContextDocument = gql`
@@ -10472,7 +10473,7 @@ export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerSearchQuery,
   SchemaTypes.ChallengeExplorerSearchQueryVariables
 >;
-export function refetchChallengeExplorerSearchQuery(variables?: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
+export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
   return { query: ChallengeExplorerSearchDocument, variables: variables };
 }
 export const SimpleEcoverseDocument = gql`
@@ -10524,7 +10525,7 @@ export type SimpleEcoverseQueryResult = Apollo.QueryResult<
   SchemaTypes.SimpleEcoverseQuery,
   SchemaTypes.SimpleEcoverseQueryVariables
 >;
-export function refetchSimpleEcoverseQuery(variables?: SchemaTypes.SimpleEcoverseQueryVariables) {
+export function refetchSimpleEcoverseQuery(variables: SchemaTypes.SimpleEcoverseQueryVariables) {
   return { query: SimpleEcoverseDocument, variables: variables };
 }
 export const ChallengeExplorerSearchEnricherDocument = gql`
@@ -10586,7 +10587,7 @@ export type ChallengeExplorerSearchEnricherQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
 >;
 export function refetchChallengeExplorerSearchEnricherQuery(
-  variables?: SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
+  variables: SchemaTypes.ChallengeExplorerSearchEnricherQueryVariables
 ) {
   return { query: ChallengeExplorerSearchEnricherDocument, variables: variables };
 }
@@ -10651,7 +10652,7 @@ export type ChallengesOverviewPageQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengesOverviewPageQuery,
   SchemaTypes.ChallengesOverviewPageQueryVariables
 >;
-export function refetchChallengesOverviewPageQuery(variables?: SchemaTypes.ChallengesOverviewPageQueryVariables) {
+export function refetchChallengesOverviewPageQuery(variables: SchemaTypes.ChallengesOverviewPageQueryVariables) {
   return { query: ChallengesOverviewPageDocument, variables: variables };
 }
 export const CommunityUpdatesDocument = gql`
@@ -10720,7 +10721,7 @@ export type CommunityUpdatesQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityUpdatesQuery,
   SchemaTypes.CommunityUpdatesQueryVariables
 >;
-export function refetchCommunityUpdatesQuery(variables?: SchemaTypes.CommunityUpdatesQueryVariables) {
+export function refetchCommunityUpdatesQuery(variables: SchemaTypes.CommunityUpdatesQueryVariables) {
   return { query: CommunityUpdatesDocument, variables: variables };
 }
 export const SendUpdateDocument = gql`
@@ -10914,7 +10915,7 @@ export type CommunityPageQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityPageQuery,
   SchemaTypes.CommunityPageQueryVariables
 >;
-export function refetchCommunityPageQuery(variables?: SchemaTypes.CommunityPageQueryVariables) {
+export function refetchCommunityPageQuery(variables: SchemaTypes.CommunityPageQueryVariables) {
   return { query: CommunityPageDocument, variables: variables };
 }
 export const CommunityPageWithHostDocument = gql`
@@ -10984,7 +10985,7 @@ export type CommunityPageWithHostQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityPageWithHostQuery,
   SchemaTypes.CommunityPageWithHostQueryVariables
 >;
-export function refetchCommunityPageWithHostQuery(variables?: SchemaTypes.CommunityPageWithHostQueryVariables) {
+export function refetchCommunityPageWithHostQuery(variables: SchemaTypes.CommunityPageWithHostQueryVariables) {
   return { query: CommunityPageWithHostDocument, variables: variables };
 }
 export const ChallengeLeadingOrganizationsDocument = gql`
@@ -11052,7 +11053,7 @@ export type ChallengeLeadingOrganizationsQueryResult = Apollo.QueryResult<
   SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
 >;
 export function refetchChallengeLeadingOrganizationsQuery(
-  variables?: SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
+  variables: SchemaTypes.ChallengeLeadingOrganizationsQueryVariables
 ) {
   return { query: ChallengeLeadingOrganizationsDocument, variables: variables };
 }
@@ -11129,7 +11130,7 @@ export type CommunityDiscussionQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityDiscussionQuery,
   SchemaTypes.CommunityDiscussionQueryVariables
 >;
-export function refetchCommunityDiscussionQuery(variables?: SchemaTypes.CommunityDiscussionQueryVariables) {
+export function refetchCommunityDiscussionQuery(variables: SchemaTypes.CommunityDiscussionQueryVariables) {
   return { query: CommunityDiscussionDocument, variables: variables };
 }
 export const CommunityDiscussionListDocument = gql`
@@ -11200,7 +11201,7 @@ export type CommunityDiscussionListQueryResult = Apollo.QueryResult<
   SchemaTypes.CommunityDiscussionListQuery,
   SchemaTypes.CommunityDiscussionListQueryVariables
 >;
-export function refetchCommunityDiscussionListQuery(variables?: SchemaTypes.CommunityDiscussionListQueryVariables) {
+export function refetchCommunityDiscussionListQuery(variables: SchemaTypes.CommunityDiscussionListQueryVariables) {
   return { query: CommunityDiscussionListDocument, variables: variables };
 }
 export const PostDiscussionCommentDocument = gql`
@@ -11355,7 +11356,7 @@ export type AuthorDetailsQueryResult = Apollo.QueryResult<
   SchemaTypes.AuthorDetailsQuery,
   SchemaTypes.AuthorDetailsQueryVariables
 >;
-export function refetchAuthorDetailsQuery(variables?: SchemaTypes.AuthorDetailsQueryVariables) {
+export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQueryVariables) {
   return { query: AuthorDetailsDocument, variables: variables };
 }
 export const CommunicationDiscussionMessageReceivedDocument = gql`
@@ -11451,7 +11452,7 @@ export type EcoversePageQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoversePageQuery,
   SchemaTypes.EcoversePageQueryVariables
 >;
-export function refetchEcoversePageQuery(variables?: SchemaTypes.EcoversePageQueryVariables) {
+export function refetchEcoversePageQuery(variables: SchemaTypes.EcoversePageQueryVariables) {
   return { query: EcoversePageDocument, variables: variables };
 }
 export const EcoversePageProjectsDocument = gql`
@@ -11521,7 +11522,7 @@ export type EcoversePageProjectsQueryResult = Apollo.QueryResult<
   SchemaTypes.EcoversePageProjectsQuery,
   SchemaTypes.EcoversePageProjectsQueryVariables
 >;
-export function refetchEcoversePageProjectsQuery(variables?: SchemaTypes.EcoversePageProjectsQueryVariables) {
+export function refetchEcoversePageProjectsQuery(variables: SchemaTypes.EcoversePageProjectsQueryVariables) {
   return { query: EcoversePageProjectsDocument, variables: variables };
 }
 export const AssignUserAsOpportunityAdminDocument = gql`
@@ -11675,7 +11676,7 @@ export type OpportunityPageQueryResult = Apollo.QueryResult<
   SchemaTypes.OpportunityPageQuery,
   SchemaTypes.OpportunityPageQueryVariables
 >;
-export function refetchOpportunityPageQuery(variables?: SchemaTypes.OpportunityPageQueryVariables) {
+export function refetchOpportunityPageQuery(variables: SchemaTypes.OpportunityPageQueryVariables) {
   return { query: OpportunityPageDocument, variables: variables };
 }
 export const OpportunityTemplateDocument = gql`
@@ -11794,7 +11795,7 @@ export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
   SchemaTypes.AssociatedOrganizationQuery,
   SchemaTypes.AssociatedOrganizationQueryVariables
 >;
-export function refetchAssociatedOrganizationQuery(variables?: SchemaTypes.AssociatedOrganizationQueryVariables) {
+export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.AssociatedOrganizationQueryVariables) {
   return { query: AssociatedOrganizationDocument, variables: variables };
 }
 export const AssignUserToOrganizationDocument = gql`
@@ -12055,7 +12056,7 @@ export type OrganizationMembersQueryResult = Apollo.QueryResult<
   SchemaTypes.OrganizationMembersQuery,
   SchemaTypes.OrganizationMembersQueryVariables
 >;
-export function refetchOrganizationMembersQuery(variables?: SchemaTypes.OrganizationMembersQueryVariables) {
+export function refetchOrganizationMembersQuery(variables: SchemaTypes.OrganizationMembersQueryVariables) {
   return { query: OrganizationMembersDocument, variables: variables };
 }
 export const UserCardsContainerDocument = gql`
@@ -12133,6 +12134,6 @@ export type UserCardsContainerQueryResult = Apollo.QueryResult<
   SchemaTypes.UserCardsContainerQuery,
   SchemaTypes.UserCardsContainerQueryVariables
 >;
-export function refetchUserCardsContainerQuery(variables?: SchemaTypes.UserCardsContainerQueryVariables) {
+export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsContainerQueryVariables) {
   return { query: UserCardsContainerDocument, variables: variables };
 }
