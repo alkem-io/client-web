@@ -48,9 +48,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
       <Route path={'/'}>
         <ChallengePage paths={currentPaths} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

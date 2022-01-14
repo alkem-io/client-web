@@ -18,9 +18,7 @@ const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
       <Route path={`community/:${nameOfUrl.role}`}>
         <GlobalCommunityAuthorizationPage paths={currentPaths} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

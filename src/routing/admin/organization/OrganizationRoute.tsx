@@ -37,9 +37,7 @@ export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
       <Route path={'authorization'}>
         <OrganizationAuthorizationRoute paths={currentPaths} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

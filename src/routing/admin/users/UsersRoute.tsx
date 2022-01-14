@@ -7,7 +7,7 @@ import { UserPage } from '../../../pages/Admin/User/UserPage';
 import { nameOfUrl } from '../../url-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
-  const url = ''
+  const url = '';
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
 
@@ -26,9 +26,7 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
       <Route path={`:${nameOfUrl.userId}`}>
         <UserPage paths={currentPaths} mode={EditMode.readOnly} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

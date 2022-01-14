@@ -36,9 +36,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths }) => {
       <Route path={'/'}>
         <OpportunityPage paths={currentPaths} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

@@ -38,9 +38,7 @@ export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
           <EcoverseRoute paths={currentPaths} />
         </EcoverseProvider>
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

@@ -27,9 +27,7 @@ const OrganizationRoute: FC<PageProps> = ({ paths }) => {
       <Route path={'/'}>
         <OrganizationPage paths={currentPaths} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

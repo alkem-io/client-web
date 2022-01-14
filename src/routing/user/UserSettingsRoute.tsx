@@ -33,9 +33,7 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
         <Route path={'notifications'}>
           <UserNotificationsPage paths={currentPaths} />
         </Route>
-        <Route path="*">
-          <Error404 />
-        </Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Routes>
     </UserTabs>
   );

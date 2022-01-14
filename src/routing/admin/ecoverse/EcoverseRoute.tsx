@@ -52,9 +52,7 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
       <Route path={'authorization'}>
         <EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

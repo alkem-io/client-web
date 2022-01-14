@@ -19,9 +19,7 @@ const OrganizationAuthorizationRoute: FC<OrganizationAuthorizationRouteProps> = 
       <Route path={'owners'}>
         <OrganizationOwnerAuthorizationPage paths={currentPaths} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

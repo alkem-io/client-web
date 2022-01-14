@@ -4,7 +4,6 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import NavigationTabs from '../../components/core/NavigationTab/NavigationTabs';
-import { RouterLink } from '../../components/core/RouterLink';
 
 const routes = {
   profile: '/profile',

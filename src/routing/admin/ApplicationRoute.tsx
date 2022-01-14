@@ -21,9 +21,7 @@ export const ApplicationRoute: FC<Props> = ({ paths, applications }) => {
       <Route path={'/'}>
         <ApplicationPage paths={paths} applications={applications} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

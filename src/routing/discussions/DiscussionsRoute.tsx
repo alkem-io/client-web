@@ -29,9 +29,7 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = () => {
           <DiscussionPage />
         </DiscussionProvider>
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

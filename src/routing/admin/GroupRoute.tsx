@@ -33,9 +33,7 @@ export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCom
           parentMembers={parentMembers}
         />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

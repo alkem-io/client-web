@@ -53,9 +53,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
       <Route path={'lead'}>
         <LeadingOrganizationPage paths={paths} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };
@@ -77,9 +75,7 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
       <Route path={`:${nameOfUrl.groupId}`}>
         <EcoverseGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

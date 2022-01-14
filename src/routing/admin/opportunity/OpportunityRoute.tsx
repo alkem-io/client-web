@@ -64,9 +64,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
       <Route path={'authorization'}>
         <OpportunityAuthorizationRoute paths={currentPaths} />
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

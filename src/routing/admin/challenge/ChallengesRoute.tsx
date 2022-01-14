@@ -28,9 +28,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
           <ChallengeRoute paths={currentPaths} />
         </ChallengeProvider>
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };
