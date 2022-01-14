@@ -13,6 +13,7 @@ fragment ChallengeCard on Challenge {
     visual {
       id
       background
+      banner
     }
   }
   tagset {

@@ -21,6 +21,7 @@ fragment ChallengeExplorerSearchResult on Challenge {
     visual {
       id
       background
+      banner
     }
   }
   tagset {
