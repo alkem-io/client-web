@@ -14,18 +14,22 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route>
-        <OrganizationList paths={currentPaths} />
+      <Route path={'/'}>
+        <Route index element={<OrganizationList paths={currentPaths} />}></Route>
+        <Route
+          path={'new'}
+          element={<OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />}
+        ></Route>
+        <Route
+          path={`:${nameOfUrl.organizationNameId}/*`}
+          element={
+            <OrganizationProvider>
+              <OrganizationRoute paths={currentPaths} />
+            </OrganizationProvider>
+          }
+        ></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={'new'}>
-        <OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />
-      </Route>
-      <Route path={`:${nameOfUrl.organizationNameId}`}>
-        <OrganizationProvider>
-          <OrganizationRoute paths={currentPaths} />
-        </OrganizationProvider>
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

@@ -35,9 +35,9 @@ export const AdminRoute: FC = () => {
             element={<ManagementPageTemplatePage data={managementData.adminLvl} paths={currentPaths} />}
           ></Route>
           <Route path={'users/*'} element={<UsersRoute paths={currentPaths} />}></Route>
-          <Route path={'authorization'} element={<GlobalAuthorizationRoute paths={currentPaths} />}></Route>
-          <Route path={'hubs'} element={<EcoversesRoute paths={currentPaths} />}></Route>
-          <Route path={'organizations'} element={<OrganizationsRoute paths={currentPaths} />}></Route>
+          <Route path={'authorization/*'} element={<GlobalAuthorizationRoute paths={currentPaths} />}></Route>
+          <Route path={'hubs/*'} element={<EcoversesRoute paths={currentPaths} />}></Route>
+          <Route path={'organizations/*'} element={<OrganizationsRoute paths={currentPaths} />}></Route>
           <Route path="*" element={<Error404 />}></Route>
         </Route>
         <Route path="*" element={<Error404 />}></Route>
