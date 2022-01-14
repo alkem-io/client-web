@@ -72,7 +72,7 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
                 {filteredData => (
                   <CardLayoutContainer>
                     {filteredData.map((challenge, i) => (
-                      <CardLayoutItem key={i} flexBasis={'50%'}>
+                      <CardLayoutItem key={i}>
                         <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseNameId} />
                       </CardLayoutItem>
                     ))}
