@@ -5,7 +5,7 @@ import { Nvp } from '../models/graphql-schema';
  * @param activityArray
  * @param name
  */
-const getActivityCount = (activityArray: Pick<Nvp, 'name' | 'value'>[], name: string): number | null => {
+const getActivityCount = (activityArray: (Pick<Nvp, 'name' | 'value'> | Nvp)[], name: string): number | null => {
   if (!Array.isArray(activityArray)) {
     return null;
   }

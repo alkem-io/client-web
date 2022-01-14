@@ -141,6 +141,7 @@ services:
       - SYNAPSE_SERVER_URL=http://synapse:8008
       - SUBSCRIPTIONS_ENABLED
       - NOTIFICATIONS_ENABLED
+      - SSI_ENABLED
     restart: always
     ports:
       - 4000
@@ -207,6 +208,28 @@ services:
       - KRATOS_API_PUBLIC_ENDPOINT
       - SERVICE_ACCOUNT_USERNAME
       - SERVICE_ACCOUNT_PASSWORD
+      - WAIT_HOSTS=alkemio_server:4000
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+    restart: always
+    networks:
+      - alkemio_client_net
+    command: sh -c "/wait && npm run start"
+
+  wallet-manager:
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    container_name: alkemio_client_wallet_manager
+    hostname: wallet-manager
+    image: alkemio/wallet-manager:v0.2.0
+    environment:
+      - DATABASE_HOST
+      - MYSQL_ROOT_PASSWORD
+      - RABBITMQ_HOST
+      - LOGGING_CONSOLE_ENABLED
+      - LOGGING_LEVEL_CONSOLE
+      - ENVIRONMENT=dev
       - WAIT_HOSTS=alkemio_server:4000
       - WAIT_HOSTS_TIMEOUT=300
       - WAIT_SLEEP_INTERVAL=30

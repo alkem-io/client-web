@@ -37,7 +37,6 @@ const ChallengeExplorerSearchContainer: FC<ChallengeSearchResultContainerProps> 
     },
     onError: handleError,
     fetchPolicy: 'no-cache',
-    errorPolicy: 'all',
     skip: !terms.length,
   });
 
