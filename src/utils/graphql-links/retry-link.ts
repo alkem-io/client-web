@@ -2,7 +2,7 @@ import { RetryLink } from '@apollo/client/link/retry';
 
 const retryIf = (error: any) => {
   const doNotRetryCodes = [500, 400];
-  return !!error && !doNotRetryCodes.includes(error.statusCode) && !error.response.redirected;
+  return !!error && !doNotRetryCodes.includes(error.statusCode) && !error.response?.redirected;
 };
 
 export const retryLink = new RetryLink({
