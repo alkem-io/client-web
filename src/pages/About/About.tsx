@@ -79,7 +79,6 @@ export const AboutPage = () => {
             )}
 
             <Box marginBottom={4}>
-              a
               <Typography variant={'h3'} color={'neutralMedium'}>
                 {t('pages.about.title')}
               </Typography>
