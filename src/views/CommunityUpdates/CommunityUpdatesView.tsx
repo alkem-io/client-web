@@ -103,7 +103,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
     'community-update': '',
   };
   const validationSchema = yup.object().shape({
-    'community-update': yup.string().required(t('components.communityUpdates.msg-not-empty')),
+    'community-update': yup.string().trim().required(t('components.communityUpdates.msg-not-empty')),
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [reviewedMessageId, setReviewedMessage] = useState<string | null>(null);
