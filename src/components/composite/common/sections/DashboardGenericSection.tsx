@@ -34,11 +34,9 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   return (
     <Section bannerUrl={bannerUrl} classes={classes}>
       {headerText && (
-        <>
-          <SectionHeader text={headerText} helpText={helpText}>
-            {primaryAction}
-          </SectionHeader>
-        </>
+        <SectionHeader text={headerText} helpText={helpText}>
+          {primaryAction}
+        </SectionHeader>
       )}
       {subHeaderText && (
         <>
