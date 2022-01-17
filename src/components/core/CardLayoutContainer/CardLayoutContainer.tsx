@@ -15,12 +15,7 @@ interface CardLayoutItemProps {
 
 export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = '25%' }) => {
   return (
-    <Grid
-      item
-      flexGrow={1}
-      flexBasis={flexBasis}
-      maxWidth={{ xs: 'auto', sm: 'auto', md: '50%', lg: '33%', xl: '25%' }}
-    >
+    <Grid item flexBasis={flexBasis}>
       {children}
     </Grid>
   );

@@ -581,7 +581,6 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnEcoverse'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnUser'
-  | 'authorizeStateModificationOnChallenge'
   | 'createActor'
   | 'createActorGroup'
   | 'createApplication'
@@ -674,7 +673,6 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorizeStateModificationOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createApplication?: FieldPolicy<any> | FieldReadFunction<any>;
