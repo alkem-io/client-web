@@ -14,7 +14,10 @@ export interface UserMetadata {
   isEcoverseAdmin: (ecoverseId: string) => boolean;
   isChallengeAdmin: (ecoverseId: string, challengeId: string) => boolean;
   isOpportunityAdmin: (ecoverseId: string, challengeId: string, opportunityId: string) => boolean;
+  /** has any admin role */
   isAdmin: boolean;
+  /** has an entity admin role, i.e. is admin of a community */
+  isCommunityAdmin: boolean;
   isGlobalAdmin: boolean;
   isGlobalAdminCommunity: boolean;
   roles: Role[];
@@ -131,6 +134,7 @@ export const useUserMetadataWrapper = () => {
         isChallengeAdmin,
         isOpportunityAdmin,
         isAdmin: false,
+        isCommunityAdmin: false,
         isGlobalAdmin: hasCredentials(AuthorizationCredential.GlobalAdmin),
         isGlobalAdminCommunity: hasCredentials(AuthorizationCredential.GlobalAdminCommunity),
         roles,
@@ -148,6 +152,7 @@ export const useUserMetadataWrapper = () => {
       };
 
       metadata.isAdmin = hasAdminRole(metadata.roles);
+      metadata.isCommunityAdmin = hasCommunityAdminRole(metadata.roles);
 
       return metadata;
     },
@@ -163,10 +168,19 @@ export const hasAdminRole = (roles: Role[]) => {
   return false;
 };
 
+export const hasCommunityAdminRole = (roles: Role[]) => roles.some(({ type }) => CommunityAdminRoles.includes(type));
+
 export const AdminRoles = [
   AuthorizationCredential.GlobalAdmin,
   AuthorizationCredential.GlobalAdminCommunity,
   AuthorizationCredential.ChallengeAdmin,
   AuthorizationCredential.EcoverseAdmin,
+  AuthorizationCredential.OpportunityAdmin,
   AuthorizationCredential.OrganizationAdmin,
+];
+
+const CommunityAdminRoles = [
+  AuthorizationCredential.ChallengeAdmin,
+  AuthorizationCredential.EcoverseAdmin,
+  AuthorizationCredential.OpportunityAdmin,
 ];
