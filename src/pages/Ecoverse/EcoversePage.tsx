@@ -75,7 +75,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                   <TabPanel value={tabNames['discussions']}>
                     <Routes>
                       <Route
-                        path={'community/discussions/*'}
+                        path={'community/discussions'}
                         element={
                           <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
                             <DiscussionsRoute paths={paths} />

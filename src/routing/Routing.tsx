@@ -9,7 +9,6 @@ import { AboutPage, Error404, HomePage } from '../pages';
 import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
 import ContributorsPage from '../pages/Contributors/ContributorsPage';
 import { AdminRoute } from './admin/AdminRoute';
-import { EcoverseRoute } from './ecoverse/EcoverseRoute';
 import { IdentityRoute } from './identity/identity';
 import { MessagesRoute } from './messages/MessagesRoute';
 import OrganizationRoute from './organization/OrganizationRoute';
@@ -19,6 +18,7 @@ import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import UserRoute from './user/UserRoute';
+import { EcoverseRouteNew } from './ecoverse/EcoverseRouteNew';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ export const Routing: FC = () => {
           element={
             <EcoverseProvider>
               <CommunityProvider>
-                <EcoverseRoute paths={[{ value: '/', name: t('common.home'), real: true }]} />
+                <EcoverseRouteNew paths={[{ value: '/', name: t('common.home'), real: true }]} />
               </CommunityProvider>
             </EcoverseProvider>
           }

@@ -19,8 +19,8 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = () => {
     // DiscussionsProvider provided at EcoversePage
     <Routes>
       <Route path={'/'}>
-        <Route index element={<DiscussionListPage />}></Route>
-        <Route path={'new'} element={<NewDiscussionPage />}></Route>
+        <Route index element={<DiscussionListPage />} />
+        <Route path={'new'} element={<NewDiscussionPage />} />
         <Route
           path={`:${nameOfUrl.discussionId}`}
           element={
@@ -29,7 +29,7 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = () => {
             </DiscussionProvider>
           }
         >
-          <Route path="*" element={<Error404 />}></Route>
+          <Route path="*" element={<Error404 />} />
         </Route>
       </Route>
     </Routes>

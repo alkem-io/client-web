@@ -11,16 +11,25 @@ import ApplyRoute from '../application/apply.route';
 import ChallengeRoute from '../challenge/ChallengeRoute';
 import { nameOfUrl } from '../url-params';
 import EcoverseTabsNew from './EcoverseTabsNew';
+import EcoverseContextView from '../../views/Ecoverse/EcoverseContextView';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
+import EcoverseCommunityPage from '../../pages/Community/EcoverseCommunityPage';
+import DiscussionsRoute from '../discussions/DiscussionsRoute';
+import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
+import { AuthorizationCredential } from '../../models/graphql-schema';
+import HubCanvasManagementView from '../../views/Ecoverse/HubCanvasManagementView';
+import EcoverseChallengesView from '../../views/Ecoverse/EcoverseChallengesView';
 
 export const EcoverseRouteNew: FC<PageProps> = ({ paths }) => {
-  const { ecoverse, displayName, loading: ecoverseLoading } = useEcoverse();
+  const { ecoverse, displayName, loading, isPrivate, ecoverseId } = useEcoverse();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (ecoverse ? [...paths, { value: resolved.pathname, name: displayName, real: true }] : paths),
     [paths, displayName]
   );
-
-  const loading = ecoverseLoading;
+  const discussionsRequiredCredentials: CredentialForResource[] =
+    isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
 
   if (loading) {
     return <Loading text={'Loading ecoverse'} />;
@@ -31,30 +40,58 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths }) => {
   }
 
   return (
-    <Routes>
-      <Route path={'/'} element={<EcoverseTabsNew />}>
-        <Route index element={<Navigate to={'dashboard'} />} />
-        <Route path={'dashboard'} element={<EcoverseDashboardPage paths={currentPaths} />} />
-        <Route path={'context'} element={<div>context</div>} />
-        <Route path={'community'} element={<div>community</div>} />
-        <Route path={'community/discussions'} element={<div>discussions</div>} />
-        <Route path={'discussions'} element={<div>discussions</div>} />
-        <Route path={'canvases'} element={<div>canvases</div>} />
-        <Route path={'challenges/*'}>
-          <Route
-            path={`:${nameOfUrl.challengeNameId}/*`}
-            element={
-              <ChallengeProvider>
-                <CommunityProvider>
-                  <ChallengeRoute paths={currentPaths} />
-                </CommunityProvider>
-              </ChallengeProvider>
-            }
-          ></Route>
-        </Route>
-        <Route path="*" element={<Error404 />}></Route>
-      </Route>
-      <Route path={'apply'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />}></Route>
-    </Routes>
+    <DiscussionsProvider>
+      <EcoversePageContainer>
+        {(e, s) => (
+          <Routes>
+            <Route path={'/'} element={<EcoverseTabsNew />}>
+              <Route index element={<Navigate replace to={'dashboard'} />} />
+              <Route path={'dashboard'} element={<EcoverseDashboardPage paths={currentPaths} />} />
+              <Route path={'context'} element={<EcoverseContextView entities={e} state={s} />} />
+              <Route path={'community'} element={<EcoverseCommunityPage paths={paths} />} />
+              <Route
+                path={'community/discussions/*'}
+                element={
+                  <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
+                    <DiscussionsRoute paths={paths} />
+                  </RestrictedRoute>
+                }
+              />
+              {e.ecoverse && (
+                <Route
+                  path={'canvases'}
+                  element={
+                    <HubCanvasManagementView
+                      entities={{
+                        hub: e.ecoverse,
+                      }}
+                      state={{
+                        loading: s.loading,
+                        error: s.error,
+                      }}
+                      actions={undefined}
+                      options={undefined}
+                    />
+                  }
+                />
+              )}
+              <Route path={'challenges'} element={<EcoverseChallengesView entities={e} state={s} />} />
+            </Route>
+            <Route path={'apply'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.ecoverse} />} />
+            <Route
+              path={`challenges/:${nameOfUrl.challengeNameId}/*`}
+              element={
+                <ChallengeProvider>
+                  <CommunityProvider>
+                    <ChallengeRoute paths={currentPaths} />
+                  </CommunityProvider>
+                </ChallengeProvider>
+              }
+            />
+            <Route path="*" element={<Error404 />} />
+          </Routes>
+        )}
+      </EcoversePageContainer>
+    </DiscussionsProvider>
   );
 };
