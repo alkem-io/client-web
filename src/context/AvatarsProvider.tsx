@@ -16,7 +16,7 @@ interface AvatarsProviderProps {
 export const AvatarsProvider: FC<AvatarsProviderProps> = ({ users = [], count = 20, children }) => {
   const targetCount = Math.min(users.length, count);
   const targetIds = users.slice(0, targetCount).map(x => x.id);
-  const { data, loading } = useUserAvatarsQuery({ variables: { ids: targetIds } });
+  const { data, loading } = useUserAvatarsQuery({ variables: { ids: targetIds }, skip: !targetIds.length });
 
   if (loading) {
     return <Loading text={'Loading avatars ...'} />;
