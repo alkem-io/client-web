@@ -25,7 +25,6 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
           </RestrictedRoute>
         }
       />
-
       <Route
         path={`:${nameOfUrl.projectNameId}`}
         element={

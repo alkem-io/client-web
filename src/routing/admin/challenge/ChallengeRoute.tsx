@@ -14,6 +14,7 @@ import { OpportunitiesRoute } from '../opportunity/OpportunitiesRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 
+/** @deprecated */
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
@@ -71,7 +72,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
             />
           }
         ></Route>
-        <Route path={'opportunities'} element={<OpportunitiesRoute paths={currentPaths} />}></Route>
+        <Route path={'opportunities/*'} element={<OpportunitiesRoute paths={currentPaths} />}></Route>
         <Route
           path={'authorization'}
           element={<ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />}

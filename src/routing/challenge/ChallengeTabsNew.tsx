@@ -27,7 +27,7 @@ const routes = {
   context: 'context',
 };
 
-export type ChallengeRoutesKey = keyof typeof routes;
+type ChallengeRoutesKey = keyof typeof routes;
 
 export interface ChallengeTabsProps {
   communityReadAccess: boolean;
@@ -58,7 +58,7 @@ const ChallengeTabsNew: FC<ChallengeTabsProps> = ({
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
     return routeMatch?.pattern?.path ?? tabValue('dashboard');
-  }, [routeMatch, challengeNameId, routes]);
+  }, [routeMatch, routes]);
 
   return (
     <>

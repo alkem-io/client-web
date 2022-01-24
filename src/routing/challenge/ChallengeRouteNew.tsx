@@ -20,7 +20,7 @@ import { ChallengeOpportunitiesView } from '../../views/Challenge/ChallengeOppor
 import { nameOfUrl } from '../url-params';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
-import OpportunityRoute from '../opportunity/OpportunityRoute';
+import OpportunityRouteNew from '../opportunity/OpportunityRouteNew';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -96,7 +96,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths }) => {
               element={
                 <OpportunityProvider>
                   <CommunityProvider>
-                    <OpportunityRoute paths={currentPaths} />
+                    <OpportunityRouteNew paths={currentPaths} />
                   </CommunityProvider>
                 </OpportunityProvider>
               }
