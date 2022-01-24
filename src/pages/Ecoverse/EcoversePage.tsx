@@ -18,6 +18,7 @@ import HubCanvasManagementView from '../../views/Ecoverse/HubCanvasManagementVie
 
 interface EcoversePageProps extends PageProps {}
 
+/*** @deprecated remove */
 const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
   useUpdateNavigation({ currentPaths: paths });
 

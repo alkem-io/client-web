@@ -31,7 +31,7 @@ export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
         <Route index element={<EcoverseList paths={currentPaths} />}></Route>
         <Route path={'new'} element={<NewEcoverse paths={currentPaths} />}></Route>
         <Route
-          path={`:${nameOfUrl.ecoverseNameId}`}
+          path={`:${nameOfUrl.ecoverseNameId}/*`}
           element={
             <EcoverseProvider>
               <EcoverseRoute paths={currentPaths} />

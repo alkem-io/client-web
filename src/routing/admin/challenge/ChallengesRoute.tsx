@@ -30,7 +30,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
           }
         ></Route>
         <Route
-          path={`:${nameOfUrl.challengeNameId}`}
+          path={`:${nameOfUrl.challengeNameId}/*`}
           element={
             <ChallengeProvider>
               <ChallengeRoute paths={currentPaths} />

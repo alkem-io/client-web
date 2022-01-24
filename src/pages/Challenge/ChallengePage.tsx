@@ -18,6 +18,7 @@ import ChallengeCommunityPage from '../Community/ChallengeCommunityPage';
 
 interface ChallengePageProps extends PageProps {}
 
+/** @deprecated remove */
 export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
   useUpdateNavigation({ currentPaths: paths });
   const { challengeId, ecoverseId } = useChallenge();

@@ -12,40 +12,44 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import { useConfig, useEcoverse } from '../../hooks';
+import { useConfig } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
-import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
-import { ChallengeRoutesKey } from '../challenge/ChallengeTabsNew';
+import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
 
 const routes = {
   discussions: 'community/discussions',
   community: 'community',
   dashboard: 'dashboard',
-  challenges: 'challenges',
+  opportunities: 'opportunities',
   canvases: 'canvases',
   settings: 'settings',
   context: 'context',
 };
 
-export interface EcoverseTabsProps {
+export type ChallengeRoutesKey = keyof typeof routes;
+
+export interface ChallengeTabsProps {
   communityReadAccess: boolean;
-  challengesReadAccess: boolean;
+  viewerCanUpdate: boolean;
+  ecoverseNameId: string;
+  challengeNameId: string;
 }
 
 // todo unify in one tab config component
-const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challengesReadAccess }) => {
+const ChallengeTabsNew: FC<ChallengeTabsProps> = ({
+  communityReadAccess,
+  viewerCanUpdate,
+  ecoverseNameId,
+  challengeNameId,
+}) => {
   const { t } = useTranslation();
+  const { isFeatureEnabled } = useConfig();
   const resolved = useResolvedPath('.');
   const matchPatterns = useMemo(
     () => Object.values(routes).map(x => resolvePath(x, resolved.pathname)?.pathname),
     [routes, resolved, resolvePath]
   );
-
-  // todo provided it as an input
-  const { ecoverseNameId, permissions } = useEcoverse();
-  const { isFeatureEnabled } = useConfig();
-
   const tabValue = useCallback(
     (route: ChallengeRoutesKey | string) => resolvePath(route, resolved.pathname)?.pathname,
     [resolved]
@@ -54,13 +58,13 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
     return routeMatch?.pattern?.path ?? tabValue('dashboard');
-  }, [routeMatch, ecoverseNameId, routes]);
+  }, [routeMatch, challengeNameId, routes]);
 
   return (
     <>
       <Tabs
         value={currentTab}
-        aria-label="Ecoverse tabs"
+        aria-label="Challenge tabs"
         variant="scrollable"
         scrollButtons={'auto'}
         allowScrollButtonsMobile
@@ -68,49 +72,49 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
-          value={resolvePath('dashboard', resolved.pathname)?.pathname}
-          to={'dashboard'}
+          value={tabValue('dashboard')}
+          to={routes['dashboard']}
         />
         <NavigationTab
           icon={<TocOutlined />}
           label={t('common.context')}
-          value={resolvePath('context', resolved.pathname)?.pathname}
-          to={'context'}
+          value={tabValue('context')}
+          to={routes['context']}
         />
         <NavigationTab
           disabled={!communityReadAccess}
           icon={<GroupOutlined />}
           label={t('common.community')}
-          value={resolvePath('community', resolved.pathname)?.pathname}
-          to={'community'}
+          value={tabValue('community')}
+          to={routes['community']}
         />
         <NavigationTab
-          disabled={!challengesReadAccess}
           icon={<ContentPasteOutlined />}
-          label={t('common.challenges')}
-          value={resolvePath('challenges', resolved.pathname)?.pathname}
-          to={'challenges'}
+          label={t('common.opportunities')}
+          value={tabValue('opportunities')}
+          to={routes['opportunities']}
         />
         <NavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
-          value={resolvePath(routes['discussions'], resolved.pathname)?.pathname}
+          value={tabValue(routes['discussions'])}
           to={routes['discussions']}
         />
         <NavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
-          value={resolvePath('canvases', resolved.pathname)?.pathname}
-          to={'canvases'}
+          value={tabValue('canvases')}
+          to={routes['canvases']}
         />
-        {permissions.viewerCanUpdate && (
+        {viewerCanUpdate && (
           <NavigationTab
             icon={<SettingsOutlined />}
             label={t('common.settings')}
-            value={resolvePath('settings', resolved.pathname)?.pathname}
-            to={buildAdminEcoverseUrl(ecoverseNameId)}
+            value={tabValue('settings')}
+            /* can be provided with the tab config */
+            to={buildAdminChallengeUrl(ecoverseNameId, challengeNameId)}
           />
         )}
       </Tabs>
@@ -120,4 +124,4 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
   );
 };
 
-export default EcoverseTabsNew;
+export default ChallengeTabsNew;

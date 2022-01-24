@@ -51,7 +51,7 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
             />
           }
         ></Route>
-        <Route path={'challenges'} element={<ChallengesRoute paths={currentPaths} />}></Route>
+        <Route path={'challenges/*'} element={<ChallengesRoute paths={currentPaths} />}></Route>
         <Route
           path={'authorization'}
           element={<EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />}

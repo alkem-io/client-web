@@ -8,7 +8,6 @@ import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Error404, PageProps } from '../../pages';
 import EcoverseDashboardPage from '../../pages/Ecoverse/EcoverseDashboardPage';
 import ApplyRoute from '../application/apply.route';
-import ChallengeRoute from '../challenge/ChallengeRoute';
 import { nameOfUrl } from '../url-params';
 import EcoverseTabsNew from './EcoverseTabsNew';
 import EcoverseContextView from '../../views/Ecoverse/EcoverseContextView';
@@ -20,13 +19,14 @@ import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import HubCanvasManagementView from '../../views/Ecoverse/HubCanvasManagementView';
 import EcoverseChallengesView from '../../views/Ecoverse/EcoverseChallengesView';
+import ChallengeRouteNew from '../challenge/ChallengeRouteNew';
 
 export const EcoverseRouteNew: FC<PageProps> = ({ paths }) => {
   const { ecoverse, displayName, loading, isPrivate, ecoverseId } = useEcoverse();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (ecoverse ? [...paths, { value: resolved.pathname, name: displayName, real: true }] : paths),
-    [paths, displayName]
+    [paths, displayName, resolved]
   );
   const discussionsRequiredCredentials: CredentialForResource[] =
     isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
@@ -39,12 +39,21 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths }) => {
     return <Error404 />;
   }
 
+  /* use EcoverseDashboardView2 instead on dashboard route*/
   return (
     <DiscussionsProvider>
       <EcoversePageContainer>
         {(e, s) => (
           <Routes>
-            <Route path={'/'} element={<EcoverseTabsNew />}>
+            <Route
+              path={'/'}
+              element={
+                <EcoverseTabsNew
+                  challengesReadAccess={e.permissions.challengesReadAccess}
+                  communityReadAccess={e.permissions.communityReadAccess}
+                />
+              }
+            >
               <Route index element={<Navigate replace to={'dashboard'} />} />
               <Route path={'dashboard'} element={<EcoverseDashboardPage paths={currentPaths} />} />
               <Route path={'context'} element={<EcoverseContextView entities={e} state={s} />} />
@@ -62,13 +71,8 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths }) => {
                   path={'canvases'}
                   element={
                     <HubCanvasManagementView
-                      entities={{
-                        hub: e.ecoverse,
-                      }}
-                      state={{
-                        loading: s.loading,
-                        error: s.error,
-                      }}
+                      entities={{ hub: e.ecoverse }}
+                      state={{ loading: s.loading, error: s.error }}
                       actions={undefined}
                       options={undefined}
                     />
@@ -83,7 +87,7 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths }) => {
               element={
                 <ChallengeProvider>
                   <CommunityProvider>
-                    <ChallengeRoute paths={currentPaths} />
+                    <ChallengeRouteNew paths={currentPaths} />
                   </CommunityProvider>
                 </ChallengeProvider>
               }
