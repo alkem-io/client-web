@@ -1024,10 +1024,26 @@
       "header": "The page you are trying to reach requires you to be logged in.",
       "subheader": "Please sign-in or register to continue!"
     },
-    "user-notfications-settings": {
-      "email-notifications": {
-        "title": "Email notifications",
-        "subheader": "Receive email notifications for the following events:"
+    "user-notifications-settings": {
+      "general": {
+        "title": "General",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages"
+      },
+      "community": {
+        "title": "Community management",
+        "subtitle": "This section allows you to select your preferences regarding the community management"
+      },
+      "discussions": {
+        "title": "Discussions",
+        "subtitle": "This section allows you to select your preferences regarding the discussions"
+      },
+      "user-administration": {
+        "title": "User administration",
+        "subtitle": "This section is only visible to users that are a global admin on the platform"
+      },
+      "community-administration": {
+        "title": "Community administration",
+        "subtitle": "This section allows you to select your preferences regarding the community administration"
       }
     }
   },
