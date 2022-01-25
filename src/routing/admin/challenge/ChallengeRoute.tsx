@@ -14,7 +14,6 @@ import { OpportunitiesRoute } from '../opportunity/OpportunitiesRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
 
-/** @deprecated */
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
@@ -48,7 +47,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
               loading={loading}
             />
           }
-        ></Route>
+        />
         <Route
           path={'edit'}
           element={
@@ -58,9 +57,9 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
               title={t('navigation.admin.challenge.edit')}
             />
           }
-        ></Route>
+        />
         <Route
-          path={'community'}
+          path={'community/*'}
           element={
             <CommunityRoute
               paths={currentPaths}
@@ -71,14 +70,14 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
               accessedFrom="challenge"
             />
           }
-        ></Route>
-        <Route path={'opportunities/*'} element={<OpportunitiesRoute paths={currentPaths} />}></Route>
+        />
+        <Route path={'opportunities/*'} element={<OpportunitiesRoute paths={currentPaths} />} />
         <Route
-          path={'authorization'}
+          path={'authorization/*'}
           element={<ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />}
-        ></Route>
-        <Route path={'lifecycle'} element={<ChallengeLifecycleRoute paths={currentPaths} />}></Route>
-        <Route path="*" element={<Error404 />}></Route>
+        />
+        <Route path={'lifecycle'} element={<ChallengeLifecycleRoute paths={currentPaths} />} />
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );

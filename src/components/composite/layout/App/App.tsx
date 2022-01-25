@@ -2,9 +2,8 @@ import React, { FC, useEffect } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import { useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
+import { useConfig, useUserContext, useUserScope } from '../../../../hooks';
 import { ScrollButton } from '../../../core';
-import Breadcrumbs from '../../../core/Breadcrumbs';
 import Loading from '../../../core/Loading/Loading';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
@@ -18,7 +17,6 @@ const App: FC = () => {
 
   const { user, loading } = useUserContext();
   const { loading: configLoading } = useConfig();
-  const { paths } = useNavigation();
 
   useUserScope(user);
   useCommunityUpdatesNotifier();
@@ -49,8 +47,8 @@ const App: FC = () => {
         <TopBar />
         <Main>
           <TopBarSpacer />
-          {/*no point of showing just one item of the breadcrumbs*/}
-          {paths.length > 1 && <Breadcrumbs paths={paths} />}
+          {/* no point of showing just one item of the breadcrumbs */}
+          {/* {paths.length > 1 && <Breadcrumbs paths={paths} />} */}
           <Outlet />
         </Main>
         <Footer />

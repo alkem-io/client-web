@@ -23,7 +23,7 @@ export const AvatarsProvider: FC<AvatarsProviderProps> = ({ users = [], count = 
   }
 
   if (!data) {
-    return <></>;
+    return <>{children([])}</>;
   }
 
   return <>{children(data?.usersById as User[])}</>;

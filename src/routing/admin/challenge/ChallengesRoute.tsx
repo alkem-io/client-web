@@ -18,7 +18,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Routes>
       <Route path={'/'}>
-        <Route index element={<ChallengeListPage paths={currentPaths} />}></Route>
+        <Route index element={<ChallengeListPage paths={currentPaths} />} />
         <Route
           path={'new'}
           element={
@@ -28,7 +28,7 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
               title={t('navigation.admin.challenge.create')}
             />
           }
-        ></Route>
+        />
         <Route
           path={`:${nameOfUrl.challengeNameId}/*`}
           element={
@@ -36,8 +36,8 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
               <ChallengeRoute paths={currentPaths} />
             </ChallengeProvider>
           }
-        ></Route>
-        <Route path="*" element={<Error404 />}></Route>
+        />
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );

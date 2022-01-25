@@ -14,8 +14,8 @@ const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resou
       <Route
         path={`:${nameOfUrl.role}`}
         element={<ChallengeAuthorizationPage paths={currentPaths} resourceId={resourceId} />}
-      ></Route>
-      <Route path="*" element={<Error404 />}></Route>
+      />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };

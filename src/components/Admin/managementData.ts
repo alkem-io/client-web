@@ -113,7 +113,7 @@ export const managementData = {
       buttons: [
         { description: 'Members', url: 'community/members' },
         { description: 'Groups', url: 'community/groups' },
-        { description: 'Applications', url: 'community/applications' },
+        // { description: 'Applications', url: 'community/applications' },
         { description: 'Updates', url: 'community/updates' },
       ],
     },

@@ -20,7 +20,7 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
   return (
     <Routes>
       <Route path={'/'}>
-        <Route index element={<OpportunityList paths={currentPaths} />}></Route>
+        <Route index element={<OpportunityList paths={currentPaths} />} />
         <Route
           path={'new'}
           element={
@@ -30,7 +30,7 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
               paths={currentPaths}
             />
           }
-        ></Route>
+        />
         <Route
           path={`:${nameOfUrl.opportunityNameId}/*`}
           element={
@@ -38,8 +38,8 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
               <OpportunityRoute paths={currentPaths} />
             </OpportunityProvider>
           }
-        ></Route>
-        <Route path="*" element={<Error404 />}></Route>
+        />
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );

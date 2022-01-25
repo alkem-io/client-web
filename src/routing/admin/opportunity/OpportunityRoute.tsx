@@ -48,7 +48,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
               loading={loadingOpportunity || loadingChallenge}
             />
           }
-        ></Route>
+        />
         <Route
           path={'edit'}
           element={
@@ -58,9 +58,9 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
               paths={currentPaths}
             />
           }
-        ></Route>
+        />
         <Route
-          path={'community'}
+          path={'community/*'}
           element={
             <CommunityRoute
               paths={currentPaths}
@@ -71,10 +71,10 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
               accessedFrom="opportunity"
             />
           }
-        ></Route>
-        <Route path={'lifecycle'} element={<OpportunityLifecycleRoute paths={currentPaths} />}></Route>
-        <Route path={'authorization'} element={<OpportunityAuthorizationRoute paths={currentPaths} />}></Route>
-        <Route path="*" element={<Error404 />}></Route>
+        />
+        <Route path={'lifecycle'} element={<OpportunityLifecycleRoute paths={currentPaths} />} />
+        <Route path={'authorization/*'} element={<OpportunityAuthorizationRoute paths={currentPaths} />} />
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );

@@ -12,7 +12,7 @@ import OpportunityRoute from '../opportunity/OpportunityRoute';
 import { nameOfUrl } from '../url-params';
 
 interface ChallengeRootProps extends PageProps {}
-
+/** @deprecated */
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   const { challengeId, displayName, loading } = useChallenge();
 
