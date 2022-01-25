@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import { Route } from 'react-router-dom';
 import { useTransactionScope } from '../hooks';
 import { SearchPage } from '../pages/Search/SearchPage';
 
@@ -8,5 +7,5 @@ export const SearchRoute: FC = () => {
 
   const currentPaths = useMemo(() => [], []);
 
-  return <Route element={<SearchPage paths={currentPaths} />} />;
+  return <SearchPage paths={currentPaths} />;
 };
