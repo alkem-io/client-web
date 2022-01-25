@@ -28,12 +28,12 @@ export const IdentityRoute: FC = () => {
   return (
     <Routes>
       <Route path={'login/*'} element={<LoginRoute />}></Route>
-      <Route path={'logout/*'} element={<LogoutRoute />}></Route>
+      <Route path={'logout'} element={<LogoutRoute />}></Route>
       <Route path={'registration/*'} element={<RegistrationRoute />}></Route>
       <Route path={'verify/*'} element={<VerifyRoute />}></Route>
-      <Route path={'recovery/*'} element={<RecoveryRoute />}></Route>
-      <Route path={'required/*'} element={<AuthRequiredPage />}></Route>
-      <Route path={'error/*'} element={<ErrorRoute />}></Route>
+      <Route path={'recovery'} element={<RecoveryRoute />}></Route>
+      <Route path={'required'} element={<AuthRequiredPage />}></Route>
+      <Route path={'error'} element={<ErrorRoute />}></Route>
       <Route
         path={'settings'}
         element={

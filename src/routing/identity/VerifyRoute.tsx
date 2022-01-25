@@ -12,7 +12,7 @@ export const VerifyRoute: FC<VerifyRouteProps> = () => {
 
   return (
     <Routes>
-      <Route>
+      <Route path={'/'}>
         <VerificationPage flow={flow} />
       </Route>
       <Route path={'success'}>

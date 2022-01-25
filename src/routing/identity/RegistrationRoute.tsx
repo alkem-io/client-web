@@ -12,13 +12,14 @@ export const RegistrationRoute: FC = () => {
   return (
     <Routes>
       <Route
+        path={'/'}
         element={
           <NotAuthenticatedRoute>
             <RegistrationPage flow={flow} />
           </NotAuthenticatedRoute>
         }
       />
-      <Route path={'success'} element={<RegistrationSuccessPage />}></Route>
+      <Route path={'success'} element={<RegistrationSuccessPage />} />
     </Routes>
   );
 };

@@ -36,9 +36,9 @@ export const Routing: FC = () => {
               </CommunityProvider>
             </EcoverseProvider>
           }
-        ></Route>
+        />
         <Route path="/admin/*" element={<AdminRoute />} />
-        <Route path="/search" element={<SearchRoute />}></Route>
+        <Route path="/search" element={<SearchRoute />} />
         <Route path="/identity/*" element={<IdentityRoute />} />
         <Route
           path={`/user/:${nameOfUrl.userId}/*`}
@@ -47,7 +47,7 @@ export const Routing: FC = () => {
               <UserRoute />
             </RestrictedRoute>
           }
-        ></Route>
+        />
         <Route path="/challenges" element={<ChallengeExplorerPage />} />
         <Route path="/contributors" element={<ContributorsPage />} />
 
@@ -70,8 +70,8 @@ export const Routing: FC = () => {
 
         <Route path="/about" element={<AboutPage />} />
         <Route path="/profile" element={<ProfileRoute />} />
-        <Route path="/restricted" element={<Restricted />}></Route>
-        <Route path="*" element={<Error404 />}></Route>
+        <Route path="/restricted" element={<Restricted />} />
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );
