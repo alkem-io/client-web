@@ -21,16 +21,14 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
       {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
-        const messageSender = {
-          id: latestMessage?.sender,
-        };
+        const messageSenders = latestMessage?.sender ? [{ id: latestMessage?.sender }] : [];
 
         return (
           <DashboardGenericSection headerText={t('dashboard-updates-section.title', { count: messages.length })}>
             {!messages.length && !retrievingUpdateMessages ? (
               t('dashboard-updates-section.no-data')
             ) : (
-              <AvatarsProvider users={[messageSender]}>
+              <AvatarsProvider users={messageSenders}>
                 {populatedUsers => (
                   <SingleUpdateView
                     loading={retrievingUpdateMessages}
