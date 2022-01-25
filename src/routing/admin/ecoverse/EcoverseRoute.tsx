@@ -37,10 +37,10 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
               loading={loadingEcoverse}
             />
           }
-        ></Route>
-        <Route path={'edit'} element={<EditEcoverse paths={currentPaths} />}></Route>
+        />
+        <Route path={'edit'} element={<EditEcoverse paths={currentPaths} />} />
         <Route
-          path={'community'}
+          path={'community/*'}
           element={
             <CommunityRoute
               paths={currentPaths}
@@ -50,13 +50,13 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
               accessedFrom="hub"
             />
           }
-        ></Route>
-        <Route path={'challenges/*'} element={<ChallengesRoute paths={currentPaths} />}></Route>
+        />
+        <Route path={'challenges/*'} element={<ChallengesRoute paths={currentPaths} />} />
         <Route
-          path={'authorization'}
+          path={'authorization/*'}
           element={<EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />}
-        ></Route>
-        <Route path="*" element={<Error404 />}></Route>
+        />
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );

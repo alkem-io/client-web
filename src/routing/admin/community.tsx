@@ -42,23 +42,23 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
             parentCommunityId={parentCommunityId}
           />
         }
-      ></Route>
+      />
       <Route
-        path={'groups'}
+        path={'groups/*'}
         element={<CommunityGroupsRoute paths={paths} communityId={communityId} parentCommunityId={parentCommunityId} />}
-      ></Route>
+      />
       <Route
-        path={'applications'}
+        path={'applications/*'}
         element={
           <>
             {accessedFrom === 'hub' && <EcoverseApplicationRoute paths={paths} />}
             {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
           </>
         }
-      ></Route>
-      <Route path={'updates'} element={<CommunityUpdatesPage paths={paths} communityId={communityId} />}></Route>
-      <Route path={'lead'} element={<LeadingOrganizationPage paths={paths} />}></Route>
-      <Route path="*" element={<Error404 />}></Route>
+      />
+      <Route path={'updates'} element={<CommunityUpdatesPage paths={paths} communityId={communityId} />} />
+      <Route path={'lead'} element={<LeadingOrganizationPage paths={paths} />} />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };
@@ -71,16 +71,13 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
 
   return (
     <Routes>
-      <Route>
-        <CommunityGroupListPage communityId={communityId || ''} paths={currentPaths} />
-      </Route>
-      <Route path={'new'}>
-        <CreateCommunityGroup paths={currentPaths} communityId={communityId} />
-      </Route>
-      <Route path={`:${nameOfUrl.groupId}`}>
-        <EcoverseGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />
-      </Route>
-      <Route path="*" element={<Error404 />}></Route>
+      <Route path={'/'} element={<CommunityGroupListPage communityId={communityId || ''} paths={currentPaths} />} />
+      <Route path={'new'} element={<CreateCommunityGroup paths={currentPaths} communityId={communityId} />} />
+      <Route
+        path={`:${nameOfUrl.groupId}/*`}
+        element={<EcoverseGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />}
+      />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };

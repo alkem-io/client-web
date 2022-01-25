@@ -43,7 +43,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
   const navigate = useNavigate();
 
   const { handleDelete } = useDeleteUserGroup({
-    onComplete: () => navigate('..', { replace: true }),
+    onComplete: () => navigate(-1),
   });
 
   const { data: membersData } = useUsersWithCredentialsQuery({
@@ -72,7 +72,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
 
   const members = membersData?.usersWithAuthorizationCredential.map(u => u as User) || [];
 
-  const handleCancel = () => navigate('..', { replace: true });
+  const handleCancel = () => navigate(-1);
 
   const handleSave = async (group: UserGroup) => {
     const profileId = group.profile?.id || '';
