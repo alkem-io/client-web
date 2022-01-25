@@ -12,9 +12,10 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { Discussion } from '../../../../models/discussion/discussion';
 import DiscussionIcon from './DiscussionIcon';
+import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;
@@ -35,15 +36,14 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
   const styles = useStyles();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { pathname } = useResolvedPath('..');
 
   const { id, title, createdAt, author, authors = [], totalComments, category } = discussion;
 
   return (
     <ListItemButton
       disableGutters
-      onClick={() => {
-        navigate(id);
-      }}
+      onClick={() => navigate(buildDiscussionUrl(pathname, id)) }
     >
       <ListItemIcon sx={{ justifyContent: 'center' }}>
         <DiscussionIcon color="primary" category={category} fontSize="large" />

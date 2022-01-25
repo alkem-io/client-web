@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { merge, uniq } from 'lodash';
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useApolloErrorHandler, useConfig, useEcoverse } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
@@ -22,6 +22,7 @@ import {
   DiscussionCategory,
 } from '../../models/graphql-schema';
 import { useCommunityContext } from '../CommunityProvider';
+import { buildDiscussionsUrl, buildDiscussionUrl } from '../../utils/urlBuilders';
 
 interface Permissions {
   canCreateDiscussion: boolean;
@@ -53,6 +54,7 @@ interface DiscussionProviderProps {}
 
 const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const navigate = useNavigate();
+  const { pathname } = useResolvedPath('.');
   const { isFeatureEnabled } = useConfig();
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
@@ -152,9 +154,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   );
 
   const [createDiscussion, { loading: creatingDiscussion }] = useCreateDiscussionMutation({
-    onCompleted: data => {
-      navigate(data.createDiscussion.id, { replace: true });
-    },
+    onCompleted: data => navigate(buildDiscussionUrl(pathname, data.createDiscussion.id), { replace: true }),
     onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
@@ -165,7 +165,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   });
 
   const [deleteDiscussion, { loading: deletingDiscussion }] = useDeleteDiscussionMutation({
-    onCompleted: () => navigate('..'),
+    onCompleted: () => navigate(buildDiscussionsUrl(pathname)),
     onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({

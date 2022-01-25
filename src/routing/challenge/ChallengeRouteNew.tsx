@@ -90,7 +90,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths }) => {
               )}
               <Route path={'opportunities'} element={<ChallengeOpportunitiesView entities={e} state={s} />} />
             </Route>
-            <Route path={'path'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />} />
+            <Route path={'apply/*'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />} />
             <Route
               path={`opportunities/:${nameOfUrl.opportunityNameId}/*`}
               element={
