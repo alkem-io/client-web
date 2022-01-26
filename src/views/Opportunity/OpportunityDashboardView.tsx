@@ -135,7 +135,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
                       details={{
                         headerText: x.displayName,
                         mediaUrl: '',
-                        url: 'projects',
+                        url: `../projects/${x.nameID}`,
                       }}
                     />
                   </Grid>

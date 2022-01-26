@@ -12,12 +12,8 @@ export const VerifyRoute: FC<VerifyRouteProps> = () => {
 
   return (
     <Routes>
-      <Route path={'/'}>
-        <VerificationPage flow={flow} />
-      </Route>
-      <Route path={'success'}>
-        <VerificationSuccessPage />
-      </Route>
+      <Route path={'/'} element={<VerificationPage flow={flow} />} />
+      <Route path={'success'} element={<VerificationSuccessPage />} />
     </Routes>
   );
 };
