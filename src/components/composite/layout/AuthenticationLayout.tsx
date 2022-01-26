@@ -23,7 +23,7 @@ export const AuthenticationLayout: FC<AuthenticationLayoutProps> = ({ children, 
     <Container maxWidth="xl" {...rest}>
       <Grid container spacing={2}>
         <Grid item container justifyContent={'center'} className={clsx(styles.logoWrapper)}>
-          <Link to={'/about'} href="https://alkem.io/about/">
+          <Link to={'/about'}>
             <Image src="/logo.png" alt="Alkemio" className={styles.logo} />
           </Link>
         </Grid>

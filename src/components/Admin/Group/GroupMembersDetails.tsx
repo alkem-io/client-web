@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 interface GroupMembersDetailsProps {
   members: User[];
-  editLink?: string;
+  editLink?: boolean;
 }
 
 export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, editLink }) => {
@@ -38,7 +38,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           );
         }}
       </AvatarsProvider>
-      {editLink && <Button small as={Link} to={editLink} text={t('buttons.edit-members')} />}
+      {editLink && <Button small as={Link} to={'members'} text={t('buttons.edit-members')} />}
     </>
   );
 };

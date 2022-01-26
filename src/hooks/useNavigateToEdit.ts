@@ -1,15 +1,14 @@
 import { useCallback } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useNavigate, useResolvedPath } from 'react-router-dom';
 
 export const useNavigateToEdit = () => {
-  const { url } = useRouteMatch();
-  const history = useHistory();
+  const { pathname: url } = useResolvedPath('.');
+  const navigate = useNavigate();
 
   return useCallback(
     (id: string) => {
-      const newUrl = url.replace('/new', `/${id}/edit`);
-      history.replace(newUrl);
+      navigate(`../${id}/edit`, { replace: true });
     },
-    [url, history]
+    [url, navigate]
   );
 };

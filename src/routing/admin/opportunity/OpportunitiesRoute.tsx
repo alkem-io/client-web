@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { OpportunityProvider } from '../../../context/OpportunityProvider';
@@ -10,29 +10,37 @@ import { nameOfUrl } from '../../url-params';
 import { OpportunityRoute } from './OpportunityRoute';
 
 interface Props extends PageProps {}
-
+/** @deprecated */
 export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
-  const { path, url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'opportunities', real: true }], [paths]);
 
   return (
-    <Switch>
-      <Route exact path={`${path}`}>
-        <OpportunityList paths={currentPaths} />
+    <Routes>
+      <Route path={'/'}>
+        <Route index element={<OpportunityList paths={currentPaths} />} />
+        <Route
+          path={'new'}
+          element={
+            <EditOpportunity
+              title={t('navigation.admin.opportunity.create')}
+              mode={FormMode.create}
+              paths={currentPaths}
+            />
+          }
+        />
+        <Route
+          path={`:${nameOfUrl.opportunityNameId}/*`}
+          element={
+            <OpportunityProvider>
+              <OpportunityRoute paths={currentPaths} />
+            </OpportunityProvider>
+          }
+        />
+        <Route path="*" element={<Error404 />} />
       </Route>
-      <Route exact path={`${path}/new`}>
-        <EditOpportunity title={t('navigation.admin.opportunity.create')} mode={FormMode.create} paths={currentPaths} />
-      </Route>
-      <Route path={`${path}/:${nameOfUrl.opportunityNameId}`}>
-        <OpportunityProvider>
-          <OpportunityRoute paths={currentPaths} />
-        </OpportunityProvider>
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    </Routes>
   );
 };

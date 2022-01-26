@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useGlobalState } from '../../hooks';
 import { Error404 } from '../../pages';
 import AuthRequiredPage from '../../pages/Authentication/AuthRequiredPage';
@@ -14,8 +14,6 @@ import SettingsRoute from './SettingsRoute';
 import VerifyRoute from './VerifyRoute';
 
 export const IdentityRoute: FC = () => {
-  const { path } = useRouteMatch();
-
   const {
     ui: { loginNavigationService },
   } = useGlobalState();
@@ -28,41 +26,23 @@ export const IdentityRoute: FC = () => {
   }, []);
 
   return (
-    <Switch>
-      <Route path={`${path}/login`}>
-        <LoginRoute />
-      </Route>
-      <Route exact path={`${path}/logout`}>
-        <LogoutRoute />
-      </Route>
-      <Route path={`${path}/registration`}>
-        <RegistrationRoute />
-      </Route>
-      <Route path={`${path}/verify`}>
-        <VerifyRoute />
-      </Route>
-      <Route exact path={`${path}/recovery`}>
-        <RecoveryRoute />
-      </Route>
+    <Routes>
+      <Route path={'login/*'} element={<LoginRoute />}></Route>
+      <Route path={'logout'} element={<LogoutRoute />}></Route>
+      <Route path={'registration/*'} element={<RegistrationRoute />}></Route>
+      <Route path={'verify/*'} element={<VerifyRoute />}></Route>
+      <Route path={'recovery'} element={<RecoveryRoute />}></Route>
+      <Route path={'required'} element={<AuthRequiredPage />}></Route>
+      <Route path={'error'} element={<ErrorRoute />}></Route>
       <Route
-        exact
-        path={`${path}/settings`}
-        render={() => (
+        path={'settings'}
+        element={
           <RestrictedRoute>
             <SettingsRoute />
           </RestrictedRoute>
-        )}
-      />
-
-      <Route exact path={`${path}/required`}>
-        <AuthRequiredPage />
-      </Route>
-      <Route exact path={`${path}/error`}>
-        <ErrorRoute />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+        }
+      ></Route>
+      <Route path="*" element={<Error404 />}></Route>
+    </Routes>
   );
 };

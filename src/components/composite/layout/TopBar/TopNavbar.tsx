@@ -3,8 +3,8 @@ import { grey } from '@mui/material/colors';
 import { alpha, emphasize, styled } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
 import { useUserContext } from '../../../../hooks';
+import useRouteMatch from '../../../../hooks/routing/useRouteMatch';
 import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
 import { RouterLink } from '../../../core/RouterLink';
 
@@ -77,7 +77,7 @@ const TopNavbar = () => {
   );
 
   const match = useRouteMatch([...menuItems].reverse().map(x => x.url));
-  const selectedIndex = useMemo(() => menuItems.findIndex(x => x.url === match?.path), [menuItems, match]);
+  const selectedIndex = useMemo(() => menuItems.findIndex(x => x.url === match?.pathname), [menuItems, match]);
 
   return (
     <Root>

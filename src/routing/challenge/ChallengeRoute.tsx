@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router';
+import { Route, Routes } from 'react-router';
+import { Navigate, useResolvedPath } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
@@ -11,11 +12,11 @@ import OpportunityRoute from '../opportunity/OpportunityRoute';
 import { nameOfUrl } from '../url-params';
 
 interface ChallengeRootProps extends PageProps {}
-
+/** @deprecated */
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   const { challengeId, displayName, loading } = useChallenge();
-  const { path, url } = useRouteMatch();
 
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [...paths, { value: url, name: displayName, real: true }] : paths),
     [paths, displayName]
@@ -30,27 +31,23 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths }) => {
   }
 
   return (
-    <Switch>
-      <Route exact path={path}>
-        <Redirect to={`${url}/dashboard`} />
+    <Routes>
+      <Route path={'/'}>
+        <Route index element={<Navigate to={'dashboard'} />}></Route>
+        <Route path={'*'} element={<ChallengePage paths={currentPaths} />}></Route>
+        <Route
+          path={`opportunities/:${nameOfUrl.opportunityNameId}/*`}
+          element={
+            <OpportunityProvider>
+              <CommunityProvider>
+                <OpportunityRoute paths={currentPaths} />
+              </CommunityProvider>
+            </OpportunityProvider>
+          }
+        ></Route>
+        <Route path={'apply'} element={<ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />}></Route>
       </Route>
-      <Route path={`${path}/opportunities/:${nameOfUrl.opportunityNameId}`}>
-        <OpportunityProvider>
-          <CommunityProvider>
-            <OpportunityRoute paths={currentPaths} />
-          </CommunityProvider>
-        </OpportunityProvider>
-      </Route>
-      <Route path={`${path}/apply`}>
-        <ApplyRoute type={ApplicationTypeEnum.challenge} paths={paths} />
-      </Route>
-      <Route path={path}>
-        <ChallengePage paths={currentPaths} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    </Routes>
   );
 };
 export default ChallengeRoute;

@@ -1,23 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { useTranslation } from 'react-i18next';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import { useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
+import { useConfig, useUserContext, useUserScope } from '../../../../hooks';
 import { ScrollButton } from '../../../core';
-import Breadcrumbs from '../../../core/Breadcrumbs';
 import Loading from '../../../core/Loading/Loading';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
 import useServerMetadata from '../../../../hooks/useServerMetadata';
 import useCommunityUpdatesNotifier from '../../../../hooks/subscription/CommunityUpdatesNotifier';
+import { Outlet } from 'react-router-dom';
 
-const App = ({ children }): React.ReactElement => {
+const App: FC = () => {
   const { t } = useTranslation();
 
   const { user, loading } = useUserContext();
   const { loading: configLoading } = useConfig();
-  const { paths } = useNavigation();
 
   useUserScope(user);
   useCommunityUpdatesNotifier();
@@ -48,9 +47,9 @@ const App = ({ children }): React.ReactElement => {
         <TopBar />
         <Main>
           <TopBarSpacer />
-          {/*no point of showing just one item of the breadcrumbs*/}
-          {paths.length > 1 && <Breadcrumbs paths={paths} />}
-          {children}
+          {/* no point of showing just one item of the breadcrumbs */}
+          {/* {paths.length > 1 && <Breadcrumbs paths={paths} />} */}
+          <Outlet />
         </Main>
         <Footer />
       </div>

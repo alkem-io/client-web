@@ -29,6 +29,7 @@ export interface HubOverview {
 interface ChallengeOverview {
   id: string;
   ecoverseId: string;
+  ecoverseNameId: string;
 }
 
 export interface ChallengeExplorerViewProps {
@@ -55,12 +56,12 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
               ariaKey="my-challenges"
             >
               <CardLayoutContainer>
-                {myChallenges.map(({ ecoverseId, id: challengeId }, i) => (
-                  <ChallengeCardContainer key={i} ecoverseNameId={ecoverseId} challengeNameId={challengeId}>
+                {myChallenges.map(({ ecoverseNameId, id: challengeId }, i) => (
+                  <ChallengeCardContainer key={i} ecoverseNameId={ecoverseNameId} challengeNameId={challengeId}>
                     {({ challenge }) =>
                       challenge && (
                         <CardLayoutItem>
-                          <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseId} />
+                          <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseNameId} />
                         </CardLayoutItem>
                       )
                     }

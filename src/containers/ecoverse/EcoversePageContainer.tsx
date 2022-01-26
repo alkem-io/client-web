@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useEcoverse, useUserContext } from '../../hooks';
 import { useEcoversePageProjectsQuery, useEcoversePageQuery } from '../../hooks/generated/graphql';
@@ -42,7 +42,7 @@ export interface EcoversePageContainerProps
 
 export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { ecoverseId, ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
   const { data: _ecoverse, loading: loadingEcoverseQuery } = useEcoversePageQuery({
     variables: { ecoverseId: ecoverseNameId },
@@ -74,7 +74,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
                     caption: c.displayName || '',
                     tag: { status: 'positive', text: p?.lifecycle?.state || '' },
                     type: 'display',
-                    onSelect: () => history.replace(buildProjectUrl(ecoverseNameId, c.nameID, o.nameID, p.nameID)),
+                    onSelect: () => navigate(buildProjectUrl(ecoverseNameId, c.nameID, o.nameID, p.nameID)),
                   } as Project)
               ) || []
           ) || []

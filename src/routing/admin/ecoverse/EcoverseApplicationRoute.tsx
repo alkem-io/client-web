@@ -8,7 +8,7 @@ import { useUrlParams } from '../../../hooks';
 interface Props extends PageProps {}
 
 export const EcoverseApplicationRoute: FC<Props> = ({ paths }) => {
-  const { ecoverseNameId } = useUrlParams();
+  const { ecoverseNameId = '' } = useUrlParams();
   const { data, loading } = useEcoverseApplicationsQuery({
     variables: { ecoverseId: ecoverseNameId },
     fetchPolicy: 'cache-and-network',

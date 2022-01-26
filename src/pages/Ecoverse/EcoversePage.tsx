@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { TabContext, TabPanel } from '@mui/lab';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
 import { useEcoverse, useUpdateNavigation } from '../../hooks';
@@ -16,14 +16,12 @@ import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvid
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import HubCanvasManagementView from '../../views/Ecoverse/HubCanvasManagementView';
 
-interface EcoversePageProps extends PageProps {
-  // tabName?: string;
-  // tabNames: EcoverseRoutesType;
-}
+interface EcoversePageProps extends PageProps {}
 
+/*** @deprecated remove */
 const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
-  const { path } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
+
   const { isPrivate, ecoverseId } = useEcoverse();
   const discussionsRequiredCredentials: CredentialForResource[] =
     isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
@@ -76,16 +74,16 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                     <EcoverseCommunityPage paths={paths} />
                   </TabPanel>
                   <TabPanel value={tabNames['discussions']}>
-                    <Switch>
+                    <Routes>
                       <Route
-                        path={`${path}/community/discussions`}
-                        render={() => (
+                        path={'community/discussions'}
+                        element={
                           <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
                             <DiscussionsRoute paths={paths} />
                           </RestrictedRoute>
-                        )}
+                        }
                       />
-                    </Switch>
+                    </Routes>
                   </TabPanel>
                   <TabPanel value={tabNames['canvases']}>
                     {entities.ecoverse && (
@@ -112,4 +110,4 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
   );
 };
 
-export { EcoversePage as Ecoverse };
+export { EcoversePage };

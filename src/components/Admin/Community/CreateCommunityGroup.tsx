@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { GroupDetailsFragmentDoc, useCreateGroupOnCommunityMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
@@ -10,14 +10,12 @@ import { WithCommunity } from './CommunityTypes';
 interface CreateCommunityGroupProps extends WithCommunity, PageProps {}
 
 export const CreateCommunityGroup: FC<CreateCommunityGroupProps> = ({ paths, communityId }) => {
-  const { url } = useRouteMatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleError = useApolloErrorHandler();
 
   const redirectToCreatedGroup = (groupId: string) => {
-    const newGroupPath = url.replace('/new', `/${groupId}`);
-    history.replace(newGroupPath);
+    navigate(`../${groupId}`, { replace: true });
   };
 
   const [createGroup] = useCreateGroupOnCommunityMutation({

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
@@ -11,14 +11,15 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 import { useEcoverse } from '../../../hooks';
+import { useResolvedPath } from 'react-router-dom';
 
 interface OpportunityListProps extends PageProps {}
 
 export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
-  const { challengeNameId } = useUrlParams();
+  const { challengeNameId = '' } = useUrlParams();
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
   });
@@ -27,7 +28,7 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
     challengesListQuery?.ecoverse?.challenge?.opportunities?.map(o => ({
       id: o.id,
       value: o.displayName,
-      url: `${url}/${o.nameID}`,
+      url: `${o.nameID}`,
     })) || [];
 
   const [deleteOpportunity] = useDeleteOpportunityMutation({

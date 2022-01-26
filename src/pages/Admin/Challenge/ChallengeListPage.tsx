@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { PageProps } from '../..';
 import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem } from '../../../components/Admin/SearchableList';
@@ -11,11 +11,12 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useEcoverse } from '../../../hooks';
+import { useResolvedPath } from 'react-router-dom';
 
 interface ChallengeListProps extends PageProps {}
 
 export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId } = useEcoverse();
   const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({
@@ -28,7 +29,7 @@ export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
     challengesListQuery?.ecoverse?.challenges?.map(c => ({
       id: c.id,
       value: c.displayName,
-      url: `${url}/${c.nameID}`,
+      url: `${c.nameID}`,
     })) || [];
 
   const [deleteChallenge] = useDeleteChallengeMutation({

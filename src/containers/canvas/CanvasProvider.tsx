@@ -29,7 +29,11 @@ export interface IProvidedEntitiesState {
 }
 
 const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
-  const { ecoverseNameId: ecoverseId, challengeNameId: challengeId, opportunityNameId: opportunityId } = useUrlParams();
+  const {
+    ecoverseNameId: ecoverseId = '',
+    challengeNameId: challengeId = '',
+    opportunityNameId: opportunityId = '',
+  } = useUrlParams();
 
   const { data: ecoverseData, loading: loadingEcoverse } = useEcoverseCanvasesQuery({
     variables: { ecoverseId },

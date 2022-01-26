@@ -1,23 +1,22 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { Error404 } from '../../../pages';
-import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import ChallengeAuthorizationPage from '../../../pages/Admin/Challenge/ChallengeAuthorizationPage';
 import { nameOfUrl } from '../../url-params';
+import AuthorizationRouteProps from '../AuthorizationRouteProps';
 
 const ChallengeAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resourceId = '' }) => {
-  const { path, url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (
-    <Switch>
-      <Route exact path={`${path}/:${nameOfUrl.role}`}>
-        <ChallengeAuthorizationPage paths={currentPaths} resourceId={resourceId} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route
+        path={`:${nameOfUrl.role}`}
+        element={<ChallengeAuthorizationPage paths={currentPaths} resourceId={resourceId} />}
+      />
+      <Route path="*" element={<Error404 />} />
+    </Routes>
   );
 };
 export default ChallengeAuthorizationRoute;

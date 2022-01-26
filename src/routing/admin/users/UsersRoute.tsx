@@ -1,34 +1,34 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
+import { EditMode } from '../../../models/editMode';
 import { Error404, PageProps } from '../../../pages';
 import { UserListPage } from '../../../pages/Admin/User/UserListPage';
 import { UserPage } from '../../../pages/Admin/User/UserPage';
-import { EditMode } from '../../../models/editMode';
 import { nameOfUrl } from '../../url-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
-  const { path, url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'users', real: true }], [paths]);
 
   return (
-    <Switch>
-      <Route exact path={`${path}`}>
-        <UserListPage paths={currentPaths} />
-      </Route>
-      {/* creating users is disabled */}
-      {/* <Route exact path={`${path}/new`}>
+    <Routes>
+      <Route path={'/'}>
+        <Route index element={<UserListPage paths={currentPaths} />}></Route>
+        {/* creating users is disabled */}
+        {/* <Route path={`new`}>
         <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
       </Route> */}
-      <Route exact path={`${path}/:${nameOfUrl.userId}/edit`}>
-        <UserPage paths={currentPaths} mode={EditMode.edit} />
+        <Route
+          path={`:${nameOfUrl.userId}/edit`}
+          element={<UserPage paths={currentPaths} mode={EditMode.edit} />}
+        ></Route>
+        <Route
+          path={`:${nameOfUrl.userId}`}
+          element={<UserPage paths={currentPaths} mode={EditMode.readOnly} />}
+        ></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route exact path={`${path}/:${nameOfUrl.userId}`}>
-        <UserPage paths={currentPaths} mode={EditMode.readOnly} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    </Routes>
   );
 };
