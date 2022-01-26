@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 interface GroupMembersDetailsProps {
   members: User[];
-  editLink?: string;
+  editLink?: boolean;
 }
 
 export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, editLink }) => {
