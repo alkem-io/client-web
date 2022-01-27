@@ -23,7 +23,7 @@ const ContributorsSection = () => {
   const usersDTO: DashboardContributorsSectionSectionProps['entities']['users'] = useMemo(
     () =>
       users.map(u => ({
-        avatar: u.profile?.avatar || '',
+        avatar: u.profile?.avatar2?.uri || '',
         displayName: u.displayName,
         url: buildUserProfileUrl(u.nameID),
         tooltip: {
@@ -59,7 +59,7 @@ const ContributorsSection = () => {
         organizations: organizationsDTO,
       }}
       loading={{ users: loading, organizations: loadingOrganizations }}
-    ></DashboardContributorsSection>
+    />
   );
 };
 

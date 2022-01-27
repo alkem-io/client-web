@@ -9,7 +9,7 @@ import { Tagset as TagsetModel } from '../../../models/Profile';
 import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../models/graphql-schema';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
-import EditableAvatar from '../../composite/common/EditableAvatar';
+import VisualUpload from '../../composite/common/VisualUpload/VisualUpload';
 
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
@@ -80,7 +80,6 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
       profile: {
         id: profileId,
         description,
-        avatar,
         references: references as Reference[],
         tagsets: tagsets as Tagset[],
       },
@@ -95,11 +94,11 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
       enableReinitialize
       onSubmit={(values, { setSubmitting }) => handleSubmit(values).finally(() => setSubmitting(false))}
     >
-      {({ values: { name, references, tagsets, avatar, description }, handleSubmit, isSubmitting }) => {
+      {({ values: { name, references, tagsets, description }, handleSubmit, isSubmitting }) => {
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Section
-              avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={profileId} />}
+              avatar={<VisualUpload visual={group?.profile?.avatar2} />}
               details={<GroupMembersDetails members={members || []} editLink={`${url}/members`} />}
             >
               <Header text={title} />

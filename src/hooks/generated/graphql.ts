@@ -548,7 +548,9 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     }
     profile {
       id
-      avatar
+      avatar2 {
+        ...VisualFull
+      }
       description
       references {
         id
@@ -562,6 +564,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
 `;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
@@ -680,10 +683,8 @@ export const UserDetailsFragmentDoc = gql`
     profile {
       id
       description
-      avatar
       avatar2 {
-        id
-        uri
+        ...VisualFull
       }
       references {
         id
@@ -697,6 +698,7 @@ export const UserDetailsFragmentDoc = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
 `;
 export const UserDisplayNameFragmentDoc = gql`
   fragment UserDisplayName on User {
@@ -3945,51 +3947,51 @@ export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateUserMutation,
   SchemaTypes.UpdateUserMutationVariables
 >;
-export const UploadAvatarDocument = gql`
-  mutation uploadAvatar($file: Upload!, $uploadData: VisualUploadImageInput!) {
+export const UploadVisualDocument = gql`
+  mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {
     uploadImageOnVisual(file: $file, uploadData: $uploadData) {
       id
       uri
     }
   }
 `;
-export type UploadAvatarMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UploadAvatarMutation,
-  SchemaTypes.UploadAvatarMutationVariables
+export type UploadVisualMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UploadVisualMutation,
+  SchemaTypes.UploadVisualMutationVariables
 >;
 
 /**
- * __useUploadAvatarMutation__
+ * __useUploadVisualMutation__
  *
- * To run a mutation, you first call `useUploadAvatarMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadAvatarMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUploadVisualMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadVisualMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [uploadAvatarMutation, { data, loading, error }] = useUploadAvatarMutation({
+ * const [uploadVisualMutation, { data, loading, error }] = useUploadVisualMutation({
  *   variables: {
  *      file: // value for 'file'
  *      uploadData: // value for 'uploadData'
  *   },
  * });
  */
-export function useUploadAvatarMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadAvatarMutation, SchemaTypes.UploadAvatarMutationVariables>
+export function useUploadVisualMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UploadVisualMutation, SchemaTypes.UploadVisualMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UploadAvatarMutation, SchemaTypes.UploadAvatarMutationVariables>(
-    UploadAvatarDocument,
+  return Apollo.useMutation<SchemaTypes.UploadVisualMutation, SchemaTypes.UploadVisualMutationVariables>(
+    UploadVisualDocument,
     options
   );
 }
-export type UploadAvatarMutationHookResult = ReturnType<typeof useUploadAvatarMutation>;
-export type UploadAvatarMutationResult = Apollo.MutationResult<SchemaTypes.UploadAvatarMutation>;
-export type UploadAvatarMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UploadAvatarMutation,
-  SchemaTypes.UploadAvatarMutationVariables
+export type UploadVisualMutationHookResult = ReturnType<typeof useUploadVisualMutation>;
+export type UploadVisualMutationResult = Apollo.MutationResult<SchemaTypes.UploadVisualMutation>;
+export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UploadVisualMutation,
+  SchemaTypes.UploadVisualMutationVariables
 >;
 export const AdminEcoversesListDocument = gql`
   query adminEcoversesList {

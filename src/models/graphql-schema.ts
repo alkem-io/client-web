@@ -3120,8 +3120,21 @@ export type OrganizationProfileInfoFragment = {
   profile: {
     __typename?: 'Profile';
     id: string;
-    avatar?: string | undefined;
     description?: string | undefined;
+    avatar2?:
+      | {
+          __typename?: 'Visual2';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }
+      | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
   };
@@ -3237,8 +3250,20 @@ export type UserDetailsFragment = {
         __typename?: 'Profile';
         id: string;
         description?: string | undefined;
-        avatar?: string | undefined;
-        avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+        avatar2?:
+          | {
+              __typename?: 'Visual2';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
+          | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       }
@@ -3555,8 +3580,20 @@ export type CreateUserMutation = {
           __typename?: 'Profile';
           id: string;
           description?: string | undefined;
-          avatar?: string | undefined;
-          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+          avatar2?:
+            | {
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -3594,8 +3631,20 @@ export type CreateUserNewRegistrationMutation = {
           __typename?: 'Profile';
           id: string;
           description?: string | undefined;
-          avatar?: string | undefined;
-          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+          avatar2?:
+            | {
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -4042,8 +4091,21 @@ export type UpdateOrganizationMutation = {
     profile: {
       __typename?: 'Profile';
       id: string;
-      avatar?: string | undefined;
       description?: string | undefined;
+      avatar2?:
+        | {
+            __typename?: 'Visual2';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+          }
+        | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
@@ -4082,8 +4144,20 @@ export type UpdateUserMutation = {
           __typename?: 'Profile';
           id: string;
           description?: string | undefined;
-          avatar?: string | undefined;
-          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+          avatar2?:
+            | {
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -4091,12 +4165,12 @@ export type UpdateUserMutation = {
   };
 };
 
-export type UploadAvatarMutationVariables = Exact<{
+export type UploadVisualMutationVariables = Exact<{
   file: Scalars['Upload'];
   uploadData: VisualUploadImageInput;
 }>;
 
-export type UploadAvatarMutation = {
+export type UploadVisualMutation = {
   __typename?: 'Mutation';
   uploadImageOnVisual: { __typename?: 'Visual2'; id: string; uri: string };
 };
@@ -5776,8 +5850,20 @@ export type MeQuery = {
           __typename?: 'Profile';
           id: string;
           description?: string | undefined;
-          avatar?: string | undefined;
-          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+          avatar2?:
+            | {
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -6483,8 +6569,21 @@ export type OrganizationProfileInfoQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
-      avatar?: string | undefined;
       description?: string | undefined;
+      avatar2?:
+        | {
+            __typename?: 'Visual2';
+            id: string;
+            uri: string;
+            name: string;
+            allowedTypes: Array<string>;
+            aspectRatio: number;
+            maxHeight: number;
+            maxWidth: number;
+            minHeight: number;
+            minWidth: number;
+          }
+        | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
@@ -6802,8 +6901,20 @@ export type UserQuery = {
           __typename?: 'Profile';
           id: string;
           description?: string | undefined;
-          avatar?: string | undefined;
-          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+          avatar2?:
+            | {
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -6893,8 +7004,20 @@ export type UserProfileQuery = {
           __typename?: 'Profile';
           id: string;
           description?: string | undefined;
-          avatar?: string | undefined;
-          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+          avatar2?:
+            | {
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -6966,8 +7089,20 @@ export type UsersQuery = {
           __typename?: 'Profile';
           id: string;
           description?: string | undefined;
-          avatar?: string | undefined;
-          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+          avatar2?:
+            | {
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }

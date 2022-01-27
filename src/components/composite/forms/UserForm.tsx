@@ -16,7 +16,7 @@ import { referenceSegmentValidationObject } from '../../Admin/Common/ReferenceSe
 import SocialSegment from '../../Admin/Common/SocialSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import { Loading } from '../../core';
-import EditableAvatar from '../common/EditableAvatar';
+import VisualUpload from '../common/VisualUpload/VisualUpload';
 import CountrySelect from './CountrySelect';
 import { FormikInputField } from './FormikInputField';
 
@@ -207,7 +207,7 @@ export const UserForm: FC<UserProps> = ({
                 <Grid container spacing={4}>
                   <Grid item xs={12} md="auto">
                     <Grid item container justifyContent="center">
-                      <EditableAvatar src={avatar?.uri} size={'xl'} name={'Avatar'} visualId={avatar?.id} />
+                      <VisualUpload visual={avatar} />
                     </Grid>
                   </Grid>
                   <Grid item xs>
