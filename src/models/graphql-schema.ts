@@ -334,6 +334,13 @@ export type Challenge = Searchable & {
   tagset?: Maybe<Tagset>;
 };
 
+export type ChallengeAuthorizeStateModificationInput = {
+  /** The challenge whose state can be udpated. */
+  challengeID: Scalars['UUID'];
+  /** The user who is being authorized to update the Challenge state. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type ChallengeEventInput = {
   ID: Scalars['UUID'];
   eventName: Scalars['String'];
@@ -514,8 +521,10 @@ export type Context = {
   tagline?: Maybe<Scalars['String']>;
   /** The goal that is being pursued */
   vision?: Maybe<Scalars['Markdown']>;
-  /** The Visual assets for this Context. */
+  /** The old api for Visual assets for this Context. */
   visual?: Maybe<Visual>;
+  /** The Visual assets for this Context. */
+  visuals?: Maybe<Array<Visual2>>;
   /** Who should get involved in this challenge */
   who?: Maybe<Scalars['String']>;
 };
@@ -590,8 +599,6 @@ export type CreateContextInput = {
   references?: InputMaybe<Array<CreateReferenceInput>>;
   tagline?: InputMaybe<Scalars['String']>;
   vision?: InputMaybe<Scalars['Markdown']>;
-  /** The Visual assets for the new Context. */
-  visual?: InputMaybe<CreateVisualInput>;
   who?: InputMaybe<Scalars['Markdown']>;
 };
 
@@ -713,12 +720,6 @@ export type CreateUserInput = {
   nameID: Scalars['NameID'];
   phone?: InputMaybe<Scalars['String']>;
   profileData?: InputMaybe<CreateProfileInput>;
-};
-
-export type CreateVisualInput = {
-  avatar: Scalars['String'];
-  background?: InputMaybe<Scalars['String']>;
-  banner?: InputMaybe<Scalars['String']>;
 };
 
 export type Credential = {
@@ -1192,6 +1193,8 @@ export type Mutation = {
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
+  /** Authorizes a User to be able to modify the state on the specified Challenge. */
+  grantStateModificationOnChallenge: User;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Removes a message from the specified Discussion. */
@@ -1252,8 +1255,10 @@ export type Mutation = {
   updateUserGroup: UserGroup;
   /** Updates an user preference */
   updateUserPreference: UserPreference;
-  /** Uploads and sets an avatar image for the specified Profile. */
-  uploadAvatar: Profile;
+  /** Updates the image URI for the specified Visual. */
+  updateVisual: Visual2;
+  /** Uploads and sets an image for the specified Visual. */
+  uploadImageOnVisual: Visual2;
 };
 
 export type MutationAdminCommunicationEnsureAccessToCommunicationsArgs = {
@@ -1484,6 +1489,10 @@ export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
 };
 
+export type MutationGrantStateModificationOnChallengeArgs = {
+  grantStateModificationVCData: ChallengeAuthorizeStateModificationInput;
+};
+
 export type MutationMessageUserArgs = {
   messageData: UserSendMessageInput;
 };
@@ -1604,9 +1613,13 @@ export type MutationUpdateUserPreferenceArgs = {
   userPreferenceData: UpdateUserPreferenceInput;
 };
 
-export type MutationUploadAvatarArgs = {
+export type MutationUpdateVisualArgs = {
+  updateData: UpdateVisualInput;
+};
+
+export type MutationUploadImageOnVisualArgs = {
   file: Scalars['Upload'];
-  uploadData: UploadProfileAvatarInput;
+  uploadData: VisualUploadImageInput;
 };
 
 export type Nvp = {
@@ -1777,8 +1790,10 @@ export type Profile = {
   __typename?: 'Profile';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** A URI that points to the location of an avatar, either on a shared location or a gravatar */
+  /** The avatar uri for this Profile. */
   avatar?: Maybe<Scalars['String']>;
+  /** The Visual avatar for this Profile. */
+  avatar2?: Maybe<Visual2>;
   /** A short description of the entity associated with this profile. */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -2147,8 +2162,6 @@ export type UpdateContextInput = {
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   tagline?: InputMaybe<Scalars['String']>;
   vision?: InputMaybe<Scalars['Markdown']>;
-  /** Update the Visual assets for the new Context. */
-  visual?: InputMaybe<UpdateVisualInput>;
   who?: InputMaybe<Scalars['Markdown']>;
 };
 
@@ -2274,9 +2287,8 @@ export type UpdateUserPreferenceInput = {
 };
 
 export type UpdateVisualInput = {
-  avatar?: InputMaybe<Scalars['String']>;
-  background?: InputMaybe<Scalars['String']>;
-  banner?: InputMaybe<Scalars['String']>;
+  uri: Scalars['String'];
+  visualID: Scalars['String'];
 };
 
 export type Updates = {
@@ -2301,11 +2313,6 @@ export type UpdatesSendMessageInput = {
   message: Scalars['String'];
   /** The Updates the message is being sent to */
   updatesID: Scalars['UUID'];
-};
-
-export type UploadProfileAvatarInput = {
-  file: Scalars['String'];
-  profileID: Scalars['String'];
 };
 
 export type User = Searchable & {
@@ -2452,7 +2459,7 @@ export type VerifiedCredential = {
   /** JSON for the claim in the credential */
   claim: Scalars['JSON'];
   /** The time at which the credential was issued */
-  issued: Scalars['DateTime'];
+  issued: Scalars['String'];
   /** The challenge issuing the VC */
   issuer: Scalars['String'];
   /** The type of VC */
@@ -2461,14 +2468,35 @@ export type VerifiedCredential = {
 
 export type Visual = {
   __typename?: 'Visual';
-  /** The avatar (logo) to be used. */
   avatar: Scalars['String'];
-  /** The background image to be used, for example when displaying previews. */
   background: Scalars['String'];
-  /** The banner to be shown at the top of the page. */
   banner: Scalars['String'];
+  id: Scalars['String'];
+};
+
+export type Visual2 = {
+  __typename?: 'Visual2';
+  allowedTypes: Array<Scalars['String']>;
+  /** Aspect ratio width / height. */
+  aspectRatio: Scalars['Float'];
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** Maximum height resolution. */
+  maxHeight: Scalars['Float'];
+  /** Maximum width resolution. */
+  maxWidth: Scalars['Float'];
+  /** Minimum height resolution. */
+  minHeight: Scalars['Float'];
+  /** Minimum width resolution. */
+  minWidth: Scalars['Float'];
+  name: Scalars['String'];
+  uri: Scalars['String'];
+};
+
+export type VisualUploadImageInput = {
+  visualID: Scalars['String'];
 };
 
 export type AdminEcoverseFragment = {
@@ -2549,7 +2577,7 @@ export type ChallengeCardFragment = {
         __typename?: 'Context';
         id: string;
         tagline?: string | undefined;
-        visual?: { __typename?: 'Visual'; id: string; background: string; banner: string } | undefined;
+        visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -2570,7 +2598,7 @@ export type ChallengeInfoFragment = {
         id: string;
         tagline?: string | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+        visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
 };
@@ -2711,7 +2739,20 @@ export type ContextDetailsFragment = {
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
     | undefined;
-  visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+  visuals?:
+    | Array<{
+        __typename?: 'Visual2';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }>
+    | undefined;
   authorization?:
     | {
         __typename?: 'Authorization';
@@ -2720,14 +2761,6 @@ export type ContextDetailsFragment = {
         anonymousReadAccess: boolean;
       }
     | undefined;
-};
-
-export type ContextVisualFragment = {
-  __typename?: 'Visual';
-  id: string;
-  avatar: string;
-  background: string;
-  banner: string;
 };
 
 export type EcoverseInfoFragment = {
@@ -2768,7 +2801,20 @@ export type EcoverseInfoFragment = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
           | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual2';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -2801,7 +2847,20 @@ export type EcoverseDetailsFragment = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
           | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual2';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -2824,7 +2883,7 @@ export type ContextDetailsProviderFragment = {
   vision?: string | undefined;
   impact?: string | undefined;
   who?: string | undefined;
-  visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+  visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
 };
 
 export type EcoverseDetailsProviderFragment = {
@@ -2845,7 +2904,7 @@ export type EcoverseDetailsProviderFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+        visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
 };
@@ -2928,7 +2987,20 @@ export type OpportunityInfoFragment = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
           | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual2';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -3085,7 +3157,7 @@ export type ChallengeSearchResultFragment = {
         __typename?: 'Context';
         id: string;
         tagline?: string | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string } | undefined;
+        visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -3102,7 +3174,7 @@ export type OpportunitySearchResultFragment = {
         __typename?: 'Context';
         id: string;
         tagline?: string | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string } | undefined;
+        visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -3166,6 +3238,7 @@ export type UserDetailsFragment = {
         id: string;
         description?: string | undefined;
         avatar?: string | undefined;
+        avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       }
@@ -3207,6 +3280,21 @@ export type UserMembershipDetailsFragment = {
       }>
     | undefined;
 };
+
+export type VisualFullFragment = {
+  __typename?: 'Visual2';
+  id: string;
+  uri: string;
+  name: string;
+  allowedTypes: Array<string>;
+  aspectRatio: number;
+  maxHeight: number;
+  maxWidth: number;
+  minHeight: number;
+  minWidth: number;
+};
+
+export type VisualUriFragment = { __typename?: 'Visual2'; id: string; uri: string; name: string };
 
 export type UpdateUserPreferencesMutationVariables = Exact<{
   input: UpdateUserPreferenceInput;
@@ -3319,8 +3407,19 @@ export type CreateEcoverseMutation = {
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
-          visual?:
-            | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+          visuals?:
+            | Array<{
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>
             | undefined;
           authorization?:
             | {
@@ -3457,6 +3556,7 @@ export type CreateUserMutation = {
           id: string;
           description?: string | undefined;
           avatar?: string | undefined;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -3495,6 +3595,7 @@ export type CreateUserNewRegistrationMutation = {
           id: string;
           description?: string | undefined;
           avatar?: string | undefined;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -3863,8 +3964,19 @@ export type UpdateEcoverseMutation = {
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
-          visual?:
-            | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+          visuals?:
+            | Array<{
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>
             | undefined;
           authorization?:
             | {
@@ -3971,6 +4083,7 @@ export type UpdateUserMutation = {
           id: string;
           description?: string | undefined;
           avatar?: string | undefined;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -3980,12 +4093,12 @@ export type UpdateUserMutation = {
 
 export type UploadAvatarMutationVariables = Exact<{
   file: Scalars['Upload'];
-  input: UploadProfileAvatarInput;
+  uploadData: VisualUploadImageInput;
 }>;
 
 export type UploadAvatarMutation = {
   __typename?: 'Mutation';
-  uploadAvatar: { __typename?: 'Profile'; id: string; avatar?: string | undefined };
+  uploadImageOnVisual: { __typename?: 'Visual2'; id: string; uri: string };
 };
 
 export type AdminEcoversesListQueryVariables = Exact<{ [key: string]: never }>;
@@ -4062,8 +4175,19 @@ export type ChallengeApplicationQuery = {
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
-            visual?:
-              | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual2';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
               | undefined;
             authorization?:
               | {
@@ -4138,26 +4262,8 @@ export type EcoverseApplicationQuery = {
     context?:
       | {
           __typename?: 'Context';
-          id: string;
           tagline?: string | undefined;
-          background?: string | undefined;
-          vision?: string | undefined;
-          impact?: string | undefined;
-          who?: string | undefined;
-          references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-            | undefined;
-          visual?:
-            | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
-            | undefined;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
-            | undefined;
+          visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
     community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
@@ -4270,7 +4376,7 @@ export type ChallengeCardQuery = {
             __typename?: 'Context';
             id: string;
             tagline?: string | undefined;
-            visual?: { __typename?: 'Visual'; id: string; background: string; banner: string } | undefined;
+            visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -4299,7 +4405,7 @@ export type ChallengeCardsQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
-                visual?: { __typename?: 'Visual'; id: string; background: string; banner: string } | undefined;
+                visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -4332,9 +4438,7 @@ export type EcoverseCardQuery = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          visual?:
-            | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
-            | undefined;
+          visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
   };
@@ -4399,9 +4503,7 @@ export type ChallengeInfoQuery = {
             id: string;
             tagline?: string | undefined;
             references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-            visual?:
-              | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
-              | undefined;
+            visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
     };
@@ -4647,8 +4749,19 @@ export type ChallengeProfileQuery = {
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
-            visual?:
-              | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual2';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
               | undefined;
             authorization?:
               | {
@@ -4691,8 +4804,19 @@ export type ChallengeProfileQuery = {
                   references?:
                     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
                     | undefined;
-                  visual?:
-                    | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+                  visuals?:
+                    | Array<{
+                        __typename?: 'Visual2';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }>
                     | undefined;
                   authorization?:
                     | {
@@ -4762,7 +4886,20 @@ export type ChallengeProfileFragment = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
           | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual2';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -4804,8 +4941,19 @@ export type ChallengeProfileFragment = {
               references?:
                 | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
                 | undefined;
-              visual?:
-                | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+              visuals?:
+                | Array<{
+                    __typename?: 'Visual2';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }>
                 | undefined;
               authorization?:
                 | {
@@ -4858,11 +5006,22 @@ export type ChallengeProfileInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual2';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
+              | undefined;
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-              | undefined;
-            visual?:
-              | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
               | undefined;
             authorization?:
               | {
@@ -4918,9 +5077,7 @@ export type ChallengesQuery = {
                 id: string;
                 tagline?: string | undefined;
                 references?: Array<{ __typename?: 'Reference'; name: string; uri: string }> | undefined;
-                visual?:
-                  | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
-                  | undefined;
+                visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
         }>
@@ -5321,8 +5478,19 @@ export type EcoverseInfoQuery = {
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
-          visual?:
-            | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+          visuals?:
+            | Array<{
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>
             | undefined;
           authorization?:
             | {
@@ -5507,9 +5675,7 @@ export type EcoverseVisualQuery = {
     context?:
       | {
           __typename?: 'Context';
-          visual?:
-            | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
-            | undefined;
+          visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
   };
@@ -5537,9 +5703,7 @@ export type EcoversesQuery = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          visual?:
-            | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
-            | undefined;
+          visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
   }>;
@@ -5613,6 +5777,7 @@ export type MeQuery = {
           id: string;
           description?: string | undefined;
           avatar?: string | undefined;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -5762,8 +5927,19 @@ export type OpportunityInfoQuery = {
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
-            visual?:
-              | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual2';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
               | undefined;
             authorization?:
               | {
@@ -6041,8 +6217,19 @@ export type OpportunityProfileInfoQuery = {
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
-            visual?:
-              | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual2';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
               | undefined;
             authorization?:
               | {
@@ -6122,7 +6309,7 @@ export type OpportunityWithActivityQuery = {
         | {
             __typename?: 'Context';
             tagline?: string | undefined;
-            visual?: { __typename?: 'Visual'; background: string } | undefined;
+            visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
       tagset?: { __typename?: 'Tagset'; name: string; tags: Array<string> } | undefined;
@@ -6239,8 +6426,8 @@ export type OrganizationDetailsQuery = {
     profile: {
       __typename?: 'Profile';
       id: string;
-      avatar?: string | undefined;
       description?: string | undefined;
+      avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
       references?: Array<{ __typename?: 'Reference'; name: string; uri: string }> | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
@@ -6313,7 +6500,11 @@ export type OrganizationsListQuery = {
     id: string;
     nameID: string;
     displayName: string;
-    profile: { __typename?: 'Profile'; id: string; avatar?: string | undefined };
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      avatar2?: { __typename?: 'Visual2'; id: string; uri: string; name: string } | undefined;
+    };
   }>;
 };
 
@@ -6435,7 +6626,7 @@ export type SearchQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
-                visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string } | undefined;
+                visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -6451,7 +6642,7 @@ export type SearchQuery = {
                 __typename?: 'Context';
                 id: string;
                 tagline?: string | undefined;
-                visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string } | undefined;
+                visuals?: Array<{ __typename?: 'Visual2'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -6612,6 +6803,7 @@ export type UserQuery = {
           id: string;
           description?: string | undefined;
           avatar?: string | undefined;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -6660,7 +6852,7 @@ export type UserAvatarsQuery = {
       | {
           __typename?: 'Profile';
           id: string;
-          avatar?: string | undefined;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -6702,6 +6894,7 @@ export type UserProfileQuery = {
           id: string;
           description?: string | undefined;
           avatar?: string | undefined;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -6774,6 +6967,7 @@ export type UsersQuery = {
           id: string;
           description?: string | undefined;
           avatar?: string | undefined;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
           references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
@@ -6801,7 +6995,13 @@ export type UsersWithCredentialsQuery = {
     firstName: string;
     lastName: string;
     email: string;
-    profile?: { __typename?: 'Profile'; id: string; avatar?: string | undefined } | undefined;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          avatar2?: { __typename?: 'Visual2'; id: string; uri: string } | undefined;
+        }
+      | undefined;
   }>;
 };
 
@@ -7977,8 +8177,19 @@ export type EcoversePageQuery = {
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
-          visual?:
-            | { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string }
+          visuals?:
+            | Array<{
+                __typename?: 'Visual2';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }>
             | undefined;
           authorization?:
             | {
@@ -8032,7 +8243,20 @@ export type EcoversePageFragment = {
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
           | undefined;
-        visual?: { __typename?: 'Visual'; id: string; avatar: string; background: string; banner: string } | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual2';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';

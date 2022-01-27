@@ -1,6 +1,6 @@
-mutation uploadAvatar($file: Upload!, $input: UploadProfileAvatarInput!) {
-  uploadAvatar(file: $file, uploadData: $input) {
+mutation uploadAvatar($file: Upload!, $uploadData: VisualUploadImageInput!) {
+  uploadImageOnVisual(file: $file, uploadData: $uploadData) {
     id
-    avatar
+    uri
   }
 }

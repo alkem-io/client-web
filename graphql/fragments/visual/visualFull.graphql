@@ -1,0 +1,11 @@
+fragment VisualFull on Visual2 {
+  id
+  uri
+  name
+  allowedTypes
+  aspectRatio
+  maxHeight
+  maxWidth
+  minHeight
+  minWidth
+}

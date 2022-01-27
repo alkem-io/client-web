@@ -122,7 +122,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
       <DialogTitle id="org-dialog-title" onClose={onHide}>
         <div className={styles.header}>
           <div className={styles.profile}>
-            <Avatar src={profile?.avatar} size={'lg'} />
+            <Avatar src={profile?.avatar2?.uri} size={'lg'} />
             <div className={styles.userName}>
               <Typography variant={'h3'}>{name}</Typography>
             </div>

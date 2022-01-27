@@ -5,7 +5,10 @@ query organizationDetails($id: UUID_NAMEID!) {
     nameID
     profile {
       id
-      avatar
+      avatar2 {
+        id
+        uri
+      }
       description
       references {
         name

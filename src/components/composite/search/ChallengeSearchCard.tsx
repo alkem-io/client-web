@@ -6,6 +6,7 @@ import ChallengePopUp from '../entities/Challenge/ChallengePopUp';
 import getActivityCount from '../../../utils/get-activity-count';
 import { ActivityItem } from '../common/ActivityPanel/Activities';
 import EntitySearchCardProps from './EntitySearchCardProps';
+import { getVisualBannerNarrow } from '../../../utils/visuals.utils';
 
 const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFragment>> = ({
   terms,
@@ -20,7 +21,7 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
   const ecoverse = data?.ecoverse;
   const tag = ecoverse?.displayName || '';
 
-  const backgroundImg = challenge.context?.visual?.background || '';
+  const backgroundImg = getVisualBannerNarrow(challenge.context?.visuals) ?? '';
   const displayName = challenge.displayName || '';
 
   const _activity = challenge?.activity || [];

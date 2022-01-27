@@ -7,6 +7,7 @@ import { useUserContext } from '../../hooks';
 import { useOrganizationsListQuery, useUsersQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+import { getVisualAvatar } from '../../utils/visuals.utils';
 
 const ContributorsSection = () => {
   const { t } = useTranslation();
@@ -37,7 +38,7 @@ const ContributorsSection = () => {
   const organizationsDTO: DashboardContributorsSectionSectionProps['entities']['organizations'] = useMemo(
     () =>
       organizations.map(o => ({
-        avatar: o?.profile?.avatar || '',
+        avatar: getVisualAvatar(o?.profile?.avatar2) || '',
         displayName: o.displayName,
         url: buildOrganizationUrl(o.nameID),
       })),

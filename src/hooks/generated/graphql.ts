@@ -87,6 +87,13 @@ export const UserCardFragmentDoc = gql`
     }
   }
 `;
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual2 {
+    id
+    uri
+    name
+  }
+`;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
     id
@@ -100,10 +107,8 @@ export const ChallengeCardFragmentDoc = gql`
     context {
       id
       tagline
-      visual {
-        id
-        background
-        banner
+      visuals {
+        ...VisualUri
       }
     }
     tagset {
@@ -112,14 +117,7 @@ export const ChallengeCardFragmentDoc = gql`
       tags
     }
   }
-`;
-export const ContextVisualFragmentDoc = gql`
-  fragment ContextVisual on Visual {
-    id
-    avatar
-    background
-    banner
-  }
+  ${VisualUriFragmentDoc}
 `;
 export const ChallengeInfoFragmentDoc = gql`
   fragment ChallengeInfo on Challenge {
@@ -141,12 +139,12 @@ export const ChallengeInfoFragmentDoc = gql`
         name
         uri
       }
-      visual {
-        ...ContextVisual
+      visuals {
+        ...VisualUri
       }
     }
   }
-  ${ContextVisualFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
@@ -285,11 +283,11 @@ export const ContextDetailsProviderFragmentDoc = gql`
     vision
     impact
     who
-    visual {
-      ...ContextVisual
+    visuals {
+      ...VisualUri
     }
   }
-  ${ContextVisualFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const EcoverseDetailsProviderFragmentDoc = gql`
   fragment EcoverseDetailsProvider on Ecoverse {
@@ -360,6 +358,19 @@ export const NewOpportunityFragmentDoc = gql`
     displayName
   }
 `;
+export const VisualFullFragmentDoc = gql`
+  fragment VisualFull on Visual2 {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+  }
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -374,8 +385,8 @@ export const ContextDetailsFragmentDoc = gql`
       uri
       description
     }
-    visual {
-      ...ContextVisual
+    visuals {
+      ...VisualFull
     }
     authorization {
       id
@@ -383,7 +394,7 @@ export const ContextDetailsFragmentDoc = gql`
       anonymousReadAccess
     }
   }
-  ${ContextVisualFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 export const ProjectDetailsFragmentDoc = gql`
   fragment ProjectDetails on Project {
@@ -573,10 +584,8 @@ export const ChallengeSearchResultFragmentDoc = gql`
     context {
       id
       tagline
-      visual {
-        id
-        avatar
-        background
+      visuals {
+        ...VisualUri
       }
     }
     tagset {
@@ -584,6 +593,7 @@ export const ChallengeSearchResultFragmentDoc = gql`
       tags
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const OpportunitySearchResultFragmentDoc = gql`
   fragment OpportunitySearchResult on Opportunity {
@@ -597,10 +607,8 @@ export const OpportunitySearchResultFragmentDoc = gql`
     context {
       id
       tagline
-      visual {
-        id
-        avatar
-        background
+      visuals {
+        ...VisualUri
       }
     }
     tagset {
@@ -614,6 +622,7 @@ export const OpportunitySearchResultFragmentDoc = gql`
       ecoverseID
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const OrganizationSearchResultFragmentDoc = gql`
   fragment OrganizationSearchResult on Organization {
@@ -672,6 +681,10 @@ export const UserDetailsFragmentDoc = gql`
       id
       description
       avatar
+      avatar2 {
+        id
+        uri
+      }
       references {
         id
         name
@@ -3933,10 +3946,10 @@ export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateUserMutationVariables
 >;
 export const UploadAvatarDocument = gql`
-  mutation uploadAvatar($file: Upload!, $input: UploadProfileAvatarInput!) {
-    uploadAvatar(file: $file, uploadData: $input) {
+  mutation uploadAvatar($file: Upload!, $uploadData: VisualUploadImageInput!) {
+    uploadImageOnVisual(file: $file, uploadData: $uploadData) {
       id
-      avatar
+      uri
     }
   }
 `;
@@ -3959,7 +3972,7 @@ export type UploadAvatarMutationFn = Apollo.MutationFunction<
  * const [uploadAvatarMutation, { data, loading, error }] = useUploadAvatarMutation({
  *   variables: {
  *      file: // value for 'file'
- *      input: // value for 'input'
+ *      uploadData: // value for 'uploadData'
  *   },
  * });
  */
@@ -4304,7 +4317,10 @@ export const EcoverseApplicationDocument = gql`
       id
       displayName
       context {
-        ...ContextDetails
+        tagline
+        visuals {
+          ...VisualUri
+        }
       }
       community {
         id
@@ -4312,7 +4328,7 @@ export const EcoverseApplicationDocument = gql`
       }
     }
   }
-  ${ContextDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -5400,11 +5416,15 @@ export const ChallengeProfileInfoDocument = gql`
         }
         context {
           ...ContextDetails
+          visuals {
+            ...VisualFull
+          }
         }
       }
     }
   }
   ${ContextDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 
 /**
@@ -5534,14 +5554,14 @@ export const ChallengesDocument = gql`
             name
             uri
           }
-          visual {
-            ...ContextVisual
+          visuals {
+            ...VisualUri
           }
         }
       }
     }
   }
-  ${ContextVisualFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -6677,13 +6697,13 @@ export const EcoverseVisualDocument = gql`
     ecoverse(ID: $ecoverseId) {
       id
       context {
-        visual {
-          ...ContextVisual
+        visuals {
+          ...VisualUri
         }
       }
     }
   }
-  ${ContextVisualFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -7918,8 +7938,8 @@ export const OpportunityWithActivityDocument = gql`
         }
         context {
           tagline
-          visual {
-            background
+          visuals {
+            ...VisualUri
           }
         }
         tagset {
@@ -7929,6 +7949,7 @@ export const OpportunityWithActivityDocument = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -8106,7 +8127,10 @@ export const OrganizationDetailsDocument = gql`
       nameID
       profile {
         id
-        avatar
+        avatar2 {
+          id
+          uri
+        }
         description
         references {
           name
@@ -8361,7 +8385,11 @@ export const OrganizationsListDocument = gql`
       displayName
       profile {
         id
-        avatar
+        avatar2 {
+          id
+          uri
+          name
+        }
       }
     }
   }
@@ -9139,7 +9167,10 @@ export const UserAvatarsDocument = gql`
       country
       profile {
         id
-        avatar
+        avatar2 {
+          id
+          uri
+        }
         tagsets {
           id
           name
@@ -9358,7 +9389,10 @@ export const UsersWithCredentialsDocument = gql`
       email
       profile {
         id
-        avatar
+        avatar2 {
+          id
+          uri
+        }
       }
     }
   }

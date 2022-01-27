@@ -20,6 +20,10 @@ fragment UserDetails on User {
     id
     description
     avatar
+    avatar2 {
+      id
+      uri
+    }
     references {
       id
       name

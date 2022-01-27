@@ -17,8 +17,8 @@ fragment ChallengeInfo on Challenge {
       name
       uri
     }
-    visual {
-      ...ContextVisual
+    visuals {
+      ...VisualUri
     }
   }
 }

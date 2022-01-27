@@ -3,13 +3,12 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset, Visual } from '../../../models/graphql-schema';
+import { Context, Reference, Tagset } from '../../../models/graphql-schema';
 import ContextReferenceSegment from '../../Admin/Common/ContextReferenceSegment';
 import { ContextSegment, contextSegmentSchema } from '../../Admin/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../Admin/Common/NameSegment';
 import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
-import { VisualSegment, visualSegmentSchema } from '../../Admin/Common/VisualSegment';
 import Typography from '../../core/Typography';
 
 export interface ProfileFormValuesType {
@@ -21,7 +20,7 @@ export interface ProfileFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
-  visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
+  // visuals: Visual2[]; todo: enable when it's time
   tagsets: Tagset[];
 }
 
@@ -67,11 +66,6 @@ const ProfileForm: FC<Props> = ({
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
-    visual: {
-      avatar: context?.visual?.avatar || '',
-      background: context?.visual?.background || '',
-      banner: context?.visual?.banner || '',
-    },
     tagsets: tagsets,
   };
 
@@ -84,7 +78,7 @@ const ProfileForm: FC<Props> = ({
     vision: contextSegmentSchema.fields?.vision || yup.string(),
     who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
-    visual: visualSegmentSchema,
+    // visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });
 
@@ -127,7 +121,7 @@ const ProfileForm: FC<Props> = ({
               </Typography>
             </Grid>
 
-            <VisualSegment />
+            {/*<VisualSegment />*/}
 
             {isEdit && <ContextReferenceSegment references={references || []} contextId={context?.id} />}
           </>

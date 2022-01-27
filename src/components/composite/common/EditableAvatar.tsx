@@ -12,9 +12,10 @@ import { Spinner } from '../../core/Spinner';
 import UploadButton from '../../core/UploadButton';
 interface EditableAvatarProps extends AvatarProps {
   profileId?: string;
+  visualId?: string;
 }
 
-const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...props }) => {
+const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, visualId, classes = {}, ...props }) => {
   const { t } = useTranslation();
   const avatarStyles = useAvatarStyles(classes);
   const [uploadAvatar, { loading }] = useUploadAvatarMutation();
@@ -24,13 +25,12 @@ const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...p
 
   const handleAvatarChange = useCallback(
     async (file: File) => {
-      if (profileId) {
+      if (visualId) {
         await uploadAvatar({
           variables: {
             file,
-            input: {
-              file: '',
-              profileID: profileId,
+            uploadData: {
+              visualID: visualId,
             },
           },
         }).catch(handleError);

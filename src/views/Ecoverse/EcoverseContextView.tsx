@@ -11,6 +11,7 @@ import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
 import { Context } from '../../models/graphql-schema';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 interface EcoverseContextViewProps {
   entities: EcoverseContainerEntities;
@@ -24,7 +25,7 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities }) 
   const { context, displayName, tagset } = ecoverse || {};
 
   const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
-  const ecoverseBanner = ecoverse?.context?.visual?.banner;
+  const ecoverseBanner = getVisualBanner(ecoverse?.context?.visuals);
 
   const ecoverseId = ecoverse?.id || '';
   const ecoverseNameId = ecoverse?.nameID || '';

@@ -5,7 +5,11 @@ query organizationsList {
     displayName
     profile {
       id
-      avatar
+      avatar2 {
+        id
+        uri
+        name
+      }
     }
   }
 }

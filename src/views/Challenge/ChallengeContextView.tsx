@@ -11,6 +11,7 @@ import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { Context } from '../../models/graphql-schema';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 interface ChallengeContextViewProps {
   entities: ChallengeContainerEntities;
@@ -22,7 +23,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities }
   const { challenge, ecoverseId, ecoverseNameId, ecoverseDisplayName } = entities;
   const { context, tagset, displayName } = challenge || {};
   const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
-  const banner = context?.visual?.banner;
+  const banner = getVisualBanner(context?.visuals);
   const challengeId = challenge?.id || '';
   const challengeNameId = challenge?.nameID || '';
   const lifecycle = challenge?.lifecycle;

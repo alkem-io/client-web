@@ -3,7 +3,10 @@ query ecoverseApplication($ecoverseId: UUID_NAMEID!) {
     id
     displayName
     context{
-      ...ContextDetails
+      tagline
+      visuals {
+        ...VisualUri
+      }
     }
     community {
       id

@@ -346,6 +346,7 @@ export type ContextKeySpecifier = (
   | 'tagline'
   | 'vision'
   | 'visual'
+  | 'visuals'
   | 'who'
   | ContextKeySpecifier
 )[];
@@ -361,6 +362,7 @@ export type ContextFieldPolicy = {
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
   visual?: FieldPolicy<any> | FieldReadFunction<any>;
+  visuals?: FieldPolicy<any> | FieldReadFunction<any>;
   who?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CredentialKeySpecifier = ('id' | 'resourceID' | 'type' | CredentialKeySpecifier)[];
@@ -623,6 +625,7 @@ export type MutationKeySpecifier = (
   | 'eventOnOrganizationVerification'
   | 'eventOnProject'
   | 'grantCredentialToUser'
+  | 'grantStateModificationOnChallenge'
   | 'messageUser'
   | 'removeMessageFromDiscussion'
   | 'removeUpdate'
@@ -653,7 +656,8 @@ export type MutationKeySpecifier = (
   | 'updateUser'
   | 'updateUserGroup'
   | 'updateUserPreference'
-  | 'uploadAvatar'
+  | 'updateVisual'
+  | 'uploadImageOnVisual'
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
@@ -715,6 +719,7 @@ export type MutationFieldPolicy = {
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  grantStateModificationOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -745,7 +750,8 @@ export type MutationFieldPolicy = {
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUserPreference?: FieldPolicy<any> | FieldReadFunction<any>;
-  uploadAvatar?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateVisual?: FieldPolicy<any> | FieldReadFunction<any>;
+  uploadImageOnVisual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type NVPKeySpecifier = ('id' | 'name' | 'value' | NVPKeySpecifier)[];
 export type NVPFieldPolicy = {
@@ -892,6 +898,7 @@ export type PlatformFieldPolicy = {
 export type ProfileKeySpecifier = (
   | 'authorization'
   | 'avatar'
+  | 'avatar2'
   | 'description'
   | 'id'
   | 'references'
@@ -901,6 +908,7 @@ export type ProfileKeySpecifier = (
 export type ProfileFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   avatar?: FieldPolicy<any> | FieldReadFunction<any>;
+  avatar2?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1201,6 +1209,31 @@ export type VisualFieldPolicy = {
   background?: FieldPolicy<any> | FieldReadFunction<any>;
   banner?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type Visual2KeySpecifier = (
+  | 'allowedTypes'
+  | 'aspectRatio'
+  | 'authorization'
+  | 'id'
+  | 'maxHeight'
+  | 'maxWidth'
+  | 'minHeight'
+  | 'minWidth'
+  | 'name'
+  | 'uri'
+  | Visual2KeySpecifier
+)[];
+export type Visual2FieldPolicy = {
+  allowedTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
+  minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
   Actor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
@@ -1546,6 +1579,10 @@ export type StrictTypedTypePolicies = {
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);
     fields?: VisualFieldPolicy;
+  };
+  Visual2?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | Visual2KeySpecifier | (() => undefined | Visual2KeySpecifier);
+    fields?: Visual2FieldPolicy;
   };
 };
 export type TypedTypePolicies = StrictTypedTypePolicies & TypePolicies;

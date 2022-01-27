@@ -16,7 +16,6 @@ export interface UserModel {
   profile: {
     id?: string;
     description: string;
-    avatar: string;
     tagsets: Tagset[];
     references: Reference[];
   };
@@ -49,7 +48,6 @@ export const defaultUser: UserModel = {
   profile: {
     id: '',
     description: '',
-    avatar: '',
     tagsets: [],
     references: [],
   },
@@ -69,7 +67,6 @@ export interface UserFormGenerated {
   twitter: string;
   github: string;
   displayName: string;
-  avatar: string;
   tagsets: Tagset[];
   references: Reference[];
   country: CountryType | null;

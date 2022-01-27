@@ -9,10 +9,8 @@ fragment OpportunitySearchResult on Opportunity {
   context {
     id
     tagline
-    visual {
-      id
-      avatar
-      background
+    visuals {
+      ...VisualUri
     }
   }
   tagset {
