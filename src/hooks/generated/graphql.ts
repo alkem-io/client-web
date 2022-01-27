@@ -322,13 +322,28 @@ export const GroupDetailsFragmentDoc = gql`
     name
   }
 `;
+export const VisualFullFragmentDoc = gql`
+  fragment VisualFull on Visual2 {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+  }
+`;
 export const GroupInfoFragmentDoc = gql`
   fragment GroupInfo on UserGroup {
     id
     name
     profile {
       id
-      avatar
+      avatar2 {
+        ...VisualFull
+      }
       description
       references {
         id
@@ -343,6 +358,7 @@ export const GroupInfoFragmentDoc = gql`
       }
     }
   }
+  ${VisualFullFragmentDoc}
 `;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
@@ -356,19 +372,6 @@ export const NewOpportunityFragmentDoc = gql`
     id
     nameID
     displayName
-  }
-`;
-export const VisualFullFragmentDoc = gql`
-  fragment VisualFull on Visual2 {
-    id
-    uri
-    name
-    allowedTypes
-    aspectRatio
-    maxHeight
-    maxWidth
-    minHeight
-    minWidth
   }
 `;
 export const ContextDetailsFragmentDoc = gql`

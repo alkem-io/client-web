@@ -2919,8 +2919,21 @@ export type GroupInfoFragment = {
     | {
         __typename?: 'Profile';
         id: string;
-        avatar?: string | undefined;
         description?: string | undefined;
+        avatar2?:
+          | {
+              __typename?: 'Visual2';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
+          | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
           | undefined;
@@ -5638,8 +5651,21 @@ export type EcoverseGroupQuery = {
         | {
             __typename?: 'Profile';
             id: string;
-            avatar?: string | undefined;
             description?: string | undefined;
+            avatar2?:
+              | {
+                  __typename?: 'Visual2';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }
+              | undefined;
             references?:
               | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
               | undefined;
@@ -6432,8 +6458,21 @@ export type OrganizationGroupQuery = {
             | {
                 __typename?: 'Profile';
                 id: string;
-                avatar?: string | undefined;
                 description?: string | undefined;
+                avatar2?:
+                  | {
+                      __typename?: 'Visual2';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
                 references?:
                   | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
                   | undefined;

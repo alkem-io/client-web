@@ -3,7 +3,9 @@ fragment GroupInfo on UserGroup {
   name
   profile {
     id
-    avatar
+    avatar2 {
+      ...VisualFull
+    }
     description
     references {
       id
