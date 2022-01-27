@@ -115,13 +115,12 @@ const ProfileForm: FC<Props> = ({
                 <TagsetSegment tagsets={tagsets} />
               </>
             )}
-            <Grid item xs={12}>
+            {/*<Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
               </Typography>
             </Grid>
-
-            {/*<VisualSegment />*/}
+            <VisualSegment />*/}
 
             {isEdit && <ContextReferenceSegment references={references || []} contextId={context?.id} />}
           </>

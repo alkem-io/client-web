@@ -12,7 +12,7 @@ import FormikSelect from '../composite/forms/FormikSelect';
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
-import { VisualSegment, visualSegmentSchema } from './Common/VisualSegment';
+import { visualSegmentSchema } from './Common/VisualSegment';
 
 interface Props {
   context?: Context;
@@ -140,12 +140,12 @@ const EcoverseEditForm: FC<Props> = ({
               </Typography>
             </Grid>
             <TagsetSegment tagsets={tagsets} />
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
               </Typography>
             </Grid>
-            <VisualSegment />
+            <VisualSegment />*/}
             {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
