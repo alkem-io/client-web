@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { EcoverseProvider } from '../../../context/EcoverseProvider';
 import { useTransactionScope } from '../../../hooks';
 import { Error404, PageProps } from '../../../pages';
@@ -12,7 +12,7 @@ import { EcoverseRoute } from './EcoverseRoute';
 export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   useTransactionScope({ type: 'admin' });
-  const { path, url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(
     () => [
       ...paths,
@@ -26,21 +26,20 @@ export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
   );
 
   return (
-    <Switch>
-      <Route exact path={`${path}`}>
-        <EcoverseList paths={currentPaths} />
+    <Routes>
+      <Route path={'/'}>
+        <Route index element={<EcoverseList paths={currentPaths} />}></Route>
+        <Route path={'new'} element={<NewEcoverse paths={currentPaths} />}></Route>
+        <Route
+          path={`:${nameOfUrl.ecoverseNameId}/*`}
+          element={
+            <EcoverseProvider>
+              <EcoverseRoute paths={currentPaths} />
+            </EcoverseProvider>
+          }
+        ></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={`${path}/new`}>
-        <NewEcoverse paths={currentPaths} />
-      </Route>
-      <Route path={`${path}/:${nameOfUrl.ecoverseNameId}`}>
-        <EcoverseProvider>
-          <EcoverseRoute paths={currentPaths} />
-        </EcoverseProvider>
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    </Routes>
   );
 };

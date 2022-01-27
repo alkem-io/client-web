@@ -1,22 +1,21 @@
+import { Grid } from '@mui/material';
 import { Form, Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router-dom';
+import {} from 'react-router-dom';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
+import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../models/graphql-schema';
 import { GroupFormGenerated } from '../../../models/Group';
 import { Tagset as TagsetModel } from '../../../models/Profile';
-import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../models/graphql-schema';
+import FormikInputField from '../../composite/forms/FormikInputField';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
 import VisualUpload from '../../composite/common/VisualUpload/VisualUpload';
-
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
+import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
-import { Grid } from '@mui/material';
-import FormikInputField from '../../composite/forms/FormikInputField';
 
 interface GroupFormProps {
   title?: string;
@@ -28,7 +27,6 @@ interface GroupFormProps {
 }
 
 export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, onCancel, onDelete }) => {
-  const { url } = useRouteMatch();
   const isReadOnlyMode = false;
   const isEditMode = true;
   const { t } = useTranslation();
@@ -99,7 +97,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
           <Form noValidate onSubmit={handleSubmit}>
             <Section
               avatar={<VisualUpload visual={group?.profile?.avatar2} />}
-              details={<GroupMembersDetails members={members || []} editLink={`${url}/members`} />}
+              details={<GroupMembersDetails members={members || []} editLink={true} />}
             >
               <Header text={title} />
               <Grid container spacing={2}>

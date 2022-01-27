@@ -38,7 +38,7 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
 interface OpportunityProviderProps {}
 
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
-  const { ecoverseNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { ecoverseNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const { data, loading } = useOpportunityInfoQuery({
     variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',

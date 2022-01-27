@@ -11,7 +11,7 @@ import { buildChallengeUrl, buildEcoverseUrl } from '../../utils/urlBuilders';
 import { getVisualAvatar } from '../../utils/visuals.utils';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
-  const { ecoverseNameId, challengeNameId } = useUrlParams();
+  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
 
   const {
     data: challengeData,

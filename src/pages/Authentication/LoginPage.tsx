@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import Button from '../../components/core/Button';
@@ -19,7 +19,7 @@ interface LoginPageProps {
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   const { loginFlow, getLoginFlow, loading } = useKratos();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const currentPaths = useMemo(() => [], []);
@@ -52,7 +52,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
             type={'submit'}
             small
             block
-            onClick={() => history.push(AUTH_REGISTER_PATH)}
+            onClick={() => navigate(AUTH_REGISTER_PATH, { replace: true })}
             text={t('authentication.sign-up')}
           />
         </Grid>

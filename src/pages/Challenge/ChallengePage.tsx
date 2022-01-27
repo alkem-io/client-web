@@ -1,25 +1,25 @@
-import React, { FC } from 'react';
-import { Switch, useRouteMatch } from 'react-router';
 import { TabContext, TabPanel } from '@mui/lab';
-import { useChallenge, useUpdateNavigation } from '../../hooks';
-import { PageProps } from '../common';
-import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
-import ChallengeTabs from '../../routing/challenge/ChallengeTabs';
-import RestrictedRoute, { CredentialForResource } from '../../routing/RestrictedRoute';
-import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
-import ChallengeCommunityPage from '../Community/ChallengeCommunityPage';
-import { ChallengeDashboardView } from '../../views/Challenge/ChallengeDashboardView';
-import { ChallengeContextView } from '../../views/Challenge/ChallengeContextView';
-import { ChallengeOpportunitiesView } from '../../views/Challenge/ChallengeOpportunitiesView';
-import { AuthorizationCredential } from '../../models/graphql-schema';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import ChallengeCanvasManagementView from '../../views/Challenge/ChallengeCanvasManagementView';
+import React, { FC } from 'react';
+import { Routes } from 'react-router';
 import { Route } from 'react-router-dom';
+import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import { useChallenge, useUpdateNavigation } from '../../hooks';
+import { AuthorizationCredential } from '../../models/graphql-schema';
+import ChallengeTabs from '../../routing/challenge/ChallengeTabs';
+import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
+import RestrictedRoute, { CredentialForResource } from '../../routing/RestrictedRoute';
+import ChallengeCanvasManagementView from '../../views/Challenge/ChallengeCanvasManagementView';
+import { ChallengeContextView } from '../../views/Challenge/ChallengeContextView';
+import { ChallengeDashboardView } from '../../views/Challenge/ChallengeDashboardView';
+import { ChallengeOpportunitiesView } from '../../views/Challenge/ChallengeOpportunitiesView';
+import { PageProps } from '../common';
+import ChallengeCommunityPage from '../Community/ChallengeCommunityPage';
 
 interface ChallengePageProps extends PageProps {}
 
+/** @deprecated remove */
 export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactElement => {
-  const { path } = useRouteMatch();
   useUpdateNavigation({ currentPaths: paths });
   const { challengeId, ecoverseId } = useChallenge();
   const requiredCredentials: CredentialForResource[] = challengeId
@@ -51,16 +51,14 @@ export const ChallengePage: FC<ChallengePageProps> = ({ paths }): React.ReactEle
                     <ChallengeCommunityPage paths={paths} />
                   </TabPanel>
                   <TabPanel value={tabNames['discussions']}>
-                    <Switch>
+                    <Routes>
                       <Route
-                        path={`${path}/community/discussions`}
-                        render={() => (
-                          <RestrictedRoute requiredCredentials={requiredCredentials}>
-                            <DiscussionsRoute paths={paths} />
-                          </RestrictedRoute>
-                        )}
-                      />
-                    </Switch>
+                        path={'community/discussions/*'}
+                        element={<RestrictedRoute requiredCredentials={requiredCredentials}></RestrictedRoute>}
+                      >
+                        <DiscussionsRoute paths={paths} />
+                      </Route>
+                    </Routes>
                   </TabPanel>
                   <TabPanel value={tabNames['canvases']}>
                     {entities.challenge && (

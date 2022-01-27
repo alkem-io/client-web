@@ -100,10 +100,10 @@ export const EditMembers: FC<EditMembersProps> = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredMembers.map(m => {
+                    {filteredMembers.map((m, i) => {
                       const disableExecutor = m.id === executor?.id && !deleteExecutor;
                       return (
-                        <TableRow key={m.email} className={classes.trow}>
+                        <TableRow key={i} className={classes.trow}>
                           <TableCell>
                             <Cell>{m.displayName}</Cell>
                           </TableCell>

@@ -10,23 +10,22 @@ import {
 import { Tabs } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router-dom';
+import { useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import { RouterLink } from '../../components/core/RouterLink';
 import { EcoverseContainerEntities } from '../../containers/ecoverse/EcoversePageContainer';
 import { useConfig, useEcoverse } from '../../hooks';
+import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 
 const routes = {
-  discussions: '/community/discussions',
-  community: '/community',
-  dashboard: '/dashboard',
-  challenges: '/challenges',
-  canvases: '/canvases',
-  settings: '/settings',
-  context: '/context',
-  root: '/',
+  discussions: 'community/discussions',
+  community: 'community',
+  dashboard: 'dashboard',
+  challenges: 'challenges',
+  canvases: 'canvases',
+  settings: 'settings',
+  context: 'context',
 };
 
 export type EcoverseRoutesType = typeof routes;
@@ -45,11 +44,13 @@ const createGetter = function <T>(r: T, url: string) {
 };
 
 const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
-  const { path, url } = useRouteMatch();
+  // TODO use NavigationTabs and refactor the routing similar to the UserSettingsRoute.
+  const { pathname: path } = useResolvedPath('./');
+
   const { t } = useTranslation();
-  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
+  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}/*`));
   const { ecoverseNameId, permissions } = useEcoverse();
-  const urlGetter = useMemo(() => createGetter(routes, url), [url]);
+  const urlGetter = useMemo(() => createGetter(routes, ''), []);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
   const { isFeatureEnabled } = useConfig();
 
@@ -64,7 +65,7 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
   return (
     <>
       <Tabs
-        value={match?.path}
+        value={match?.pathnameBase}
         aria-label="Ecoverse tabs"
         variant="scrollable"
         scrollButtons={'auto'}
@@ -73,14 +74,12 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
         <NavigationTab
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
-          component={RouterLink}
           value={pathGetter('dashboard')}
           to={urlGetter('dashboard')}
         />
         <NavigationTab
           icon={<TocOutlined />}
           label={t('common.context')}
-          component={RouterLink}
           value={pathGetter('context')}
           to={urlGetter('context')}
         />
@@ -88,7 +87,6 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           disabled={!communityReadAccess}
           icon={<GroupOutlined />}
           label={t('common.community')}
-          component={RouterLink}
           value={pathGetter('community')}
           to={urlGetter('community')}
         />
@@ -96,7 +94,6 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           disabled={!challengesReadAccess}
           icon={<ContentPasteOutlined />}
           label={t('common.challenges')}
-          component={RouterLink}
           value={pathGetter('challenges')}
           to={urlGetter('challenges')}
         />
@@ -104,7 +101,6 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
-          component={RouterLink}
           value={pathGetter('discussions')}
           to={urlGetter('discussions')}
         />
@@ -112,7 +108,6 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
-          component={RouterLink}
           value={pathGetter('canvases')}
           to={urlGetter('canvases')}
         />
@@ -120,13 +115,12 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ entities, children }) => {
           <NavigationTab
             icon={<SettingsOutlined />}
             label={t('common.settings')}
-            component={RouterLink}
             value={pathGetter('settings')}
             to={buildAdminEcoverseUrl(ecoverseNameId)}
           />
         )}
       </Tabs>
-      {children({ pathGetter, urlGetter, tabName: match?.path || 'dashboard', tabNames })}
+      {children({ pathGetter, urlGetter, tabName: match?.pathnameBase || 'dashboard', tabNames })}
     </>
   );
 };

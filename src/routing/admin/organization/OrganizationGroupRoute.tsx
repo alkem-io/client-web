@@ -7,7 +7,7 @@ import { GroupRoute } from '../GroupRoute';
 interface GroupRouteProps extends PageProps {}
 
 export const OrganizationGroupRoute: FC<GroupRouteProps> = ({ paths }) => {
-  const { groupId, organizationNameId } = useUrlParams();
+  const { groupId = '', organizationNameId = '' } = useUrlParams();
 
   // TODO: find a place for this one.
   const { data, loading } = useOrganizationGroupQuery({

@@ -1,13 +1,22 @@
 import { styled, Tab, TabProps } from '@mui/material';
-import React from 'react';
+import React, { forwardRef } from 'react';
+import { RouterLink } from '../RouterLink';
 
-const NavigationTab = styled((props: TabProps) => {
-  return <Tab iconPosition="start" {...props} />;
-})(({ theme }) => ({
+interface NagivationTabProps extends TabProps {
+  to: string;
+}
+
+const StyledTab = styled(Tab)(({ theme }) => ({
   '&.Mui-selected': {
     color: theme.palette.text.primary,
     fontWeight: 'bold',
   },
-}));
+})) as typeof Tab;
 
-export default NavigationTab as typeof Tab;
+const NavigationTab = forwardRef<HTMLAnchorElement, NagivationTabProps>(({ to, value, icon, label }, ref) => {
+  return (
+    <StyledTab ref={ref} iconPosition="start" component={RouterLink} to={to} value={value} icon={icon} label={label} />
+  );
+});
+
+export default NavigationTab;

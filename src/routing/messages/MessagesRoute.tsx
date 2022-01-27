@@ -1,19 +1,17 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { Error404, MessagesPage } from '../../pages';
 
 export const MessagesRoute: FC = () => {
-  const { path, url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [{ value: url, name: 'messages', real: true }], []);
 
   return (
-    <Switch>
-      <Route exact path={`${path}`}>
-        <MessagesPage paths={currentPaths} />
+    <Routes>
+      <Route path={'/'}>
+        <Route index element={<MessagesPage paths={currentPaths} />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    </Routes>
   );
 };

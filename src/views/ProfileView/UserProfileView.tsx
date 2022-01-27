@@ -3,7 +3,6 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router-dom';
 import { SettingsButton } from '../../components/composite';
 import ProfileDetail from '../../components/composite/common/ProfileDetail/ProfileDetail';
 import SocialLinks, { isSocialLink } from '../../components/composite/common/SocialLinks/SocialLinks';
@@ -66,7 +65,6 @@ const useStyles = makeStyles(theme =>
 );
 
 export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMetadata }, options }) => {
-  const { url } = useRouteMatch();
   const { t } = useTranslation();
   const { user, keywords, skills } = userMetadata;
   const styles = useStyles();
@@ -118,7 +116,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
           isCurrentUser && (
             <SettingsButton
               color={'primary'}
-              to={`${url}/settings/profile`}
+              to={'settings/profile'}
               tooltip={t('pages.user-profile.tooltips.settings')}
             />
           )

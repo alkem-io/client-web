@@ -33,3 +33,5 @@ export * from './useQueryParams';
 export * from './useSentry';
 export * from './useGlobalState';
 export * from './useAvailableMembers';
+
+export * from './routing/useRouteMatch';

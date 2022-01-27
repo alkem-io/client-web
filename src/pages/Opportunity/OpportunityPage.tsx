@@ -1,9 +1,12 @@
 import { TabContext, TabPanel } from '@mui/lab';
 import React, { FC } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { OpportunityPageContainer } from '../../containers';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import { useUpdateNavigation } from '../../hooks';
+import DiscussionsRoute from '../../routing/discussions/DiscussionsRoute';
 import OpportunityTabs from '../../routing/opportunity/OpportunityTabs';
+import RestrictedRoute from '../../routing/RestrictedRoute';
 import OpportunityCanvasView from '../../views/Opportunity/OpportunityCanvasManagementView';
 import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
 import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboardView';
@@ -105,14 +108,19 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                   <TabPanel value={tabNames['community']}>
                     <OpportunityCommunityPage paths={paths} />
                   </TabPanel>
-                  {/* <TabPanel value={tabNames['discussions']}>
-                    <Switch>
-                      <RestrictedRoute path={`${path}/community/discussions`}>
-                        <DiscussionsRoute paths={paths} />
-                      </RestrictedRoute>
-                    </Switch>
+                  <TabPanel value={tabNames['discussions']}>
+                    <Routes>
+                      <Route
+                        path={'community/discussions/*'}
+                        element={
+                          <RestrictedRoute>
+                            <DiscussionsRoute paths={paths} />
+                          </RestrictedRoute>
+                        }
+                      />
+                    </Routes>
                   </TabPanel>
-                  */}
+
                   <TabPanel value={tabNames['canvases']}>
                     <OpportunityCanvasView
                       entities={entities}

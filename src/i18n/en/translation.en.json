@@ -608,7 +608,7 @@
           "header": "Alkemio and You",
           "innovation-facilitator": "Are you driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
           "suggestions": "Do you have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!",
-          "contributor": "Do you want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io'>open source</a>. Backed by a <a href='https://alkem.io'>non-profit foundation</a>."
+          "contributor": "Do you want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Backed by a <a href='https://alkem.io' target='_blank'>non-profit foundation</a>."
         },
         "getting-started": {
           "header": "Getting Started",

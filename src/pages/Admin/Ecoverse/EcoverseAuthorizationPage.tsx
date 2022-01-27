@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router';
+
 import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
 import { Loading } from '../../../components/core';
 import { useApolloErrorHandler, useEcoverse, useUpdateNavigation, useUrlParams } from '../../../hooks';
@@ -12,12 +12,14 @@ import {
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
-import { UserDisplayNameFragment } from '../../../models/graphql-schema';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
+import { useResolvedPath } from 'react-router-dom';
 
 const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
-  const { url } = useRouteMatch();
-  const { role: credential } = useUrlParams();
+  const { pathname: url } = useResolvedPath('.');
+  // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
+  const { role: credential = AuthorizationCredential.EcoverseMember } = useUrlParams();
   const currentPaths = useMemo(
     () => [
       ...paths,
