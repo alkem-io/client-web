@@ -25,7 +25,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
             <>
               <AvatarContainer title={''}>
                 {avatars.map((u, i) => (
-                  <Avatar key={i} src={u.profile?.avatar} userId={u.id} name={u.displayName} />
+                  <Avatar key={i} src={u.profile?.avatar?.uri} userId={u.id} name={u.displayName} />
                 ))}
               </AvatarContainer>
               <div style={{ flexBasis: '100%' }} />

@@ -14,6 +14,13 @@ export const AdminEcoverseFragmentDoc = gql`
     }
   }
 `;
+export const VisualUriFragmentDoc = gql`
+  fragment VisualUri on Visual {
+    id
+    uri
+    name
+  }
+`;
 export const ApplicationInfoFragmentDoc = gql`
   fragment ApplicationInfo on Application {
     id
@@ -30,7 +37,9 @@ export const ApplicationInfoFragmentDoc = gql`
       email
       profile {
         id
-        avatar
+        avatar {
+          ...VisualUri
+        }
       }
     }
     questions {
@@ -39,6 +48,7 @@ export const ApplicationInfoFragmentDoc = gql`
       value
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const OrganizationCardFragmentDoc = gql`
   fragment OrganizationCard on Organization {
@@ -52,7 +62,9 @@ export const OrganizationCardFragmentDoc = gql`
     }
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       description
     }
     verification {
@@ -60,6 +72,7 @@ export const OrganizationCardFragmentDoc = gql`
       status
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const UserCardFragmentDoc = gql`
   fragment UserCard on User {
@@ -78,7 +91,9 @@ export const UserCardFragmentDoc = gql`
     }
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       tagsets {
         id
         name
@@ -86,13 +101,7 @@ export const UserCardFragmentDoc = gql`
       }
     }
   }
-`;
-export const VisualUriFragmentDoc = gql`
-  fragment VisualUri on Visual2 {
-    id
-    uri
-    name
-  }
+  ${VisualUriFragmentDoc}
 `;
 export const ChallengeCardFragmentDoc = gql`
   fragment ChallengeCard on Challenge {
@@ -223,7 +232,9 @@ export const CommunityPageMembersFragmentDoc = gql`
     }
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       description
       tagsets {
         id
@@ -231,6 +242,7 @@ export const CommunityPageMembersFragmentDoc = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const ConfigurationFragmentDoc = gql`
   fragment Configuration on Config {
@@ -323,7 +335,7 @@ export const GroupDetailsFragmentDoc = gql`
   }
 `;
 export const VisualFullFragmentDoc = gql`
-  fragment VisualFull on Visual2 {
+  fragment VisualFull on Visual {
     id
     uri
     name
@@ -341,7 +353,7 @@ export const GroupInfoFragmentDoc = gql`
     name
     profile {
       id
-      avatar2 {
+      avatar {
         ...VisualFull
       }
       description
@@ -498,7 +510,9 @@ export const OrganizationInfoFragmentDoc = gql`
     website
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       description
       tagsets {
         id
@@ -527,7 +541,9 @@ export const OrganizationInfoFragmentDoc = gql`
       }
       profile {
         id
-        avatar
+        avatar {
+          ...VisualUri
+        }
         tagsets {
           id
           tags
@@ -535,6 +551,7 @@ export const OrganizationInfoFragmentDoc = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
@@ -551,7 +568,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     }
     profile {
       id
-      avatar2 {
+      avatar {
         ...VisualFull
       }
       description
@@ -636,7 +653,9 @@ export const OrganizationSearchResultFragmentDoc = gql`
     displayName
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       tagsets {
         id
         name
@@ -644,6 +663,7 @@ export const OrganizationSearchResultFragmentDoc = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const UserSearchResultFragmentDoc = gql`
   fragment UserSearchResult on UserGroup {
@@ -686,7 +706,7 @@ export const UserDetailsFragmentDoc = gql`
     profile {
       id
       description
-      avatar2 {
+      avatar {
         ...VisualFull
       }
       references {
@@ -764,7 +784,9 @@ export const OrganizationDetailsFragmentDoc = gql`
     nameID
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       description
       tagsets {
         id
@@ -772,6 +794,7 @@ export const OrganizationDetailsFragmentDoc = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const ChallengeProfileFragmentDoc = gql`
   fragment ChallengeProfile on Challenge {
@@ -866,7 +889,9 @@ export const OrganizationContributorFragmentDoc = gql`
     }
     orgProfile: profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       description
     }
     verification {
@@ -874,6 +899,7 @@ export const OrganizationContributorFragmentDoc = gql`
       status
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const UserContributorFragmentDoc = gql`
   fragment UserContributor on User {
@@ -892,7 +918,9 @@ export const UserContributorFragmentDoc = gql`
     }
     userProfile: profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       tagsets {
         id
         name
@@ -900,6 +928,7 @@ export const UserContributorFragmentDoc = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
@@ -957,10 +986,8 @@ export const ChallengeExplorerSearchResultFragmentDoc = gql`
     }
     context {
       id
-      visual {
-        id
-        background
-        banner
+      visuals {
+        ...VisualUri
       }
     }
     tagset {
@@ -969,6 +996,7 @@ export const ChallengeExplorerSearchResultFragmentDoc = gql`
       tags
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const SimpleEcoverseFragmentDoc = gql`
   fragment SimpleEcoverse on Ecoverse {
@@ -1130,9 +1158,8 @@ export const OpportunityPageFragmentDoc = gql`
         explanation
         framing
       }
-      visual {
-        id
-        banner
+      visuals {
+        ...VisualUri
       }
       ecosystemModel {
         id
@@ -1167,6 +1194,7 @@ export const OpportunityPageFragmentDoc = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {
@@ -1176,7 +1204,9 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
     profile {
       id
       description
-      avatar
+      avatar {
+        ...VisualUri
+      }
     }
     verification {
       id
@@ -1188,6 +1218,7 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
       value
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const UpdateUserPreferencesDocument = gql`
   mutation updateUserPreferences($input: UpdateUserPreferenceInput!) {
@@ -3757,7 +3788,9 @@ export const UpdateGroupDocument = gql`
       name
       profile {
         id
-        avatar
+        avatar {
+          ...VisualUri
+        }
         description
         references {
           uri
@@ -3771,6 +3804,7 @@ export const UpdateGroupDocument = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export type UpdateGroupMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateGroupMutation,
@@ -8132,9 +8166,8 @@ export const OrganizationDetailsDocument = gql`
       nameID
       profile {
         id
-        avatar2 {
-          id
-          uri
+        avatar {
+          ...VisualUri
         }
         description
         references {
@@ -8157,6 +8190,7 @@ export const OrganizationDetailsDocument = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -8390,14 +8424,13 @@ export const OrganizationsListDocument = gql`
       displayName
       profile {
         id
-        avatar2 {
-          id
-          uri
-          name
+        avatar {
+          ...VisualUri
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -9172,9 +9205,8 @@ export const UserAvatarsDocument = gql`
       country
       profile {
         id
-        avatar2 {
-          id
-          uri
+        avatar {
+          ...VisualUri
         }
         tagsets {
           id
@@ -9184,6 +9216,7 @@ export const UserAvatarsDocument = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -9394,13 +9427,13 @@ export const UsersWithCredentialsDocument = gql`
       email
       profile {
         id
-        avatar2 {
-          id
-          uri
+        avatar {
+          ...VisualUri
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -9530,15 +9563,13 @@ export const EcoverseContributionDetailsDocument = gql`
       }
       context {
         id
-        visual {
-          id
-          avatar
-          background
-          banner
+        visuals {
+          ...VisualUri
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -9608,16 +9639,14 @@ export const ChallengeContributionDetailsDocument = gql`
         }
         context {
           id
-          visual {
-            id
-            avatar
-            background
-            banner
+          visuals {
+            ...VisualUri
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -9692,16 +9721,14 @@ export const OpportunityContributionDetailsDocument = gql`
         }
         context {
           id
-          visual {
-            id
-            avatar
-            background
-            banner
+          visuals {
+            ...VisualUri
           }
         }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -11350,10 +11377,13 @@ export const AuthorDetailsDocument = gql`
       lastName
       profile {
         id
-        avatar
+        avatar {
+          ...VisualUri
+        }
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**
@@ -12109,7 +12139,9 @@ export const UserCardsContainerDocument = gql`
       country
       profile {
         id
-        avatar
+        avatar {
+          ...VisualUri
+        }
         tagsets {
           id
           name
@@ -12126,6 +12158,7 @@ export const UserCardsContainerDocument = gql`
       }
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 
 /**

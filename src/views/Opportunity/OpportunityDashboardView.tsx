@@ -15,6 +15,7 @@ import { useOpportunity } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityPageFragment, Reference, User } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -81,8 +82,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { communityReadAccess } = options;
 
   const { id, context, displayName } = opportunity;
-  const { visual, tagline = '', vision = '' } = context ?? {};
-  const banner = visual?.banner;
+  const { visuals, tagline = '', vision = '' } = context ?? {};
+  const banner = getVisualBanner(visuals);
 
   const { loading } = state;
   return (

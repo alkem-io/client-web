@@ -1,8 +1,8 @@
-import { Context, Visual2 } from '../models/graphql-schema';
+import { Context, Visual } from '../models/graphql-schema';
 import { VisualName } from '../models/constants/visuals.constants';
 
-type VisualNameAndUri = Pick<Visual2, 'name' | 'uri'>;
-type ContextWithVisualNameAndUri = { visuals: Pick<Visual2, 'name' | 'uri'>[] };
+type VisualNameAndUri = Pick<Visual, 'name' | 'uri'>;
+type ContextWithVisualNameAndUri = { visuals: Pick<Visual, 'name' | 'uri'>[] };
 
 export function getVisualAvatar(ctx?: ContextWithVisualNameAndUri): string | undefined;
 export function getVisualAvatar(vis?: VisualNameAndUri[]): string | undefined;
@@ -33,14 +33,14 @@ const getVisualByType = (type: VisualName, ctxOrVis?: unknown): string | undefin
   if (isContext(ctxOrVis)) {
     return (ctxOrVis as Context).visuals?.find(x => x.name === type)?.uri;
   } else if (isVisualArray(ctxOrVis)) {
-    return (ctxOrVis as Visual2[]).find(x => x.name === type)?.uri;
+    return (ctxOrVis as Visual[]).find(x => x.name === type)?.uri;
   } else if (isVisual(ctxOrVis)) {
-    return (ctxOrVis as Visual2).name === type ? (ctxOrVis as Visual2)?.uri : undefined;
+    return (ctxOrVis as Visual).name === type ? (ctxOrVis as Visual)?.uri : undefined;
   } else {
     return undefined;
   }
 };
 
 const isContext = (ctx: unknown): ctx is Context => !!(ctx as Context)?.visuals;
-const isVisualArray = (vis: unknown): vis is Visual2[] => Array.isArray(vis) && !!(vis as Visual2[])?.[0]?.name;
-const isVisual = (vis: unknown): vis is Visual2 => !!(vis as Visual2)?.name;
+const isVisualArray = (vis: unknown): vis is Visual[] => Array.isArray(vis) && !!(vis as Visual[])?.[0]?.name;
+const isVisual = (vis: unknown): vis is Visual => !!(vis as Visual)?.name;

@@ -10,11 +10,8 @@ query ecoverseContributionDetails($ecoverseId: UUID_NAMEID!) {
     }
     context {
       id
-      visual {
-        id
-        avatar
-        background
-        banner
+      visuals {
+        ...VisualUri
       }
     }
   }
@@ -35,11 +32,8 @@ query challengeContributionDetails($ecoverseId: UUID_NAMEID!, $challengeId: UUID
       }
       context {
         id
-        visual {
-          id
-          avatar
-          background
-          banner
+        visuals {
+          ...VisualUri
         }
       }
     }
@@ -63,11 +57,8 @@ query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: 
       }
       context {
         id
-        visual {
-          id
-          avatar
-          background
-          banner
+        visuals {
+          ...VisualUri
         }
       }
     }

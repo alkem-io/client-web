@@ -55,7 +55,6 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
 
   const initialValues: GroupFormGenerated = {
     name: groupName || '',
-    avatar: group.profile?.avatar || '',
     tagsets: tagsets,
     references: group.profile?.references || [],
     description: group.profile?.description || '',
@@ -71,7 +70,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
   });
 
   const handleSubmit = async (formData: GroupFormGenerated) => {
-    const { tagsets, avatar, references, description, profileId, ...otherData } = formData;
+    const { tagsets, references, description, profileId, ...otherData } = formData;
     const group: UserGroup = {
       ...otherData,
       id: groupId,
@@ -96,7 +95,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Section
-              avatar={<VisualUpload visual={group?.profile?.avatar2} />}
+              avatar={<VisualUpload visual={group?.profile?.avatar} />}
               details={<GroupMembersDetails members={members || []} editLink={true} />}
             >
               <Header text={title} />

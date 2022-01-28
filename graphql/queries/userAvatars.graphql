@@ -7,9 +7,8 @@ query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
     country
     profile {
       id
-      avatar2 {
-        id
-        uri
+      avatar {
+        ...VisualUri
       }
       tagsets {
         id

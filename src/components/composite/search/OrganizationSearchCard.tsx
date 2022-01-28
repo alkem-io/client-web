@@ -57,7 +57,7 @@ const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganizationSearchRe
   const tagProps = { text: 'Organization' };
 
   const displayName = organization?.displayName || '';
-  const avatar = organization?.profile?.avatar || '';
+  const avatar = organization?.profile?.avatar?.uri || '';
 
   const tags = (organization?.profile?.tagsets || []).flatMap(x => x.tags);
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);

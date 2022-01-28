@@ -4,7 +4,9 @@ fragment OrganizationDetails on Organization {
   nameID
   profile {
     id
-    avatar
+    avatar {
+      ...VisualUri
+    }
     description
     tagsets {
       id

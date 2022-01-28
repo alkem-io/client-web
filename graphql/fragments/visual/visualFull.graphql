@@ -1,4 +1,4 @@
-fragment VisualFull on Visual2 {
+fragment VisualFull on Visual {
   id
   uri
   name

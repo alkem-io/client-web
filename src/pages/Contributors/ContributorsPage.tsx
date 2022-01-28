@@ -44,7 +44,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
             const roleName = roleTranslationKey ? t(roleTranslationKey) : undefined;
             return {
               name: x.displayName,
-              avatar: x.orgProfile.avatar,
+              avatar: x.orgProfile.avatar?.uri,
               information: x.orgProfile.description,
               role: roleName as string,
               members: getActivityCount(x.activity ?? [], 'members') ?? 0,
@@ -72,7 +72,7 @@ export default ContributorsPage;
 
 const toUserCardViewmodel = (users: UserContributorFragment[], loading: boolean): UserCardProps[] => {
   return users.map(x => ({
-    avatarSrc: x.userProfile?.avatar ?? '',
+    avatarSrc: x.userProfile?.avatar?.uri ?? '',
     displayName: x.displayName,
     tags: (x.userProfile?.tagsets || []).flatMap(y => y.tags),
     url: buildUserProfileUrl(x.nameID),

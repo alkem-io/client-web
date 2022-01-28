@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
+import { Context, Reference, Tagset } from '../../models/graphql-schema';
 import Typography from '../core/Typography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
@@ -38,7 +38,8 @@ export interface EcoverseEditFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
-  visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
+  // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
+  // visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
   anonymousReadAccess: boolean;
   tagsets: Tagset[];
 }
@@ -81,11 +82,12 @@ const EcoverseEditForm: FC<Props> = ({
     references: context?.references || [],
     tagsets: tagsets,
     host: hostID || '',
-    visual: {
+    // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
+    /*visual: {
       avatar: context?.visual?.avatar || '',
       background: context?.visual?.background || '',
       banner: context?.visual?.banner || '',
-    },
+    },*/
     anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
   };
 

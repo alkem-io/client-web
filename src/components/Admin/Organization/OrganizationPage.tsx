@@ -92,7 +92,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         legalEntityName: legalEntityName,
         website: website,
         profileData: {
-          avatar: profile.avatar,
           description: profile.description || '',
           referencesData: [...(profile.references as Reference[])],
           tagsetsData: [...(profile.tagsets as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
@@ -133,7 +132,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         website: website,
         profileData: {
           ID: profileId || '',
-          avatar: profile.avatar,
           description: profile.description || '',
           references: references.map(x => ({
             ID: x.id,

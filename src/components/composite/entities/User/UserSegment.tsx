@@ -49,7 +49,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
       <User
         name={user.displayName}
         title={role}
-        src={user.profile?.avatar}
+        src={user.profile?.avatar?.uri}
         ref={popoverAnchor as any}
         onClick={() => setDropdownOpen(true)}
       />
@@ -69,7 +69,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
         <Root>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
             <Box display="flex" flexDirection="column" alignItems="center" className={classes.userHeader}>
-              <Avatar size={'lg'} src={user.profile?.avatar} />
+              <Avatar size={'lg'} src={user.profile?.avatar?.uri} />
               <Box textAlign={'center'}>
                 <Typography variant="h3">{user.displayName}</Typography>
               </Box>

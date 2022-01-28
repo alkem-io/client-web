@@ -23,6 +23,7 @@ import { SectionSpacer } from '../../components/core/Section/Section';
 import { Context, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { replaceAll } from '../../utils/replaceAll';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface OpportunityContextViewEntities {
   opportunity: OpportunityPageFragment;
@@ -79,7 +80,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
   } = context || ({} as Context);
   const contextId = context?.id ?? '';
   const ecosystemModelId = context?.ecosystemModel?.id ?? '';
-  const banner = context?.visual?.banner;
+  const banner = getVisualBanner(context?.visuals);
   const lifecycle = opportunity?.lifecycle;
   const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 

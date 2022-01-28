@@ -67,7 +67,7 @@ export const OrganizationForm: FC<Props> = ({
     legalEntityName,
     website,
     verification: { status: verificationStatus },
-    profile: { id: profileId, description, references, avatar2 },
+    profile: { id: profileId, description, references, avatar },
   } = currentOrganization as Organization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
@@ -170,7 +170,7 @@ export const OrganizationForm: FC<Props> = ({
           {({ values: { references, tagsets }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Section avatar={<VisualUpload visual={avatar2} />}>
+                <Section avatar={<VisualUpload visual={avatar} />}>
                   <Header text={title} />
                   <Grid container spacing={2}>
                     <NameSegment disabled={isEditMode} required={!isEditMode} />

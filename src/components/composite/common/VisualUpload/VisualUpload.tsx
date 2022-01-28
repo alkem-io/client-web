@@ -5,13 +5,13 @@ import { Avatar, Box, Skeleton } from '@mui/material';
 import { useApolloErrorHandler, useNotification } from '../../../../hooks';
 import { useUploadVisualMutation } from '../../../../hooks/generated/graphql';
 import UploadButton from '../../../core/UploadButton';
+import { Visual } from '../../../../models/graphql-schema';
 import { CropDialog } from './CropDialog';
-import { Visual2 } from '../../../../models/graphql-schema';
 
 const AVATAR_SIZE = 150;
 
 interface VisualUploadProps {
-  visual?: Visual2;
+  visual?: Visual;
 }
 
 const VisualUpload: FC<VisualUploadProps> = ({ visual }) => {

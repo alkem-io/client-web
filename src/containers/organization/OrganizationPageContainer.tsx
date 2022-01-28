@@ -99,7 +99,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       usersWithRoles.map<ContributorCardProps>(x => ({
         displayName: x.displayName,
         roleName: x.roleName,
-        avatar: x.profile?.avatar || '',
+        avatar: x.profile?.avatar?.uri || '',
         tooltip: {
           city: x.city,
           country: COUNTRIES_BY_CODE[x.country],

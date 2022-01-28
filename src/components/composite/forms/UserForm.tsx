@@ -7,7 +7,7 @@ import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { COUNTRIES } from '../../../models/constants';
 import { EditMode } from '../../../models/editMode';
 import { SocialNetworkEnum } from '../../../models/enums/SocialNetworks';
-import { TagsetTemplate, Visual2 } from '../../../models/graphql-schema';
+import { TagsetTemplate, Visual } from '../../../models/graphql-schema';
 import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../../../models/User';
 import { logger } from '../../../services/logging/winston/logger';
@@ -36,7 +36,7 @@ const referenceSegmentWithSocialSchema = yup.array().of(
 
 interface UserProps {
   user?: UserModel;
-  avatar?: Visual2;
+  avatar?: Visual;
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;

@@ -15,7 +15,9 @@ fragment CommunityPageMembers on User {
   }
   profile {
     id
-    avatar
+    avatar {
+      ...VisualUri
+    }
     description
     tagsets {
       id

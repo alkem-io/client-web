@@ -61,7 +61,7 @@ export const OrganizationBanners: FC<Props> = ({ organizations }) => {
             <Tooltip placement="bottom" id={`challenge-${org.id}-tooltip`} title={org.displayName} key={index}>
               <div className={styles.imgContainer}>
                 <Link component={RouterLink} to={buildOrganizationUrl(org.nameID)}>
-                  <Image src={org.profile?.avatar} alt={org.displayName} className={styles.img} />
+                  <Image src={org.profile?.avatar?.uri} alt={org.displayName} className={styles.img} />
                 </Link>
               </div>
             </Tooltip>
