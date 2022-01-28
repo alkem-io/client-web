@@ -642,7 +642,6 @@ export type CreateOrganizationInput = {
 };
 
 export type CreateProfileInput = {
-  avatar?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   referencesData?: InputMaybe<Array<CreateReferenceInput>>;
   tagsetsData?: InputMaybe<Array<CreateTagsetInput>>;
@@ -2222,7 +2221,6 @@ export type UpdateOrganizationInput = {
 
 export type UpdateProfileInput = {
   ID: Scalars['UUID'];
-  avatar?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   tagsets?: InputMaybe<Array<UpdateTagsetInput>>;
