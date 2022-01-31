@@ -8,20 +8,29 @@ import UploadButton from '../../../core/UploadButton';
 import { Visual } from '../../../../models/graphql-schema';
 import { CropDialog } from './CropDialog';
 
-const AVATAR_SIZE = 150;
+const DEFAULT_SIZE = 150;
 
 interface VisualUploadProps {
   visual?: Visual;
+  height?: number;
+  width?: number;
 }
 
-const VisualUpload: FC<VisualUploadProps> = ({ visual }) => {
+/**
+ * if height or width are not specified, default size would be used instead
+ * @param visual
+ * @param height
+ * @param width
+ * @constructor
+ */
+const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, width = DEFAULT_SIZE }) => {
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
 
   const [uploadAvatar, { loading }] = useUploadVisualMutation({
     onError: handleError,
-    onCompleted: () => notify(t('components.editable-avatar.success'), 'success'),
+    onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
   const [dialogOpened, setDialogOpened] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -42,19 +51,31 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual }) => {
     [visual]
   );
 
+  if (!visual) {
+    return null;
+  }
+
+  const { maxWidth, maxHeight, allowedTypes, aspectRatio } = visual;
+
+  if (!maxWidth || !maxHeight || !allowedTypes || !aspectRatio) {
+    throw new Error(
+      "'maxWidth', 'maxHeight', 'allowedTypes', 'aspectRatio' fields are required for the component to operate!"
+    );
+  }
+
   return (
-    <Box display="flex" flexDirection="column" justifyContent="center">
+    <Box>
       <Box marginBottom={2}>
         {loading ? (
           <Skeleton variant="rectangular">
-            <Avatar sx={{ width: AVATAR_SIZE, height: AVATAR_SIZE }} />
+            <Avatar sx={{ width, height }} />
           </Skeleton>
         ) : (
-          <Avatar sx={{ width: AVATAR_SIZE, height: AVATAR_SIZE }} src={visual?.uri} />
+          <img src={visual?.uri} width={width} height={height} />
         )}
       </Box>
       {visual && (
-        <Box display="flex" justifyContent="center" width="100%">
+        <Box>
           <UploadButton
             disabled={loading}
             accept={visual.allowedTypes.join(',')}
@@ -65,7 +86,6 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual }) => {
                 setDialogOpened(true);
               }
             }}
-            small
             text={t('buttons.edit')}
           />
         </Box>

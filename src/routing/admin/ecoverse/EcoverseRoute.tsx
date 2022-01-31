@@ -10,6 +10,7 @@ import { buildEcoverseUrl } from '../../../utils/urlBuilders';
 import { ChallengesRoute } from '../challenge/ChallengesRoute';
 import { CommunityRoute } from '../community';
 import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
+import EcoverseVisualsPage from '../../../pages/Admin/Ecoverse/EcoverseVisualsPage';
 
 interface EcoverseAdminRouteProps extends PageProps {}
 
@@ -39,6 +40,7 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
           }
         />
         <Route path={'edit'} element={<EditEcoverse paths={currentPaths} />} />
+        <Route path={'visuals'} element={<EcoverseVisualsPage paths={currentPaths} />} />
         <Route
           path={'community/*'}
           element={

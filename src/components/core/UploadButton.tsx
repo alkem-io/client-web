@@ -1,12 +1,16 @@
 import React, { ChangeEvent, ChangeEventHandler, FC, useCallback, useRef } from 'react';
-import Button, { ButtonProps } from './Button';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 
-interface UploadButtonProps extends Omit<ButtonProps, 'onClick'> {
+interface UploadButtonProps {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   accept?: string;
+  icon?: React.ReactElement;
+  text?: string;
+  disabled?: boolean;
 }
 
-export const UploadButton: FC<UploadButtonProps> = ({ onChange, ...props }) => {
+export const UploadButton: FC<UploadButtonProps> = ({ onChange, accept, icon, text, disabled }) => {
   const ref = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
@@ -25,10 +29,20 @@ export const UploadButton: FC<UploadButtonProps> = ({ onChange, ...props }) => {
     [onChange]
   );
 
+  const button = icon ? (
+    <IconButton color="primary" aria-label="upload image" onClick={handleButtonClick} disabled={disabled}>
+      {icon}
+    </IconButton>
+  ) : (
+    <Button aria-label="upload image" onClick={handleButtonClick} disabled={disabled}>
+      {text}
+    </Button>
+  );
+
   return (
     <>
-      <Button onClick={handleButtonClick} {...props} />
-      <input ref={ref} accept={props.accept} type="file" style={{ display: 'none' }} onChange={handleChange} />
+      {button}
+      <input ref={ref} type="file" accept={accept} style={{ display: 'none' }} onChange={handleChange} />
     </>
   );
 };

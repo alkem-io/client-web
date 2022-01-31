@@ -8,34 +8,41 @@ export function getVisualAvatar(ctx?: ContextWithVisualNameAndUri): string | und
 export function getVisualAvatar(vis?: VisualNameAndUri[]): string | undefined;
 export function getVisualAvatar(vis?: VisualNameAndUri): string | undefined;
 export function getVisualAvatar(ctxOrVis?: unknown): string | undefined {
-  return getVisualByType(VisualName.AVATAR, ctxOrVis);
+  return _getVisualByType(VisualName.AVATAR, ctxOrVis)?.uri;
 }
 
 export function getVisualBanner(ctx?: ContextWithVisualNameAndUri): string | undefined;
 export function getVisualBanner(vis?: VisualNameAndUri[]): string | undefined;
 export function getVisualBanner(vis?: VisualNameAndUri): string | undefined;
 export function getVisualBanner(a?: unknown): string | undefined {
-  return getVisualByType(VisualName.BANNER, a);
+  return _getVisualByType(VisualName.BANNER, a)?.uri;
 }
 
 export function getVisualBannerNarrow(ctx?: ContextWithVisualNameAndUri): string | undefined;
 export function getVisualBannerNarrow(vis?: VisualNameAndUri[]): string | undefined;
 export function getVisualBannerNarrow(vis?: VisualNameAndUri): string | undefined;
 export function getVisualBannerNarrow(ctxOrVis?: unknown): string | undefined {
-  return getVisualByType(VisualName.BANNERNARROW, ctxOrVis);
+  return _getVisualByType(VisualName.BANNERNARROW, ctxOrVis)?.uri;
 }
 
-const getVisualByType = (type: VisualName, ctxOrVis?: unknown): string | undefined => {
+export function getVisualByType(type: VisualName, ctx?: ContextWithVisualNameAndUri): Visual | undefined;
+export function getVisualByType(type: VisualName, vis?: VisualNameAndUri[]): Visual | undefined;
+export function getVisualByType(type: VisualName, vis?: VisualNameAndUri): Visual | undefined;
+export function getVisualByType(type: VisualName, ctxOrVis?: unknown): Visual | undefined {
+  return _getVisualByType(type, ctxOrVis);
+}
+
+const _getVisualByType = (type: VisualName, ctxOrVis?: unknown): Visual | undefined => {
   if (!ctxOrVis) {
     return undefined;
   }
 
   if (isContext(ctxOrVis)) {
-    return (ctxOrVis as Context).visuals?.find(x => x.name === type)?.uri;
+    return (ctxOrVis as Context).visuals?.find(x => x.name === type);
   } else if (isVisualArray(ctxOrVis)) {
-    return (ctxOrVis as Visual[]).find(x => x.name === type)?.uri;
+    return (ctxOrVis as Visual[]).find(x => x.name === type);
   } else if (isVisual(ctxOrVis)) {
-    return (ctxOrVis as Visual).name === type ? (ctxOrVis as Visual)?.uri : undefined;
+    return (ctxOrVis as Visual).name === type ? (ctxOrVis as Visual) : undefined;
   } else {
     return undefined;
   }

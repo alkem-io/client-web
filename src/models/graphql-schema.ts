@@ -2595,7 +2595,20 @@ export type ChallengeInfoFragment = {
         id: string;
         tagline?: string | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
       }
     | undefined;
 };
@@ -4599,7 +4612,20 @@ export type ChallengeInfoQuery = {
             id: string;
             tagline?: string | undefined;
             references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-            visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
+              | undefined;
           }
         | undefined;
     };
