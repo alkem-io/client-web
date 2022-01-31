@@ -1,7 +1,5 @@
 export * from './About/About';
-export * from './Challenge/ChallengePage';
 export * from './common';
-export * from './Ecoverse/EcoversePage';
 export * from './Errors/Error404';
 export * from './Errors/ErrorPage';
 export * from './Home/Home';

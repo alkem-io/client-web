@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import DiscussionIcon from '../../components/composite/entities/Communication/DiscussionIcon';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
@@ -7,12 +7,13 @@ import RemoveModal from '../../components/core/RemoveModal';
 import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionContext } from '../../context/Discussions/DiscussionProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { useUserContext } from '../../hooks';
+import { useUpdateNavigation, useUserContext } from '../../hooks';
 import DiscussionView from '../../views/Discussions/DiscussionView';
+import { PageProps } from '../common';
 
-interface DiscussionPageProps {}
+interface DiscussionPageProps extends PageProps {}
 
-export const DiscussionPage: FC<DiscussionPageProps> = () => {
+export const DiscussionPage: FC<DiscussionPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { loading: loadingCommunity } = useCommunityContext();
   const { user } = useUserContext();
@@ -24,6 +25,12 @@ export const DiscussionPage: FC<DiscussionPageProps> = () => {
 
   const { discussion, handlePostComment, handleDeleteComment, loading: loadingDiscussions } = useDiscussionContext();
   const { handleDeleteDiscussion } = useDiscussionsContext();
+
+  const currentPaths = useMemo(
+    () => [...paths, { value: '', name: discussion?.title ?? '', real: false }],
+    [paths, discussion]
+  );
+  useUpdateNavigation({ currentPaths });
 
   if (loadingDiscussions || loadingCommunity) return <Loading />;
 
