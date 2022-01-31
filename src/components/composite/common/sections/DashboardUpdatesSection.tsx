@@ -24,7 +24,11 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
         const messageSenders = latestMessage?.sender ? [{ id: latestMessage?.sender }] : [];
 
         return (
-          <DashboardGenericSection headerText={t('dashboard-updates-section.title', { count: messages.length })}>
+          <DashboardGenericSection
+            headerText={t('dashboard-updates-section.title', { count: messages.length })}
+            navText={t('buttons.see-all')}
+            navLink={'community'}
+          >
             {retrievingUpdateMessages ? (
               <SingleUpdateView loading={retrievingUpdateMessages} />
             ) : !messages.length && !retrievingUpdateMessages ? (

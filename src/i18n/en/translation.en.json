@@ -878,7 +878,9 @@
         "no-data": "No members available"
       },
       "no-user-groups": "There are no user groups",
-      "no-updates": "There are no updates"
+      "updates": {
+        "no-data": "No updates available"
+      }
     },
     "canvas": {
       "header": "Canvases in this {{blockName}}",

@@ -72,7 +72,7 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
       <DashboardGenericSection>
         {!messages.length && !messagesLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Typography>No updates</Typography>
+            <Typography>{t('pages.community.updates.no-data')}</Typography>
           </Box>
         ) : (
           <Box sx={{ height: `${UPDATES_CONTAINER_HEIGHT}px`, overflowY: 'auto' }}>
