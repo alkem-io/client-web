@@ -53,7 +53,7 @@ const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
   const tags = userMetadata?.user?.profile?.tagsets?.flatMap(x => x.tags) || [];
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
-  const avatar = userMetadata?.user.profile?.avatar;
+  const avatar = userMetadata?.user.profile?.avatar?.uri;
 
   if (loading) return <Loading text={''} />;
   return (

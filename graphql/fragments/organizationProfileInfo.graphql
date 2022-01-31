@@ -12,7 +12,9 @@ fragment OrganizationProfileInfo on Organization {
   }
   profile {
     id
-    avatar
+    avatar {
+      ...VisualFull
+    }
     description
     references {
       id

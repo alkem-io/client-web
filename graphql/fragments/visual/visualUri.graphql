@@ -1,0 +1,5 @@
+fragment VisualUri on Visual {
+  id
+  uri
+  name
+}

@@ -5,6 +5,7 @@ import { useUpdateNavigation } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import EcoverseDashboardView2 from '../../views/Ecoverse/EcoverseDashboardView2';
 import { PageProps } from '../common';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface EcoverseDashboardPageProps extends PageProps {}
 
@@ -25,7 +26,7 @@ const EcoverseDashboardPage: FC<EcoverseDashboardPageProps> = ({ paths }) => {
             {cEntities => (
               <EcoverseDashboardView2
                 title={entities?.ecoverse?.displayName}
-                bannerUrl={entities?.ecoverse?.context?.visual?.banner}
+                bannerUrl={getVisualBanner(entities?.ecoverse?.context?.visuals)}
                 tagline={entities?.ecoverse?.context?.tagline}
                 vision={entities?.ecoverse?.context?.vision}
                 ecoverseId={entities?.ecoverse?.id}

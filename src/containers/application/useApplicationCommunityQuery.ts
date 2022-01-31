@@ -8,6 +8,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { buildChallengeUrl, buildEcoverseUrl } from '../../utils/urlBuilders';
+import { getVisualAvatar } from '../../utils/visuals.utils';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
   const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
@@ -58,7 +59,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
       return {
         communityId: ecoverseData?.ecoverse.community?.id || '',
         displayName: ecoverseData?.ecoverse.displayName || '',
-        avatar: ecoverseData?.ecoverse.context?.visual?.avatar || '',
+        avatar: getVisualAvatar(ecoverseData?.ecoverse.context?.visuals),
         tagline: ecoverseData?.ecoverse.context?.tagline || '',
         questions: ecoverseTemplateData?.configuration.template.ecoverses[0].applications?.[0].questions || [],
         backUrl: buildEcoverseUrl(ecoverseNameId),
@@ -68,7 +69,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
       return {
         communityId: challengeData?.ecoverse.challenge.community?.id || '',
         displayName: challengeData?.ecoverse.challenge.displayName || '',
-        avatar: challengeData?.ecoverse.challenge.context?.visual?.avatar || '',
+        avatar: getVisualAvatar(challengeData?.ecoverse.challenge.context?.visuals),
         tagline: challengeData?.ecoverse.challenge.context?.tagline || '',
         questions: challengeTemplateData?.configuration.template.challenges[0].applications?.[0].questions || [],
         backUrl: buildChallengeUrl(ecoverseNameId, challengeNameId),

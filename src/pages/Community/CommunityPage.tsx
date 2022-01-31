@@ -78,7 +78,7 @@ const toOrganizationCardProps = (
   verified: data.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
   information: data.profile.description,
   name: data.displayName,
-  avatar: data.profile.avatar,
+  avatar: data.profile.avatar?.uri,
   members: getActivityCount(data.activity ?? [], 'members') ?? 0,
   role: t(getUserCardRoleNameKey([user], resourceId)[0].roleNameKey),
   url: buildOrganizationUrl(data.nameID),

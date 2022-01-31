@@ -81,7 +81,9 @@ query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
     lastName
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
     }
   }
 }

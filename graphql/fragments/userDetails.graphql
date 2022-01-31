@@ -19,7 +19,9 @@ fragment UserDetails on User {
   profile {
     id
     description
-    avatar
+    avatar {
+      ...VisualFull
+    }
     references {
       id
       name

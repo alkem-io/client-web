@@ -110,7 +110,6 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
         ...rest,
         nameID: createUserNameID(rest.firstName, rest.lastName),
         profileData: {
-          avatar: profile.avatar,
           description: profile.description,
           referencesData: [...profile.references],
           tagsetsData: [...profile.tagsets],

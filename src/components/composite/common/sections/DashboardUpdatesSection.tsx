@@ -37,7 +37,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
                     author={{
                       id: populatedUsers[0]?.id,
                       displayName: populatedUsers[0]?.displayName,
-                      avatarUrl: populatedUsers[0]?.profile?.avatar ?? '',
+                      avatarUrl: populatedUsers[0]?.profile?.avatar?.uri ?? '',
                       firstName: '',
                       lastName: '',
                       url: buildUserProfileUrl(populatedUsers[0]?.nameID),

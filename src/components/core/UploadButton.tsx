@@ -28,7 +28,7 @@ export const UploadButton: FC<UploadButtonProps> = ({ onChange, ...props }) => {
   return (
     <>
       <Button onClick={handleButtonClick} {...props} />
-      <input ref={ref} type="file" style={{ display: 'none' }} onChange={handleChange} />
+      <input ref={ref} accept={props.accept} type="file" style={{ display: 'none' }} onChange={handleChange} />
     </>
   );
 };

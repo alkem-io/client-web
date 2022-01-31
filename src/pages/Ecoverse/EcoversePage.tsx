@@ -15,6 +15,7 @@ import EcoverseDashboardView2 from '../../views/Ecoverse/EcoverseDashboardView2'
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import HubCanvasManagementView from '../../views/Ecoverse/HubCanvasManagementView';
+import { getVisualAvatar } from '../../utils/visuals.utils';
 
 interface EcoversePageProps extends PageProps {}
 
@@ -45,7 +46,7 @@ const EcoversePage: FC<EcoversePageProps> = ({ paths }): React.ReactElement => {
                       {cEntities => (
                         <EcoverseDashboardView2
                           title={entities?.ecoverse?.displayName}
-                          bannerUrl={entities?.ecoverse?.context?.visual?.banner}
+                          bannerUrl={getVisualAvatar(entities?.ecoverse?.context?.visuals)}
                           tagline={entities?.ecoverse?.context?.tagline}
                           vision={entities?.ecoverse?.context?.vision}
                           ecoverseId={entities?.ecoverse?.id}

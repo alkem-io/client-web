@@ -7,6 +7,7 @@ import { useUserContext } from '../../hooks';
 import { useOrganizationsListQuery, useUsersQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+import { getVisualAvatar } from '../../utils/visuals.utils';
 
 const ContributorsSection = () => {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ const ContributorsSection = () => {
   const usersDTO: DashboardContributorsSectionSectionProps['entities']['users'] = useMemo(
     () =>
       users.map(u => ({
-        avatar: u.profile?.avatar || '',
+        avatar: u.profile?.avatar?.uri || '',
         displayName: u.displayName,
         url: buildUserProfileUrl(u.nameID),
         tooltip: {
@@ -37,7 +38,7 @@ const ContributorsSection = () => {
   const organizationsDTO: DashboardContributorsSectionSectionProps['entities']['organizations'] = useMemo(
     () =>
       organizations.map(o => ({
-        avatar: o?.profile?.avatar || '',
+        avatar: getVisualAvatar(o?.profile?.avatar) || '',
         displayName: o.displayName,
         url: buildOrganizationUrl(o.nameID),
       })),
@@ -58,7 +59,7 @@ const ContributorsSection = () => {
         organizations: organizationsDTO,
       }}
       loading={{ users: loading, organizations: loadingOrganizations }}
-    ></DashboardContributorsSection>
+    />
   );
 };
 

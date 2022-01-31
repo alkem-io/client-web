@@ -23,7 +23,6 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
     ID: userID,
     profileData: {
       ID: user.profile.id || '',
-      avatar: profile.avatar,
       description: profile.description,
       references: profile.references.filter(r => r.id).map(t => ({ ID: t.id || '', name: t.name, uri: t.uri })),
       tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: t.id || '', name: t.name, tags: [...t.tags] })),
@@ -99,7 +98,15 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
     }
   };
 
-  return <UserForm title={'Profile'} user={{ ...user } as UserModel} editMode={editMode} onSave={handleSave} />;
+  return (
+    <UserForm
+      title={'Profile'}
+      user={{ ...user } as UserModel}
+      avatar={user?.profile?.avatar}
+      editMode={editMode}
+      onSave={handleSave}
+    />
+  );
 };
 
 export default EditUserProfilePage;

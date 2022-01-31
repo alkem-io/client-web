@@ -41,10 +41,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
   const { id, title, createdAt, author, authors = [], totalComments, category } = discussion;
 
   return (
-    <ListItemButton
-      disableGutters
-      onClick={() => navigate(buildDiscussionUrl(pathname, id)) }
-    >
+    <ListItemButton disableGutters onClick={() => navigate(buildDiscussionUrl(pathname, id))}>
       <ListItemIcon sx={{ justifyContent: 'center' }}>
         <DiscussionIcon color="primary" category={category} fontSize="large" />
       </ListItemIcon>

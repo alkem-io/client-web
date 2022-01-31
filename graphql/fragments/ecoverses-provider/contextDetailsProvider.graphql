@@ -5,7 +5,7 @@ fragment ContextDetailsProvider on Context {
   vision
   impact
   who
-  visual {
-    ...ContextVisual
+  visuals {
+    ...VisualUri
   }
 }

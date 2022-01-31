@@ -1,102 +1,43 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogProps } from '@mui/material';
-import clsx from 'clsx';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, { Crop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import Resizer from 'react-image-file-resizer';
-import { useApolloErrorHandler } from '../../../hooks';
-import { useUploadAvatarMutation } from '../../../hooks/generated/graphql';
-import Avatar, { AvatarProps, useAvatarStyles } from '../../core/Avatar';
-import { Spinner } from '../../core/Spinner';
-import UploadButton from '../../core/UploadButton';
-interface EditableAvatarProps extends AvatarProps {
-  profileId?: string;
+
+interface CropDialogConfig {
+  aspectRatio?: number;
+  maxHeight?: number;
+  minHeight?: number;
+  maxWidth?: number;
+  minWidth?: number;
 }
-
-const EditableAvatar: FC<EditableAvatarProps> = ({ profileId, classes = {}, ...props }) => {
-  const { t } = useTranslation();
-  const avatarStyles = useAvatarStyles(classes);
-  const [uploadAvatar, { loading }] = useUploadAvatarMutation();
-  const [dialogOpened, setDialogOpened] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File>();
-  const handleError = useApolloErrorHandler();
-
-  const handleAvatarChange = useCallback(
-    async (file: File) => {
-      if (profileId) {
-        await uploadAvatar({
-          variables: {
-            file,
-            input: {
-              file: '',
-              profileID: profileId,
-            },
-          },
-        }).catch(handleError);
-      }
-    },
-    [profileId]
-  );
-
-  return (
-    <Box display="flex" flexDirection="column" justifyContent="center">
-      <Box marginY={1}>
-        {loading ? (
-          <div
-            className={clsx(avatarStyles.noAvatar, avatarStyles[props.theme || 'light'], props.size, props.className)}
-          >
-            <Spinner />
-          </div>
-        ) : (
-          <Avatar {...props} />
-        )}
-      </Box>
-      {profileId && (
-        <Box display="flex" justifyContent="center" width="100%">
-          <UploadButton
-            disabled={loading}
-            accept={'image/*'}
-            onChange={e => {
-              const file = e && e.target && e.target.files && e.target.files[0];
-              if (file) {
-                setSelectedFile(file);
-                setDialogOpened(true);
-              } //handleAvatarChange(file);
-            }}
-            small
-            text={t('buttons.edit-photo')}
-          />
-        </Box>
-      )}
-      {dialogOpened && (
-        <CropDialog
-          open={dialogOpened}
-          file={selectedFile}
-          onClose={() => setDialogOpened(false)}
-          onSave={handleAvatarChange}
-        />
-      )}
-    </Box>
-  );
-};
-
-export default EditableAvatar;
 
 interface CropDialogInterface extends DialogProps {
   file?: File;
   onSave?: (imgFile: File) => Promise<void> | void;
+  config: CropDialogConfig;
 }
 
-const ASPECT_RATIO = 1 / 1;
+const ASPECT_RATIO = 1;
 const MAX_WIDTH = 400;
+const MIN_WIDTH = 200;
 const MAX_HEIGHT = 400;
+const MIN_HEIGHT = 200;
 
-const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
-  const [src, setSrc] = useState<string | null>(null);
-  const [crop, setCrop] = useState<Partial<Crop>>({ aspect: ASPECT_RATIO });
-  const imgRef = useRef<HTMLImageElement>();
+export const CropDialog: FC<CropDialogInterface> = ({ file, onSave, config, ...rest }) => {
   const { t } = useTranslation();
+  const imgRef = useRef<HTMLImageElement>();
+
+  const {
+    aspectRatio = ASPECT_RATIO,
+    maxHeight = MAX_HEIGHT,
+    minHeight = MIN_HEIGHT,
+    maxWidth = MAX_WIDTH,
+    minWidth = MIN_WIDTH,
+  } = config;
+  const [src, setSrc] = useState<string | null>(null);
+  const [crop, setCrop] = useState<Partial<Crop>>({ aspect: aspectRatio });
 
   const onCropChange = (crop: Crop, _percentCrop: Crop) => {
     // You could also use percentCrop:
@@ -106,7 +47,7 @@ const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
   const onLoad = useCallback((img: HTMLImageElement) => {
     imgRef.current = img;
 
-    const aspect = ASPECT_RATIO;
+    const aspect = aspectRatio;
     // calculate in ration
     const widthRatio = img.width / aspect < img.height * aspect ? 1 : (img.height * aspect) / img.width;
     const heightRatio = img.width / aspect > img.height * aspect ? 1 : img.width / aspect / img.height;
@@ -176,8 +117,8 @@ const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
             try {
               Resizer.imageFileResizer(
                 blob,
-                MAX_WIDTH,
-                MAX_HEIGHT,
+                maxWidth,
+                maxHeight,
                 'JPEG',
                 100,
                 0,
@@ -185,8 +126,8 @@ const CropDialog: FC<CropDialogInterface> = ({ file, onSave, ...rest }) => {
                   resolve(new File([uri as Blob], fileName, { type: 'image/jpeg' }));
                 },
                 'blob',
-                200,
-                200
+                minWidth,
+                minHeight
               );
             } catch (err) {
               console.error(err);

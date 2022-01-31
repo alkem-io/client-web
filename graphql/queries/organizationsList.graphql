@@ -5,7 +5,9 @@ query organizationsList {
     displayName
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
     }
   }
 }

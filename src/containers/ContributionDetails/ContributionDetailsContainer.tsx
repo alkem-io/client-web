@@ -8,6 +8,7 @@ import {
 import { ContainerProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
 import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionCardV2Details;
@@ -54,7 +55,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         headerText: ecoverseData.ecoverse.displayName,
         type: 'hub',
-        mediaUrl: ecoverseData.ecoverse.context?.visual?.banner,
+        mediaUrl: getVisualBanner(ecoverseData.ecoverse.context?.visuals),
         tags: ecoverseData.ecoverse.tagset?.tags || [],
         url: buildEcoverseUrl(ecoverseData.ecoverse.nameID),
       } as ContributionCardV2Details;
@@ -63,7 +64,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         headerText: challengeData.ecoverse.challenge.displayName,
         type: 'challenge',
-        mediaUrl: challengeData.ecoverse.challenge.context?.visual?.banner,
+        mediaUrl: getVisualBanner(challengeData.ecoverse.challenge.context?.visuals),
         tags: challengeData.ecoverse.challenge.tagset?.tags || [],
         url: buildChallengeUrl(challengeData.ecoverse.nameID, challengeData.ecoverse.challenge.nameID),
       } as ContributionCardV2Details;
@@ -72,7 +73,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
       return {
         headerText: opportunityData.ecoverse.opportunity.displayName,
         type: 'opportunity',
-        mediaUrl: opportunityData.ecoverse.opportunity.context?.visual?.banner,
+        mediaUrl: getVisualBanner(opportunityData.ecoverse.opportunity.context?.visuals),
         tags: opportunityData.ecoverse.opportunity.tagset?.tags || [],
         url: buildOpportunityUrl(
           opportunityData.ecoverse.nameID,

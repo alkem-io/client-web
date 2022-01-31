@@ -1,12 +1,9 @@
 import {
   CreateContextInput,
   CreateReferenceInput,
-  CreateVisualInput,
   Reference,
   UpdateContextInput,
   UpdateReferenceInput,
-  UpdateVisualInput,
-  Visual,
 } from '../models/graphql-schema';
 
 interface ContextObject {
@@ -15,12 +12,11 @@ interface ContextObject {
   references?: Reference[];
   tagline?: string;
   vision?: string;
-  visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
   who?: string;
 }
 
 export const createContextInput = (obj: ContextObject): CreateContextInput => {
-  const { background, impact, tagline, vision, who, references = [], visual } = obj;
+  const { background, impact, tagline, vision, who, references = [] } = obj;
 
   return {
     background: background,
@@ -28,13 +24,12 @@ export const createContextInput = (obj: ContextObject): CreateContextInput => {
     references: references.map(toCreateReferenceInput),
     tagline: tagline,
     vision: vision,
-    visual: visual,
     who: who,
   };
 };
 
 export const updateContextInput = (obj: ContextObject): UpdateContextInput => {
-  const { background, impact, tagline, vision, who, references = [], visual } = obj;
+  const { background, impact, tagline, vision, who, references = [] } = obj;
 
   return {
     background: background,
@@ -42,7 +37,6 @@ export const updateContextInput = (obj: ContextObject): UpdateContextInput => {
     references: references.map(toUpdateReferenceInput),
     tagline: tagline,
     vision: vision,
-    visual: visual,
     who: who,
   };
 };

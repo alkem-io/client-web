@@ -6,7 +6,7 @@ import {
   CanvasContentUpdatedDocument,
   useChallengeCanvasValuesQuery,
   useEcoverseCanvasValuesQuery,
-  useOpportunityCanvasValuesQuery
+  useOpportunityCanvasValuesQuery,
 } from '../../hooks/generated/graphql';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { ContainerProps } from '../../models/container';
@@ -17,7 +17,7 @@ import {
   ChallengeCanvasValuesQuery,
   EcoverseCanvasValuesQuery,
   OpportunityCanvasValuesQuery,
-  SubscriptionCanvasContentUpdatedArgs
+  SubscriptionCanvasContentUpdatedArgs,
 } from '../../models/graphql-schema';
 import { TemplateQuery } from './CanvasProvider';
 

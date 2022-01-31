@@ -7,7 +7,7 @@ import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { COUNTRIES } from '../../../models/constants';
 import { EditMode } from '../../../models/editMode';
 import { SocialNetworkEnum } from '../../../models/enums/SocialNetworks';
-import { TagsetTemplate } from '../../../models/graphql-schema';
+import { TagsetTemplate, Visual } from '../../../models/graphql-schema';
 import { Reference, Tagset } from '../../../models/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../../../models/User';
 import { logger } from '../../../services/logging/winston/logger';
@@ -16,7 +16,7 @@ import { referenceSegmentValidationObject } from '../../Admin/Common/ReferenceSe
 import SocialSegment from '../../Admin/Common/SocialSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import { Loading } from '../../core';
-import EditableAvatar from '../common/EditableAvatar';
+import VisualUpload from '../common/VisualUpload/VisualUpload';
 import CountrySelect from './CountrySelect';
 import { FormikInputField } from './FormikInputField';
 
@@ -36,6 +36,7 @@ const referenceSegmentWithSocialSchema = yup.array().of(
 
 interface UserProps {
   user?: UserModel;
+  avatar?: Visual;
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;
@@ -44,6 +45,7 @@ interface UserProps {
 
 export const UserForm: FC<UserProps> = ({
   user: currentUser = defaultUser,
+  avatar,
   editMode = EditMode.readOnly,
   onSave,
   onDelete,
@@ -75,7 +77,7 @@ export const UserForm: FC<UserProps> = ({
     gender,
     phone,
     country,
-    profile: { id: profileId, description: bio, references, avatar },
+    profile: { id: profileId, description: bio, references },
   } = currentUser;
 
   const tagsets = useMemo(() => {
@@ -118,7 +120,6 @@ export const UserForm: FC<UserProps> = ({
     city: city || '',
     country: COUNTRIES.find(x => x.code === country) || null,
     phone: phone || '',
-    avatar: avatar || '',
     tagsets: tagsets,
     references: references.filter(x => !socialNames.includes(x.name.toLowerCase())) || [],
     bio: bio || '',
@@ -154,7 +155,6 @@ export const UserForm: FC<UserProps> = ({
     async (userData: UserFormGenerated) => {
       const {
         tagsets,
-        avatar,
         references: newReferences,
         bio,
         profileId,
@@ -177,7 +177,6 @@ export const UserForm: FC<UserProps> = ({
         profile: {
           id: profileId,
           description: bio,
-          avatar,
           references: finalReferences,
           tagsets,
         },
@@ -198,7 +197,7 @@ export const UserForm: FC<UserProps> = ({
         handleSubmit(values).finally(() => setSubmitting(false));
       }}
     >
-      {({ values: { references, tagsets, avatar }, handleSubmit, isSubmitting, errors }) => {
+      {({ values: { references, tagsets }, handleSubmit, isSubmitting, errors }) => {
         logger.info(errors);
         return (
           <form noValidate onSubmit={handleSubmit}>
@@ -208,7 +207,7 @@ export const UserForm: FC<UserProps> = ({
                 <Grid container spacing={4}>
                   <Grid item xs={12} md="auto">
                     <Grid item container justifyContent="center">
-                      <EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={currentUser.profile.id} />
+                      <VisualUpload visual={avatar} />
                     </Grid>
                   </Grid>
                   <Grid item xs>

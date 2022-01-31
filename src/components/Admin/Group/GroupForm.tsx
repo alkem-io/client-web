@@ -8,10 +8,10 @@ import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
 import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../models/graphql-schema';
 import { GroupFormGenerated } from '../../../models/Group';
 import { Tagset as TagsetModel } from '../../../models/Profile';
-import EditableAvatar from '../../composite/common/EditableAvatar';
 import FormikInputField from '../../composite/forms/FormikInputField';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
+import VisualUpload from '../../composite/common/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
@@ -55,7 +55,6 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
 
   const initialValues: GroupFormGenerated = {
     name: groupName || '',
-    avatar: group.profile?.avatar || '',
     tagsets: tagsets,
     references: group.profile?.references || [],
     description: group.profile?.description || '',
@@ -71,14 +70,13 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
   });
 
   const handleSubmit = async (formData: GroupFormGenerated) => {
-    const { tagsets, avatar, references, description, profileId, ...otherData } = formData;
+    const { tagsets, references, description, profileId, ...otherData } = formData;
     const group: UserGroup = {
       ...otherData,
       id: groupId,
       profile: {
         id: profileId,
         description,
-        avatar,
         references: references as Reference[],
         tagsets: tagsets as Tagset[],
       },
@@ -93,11 +91,11 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
       enableReinitialize
       onSubmit={(values, { setSubmitting }) => handleSubmit(values).finally(() => setSubmitting(false))}
     >
-      {({ values: { name, references, tagsets, avatar, description }, handleSubmit, isSubmitting }) => {
+      {({ values: { name, references, tagsets, description }, handleSubmit, isSubmitting }) => {
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Section
-              avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={profileId} />}
+              avatar={<VisualUpload visual={group?.profile?.avatar} />}
               details={<GroupMembersDetails members={members || []} editLink={true} />}
             >
               <Header text={title} />

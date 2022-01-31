@@ -1,6 +1,0 @@
-fragment ContextVisual on Visual {
-  id
-  avatar
-  background
-  banner
-}

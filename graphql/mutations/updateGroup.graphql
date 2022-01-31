@@ -4,7 +4,9 @@ mutation updateGroup($input: UpdateUserGroupInput!) {
     name
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
       description
       references {
         uri

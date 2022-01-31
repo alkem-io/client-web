@@ -17,7 +17,9 @@ const AuthenticationBackdrop: FC<BackdropProps> = ({ children, blockName }) => {
       message={t('components.backdrop.authentication', { blockName })}
       children={children}
       show={!isAuthenticated}
-      template={<Button onClick={() => navigate(AUTH_LOGIN_PATH, { replace: true })} text={t('authentication.sign-in')} />}
+      template={
+        <Button onClick={() => navigate(AUTH_LOGIN_PATH, { replace: true })} text={t('authentication.sign-in')} />
+      }
     />
   );
 };

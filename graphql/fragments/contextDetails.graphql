@@ -11,8 +11,8 @@ fragment ContextDetails on Context {
     uri
     description
   }
-  visual {
-    ...ContextVisual
+  visuals {
+    ...VisualFull
   }
   authorization {
     id

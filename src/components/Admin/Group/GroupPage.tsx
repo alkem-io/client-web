@@ -27,7 +27,6 @@ export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInp
 
   return {
     ID: profile.id || '',
-    avatar: profile.avatar,
     description: profile.description,
     references: profile.references?.filter(r => r.id).map(t => ({ ID: t.id, name: t.name, uri: t.uri })),
     tagsets: profile.tagsets?.filter(t => t.id).map(t => ({ ID: t.id, name: t.name, tags: [...t.tags] })),
