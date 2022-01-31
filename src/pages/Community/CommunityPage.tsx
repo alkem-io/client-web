@@ -16,6 +16,8 @@ import { OrganizationCardProps } from '../../components/composite/common/cards/O
 import getActivityCount from '../../utils/get-activity-count';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useResolvedPath } from 'react-router-dom';
+import { CommunityUpdatesContainer } from '../../containers/community-updates/CommunityUpdatesContainer';
+import { AvatarsProvider } from '../../context/AvatarsProvider';
 
 export interface CommunityPageV2Props extends PageProps {
   ecoverseId?: Scalars['UUID_NAMEID'];
@@ -37,34 +39,45 @@ const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityI
   const resourceId = opportunityId ?? challengeId ?? ecoverseId;
 
   return (
-    <CommunityPageContainer
-      ecoverseId={ecoverseId}
-      communityId={communityId}
-      challengeId={challengeId}
-      opportunityId={opportunityId}
-    >
-      {(entities, state) => {
-        const hostOrganization =
-          entities.hostOrganization &&
-          user &&
-          toOrganizationCardProps(entities.hostOrganization, entities.hostOrganization.id, user, t);
-        const leadingOrganizations =
-          user && entities.leadingOrganizations.map(x => toOrganizationCardProps(x, x.id, user, t));
-        const members = toUserCardProps(entities.members, resourceId, t);
-        return (
-          <CommunityPageView
-            title={entities?.communityName}
-            loading={state.loading}
-            showOrganizations={!opportunityId}
-            hostOrganization={hostOrganization}
-            leadingOrganizations={leadingOrganizations}
-            organizationsLoading={state.organizationsLoading}
-            members={members}
-            membersLoading={state.membersLoading}
-          />
-        );
-      }}
-    </CommunityPageContainer>
+    <CommunityUpdatesContainer entities={{ ecoverseId, communityId }}>
+      {({ messages, senders }, actions, loading) => (
+        <CommunityPageContainer
+          ecoverseId={ecoverseId}
+          communityId={communityId}
+          challengeId={challengeId}
+          opportunityId={opportunityId}
+        >
+          {(entities, state) => {
+            const hostOrganization =
+              entities.hostOrganization &&
+              user &&
+              toOrganizationCardProps(entities.hostOrganization, entities.hostOrganization.id, user, t);
+            const leadingOrganizations =
+              user && entities.leadingOrganizations.map(x => toOrganizationCardProps(x, x.id, user, t));
+            const members = toUserCardProps(entities.members, resourceId, t);
+            return (
+              <AvatarsProvider users={senders}>
+                {populatedUsers => (
+                  <CommunityPageView
+                    title={entities?.communityName}
+                    loading={state.loading}
+                    showOrganizations={!opportunityId}
+                    hostOrganization={hostOrganization}
+                    leadingOrganizations={leadingOrganizations}
+                    organizationsLoading={state.organizationsLoading}
+                    members={members}
+                    membersLoading={state.membersLoading}
+                    messages={messages}
+                    messagesLoading={loading.retrievingUpdateMessages}
+                    authors={populatedUsers}
+                  />
+                )}
+              </AvatarsProvider>
+            );
+          }}
+        </CommunityPageContainer>
+      )}
+    </CommunityUpdatesContainer>
   );
 };
 export default CommunityPage;

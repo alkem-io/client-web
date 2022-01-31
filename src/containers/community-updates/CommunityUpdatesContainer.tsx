@@ -21,8 +21,8 @@ import { logger } from '../../services/logging/winston/logger';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
-    communityId: Community['id'];
-    ecoverseId: Ecoverse['id'];
+    communityId?: Community['id'];
+    ecoverseId?: Ecoverse['id'];
   };
   children: (
     entities: CommunityUpdatesEntities,
@@ -58,9 +58,10 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
-    refetchQueries: isFeatureEnabled(FEATURE_SUBSCRIPTIONS)
-      ? []
-      : [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
+    refetchQueries:
+      isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !ecoverseId || !communityId
+        ? []
+        : [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
   });
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
@@ -79,7 +80,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     async messageId => {
       const update = await removeUpdate({
         variables: { msgData: { messageID: messageId, updatesID: updatesId } },
-        refetchQueries: [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
+        refetchQueries: ecoverseId && communityId ? [refetchCommunityUpdatesQuery({ ecoverseId, communityId })] : [],
       });
       return update.data?.removeUpdate;
     },

@@ -11,12 +11,15 @@ import { SectionSpacer } from '../../components/core/Section/Section';
 import { Accordion } from '../../components/composite/common/Accordion/Accordion';
 import Grid from '@mui/material/Grid';
 import CardFilter from '../../components/core/card-filter/CardFilter';
-import { Searchable } from '../../models/graphql-schema';
+import { Message, Searchable, User } from '../../models/graphql-schema';
 import {
   userCardTagsGetter,
   userCardValueGetter,
 } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
 import { Box } from '@mui/material';
+import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
+
+const UPDATES_CONTAINER_HEIGHT = 300;
 
 export type SearchableUserCardProps = UserCardProps & Searchable;
 
@@ -29,6 +32,9 @@ export interface CommunityPageViewProps {
   organizationsLoading: boolean;
   members?: SearchableUserCardProps[];
   membersLoading: boolean;
+  messages?: Message[];
+  messagesLoading: boolean;
+  authors?: User[];
 }
 
 const CommunityPageView: FC<CommunityPageViewProps> = ({
@@ -40,6 +46,9 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
   organizationsLoading,
   members = [],
   membersLoading,
+  messages = [],
+  messagesLoading,
+  authors = [],
 }) => {
   const { t } = useTranslation();
   const sectionTitle = t('pages.community.title', { name: title });
@@ -58,6 +67,31 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
         <Typography variant={'subtitle2'}>
           {loading ? <Skeleton width="50%" /> : t('pages.community.subtitle')}
         </Typography>
+      </DashboardGenericSection>
+      <SectionSpacer />
+      <DashboardGenericSection>
+        {!messages.length && !messagesLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Typography>{t('pages.community.updates.no-data')}</Typography>
+          </Box>
+        ) : (
+          <Box sx={{ height: `${UPDATES_CONTAINER_HEIGHT}px`, overflowY: 'auto' }}>
+            <CommunityUpdatesView
+              entities={{ messages, members: authors }}
+              state={{
+                loadingMessages: messagesLoading,
+                submittingMessage: false,
+                removingMessage: false,
+              }}
+              options={{
+                hideHeaders: true,
+                disableCollapse: true,
+                disableElevation: true,
+                itemsPerRow: 1,
+              }}
+            />
+          </Box>
+        )}
       </DashboardGenericSection>
       <SectionSpacer />
       {showOrganizations && (
