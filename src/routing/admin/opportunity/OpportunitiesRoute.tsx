@@ -10,7 +10,7 @@ import { nameOfUrl } from '../../url-params';
 import { OpportunityRoute } from './OpportunityRoute';
 
 interface Props extends PageProps {}
-/** @deprecated */
+
 export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
