@@ -532,6 +532,23 @@
     }
   },
   "pages": {
+    "visual-edit": {
+      "avatar": {
+        "title": "Avatar",
+        "description1": "{{width}} x {{height}} and supported formats recommended",
+        "description2": "??"
+      },
+      "banner": {
+        "title": "Banner",
+        "description1": "{{width}} x {{height}} and supported formats recommended",
+        "description2": "Used on the dashboard page"
+      },
+      "banner-narrow": {
+        "title": "Banner narrow",
+        "description1": "{{width}} x {{height}} and supported formats recommended",
+        "description2": "Used on the cards"
+      }
+    },
     "contributors": {
       "search": {
         "title": "Explore the users and organizations that are contributing!",

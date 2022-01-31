@@ -2,6 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { PageProps } from '../../common';
 import EditVisualsView from '../../../views/Visuals/EditVisualsView';
 import { useChallenge, useUpdateNavigation } from '../../../hooks';
+import { Box } from '@mui/material';
 
 export interface ChallengeVisualsPageProps extends PageProps {}
 
@@ -10,6 +11,10 @@ const ChallengeVisualsPage: FC<ChallengeVisualsPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
   const { challenge } = useChallenge();
 
-  return <EditVisualsView visuals={challenge?.context?.visuals} />;
+  return (
+    <Box paddingY={2}>
+      <EditVisualsView visuals={challenge?.context?.visuals} />
+    </Box>
+  );
 };
 export default ChallengeVisualsPage;

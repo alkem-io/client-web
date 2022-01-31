@@ -1,4 +1,5 @@
 import React, { FC, useMemo } from 'react';
+import { Box } from '@mui/material';
 import { PageProps } from '../../common';
 import EditVisualsView from '../../../views/Visuals/EditVisualsView';
 import { useEcoverse, useUpdateNavigation } from '../../../hooks';
@@ -10,6 +11,10 @@ const EcoverseVisualsPage: FC<EcoverseVisualsPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
   const { ecoverse } = useEcoverse();
 
-  return <EditVisualsView visuals={ecoverse?.context?.visuals} />;
+  return (
+    <Box paddingY={2}>
+      <EditVisualsView visuals={ecoverse?.context?.visuals} />
+    </Box>
+  );
 };
 export default EcoverseVisualsPage;
