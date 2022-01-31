@@ -37,7 +37,10 @@ export const managementData = {
   ecoverseLvl: [
     {
       name: 'Info',
-      buttons: [{ description: 'Edit', url: 'edit' }],
+      buttons: [
+        { description: 'Edit', url: 'edit' },
+        { description: 'Visuals', url: 'visuals' },
+      ],
     },
     {
       name: 'Community',
@@ -71,6 +74,7 @@ export const managementData = {
       buttons: [
         { description: 'Edit', url: 'edit' },
         { description: 'Lifecycle', url: 'lifecycle' },
+        { description: 'Visuals', url: 'visuals' },
       ],
     },
     {
@@ -106,6 +110,7 @@ export const managementData = {
       buttons: [
         { description: 'Edit', url: 'edit' },
         { description: 'Lifecycle', url: 'lifecycle' },
+        { description: 'Visuals', url: 'visuals' },
       ],
     },
     {

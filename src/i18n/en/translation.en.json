@@ -223,9 +223,10 @@
     }
   },
   "components": {
-    "editable-avatar": {
-      "loading": "Avatar is loading",
-      "success": "Image uploaded successfully"
+    "visual-upload": {
+      "loading": "Image is loading",
+      "success": "Image uploaded successfully",
+      "upload-hover": "Upload image"
     },
     "tags-component": {
       "more": "+{{count}} more",

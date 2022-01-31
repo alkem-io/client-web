@@ -21,7 +21,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual }) => {
 
   const [uploadAvatar, { loading }] = useUploadVisualMutation({
     onError: handleError,
-    onCompleted: () => notify(t('components.editable-avatar.success'), 'success'),
+    onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
   const [dialogOpened, setDialogOpened] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File>();
@@ -65,7 +65,6 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual }) => {
                 setDialogOpened(true);
               }
             }}
-            small
             text={t('buttons.edit')}
           />
         </Box>

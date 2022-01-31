@@ -13,6 +13,7 @@ import { CommunityRoute } from '../community';
 import { OpportunitiesRoute } from '../opportunity/OpportunitiesRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
+import ChallengeVisualsPage from '../../../pages/Admin/Challenge/ChallengeVisualsPage';
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -58,6 +59,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
             />
           }
         />
+        <Route path={'visuals'} element={<ChallengeVisualsPage paths={currentPaths} />} />
         <Route
           path={'community/*'}
           element={

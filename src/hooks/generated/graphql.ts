@@ -128,6 +128,19 @@ export const ChallengeCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const VisualFullFragmentDoc = gql`
+  fragment VisualFull on Visual {
+    id
+    uri
+    name
+    allowedTypes
+    aspectRatio
+    maxHeight
+    maxWidth
+    minHeight
+    minWidth
+  }
+`;
 export const ChallengeInfoFragmentDoc = gql`
   fragment ChallengeInfo on Challenge {
     id
@@ -149,11 +162,11 @@ export const ChallengeInfoFragmentDoc = gql`
         uri
       }
       visuals {
-        ...VisualUri
+        ...VisualFull
       }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 export const GroupMembersFragmentDoc = gql`
   fragment GroupMembers on User {
@@ -332,19 +345,6 @@ export const GroupDetailsFragmentDoc = gql`
   fragment GroupDetails on UserGroup {
     id
     name
-  }
-`;
-export const VisualFullFragmentDoc = gql`
-  fragment VisualFull on Visual {
-    id
-    uri
-    name
-    allowedTypes
-    aspectRatio
-    maxHeight
-    maxWidth
-    minHeight
-    minWidth
   }
 `;
 export const GroupInfoFragmentDoc = gql`

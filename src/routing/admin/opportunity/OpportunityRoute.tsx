@@ -12,6 +12,7 @@ import { buildOpportunityUrl } from '../../../utils/urlBuilders';
 import { CommunityRoute } from '../community';
 import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 import OpportunityLifecycleRoute from './OpportunityLifecycleRoute';
+import OpportunityVisualsPage from '../../../pages/Admin/Opportunity/OpportunityVisualsPage';
 
 interface Props extends PageProps {}
 
@@ -59,6 +60,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
             />
           }
         />
+        <Route path={'visuals'} element={<OpportunityVisualsPage paths={currentPaths} />} />
         <Route
           path={'community/*'}
           element={
