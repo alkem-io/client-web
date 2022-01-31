@@ -33,7 +33,7 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
           </RestrictedRoute>
         }
       />
-      <Route path="*" element={<Error404 />}></Route>
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };
@@ -43,7 +43,7 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
   const navigate = useNavigate();
   const handleError = useApolloErrorHandler();
   const { opportunityId } = useOpportunity();
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'New project', real: true }], [paths]);
+  const currentPaths = useMemo(() => [...paths, { value: '/new', name: 'New project', real: true }], [paths]);
   const [createProject, { loading: projectCreationLoading }] = useCreateProjectMutation({
     onCompleted: ({ createProject: _project }) => {
       navigate(url.split('/').reverse().slice(1).reverse().join('/'), { replace: true });
