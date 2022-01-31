@@ -1,5 +1,4 @@
 export * from './About/About';
-export * from './Challenge/ChallengePage';
 export * from './common';
 export * from './Errors/Error404';
 export * from './Errors/ErrorPage';

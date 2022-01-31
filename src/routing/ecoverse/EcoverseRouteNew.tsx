@@ -25,7 +25,7 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths }) => {
   const { ecoverse, displayName, loading, isPrivate, ecoverseId } = useEcoverse();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
-    () => (ecoverse ? [...paths, { value: resolved.pathname, name: displayName, real: false }] : paths),
+    () => (ecoverse ? [...paths, { value: resolved.pathname, name: displayName, real: true }] : paths),
     [paths, displayName, resolved]
   );
   const discussionsRequiredCredentials: CredentialForResource[] =

@@ -9,7 +9,6 @@ import ApplyRoute from '../application/apply.route';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
 import ChallengeTabsNew from './ChallengeTabsNew';
-import { ChallengeDashboardView } from '../../views/Challenge/ChallengeDashboardView';
 import { ChallengeContextView } from '../../views/Challenge/ChallengeContextView';
 import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
 import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
@@ -21,6 +20,7 @@ import { nameOfUrl } from '../url-params';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import OpportunityRouteNew from '../opportunity/OpportunityRouteNew';
+import ChallengeDashboardPage from '../../pages/Admin/Challenge/ChallengeDashboardPage';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -64,7 +64,10 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths }) => {
               }
             >
               <Route index element={<Navigate replace to={'dashboard'} />} />
-              <Route path={'dashboard'} element={<ChallengeDashboardView entities={e} state={s} />} />
+              <Route
+                path={'dashboard'}
+                element={<ChallengeDashboardPage paths={currentPaths} entities={e} state={s} />}
+              />
               <Route path={'context'} element={<ChallengeContextView entities={e} state={s} />} />
               <Route path={'community'} element={<ChallengeCommunityPage paths={paths} />} />
               <Route
