@@ -8,21 +8,21 @@ import { ProjectRoute } from './ProjectRoute';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import { OpportunityPageContainer } from '../../containers';
 import OpportunityTabsNew from './OpportunityTabsNew';
-import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboardView';
-import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
 import OpportunityCommunityPage from '../../pages/Community/OpportunityCommunityPage';
-import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
-import OpportunityCanvasView from '../../views/Opportunity/OpportunityCanvasManagementView';
+import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboardPage';
+import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
+import OpportunityProjectsPage from '../../pages/Opportunity/OpportunityProjectsPage';
+import OpportunityCanvasPage from '../../pages/Opportunity/OpportunityCanvasPage';
 
 interface OpportunityRootProps extends PageProps {}
 
-const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths }) => {
+const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths: _paths }) => {
   const { opportunity, displayName, ecoverseNameId, challengeNameId, opportunityNameId, loading, permissions } =
     useOpportunity();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
-    () => (displayName ? [...paths, { value: resolved.pathname, name: displayName, real: true }] : paths),
-    [paths, displayName, resolved]
+    () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
+    [_paths, displayName, resolved]
   );
 
   if (loading) {
@@ -53,62 +53,17 @@ const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths }) => {
               <Route index element={<Navigate replace to={'dashboard'} />} />
               <Route
                 path={'dashboard'}
-                element={
-                  <OpportunityDashboardView
-                    entities={e}
-                    state={{
-                      loading: s.loading,
-                      showInterestModal: e.showInterestModal,
-                      showActorGroupModal: e.showActorGroupModal,
-                      error: s.error,
-                    }}
-                    actions={a}
-                    options={e.permissions}
-                  />
-                }
+                element={<OpportunityDashboardPage paths={currentPaths} entities={e} state={s} actions={a} />}
               />
               <Route
                 path={'context'}
-                element={
-                  <OpportunityContextView
-                    entities={e}
-                    state={{
-                      showActorGroupModal: e.showActorGroupModal,
-                      loading: s.loading,
-                      error: s.error,
-                    }}
-                    actions={a}
-                    options={e.permissions}
-                  />
-                }
+                element={<OpportunityContextPage paths={currentPaths} entities={e} state={s} actions={a} />}
               />
-              <Route path={'community'} element={<OpportunityCommunityPage paths={paths} />} />
-              <Route
-                path={'projects'}
-                element={
-                  <OpportunityProjectsView
-                    entities={{
-                      opportunityProjects: e.opportunityProjects,
-                    }}
-                    state={{}}
-                    actions={{}}
-                    options={{}}
-                  />
-                }
-              />
+              <Route path={'community'} element={<OpportunityCommunityPage paths={currentPaths} />} />
+              <Route path={'projects'} element={<OpportunityProjectsPage paths={currentPaths} entities={e} />} />
               <Route
                 path={'canvases'}
-                element={
-                  <OpportunityCanvasView
-                    entities={e}
-                    state={{
-                      loading: s.loading,
-                      error: s.error,
-                    }}
-                    actions={undefined}
-                    options={undefined}
-                  />
-                }
+                element={<OpportunityCanvasPage paths={currentPaths} entities={e} state={s} />}
               />
             </Route>
             <Route path={'projects/*'} element={<ProjectRoute paths={currentPaths} />} />

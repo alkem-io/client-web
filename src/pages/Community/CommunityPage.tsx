@@ -107,7 +107,7 @@ const toUserCardProps = (data: UserCardFragment[], resourceId = '', t: TFunction
         roleName: t(roleNameKey),
         tags: x?.profile?.tagsets?.flatMap(x => x.tags),
         displayName: x.displayName,
-        avatarSrc: x?.profile?.avatar,
+        avatarSrc: x?.profile?.avatar?.uri,
         city: x.city,
         country: x.country,
         url: buildUserProfileUrl(x.nameID),

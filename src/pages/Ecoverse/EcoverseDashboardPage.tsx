@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
 import { useUpdateNavigation } from '../../hooks';
@@ -10,7 +10,8 @@ import { getVisualBanner } from '../../utils/visuals.utils';
 export interface EcoverseDashboardPageProps extends PageProps {}
 
 const EcoverseDashboardPage: FC<EcoverseDashboardPageProps> = ({ paths }) => {
-  useUpdateNavigation({ currentPaths: paths });
+  const currentPaths = useMemo(() => [...paths, { value: '', name: 'dashboard', real: false }], [paths]);
+  useUpdateNavigation({ currentPaths });
 
   return (
     <EcoversePageContainer>

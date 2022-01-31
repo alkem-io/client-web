@@ -9,27 +9,27 @@ import ApplyRoute from '../application/apply.route';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
 import ChallengeTabsNew from './ChallengeTabsNew';
-import { ChallengeDashboardView } from '../../views/Challenge/ChallengeDashboardView';
-import { ChallengeContextView } from '../../views/Challenge/ChallengeContextView';
 import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
 import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
 import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import { AuthorizationCredential } from '../../models/graphql-schema';
-import ChallengeCanvasManagementView from '../../views/Challenge/ChallengeCanvasManagementView';
-import { ChallengeOpportunitiesView } from '../../views/Challenge/ChallengeOpportunitiesView';
 import { nameOfUrl } from '../url-params';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import OpportunityRouteNew from '../opportunity/OpportunityRouteNew';
+import ChallengeDashboardPage from '../../pages/Admin/Challenge/ChallengeDashboardPage';
+import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPage';
+import ChallengeOpportunityPage from '../../pages/Admin/Challenge/ChallengeOpportunityPage';
+import ChallengeCanvasPage from '../../pages/Admin/Challenge/ChallengeCanvasPage';
 
 interface ChallengeRootProps extends PageProps {}
 
-const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths }) => {
+const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const { ecoverseNameId, ecoverseId, challengeId, challengeNameId, displayName, loading } = useChallenge();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
-    () => (displayName ? [...paths, { value: resolved.pathname, name: displayName, real: true }] : paths),
-    [paths, displayName, resolved]
+    () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
+    [_paths, displayName, resolved]
   );
 
   const discussionsRequiredCredentials: CredentialForResource[] = challengeId
@@ -64,31 +64,25 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths }) => {
               }
             >
               <Route index element={<Navigate replace to={'dashboard'} />} />
-              <Route path={'dashboard'} element={<ChallengeDashboardView entities={e} state={s} />} />
-              <Route path={'context'} element={<ChallengeContextView entities={e} state={s} />} />
-              <Route path={'community'} element={<ChallengeCommunityPage paths={paths} />} />
+              <Route
+                path={'dashboard'}
+                element={<ChallengeDashboardPage paths={currentPaths} entities={e} state={s} />}
+              />
+              <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} entities={e} state={s} />} />
+              <Route path={'community'} element={<ChallengeCommunityPage paths={currentPaths} />} />
               <Route
                 path={'community/discussions/*'}
                 element={
                   <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
-                    <DiscussionsRoute paths={paths} />
+                    <DiscussionsRoute paths={currentPaths} />
                   </RestrictedRoute>
                 }
               />
-              {e.challenge && (
-                <Route
-                  path={'canvases'}
-                  element={
-                    <ChallengeCanvasManagementView
-                      entities={{ challenge: e.challenge }}
-                      state={{ loading: s.loading, error: s.error }}
-                      actions={undefined}
-                      options={undefined}
-                    />
-                  }
-                />
-              )}
-              <Route path={'opportunities'} element={<ChallengeOpportunitiesView entities={e} state={s} />} />
+              <Route path={'canvases'} element={<ChallengeCanvasPage paths={currentPaths} entities={e} state={s} />} />
+              <Route
+                path={'opportunities'}
+                element={<ChallengeOpportunityPage paths={currentPaths} entities={e} state={s} />}
+              />
             </Route>
             <Route
               path={'apply/*'}

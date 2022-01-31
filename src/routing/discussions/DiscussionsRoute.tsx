@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { DiscussionProvider } from '../../context/Discussions/DiscussionProvider';
 import { useConfig } from '../../hooks';
@@ -11,21 +11,23 @@ import { nameOfUrl } from '../url-params';
 
 interface DiscussionsRouteProps extends PageProps {}
 
-export const DiscussionsRoute: FC<DiscussionsRouteProps> = () => {
+export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
   const { isFeatureEnabled } = useConfig();
+
+  const currentPaths = useMemo(() => [...paths, { value: 'discussions', name: 'discussions', real: false }], [paths]);
 
   if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
   return (
     // DiscussionsProvider provided at EcoversePage
     <Routes>
       <Route path={'/'}>
-        <Route index element={<DiscussionListPage />} />
-        <Route path={'new'} element={<NewDiscussionPage />} />
+        <Route index element={<DiscussionListPage paths={currentPaths} />} />
+        <Route path={'new'} element={<NewDiscussionPage paths={currentPaths} />} />
         <Route
           path={`:${nameOfUrl.discussionId}`}
           element={
             <DiscussionProvider>
-              <DiscussionPage />
+              <DiscussionPage paths={currentPaths} />
             </DiscussionProvider>
           }
         >
