@@ -1,5 +1,5 @@
-query users {
-  users {
+query users($limit: Float, $randomSelection: Boolean) {
+  users(limit: $limit, randomSelection: $randomSelection) {
     ...UserDetails
   }
 }

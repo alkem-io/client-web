@@ -8417,8 +8417,8 @@ export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.Organ
   return { query: OrganizationProfileInfoDocument, variables: variables };
 }
 export const OrganizationsListDocument = gql`
-  query organizationsList {
-    organizations {
+  query organizationsList($limit: Float, $randomSelection: Boolean) {
+    organizations(limit: $limit, randomSelection: $randomSelection) {
       id
       nameID
       displayName
@@ -8445,6 +8445,8 @@ export const OrganizationsListDocument = gql`
  * @example
  * const { data, loading, error } = useOrganizationsListQuery({
  *   variables: {
+ *      limit: // value for 'limit'
+ *      randomSelection: // value for 'randomSelection'
  *   },
  * });
  */
@@ -9322,8 +9324,8 @@ export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryV
   return { query: UserProfileDocument, variables: variables };
 }
 export const UsersDocument = gql`
-  query users {
-    users {
+  query users($limit: Float, $randomSelection: Boolean) {
+    users(limit: $limit, randomSelection: $randomSelection) {
       ...UserDetails
     }
   }
@@ -9342,6 +9344,8 @@ export const UsersDocument = gql`
  * @example
  * const { data, loading, error } = useUsersQuery({
  *   variables: {
+ *      limit: // value for 'limit'
+ *      randomSelection: // value for 'randomSelection'
  *   },
  * });
  */

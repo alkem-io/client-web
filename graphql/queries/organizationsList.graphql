@@ -1,5 +1,5 @@
-query organizationsList {
-  organizations {
+query organizationsList($limit: Float, $randomSelection: Boolean) {
+  organizations(limit: $limit, randomSelection: $randomSelection) {
     id
     nameID
     displayName
