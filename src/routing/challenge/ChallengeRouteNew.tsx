@@ -24,12 +24,12 @@ import ChallengeCanvasPage from '../../pages/Admin/Challenge/ChallengeCanvasPage
 
 interface ChallengeRootProps extends PageProps {}
 
-const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths }) => {
+const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const { ecoverseNameId, ecoverseId, challengeId, challengeNameId, displayName, loading } = useChallenge();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
-    () => (displayName ? [...paths, { value: resolved.pathname, name: displayName, real: true }] : paths),
-    [paths, displayName, resolved]
+    () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
+    [_paths, displayName, resolved]
   );
 
   const discussionsRequiredCredentials: CredentialForResource[] = challengeId

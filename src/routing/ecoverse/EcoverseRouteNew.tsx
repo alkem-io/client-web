@@ -21,12 +21,12 @@ import EcoverseContextPage from '../../pages/Ecoverse/EcoverseContextPage';
 import HubCanvasPage from './HubCanvasPage';
 import HubChallengesPage from '../../pages/Ecoverse/EcoverseChallengesPage';
 
-export const EcoverseRouteNew: FC<PageProps> = ({ paths }) => {
+export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
   const { ecoverse, displayName, loading, isPrivate, ecoverseId } = useEcoverse();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
-    () => (ecoverse ? [...paths, { value: resolved.pathname, name: displayName, real: true }] : paths),
-    [paths, displayName, resolved]
+    () => (ecoverse ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
+    [_paths, displayName, resolved]
   );
   const discussionsRequiredCredentials: CredentialForResource[] =
     isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
