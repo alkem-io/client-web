@@ -6,16 +6,20 @@ import DiscussionsLayout from '../../components/composite/layout/Discussions/Dis
 import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionCategoryFilter, useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
+import { PageProps } from '../common';
+import { useUpdateNavigation } from '../../hooks';
 
-interface DiscussionsPageProps {}
+interface DiscussionsPageProps extends PageProps {}
 
-export const DiscussionListPage: FC<DiscussionsPageProps> = () => {
+export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
   const { filtered, categoryFilter, setCategoryFilter } = useDiscussionCategoryFilter(discussionList);
 
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
+
+  useUpdateNavigation({ currentPaths: paths });
 
   return (
     <DiscussionsLayout
