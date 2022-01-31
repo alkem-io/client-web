@@ -535,18 +535,18 @@
     "visual-edit": {
       "avatar": {
         "title": "Avatar",
-        "description1": "{{width}} x {{height}} and supported formats recommended",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
         "description2": "??"
       },
       "banner": {
         "title": "Banner",
-        "description1": "{{width}} x {{height}} and supported formats recommended",
-        "description2": "Used on the dashboard page"
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Banner on dashboard tab"
       },
       "banner-narrow": {
-        "title": "Banner narrow",
-        "description1": "{{width}} x {{height}} and supported formats recommended",
-        "description2": "Used on the cards"
+        "title": "Banner for cards",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Banner on cards"
       }
     },
     "contributors": {
@@ -878,7 +878,9 @@
         "no-data": "No members available"
       },
       "no-user-groups": "There are no user groups",
-      "no-updates": "There are no updates"
+      "updates": {
+        "no-data": "No updates available"
+      }
     },
     "canvas": {
       "header": "Canvases in this {{blockName}}",
@@ -1060,7 +1062,7 @@
         "subtitle": "This section allows you to select your preferences regarding the discussions"
       },
       "user-administration": {
-        "title": "User administration",
+        "title": "Platform Administration",
         "subtitle": "This section is only visible to users that are a global admin on the platform"
       },
       "community-administration": {
