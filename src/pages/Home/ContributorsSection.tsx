@@ -17,13 +17,14 @@ const MAX_ORGANIZATIONS_TO_SHOW = 12;
 const ContributorsSection = () => {
   const { t } = useTranslation();
   // move this to a container
-  const { user } = useUserContext();
+  const { user, isAuthenticated } = useUserContext();
   const { data: usersData, loading } = useUsersQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       limit: MAX_USERS_TO_SHOW,
       shuffle: true,
     },
+    skip: !isAuthenticated,
   });
   const { data: organizationsData, loading: loadingOrganizations } = useOrganizationsListQuery({
     fetchPolicy: 'cache-and-network',
