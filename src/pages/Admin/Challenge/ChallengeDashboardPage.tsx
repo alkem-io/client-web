@@ -1,11 +1,11 @@
 import React, { FC, useMemo } from 'react';
 import { PageProps } from '../../common';
 import { useUpdateNavigation } from '../../../hooks';
-import { ChallengeContextView } from '../../../views/Challenge/ChallengeContextView';
 import {
   ChallengeContainerEntities,
   ChallengeContainerState,
 } from '../../../containers/challenge/ChallengePageContainer';
+import { ChallengeDashboardView } from '../../../views/Challenge/ChallengeDashboardView';
 
 export interface ChallengeDashboardPageProps extends PageProps {
   entities: ChallengeContainerEntities;
@@ -16,6 +16,6 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ paths, entiti
   const currentPaths = useMemo(() => [...paths, { value: '/dashboard', name: 'dashboard', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  return <ChallengeContextView entities={entities} state={state} />;
+  return <ChallengeDashboardView entities={entities} state={state} />;
 };
 export default ChallengeDashboardPage;
