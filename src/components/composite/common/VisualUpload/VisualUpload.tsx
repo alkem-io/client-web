@@ -71,7 +71,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, wi
             <Avatar sx={{ width, height }} />
           </Skeleton>
         ) : (
-          <img src={visual?.uri} width={width} height={height} />
+          <img src={visual?.uri} width={width} height={height} alt={''} />
         )}
       </Box>
       {visual && (
