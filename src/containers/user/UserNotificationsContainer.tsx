@@ -14,7 +14,7 @@ export interface UserNotificationsContainerState {
 }
 
 export interface UserNotificationsContainerActions {
-  updatePreference: (name: string, checked: boolean, id: string) => void;
+  updatePreference: (type: UserPreferenceType, checked: boolean, id: string) => void;
 }
 
 export interface UserNotificationsContainerProps
@@ -24,7 +24,7 @@ export interface UserNotificationsContainerProps
     UserNotificationsContainerState
   > {}
 
-const limitNotifcationsTo = [
+const limitNotificationsTo = [
   UserPreferenceType.NotificationApplicationReceived,
   UserPreferenceType.NotificationApplicationSubmitted,
   UserPreferenceType.NotificationCommunicationUpdates,
@@ -35,7 +35,7 @@ const limitNotifcationsTo = [
 ];
 
 const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ children }) => {
-  const { userId } = useUrlParams();
+  const { userId = '' } = useUrlParams();
 
   const handleError = useApolloErrorHandler();
   const { data, loading } = useUserNotificationsPreferencesQuery({
@@ -50,11 +50,11 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
     onError: handleError,
   });
 
-  const updatePreference = (name: string, checked: boolean, id: string) => {
+  const updatePreference = (type: UserPreferenceType, checked: boolean, id: string) => {
     updateUserPreferences({
       variables: {
         input: {
-          type: name as UserPreferenceType,
+          type: type,
           userID: userUUID || '',
           value: checked ? 'true' : 'false',
         },
@@ -72,7 +72,7 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
   const preferences = useMemo(
     () =>
       sortBy(
-        (data?.user.preferences || []).filter(p => limitNotifcationsTo.includes(p.definition.type)),
+        (data?.user.preferences || []).filter(p => limitNotificationsTo.includes(p.definition.type)),
         x => x.definition.displayName
       ),
     [data]

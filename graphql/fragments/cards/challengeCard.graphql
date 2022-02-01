@@ -10,10 +10,8 @@ fragment ChallengeCard on Challenge {
   context {
     id
     tagline
-    visual {
-      id
-      background
-      banner
+    visuals {
+      ...VisualUri
     }
   }
   tagset {

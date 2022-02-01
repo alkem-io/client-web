@@ -4,13 +4,13 @@ import { Author } from '../../models/discussion/author';
 import Markdown from '../../components/core/Markdown';
 
 export interface SingleUpdateViewProps {
-  author: Author;
-  createdDate: Date;
-  content: string;
+  author?: Author;
+  createdDate?: Date;
+  content?: string;
   loading?: boolean;
 }
 
-const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, content, loading }) => {
+const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, content = '', loading }) => {
   return (
     <>
       <Grid container spacing={1}>
@@ -20,12 +20,12 @@ const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, cont
               <Avatar />
             </Skeleton>
           ) : (
-            <Avatar src={author.avatarUrl} />
+            <Avatar src={author?.avatarUrl} />
           )}
         </Grid>
         <Grid item xs>
-          <Grid item>{loading ? <Skeleton /> : author.displayName}</Grid>
-          <Grid item>{loading ? <Skeleton /> : createdDate.toLocaleString()}</Grid>
+          <Grid item>{loading ? <Skeleton /> : author?.displayName}</Grid>
+          <Grid item>{loading ? <Skeleton /> : createdDate?.toLocaleString()}</Grid>
         </Grid>
       </Grid>
       {loading ? (

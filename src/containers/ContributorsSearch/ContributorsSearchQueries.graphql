@@ -18,7 +18,9 @@ fragment OrganizationContributor on Organization {
   }
   orgProfile: profile {
     id
-    avatar
+    avatar {
+      ...VisualUri
+    }
     description
   }
   verification {
@@ -43,7 +45,9 @@ fragment UserContributor on User {
   }
   userProfile: profile {
     id
-    avatar
+    avatar {
+      ...VisualUri
+    }
     tagsets {
       id
       name

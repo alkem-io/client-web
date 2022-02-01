@@ -16,7 +16,7 @@ export const useAuthorsDetails = (authorIDds: string[]) => {
         displayName: a.displayName,
         firstName: a.firstName,
         lastName: a.lastName,
-        avatarUrl: a.profile?.avatar || '',
+        avatarUrl: a.profile?.avatar?.uri || '',
         url: buildUserProfileUrl(a.nameID),
       })),
     [authorData]

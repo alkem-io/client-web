@@ -3,7 +3,7 @@ import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.
 import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UserMetadata } from '../../../../hooks';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
@@ -30,7 +30,7 @@ interface UserSegmentProps {
 
 const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef(null);
@@ -49,7 +49,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
       <User
         name={user.displayName}
         title={role}
-        src={user.profile?.avatar}
+        src={user.profile?.avatar?.uri}
         ref={popoverAnchor as any}
         onClick={() => setDropdownOpen(true)}
       />
@@ -69,7 +69,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
         <Root>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
             <Box display="flex" flexDirection="column" alignItems="center" className={classes.userHeader}>
-              <Avatar size={'lg'} src={user.profile?.avatar} />
+              <Avatar size={'lg'} src={user.profile?.avatar?.uri} />
               <Box textAlign={'center'}>
                 <Typography variant="h3">{user.displayName}</Typography>
               </Box>
@@ -81,7 +81,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
               <ListItemButton
                 onClick={() => {
                   setDropdownOpen(false);
-                  history.push(buildUserProfileUrl(user.nameID));
+                  navigate(buildUserProfileUrl(user.nameID), { replace: true });
                 }}
               >
                 <ListItemIcon>
@@ -92,7 +92,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
               <ListItemButton
                 onClick={() => {
                   setDropdownOpen(false);
-                  history.push('/identity/logout');
+                  navigate('/identity/logout', { replace: true });
                 }}
               >
                 <ListItemIcon>

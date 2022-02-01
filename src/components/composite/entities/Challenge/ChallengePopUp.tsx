@@ -3,6 +3,7 @@ import { ChallengeSearchResultFragment } from '../../../../models/graphql-schema
 import { buildChallengeUrl } from '../../../../utils/urlBuilders';
 import PopUp, { PopUpViewmodel } from '../../search/PopUp';
 import PopUpProps from '../../dialogs/PopUpProps';
+import { getVisualAvatar } from '../../../../utils/visuals.utils';
 
 const ChallengePopUp: FC<PopUpProps<ChallengeSearchResultFragment>> = ({ onHide, entity: challenge, ecoverse }) => {
   const url = useMemo(
@@ -13,7 +14,7 @@ const ChallengePopUp: FC<PopUpProps<ChallengeSearchResultFragment>> = ({ onHide,
   const model = useMemo(
     () =>
       ({
-        avatar: challenge?.context?.visual?.avatar,
+        avatar: getVisualAvatar(challenge?.context?.visuals),
         displayName: challenge?.displayName,
         tagline: challenge?.context?.tagline,
         tags: challenge?.tagset?.tags,

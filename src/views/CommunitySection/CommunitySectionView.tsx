@@ -5,20 +5,20 @@ import makeStyles from '@mui/styles/makeStyles';
 import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
+import { Link as RouterLink, useResolvedPath } from 'react-router-dom';
 import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
+import { useCommunityContext } from '../../context/CommunityProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
-import { AuthorizationPrivilege, Message, User } from '../../models/graphql-schema';
 import { Discussion } from '../../models/discussion/discussion';
+import { AuthorizationPrivilege, Message, User } from '../../models/graphql-schema';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
-import { useCommunityContext } from '../../context/CommunityProvider';
 
 export interface CommunitySectionPropsExt
   extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users' | 'parentEntityId'> {}
@@ -62,7 +62,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   shuffle = false,
   parentEntityId,
 }) => {
-  const { url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const { t } = useTranslation();
   const styles = useCommunityStyles();
   const [tabValue, setTabValue] = useState('members');

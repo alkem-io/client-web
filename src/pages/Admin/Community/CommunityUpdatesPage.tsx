@@ -1,6 +1,7 @@
 import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useResolvedPath } from 'react-router-dom';
+
 import { WithCommunity } from '../../../components/Admin/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../containers/community-updates/CommunityUpdatesContainer';
 import { AvatarsProvider } from '../../../context/AvatarsProvider';
@@ -11,7 +12,7 @@ import { PageProps } from '../../common';
 interface CommunityUpdatesPageProps extends PageProps, WithCommunity {}
 
 export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, communityId }) => {
-  const { url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'updates', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 

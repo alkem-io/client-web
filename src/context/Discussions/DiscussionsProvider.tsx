@@ -1,7 +1,7 @@
-import { uniq, merge } from 'lodash';
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
 import { ApolloError } from '@apollo/client';
+import { merge, uniq } from 'lodash';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useApolloErrorHandler, useConfig, useEcoverse } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
@@ -12,6 +12,7 @@ import {
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
 } from '../../hooks/generated/graphql';
+import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { Discussion } from '../../models/discussion/discussion';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../models/enums/DiscussionCategoriesExt';
 import {
@@ -21,7 +22,6 @@ import {
   DiscussionCategory,
 } from '../../models/graphql-schema';
 import { useCommunityContext } from '../CommunityProvider';
-import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { buildDiscussionsUrl, buildDiscussionUrl } from '../../utils/urlBuilders';
 
 interface Permissions {
@@ -53,12 +53,12 @@ const DiscussionsContext = React.createContext<DiscussionsContextProps>({
 interface DiscussionProviderProps {}
 
 const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const { pathname } = useResolvedPath('.');
   const { isFeatureEnabled } = useConfig();
   const handleError = useApolloErrorHandler();
   const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
   const { communityId, communicationId, loading: loadingCommunity } = useCommunityContext();
-  const { url } = useRouteMatch();
 
   const {
     data,
@@ -154,9 +154,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   );
 
   const [createDiscussion, { loading: creatingDiscussion }] = useCreateDiscussionMutation({
-    onCompleted: data => {
-      history.replace(buildDiscussionUrl(url, data.createDiscussion.id));
-    },
+    onCompleted: data => navigate(buildDiscussionUrl(pathname, data.createDiscussion.id), { replace: true }),
     onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
@@ -167,7 +165,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   });
 
   const [deleteDiscussion, { loading: deletingDiscussion }] = useDeleteDiscussionMutation({
-    onCompleted: () => history.replace(buildDiscussionsUrl(url)),
+    onCompleted: () => navigate(buildDiscussionsUrl(pathname)),
     onError: handleError,
     refetchQueries: [
       refetchCommunityDiscussionListQuery({

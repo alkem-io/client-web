@@ -21,26 +21,30 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
       {(entities, _, { retrievingUpdateMessages }) => {
         const messages = [...entities.messages];
         const [latestMessage] = messages.sort((a, b) => b.timestamp - a.timestamp);
-        const messageSender = {
-          id: latestMessage?.sender,
-        };
+        const messageSenders = latestMessage?.sender ? [{ id: latestMessage?.sender }] : [];
 
         return (
-          <DashboardGenericSection headerText={t('dashboard-updates-section.title', { count: messages.length })}>
-            {!messages.length && !retrievingUpdateMessages ? (
+          <DashboardGenericSection
+            headerText={t('dashboard-updates-section.title', { count: messages.length })}
+            navText={t('buttons.see-all')}
+            navLink={'community'}
+          >
+            {retrievingUpdateMessages ? (
+              <SingleUpdateView loading={retrievingUpdateMessages} />
+            ) : !messages.length && !retrievingUpdateMessages ? (
               t('dashboard-updates-section.no-data')
             ) : (
-              <AvatarsProvider users={[messageSender]}>
+              <AvatarsProvider users={messageSenders}>
                 {populatedUsers => (
                   <SingleUpdateView
                     loading={retrievingUpdateMessages}
                     author={{
-                      id: populatedUsers[0].id,
-                      displayName: populatedUsers[0].displayName,
-                      avatarUrl: populatedUsers[0].profile?.avatar ?? '',
+                      id: populatedUsers[0]?.id,
+                      displayName: populatedUsers[0]?.displayName,
+                      avatarUrl: populatedUsers[0]?.profile?.avatar?.uri ?? '',
                       firstName: '',
                       lastName: '',
-                      url: buildUserProfileUrl(populatedUsers[0].nameID),
+                      url: buildUserProfileUrl(populatedUsers[0]?.nameID),
                     }}
                     createdDate={new Date(latestMessage.timestamp)}
                     content={latestMessage.message}

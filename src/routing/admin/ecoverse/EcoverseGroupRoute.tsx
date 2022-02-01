@@ -8,7 +8,7 @@ import { GroupRoute } from '../GroupRoute';
 interface GroupRouteProps extends PageProps, WithCommunity {}
 
 export const EcoverseGroupRoute: FC<GroupRouteProps> = ({ paths, parentCommunityId }) => {
-  const { groupId, ecoverseNameId } = useUrlParams();
+  const { groupId = '', ecoverseNameId = '' } = useUrlParams();
 
   const { data, loading } = useEcoverseGroupQuery({
     variables: { ecoverseId: ecoverseNameId, groupId },

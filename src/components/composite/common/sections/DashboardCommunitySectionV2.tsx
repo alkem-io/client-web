@@ -29,7 +29,7 @@ const DashboardCommunitySectionV2: FC<DashboardCommunitySectionV2Props> = ({ mem
             {populated.map((x, i) => (
               <Grid key={i} item xs={3}>
                 <ContributorCard
-                  avatar={x.profile?.avatar || ''}
+                  avatar={x.profile?.avatar?.uri || ''}
                   displayName={x.displayName}
                   tooltip={{
                     tags: x.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],

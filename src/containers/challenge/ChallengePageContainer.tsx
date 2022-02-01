@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
@@ -41,7 +41,7 @@ export interface ChallengePageContainerProps
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { user, isAuthenticated } = useUserContext();
   const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
   const { ecoverseId, ecoverseNameId, challengeId, challengeNameId, loading } = useChallenge();
@@ -98,7 +98,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
                 caption: o.displayName || '',
                 tag: { status: 'positive', text: p?.lifecycle?.state || '' },
                 type: 'display',
-                onSelect: () => history.replace(buildProjectUrl(ecoverseNameId, challengeNameId, o.nameID, p.nameID)),
+                onSelect: () => navigate(buildProjectUrl(ecoverseNameId, challengeNameId, o.nameID, p.nameID)),
               } as Project)
           ) || []
       ) || [];

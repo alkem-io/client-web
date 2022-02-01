@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
 import { InputAdornment } from '@mui/material';
@@ -8,13 +8,13 @@ import SearchIcon from '@mui/icons-material/Search';
 
 const TopSearchComponent = () => {
   const { t } = useTranslation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [value, setValue] = useState<String>('');
 
   const keyPressHandler = ({ code }: React.KeyboardEvent<HTMLDivElement>) => {
     if (code === 'Enter' || code === 'NumpadEnter') {
       const terms = value.split(' ').join(',');
-      history.push(`/search?terms=${terms}`);
+      navigate(`/search?terms=${terms}`, { replace: true });
     }
   };
 

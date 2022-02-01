@@ -13,7 +13,9 @@ fragment ApplicationInfo on Application {
     email
     profile {
       id
-      avatar
+      avatar {
+        ...VisualUri
+      }
     }
   }
   questions {

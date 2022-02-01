@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { useQueryParams } from '../../hooks';
 import { LOCAL_STORAGE_RETURN_URL_KEY, RETURN_URL } from '../../models/constants';
 import LoginPage from '../../pages/Authentication/LoginPage';
@@ -9,7 +9,6 @@ import { NotAuthenticatedRoute } from '../NotAuthenticatedRoute';
 export const LoginRoute: FC = () => {
   const params = useQueryParams();
   const flow = params.get('flow') || undefined;
-  const { path } = useRouteMatch();
 
   const returnUrl = useQueryParams().get(RETURN_URL);
 
@@ -18,21 +17,17 @@ export const LoginRoute: FC = () => {
   }
 
   return (
-    <Switch>
+    <Routes>
       <Route
-        exact
-        path={`${path}`}
-        render={() => (
-          <NotAuthenticatedRoute exact path={`${path}`}>
+        path={'/'}
+        element={
+          <NotAuthenticatedRoute>
             <LoginPage flow={flow} />
           </NotAuthenticatedRoute>
-        )}
+        }
       />
-
-      <Route exact path={`${path}/success`}>
-        <LoginSuccessPage />
-      </Route>
-    </Switch>
+      <Route path={'success'} element={<LoginSuccessPage />}></Route>
+    </Routes>
   );
 };
 

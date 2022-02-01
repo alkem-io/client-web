@@ -11,7 +11,9 @@ fragment AssociatedOrganizationDetails on Organization {
   profile {
     id
     description
-    avatar
+    avatar {
+      ...VisualUri
+    }
   }
   verification {
     id

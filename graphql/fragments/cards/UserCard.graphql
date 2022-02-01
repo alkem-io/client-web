@@ -14,7 +14,9 @@ fragment UserCard on User {
   }
   profile {
     id
-    avatar
+    avatar {
+      ...VisualUri
+    }
     tagsets {
       id
       name

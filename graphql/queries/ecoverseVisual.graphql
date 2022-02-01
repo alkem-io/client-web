@@ -2,8 +2,8 @@ query ecoverseVisual($ecoverseId: UUID_NAMEID!) {
   ecoverse(ID: $ecoverseId) {
     id
     context {
-      visual {
-        ...ContextVisual
+      visuals {
+        ...VisualUri
       }
     }
   }

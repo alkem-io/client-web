@@ -10,13 +10,12 @@ import DashboardOpportunityStatistics from '../../components/composite/common/se
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
 import Markdown from '../../components/core/Markdown';
-import { Header as SectionHeader } from '../../components/core/Section';
 import { SectionSpacer } from '../../components/core/Section/Section';
-import Typography from '../../components/core/Typography';
 import { useOpportunity } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityPageFragment, Reference, User } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -83,8 +82,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { communityReadAccess } = options;
 
   const { id, context, displayName } = opportunity;
-  const { visual, tagline = '', vision = '' } = context ?? {};
-  const banner = visual?.banner;
+  const { visuals, tagline = '', vision = '' } = context ?? {};
+  const banner = getVisualBanner(visuals);
 
   const { loading } = state;
   return (
@@ -100,9 +99,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               </Button>
             }
           >
-            <Typography component={Markdown} variant="body1" children={tagline} />
-            <SectionHeader text={t('components.contextSegment.vision.title')} />
-            <Typography component={Markdown} variant="body1" children={vision} />
+            <Markdown children={tagline} />
+            <Markdown children={vision} />
           </DashboardGenericSection>
           <SectionSpacer />
           <DashboardOpportunityStatistics
@@ -138,7 +136,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
                       details={{
                         headerText: x.displayName,
                         mediaUrl: '',
-                        url: 'projects',
+                        url: `../projects/${x.nameID}`,
                       }}
                     />
                   </Grid>

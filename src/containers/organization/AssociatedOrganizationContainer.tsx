@@ -52,7 +52,7 @@ export const AssociatedOrganizationContainer: FC<OrganizationDetailsContainerPro
           name: data?.organization.displayName || '',
           membersCount: getActivityCount(data?.organization.activity || [], 'members') || 0,
           information: data?.organization.profile.description,
-          avatar: data?.organization.profile.avatar || '',
+          avatar: data?.organization.profile.avatar?.uri || '',
           verified: data?.organization.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
           role: usersWithRoles[0]?.roleName || '',
           url: buildOrganizationUrl(organizationNameId),

@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   useCreateTagsetOnProfileMutation,
   useCreateUserMutation,
@@ -30,8 +30,8 @@ interface UserPageProps extends PageProps {
 export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 'User', paths }) => {
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
-  const history = useHistory();
-  const { userId } = useUrlParams();
+  const navigate = useNavigate();
+  const { userId = '' } = useUrlParams();
   const { data, loading } = useUserQuery({ variables: { id: userId }, fetchPolicy: 'cache-and-network' });
 
   const user = data?.user as UserModel;
@@ -63,7 +63,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
     },
     awaitRefetchQueries: true,
     onCompleted: () => {
-      history.push('/admin/users');
+      navigate('/admin/users', { replace: true });
     },
     onError: handleError,
   });
@@ -110,7 +110,6 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
         ...rest,
         nameID: createUserNameID(rest.firstName, rest.lastName),
         profileData: {
-          avatar: profile.avatar,
           description: profile.description,
           referencesData: [...profile.references],
           tagsetsData: [...profile.tagsets],
@@ -166,7 +165,14 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
   return (
     <div>
       {isSaving && <Loading text={'Saving...'} />}
-      <UserForm editMode={mode} onSave={handleSave} title={title} user={user} onDelete={() => setModalOpened(true)} />
+      <UserForm
+        editMode={mode}
+        onSave={handleSave}
+        title={title}
+        user={user}
+        avatar={data?.user?.profile?.avatar}
+        onDelete={() => setModalOpened(true)}
+      />
       <UserRemoveModal
         show={isModalOpened}
         onCancel={closeModal}

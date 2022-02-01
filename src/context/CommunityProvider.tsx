@@ -26,7 +26,7 @@ const CommunityContext = React.createContext<CommunityContextProps>({
 interface CommunityProviderProps {}
 
 const CommunityProvider: FC<CommunityProviderProps> = ({ children }) => {
-  const { ecoverseNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const { ecoverseNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
 
   const { data: ecoverseData, loading: loadingEcoverse } = useEcoverseCommunityQuery({
     variables: { ecoverseId: ecoverseNameId },

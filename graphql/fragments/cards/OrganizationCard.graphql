@@ -9,7 +9,9 @@ fragment OrganizationCard on Organization {
   }
   profile {
     id
-    avatar
+    avatar {
+      ...VisualUri
+    }
     description
   }
   verification {

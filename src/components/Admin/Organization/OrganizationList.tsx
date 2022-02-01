@@ -1,15 +1,16 @@
 import React, { FC } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+
 import { useDeleteOrganizationMutation, useOrganizationsListQuery } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import { ListPage } from '../ListPage';
 import { SearchableListItem } from '../SearchableList';
+import { useResolvedPath } from 'react-router-dom';
 
 interface OrganizationListProps extends PageProps {}
 
 export const OrganizationList: FC<OrganizationListProps> = ({ paths }) => {
-  const { url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
 
   const { data: organizationsListQuery } = useOrganizationsListQuery();
 
@@ -38,7 +39,7 @@ export const OrganizationList: FC<OrganizationListProps> = ({ paths }) => {
         ({
           id: c.id,
           value: c.displayName,
-          url: `${url}/${c.nameID}`,
+          url: `${c.nameID}`,
         } as SearchableListItem)
     ) || [];
 

@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset, Visual } from '../../models/graphql-schema';
+import { Context, Reference, Tagset } from '../../models/graphql-schema';
 import Typography from '../core/Typography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
@@ -12,7 +12,7 @@ import FormikSelect from '../composite/forms/FormikSelect';
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
-import { VisualSegment, visualSegmentSchema } from './Common/VisualSegment';
+import { visualSegmentSchema } from './Common/VisualSegment';
 
 interface Props {
   context?: Context;
@@ -38,7 +38,8 @@ export interface EcoverseEditFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
-  visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
+  // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
+  // visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
   anonymousReadAccess: boolean;
   tagsets: Tagset[];
 }
@@ -81,11 +82,12 @@ const EcoverseEditForm: FC<Props> = ({
     references: context?.references || [],
     tagsets: tagsets,
     host: hostID || '',
-    visual: {
+    // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
+    /*visual: {
       avatar: context?.visual?.avatar || '',
       background: context?.visual?.background || '',
       banner: context?.visual?.banner || '',
-    },
+    },*/
     anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
   };
 
@@ -140,12 +142,12 @@ const EcoverseEditForm: FC<Props> = ({
               </Typography>
             </Grid>
             <TagsetSegment tagsets={tagsets} />
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
               </Typography>
             </Grid>
-            <VisualSegment />
+            <VisualSegment />*/}
             {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>

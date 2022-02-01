@@ -223,6 +223,11 @@
     }
   },
   "components": {
+    "visual-upload": {
+      "loading": "Image is loading",
+      "success": "Image uploaded successfully",
+      "upload-hover": "Upload image"
+    },
     "tags-component": {
       "more": "+{{count}} more",
       "no-tags": "No tags available."
@@ -527,6 +532,23 @@
     }
   },
   "pages": {
+    "visual-edit": {
+      "avatar": {
+        "title": "Avatar",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "??"
+      },
+      "banner": {
+        "title": "Banner",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Banner on dashboard tab"
+      },
+      "banner-narrow": {
+        "title": "Banner for cards",
+        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+        "description2": "Usage: Banner on cards"
+      }
+    },
     "contributors": {
       "search": {
         "title": "Explore the users and organizations that are contributing!",
@@ -604,7 +626,7 @@
           "header": "Alkemio and You",
           "innovation-facilitator": "Are you driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
           "suggestions": "Do you have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!",
-          "contributor": "Do you want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io'>open source</a>. Backed by a <a href='https://alkem.io'>non-profit foundation</a>."
+          "contributor": "Do you want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Backed by a <a href='https://alkem.io' target='_blank'>non-profit foundation</a>."
         },
         "getting-started": {
           "header": "Getting Started",
@@ -856,7 +878,9 @@
         "no-data": "No members available"
       },
       "no-user-groups": "There are no user groups",
-      "no-updates": "There are no updates"
+      "updates": {
+        "no-data": "No updates available"
+      }
     },
     "canvas": {
       "header": "Canvases in this {{blockName}}",
@@ -1024,10 +1048,26 @@
       "header": "The page you are trying to reach requires you to be logged in.",
       "subheader": "Please sign-in or register to continue!"
     },
-    "user-notfications-settings": {
-      "email-notifications": {
-        "title": "Email notifications",
-        "subheader": "Receive email notifications for the following events:"
+    "user-notifications-settings": {
+      "general": {
+        "title": "General",
+        "subtitle": "This section allows you to select your preferences regarding receiving messages"
+      },
+      "community": {
+        "title": "Community management",
+        "subtitle": "This section allows you to select your preferences regarding the community management"
+      },
+      "discussions": {
+        "title": "Discussions",
+        "subtitle": "This section allows you to select your preferences regarding the discussions"
+      },
+      "user-administration": {
+        "title": "Platform Administration",
+        "subtitle": "This section is only visible to users that are a global admin on the platform"
+      },
+      "community-administration": {
+        "title": "Community administration",
+        "subtitle": "This section allows you to select your preferences regarding the community administration"
       }
     }
   },

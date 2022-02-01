@@ -2,13 +2,16 @@ import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildEcoverseUrl } from '../../../../../utils/urlBuilders';
 import getActivityCount from '../../../../../utils/get-activity-count';
-import { Ecoverse, Nvp } from '../../../../../models/graphql-schema';
+import { Ecoverse, Nvp, VisualUriFragment } from '../../../../../models/graphql-schema';
 import EntityContributionCard from '../ContributionCard/EntityContributionCard';
 import { useUserContext } from '../../../../../hooks';
+import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 
-type NeededFields = 'displayName' | 'context' | 'tagset' | 'nameID' | 'authorization' | 'id';
+type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 export interface HubCardProps {
-  ecoverse: Pick<Ecoverse, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] };
+  ecoverse: Pick<Ecoverse, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
+    context?: { tagline?: string; visuals?: VisualUriFragment[] };
+  };
   loading?: boolean;
 }
 
@@ -23,13 +26,15 @@ const HubCard: FC<HubCardProps> = ({ ecoverse, loading = false }) => {
     [user]
   );
 
+  const bannerNarrow = getVisualBannerNarrow(ecoverse?.context?.visuals);
   const { activity = [] } = ecoverse;
+
   return (
     <EntityContributionCard
       details={{
         headerText: ecoverse.displayName,
         descriptionText: ecoverse?.context?.tagline,
-        mediaUrl: ecoverse?.context?.visual?.banner,
+        mediaUrl: bannerNarrow,
         tags: ecoverse.tagset?.tags || [],
         tagsFor: 'hub',
         url: buildEcoverseUrl(ecoverse.nameID),

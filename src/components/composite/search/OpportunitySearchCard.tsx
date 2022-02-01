@@ -6,6 +6,7 @@ import OpportunityPopUp from '../entities/Opportunity/OpportunityPopUp';
 import { useEcoverseNameQuery } from '../../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
 import EntitySearchCardProps from './EntitySearchCardProps';
+import { getVisualBannerNarrow } from '../../../utils/visuals.utils';
 
 const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResultFragment>> = ({
   terms,
@@ -20,7 +21,7 @@ const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResu
   const ecoverse = data?.ecoverse;
   const tag = opportunity.challenge?.displayName || '';
 
-  const backgroundImg = opportunity.context?.visual?.background || '';
+  const backgroundImg = getVisualBannerNarrow(opportunity.context?.visuals) ?? '';
   const displayName = opportunity?.displayName || '';
 
   const _activity = opportunity?.activity || [];

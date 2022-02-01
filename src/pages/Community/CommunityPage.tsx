@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { PageProps } from '../common';
@@ -16,6 +15,9 @@ import {
 import { OrganizationCardProps } from '../../components/composite/common/cards/Organization/OrganizationCard';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
+import { useResolvedPath } from 'react-router-dom';
+import { CommunityUpdatesContainer } from '../../containers/community-updates/CommunityUpdatesContainer';
+import { AvatarsProvider } from '../../context/AvatarsProvider';
 
 export interface CommunityPageV2Props extends PageProps {
   ecoverseId?: Scalars['UUID_NAMEID'];
@@ -26,7 +28,8 @@ export interface CommunityPageV2Props extends PageProps {
 
 const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityId, challengeId, opportunityId }) => {
   const { t } = useTranslation();
-  const { url } = useRouteMatch();
+
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'community', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
@@ -36,34 +39,45 @@ const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityI
   const resourceId = opportunityId ?? challengeId ?? ecoverseId;
 
   return (
-    <CommunityPageContainer
-      ecoverseId={ecoverseId}
-      communityId={communityId}
-      challengeId={challengeId}
-      opportunityId={opportunityId}
-    >
-      {(entities, state) => {
-        const hostOrganization =
-          entities.hostOrganization &&
-          user &&
-          toOrganizationCardProps(entities.hostOrganization, entities.hostOrganization.id, user, t);
-        const leadingOrganizations =
-          user && entities.leadingOrganizations.map(x => toOrganizationCardProps(x, x.id, user, t));
-        const members = toUserCardProps(entities.members, resourceId, t);
-        return (
-          <CommunityPageView
-            title={entities?.communityName}
-            loading={state.loading}
-            showOrganizations={!opportunityId}
-            hostOrganization={hostOrganization}
-            leadingOrganizations={leadingOrganizations}
-            organizationsLoading={state.organizationsLoading}
-            members={members}
-            membersLoading={state.membersLoading}
-          />
-        );
-      }}
-    </CommunityPageContainer>
+    <CommunityUpdatesContainer entities={{ ecoverseId, communityId }}>
+      {({ messages, senders }, actions, loading) => (
+        <CommunityPageContainer
+          ecoverseId={ecoverseId}
+          communityId={communityId}
+          challengeId={challengeId}
+          opportunityId={opportunityId}
+        >
+          {(entities, state) => {
+            const hostOrganization =
+              entities.hostOrganization &&
+              user &&
+              toOrganizationCardProps(entities.hostOrganization, entities.hostOrganization.id, user, t);
+            const leadingOrganizations =
+              user && entities.leadingOrganizations.map(x => toOrganizationCardProps(x, x.id, user, t));
+            const members = toUserCardProps(entities.members, resourceId, t);
+            return (
+              <AvatarsProvider users={senders}>
+                {populatedUsers => (
+                  <CommunityPageView
+                    title={entities?.communityName}
+                    loading={state.loading}
+                    showOrganizations={!opportunityId}
+                    hostOrganization={hostOrganization}
+                    leadingOrganizations={leadingOrganizations}
+                    organizationsLoading={state.organizationsLoading}
+                    members={members}
+                    membersLoading={state.membersLoading}
+                    messages={messages}
+                    messagesLoading={loading.retrievingUpdateMessages}
+                    authors={populatedUsers}
+                  />
+                )}
+              </AvatarsProvider>
+            );
+          }}
+        </CommunityPageContainer>
+      )}
+    </CommunityUpdatesContainer>
   );
 };
 export default CommunityPage;
@@ -77,7 +91,7 @@ const toOrganizationCardProps = (
   verified: data.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
   information: data.profile.description,
   name: data.displayName,
-  avatar: data.profile.avatar,
+  avatar: data.profile.avatar?.uri,
   members: getActivityCount(data.activity ?? [], 'members') ?? 0,
   role: t(getUserCardRoleNameKey([user], resourceId)[0].roleNameKey),
   url: buildOrganizationUrl(data.nameID),
@@ -93,7 +107,7 @@ const toUserCardProps = (data: UserCardFragment[], resourceId = '', t: TFunction
         roleName: t(roleNameKey),
         tags: x?.profile?.tagsets?.flatMap(x => x.tags),
         displayName: x.displayName,
-        avatarSrc: x?.profile?.avatar,
+        avatarSrc: x?.profile?.avatar?.uri,
         city: x.city,
         country: x.country,
         url: buildUserProfileUrl(x.nameID),

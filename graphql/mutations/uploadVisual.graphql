@@ -1,0 +1,6 @@
+mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {
+  uploadImageOnVisual(file: $file, uploadData: $uploadData) {
+    id
+    uri
+  }
+}

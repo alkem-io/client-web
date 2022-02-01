@@ -10,10 +10,8 @@ fragment ChallengeSearchResult on Challenge {
   context {
     id
     tagline
-    visual {
-      id
-      avatar
-      background
+    visuals {
+      ...VisualUri
     }
   }
   tagset {

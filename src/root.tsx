@@ -2,20 +2,19 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import App from './components/composite/layout/App/App';
 import AlkemioApolloProvider from './context/ApolloProvider';
 import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
 import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
+import ServerMetadataProvider from './context/ServerMetadataProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './context/UserProvider';
 import './i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
 import { env } from './types/env';
-import ServerMetadataProvider from './context/ServerMetadataProvider';
 
 const domain = (env && env.REACT_APP_ALKEMIO_DOMAIN) ?? '';
 export const publicGraphQLEndpoint = domain + '/api/public/graphql';
@@ -74,10 +73,8 @@ const Root: FC = () => {
                       <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                         <NavigationProvider>
                           <UserProvider>
-                            <App>
-                              <ScrollToTop />
-                              <Routing />
-                            </App>
+                            <ScrollToTop />
+                            <Routing />
                           </UserProvider>
                         </NavigationProvider>
                       </AlkemioApolloProvider>

@@ -18,10 +18,8 @@ fragment ChallengeExplorerSearchResult on Challenge {
   }
   context {
     id
-    visual {
-      id
-      background
-      banner
+    visuals {
+      ...VisualUri
     }
   }
   tagset {

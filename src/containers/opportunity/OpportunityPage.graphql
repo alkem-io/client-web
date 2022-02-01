@@ -59,9 +59,8 @@ fragment OpportunityPage on Opportunity {
       explanation
       framing
     }
-    visual {
-      id
-      banner
+    visuals {
+      ...VisualUri
     }
     ecosystemModel {
       id

@@ -1,14 +1,12 @@
-import React, { FC, useMemo } from 'react';
-import { Link as RouterLink, useRouteMatch } from 'react-router-dom';
 import { Container, Link, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
-
-import Button from '../../components/core/Button';
-import Card from '../../components/core/Card';
-
-import { useUpdateNavigation } from '../../hooks';
+import React, { FC, useMemo } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { PageProps } from '..';
 import { Loading } from '../../components/core';
+import Button from '../../components/core/Button';
+import Card from '../../components/core/Card';
+import { useUpdateNavigation } from '../../hooks';
 
 interface Props extends PageProps {
   data: Array<{
@@ -24,8 +22,6 @@ interface Props extends PageProps {
 }
 
 export const ManagementPageTemplatePage: FC<Props> = ({ title, entityUrl, data, paths, loading = false }) => {
-  const { url } = useRouteMatch();
-
   useUpdateNavigation({ currentPaths: paths });
 
   const titleElement = useMemo(
@@ -66,7 +62,7 @@ export const ManagementPageTemplatePage: FC<Props> = ({ title, entityUrl, data, 
               <Grid container spacing={2}>
                 {x.buttons.map((btn, index) => (
                   <Grid key={index} item>
-                    <Button as={RouterLink} to={`${url}${btn.url}`} text={btn.description} />
+                    <Button as={RouterLink} to={`${btn.url}`} text={btn.description} />
                   </Grid>
                 ))}
               </Grid>

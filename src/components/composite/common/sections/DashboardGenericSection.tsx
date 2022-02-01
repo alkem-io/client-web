@@ -18,6 +18,9 @@ export interface DashboardGenericSectionProps {
   classes?: SectionProps['classes'];
 }
 
+const relativeLinkRegex = /^\.+\//;
+const relativeStepBackRoute = '../';
+
 const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   bannerUrl,
   headerText,
@@ -31,14 +34,15 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   classes,
   children,
 }) => {
+  const navLinkIsRelative = navLink && navLink.search(relativeLinkRegex) > -1;
+  const cleanNavLink = navLink && !navLinkIsRelative ? navLink.replace(relativeLinkRegex, '') : navLink;
+  const routerNavLink = cleanNavLink && relativeStepBackRoute.concat(cleanNavLink);
   return (
     <Section bannerUrl={bannerUrl} classes={classes}>
       {headerText && (
-        <>
-          <SectionHeader text={headerText} helpText={helpText}>
-            {primaryAction}
-          </SectionHeader>
-        </>
+        <SectionHeader text={headerText} helpText={helpText}>
+          {primaryAction}
+        </SectionHeader>
       )}
       {subHeaderText && (
         <>
@@ -53,9 +57,9 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
         {children}
         {secondaryAction}
       </Box>
-      {navText && navLink && (
+      {navText && routerNavLink && (
         <Box display="flex" justifyContent="end">
-          <Link component={RouterLink} to={navLink}>
+          <Link component={RouterLink} to={routerNavLink}>
             {navText}
           </Link>
         </Box>

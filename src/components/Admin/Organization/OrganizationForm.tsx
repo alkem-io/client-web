@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Grid } from '@mui/material';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
@@ -10,7 +10,7 @@ import { Organization, OrganizationVerificationEnum, TagsetTemplate } from '../.
 import { EditMode } from '../../../models/editMode';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
-import EditableAvatar from '../../composite/common/EditableAvatar';
+import VisualUpload from '../../composite/common/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
@@ -30,7 +30,6 @@ const emptyOrganization = {
   },
   profile: {
     description: '',
-    avatar: '',
     tagsets: [],
     references: [],
   },
@@ -50,7 +49,7 @@ export const OrganizationForm: FC<Props> = ({
   onSave,
   title = 'Organization',
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { data: config } = useTagsetsTemplateQuery();
 
@@ -95,7 +94,6 @@ export const OrganizationForm: FC<Props> = ({
     name: displayName || emptyOrganization.displayName,
     nameID: nameID || emptyOrganization.nameID,
     description: description || emptyOrganization.profile.description,
-    avatar: avatar || emptyOrganization.profile.avatar,
     tagsets: tagsets || emptyOrganization.profile.tagsets,
     contactEmail: contactEmail || emptyOrganization.contactEmail,
     domain: domain || emptyOrganization.domain,
@@ -108,7 +106,6 @@ export const OrganizationForm: FC<Props> = ({
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name || yup.string(),
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
-    avatar: profileSegmentSchema.fields?.avatar || yup.string(),
     description: profileSegmentSchema.fields?.description || yup.string(),
     contactEmail: organizationegmentSchema.fields?.contactEmail || yup.string(),
     domain: organizationegmentSchema.fields?.domain || yup.string(),
@@ -126,7 +123,7 @@ export const OrganizationForm: FC<Props> = ({
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
   const handleSubmit = async (orgData: typeof initialValues) => {
-    const { tagsets, avatar, references, description, ...otherData } = orgData;
+    const { tagsets, references, description, ...otherData } = orgData;
 
     const organization: Organization = {
       ...currentOrganization,
@@ -134,7 +131,6 @@ export const OrganizationForm: FC<Props> = ({
       displayName: otherData.name,
       profile: {
         description,
-        avatar,
         references,
         tagsets,
       },
@@ -143,7 +139,7 @@ export const OrganizationForm: FC<Props> = ({
     onSave && onSave(organization);
   };
 
-  const handleBack = () => history.back();
+  const handleBack = () => navigate(-1);
 
   const backButton = (
     <Grid item>
@@ -171,10 +167,10 @@ export const OrganizationForm: FC<Props> = ({
           enableReinitialize
           onSubmit={values => handleSubmit(values)}
         >
-          {({ values: { references, tagsets, avatar }, handleSubmit }) => {
+          {({ values: { references, tagsets }, handleSubmit }) => {
             return (
               <Form noValidate onSubmit={handleSubmit}>
-                <Section avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={profileId} />}>
+                <Section avatar={<VisualUpload visual={avatar} />}>
                   <Header text={title} />
                   <Grid container spacing={2}>
                     <NameSegment disabled={isEditMode} required={!isEditMode} />

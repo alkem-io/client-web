@@ -3,7 +3,9 @@ fragment OrganizationSearchResult on Organization {
   displayName
   profile {
     id
-    avatar
+    avatar {
+      ...VisualUri
+    }
     tagsets {
       id
       name

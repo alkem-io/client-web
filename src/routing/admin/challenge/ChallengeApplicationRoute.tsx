@@ -8,7 +8,7 @@ import { useUrlParams } from '../../../hooks';
 interface Props extends PageProps {}
 
 export const ChallengeApplicationRoute: FC<Props> = ({ paths }) => {
-  const { ecoverseNameId, challengeNameId } = useUrlParams();
+  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
   const { data, loading } = useChallengeApplicationsQuery({
     variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
     errorPolicy: 'all',

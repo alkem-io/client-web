@@ -14,7 +14,7 @@ export const UserProfilePage: FC<UserProfileProps> = ({ paths }) => {
 
   const { user: currentUser, verified } = useUserContext();
 
-  const { userId } = useUrlParams();
+  const { userId = '' } = useUrlParams();
 
   const { user: userMetadata, loading } = useUserMetadata(userId);
 

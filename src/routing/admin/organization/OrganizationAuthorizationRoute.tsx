@@ -1,28 +1,22 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { Error404 } from '../../../pages';
 import OrganizationAdminAuthorizationPage from '../../../pages/Admin/Organization/OrganizationAdminAuthorizationPage';
-import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import OrganizationOwnerAuthorizationPage from '../../../pages/Admin/Organization/OrganizationOwnerAuthorizationPage';
+import AuthorizationRouteProps from '../AuthorizationRouteProps';
 
 interface OrganizationAuthorizationRouteProps extends AuthorizationRouteProps {}
 
 const OrganizationAuthorizationRoute: FC<OrganizationAuthorizationRouteProps> = ({ paths }) => {
-  const { path, url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
 
   return (
-    <Switch>
-      <Route exact path={`${path}/admins`}>
-        <OrganizationAdminAuthorizationPage paths={currentPaths} />
-      </Route>
-      <Route exact path={`${path}/owners`}>
-        <OrganizationOwnerAuthorizationPage paths={currentPaths} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route path={'admins'} element={<OrganizationAdminAuthorizationPage paths={currentPaths} />}></Route>
+      <Route path={'owners'} element={<OrganizationOwnerAuthorizationPage paths={currentPaths} />}></Route>
+      <Route path="*" element={<Error404 />}></Route>
+    </Routes>
   );
 };
 export default OrganizationAuthorizationRoute;

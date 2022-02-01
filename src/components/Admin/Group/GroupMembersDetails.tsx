@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 interface GroupMembersDetailsProps {
   members: User[];
-  editLink?: string;
+  editLink?: boolean;
 }
 
 export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, editLink }) => {
@@ -25,7 +25,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
             <>
               <AvatarContainer title={''}>
                 {avatars.map((u, i) => (
-                  <Avatar key={i} src={u.profile?.avatar} userId={u.id} name={u.displayName} />
+                  <Avatar key={i} src={u.profile?.avatar?.uri} userId={u.id} name={u.displayName} />
                 ))}
               </AvatarContainer>
               <div style={{ flexBasis: '100%' }} />
@@ -38,7 +38,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           );
         }}
       </AvatarsProvider>
-      {editLink && <Button small as={Link} to={editLink} text={t('buttons.edit-members')} />}
+      {editLink && <Button small as={Link} to={'members'} text={t('buttons.edit-members')} />}
     </>
   );
 };

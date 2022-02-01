@@ -3,7 +3,7 @@ import { ReactComponent as FileEarmarkPostIcon } from 'bootstrap-icons/icons/fil
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import Button from '../../components/core/Button';
 import Icon from '../../components/core/Icon';
@@ -45,7 +45,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
 
   const { t } = useTranslation();
   const styles = useStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const initialValues = {
     name: 'New project',
@@ -121,7 +121,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
                     text={t('buttons.cancel-project')}
                     variant="transparent"
                     inset
-                    onClick={() => history.back()}
+                    onClick={() => navigate(-1)}
                   />
                   <Box flexGrow={1} />
                   <Button type={'submit'} text={t('buttons.create-project')} variant="primary" disabled={!isValid} />

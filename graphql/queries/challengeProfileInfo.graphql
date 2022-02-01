@@ -15,6 +15,9 @@ query challengeProfileInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!
       }
       context {
         ...ContextDetails
+        visuals {
+          ...VisualFull
+        }
       }
     }
   }

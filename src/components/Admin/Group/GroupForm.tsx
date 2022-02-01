@@ -1,22 +1,21 @@
+import { Grid } from '@mui/material';
 import { Form, Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRouteMatch } from 'react-router-dom';
+import {} from 'react-router-dom';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
+import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../models/graphql-schema';
 import { GroupFormGenerated } from '../../../models/Group';
 import { Tagset as TagsetModel } from '../../../models/Profile';
-import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../models/graphql-schema';
+import FormikInputField from '../../composite/forms/FormikInputField';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
-import EditableAvatar from '../../composite/common/EditableAvatar';
-
+import VisualUpload from '../../composite/common/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
-import { tagsetSegmentSchema, TagsetSegment } from '../Common/TagsetSegment';
+import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import GroupMembersDetails from './GroupMembersDetails';
-import { Grid } from '@mui/material';
-import FormikInputField from '../../composite/forms/FormikInputField';
 
 interface GroupFormProps {
   title?: string;
@@ -28,7 +27,6 @@ interface GroupFormProps {
 }
 
 export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, onCancel, onDelete }) => {
-  const { url } = useRouteMatch();
   const isReadOnlyMode = false;
   const isEditMode = true;
   const { t } = useTranslation();
@@ -57,7 +55,6 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
 
   const initialValues: GroupFormGenerated = {
     name: groupName || '',
-    avatar: group.profile?.avatar || '',
     tagsets: tagsets,
     references: group.profile?.references || [],
     description: group.profile?.description || '',
@@ -73,14 +70,13 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
   });
 
   const handleSubmit = async (formData: GroupFormGenerated) => {
-    const { tagsets, avatar, references, description, profileId, ...otherData } = formData;
+    const { tagsets, references, description, profileId, ...otherData } = formData;
     const group: UserGroup = {
       ...otherData,
       id: groupId,
       profile: {
         id: profileId,
         description,
-        avatar,
         references: references as Reference[],
         tagsets: tagsets as Tagset[],
       },
@@ -95,12 +91,12 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
       enableReinitialize
       onSubmit={(values, { setSubmitting }) => handleSubmit(values).finally(() => setSubmitting(false))}
     >
-      {({ values: { name, references, tagsets, avatar, description }, handleSubmit, isSubmitting }) => {
+      {({ values: { name, references, tagsets, description }, handleSubmit, isSubmitting }) => {
         return (
           <Form noValidate onSubmit={handleSubmit}>
             <Section
-              avatar={<EditableAvatar src={avatar} size={'xl'} name={'Avatar'} profileId={profileId} />}
-              details={<GroupMembersDetails members={members || []} editLink={`${url}/members`} />}
+              avatar={<VisualUpload visual={group?.profile?.avatar} />}
+              details={<GroupMembersDetails members={members || []} editLink={true} />}
             >
               <Header text={title} />
               <Grid container spacing={2}>

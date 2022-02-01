@@ -17,6 +17,7 @@ import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -40,8 +41,8 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const communityId = challenge?.community?.id || '';
   const members = (challenge?.community?.members || []) as User[];
 
-  const { tagline = '', visual, vision = '' } = context || {};
-  const bannerUrl = visual?.banner;
+  const { tagline = '', visuals, vision = '' } = context || {};
+  const bannerUrl = getVisualBanner(visuals);
 
   const orgNameIds = leadOrganizations.map(x => x.nameID);
 
@@ -90,7 +91,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             </>
           )}
         </Grid>
-        <Grid item md={6} xs={12} spacing={SPACING}>
+        <Grid item md={6} xs={12}>
           <AssociatedOrganizationsView
             title={t('pages.challenge.sections.dashboard.organization')}
             organizationNameIDs={orgNameIds}

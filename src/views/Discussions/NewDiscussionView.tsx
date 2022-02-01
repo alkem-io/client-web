@@ -53,9 +53,9 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
   };
 
   const validationSchema = yup.object().shape({
-    title: yup.string().required(t('forms.validations.required')),
+    title: yup.string().trim().required(t('forms.validations.required')),
     category: yup.string().required(t('forms.validations.required')),
-    description: yup.string().required(t('forms.validations.required')),
+    description: yup.string().trim().required(t('forms.validations.required')),
   });
 
   const handleSubmit = async (values: formValues, _helpers: FormikHelpers<formValues>) => {

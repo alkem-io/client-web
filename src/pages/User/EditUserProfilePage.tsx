@@ -1,5 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import { useHistory, useRouteMatch } from 'react-router';
+import { useNavigate } from 'react-router';
+import { useResolvedPath } from 'react-router-dom';
 import { UserForm } from '../../components/composite/forms/UserForm';
 import { Loading } from '../../components/core';
 import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
@@ -22,7 +23,6 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
     ID: userID,
     profileData: {
       ID: user.profile.id || '',
-      avatar: profile.avatar,
       description: profile.description,
       references: profile.references.filter(r => r.id).map(t => ({ ID: t.id || '', name: t.name, uri: t.uri })),
       tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: t.id || '', name: t.name, tags: [...t.tags] })),
@@ -31,9 +31,10 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
 };
 
 export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => {
-  const history = useHistory();
-  const { userId } = useUrlParams();
-  const { url } = useRouteMatch();
+  const navigate = useNavigate();
+  const { userId = '' } = useUrlParams();
+  const { pathname: url } = useResolvedPath('.');
+
   const { user: currentUser } = useUserContext();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'profile', real: true }], [url, paths]);
   useUpdateNavigation({ currentPaths });
@@ -93,11 +94,19 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
     });
 
     if (currentUser) {
-      history.push(buildUserProfileUrl(currentUser.user.nameID));
+      navigate(buildUserProfileUrl(currentUser.user.nameID), { replace: true });
     }
   };
 
-  return <UserForm title={'Profile'} user={{ ...user } as UserModel} editMode={editMode} onSave={handleSave} />;
+  return (
+    <UserForm
+      title={'Profile'}
+      user={{ ...user } as UserModel}
+      avatar={user?.profile?.avatar}
+      editMode={editMode}
+      onSave={handleSave}
+    />
+  );
 };
 
 export default EditUserProfilePage;

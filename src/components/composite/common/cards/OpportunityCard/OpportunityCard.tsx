@@ -1,14 +1,17 @@
 import React, { FC, useCallback } from 'react';
-import { Nvp, Opportunity } from '../../../../../models/graphql-schema';
+import { Nvp, Opportunity, VisualUriFragment } from '../../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import EntityContributionCard from '../ContributionCard/EntityContributionCard';
 import { buildOpportunityUrl } from '../../../../../utils/urlBuilders';
 import getActivityCount from '../../../../../utils/get-activity-count';
 import { useUserContext } from '../../../../../hooks';
+import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 
-type NeededFields = 'displayName' | 'context' | 'tagset' | 'nameID' | 'authorization' | 'id';
+type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 export interface OpportunityCardProps {
-  opportunity: Pick<Opportunity, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] };
+  opportunity: Pick<Opportunity, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
+    context?: { tagline?: string; visuals?: VisualUriFragment[] };
+  };
   ecoverseNameId: string;
   challengeNameId: string;
   loading?: boolean;
@@ -29,13 +32,16 @@ const OpportunityCard: FC<OpportunityCardProps> = ({
     },
     [user]
   );
+
+  const bannerNarrow = getVisualBannerNarrow(opportunity?.context?.visuals);
   const { activity = [] } = opportunity;
+
   return (
     <EntityContributionCard
       details={{
         headerText: opportunity.displayName,
         descriptionText: opportunity?.context?.tagline,
-        mediaUrl: opportunity?.context?.visual?.banner,
+        mediaUrl: bannerNarrow,
         tags: opportunity.tagset?.tags || [],
         tagsFor: 'opportunity',
         url: buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunity.nameID),

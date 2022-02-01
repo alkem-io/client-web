@@ -1,12 +1,12 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { useRouteMatch } from 'react-router';
 import { useUpdateNavigation } from '../../hooks';
 import { makeStyles } from '@mui/styles';
 import { Lifecycle } from '../../models/graphql-schema';
 import { PageProps } from '../../pages';
 import LifecycleVisualizer from '../core/LifecycleVisualizer';
 import LifecycleButton from '../core/LifecycleButton';
+import { useResolvedPath } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -28,7 +28,7 @@ interface Props extends PageProps {
 }
 
 const EditLifecycle: FC<Props> = ({ paths, data, id, onSetNewState }) => {
-  const { url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
   const styles = useStyles();
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'lifecycle', real: true }], [paths, url]);
   useUpdateNavigation({ currentPaths });

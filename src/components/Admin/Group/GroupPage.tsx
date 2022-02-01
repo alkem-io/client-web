@@ -1,16 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useApolloErrorHandler, useDeleteUserGroup, useNotification, useUpdateNavigation } from '../../../hooks';
 import {
   useCreateTagsetOnProfileMutation,
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import { useDeleteUserGroup } from '../../../hooks';
-import { useUpdateNavigation } from '../../../hooks';
-import { useNotification } from '../../../hooks';
-import { PageProps } from '../../../pages';
 import {
   AuthorizationCredential,
   Maybe,
@@ -19,10 +15,9 @@ import {
   User,
   UserGroup,
 } from '../../../models/graphql-schema';
-import { urlStrip } from '../../../utils/urlStrip';
-import GroupForm from './GroupForm';
+import { PageProps } from '../../../pages';
 import { logger } from '../../../services/logging/winston/logger';
-
+import GroupForm from './GroupForm';
 interface GroupPageProps extends PageProps {
   group?: UserGroup;
 }
@@ -32,7 +27,6 @@ export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInp
 
   return {
     ID: profile.id || '',
-    avatar: profile.avatar,
     description: profile.description,
     references: profile.references?.filter(r => r.id).map(t => ({ ID: t.id, name: t.name, uri: t.uri })),
     tagsets: profile.tagsets?.filter(t => t.id).map(t => ({ ID: t.id, name: t.name, tags: [...t.tags] })),
@@ -41,16 +35,14 @@ export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInp
 
 export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
   const { t } = useTranslation();
-  const { url } = useRouteMatch();
   const notify = useNotification();
   const success = (message: string) => notify(message, 'success');
   const handleError = useApolloErrorHandler();
 
-  const history = useHistory();
-  const returnRoute = urlStrip(url);
+  const navigate = useNavigate();
 
   const { handleDelete } = useDeleteUserGroup({
-    onComplete: () => history.push(returnRoute),
+    onComplete: () => navigate(-1),
   });
 
   const { data: membersData } = useUsersWithCredentialsQuery({
@@ -79,7 +71,7 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
 
   const members = membersData?.usersWithAuthorizationCredential.map(u => u as User) || [];
 
-  const handleCancel = () => history.push(returnRoute);
+  const handleCancel = () => navigate(-1);
 
   const handleSave = async (group: UserGroup) => {
     const profileId = group.profile?.id || '';

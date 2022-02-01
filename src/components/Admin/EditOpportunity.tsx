@@ -16,6 +16,7 @@ import Button from '../core/Button';
 import Typography from '../core/Typography';
 import ProfileForm, { ProfileFormValuesType } from '../composite/forms/ProfileForm';
 import FormMode from './FormMode';
+import { Context } from '../../models/graphql-schema';
 
 interface Props {
   mode: FormMode;
@@ -114,7 +115,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         name={opportunity?.displayName}
         nameID={opportunity?.nameID}
         tagset={opportunity?.tagset}
-        context={opportunity?.context}
+        context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

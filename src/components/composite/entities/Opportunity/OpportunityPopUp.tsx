@@ -3,6 +3,7 @@ import { OpportunitySearchResultFragment } from '../../../../models/graphql-sche
 import PopUp, { PopUpViewmodel } from '../../search/PopUp';
 import { buildOpportunityUrl } from '../../../../utils/urlBuilders';
 import PopUpProps from '../../dialogs/PopUpProps';
+import { getVisualAvatar } from '../../../../utils/visuals.utils';
 
 const OpportunityPopUp: FC<PopUpProps<OpportunitySearchResultFragment>> = ({
   onHide,
@@ -22,7 +23,7 @@ const OpportunityPopUp: FC<PopUpProps<OpportunitySearchResultFragment>> = ({
   const model = useMemo(
     () =>
       ({
-        avatar: opportunity?.context?.visual?.avatar,
+        avatar: getVisualAvatar(opportunity?.context?.visuals),
         displayName: opportunity?.displayName,
         tagline: opportunity?.context?.tagline,
         tags: opportunity?.tagset?.tags,

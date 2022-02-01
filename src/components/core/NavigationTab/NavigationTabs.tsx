@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useResolvedPath } from 'react-router-dom';
+import useRouteMatch from '../../../hooks/routing/useRouteMatch';
 
 const createGetter = function <T>(r: T, url: string) {
   return (key: keyof T) => `${url}${r[key]}`;
@@ -16,9 +17,10 @@ function NavigationTabs<T extends Record<string, string>>({
   routes,
   children,
 }: NavigationTabsProps<T>): React.ReactElement {
-  const { path, url } = useRouteMatch();
-  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}`));
-  const urlGetter = useMemo(() => createGetter(routes, url), [url]);
+  const { pathname: path } = useResolvedPath('./');
+
+  const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}/*`));
+  const urlGetter = useMemo(() => createGetter(routes, ''), []);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
 
   const result = useMemo(
@@ -33,7 +35,7 @@ function NavigationTabs<T extends Record<string, string>>({
     [routes]
   );
 
-  return <>{children(result, match?.path)}</>;
+  return <>{children(result, match?.pathnameBase)}</>;
 }
 
 export default NavigationTabs;

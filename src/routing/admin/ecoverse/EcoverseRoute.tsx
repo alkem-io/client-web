@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
 import { useEcoverse, useTransactionScope } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
@@ -10,13 +10,14 @@ import { buildEcoverseUrl } from '../../../utils/urlBuilders';
 import { ChallengesRoute } from '../challenge/ChallengesRoute';
 import { CommunityRoute } from '../community';
 import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
+import EcoverseVisualsPage from '../../../pages/Admin/Ecoverse/EcoverseVisualsPage';
 
 interface EcoverseAdminRouteProps extends PageProps {}
 
 export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
   const { ecoverseId, ecoverseNameId, ecoverse, loading: loadingEcoverse } = useEcoverse();
-  const { path, url } = useRouteMatch();
+  const { pathname: url } = useResolvedPath('.');
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: ecoverse?.displayName || '', real: true }],
@@ -24,37 +25,41 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
   );
 
   return (
-    <Switch>
-      <Route exact path={`${path}`}>
-        <ManagementPageTemplatePage
-          data={managementData.ecoverseLvl}
-          paths={currentPaths}
-          title={ecoverse?.displayName}
-          entityUrl={buildEcoverseUrl(ecoverseNameId)}
-          loading={loadingEcoverse}
+    <Routes>
+      <Route path={'/'}>
+        <Route
+          index
+          element={
+            <ManagementPageTemplatePage
+              data={managementData.ecoverseLvl}
+              paths={currentPaths}
+              title={ecoverse?.displayName}
+              entityUrl={buildEcoverseUrl(ecoverseNameId)}
+              loading={loadingEcoverse}
+            />
+          }
         />
-      </Route>
-      <Route path={`${path}/edit`}>
-        <EditEcoverse paths={currentPaths} />
-      </Route>
-      <Route path={`${path}/community`}>
-        <CommunityRoute
-          paths={currentPaths}
-          communityId={ecoverse?.community?.id}
-          credential={AuthorizationCredential.EcoverseMember}
-          resourceId={ecoverseId}
-          accessedFrom="hub"
+        <Route path={'edit'} element={<EditEcoverse paths={currentPaths} />} />
+        <Route path={'visuals'} element={<EcoverseVisualsPage paths={currentPaths} />} />
+        <Route
+          path={'community/*'}
+          element={
+            <CommunityRoute
+              paths={currentPaths}
+              communityId={ecoverse?.community?.id}
+              credential={AuthorizationCredential.EcoverseMember}
+              resourceId={ecoverseId}
+              accessedFrom="hub"
+            />
+          }
         />
+        <Route path={'challenges/*'} element={<ChallengesRoute paths={currentPaths} />} />
+        <Route
+          path={'authorization/*'}
+          element={<EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />}
+        />
+        <Route path="*" element={<Error404 />} />
       </Route>
-      <Route path={`${path}/challenges`}>
-        <ChallengesRoute paths={currentPaths} />
-      </Route>
-      <Route path={`${path}/authorization`}>
-        <EcoverseAuthorizationRoute paths={currentPaths} resourceId={ecoverseId} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    </Routes>
   );
 };

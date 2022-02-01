@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../pages';
 import { Path } from '../../context/NavigationProvider';
 import ApplicationPage from '../../components/Admin/Community/ApplicationPage';
@@ -13,19 +13,13 @@ interface Props {
 }
 
 export const ApplicationRoute: FC<Props> = ({ paths, applications }) => {
-  const { path } = useRouteMatch();
-
   return (
-    <Switch>
-      <Route exact path={`${path}/:${nameOfUrl.applicationId}`}>
-        <ApplicationDetailsPage />
+    <Routes>
+      <Route path={'/'}>
+        <Route index element={<ApplicationPage paths={paths} applications={applications} />}></Route>
+        <Route path={`:${nameOfUrl.applicationId}`} element={<ApplicationDetailsPage />}></Route>
+        <Route path="*" element={<Error404 />}></Route>
       </Route>
-      <Route path={path}>
-        <ApplicationPage paths={paths} applications={applications} />
-      </Route>
-      <Route path="*">
-        <Error404 />
-      </Route>
-    </Switch>
+    </Routes>
   );
 };

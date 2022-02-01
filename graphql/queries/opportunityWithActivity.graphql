@@ -11,8 +11,8 @@ query opportunityWithActivity($ecoverseId: UUID_NAMEID!) {
       }
       context {
         tagline
-        visual {
-          background
+        visuals {
+          ...VisualUri
         }
       }
       tagset {

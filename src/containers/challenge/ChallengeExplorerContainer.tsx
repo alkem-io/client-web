@@ -8,6 +8,7 @@ import { useApolloErrorHandler, useUserContext } from '../../hooks';
 export type SimpleChallenge = {
   id: string;
   ecoverseId: string;
+  ecoverseNameId: string;
 };
 
 export interface ChallengesOverviewContainerEntities {
@@ -49,6 +50,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ ch
     ecoverses.flatMap(x =>
       x?.challenges.map(y => ({
         id: y.id,
+        ecoverseNameId: x.nameID,
         ecoverseId: x.ecoverseID,
       }))
     );
