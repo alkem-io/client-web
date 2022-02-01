@@ -1885,6 +1885,11 @@ export type QueryOrganizationArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type QueryOrganizationsArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type QuerySearchArgs = {
   searchData: SearchInput;
 };
@@ -1895,6 +1900,11 @@ export type QueryUserArgs = {
 
 export type QueryUserAuthorizationPrivilegesArgs = {
   userAuthorizationPrivilegesData: UserAuthorizationPrivilegesInput;
+};
+
+export type QueryUsersArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryUsersByIdArgs = {
@@ -2052,6 +2062,10 @@ export type Subscription = {
   canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
+  /** Receive new Discussion messages */
+  communicationDiscussionMessageReceived2: CommunicationDiscussionMessageReceived;
+  /** Receive updates on Discussions */
+  communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
 };
@@ -2062,6 +2076,14 @@ export type SubscriptionCanvasContentUpdatedArgs = {
 
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
   discussionIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionCommunicationDiscussionMessageReceived2Args = {
+  discussionID: Scalars['UUID'];
+};
+
+export type SubscriptionCommunicationDiscussionUpdatedArgs = {
+  communicationID: Scalars['UUID'];
 };
 
 export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
@@ -6664,7 +6686,10 @@ export type OrganizationProfileInfoQuery = {
   };
 };
 
-export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
+export type OrganizationsListQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+}>;
 
 export type OrganizationsListQuery = {
   __typename?: 'Query';
@@ -7133,7 +7158,10 @@ export type UserProfileQuery = {
   };
 };
 
-export type UsersQueryVariables = Exact<{ [key: string]: never }>;
+export type UsersQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+}>;
 
 export type UsersQuery = {
   __typename?: 'Query';
