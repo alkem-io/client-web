@@ -22,14 +22,14 @@ const ContributorsSection = () => {
     fetchPolicy: 'cache-and-network',
     variables: {
       limit: MAX_USERS_TO_SHOW,
-      randomSelection: true,
+      shuffle: true,
     },
   });
   const { data: organizationsData, loading: loadingOrganizations } = useOrganizationsListQuery({
     fetchPolicy: 'cache-and-network',
     variables: {
       limit: MAX_ORGANIZATIONS_TO_SHOW,
-      randomSelection: true,
+      shuffle: true,
     },
   });
   const users = useMemo(() => usersData?.users || [], [usersData]);

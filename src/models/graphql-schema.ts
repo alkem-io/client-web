@@ -1887,7 +1887,7 @@ export type QueryOrganizationArgs = {
 
 export type QueryOrganizationsArgs = {
   limit?: InputMaybe<Scalars['Float']>;
-  randomSelection?: InputMaybe<Scalars['Boolean']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QuerySearchArgs = {
@@ -1904,7 +1904,7 @@ export type QueryUserAuthorizationPrivilegesArgs = {
 
 export type QueryUsersArgs = {
   limit?: InputMaybe<Scalars['Float']>;
-  randomSelection?: InputMaybe<Scalars['Boolean']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryUsersByIdArgs = {
@@ -6688,7 +6688,7 @@ export type OrganizationProfileInfoQuery = {
 
 export type OrganizationsListQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
-  randomSelection?: InputMaybe<Scalars['Boolean']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type OrganizationsListQuery = {
@@ -7160,7 +7160,7 @@ export type UserProfileQuery = {
 
 export type UsersQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
-  randomSelection?: InputMaybe<Scalars['Boolean']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 export type UsersQuery = {
