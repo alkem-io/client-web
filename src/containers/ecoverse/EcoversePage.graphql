@@ -25,26 +25,14 @@ fragment EcoversePage on Ecoverse {
   context {
     id
     tagline
-    background
     vision
-    impact
-    who
-    aspects {
-      ...AspectCard
-    }
-    references {
-      id
-      name
-      uri
-      description
-    }
     visuals {
-      ...VisualFull
+      ...VisualUri
     }
     authorization {
       id
-      myPrivileges
       anonymousReadAccess
+      myPrivileges
     }
   }
   authorization {

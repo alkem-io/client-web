@@ -8,7 +8,7 @@ import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import { Project } from '../../models/Project';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
@@ -20,7 +20,6 @@ export interface ChallengeContainerEntities {
   challenge?: ChallengeProfileFragment;
   activity: ActivityItem[];
   projects: Project[];
-  aspects: AspectCardFragment[];
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -113,8 +112,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ];
   }, [_opportunities]);
 
-  const aspects = _challenge?.ecoverse?.challenge?.context?.aspects ?? [];
-
   return (
     <>
       {children(
@@ -129,7 +126,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           isMember: user?.ofChallenge(challengeId) || false,
           projects,
           discussions: discussionList,
-          aspects,
         },
         { loading: loading || loadingProfile || loadingEcoverseContext || loadingDiscussions },
         {}

@@ -55,10 +55,7 @@ const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths: _paths }) => {
                 path={'dashboard'}
                 element={<OpportunityDashboardPage paths={currentPaths} entities={e} state={s} actions={a} />}
               />
-              <Route
-                path={'context'}
-                element={<OpportunityContextPage paths={currentPaths} entities={e} state={s} actions={a} />}
-              />
+              <Route path={'context'} element={<OpportunityContextPage paths={currentPaths} />} />
               <Route path={'community'} element={<OpportunityCommunityPage paths={currentPaths} />} />
               <Route path={'projects'} element={<OpportunityProjectsPage paths={currentPaths} entities={e} />} />
               <Route

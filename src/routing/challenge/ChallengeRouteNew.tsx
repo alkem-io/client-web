@@ -68,7 +68,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
                 path={'dashboard'}
                 element={<ChallengeDashboardPage paths={currentPaths} entities={e} state={s} />}
               />
-              <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} entities={e} state={s} />} />
+              <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} />} />
               <Route path={'community'} element={<ChallengeCommunityPage paths={currentPaths} />} />
               <Route
                 path={'community/discussions/*'}

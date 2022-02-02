@@ -29,26 +29,14 @@ fragment ChallengeProfile on Challenge {
   context {
     id
     tagline
-    background
     vision
-    impact
-    who
-    aspects {
-      ...AspectCard
-    }
-    references {
-      id
-      name
-      uri
-      description
-    }
-    visuals {
-      ...VisualFull
-    }
     authorization {
       id
       myPrivileges
       anonymousReadAccess
+    }
+    visuals {
+      ...VisualFull
     }
   }
   community {

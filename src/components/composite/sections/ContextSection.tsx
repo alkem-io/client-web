@@ -9,6 +9,7 @@ import DashboardGenericSection from '../common/sections/DashboardGenericSection'
 import { AspectCardFragment } from '../../../models/graphql-schema';
 import { CardLayoutContainer, CardLayoutItem } from '../../core/CardLayoutContainer/CardLayoutContainer';
 import AspectCard from '../common/cards/AspectCard/AspectCard';
+import MembershipBackdrop from '../common/Backdrops/MembershipBackdrop';
 
 export interface ContextSectionProps {
   primaryAction?: ReactElement;
@@ -21,6 +22,7 @@ export interface ContextSectionProps {
   who?: string;
   aspects: AspectCardFragment[];
   aspectsLoading?: boolean;
+  canReadAspects?: boolean;
 }
 
 const ContextSection: FC<ContextSectionProps> = ({
@@ -34,6 +36,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   who,
   aspects = [],
   aspectsLoading,
+  canReadAspects,
 }) => {
   const { t } = useTranslation();
   return (
@@ -56,28 +59,30 @@ const ContextSection: FC<ContextSectionProps> = ({
         <Typography component={Markdown} variant="body1" children={who} />
       </DashboardGenericSection>
       <SectionSpacer />
-      <DashboardGenericSection headerText={`${t('common.aspects')} (${aspects.length})`}>
-        <CardLayoutContainer>
-          {aspectsLoading ? (
-            <>
-              <CardLayoutItem>
-                <AspectCard loading={true} />
-              </CardLayoutItem>
-              <CardLayoutItem>
-                <AspectCard loading={true} />
-              </CardLayoutItem>
-            </>
-          ) : (
-            <>
-              {aspects.map((x, i) => (
-                <CardLayoutItem key={i}>
-                  <AspectCard aspect={x} challengeNameId={''} ecoverseNameId={''} />
+      <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
+        <DashboardGenericSection headerText={`${t('common.aspects')} (${aspects.length})`}>
+          <CardLayoutContainer>
+            {aspectsLoading ? (
+              <>
+                <CardLayoutItem>
+                  <AspectCard loading={true} />
                 </CardLayoutItem>
-              ))}
-            </>
-          )}
-        </CardLayoutContainer>
-      </DashboardGenericSection>
+                <CardLayoutItem>
+                  <AspectCard loading={true} />
+                </CardLayoutItem>
+              </>
+            ) : (
+              <>
+                {aspects.map((x, i) => (
+                  <CardLayoutItem key={i}>
+                    <AspectCard aspect={x} challengeNameId={''} ecoverseNameId={''} />
+                  </CardLayoutItem>
+                ))}
+              </>
+            )}
+          </CardLayoutContainer>
+        </DashboardGenericSection>
+      </MembershipBackdrop>
     </>
   );
 };

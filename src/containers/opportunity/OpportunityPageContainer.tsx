@@ -69,6 +69,7 @@ export interface OpportunityContainerState {
 export interface OpportunityPageContainerProps
   extends ContainerProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
 
+// todo: Do cleanup when the aspect are extended further
 const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -112,13 +113,13 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   }, [user, opportunity, ecoverseId, challengeId, opportunityId]);
 
   const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
-  const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
+  // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
   const { references = [], aspects = [] } = context ?? {};
 
   const { data: config, loading: loadingTemplate, error: errorTemplate } = useOpportunityTemplateQuery();
   const aspectsTypes = config?.configuration.template.opportunities[0].aspects ?? [];
-  const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
+  // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
   const meme = references?.find(x => x.name === 'meme') as Reference;
   const links = (references?.filter(x => ['poster', 'meme'].indexOf(x.name) === -1) ?? []) as Reference[];
@@ -130,8 +131,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.displayName)) || [];
   const isAspectAddAllowed = permissions.editAspect && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
-  const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
-  const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
+  // const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
+  const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
   const onProjectTransition = (project?: any) => {
     navigate(`${url}/projects/${project?.nameID ?? 'new'}`, { replace: true });

@@ -38,10 +38,7 @@ fragment OpportunityPage on Opportunity {
   }
   context {
     id
-    background
     tagline
-    who
-    impact
     vision
     authorization {
       id
@@ -58,20 +55,6 @@ fragment OpportunityPage on Opportunity {
     }
     visuals {
       ...VisualUri
-    }
-    ecosystemModel {
-      id
-      actorGroups {
-        id
-        name
-        actors {
-          id
-          name
-          description
-          value
-          impact
-        }
-      }
     }
   }
   #

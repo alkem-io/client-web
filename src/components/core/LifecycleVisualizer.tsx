@@ -14,7 +14,7 @@ export interface GraphThemeOptions {
 }
 
 interface Props {
-  lifecycle: Lifecycle;
+  lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>;
   options?: GraphThemeOptions;
 }
 
@@ -34,7 +34,7 @@ const LifecycleVisualizer: FC<Props> = ({ lifecycle, options }) => {
 
 const buildGraph = (
   ref: MutableRefObject<SVGSVGElement>,
-  lifecycle: Lifecycle,
+  lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>,
   theme: Theme,
   options?: GraphThemeOptions
 ) => {
@@ -55,7 +55,11 @@ const buildGraph = (
   _buildGraph(ref, lifecycle, options);
 };
 
-const _buildGraph = (ref: MutableRefObject<SVGSVGElement>, lifecycle: Lifecycle, options: GraphThemeOptions) => {
+const _buildGraph = (
+  ref: MutableRefObject<SVGSVGElement>,
+  lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>,
+  options: GraphThemeOptions
+) => {
   const machine = createMachine(JSON.parse(lifecycle.machineDef));
   const graph = toDirectedGraph(machine);
 

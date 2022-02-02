@@ -2,27 +2,41 @@ import { Link, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
 import ContextLayout from '../../components/composite/layout/Context/ContextLayout';
 import ContextSection from '../../components/composite/sections/ContextSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
-import { Context } from '../../models/graphql-schema';
+import { Context, ContextTabFragment, Tagset } from '../../models/graphql-schema';
 import { getVisualBanner } from '../../utils/visuals.utils';
+import { ViewProps } from '../../models/view';
+import { ApolloError } from '@apollo/client';
 
-interface EcoverseContextViewProps {
-  entities: EcoverseContainerEntities;
-  state: EcoverseContainerState;
+interface EcoverseContextEntities {
+  context?: ContextTabFragment;
+  hubId?: string;
+  hubNameId?: string;
+  hubDisplayName?: string;
+  hubTagSet?: Tagset;
+}
+interface EcoverseContextActions {}
+interface EcoverseContextState {
+  loading: boolean;
+  error?: ApolloError;
+}
+interface EcoverseContextOptions {
+  canReadAspects: boolean;
 }
 
-export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, state }) => {
+interface EcoverseContextViewProps
+  extends ViewProps<EcoverseContextEntities, EcoverseContextActions, EcoverseContextState, EcoverseContextOptions> {}
+
+export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, state, options }) => {
   const { t } = useTranslation();
-  const { ecoverse, permissions } = entities;
-  const { challengesReadAccess } = permissions;
-  const { context, displayName, tagset } = ecoverse || {};
+  const { canReadAspects } = options;
+  const { loading } = state;
+  const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
 
   const {
     tagline = '',
@@ -32,16 +46,14 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
     who = '',
     references,
     aspects = [],
+    visuals = [],
   } = context || ({} as Context);
-  const ecoverseBanner = getVisualBanner(ecoverse?.context?.visuals);
-
-  const ecoverseId = ecoverse?.id || '';
-  const ecoverseNameId = ecoverse?.nameID || '';
+  const ecoverseBanner = getVisualBanner(visuals);
 
   const rightPanel = (
     <>
       <DashboardGenericSection headerText={t('components.profile.fields.keywords.title')}>
-        <TagsComponent tags={tagset?.tags || []} />
+        <TagsComponent tags={hubTagSet?.tags ?? []} />
       </DashboardGenericSection>
       <SectionSpacer />
       <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
@@ -56,30 +68,31 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
 
   return (
     <ContextLayout rightPanel={rightPanel}>
-      <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.hub.sections.challenges.header')}>
-        <ContextSection
-          primaryAction={
+      <ContextSection
+        primaryAction={
+          hubId && hubNameId && hubDisplayName ? (
             <ApplicationButtonContainer
               entities={{
-                ecoverseId,
-                ecoverseNameId,
-                ecoverseName: ecoverse?.displayName || '',
+                ecoverseId: hubId,
+                ecoverseNameId: hubNameId,
+                ecoverseName: hubDisplayName,
               }}
             >
               {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
             </ApplicationButtonContainer>
-          }
-          banner={ecoverseBanner}
-          background={background}
-          displayName={displayName}
-          impact={impact}
-          tagline={tagline}
-          vision={vision}
-          who={who}
-          aspects={aspects}
-          aspectsLoading={state.loading}
-        />
-      </MembershipBackdrop>
+          ) : undefined
+        }
+        banner={ecoverseBanner}
+        background={background}
+        displayName={hubDisplayName}
+        impact={impact}
+        tagline={tagline}
+        vision={vision}
+        who={who}
+        aspects={aspects}
+        aspectsLoading={loading}
+        canReadAspects={canReadAspects}
+      />
     </ContextLayout>
   );
 };
