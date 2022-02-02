@@ -6432,7 +6432,10 @@ export type OrganizationProfileInfoQuery = {
   };
 };
 
-export type OrganizationsListQueryVariables = Exact<{ [key: string]: never }>;
+export type OrganizationsListQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+}>;
 
 export type OrganizationsListQuery = {
   __typename?: 'Query';
@@ -6901,7 +6904,10 @@ export type UserProfileQuery = {
   };
 };
 
-export type UsersQueryVariables = Exact<{ [key: string]: never }>;
+export type UsersQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+}>;
 
 export type UsersQuery = {
   __typename?: 'Query';
