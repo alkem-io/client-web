@@ -128,7 +128,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const outgoing = useMemo(() => relations.filter(x => x.type === 'outgoing'), [relations]);
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
-  const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.title)) || [];
+  const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.displayName)) || [];
   const isAspectAddAllowed = permissions.editAspect && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
   const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];

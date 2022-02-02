@@ -36,7 +36,7 @@ const Root = styled('div')(({ theme }) => ({
 }));
 
 // type NeededFields = 'title' | 'description' | 'nameID' | 'bannerNarrow' | 'id' | 'tagset';
-type NeededFields = 'id' | 'title' | 'description' | 'type';
+type NeededFields = 'id' | 'displayName' | 'description' | 'type';
 export interface AspectCardProps {
   aspect?: Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment };
   ecoverseNameId?: string;
@@ -49,13 +49,13 @@ const AspectCard: FC<AspectCardProps> = ({ aspect, loading = false }) => {
     return <></>;
   }
 
-  const { title = '', description = '', type = '' } = aspect as Aspect;
+  const { displayName = '', description = '', type = '' } = aspect as Aspect;
   const bannerNarrow = getVisualBannerNarrow(aspect?.bannerNarrow);
 
   return (
     <EntityContributionCard
       details={{
-        headerText: title,
+        headerText: displayName,
         mediaUrl: bannerNarrow,
         labelText: type,
         tags: [], // aspect.tagset?.tags ?? [],

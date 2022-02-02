@@ -137,11 +137,14 @@ export type Aspect = {
   description: Scalars['String'];
   /** The discussion for this Aspect. */
   discussion?: Maybe<Discussion>;
+  /** The display name. */
+  displayName: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
   /** The References for this Aspect. */
   references?: Maybe<Array<Reference>>;
-  title: Scalars['String'];
   type: Scalars['String'];
 };
 
@@ -565,7 +568,10 @@ export type CreateApplicationInput = {
 export type CreateAspectInput = {
   contextID: Scalars['UUID'];
   description: Scalars['String'];
-  title: Scalars['String'];
+  /** The display name for the entity. */
+  displayName?: InputMaybe<Scalars['String']>;
+  /** A readable identifier, unique within the containing scope. */
+  nameID: Scalars['NameID'];
   type: Scalars['String'];
 };
 
@@ -2161,7 +2167,10 @@ export type UpdateActorInput = {
 export type UpdateAspectInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
+  /** The display name for this entity. */
+  displayName?: InputMaybe<Scalars['String']>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
 };
 
 export type UpdateAuthorizationPolicyInput = {
@@ -2611,7 +2620,8 @@ export type UserCardFragment = {
 export type AspectCardFragment = {
   __typename?: 'Aspect';
   id: string;
-  title: string;
+  nameID: string;
+  displayName: string;
   type: string;
   description: string;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -3035,7 +3045,7 @@ export type OpportunityInfoFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        aspects?: Array<{ __typename?: 'Aspect'; id: string; title: string }> | undefined;
+        aspects?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
         ecosystemModel?:
           | {
               __typename?: 'EcosystemModel';
@@ -4029,7 +4039,7 @@ export type UpdateAspectMutationVariables = Exact<{
 
 export type UpdateAspectMutation = {
   __typename?: 'Mutation';
-  updateAspect: { __typename?: 'Aspect'; id: string; title: string };
+  updateAspect: { __typename?: 'Aspect'; id: string; displayName: string };
 };
 
 export type UpdateChallengeMutationVariables = Exact<{
@@ -5806,7 +5816,7 @@ export type OpportunityInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            aspects?: Array<{ __typename?: 'Aspect'; id: string; title: string }> | undefined;
+            aspects?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
             ecosystemModel?:
               | {
                   __typename?: 'EcosystemModel';
@@ -5978,7 +5988,7 @@ export type OpportunityAspectsOldQuery = {
         | {
             __typename?: 'Context';
             id: string;
-            aspects?: Array<{ __typename?: 'Aspect'; id: string; title: string }> | undefined;
+            aspects?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
           }
         | undefined;
     };
@@ -7731,7 +7741,8 @@ export type ChallengePageQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  title: string;
+                  nameID: string;
+                  displayName: string;
                   type: string;
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -7879,7 +7890,8 @@ export type ChallengeProfileFragment = {
           | Array<{
               __typename?: 'Aspect';
               id: string;
-              title: string;
+              nameID: string;
+              displayName: string;
               type: string;
               description: string;
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -8447,7 +8459,8 @@ export type EcoversePageQuery = {
             | Array<{
                 __typename?: 'Aspect';
                 id: string;
-                title: string;
+                nameID: string;
+                displayName: string;
                 type: string;
                 description: string;
                 banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -8524,7 +8537,8 @@ export type EcoversePageFragment = {
           | Array<{
               __typename?: 'Aspect';
               id: string;
-              title: string;
+              nameID: string;
+              displayName: string;
               type: string;
               description: string;
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -8696,7 +8710,8 @@ export type OpportunityPageQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  title: string;
+                  nameID: string;
+                  displayName: string;
                   type: string;
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -8802,7 +8817,8 @@ export type OpportunityPageFragment = {
           | Array<{
               __typename?: 'Aspect';
               id: string;
-              title: string;
+              nameID: string;
+              displayName: string;
               type: string;
               description: string;
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;

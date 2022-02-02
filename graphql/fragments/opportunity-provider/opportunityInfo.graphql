@@ -10,7 +10,7 @@ fragment OpportunityInfo on Opportunity {
     ...ContextDetails
     aspects {
       id
-      title
+      displayName
     }
     ecosystemModel {
       id

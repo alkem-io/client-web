@@ -7,7 +7,7 @@ query opportunityAspectsOld($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAME
         id
         aspects {
           id
-          title
+          displayName
         }
       }
     }

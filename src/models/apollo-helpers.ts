@@ -100,9 +100,10 @@ export type AspectKeySpecifier = (
   | 'createdBy'
   | 'description'
   | 'discussion'
+  | 'displayName'
   | 'id'
+  | 'nameID'
   | 'references'
-  | 'title'
   | 'type'
   | AspectKeySpecifier
 )[];
@@ -113,9 +114,10 @@ export type AspectFieldPolicy = {
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   discussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
-  title?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];

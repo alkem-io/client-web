@@ -274,7 +274,7 @@ export const NewActorCard: FC<NewActorProps> = ({ text, actorGroupId, opportunit
 
 interface AspectCardProps {
   id: string;
-  title: string;
+  displayName: string;
   framing?: string;
   explanation?: string;
   opportunityId: string;
@@ -284,7 +284,7 @@ interface AspectCardProps {
 
 export const AspectCard: FC<AspectCardProps> = ({
   id,
-  title,
+  displayName,
   framing,
   explanation,
   opportunityId,
@@ -315,7 +315,7 @@ export const AspectCard: FC<AspectCardProps> = ({
             background: theme => theme.palette.background.paper,
           },
         }}
-        primaryTextProps={{ text: replaceAll('_', ' ', title) }}
+        primaryTextProps={{ text: replaceAll('_', ' ', displayName) }}
         actions={
           isAdmin
             ? [
@@ -345,14 +345,14 @@ export const AspectCard: FC<AspectCardProps> = ({
       <AspectEdit
         show={isEditOpened}
         onHide={() => setEditOpened(false)}
-        data={{ id, title }}
+        data={{ id, displayName }}
         opportunityId={opportunityId}
         contextId={contextId}
         id={id}
       />
       <RemoveModal
         show={isRemoveConfirmOpened}
-        text={`Are you sure you want to remove "${title}" aspect`}
+        text={`Are you sure you want to remove "${displayName}" aspect`}
         onConfirm={() => onRemove()}
         onCancel={() => setIsRemoveConfirmOpened(false)}
       />

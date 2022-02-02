@@ -1,6 +1,7 @@
 fragment AspectCard on Aspect {
   id
-  title
+  nameID
+  displayName
   type
   description
   banner {
