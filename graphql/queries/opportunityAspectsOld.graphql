@@ -1,4 +1,4 @@
-query opportunityAspects($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+query opportunityAspectsOld($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
   ecoverse(ID: $ecoverseId) {
     id
     opportunity(ID: $opportunityId) {
@@ -8,8 +8,6 @@ query opportunityAspects($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!
         aspects {
           id
           title
-          framing
-          explanation
         }
       }
     }

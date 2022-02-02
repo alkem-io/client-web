@@ -7,7 +7,7 @@ import { useEcoverse, useUserContext } from '../../hooks';
 import { useEcoversePageProjectsQuery, useEcoversePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Project } from '../../models/Project';
-import { AuthorizationPrivilege, EcoversePageFragment } from '../../models/graphql-schema';
+import { AspectCardFragment, AuthorizationPrivilege, EcoversePageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
@@ -22,6 +22,7 @@ export interface EcoverseContainerEntities {
     challengesReadAccess: boolean;
   };
   projects: Project[];
+  aspects: AspectCardFragment[];
   activity: ActivityItem[];
   isAuthenticated: boolean;
   isMember: boolean;
@@ -121,6 +122,8 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
     challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
   };
 
+  const aspects = _ecoverse?.ecoverse?.context?.aspects ?? [];
+
   return (
     <>
       {children(
@@ -134,6 +137,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
           isAuthenticated,
           isMember,
           isGlobalAdmin,
+          aspects,
         },
         {
           loading: loadingEcoverseQuery || loadingEcoverse || loadingDiscussions,

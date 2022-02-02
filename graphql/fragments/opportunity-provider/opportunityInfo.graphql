@@ -11,8 +11,6 @@ fragment OpportunityInfo on Opportunity {
     aspects {
       id
       title
-      framing
-      explanation
     }
     ecosystemModel {
       id

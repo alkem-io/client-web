@@ -18,13 +18,21 @@ interface EcoverseContextViewProps {
   state: EcoverseContainerState;
 }
 
-export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities }) => {
+export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
   const { ecoverse, permissions } = entities;
   const { challengesReadAccess } = permissions;
   const { context, displayName, tagset } = ecoverse || {};
 
-  const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
+  const {
+    tagline = '',
+    impact = '',
+    background = '',
+    vision = '',
+    who = '',
+    references,
+    aspects = [],
+  } = context || ({} as Context);
   const ecoverseBanner = getVisualBanner(ecoverse?.context?.visuals);
 
   const ecoverseId = ecoverse?.id || '';
@@ -68,6 +76,8 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities }) 
           tagline={tagline}
           vision={vision}
           who={who}
+          aspects={aspects}
+          aspectsLoading={state.loading}
         />
       </MembershipBackdrop>
     </ContextLayout>

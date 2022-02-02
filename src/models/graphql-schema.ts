@@ -128,11 +128,21 @@ export type Aspect = {
   __typename?: 'Aspect';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  explanation: Scalars['String'];
-  framing: Scalars['String'];
+  /** The banner Visual for this Aspect. */
+  banner?: Maybe<Visual>;
+  /** The narrow banner visual for this Aspect. */
+  bannerNarrow?: Maybe<Visual>;
+  /** The id of the user that created this Aspect */
+  createdBy: Scalars['UUID'];
+  description: Scalars['String'];
+  /** The discussion for this Aspect. */
+  discussion?: Maybe<Discussion>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The References for this Aspect. */
+  references?: Maybe<Array<Reference>>;
   title: Scalars['String'];
+  type: Scalars['String'];
 };
 
 export type AssignChallengeAdminInput = {
@@ -246,6 +256,7 @@ export type AuthorizationPolicyRuleCredential = {
 
 export enum AuthorizationPrivilege {
   Create = 'CREATE',
+  CreateAspect = 'CREATE_ASPECT',
   CreateCanvas = 'CREATE_CANVAS',
   CreateHub = 'CREATE_HUB',
   CreateOrganization = 'CREATE_ORGANIZATION',
@@ -515,7 +526,7 @@ export type Context = {
   id: Scalars['UUID'];
   /** What is the potential impact? */
   impact?: Maybe<Scalars['Markdown']>;
-  /** A list of URLs to relevant information. */
+  /** The References for this Context. */
   references?: Maybe<Array<Reference>>;
   /** A one line description */
   tagline?: Maybe<Scalars['String']>;
@@ -552,10 +563,10 @@ export type CreateApplicationInput = {
 };
 
 export type CreateAspectInput = {
-  explanation: Scalars['String'];
-  framing: Scalars['String'];
-  parentID: Scalars['UUID'];
+  contextID: Scalars['UUID'];
+  description: Scalars['String'];
   title: Scalars['String'];
+  type: Scalars['String'];
 };
 
 export type CreateCanvasOnContextInput = {
@@ -657,6 +668,13 @@ export type CreateProjectInput = {
 };
 
 export type CreateReferenceInput = {
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  uri?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateReferenceOnAspectInput = {
+  aspectID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   uri?: InputMaybe<Scalars['String']>;
@@ -1113,7 +1131,7 @@ export type Mutation = {
   /** Creates Application for a User to join this Community. */
   createApplication: Application;
   /** Create a new Aspect on the Context. */
-  createAspect: Aspect;
+  createAspectOnContext: Aspect;
   /** Create a new Canvas on the Context. */
   createCanvasOnContext: Canvas;
   /** Creates a new Challenge within the specified Ecoverse. */
@@ -1134,6 +1152,8 @@ export type Mutation = {
   createOrganization: Organization;
   /** Create a new Project on the Opportunity */
   createProject: Project;
+  /** Creates a new Reference on the specified Aspect. */
+  createReferenceOnAspect: Reference;
   /** Creates a new Reference on the specified Context. */
   createReferenceOnContext: Reference;
   /** Creates a new Reference on the specified Profile. */
@@ -1334,7 +1354,7 @@ export type MutationCreateApplicationArgs = {
   applicationData: CreateApplicationInput;
 };
 
-export type MutationCreateAspectArgs = {
+export type MutationCreateAspectOnContextArgs = {
   aspectData: CreateAspectInput;
 };
 
@@ -1376,6 +1396,10 @@ export type MutationCreateOrganizationArgs = {
 
 export type MutationCreateProjectArgs = {
   projectData: CreateProjectInput;
+};
+
+export type MutationCreateReferenceOnAspectArgs = {
+  referenceData: CreateReferenceOnAspectInput;
 };
 
 export type MutationCreateReferenceOnContextArgs = {
@@ -1885,6 +1909,11 @@ export type QueryOrganizationArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type QueryOrganizationsArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type QuerySearchArgs = {
   searchData: SearchInput;
 };
@@ -1895,6 +1924,11 @@ export type QueryUserArgs = {
 
 export type QueryUserAuthorizationPrivilegesArgs = {
   userAuthorizationPrivilegesData: UserAuthorizationPrivilegesInput;
+};
+
+export type QueryUsersArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryUsersByIdArgs = {
@@ -2052,6 +2086,10 @@ export type Subscription = {
   canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
+  /** Receive new Discussion messages */
+  communicationDiscussionMessageReceived2: CommunicationDiscussionMessageReceived;
+  /** Receive updates on Discussions */
+  communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
 };
@@ -2062,6 +2100,14 @@ export type SubscriptionCanvasContentUpdatedArgs = {
 
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
   discussionIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionCommunicationDiscussionMessageReceived2Args = {
+  discussionID: Scalars['UUID'];
+};
+
+export type SubscriptionCommunicationDiscussionUpdatedArgs = {
+  communicationID: Scalars['UUID'];
 };
 
 export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
@@ -2114,8 +2160,7 @@ export type UpdateActorInput = {
 
 export type UpdateAspectInput = {
   ID: Scalars['UUID'];
-  explanation?: InputMaybe<Scalars['String']>;
-  framing?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
 };
 
@@ -2563,6 +2608,16 @@ export type UserCardFragment = {
     | undefined;
 };
 
+export type AspectCardFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  title: string;
+  type: string;
+  description: string;
+  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+};
+
 export type ChallengeCardFragment = {
   __typename?: 'Challenge';
   id: string;
@@ -2980,9 +3035,7 @@ export type OpportunityInfoFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
-        aspects?:
-          | Array<{ __typename?: 'Aspect'; id: string; title: string; framing: string; explanation: string }>
-          | undefined;
+        aspects?: Array<{ __typename?: 'Aspect'; id: string; title: string }> | undefined;
         ecosystemModel?:
           | {
               __typename?: 'EcosystemModel';
@@ -3409,15 +3462,6 @@ export type CreateApplicationMutationVariables = Exact<{
 export type CreateApplicationMutation = {
   __typename?: 'Mutation';
   createApplication: { __typename?: 'Application'; id: string };
-};
-
-export type CreateAspectMutationVariables = Exact<{
-  input: CreateAspectInput;
-}>;
-
-export type CreateAspectMutation = {
-  __typename?: 'Mutation';
-  createAspect: { __typename?: 'Aspect'; id: string; title: string };
 };
 
 export type CreateChallengeMutationVariables = Exact<{
@@ -3985,7 +4029,7 @@ export type UpdateAspectMutationVariables = Exact<{
 
 export type UpdateAspectMutation = {
   __typename?: 'Mutation';
-  updateAspect: { __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string };
+  updateAspect: { __typename?: 'Aspect'; id: string; title: string };
 };
 
 export type UpdateChallengeMutationVariables = Exact<{
@@ -4818,288 +4862,6 @@ export type ChallengeNameQuery = {
       community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
     };
   };
-};
-
-export type ChallengeProfileQueryVariables = Exact<{
-  ecoverseId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeProfileQuery = {
-  __typename?: 'Query';
-  ecoverse: {
-    __typename?: 'Ecoverse';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      nameID: string;
-      displayName: string;
-      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      leadOrganizations: Array<{
-        __typename?: 'Organization';
-        id: string;
-        displayName: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-        };
-      }>;
-      lifecycle?:
-        | {
-            __typename?: 'Lifecycle';
-            id: string;
-            machineDef: string;
-            state?: string | undefined;
-            nextEvents?: Array<string> | undefined;
-            stateIsFinal: boolean;
-          }
-        | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            tagline?: string | undefined;
-            background?: string | undefined;
-            vision?: string | undefined;
-            impact?: string | undefined;
-            who?: string | undefined;
-            references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-              | undefined;
-            visuals?:
-              | Array<{
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                }>
-              | undefined;
-            authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
-              | undefined;
-          }
-        | undefined;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-            members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
-          }
-        | undefined;
-      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      opportunities?:
-        | Array<{
-            __typename?: 'Opportunity';
-            id: string;
-            nameID: string;
-            displayName: string;
-            activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-            context?:
-              | {
-                  __typename?: 'Context';
-                  id: string;
-                  tagline?: string | undefined;
-                  background?: string | undefined;
-                  vision?: string | undefined;
-                  impact?: string | undefined;
-                  who?: string | undefined;
-                  references?:
-                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-                    | undefined;
-                  visuals?:
-                    | Array<{
-                        __typename?: 'Visual';
-                        id: string;
-                        uri: string;
-                        name: string;
-                        allowedTypes: Array<string>;
-                        aspectRatio: number;
-                        maxHeight: number;
-                        maxWidth: number;
-                        minHeight: number;
-                        minWidth: number;
-                      }>
-                    | undefined;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        anonymousReadAccess: boolean;
-                      }
-                    | undefined;
-                }
-              | undefined;
-            projects?:
-              | Array<{
-                  __typename?: 'Project';
-                  id: string;
-                  nameID: string;
-                  displayName: string;
-                  description?: string | undefined;
-                  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-                }>
-              | undefined;
-            tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-          }>
-        | undefined;
-    };
-  };
-};
-
-export type ChallengeProfileFragment = {
-  __typename?: 'Challenge';
-  id: string;
-  nameID: string;
-  displayName: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  leadOrganizations: Array<{
-    __typename?: 'Organization';
-    id: string;
-    displayName: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      description?: string | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-    };
-  }>;
-  lifecycle?:
-    | {
-        __typename?: 'Lifecycle';
-        id: string;
-        machineDef: string;
-        state?: string | undefined;
-        nextEvents?: Array<string> | undefined;
-        stateIsFinal: boolean;
-      }
-    | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        background?: string | undefined;
-        vision?: string | undefined;
-        impact?: string | undefined;
-        who?: string | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-          | undefined;
-        visuals?:
-          | Array<{
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }>
-          | undefined;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-      }
-    | undefined;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  opportunities?:
-    | Array<{
-        __typename?: 'Opportunity';
-        id: string;
-        nameID: string;
-        displayName: string;
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-        context?:
-          | {
-              __typename?: 'Context';
-              id: string;
-              tagline?: string | undefined;
-              background?: string | undefined;
-              vision?: string | undefined;
-              impact?: string | undefined;
-              who?: string | undefined;
-              references?:
-                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-                | undefined;
-              visuals?:
-                | Array<{
-                    __typename?: 'Visual';
-                    id: string;
-                    uri: string;
-                    name: string;
-                    allowedTypes: Array<string>;
-                    aspectRatio: number;
-                    maxHeight: number;
-                    maxWidth: number;
-                    minHeight: number;
-                    minWidth: number;
-                  }>
-                | undefined;
-              authorization?:
-                | {
-                    __typename?: 'Authorization';
-                    id: string;
-                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    anonymousReadAccess: boolean;
-                  }
-                | undefined;
-            }
-          | undefined;
-        projects?:
-          | Array<{
-              __typename?: 'Project';
-              id: string;
-              nameID: string;
-              displayName: string;
-              description?: string | undefined;
-              lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-            }>
-          | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      }>
-    | undefined;
 };
 
 export type ChallengeProfileInfoQueryVariables = Exact<{
@@ -6044,9 +5806,7 @@ export type OpportunityInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            aspects?:
-              | Array<{ __typename?: 'Aspect'; id: string; title: string; framing: string; explanation: string }>
-              | undefined;
+            aspects?: Array<{ __typename?: 'Aspect'; id: string; title: string }> | undefined;
             ecosystemModel?:
               | {
                   __typename?: 'EcosystemModel';
@@ -6201,12 +5961,12 @@ export type OpportunityActorGroupsQuery = {
   };
 };
 
-export type OpportunityAspectsQueryVariables = Exact<{
+export type OpportunityAspectsOldQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
-export type OpportunityAspectsQuery = {
+export type OpportunityAspectsOldQuery = {
   __typename?: 'Query';
   ecoverse: {
     __typename?: 'Ecoverse';
@@ -6218,9 +5978,7 @@ export type OpportunityAspectsQuery = {
         | {
             __typename?: 'Context';
             id: string;
-            aspects?:
-              | Array<{ __typename?: 'Aspect'; id: string; title: string; framing: string; explanation: string }>
-              | undefined;
+            aspects?: Array<{ __typename?: 'Aspect'; id: string; title: string }> | undefined;
           }
         | undefined;
     };
@@ -7921,6 +7679,310 @@ export type ChallengeExplorerSearchEnricherQuery = {
   ecoverse: { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
 };
 
+export type ChallengePageQueryVariables = Exact<{
+  ecoverseId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengePageQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      nameID: string;
+      displayName: string;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      leadOrganizations: Array<{
+        __typename?: 'Organization';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          description?: string | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+        };
+      }>;
+      lifecycle?:
+        | {
+            __typename?: 'Lifecycle';
+            id: string;
+            machineDef: string;
+            state?: string | undefined;
+            nextEvents?: Array<string> | undefined;
+            stateIsFinal: boolean;
+          }
+        | undefined;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            tagline?: string | undefined;
+            background?: string | undefined;
+            vision?: string | undefined;
+            impact?: string | undefined;
+            who?: string | undefined;
+            aspects?:
+              | Array<{
+                  __typename?: 'Aspect';
+                  id: string;
+                  title: string;
+                  type: string;
+                  description: string;
+                  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                }>
+              | undefined;
+            references?:
+              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+              | undefined;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
+              | undefined;
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
+              | undefined;
+          }
+        | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
+          }
+        | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      opportunities?:
+        | Array<{
+            __typename?: 'Opportunity';
+            id: string;
+            nameID: string;
+            displayName: string;
+            activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            context?:
+              | {
+                  __typename?: 'Context';
+                  id: string;
+                  tagline?: string | undefined;
+                  background?: string | undefined;
+                  vision?: string | undefined;
+                  impact?: string | undefined;
+                  who?: string | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
+                  visuals?:
+                    | Array<{
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }>
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        anonymousReadAccess: boolean;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            projects?:
+              | Array<{
+                  __typename?: 'Project';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+                }>
+              | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+          }>
+        | undefined;
+    };
+  };
+};
+
+export type ChallengeProfileFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  nameID: string;
+  displayName: string;
+  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  leadOrganizations: Array<{
+    __typename?: 'Organization';
+    id: string;
+    displayName: string;
+    nameID: string;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      description?: string | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+    };
+  }>;
+  lifecycle?:
+    | {
+        __typename?: 'Lifecycle';
+        id: string;
+        machineDef: string;
+        state?: string | undefined;
+        nextEvents?: Array<string> | undefined;
+        stateIsFinal: boolean;
+      }
+    | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        tagline?: string | undefined;
+        background?: string | undefined;
+        vision?: string | undefined;
+        impact?: string | undefined;
+        who?: string | undefined;
+        aspects?:
+          | Array<{
+              __typename?: 'Aspect';
+              id: string;
+              title: string;
+              type: string;
+              description: string;
+              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            }>
+          | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+      }
+    | undefined;
+  community?:
+    | {
+        __typename?: 'Community';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
+      }
+    | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  opportunities?:
+    | Array<{
+        __typename?: 'Opportunity';
+        id: string;
+        nameID: string;
+        displayName: string;
+        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+        context?:
+          | {
+              __typename?: 'Context';
+              id: string;
+              tagline?: string | undefined;
+              background?: string | undefined;
+              vision?: string | undefined;
+              impact?: string | undefined;
+              who?: string | undefined;
+              references?:
+                | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                | undefined;
+              visuals?:
+                | Array<{
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }>
+                | undefined;
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+            }
+          | undefined;
+        projects?:
+          | Array<{
+              __typename?: 'Project';
+              id: string;
+              nameID: string;
+              displayName: string;
+              description?: string | undefined;
+              lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
+            }>
+          | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+};
+
 export type ChallengesOverviewPageQueryVariables = Exact<{
   membershipData: MembershipUserInput;
 }>;
@@ -8362,27 +8424,15 @@ export type EcoversePageQuery = {
     id: string;
     nameID: string;
     displayName: string;
-    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     authorization?:
       | {
           __typename?: 'Authorization';
           id: string;
-          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
           anonymousReadAccess: boolean;
+          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         }
       | undefined;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          displayName: string;
-          members?: Array<{ __typename?: 'User'; id: string }> | undefined;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
-    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
     context?:
       | {
@@ -8393,6 +8443,17 @@ export type EcoversePageQuery = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
+          aspects?:
+            | Array<{
+                __typename?: 'Aspect';
+                id: string;
+                title: string;
+                type: string;
+                description: string;
+                banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              }>
+            | undefined;
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
@@ -8420,6 +8481,18 @@ export type EcoversePageQuery = {
             | undefined;
         }
       | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          displayName: string;
+          members?: Array<{ __typename?: 'User'; id: string }> | undefined;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 
@@ -8428,27 +8501,15 @@ export type EcoversePageFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   authorization?:
     | {
         __typename?: 'Authorization';
         id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         anonymousReadAccess: boolean;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
       }
     | undefined;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        displayName: string;
-        members?: Array<{ __typename?: 'User'; id: string }> | undefined;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
   context?:
     | {
@@ -8459,6 +8520,17 @@ export type EcoversePageFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
+        aspects?:
+          | Array<{
+              __typename?: 'Aspect';
+              id: string;
+              title: string;
+              type: string;
+              description: string;
+              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            }>
+          | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
           | undefined;
@@ -8486,6 +8558,18 @@ export type EcoversePageFragment = {
           | undefined;
       }
     | undefined;
+  community?:
+    | {
+        __typename?: 'Community';
+        id: string;
+        displayName: string;
+        members?: Array<{ __typename?: 'User'; id: string }> | undefined;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }
+    | undefined;
+  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
 };
 
 export type ProjectInfoFragment = {
@@ -8609,7 +8693,15 @@ export type OpportunityPageQuery = {
               | undefined;
             references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
             aspects?:
-              | Array<{ __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string }>
+              | Array<{
+                  __typename?: 'Aspect';
+                  id: string;
+                  title: string;
+                  type: string;
+                  description: string;
+                  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                }>
               | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
             ecosystemModel?:
@@ -8707,7 +8799,15 @@ export type OpportunityPageFragment = {
           | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
         aspects?:
-          | Array<{ __typename?: 'Aspect'; id: string; title: string; explanation: string; framing: string }>
+          | Array<{
+              __typename?: 'Aspect';
+              id: string;
+              title: string;
+              type: string;
+              description: string;
+              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            }>
           | undefined;
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         ecosystemModel?:

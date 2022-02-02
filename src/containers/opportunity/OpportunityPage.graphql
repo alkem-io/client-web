@@ -54,10 +54,7 @@ fragment OpportunityPage on Opportunity {
       uri
     }
     aspects {
-      id
-      title
-      explanation
-      framing
+      ...AspectCard
     }
     visuals {
       ...VisualUri

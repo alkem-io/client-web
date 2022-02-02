@@ -10,6 +10,7 @@ import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import {
+  AspectCardFragment,
   AuthorizationCredential,
   AuthorizationPrivilege,
   OpportunityPageFragment,
@@ -49,6 +50,7 @@ export interface OpportunityContainerEntities {
     outgoing: OpportunityPageFragment['relations'];
   };
   discussions: Discussion[];
+  aspects: AspectCardFragment[];
 }
 
 export interface OpportunityContainerActions {
@@ -207,6 +209,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
             outgoing,
           },
           discussions: [], //discussionList,
+          aspects,
         },
         {
           loading: loadingOpportunity || loadingTemplate, // || loadingDiscussions,

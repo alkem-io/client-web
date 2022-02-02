@@ -93,13 +93,30 @@ export type ApplicationTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type AspectKeySpecifier = ('authorization' | 'explanation' | 'framing' | 'id' | 'title' | AspectKeySpecifier)[];
+export type AspectKeySpecifier = (
+  | 'authorization'
+  | 'banner'
+  | 'bannerNarrow'
+  | 'createdBy'
+  | 'description'
+  | 'discussion'
+  | 'id'
+  | 'references'
+  | 'title'
+  | 'type'
+  | AspectKeySpecifier
+)[];
 export type AspectFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  explanation?: FieldPolicy<any> | FieldReadFunction<any>;
-  framing?: FieldPolicy<any> | FieldReadFunction<any>;
+  banner?: FieldPolicy<any> | FieldReadFunction<any>;
+  bannerNarrow?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  references?: FieldPolicy<any> | FieldReadFunction<any>;
   title?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
 export type AuthenticationConfigFieldPolicy = {
@@ -584,7 +601,7 @@ export type MutationKeySpecifier = (
   | 'createActor'
   | 'createActorGroup'
   | 'createApplication'
-  | 'createAspect'
+  | 'createAspectOnContext'
   | 'createCanvasOnContext'
   | 'createChallenge'
   | 'createChildChallenge'
@@ -595,6 +612,7 @@ export type MutationKeySpecifier = (
   | 'createOpportunity'
   | 'createOrganization'
   | 'createProject'
+  | 'createReferenceOnAspect'
   | 'createReferenceOnContext'
   | 'createReferenceOnProfile'
   | 'createRelation'
@@ -678,7 +696,7 @@ export type MutationFieldPolicy = {
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createApplication?: FieldPolicy<any> | FieldReadFunction<any>;
-  createAspect?: FieldPolicy<any> | FieldReadFunction<any>;
+  createAspectOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -689,6 +707,7 @@ export type MutationFieldPolicy = {
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
+  createReferenceOnAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createReferenceOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   createRelation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1035,12 +1054,16 @@ export type ServiceMetadataFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'canvasContentUpdated'
   | 'communicationDiscussionMessageReceived'
+  | 'communicationDiscussionMessageReceived2'
+  | 'communicationDiscussionUpdated'
   | 'communicationUpdateMessageReceived'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationDiscussionMessageReceived2?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdateMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = ('authorization' | 'id' | 'name' | 'tags' | TagsetKeySpecifier)[];

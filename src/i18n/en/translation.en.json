@@ -62,6 +62,8 @@
     "remove": "Remove",
     "email": "Email",
     "state": "State",
+    "aspect": "Aspect",
+    "aspects": "Aspects",
     "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",

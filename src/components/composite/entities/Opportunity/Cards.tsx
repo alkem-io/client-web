@@ -10,7 +10,7 @@ import React, { FC, useState } from 'react';
 import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
 import {
   refetchOpportunityActorGroupsQuery,
-  refetchOpportunityAspectsQuery,
+  refetchOpportunityAspectsOldQuery,
   refetchOpportunityRelationsQuery,
   useDeleteActorMutation,
   useDeleteAspectMutation,
@@ -299,7 +299,7 @@ export const AspectCard: FC<AspectCardProps> = ({
   const [removeAspect] = useDeleteAspectMutation({
     onCompleted: () => setIsRemoveConfirmOpened(false),
     onError: handleError,
-    refetchQueries: [refetchOpportunityAspectsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
+    refetchQueries: [refetchOpportunityAspectsOldQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
   const onRemove = () => removeAspect({ variables: { input: { ID: id } } });
@@ -345,7 +345,7 @@ export const AspectCard: FC<AspectCardProps> = ({
       <AspectEdit
         show={isEditOpened}
         onHide={() => setEditOpened(false)}
-        data={{ id, title, framing: framing || '', explanation: explanation || '' }}
+        data={{ id, title }}
         opportunityId={opportunityId}
         contextId={contextId}
         id={id}

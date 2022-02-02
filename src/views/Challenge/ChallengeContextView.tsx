@@ -18,11 +18,19 @@ interface ChallengeContextViewProps {
   state: ChallengeContainerState;
 }
 
-export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities }) => {
+export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
   const { challenge, ecoverseId, ecoverseNameId, ecoverseDisplayName } = entities;
   const { context, tagset, displayName } = challenge || {};
-  const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
+  const {
+    tagline = '',
+    impact = '',
+    background = '',
+    vision = '',
+    who = '',
+    references,
+    aspects = [],
+  } = context || ({} as Context);
   const banner = getVisualBanner(context?.visuals);
   const challengeId = challenge?.id || '';
   const challengeNameId = challenge?.nameID || '';
@@ -70,6 +78,8 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities }
         tagline={tagline}
         vision={vision}
         who={who}
+        aspects={aspects}
+        aspectsLoading={state.loading}
       />
     </ContextLayout>
   );

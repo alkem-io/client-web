@@ -1,0 +1,12 @@
+fragment AspectCard on Aspect {
+  id
+  title
+  type
+  description
+  banner {
+    ...VisualUri
+  }
+  bannerNarrow {
+    ...VisualUri
+  }
+}

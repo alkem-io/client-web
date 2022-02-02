@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
-import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
+import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
+import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import { Project } from '../../models/Project';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
@@ -20,6 +20,7 @@ export interface ChallengeContainerEntities {
   challenge?: ChallengeProfileFragment;
   activity: ActivityItem[];
   projects: Project[];
+  aspects: AspectCardFragment[];
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -46,7 +47,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
   const { ecoverseId, ecoverseNameId, challengeId, challengeNameId, loading } = useChallenge();
 
-  const { data: _challenge, loading: loadingProfile } = useChallengeProfileQuery({
+  const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
     variables: {
       ecoverseId: ecoverseNameId,
       challengeId: challengeNameId,
@@ -112,6 +113,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ];
   }, [_opportunities]);
 
+  const aspects = _challenge?.ecoverse?.challenge?.context?.aspects ?? [];
+
   return (
     <>
       {children(
@@ -126,6 +129,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           isMember: user?.ofChallenge(challengeId) || false,
           projects,
           discussions: discussionList,
+          aspects,
         },
         { loading: loading || loadingProfile || loadingEcoverseContext || loadingDiscussions },
         {}

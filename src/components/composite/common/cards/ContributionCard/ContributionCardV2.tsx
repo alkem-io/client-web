@@ -10,7 +10,7 @@ import TagsComponent from '../../TagsComponent/TagsComponent';
 type mediaSize = 'small' | 'medium' | 'large';
 
 export interface ContributionCardV2Details {
-  headerText: string;
+  headerText?: string;
   labelText?: string;
   descriptionText?: string;
   tagsFor?: string;

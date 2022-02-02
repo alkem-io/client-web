@@ -72,6 +72,7 @@ const OpportunityPage: FC<OpportunityPageProps> = ({ paths }) => {
                         availableActorGroupNames: entities.availableActorGroupNames,
                         existingAspectNames: entities.existingAspectNames,
                         meme: entities.meme,
+                        aspects: entities.aspects,
                       }}
                       state={{
                         showActorGroupModal: entities.showActorGroupModal,

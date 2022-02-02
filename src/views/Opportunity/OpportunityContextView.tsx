@@ -20,7 +20,7 @@ import { CardContainer } from '../../components/core/CardContainer';
 import Icon from '../../components/core/Icon';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { SectionSpacer } from '../../components/core/Section/Section';
-import { Context, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import { AspectCardFragment, Context, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { replaceAll } from '../../utils/replaceAll';
 import { getVisualBanner } from '../../utils/visuals.utils';
@@ -30,6 +30,7 @@ export interface OpportunityContextViewEntities {
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   meme?: Reference;
+  aspects: AspectCardFragment[];
 }
 
 export interface OpportunityContextViewActions {
@@ -112,6 +113,8 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
         tagline={tagline}
         vision={vision}
         who={who}
+        aspects={aspects}
+        aspectsLoading={state.loading}
       />
       <SectionSpacer />
       <Section hideDetails avatar={<Icon component={NodePlusIcon} color="primary" size="xl" />}>
