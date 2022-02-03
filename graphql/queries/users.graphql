@@ -1,5 +1,5 @@
-query users {
-  users {
+query users($limit: Float, $shuffle: Boolean) {
+  users(limit: $limit, shuffle: $shuffle) {
     ...UserDetails
   }
 }

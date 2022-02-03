@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserMetadata } from '../../../../hooks';
 import { SectionSpacer } from '../../../core/Section/Section';
@@ -17,8 +17,10 @@ export interface DashboardContributorsSectionSectionProps extends DashboardGener
   userTitle: string;
   organizationTitle: string;
   entities: {
+    usersCount: number;
     users: ContributorCardProps[];
     user?: UserMetadata;
+    organizationsCount: number;
     organizations: ContributorCardProps[];
   };
   loading: {
@@ -35,14 +37,12 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
   organizationTitle,
   ...props
 }) => {
-  const { users, organizations, user } = entities;
+  const { users, organizations, user, usersCount, organizationsCount } = entities;
   const { t } = useTranslation();
 
-  const usersCount = users.length - MAX_USERS_TO_SHOWN;
-  const organizationsCount = organizations.length - MAX_ORGANIZATIONS_TO_SHOWN;
+  const usersRemainingCount = usersCount - users.length;
+  const organizationsRemainingCount = organizationsCount - organizations.length;
 
-  const reducedUsers = useMemo(() => users.slice(0, MAX_USERS_TO_SHOWN), [users]);
-  const reducedOrganizations = useMemo(() => organizations.slice(0, MAX_ORGANIZATIONS_TO_SHOWN), [organizations]);
   return (
     <Section {...props}>
       <Grid container spacing={2}>
@@ -56,7 +56,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
                   <ContributorCardSkeleton />
                 </Grid>
               ))}
-            {reducedUsers.map((user, i) => {
+            {users.map((user, i) => {
               return (
                 <Grid item flexBasis={'16.6%'} key={i}>
                   <ContributorCard {...user} />
@@ -72,8 +72,8 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
             )}
           </Grid>
           <Box display="flex" justifyContent="end" paddingTop={2}>
-            {usersCount > 0 && (
-              <Typography>{t('dashboard-contributors-section.more', { count: usersCount })}</Typography>
+            {usersRemainingCount > 0 && (
+              <Typography>{t('dashboard-contributors-section.more', { count: usersRemainingCount })}</Typography>
             )}
           </Box>
         </Grid>
@@ -87,7 +87,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
                   <ContributorCardSkeleton />
                 </Grid>
               ))}
-            {reducedOrganizations.map((organization, i) => {
+            {organizations.map((organization, i) => {
               return (
                 <Grid item flexBasis={'16.6%'} key={i}>
                   <ContributorCard {...organization} />
@@ -96,8 +96,10 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
             })}
           </Grid>
           <Box display="flex" justifyContent="end" paddingTop={2}>
-            {organizationsCount > 0 && (
-              <Typography>{t('dashboard-contributors-section.more', { count: organizationsCount })}</Typography>
+            {organizationsRemainingCount > 0 && (
+              <Typography>
+                {t('dashboard-contributors-section.more', { count: organizationsRemainingCount })}
+              </Typography>
             )}
           </Box>
         </Grid>
