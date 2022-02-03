@@ -7,8 +7,9 @@ import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/Tagset
 import { Formik } from 'formik';
 import { Box } from '@mui/material';
 import { SectionSpacer } from '../../../core/Section/Section';
-import { Aspect, Tagset } from '../../../../models/graphql-schema';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
+import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';
+import { Tagset } from '../../../../models/graphql-schema';
 
 type FormValueType = {
   name: string;
@@ -19,31 +20,38 @@ type FormValueType = {
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-type FormMode = 'new' | 'edit' | 'read';
-export type AspectFormOutput = Pick<Aspect, 'displayName' | 'nameID' | 'description' | 'tagset'>;
-export type AspectFormInput = AspectFormOutput;
+export type AspectFormOutput = { displayName: string; nameID: string; description: string; tags: string[] };
+export type AspectFormInput = AspectCreationType;
 export interface AspectFormProps {
   aspect?: AspectFormInput;
-  mode: FormMode;
-  onChange: (aspect: AspectFormOutput) => void;
+  edit?: boolean;
+  onChange?: (aspect: AspectFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
 }
 
-const AspectForm: FC<AspectFormProps> = ({ aspect, mode, onChange, onStatusChanged }) => {
+const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, onChange, onStatusChanged }) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
+
+  const tagsets: Tagset[] = [
+    {
+      id: '-1',
+      name: 'default',
+      tags: aspect?.tags ?? [],
+    },
+  ];
 
   const initialValues: FormValueType = {
     name: aspect?.displayName ?? '',
     nameID: aspect?.nameID ?? '',
     description: aspect?.description ?? '',
-    tagsets: [aspect?.tagset ?? { id: '', name: 'default', tags: [] }],
+    tagsets,
   };
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name || yup.string(),
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
-    description: yup.string(),
+    description: yup.string().required(),
     tagsets: tagsetSegmentSchema,
   });
 
@@ -52,10 +60,10 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, mode, onChange, onStatusChang
       displayName: values.name,
       nameID: values.nameID,
       description: values.description,
-      tagset: values.tagsets[0],
+      tags: values.tagsets[0].tags,
     };
 
-    onChange(aspect);
+    onChange && onChange(aspect);
   };
 
   return (
@@ -69,16 +77,16 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, mode, onChange, onStatusChang
       {() => (
         <Box>
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          <NameSegment disabled={mode !== 'new'} required={mode === 'new'} />
+          <NameSegment disabled={edit} required={!edit} />
           <SectionSpacer />
           {getInputField({
             name: 'description',
             label: t('components.aspect-creation.info-step.description'),
             placeholder: t('components.aspect-creation.info-step.description-placeholder'),
-            disabled: mode === 'read',
+            required: true,
           })}
           <SectionSpacer />
-          <TagsetSegment tagsets={initialValues.tagsets} disabled={mode === 'read'} />
+          <TagsetSegment tagsets={tagsets} />
         </Box>
       )}
     </Formik>

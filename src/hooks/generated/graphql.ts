@@ -1597,6 +1597,66 @@ export type CreateApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateApplicationMutation,
   SchemaTypes.CreateApplicationMutationVariables
 >;
+export const CreateAspectDocument = gql`
+  mutation CreateAspect($aspectData: CreateAspectInput!) {
+    createAspectOnContext(aspectData: $aspectData) {
+      id
+      nameID
+      displayName
+      description
+      type
+      tagset {
+        id
+        name
+        tags
+      }
+      banner {
+        ...VisualUri
+      }
+      bannerNarrow {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export type CreateAspectMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateAspectMutation,
+  SchemaTypes.CreateAspectMutationVariables
+>;
+
+/**
+ * __useCreateAspectMutation__
+ *
+ * To run a mutation, you first call `useCreateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAspectMutation, { data, loading, error }] = useCreateAspectMutation({
+ *   variables: {
+ *      aspectData: // value for 'aspectData'
+ *   },
+ * });
+ */
+export function useCreateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateAspectMutation, SchemaTypes.CreateAspectMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateAspectMutation, SchemaTypes.CreateAspectMutationVariables>(
+    CreateAspectDocument,
+    options
+  );
+}
+export type CreateAspectMutationHookResult = ReturnType<typeof useCreateAspectMutation>;
+export type CreateAspectMutationResult = Apollo.MutationResult<SchemaTypes.CreateAspectMutation>;
+export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateAspectMutation,
+  SchemaTypes.CreateAspectMutationVariables
+>;
 export const CreateChallengeDocument = gql`
   mutation createChallenge($input: CreateChallengeOnEcoverseInput!) {
     createChallenge(challengeData: $input) {

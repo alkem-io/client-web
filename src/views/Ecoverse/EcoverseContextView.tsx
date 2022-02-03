@@ -39,6 +39,7 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
 
   const {
+    id = '',
     tagline = '',
     impact = '',
     background = '',
@@ -82,6 +83,7 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
             </ApplicationButtonContainer>
           ) : undefined
         }
+        contextId={id}
         banner={ecoverseBanner}
         background={background}
         displayName={hubDisplayName}

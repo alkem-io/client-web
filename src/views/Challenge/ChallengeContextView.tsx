@@ -58,6 +58,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
     challengeLifecycle,
   } = entities;
   const {
+    id = '',
     tagline = '',
     impact = '',
     background = '',
@@ -104,6 +105,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
             {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
           </ApplicationButtonContainer>
         }
+        contextId={id}
         banner={banner}
         background={background}
         displayName={challengeDisplayName}

@@ -225,6 +225,9 @@
     }
   },
   "components": {
+    "context-section": {
+      "create-aspect": "Successfully created the aspect"
+    },
     "aspect-creation": {
       "title": "Create a new aspect",
       "type-step": {
@@ -238,7 +241,13 @@
         "description-placeholder": "A description for this aspect"
       },
       "final-step": {
-        "title": "Final check"
+        "title": "Final check",
+        "type": "Type",
+        "name": "Name",
+        "description": "Description",
+        "links": "Links",
+        "canvas": "Canvas",
+        "visual": "Visual"
       }
     },
     "visual-upload": {

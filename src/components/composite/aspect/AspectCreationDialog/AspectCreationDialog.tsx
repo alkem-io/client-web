@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import Stepper from '@mui/material/Stepper';
@@ -6,28 +6,40 @@ import { Box, Button, Step } from '@mui/material';
 import StepLabel from '@mui/material/StepLabel';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
 import AspectTypeStep from './steps/AspectTypeStep/AspectTypeStep';
-import AspectInfoStep, { AspectFormOutput } from './steps/AspectInfoStep/AspectInfoStep';
+import AspectReviewStep from './steps/AspectReviewStep/AspectReviewStep';
+import { AspectFormOutput } from '../AspectForm/AspectForm';
+import AspectInfoStep from './steps/AspectInfoStep/AspectInfoStep';
+import { CreateAspectInput } from '../../../../models/graphql-schema';
+
+export type AspectCreationType = Partial<CreateAspectInput>;
+export type AspectCreationOutput = Omit<CreateAspectInput, 'contextID'>;
 
 interface IStep {
+  /** identifier  */
   index: number;
+  /** text label */
   label: string;
+  /** is it already completed */
   isCompleted: boolean;
+  /** is ir valid to complete */
   isInvalid?: boolean;
+  /** is this the first step */
   isFirst?: boolean;
+  /** is this the last step */
   isFinal?: boolean;
 }
 
 export interface AspectCreationDialogProps {
   open: boolean;
   onCancel: () => void;
+  onCreate: (aspect: AspectCreationOutput) => void;
 }
 
-const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel }) => {
+const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel, onCreate }) => {
   const { t } = useTranslation();
 
   const [completedSteps, setCompletedStep] = useState(new Set<number>());
-  const [type, setType] = useState<string>();
-  const [aspectFormOutput, setAspectFormOutput] = useState<AspectFormOutput | undefined>();
+  const [aspect, setAspect] = useState<AspectCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);
 
   const getNextStep = (step: IStep) => {
@@ -80,43 +92,52 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel })
   };
 
   const handleCancel = () => {
-    setActiveStep(steps[0]);
-    setCompletedStep(new Set<number>());
-    setType(undefined);
-    setAspectFormOutput(undefined);
+    resetState();
     onCancel();
   };
 
-  const handleFinish = () => {};
-  const handleTypeChange = (type: string) => setType(type);
-  const handleFormChange = (aspect: AspectFormOutput) => setAspectFormOutput(aspect);
+  const resetState = () => {
+    setActiveStep(steps[0]);
+    setAspect({});
+    setCompletedStep(new Set<number>());
+  };
+
+  const handleFinish = () => {
+    onCreate({
+      displayName: aspect?.displayName ?? '',
+      nameID: aspect?.displayName ?? '',
+      description: aspect?.description ?? '',
+      type: aspect?.type ?? '',
+      tags: aspect?.tags ?? [],
+    });
+    resetState();
+  };
+  const handleTypeChange = (type: string) => setAspect({ ...aspect, type });
+  const handleFormChange = (newAspect: AspectFormOutput) => setAspect({ ...aspect, ...newAspect });
   const handleFormStatusChange = (isValid: boolean) => setIsFormValid(isValid);
 
   const _isStepCompleted = (step: number) => completedSteps.has(step);
 
-  const steps: IStep[] = useMemo(
-    () => [
-      {
-        index: 0,
-        label: t('components.aspect-creation.type-step.title'),
-        isCompleted: _isStepCompleted(0),
-        isFirst: true,
-      },
-      {
-        index: 1,
-        label: t('components.aspect-creation.info-step.title'),
-        isCompleted: _isStepCompleted(1),
-        isInvalid: !isFormValid,
-      },
-      {
-        index: 2,
-        label: t('components.aspect-creation.final-step.title'),
-        isCompleted: _isStepCompleted(2),
-        isFinal: true,
-      },
-    ],
-    [t, isFormValid]
-  );
+  const steps: IStep[] = [
+    {
+      index: 0,
+      label: t('components.aspect-creation.type-step.title'),
+      isCompleted: _isStepCompleted(0),
+      isFirst: true,
+    },
+    {
+      index: 1,
+      label: t('components.aspect-creation.info-step.title'),
+      isCompleted: _isStepCompleted(1),
+      isInvalid: !isFormValid,
+    },
+    {
+      index: 2,
+      label: t('components.aspect-creation.final-step.title'),
+      isCompleted: _isStepCompleted(2),
+      isFinal: true,
+    },
+  ];
   // todo: how to move this at the beginning
   const [activeStep, setActiveStep] = useState<IStep>(steps[0]);
 
@@ -134,14 +155,11 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel })
           ))}
         </Stepper>
         <Box marginBottom={2} marginTop={4}>
-          {activeStep.index === 0 && <AspectTypeStep type={type} onChange={handleTypeChange} />}
+          {activeStep.index === 0 && <AspectTypeStep type={aspect.type} onChange={handleTypeChange} />}
           {activeStep.index === 1 && (
-            <AspectInfoStep
-              aspect={aspectFormOutput}
-              onChange={handleFormChange}
-              onStatusChanged={handleFormStatusChange}
-            />
+            <AspectInfoStep aspect={aspect} onChange={handleFormChange} onStatusChanged={handleFormStatusChange} />
           )}
+          {activeStep.index === 2 && <AspectReviewStep aspect={aspect} />}
         </Box>
       </DialogContent>
       <DialogActions>

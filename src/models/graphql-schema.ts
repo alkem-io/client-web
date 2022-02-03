@@ -3524,6 +3524,25 @@ export type CreateApplicationMutation = {
   createApplication: { __typename?: 'Application'; id: string };
 };
 
+export type CreateAspectMutationVariables = Exact<{
+  aspectData: CreateAspectInput;
+}>;
+
+export type CreateAspectMutation = {
+  __typename?: 'Mutation';
+  createAspectOnContext: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    displayName: string;
+    description: string;
+    type: string;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
 export type CreateChallengeMutationVariables = Exact<{
   input: CreateChallengeOnEcoverseInput;
 }>;

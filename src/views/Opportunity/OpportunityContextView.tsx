@@ -45,6 +45,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
   const { context, opportunityDisplayName, opportunityTagset, opportunityLifecycle } = entities;
 
   const {
+    id = '',
     tagline = '',
     impact = '',
     background = '',
@@ -77,6 +78,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
   return (
     <ContextLayout rightPanel={rightPanel}>
       <ContextSection
+        contextId={id}
         banner={banner}
         background={background}
         displayName={opportunityDisplayName}

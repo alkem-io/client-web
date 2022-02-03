@@ -11,9 +11,12 @@ import { CardLayoutContainer, CardLayoutItem } from '../../core/CardLayoutContai
 import AspectCard from '../common/cards/AspectCard/AspectCard';
 import MembershipBackdrop from '../common/Backdrops/MembershipBackdrop';
 import Button from '@mui/material/Button';
-import AspectCreationDialog from '../aspect/AspectCreationDialog/AspectCreationDialog';
+import AspectCreationDialog, { AspectCreationOutput } from '../aspect/AspectCreationDialog/AspectCreationDialog';
+import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useNotification } from '../../../hooks';
 
 export interface ContextSectionProps {
+  contextId?: string;
   primaryAction?: ReactElement;
   banner?: string;
   displayName?: string;
@@ -28,6 +31,7 @@ export interface ContextSectionProps {
 }
 
 const ContextSection: FC<ContextSectionProps> = ({
+  contextId,
   primaryAction,
   banner,
   background,
@@ -41,10 +45,91 @@ const ContextSection: FC<ContextSectionProps> = ({
   canReadAspects,
 }) => {
   const { t } = useTranslation();
+  const handleError = useApolloErrorHandler();
+  const notify = useNotification();
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
 
-  const onCreateAspectClicked = () => setAspectDialogOpen(true);
-  const onCreateAspectDialogClosed = () => setAspectDialogOpen(false);
+  const [createAspect] = useCreateAspectMutation({
+    onError: handleError,
+    onCompleted: () => notify(t('components.context-section.create-aspect'), 'success'),
+    update: (cache, { data }) => {
+      if (!data) {
+        return;
+      }
+      const { createAspectOnContext } = data;
+
+      const contextRefId = cache.identify({
+        __typename: 'Context',
+        id: contextId,
+      });
+
+      if (!contextRefId) {
+        return;
+      }
+
+      cache.modify({
+        id: contextRefId,
+        fields: {
+          aspects(existingAspects = []) {
+            const newAspectRef = cache.writeFragment({
+              data: createAspectOnContext,
+              fragment: AspectCardFragmentDoc,
+              fragmentName: 'AspectCard',
+            });
+            return [...existingAspects, newAspectRef];
+          },
+        },
+      });
+    },
+  });
+
+  const handleCreateDialogOpened = () => setAspectDialogOpen(true);
+  const handleCreateDialogClosed = () => setAspectDialogOpen(false);
+  const onCreate = async (aspect: AspectCreationOutput) => {
+    if (!contextId) {
+      return;
+    }
+
+    createAspect({
+      variables: {
+        aspectData: {
+          contextID: contextId,
+          nameID: aspect.nameID,
+          displayName: aspect.displayName,
+          description: aspect.description,
+          type: aspect.type,
+          tags: aspect.tags,
+        },
+      },
+      optimisticResponse: {
+        createAspectOnContext: {
+          __typename: 'Aspect',
+          id: '',
+          nameID: aspect.nameID,
+          displayName: aspect.displayName ?? '',
+          description: aspect.description,
+          type: aspect.type,
+          tagset: {
+            id: '-1',
+            name: 'default',
+            tags: aspect.tags ?? [],
+          },
+          banner: {
+            id: '-1',
+            name: '',
+            uri: '',
+          },
+          bannerNarrow: {
+            id: '-1',
+            name: '',
+            uri: '',
+          },
+        },
+      },
+    });
+
+    setAspectDialogOpen(false);
+  };
 
   return (
     <>
@@ -69,7 +154,7 @@ const ContextSection: FC<ContextSectionProps> = ({
       <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
         <DashboardGenericSection
           headerText={`${t('common.aspects')} (${aspects.length})`}
-          primaryAction={<Button onClick={onCreateAspectClicked}>Create</Button>}
+          primaryAction={<Button onClick={handleCreateDialogOpened}>Create</Button>}
         >
           <CardLayoutContainer>
             {aspectsLoading ? (
@@ -93,7 +178,7 @@ const ContextSection: FC<ContextSectionProps> = ({
           </CardLayoutContainer>
         </DashboardGenericSection>
       </MembershipBackdrop>
-      <AspectCreationDialog open={aspectDialogOpen} onCancel={onCreateAspectDialogClosed} />
+      <AspectCreationDialog open={aspectDialogOpen} onCancel={handleCreateDialogClosed} onCreate={onCreate} />
     </>
   );
 };
