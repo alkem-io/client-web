@@ -6,6 +6,10 @@ import Markdown from '../../core/Markdown';
 import { SectionSpacer } from '../../core/Section/Section';
 import SectionHeader from '../../core/Section/SectionHeader';
 import DashboardGenericSection from '../common/sections/DashboardGenericSection';
+import { AspectCardFragment } from '../../../models/graphql-schema';
+import { CardLayoutContainer, CardLayoutItem } from '../../core/CardLayoutContainer/CardLayoutContainer';
+import AspectCard from '../common/cards/AspectCard/AspectCard';
+import MembershipBackdrop from '../common/Backdrops/MembershipBackdrop';
 
 export interface ContextSectionProps {
   primaryAction?: ReactElement;
@@ -16,6 +20,9 @@ export interface ContextSectionProps {
   background?: string;
   impact?: string;
   who?: string;
+  aspects: AspectCardFragment[];
+  aspectsLoading?: boolean;
+  canReadAspects?: boolean;
 }
 
 const ContextSection: FC<ContextSectionProps> = ({
@@ -27,27 +34,55 @@ const ContextSection: FC<ContextSectionProps> = ({
   vision,
   impact,
   who,
+  aspects = [],
+  aspectsLoading,
+  canReadAspects,
 }) => {
   const { t } = useTranslation();
   return (
     <>
       <DashboardGenericSection primaryAction={primaryAction} bannerUrl={banner} headerText={displayName}>
-        <Typography component={Markdown} variant="body1" children={tagline}></Typography>
-        <SectionHeader text={t('components.contextSegment.vision.title')}></SectionHeader>
-        <Typography component={Markdown} variant="body1" children={vision}></Typography>
+        <Typography component={Markdown} variant="body1" children={tagline} />
+        <SectionHeader text={t('components.contextSegment.vision.title')} />
+        <Typography component={Markdown} variant="body1" children={vision} />
       </DashboardGenericSection>
       <SectionSpacer />
       <DashboardGenericSection headerText={t('components.contextSegment.background.title')}>
-        <Typography component={Markdown} variant="body1" children={background}></Typography>
+        <Typography component={Markdown} variant="body1" children={background} />
       </DashboardGenericSection>
       <SectionSpacer />
       <DashboardGenericSection headerText={t('components.contextSegment.impact.title')}>
-        <Typography component={Markdown} variant="body1" children={impact}></Typography>
+        <Typography component={Markdown} variant="body1" children={impact} />
       </DashboardGenericSection>
       <SectionSpacer />
       <DashboardGenericSection headerText={t('components.contextSegment.who.title')}>
-        <Typography component={Markdown} variant="body1" children={who}></Typography>
+        <Typography component={Markdown} variant="body1" children={who} />
       </DashboardGenericSection>
+      <SectionSpacer />
+      <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
+        <DashboardGenericSection headerText={`${t('common.aspects')} (${aspects.length})`}>
+          <CardLayoutContainer>
+            {aspectsLoading ? (
+              <>
+                <CardLayoutItem>
+                  <AspectCard loading={true} />
+                </CardLayoutItem>
+                <CardLayoutItem>
+                  <AspectCard loading={true} />
+                </CardLayoutItem>
+              </>
+            ) : (
+              <>
+                {aspects.map((x, i) => (
+                  <CardLayoutItem key={i}>
+                    <AspectCard aspect={x} challengeNameId={''} ecoverseNameId={''} />
+                  </CardLayoutItem>
+                ))}
+              </>
+            )}
+          </CardLayoutContainer>
+        </DashboardGenericSection>
+      </MembershipBackdrop>
     </>
   );
 };

@@ -62,6 +62,8 @@
     "remove": "Remove",
     "email": "Email",
     "state": "State",
+    "aspect": "Aspect",
+    "aspects": "Aspects",
     "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",
@@ -262,7 +264,7 @@
       "title": "Filter"
     },
     "backdrop": {
-      "private": "{{blockName}} are only visible to members.",
+      "private": "Please become a member to access {{blockName}}",
       "authentication": "Please sign in to see details about the {{blockName}}."
     },
     "notifications": {

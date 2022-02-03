@@ -1,0 +1,93 @@
+query HubContext($hubNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    nameID
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    context {
+      ...ContextTab
+    }
+  }
+}
+
+query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    nameID
+    displayName
+    challenge(ID: $challengeNameId) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      lifecycle {
+        ...LifecycleContextTab
+      }
+      context {
+        ...ContextTab
+      }
+    }
+  }
+}
+
+query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    nameID
+    opportunity(ID: $opportunityNameId) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      lifecycle {
+        ...LifecycleContextTab
+      }
+      context {
+        ...ContextTab
+      }
+    }
+  }
+}
+
+fragment ContextTab on Context {
+  id
+  tagline
+  background
+  vision
+  impact
+  who
+  authorization {
+    id
+    myPrivileges
+  }
+  aspects {
+    ...AspectCard
+  }
+  references {
+    id
+    name
+    uri
+    description
+  }
+  visuals {
+    ...VisualFull
+  }
+}
+
+fragment LifecycleContextTab on Lifecycle {
+  id
+  state
+  machineDef
+}

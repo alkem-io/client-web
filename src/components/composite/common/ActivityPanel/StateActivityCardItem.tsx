@@ -36,7 +36,7 @@ const useDialogStyles = makeStyles(() => ({
 }));
 
 export interface LifecycleModalProps {
-  lifecycle: Lifecycle;
+  lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>;
   show: boolean;
   onHide: () => void;
 }

@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle as LifecycleModel } from '../../../models/graphql-schema';
+import { Lifecycle } from '../../../models/graphql-schema';
 import DashboardGenericSection from '../common/sections/DashboardGenericSection';
 import LifecycleState from '../entities/Lifecycle/LifecycleState';
 
 export interface LifecycleSectionProps {
-  lifecycle?: LifecycleModel;
+  lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
 }
 
 const LifecycleSection: FC<LifecycleSectionProps> = ({ lifecycle }) => {

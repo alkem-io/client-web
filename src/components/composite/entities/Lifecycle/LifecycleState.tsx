@@ -2,11 +2,11 @@ import InfoIcon from '@mui/icons-material/Info';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle as LifecycleModel } from '../../../../models/graphql-schema';
+import { Lifecycle } from '../../../../models/graphql-schema';
 import { LifecycleModal } from '../../common/ActivityPanel/StateActivityCardItem';
 
 export interface LifecycleProps {
-  lifecycle?: LifecycleModel;
+  lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
 }
 
 const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {

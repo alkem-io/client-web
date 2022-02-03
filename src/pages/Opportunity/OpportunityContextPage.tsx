@@ -1,30 +1,38 @@
 import React, { FC, useMemo } from 'react';
-import { OpportunityContainerActions, OpportunityContainerEntities, OpportunityContainerState } from '../../containers';
 import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
 import { PageProps } from '../common';
-import { useUpdateNavigation } from '../../hooks';
+import { useOpportunity, useUpdateNavigation } from '../../hooks';
+import ContextTabContainer from '../../containers/context/ContextTabContainer';
 
-export interface OpportunityContextPageProps extends PageProps {
-  entities: OpportunityContainerEntities;
-  state: OpportunityContainerState;
-  actions: OpportunityContainerActions;
-}
+export interface OpportunityContextPageProps extends PageProps {}
 
-const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths, entities, state, actions }) => {
+const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/context', name: 'context', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
+  const { ecoverseNameId, opportunityNameId, displayName } = useOpportunity();
+
   return (
-    <OpportunityContextView
-      entities={entities}
-      state={{
-        showActorGroupModal: entities.showActorGroupModal,
-        loading: state.loading,
-        error: state.error,
-      }}
-      actions={actions}
-      options={entities.permissions}
-    />
+    <ContextTabContainer hubNameId={ecoverseNameId} opportunityNameId={opportunityNameId}>
+      {(entities, state) => (
+        <OpportunityContextView
+          entities={{
+            opportunityDisplayName: displayName,
+            opportunityTagset: entities.tagset,
+            opportunityLifecycle: entities.lifecycle,
+            context: entities.context,
+          }}
+          state={{
+            loading: state.loading,
+            error: state.error,
+          }}
+          options={{
+            canReadAspects: entities.permissions.canReadAspects,
+          }}
+          actions={{}}
+        />
+      )}
+    </ContextTabContainer>
   );
 };
 export default OpportunityContextPage;

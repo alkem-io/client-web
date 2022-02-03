@@ -9,31 +9,72 @@ import ContextSection from '../../components/composite/sections/ContextSection';
 import LifecycleSection from '../../components/composite/sections/LifecycleSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { Context } from '../../models/graphql-schema';
+import { Context, ContextTabFragment, LifecycleContextTabFragment, Tagset } from '../../models/graphql-schema';
 import { getVisualBanner } from '../../utils/visuals.utils';
+import { ApolloError } from '@apollo/client';
+import { ViewProps } from '../../models/view';
 
-interface ChallengeContextViewProps {
-  entities: ChallengeContainerEntities;
-  state: ChallengeContainerState;
+interface ChallengeContextEntities {
+  context?: ContextTabFragment;
+  hubId?: string;
+  hubNameId?: string;
+  hubDisplayName?: string;
+  challengeId?: string;
+  challengeNameId?: string;
+  challengeDisplayName?: string;
+  challengeTagset?: Tagset;
+  challengeLifecycle?: LifecycleContextTabFragment;
+}
+interface ChallengeContextActions {}
+interface ChallengeContextState {
+  loading: boolean;
+  error?: ApolloError;
+}
+interface ChallengeContextOptions {
+  canReadAspects: boolean;
 }
 
-export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities }) => {
+interface ChallengeContextViewProps
+  extends ViewProps<
+    ChallengeContextEntities,
+    ChallengeContextActions,
+    ChallengeContextState,
+    ChallengeContextOptions
+  > {}
+
+export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
   const { t } = useTranslation();
-  const { challenge, ecoverseId, ecoverseNameId, ecoverseDisplayName } = entities;
-  const { context, tagset, displayName } = challenge || {};
-  const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
-  const banner = getVisualBanner(context?.visuals);
-  const challengeId = challenge?.id || '';
-  const challengeNameId = challenge?.nameID || '';
-  const lifecycle = challenge?.lifecycle;
+  const { canReadAspects } = options;
+  const { loading } = state;
+  const {
+    context,
+    hubId = '',
+    hubNameId = '',
+    hubDisplayName = '',
+    challengeId,
+    challengeNameId,
+    challengeDisplayName = '',
+    challengeTagset,
+    challengeLifecycle,
+  } = entities;
+  const {
+    tagline = '',
+    impact = '',
+    background = '',
+    vision = '',
+    who = '',
+    references,
+    aspects = [],
+    visuals = [],
+  } = context || ({} as Context);
+  const banner = getVisualBanner(visuals);
 
   const rightPanel = (
     <>
-      <LifecycleSection lifecycle={lifecycle} />
+      <LifecycleSection lifecycle={challengeLifecycle} />
       <SectionSpacer />
       <DashboardGenericSection headerText={t('components.profile.fields.keywords.title')}>
-        <TagsComponent tags={tagset?.tags || []} />
+        <TagsComponent tags={challengeTagset?.tags ?? []} />
       </DashboardGenericSection>
       <SectionSpacer />
       <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
@@ -52,11 +93,11 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities }
         primaryAction={
           <ApplicationButtonContainer
             entities={{
-              ecoverseId,
-              ecoverseNameId,
-              ecoverseName: ecoverseDisplayName,
+              ecoverseId: hubId,
+              ecoverseNameId: hubNameId,
+              ecoverseName: hubDisplayName,
               challengeId,
-              challengeName: challenge?.displayName || '',
+              challengeName: challengeDisplayName,
               challengeNameId,
             }}
           >
@@ -65,11 +106,14 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities }
         }
         banner={banner}
         background={background}
-        displayName={displayName}
+        displayName={challengeDisplayName}
         impact={impact}
         tagline={tagline}
         vision={vision}
         who={who}
+        aspects={aspects}
+        aspectsLoading={loading}
+        canReadAspects={canReadAspects}
       />
     </ContextLayout>
   );

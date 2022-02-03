@@ -17,7 +17,7 @@ const Root = styled('div')(({ theme }) => ({
 }));
 
 export interface EntityContributionCardProps extends ContributionCardV2Props {
-  activities: ActivityItem[];
+  activities?: ActivityItem[];
   isMember?: boolean;
   isAnonymous?: boolean;
 }
@@ -56,8 +56,12 @@ const EntityContributionCard: FC<EntityContributionCardProps> = ({
     <Root>
       <ContributionCardV2 details={details} classes={classes} loading={loading}>
         <SectionSpacer double />
-        <ActivitiesV2 activity={activities} />
-        <SectionSpacer />
+        {activities && (
+          <>
+            <ActivitiesV2 activity={activities} />
+            <SectionSpacer />
+          </>
+        )}
         {children}
       </ContributionCardV2>
     </Root>

@@ -55,7 +55,7 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
             >
               <Route index element={<Navigate replace to={'dashboard'} />} />
               <Route path={'dashboard'} element={<EcoverseDashboardPage paths={currentPaths} />} />
-              <Route path={'context'} element={<EcoverseContextPage paths={currentPaths} entities={e} state={s} />} />
+              <Route path={'context'} element={<EcoverseContextPage paths={currentPaths} />} />
               <Route path={'community'} element={<EcoverseCommunityPage paths={currentPaths} />} />
               <Route
                 path={'community/discussions/*'}
