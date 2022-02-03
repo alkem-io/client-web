@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ReactElement } from 'react-markdown';
 import Markdown from '../../core/Markdown';
@@ -10,6 +10,8 @@ import { AspectCardFragment } from '../../../models/graphql-schema';
 import { CardLayoutContainer, CardLayoutItem } from '../../core/CardLayoutContainer/CardLayoutContainer';
 import AspectCard from '../common/cards/AspectCard/AspectCard';
 import MembershipBackdrop from '../common/Backdrops/MembershipBackdrop';
+import Button from '@mui/material/Button';
+import AspectCreationDialog from '../aspect/AspectCreationDialog/AspectCreationDialog';
 
 export interface ContextSectionProps {
   primaryAction?: ReactElement;
@@ -39,6 +41,11 @@ const ContextSection: FC<ContextSectionProps> = ({
   canReadAspects,
 }) => {
   const { t } = useTranslation();
+  const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
+
+  const onCreateAspectClicked = () => setAspectDialogOpen(true);
+  const onCreateAspectDialogClosed = () => setAspectDialogOpen(false);
+
   return (
     <>
       <DashboardGenericSection primaryAction={primaryAction} bannerUrl={banner} headerText={displayName}>
@@ -60,7 +67,10 @@ const ContextSection: FC<ContextSectionProps> = ({
       </DashboardGenericSection>
       <SectionSpacer />
       <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
-        <DashboardGenericSection headerText={`${t('common.aspects')} (${aspects.length})`}>
+        <DashboardGenericSection
+          headerText={`${t('common.aspects')} (${aspects.length})`}
+          primaryAction={<Button onClick={onCreateAspectClicked}>Create</Button>}
+        >
           <CardLayoutContainer>
             {aspectsLoading ? (
               <>
@@ -83,6 +93,7 @@ const ContextSection: FC<ContextSectionProps> = ({
           </CardLayoutContainer>
         </DashboardGenericSection>
       </MembershipBackdrop>
+      <AspectCreationDialog open={aspectDialogOpen} onCancel={onCreateAspectDialogClosed} />
     </>
   );
 };
