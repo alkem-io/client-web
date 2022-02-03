@@ -97,13 +97,14 @@ export type AspectKeySpecifier = (
   | 'authorization'
   | 'banner'
   | 'bannerNarrow'
+  | 'comments'
   | 'createdBy'
   | 'description'
-  | 'discussion'
   | 'displayName'
   | 'id'
   | 'nameID'
   | 'references'
+  | 'tagset'
   | 'type'
   | AspectKeySpecifier
 )[];
@@ -111,13 +112,14 @@ export type AspectFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   banner?: FieldPolicy<any> | FieldReadFunction<any>;
   bannerNarrow?: FieldPolicy<any> | FieldReadFunction<any>;
+  comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
-  discussion?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
@@ -239,6 +241,17 @@ export type ChallengeTemplateKeySpecifier = ('applications' | 'name' | Challenge
 export type ChallengeTemplateFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommentsKeySpecifier = ('authorization' | 'id' | 'messages' | CommentsKeySpecifier)[];
+export type CommentsFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  messages?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommentsMessageReceivedKeySpecifier = ('commentsID' | 'message' | CommentsMessageReceivedKeySpecifier)[];
+export type CommentsMessageReceivedFieldPolicy = {
+  commentsID?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
@@ -645,6 +658,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToUser'
   | 'grantStateModificationOnChallenge'
   | 'messageUser'
+  | 'removeComment'
   | 'removeMessageFromDiscussion'
   | 'removeUpdate'
   | 'removeUserAsChallengeAdmin'
@@ -658,6 +672,7 @@ export type MutationKeySpecifier = (
   | 'removeUserFromGroup'
   | 'removeUserFromOrganization'
   | 'revokeCredentialFromUser'
+  | 'sendComment'
   | 'sendMessageToDiscussion'
   | 'sendUpdate'
   | 'updateActor'
@@ -740,6 +755,7 @@ export type MutationFieldPolicy = {
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   grantStateModificationOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeComment?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -753,6 +769,7 @@ export type MutationFieldPolicy = {
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendComment?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   sendUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1319,6 +1336,14 @@ export type StrictTypedTypePolicies = {
   ChallengeTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ChallengeTemplateKeySpecifier | (() => undefined | ChallengeTemplateKeySpecifier);
     fields?: ChallengeTemplateFieldPolicy;
+  };
+  Comments?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommentsKeySpecifier | (() => undefined | CommentsKeySpecifier);
+    fields?: CommentsFieldPolicy;
+  };
+  CommentsMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommentsMessageReceivedKeySpecifier | (() => undefined | CommentsMessageReceivedKeySpecifier);
+    fields?: CommentsMessageReceivedFieldPolicy;
   };
   Communication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunicationKeySpecifier | (() => undefined | CommunicationKeySpecifier);

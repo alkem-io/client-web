@@ -10,4 +10,9 @@ fragment AspectCard on Aspect {
   bannerNarrow {
     ...VisualUri
   }
+  tagset {
+    id
+    name
+    tags
+  }
 }

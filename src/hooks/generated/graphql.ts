@@ -1080,6 +1080,11 @@ export const AspectCardFragmentDoc = gql`
     bannerNarrow {
       ...VisualUri
     }
+    tagset {
+      id
+      name
+      tags
+    }
   }
   ${VisualUriFragmentDoc}
 `;
@@ -8394,8 +8399,8 @@ export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.Organ
   return { query: OrganizationProfileInfoDocument, variables: variables };
 }
 export const OrganizationsListDocument = gql`
-  query organizationsList {
-    organizations {
+  query organizationsList($limit: Float, $shuffle: Boolean) {
+    organizations(limit: $limit, shuffle: $shuffle) {
       id
       nameID
       displayName
@@ -8422,6 +8427,8 @@ export const OrganizationsListDocument = gql`
  * @example
  * const { data, loading, error } = useOrganizationsListQuery({
  *   variables: {
+ *      limit: // value for 'limit'
+ *      shuffle: // value for 'shuffle'
  *   },
  * });
  */
@@ -9299,8 +9306,8 @@ export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryV
   return { query: UserProfileDocument, variables: variables };
 }
 export const UsersDocument = gql`
-  query users {
-    users {
+  query users($limit: Float, $shuffle: Boolean) {
+    users(limit: $limit, shuffle: $shuffle) {
       ...UserDetails
     }
   }
@@ -9319,6 +9326,8 @@ export const UsersDocument = gql`
  * @example
  * const { data, loading, error } = useUsersQuery({
  *   variables: {
+ *      limit: // value for 'limit'
+ *      shuffle: // value for 'shuffle'
  *   },
  * });
  */
