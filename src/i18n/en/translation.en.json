@@ -225,6 +225,20 @@
     }
   },
   "components": {
+    "aspect-creation": {
+      "title": "Create a new aspect",
+      "type-step": {
+        "title": "Choose an aspect type",
+        "error": "Error occurred while loading the types",
+        "label": "Type"
+      },
+      "info-step": {
+        "title": "Some basic info"
+      },
+      "final-step": {
+        "title": "Final check"
+      }
+    },
     "visual-upload": {
       "loading": "Image is loading",
       "success": "Image uploaded successfully",

@@ -9536,6 +9536,60 @@ export function refetchUsersWithCredentialsSimpleListQuery(
 ) {
   return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
 }
+export const AspectTypesDocument = gql`
+  query AspectTypes {
+    configuration {
+      template {
+        opportunities {
+          aspects
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAspectTypesQuery__
+ *
+ * To run a query within a React component, call `useAspectTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAspectTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAspectTypesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAspectTypesQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AspectTypesQuery, SchemaTypes.AspectTypesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AspectTypesQuery, SchemaTypes.AspectTypesQueryVariables>(
+    AspectTypesDocument,
+    options
+  );
+}
+export function useAspectTypesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AspectTypesQuery, SchemaTypes.AspectTypesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AspectTypesQuery, SchemaTypes.AspectTypesQueryVariables>(
+    AspectTypesDocument,
+    options
+  );
+}
+export type AspectTypesQueryHookResult = ReturnType<typeof useAspectTypesQuery>;
+export type AspectTypesLazyQueryHookResult = ReturnType<typeof useAspectTypesLazyQuery>;
+export type AspectTypesQueryResult = Apollo.QueryResult<
+  SchemaTypes.AspectTypesQuery,
+  SchemaTypes.AspectTypesQueryVariables
+>;
+export function refetchAspectTypesQuery(variables?: SchemaTypes.AspectTypesQueryVariables) {
+  return { query: AspectTypesDocument, variables: variables };
+}
 export const EcoverseContributionDetailsDocument = gql`
   query ecoverseContributionDetails($ecoverseId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {

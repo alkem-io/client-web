@@ -7054,6 +7054,19 @@ export type UsersWithCredentialsSimpleListQuery = {
   }>;
 };
 
+export type AspectTypesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AspectTypesQuery = {
+  __typename?: 'Query';
+  configuration: {
+    __typename?: 'Config';
+    template: {
+      __typename?: 'Template';
+      opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+    };
+  };
+};
+
 export type EcoverseContributionDetailsQueryVariables = Exact<{
   ecoverseId: Scalars['UUID_NAMEID'];
 }>;
