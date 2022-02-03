@@ -233,7 +233,9 @@
         "label": "Type"
       },
       "info-step": {
-        "title": "Some basic info"
+        "title": "Some basic info",
+        "description": "Description",
+        "description-placeholder": "A description for this aspect"
       },
       "final-step": {
         "title": "Final check"

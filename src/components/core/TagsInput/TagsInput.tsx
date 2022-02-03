@@ -3,18 +3,22 @@ import { Autocomplete, Chip, OutlinedTextFieldProps, TextField } from '@mui/mate
 import { isArray } from 'lodash';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
 
+const DEFAULT_MIN_LENGHT = 2;
+
 // TODO: Do we realy need to extend from OutlinedTextFieldProps?
 type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   onChange?: (tags: (string | string[])[]) => void;
+  minLength?: number;
+  error?: boolean;
   value: string[];
   readOnly?: boolean;
   disabled?: boolean;
 };
 
 export const TagsInput: FC<TagsInputProps> = forwardRef(
-  ({ onChange, value, placeholder, readOnly, disabled, ...rest }, ref) => {
+  ({ onChange, minLength = DEFAULT_MIN_LENGHT, error, value, placeholder, readOnly, disabled, ...rest }, ref) => {
     const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
-      const changedValues = newValue.map(x => (isArray(x) ? x : x.trim())).filter(x => x.length >= 2);
+      const changedValues = newValue.map(x => (isArray(x) ? x : x.trim())).filter(x => x.length >= minLength);
       onChange && onChange(changedValues);
     };
 
@@ -45,7 +49,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
             />
           ))
         }
-        renderInput={params => <TextField {...params} {...rest} variant="outlined" />}
+        renderInput={params => <TextField {...params} {...rest} error={error} variant="outlined" />}
       />
     );
   }
