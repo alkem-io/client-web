@@ -35,10 +35,10 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-// type NeededFields = 'title' | 'description' | 'nameID' | 'bannerNarrow' | 'id' | 'tagset';
-type NeededFields = 'id' | 'displayName' | 'description' | 'type';
+type NeededFields = 'id' | 'displayName' | 'description' | 'type' | 'tagset';
+type AspectType = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment };
 export interface AspectCardProps {
-  aspect?: Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment };
+  aspect?: AspectType;
   ecoverseNameId?: string;
   challengeNameId?: string;
   loading?: boolean;
@@ -49,7 +49,7 @@ const AspectCard: FC<AspectCardProps> = ({ aspect, loading = false }) => {
     return <></>;
   }
 
-  const { displayName = '', description = '', type = '' } = aspect as Aspect;
+  const { displayName = '', description = '', type = '', tagset } = aspect as AspectType;
   const bannerNarrow = getVisualBannerNarrow(aspect?.bannerNarrow);
 
   return (
@@ -58,7 +58,7 @@ const AspectCard: FC<AspectCardProps> = ({ aspect, loading = false }) => {
         headerText: displayName,
         mediaUrl: bannerNarrow,
         labelText: type,
-        tags: [], // aspect.tagset?.tags ?? [],
+        tags: tagset?.tags ?? [],
       }}
       loading={loading}
     >

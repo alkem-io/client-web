@@ -1080,6 +1080,11 @@ export const AspectCardFragmentDoc = gql`
     bannerNarrow {
       ...VisualUri
     }
+    tagset {
+      id
+      name
+      tags
+    }
   }
   ${VisualUriFragmentDoc}
 `;

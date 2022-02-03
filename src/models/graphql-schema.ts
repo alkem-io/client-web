@@ -132,11 +132,11 @@ export type Aspect = {
   banner?: Maybe<Visual>;
   /** The narrow banner visual for this Aspect. */
   bannerNarrow?: Maybe<Visual>;
+  /** The comments for this Aspect. */
+  comments?: Maybe<Comments>;
   /** The id of the user that created this Aspect */
   createdBy: Scalars['UUID'];
   description: Scalars['String'];
-  /** The discussion for this Aspect. */
-  discussion?: Maybe<Discussion>;
   /** The display name. */
   displayName: Scalars['String'];
   /** The ID of the entity */
@@ -145,6 +145,8 @@ export type Aspect = {
   nameID: Scalars['NameID'];
   /** The References for this Aspect. */
   references?: Maybe<Array<Reference>>;
+  /** The set of tags for the Aspect */
+  tagset?: Maybe<Tagset>;
   type: Scalars['String'];
 };
 
@@ -368,6 +370,38 @@ export type ChallengeTemplate = {
   name: Scalars['String'];
 };
 
+export type Comments = {
+  __typename?: 'Comments';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Messages in this Comments. */
+  messages?: Maybe<Array<Message>>;
+};
+
+export type CommentsMessageReceived = {
+  __typename?: 'CommentsMessageReceived';
+  /** The identifier for the Comments on which the message was sent. */
+  commentsID: Scalars['String'];
+  /** The message that has been sent. */
+  message: Message;
+};
+
+export type CommentsRemoveMessageInput = {
+  /** The Comments the message is being removed from. */
+  commentsID: Scalars['UUID'];
+  /** The message id that should be removed */
+  messageID: Scalars['String'];
+};
+
+export type CommentsSendMessageInput = {
+  /** The Comments the message is being sent to */
+  commentsID: Scalars['UUID'];
+  /** The message being sent */
+  message: Scalars['String'];
+};
+
 export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
@@ -572,6 +606,7 @@ export type CreateAspectInput = {
   displayName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
 };
 
@@ -1220,6 +1255,8 @@ export type Mutation = {
   grantStateModificationOnChallenge: User;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
+  /** Removes a comment message. */
+  removeComment: Scalars['MessageID'];
   /** Removes a message from the specified Discussion. */
   removeMessageFromDiscussion: Scalars['MessageID'];
   /** Removes an update message. */
@@ -1246,6 +1283,8 @@ export type Mutation = {
   removeUserFromOrganization: Organization;
   /** Removes an authorization credential from a User. */
   revokeCredentialFromUser: User;
+  /** Sends an comment message. Returns the id of the new Update message. */
+  sendComment: Message;
   /** Sends a message to the specified Discussion.  */
   sendMessageToDiscussion: Message;
   /** Sends an update message. Returns the id of the new Update message. */
@@ -1524,6 +1563,10 @@ export type MutationMessageUserArgs = {
   messageData: UserSendMessageInput;
 };
 
+export type MutationRemoveCommentArgs = {
+  messageData: CommentsRemoveMessageInput;
+};
+
 export type MutationRemoveMessageFromDiscussionArgs = {
   messageData: DiscussionRemoveMessageInput;
 };
@@ -1574,6 +1617,10 @@ export type MutationRemoveUserFromOrganizationArgs = {
 
 export type MutationRevokeCredentialFromUserArgs = {
   revokeCredentialData: RevokeAuthorizationCredentialInput;
+};
+
+export type MutationSendCommentArgs = {
+  messageData: CommentsSendMessageInput;
 };
 
 export type MutationSendMessageToDiscussionArgs = {
@@ -2171,6 +2218,8 @@ export type UpdateAspectInput = {
   displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** Update the tags on the Aspect. */
+  tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type UpdateAuthorizationPolicyInput = {
@@ -2626,6 +2675,7 @@ export type AspectCardFragment = {
   description: string;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
 };
 
 export type ChallengeCardFragment = {
@@ -8241,6 +8291,7 @@ export type HubContextQuery = {
                 description: string;
                 banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               }>
             | undefined;
           references?:
@@ -8306,6 +8357,7 @@ export type ChallengeContextQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                 }>
               | undefined;
             references?:
@@ -8371,6 +8423,7 @@ export type OpportunityContextQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                 }>
               | undefined;
             references?:
@@ -8417,6 +8470,7 @@ export type ContextTabFragment = {
         description: string;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       }>
     | undefined;
   references?:
@@ -8853,6 +8907,7 @@ export type OpportunityPageQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                 }>
               | undefined;
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
@@ -8934,6 +8989,7 @@ export type OpportunityPageFragment = {
               description: string;
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
             }>
           | undefined;
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
