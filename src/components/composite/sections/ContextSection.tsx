@@ -13,7 +13,7 @@ import MembershipBackdrop from '../common/Backdrops/MembershipBackdrop';
 import Button from '@mui/material/Button';
 import AspectCreationDialog, { AspectCreationOutput } from '../aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useNotification } from '../../../hooks';
+import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../hooks';
 
 export interface ContextSectionProps {
   contextId?: string;
@@ -49,6 +49,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
+  const { ecoverseNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
 
   const [createAspect] = useCreateAspectMutation({
@@ -172,7 +173,12 @@ const ContextSection: FC<ContextSectionProps> = ({
               <>
                 {aspects.map((x, i) => (
                   <CardLayoutItem key={i}>
-                    <AspectCard aspect={x} challengeNameId={''} ecoverseNameId={''} />
+                    <AspectCard
+                      aspect={x}
+                      hubNameId={ecoverseNameId}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                    />
                   </CardLayoutItem>
                 ))}
               </>

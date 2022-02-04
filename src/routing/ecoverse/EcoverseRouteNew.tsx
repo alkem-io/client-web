@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
-import Loading from '../../components/core/Loading/Loading';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import { useEcoverse } from '../../hooks';
@@ -20,9 +19,10 @@ import ChallengeRouteNew from '../challenge/ChallengeRouteNew';
 import EcoverseContextPage from '../../pages/Ecoverse/EcoverseContextPage';
 import HubCanvasPage from './HubCanvasPage';
 import HubChallengesPage from '../../pages/Ecoverse/EcoverseChallengesPage';
+import AspectRoute from '../aspect/AspectRoute';
 
 export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
-  const { ecoverse, displayName, loading, isPrivate, ecoverseId } = useEcoverse();
+  const { ecoverse, displayName, isPrivate, ecoverseId } = useEcoverse();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (ecoverse ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
@@ -30,14 +30,6 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
   );
   const discussionsRequiredCredentials: CredentialForResource[] =
     isPrivate && ecoverseId ? [{ credential: AuthorizationCredential.EcoverseMember, resourceId: ecoverseId }] : [];
-
-  if (loading) {
-    return <Loading text={'Loading ecoverse'} />;
-  }
-
-  if (!ecoverse) {
-    return <Error404 />;
-  }
 
   return (
     <DiscussionsProvider>
@@ -79,6 +71,7 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
                 </ChallengeProvider>
               }
             />
+            <Route path={`aspects/:${nameOfUrl.aspectId}/*`} element={<AspectRoute paths={currentPaths} />} />
             <Route path="*" element={<Error404 />} />
           </Routes>
         )}

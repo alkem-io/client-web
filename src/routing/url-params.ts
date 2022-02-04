@@ -12,6 +12,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   userId?: string;
   role?: AuthorizationCredential;
   discussionId?: string;
+  aspectId?: string;
 }
 
 export const nameOfUrl = nameof<UrlParams>();

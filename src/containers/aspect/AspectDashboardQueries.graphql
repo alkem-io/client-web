@@ -1,0 +1,58 @@
+query HubAspects($hubNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    context {
+      ...ContextTab
+    }
+  }
+}
+
+query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      context {
+        ...ContextTab
+      }
+    }
+  }
+}
+
+query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      context {
+        ...ContextTab
+      }
+    }
+  }
+}
+
+fragment AspectPageData on Context {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+  aspects {
+    id
+    displayName
+    description
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+    }
+    comments {
+
+    }
+  }
+}
