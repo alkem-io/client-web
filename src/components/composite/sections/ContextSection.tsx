@@ -28,6 +28,7 @@ export interface ContextSectionProps {
   aspects: AspectCardFragment[];
   aspectsLoading?: boolean;
   canReadAspects?: boolean;
+  canCreateAspects?: boolean;
 }
 
 const ContextSection: FC<ContextSectionProps> = ({
@@ -43,6 +44,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   aspects = [],
   aspectsLoading,
   canReadAspects,
+  canCreateAspects,
 }) => {
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
@@ -154,7 +156,7 @@ const ContextSection: FC<ContextSectionProps> = ({
       <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
         <DashboardGenericSection
           headerText={`${t('common.aspects')} (${aspects.length})`}
-          primaryAction={<Button onClick={handleCreateDialogOpened}>Create</Button>}
+          primaryAction={canCreateAspects && <Button onClick={handleCreateDialogOpened}>Create</Button>}
         >
           <CardLayoutContainer>
             {aspectsLoading ? (

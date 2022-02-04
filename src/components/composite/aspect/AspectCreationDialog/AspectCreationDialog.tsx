@@ -168,7 +168,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel, o
         </Button>
         <Box sx={{ flex: '1 1 auto' }} />
         {getStep(activeStep).isFinal ? (
-          <Button onClick={handleFinish}>Finish</Button>
+          <Button onClick={handleFinish}>Create</Button>
         ) : (
           <Button disabled={getStep(activeStep).isInvalid} onClick={handleNext}>
             Next

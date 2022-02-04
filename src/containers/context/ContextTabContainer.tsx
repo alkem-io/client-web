@@ -17,6 +17,7 @@ import { useApolloErrorHandler } from '../../hooks';
 
 interface ContextTabPermissions {
   canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
 export interface ContextTabContainerEntities {
@@ -59,8 +60,10 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
   });
   const hubContext = hubData?.ecoverse?.context;
   const hugTagset = hubData?.ecoverse?.tagset;
-  const canReadHubContext =
-    hubContext && (hubContext?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
+  const hubContextPrivileges = hubContext && (hubContext?.authorization?.myPrivileges ?? []);
+  const canReadHubContext = hubContextPrivileges && hubContextPrivileges.includes(AuthorizationPrivilege.Read);
+  const canCreateAspectOnHub =
+    hubContextPrivileges && hubContextPrivileges.includes(AuthorizationPrivilege.CreateAspect);
 
   const {
     data: challengeData,
@@ -74,8 +77,11 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
   const challengeContext = challengeData?.ecoverse?.challenge?.context;
   const challengeTagset = challengeData?.ecoverse?.challenge?.tagset;
   const challengeLifecycle = challengeData?.ecoverse?.challenge?.lifecycle;
+  const challengeContextPrivileges = challengeContext && (challengeContext?.authorization?.myPrivileges ?? []);
   const canReadChallengeContext =
-    challengeContext && (challengeContext?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
+    challengeContextPrivileges && challengeContextPrivileges.includes(AuthorizationPrivilege.Read);
+  const canCreateAspectOnChallenge =
+    challengeContextPrivileges && challengeContextPrivileges.includes(AuthorizationPrivilege.CreateAspect);
 
   const {
     data: opportunityData,
@@ -89,8 +95,11 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
   const opportunityContext = opportunityData?.ecoverse?.opportunity?.context;
   const opportunityTagset = opportunityData?.ecoverse?.opportunity?.tagset;
   const opportunityLifecycle = opportunityData?.ecoverse?.opportunity?.lifecycle;
+  const opportunityContextPrivileges = opportunityContext && (opportunityContext?.authorization?.myPrivileges ?? []);
   const canReadOpportunityContext =
-    opportunityContext && (opportunityContext?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
+    opportunityContextPrivileges && opportunityContextPrivileges.includes(AuthorizationPrivilege.Read);
+  const canCreateAspectOnOpportunity =
+    opportunityContextPrivileges && opportunityContextPrivileges.includes(AuthorizationPrivilege.CreateAspect);
 
   const context = hubContext ?? challengeContext ?? opportunityContext;
   const tagset = hugTagset ?? challengeTagset ?? opportunityTagset;
@@ -100,6 +109,7 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
 
   const permissions: ContextTabPermissions = {
     canReadAspects: canReadHubContext ?? canReadChallengeContext ?? canReadOpportunityContext ?? true,
+    canCreateAspects: canCreateAspectOnHub ?? canCreateAspectOnChallenge ?? canCreateAspectOnOpportunity ?? false,
   };
 
   return <>{children({ context, tagset, lifecycle, permissions }, { loading, error }, {})}</>;

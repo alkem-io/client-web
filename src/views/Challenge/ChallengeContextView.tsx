@@ -32,6 +32,7 @@ interface ChallengeContextState {
 }
 interface ChallengeContextOptions {
   canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
 interface ChallengeContextViewProps
@@ -44,7 +45,7 @@ interface ChallengeContextViewProps
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
   const { t } = useTranslation();
-  const { canReadAspects } = options;
+  const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const {
     context,
@@ -116,6 +117,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         aspects={aspects}
         aspectsLoading={loading}
         canReadAspects={canReadAspects}
+        canCreateAspects={canCreateAspects}
       />
     </ContextLayout>
   );

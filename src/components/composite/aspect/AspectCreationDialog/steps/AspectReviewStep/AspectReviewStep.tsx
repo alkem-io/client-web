@@ -27,6 +27,8 @@ const AspectReviewStep: FC<AspectReviewStepProps> = ({ aspect }) => {
           <TagsComponent tags={tags} count={tags.length} />
         </Box>
       </LabelRow>
+      <SectionSpacer double />
+      <Typography variant={'subtitle2'}>{t('components.aspect-creation.final-step.explanation')}</Typography>
     </>
   );
 };

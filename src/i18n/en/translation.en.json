@@ -247,7 +247,8 @@
         "description": "Description",
         "links": "Links",
         "canvas": "Canvas",
-        "visual": "Visual"
+        "visual": "Visual",
+        "explanation": "After the creation, you will be able to add visual and references through Settings in the Aspect's page"
       }
     },
     "visual-upload": {

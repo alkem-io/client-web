@@ -28,6 +28,7 @@ export interface OpportunityContextViewState {
 
 export interface OpportunityContextViewOptions {
   canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
 export interface OpportunityContextViewProps
@@ -40,7 +41,7 @@ export interface OpportunityContextViewProps
 
 const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, options, state }) => {
   const { t } = useTranslation();
-  const { canReadAspects } = options;
+  const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const { context, opportunityDisplayName, opportunityTagset, opportunityLifecycle } = entities;
 
@@ -89,6 +90,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
         aspects={aspects}
         aspectsLoading={loading}
         canReadAspects={canReadAspects}
+        canCreateAspects={canCreateAspects}
       />
       <SectionSpacer />
     </ContextLayout>

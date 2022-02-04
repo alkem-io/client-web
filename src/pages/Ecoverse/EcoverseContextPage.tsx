@@ -29,6 +29,7 @@ const EcoverseContextPage: FC<EcoverseContextPageProps> = ({ paths }) => {
           }}
           options={{
             canReadAspects: entities.permissions.canReadAspects,
+            canCreateAspects: entities.permissions.canCreateAspects,
           }}
           actions={{}}
         />

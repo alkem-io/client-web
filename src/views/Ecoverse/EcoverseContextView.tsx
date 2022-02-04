@@ -27,6 +27,7 @@ interface EcoverseContextState {
 }
 interface EcoverseContextOptions {
   canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
 interface EcoverseContextViewProps
@@ -34,7 +35,7 @@ interface EcoverseContextViewProps
 
 export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, state, options }) => {
   const { t } = useTranslation();
-  const { canReadAspects } = options;
+  const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
 
@@ -94,6 +95,7 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
         aspects={aspects}
         aspectsLoading={loading}
         canReadAspects={canReadAspects}
+        canCreateAspects={canCreateAspects}
       />
     </ContextLayout>
   );
