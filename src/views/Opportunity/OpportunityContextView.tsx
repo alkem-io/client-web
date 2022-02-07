@@ -8,15 +8,25 @@ import ContextLayout from '../../components/composite/layout/Context/ContextLayo
 import ContextSection from '../../components/composite/sections/ContextSection';
 import LifecycleSection from '../../components/composite/sections/LifecycleSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
-import { Context, ContextTabFragment, LifecycleContextTabFragment, Tagset } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  Context,
+  ContextTabFragment,
+  LifecycleContextTabFragment,
+  ReferenceContextTabFragment,
+  Tagset,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
+import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
 
 export interface OpportunityContextViewEntities {
   context?: ContextTabFragment;
   opportunityDisplayName?: string;
   opportunityTagset?: Tagset;
   opportunityLifecycle?: LifecycleContextTabFragment;
+  aspects?: AspectCardFragment[];
+  references?: ReferenceContextTabFragment[];
 }
 
 export interface OpportunityContextViewActions {}
@@ -52,11 +62,11 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
     background = '',
     vision = '',
     who = '',
-    references,
-    aspects = [],
     visuals = [],
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
+  const aspects = entities?.aspects;
+  const references = entities?.references;
 
   const rightPanel = (
     <>
@@ -66,13 +76,16 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
         <TagsComponent tags={opportunityTagset?.tags ?? []} />
       </DashboardGenericSection>
       <SectionSpacer />
-      <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
-        {references?.map((l, i) => (
-          <Link key={i} href={l.uri} target="_blank">
-            <Typography>{l.uri}</Typography>
-          </Link>
-        ))}
-      </DashboardGenericSection>
+      <MembershipBackdrop show={!references} blockName={t('common.references')}>
+        <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
+          {references &&
+            references.map((l, i) => (
+              <Link key={i} href={l.uri} target="_blank">
+                <Typography>{l.uri}</Typography>
+              </Link>
+            ))}
+        </DashboardGenericSection>
+      </MembershipBackdrop>
     </>
   );
 
