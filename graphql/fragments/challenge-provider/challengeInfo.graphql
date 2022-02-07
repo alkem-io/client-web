@@ -12,6 +12,10 @@ fragment ChallengeInfo on Challenge {
   context {
     id
     tagline
+    authorization {
+      id
+      myPrivileges
+    }
     references {
       id
       name

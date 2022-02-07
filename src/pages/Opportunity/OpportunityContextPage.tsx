@@ -3,6 +3,7 @@ import OpportunityContextView from '../../views/Opportunity/OpportunityContextVi
 import { PageProps } from '../common';
 import { useOpportunity, useUpdateNavigation } from '../../hooks';
 import ContextTabContainer from '../../containers/context/ContextTabContainer';
+import { AuthorizationPrivilege } from '../../models/graphql-schema';
 
 export interface OpportunityContextPageProps extends PageProps {}
 
@@ -10,10 +11,20 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/context', name: 'context', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const { ecoverseNameId, opportunityNameId, displayName } = useOpportunity();
+  const {
+    ecoverseNameId,
+    opportunityNameId,
+    displayName,
+    permissions: { contextPrivileges },
+  } = useOpportunity();
+  const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <ContextTabContainer hubNameId={ecoverseNameId} opportunityNameId={opportunityNameId}>
+    <ContextTabContainer
+      hubNameId={ecoverseNameId}
+      opportunityNameId={opportunityNameId}
+      loadAspectsAndReferences={loadAspectsAndReferences}
+    >
       {(entities, state) => (
         <OpportunityContextView
           entities={{
@@ -21,6 +32,8 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
             opportunityTagset: entities.tagset,
             opportunityLifecycle: entities.lifecycle,
             context: entities.context,
+            aspects: entities?.aspects,
+            references: entities?.references,
           }}
           state={{
             loading: state.loading,

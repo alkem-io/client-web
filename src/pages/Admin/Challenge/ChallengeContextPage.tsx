@@ -3,6 +3,7 @@ import { PageProps } from '../../common';
 import { useChallenge, useEcoverse, useUpdateNavigation } from '../../../hooks';
 import { ChallengeContextView } from '../../../views/Challenge/ChallengeContextView';
 import ContextTabContainer from '../../../containers/context/ContextTabContainer';
+import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 
 export interface ChallengeContextPageProps extends PageProps {}
 
@@ -17,10 +18,16 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
     displayName: challengeDisplayName,
     challengeId,
     challengeNameId,
+    permissions: { contextPrivileges },
   } = useChallenge();
+  const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <ContextTabContainer hubNameId={ecoverseNameId} challengeNameId={challengeNameId}>
+    <ContextTabContainer
+      hubNameId={ecoverseNameId}
+      challengeNameId={challengeNameId}
+      loadAspectsAndReferences={loadAspectsAndReferences}
+    >
       {(entities, state) => (
         <ChallengeContextView
           entities={{
@@ -33,6 +40,8 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
             challengeTagset: entities.tagset,
             challengeLifecycle: entities.lifecycle,
             context: entities.context,
+            aspects: entities?.aspects,
+            references: entities?.references,
           }}
           state={{
             loading: state.loading,

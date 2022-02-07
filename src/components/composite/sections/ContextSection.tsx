@@ -25,7 +25,7 @@ export interface ContextSectionProps {
   background?: string;
   impact?: string;
   who?: string;
-  aspects: AspectCardFragment[];
+  aspects?: AspectCardFragment[];
   aspectsLoading?: boolean;
   canReadAspects?: boolean;
   canCreateAspects?: boolean;
@@ -41,7 +41,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   vision,
   impact,
   who,
-  aspects = [],
+  aspects,
   aspectsLoading,
   canReadAspects,
   canCreateAspects,
@@ -52,6 +52,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   const { ecoverseNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
 
+  // todo: move handlers to the contextTabContainer
   const [createAspect] = useCreateAspectMutation({
     onError: handleError,
     onCompleted: () => notify(t('components.context-section.create-aspect'), 'success'),
@@ -156,34 +157,36 @@ const ContextSection: FC<ContextSectionProps> = ({
       <SectionSpacer />
       <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
         <DashboardGenericSection
-          headerText={`${t('common.aspects')} (${aspects.length})`}
+          headerText={`${t('common.aspects')} (${aspects ? aspects.length : 0})`}
           primaryAction={canCreateAspects && <Button onClick={handleCreateDialogOpened}>Create</Button>}
         >
-          <CardLayoutContainer>
-            {aspectsLoading ? (
-              <>
-                <CardLayoutItem>
-                  <AspectCard loading={true} />
-                </CardLayoutItem>
-                <CardLayoutItem>
-                  <AspectCard loading={true} />
-                </CardLayoutItem>
-              </>
-            ) : (
-              <>
-                {aspects.map((x, i) => (
-                  <CardLayoutItem key={i}>
-                    <AspectCard
-                      aspect={x}
-                      hubNameId={ecoverseNameId}
-                      challengeNameId={challengeNameId}
-                      opportunityNameId={opportunityNameId}
-                    />
+          {aspects && (
+            <CardLayoutContainer>
+              {aspectsLoading ? (
+                <>
+                  <CardLayoutItem>
+                    <AspectCard loading={true} />
                   </CardLayoutItem>
-                ))}
-              </>
-            )}
-          </CardLayoutContainer>
+                  <CardLayoutItem>
+                    <AspectCard loading={true} />
+                  </CardLayoutItem>
+                </>
+              ) : (
+                <>
+                  {aspects.map((x, i) => (
+                    <CardLayoutItem key={i}>
+                      <AspectCard
+                        aspect={x}
+                        hubNameId={ecoverseNameId}
+                        challengeNameId={challengeNameId}
+                        opportunityNameId={opportunityNameId}
+                      />
+                    </CardLayoutItem>
+                  ))}
+                </>
+              )}
+            </CardLayoutContainer>
+          )}
         </DashboardGenericSection>
       </MembershipBackdrop>
       <AspectCreationDialog open={aspectDialogOpen} onCancel={handleCreateDialogClosed} onCreate={onCreate} />

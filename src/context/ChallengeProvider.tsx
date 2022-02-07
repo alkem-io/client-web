@@ -5,6 +5,7 @@ import { useUrlParams } from '../hooks';
 
 interface ChallengePermissions {
   viewerCanUpdate: boolean;
+  contextPrivileges: AuthorizationPrivilege[];
 }
 
 interface ChallengeContextProps {
@@ -27,6 +28,7 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   displayName: '',
   permissions: {
     viewerCanUpdate: false,
+    contextPrivileges: [],
   },
 });
 
@@ -47,6 +49,7 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
   const permissions = useMemo<ChallengePermissions>(
     () => ({
       viewerCanUpdate: challenge?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+      contextPrivileges: challenge?.context?.authorization?.myPrivileges ?? [],
     }),
     [challenge]
   );
