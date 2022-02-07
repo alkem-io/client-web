@@ -62,10 +62,14 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
         return <Button disabled>{t('buttons.apply-pending')}</Button>;
       }
     } else if (isNotParentMember) {
-      return <Button onClick={handleClick}>{t('buttons.apply')}</Button>;
+      return (
+        <Button onClick={handleClick} variant={'contained'}>
+          {t('buttons.apply')}
+        </Button>
+      );
     }
     return (
-      <Button component={RouterLink} to={applyUrl || ''}>
+      <Button component={RouterLink} variant={'contained'} to={applyUrl || ''}>
         {t('buttons.apply')}
       </Button>
     );

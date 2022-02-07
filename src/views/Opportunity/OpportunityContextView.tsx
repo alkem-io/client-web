@@ -1,13 +1,8 @@
 import { ApolloError } from '@apollo/client';
-import { Link, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
-import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
-import ContextLayout from '../../components/composite/layout/Context/ContextLayout';
+import LifecycleState from '../../components/composite/entities/Lifecycle/LifecycleState';
 import ContextSection from '../../components/composite/sections/ContextSection';
-import LifecycleSection from '../../components/composite/sections/LifecycleSection';
-import { SectionSpacer } from '../../components/core/Section/Section';
 import { Context, ContextTabFragment, LifecycleContextTabFragment, Tagset } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
@@ -39,7 +34,6 @@ export interface OpportunityContextViewProps
   > {}
 
 const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, options, state }) => {
-  const { t } = useTranslation();
   const { canReadAspects } = options;
   const { loading } = state;
   const { context, opportunityDisplayName, opportunityTagset, opportunityLifecycle } = entities;
@@ -56,40 +50,26 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
 
-  const rightPanel = (
-    <>
-      <LifecycleSection lifecycle={opportunityLifecycle} />
-      <SectionSpacer />
-      <DashboardGenericSection headerText={t('components.profile.fields.keywords.title')}>
-        <TagsComponent tags={opportunityTagset?.tags ?? []} />
-      </DashboardGenericSection>
-      <SectionSpacer />
-      <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
-        {references?.map((l, i) => (
-          <Link key={i} href={l.uri} target="_blank">
-            <Typography>{l.uri}</Typography>
-          </Link>
-        ))}
-      </DashboardGenericSection>
-    </>
-  );
-
   return (
-    <ContextLayout rightPanel={rightPanel}>
-      <ContextSection
-        banner={banner}
-        background={background}
-        displayName={opportunityDisplayName}
-        impact={impact}
-        tagline={tagline}
-        vision={vision}
-        who={who}
-        aspects={aspects}
-        aspectsLoading={loading}
-        canReadAspects={canReadAspects}
-      />
-      <SectionSpacer />
-    </ContextLayout>
+    <ContextSection
+      primaryAction={
+        <Box display="flex">
+          <LifecycleState lifecycle={opportunityLifecycle} />
+        </Box>
+      }
+      banner={banner}
+      background={background}
+      displayName={opportunityDisplayName}
+      impact={impact}
+      tagline={tagline}
+      vision={vision}
+      who={who}
+      keywords={opportunityTagset?.tags}
+      references={references}
+      aspects={aspects}
+      aspectsLoading={loading}
+      canReadAspects={canReadAspects}
+    />
   );
 };
 export default OpportunityContextView;

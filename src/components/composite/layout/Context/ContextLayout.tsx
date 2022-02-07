@@ -9,10 +9,10 @@ export interface ContextLayoutProps {
 const ContextLayout: FC<ContextLayoutProps> = ({ rightPanel, leftPanel, children }) => {
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={8}>
+      <Grid item xs={12} lg={6}>
         {leftPanel ? leftPanel : children}
       </Grid>
-      <Grid item xs={12} lg={4} zeroMinWidth>
+      <Grid item xs={12} lg={6} zeroMinWidth>
         {rightPanel}
       </Grid>
     </Grid>
