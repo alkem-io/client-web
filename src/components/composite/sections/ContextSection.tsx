@@ -51,6 +51,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   const notify = useNotification();
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
 
+  // todo: move handlers to the contextTabContainer
   const [createAspect] = useCreateAspectMutation({
     onError: handleError,
     onCompleted: () => notify(t('components.context-section.create-aspect'), 'success'),

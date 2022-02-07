@@ -105,7 +105,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel, o
   const handleFinish = () => {
     onCreate({
       displayName: aspect?.displayName ?? '',
-      nameID: aspect?.displayName ?? '',
+      nameID: aspect?.nameID ?? '',
       description: aspect?.description ?? '',
       type: aspect?.type ?? '',
       tags: aspect?.tags ?? [],
@@ -123,6 +123,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel, o
       index: 0,
       label: t('components.aspect-creation.type-step.title'),
       isCompleted: _isStepCompleted(0),
+      isInvalid: !aspect.type,
       isFirst: true,
     },
     {
@@ -155,7 +156,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel, o
           ))}
         </Stepper>
         <Box marginBottom={2} marginTop={4}>
-          {activeStep.index === 0 && <AspectTypeStep type={aspect.type} onChange={handleTypeChange} />}
+          {activeStep.index === 0 && <AspectTypeStep onChange={handleTypeChange} />}
           {activeStep.index === 1 && (
             <AspectInfoStep aspect={aspect} onChange={handleFormChange} onStatusChanged={handleFormStatusChange} />
           )}

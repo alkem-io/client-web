@@ -33,11 +33,14 @@ const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
         </Skeleton>
       ) : (
         <>
-          <InputLabel id="type-select-label">{t('components.aspect-creation.type-step.label')}</InputLabel>
+          <InputLabel id="type-select-label" required>
+            {t('components.aspect-creation.type-step.label')}
+          </InputLabel>
           <Select
             labelId="type-select-label"
             id="type-select"
-            value={type ?? aspectTypes[0]}
+            value={type}
+            defaultValue={''}
             label={t('components.aspect-creation.type-step.label')}
             onChange={e => onChange(e.target.value)}
           >
