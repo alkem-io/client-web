@@ -7,6 +7,15 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { useAspectTypesQuery } from '../../../../../../hooks/generated/graphql';
+import HelpButton from '../../../../../core/HelpButton';
+import makeStyles from '@mui/styles/makeStyles';
+import { InputAdornment } from '@mui/material';
+
+const useStyles = makeStyles(theme => ({
+  selectAdornment: {
+    marginRight: theme.spacing(3),
+  },
+}));
 
 export interface AspectTypeStepProps {
   type?: string;
@@ -14,6 +23,7 @@ export interface AspectTypeStepProps {
 }
 
 const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
+  const styles = useStyles();
   const { t } = useTranslation();
   const { data, loading, error } = useAspectTypesQuery();
 
@@ -43,6 +53,11 @@ const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
             defaultValue={''}
             label={t('components.aspect-creation.type-step.label')}
             onChange={e => onChange(e.target.value)}
+            endAdornment={
+              <InputAdornment className={styles.selectAdornment} position="end">
+                <HelpButton helpText={t('components.aspect-creation.type-step.type-help-text')} />
+              </InputAdornment>
+            }
           >
             {aspectTypes.map((x, i) => (
               <MenuItem key={i} value={x}>

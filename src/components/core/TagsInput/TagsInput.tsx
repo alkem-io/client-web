@@ -2,6 +2,7 @@ import { FiberManualRecord } from '@mui/icons-material';
 import { Autocomplete, Chip, OutlinedTextFieldProps, TextField } from '@mui/material';
 import { isArray } from 'lodash';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
+import HelpButton from '../HelpButton';
 
 const DEFAULT_MIN_LENGHT = 2;
 
@@ -13,10 +14,14 @@ type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   value: string[];
   readOnly?: boolean;
   disabled?: boolean;
+  helpText?: string;
 };
 
 export const TagsInput: FC<TagsInputProps> = forwardRef(
-  ({ onChange, minLength = DEFAULT_MIN_LENGHT, error, value, placeholder, readOnly, disabled, ...rest }, ref) => {
+  (
+    { onChange, minLength = DEFAULT_MIN_LENGHT, error, value, placeholder, readOnly, disabled, helpText, ...rest },
+    ref
+  ) => {
     const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
       const changedValues = newValue.map(x => (isArray(x) ? x : x.trim())).filter(x => x.length >= minLength);
       onChange && onChange(changedValues);
@@ -49,7 +54,18 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
             />
           ))
         }
-        renderInput={params => <TextField {...params} {...rest} error={error} variant="outlined" />}
+        renderInput={params => (
+          <TextField
+            {...params}
+            {...rest}
+            error={error}
+            variant="outlined"
+            InputProps={{
+              endAdornment: helpText && <HelpButton helpText={helpText} />,
+              readOnly: readOnly,
+            }}
+          />
+        )}
       />
     );
   }

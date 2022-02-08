@@ -4,7 +4,7 @@ import React, { FC, useCallback } from 'react';
 import * as yup from 'yup';
 import { TagsetTemplate } from '../../../models/graphql-schema';
 import { Tagset } from '../../../models/Profile';
-import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
+import { toTagsetTitle } from '../../../utils/toTagsetTitle';
 import { TagsInput } from '../../core';
 
 interface TagsSegmentProps {
@@ -12,6 +12,8 @@ interface TagsSegmentProps {
   template?: TagsetTemplate[];
   readOnly?: boolean;
   disabled?: boolean;
+  title?: string;
+  helpText?: string;
 }
 
 const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
@@ -21,7 +23,14 @@ export const tagsetSegmentValidationObject = yup.object().shape({
 });
 export const tagsetSegmentSchema = yup.array().of(tagsetSegmentValidationObject);
 
-export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false, template, disabled }) => {
+export const TagsetSegment: FC<TagsSegmentProps> = ({
+  tagsets,
+  readOnly = false,
+  template,
+  disabled,
+  title,
+  helpText,
+}) => {
   const getTagsetPlaceholder = useCallback(
     (name: string) => {
       if (!template) return DEFAULT_PLACEHOLDER;
@@ -37,10 +46,11 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false,
           <TagsetField
             key={index}
             name={`tagsets[${index}].tags`}
-            title={toFirstCaptitalLetter(tagSet.name)}
+            title={toTagsetTitle(tagSet, title)}
             placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}
             disabled={disabled}
+            helpText={helpText}
           />
         ))
       }
@@ -57,6 +67,7 @@ interface TagsetFieldProps {
   placeholder?: string;
   as?: React.ElementType;
   disabled?: boolean;
+  helpText?: string;
 }
 
 export const TagsetField: FC<TagsetFieldProps> = ({
@@ -66,6 +77,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   readOnly = false,
   disabled = false,
   placeholder,
+  helpText,
 }) => {
   const [field, meta, helper] = useField(name);
   return (
@@ -81,6 +93,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         readOnly={readOnly}
         error={Boolean(meta.error)}
         helperText={meta.error}
+        helpText={helpText}
         onChange={items => helper.setValue(items)}
         InputLabelProps={{
           shrink: true,
