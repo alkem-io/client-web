@@ -3,16 +3,18 @@ import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { PageProps } from '../../pages';
 import AspectTabs from './AspectTabs';
 import AspectDashboardPage from '../../pages/aspect/AspectDashboardPage';
+import { useAspect } from '../../context/aspect/AspectProvider';
 
 export interface AspectRouteProps extends PageProps {}
 
 const AspectRoute: FC<AspectRouteProps> = ({ paths: _paths }) => {
+  const { displayName = '' } = useAspect();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => [
       ..._paths,
       { value: '', name: 'aspects', real: false },
-      { value: resolved.pathname, name: 'aspect name', real: true },
+      { value: resolved.pathname, name: displayName, real: true },
     ],
     [_paths]
   );

@@ -1,58 +1,79 @@
-query HubAspects($hubNameId: UUID_NAMEID!) {
+query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
   ecoverse(ID: $hubNameId) {
     id
     context {
-      ...ContextTab
+      ...AspectDashboardData
     }
   }
 }
 
-query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
   ecoverse(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
       context {
-        ...ContextTab
+        ...AspectDashboardData
       }
     }
   }
 }
 
-query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
   ecoverse(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
       context {
-        ...ContextTab
+        ...AspectDashboardData
       }
     }
   }
 }
 
-fragment AspectPageData on Context {
+fragment AspectDashboardData on Context {
   id
   authorization {
     id
     myPrivileges
   }
-  aspects {
-    id
-    displayName
-    description
-    tagset {
-      id
-      name
-      tags
-    }
-    references {
-      id
-      name
-      uri
-    }
-    comments {
+  aspects(IDs: [$aspectNameId]) {
+    ...AspectDashboard
+  }
+}
 
+fragment AspectDashboard on Aspect {
+  id
+  displayName
+  description
+  banner {
+    ...VisualUri
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+  references {
+    id
+    name
+    uri
+  }
+  comments {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    messages {
+      ...AspectMessage
     }
   }
+}
+
+fragment AspectMessage on Message {
+  id
+  message
+  sender
+  timestamp
 }

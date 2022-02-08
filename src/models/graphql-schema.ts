@@ -575,6 +575,10 @@ export type Context = {
   who?: Maybe<Scalars['String']>;
 };
 
+export type ContextAspectsArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+};
+
 export type ContextCanvasesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
 };
@@ -7268,6 +7272,242 @@ export type UserContributorFragment = {
     | undefined;
 };
 
+export type HubAspectQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubAspectQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          aspects?:
+            | Array<{
+                __typename?: 'Aspect';
+                id: string;
+                displayName: string;
+                description: string;
+                banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                comments?:
+                  | {
+                      __typename?: 'Comments';
+                      id: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                      messages?:
+                        | Array<{
+                            __typename?: 'Message';
+                            id: string;
+                            message: string;
+                            sender: string;
+                            timestamp: number;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeAspectQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeAspectQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            aspects?:
+              | Array<{
+                  __typename?: 'Aspect';
+                  id: string;
+                  displayName: string;
+                  description: string;
+                  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              message: string;
+                              sender: string;
+                              timestamp: number;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAspectQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityAspectQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+            aspects?:
+              | Array<{
+                  __typename?: 'Aspect';
+                  id: string;
+                  displayName: string;
+                  description: string;
+                  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              message: string;
+                              sender: string;
+                              timestamp: number;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type AspectDashboardDataFragment = {
+  __typename?: 'Context';
+  id: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  aspects?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        displayName: string;
+        description: string;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        comments?:
+          | {
+              __typename?: 'Comments';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+              messages?:
+                | Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+                | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+};
+
+export type AspectDashboardFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  displayName: string;
+  description: string;
+  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+  comments?:
+    | {
+        __typename?: 'Comments';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        messages?:
+          | Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+          | undefined;
+      }
+    | undefined;
+};
+
+export type AspectMessageFragment = {
+  __typename?: 'Message';
+  id: string;
+  message: string;
+  sender: string;
+  timestamp: number;
+};
+
 export type CanvasDetailsFragment = {
   __typename?: 'Canvas';
   id: string;
@@ -9295,3 +9535,96 @@ export type UserCardsContainerQuery = {
       | undefined;
   }>;
 };
+
+export type HubAspectProviderQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubAspectProviderQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string; displayName: string }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeAspectProviderQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeAspectProviderQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string; displayName: string }> | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAspectProviderQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityAspectProviderQuery = {
+  __typename?: 'Query';
+  ecoverse: {
+    __typename?: 'Ecoverse';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string; displayName: string }> | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type AspectProviderDataFragment = {
+  __typename?: 'Context';
+  id: string;
+  aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string; displayName: string }> | undefined;
+};
+
+export type AspectProvidedFragment = { __typename?: 'Aspect'; id: string; nameID: string; displayName: string };
+
+export type PostCommentInAspectMutationVariables = Exact<{
+  messageData: CommentsSendMessageInput;
+}>;
+
+export type PostCommentInAspectMutation = {
+  __typename?: 'Mutation';
+  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+};
+
+export type RemoveCommentFromAspectMutationVariables = Exact<{
+  messageData: CommentsRemoveMessageInput;
+}>;
+
+export type RemoveCommentFromAspectMutation = { __typename?: 'Mutation'; removeComment: string };

@@ -20,6 +20,7 @@ import EcoverseContextPage from '../../pages/Ecoverse/EcoverseContextPage';
 import HubCanvasPage from './HubCanvasPage';
 import HubChallengesPage from '../../pages/Ecoverse/EcoverseChallengesPage';
 import AspectRoute from '../aspect/AspectRoute';
+import AspectProvider from '../../context/aspect/AspectProvider';
 
 export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
   const { ecoverse, displayName, isPrivate, ecoverseId } = useEcoverse();
@@ -71,7 +72,14 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
                 </ChallengeProvider>
               }
             />
-            <Route path={`aspects/:${nameOfUrl.aspectId}/*`} element={<AspectRoute paths={currentPaths} />} />
+            <Route
+              path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+              element={
+                <AspectProvider>
+                  <AspectRoute paths={currentPaths} />
+                </AspectProvider>
+              }
+            />
             <Route path="*" element={<Error404 />} />
           </Routes>
         )}
