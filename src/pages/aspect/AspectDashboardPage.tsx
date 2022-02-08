@@ -8,9 +8,9 @@ export interface AspectDashboardPageProps extends PageProps {}
 
 const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ paths: _paths }) => {
   const resolved = useResolvedPath('.');
-  const currentPaths = useMemo(() => [..._paths, { value: '', name: 'Dashboard', real: true }], [_paths, resolved]);
+  const currentPaths = useMemo(() => [..._paths, { value: '', name: 'Dashboard', real: false }], [_paths, resolved]);
   useUpdateNavigation({ currentPaths });
 
-  return <AspectDashboardView />;
+  return <AspectDashboardView entities={{}} state={{ loading: true }} actions={{}} options={{}} />;
 };
 export default AspectDashboardPage;

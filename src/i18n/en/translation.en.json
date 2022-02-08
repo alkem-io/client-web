@@ -60,6 +60,8 @@
     "tags": "Tags",
     "add": "Add",
     "remove": "Remove",
+    "comment": "Comment",
+    "comments": "Comments",
     "email": "Email",
     "state": "State",
     "aspect": "Aspect",
