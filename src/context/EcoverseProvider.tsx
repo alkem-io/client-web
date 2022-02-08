@@ -5,6 +5,7 @@ import { AuthorizationPrivilege, EcoverseInfoFragment } from '../models/graphql-
 
 interface EcoversePermissions {
   viewerCanUpdate: boolean;
+  contextPrivileges: AuthorizationPrivilege[];
 }
 
 interface EcoverseContextProps {
@@ -25,6 +26,7 @@ const EcoverseContext = React.createContext<EcoverseContextProps>({
   displayName: '',
   permissions: {
     viewerCanUpdate: false,
+    contextPrivileges: [],
   },
 });
 
@@ -45,6 +47,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
   const permissions = useMemo<EcoversePermissions>(
     () => ({
       viewerCanUpdate: ecoverse?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+      contextPrivileges: ecoverse?.context?.authorization?.myPrivileges ?? [],
     }),
     [ecoverse]
   );

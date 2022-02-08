@@ -9,10 +9,18 @@ import ContextSection from '../../components/composite/sections/ContextSection';
 import LifecycleSection from '../../components/composite/sections/LifecycleSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { Context, ContextTabFragment, LifecycleContextTabFragment, Tagset } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  Context,
+  ContextTabFragment,
+  LifecycleContextTabFragment,
+  ReferenceContextTabFragment,
+  Tagset,
+} from '../../models/graphql-schema';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import { ApolloError } from '@apollo/client';
 import { ViewProps } from '../../models/view';
+import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
 
 interface ChallengeContextEntities {
   context?: ContextTabFragment;
@@ -24,6 +32,8 @@ interface ChallengeContextEntities {
   challengeDisplayName?: string;
   challengeTagset?: Tagset;
   challengeLifecycle?: LifecycleContextTabFragment;
+  aspects?: AspectCardFragment[];
+  references?: ReferenceContextTabFragment[];
 }
 interface ChallengeContextActions {}
 interface ChallengeContextState {
@@ -32,6 +42,7 @@ interface ChallengeContextState {
 }
 interface ChallengeContextOptions {
   canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
 interface ChallengeContextViewProps
@@ -44,7 +55,7 @@ interface ChallengeContextViewProps
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
   const { t } = useTranslation();
-  const { canReadAspects } = options;
+  const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const {
     context,
@@ -58,16 +69,17 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
     challengeLifecycle,
   } = entities;
   const {
+    id = '',
     tagline = '',
     impact = '',
     background = '',
     vision = '',
     who = '',
-    references,
-    aspects = [],
     visuals = [],
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
+  const aspects = entities?.aspects;
+  const references = entities?.references;
 
   const rightPanel = (
     <>
@@ -77,13 +89,16 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         <TagsComponent tags={challengeTagset?.tags ?? []} />
       </DashboardGenericSection>
       <SectionSpacer />
-      <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
-        {references?.map((l, i) => (
-          <Link key={i} href={l.uri} target="_blank">
-            <Typography>{l.uri}</Typography>
-          </Link>
-        ))}
-      </DashboardGenericSection>
+      <MembershipBackdrop show={!references} blockName={t('common.references')}>
+        <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
+          {references &&
+            references.map((l, i) => (
+              <Link key={i} href={l.uri} target="_blank">
+                <Typography>{l.uri}</Typography>
+              </Link>
+            ))}
+        </DashboardGenericSection>
+      </MembershipBackdrop>
     </>
   );
 
@@ -104,6 +119,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
             {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
           </ApplicationButtonContainer>
         }
+        contextId={id}
         banner={banner}
         background={background}
         displayName={challengeDisplayName}
@@ -114,6 +130,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         aspects={aspects}
         aspectsLoading={loading}
         canReadAspects={canReadAspects}
+        canCreateAspects={canCreateAspects}
       />
     </ContextLayout>
   );
