@@ -24,7 +24,7 @@ const useStyle = makeStyles(theme => ({
 }));
 
 interface MarkdownFieldProps extends InputProps {
-  title: string;
+  title?: string;
   tooltipTitle?: string;
   name: string;
   required?: boolean;
@@ -54,7 +54,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   return (
     <FormGroup>
       <div className={styles.withTooltipIcon}>
-        {title !== '' && <InputLabel required={required}>{title}</InputLabel>}
+        {title && <InputLabel required={required}>{title}</InputLabel>}
         {tooltipTitle && (
           <Tooltip title={tooltipTitle} arrow placement="top" aria-label={`tooltip-${title}`}>
             <InfoIcon fontSize="inherit" color="primary" />

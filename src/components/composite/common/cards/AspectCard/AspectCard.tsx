@@ -4,9 +4,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Aspect, VisualUriFragment } from '../../../../../models/graphql-schema';
 import EntityContributionCard from '../ContributionCard/EntityContributionCard';
-import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 import { styled } from '@mui/material';
 import remToPx from '../../../../../utils/remToPx/remToPx';
+import { buildAspectUrl } from '../../../../../utils/urlBuilders';
 
 const DEFAULT_LINE_HEIGHT = 1.5;
 const DEFAULT_FONT_SIZE = '1rem';
@@ -35,22 +35,29 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-type NeededFields = 'id' | 'displayName' | 'description' | 'type' | 'tagset';
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'description' | 'type' | 'tagset';
 type AspectType = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment };
 export interface AspectCardProps {
   aspect?: AspectType;
-  ecoverseNameId?: string;
+  hubNameId?: string;
   challengeNameId?: string;
+  opportunityNameId?: string;
   loading?: boolean;
 }
 
-const AspectCard: FC<AspectCardProps> = ({ aspect, loading = false }) => {
+const AspectCard: FC<AspectCardProps> = ({
+  aspect,
+  loading = false,
+  hubNameId,
+  challengeNameId,
+  opportunityNameId,
+}) => {
   if (!aspect) {
     return <></>;
   }
 
-  const { displayName = '', description = '', type = '', tagset } = aspect as AspectType;
-  const bannerNarrow = getVisualBannerNarrow(aspect?.bannerNarrow);
+  const { nameID, displayName = '', description = '', type = '', tagset } = aspect as AspectType;
+  const bannerNarrow = aspect?.bannerNarrow?.uri;
 
   return (
     <EntityContributionCard
@@ -59,6 +66,7 @@ const AspectCard: FC<AspectCardProps> = ({ aspect, loading = false }) => {
         mediaUrl: bannerNarrow,
         labelText: type,
         tags: tagset?.tags ?? [],
+        url: hubNameId && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
       }}
       loading={loading}
     >

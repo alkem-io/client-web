@@ -149,13 +149,12 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
   const aspects = hubAspects ?? challengeAspects ?? opportunityAspects;
   const references = hubReferences ?? challengeReferences ?? opportunityReferences;
   const loading =
-    hubLoading ??
-    hubExtraLoading ??
-    challengeLoading ??
-    challengeExtraLoading ??
-    opportunityLoading ??
-    opportunityExtraLoading ??
-    false;
+    hubLoading ||
+    hubExtraLoading ||
+    challengeLoading ||
+    challengeExtraLoading ||
+    opportunityLoading ||
+    opportunityExtraLoading;
   const error =
     hubError ?? hubExtraError ?? challengeError ?? challengeExtraError ?? opportunityError ?? opportunityExtraError;
 

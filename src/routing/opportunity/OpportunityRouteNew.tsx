@@ -13,6 +13,9 @@ import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboa
 import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
 import OpportunityProjectsPage from '../../pages/Opportunity/OpportunityProjectsPage';
 import OpportunityCanvasPage from '../../pages/Opportunity/OpportunityCanvasPage';
+import { nameOfUrl } from '../url-params';
+import AspectProvider from '../../context/aspect/AspectProvider';
+import AspectRoute from '../aspect/AspectRoute';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -64,6 +67,14 @@ const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths: _paths }) => {
               />
             </Route>
             <Route path={'projects/*'} element={<ProjectRoute paths={currentPaths} />} />
+            <Route
+              path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+              element={
+                <AspectProvider>
+                  <AspectRoute paths={currentPaths} />
+                </AspectProvider>
+              }
+            />
             <Route path="*" element={<Error404 />} />
           </Routes>
         )}

@@ -3,7 +3,8 @@ schema: "http://localhost:4000/graphql"
 documents: [
   "graphql/**/*.graphql",
   "src/containers/**/*.graphql",
-  "src/components/composite/**/*.graphql"
+  "src/context/**/*.graphql",
+  "src/components/composite/**/*.graphql",
 ]
 hooks:
   afterAllFileWrite:
