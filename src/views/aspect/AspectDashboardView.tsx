@@ -66,30 +66,32 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
 
   const rightPanel = (
     <>
-      <DashboardGenericSection headerText={t('common.tags')}>
-        <TagsComponent tags={tags ?? []} loading={loading} />
-      </DashboardGenericSection>
-      <SectionSpacer />
-      <DashboardGenericSection headerText={t('common.references')}>
-        {loading ? (
-          <>
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-          </>
-        ) : (
-          <>
-            {references &&
-              references.length > 0 &&
-              references.map((l, i) => (
-                <Link key={i} href={l.uri} target="_blank">
-                  <Typography>{l.uri}</Typography>
-                </Link>
-              ))}
-            {references && !references.length && <Typography>{t('common.no-references')}</Typography>}
-          </>
-        )}
-      </DashboardGenericSection>
+      {canReadComments && (
+        <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
+          <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}>
+            {messages.map((x, i) => (
+              <Box key={i}>
+                <DiscussionComment comment={x} canDelete={canDeleteComment(x.author?.id)} onDelete={onDeleteComment} />
+                {i < messages.length - 1 && <SectionSpacer />}
+              </Box>
+            ))}
+          </Box>
+          <SectionSpacer double />
+          <Box>
+            {canPostComments && (
+              <PostComment
+                placeholder={t('pages.aspect.dashboard.comment.placeholder')}
+                onPostComment={onPostComment}
+              />
+            )}
+            {!canPostComments && (
+              <Box paddingY={4} display="flex" justifyContent="center">
+                <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
+              </Box>
+            )}
+          </Box>
+        </DashboardGenericSection>
+      )}
     </>
   );
 
@@ -104,40 +106,34 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
               <Skeleton width={'60%'} />
             </>
           ) : (
-            <Typography>{description}</Typography>
+            <>
+              <Typography>{description}</Typography>
+              <SectionSpacer double />
+              <TagsComponent tags={tags ?? []} loading={loading} />
+            </>
           )}
         </DashboardGenericSection>
         <SectionSpacer />
-        {canReadComments && (
-          <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
-            <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}>
-              {messages.map((x, i) => (
-                <Box key={i}>
-                  <DiscussionComment
-                    comment={x}
-                    canDelete={canDeleteComment(x.author?.id)}
-                    onDelete={onDeleteComment}
-                  />
-                  {i < messages.length - 1 && <SectionSpacer />}
-                </Box>
-              ))}
-            </Box>
-            <SectionSpacer double />
-            <Box>
-              {canPostComments && (
-                <PostComment
-                  placeholder={t('pages.aspect.dashboard.comment.placeholder')}
-                  onPostComment={onPostComment}
-                />
-              )}
-              {!canPostComments && (
-                <Box paddingY={4} display="flex" justifyContent="center">
-                  <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
-                </Box>
-              )}
-            </Box>
-          </DashboardGenericSection>
-        )}
+        <DashboardGenericSection headerText={t('common.references')}>
+          {loading ? (
+            <>
+              <Skeleton />
+              <Skeleton />
+              <Skeleton />
+            </>
+          ) : (
+            <>
+              {references &&
+                references.length > 0 &&
+                references.map((l, i) => (
+                  <Link key={i} href={l.uri} target="_blank">
+                    <Typography>{l.uri}</Typography>
+                  </Link>
+                ))}
+              {references && !references.length && <Typography>{t('common.no-references')}</Typography>}
+            </>
+          )}
+        </DashboardGenericSection>
       </>
     </ContextLayout>
   );
