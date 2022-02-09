@@ -47,7 +47,7 @@ const AspectProvider: FC = ({ children }) => {
     error: challengeError,
   } = useChallengeAspectProviderQuery({
     variables: { hubNameId, challengeNameId, aspectNameId },
-    skip: !isAspectDefined || !challengeNameId,
+    skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
   const challengeAspect = challengeData?.ecoverse?.challenge?.context?.aspects?.[0];
@@ -64,7 +64,7 @@ const AspectProvider: FC = ({ children }) => {
   const opportunityAspect = opportunityData?.ecoverse?.opportunity?.context?.aspects?.[0];
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
-  const loading = hubLoading ?? challengeLoading ?? opportunityLoading ?? false;
+  const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
   return (

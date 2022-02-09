@@ -16,7 +16,7 @@ const AspectRoute: FC<AspectRouteProps> = ({ paths: _paths }) => {
       { value: '', name: 'aspects', real: false },
       { value: resolved.pathname, name: displayName, real: true },
     ],
-    [_paths]
+    [_paths, displayName]
   );
   return (
     <Routes>

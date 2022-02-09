@@ -80,7 +80,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: challengeError,
   } = useChallengeAspectQuery({
     variables: { hubNameId, challengeNameId, aspectNameId },
-    skip: !isAspectDefined || !challengeNameId,
+    skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
   const challengeAspect = challengeData?.ecoverse?.challenge?.context?.aspects?.[0];
@@ -97,7 +97,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const opportunityAspect = opportunityData?.ecoverse?.opportunity?.context?.aspects?.[0];
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
-  const loading = hubLoading ?? challengeLoading ?? opportunityLoading ?? false;
+  const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
   const commentId = aspect?.comments?.id;
