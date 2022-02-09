@@ -243,7 +243,6 @@
         "description": "Description",
         "description-placeholder": "A description for this aspect",
         "description-help-text": "Some help",
-        "tags-title": "Tags",
         "tags-help-text": "Tags help text",
         "name-help-text": "Name help text",
         "name-id-help-text": "Name ID help text"
@@ -256,8 +255,7 @@
         "links": "Links",
         "canvas": "Canvas",
         "visual": "Visual",
-        "explanation": "After the creation, you will be able to add visual and references through Settings in the Aspect's page",
-        "tags-title": "Tags"
+        "explanation": "After the creation, you will be able to add visual and references through Settings in the Aspect's page"
       }
     },
     "visual-upload": {

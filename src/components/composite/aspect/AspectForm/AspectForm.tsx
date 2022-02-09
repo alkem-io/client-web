@@ -94,7 +94,7 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, onChange, onSta
           <SectionSpacer />
           <TagsetSegment
             tagsets={tagsets}
-            title={t('components.aspect-creation.info-step.tags-title')}
+            title={t('common.tags')}
             helpText={t('components.aspect-creation.info-step.tags-help-text')}
           />
         </Box>
