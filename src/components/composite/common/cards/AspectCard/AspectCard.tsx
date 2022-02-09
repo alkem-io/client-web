@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Aspect, VisualUriFragment } from '../../../../../models/graphql-schema';
 import EntityContributionCard from '../ContributionCard/EntityContributionCard';
-import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 import { styled } from '@mui/material';
 import remToPx from '../../../../../utils/remToPx/remToPx';
 import { buildAspectUrl } from '../../../../../utils/urlBuilders';
@@ -58,7 +57,7 @@ const AspectCard: FC<AspectCardProps> = ({
   }
 
   const { nameID, displayName = '', description = '', type = '', tagset } = aspect as AspectType;
-  const bannerNarrow = getVisualBannerNarrow(aspect?.bannerNarrow);
+  const bannerNarrow = aspect?.bannerNarrow?.uri;
 
   return (
     <EntityContributionCard

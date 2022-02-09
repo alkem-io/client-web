@@ -4,7 +4,6 @@ import { useUpdateNavigation, useUrlParams } from '../../hooks';
 import { useResolvedPath } from 'react-router-dom';
 import AspectDashboardView from '../../views/aspect/AspectDashboardView';
 import AspectDashboardContainer from '../../containers/aspect/AspectDashboardContainer';
-import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface AspectDashboardPageProps extends PageProps {}
 
@@ -24,7 +23,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ paths: _paths }) =>
       {(entities, state, actions) => (
         <AspectDashboardView
           entities={{
-            banner: getVisualBanner(entities.aspect?.banner),
+            banner: entities.aspect?.banner?.uri,
             displayName: entities.aspect?.displayName,
             description: entities.aspect?.description,
             tags: entities.aspect?.tagset?.tags,
