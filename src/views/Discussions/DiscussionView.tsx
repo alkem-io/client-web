@@ -91,7 +91,13 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
           <Grid item container spacing={2}>
             <Grid item xs={12}>
               <Box paddingY={2}>
-                {canPost && <PostComment onPostComment={comment => onPostComment && onPostComment(id, comment)} />}
+                {canPost && (
+                  <PostComment
+                    onPostComment={comment => onPostComment && onPostComment(id, comment)}
+                    title={t('components.post-comment.fields.description.title')}
+                    placeholder={t('components.post-comment.fields.description.placeholder')}
+                  />
+                )}
                 {!canPost && (
                   <Box paddingY={4} display="flex" justifyContent="center">
                     <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>

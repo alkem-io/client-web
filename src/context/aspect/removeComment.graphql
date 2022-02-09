@@ -1,0 +1,3 @@
+mutation RemoveCommentFromAspect($messageData: CommentsRemoveMessageInput!) {
+  removeComment(messageData: $messageData)
+}
