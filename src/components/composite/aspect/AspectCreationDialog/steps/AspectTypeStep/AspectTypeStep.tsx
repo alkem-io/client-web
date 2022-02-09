@@ -49,7 +49,7 @@ const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
           <Select
             labelId="type-select-label"
             id="type-select"
-            value={type}
+            value={type ?? ''}
             defaultValue={''}
             label={t('components.aspect-creation.type-step.label')}
             onChange={e => onChange(e.target.value)}
