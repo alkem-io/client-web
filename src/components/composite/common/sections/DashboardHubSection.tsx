@@ -12,7 +12,7 @@ interface DashboardHubSectionProps extends DashboardGenericSectionProps {
   };
   options: {
     itemBasis: '25%' | '33%' | '50%';
-  };
+  } & DashboardGenericSectionProps['options'];
   loading: {
     hubs?: boolean;
   };
