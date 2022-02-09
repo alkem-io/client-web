@@ -15,4 +15,11 @@ fragment EcoverseInfo on Ecoverse {
       myPrivileges
     }
   }
+  context {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
 }

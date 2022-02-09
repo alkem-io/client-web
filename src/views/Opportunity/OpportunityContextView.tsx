@@ -3,7 +3,14 @@ import { Box } from '@mui/material';
 import React, { FC } from 'react';
 import LifecycleState from '../../components/composite/entities/Lifecycle/LifecycleState';
 import ContextSection from '../../components/composite/sections/ContextSection';
-import { Context, ContextTabFragment, LifecycleContextTabFragment, Tagset } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  Context,
+  ContextTabFragment,
+  LifecycleContextTabFragment,
+  ReferenceContextTabFragment,
+  Tagset,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
@@ -12,6 +19,8 @@ export interface OpportunityContextViewEntities {
   opportunityDisplayName?: string;
   opportunityTagset?: Tagset;
   opportunityLifecycle?: LifecycleContextTabFragment;
+  aspects?: AspectCardFragment[];
+  references?: ReferenceContextTabFragment[];
 }
 
 export interface OpportunityContextViewActions {}
@@ -23,6 +32,7 @@ export interface OpportunityContextViewState {
 
 export interface OpportunityContextViewOptions {
   canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
 export interface OpportunityContextViewProps
@@ -34,7 +44,7 @@ export interface OpportunityContextViewProps
   > {}
 
 const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, options, state }) => {
-  const { canReadAspects } = options;
+  const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const { context, opportunityDisplayName, opportunityTagset, opportunityLifecycle } = entities;
 
@@ -44,11 +54,11 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
     background = '',
     vision = '',
     who = '',
-    references,
-    aspects = [],
     visuals = [],
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
+  const aspects = entities?.aspects;
+  const references = entities?.references;
 
   return (
     <ContextSection
@@ -69,6 +79,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
       aspects={aspects}
       aspectsLoading={loading}
       canReadAspects={canReadAspects}
+      canCreateAspects={canCreateAspects}
     />
   );
 };

@@ -15,12 +15,11 @@ interface TagsSegmentProps {
 }
 
 const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
-export const tagsetSegmentSchema = yup.array().of(
-  yup.object().shape({
-    name: yup.string(),
-    tags: yup.array().of(yup.string()),
-  })
-);
+export const tagsetSegmentValidationObject = yup.object().shape({
+  name: yup.string(),
+  tags: yup.array().of(yup.string().min(2)),
+});
+export const tagsetSegmentSchema = yup.array().of(tagsetSegmentValidationObject);
 
 export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false, template, disabled }) => {
   const getTagsetPlaceholder = useCallback(
@@ -68,7 +67,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   disabled = false,
   placeholder,
 }) => {
-  const [field, , helper] = useField(name);
+  const [field, meta, helper] = useField(name);
   return (
     <Grid item xs={12}>
       <TagsInput
@@ -80,6 +79,8 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         required={required}
         disabled={disabled}
         readOnly={readOnly}
+        error={Boolean(meta.error)}
+        helperText={meta.error}
         onChange={items => helper.setValue(items)}
         InputLabelProps={{
           shrink: true,

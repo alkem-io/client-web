@@ -3,7 +3,13 @@ import React, { FC } from 'react';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import ContextSection from '../../components/composite/sections/ContextSection';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { Context, ContextTabFragment, Tagset } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  Context,
+  ContextTabFragment,
+  ReferenceContextTabFragment,
+  Tagset,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
@@ -13,6 +19,8 @@ interface EcoverseContextEntities {
   hubNameId?: string;
   hubDisplayName?: string;
   hubTagSet?: Tagset;
+  aspects?: AspectCardFragment[];
+  references?: ReferenceContextTabFragment[];
 }
 interface EcoverseContextActions {}
 interface EcoverseContextState {
@@ -21,13 +29,14 @@ interface EcoverseContextState {
 }
 interface EcoverseContextOptions {
   canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
 interface EcoverseContextViewProps
   extends ViewProps<EcoverseContextEntities, EcoverseContextActions, EcoverseContextState, EcoverseContextOptions> {}
 
 export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, state, options }) => {
-  const { canReadAspects } = options;
+  const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
 
@@ -37,11 +46,11 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
     background = '',
     vision = '',
     who = '',
-    references,
-    aspects = [],
     visuals = [],
   } = context || ({} as Context);
   const ecoverseBanner = getVisualBanner(visuals);
+  const aspects = entities?.aspects;
+  const references = entities?.references;
 
   return (
     <ContextSection
@@ -70,6 +79,7 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
       aspects={aspects}
       aspectsLoading={loading}
       canReadAspects={canReadAspects}
+      canCreateAspects={canCreateAspects}
     />
   );
 };

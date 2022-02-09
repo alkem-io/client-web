@@ -6,7 +6,14 @@ import LifecycleState from '../../components/composite/entities/Lifecycle/Lifecy
 import ContextSection from '../../components/composite/sections/ContextSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { Context, ContextTabFragment, LifecycleContextTabFragment, Tagset } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  Context,
+  ContextTabFragment,
+  LifecycleContextTabFragment,
+  ReferenceContextTabFragment,
+  Tagset,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
@@ -20,6 +27,8 @@ interface ChallengeContextEntities {
   challengeDisplayName?: string;
   challengeTagset?: Tagset;
   challengeLifecycle?: LifecycleContextTabFragment;
+  aspects?: AspectCardFragment[];
+  references?: ReferenceContextTabFragment[];
 }
 interface ChallengeContextActions {}
 interface ChallengeContextState {
@@ -28,6 +37,7 @@ interface ChallengeContextState {
 }
 interface ChallengeContextOptions {
   canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
 interface ChallengeContextViewProps
@@ -39,7 +49,7 @@ interface ChallengeContextViewProps
   > {}
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
-  const { canReadAspects } = options;
+  const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const {
     context,
@@ -58,11 +68,11 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
     background = '',
     vision = '',
     who = '',
-    references,
-    aspects = [],
     visuals = [],
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
+  const aspects = entities?.aspects;
+  const references = entities?.references;
 
   return (
     <ContextSection
@@ -96,6 +106,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
       aspects={aspects}
       aspectsLoading={loading}
       canReadAspects={canReadAspects}
+      canCreateAspects={canCreateAspects}
     />
   );
 };

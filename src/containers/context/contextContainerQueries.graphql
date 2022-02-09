@@ -1,3 +1,5 @@
+# normal query and "extra" one with JUST the aspects and references
+# hub queries
 query HubContext($hubNameId: UUID_NAMEID!) {
   ecoverse(ID: $hubNameId) {
     id
@@ -13,7 +15,22 @@ query HubContext($hubNameId: UUID_NAMEID!) {
     }
   }
 }
-
+query HubContextExtra($hubNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    nameID
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    context {
+      ...ContextTabExtra
+    }
+  }
+}
+# chall queries
 query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
   ecoverse(ID: $hubNameId) {
     id
@@ -37,7 +54,30 @@ query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
     }
   }
 }
-
+query ChallengeContextExtra($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    nameID
+    displayName
+    challenge(ID: $challengeNameId) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      lifecycle {
+        ...LifecycleContextTab
+      }
+      context {
+        ...ContextTabExtra
+      }
+    }
+  }
+}
+# opp queries
 query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
   ecoverse(ID: $hubNameId) {
     id
@@ -60,7 +100,29 @@ query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
     }
   }
 }
-
+query OpportunityContextExtra($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  ecoverse(ID: $hubNameId) {
+    id
+    nameID
+    opportunity(ID: $opportunityNameId) {
+      id
+      nameID
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      lifecycle {
+        ...LifecycleContextTab
+      }
+      context {
+        ...ContextTabExtra
+      }
+    }
+  }
+}
+# context tab fragments
 fragment ContextTab on Context {
   id
   tagline
@@ -72,22 +134,28 @@ fragment ContextTab on Context {
     id
     myPrivileges
   }
-  aspects {
-    ...AspectCard
-  }
-  references {
-    id
-    name
-    uri
-    description
-  }
   visuals {
     ...VisualFull
   }
 }
-
+fragment ContextTabExtra on Context {
+  id
+  aspects {
+    ...AspectCard
+  }
+  references {
+    ...ReferenceContextTab
+  }
+}
+#
 fragment LifecycleContextTab on Lifecycle {
   id
   state
   machineDef
+}
+fragment ReferenceContextTab on Reference {
+  id
+  name
+  uri
+  description
 }

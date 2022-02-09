@@ -1,0 +1,20 @@
+mutation CreateAspect($aspectData: CreateAspectInput!) {
+  createAspectOnContext(aspectData: $aspectData) {
+    id
+    nameID
+    displayName
+    description
+    type
+    tagset {
+      id
+      name
+      tags
+    }
+    banner {
+      ...VisualUri
+    }
+    bannerNarrow {
+      ...VisualUri
+    }
+  }
+}
