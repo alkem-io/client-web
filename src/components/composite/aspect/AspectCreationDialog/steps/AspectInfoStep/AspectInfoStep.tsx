@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { useEcoverse } from '../../../../../../hooks';
 import AspectForm, { AspectFormOutput } from '../../../AspectForm/AspectForm';
 import { AspectCreationType } from '../../AspectCreationDialog';
 
@@ -9,6 +10,16 @@ export interface AspectInfoStepProps {
 }
 
 const AspectInfoStep: FC<AspectInfoStepProps> = ({ aspect, onChange, onStatusChanged }) => {
-  return <AspectForm aspect={aspect} onChange={onChange} onStatusChanged={onStatusChanged} />;
+  const { template } = useEcoverse();
+  const description = template.aspectTemplates.find(x => x.type === aspect?.type)?.description;
+
+  return (
+    <AspectForm
+      aspect={aspect}
+      onChange={onChange}
+      onStatusChanged={onStatusChanged}
+      templateDescription={description}
+    />
+  );
 };
 export default AspectInfoStep;
