@@ -22,7 +22,7 @@ const AspectReviewStep: FC<AspectReviewStepProps> = ({ aspect }) => {
       </LabelRow>
       <LabelRow title={t('components.aspect-creation.final-step.name')}>{displayName}</LabelRow>
       <LabelRow title={t('components.aspect-creation.final-step.description')}>{description}</LabelRow>
-      <LabelRow title={'Default'}>
+      <LabelRow title={t('common.tags')}>
         <Box marginTop={1}>
           <TagsComponent tags={tags} count={tags.length} />
         </Box>

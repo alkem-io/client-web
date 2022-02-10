@@ -17,20 +17,23 @@ export const nameSegmentSchema = yup.object().shape({
 interface NameSegmentProps {
   disabled: boolean;
   required: boolean;
+  nameHelpText?: string;
+  nameIDHelpText?: string;
 }
 
-export const NameSegment: FC<NameSegmentProps> = ({ disabled, required }) => {
+export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelpText, nameIDHelpText }) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
   return (
     <>
-      {getInputField({ name: 'name', label: t('components.nameSegment.name'), required: true })}
+      {getInputField({ name: 'name', label: t('components.nameSegment.name'), required: true, helpText: nameHelpText })}
       {getInputField({
         name: 'nameID',
         label: t('components.nameSegment.nameID.title'),
         placeholder: t('components.nameSegment.nameID.placeholder'),
         disabled: disabled,
         required: required,
+        helpText: nameIDHelpText,
       })}
     </>
   );

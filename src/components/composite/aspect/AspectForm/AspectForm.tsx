@@ -77,16 +77,26 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, onChange, onSta
       {() => (
         <Box>
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          <NameSegment disabled={edit} required={!edit} />
+          <NameSegment
+            disabled={edit}
+            required={!edit}
+            nameHelpText={t('components.aspect-creation.info-step.name-help-text')}
+            nameIDHelpText={t('components.aspect-creation.info-step.name-id-help-text')}
+          />
           <SectionSpacer />
           {getInputField({
             name: 'description',
             label: t('components.aspect-creation.info-step.description'),
             placeholder: t('components.aspect-creation.info-step.description-placeholder'),
             required: true,
+            helpText: t('components.aspect-creation.info-step.description-help-text'),
           })}
           <SectionSpacer />
-          <TagsetSegment tagsets={tagsets} />
+          <TagsetSegment
+            tagsets={tagsets}
+            title={t('common.tags')}
+            helpText={t('components.aspect-creation.info-step.tags-help-text')}
+          />
         </Box>
       )}
     </Formik>
