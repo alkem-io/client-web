@@ -4109,15 +4109,6 @@ export type UpdateActorMutation = {
   };
 };
 
-export type UpdateAspectMutationVariables = Exact<{
-  input: UpdateAspectInput;
-}>;
-
-export type UpdateAspectMutation = {
-  __typename?: 'Mutation';
-  updateAspect: { __typename?: 'Aspect'; id: string; displayName: string };
-};
-
 export type UpdateChallengeMutationVariables = Exact<{
   input: UpdateChallengeInput;
 }>;
@@ -7506,6 +7497,21 @@ export type AspectMessageFragment = {
   message: string;
   sender: string;
   timestamp: number;
+};
+
+export type UpdateAspectMutationVariables = Exact<{
+  input: UpdateAspectInput;
+}>;
+
+export type UpdateAspectMutation = {
+  __typename?: 'Mutation';
+  updateAspect: {
+    __typename?: 'Aspect';
+    id: string;
+    description: string;
+    displayName: string;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  };
 };
 
 export type HubAspectSettingsQueryVariables = Exact<{

@@ -6,18 +6,25 @@ import {
   useChallengeAspectSettingsQuery,
   useHubAspectSettingsQuery,
   useOpportunityAspectSettingsQuery,
+  useUpdateAspectMutation,
 } from '../../../hooks/generated/graphql';
-import { AspectSettingsFragment } from '../../../models/graphql-schema';
+import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
+
+type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description'> & { tags: string[] };
 
 export interface AspectSettingsContainerEntities {
   aspect?: AspectSettingsFragment;
 }
 
-export interface AspectSettingsContainerActions {}
+export interface AspectSettingsContainerActions {
+  handleUpdate: (aspect: AspectUpdateData) => void;
+}
 
 export interface AspectSettingsContainerState {
   loading: boolean;
+  updating: boolean;
   error?: ApolloError;
+  updateError?: ApolloError;
 }
 
 export interface AspectSettingsContainerProps
@@ -80,6 +87,23 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
-  return <>{children({ aspect }, { loading, error }, {})}</>;
+  const [updateAspect, { loading: updating, error: updateError }] = useUpdateAspectMutation({
+    onError: handleError,
+  });
+
+  const handleUpdate = (aspect: AspectUpdateData) => {
+    updateAspect({
+      variables: {
+        input: {
+          ID: aspect.id,
+          displayName: aspect.displayName,
+          description: aspect.description,
+          tags: aspect.tags,
+        },
+      },
+    });
+  };
+
+  return <>{children({ aspect }, { loading, error, updating, updateError }, { handleUpdate })}</>;
 };
 export default AspectSettingsContainer;

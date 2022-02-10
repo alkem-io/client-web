@@ -14,6 +14,7 @@ interface TagsSegmentProps {
   disabled?: boolean;
   title?: string;
   helpText?: string;
+  loading?: boolean;
 }
 
 const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
@@ -30,6 +31,7 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
   disabled,
   title,
   helpText,
+  loading,
 }) => {
   const getTagsetPlaceholder = useCallback(
     (name: string) => {
@@ -51,6 +53,7 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
             readOnly={readOnly}
             disabled={disabled}
             helpText={helpText}
+            loading={loading}
           />
         ))
       }
@@ -68,6 +71,7 @@ interface TagsetFieldProps {
   as?: React.ElementType;
   disabled?: boolean;
   helpText?: string;
+  loading?: boolean;
 }
 
 export const TagsetField: FC<TagsetFieldProps> = ({
@@ -78,6 +82,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   disabled = false,
   placeholder,
   helpText,
+  loading,
 }) => {
   const [field, meta, helper] = useField(name);
   return (
@@ -99,6 +104,7 @@ export const TagsetField: FC<TagsetFieldProps> = ({
           shrink: true,
         }}
         fullWidth
+        loading={loading}
       />
     </Grid>
   );

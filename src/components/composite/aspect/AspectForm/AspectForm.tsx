@@ -16,20 +16,28 @@ type FormValueType = {
   nameID: string;
   description: string;
   tagsets: Tagset[];
+  type: string;
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-export type AspectFormOutput = { displayName: string; nameID: string; description: string; tags: string[] };
+export type AspectFormOutput = {
+  displayName: string;
+  nameID: string;
+  description: string;
+  tags: string[];
+  type: string;
+};
 export type AspectFormInput = AspectCreationType;
 export interface AspectFormProps {
   aspect?: AspectFormInput;
   edit?: boolean;
+  loading?: boolean;
   onChange?: (aspect: AspectFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
 }
 
-const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, onChange, onStatusChanged }) => {
+const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, loading, onChange, onStatusChanged }) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
 
@@ -46,6 +54,7 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, onChange, onSta
     nameID: aspect?.nameID ?? '',
     description: aspect?.description ?? '',
     tagsets,
+    type: aspect?.type ?? '',
   };
 
   const validationSchema = yup.object().shape({
@@ -61,6 +70,7 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, onChange, onSta
       nameID: values.nameID,
       description: values.description,
       tags: values.tagsets[0].tags,
+      type: values.type,
     };
 
     onChange && onChange(aspect);
@@ -83,19 +93,27 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, onChange, onSta
             nameHelpText={t('components.aspect-creation.info-step.name-help-text')}
             nameIDHelpText={t('components.aspect-creation.info-step.name-id-help-text')}
           />
+          {getInputField({
+            name: 'type',
+            label: t('components.aspect-creation.type-step.label'),
+            helpText: t('components.aspect-creation.type-step.type-help-text'),
+            required: true,
+            disabled: true,
+          })}
           <SectionSpacer />
           {getInputField({
             name: 'description',
             label: t('components.aspect-creation.info-step.description'),
             placeholder: t('components.aspect-creation.info-step.description-placeholder'),
-            required: true,
             helpText: t('components.aspect-creation.info-step.description-help-text'),
+            required: true,
           })}
           <SectionSpacer />
           <TagsetSegment
             tagsets={tagsets}
             title={t('common.tags')}
             helpText={t('components.aspect-creation.info-step.tags-help-text')}
+            loading={loading}
           />
         </Box>
       )}

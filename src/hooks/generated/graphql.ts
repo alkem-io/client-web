@@ -3816,51 +3816,6 @@ export type UpdateActorMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateActorMutation,
   SchemaTypes.UpdateActorMutationVariables
 >;
-export const UpdateAspectDocument = gql`
-  mutation updateAspect($input: UpdateAspectInput!) {
-    updateAspect(aspectData: $input) {
-      id
-      displayName
-    }
-  }
-`;
-export type UpdateAspectMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateAspectMutation,
-  SchemaTypes.UpdateAspectMutationVariables
->;
-
-/**
- * __useUpdateAspectMutation__
- *
- * To run a mutation, you first call `useUpdateAspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAspectMutation, { data, loading, error }] = useUpdateAspectMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>(
-    UpdateAspectDocument,
-    options
-  );
-}
-export type UpdateAspectMutationHookResult = ReturnType<typeof useUpdateAspectMutation>;
-export type UpdateAspectMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAspectMutation>;
-export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateAspectMutation,
-  SchemaTypes.UpdateAspectMutationVariables
->;
 export const UpdateChallengeDocument = gql`
   mutation updateChallenge($input: UpdateChallengeInput!) {
     updateChallenge(challengeData: $input) {
@@ -10245,6 +10200,57 @@ export type OpportunityAspectQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectQuery(variables: SchemaTypes.OpportunityAspectQueryVariables) {
   return { query: OpportunityAspectDocument, variables: variables };
 }
+export const UpdateAspectDocument = gql`
+  mutation updateAspect($input: UpdateAspectInput!) {
+    updateAspect(aspectData: $input) {
+      id
+      description
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+    }
+  }
+`;
+export type UpdateAspectMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAspectMutation,
+  SchemaTypes.UpdateAspectMutationVariables
+>;
+
+/**
+ * __useUpdateAspectMutation__
+ *
+ * To run a mutation, you first call `useUpdateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAspectMutation, { data, loading, error }] = useUpdateAspectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>(
+    UpdateAspectDocument,
+    options
+  );
+}
+export type UpdateAspectMutationHookResult = ReturnType<typeof useUpdateAspectMutation>;
+export type UpdateAspectMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAspectMutation>;
+export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAspectMutation,
+  SchemaTypes.UpdateAspectMutationVariables
+>;
 export const HubAspectSettingsDocument = gql`
   query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
     ecoverse(ID: $hubNameId) {
