@@ -609,7 +609,7 @@ export type CreateApplicationInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type CreateAspectInput = {
+export type CreateAspectOnContextInput = {
   contextID: Scalars['UUID'];
   description: Scalars['String'];
   /** The display name for the entity. */
@@ -1417,7 +1417,7 @@ export type MutationCreateApplicationArgs = {
 };
 
 export type MutationCreateAspectOnContextArgs = {
-  aspectData: CreateAspectInput;
+  aspectData: CreateAspectOnContextInput;
 };
 
 export type MutationCreateCanvasOnContextArgs = {
@@ -3565,7 +3565,7 @@ export type CreateApplicationMutation = {
 };
 
 export type CreateAspectMutationVariables = Exact<{
-  aspectData: CreateAspectInput;
+  aspectData: CreateAspectOnContextInput;
 }>;
 
 export type CreateAspectMutation = {
