@@ -19,6 +19,8 @@ import Button from '@mui/material/Button';
 import AspectCreationDialog, { AspectCreationOutput } from '../aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../hooks';
+import CardFilter from '../../core/card-filter/CardFilter';
+import { aspectTagsValueGetter, aspectValueGetter } from '../../core/card-filter/value-getters/aspect-value-getter';
 
 export interface ContextSectionProps {
   contextId?: string;
@@ -228,31 +230,35 @@ const ContextSection: FC<ContextSectionProps> = ({
               primaryAction={canCreateAspects && <Button onClick={handleCreateDialogOpened}>Create</Button>}
             >
               {aspects && (
-                <CardLayoutContainer>
-                  {aspectsLoading ? (
-                    <>
-                      <CardLayoutItem>
-                        <AspectCard loading={true} />
-                      </CardLayoutItem>
-                      <CardLayoutItem>
-                        <AspectCard loading={true} />
-                      </CardLayoutItem>
-                    </>
-                  ) : (
-                    <>
-                      {aspects.map((x, i) => (
-                        <CardLayoutItem key={i}>
-                          <AspectCard
-                            aspect={x}
-                            hubNameId={ecoverseNameId}
-                            challengeNameId={challengeNameId}
-                            opportunityNameId={opportunityNameId}
-                          />
-                        </CardLayoutItem>
-                      ))}
-                    </>
+                <CardFilter data={aspects} tagsValueGetter={aspectTagsValueGetter} valueGetter={aspectValueGetter}>
+                  {filteredAspects => (
+                    <CardLayoutContainer>
+                      {aspectsLoading ? (
+                        <>
+                          <CardLayoutItem>
+                            <AspectCard loading={true} />
+                          </CardLayoutItem>
+                          <CardLayoutItem>
+                            <AspectCard loading={true} />
+                          </CardLayoutItem>
+                        </>
+                      ) : (
+                        <>
+                          {filteredAspects.map((x, i) => (
+                            <CardLayoutItem key={i}>
+                              <AspectCard
+                                aspect={x}
+                                hubNameId={ecoverseNameId}
+                                challengeNameId={challengeNameId}
+                                opportunityNameId={opportunityNameId}
+                              />
+                            </CardLayoutItem>
+                          ))}
+                        </>
+                      )}
+                    </CardLayoutContainer>
                   )}
-                </CardLayoutContainer>
+                </CardFilter>
               )}
             </DashboardGenericSection>
           </MembershipBackdrop>
