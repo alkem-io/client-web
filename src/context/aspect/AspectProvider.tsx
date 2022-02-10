@@ -6,17 +6,26 @@ import {
   useOpportunityAspectProviderQuery,
 } from '../../hooks/generated/graphql';
 import { ApolloError } from '@apollo/client';
+import { AuthorizationPrivilege } from '../../models/graphql-schema';
+
+interface AspectPermissions {
+  canUpdate: boolean;
+}
 
 interface AspectContextProps {
   id?: string;
   nameId?: string;
   displayName?: string;
+  permissions: AspectPermissions;
   loading: boolean;
   error?: ApolloError;
 }
 
 const AspectContext = React.createContext<AspectContextProps>({
   loading: false,
+  permissions: {
+    canUpdate: false,
+  },
 });
 
 const AspectProvider: FC = ({ children }) => {
@@ -67,6 +76,11 @@ const AspectProvider: FC = ({ children }) => {
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
+  const myPrivileges = aspect?.authorization?.myPrivileges ?? [];
+  const permissions: AspectPermissions = {
+    canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
+  };
+
   return (
     <AspectContext.Provider
       value={{
@@ -75,6 +89,7 @@ const AspectProvider: FC = ({ children }) => {
         id: aspect?.id,
         nameId: aspect?.nameID,
         displayName: aspect?.displayName,
+        permissions,
       }}
     >
       {children}
