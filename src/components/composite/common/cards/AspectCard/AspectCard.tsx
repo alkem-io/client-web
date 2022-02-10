@@ -52,11 +52,7 @@ const AspectCard: FC<AspectCardProps> = ({
   challengeNameId,
   opportunityNameId,
 }) => {
-  if (!aspect) {
-    return <></>;
-  }
-
-  const { nameID, displayName = '', description = '', type = '', tagset } = aspect as AspectType;
+  const { nameID = '', displayName = '', description = '', type = '', tagset } = (aspect || {}) as AspectType;
   const bannerNarrow = aspect?.bannerNarrow?.uri;
 
   return (

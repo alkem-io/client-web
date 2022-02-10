@@ -19,6 +19,8 @@ import Button from '@mui/material/Button';
 import AspectCreationDialog, { AspectCreationOutput } from '../aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../hooks';
+import CardFilter from '../../core/card-filter/CardFilter';
+import { aspectTagsValueGetter, aspectValueGetter } from '../../core/card-filter/value-getters/aspect-value-getter';
 
 export interface ContextSectionProps {
   contextId?: string;
@@ -227,20 +229,20 @@ const ContextSection: FC<ContextSectionProps> = ({
               headerText={`${t('common.aspects')} (${aspects ? aspects.length : 0})`}
               primaryAction={canCreateAspects && <Button onClick={handleCreateDialogOpened}>Create</Button>}
             >
-              {aspects && (
+              {aspectsLoading ? (
                 <CardLayoutContainer>
-                  {aspectsLoading ? (
-                    <>
-                      <CardLayoutItem>
-                        <AspectCard loading={true} />
-                      </CardLayoutItem>
-                      <CardLayoutItem>
-                        <AspectCard loading={true} />
-                      </CardLayoutItem>
-                    </>
-                  ) : (
-                    <>
-                      {aspects.map((x, i) => (
+                  <CardLayoutItem>
+                    <AspectCard loading={true} />
+                  </CardLayoutItem>
+                  <CardLayoutItem>
+                    <AspectCard loading={true} />
+                  </CardLayoutItem>
+                </CardLayoutContainer>
+              ) : (
+                <CardFilter data={aspects} tagsValueGetter={aspectTagsValueGetter} valueGetter={aspectValueGetter}>
+                  {filteredAspects => (
+                    <CardLayoutContainer>
+                      {filteredAspects.map((x, i) => (
                         <CardLayoutItem key={i}>
                           <AspectCard
                             aspect={x}
@@ -250,9 +252,9 @@ const ContextSection: FC<ContextSectionProps> = ({
                           />
                         </CardLayoutItem>
                       ))}
-                    </>
+                    </CardLayoutContainer>
                   )}
-                </CardLayoutContainer>
+                </CardFilter>
               )}
             </DashboardGenericSection>
           </MembershipBackdrop>
