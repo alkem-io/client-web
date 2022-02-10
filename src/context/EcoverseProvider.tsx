@@ -54,7 +54,10 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
   const ecoverse = data?.ecoverse;
   const ecoverseId = ecoverse?.id || '';
   const displayName = ecoverse?.displayName || '';
-  const template = ecoverse?.template || { aspectTemplates: globalAspectTemplates || [] };
+  const template: HubTemplate =
+    ecoverse && ecoverse.template.aspectTemplates.length > 0
+      ? { aspectTemplates: ecoverse?.template.aspectTemplates }
+      : { aspectTemplates: globalAspectTemplates || [] };
   const isPrivate = !Boolean(ecoverse?.authorization?.anonymousReadAccess ?? true);
   const error = configError || hubError;
 
