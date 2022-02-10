@@ -229,33 +229,29 @@ const ContextSection: FC<ContextSectionProps> = ({
               headerText={`${t('common.aspects')} (${aspects ? aspects.length : 0})`}
               primaryAction={canCreateAspects && <Button onClick={handleCreateDialogOpened}>Create</Button>}
             >
-              {aspects && (
+              {aspectsLoading ? (
+                <CardLayoutContainer>
+                  <CardLayoutItem>
+                    <AspectCard loading={true} />
+                  </CardLayoutItem>
+                  <CardLayoutItem>
+                    <AspectCard loading={true} />
+                  </CardLayoutItem>
+                </CardLayoutContainer>
+              ) : (
                 <CardFilter data={aspects} tagsValueGetter={aspectTagsValueGetter} valueGetter={aspectValueGetter}>
                   {filteredAspects => (
                     <CardLayoutContainer>
-                      {aspectsLoading ? (
-                        <>
-                          <CardLayoutItem>
-                            <AspectCard loading={true} />
-                          </CardLayoutItem>
-                          <CardLayoutItem>
-                            <AspectCard loading={true} />
-                          </CardLayoutItem>
-                        </>
-                      ) : (
-                        <>
-                          {filteredAspects.map((x, i) => (
-                            <CardLayoutItem key={i}>
-                              <AspectCard
-                                aspect={x}
-                                hubNameId={ecoverseNameId}
-                                challengeNameId={challengeNameId}
-                                opportunityNameId={opportunityNameId}
-                              />
-                            </CardLayoutItem>
-                          ))}
-                        </>
-                      )}
+                      {filteredAspects.map((x, i) => (
+                        <CardLayoutItem key={i}>
+                          <AspectCard
+                            aspect={x}
+                            hubNameId={ecoverseNameId}
+                            challengeNameId={challengeNameId}
+                            opportunityNameId={opportunityNameId}
+                          />
+                        </CardLayoutItem>
+                      ))}
                     </CardLayoutContainer>
                   )}
                 </CardFilter>
