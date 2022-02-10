@@ -1700,7 +1700,7 @@ export type CreateApplicationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateApplicationMutationVariables
 >;
 export const CreateAspectDocument = gql`
-  mutation CreateAspect($aspectData: CreateAspectInput!) {
+  mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {
     createAspectOnContext(aspectData: $aspectData) {
       id
       nameID
