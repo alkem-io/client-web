@@ -2,6 +2,7 @@ import { TextField, TextFieldProps } from '@mui/material';
 import { DistributiveOmit } from '@mui/types';
 import { useField } from 'formik';
 import React, { FC } from 'react';
+import HelpButton from '../../core/HelpButton';
 type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
   name: string;
@@ -10,6 +11,7 @@ type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   disabled?: boolean;
   placeholder?: string;
   autoComplete?: string;
+  helpText?: string;
 };
 
 export const FormikInputField: FC<InputFieldProps> = ({
@@ -22,6 +24,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   placeholder,
   autoComplete,
   InputProps,
+  helpText,
   ...rest
 }) => {
   const [field, meta] = useField(name);
@@ -44,6 +47,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
       fullWidth
       InputProps={{
         ...InputProps,
+        endAdornment: helpText && <HelpButton helpText={helpText} />,
         readOnly: readOnly,
       }}
       {...rest}

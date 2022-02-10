@@ -238,12 +238,17 @@
       "type-step": {
         "title": "Choose an aspect type",
         "error": "Error occurred while loading the types",
-        "label": "Type"
+        "label": "Type",
+        "type-help-text": "Aspect type"
       },
       "info-step": {
         "title": "Some basic info",
         "description": "Description",
-        "description-placeholder": "A description for this aspect"
+        "description-placeholder": "A description for this aspect",
+        "description-help-text": "Some help",
+        "tags-help-text": "Tags help text",
+        "name-help-text": "Name help text",
+        "name-id-help-text": "Name ID help text"
       },
       "final-step": {
         "title": "Final check",
