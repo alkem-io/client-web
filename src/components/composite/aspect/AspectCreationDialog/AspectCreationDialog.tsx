@@ -156,7 +156,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel, o
           ))}
         </Stepper>
         <Box marginBottom={2} marginTop={4}>
-          {activeStep.index === 0 && <AspectTypeStep onChange={handleTypeChange} />}
+          {activeStep.index === 0 && <AspectTypeStep type={aspect?.type} onChange={handleTypeChange} />}
           {activeStep.index === 1 && (
             <AspectInfoStep aspect={aspect} onChange={handleFormChange} onStatusChanged={handleFormStatusChange} />
           )}
