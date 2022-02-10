@@ -22,4 +22,10 @@ fragment EcoverseInfo on Ecoverse {
       myPrivileges
     }
   }
+  template {
+    aspectTemplates {
+      description
+      type
+    }
+  }
 }

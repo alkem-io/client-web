@@ -1,9 +1,0 @@
-query AspectTypes {
-  configuration {
-    template {
-      opportunities {
-        aspects
-      }
-    }
-  }
-}
