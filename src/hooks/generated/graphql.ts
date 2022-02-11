@@ -1737,7 +1737,6 @@ export const CreateAspectDocument = gql`
   mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {
     createAspectOnContext(aspectData: $aspectData) {
       id
-      nameID
       displayName
       description
       type
@@ -2130,6 +2129,56 @@ export type CreateProjectMutationResult = Apollo.MutationResult<SchemaTypes.Crea
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateProjectMutation,
   SchemaTypes.CreateProjectMutationVariables
+>;
+export const CreateReferenceOnAspectDocument = gql`
+  mutation createReferenceOnAspect($referenceInput: CreateReferenceOnAspectInput!) {
+    createReferenceOnAspect(referenceData: $referenceInput) {
+      id
+      name
+      uri
+      description
+    }
+  }
+`;
+export type CreateReferenceOnAspectMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateReferenceOnAspectMutation,
+  SchemaTypes.CreateReferenceOnAspectMutationVariables
+>;
+
+/**
+ * __useCreateReferenceOnAspectMutation__
+ *
+ * To run a mutation, you first call `useCreateReferenceOnAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReferenceOnAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReferenceOnAspectMutation, { data, loading, error }] = useCreateReferenceOnAspectMutation({
+ *   variables: {
+ *      referenceInput: // value for 'referenceInput'
+ *   },
+ * });
+ */
+export function useCreateReferenceOnAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateReferenceOnAspectMutation,
+    SchemaTypes.CreateReferenceOnAspectMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateReferenceOnAspectMutation,
+    SchemaTypes.CreateReferenceOnAspectMutationVariables
+  >(CreateReferenceOnAspectDocument, options);
+}
+export type CreateReferenceOnAspectMutationHookResult = ReturnType<typeof useCreateReferenceOnAspectMutation>;
+export type CreateReferenceOnAspectMutationResult = Apollo.MutationResult<SchemaTypes.CreateReferenceOnAspectMutation>;
+export type CreateReferenceOnAspectMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateReferenceOnAspectMutation,
+  SchemaTypes.CreateReferenceOnAspectMutationVariables
 >;
 export const CreateReferenceOnContextDocument = gql`
   mutation createReferenceOnContext($input: CreateReferenceOnContextInput!) {
@@ -10167,6 +10216,13 @@ export const UpdateAspectDocument = gql`
         id
         name
         tags
+      }
+      references {
+        id
+        name
+        description
+        name
+        uri
       }
     }
   }

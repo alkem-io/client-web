@@ -136,6 +136,7 @@ export type Aspect = {
   comments?: Maybe<Comments>;
   /** The id of the user that created this Aspect */
   createdBy: Scalars['UUID'];
+  createdDate: Scalars['DateTime'];
   description: Scalars['String'];
   /** The display name. */
   displayName: Scalars['String'];
@@ -269,6 +270,7 @@ export enum AuthorizationPrivilege {
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCanvas = 'CREATE_CANVAS',
+  CreateComment = 'CREATE_COMMENT',
   CreateHub = 'CREATE_HUB',
   CreateOrganization = 'CREATE_ORGANIZATION',
   Delete = 'DELETE',
@@ -614,8 +616,8 @@ export type CreateAspectOnContextInput = {
   description: Scalars['String'];
   /** The display name for the entity. */
   displayName?: InputMaybe<Scalars['String']>;
-  /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  /** A readable identifier, unique within the containing scope. If not provided generate based on the displayName */
+  nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
 };
@@ -2235,6 +2237,8 @@ export type UpdateAspectInput = {
   displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** Update the set of References for the Aspect. */
+  references?: InputMaybe<Array<UpdateReferenceInput>>;
   /** Update the tags on the Aspect. */
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
@@ -3573,7 +3577,6 @@ export type CreateAspectMutation = {
   createAspectOnContext: {
     __typename?: 'Aspect';
     id: string;
-    nameID: string;
     displayName: string;
     description: string;
     type: string;
@@ -3696,6 +3699,15 @@ export type CreateProjectMutation = {
     lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   };
+};
+
+export type CreateReferenceOnAspectMutationVariables = Exact<{
+  referenceInput: CreateReferenceOnAspectInput;
+}>;
+
+export type CreateReferenceOnAspectMutation = {
+  __typename?: 'Mutation';
+  createReferenceOnAspect: { __typename?: 'Reference'; id: string; name: string; uri: string; description: string };
 };
 
 export type CreateReferenceOnContextMutationVariables = Exact<{
@@ -7539,6 +7551,9 @@ export type UpdateAspectMutation = {
     description: string;
     displayName: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; description: string; uri: string }>
+      | undefined;
   };
 };
 

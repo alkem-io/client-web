@@ -8,5 +8,12 @@ mutation updateAspect($input: UpdateAspectInput!) {
       name
       tags
     }
+    references {
+      id
+      name
+      description
+      name
+      uri
+    }
   }
 }

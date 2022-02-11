@@ -27,6 +27,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
       description: aspect.description,
       displayName: aspect.displayName,
       tags: aspect?.tagset?.tags,
+      references: aspect?.references,
     };
 
   return (
@@ -43,6 +44,8 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
             loading={state.loading || state.updating}
             aspect={toAspectFormInput(entities.aspect)}
             onChange={setAspect}
+            onAddReference={actions.handleAddReference}
+            onRemoveReference={actions.handleRemoveReference}
           />
           <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2 }}>
             <Button
@@ -59,6 +62,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
                   displayName: aspect.displayName,
                   description: aspect.description,
                   tags: aspect.tags,
+                  references: aspect.references,
                 });
               }}
             >

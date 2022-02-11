@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerProps } from '../../../models/container';
-import { useApolloErrorHandler } from '../../../hooks';
+import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
 import {
   useChallengeAspectSettingsQuery,
   useHubAspectSettingsQuery,
@@ -9,8 +9,13 @@ import {
   useUpdateAspectMutation,
 } from '../../../hooks/generated/graphql';
 import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
+import { Reference } from '../../../models/Profile';
+import { newReferenceName } from '../../../utils/newReferenceName';
 
-type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description'> & { tags: string[] };
+type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description'> & {
+  tags: string[];
+  references?: Reference[];
+};
 
 export interface AspectSettingsContainerEntities {
   aspect?: AspectSettingsFragment;
@@ -18,6 +23,8 @@ export interface AspectSettingsContainerEntities {
 
 export interface AspectSettingsContainerActions {
   handleUpdate: (aspect: AspectUpdateData) => void;
+  handleAddReference: (push: PushFunc) => void;
+  handleRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
 }
 
 export interface AspectSettingsContainerState {
@@ -47,6 +54,8 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   opportunityNameId = '',
 }) => {
   const handleError = useApolloErrorHandler();
+  const notify = useNotification();
+  const { addReference, deleteReference, setPush, setRemove } = useEditReference();
 
   const isAspectDefined = aspectNameId && hubNameId;
 
@@ -89,6 +98,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
 
   const [updateAspect, { loading: updating, error: updateError }] = useUpdateAspectMutation({
     onError: handleError,
+    onCompleted: () => notify('Aspect updated successfully', 'success'),
   });
 
   const handleUpdate = (aspect: AspectUpdateData) => {
@@ -99,11 +109,42 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
           displayName: aspect.displayName,
           description: aspect.description,
           tags: aspect.tags,
+          references: aspect.references?.map(x => ({
+            ID: x.id ?? '',
+            name: x.name,
+            description: x.description,
+            uri: x.uri,
+          })),
         },
       },
     });
   };
 
-  return <>{children({ aspect }, { loading, error, updating, updateError }, { handleUpdate })}</>;
+  const handleAddReference = (push: PushFunc) => {
+    setPush(push);
+    if (aspect?.id) {
+      addReference({
+        aspectId: aspect.id,
+        name: newReferenceName(aspect?.references?.length ?? 0),
+      });
+    }
+  };
+
+  const handleRemoveReference = (ref: Reference, removeFn: RemoveFunc) => {
+    setRemove(removeFn);
+    if (ref.id) {
+      deleteReference(ref.id);
+    }
+  };
+
+  return (
+    <>
+      {children(
+        { aspect },
+        { loading, error, updating, updateError },
+        { handleUpdate, handleAddReference, handleRemoveReference }
+      )}
+    </>
+  );
 };
 export default AspectSettingsContainer;
