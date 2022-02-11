@@ -31,11 +31,12 @@ interface IStep {
 
 export interface AspectCreationDialogProps {
   open: boolean;
+  aspects: string[];
   onCancel: () => void;
   onCreate: (aspect: AspectCreationOutput) => void;
 }
 
-const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel, onCreate }) => {
+const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, aspects, onCancel, onCreate }) => {
   const { t } = useTranslation();
 
   const [completedSteps, setCompletedStep] = useState(new Set<number>());
@@ -158,7 +159,12 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, onCancel, o
         <Box marginBottom={2} marginTop={4}>
           {activeStep.index === 0 && <AspectTypeStep type={aspect?.type} onChange={handleTypeChange} />}
           {activeStep.index === 1 && (
-            <AspectInfoStep aspect={aspect} onChange={handleFormChange} onStatusChanged={handleFormStatusChange} />
+            <AspectInfoStep
+              aspect={aspect}
+              aspects={aspects}
+              onChange={handleFormChange}
+              onStatusChanged={handleFormStatusChange}
+            />
           )}
           {activeStep.index === 2 && <AspectReviewStep aspect={aspect} />}
         </Box>

@@ -10,12 +10,14 @@ import { SectionSpacer } from '../../../core/Section/Section';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
 import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';
 import { Tagset } from '../../../../models/graphql-schema';
+import i18next from 'i18next';
 
 type FormValueType = {
   name: string;
   nameID: string;
   description: string;
   tagsets: Tagset[];
+  aspects: string[];
 };
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
@@ -24,13 +26,21 @@ export type AspectFormOutput = { displayName: string; nameID: string; descriptio
 export type AspectFormInput = AspectCreationType;
 export interface AspectFormProps {
   aspect?: AspectFormInput;
+  aspects: string[];
   edit?: boolean;
   templateDescription?: string;
   onChange?: (aspect: AspectFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
 }
 
-const AspectForm: FC<AspectFormProps> = ({ aspect, templateDescription, edit = false, onChange, onStatusChanged }) => {
+const AspectForm: FC<AspectFormProps> = ({
+  aspect,
+  aspects,
+  templateDescription,
+  edit = false,
+  onChange,
+  onStatusChanged,
+}) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
 
@@ -47,10 +57,19 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, templateDescription, edit = f
     nameID: aspect?.nameID ?? '',
     description: aspect?.description ?? templateDescription ?? '',
     tagsets,
+    aspects: aspects && aspects.length > 0 ? aspects : [],
   };
 
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name || yup.string(),
+    name: yup
+      .string()
+      .test('is-valid-name', '${path} is already used in another aspect', value => {
+        if (value && !aspects.includes(value)) return true;
+        return false;
+      })
+      .required(i18next.t('forms.validations.required'))
+      .min(3, 'Name should be at least 3 symbols long')
+      .max(128, 'Exceeded the limit of 128 characters'),
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     description: yup.string().required(),
     tagsets: tagsetSegmentSchema,

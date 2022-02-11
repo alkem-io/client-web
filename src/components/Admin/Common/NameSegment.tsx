@@ -5,7 +5,11 @@ import * as yup from 'yup';
 import { useInputField } from './useInputField';
 
 export const nameSegmentSchema = yup.object().shape({
-  name: yup.string().required(i18next.t('forms.validations.required')),
+  name: yup
+    .string()
+    .required(i18next.t('forms.validations.required'))
+    .min(3, 'Name should be at least 3 symbols long')
+    .max(128, 'Exceeded the limit of 128 characters'),
   nameID: yup
     .string()
     .required(i18next.t('forms.validations.required'))
