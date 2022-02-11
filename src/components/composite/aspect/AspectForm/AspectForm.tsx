@@ -59,10 +59,12 @@ const AspectForm: FC<AspectFormProps> = ({
     aspectNames: aspectNames ?? [],
   };
 
-  const uniqueNameValidator = yup.string().test('is-valid-name', '${path} is already used in another aspect', value => {
-    if (value && aspectNames && !aspectNames.includes(value)) return true;
-    return false;
-  });
+  const uniqueNameValidator = yup
+    .string()
+    .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value => {
+      if (value && aspectNames && !aspectNames.includes(value)) return true;
+      return false;
+    });
 
   const validationSchema = yup.object().shape({
     name: uniqueNameValidator.concat(nameValidator),
