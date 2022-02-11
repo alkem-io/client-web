@@ -1,6 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { useRef } from 'react';
 import {
+  useCreateReferenceOnAspectMutation,
   useCreateReferenceOnContextMutation,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
@@ -10,6 +11,7 @@ import { useApolloErrorHandler } from '../graphql/useApolloErrorHandler';
 export type PushFunc = (success: boolean) => void;
 export type RemoveFunc = (obj?: any) => void;
 export type AddReferenceFunc = (reference: {
+  aspectId?: string;
   contextId?: string;
   profileId?: string;
   name: string;
@@ -53,12 +55,26 @@ export const useEditReference = () => {
     },
   });
 
+  const [addReferenceOnAspect] = useCreateReferenceOnAspectMutation({
+    onError: handleError,
+    onCompleted: data => {
+      if (push.current) {
+        push.current({
+          id: data?.createReferenceOnAspect.id,
+          name: data?.createReferenceOnAspect.name,
+          uri: data?.createReferenceOnAspect.uri,
+        });
+      }
+    },
+  });
+
   const [deleteReferenceInt] = useDeleteReferenceMutation({
     onError: err => {
       remove.current && remove.current(false);
       handleError(err);
     },
     onCompleted: () => remove.current && remove.current(true),
+    //update: removeFromCache,
   });
 
   const setPush = (pushFn: PushFunc) => {
@@ -69,7 +85,7 @@ export const useEditReference = () => {
     remove.current = removeFn;
   };
 
-  const addReference: AddReferenceFunc = ({ contextId, profileId, name, uri = '', description = '' }) => {
+  const addReference: AddReferenceFunc = ({ aspectId, contextId, profileId, name, uri = '', description = '' }) => {
     if (contextId) {
       addReferenceOnContext({
         variables: {
@@ -88,6 +104,19 @@ export const useEditReference = () => {
         variables: {
           input: {
             profileID: profileId,
+            name: name,
+            description: description,
+            uri: uri,
+          },
+        },
+      });
+    }
+
+    if (aspectId) {
+      addReferenceOnAspect({
+        variables: {
+          referenceInput: {
+            aspectID: aspectId,
             name: name,
             description: description,
             uri: uri,

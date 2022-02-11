@@ -955,6 +955,36 @@ export const AspectDashboardDataFragmentDoc = gql`
   }
   ${AspectDashboardFragmentDoc}
 `;
+export const AspectSettingsFragmentDoc = gql`
+  fragment AspectSettings on Aspect {
+    id
+    nameID
+    displayName
+    description
+    type
+    authorization {
+      id
+      myPrivileges
+    }
+    banner {
+      ...VisualFull
+    }
+    bannerNarrow {
+      ...VisualFull
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+    references {
+      id
+      name
+      uri
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
@@ -1401,6 +1431,10 @@ export const AspectProvidedFragmentDoc = gql`
     id
     nameID
     displayName
+    authorization {
+      id
+      myPrivileges
+    }
   }
 `;
 export const AspectProviderDataFragmentDoc = gql`
@@ -2096,6 +2130,56 @@ export type CreateProjectMutationResult = Apollo.MutationResult<SchemaTypes.Crea
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateProjectMutation,
   SchemaTypes.CreateProjectMutationVariables
+>;
+export const CreateReferenceOnAspectDocument = gql`
+  mutation createReferenceOnAspect($referenceInput: CreateReferenceOnAspectInput!) {
+    createReferenceOnAspect(referenceData: $referenceInput) {
+      id
+      name
+      uri
+      description
+    }
+  }
+`;
+export type CreateReferenceOnAspectMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateReferenceOnAspectMutation,
+  SchemaTypes.CreateReferenceOnAspectMutationVariables
+>;
+
+/**
+ * __useCreateReferenceOnAspectMutation__
+ *
+ * To run a mutation, you first call `useCreateReferenceOnAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReferenceOnAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReferenceOnAspectMutation, { data, loading, error }] = useCreateReferenceOnAspectMutation({
+ *   variables: {
+ *      referenceInput: // value for 'referenceInput'
+ *   },
+ * });
+ */
+export function useCreateReferenceOnAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateReferenceOnAspectMutation,
+    SchemaTypes.CreateReferenceOnAspectMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateReferenceOnAspectMutation,
+    SchemaTypes.CreateReferenceOnAspectMutationVariables
+  >(CreateReferenceOnAspectDocument, options);
+}
+export type CreateReferenceOnAspectMutationHookResult = ReturnType<typeof useCreateReferenceOnAspectMutation>;
+export type CreateReferenceOnAspectMutationResult = Apollo.MutationResult<SchemaTypes.CreateReferenceOnAspectMutation>;
+export type CreateReferenceOnAspectMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateReferenceOnAspectMutation,
+  SchemaTypes.CreateReferenceOnAspectMutationVariables
 >;
 export const CreateReferenceOnContextDocument = gql`
   mutation createReferenceOnContext($input: CreateReferenceOnContextInput!) {
@@ -3792,51 +3876,6 @@ export type UpdateActorMutationResult = Apollo.MutationResult<SchemaTypes.Update
 export type UpdateActorMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateActorMutation,
   SchemaTypes.UpdateActorMutationVariables
->;
-export const UpdateAspectDocument = gql`
-  mutation updateAspect($input: UpdateAspectInput!) {
-    updateAspect(aspectData: $input) {
-      id
-      displayName
-    }
-  }
-`;
-export type UpdateAspectMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateAspectMutation,
-  SchemaTypes.UpdateAspectMutationVariables
->;
-
-/**
- * __useUpdateAspectMutation__
- *
- * To run a mutation, you first call `useUpdateAspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAspectMutation, { data, loading, error }] = useUpdateAspectMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateAspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>(
-    UpdateAspectDocument,
-    options
-  );
-}
-export type UpdateAspectMutationHookResult = ReturnType<typeof useUpdateAspectMutation>;
-export type UpdateAspectMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAspectMutation>;
-export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateAspectMutation,
-  SchemaTypes.UpdateAspectMutationVariables
 >;
 export const UpdateChallengeDocument = gql`
   mutation updateChallenge($input: UpdateChallengeInput!) {
@@ -10167,6 +10206,268 @@ export type OpportunityAspectQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityAspectQuery(variables: SchemaTypes.OpportunityAspectQueryVariables) {
   return { query: OpportunityAspectDocument, variables: variables };
+}
+export const UpdateAspectDocument = gql`
+  mutation updateAspect($input: UpdateAspectInput!) {
+    updateAspect(aspectData: $input) {
+      id
+      description
+      displayName
+      tagset {
+        id
+        name
+        tags
+      }
+      references {
+        id
+        name
+        description
+        name
+        uri
+      }
+    }
+  }
+`;
+export type UpdateAspectMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAspectMutation,
+  SchemaTypes.UpdateAspectMutationVariables
+>;
+
+/**
+ * __useUpdateAspectMutation__
+ *
+ * To run a mutation, you first call `useUpdateAspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAspectMutation, { data, loading, error }] = useUpdateAspectMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateAspectMutation, SchemaTypes.UpdateAspectMutationVariables>(
+    UpdateAspectDocument,
+    options
+  );
+}
+export type UpdateAspectMutationHookResult = ReturnType<typeof useUpdateAspectMutation>;
+export type UpdateAspectMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAspectMutation>;
+export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAspectMutation,
+  SchemaTypes.UpdateAspectMutationVariables
+>;
+export const HubAspectSettingsDocument = gql`
+  query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+    ecoverse(ID: $hubNameId) {
+      id
+      context {
+        id
+        aspects(IDs: [$aspectNameId]) {
+          ...AspectSettings
+        }
+      }
+    }
+  }
+  ${AspectSettingsFragmentDoc}
+`;
+
+/**
+ * __useHubAspectSettingsQuery__
+ *
+ * To run a query within a React component, call `useHubAspectSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubAspectSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubAspectSettingsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      aspectNameId: // value for 'aspectNameId'
+ *   },
+ * });
+ */
+export function useHubAspectSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubAspectSettingsQuery, SchemaTypes.HubAspectSettingsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubAspectSettingsQuery, SchemaTypes.HubAspectSettingsQueryVariables>(
+    HubAspectSettingsDocument,
+    options
+  );
+}
+export function useHubAspectSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubAspectSettingsQuery,
+    SchemaTypes.HubAspectSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubAspectSettingsQuery, SchemaTypes.HubAspectSettingsQueryVariables>(
+    HubAspectSettingsDocument,
+    options
+  );
+}
+export type HubAspectSettingsQueryHookResult = ReturnType<typeof useHubAspectSettingsQuery>;
+export type HubAspectSettingsLazyQueryHookResult = ReturnType<typeof useHubAspectSettingsLazyQuery>;
+export type HubAspectSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubAspectSettingsQuery,
+  SchemaTypes.HubAspectSettingsQueryVariables
+>;
+export function refetchHubAspectSettingsQuery(variables: SchemaTypes.HubAspectSettingsQueryVariables) {
+  return { query: HubAspectSettingsDocument, variables: variables };
+}
+export const ChallengeAspectSettingsDocument = gql`
+  query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+    ecoverse(ID: $hubNameId) {
+      id
+      challenge(ID: $challengeNameId) {
+        id
+        context {
+          id
+          aspects(IDs: [$aspectNameId]) {
+            ...AspectSettings
+          }
+        }
+      }
+    }
+  }
+  ${AspectSettingsFragmentDoc}
+`;
+
+/**
+ * __useChallengeAspectSettingsQuery__
+ *
+ * To run a query within a React component, call `useChallengeAspectSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeAspectSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeAspectSettingsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      aspectNameId: // value for 'aspectNameId'
+ *   },
+ * });
+ */
+export function useChallengeAspectSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeAspectSettingsQuery,
+    SchemaTypes.ChallengeAspectSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeAspectSettingsQuery, SchemaTypes.ChallengeAspectSettingsQueryVariables>(
+    ChallengeAspectSettingsDocument,
+    options
+  );
+}
+export function useChallengeAspectSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeAspectSettingsQuery,
+    SchemaTypes.ChallengeAspectSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeAspectSettingsQuery,
+    SchemaTypes.ChallengeAspectSettingsQueryVariables
+  >(ChallengeAspectSettingsDocument, options);
+}
+export type ChallengeAspectSettingsQueryHookResult = ReturnType<typeof useChallengeAspectSettingsQuery>;
+export type ChallengeAspectSettingsLazyQueryHookResult = ReturnType<typeof useChallengeAspectSettingsLazyQuery>;
+export type ChallengeAspectSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeAspectSettingsQuery,
+  SchemaTypes.ChallengeAspectSettingsQueryVariables
+>;
+export function refetchChallengeAspectSettingsQuery(variables: SchemaTypes.ChallengeAspectSettingsQueryVariables) {
+  return { query: ChallengeAspectSettingsDocument, variables: variables };
+}
+export const OpportunityAspectSettingsDocument = gql`
+  query OpportunityAspectSettings(
+    $hubNameId: UUID_NAMEID!
+    $opportunityNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+  ) {
+    ecoverse(ID: $hubNameId) {
+      id
+      opportunity(ID: $opportunityNameId) {
+        id
+        context {
+          id
+          aspects(IDs: [$aspectNameId]) {
+            ...AspectSettings
+          }
+        }
+      }
+    }
+  }
+  ${AspectSettingsFragmentDoc}
+`;
+
+/**
+ * __useOpportunityAspectSettingsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityAspectSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityAspectSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityAspectSettingsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      aspectNameId: // value for 'aspectNameId'
+ *   },
+ * });
+ */
+export function useOpportunityAspectSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityAspectSettingsQuery,
+    SchemaTypes.OpportunityAspectSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityAspectSettingsQuery,
+    SchemaTypes.OpportunityAspectSettingsQueryVariables
+  >(OpportunityAspectSettingsDocument, options);
+}
+export function useOpportunityAspectSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityAspectSettingsQuery,
+    SchemaTypes.OpportunityAspectSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityAspectSettingsQuery,
+    SchemaTypes.OpportunityAspectSettingsQueryVariables
+  >(OpportunityAspectSettingsDocument, options);
+}
+export type OpportunityAspectSettingsQueryHookResult = ReturnType<typeof useOpportunityAspectSettingsQuery>;
+export type OpportunityAspectSettingsLazyQueryHookResult = ReturnType<typeof useOpportunityAspectSettingsLazyQuery>;
+export type OpportunityAspectSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityAspectSettingsQuery,
+  SchemaTypes.OpportunityAspectSettingsQueryVariables
+>;
+export function refetchOpportunityAspectSettingsQuery(variables: SchemaTypes.OpportunityAspectSettingsQueryVariables) {
+  return { query: OpportunityAspectSettingsDocument, variables: variables };
 }
 export const EcoverseCanvasesDocument = gql`
   query ecoverseCanvases($ecoverseId: UUID_NAMEID!) {
