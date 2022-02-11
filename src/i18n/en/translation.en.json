@@ -236,18 +236,18 @@
     "aspect-creation": {
       "title": "Create a new aspect",
       "type-step": {
-        "title": "Choose an aspect type",
+        "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
-        "label": "Type",
-        "type-help-text": "Aspect type"
+        "label": "Aspect Type",
+        "type-help-text": "Aspects allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of aspect types that are avaialble in this context is fixed. Please choose the aspect type that best matches the context you wish to share."
       },
       "info-step": {
-        "title": "Some basic info",
-        "description": "Description",
+        "title": "Details",
+        "description": "Please share the details",
         "description-placeholder": "A description for this aspect",
-        "description-help-text": "Some help",
-        "tags-help-text": "Tags help text",
-        "name-help-text": "Name help text",
+        "description-help-text": "Add here the key information about the aspect. Why is it relevant? How does it relate?",
+        "tags-help-text": "Add free form tags to help quickly convey the key information about the aspect. Good tags also help make the Aspect easier to find in searches.",
+        "name-help-text": "A descriptive name for this aspect.",
         "name-id-help-text": "Name ID help text"
       },
       "final-step": {
@@ -255,10 +255,8 @@
         "type": "Type",
         "name": "Name",
         "description": "Description",
-        "links": "Links",
-        "canvas": "Canvas",
-        "visual": "Visual",
-        "explanation": "After the creation, you will be able to add visual and references through Settings in the Aspect's page"
+        "links": "Relevant Links",
+        "explanation": "By completing this step the Aspect will be created. The next step is to further edit the Aspect via the settings tab. For example to add references, select images for the banners etc."
       }
     },
     "visual-upload": {

@@ -9,10 +9,10 @@ import AspectTypeStep from './steps/AspectTypeStep/AspectTypeStep';
 import AspectReviewStep from './steps/AspectReviewStep/AspectReviewStep';
 import { AspectFormOutput } from '../AspectForm/AspectForm';
 import AspectInfoStep from './steps/AspectInfoStep/AspectInfoStep';
-import { CreateAspectInput } from '../../../../models/graphql-schema';
+import { CreateAspectOnContextInput } from '../../../../models/graphql-schema';
 
-export type AspectCreationType = Partial<CreateAspectInput>;
-export type AspectCreationOutput = Omit<CreateAspectInput, 'contextID'>;
+export type AspectCreationType = Partial<CreateAspectOnContextInput>;
+export type AspectCreationOutput = Omit<CreateAspectOnContextInput, 'contextID'>;
 
 interface IStep {
   /** identifier  */

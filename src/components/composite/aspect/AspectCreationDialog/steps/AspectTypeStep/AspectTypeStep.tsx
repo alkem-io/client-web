@@ -6,10 +6,10 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import { useAspectTypesQuery } from '../../../../../../hooks/generated/graphql';
 import HelpButton from '../../../../../core/HelpButton';
 import makeStyles from '@mui/styles/makeStyles';
 import { InputAdornment } from '@mui/material';
+import { useEcoverse } from '../../../../../../hooks';
 
 const useStyles = makeStyles(theme => ({
   selectAdornment: {
@@ -25,13 +25,13 @@ export interface AspectTypeStepProps {
 const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
   const styles = useStyles();
   const { t } = useTranslation();
-  const { data, loading, error } = useAspectTypesQuery();
+  const { error, loading, template } = useEcoverse();
 
   if (error) {
     return <Typography>{t('components.aspect-creation.type-step.error')}</Typography>;
   }
 
-  const aspectTypes = data?.configuration.template.opportunities[0].aspects ?? [];
+  const aspectTypes = template.aspectTemplates.map(x => x.type);
 
   return (
     <FormControl fullWidth>

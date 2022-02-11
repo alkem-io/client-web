@@ -32,12 +32,20 @@ export type AspectFormInput = AspectCreationType;
 export interface AspectFormProps {
   aspect?: AspectFormInput;
   edit?: boolean;
+  templateDescription?: string;
   loading?: boolean;
   onChange?: (aspect: AspectFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
 }
 
-const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, loading, onChange, onStatusChanged }) => {
+const AspectForm: FC<AspectFormProps> = ({
+  aspect,
+  templateDescription,
+  edit = false,
+  loading,
+  onChange,
+  onStatusChanged,
+}) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
 
@@ -52,7 +60,7 @@ const AspectForm: FC<AspectFormProps> = ({ aspect, edit = false, loading, onChan
   const initialValues: FormValueType = {
     name: aspect?.displayName ?? '',
     nameID: aspect?.nameID ?? '',
-    description: aspect?.description ?? '',
+    description: aspect?.description ?? templateDescription ?? '',
     tagsets,
     type: aspect?.type ?? '',
   };

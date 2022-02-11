@@ -150,6 +150,12 @@ export type Aspect = {
   type: Scalars['String'];
 };
 
+export type AspectTemplate = {
+  __typename?: 'AspectTemplate';
+  description: Scalars['String'];
+  type: Scalars['String'];
+};
+
 export type AssignChallengeAdminInput = {
   challengeID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -603,7 +609,7 @@ export type CreateApplicationInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type CreateAspectInput = {
+export type CreateAspectOnContextInput = {
   contextID: Scalars['UUID'];
   description: Scalars['String'];
   /** The display name for the entity. */
@@ -962,6 +968,8 @@ export type Ecoverse = {
   projects: Array<Project>;
   /** The set of tags for the  ecoverse. */
   tagset?: Maybe<Tagset>;
+  /** The template for this Hub. */
+  template: HubTemplate;
 };
 
 export type EcoverseApplicationArgs = {
@@ -1024,6 +1032,11 @@ export type GrantAuthorizationCredentialInput = {
 export type Groupable = {
   /** The groups contained by this entity. */
   groups?: Maybe<Array<UserGroup>>;
+};
+
+export type HubTemplate = {
+  __typename?: 'HubTemplate';
+  aspectTemplates: Array<AspectTemplate>;
 };
 
 export type Lifecycle = {
@@ -1404,7 +1417,7 @@ export type MutationCreateApplicationArgs = {
 };
 
 export type MutationCreateAspectOnContextArgs = {
-  aspectData: CreateAspectInput;
+  aspectData: CreateAspectOnContextInput;
 };
 
 export type MutationCreateCanvasOnContextArgs = {
@@ -2226,6 +2239,11 @@ export type UpdateAspectInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type UpdateAspectTemplateInput = {
+  description?: InputMaybe<Scalars['String']>;
+  type: Scalars['String'];
+};
+
 export type UpdateAuthorizationPolicyInput = {
   anonymousReadAccess: Scalars['Boolean'];
 };
@@ -2298,6 +2316,13 @@ export type UpdateEcoverseInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
   tags?: InputMaybe<Array<Scalars['String']>>;
+  /** Update the template for this Hub. */
+  template?: InputMaybe<UpdateHubTemplateInput>;
+};
+
+export type UpdateHubTemplateInput = {
+  /** The set of aspect type definitions to be supported by the Hub. */
+  aspectTemplates: Array<UpdateAspectTemplateInput>;
 };
 
 export type UpdateOpportunityInput = {
@@ -2858,6 +2883,10 @@ export type ConfigurationFragment = {
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+  template: {
+    __typename?: 'Template';
+    opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+  };
 };
 
 export type ContextDetailsFragment = {
@@ -2955,6 +2984,10 @@ export type EcoverseInfoFragment = {
           | undefined;
       }
     | undefined;
+  template: {
+    __typename?: 'HubTemplate';
+    aspectTemplates: Array<{ __typename?: 'AspectTemplate'; description: string; type: string }>;
+  };
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
 };
@@ -3532,7 +3565,7 @@ export type CreateApplicationMutation = {
 };
 
 export type CreateAspectMutationVariables = Exact<{
-  aspectData: CreateAspectInput;
+  aspectData: CreateAspectOnContextInput;
 }>;
 
 export type CreateAspectMutation = {
@@ -5395,6 +5428,10 @@ export type ConfigurationQuery = {
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+    template: {
+      __typename?: 'Template';
+      opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+    };
   };
 };
 
@@ -5464,6 +5501,10 @@ export type EcoverseInfoQuery = {
             | undefined;
         }
       | undefined;
+    template: {
+      __typename?: 'HubTemplate';
+      aspectTemplates: Array<{ __typename?: 'AspectTemplate'; description: string; type: string }>;
+    };
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
   };
@@ -7072,19 +7113,6 @@ export type UsersWithCredentialsSimpleListQuery = {
     lastName: string;
     email: string;
   }>;
-};
-
-export type AspectTypesQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AspectTypesQuery = {
-  __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    template: {
-      __typename?: 'Template';
-      opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
-    };
-  };
 };
 
 export type EcoverseContributionDetailsQueryVariables = Exact<{

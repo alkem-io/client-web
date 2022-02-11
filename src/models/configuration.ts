@@ -16,6 +16,11 @@ export interface Configuration {
     endpoint: string;
     submitPII: boolean;
   };
+  template: {
+    opportunities: {
+      aspects?: string[];
+    }[];
+  };
 }
 
 interface AuthenticationProvider {
