@@ -225,7 +225,13 @@ const ContextSection: FC<ContextSectionProps> = ({
           <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
             <DashboardGenericSection
               headerText={`${t('common.aspects')} (${aspects ? aspects.length : 0})`}
-              primaryAction={canCreateAspects && <Button onClick={handleCreateDialogOpened}>Create</Button>}
+              primaryAction={
+                canCreateAspects && (
+                  <Button variant="contained" onClick={handleCreateDialogOpened}>
+                    Create
+                  </Button>
+                )
+              }
             >
               {aspectsLoading ? (
                 <CardLayoutContainer>
