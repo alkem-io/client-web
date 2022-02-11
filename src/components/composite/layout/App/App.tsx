@@ -3,10 +3,9 @@ import CookieConsent from 'react-cookie-consent';
 import { Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import { useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
+import { useNavigation, useUserContext, useUserScope } from '../../../../hooks';
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
-import Loading from '../../../core/Loading/Loading';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
@@ -17,8 +16,7 @@ const App: FC = () => {
   const { t } = useTranslation();
   const { paths } = useNavigation();
 
-  const { user, loading } = useUserContext();
-  const { loading: configLoading } = useConfig();
+  const { user } = useUserContext();
 
   useUserScope(user);
   useCommunityUpdatesNotifier();
@@ -38,10 +36,6 @@ const App: FC = () => {
       });
     }
   }, [services]);
-
-  if (loading || configLoading) {
-    return <Loading text={'Loading Application ...'} />;
-  }
 
   return (
     <div id="app">

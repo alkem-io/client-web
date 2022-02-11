@@ -27,14 +27,21 @@ interface NameSegmentProps {
   required: boolean;
   nameHelpText?: string;
   nameIDHelpText?: string;
+  loading?: boolean;
 }
 
-export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelpText, nameIDHelpText }) => {
+export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelpText, nameIDHelpText, loading }) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
   return (
     <>
-      {getInputField({ name: 'name', label: t('components.nameSegment.name'), required: true, helpText: nameHelpText })}
+      {getInputField({
+        name: 'name',
+        label: t('components.nameSegment.name'),
+        required: true,
+        helpText: nameHelpText,
+        loading: loading,
+      })}
       {getInputField({
         name: 'nameID',
         label: t('components.nameSegment.nameID.title'),
@@ -42,6 +49,7 @@ export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelp
         disabled: disabled,
         required: required,
         helpText: nameIDHelpText,
+        loading: loading,
       })}
     </>
   );

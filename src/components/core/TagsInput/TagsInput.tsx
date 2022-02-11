@@ -3,6 +3,7 @@ import { Autocomplete, Chip, OutlinedTextFieldProps, TextField } from '@mui/mate
 import Box from '@mui/material/Box';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
 import HelpButton from '../HelpButton';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const DEFAULT_MIN_LENGTH = 2;
 
@@ -15,11 +16,23 @@ type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   readOnly?: boolean;
   disabled?: boolean;
   helpText?: string;
+  loading?: boolean;
 };
 
 export const TagsInput: FC<TagsInputProps> = forwardRef(
   (
-    { onChange, minLength = DEFAULT_MIN_LENGTH, error, value, placeholder, readOnly, disabled, helpText, ...rest },
+    {
+      onChange,
+      minLength = DEFAULT_MIN_LENGTH,
+      error,
+      value,
+      placeholder,
+      readOnly,
+      disabled,
+      helpText,
+      loading,
+      ...rest
+    },
     ref
   ) => {
     const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
@@ -41,7 +54,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
         value={value}
         onChange={handleChange}
         disableClearable
-        disabled={readOnly || disabled}
+        disabled={loading || readOnly || disabled}
         sx={{
           ':root': {
             padding: 14,
@@ -68,7 +81,8 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
             InputProps={{
               ...params.InputProps,
               endAdornment: helpText && (
-                <Box sx={{ marginRight: '5px' }}>
+                <Box sx={{ marginRight: '5px', display: 'flex' }}>
+                  {loading && <CircularProgress size={20} />}
                   <HelpButton helpText={helpText} />
                 </Box>
               ),

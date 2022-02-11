@@ -229,7 +229,7 @@ const ContextSection: FC<ContextSectionProps> = ({
               primaryAction={
                 canCreateAspects && (
                   <Button variant="contained" onClick={handleCreateDialogOpened}>
-                    Create
+                    {t('buttons.create')}
                   </Button>
                 )
               }

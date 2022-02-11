@@ -42,4 +42,8 @@ fragment AspectProvided on Aspect {
   id
   nameID
   displayName
+  authorization {
+    id
+    myPrivileges
+  }
 }

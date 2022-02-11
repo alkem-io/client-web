@@ -23,7 +23,13 @@ import AspectRoute from '../aspect/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
 
 export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
-  const { ecoverse, displayName, isPrivate, ecoverseId } = useEcoverse();
+  const {
+    ecoverse,
+    displayName,
+    isPrivate,
+    ecoverseId,
+    permissions: { canReadAspects },
+  } = useEcoverse();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (ecoverse ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
@@ -72,14 +78,16 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
                 </ChallengeProvider>
               }
             />
-            <Route
-              path={`aspects/:${nameOfUrl.aspectNameId}/*`}
-              element={
-                <AspectProvider>
-                  <AspectRoute paths={currentPaths} />
-                </AspectProvider>
-              }
-            />
+            {canReadAspects && (
+              <Route
+                path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+                element={
+                  <AspectProvider>
+                    <AspectRoute paths={currentPaths} />
+                  </AspectProvider>
+                }
+              />
+            )}
             <Route path="*" element={<Error404 />} />
           </Routes>
         )}

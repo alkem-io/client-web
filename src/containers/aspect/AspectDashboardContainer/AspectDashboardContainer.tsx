@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerProps } from '../../models/container';
-import { AspectDashboardFragment, AuthorizationPrivilege } from '../../models/graphql-schema';
+import { ContainerProps } from '../../../models/container';
+import { AspectDashboardFragment, AuthorizationPrivilege } from '../../../models/graphql-schema';
 import {
   AspectMessageFragmentDoc,
   useChallengeAspectQuery,
@@ -9,11 +9,11 @@ import {
   useOpportunityAspectQuery,
   usePostCommentInAspectMutation,
   useRemoveCommentFromAspectMutation,
-} from '../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../hooks';
-import { Comment } from '../../models/discussion/comment';
-import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
-import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
+} from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../hooks';
+import { Comment } from '../../../models/discussion/comment';
+import { useAuthorsDetails } from '../../../hooks/communication/useAuthorsDetails';
+import { evictFromCache } from '../../../utils/apollo-cache/removeFromCache';
 
 export interface AspectDashboardPermissions {
   canReadComments: boolean;

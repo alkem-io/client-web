@@ -6,6 +6,7 @@ import { AspectTemplate, AuthorizationPrivilege, EcoverseInfoFragment, HubTempla
 
 interface EcoversePermissions {
   viewerCanUpdate: boolean;
+  canReadAspects: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
 
@@ -30,6 +31,7 @@ const EcoverseContext = React.createContext<EcoverseContextProps>({
   template: { aspectTemplates: [] },
   permissions: {
     viewerCanUpdate: false,
+    canReadAspects: false,
     contextPrivileges: [],
   },
 });
@@ -61,10 +63,13 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
   const isPrivate = !Boolean(ecoverse?.authorization?.anonymousReadAccess ?? true);
   const error = configError || hubError;
 
+  const contextPrivileges = ecoverse?.context?.authorization?.myPrivileges ?? [];
+
   const permissions = useMemo<EcoversePermissions>(
     () => ({
       viewerCanUpdate: ecoverse?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
-      contextPrivileges: ecoverse?.context?.authorization?.myPrivileges ?? [],
+      canReadAspects: contextPrivileges.includes(AuthorizationPrivilege.Read),
+      contextPrivileges,
     }),
     [ecoverse]
   );
