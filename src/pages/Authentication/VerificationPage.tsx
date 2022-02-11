@@ -28,6 +28,9 @@ export const VerificationPage: FC<RegisterPageProps> = ({ flow }) => {
           <Box marginY={3} textAlign={'center'}>
             <Typography variant={'h3'}>{t('pages.verification.header')}</Typography>
           </Box>
+          <Box marginY={3} textAlign={'center'}>
+            <Typography variant={'h5'}>{t('pages.verification.message')}</Typography>
+          </Box>
           <KratosUI flow={verificationFlow} />
         </Grid>
       </Grid>

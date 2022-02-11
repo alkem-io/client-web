@@ -258,7 +258,12 @@ const ContextSection: FC<ContextSectionProps> = ({
               )}
             </DashboardGenericSection>
           </MembershipBackdrop>
-          <AspectCreationDialog open={aspectDialogOpen} onCancel={handleCreateDialogClosed} onCreate={onCreate} />
+          <AspectCreationDialog
+            open={aspectDialogOpen}
+            onCancel={handleCreateDialogClosed}
+            onCreate={onCreate}
+            aspectNames={aspects.map(x => x.displayName)}
+          />
         </Grid>
       </Grid>
     </>

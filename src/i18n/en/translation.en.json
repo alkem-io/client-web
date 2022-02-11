@@ -248,7 +248,8 @@
         "description-help-text": "Add here the key information about the aspect. Why is it relevant? How does it relate?",
         "tags-help-text": "Add free form tags to help quickly convey the key information about the aspect. Good tags also help make the Aspect easier to find in searches.",
         "name-help-text": "A descriptive name for this aspect.",
-        "name-id-help-text": "Name ID help text"
+        "name-id-help-text": "Name ID help text",
+        "unique-name-validation-text": "${path} is already used in another aspect"
       },
       "final-step": {
         "title": "Final check",
@@ -1039,6 +1040,7 @@
         }
       },
       "header": "Password Reset",
+      "message": "Please enter your email address below to recieve a link to reset your password.",
       "buttons": {
         "register": "Register"
       }
@@ -1049,7 +1051,8 @@
           "email": "Email is not valid"
         }
       },
-      "header": "Verify",
+      "header": "Email verification",
+      "message": "Users of Alkemio are required to verify their email address.<br/><br/>Please enter your email address below to recieve a new verification link.",
       "buttons": {
         "register": "Verify"
       }

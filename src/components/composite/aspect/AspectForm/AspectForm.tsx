@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInputField } from '../../../Admin/Common/useInputField';
 import * as yup from 'yup';
-import { NameSegment, nameSegmentSchema } from '../../../Admin/Common/NameSegment';
+import { NameSegment, nameSegmentSchema, nameValidator } from '../../../Admin/Common/NameSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
 import { Formik } from 'formik';
 import { Box } from '@mui/material';
@@ -19,6 +19,7 @@ type FormValueType = {
   nameID: string;
   description: string;
   tagsets: Tagset[];
+  aspectNames: string[];
   type: string;
   references: Reference[];
 };
@@ -36,6 +37,7 @@ export type AspectFormOutput = {
 export type AspectFormInput = AspectCreationType & AspectEditFields;
 export interface AspectFormProps {
   aspect?: AspectFormInput;
+  aspectNames?: string[];
   edit?: boolean;
   templateDescription?: string;
   loading?: boolean;
@@ -47,6 +49,7 @@ export interface AspectFormProps {
 
 const AspectForm: FC<AspectFormProps> = ({
   aspect,
+  aspectNames,
   templateDescription,
   edit = false,
   loading,
@@ -71,12 +74,20 @@ const AspectForm: FC<AspectFormProps> = ({
     nameID: aspect?.nameID ?? '',
     description: aspect?.description ?? templateDescription ?? '',
     tagsets,
+    aspectNames: aspectNames ?? [],
     type: aspect?.type ?? '',
     references: aspect?.references ?? [],
   };
 
+  const uniqueNameValidator = yup
+    .string()
+    .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value => {
+      if (value && aspectNames && !aspectNames.includes(value)) return true;
+      return false;
+    });
+
   const validationSchema = yup.object().shape({
-    name: nameSegmentSchema.fields?.name || yup.string(),
+    name: uniqueNameValidator.concat(nameValidator),
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     description: yup.string().required(),
     tagsets: tagsetSegmentSchema,
