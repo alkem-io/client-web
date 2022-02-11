@@ -109,7 +109,6 @@ const ContextSection: FC<ContextSectionProps> = ({
       variables: {
         aspectData: {
           contextID: contextId,
-          nameID: aspect.nameID,
           displayName: aspect.displayName,
           description: aspect.description,
           type: aspect.type,
@@ -120,7 +119,6 @@ const ContextSection: FC<ContextSectionProps> = ({
         createAspectOnContext: {
           __typename: 'Aspect',
           id: '',
-          nameID: aspect.nameID,
           displayName: aspect.displayName ?? '',
           description: aspect.description,
           type: aspect.type,

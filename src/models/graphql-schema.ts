@@ -136,6 +136,7 @@ export type Aspect = {
   comments?: Maybe<Comments>;
   /** The id of the user that created this Aspect */
   createdBy: Scalars['UUID'];
+  createdDate: Scalars['DateTime'];
   description: Scalars['String'];
   /** The display name. */
   displayName: Scalars['String'];
@@ -269,6 +270,7 @@ export enum AuthorizationPrivilege {
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCanvas = 'CREATE_CANVAS',
+  CreateComment = 'CREATE_COMMENT',
   CreateHub = 'CREATE_HUB',
   CreateOrganization = 'CREATE_ORGANIZATION',
   Delete = 'DELETE',
@@ -614,8 +616,8 @@ export type CreateAspectOnContextInput = {
   description: Scalars['String'];
   /** The display name for the entity. */
   displayName?: InputMaybe<Scalars['String']>;
-  /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  /** A readable identifier, unique within the containing scope. If not provided generate based on the displayName */
+  nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
 };
@@ -3573,7 +3575,6 @@ export type CreateAspectMutation = {
   createAspectOnContext: {
     __typename?: 'Aspect';
     id: string;
-    nameID: string;
     displayName: string;
     description: string;
     type: string;

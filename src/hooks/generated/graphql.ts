@@ -1703,7 +1703,6 @@ export const CreateAspectDocument = gql`
   mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {
     createAspectOnContext(aspectData: $aspectData) {
       id
-      nameID
       displayName
       description
       type
