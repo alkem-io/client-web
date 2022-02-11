@@ -5,7 +5,7 @@ import { AspectCreationType } from '../../AspectCreationDialog';
 
 export interface AspectInfoStepProps {
   aspect?: AspectCreationType;
-  aspects: string[];
+  aspects?: string[];
   onChange: (aspect: AspectFormOutput) => void;
   onStatusChanged: (isValid: boolean) => void;
 }

@@ -26,7 +26,7 @@ export type AspectFormOutput = { displayName: string; nameID: string; descriptio
 export type AspectFormInput = AspectCreationType;
 export interface AspectFormProps {
   aspect?: AspectFormInput;
-  aspects: string[];
+  aspects?: string[];
   edit?: boolean;
   templateDescription?: string;
   onChange?: (aspect: AspectFormOutput) => void;
@@ -64,7 +64,7 @@ const AspectForm: FC<AspectFormProps> = ({
     name: yup
       .string()
       .test('is-valid-name', '${path} is already used in another aspect', value => {
-        if (value && !aspects.includes(value)) return true;
+        if (value && aspects && !aspects.includes(value)) return true;
         return false;
       })
       .required(i18next.t('forms.validations.required'))
