@@ -615,7 +615,7 @@ export type CreateAspectOnContextInput = {
   contextID: Scalars['UUID'];
   description: Scalars['String'];
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']>;
+  displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. If not provided generate based on the displayName */
   nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -7322,6 +7322,7 @@ export type HubAspectQuery = {
             | Array<{
                 __typename?: 'Aspect';
                 id: string;
+                type: string;
                 displayName: string;
                 description: string;
                 banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -7381,6 +7382,7 @@ export type ChallengeAspectQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
+                  type: string;
                   displayName: string;
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -7441,6 +7443,7 @@ export type OpportunityAspectQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
+                  type: string;
                   displayName: string;
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -7486,6 +7489,7 @@ export type AspectDashboardDataFragment = {
     | Array<{
         __typename?: 'Aspect';
         id: string;
+        type: string;
         displayName: string;
         description: string;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -7510,6 +7514,7 @@ export type AspectDashboardDataFragment = {
 export type AspectDashboardFragment = {
   __typename?: 'Aspect';
   id: string;
+  type: string;
   displayName: string;
   description: string;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;

@@ -44,6 +44,7 @@ fragment AspectDashboardData on Context {
 
 fragment AspectDashboard on Aspect {
   id
+  type
   displayName
   description
   banner {
