@@ -100,6 +100,7 @@ const AspectForm: FC<AspectFormProps> = ({
             required={!edit}
             nameHelpText={t('components.aspect-creation.info-step.name-help-text')}
             nameIDHelpText={t('components.aspect-creation.info-step.name-id-help-text')}
+            loading={loading}
           />
           {getInputField({
             name: 'type',
@@ -107,6 +108,7 @@ const AspectForm: FC<AspectFormProps> = ({
             helpText: t('components.aspect-creation.type-step.type-help-text'),
             required: true,
             disabled: true,
+            loading: loading,
           })}
           <SectionSpacer />
           {getInputField({
@@ -115,6 +117,7 @@ const AspectForm: FC<AspectFormProps> = ({
             placeholder: t('components.aspect-creation.info-step.description-placeholder'),
             helpText: t('components.aspect-creation.info-step.description-help-text'),
             required: true,
+            loading: loading,
           })}
           <SectionSpacer />
           <TagsetSegment
