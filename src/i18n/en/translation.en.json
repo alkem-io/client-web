@@ -248,7 +248,8 @@
         "description-help-text": "Add here the key information about the aspect. Why is it relevant? How does it relate?",
         "tags-help-text": "Add free form tags to help quickly convey the key information about the aspect. Good tags also help make the Aspect easier to find in searches.",
         "name-help-text": "A descriptive name for this aspect.",
-        "name-id-help-text": "Name ID help text"
+        "name-id-help-text": "Name ID help text",
+        "unique-name-validation-text": "${path} is already used in another aspect"
       },
       "final-step": {
         "title": "Final check",
