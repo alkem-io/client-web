@@ -24,7 +24,7 @@ interface AspectContextProps {
 const AspectContext = React.createContext<AspectContextProps>({
   loading: false,
   permissions: {
-    canUpdate: false,
+    canUpdate: true,
   },
 });
 
@@ -76,9 +76,9 @@ const AspectProvider: FC = ({ children }) => {
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
-  const myPrivileges = aspect?.authorization?.myPrivileges ?? [];
+  const myPrivileges = aspect?.authorization?.myPrivileges;
   const permissions: AspectPermissions = {
-    canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
+    canUpdate: myPrivileges?.includes(AuthorizationPrivilege.Update) ?? true,
   };
 
   return (
