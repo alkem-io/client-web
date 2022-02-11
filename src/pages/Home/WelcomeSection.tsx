@@ -9,7 +9,7 @@ const WelcomeSection = () => {
   const { t } = useTranslation();
 
   const { isAuthenticated } = useAuthenticationContext();
-  const banner = './alkemio-banner.png';
+  const banner = './alkemio-banner.jpg';
 
   return (
     <DashboardGenericSection
