@@ -26,6 +26,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ paths: _paths }) =>
             banner: entities.aspect?.banner?.uri,
             displayName: entities.aspect?.displayName,
             description: entities.aspect?.description,
+            type: entities.aspect?.type,
             tags: entities.aspect?.tagset?.tags,
             references: entities.aspect?.references,
             messages: entities.messages,

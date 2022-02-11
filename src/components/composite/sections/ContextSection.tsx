@@ -109,7 +109,6 @@ const ContextSection: FC<ContextSectionProps> = ({
       variables: {
         aspectData: {
           contextID: contextId,
-          nameID: aspect.nameID,
           displayName: aspect.displayName,
           description: aspect.description,
           type: aspect.type,
@@ -227,7 +226,13 @@ const ContextSection: FC<ContextSectionProps> = ({
           <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
             <DashboardGenericSection
               headerText={`${t('common.aspects')} (${aspects ? aspects.length : 0})`}
-              primaryAction={canCreateAspects && <Button onClick={handleCreateDialogOpened}>Create</Button>}
+              primaryAction={
+                canCreateAspects && (
+                  <Button variant="contained" onClick={handleCreateDialogOpened}>
+                    {t('buttons.create')}
+                  </Button>
+                )
+              }
             >
               {aspectsLoading ? (
                 <CardLayoutContainer>

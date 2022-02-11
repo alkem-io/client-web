@@ -2,7 +2,6 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInputField } from '../../../Admin/Common/useInputField';
 import * as yup from 'yup';
-import { NameSegment, nameSegmentSchema, nameValidator } from '../../../Admin/Common/NameSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
 import { Formik } from 'formik';
 import { Box } from '@mui/material';
@@ -13,10 +12,10 @@ import { Aspect, Tagset } from '../../../../models/graphql-schema';
 import ReferenceSegment, { referenceSegmentSchema } from '../../../Admin/Common/ReferenceSegment';
 import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
+import { nameValidator } from '../../../Admin/Common/NameSegment';
 
 type FormValueType = {
   name: string;
-  nameID: string;
   description: string;
   tagsets: Tagset[];
   aspectNames: string[];
@@ -29,7 +28,6 @@ const FormikEffect = FormikEffectFactory<FormValueType>();
 type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { references?: Reference[] };
 export type AspectFormOutput = {
   displayName: string;
-  nameID: string;
   description: string;
   tags: string[];
   type: string;
@@ -71,7 +69,6 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const initialValues: FormValueType = {
     name: aspect?.displayName ?? '',
-    nameID: aspect?.nameID ?? '',
     description: aspect?.description ?? templateDescription ?? '',
     tagsets,
     aspectNames: aspectNames ?? [],
@@ -88,7 +85,6 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const validationSchema = yup.object().shape({
     name: uniqueNameValidator.concat(nameValidator),
-    nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     description: yup.string().required(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
@@ -97,7 +93,6 @@ const AspectForm: FC<AspectFormProps> = ({
   const handleChange = (values: FormValueType) => {
     const aspect: AspectFormOutput = {
       displayName: values.name,
-      nameID: values.nameID,
       description: values.description,
       tags: values.tagsets[0].tags,
       type: values.type,
@@ -118,13 +113,13 @@ const AspectForm: FC<AspectFormProps> = ({
       {({ values: { references } }) => (
         <Box>
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          <NameSegment
-            disabled={edit}
-            required={!edit}
-            nameHelpText={t('components.aspect-creation.info-step.name-help-text')}
-            nameIDHelpText={t('components.aspect-creation.info-step.name-id-help-text')}
-            loading={loading}
-          />
+          {getInputField({
+            name: 'name',
+            label: t('components.nameSegment.name'),
+            required: true,
+            helpText: t('components.aspect-creation.info-step.name-help-text'),
+          })}
+          <SectionSpacer />
           {getInputField({
             name: 'type',
             label: t('components.aspect-creation.type-step.label'),

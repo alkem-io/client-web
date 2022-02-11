@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, Link } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import { ViewProps } from '../../models/view';
@@ -13,13 +14,31 @@ import ContextLayout from '../../components/composite/layout/Context/ContextLayo
 import DiscussionComment from '../../components/composite/common/Discussion/Comment';
 import { Comment } from '../../models/discussion/comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
+import clsx from 'clsx';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
+
+const useStyles = makeStyles(theme => ({
+  entityType: {
+    color: '#FFFFFF',
+    textTransform: 'uppercase',
+  },
+  entityTypeWrapper: {
+    background: theme.palette.augmentColor({ color: theme.palette.positive }).dark,
+    boxShadow: '0px 3px 6px #00000029',
+    borderRadius: '15px 0px 0px 15px',
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    marginRight: theme.spacing(-2),
+    flexShrink: 0,
+  },
+}));
 
 export interface AspectDashboardViewEntities {
   banner?: string;
   displayName?: string;
   description?: string;
+  type?: string;
   messages?: Comment[];
   commentId?: string;
   tags?: string[];
@@ -54,8 +73,19 @@ export interface AspectDashboardViewProps
 const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, options, actions }) => {
   const { t } = useTranslation();
   const loading = state.loading;
+  const styles = useStyles();
 
-  const { banner, description, displayName, messages = [], commentId, tags, references, currentUserId } = entities;
+  const {
+    banner,
+    description,
+    displayName,
+    type,
+    messages = [],
+    commentId,
+    tags,
+    references,
+    currentUserId,
+  } = entities;
   const { canReadComments, canDeleteComments, canPostComments } = options;
   const { handlePostComment, handleDeleteComment } = actions;
 
@@ -98,7 +128,21 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
   return (
     <ContextLayout rightPanel={rightPanel}>
       <>
-        <DashboardGenericSection bannerUrl={banner} headerText={displayName}>
+        <DashboardGenericSection
+          bannerUrl={banner}
+          headerText={displayName}
+          primaryAction={
+            <>
+              {type && (
+                <Box className={clsx(styles.entityTypeWrapper)}>
+                  <Typography variant="caption" className={styles.entityType}>
+                    {type}
+                  </Typography>
+                </Box>
+              )}
+            </>
+          }
+        >
           {loading ? (
             <>
               <Skeleton width={'80%'} />

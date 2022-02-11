@@ -913,6 +913,7 @@ export const AspectMessageFragmentDoc = gql`
 export const AspectDashboardFragmentDoc = gql`
   fragment AspectDashboard on Aspect {
     id
+    type
     displayName
     description
     banner {
