@@ -99,6 +99,7 @@ export type AspectKeySpecifier = (
   | 'bannerNarrow'
   | 'comments'
   | 'createdBy'
+  | 'createdDate'
   | 'description'
   | 'displayName'
   | 'id'
@@ -114,6 +115,7 @@ export type AspectFieldPolicy = {
   bannerNarrow?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;

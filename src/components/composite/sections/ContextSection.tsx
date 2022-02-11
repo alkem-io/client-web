@@ -120,7 +120,7 @@ const ContextSection: FC<ContextSectionProps> = ({
         createAspectOnContext: {
           __typename: 'Aspect',
           id: '',
-          nameID: aspect.nameID,
+          nameID: aspect.nameID ?? '',
           displayName: aspect.displayName ?? '',
           description: aspect.description,
           type: aspect.type,
@@ -262,7 +262,7 @@ const ContextSection: FC<ContextSectionProps> = ({
             open={aspectDialogOpen}
             onCancel={handleCreateDialogClosed}
             onCreate={onCreate}
-            aspects={aspects.map(x => x.displayName)}
+            aspectNames={aspects.map(x => x.displayName)}
           />
         </Grid>
       </Grid>
