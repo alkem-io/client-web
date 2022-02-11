@@ -116,7 +116,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const commentsPrivileges = aspect?.comments?.authorization?.myPrivileges ?? [];
   const permissions: AspectDashboardPermissions = {
     canReadComments: commentsPrivileges.includes(AuthorizationPrivilege.Read) ?? false,
-    canPostComments: commentsPrivileges.includes(AuthorizationPrivilege.Update) ?? false,
+    canPostComments: commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) ?? false,
     canDeleteComments: commentsPrivileges.includes(AuthorizationPrivilege.Delete) ?? false,
   };
 
