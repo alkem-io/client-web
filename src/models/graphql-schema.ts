@@ -3575,6 +3575,7 @@ export type CreateAspectMutation = {
   createAspectOnContext: {
     __typename?: 'Aspect';
     id: string;
+    nameID: string;
     displayName: string;
     description: string;
     type: string;
