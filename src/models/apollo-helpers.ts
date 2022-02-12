@@ -99,6 +99,7 @@ export type AspectKeySpecifier = (
   | 'bannerNarrow'
   | 'comments'
   | 'createdBy'
+  | 'createdDate'
   | 'description'
   | 'displayName'
   | 'id'
@@ -114,6 +115,7 @@ export type AspectFieldPolicy = {
   bannerNarrow?: FieldPolicy<any> | FieldReadFunction<any>;
   comments?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -985,6 +987,7 @@ export type QueryKeySpecifier = (
   | 'configuration'
   | 'ecoverse'
   | 'ecoverses'
+  | 'generateCredentialShareRequest'
   | 'me'
   | 'meHasProfile'
   | 'membershipOrganization'
@@ -1007,6 +1010,7 @@ export type QueryFieldPolicy = {
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
+  generateCredentialShareRequest?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   meHasProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   membershipOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1080,6 +1084,17 @@ export type ServiceMetadataKeySpecifier = ('name' | 'version' | ServiceMetadataK
 export type ServiceMetadataFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   version?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ShareCredentialOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | ShareCredentialOutputKeySpecifier
+)[];
+export type ShareCredentialOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
   | 'canvasContentUpdated'
@@ -1585,6 +1600,10 @@ export type StrictTypedTypePolicies = {
   ServiceMetadata?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ServiceMetadataKeySpecifier | (() => undefined | ServiceMetadataKeySpecifier);
     fields?: ServiceMetadataFieldPolicy;
+  };
+  ShareCredentialOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ShareCredentialOutputKeySpecifier | (() => undefined | ShareCredentialOutputKeySpecifier);
+    fields?: ShareCredentialOutputFieldPolicy;
   };
   Subscription?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SubscriptionKeySpecifier | (() => undefined | SubscriptionKeySpecifier);

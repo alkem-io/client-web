@@ -276,6 +276,10 @@
       "created": "Created on {{date}}",
       "updated": "Last updated on {{date}}"
     },
+    "credential-share-request-dialog": {
+      "title": "Share your verified credentials",
+      "content": "To share the {{credentials}} with Alkemio scan the generated QR code below."
+    },
     "edit-members": {
       "no-available-members": "No users available to add; please check members of containing community",
       "user-not-found": "User not found!"

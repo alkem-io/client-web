@@ -12937,6 +12937,69 @@ export type OrganizationMembersQueryResult = Apollo.QueryResult<
 export function refetchOrganizationMembersQuery(variables: SchemaTypes.OrganizationMembersQueryVariables) {
   return { query: OrganizationMembersDocument, variables: variables };
 }
+export const GenerateCredentialShareRequestDocument = gql`
+  query generateCredentialShareRequest($types: [String!]!) {
+    generateCredentialShareRequest(types: $types) {
+      interactionId
+      jwt
+      expiresOn
+    }
+  }
+`;
+
+/**
+ * __useGenerateCredentialShareRequestQuery__
+ *
+ * To run a query within a React component, call `useGenerateCredentialShareRequestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGenerateCredentialShareRequestQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGenerateCredentialShareRequestQuery({
+ *   variables: {
+ *      types: // value for 'types'
+ *   },
+ * });
+ */
+export function useGenerateCredentialShareRequestQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.GenerateCredentialShareRequestQuery,
+    SchemaTypes.GenerateCredentialShareRequestQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.GenerateCredentialShareRequestQuery,
+    SchemaTypes.GenerateCredentialShareRequestQueryVariables
+  >(GenerateCredentialShareRequestDocument, options);
+}
+export function useGenerateCredentialShareRequestLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.GenerateCredentialShareRequestQuery,
+    SchemaTypes.GenerateCredentialShareRequestQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.GenerateCredentialShareRequestQuery,
+    SchemaTypes.GenerateCredentialShareRequestQueryVariables
+  >(GenerateCredentialShareRequestDocument, options);
+}
+export type GenerateCredentialShareRequestQueryHookResult = ReturnType<typeof useGenerateCredentialShareRequestQuery>;
+export type GenerateCredentialShareRequestLazyQueryHookResult = ReturnType<
+  typeof useGenerateCredentialShareRequestLazyQuery
+>;
+export type GenerateCredentialShareRequestQueryResult = Apollo.QueryResult<
+  SchemaTypes.GenerateCredentialShareRequestQuery,
+  SchemaTypes.GenerateCredentialShareRequestQueryVariables
+>;
+export function refetchGenerateCredentialShareRequestQuery(
+  variables: SchemaTypes.GenerateCredentialShareRequestQueryVariables
+) {
+  return { query: GenerateCredentialShareRequestDocument, variables: variables };
+}
 export const UserCardsContainerDocument = gql`
   query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {

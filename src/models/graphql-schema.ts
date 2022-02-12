@@ -136,6 +136,7 @@ export type Aspect = {
   comments?: Maybe<Comments>;
   /** The id of the user that created this Aspect */
   createdBy: Scalars['UUID'];
+  createdDate: Scalars['DateTime'];
   description: Scalars['String'];
   /** The display name. */
   displayName: Scalars['String'];
@@ -269,6 +270,7 @@ export enum AuthorizationPrivilege {
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCanvas = 'CREATE_CANVAS',
+  CreateComment = 'CREATE_COMMENT',
   CreateHub = 'CREATE_HUB',
   CreateOrganization = 'CREATE_ORGANIZATION',
   Delete = 'DELETE',
@@ -614,8 +616,8 @@ export type CreateAspectOnContextInput = {
   description: Scalars['String'];
   /** The display name for the entity. */
   displayName?: InputMaybe<Scalars['String']>;
-  /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  /** A readable identifier, unique within the containing scope. If not provided generate based on the displayName */
+  nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
 };
@@ -1931,6 +1933,8 @@ export type Query = {
   ecoverse: Ecoverse;
   /** The Ecoverses on this platform */
   ecoverses: Array<Ecoverse>;
+  /** Generate credential share request */
+  generateCredentialShareRequest: ShareCredentialOutput;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -1965,6 +1969,10 @@ export type QueryAdminCommunicationMembershipArgs = {
 
 export type QueryEcoverseArgs = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type QueryGenerateCredentialShareRequestArgs = {
+  types: Array<Scalars['String']>;
 };
 
 export type QueryMembershipOrganizationArgs = {
@@ -2148,6 +2156,16 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']>;
+};
+
+export type ShareCredentialOutput = {
+  __typename?: 'ShareCredentialOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential share request. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  jwt: Scalars['String'];
 };
 
 export type Subscription = {
@@ -9528,6 +9546,20 @@ export type OrganizationMembersQuery = {
           email: string;
         }>
       | undefined;
+  };
+};
+
+export type GenerateCredentialShareRequestQueryVariables = Exact<{
+  types: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type GenerateCredentialShareRequestQuery = {
+  __typename?: 'Query';
+  generateCredentialShareRequest: {
+    __typename?: 'ShareCredentialOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
   };
 };
 
