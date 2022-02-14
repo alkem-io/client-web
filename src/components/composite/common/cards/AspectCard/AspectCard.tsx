@@ -26,6 +26,7 @@ const Root = styled('div')(({ theme }) => ({
       remToPx(theme.typography.htmlFontSize, theme?.typography?.body1.fontSize ?? DEFAULT_FONT_SIZE) *
       ((theme?.typography?.body1?.lineHeight ?? DEFAULT_LINE_HEIGHT) as number) *
       LINE_CLAMP,
+    marginBottom: theme.spacing(1),
   },
   [`& .${classes.textClamp}`]: {
     overflow: 'hidden',
