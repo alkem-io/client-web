@@ -9,12 +9,11 @@ import UploadButton from '../../../core/UploadButton';
 import { Visual } from '../../../../models/graphql-schema';
 import { CropDialog } from './CropDialog';
 
-const DEFAULT_SIZE = 150;
+const DEFAULT_SIZE = 128;
 
 interface VisualUploadProps {
   visual?: Visual;
   height?: number;
-  width?: number;
 }
 
 /**
@@ -24,7 +23,7 @@ interface VisualUploadProps {
  * @param width
  * @constructor
  */
-const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, width = DEFAULT_SIZE }) => {
+const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) => {
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
@@ -63,6 +62,8 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, wi
       "'maxWidth', 'maxHeight', 'allowedTypes', 'aspectRatio' fields are required for the component to operate!"
     );
   }
+
+  const width = height * visual.aspectRatio;
 
   return (
     <Box>
