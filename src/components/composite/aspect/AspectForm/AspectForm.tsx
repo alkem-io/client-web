@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInputField } from '../../../Admin/Common/useInputField';
 import * as yup from 'yup';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
 import { Formik } from 'formik';
 import { Box } from '@mui/material';
+import { useInputField } from '../../../Admin/Common/useInputField';
+import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
 import { SectionSpacer } from '../../../core/Section/Section';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
 import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';
@@ -121,20 +121,12 @@ const AspectForm: FC<AspectFormProps> = ({
           })}
           <SectionSpacer />
           {getInputField({
-            name: 'type',
-            label: t('components.aspect-creation.type-step.label'),
-            helpText: t('components.aspect-creation.type-step.type-help-text'),
-            required: true,
-            disabled: true,
-            loading: loading,
-          })}
-          <SectionSpacer />
-          {getInputField({
             name: 'description',
             label: t('components.aspect-creation.info-step.description'),
             placeholder: t('components.aspect-creation.info-step.description-placeholder'),
             helpText: t('components.aspect-creation.info-step.description-help-text'),
             required: true,
+            rows: 7,
             loading: loading,
           })}
           <SectionSpacer />
