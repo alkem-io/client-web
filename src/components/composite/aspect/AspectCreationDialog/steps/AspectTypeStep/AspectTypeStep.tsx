@@ -7,15 +7,8 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import HelpButton from '../../../../../core/HelpButton';
-import makeStyles from '@mui/styles/makeStyles';
 import { InputAdornment } from '@mui/material';
 import { useEcoverse } from '../../../../../../hooks';
-
-const useStyles = makeStyles(theme => ({
-  selectAdornment: {
-    marginRight: theme.spacing(3),
-  },
-}));
 
 export interface AspectTypeStepProps {
   type?: string;
@@ -23,7 +16,6 @@ export interface AspectTypeStepProps {
 }
 
 const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
-  const styles = useStyles();
   const { t } = useTranslation();
   const { error, loading, template } = useEcoverse();
 
@@ -54,7 +46,7 @@ const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
             label={t('components.aspect-creation.type-step.label')}
             onChange={e => onChange(e.target.value)}
             endAdornment={
-              <InputAdornment className={styles.selectAdornment} position="end">
+              <InputAdornment position="start">
                 <HelpButton helpText={t('components.aspect-creation.type-step.type-help-text')} />
               </InputAdornment>
             }

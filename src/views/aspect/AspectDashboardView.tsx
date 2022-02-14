@@ -15,6 +15,7 @@ import DiscussionComment from '../../components/composite/common/Discussion/Comm
 import { Comment } from '../../models/discussion/comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
 import clsx from 'clsx';
+import Markdown from '../../components/core/Markdown';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
@@ -82,7 +83,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
     type,
     messages = [],
     commentId,
-    tags,
+    tags = [],
     references,
     currentUserId,
   } = entities;
@@ -151,9 +152,9 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
             </>
           ) : (
             <>
-              <Typography>{description}</Typography>
+              <Typography component={Markdown}>{description}</Typography>
               <SectionSpacer double />
-              <TagsComponent tags={tags ?? []} loading={loading} />
+              <TagsComponent tags={tags} loading={loading} />
             </>
           )}
         </DashboardGenericSection>
@@ -171,7 +172,9 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
                 references.length > 0 &&
                 references.map((l, i) => (
                   <Link key={i} href={l.uri} target="_blank">
-                    <Typography>{l.uri}</Typography>
+                    <Typography sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                      {l.name}
+                    </Typography>
                   </Link>
                 ))}
               {references && !references.length && <Typography>{t('common.no-references')}</Typography>}

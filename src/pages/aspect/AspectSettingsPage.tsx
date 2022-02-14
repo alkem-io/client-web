@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import { AspectSettingsFragment, Visual } from '../../models/graphql-schema';
 import EditVisualsView from '../../views/Visuals/EditVisualsView';
 import { SectionSpacer } from '../../components/core/Section/Section';
+import Typography from '@mui/material/Typography';
 
 export interface AspectSettingsPageProps extends PageProps {}
 
@@ -52,7 +53,11 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
               onRemoveReference={actions.handleRemoveReference}
             />
             <SectionSpacer double />
-            <EditVisualsView visuals={visuals} />
+            <Box>
+              <Typography variant={'h4'}>{t('common.visuals')}</Typography>
+              <SectionSpacer />
+              <EditVisualsView visuals={visuals} />
+            </Box>
             <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2 }}>
               <Button
                 aria-label="save-aspect"

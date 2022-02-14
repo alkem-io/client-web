@@ -109,6 +109,7 @@
     "social": "Social",
     "lifecycle": "Lifecycle",
     "home": "Home",
+    "visuals": "Visuals",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -263,7 +264,8 @@
     "visual-upload": {
       "loading": "Image is loading",
       "success": "Image uploaded successfully",
-      "upload-hover": "Upload image"
+      "upload-hover": "Upload image",
+      "no-data": "Not yet set"
     },
     "tags-component": {
       "more": "+{{count}} more",
