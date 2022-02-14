@@ -13,6 +13,7 @@ import ReferenceSegment, { referenceSegmentSchema } from '../../../Admin/Common/
 import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
 import { nameValidator } from '../../../Admin/Common/NameSegment';
+import { useMarkdownInputField } from '../../../Admin/Common/useMarkdownInputField';
 
 type FormValueType = {
   name: string;
@@ -58,6 +59,7 @@ const AspectForm: FC<AspectFormProps> = ({
 }) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
+  const getMarkdownInput = useMarkdownInputField();
 
   const tagsets: Tagset[] = [
     {
@@ -120,14 +122,14 @@ const AspectForm: FC<AspectFormProps> = ({
             helpText: t('components.aspect-creation.info-step.name-help-text'),
           })}
           <SectionSpacer />
-          {getInputField({
+          {getMarkdownInput({
             name: 'description',
             label: t('components.aspect-creation.info-step.description'),
             placeholder: t('components.aspect-creation.info-step.description-placeholder'),
-            helpText: t('components.aspect-creation.info-step.description-help-text'),
+            tooltipLabel: t('components.aspect-creation.info-step.description-help-text'),
             required: true,
-            rows: 7,
             loading: loading,
+            rows: 7,
           })}
           <SectionSpacer />
           <TagsetSegment
