@@ -63,7 +63,7 @@ const AspectCard: FC<AspectCardProps> = ({
         mediaUrl: bannerNarrow,
         labelText: type,
         tags: tagset?.tags ?? [],
-        url: hubNameId && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
+        url: hubNameId && nameID && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
       }}
       loading={loading}
     >
