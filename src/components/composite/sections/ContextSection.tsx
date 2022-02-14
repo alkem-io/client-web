@@ -47,7 +47,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   background,
   displayName,
   tagline,
-  keywords,
+  keywords = [],
   vision,
   impact,
   who,
@@ -119,7 +119,7 @@ const ContextSection: FC<ContextSectionProps> = ({
         createAspectOnContext: {
           __typename: 'Aspect',
           id: '',
-          nameID: aspect.nameID ?? '',
+          nameID: '',
           displayName: aspect.displayName ?? '',
           description: aspect.description,
           type: aspect.type,
@@ -157,7 +157,7 @@ const ContextSection: FC<ContextSectionProps> = ({
             headerSpacing={'none'}
             options={{ collapsible: { maxHeight: 240 } }}
           >
-            <TagsComponent tags={keywords ?? []} count={10} />
+            <TagsComponent tags={keywords} count={10} />
             <SectionSpacer />
             <SectionHeader text={t('components.contextSegment.vision.title')} />
             <Typography component={Markdown} variant="body1" children={vision} />
