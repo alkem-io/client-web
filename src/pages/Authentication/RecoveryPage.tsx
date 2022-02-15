@@ -27,6 +27,9 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
           <Box marginY={3} textAlign={'center'}>
             <Typography variant={'h3'}>{t('pages.recovery.header')}</Typography>
           </Box>
+          <Box marginY={3} textAlign={'center'}>
+            <Typography variant={'h5'}>{t('pages.recovery.message')}</Typography>
+          </Box>
           <KratosUI flow={recoveryFlow} />
         </Grid>
       </Grid>

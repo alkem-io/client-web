@@ -4,7 +4,7 @@ import React, { FC, useCallback } from 'react';
 import * as yup from 'yup';
 import { TagsetTemplate } from '../../../models/graphql-schema';
 import { Tagset } from '../../../models/Profile';
-import { toFirstCaptitalLetter } from '../../../utils/toFirstCapitalLeter';
+import { toTagsetTitle } from '../../../utils/toTagsetTitle';
 import { TagsInput } from '../../core';
 
 interface TagsSegmentProps {
@@ -12,17 +12,27 @@ interface TagsSegmentProps {
   template?: TagsetTemplate[];
   readOnly?: boolean;
   disabled?: boolean;
+  title?: string;
+  helpText?: string;
+  loading?: boolean;
 }
 
 const DEFAULT_PLACEHOLDER = 'Innovation, AI, Technology, Blockchain';
-export const tagsetSegmentSchema = yup.array().of(
-  yup.object().shape({
-    name: yup.string(),
-    tags: yup.array().of(yup.string()),
-  })
-);
+export const tagsetSegmentValidationObject = yup.object().shape({
+  name: yup.string(),
+  tags: yup.array().of(yup.string().min(2)),
+});
+export const tagsetSegmentSchema = yup.array().of(tagsetSegmentValidationObject);
 
-export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false, template, disabled }) => {
+export const TagsetSegment: FC<TagsSegmentProps> = ({
+  tagsets,
+  readOnly = false,
+  template,
+  disabled,
+  title,
+  helpText,
+  loading,
+}) => {
   const getTagsetPlaceholder = useCallback(
     (name: string) => {
       if (!template) return DEFAULT_PLACEHOLDER;
@@ -38,10 +48,12 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({ tagsets, readOnly = false,
           <TagsetField
             key={index}
             name={`tagsets[${index}].tags`}
-            title={toFirstCaptitalLetter(tagSet.name)}
+            title={toTagsetTitle(tagSet, title)}
             placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}
             disabled={disabled}
+            helpText={helpText}
+            loading={loading}
           />
         ))
       }
@@ -58,6 +70,8 @@ interface TagsetFieldProps {
   placeholder?: string;
   as?: React.ElementType;
   disabled?: boolean;
+  helpText?: string;
+  loading?: boolean;
 }
 
 export const TagsetField: FC<TagsetFieldProps> = ({
@@ -67,8 +81,10 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   readOnly = false,
   disabled = false,
   placeholder,
+  helpText,
+  loading,
 }) => {
-  const [field, , helper] = useField(name);
+  const [field, meta, helper] = useField(name);
   return (
     <Grid item xs={12}>
       <TagsInput
@@ -80,11 +96,15 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         required={required}
         disabled={disabled}
         readOnly={readOnly}
+        error={Boolean(meta.error)}
+        helperText={meta.error}
+        helpText={helpText}
         onChange={items => helper.setValue(items)}
         InputLabelProps={{
           shrink: true,
         }}
         fullWidth
+        loading={loading}
       />
     </Grid>
   );

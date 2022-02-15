@@ -21,6 +21,8 @@ import ChallengeDashboardPage from '../../pages/Admin/Challenge/ChallengeDashboa
 import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPage';
 import ChallengeOpportunityPage from '../../pages/Admin/Challenge/ChallengeOpportunityPage';
 import ChallengeCanvasPage from '../../pages/Admin/Challenge/ChallengeCanvasPage';
+import AspectProvider from '../../context/aspect/AspectProvider';
+import AspectRoute from '../aspect/AspectRoute';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -68,7 +70,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
                 path={'dashboard'}
                 element={<ChallengeDashboardPage paths={currentPaths} entities={e} state={s} />}
               />
-              <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} entities={e} state={s} />} />
+              <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} />} />
               <Route path={'community'} element={<ChallengeCommunityPage paths={currentPaths} />} />
               <Route
                 path={'community/discussions/*'}
@@ -96,6 +98,14 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
                     <OpportunityRouteNew paths={currentPaths} />
                   </CommunityProvider>
                 </OpportunityProvider>
+              }
+            />
+            <Route
+              path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+              element={
+                <AspectProvider>
+                  <AspectRoute paths={currentPaths} />
+                </AspectProvider>
               }
             />
             <Route path="*" element={<Error404 />} />

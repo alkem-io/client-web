@@ -1,12 +1,12 @@
 import InfoIcon from '@mui/icons-material/Info';
-import { Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle as LifecycleModel } from '../../../../models/graphql-schema';
+import { Lifecycle } from '../../../../models/graphql-schema';
 import { LifecycleModal } from '../../common/ActivityPanel/StateActivityCardItem';
 
 export interface LifecycleProps {
-  lifecycle?: LifecycleModel;
+  lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;
 }
 
 const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
@@ -16,17 +16,11 @@ const LifecycleState: FC<LifecycleProps> = ({ lifecycle }) => {
 
   return (
     <>
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Box display="flex" alignItems="center">
-          <Typography>State</Typography>
-          <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
-            <IconButton color="primary" onClick={() => setModalVisible(true)} size="large">
-              <InfoIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-        <Typography sx={{ textTransform: 'capitalize' }}>{state}</Typography>
-      </Box>
+      <Tooltip title={t('pages.activity.lifecycle-info') || ''} arrow placement="top" id="lifecycle-graph">
+        <Button onClick={() => setModalVisible(true)} variant={'outlined'} startIcon={<InfoIcon />}>
+          {`State: ${state}`}
+        </Button>
+      </Tooltip>
       {lifecycle && (
         <LifecycleModal
           lifecycle={lifecycle}

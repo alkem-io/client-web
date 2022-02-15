@@ -1,76 +1,114 @@
-import { Link, Typography } from '@mui/material';
+import { ApolloError } from '@apollo/client';
+import { Box } from '@mui/material';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
-import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
-import ContextLayout from '../../components/composite/layout/Context/ContextLayout';
+import LifecycleState from '../../components/composite/entities/Lifecycle/LifecycleState';
 import ContextSection from '../../components/composite/sections/ContextSection';
-import LifecycleSection from '../../components/composite/sections/LifecycleSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { Context } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  Context,
+  ContextTabFragment,
+  LifecycleContextTabFragment,
+  ReferenceContextTabFragment,
+  Tagset,
+} from '../../models/graphql-schema';
+import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
-interface ChallengeContextViewProps {
-  entities: ChallengeContainerEntities;
-  state: ChallengeContainerState;
+interface ChallengeContextEntities {
+  context?: ContextTabFragment;
+  hubId?: string;
+  hubNameId?: string;
+  hubDisplayName?: string;
+  challengeId?: string;
+  challengeNameId?: string;
+  challengeDisplayName?: string;
+  challengeTagset?: Tagset;
+  challengeLifecycle?: LifecycleContextTabFragment;
+  aspects?: AspectCardFragment[];
+  references?: ReferenceContextTabFragment[];
+}
+interface ChallengeContextActions {}
+interface ChallengeContextState {
+  loading: boolean;
+  error?: ApolloError;
+}
+interface ChallengeContextOptions {
+  canReadAspects: boolean;
+  canCreateAspects: boolean;
 }
 
-export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities }) => {
-  const { t } = useTranslation();
-  const { challenge, ecoverseId, ecoverseNameId, ecoverseDisplayName } = entities;
-  const { context, tagset, displayName } = challenge || {};
-  const { tagline = '', impact = '', background = '', vision = '', who = '', references } = context || ({} as Context);
-  const banner = getVisualBanner(context?.visuals);
-  const challengeId = challenge?.id || '';
-  const challengeNameId = challenge?.nameID || '';
-  const lifecycle = challenge?.lifecycle;
+interface ChallengeContextViewProps
+  extends ViewProps<
+    ChallengeContextEntities,
+    ChallengeContextActions,
+    ChallengeContextState,
+    ChallengeContextOptions
+  > {}
 
-  const rightPanel = (
-    <>
-      <LifecycleSection lifecycle={lifecycle} />
-      <SectionSpacer />
-      <DashboardGenericSection headerText={t('components.profile.fields.keywords.title')}>
-        <TagsComponent tags={tagset?.tags || []} />
-      </DashboardGenericSection>
-      <SectionSpacer />
-      <DashboardGenericSection headerText={t('components.referenceSegment.title')}>
-        {references?.map((l, i) => (
-          <Link key={i} href={l.uri} target="_blank">
-            <Typography>{l.uri}</Typography>
-          </Link>
-        ))}
-      </DashboardGenericSection>
-    </>
-  );
+export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
+  const { canReadAspects, canCreateAspects } = options;
+  const { loading } = state;
+  const {
+    context,
+    hubId = '',
+    hubNameId = '',
+    hubDisplayName = '',
+    challengeId,
+    challengeNameId,
+    challengeDisplayName = '',
+    challengeTagset,
+    challengeLifecycle,
+  } = entities;
+  const {
+    tagline = '',
+    impact = '',
+    background = '',
+    vision = '',
+    who = '',
+    visuals = [],
+    id = '',
+  } = context || ({} as Context);
+  const banner = getVisualBanner(visuals);
+  const aspects = entities?.aspects;
+  const references = entities?.references;
 
   return (
-    <ContextLayout rightPanel={rightPanel}>
-      <ContextSection
-        primaryAction={
+    <ContextSection
+      primaryAction={
+        <Box display="flex">
+          <LifecycleState lifecycle={challengeLifecycle} />
+          <SectionSpacer />
           <ApplicationButtonContainer
             entities={{
-              ecoverseId,
-              ecoverseNameId,
-              ecoverseName: ecoverseDisplayName,
+              ecoverseId: hubId,
+              ecoverseNameId: hubNameId,
+              ecoverseName: hubDisplayName,
               challengeId,
-              challengeName: challenge?.displayName || '',
+              challengeName: challengeDisplayName,
               challengeNameId,
             }}
           >
             {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
           </ApplicationButtonContainer>
-        }
-        banner={banner}
-        background={background}
-        displayName={displayName}
-        impact={impact}
-        tagline={tagline}
-        vision={vision}
-        who={who}
-      />
-    </ContextLayout>
+        </Box>
+      }
+      banner={banner}
+      background={background}
+      displayName={challengeDisplayName}
+      impact={impact}
+      tagline={tagline}
+      vision={vision}
+      who={who}
+      contextId={id}
+      keywords={challengeTagset?.tags}
+      references={references}
+      aspects={aspects}
+      aspectsLoading={loading}
+      canReadAspects={canReadAspects}
+      canCreateAspects={canCreateAspects}
+    />
   );
 };

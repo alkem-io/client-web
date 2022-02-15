@@ -1,20 +1,42 @@
 import { FiberManualRecord } from '@mui/icons-material';
 import { Autocomplete, Chip, OutlinedTextFieldProps, TextField } from '@mui/material';
-import { isArray } from 'lodash';
+import Box from '@mui/material/Box';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
+import HelpButton from '../HelpButton';
+import CircularProgress from '@mui/material/CircularProgress';
+
+const DEFAULT_MIN_LENGTH = 2;
 
 // TODO: Do we realy need to extend from OutlinedTextFieldProps?
 type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   onChange?: (tags: (string | string[])[]) => void;
+  minLength?: number;
+  error?: boolean;
   value: string[];
   readOnly?: boolean;
   disabled?: boolean;
+  helpText?: string;
+  loading?: boolean;
 };
 
 export const TagsInput: FC<TagsInputProps> = forwardRef(
-  ({ onChange, value, placeholder, readOnly, disabled, ...rest }, ref) => {
+  (
+    {
+      onChange,
+      minLength = DEFAULT_MIN_LENGTH,
+      error,
+      value,
+      placeholder,
+      readOnly,
+      disabled,
+      helpText,
+      loading,
+      ...rest
+    },
+    ref
+  ) => {
     const handleChange = (e: ChangeEvent<{}>, newValue: (string | string[])[]) => {
-      const changedValues = newValue.map(x => (isArray(x) ? x : x.trim())).filter(x => x.length >= 2);
+      const changedValues = newValue.map(x => (Array.isArray(x) ? x : x.trim())).filter(x => x.length >= minLength);
       onChange && onChange(changedValues);
     };
 
@@ -32,7 +54,12 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
         value={value}
         onChange={handleChange}
         disableClearable
-        disabled={readOnly || disabled}
+        disabled={loading || readOnly || disabled}
+        sx={{
+          ':root': {
+            padding: 14,
+          },
+        }}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
             <Chip
@@ -45,7 +72,23 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
             />
           ))
         }
-        renderInput={params => <TextField {...params} {...rest} variant="outlined" />}
+        renderInput={params => (
+          <TextField
+            {...params}
+            {...rest}
+            error={error}
+            variant="outlined"
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: helpText && (
+                <Box sx={{ marginRight: '5px', display: 'flex' }}>
+                  {loading && <CircularProgress size={20} />}
+                  <HelpButton helpText={helpText} />
+                </Box>
+              ),
+            }}
+          />
+        )}
       />
     );
   }

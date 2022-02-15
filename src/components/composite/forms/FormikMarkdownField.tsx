@@ -24,7 +24,7 @@ const useStyle = makeStyles(theme => ({
 }));
 
 interface MarkdownFieldProps extends InputProps {
-  title: string;
+  title?: string;
   tooltipTitle?: string;
   name: string;
   required?: boolean;
@@ -33,6 +33,7 @@ interface MarkdownFieldProps extends InputProps {
   placeholder?: string;
   autoComplete?: string;
   rows?: number;
+  loading?: boolean;
 }
 
 export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
@@ -45,16 +46,20 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   placeholder,
   autoComplete,
   rows = 10,
+  loading,
 }) => {
   const styles = useStyle();
   const [field, meta, helper] = useField(name);
-  const validClass = useMemo(() => (required && Boolean(!meta.error) && meta.touched ? 'is-valid' : undefined), [meta]);
-  const invalidClass = useMemo(() => (Boolean(!!meta.error) && meta.touched ? 'is-invalid' : undefined), [meta]);
+  const validClass = useMemo(() => (!Boolean(meta.error) && meta.touched ? 'is-valid' : undefined), [meta]);
+  const invalidClass = useMemo(
+    () => (required && Boolean(meta.error) && meta.touched ? 'is-invalid' : undefined),
+    [meta]
+  );
 
   return (
     <FormGroup>
       <div className={styles.withTooltipIcon}>
-        {title !== '' && <InputLabel required={required}>{title}</InputLabel>}
+        {title && <InputLabel required={required}>{title}</InputLabel>}
         {tooltipTitle && (
           <Tooltip title={tooltipTitle} arrow placement="top" aria-label={`tooltip-${title}`}>
             <InfoIcon fontSize="inherit" color="primary" />
@@ -71,13 +76,13 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           placeholder: placeholder || title,
           required: required,
           readOnly: readOnly,
-          disabled: disabled,
+          disabled: loading || disabled,
           autoComplete: autoComplete,
           onBlur: field.onBlur,
           rows,
         }}
       />
-      <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>
+      {meta.touched && <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>}
     </FormGroup>
   );
 };

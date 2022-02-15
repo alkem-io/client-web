@@ -31,4 +31,9 @@ fragment Configuration on Config {
     endpoint
     submitPII
   }
+  template {
+    opportunities {
+      aspects
+    }
+  }
 }

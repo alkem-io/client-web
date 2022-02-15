@@ -1,0 +1,8 @@
+mutation createReferenceOnAspect($referenceInput: CreateReferenceOnAspectInput!) {
+  createReferenceOnAspect(referenceData: $referenceInput) {
+    id
+    name
+    uri
+    description
+  }
+}

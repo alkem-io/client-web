@@ -60,8 +60,12 @@
     "tags": "Tags",
     "add": "Add",
     "remove": "Remove",
+    "comment": "Comment",
+    "comments": "Comments",
     "email": "Email",
     "state": "State",
+    "aspect": "Aspect",
+    "aspects": "Aspects",
     "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",
@@ -82,6 +86,7 @@
     "updates": "Updates",
     "no-updates": "No updates",
     "no-tags": "No tags available",
+    "no-references": "No references available",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
@@ -96,12 +101,15 @@
     "canvases": "Canvases",
     "settings": "Settings",
     "search": "Search",
+    "reference": "Reference",
+    "references": "References",
     "notifications": "Notifications",
     "my-profile": "My profile",
     "my-memberships": "My memberships",
     "social": "Social",
     "lifecycle": "Lifecycle",
     "home": "Home",
+    "visuals": "Visuals",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -223,10 +231,41 @@
     }
   },
   "components": {
+    "context-section": {
+      "create-aspect": "Successfully created the aspect"
+    },
+    "aspect-creation": {
+      "title": "Create a new aspect",
+      "type-step": {
+        "title": "The type of the additional context to add.",
+        "error": "Error occurred while loading the types",
+        "label": "Aspect Type",
+        "type-help-text": "Aspects allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of aspect types that are avaialble in this context is fixed. Please choose the aspect type that best matches the context you wish to share."
+      },
+      "info-step": {
+        "title": "Details",
+        "description": "Please share the details",
+        "description-placeholder": "A description for this aspect",
+        "description-help-text": "Add here the key information about the aspect. Why is it relevant? How does it relate?",
+        "tags-help-text": "Add free form tags to help quickly convey the key information about the aspect. Good tags also help make the Aspect easier to find in searches.",
+        "name-help-text": "A descriptive name for this aspect.",
+        "name-id-help-text": "Name ID help text",
+        "unique-name-validation-text": "${path} is already used in another aspect"
+      },
+      "final-step": {
+        "title": "Final check",
+        "type": "Type",
+        "name": "Name",
+        "description": "Description",
+        "links": "Relevant Links",
+        "explanation": "By completing this step the Aspect will be created. The next step is to further edit the Aspect via the settings tab. For example to add references, select images for the banners etc."
+      }
+    },
     "visual-upload": {
       "loading": "Image is loading",
       "success": "Image uploaded successfully",
-      "upload-hover": "Upload image"
+      "upload-hover": "Upload image",
+      "no-data": "Not yet set"
     },
     "tags-component": {
       "more": "+{{count}} more",
@@ -262,7 +301,7 @@
       "title": "Filter"
     },
     "backdrop": {
-      "private": "{{blockName}} are only visible to members.",
+      "private": "Please become a member to access {{blockName}}",
       "authentication": "Please sign in to see details about the {{blockName}}."
     },
     "notifications": {
@@ -532,6 +571,13 @@
     }
   },
   "pages": {
+    "aspect": {
+      "dashboard": {
+        "comment": {
+          "placeholder": "Type your comment here"
+        }
+      }
+    },
     "visual-edit": {
       "avatar": {
         "title": "Avatar",
@@ -996,6 +1042,7 @@
         }
       },
       "header": "Password Reset",
+      "message": "Please enter your email address below to recieve a link to reset your password.",
       "buttons": {
         "register": "Register"
       }
@@ -1006,7 +1053,8 @@
           "email": "Email is not valid"
         }
       },
-      "header": "Verify",
+      "header": "Email verification",
+      "message": "Users of Alkemio are required to verify their email address.<br/><br/>Please enter your email address below to recieve a new verification link.",
       "buttons": {
         "register": "Verify"
       }

@@ -1,19 +1,19 @@
 import 'react-image-crop/dist/ReactCrop.css';
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Box, Skeleton } from '@mui/material';
+import { Avatar, Box, Skeleton, SxProps } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { useApolloErrorHandler, useNotification } from '../../../../hooks';
 import { useUploadVisualMutation } from '../../../../hooks/generated/graphql';
 import UploadButton from '../../../core/UploadButton';
 import { Visual } from '../../../../models/graphql-schema';
 import { CropDialog } from './CropDialog';
 
-const DEFAULT_SIZE = 150;
+const DEFAULT_SIZE = 128;
 
 interface VisualUploadProps {
   visual?: Visual;
   height?: number;
-  width?: number;
 }
 
 /**
@@ -23,7 +23,7 @@ interface VisualUploadProps {
  * @param width
  * @constructor
  */
-const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, width = DEFAULT_SIZE }) => {
+const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) => {
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
@@ -63,6 +63,8 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, wi
     );
   }
 
+  const width = height * visual.aspectRatio;
+
   return (
     <Box>
       <Box marginBottom={2}>
@@ -71,7 +73,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, wi
             <Avatar sx={{ width, height }} />
           </Skeleton>
         ) : (
-          <img src={visual?.uri} width={width} height={height} alt={''} />
+          <ImageComponent src={visual?.uri} width={width} height={height} />
         )}
       </Box>
       {visual && (
@@ -110,3 +112,29 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE, wi
 };
 
 export default VisualUpload;
+
+interface ImageComponentProps {
+  width: number;
+  height: number;
+  src?: string;
+}
+
+const ImageComponent: FC<ImageComponentProps> = ({ width, height, src }) => {
+  const { t } = useTranslation();
+
+  const sx: SxProps = {
+    width,
+    height,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: 1,
+    borderColor: grey[400],
+  };
+
+  return src ? (
+    <img src={src} width={width} height={height} alt={''} />
+  ) : (
+    <Box sx={sx}>{t('components.visual-upload.no-data')}</Box>
+  );
+};

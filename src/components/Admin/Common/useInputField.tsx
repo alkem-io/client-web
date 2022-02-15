@@ -10,11 +10,13 @@ interface InputFieldProps {
   rows?: number;
   disabled?: boolean;
   required?: boolean;
+  helpText?: string;
+  loading?: boolean;
 }
 
 export const useInputField = () => {
   const styles = useProfileStyles();
-  return ({ name, label, placeholder, rows, disabled = false, required }: InputFieldProps) => {
+  return ({ name, label, placeholder, rows, disabled = false, required, helpText, loading }: InputFieldProps) => {
     return (
       <Grid item xs={12}>
         <FormikInputField
@@ -26,6 +28,8 @@ export const useInputField = () => {
           required={required}
           multiline={!!rows && rows > 1}
           rows={rows}
+          helpText={helpText}
+          loading={loading}
         />
       </Grid>
     );

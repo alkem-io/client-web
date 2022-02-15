@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
-import { useChallengeProfileQuery } from '../../hooks/generated/graphql';
+import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
@@ -46,7 +46,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
   const { ecoverseId, ecoverseNameId, challengeId, challengeNameId, loading } = useChallenge();
 
-  const { data: _challenge, loading: loadingProfile } = useChallengeProfileQuery({
+  const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
     variables: {
       ecoverseId: ecoverseNameId,
       challengeId: challengeNameId,

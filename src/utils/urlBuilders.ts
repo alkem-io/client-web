@@ -64,3 +64,20 @@ export const buildNewDiscussionUrl = (url: string) => {
   const stripUrl = url.replace('/community/discussions', '');
   return `${stripUrl}/community/discussions/new`;
 };
+
+export const buildAspectUrl = (
+  aspectNameId: string,
+  ecoverseNameId: string,
+  challengeNameId?: string,
+  opportunityNameId?: string
+) => {
+  if (challengeNameId) {
+    if (opportunityNameId) {
+      return `${buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}/aspects/${aspectNameId}`;
+    } else {
+      return `${buildChallengeUrl(ecoverseNameId, challengeNameId)}/aspects/${aspectNameId}`;
+    }
+  } else {
+    return `${buildEcoverseUrl(ecoverseNameId)}/aspects/${aspectNameId}`;
+  }
+};

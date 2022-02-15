@@ -1,4 +1,4 @@
-query challengeProfile($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+query challengePage($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   ecoverse(ID: $ecoverseId) {
     id
     challenge(ID: $challengeId) {
@@ -27,7 +27,17 @@ fragment ChallengeProfile on Challenge {
     stateIsFinal
   }
   context {
-    ...ContextDetails
+    id
+    tagline
+    vision
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+    visuals {
+      ...VisualFull
+    }
   }
   community {
     id

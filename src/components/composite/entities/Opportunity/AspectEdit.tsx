@@ -7,12 +7,10 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
 import {
-  refetchOpportunityAspectsQuery,
-  useCreateAspectMutation,
+  refetchOpportunityAspectsOldQuery,
   useOpportunityTemplateQuery,
   useUpdateAspectMutation,
 } from '../../../../hooks/generated/graphql';
-import { Aspect } from '../../../../models/graphql-schema';
 import { replaceAll } from '../../../../utils/replaceAll';
 import Button from '../../../core/Button';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
@@ -22,7 +20,7 @@ import { FormikSelect } from '../../forms/FormikSelect';
 interface Props {
   show: boolean;
   onHide: () => void;
-  data?: Aspect;
+  data?: any;
   id?: string;
   opportunityId: string;
   contextId: string;
@@ -64,11 +62,9 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, contextI
       ? aspectsTypes?.filter(at => !existingAspectNames.includes(replaceAll('_', ' ', at)))
       : aspectsTypes;
 
-  const initialValues: Aspect = {
+  const initialValues = {
     id: id || '',
     title: (isCreate ? availableTypes && availableTypes[0] : data?.title) || '',
-    framing: data?.framing || '',
-    explanation: data?.explanation || '',
   };
   const validationSchema = yup.object().shape({
     title: yup.string().required(),
@@ -79,29 +75,13 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, contextI
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityAspectsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
+    refetchQueries: [refetchOpportunityAspectsOldQuery({ ecoverseId: ecoverseNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
 
-  const [createAspect] = useCreateAspectMutation({
-    onCompleted: () => onHide(),
-    onError: handleError,
-    refetchQueries: [refetchOpportunityAspectsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
-    awaitRefetchQueries: true,
-  });
-
-  const onSubmit = async (values: Aspect) => {
+  const onSubmit = async (values: any) => {
     const { id: apectId, ...rest } = values;
     if (!apectId && contextId) {
-      await createAspect({
-        variables: {
-          input: {
-            parentID: contextId,
-            ...rest,
-          },
-        },
-      });
-
       return;
     } else {
       await updateAspect({

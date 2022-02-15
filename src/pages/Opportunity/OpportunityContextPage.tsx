@@ -1,30 +1,52 @@
 import React, { FC, useMemo } from 'react';
-import { OpportunityContainerActions, OpportunityContainerEntities, OpportunityContainerState } from '../../containers';
 import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
 import { PageProps } from '../common';
-import { useUpdateNavigation } from '../../hooks';
+import { useOpportunity, useUpdateNavigation } from '../../hooks';
+import ContextTabContainer from '../../containers/context/ContextTabContainer';
+import { AuthorizationPrivilege } from '../../models/graphql-schema';
 
-export interface OpportunityContextPageProps extends PageProps {
-  entities: OpportunityContainerEntities;
-  state: OpportunityContainerState;
-  actions: OpportunityContainerActions;
-}
+export interface OpportunityContextPageProps extends PageProps {}
 
-const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths, entities, state, actions }) => {
+const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/context', name: 'context', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
+  const {
+    ecoverseNameId,
+    opportunityNameId,
+    displayName,
+    permissions: { contextPrivileges },
+  } = useOpportunity();
+  const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
+
   return (
-    <OpportunityContextView
-      entities={entities}
-      state={{
-        showActorGroupModal: entities.showActorGroupModal,
-        loading: state.loading,
-        error: state.error,
-      }}
-      actions={actions}
-      options={entities.permissions}
-    />
+    <ContextTabContainer
+      hubNameId={ecoverseNameId}
+      opportunityNameId={opportunityNameId}
+      loadAspectsAndReferences={loadAspectsAndReferences}
+    >
+      {(entities, state) => (
+        <OpportunityContextView
+          entities={{
+            opportunityDisplayName: displayName,
+            opportunityTagset: entities.tagset,
+            opportunityLifecycle: entities.lifecycle,
+            context: entities.context,
+            aspects: entities?.aspects,
+            references: entities?.references,
+          }}
+          state={{
+            loading: state.loading,
+            error: state.error,
+          }}
+          options={{
+            canReadAspects: entities.permissions.canReadAspects,
+            canCreateAspects: entities.permissions.canCreateAspects,
+          }}
+          actions={{}}
+        />
+      )}
+    </ContextTabContainer>
   );
 };
 export default OpportunityContextPage;

@@ -2,6 +2,8 @@ import { TextField, TextFieldProps } from '@mui/material';
 import { DistributiveOmit } from '@mui/types';
 import { useField } from 'formik';
 import React, { FC } from 'react';
+import HelpButton from '../../core/HelpButton';
+import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
   name: string;
@@ -10,6 +12,8 @@ type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   disabled?: boolean;
   placeholder?: string;
   autoComplete?: string;
+  helpText?: string;
+  loading?: boolean;
 };
 
 export const FormikInputField: FC<InputFieldProps> = ({
@@ -22,6 +26,8 @@ export const FormikInputField: FC<InputFieldProps> = ({
   placeholder,
   autoComplete,
   InputProps,
+  helpText,
+  loading,
   ...rest
 }) => {
   const [field, meta] = useField(name);
@@ -39,11 +45,17 @@ export const FormikInputField: FC<InputFieldProps> = ({
       error={meta.touched && Boolean(meta.error)}
       helperText={meta.touched && meta.error}
       required={required}
-      disabled={disabled}
+      disabled={loading || disabled}
       autoComplete={autoComplete}
       fullWidth
       InputProps={{
         ...InputProps,
+        endAdornment: (
+          <>
+            {loading && <CircularProgress size={20} />}
+            {helpText && <HelpButton helpText={helpText} />}
+          </>
+        ),
         readOnly: readOnly,
       }}
       {...rest}

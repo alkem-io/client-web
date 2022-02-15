@@ -5,7 +5,51 @@ query ecoversePage($ecoverseId: UUID_NAMEID!) {
 }
 
 fragment EcoversePage on Ecoverse {
-  ...EcoverseInfo
+  id
+  nameID
+  displayName
+  tagset {
+    id
+    name
+    tags
+  }
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  host {
+    id
+    displayName
+    nameID
+  }
+  context {
+    id
+    tagline
+    vision
+    visuals {
+      ...VisualUri
+    }
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  community {
+    id
+    displayName
+    members {
+      id
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
   activity {
     id
     name

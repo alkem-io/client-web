@@ -1,8 +1,0 @@
-mutation updateAspect($input: UpdateAspectInput!) {
-  updateAspect(aspectData: $input) {
-    id
-    title
-    explanation
-    framing
-  }
-}
