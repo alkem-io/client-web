@@ -1,0 +1,11 @@
+subscription communicationDiscussionUpdated($communicationID: UUID!) {
+  communicationDiscussionUpdated(communicationID: $communicationID) {
+    id
+    title
+    description
+    createdBy
+    timestamp
+    category
+    commentsCount
+  }
+}

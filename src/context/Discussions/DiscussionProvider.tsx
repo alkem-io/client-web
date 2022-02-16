@@ -14,10 +14,11 @@ import {
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
 import {
-  CommunicationDiscussionMessageReceivedSubscription,
   Discussion as DiscussionGraphql,
   Message,
   MessageDetailsFragment,
+  CommunicationDiscussionMessageReceivedSubscription,
+  SubscriptionCommunicationDiscussionMessageReceivedArgs,
 } from '../../models/graphql-schema';
 import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
 import { useCommunityContext } from '../CommunityProvider';
@@ -62,12 +63,16 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   });
 
   useEffect(() => {
-    if (!isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+    if (!isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !discussionId) {
       return;
     }
 
-    const unSubscribe = subscribeToMore<CommunicationDiscussionMessageReceivedSubscription>({
+    const unSubscribe = subscribeToMore<
+      CommunicationDiscussionMessageReceivedSubscription,
+      SubscriptionCommunicationDiscussionMessageReceivedArgs
+    >({
       document: CommunicationDiscussionMessageReceivedDocument,
+      variables: { discussionID: discussionId },
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       updateQuery: (prev, { subscriptionData }) => {
         const discussion = prev?.ecoverse?.community?.communication?.discussion;
@@ -93,7 +98,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       },
     });
     return () => unSubscribe && unSubscribe();
-  }, [isFeatureEnabled, subscribeToMore]);
+  }, [isFeatureEnabled, subscribeToMore, discussionId]);
 
   const discussionData = data?.ecoverse.community?.communication?.discussion;
 
