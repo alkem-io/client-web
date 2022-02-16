@@ -6,6 +6,7 @@ import EditUserProfilePage from '../../pages/User/EditUserProfilePage';
 import UserMembershipPage from '../../pages/User/UserMembershipPage';
 import UserNotificationsPage from '../../pages/User/UserNotificationsPage';
 import UserOrganizationsPage from '../../pages/User/UserOrganizationsPage';
+import UserCredentialsPage from '../../pages/User/UserCredentialsPage';
 import UserTabs from './UserTabs';
 
 interface UserSettingsProps extends PageProps {}
@@ -24,6 +25,7 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
           <Route path={'membership'} element={<UserMembershipPage paths={currentPaths} />}></Route>
           <Route path={'organizations'} element={<UserOrganizationsPage paths={currentPaths} />}></Route>
           <Route path={'notifications'} element={<UserNotificationsPage paths={currentPaths} />}></Route>
+          <Route path={'credentials'} element={<UserCredentialsPage paths={currentPaths} />}></Route>
           <Route path="*" element={<Error404 />}></Route>
         </Route>
       </Routes>

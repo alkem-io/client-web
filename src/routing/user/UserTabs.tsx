@@ -4,12 +4,14 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import NavigationTabs from '../../components/core/NavigationTab/NavigationTabs';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 const routes = {
   profile: 'profile',
   membership: 'membership',
   organizations: 'organizations',
   notifications: 'notifications',
+  credentials: 'credentials',
 };
 
 export interface UserTabsProps {}
@@ -35,6 +37,7 @@ const UserTabs: FC<UserTabsProps> = ({ children }) => {
               label={t('common.notifications')}
               {...routesObj['notifications']}
             />
+            <NavigationTab icon={<VerifiedUserIcon />} label={t('common.credentials')} {...routesObj['credentials']} />
           </Tabs>
         )}
       </NavigationTabs>

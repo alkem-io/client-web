@@ -272,7 +272,7 @@ export const UserForm: FC<UserProps> = ({
                           {onVerify && (
                             <>
                               <Box marginLeft={1} />
-                              <IconButton sx={{ flexShrink: 0 }} onClick={() => onVerify('LocationCredential')}>
+                              <IconButton sx={{ flexShrink: 0 }} onClick={() => onVerify('ProofOfNameCredential')}>
                                 <HealthAndSafetyIcon />
                               </IconButton>
                             </>

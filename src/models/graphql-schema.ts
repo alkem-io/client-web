@@ -281,6 +281,16 @@ export enum AuthorizationPrivilege {
   UpdateCanvas = 'UPDATE_CANVAS',
 }
 
+export type BeginCredentialRequestOutput = {
+  __typename?: 'BeginCredentialRequestOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential share request. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  jwt: Scalars['String'];
+};
+
 export type Canvas = {
   __typename?: 'Canvas';
   /** The authorization rules for the entity */
@@ -1927,14 +1937,14 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** The authorization policy for the platform */
   authorization: Authorization;
+  /** Generate credential share request */
+  beginCredentialRequestInteraction: BeginCredentialRequestOutput;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
   ecoverse: Ecoverse;
   /** The Ecoverses on this platform */
   ecoverses: Array<Ecoverse>;
-  /** Generate credential share request */
-  generateCredentialShareRequest: ShareCredentialOutput;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -1967,12 +1977,12 @@ export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
 };
 
-export type QueryEcoverseArgs = {
-  ID: Scalars['UUID_NAMEID'];
+export type QueryBeginCredentialRequestInteractionArgs = {
+  types: Array<Scalars['String']>;
 };
 
-export type QueryGenerateCredentialShareRequestArgs = {
-  types: Array<Scalars['String']>;
+export type QueryEcoverseArgs = {
+  ID: Scalars['UUID_NAMEID'];
 };
 
 export type QueryMembershipOrganizationArgs = {
@@ -2156,16 +2166,6 @@ export type ServiceMetadata = {
   name?: Maybe<Scalars['String']>;
   /** Version in the format {major.minor.patch} - using SemVer. */
   version?: Maybe<Scalars['String']>;
-};
-
-export type ShareCredentialOutput = {
-  __typename?: 'ShareCredentialOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential share request. */
-  interactionId: Scalars['String'];
-  /** The token containing the information about issuer, callback endpoint and credential requirements */
-  jwt: Scalars['String'];
 };
 
 export type Subscription = {
@@ -9549,14 +9549,14 @@ export type OrganizationMembersQuery = {
   };
 };
 
-export type GenerateCredentialShareRequestQueryVariables = Exact<{
+export type BeginCredentialRequestInteractionQueryVariables = Exact<{
   types: Array<Scalars['String']> | Scalars['String'];
 }>;
 
-export type GenerateCredentialShareRequestQuery = {
+export type BeginCredentialRequestInteractionQuery = {
   __typename?: 'Query';
-  generateCredentialShareRequest: {
-    __typename?: 'ShareCredentialOutput';
+  beginCredentialRequestInteraction: {
+    __typename?: 'BeginCredentialRequestOutput';
     interactionId: string;
     jwt: string;
     expiresOn: number;
