@@ -24,7 +24,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
     opportunity,
     opportunityId,
     opportunityNameId,
-    ecoverseNameId,
+    hubNameId,
     challengeNameId,
     displayName,
     loading: loadingOpportunity,
@@ -45,7 +45,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
               data={managementData.opportunityLvl}
               paths={currentPaths}
               title={displayName}
-              entityUrl={buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}
+              entityUrl={buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
               loading={loadingOpportunity || loadingChallenge}
             />
           }

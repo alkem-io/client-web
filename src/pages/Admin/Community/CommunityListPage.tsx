@@ -13,18 +13,18 @@ interface CommunityGroupListPageProps extends PageProps {
 
 export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ paths, communityId }) => {
   const { pathname: url } = useResolvedPath('.');
-  const { ecoverseId, loading: loadingEcoverse } = useEcoverse();
+  const { hubId, loading: loadingEcoverse } = useEcoverse();
 
   const { data, loading } = useCommunityGroupsQuery({
     variables: {
-      ecoverseId,
+      hubId,
       communityId,
     },
   });
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
   const { handleDelete } = useDeleteUserGroup();
 
-  const community = data?.ecoverse.community;
+  const community = data?.hub.community;
   const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` })) || [];
 
   if (loading || loadingEcoverse) return <Loading />;

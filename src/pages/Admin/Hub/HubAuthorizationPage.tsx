@@ -48,7 +48,7 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
       variables: {
         input: {
           userID: member.id,
-          ecoverseID: resourceId,
+          hubID: resourceId,
         },
       },
       refetchQueries: [
@@ -65,7 +65,7 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
       variables: {
         input: {
           userID: member.id,
-          ecoverseID: resourceId,
+          hubID: resourceId,
         },
       },
       refetchQueries: [
@@ -77,8 +77,8 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
     });
   };
 
-  const { ecoverse, loading: loadingEcoverse } = useEcoverse();
-  const communityId = ecoverse?.community?.id || '';
+  const { hub, loading: loadingEcoverse } = useEcoverse();
+  const communityId = hub?.community?.id || '';
 
   if (loadingEcoverse) {
     return <Loading />;

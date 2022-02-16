@@ -39,12 +39,12 @@ const ChallengeExplorerSearchEnricherContainer: FC<ChallengeExplorerSearchEnrich
   const handleError = useApolloErrorHandler();
   const { data, loading, error } = useChallengeExplorerSearchEnricherQuery({
     variables: {
-      ecoverseId: challenge.ecoverseID,
+      hubId: challenge.hubID,
     },
     onError: handleError,
   });
 
-  const hub = data?.ecoverse;
+  const hub = data?.hub;
   const enrichedChallenge: EnrichedChallenge = {
     ...challenge,
     hubNameId: hub?.nameID,

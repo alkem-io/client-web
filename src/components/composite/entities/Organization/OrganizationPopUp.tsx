@@ -114,7 +114,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
     },
   });
 
-  const ecoversesHosting = membership?.membershipOrganization?.ecoversesHosting || [];
+  const hubsHosting = membership?.membershipOrganization?.hubsHosting || [];
   const challengesLeading = membership?.membershipOrganization?.challengesLeading || [];
 
   return (
@@ -152,7 +152,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                 <span>{t('common.no-tags')}</span>
               )}
             </div>
-            <div className={clsx({ [styles.tableScrollable]: ecoversesHosting.length > 0 })}>
+            <div className={clsx({ [styles.tableScrollable]: hubsHosting.length > 0 })}>
               <Table size="small" className={styles.table}>
                 <TableHead>
                   <TableRow>
@@ -160,15 +160,15 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {ecoversesHosting.length > 0 &&
-                    ecoversesHosting.map(x => (
+                  {hubsHosting.length > 0 &&
+                    hubsHosting.map(x => (
                       <TableRow key={`tr-${x.id}`}>
                         <TableCell key={`td-${x.id}`}>{x.displayName}</TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
               </Table>
-              {ecoversesHosting.length === 0 && (
+              {hubsHosting.length === 0 && (
                 <div className={styles.centeredText}>{t('pages.search.organization.no-hosted')}</div>
               )}
             </div>

@@ -45,7 +45,7 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
   );
 
   // todo provided it as an input
-  const { ecoverseNameId, permissions } = useEcoverse();
+  const { hubNameId, permissions } = useEcoverse();
 
   const tabValue = useCallback(
     (route: EcoverseRoutesType | string) => resolvePath(route, resolved.pathname)?.pathname,
@@ -106,7 +106,7 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
             icon={<SettingsOutlined />}
             label={t('common.settings')}
             value={tabValue('settings')}
-            to={buildAdminEcoverseUrl(ecoverseNameId)}
+            to={buildAdminEcoverseUrl(hubNameId)}
           />
         )}
       </Tabs>

@@ -72,7 +72,7 @@ export interface OpportunityDashboardViewProps
 const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities, state, options, actions }) => {
   const { t } = useTranslation();
 
-  const { ecoverseId } = useOpportunity();
+  const { hubId } = useOpportunity();
 
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
@@ -112,7 +112,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           {communityReadAccess && (
             <>
               <SectionSpacer />
-              <DashboardUpdatesSection entities={{ ecoverseId: ecoverseId, communityId: communityId }} />
+              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
               {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
               {/* <SectionSpacer />
               <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}

@@ -20,7 +20,7 @@ import AspectRoute from '../aspect/AspectRoute';
 interface OpportunityRootProps extends PageProps {}
 
 const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths: _paths }) => {
-  const { opportunity, displayName, ecoverseNameId, challengeNameId, opportunityNameId, loading, permissions } =
+  const { opportunity, displayName, hubNameId, challengeNameId, opportunityNameId, loading, permissions } =
     useOpportunity();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
@@ -47,7 +47,7 @@ const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths: _paths }) => {
                 <OpportunityTabsNew
                   communityReadAccess={e.permissions.communityReadAccess}
                   viewerCanUpdate={permissions.viewerCanUpdate}
-                  ecoverseNameId={ecoverseNameId}
+                  hubNameId={hubNameId}
                   challengeNameId={challengeNameId}
                   opportunityNameId={opportunityNameId}
                 />

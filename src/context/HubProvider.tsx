@@ -11,9 +11,9 @@ interface EcoversePermissions {
 }
 
 interface EcoverseContextProps {
-  ecoverse?: EcoverseInfoFragment;
-  ecoverseId: string;
-  ecoverseNameId: string;
+  hub?: EcoverseInfoFragment;
+  hubId: string;
+  hubNameId: string;
   displayName: string;
   template: HubTemplate;
   isPrivate: boolean;
@@ -25,8 +25,8 @@ interface EcoverseContextProps {
 const EcoverseContext = React.createContext<EcoverseContextProps>({
   loading: false,
   isPrivate: false,
-  ecoverseId: '',
-  ecoverseNameId: '',
+  hubId: '',
+  hubNameId: '',
   displayName: '',
   template: { aspectTemplates: [] },
   permissions: {
@@ -39,7 +39,7 @@ const EcoverseContext = React.createContext<EcoverseContextProps>({
 interface EcoverseProviderProps {}
 
 const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
-  const { ecoverseNameId = '' } = useUrlParams();
+  const { hubNameId = '' } = useUrlParams();
   const { template: platformTemplate, error: configError } = useConfig();
   const globalAspectTemplates = platformTemplate?.opportunities
     .flatMap(x => x.aspects)
@@ -49,37 +49,37 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
     data,
     loading,
   } = useEcoverseInfoQuery({
-    variables: { ecoverseId: ecoverseNameId },
+    variables: { hubId: hubNameId },
     errorPolicy: 'all',
-    skip: !ecoverseNameId,
+    skip: !hubNameId,
   });
-  const ecoverse = data?.ecoverse;
-  const ecoverseId = ecoverse?.id || '';
-  const displayName = ecoverse?.displayName || '';
+  const hub = data?.hub;
+  const hubId = hub?.id || '';
+  const displayName = hub?.displayName || '';
   const template: HubTemplate =
-    ecoverse && ecoverse.template.aspectTemplates.length > 0
-      ? { aspectTemplates: ecoverse?.template.aspectTemplates }
+    hub && hub.template.aspectTemplates.length > 0
+      ? { aspectTemplates: hub?.template.aspectTemplates }
       : { aspectTemplates: globalAspectTemplates || [] };
-  const isPrivate = !Boolean(ecoverse?.authorization?.anonymousReadAccess ?? true);
+  const isPrivate = !Boolean(hub?.authorization?.anonymousReadAccess ?? true);
   const error = configError || hubError;
 
-  const contextPrivileges = ecoverse?.context?.authorization?.myPrivileges ?? [];
+  const contextPrivileges = hub?.context?.authorization?.myPrivileges ?? [];
 
   const permissions = useMemo<EcoversePermissions>(
     () => ({
-      viewerCanUpdate: ecoverse?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+      viewerCanUpdate: hub?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
       canReadAspects: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     }),
-    [ecoverse]
+    [hub]
   );
 
   return (
     <EcoverseContext.Provider
       value={{
-        ecoverse,
-        ecoverseId,
-        ecoverseNameId,
+        hub,
+        hubId,
+        hubNameId,
         template,
         permissions,
         displayName,

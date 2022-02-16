@@ -18,14 +18,14 @@ interface OpportunityListProps extends PageProps {}
 export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
-  const { ecoverseNameId } = useEcoverse();
+  const { hubNameId } = useEcoverse();
   const { challengeNameId = '' } = useUrlParams();
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
+    variables: { hubId: hubNameId, challengeId: challengeNameId },
   });
 
   const opportunityList =
-    challengesListQuery?.ecoverse?.challenge?.opportunities?.map(o => ({
+    challengesListQuery?.hub?.challenge?.opportunities?.map(o => ({
       id: o.id,
       value: o.displayName,
       url: `${o.nameID}`,
@@ -34,7 +34,7 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
   const [deleteOpportunity] = useDeleteOpportunityMutation({
     refetchQueries: [
       refetchOpportunitiesQuery({
-        ecoverseId: ecoverseNameId,
+        hubId: hubNameId,
         challengeId: challengeNameId,
       }),
     ],
@@ -52,7 +52,7 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
     });
   };
 
-  if (loading) return <Loading text={'Loading ecoverses'} />;
+  if (loading) return <Loading text={'Loading hubs'} />;
 
   return <ListPage data={opportunityList} paths={paths} newLink={`${url}/new`} onDelete={handleDelete} />;
 };

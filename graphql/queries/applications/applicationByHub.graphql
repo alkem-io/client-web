@@ -1,5 +1,5 @@
-query applicationByEcoverse($ecoverseId: UUID_NAMEID!, $appId: UUID!) {
-  ecoverse(ID: $ecoverseId) {
+query applicationByEcoverse($hubId: UUID_NAMEID!, $appId: UUID!) {
+  hub(ID: $hubId) {
     id
     application(ID: $appId) {
       id

@@ -15,10 +15,10 @@ const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResu
   // todo: can we avoid this query?
   const { data } = useEcoverseNameQuery({
     variables: {
-      ecoverseId: opportunity?.challenge?.ecoverseID || '',
+      hubId: opportunity?.challenge?.hubID || '',
     },
   });
-  const ecoverse = data?.ecoverse;
+  const hub = data?.hub;
   const tag = opportunity.challenge?.displayName || '';
 
   const backgroundImg = getVisualBannerNarrow(opportunity.context?.visuals) ?? '';
@@ -37,7 +37,7 @@ const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResu
       activity={activity}
       backgroundImg={backgroundImg}
       tag={tag}
-      dialog={<OpportunityPopUp entity={opportunity} ecoverse={ecoverse} />}
+      dialog={<OpportunityPopUp entity={opportunity} hub={hub} />}
     />
   );
 };

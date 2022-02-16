@@ -1,5 +1,5 @@
 query adminEcoversesList {
-  ecoverses {
+  hubs {
     ...AdminEcoverse
   }
 }

@@ -1,5 +1,5 @@
-query ecoverseApplication($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query hubApplication($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     displayName
     context{

@@ -14,20 +14,20 @@ const data = (): TestData[] =>
     // normal case
     {
       name: '3',
-      data: { id: 'app-id', ecoverseID: 'eco' },
-      result: { id: 'app-id', ecoverseID: 'eco', type: ApplicationTypeEnum.ecoverse },
+      data: { id: 'app-id', hubID: 'eco' },
+      result: { id: 'app-id', hubID: 'eco', type: ApplicationTypeEnum.hub },
     },
     {
       name: '4',
-      data: { id: 'app-id', ecoverseID: 'eco', challengeID: 'chall' },
-      result: { id: 'app-id', ecoverseID: 'eco', challengeID: 'chall', type: ApplicationTypeEnum.challenge },
+      data: { id: 'app-id', hubID: 'eco', challengeID: 'chall' },
+      result: { id: 'app-id', hubID: 'eco', challengeID: 'chall', type: ApplicationTypeEnum.challenge },
     },
     {
       name: '5',
-      data: { id: 'app-id', ecoverseID: 'eco', challengeID: 'chall', opportunityID: 'opp' },
+      data: { id: 'app-id', hubID: 'eco', challengeID: 'chall', opportunityID: 'opp' },
       result: {
         id: 'app-id',
-        ecoverseID: 'eco',
+        hubID: 'eco',
         challengeID: 'chall',
         opportunityID: 'opp',
         type: ApplicationTypeEnum.opportunity,
@@ -38,11 +38,11 @@ const data = (): TestData[] =>
 const exceptionData = (): TestData[] =>
   [
     //edge case
-    { name: '1', data: { id: 'app-id' }, exceptionMsg: "'ecoverseID' parameter expected" },
+    { name: '1', data: { id: 'app-id' }, exceptionMsg: "'hubID' parameter expected" },
     {
       name: '2',
-      data: { id: 'app-id', ecoverseID: 'eco', opportunityID: 'opp' },
-      exceptionMsg: "'challengeID' parameter expected when 'ecoverseID' and 'opportunityID' are provided",
+      data: { id: 'app-id', hubID: 'eco', opportunityID: 'opp' },
+      exceptionMsg: "'challengeID' parameter expected when 'hubID' and 'opportunityID' are provided",
     },
   ].map(x => Object.assign(x, { toString: () => x.name })); // using toString operator into test.each;
 

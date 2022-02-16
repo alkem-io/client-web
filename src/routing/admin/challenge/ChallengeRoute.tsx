@@ -18,15 +18,8 @@ import ChallengeVisualsPage from '../../../pages/Admin/Challenge/ChallengeVisual
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
-  const { ecoverse, loading: loadingEcoverse } = useEcoverse();
-  const {
-    challenge,
-    displayName,
-    ecoverseNameId,
-    challengeId,
-    challengeNameId,
-    loading: loadingChallenge,
-  } = useChallenge();
+  const { hub, loading: loadingEcoverse } = useEcoverse();
+  const { challenge, displayName, hubNameId, challengeId, challengeNameId, loading: loadingChallenge } = useChallenge();
   const loading = loadingEcoverse || loadingChallenge;
 
   const currentPaths = useMemo(
@@ -44,7 +37,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
               data={managementData.challengeLvl}
               paths={currentPaths}
               title={displayName}
-              entityUrl={buildChallengeUrl(ecoverseNameId, challengeNameId)}
+              entityUrl={buildChallengeUrl(hubNameId, challengeNameId)}
               loading={loading}
             />
           }
@@ -66,7 +59,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
             <CommunityRoute
               paths={currentPaths}
               communityId={challenge?.community?.id}
-              parentCommunityId={ecoverse?.community?.id}
+              parentCommunityId={hub?.community?.id}
               credential={AuthorizationCredential.ChallengeMember}
               resourceId={challengeId}
               accessedFrom="challenge"

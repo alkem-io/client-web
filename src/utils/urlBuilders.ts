@@ -1,34 +1,30 @@
 import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH, COMMUNITY_ROUTE } from '../models/constants';
 
-export const buildEcoverseUrl = (ecoverseNameId: string) => `/${ecoverseNameId}`;
+export const buildEcoverseUrl = (hubNameId: string) => `/${hubNameId}`;
 
-export const buildChallengeUrl = (ecoverseNameId: string, challengeNameId: string) =>
-  buildEcoverseUrl(ecoverseNameId).concat(`/challenges/${challengeNameId}`);
+export const buildChallengeUrl = (hubNameId: string, challengeNameId: string) =>
+  buildEcoverseUrl(hubNameId).concat(`/challenges/${challengeNameId}`);
 
-export const buildOpportunityUrl = (ecoverseNameId: string, challengeNameId: string, opportunityNameId: string) =>
-  buildChallengeUrl(ecoverseNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
+export const buildOpportunityUrl = (hubNameId: string, challengeNameId: string, opportunityNameId: string) =>
+  buildChallengeUrl(hubNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
 
 export const buildOrganizationUrl = (organizationNameId: string) => `/organization/${organizationNameId}`;
 
-export const buildAdminEcoverseUrl = (ecoverseNameId: string) => `/admin/hubs/${ecoverseNameId}`;
+export const buildAdminEcoverseUrl = (hubNameId: string) => `/admin/hubs/${hubNameId}`;
 
-export const buildAdminChallengeUrl = (ecoverseNameId: string, challengeNameId: string) =>
-  buildAdminEcoverseUrl(ecoverseNameId).concat(`/challenges/${challengeNameId}`);
+export const buildAdminChallengeUrl = (hubNameId: string, challengeNameId: string) =>
+  buildAdminEcoverseUrl(hubNameId).concat(`/challenges/${challengeNameId}`);
 
-export const buildAdminOpportunityUrl = (ecoverseNameId: string, challengeNameId: string, opportunityNameId: string) =>
-  buildAdminChallengeUrl(ecoverseNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
+export const buildAdminOpportunityUrl = (hubNameId: string, challengeNameId: string, opportunityNameId: string) =>
+  buildAdminChallengeUrl(hubNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
 
 export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
 
-export const buildEcoverseCommunityUrl = (ecoverseNameId: string) =>
-  buildEcoverseUrl(ecoverseNameId).concat(COMMUNITY_ROUTE);
-export const buildChallengeCommunityUrl = (ecoverseNameId: string, challengeNameId: string) =>
-  buildChallengeUrl(ecoverseNameId, challengeNameId).concat(COMMUNITY_ROUTE);
-export const buildOpportunityCommunityUrl = (
-  ecoverseNameId: string,
-  challengeNameId: string,
-  opportunityNameId: string
-) => buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId).concat(COMMUNITY_ROUTE);
+export const buildEcoverseCommunityUrl = (hubNameId: string) => buildEcoverseUrl(hubNameId).concat(COMMUNITY_ROUTE);
+export const buildChallengeCommunityUrl = (hubNameId: string, challengeNameId: string) =>
+  buildChallengeUrl(hubNameId, challengeNameId).concat(COMMUNITY_ROUTE);
+export const buildOpportunityCommunityUrl = (hubNameId: string, challengeNameId: string, opportunityNameId: string) =>
+  buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId).concat(COMMUNITY_ROUTE);
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 
@@ -38,17 +34,17 @@ export const buildAuthenticationRequiredURL = (returnUrl?: string) =>
 export const buildLoginUrl = (returnUrl?: string) =>
   returnUrl ? `${AUTH_LOGIN_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_LOGIN_PATH;
 
-export const buildEcoverseApplyUrl = (ecoverseNameId: string) => `${buildEcoverseUrl(ecoverseNameId)}/apply`;
+export const buildEcoverseApplyUrl = (hubNameId: string) => `${buildEcoverseUrl(hubNameId)}/apply`;
 
-export const buildChallengeApplyUrl = (ecoverseNameId: string, challengeNameId: string) =>
-  `${buildChallengeUrl(ecoverseNameId, challengeNameId)}/apply`;
+export const buildChallengeApplyUrl = (hubNameId: string, challengeNameId: string) =>
+  `${buildChallengeUrl(hubNameId, challengeNameId)}/apply`;
 
 export const buildProjectUrl = (
-  ecoverseNameId: string,
+  hubNameId: string,
   challengeNameId: string,
   opportunityNameId: string,
   projectNameId: string
-) => `${buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}`;
+) => `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}`;
 
 export const buildDiscussionUrl = (url: string, id: string) => {
   const stripUrl = url.replace('/discussions', '');
@@ -67,17 +63,17 @@ export const buildNewDiscussionUrl = (url: string) => {
 
 export const buildAspectUrl = (
   aspectNameId: string,
-  ecoverseNameId: string,
+  hubNameId: string,
   challengeNameId?: string,
   opportunityNameId?: string
 ) => {
   if (challengeNameId) {
     if (opportunityNameId) {
-      return `${buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}/aspects/${aspectNameId}`;
+      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}/aspects/${aspectNameId}`;
     } else {
-      return `${buildChallengeUrl(ecoverseNameId, challengeNameId)}/aspects/${aspectNameId}`;
+      return `${buildChallengeUrl(hubNameId, challengeNameId)}/aspects/${aspectNameId}`;
     }
   } else {
-    return `${buildEcoverseUrl(ecoverseNameId)}/aspects/${aspectNameId}`;
+    return `${buildEcoverseUrl(hubNameId)}/aspects/${aspectNameId}`;
   }
 };

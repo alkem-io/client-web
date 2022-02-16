@@ -7,7 +7,7 @@ import HubCard from '../cards/HubCard/HubCard';
 
 interface DashboardHubSectionProps extends DashboardGenericSectionProps {
   entities: {
-    hubs: EcoversesQuery['ecoverses'];
+    hubs: EcoversesQuery['hubs'];
     user?: UserMetadata;
   };
   options: {
@@ -24,9 +24,9 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
     <Section {...props}>
       {children}
       <CardLayoutContainer>
-        {hubs.map((ecoverse, i) => (
+        {hubs.map((hub, i) => (
           <CardLayoutItem key={i}>
-            <HubCard ecoverse={ecoverse} />
+            <HubCard hub={hub} />
           </CardLayoutItem>
         ))}
       </CardLayoutContainer>

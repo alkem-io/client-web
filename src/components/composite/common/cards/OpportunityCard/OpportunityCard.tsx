@@ -12,17 +12,12 @@ export interface OpportunityCardProps {
   opportunity: Pick<Opportunity, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
     context?: { tagline?: string; visuals?: VisualUriFragment[] };
   };
-  ecoverseNameId: string;
+  hubNameId: string;
   challengeNameId: string;
   loading?: boolean;
 }
 
-const OpportunityCard: FC<OpportunityCardProps> = ({
-  opportunity,
-  ecoverseNameId,
-  challengeNameId,
-  loading = false,
-}) => {
+const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, challengeNameId, loading = false }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
 
@@ -44,7 +39,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({
         mediaUrl: bannerNarrow,
         tags: opportunity.tagset?.tags || [],
         tagsFor: 'opportunity',
-        url: buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunity.nameID),
+        url: buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
       }}
       isMember={isMember(opportunity.id)}
       loading={loading}

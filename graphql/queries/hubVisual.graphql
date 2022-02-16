@@ -1,5 +1,5 @@
-query ecoverseVisual($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query hubVisual($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     context {
       visuals {

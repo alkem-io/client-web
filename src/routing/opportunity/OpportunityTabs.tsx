@@ -48,7 +48,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
   const { pathname: path } = useResolvedPath('./');
   const { t } = useTranslation();
   const match = useRouteMatch(Object.values(routes).map(x => `${path}${x}/*`)); // Match underlying routes because of the discussions sub route.
-  const { ecoverseNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
+  const { hubNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
   const urlGetter = useMemo(() => createGetter(routes, ''), []);
   const pathGetter = useMemo(() => createGetter(routes, path), [path]);
   const { communityReadAccess } = entities.permissions;
@@ -109,7 +109,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({ entities, children }) => {
             icon={<SettingsOutlined />}
             label={t('common.settings')}
             value={pathGetter('settings')}
-            to={buildAdminOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}
+            to={buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
           />
         )}
       </Tabs>

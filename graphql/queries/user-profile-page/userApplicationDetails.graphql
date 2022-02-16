@@ -4,7 +4,7 @@ query userApplicationDetails($input: MembershipUserInput!) {
       id
       state
       displayName
-      ecoverseID
+      hubID
       challengeID
       opportunityID
     }

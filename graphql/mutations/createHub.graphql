@@ -1,5 +1,5 @@
 mutation createEcoverse($input: CreateEcoverseInput!) {
-  createEcoverse(ecoverseData: $input) {
+  createEcoverse(hubData: $input) {
     ...EcoverseDetails
   }
 }

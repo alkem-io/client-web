@@ -49,7 +49,7 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
     visuals = [],
     id = '',
   } = context || ({} as Context);
-  const ecoverseBanner = getVisualBanner(visuals);
+  const hubBanner = getVisualBanner(visuals);
   const aspects = entities?.aspects;
   const references = entities?.references;
 
@@ -59,16 +59,16 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
         hubId && hubNameId && hubDisplayName ? (
           <ApplicationButtonContainer
             entities={{
-              ecoverseId: hubId,
-              ecoverseNameId: hubNameId,
-              ecoverseName: hubDisplayName,
+              hubId: hubId,
+              hubNameId: hubNameId,
+              hubName: hubDisplayName,
             }}
           >
             {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
           </ApplicationButtonContainer>
         ) : undefined
       }
-      banner={ecoverseBanner}
+      banner={hubBanner}
       background={background}
       displayName={hubDisplayName}
       keywords={hubTagSet?.tags}

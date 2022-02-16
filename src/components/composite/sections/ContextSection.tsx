@@ -60,7 +60,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
-  const { ecoverseNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
 
   // todo: move handlers to the contextTabContainer
@@ -251,7 +251,7 @@ const ContextSection: FC<ContextSectionProps> = ({
                         <CardLayoutItem key={i}>
                           <AspectCard
                             aspect={x}
-                            hubNameId={ecoverseNameId}
+                            hubNameId={hubNameId}
                             challengeNameId={challengeNameId}
                             opportunityNameId={opportunityNameId}
                           />

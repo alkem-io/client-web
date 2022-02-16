@@ -18,7 +18,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   const { t } = useTranslation();
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'edit', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
-  const { ecoverseNameId, ecoverse } = useEcoverse();
+  const { hubNameId, hub } = useEcoverse();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
@@ -46,7 +46,7 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
         input: {
           context: updateContextInput(values),
           displayName: name,
-          ID: ecoverseNameId,
+          ID: hubNameId,
           hostID: host,
           tags: tagsets.flatMap(x => x.tags),
           authorizationPolicy: {
@@ -65,12 +65,12 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
       </Box>
       <EcoverseEditForm
         isEdit={true}
-        name={ecoverse?.displayName}
-        nameID={ecoverse?.nameID}
-        hostID={ecoverse?.host?.id}
-        tagset={ecoverse?.tagset}
-        context={ecoverse?.context}
-        anonymousReadAccess={ecoverse?.authorization?.anonymousReadAccess}
+        name={hub?.displayName}
+        nameID={hub?.nameID}
+        hostID={hub?.host?.id}
+        tagset={hub?.tagset}
+        context={hub?.context}
+        anonymousReadAccess={hub?.authorization?.anonymousReadAccess}
         organizations={organizations}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

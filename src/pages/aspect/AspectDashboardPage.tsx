@@ -8,14 +8,14 @@ import AspectDashboardContainer from '../../containers/aspect/AspectDashboardCon
 export interface AspectDashboardPageProps extends PageProps {}
 
 const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ paths: _paths }) => {
-  const { ecoverseNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(() => [..._paths, { value: '', name: 'Dashboard', real: false }], [_paths, resolved]);
   useUpdateNavigation({ currentPaths });
 
   return (
     <AspectDashboardContainer
-      hubNameId={ecoverseNameId}
+      hubNameId={hubNameId}
       aspectNameId={aspectNameId}
       challengeNameId={challengeNameId}
       opportunityNameId={opportunityNameId}

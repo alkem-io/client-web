@@ -9,8 +9,8 @@ import { useEcoversesQuery } from '../../hooks/generated/graphql';
 // const EcoversesSection = () => {
 //   const { t } = useTranslation();
 //   const { user } = useUserContext();
-//   const { data: ecoversesData, loading, error } = useEcoversesQuery({ fetchPolicy: 'cache-and-network' });
-//   const ecoverses = useMemo(() => ecoversesData?.ecoverses || [], [ecoversesData]);
+//   const { data: hubsData, loading, error } = useEcoversesQuery({ fetchPolicy: 'cache-and-network' });
+//   const hubs = useMemo(() => hubsData?.hubs || [], [hubsData]);
 
 //   const currentPaths = useMemo(() => [], []);
 //   useUpdateNavigation({ currentPaths });
@@ -18,35 +18,35 @@ import { useEcoversesQuery } from '../../hooks/generated/graphql';
 //   return (
 //     <>
 //       {loading ? (
-//         <Loading text={t('components.loading.message', { blockName: t('common.ecoverses') })} />
+//         <Loading text={t('components.loading.message', { blockName: t('common.hubs') })} />
 //       ) : error ? (
 //         <Grid container spacing={2}>
 //           <Grid item xs={12}>
-//             <ErrorBlock blockName={t('common.ecoverse')} />
+//             <ErrorBlock blockName={t('common.hub')} />
 //           </Grid>
 //         </Grid>
 //       ) : (
 //         <CardContainer cardHeight={520}>
-//           {ecoverses.map((ecoverse, i) => {
-//             const anonymousReadAccess = ecoverse?.authorization?.anonymousReadAccess;
+//           {hubs.map((hub, i) => {
+//             const anonymousReadAccess = hub?.authorization?.anonymousReadAccess;
 //             return (
 //               <EcoverseCard
 //                 key={i}
-//                 id={ecoverse.id}
-//                 displayName={ecoverse.displayName}
-//                 activity={ecoverse?.activity || []}
+//                 id={hub.id}
+//                 displayName={hub.displayName}
+//                 activity={hub?.activity || []}
 //                 context={{
-//                   tagline: ecoverse?.context?.tagline || '',
+//                   tagline: hub?.context?.tagline || '',
 //                   visual: {
-//                     background: ecoverse?.context?.visual?.background || '',
+//                     background: hub?.context?.visual?.background || '',
 //                   },
 //                 }}
 //                 authorization={{
 //                   anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
 //                 }}
-//                 isMember={user?.ofEcoverse(ecoverse.id) || false}
-//                 tags={ecoverse?.tagset?.tags || []}
-//                 url={buildEcoverseUrl(ecoverse.nameID)}
+//                 isMember={user?.ofEcoverse(hub.id) || false}
+//                 tags={hub?.tagset?.tags || []}
+//                 url={buildEcoverseUrl(hub.nameID)}
 //               />
 //             );
 //           })}
@@ -59,15 +59,15 @@ import { useEcoversesQuery } from '../../hooks/generated/graphql';
 const EcoverseSectionV2 = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
-  const { data: ecoversesData, loading } = useEcoversesQuery({ fetchPolicy: 'cache-and-network' });
-  const ecoverses = useMemo(() => ecoversesData?.ecoverses || [], [ecoversesData]);
+  const { data: hubsData, loading } = useEcoversesQuery({ fetchPolicy: 'cache-and-network' });
+  const hubs = useMemo(() => hubsData?.hubs || [], [hubsData]);
 
   return (
     <DashboardHubSection
       headerText={t('pages.home.sections.hub.header')}
       subHeaderText={t('pages.home.sections.hub.subheader')}
       entities={{
-        hubs: ecoverses,
+        hubs: hubs,
         user,
       }}
       options={{

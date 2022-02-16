@@ -30,58 +30,58 @@ export interface IProvidedEntitiesState {
 
 const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
   const {
-    ecoverseNameId: ecoverseId = '',
+    hubNameId: hubId = '',
     challengeNameId: challengeId = '',
     opportunityNameId: opportunityId = '',
   } = useUrlParams();
 
-  const { data: ecoverseData, loading: loadingEcoverse } = useEcoverseCanvasesQuery({
-    variables: { ecoverseId },
+  const { data: hubData, loading: loadingEcoverse } = useEcoverseCanvasesQuery({
+    variables: { hubId },
     errorPolicy: 'all',
   });
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasesQuery({
-    variables: { ecoverseId: ecoverseId, challengeId },
+    variables: { hubId: hubId, challengeId },
     skip: !Boolean(challengeId),
     errorPolicy: 'all',
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCanvasesQuery({
-    variables: { ecoverseId, opportunityId: opportunityId },
+    variables: { hubId, opportunityId: opportunityId },
     skip: !Boolean(opportunityId),
     errorPolicy: 'all',
   });
 
   const canvases = useMemo(() => {
-    if (ecoverseId && !Boolean(challengeId) && !Boolean(opportunityId)) {
-      return ecoverseData?.ecoverse.context?.canvases || [];
+    if (hubId && !Boolean(challengeId) && !Boolean(opportunityId)) {
+      return hubData?.hub.context?.canvases || [];
     }
-    if (ecoverseId && challengeId && !Boolean(opportunityId)) {
-      return challengeData?.ecoverse.challenge.context?.canvases || [];
+    if (hubId && challengeId && !Boolean(opportunityId)) {
+      return challengeData?.hub.challenge.context?.canvases || [];
     }
-    if (ecoverseId && opportunityId) {
-      return opportunityData?.ecoverse.opportunity.context?.canvases || [];
+    if (hubId && opportunityId) {
+      return opportunityData?.hub.opportunity.context?.canvases || [];
     }
 
     return [] as CanvasWithoutValue[];
-  }, [ecoverseData, challengeData, opportunityData]);
+  }, [hubData, challengeData, opportunityData]);
 
   const templates = useMemo(() => {
     return {
       hub: {
-        query: { hubId: ecoverseId },
-        result: ecoverseData?.ecoverse.context?.canvases?.filter(c => c.isTemplate) || [],
+        query: { hubId: hubId },
+        result: hubData?.hub.context?.canvases?.filter(c => c.isTemplate) || [],
       },
       challenge: {
-        query: { hubId: ecoverseId, challengeId: challengeId },
-        result: challengeData?.ecoverse.challenge.context?.canvases?.filter(c => c.isTemplate) || [],
+        query: { hubId: hubId, challengeId: challengeId },
+        result: challengeData?.hub.challenge.context?.canvases?.filter(c => c.isTemplate) || [],
       },
       opportunity: {
-        query: { hubId: ecoverseId, opportunityId: opportunityId },
-        result: opportunityData?.ecoverse.opportunity.context?.canvases?.filter(c => c.isTemplate) || [],
+        query: { hubId: hubId, opportunityId: opportunityId },
+        result: opportunityData?.hub.opportunity.context?.canvases?.filter(c => c.isTemplate) || [],
       },
     };
-  }, [ecoverseData, challengeData, opportunityData]);
+  }, [hubData, challengeData, opportunityData]);
 
   return (
     <>

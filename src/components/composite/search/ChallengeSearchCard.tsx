@@ -15,11 +15,11 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
   // todo: can we avoid this query?
   const { data } = useEcoverseNameQuery({
     variables: {
-      ecoverseId: challenge.ecoverseID,
+      hubId: challenge.hubID,
     },
   });
-  const ecoverse = data?.ecoverse;
-  const tag = ecoverse?.displayName || '';
+  const hub = data?.hub;
+  const tag = hub?.displayName || '';
 
   const backgroundImg = getVisualBannerNarrow(challenge.context?.visuals) ?? '';
   const displayName = challenge.displayName || '';
@@ -37,7 +37,7 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
       activity={activity}
       backgroundImg={backgroundImg}
       tag={tag}
-      dialog={<ChallengePopUp entity={challenge} ecoverse={ecoverse} />}
+      dialog={<ChallengePopUp entity={challenge} hub={hub} />}
     />
   );
 };

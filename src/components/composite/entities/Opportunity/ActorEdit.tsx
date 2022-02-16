@@ -46,7 +46,7 @@ const useContextEditStyles = makeStyles(theme => ({
 
 const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId }) => {
   const { t } = useTranslation();
-  const { ecoverseNameId } = useEcoverse();
+  const { hubNameId } = useEcoverse();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
 
@@ -68,7 +68,7 @@ const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGrou
   const [createActor] = useCreateActorMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ hubId: hubNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
 

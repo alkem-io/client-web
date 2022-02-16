@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../common';
-import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
+import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/hub/EcoversePageContainer';
 import EcoverseChallengesView from '../../views/Ecoverse/EcoverseChallengesView';
 
 export interface HubChallengesPageProps extends PageProps {

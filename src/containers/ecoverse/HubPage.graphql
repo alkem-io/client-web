@@ -1,5 +1,5 @@
-query ecoversePage($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query hubPage($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     ...EcoversePage
   }
 }
@@ -67,8 +67,8 @@ fragment ProjectInfo on Project {
   }
 }
 
-query EcoversePageProjects($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query EcoversePageProjects($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     challenges {
       id

@@ -1,5 +1,5 @@
-query ecoverses {
-  ecoverses {
+query hubs {
+  hubs {
     ...EcoverseDetailsProvider
   }
 }

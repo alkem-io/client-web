@@ -13,8 +13,8 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
 
   const { displayName: hubDisplayName } = useEcoverse();
   const {
-    ecoverseId,
-    ecoverseNameId,
+    hubId,
+    hubNameId,
     displayName: challengeDisplayName,
     challengeId,
     challengeNameId,
@@ -24,15 +24,15 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
 
   return (
     <ContextTabContainer
-      hubNameId={ecoverseNameId}
+      hubNameId={hubNameId}
       challengeNameId={challengeNameId}
       loadAspectsAndReferences={loadAspectsAndReferences}
     >
       {(entities, state) => (
         <ChallengeContextView
           entities={{
-            hubId: ecoverseId,
-            hubNameId: ecoverseNameId,
+            hubId: hubId,
+            hubNameId: hubNameId,
             hubDisplayName: hubDisplayName,
             challengeId,
             challengeNameId,

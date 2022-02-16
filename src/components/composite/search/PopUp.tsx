@@ -40,7 +40,7 @@ export interface PopUpViewmodel {
   tags: string[];
   tagline: string;
   displayName: string;
-  ecoverseName: string;
+  hubName: string;
   challengeName: string;
   url: string;
 }
@@ -52,7 +52,7 @@ interface Props {
 
 const PopUp: FC<Props> = ({
   onHide,
-  model: { avatar, tags = [], tagline, displayName, ecoverseName, challengeName, url },
+  model: { avatar, tags = [], tagline, displayName, hubName, challengeName, url },
 }) => {
   const { t } = useTranslation();
   const styles = getStyles();
@@ -89,10 +89,10 @@ const PopUp: FC<Props> = ({
               <span>No tags available</span>
             )}
           </Grid>
-          {ecoverseName && (
+          {hubName && (
             <Grid item>
               <Typography weight={'medium'} variant={'h4'}>
-                {t('common.hub')}: {ecoverseName}
+                {t('common.hub')}: {hubName}
               </Typography>
             </Grid>
           )}

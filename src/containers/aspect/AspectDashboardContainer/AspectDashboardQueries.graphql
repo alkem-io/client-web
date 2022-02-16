@@ -1,5 +1,5 @@
 query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     context {
       ...AspectDashboardData
@@ -8,7 +8,7 @@ query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
 }
 
 query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
@@ -20,7 +20,7 @@ query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, 
 }
 
 query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id

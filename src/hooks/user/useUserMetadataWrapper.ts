@@ -11,9 +11,9 @@ export interface UserMetadata {
   ofChallenge: (id: string) => boolean;
   ofEcoverse: (id: string) => boolean;
   ofOpportunity: (id: string) => boolean;
-  isEcoverseAdmin: (ecoverseId: string) => boolean;
-  isChallengeAdmin: (ecoverseId: string, challengeId: string) => boolean;
-  isOpportunityAdmin: (ecoverseId: string, challengeId: string, opportunityId: string) => boolean;
+  isEcoverseAdmin: (hubId: string) => boolean;
+  isChallengeAdmin: (hubId: string, challengeId: string) => boolean;
+  isOpportunityAdmin: (hubId: string, challengeId: string, opportunityId: string) => boolean;
   /** has any admin role */
   isAdmin: boolean;
   /** has an entity admin role, i.e. is admin of a community */
@@ -25,7 +25,7 @@ export interface UserMetadata {
   organizations: string[];
   opportunities: string[];
   challenges: string[];
-  ecoverses: string[];
+  hubs: string[];
   keywords: string[];
   skills: string[];
   communities: Record<string, string>;
@@ -39,24 +39,24 @@ const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
 const getContributions = (membershipData?: UserMembershipDetailsFragment) => {
   if (!membershipData) return [];
 
-  const ecoverses = membershipData.ecoverses.map<ContributionItem>(e => ({
-    ecoverseId: e.ecoverseID,
+  const hubs = membershipData.hubs.map<ContributionItem>(e => ({
+    hubId: e.hubID,
   }));
 
-  const challenges = membershipData.ecoverses.flatMap<ContributionItem>(e =>
+  const challenges = membershipData.hubs.flatMap<ContributionItem>(e =>
     e.challenges.map(c => ({
-      ecoverseId: e.nameID,
+      hubId: e.nameID,
       challengeId: c.nameID,
     }))
   );
 
-  const opportunities = membershipData.ecoverses.flatMap<ContributionItem>(e =>
+  const opportunities = membershipData.hubs.flatMap<ContributionItem>(e =>
     e.opportunities.map(o => ({
-      ecoverseId: e.nameID,
+      hubId: e.nameID,
       opportunityId: o.nameID,
     }))
   );
-  return [...ecoverses, ...challenges, ...opportunities];
+  return [...hubs, ...challenges, ...opportunities];
 };
 
 const getPendingApplications = (membershipData?: UserMembershipDetailsFragment) => {
@@ -64,7 +64,7 @@ const getPendingApplications = (membershipData?: UserMembershipDetailsFragment) 
 
   return (
     membershipData.applications?.map<ContributionItem>(a => ({
-      ecoverseId: a.ecoverseID,
+      hubId: a.hubID,
       challengeId: a.challengeID,
       opportunityId: a.opportunityID,
     })) || []
@@ -80,13 +80,13 @@ export const useUserMetadataWrapper = () => {
         return;
       }
 
-      const ecoverses = membershipData?.ecoverses.map(getDisplayName) || [];
-      const challenges = membershipData?.ecoverses.flatMap(e => e.challenges.map(getDisplayName)) || [];
-      const opportunities = membershipData?.ecoverses.flatMap(e => e.opportunities.map(getDisplayName)) || [];
+      const hubs = membershipData?.hubs.map(getDisplayName) || [];
+      const challenges = membershipData?.hubs.flatMap(e => e.challenges.map(getDisplayName)) || [];
+      const opportunities = membershipData?.hubs.flatMap(e => e.opportunities.map(getDisplayName)) || [];
       const organizations = membershipData?.organizations.map(getDisplayName) || [];
       const organizationNameIDs: UserMetadata['organizationNameIDs'] =
         membershipData?.organizations.map(o => o.nameID) || [];
-      const groups = membershipData?.ecoverses.flatMap(e => e.userGroups.map(getDisplayName)) || [];
+      const groups = membershipData?.hubs.flatMap(e => e.userGroups.map(getDisplayName)) || [];
       const communities =
         membershipData?.communities.reduce((aggr, value) => {
           aggr[value.id] = value.displayName;
@@ -117,12 +117,11 @@ export const useUserMetadataWrapper = () => {
         hasCredentials(AuthorizationCredential.GlobalAdmin) ||
         hasCredentials(AuthorizationCredential.EcoverseAdmin, id);
 
-      const isChallengeAdmin = (ecoverseId: string, challengeId: string) =>
-        isEcoverseAdmin(ecoverseId) || hasCredentials(AuthorizationCredential.ChallengeAdmin, challengeId);
+      const isChallengeAdmin = (hubId: string, challengeId: string) =>
+        isEcoverseAdmin(hubId) || hasCredentials(AuthorizationCredential.ChallengeAdmin, challengeId);
 
-      const isOpportunityAdmin = (ecoverseId: string, challengeId: string, opportunityId) =>
-        isChallengeAdmin(ecoverseId, challengeId) ||
-        hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
+      const isOpportunityAdmin = (hubId: string, challengeId: string, opportunityId) =>
+        isChallengeAdmin(hubId, challengeId) || hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
 
       const metadata: UserMetadata = {
         user,
@@ -142,7 +141,7 @@ export const useUserMetadataWrapper = () => {
         challenges,
         opportunities,
         organizations,
-        ecoverses,
+        hubs,
         communities,
         keywords: user.profile?.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
         skills: user.profile?.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],

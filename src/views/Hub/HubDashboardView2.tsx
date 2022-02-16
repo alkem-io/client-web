@@ -22,8 +22,8 @@ export interface EcoverseDashboardView2Props {
   bannerUrl?: string;
   tagline?: string;
   vision?: string;
-  ecoverseId?: string;
-  ecoverseNameId?: string;
+  hubId?: string;
+  hubNameId?: string;
   communityId?: string;
   organizationNameId?: string;
   activity: ActivityItem[];
@@ -48,8 +48,8 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
   vision = '',
   challenges,
   members = [],
-  ecoverseId = '',
-  ecoverseNameId = '',
+  hubId = '',
+  hubNameId = '',
   communityId = '',
   organizationNameId,
   activity,
@@ -72,9 +72,9 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
             primaryAction={
               <ApplicationButtonContainer
                 entities={{
-                  ecoverseId,
-                  ecoverseNameId,
-                  ecoverseName: title || '',
+                  hubId,
+                  hubNameId,
+                  hubName: title || '',
                 }}
               >
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
@@ -93,7 +93,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
           {communityReadAccess && (
             <>
               <SectionSpacer />
-              <DashboardUpdatesSection entities={{ ecoverseId: ecoverseNameId, communityId }} />
+              <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
               <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
             </>
@@ -115,7 +115,7 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
               <CardLayoutContainer>
                 {challenges.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => (
                   <CardLayoutItem key={i} flexBasis={'50%'}>
-                    <ChallengeCard challenge={x} ecoverseNameId={ecoverseNameId} />
+                    <ChallengeCard challenge={x} hubNameId={hubNameId} />
                   </CardLayoutItem>
                 ))}
               </CardLayoutContainer>

@@ -18,7 +18,7 @@ import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import UserRoute from './user/UserRoute';
-import { EcoverseRouteNew } from './ecoverse/EcoverseRouteNew';
+import { EcoverseRouteNew } from './hub/EcoverseRouteNew';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ export const Routing: FC = () => {
       <Route path="/" element={<App />}>
         <Route index element={<HomePage />} />
         <Route
-          path={`:${nameOfUrl.ecoverseNameId}/*`}
+          path={`:${nameOfUrl.hubNameId}/*`}
           element={
             <EcoverseProvider>
               <CommunityProvider>

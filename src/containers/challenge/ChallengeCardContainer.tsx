@@ -17,23 +17,19 @@ export interface ChallengeCardContainerState {
 
 export interface ChallengeCardContainerProps
   extends ContainerProps<ChallengeCardContainerEntities, ChallengeCardContainerActions, ChallengeCardContainerState> {
-  ecoverseNameId: string;
+  hubNameId: string;
   challengeNameId: string;
 }
 
-export const ChallengeCardContainer: FC<ChallengeCardContainerProps> = ({
-  children,
-  ecoverseNameId,
-  challengeNameId,
-}) => {
+export const ChallengeCardContainer: FC<ChallengeCardContainerProps> = ({ children, hubNameId, challengeNameId }) => {
   const { data, loading, error } = useChallengeCardQuery({
     variables: {
-      ecoverseId: ecoverseNameId,
+      hubId: hubNameId,
       challengeId: challengeNameId,
     },
-    skip: !ecoverseNameId || !challengeNameId,
+    skip: !hubNameId || !challengeNameId,
   });
-  const challenge = data?.ecoverse.challenge as ChallengeCardProps['challenge'];
+  const challenge = data?.hub.challenge as ChallengeCardProps['challenge'];
 
   return <>{children({ challenge }, { loading, error }, {})}</>;
 };

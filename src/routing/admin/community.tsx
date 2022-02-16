@@ -10,8 +10,8 @@ import CommunityGroupListPage from '../../pages/Admin/Community/CommunityListPag
 import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
 import { nameOfUrl } from '../url-params';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
-import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
-import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
+import { EcoverseApplicationRoute } from './hub/EcoverseApplicationRoute';
+import { EcoverseGroupRoute } from './hub/EcoverseGroupRoute';
 
 type AccessedFrom = 'hub' | 'challenge' | 'opportunity';
 

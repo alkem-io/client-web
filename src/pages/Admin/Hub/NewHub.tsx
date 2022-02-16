@@ -29,10 +29,10 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
     // refetchQueries: [refetchEcoversesQuery()],
     // awaitRefetchQueries: true,
     onCompleted: data => {
-      const ecoverseId = data.createEcoverse.nameID;
-      if (ecoverseId) {
+      const hubId = data.createEcoverse.nameID;
+      if (hubId) {
         notify('Hub created successfuly!', 'success');
-        navigateToEdit(ecoverseId);
+        navigateToEdit(hubId);
       }
     },
     update: (cache, { data }) => {
@@ -41,7 +41,7 @@ export const NewEcoverse: FC<NewEcoverseProps> = ({ paths }) => {
 
         cache.modify({
           fields: {
-            ecoverses(existingEcoverses = []) {
+            hubs(existingEcoverses = []) {
               const newEcoverseRef = cache.writeFragment({
                 data: createEcoverse,
                 fragment: EcoverseDetailsFragmentDoc,

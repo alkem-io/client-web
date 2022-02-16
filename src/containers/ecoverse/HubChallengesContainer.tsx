@@ -22,7 +22,7 @@ export interface EcoverseChallengesContainerProps
     EcoverseChallengesContainerState
   > {
   entities: {
-    ecoverseNameId: string;
+    hubNameId: string;
   };
 }
 
@@ -32,15 +32,15 @@ export const EcoverseChallengesContainer: FC<EcoverseChallengesContainerProps> =
     error: challengesError,
     loading: loadingChallenges,
   } = useChallengeCardsQuery({
-    variables: { ecoverseId: entities.ecoverseNameId },
-    skip: !entities.ecoverseNameId,
+    variables: { hubId: entities.hubNameId },
+    skip: !entities.hubNameId,
   });
 
   return (
     <>
       {children(
         {
-          challenges: (_challenges?.ecoverse?.challenges || []) as Challenge[],
+          challenges: (_challenges?.hub?.challenges || []) as Challenge[],
         },
         {
           loading: loadingChallenges,

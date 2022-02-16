@@ -12,8 +12,8 @@ import {
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../components/core/ErrorBlock';
-import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
-import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/ecoverse/EcoversePageContainer';
+import EcoverseChallengesContainer from '../../containers/hub/EcoverseChallengesContainer';
+import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/hub/EcoversePageContainer';
 import { CardLayoutItem, CardLayoutContainer } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 interface EcoverseChallengesViewProps {
@@ -23,9 +23,9 @@ interface EcoverseChallengesViewProps {
 
 export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entities }) => {
   const { t } = useTranslation();
-  const { ecoverse, permissions } = entities;
+  const { hub, permissions } = entities;
   const { challengesReadAccess } = permissions;
-  const { nameID: ecoverseNameId = '' } = ecoverse || {};
+  const { nameID: hubNameId = '' } = hub || {};
 
   return (
     <>
@@ -35,7 +35,7 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
       <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.hub.sections.challenges.header')}>
         <EcoverseChallengesContainer
           entities={{
-            ecoverseNameId,
+            hubNameId,
           }}
         >
           {(cEntities, cState) => {
@@ -73,7 +73,7 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
                   <CardLayoutContainer>
                     {filteredData.map((challenge, i) => (
                       <CardLayoutItem key={i}>
-                        <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseNameId} />
+                        <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
                       </CardLayoutItem>
                     ))}
                   </CardLayoutContainer>

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
-import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
-import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
+import EcoverseChallengesContainer from '../../containers/hub/EcoverseChallengesContainer';
+import EcoversePageContainer from '../../containers/hub/EcoversePageContainer';
 import { useUpdateNavigation } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import EcoverseDashboardView2 from '../../views/Ecoverse/EcoverseDashboardView2';
@@ -21,23 +21,23 @@ const EcoverseDashboardPage: FC<EcoverseDashboardPageProps> = ({ paths }) => {
         return (
           <EcoverseChallengesContainer
             entities={{
-              ecoverseNameId: entities?.ecoverse?.nameID || '',
+              hubNameId: entities?.hub?.nameID || '',
             }}
           >
             {cEntities => (
               <EcoverseDashboardView2
-                title={entities?.ecoverse?.displayName}
-                bannerUrl={getVisualBanner(entities?.ecoverse?.context?.visuals)}
-                tagline={entities?.ecoverse?.context?.tagline}
-                vision={entities?.ecoverse?.context?.vision}
-                ecoverseId={entities?.ecoverse?.id}
-                ecoverseNameId={entities?.ecoverse?.nameID}
-                communityId={entities?.ecoverse?.community?.id}
-                organizationNameId={entities?.ecoverse?.host?.nameID}
+                title={entities?.hub?.displayName}
+                bannerUrl={getVisualBanner(entities?.hub?.context?.visuals)}
+                tagline={entities?.hub?.context?.tagline}
+                vision={entities?.hub?.context?.vision}
+                hubId={entities?.hub?.id}
+                hubNameId={entities?.hub?.nameID}
+                communityId={entities?.hub?.community?.id}
+                organizationNameId={entities?.hub?.host?.nameID}
                 activity={entities.activity}
                 challenges={cEntities.challenges}
                 discussions={entities.discussionList}
-                members={entities?.ecoverse?.community?.members as User[]}
+                members={entities?.hub?.community?.members as User[]}
                 loading={state.loading}
                 isMember={entities.isMember}
                 communityReadAccess={communityReadAccess}

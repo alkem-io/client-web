@@ -34,7 +34,7 @@ export const managementData = {
       ],
     },
   ],
-  ecoverseLvl: [
+  hubLvl: [
     {
       name: 'Info',
       buttons: [

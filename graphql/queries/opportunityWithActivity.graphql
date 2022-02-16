@@ -1,5 +1,5 @@
-query opportunityWithActivity($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query opportunityWithActivity($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     opportunities {
       id

@@ -4,10 +4,10 @@ import { useEcoverse } from '../../hooks';
 import CommunityPage from './CommunityPage';
 
 const EcoverseCommunityPage: FC<PageProps> = ({ paths }) => {
-  const { ecoverse } = useEcoverse();
-  const ecoverseId = ecoverse?.id || '';
-  const communityId = ecoverse?.community?.id;
+  const { hub } = useEcoverse();
+  const hubId = hub?.id || '';
+  const communityId = hub?.community?.id;
 
-  return <CommunityPage paths={paths} ecoverseId={ecoverseId} communityId={communityId} />;
+  return <CommunityPage paths={paths} hubId={hubId} communityId={communityId} />;
 };
 export default EcoverseCommunityPage;

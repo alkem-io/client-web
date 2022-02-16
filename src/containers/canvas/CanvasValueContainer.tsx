@@ -43,13 +43,13 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const {
-    ecoverseNameId: ecoverseId = '',
+    hubNameId: hubId = '',
     challengeNameId: challengeId = '',
     opportunityNameId: opportunityId = '',
   } = useUrlParams();
   let queryOpportunityId: string | undefined = opportunityId;
   let queryChallengeId: string | undefined = challengeId;
-  let queryEcoverseId: string | undefined = ecoverseId;
+  let queryEcoverseId: string | undefined = hubId;
 
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
@@ -65,7 +65,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   const skipOpportunity = !Boolean(queryOpportunityId) || !Boolean(canvasId);
 
   const {
-    data: ecoverseData,
+    data: hubData,
     loading: loadingEcoverseCanvasValue,
     subscribeToMore: subEcoverse,
   } = useEcoverseCanvasValuesQuery({
@@ -74,7 +74,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
     nextFetchPolicy: 'cache-and-network',
     skip: skipEcoverse,
     variables: {
-      ecoverseId: queryEcoverseId,
+      hubId: queryEcoverseId,
       canvasId: canvasId || '',
     },
   });
@@ -88,7 +88,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
     nextFetchPolicy: 'cache-and-network',
     skip: skipChallenge,
     variables: {
-      ecoverseId: queryEcoverseId,
+      hubId: queryEcoverseId,
       challengeId: queryChallengeId || '',
       canvasId: canvasId || '',
     },
@@ -103,7 +103,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
     nextFetchPolicy: 'cache-and-network',
     skip: skipOpportunity,
     variables: {
-      ecoverseId: queryEcoverseId,
+      hubId: queryEcoverseId,
       opportunityId: queryOpportunityId || '',
       canvasId: canvasId || '',
     },
@@ -111,12 +111,12 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
 
   const canvas = useMemo(() => {
     const sourceArray =
-      ecoverseData?.ecoverse.context?.canvases ||
-      challengeData?.ecoverse.challenge.context?.canvases ||
-      opportunityData?.ecoverse.opportunity.context?.canvases;
+      hubData?.hub.context?.canvases ||
+      challengeData?.hub.challenge.context?.canvases ||
+      opportunityData?.hub.opportunity.context?.canvases;
 
     return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
-  }, [ecoverseData, challengeData, opportunityData, canvasId]);
+  }, [hubData, challengeData, opportunityData, canvasId]);
 
   useEffect(() => {
     if (!isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
@@ -149,13 +149,13 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
 
     if (!skipEcoverse) {
       subscribeToMore = subEcoverse;
-      getCanvasesFn = state => (state as EcoverseCanvasValuesQuery).ecoverse.context?.canvases ?? [];
+      getCanvasesFn = state => (state as EcoverseCanvasValuesQuery).hub.context?.canvases ?? [];
     } else if (!skipChallenge) {
       subscribeToMore = subChallenge;
-      getCanvasesFn = state => (state as ChallengeCanvasValuesQuery).ecoverse.challenge?.context?.canvases ?? [];
+      getCanvasesFn = state => (state as ChallengeCanvasValuesQuery).hub.challenge?.context?.canvases ?? [];
     } else if (!skipOpportunity) {
       subscribeToMore = subOpportunity;
-      getCanvasesFn = state => (state as OpportunityCanvasValuesQuery).ecoverse.opportunity?.context?.canvases ?? [];
+      getCanvasesFn = state => (state as OpportunityCanvasValuesQuery).hub.opportunity?.context?.canvases ?? [];
     } else {
       // do not subscribe if data is not fetched
       return;

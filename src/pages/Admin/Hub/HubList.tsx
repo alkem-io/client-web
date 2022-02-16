@@ -21,13 +21,13 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { data: ecoversesData, loading: loadingEcoverses } = useAdminEcoversesListQuery();
-  const ecoverseList = useMemo(
+  const { data: hubsData, loading: loadingEcoverses } = useAdminEcoversesListQuery();
+  const hubList = useMemo(
     () =>
-      ecoversesData?.ecoverses
+      hubsData?.hubs
         .filter(x => (x.authorization?.myPrivileges ?? []).find(y => y === AuthorizationPrivilege.Update))
         .map(searchableListItemMapper()) || [],
-    [ecoversesData]
+    [hubsData]
   );
 
   const [deleteEcoverse] = useDeleteEcoverseMutation({
@@ -47,14 +47,14 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
     });
   };
 
-  if (loadingEcoverses) return <Loading text={'Loading ecoverses'} />;
+  if (loadingEcoverses) return <Loading text={'Loading hubs'} />;
 
   return (
     <ListPage
-      data={ecoverseList}
+      data={hubList}
       paths={paths}
       newLink={`${url}/new`}
-      onDelete={ecoverseList.length > 1 ? handleDelete : undefined}
+      onDelete={hubList.length > 1 ? handleDelete : undefined}
     />
   );
 };

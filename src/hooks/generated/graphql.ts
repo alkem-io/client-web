@@ -665,7 +665,7 @@ export const ChallengeSearchResultFragmentDoc = gql`
     id
     displayName
     nameID
-    ecoverseID
+    hubID
     activity {
       name
       value
@@ -708,7 +708,7 @@ export const OpportunitySearchResultFragmentDoc = gql`
       id
       nameID
       displayName
-      ecoverseID
+      hubID
     }
   }
   ${VisualUriFragmentDoc}
@@ -797,10 +797,10 @@ export const UserDisplayNameFragmentDoc = gql`
 `;
 export const UserMembershipDetailsFragmentDoc = gql`
   fragment UserMembershipDetails on UserMembership {
-    ecoverses {
+    hubs {
       id
       nameID
-      ecoverseID
+      hubID
       displayName
       challenges {
         id
@@ -837,7 +837,7 @@ export const UserMembershipDetailsFragmentDoc = gql`
       communityID
       displayName
       state
-      ecoverseID
+      hubID
       challengeID
       opportunityID
     }
@@ -1034,7 +1034,7 @@ export const ChallengeExplorerSearchResultFragmentDoc = gql`
     id
     displayName
     nameID
-    ecoverseID
+    hubID
     activity {
       id
       name
@@ -1168,7 +1168,7 @@ export const ChallengeProfileFragmentDoc = gql`
 `;
 export const SimpleEcoverseResultEntryFragmentDoc = gql`
   fragment SimpleEcoverseResultEntry on MembershipUserResultEntryEcoverse {
-    ecoverseID
+    hubID
     nameID
     displayName
   }
@@ -1844,7 +1844,7 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const CreateEcoverseDocument = gql`
   mutation createEcoverse($input: CreateEcoverseInput!) {
-    createEcoverse(ecoverseData: $input) {
+    createEcoverse(hubData: $input) {
       ...EcoverseDetails
     }
   }
@@ -3980,7 +3980,7 @@ export type UpdateEcosystemModelMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UpdateEcoverseDocument = gql`
   mutation updateEcoverse($input: UpdateEcoverseInput!) {
-    updateEcoverse(ecoverseData: $input) {
+    updateEcoverse(hubData: $input) {
       ...EcoverseDetails
     }
   }
@@ -4277,7 +4277,7 @@ export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const AdminEcoversesListDocument = gql`
   query adminEcoversesList {
-    ecoverses {
+    hubs {
       ...AdminEcoverse
     }
   }
@@ -4333,8 +4333,8 @@ export function refetchAdminEcoversesListQuery(variables?: SchemaTypes.AdminEcov
   return { query: AdminEcoversesListDocument, variables: variables };
 }
 export const AllOpportunitiesDocument = gql`
-  query allOpportunities($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query allOpportunities($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunities {
         id
@@ -4356,7 +4356,7 @@ export const AllOpportunitiesDocument = gql`
  * @example
  * const { data, loading, error } = useAllOpportunitiesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -4391,8 +4391,8 @@ export function refetchAllOpportunitiesQuery(variables: SchemaTypes.AllOpportuni
   return { query: AllOpportunitiesDocument, variables: variables };
 }
 export const ApplicationByEcoverseDocument = gql`
-  query applicationByEcoverse($ecoverseId: UUID_NAMEID!, $appId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query applicationByEcoverse($hubId: UUID_NAMEID!, $appId: UUID!) {
+    hub(ID: $hubId) {
       id
       application(ID: $appId) {
         id
@@ -4420,7 +4420,7 @@ export const ApplicationByEcoverseDocument = gql`
  * @example
  * const { data, loading, error } = useApplicationByEcoverseQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      appId: // value for 'appId'
  *   },
  * });
@@ -4459,8 +4459,8 @@ export function refetchApplicationByEcoverseQuery(variables: SchemaTypes.Applica
   return { query: ApplicationByEcoverseDocument, variables: variables };
 }
 export const ChallengeApplicationDocument = gql`
-  query challengeApplication($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeApplication($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -4489,7 +4489,7 @@ export const ChallengeApplicationDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeApplicationQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -4528,8 +4528,8 @@ export function refetchChallengeApplicationQuery(variables: SchemaTypes.Challeng
   return { query: ChallengeApplicationDocument, variables: variables };
 }
 export const ChallengeApplicationsDocument = gql`
-  query challengeApplications($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeApplications($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -4557,7 +4557,7 @@ export const ChallengeApplicationsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeApplicationsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -4596,8 +4596,8 @@ export function refetchChallengeApplicationsQuery(variables: SchemaTypes.Challen
   return { query: ChallengeApplicationsDocument, variables: variables };
 }
 export const EcoverseApplicationDocument = gql`
-  query ecoverseApplication($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubApplication($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       displayName
       context {
@@ -4627,7 +4627,7 @@ export const EcoverseApplicationDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseApplicationQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -4665,8 +4665,8 @@ export function refetchEcoverseApplicationQuery(variables: SchemaTypes.EcoverseA
   return { query: EcoverseApplicationDocument, variables: variables };
 }
 export const EcoverseApplicationsDocument = gql`
-  query ecoverseApplications($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubApplications($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       community {
         id
@@ -4691,7 +4691,7 @@ export const EcoverseApplicationsDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseApplicationsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -4729,8 +4729,8 @@ export function refetchEcoverseApplicationsQuery(variables: SchemaTypes.Ecoverse
   return { query: EcoverseApplicationsDocument, variables: variables };
 }
 export const EcoverseNameIdDocument = gql`
-  query ecoverseNameId($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubNameId($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
     }
@@ -4749,7 +4749,7 @@ export const EcoverseNameIdDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseNameIdQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -4781,8 +4781,8 @@ export function refetchEcoverseNameIdQuery(variables: SchemaTypes.EcoverseNameId
   return { query: EcoverseNameIdDocument, variables: variables };
 }
 export const ChallengeNameIdDocument = gql`
-  query challengeNameId($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeNameId($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       challenge(ID: $challengeId) {
@@ -4805,7 +4805,7 @@ export const ChallengeNameIdDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeNameIdQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -4838,8 +4838,8 @@ export function refetchChallengeNameIdQuery(variables: SchemaTypes.ChallengeName
   return { query: ChallengeNameIdDocument, variables: variables };
 }
 export const OpportunityNameIdDocument = gql`
-  query opportunityNameId($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityNameId($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       opportunity(ID: $opportunityId) {
@@ -4866,7 +4866,7 @@ export const OpportunityNameIdDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityNameIdQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -4902,8 +4902,8 @@ export function refetchOpportunityNameIdQuery(variables: SchemaTypes.Opportunity
   return { query: OpportunityNameIdDocument, variables: variables };
 }
 export const ChallengeCardDocument = gql`
-  query challengeCard($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeCard($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       challenge(ID: $challengeId) {
@@ -4926,7 +4926,7 @@ export const ChallengeCardDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeCardQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -4959,8 +4959,8 @@ export function refetchChallengeCardQuery(variables: SchemaTypes.ChallengeCardQu
   return { query: ChallengeCardDocument, variables: variables };
 }
 export const ChallengeCardsDocument = gql`
-  query challengeCards($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeCards($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenges {
         ...ChallengeCard
@@ -4982,7 +4982,7 @@ export const ChallengeCardsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeCardsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -5014,8 +5014,8 @@ export function refetchChallengeCardsQuery(variables: SchemaTypes.ChallengeCards
   return { query: ChallengeCardsDocument, variables: variables };
 }
 export const EcoverseCardDocument = gql`
-  query ecoverseCard($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubCard($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       ...EcoverseDetailsProvider
     }
   }
@@ -5034,7 +5034,7 @@ export const EcoverseCardDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseCardQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -5109,8 +5109,8 @@ export function refetchUserCardQuery(variables: SchemaTypes.UserCardQueryVariabl
   return { query: UserCardDocument, variables: variables };
 }
 export const ChallengeInfoDocument = gql`
-  query challengeInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeInfo($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       challenge(ID: $challengeId) {
@@ -5133,7 +5133,7 @@ export const ChallengeInfoDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeInfoQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -5166,8 +5166,8 @@ export function refetchChallengeInfoQuery(variables: SchemaTypes.ChallengeInfoQu
   return { query: ChallengeInfoDocument, variables: variables };
 }
 export const ChallengeActivityDocument = gql`
-  query challengeActivity($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeActivity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -5192,7 +5192,7 @@ export const ChallengeActivityDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeActivityQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -5300,8 +5300,8 @@ export function refetchChallengeApplicationTemplateQuery(
   return { query: ChallengeApplicationTemplateDocument, variables: variables };
 }
 export const ChallengeGroupsDocument = gql`
-  query challengeGroups($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeGroups($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         community {
@@ -5327,7 +5327,7 @@ export const ChallengeGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeGroupsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -5360,8 +5360,8 @@ export function refetchChallengeGroupsQuery(variables: SchemaTypes.ChallengeGrou
   return { query: ChallengeGroupsDocument, variables: variables };
 }
 export const ChallengeLeadOrganizationsDocument = gql`
-  query challengeLeadOrganizations($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeLeadOrganizations($hubId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeID) {
         id
@@ -5389,7 +5389,7 @@ export const ChallengeLeadOrganizationsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeLeadOrganizationsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeID: // value for 'challengeID'
  *   },
  * });
@@ -5430,8 +5430,8 @@ export function refetchChallengeLeadOrganizationsQuery(
   return { query: ChallengeLeadOrganizationsDocument, variables: variables };
 }
 export const ChallengeLifecycleDocument = gql`
-  query challengeLifecycle($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeLifecycle($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -5459,7 +5459,7 @@ export const ChallengeLifecycleDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeLifecycleQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -5498,8 +5498,8 @@ export function refetchChallengeLifecycleQuery(variables: SchemaTypes.ChallengeL
   return { query: ChallengeLifecycleDocument, variables: variables };
 }
 export const ChallengeMembersDocument = gql`
-  query challengeMembers($ecoverseId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeMembers($hubId: UUID_NAMEID!, $challengeID: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeID) {
         community {
@@ -5528,7 +5528,7 @@ export const ChallengeMembersDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeMembersQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeID: // value for 'challengeID'
  *   },
  * });
@@ -5564,8 +5564,8 @@ export function refetchChallengeMembersQuery(variables: SchemaTypes.ChallengeMem
   return { query: ChallengeMembersDocument, variables: variables };
 }
 export const ChallengeNameDocument = gql`
-  query challengeName($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeName($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -5591,7 +5591,7 @@ export const ChallengeNameDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeNameQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -5624,8 +5624,8 @@ export function refetchChallengeNameQuery(variables: SchemaTypes.ChallengeNameQu
   return { query: ChallengeNameDocument, variables: variables };
 }
 export const ChallengeProfileInfoDocument = gql`
-  query challengeProfileInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeProfileInfo($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -5664,7 +5664,7 @@ export const ChallengeProfileInfoDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeProfileInfoQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -5703,8 +5703,8 @@ export function refetchChallengeProfileInfoQuery(variables: SchemaTypes.Challeng
   return { query: ChallengeProfileInfoDocument, variables: variables };
 }
 export const ChallengeUserIdsDocument = gql`
-  query challengeUserIds($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeUserIds($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         community {
@@ -5729,7 +5729,7 @@ export const ChallengeUserIdsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeUserIdsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -5765,8 +5765,8 @@ export function refetchChallengeUserIdsQuery(variables: SchemaTypes.ChallengeUse
   return { query: ChallengeUserIdsDocument, variables: variables };
 }
 export const ChallengesDocument = gql`
-  query challenges($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challenges($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenges {
         id
@@ -5801,7 +5801,7 @@ export const ChallengesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -5833,8 +5833,8 @@ export function refetchChallengesQuery(variables: SchemaTypes.ChallengesQueryVar
   return { query: ChallengesDocument, variables: variables };
 }
 export const AllCommunitiesDocument = gql`
-  query allCommunities($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query allCommunities($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       community {
         ...AllCommunityDetails
       }
@@ -5865,7 +5865,7 @@ export const AllCommunitiesDocument = gql`
  * @example
  * const { data, loading, error } = useAllCommunitiesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -5897,8 +5897,8 @@ export function refetchAllCommunitiesQuery(variables: SchemaTypes.AllCommunities
   return { query: AllCommunitiesDocument, variables: variables };
 }
 export const ChallengeCommunityDocument = gql`
-  query challengeCommunity($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -5924,7 +5924,7 @@ export const ChallengeCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeCommunityQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -5963,8 +5963,8 @@ export function refetchChallengeCommunityQuery(variables: SchemaTypes.ChallengeC
   return { query: ChallengeCommunityDocument, variables: variables };
 }
 export const ChallengesWithCommunityDocument = gql`
-  query challengesWithCommunity($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengesWithCommunity($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenges {
         id
@@ -5991,7 +5991,7 @@ export const ChallengesWithCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useChallengesWithCommunityQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6029,8 +6029,8 @@ export function refetchChallengesWithCommunityQuery(variables: SchemaTypes.Chall
   return { query: ChallengesWithCommunityDocument, variables: variables };
 }
 export const EcoverseCommunityDocument = gql`
-  query ecoverseCommunity($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubCommunity($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       community {
         ...CommunityDetails
@@ -6052,7 +6052,7 @@ export const EcoverseCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseCommunityQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6087,8 +6087,8 @@ export function refetchEcoverseCommunityQuery(variables: SchemaTypes.EcoverseCom
   return { query: EcoverseCommunityDocument, variables: variables };
 }
 export const CommunityMessagesDocument = gql`
-  query communityMessages($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query communityMessages($hubId: UUID_NAMEID!, $communityId: UUID!) {
+    hub(ID: $hubId) {
       id
       community(ID: $communityId) {
         ...CommunityMessages
@@ -6110,7 +6110,7 @@ export const CommunityMessagesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityMessagesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -6146,8 +6146,8 @@ export function refetchCommunityMessagesQuery(variables: SchemaTypes.CommunityMe
   return { query: CommunityMessagesDocument, variables: variables };
 }
 export const OpportunityCommunityDocument = gql`
-  query opportunityCommunity($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityCommunity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -6173,7 +6173,7 @@ export const OpportunityCommunityDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityCommunityQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -6212,8 +6212,8 @@ export function refetchOpportunityCommunityQuery(variables: SchemaTypes.Opportun
   return { query: OpportunityCommunityDocument, variables: variables };
 }
 export const CommunityGroupsDocument = gql`
-  query communityGroups($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query communityGroups($hubId: UUID_NAMEID!, $communityId: UUID!) {
+    hub(ID: $hubId) {
       id
       community(ID: $communityId) {
         id
@@ -6239,7 +6239,7 @@ export const CommunityGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityGroupsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -6272,8 +6272,8 @@ export function refetchCommunityGroupsQuery(variables: SchemaTypes.CommunityGrou
   return { query: CommunityGroupsDocument, variables: variables };
 }
 export const CommunityMembersDocument = gql`
-  query communityMembers($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query communityMembers($hubId: UUID_NAMEID!, $communityId: UUID!) {
+    hub(ID: $hubId) {
       id
       community(ID: $communityId) {
         id
@@ -6298,7 +6298,7 @@ export const CommunityMembersDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityMembersQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -6385,8 +6385,8 @@ export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQ
   return { query: ConfigurationDocument, variables: variables };
 }
 export const EcoverseInfoDocument = gql`
-  query ecoverseInfo($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubInfo($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       ...EcoverseInfo
     }
   }
@@ -6405,7 +6405,7 @@ export const EcoverseInfoDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseInfoQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6437,8 +6437,8 @@ export function refetchEcoverseInfoQuery(variables: SchemaTypes.EcoverseInfoQuer
   return { query: EcoverseInfoDocument, variables: variables };
 }
 export const EcoverseActivityDocument = gql`
-  query ecoverseActivity($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubActivity($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       activity {
         name
@@ -6460,7 +6460,7 @@ export const EcoverseActivityDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseActivityQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6495,10 +6495,10 @@ export function refetchEcoverseActivityQuery(variables: SchemaTypes.EcoverseActi
   return { query: EcoverseActivityDocument, variables: variables };
 }
 export const EcoverseApplicationTemplateDocument = gql`
-  query ecoverseApplicationTemplate {
+  query hubApplicationTemplate {
     configuration {
       template {
-        ecoverses {
+        hubs {
           name
           applications {
             name
@@ -6565,8 +6565,8 @@ export function refetchEcoverseApplicationTemplateQuery(
   return { query: EcoverseApplicationTemplateDocument, variables: variables };
 }
 export const EcoverseGroupDocument = gql`
-  query ecoverseGroup($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubGroup($hubId: UUID_NAMEID!, $groupId: UUID!) {
+    hub(ID: $hubId) {
       id
       group(ID: $groupId) {
         ...GroupInfo
@@ -6588,7 +6588,7 @@ export const EcoverseGroupDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseGroupQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      groupId: // value for 'groupId'
  *   },
  * });
@@ -6621,8 +6621,8 @@ export function refetchEcoverseGroupQuery(variables: SchemaTypes.EcoverseGroupQu
   return { query: EcoverseGroupDocument, variables: variables };
 }
 export const EcoverseGroupsListDocument = gql`
-  query ecoverseGroupsList($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubGroupsList($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       groups {
         id
@@ -6644,7 +6644,7 @@ export const EcoverseGroupsListDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseGroupsListQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6682,8 +6682,8 @@ export function refetchEcoverseGroupsListQuery(variables: SchemaTypes.EcoverseGr
   return { query: EcoverseGroupsListDocument, variables: variables };
 }
 export const EcoverseHostReferencesDocument = gql`
-  query ecoverseHostReferences($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubHostReferences($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       host {
         profile {
@@ -6710,7 +6710,7 @@ export const EcoverseHostReferencesDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseHostReferencesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6748,8 +6748,8 @@ export function refetchEcoverseHostReferencesQuery(variables: SchemaTypes.Ecover
   return { query: EcoverseHostReferencesDocument, variables: variables };
 }
 export const EcoverseMembersDocument = gql`
-  query ecoverseMembers($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubMembers($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       community {
         id
@@ -6777,7 +6777,7 @@ export const EcoverseMembersDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseMembersQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6809,8 +6809,8 @@ export function refetchEcoverseMembersQuery(variables: SchemaTypes.EcoverseMembe
   return { query: EcoverseMembersDocument, variables: variables };
 }
 export const EcoverseNameDocument = gql`
-  query ecoverseName($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubName($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       ...EcoverseName
     }
   }
@@ -6829,7 +6829,7 @@ export const EcoverseNameDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseNameQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6861,8 +6861,8 @@ export function refetchEcoverseNameQuery(variables: SchemaTypes.EcoverseNameQuer
   return { query: EcoverseNameDocument, variables: variables };
 }
 export const EcoverseUserIdsDocument = gql`
-  query ecoverseUserIds($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubUserIds($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       community {
         id
@@ -6886,7 +6886,7 @@ export const EcoverseUserIdsDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseUserIdsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6918,8 +6918,8 @@ export function refetchEcoverseUserIdsQuery(variables: SchemaTypes.EcoverseUserI
   return { query: EcoverseUserIdsDocument, variables: variables };
 }
 export const EcoverseVisualDocument = gql`
-  query ecoverseVisual($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubVisual($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       context {
         visuals {
@@ -6943,7 +6943,7 @@ export const EcoverseVisualDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseVisualQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -6975,8 +6975,8 @@ export function refetchEcoverseVisualQuery(variables: SchemaTypes.EcoverseVisual
   return { query: EcoverseVisualDocument, variables: variables };
 }
 export const EcoversesDocument = gql`
-  query ecoverses {
-    ecoverses {
+  query hubs {
+    hubs {
       ...EcoverseDetailsProvider
     }
   }
@@ -7073,8 +7073,8 @@ export function refetchGlobalActivityQuery(variables?: SchemaTypes.GlobalActivit
   return { query: GlobalActivityDocument, variables: variables };
 }
 export const GroupMembersDocument = gql`
-  query groupMembers($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query groupMembers($hubId: UUID_NAMEID!, $groupId: UUID!) {
+    hub(ID: $hubId) {
       id
       group(ID: $groupId) {
         id
@@ -7100,7 +7100,7 @@ export const GroupMembersDocument = gql`
  * @example
  * const { data, loading, error } = useGroupMembersQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      groupId: // value for 'groupId'
  *   },
  * });
@@ -7226,7 +7226,7 @@ export const MembershipOrganizationDocument = gql`
   query membershipOrganization($input: MembershipOrganizationInput!) {
     membershipOrganization(membershipData: $input) {
       id
-      ecoversesHosting {
+      hubsHosting {
         id
         nameID
         displayName
@@ -7235,7 +7235,7 @@ export const MembershipOrganizationDocument = gql`
         id
         nameID
         displayName
-        ecoverseID
+        hubID
       }
     }
   }
@@ -7344,8 +7344,8 @@ export function refetchMembershipUserQuery(variables: SchemaTypes.MembershipUser
   return { query: MembershipUserDocument, variables: variables };
 }
 export const OpportunitiesDocument = gql`
-  query opportunities($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunities($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -7371,7 +7371,7 @@ export const OpportunitiesDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunitiesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -7404,8 +7404,8 @@ export function refetchOpportunitiesQuery(variables: SchemaTypes.OpportunitiesQu
   return { query: OpportunitiesDocument, variables: variables };
 }
 export const OpportunityInfoDocument = gql`
-  query opportunityInfo($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       opportunity(ID: $opportunityId) {
@@ -7428,7 +7428,7 @@ export const OpportunityInfoDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityInfoQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -7461,8 +7461,8 @@ export function refetchOpportunityInfoQuery(variables: SchemaTypes.OpportunityIn
   return { query: OpportunityInfoDocument, variables: variables };
 }
 export const OpportunityActivityDocument = gql`
-  query opportunityActivity($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityActivity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -7487,7 +7487,7 @@ export const OpportunityActivityDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityActivityQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -7526,8 +7526,8 @@ export function refetchOpportunityActivityQuery(variables: SchemaTypes.Opportuni
   return { query: OpportunityActivityDocument, variables: variables };
 }
 export const OpportunityActorGroupsDocument = gql`
-  query opportunityActorGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityActorGroups($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -7566,7 +7566,7 @@ export const OpportunityActorGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityActorGroupsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -7605,8 +7605,8 @@ export function refetchOpportunityActorGroupsQuery(variables: SchemaTypes.Opport
   return { query: OpportunityActorGroupsDocument, variables: variables };
 }
 export const OpportunityAspectsOldDocument = gql`
-  query opportunityAspectsOld($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityAspectsOld($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -7634,7 +7634,7 @@ export const OpportunityAspectsOldDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityAspectsOldQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -7673,8 +7673,8 @@ export function refetchOpportunityAspectsOldQuery(variables: SchemaTypes.Opportu
   return { query: OpportunityAspectsOldDocument, variables: variables };
 }
 export const OpportunityEcosystemDetailsDocument = gql`
-  query opportunityEcosystemDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityEcosystemDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         context {
@@ -7716,7 +7716,7 @@ export const OpportunityEcosystemDetailsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityEcosystemDetailsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -7757,8 +7757,8 @@ export function refetchOpportunityEcosystemDetailsQuery(
   return { query: OpportunityEcosystemDetailsDocument, variables: variables };
 }
 export const OpportunityGroupsDocument = gql`
-  query opportunityGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityGroups($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         community {
@@ -7784,7 +7784,7 @@ export const OpportunityGroupsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityGroupsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -7820,8 +7820,8 @@ export function refetchOpportunityGroupsQuery(variables: SchemaTypes.Opportunity
   return { query: OpportunityGroupsDocument, variables: variables };
 }
 export const OpportunityLifecycleDocument = gql`
-  query opportunityLifecycle($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityLifecycle($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -7849,7 +7849,7 @@ export const OpportunityLifecycleDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityLifecycleQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -7888,8 +7888,8 @@ export function refetchOpportunityLifecycleQuery(variables: SchemaTypes.Opportun
   return { query: OpportunityLifecycleDocument, variables: variables };
 }
 export const OpportunityNameDocument = gql`
-  query opportunityName($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityName($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -7911,7 +7911,7 @@ export const OpportunityNameDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityNameQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -7944,8 +7944,8 @@ export function refetchOpportunityNameQuery(variables: SchemaTypes.OpportunityNa
   return { query: OpportunityNameDocument, variables: variables };
 }
 export const OpportunityProfileInfoDocument = gql`
-  query opportunityProfileInfo($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityProfileInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -7977,7 +7977,7 @@ export const OpportunityProfileInfoDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityProfileInfoQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -8016,8 +8016,8 @@ export function refetchOpportunityProfileInfoQuery(variables: SchemaTypes.Opport
   return { query: OpportunityProfileInfoDocument, variables: variables };
 }
 export const OpportunityRelationsDocument = gql`
-  query opportunityRelations($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityRelations($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         relations {
@@ -8044,7 +8044,7 @@ export const OpportunityRelationsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityRelationsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -8083,8 +8083,8 @@ export function refetchOpportunityRelationsQuery(variables: SchemaTypes.Opportun
   return { query: OpportunityRelationsDocument, variables: variables };
 }
 export const OpportunityUserIdsDocument = gql`
-  query opportunityUserIds($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityUserIds($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         community {
@@ -8109,7 +8109,7 @@ export const OpportunityUserIdsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityUserIdsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -8148,8 +8148,8 @@ export function refetchOpportunityUserIdsQuery(variables: SchemaTypes.Opportunit
   return { query: OpportunityUserIdsDocument, variables: variables };
 }
 export const OpportunityWithActivityDocument = gql`
-  query opportunityWithActivity($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityWithActivity($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunities {
         id
@@ -8187,7 +8187,7 @@ export const OpportunityWithActivityDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityWithActivityQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -8665,8 +8665,8 @@ export function refetchOrganizationsListQuery(variables?: SchemaTypes.Organizati
   return { query: OrganizationsListDocument, variables: variables };
 }
 export const ProjectProfileDocument = gql`
-  query projectProfile($ecoverseId: UUID_NAMEID!, $projectId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query projectProfile($hubId: UUID_NAMEID!, $projectId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       project(ID: $projectId) {
         ...ProjectDetails
@@ -8688,7 +8688,7 @@ export const ProjectProfileDocument = gql`
  * @example
  * const { data, loading, error } = useProjectProfileQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      projectId: // value for 'projectId'
  *   },
  * });
@@ -8721,8 +8721,8 @@ export function refetchProjectProfileQuery(variables: SchemaTypes.ProjectProfile
   return { query: ProjectProfileDocument, variables: variables };
 }
 export const ProjectsDocument = gql`
-  query projects($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query projects($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       projects {
         id
@@ -8749,7 +8749,7 @@ export const ProjectsDocument = gql`
  * @example
  * const { data, loading, error } = useProjectsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -8772,8 +8772,8 @@ export function refetchProjectsQuery(variables: SchemaTypes.ProjectsQueryVariabl
   return { query: ProjectsDocument, variables: variables };
 }
 export const ProjectsChainHistoryDocument = gql`
-  query projectsChainHistory($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query projectsChainHistory($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenges {
         displayName
@@ -8801,7 +8801,7 @@ export const ProjectsChainHistoryDocument = gql`
  * @example
  * const { data, loading, error } = useProjectsChainHistoryQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -8839,8 +8839,8 @@ export function refetchProjectsChainHistoryQuery(variables: SchemaTypes.Projects
   return { query: ProjectsChainHistoryDocument, variables: variables };
 }
 export const RelationsDocument = gql`
-  query relations($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query relations($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         relations {
@@ -8868,7 +8868,7 @@ export const RelationsDocument = gql`
  * @example
  * const { data, loading, error } = useRelationsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -9079,7 +9079,7 @@ export const UserApplicationDetailsDocument = gql`
         id
         state
         displayName
-        ecoverseID
+        hubID
         challengeID
         opportunityID
       }
@@ -9143,7 +9143,7 @@ export const UserProfileApplicationsDocument = gql`
         id
         state
         displayName
-        ecoverseID
+        hubID
         challengeID
         opportunityID
       }
@@ -9327,7 +9327,7 @@ export const UserApplicationsDocument = gql`
         communityID
         displayName
         createdDate
-        ecoverseID
+        hubID
         challengeID
         opportunityID
       }
@@ -9739,8 +9739,8 @@ export function refetchUsersWithCredentialsSimpleListQuery(
   return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
 }
 export const EcoverseContributionDetailsDocument = gql`
-  query ecoverseContributionDetails($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubContributionDetails($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       displayName
@@ -9772,7 +9772,7 @@ export const EcoverseContributionDetailsDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseContributionDetailsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -9812,8 +9812,8 @@ export function refetchEcoverseContributionDetailsQuery(
   return { query: EcoverseContributionDetailsDocument, variables: variables };
 }
 export const ChallengeContributionDetailsDocument = gql`
-  query challengeContributionDetails($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeContributionDetails($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       challenge(ID: $challengeId) {
@@ -9849,7 +9849,7 @@ export const ChallengeContributionDetailsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeContributionDetailsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -9892,8 +9892,8 @@ export function refetchChallengeContributionDetailsQuery(
   return { query: ChallengeContributionDetailsDocument, variables: variables };
 }
 export const OpportunityContributionDetailsDocument = gql`
-  query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityContributionDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       opportunity(ID: $opportunityId) {
@@ -9931,7 +9931,7 @@ export const OpportunityContributionDetailsDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityContributionDetailsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -10037,7 +10037,7 @@ export function refetchContributorsSearchQuery(variables: SchemaTypes.Contributo
 }
 export const HubAspectDocument = gql`
   query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       context {
         ...AspectDashboardData
@@ -10087,7 +10087,7 @@ export function refetchHubAspectQuery(variables: SchemaTypes.HubAspectQueryVaria
 }
 export const ChallengeAspectDocument = gql`
   query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
         id
@@ -10147,7 +10147,7 @@ export function refetchChallengeAspectQuery(variables: SchemaTypes.ChallengeAspe
 }
 export const OpportunityAspectDocument = gql`
   query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
         id
@@ -10268,7 +10268,7 @@ export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const HubAspectSettingsDocument = gql`
   query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       context {
         id
@@ -10330,7 +10330,7 @@ export function refetchHubAspectSettingsQuery(variables: SchemaTypes.HubAspectSe
 }
 export const ChallengeAspectSettingsDocument = gql`
   query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
         id
@@ -10403,7 +10403,7 @@ export const OpportunityAspectSettingsDocument = gql`
     $opportunityNameId: UUID_NAMEID!
     $aspectNameId: UUID_NAMEID!
   ) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
         id
@@ -10471,8 +10471,8 @@ export function refetchOpportunityAspectSettingsQuery(variables: SchemaTypes.Opp
   return { query: OpportunityAspectSettingsDocument, variables: variables };
 }
 export const EcoverseCanvasesDocument = gql`
-  query ecoverseCanvases($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubCanvases($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       context {
         id
@@ -10497,7 +10497,7 @@ export const EcoverseCanvasesDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseCanvasesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -10532,8 +10532,8 @@ export function refetchEcoverseCanvasesQuery(variables: SchemaTypes.EcoverseCanv
   return { query: EcoverseCanvasesDocument, variables: variables };
 }
 export const EcoverseCanvasValuesDocument = gql`
-  query ecoverseCanvasValues($ecoverseId: UUID_NAMEID!, $canvasId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
+    hub(ID: $hubId) {
       id
       context {
         id
@@ -10560,7 +10560,7 @@ export const EcoverseCanvasValuesDocument = gql`
  * @example
  * const { data, loading, error } = useEcoverseCanvasValuesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      canvasId: // value for 'canvasId'
  *   },
  * });
@@ -10599,8 +10599,8 @@ export function refetchEcoverseCanvasValuesQuery(variables: SchemaTypes.Ecoverse
   return { query: EcoverseCanvasValuesDocument, variables: variables };
 }
 export const ChallengeCanvasesDocument = gql`
-  query challengeCanvases($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeCanvases($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -10628,7 +10628,7 @@ export const ChallengeCanvasesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeCanvasesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -10664,8 +10664,8 @@ export function refetchChallengeCanvasesQuery(variables: SchemaTypes.ChallengeCa
   return { query: ChallengeCanvasesDocument, variables: variables };
 }
 export const ChallengeCanvasValuesDocument = gql`
-  query challengeCanvasValues($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasId: UUID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -10695,7 +10695,7 @@ export const ChallengeCanvasValuesDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeCanvasValuesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *      canvasId: // value for 'canvasId'
  *   },
@@ -10735,8 +10735,8 @@ export function refetchChallengeCanvasValuesQuery(variables: SchemaTypes.Challen
   return { query: ChallengeCanvasValuesDocument, variables: variables };
 }
 export const OpportunityCanvasesDocument = gql`
-  query opportunityCanvases($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityCanvases($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -10764,7 +10764,7 @@ export const OpportunityCanvasesDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityCanvasesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -10803,8 +10803,8 @@ export function refetchOpportunityCanvasesQuery(variables: SchemaTypes.Opportuni
   return { query: OpportunityCanvasesDocument, variables: variables };
 }
 export const OpportunityCanvasValuesDocument = gql`
-  query opportunityCanvasValues($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityCanvasValues($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasId: UUID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
@@ -10834,7 +10834,7 @@ export const OpportunityCanvasValuesDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityCanvasValuesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *      canvasId: // value for 'canvasId'
  *   },
@@ -11168,7 +11168,7 @@ export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.Chall
 }
 export const SimpleEcoverseDocument = gql`
   query SimpleEcoverse($ID: UUID_NAMEID!) {
-    ecoverse(ID: $ID) {
+    hub(ID: $ID) {
       ...SimpleEcoverse
     }
   }
@@ -11219,8 +11219,8 @@ export function refetchSimpleEcoverseQuery(variables: SchemaTypes.SimpleEcoverse
   return { query: SimpleEcoverseDocument, variables: variables };
 }
 export const ChallengeExplorerSearchEnricherDocument = gql`
-  query ChallengeExplorerSearchEnricher($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query ChallengeExplorerSearchEnricher($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       nameID
       displayName
@@ -11240,7 +11240,7 @@ export const ChallengeExplorerSearchEnricherDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeExplorerSearchEnricherQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -11282,8 +11282,8 @@ export function refetchChallengeExplorerSearchEnricherQuery(
   return { query: ChallengeExplorerSearchEnricherDocument, variables: variables };
 }
 export const ChallengePageDocument = gql`
-  query challengePage($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query challengePage($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         ...ChallengeProfile
@@ -11305,7 +11305,7 @@ export const ChallengePageDocument = gql`
  * @example
  * const { data, loading, error } = useChallengePageQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -11340,7 +11340,7 @@ export function refetchChallengePageQuery(variables: SchemaTypes.ChallengePageQu
 export const ChallengesOverviewPageDocument = gql`
   query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
     membershipUser(membershipData: $membershipData) {
-      ecoverses {
+      hubs {
         id
         ...SimpleEcoverseResultEntry
         challenges {
@@ -11402,8 +11402,8 @@ export function refetchChallengesOverviewPageQuery(variables: SchemaTypes.Challe
   return { query: ChallengesOverviewPageDocument, variables: variables };
 }
 export const CommunityUpdatesDocument = gql`
-  query communityUpdates($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query communityUpdates($hubId: UUID_NAMEID!, $communityId: UUID!) {
+    hub(ID: $hubId) {
       id
       community(ID: $communityId) {
         id
@@ -11435,7 +11435,7 @@ export const CommunityUpdatesDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityUpdatesQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -11605,8 +11605,8 @@ export type CommunicationUpdateMessageReceivedSubscriptionHookResult = ReturnTyp
 export type CommunicationUpdateMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationUpdateMessageReceivedSubscription>;
 export const CommunityPageDocument = gql`
-  query CommunityPage($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query CommunityPage($hubId: UUID_NAMEID!, $communityId: UUID!) {
+    hub(ID: $hubId) {
       id
       community(ID: $communityId) {
         id
@@ -11632,7 +11632,7 @@ export const CommunityPageDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityPageQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -11665,8 +11665,8 @@ export function refetchCommunityPageQuery(variables: SchemaTypes.CommunityPageQu
   return { query: CommunityPageDocument, variables: variables };
 }
 export const CommunityPageWithHostDocument = gql`
-  query CommunityPageWithHost($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query CommunityPageWithHost($hubId: UUID_NAMEID!, $communityId: UUID!) {
+    hub(ID: $hubId) {
       id
       host {
         ...OrganizationCard
@@ -11696,7 +11696,7 @@ export const CommunityPageWithHostDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityPageWithHostQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -11735,8 +11735,8 @@ export function refetchCommunityPageWithHostQuery(variables: SchemaTypes.Communi
   return { query: CommunityPageWithHostDocument, variables: variables };
 }
 export const ChallengeLeadingOrganizationsDocument = gql`
-  query ChallengeLeadingOrganizations($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query ChallengeLeadingOrganizations($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
@@ -11761,7 +11761,7 @@ export const ChallengeLeadingOrganizationsDocument = gql`
  * @example
  * const { data, loading, error } = useChallengeLeadingOrganizationsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
  *   },
  * });
@@ -11805,7 +11805,7 @@ export function refetchChallengeLeadingOrganizationsQuery(
 }
 export const HubContextDocument = gql`
   query HubContext($hubNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       nameID
       displayName
@@ -11867,7 +11867,7 @@ export function refetchHubContextQuery(variables: SchemaTypes.HubContextQueryVar
 }
 export const HubContextExtraDocument = gql`
   query HubContextExtra($hubNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       nameID
       displayName
@@ -11929,7 +11929,7 @@ export function refetchHubContextExtraQuery(variables: SchemaTypes.HubContextExt
 }
 export const ChallengeContextDocument = gql`
   query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       nameID
       displayName
@@ -12004,7 +12004,7 @@ export function refetchChallengeContextQuery(variables: SchemaTypes.ChallengeCon
 }
 export const ChallengeContextExtraDocument = gql`
   query ChallengeContextExtra($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       nameID
       displayName
@@ -12082,7 +12082,7 @@ export function refetchChallengeContextExtraQuery(variables: SchemaTypes.Challen
 }
 export const OpportunityContextDocument = gql`
   query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       nameID
       opportunity(ID: $opportunityNameId) {
@@ -12159,7 +12159,7 @@ export function refetchOpportunityContextQuery(variables: SchemaTypes.Opportunit
 }
 export const OpportunityContextExtraDocument = gql`
   query OpportunityContextExtra($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       nameID
       opportunity(ID: $opportunityNameId) {
@@ -12235,8 +12235,8 @@ export function refetchOpportunityContextExtraQuery(variables: SchemaTypes.Oppor
   return { query: OpportunityContextExtraDocument, variables: variables };
 }
 export const CommunityDiscussionDocument = gql`
-  query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
-    ecoverse(ID: $ecoverseId) {
+  query communityDiscussion($hubId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
+    hub(ID: $hubId) {
       id
       community(ID: $communityId) {
         id
@@ -12271,7 +12271,7 @@ export const CommunityDiscussionDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityDiscussionQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      communityId: // value for 'communityId'
  *      discussionId: // value for 'discussionId'
  *   },
@@ -12311,8 +12311,8 @@ export function refetchCommunityDiscussionQuery(variables: SchemaTypes.Community
   return { query: CommunityDiscussionDocument, variables: variables };
 }
 export const CommunityDiscussionListDocument = gql`
-  query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-    ecoverse(ID: $ecoverseId) {
+  query communityDiscussionList($hubId: UUID_NAMEID!, $communityId: UUID!) {
+    hub(ID: $hubId) {
       id
       community(ID: $communityId) {
         id
@@ -12343,7 +12343,7 @@ export const CommunityDiscussionListDocument = gql`
  * @example
  * const { data, loading, error } = useCommunityDiscussionListQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      communityId: // value for 'communityId'
  *   },
  * });
@@ -12632,8 +12632,8 @@ export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
 export type CommunicationDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
 export const EcoversePageDocument = gql`
-  query ecoversePage($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query hubPage($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       ...EcoversePage
     }
   }
@@ -12652,7 +12652,7 @@ export const EcoversePageDocument = gql`
  * @example
  * const { data, loading, error } = useEcoversePageQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -12684,8 +12684,8 @@ export function refetchEcoversePageQuery(variables: SchemaTypes.EcoversePageQuer
   return { query: EcoversePageDocument, variables: variables };
 }
 export const EcoversePageProjectsDocument = gql`
-  query EcoversePageProjects($ecoverseId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query EcoversePageProjects($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       challenges {
         id
@@ -12716,7 +12716,7 @@ export const EcoversePageProjectsDocument = gql`
  * @example
  * const { data, loading, error } = useEcoversePageProjectsQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *   },
  * });
  */
@@ -12852,8 +12852,8 @@ export type RemoveUserAsOpportunityAdminMutationOptions = Apollo.BaseMutationOpt
   SchemaTypes.RemoveUserAsOpportunityAdminMutationVariables
 >;
 export const OpportunityPageDocument = gql`
-  query opportunityPage($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    ecoverse(ID: $ecoverseId) {
+  query opportunityPage($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         ...OpportunityPage
@@ -12875,7 +12875,7 @@ export const OpportunityPageDocument = gql`
  * @example
  * const { data, loading, error } = useOpportunityPageQuery({
  *   variables: {
- *      ecoverseId: // value for 'ecoverseId'
+ *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
  *   },
  * });
@@ -13370,7 +13370,7 @@ export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsC
 }
 export const HubAspectProviderDocument = gql`
   query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       context {
         ...AspectProviderData
@@ -13429,7 +13429,7 @@ export function refetchHubAspectProviderQuery(variables: SchemaTypes.HubAspectPr
 }
 export const ChallengeAspectProviderDocument = gql`
   query ChallengeAspectProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
         id
@@ -13499,7 +13499,7 @@ export const OpportunityAspectProviderDocument = gql`
     $opportunityNameId: UUID_NAMEID!
     $aspectNameId: UUID_NAMEID!
   ) {
-    ecoverse(ID: $hubNameId) {
+    hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
         id

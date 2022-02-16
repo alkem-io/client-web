@@ -16,15 +16,15 @@ export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, com
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'updates', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const { ecoverseId } = useEcoverse();
+  const { hubId } = useEcoverse();
 
-  if (!communityId || !ecoverseId) {
+  if (!communityId || !hubId) {
     return <Container maxWidth="xl">No community</Container>;
   }
 
   return (
     <Container maxWidth="xl">
-      <CommunityUpdatesContainer entities={{ ecoverseId, communityId }}>
+      <CommunityUpdatesContainer entities={{ hubId, communityId }}>
         {({ messages, senders }, actions, loading) => (
           <AvatarsProvider users={senders}>
             {populatedUsers => (

@@ -70,7 +70,7 @@ export type ApplicationResultEntryKeySpecifier = (
   | 'communityID'
   | 'createdDate'
   | 'displayName'
-  | 'ecoverseID'
+  | 'hubID'
   | 'id'
   | 'opportunityID'
   | 'state'
@@ -82,7 +82,7 @@ export type ApplicationResultEntryFieldPolicy = {
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunityID?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -219,7 +219,7 @@ export type ChallengeKeySpecifier = (
   | 'community'
   | 'context'
   | 'displayName'
-  | 'ecoverseID'
+  | 'hubID'
   | 'id'
   | 'leadOrganizations'
   | 'lifecycle'
@@ -236,7 +236,7 @@ export type ChallengeFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -546,14 +546,14 @@ export type MembershipCommunityResultEntryFieldPolicy = {
 };
 export type MembershipOrganizationResultEntryChallengeKeySpecifier = (
   | 'displayName'
-  | 'ecoverseID'
+  | 'hubID'
   | 'id'
   | 'nameID'
   | MembershipOrganizationResultEntryChallengeKeySpecifier
 )[];
 export type MembershipOrganizationResultEntryChallengeFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -566,7 +566,7 @@ export type MembershipResultEntryFieldPolicy = {
 export type MembershipUserResultEntryEcoverseKeySpecifier = (
   | 'challenges'
   | 'displayName'
-  | 'ecoverseID'
+  | 'hubID'
   | 'id'
   | 'nameID'
   | 'opportunities'
@@ -576,7 +576,7 @@ export type MembershipUserResultEntryEcoverseKeySpecifier = (
 export type MembershipUserResultEntryEcoverseFieldPolicy = {
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -893,13 +893,13 @@ export type OrganizationFieldPolicy = {
 };
 export type OrganizationMembershipKeySpecifier = (
   | 'challengesLeading'
-  | 'ecoversesHosting'
+  | 'hubsHosting'
   | 'id'
   | OrganizationMembershipKeySpecifier
 )[];
 export type OrganizationMembershipFieldPolicy = {
   challengesLeading?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoversesHosting?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubsHosting?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationTemplateKeySpecifier = ('name' | 'tagsets' | OrganizationTemplateKeySpecifier)[];
@@ -985,8 +985,8 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
   | 'configuration'
-  | 'ecoverse'
-  | 'ecoverses'
+  | 'hub'
+  | 'hubs'
   | 'me'
   | 'meHasProfile'
   | 'membershipOrganization'
@@ -1007,8 +1007,8 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverse?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
+  hub?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   meHasProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   membershipOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1111,7 +1111,7 @@ export type TagsetTemplateFieldPolicy = {
 export type TemplateKeySpecifier = (
   | 'challenges'
   | 'description'
-  | 'ecoverses'
+  | 'hubs'
   | 'name'
   | 'opportunities'
   | 'organizations'
@@ -1121,7 +1121,7 @@ export type TemplateKeySpecifier = (
 export type TemplateFieldPolicy = {
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1192,7 +1192,7 @@ export type UserGroupFieldPolicy = {
 export type UserMembershipKeySpecifier = (
   | 'applications'
   | 'communities'
-  | 'ecoverses'
+  | 'hubs'
   | 'id'
   | 'organizations'
   | UserMembershipKeySpecifier
@@ -1200,7 +1200,7 @@ export type UserMembershipKeySpecifier = (
 export type UserMembershipFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   communities?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
 };

@@ -1,5 +1,5 @@
-query ecoverseName($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query hubName($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
    ...EcoverseName
   }
 }

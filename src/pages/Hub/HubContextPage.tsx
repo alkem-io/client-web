@@ -12,20 +12,20 @@ const EcoverseContextPage: FC<EcoverseContextPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   const {
-    ecoverseId,
-    ecoverseNameId,
+    hubId,
+    hubNameId,
     displayName,
     permissions: { contextPrivileges },
   } = useEcoverse();
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <ContextTabContainer hubNameId={ecoverseNameId} loadAspectsAndReferences={loadAspectsAndReferences}>
+    <ContextTabContainer hubNameId={hubNameId} loadAspectsAndReferences={loadAspectsAndReferences}>
       {(entities, state) => (
         <EcoverseContextView
           entities={{
-            hubId: ecoverseId,
-            hubNameId: ecoverseNameId,
+            hubId: hubId,
+            hubNameId: hubNameId,
             hubDisplayName: displayName,
             hubTagSet: entities.tagset,
             context: entities.context,

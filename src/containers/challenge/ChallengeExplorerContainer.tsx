@@ -7,8 +7,8 @@ import { useApolloErrorHandler, useUserContext } from '../../hooks';
 
 export type SimpleChallenge = {
   id: string;
-  ecoverseId: string;
-  ecoverseNameId: string;
+  hubId: string;
+  hubNameId: string;
 };
 
 export interface ChallengesOverviewContainerEntities {
@@ -44,21 +44,21 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ ch
     },
     skip: !user,
   });
-  const ecoverses = data?.membershipUser.ecoverses;
+  const hubs = data?.membershipUser.hubs;
   const userChallenges: SimpleChallenge[] | undefined =
-    ecoverses &&
-    ecoverses.flatMap(x =>
+    hubs &&
+    hubs.flatMap(x =>
       x?.challenges.map(y => ({
         id: y.id,
-        ecoverseNameId: x.nameID,
-        ecoverseId: x.ecoverseID,
+        hubNameId: x.nameID,
+        hubId: x.hubID,
       }))
     );
 
   const userHubs: SimpleEcoverseResultEntryFragment[] | undefined =
-    ecoverses &&
-    ecoverses.map(({ ecoverseID, displayName, nameID }) => ({
-      ecoverseID,
+    hubs &&
+    hubs.map(({ hubID, displayName, nameID }) => ({
+      hubID,
       displayName,
       nameID,
     }));

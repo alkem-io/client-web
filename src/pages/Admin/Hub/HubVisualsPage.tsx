@@ -9,11 +9,11 @@ export interface EcoverseVisualsPageProps extends PageProps {}
 const EcoverseVisualsPage: FC<EcoverseVisualsPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'visuals', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
-  const { ecoverse } = useEcoverse();
+  const { hub } = useEcoverse();
 
   return (
     <Box paddingY={2}>
-      <EditVisualsView visuals={ecoverse?.context?.visuals} />
+      <EditVisualsView visuals={hub?.context?.visuals} />
     </Box>
   );
 };

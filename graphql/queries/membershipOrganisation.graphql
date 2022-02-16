@@ -1,7 +1,7 @@
 query membershipOrganization($input: MembershipOrganizationInput!) {
   membershipOrganization(membershipData: $input) {
     id
-    ecoversesHosting {
+    hubsHosting {
       id
       nameID
       displayName
@@ -10,7 +10,7 @@ query membershipOrganization($input: MembershipOrganizationInput!) {
       id
       nameID
       displayName
-      ecoverseID
+      hubID
     }
   }
 }

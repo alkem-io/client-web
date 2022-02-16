@@ -49,7 +49,7 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
       navigate(url.split('/').reverse().slice(1).reverse().join('/'), { replace: true });
     },
     onError: handleError,
-    refetchQueries: ['opportunityProfile', 'challengeProfile', 'ecoverseDetails'],
+    refetchQueries: ['opportunityProfile', 'challengeProfile', 'hubDetails'],
     awaitRefetchQueries: true,
   });
 
@@ -96,13 +96,13 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
 const ProjectIndex: FC<ProjectRootProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const { projectNameId = '' } = useUrlParams();
-  const { ecoverseNameId } = useEcoverse();
+  const { hubNameId } = useEcoverse();
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
-    variables: { ecoverseId: ecoverseNameId, projectId: projectNameId },
+    variables: { hubId: hubNameId, projectId: projectNameId },
   });
 
-  const project = query?.ecoverse.project;
+  const project = query?.hub.project;
 
   const currentPaths = useMemo(
     () => (project ? [...paths, { value: url, name: project.displayName, real: true }] : paths),

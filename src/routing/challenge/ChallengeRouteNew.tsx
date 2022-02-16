@@ -27,7 +27,7 @@ import AspectRoute from '../aspect/AspectRoute';
 interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
-  const { ecoverseNameId, ecoverseId, challengeId, challengeNameId, displayName, loading } = useChallenge();
+  const { hubNameId, hubId, challengeId, challengeNameId, displayName, loading } = useChallenge();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
@@ -37,7 +37,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const discussionsRequiredCredentials: CredentialForResource[] = challengeId
     ? [
         { credential: AuthorizationCredential.ChallengeMember, resourceId: challengeId },
-        { credential: AuthorizationCredential.EcoverseAdmin, resourceId: ecoverseId },
+        { credential: AuthorizationCredential.EcoverseAdmin, resourceId: hubId },
       ]
     : [];
 
@@ -60,7 +60,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
                 <ChallengeTabsNew
                   communityReadAccess={e.permissions.communityReadAccess}
                   viewerCanUpdate={e.permissions.canEdit}
-                  ecoverseNameId={ecoverseNameId}
+                  hubNameId={hubNameId}
                   challengeNameId={challengeNameId}
                 />
               }

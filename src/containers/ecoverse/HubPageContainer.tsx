@@ -14,7 +14,7 @@ import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProv
 import { Discussion } from '../../models/discussion/discussion';
 
 export interface EcoverseContainerEntities {
-  ecoverse?: EcoversePageFragment;
+  hub?: EcoversePageFragment;
   isPrivate: boolean;
   permissions: {
     canEdit: boolean;
@@ -43,26 +43,26 @@ export interface EcoversePageContainerProps
 export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { ecoverseId, ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
-  const { data: _ecoverse, loading: loadingEcoverseQuery } = useEcoversePageQuery({
-    variables: { ecoverseId: ecoverseNameId },
+  const { hubId, hubNameId, loading: loadingEcoverse } = useEcoverse();
+  const { data: _hub, loading: loadingEcoverseQuery } = useEcoversePageQuery({
+    variables: { hubId: hubNameId },
     errorPolicy: 'all',
   });
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const { user, isAuthenticated } = useUserContext();
 
-  const communityReadAccess = (_ecoverse?.ecoverse?.community?.authorization?.myPrivileges ?? []).some(
+  const communityReadAccess = (_hub?.hub?.community?.authorization?.myPrivileges ?? []).some(
     x => x === AuthorizationPrivilege.Read
   );
 
   const { data: _projects, loading: loadingProjects } = useEcoversePageProjectsQuery({
-    variables: { ecoverseId: ecoverseNameId },
+    variables: { hubId: hubNameId },
   });
 
   const projects = useMemo(() => {
     const result =
-      _projects?.ecoverse.challenges?.flatMap(
+      _projects?.hub.challenges?.flatMap(
         c =>
           c.opportunities?.flatMap(
             o =>
@@ -74,7 +74,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
                     caption: c.displayName || '',
                     tag: { status: 'positive', text: p?.lifecycle?.state || '' },
                     type: 'display',
-                    onSelect: () => navigate(buildProjectUrl(ecoverseNameId, c.nameID, o.nameID, p.nameID)),
+                    onSelect: () => navigate(buildProjectUrl(hubNameId, c.nameID, o.nameID, p.nameID)),
                   } as Project)
               ) || []
           ) || []
@@ -90,7 +90,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
   }, [_projects]);
 
   const activity: ActivityItem[] = useMemo(() => {
-    const _activity = _ecoverse?.ecoverse.activity || [];
+    const _activity = _hub?.hub.activity || [];
     return [
       {
         name: t('pages.activity.challenges'),
@@ -108,14 +108,14 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
         color: 'neutralMedium',
       },
     ];
-  }, [_ecoverse]);
+  }, [_hub]);
 
-  const isMember = user?.ofEcoverse(ecoverseId) ?? false;
+  const isMember = user?.ofEcoverse(hubId) ?? false;
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
-  const isPrivate = !(_ecoverse?.ecoverse?.authorization?.anonymousReadAccess ?? true);
+  const isPrivate = !(_hub?.hub?.authorization?.anonymousReadAccess ?? true);
 
   const permissions = {
-    canEdit: user?.isEcoverseAdmin(ecoverseId) || false,
+    canEdit: user?.isEcoverseAdmin(hubId) || false,
     communityReadAccess,
     // todo: use privileges instead when authorization on challenges is public
     challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
@@ -125,7 +125,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
     <>
       {children(
         {
-          ecoverse: _ecoverse?.ecoverse,
+          hub: _hub?.hub,
           discussionList,
           isPrivate,
           permissions,

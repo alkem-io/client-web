@@ -6,7 +6,7 @@ import { AuthorizationCredential } from '../../models/graphql-schema';
 import { Error404 } from '../../pages';
 import ManagementPageTemplatePage from '../../pages/Admin/ManagementPageTemplatePage';
 import RestrictedRoute from '../RestrictedRoute';
-import { EcoversesRoute } from './ecoverse/EcoversesRoute';
+import { EcoversesRoute } from './hub/EcoversesRoute';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { OrganizationsRoute } from './organization/OrganizationsRoute';
 import { UsersRoute } from './users/UsersRoute';

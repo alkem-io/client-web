@@ -8,13 +8,13 @@ import { useUrlParams } from '../../../hooks';
 interface Props extends PageProps {}
 
 export const EcoverseApplicationRoute: FC<Props> = ({ paths }) => {
-  const { ecoverseNameId = '' } = useUrlParams();
+  const { hubNameId = '' } = useUrlParams();
   const { data, loading } = useEcoverseApplicationsQuery({
-    variables: { ecoverseId: ecoverseNameId },
+    variables: { hubId: hubNameId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
-  const applications = data?.ecoverse?.community?.applications || [];
+  const applications = data?.hub?.community?.applications || [];
 
   if (loading) {
     return <Loading />;

@@ -21,10 +21,10 @@ interface P {
 
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, ecosystemModelId, availableActorGroupNames }) => {
   const { t } = useTranslation();
-  const { ecoverseNameId } = useEcoverse();
+  const { hubNameId } = useEcoverse();
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
-    refetchQueries: [refetchOpportunityActorGroupsQuery({ ecoverseId: ecoverseNameId, opportunityId })],
+    refetchQueries: [refetchOpportunityActorGroupsQuery({ hubId: hubNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
   const [name, setName] = useState<string>(availableActorGroupNames[0]);
