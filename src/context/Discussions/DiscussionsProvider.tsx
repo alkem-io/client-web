@@ -5,9 +5,8 @@ import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useApolloErrorHandler, useConfig, useEcoverse } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
-  CommunicationDiscussionMessageReceivedDocument,
+  CommunicationDiscussionUpdatedDocument,
   refetchCommunityDiscussionListQuery,
-  useCommunityDiscussionListLazyQuery,
   useCommunityDiscussionListQuery,
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
@@ -17,9 +16,10 @@ import { Discussion } from '../../models/discussion/discussion';
 import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../models/enums/DiscussionCategoriesExt';
 import {
   AuthorizationPrivilege,
-  CommunicationDiscussionMessageReceivedSubscription,
   Discussion as DiscussionGraphql,
   DiscussionCategory,
+  CommunicationDiscussionUpdatedSubscription,
+  SubscriptionCommunicationDiscussionUpdatedArgs,
 } from '../../models/graphql-schema';
 import { useCommunityContext } from '../CommunityProvider';
 import { buildDiscussionsUrl, buildDiscussionUrl } from '../../utils/urlBuilders';
@@ -73,19 +73,18 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     skip: !ecoverseNameId || !communityId,
     onError: handleError,
   });
-  const [discussionListLazy] = useCommunityDiscussionListLazyQuery({
-    fetchPolicy: 'network-only',
-    variables: { ecoverseId: ecoverseNameId, communityId },
-    onError: handleError,
-  });
 
   useEffect(() => {
-    if (!ecoverseNameId || !communityId || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+    if (!communicationId || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
       return;
     }
 
-    const unSubscribe = subscribeToMore<CommunicationDiscussionMessageReceivedSubscription>({
-      document: CommunicationDiscussionMessageReceivedDocument,
+    const unSubscribe = subscribeToMore<
+      CommunicationDiscussionUpdatedSubscription,
+      SubscriptionCommunicationDiscussionUpdatedArgs
+    >({
+      document: CommunicationDiscussionUpdatedDocument,
+      variables: { communicationID: communicationId },
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       updateQuery: (prev, { subscriptionData }) => {
         const discussions = prev?.ecoverse?.community?.communication?.discussions;
@@ -94,22 +93,16 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
           return prev;
         }
 
-        const messageReceivedInfo = subscriptionData.data.communicationDiscussionMessageReceived;
-        const discussionIndex = discussions.findIndex(x => x.id === messageReceivedInfo.discussionID);
-
-        if (discussionIndex === -1) {
-          // fetch new data from the server
-          discussionListLazy();
-          return prev;
-        }
+        const updatedDiscussion = subscriptionData.data.communicationDiscussionUpdated;
+        const discussionIndex = discussions.findIndex(x => x.id === updatedDiscussion.id);
 
         const updatedDiscussions = [...discussions];
-        const discussion = updatedDiscussions[discussionIndex];
 
-        updatedDiscussions[discussionIndex] = {
-          ...discussion,
-          commentsCount: discussion.commentsCount + 1,
-        };
+        if (discussionIndex === -1) {
+          updatedDiscussions.push(updatedDiscussion);
+        } else {
+          updatedDiscussions[discussionIndex] = { ...updatedDiscussion };
+        }
 
         return merge({}, prev, {
           ecoverse: {
@@ -123,7 +116,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
       },
     });
     return () => unSubscribe && unSubscribe();
-  }, [isFeatureEnabled, subscribeToMore, ecoverseNameId, communityId]);
+  }, [isFeatureEnabled, subscribeToMore, communicationId]);
 
   const discussions = data?.ecoverse.community?.communication?.discussions || [];
 
