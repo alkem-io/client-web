@@ -21,6 +21,7 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
     <Grid container rowSpacing={4}>
       <Grid item xs={12}>
         <AssociatedOrganizationsView
+          canCreateOrganization={userMetadata?.permissions?.canCreateOrganization}
           organizationNameIDs={userMetadata?.organizationNameIDs || []}
           title={t('pages.user-profile.associated-organizations.title')}
           helpText={t('pages.user-profile.associated-organizations.help')}
