@@ -51,18 +51,18 @@ export const buildProjectUrl = (
 ) => `${buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}`;
 
 export const buildDiscussionUrl = (url: string, id: string) => {
-  const stripUrl = url.replace('/community/discussions', '');
-  return `${stripUrl}/community/discussions/${id}`;
+  const stripUrl = url.replace('/discussions', '');
+  return `${stripUrl}/discussions/${id}`;
 };
 
 export const buildDiscussionsUrl = (url: string) => {
-  const stripUrl = url.replace('/community/discussions', '');
-  return `${stripUrl}/community/discussions/`;
+  const stripUrl = url.replace('/discussions', '');
+  return `${stripUrl}/discussions/`;
 };
 
 export const buildNewDiscussionUrl = (url: string) => {
-  const stripUrl = url.replace('/community/discussions', '');
-  return `${stripUrl}/community/discussions/new`;
+  const stripUrl = url.replace('/discussions', '');
+  return `${stripUrl}/discussions/new`;
 };
 
 export const buildNewOrganizationUrl = () => {

@@ -10,14 +10,18 @@ export interface AspectRouteProps extends PageProps {}
 
 const AspectRoute: FC<AspectRouteProps> = ({ paths: _paths }) => {
   const { displayName = '' } = useAspect();
-  const resolved = useResolvedPath('.');
+  const { pathname } = useResolvedPath('.');
+  const [lastPath] = _paths.slice(-1);
+  const contextPath = `${lastPath.value}/context`;
+
   const currentPaths = useMemo(
     () => [
       ..._paths,
+      { value: contextPath, name: 'context', real: true },
       { value: '', name: 'aspects', real: false },
-      { value: resolved.pathname, name: displayName, real: true },
+      { value: pathname, name: displayName, real: true },
     ],
-    [_paths, displayName]
+    [_paths, displayName, pathname, contextPath]
   );
   return (
     <Routes>
