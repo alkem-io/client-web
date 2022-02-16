@@ -3120,6 +3120,11 @@ export type GroupMembersFragment = {
   email: string;
 };
 
+export type MyPrivilegesFragment = {
+  __typename?: 'Authorization';
+  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+};
+
 export type NewChallengeFragment = { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 
 export type NewOpportunityFragment = { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
@@ -7026,6 +7031,7 @@ export type UserProfileQuery = {
         }>
       | undefined;
   };
+  authorization: { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined };
 };
 
 export type UsersQueryVariables = Exact<{

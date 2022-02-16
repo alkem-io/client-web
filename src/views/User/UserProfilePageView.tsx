@@ -9,7 +9,7 @@ export interface UserProfileViewPageProps extends UserProfileViewProps {}
 
 export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, options }) => {
   const { t } = useTranslation();
-  const { contributions, pendingApplications, organizationNameIDs } = entities.userMetadata;
+  const { contributions, pendingApplications, organizationNameIDs, permissions } = entities.userMetadata;
 
   return (
     <Grid container spacing={2}>
@@ -20,6 +20,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, op
         <Grid item>
           <AssociatedOrganizationsView
             organizationNameIDs={organizationNameIDs}
+            canCreateOrganization={permissions.canCreateOrganization}
             title={t('pages.user-profile.associated-organizations.title')}
             helpText={t('pages.user-profile.associated-organizations.help')}
           />

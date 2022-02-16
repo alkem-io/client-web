@@ -65,6 +65,10 @@ export const buildNewDiscussionUrl = (url: string) => {
   return `${stripUrl}/community/discussions/new`;
 };
 
+export const buildNewOrganizationUrl = () => {
+  return '/admin/organizations/new';
+};
+
 export const buildAspectUrl = (
   aspectNameId: string,
   ecoverseNameId: string,
