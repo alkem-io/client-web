@@ -26,7 +26,7 @@ export const AssociatedOrganizationsView: FC<AssociatedOrganizationsViewProps> =
   organizationNameIDs,
   dense = false,
   loading,
-  canCreateOrganization,
+  canCreateOrganization = false,
   title,
   helpText,
 }) => {
