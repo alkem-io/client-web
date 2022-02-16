@@ -2158,8 +2158,6 @@ export type Subscription = {
   canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
-  /** Receive new Discussion messages */
-  communicationDiscussionMessageReceived2: CommunicationDiscussionMessageReceived;
   /** Receive updates on Discussions */
   communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
@@ -2171,10 +2169,6 @@ export type SubscriptionCanvasContentUpdatedArgs = {
 };
 
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
-  discussionIDs?: InputMaybe<Array<Scalars['UUID']>>;
-};
-
-export type SubscriptionCommunicationDiscussionMessageReceived2Args = {
   discussionID: Scalars['UUID'];
 };
 
@@ -9350,7 +9344,9 @@ export type AuthorDetailsQuery = {
   }>;
 };
 
-export type CommunicationDiscussionMessageReceivedSubscriptionVariables = Exact<{ [key: string]: never }>;
+export type CommunicationDiscussionMessageReceivedSubscriptionVariables = Exact<{
+  discussionID: Scalars['UUID'];
+}>;
 
 export type CommunicationDiscussionMessageReceivedSubscription = {
   __typename?: 'Subscription';
@@ -9358,6 +9354,24 @@ export type CommunicationDiscussionMessageReceivedSubscription = {
     __typename?: 'CommunicationDiscussionMessageReceived';
     discussionID: string;
     message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
+  };
+};
+
+export type CommunicationDiscussionUpdatedSubscriptionVariables = Exact<{
+  communicationID: Scalars['UUID'];
+}>;
+
+export type CommunicationDiscussionUpdatedSubscription = {
+  __typename?: 'Subscription';
+  communicationDiscussionUpdated: {
+    __typename?: 'Discussion';
+    id: string;
+    title: string;
+    description: string;
+    createdBy: string;
+    timestamp?: number | undefined;
+    category: DiscussionCategory;
+    commentsCount: number;
   };
 };
 

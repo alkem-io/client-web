@@ -12540,8 +12540,8 @@ export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQu
   return { query: AuthorDetailsDocument, variables: variables };
 }
 export const CommunicationDiscussionMessageReceivedDocument = gql`
-  subscription communicationDiscussionMessageReceived {
-    communicationDiscussionMessageReceived {
+  subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
+    communicationDiscussionMessageReceived(discussionID: $discussionID) {
       discussionID
       message {
         ...MessageDetails
@@ -12563,11 +12563,12 @@ export const CommunicationDiscussionMessageReceivedDocument = gql`
  * @example
  * const { data, loading, error } = useCommunicationDiscussionMessageReceivedSubscription({
  *   variables: {
+ *      discussionID: // value for 'discussionID'
  *   },
  * });
  */
 export function useCommunicationDiscussionMessageReceivedSubscription(
-  baseOptions?: Apollo.SubscriptionHookOptions<
+  baseOptions: Apollo.SubscriptionHookOptions<
     SchemaTypes.CommunicationDiscussionMessageReceivedSubscription,
     SchemaTypes.CommunicationDiscussionMessageReceivedSubscriptionVariables
   >
@@ -12583,6 +12584,53 @@ export type CommunicationDiscussionMessageReceivedSubscriptionHookResult = Retur
 >;
 export type CommunicationDiscussionMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionMessageReceivedSubscription>;
+export const CommunicationDiscussionUpdatedDocument = gql`
+  subscription communicationDiscussionUpdated($communicationID: UUID!) {
+    communicationDiscussionUpdated(communicationID: $communicationID) {
+      id
+      title
+      description
+      createdBy
+      timestamp
+      category
+      commentsCount
+    }
+  }
+`;
+
+/**
+ * __useCommunicationDiscussionUpdatedSubscription__
+ *
+ * To run a query within a React component, call `useCommunicationDiscussionUpdatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCommunicationDiscussionUpdatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunicationDiscussionUpdatedSubscription({
+ *   variables: {
+ *      communicationID: // value for 'communicationID'
+ *   },
+ * });
+ */
+export function useCommunicationDiscussionUpdatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CommunicationDiscussionUpdatedSubscription,
+    SchemaTypes.CommunicationDiscussionUpdatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CommunicationDiscussionUpdatedSubscription,
+    SchemaTypes.CommunicationDiscussionUpdatedSubscriptionVariables
+  >(CommunicationDiscussionUpdatedDocument, options);
+}
+export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
+  typeof useCommunicationDiscussionUpdatedSubscription
+>;
+export type CommunicationDiscussionUpdatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
 export const EcoversePageDocument = gql`
   query ecoversePage($ecoverseId: UUID_NAMEID!) {
     ecoverse(ID: $ecoverseId) {
