@@ -18,7 +18,7 @@ import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } fr
 import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
 
 const routes = {
-  discussions: 'community/discussions',
+  discussions: 'discussions',
   community: 'community',
   dashboard: 'dashboard',
   opportunities: 'opportunities',
@@ -98,7 +98,7 @@ const ChallengeTabsNew: FC<ChallengeTabsProps> = ({
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
-          value={tabValue(routes['discussions'])}
+          value={tabValue('discussions')}
           to={routes['discussions']}
         />
         <NavigationTab
