@@ -92,18 +92,17 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
         if (!discussions) {
           return prev;
         }
-        // todo: update discussion
+
         const updatedDiscussion = subscriptionData.data.communicationDiscussionUpdated;
         const discussionIndex = discussions.findIndex(x => x.id === updatedDiscussion.id);
 
-        if (discussionIndex === -1) {
-          return prev;
-        }
-
         const updatedDiscussions = [...discussions];
-        updatedDiscussions[discussionIndex] = {
-          ...updatedDiscussion,
-        };
+
+        if (discussionIndex === -1) {
+          updatedDiscussions.push(updatedDiscussion);
+        } else {
+          updatedDiscussions[discussionIndex] = { ...updatedDiscussion };
+        }
 
         return merge({}, prev, {
           ecoverse: {
