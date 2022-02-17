@@ -1,15 +1,15 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { EcoverseProvider } from '../../../context/EcoverseProvider';
+import { HubProvider } from '../../../context/HubProvider';
 import { useTransactionScope } from '../../../hooks';
 import { Error404, PageProps } from '../../../pages';
-import EcoverseList from '../../../pages/Admin/Ecoverse/EcoverseList';
-import NewEcoverse from '../../../pages/Admin/Ecoverse/NewEcoverse';
+import HubList from '../../../pages/Admin/Hub/HubList';
+import NewHub from '../../../pages/Admin/Hub/NewHub';
 import { nameOfUrl } from '../../url-params';
-import { EcoverseRoute } from './EcoverseRoute';
+import { HubRoute } from './HubRoute';
 
-export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
+export const HubsRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   useTransactionScope({ type: 'admin' });
   const { pathname: url } = useResolvedPath('.');
@@ -28,14 +28,14 @@ export const EcoversesRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Routes>
       <Route path={'/'}>
-        <Route index element={<EcoverseList paths={currentPaths} />}></Route>
-        <Route path={'new'} element={<NewEcoverse paths={currentPaths} />}></Route>
+        <Route index element={<HubList paths={currentPaths} />}></Route>
+        <Route path={'new'} element={<NewHub paths={currentPaths} />}></Route>
         <Route
           path={`:${nameOfUrl.hubNameId}/*`}
           element={
-            <EcoverseProvider>
-              <EcoverseRoute paths={currentPaths} />
-            </EcoverseProvider>
+            <HubProvider>
+              <HubRoute paths={currentPaths} />
+            </HubProvider>
           }
         ></Route>
         <Route path="*" element={<Error404 />}></Route>

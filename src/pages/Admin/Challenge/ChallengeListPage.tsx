@@ -10,7 +10,7 @@ import {
   useDeleteChallengeMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
-import { useEcoverse } from '../../../hooks';
+import { useHub } from '../../../hooks';
 import { useResolvedPath } from 'react-router-dom';
 
 interface ChallengeListProps extends PageProps {}
@@ -18,7 +18,7 @@ interface ChallengeListProps extends PageProps {}
 export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({
     variables: {
       hubId: hubNameId,

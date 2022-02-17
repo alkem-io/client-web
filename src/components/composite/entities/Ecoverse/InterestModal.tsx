@@ -8,7 +8,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select/Select';
 import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
+import { useApolloErrorHandler, useHub } from '../../../../hooks';
 import {
   refetchOpportunityRelationsQuery,
   useCreateRelationMutation,
@@ -35,7 +35,7 @@ interface P {
 const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   const { t } = useTranslation();
   const styles = useStyles();
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const roles = ['Want to help build', 'Interested in your solution', 'Sharing knowledge / network', 'Other'];
   const { data: userData } = useMeQuery();
   const handleError = useApolloErrorHandler();

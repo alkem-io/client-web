@@ -3,8 +3,8 @@ import * as SchemaTypes from '../../models/graphql-schema';
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {};
-export const AdminEcoverseFragmentDoc = gql`
-  fragment AdminEcoverse on Ecoverse {
+export const AdminHubFragmentDoc = gql`
+  fragment AdminHub on Hub {
     id
     nameID
     displayName
@@ -327,8 +327,8 @@ export const ContextDetailsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const EcoverseDetailsFragmentDoc = gql`
-  fragment EcoverseDetails on Ecoverse {
+export const HubDetailsFragmentDoc = gql`
+  fragment HubDetails on Hub {
     id
     nameID
     displayName
@@ -352,9 +352,9 @@ export const EcoverseDetailsFragmentDoc = gql`
   }
   ${ContextDetailsFragmentDoc}
 `;
-export const EcoverseInfoFragmentDoc = gql`
-  fragment EcoverseInfo on Ecoverse {
-    ...EcoverseDetails
+export const HubInfoFragmentDoc = gql`
+  fragment HubInfo on Hub {
+    ...HubDetails
     authorization {
       id
       myPrivileges
@@ -384,10 +384,10 @@ export const EcoverseInfoFragmentDoc = gql`
       }
     }
   }
-  ${EcoverseDetailsFragmentDoc}
+  ${HubDetailsFragmentDoc}
 `;
-export const EcoverseNameFragmentDoc = gql`
-  fragment EcoverseName on Ecoverse {
+export const HubNameFragmentDoc = gql`
+  fragment HubName on Hub {
     id
     nameID
     displayName
@@ -407,8 +407,8 @@ export const ContextDetailsProviderFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const EcoverseDetailsProviderFragmentDoc = gql`
-  fragment EcoverseDetailsProvider on Ecoverse {
+export const HubDetailsProviderFragmentDoc = gql`
+  fragment HubDetailsProvider on Hub {
     id
     nameID
     displayName
@@ -1059,8 +1059,8 @@ export const ChallengeExplorerSearchResultFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const SimpleEcoverseFragmentDoc = gql`
-  fragment SimpleEcoverse on Ecoverse {
+export const SimpleHubFragmentDoc = gql`
+  fragment SimpleHub on Hub {
     id
     nameID
     displayName
@@ -1171,8 +1171,8 @@ export const ChallengeProfileFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
-export const SimpleEcoverseResultEntryFragmentDoc = gql`
-  fragment SimpleEcoverseResultEntry on MembershipUserResultEntryEcoverse {
+export const SimpleHubResultEntryFragmentDoc = gql`
+  fragment SimpleHubResultEntry on MembershipUserResultEntryHub {
     hubID
     nameID
     displayName
@@ -1270,8 +1270,8 @@ export const DiscussionDetailsNoAuthFragmentDoc = gql`
     commentsCount
   }
 `;
-export const EcoversePageFragmentDoc = gql`
-  fragment EcoversePage on Ecoverse {
+export const HubPageFragmentDoc = gql`
+  fragment HubPage on Hub {
     id
     nameID
     displayName
@@ -1800,7 +1800,7 @@ export type CreateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectMutationVariables
 >;
 export const CreateChallengeDocument = gql`
-  mutation createChallenge($input: CreateChallengeOnEcoverseInput!) {
+  mutation createChallenge($input: CreateChallengeOnHubInput!) {
     createChallenge(challengeData: $input) {
       ...NewChallenge
     }
@@ -1847,53 +1847,50 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateChallengeMutation,
   SchemaTypes.CreateChallengeMutationVariables
 >;
-export const CreateEcoverseDocument = gql`
-  mutation createEcoverse($input: CreateEcoverseInput!) {
-    createEcoverse(hubData: $input) {
-      ...EcoverseDetails
+export const CreateHubDocument = gql`
+  mutation createHub($input: CreateHubInput!) {
+    createHub(hubData: $input) {
+      ...HubDetails
     }
   }
-  ${EcoverseDetailsFragmentDoc}
+  ${HubDetailsFragmentDoc}
 `;
-export type CreateEcoverseMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateEcoverseMutation,
-  SchemaTypes.CreateEcoverseMutationVariables
+export type CreateHubMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateHubMutation,
+  SchemaTypes.CreateHubMutationVariables
 >;
 
 /**
- * __useCreateEcoverseMutation__
+ * __useCreateHubMutation__
  *
- * To run a mutation, you first call `useCreateEcoverseMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateEcoverseMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateHubMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateHubMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createEcoverseMutation, { data, loading, error }] = useCreateEcoverseMutation({
+ * const [createHubMutation, { data, loading, error }] = useCreateHubMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateEcoverseMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateEcoverseMutation,
-    SchemaTypes.CreateEcoverseMutationVariables
-  >
+export function useCreateHubMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateHubMutation, SchemaTypes.CreateHubMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateEcoverseMutation, SchemaTypes.CreateEcoverseMutationVariables>(
-    CreateEcoverseDocument,
+  return Apollo.useMutation<SchemaTypes.CreateHubMutation, SchemaTypes.CreateHubMutationVariables>(
+    CreateHubDocument,
     options
   );
 }
-export type CreateEcoverseMutationHookResult = ReturnType<typeof useCreateEcoverseMutation>;
-export type CreateEcoverseMutationResult = Apollo.MutationResult<SchemaTypes.CreateEcoverseMutation>;
-export type CreateEcoverseMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateEcoverseMutation,
-  SchemaTypes.CreateEcoverseMutationVariables
+export type CreateHubMutationHookResult = ReturnType<typeof useCreateHubMutation>;
+export type CreateHubMutationResult = Apollo.MutationResult<SchemaTypes.CreateHubMutation>;
+export type CreateHubMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateHubMutation,
+  SchemaTypes.CreateHubMutationVariables
 >;
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
@@ -2660,54 +2657,51 @@ export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDiscussionMutation,
   SchemaTypes.DeleteDiscussionMutationVariables
 >;
-export const DeleteEcoverseDocument = gql`
-  mutation deleteEcoverse($input: DeleteEcoverseInput!) {
-    deleteEcoverse(deleteData: $input) {
+export const DeleteHubDocument = gql`
+  mutation deleteHub($input: DeleteHubInput!) {
+    deleteHub(deleteData: $input) {
       id
       nameID
       displayName
     }
   }
 `;
-export type DeleteEcoverseMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteEcoverseMutation,
-  SchemaTypes.DeleteEcoverseMutationVariables
+export type DeleteHubMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteHubMutation,
+  SchemaTypes.DeleteHubMutationVariables
 >;
 
 /**
- * __useDeleteEcoverseMutation__
+ * __useDeleteHubMutation__
  *
- * To run a mutation, you first call `useDeleteEcoverseMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteEcoverseMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteHubMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteHubMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteEcoverseMutation, { data, loading, error }] = useDeleteEcoverseMutation({
+ * const [deleteHubMutation, { data, loading, error }] = useDeleteHubMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useDeleteEcoverseMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteEcoverseMutation,
-    SchemaTypes.DeleteEcoverseMutationVariables
-  >
+export function useDeleteHubMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteHubMutation, SchemaTypes.DeleteHubMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeleteEcoverseMutation, SchemaTypes.DeleteEcoverseMutationVariables>(
-    DeleteEcoverseDocument,
+  return Apollo.useMutation<SchemaTypes.DeleteHubMutation, SchemaTypes.DeleteHubMutationVariables>(
+    DeleteHubDocument,
     options
   );
 }
-export type DeleteEcoverseMutationHookResult = ReturnType<typeof useDeleteEcoverseMutation>;
-export type DeleteEcoverseMutationResult = Apollo.MutationResult<SchemaTypes.DeleteEcoverseMutation>;
-export type DeleteEcoverseMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteEcoverseMutation,
-  SchemaTypes.DeleteEcoverseMutationVariables
+export type DeleteHubMutationHookResult = ReturnType<typeof useDeleteHubMutation>;
+export type DeleteHubMutationResult = Apollo.MutationResult<SchemaTypes.DeleteHubMutation>;
+export type DeleteHubMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteHubMutation,
+  SchemaTypes.DeleteHubMutationVariables
 >;
 export const DeleteGroupDocument = gql`
   mutation deleteGroup($input: DeleteUserGroupInput!) {
@@ -3239,54 +3233,53 @@ export type AssignUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.AssignUserAsChallengeAdminMutation,
   SchemaTypes.AssignUserAsChallengeAdminMutationVariables
 >;
-export const AssignUserAsEcoverseAdminDocument = gql`
-  mutation assignUserAsEcoverseAdmin($input: AssignEcoverseAdminInput!) {
-    assignUserAsEcoverseAdmin(membershipData: $input) {
+export const AssignUserAsHubAdminDocument = gql`
+  mutation assignUserAsHubAdmin($input: AssignHubAdminInput!) {
+    assignUserAsHubAdmin(membershipData: $input) {
       id
       displayName
     }
   }
 `;
-export type AssignUserAsEcoverseAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsEcoverseAdminMutation,
-  SchemaTypes.AssignUserAsEcoverseAdminMutationVariables
+export type AssignUserAsHubAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsHubAdminMutation,
+  SchemaTypes.AssignUserAsHubAdminMutationVariables
 >;
 
 /**
- * __useAssignUserAsEcoverseAdminMutation__
+ * __useAssignUserAsHubAdminMutation__
  *
- * To run a mutation, you first call `useAssignUserAsEcoverseAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsEcoverseAdminMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAssignUserAsHubAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsHubAdminMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [assignUserAsEcoverseAdminMutation, { data, loading, error }] = useAssignUserAsEcoverseAdminMutation({
+ * const [assignUserAsHubAdminMutation, { data, loading, error }] = useAssignUserAsHubAdminMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAssignUserAsEcoverseAdminMutation(
+export function useAssignUserAsHubAdminMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsEcoverseAdminMutation,
-    SchemaTypes.AssignUserAsEcoverseAdminMutationVariables
+    SchemaTypes.AssignUserAsHubAdminMutation,
+    SchemaTypes.AssignUserAsHubAdminMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.AssignUserAsEcoverseAdminMutation,
-    SchemaTypes.AssignUserAsEcoverseAdminMutationVariables
-  >(AssignUserAsEcoverseAdminDocument, options);
+    SchemaTypes.AssignUserAsHubAdminMutation,
+    SchemaTypes.AssignUserAsHubAdminMutationVariables
+  >(AssignUserAsHubAdminDocument, options);
 }
-export type AssignUserAsEcoverseAdminMutationHookResult = ReturnType<typeof useAssignUserAsEcoverseAdminMutation>;
-export type AssignUserAsEcoverseAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.AssignUserAsEcoverseAdminMutation>;
-export type AssignUserAsEcoverseAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsEcoverseAdminMutation,
-  SchemaTypes.AssignUserAsEcoverseAdminMutationVariables
+export type AssignUserAsHubAdminMutationHookResult = ReturnType<typeof useAssignUserAsHubAdminMutation>;
+export type AssignUserAsHubAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsHubAdminMutation>;
+export type AssignUserAsHubAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsHubAdminMutation,
+  SchemaTypes.AssignUserAsHubAdminMutationVariables
 >;
 export const AssignUserAsGlobalAdminDocument = gql`
   mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
@@ -3487,54 +3480,53 @@ export type RemoveUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.RemoveUserAsChallengeAdminMutation,
   SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
 >;
-export const RemoveUserAsEcoverseAdminDocument = gql`
-  mutation removeUserAsEcoverseAdmin($input: RemoveEcoverseAdminInput!) {
-    removeUserAsEcoverseAdmin(membershipData: $input) {
+export const RemoveUserAsHubAdminDocument = gql`
+  mutation removeUserAsHubAdmin($input: RemoveHubAdminInput!) {
+    removeUserAsHubAdmin(membershipData: $input) {
       id
       displayName
     }
   }
 `;
-export type RemoveUserAsEcoverseAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsEcoverseAdminMutation,
-  SchemaTypes.RemoveUserAsEcoverseAdminMutationVariables
+export type RemoveUserAsHubAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsHubAdminMutation,
+  SchemaTypes.RemoveUserAsHubAdminMutationVariables
 >;
 
 /**
- * __useRemoveUserAsEcoverseAdminMutation__
+ * __useRemoveUserAsHubAdminMutation__
  *
- * To run a mutation, you first call `useRemoveUserAsEcoverseAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsEcoverseAdminMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemoveUserAsHubAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsHubAdminMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [removeUserAsEcoverseAdminMutation, { data, loading, error }] = useRemoveUserAsEcoverseAdminMutation({
+ * const [removeUserAsHubAdminMutation, { data, loading, error }] = useRemoveUserAsHubAdminMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useRemoveUserAsEcoverseAdminMutation(
+export function useRemoveUserAsHubAdminMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsEcoverseAdminMutation,
-    SchemaTypes.RemoveUserAsEcoverseAdminMutationVariables
+    SchemaTypes.RemoveUserAsHubAdminMutation,
+    SchemaTypes.RemoveUserAsHubAdminMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsEcoverseAdminMutation,
-    SchemaTypes.RemoveUserAsEcoverseAdminMutationVariables
-  >(RemoveUserAsEcoverseAdminDocument, options);
+    SchemaTypes.RemoveUserAsHubAdminMutation,
+    SchemaTypes.RemoveUserAsHubAdminMutationVariables
+  >(RemoveUserAsHubAdminDocument, options);
 }
-export type RemoveUserAsEcoverseAdminMutationHookResult = ReturnType<typeof useRemoveUserAsEcoverseAdminMutation>;
-export type RemoveUserAsEcoverseAdminMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveUserAsEcoverseAdminMutation>;
-export type RemoveUserAsEcoverseAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsEcoverseAdminMutation,
-  SchemaTypes.RemoveUserAsEcoverseAdminMutationVariables
+export type RemoveUserAsHubAdminMutationHookResult = ReturnType<typeof useRemoveUserAsHubAdminMutation>;
+export type RemoveUserAsHubAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsHubAdminMutation>;
+export type RemoveUserAsHubAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsHubAdminMutation,
+  SchemaTypes.RemoveUserAsHubAdminMutationVariables
 >;
 export const RemoveUserAsGlobalAdminDocument = gql`
   mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
@@ -3983,53 +3975,50 @@ export type UpdateEcosystemModelMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateEcosystemModelMutation,
   SchemaTypes.UpdateEcosystemModelMutationVariables
 >;
-export const UpdateEcoverseDocument = gql`
-  mutation updateEcoverse($input: UpdateEcoverseInput!) {
-    updateEcoverse(hubData: $input) {
-      ...EcoverseDetails
+export const UpdateHubDocument = gql`
+  mutation updateHub($input: UpdateHubInput!) {
+    updateHub(hubData: $input) {
+      ...HubDetails
     }
   }
-  ${EcoverseDetailsFragmentDoc}
+  ${HubDetailsFragmentDoc}
 `;
-export type UpdateEcoverseMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateEcoverseMutation,
-  SchemaTypes.UpdateEcoverseMutationVariables
+export type UpdateHubMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateHubMutation,
+  SchemaTypes.UpdateHubMutationVariables
 >;
 
 /**
- * __useUpdateEcoverseMutation__
+ * __useUpdateHubMutation__
  *
- * To run a mutation, you first call `useUpdateEcoverseMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateEcoverseMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateHubMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateHubMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateEcoverseMutation, { data, loading, error }] = useUpdateEcoverseMutation({
+ * const [updateHubMutation, { data, loading, error }] = useUpdateHubMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateEcoverseMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateEcoverseMutation,
-    SchemaTypes.UpdateEcoverseMutationVariables
-  >
+export function useUpdateHubMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateHubMutation, SchemaTypes.UpdateHubMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateEcoverseMutation, SchemaTypes.UpdateEcoverseMutationVariables>(
-    UpdateEcoverseDocument,
+  return Apollo.useMutation<SchemaTypes.UpdateHubMutation, SchemaTypes.UpdateHubMutationVariables>(
+    UpdateHubDocument,
     options
   );
 }
-export type UpdateEcoverseMutationHookResult = ReturnType<typeof useUpdateEcoverseMutation>;
-export type UpdateEcoverseMutationResult = Apollo.MutationResult<SchemaTypes.UpdateEcoverseMutation>;
-export type UpdateEcoverseMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateEcoverseMutation,
-  SchemaTypes.UpdateEcoverseMutationVariables
+export type UpdateHubMutationHookResult = ReturnType<typeof useUpdateHubMutation>;
+export type UpdateHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdateHubMutation>;
+export type UpdateHubMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateHubMutation,
+  SchemaTypes.UpdateHubMutationVariables
 >;
 export const UpdateGroupDocument = gql`
   mutation updateGroup($input: UpdateUserGroupInput!) {
@@ -4280,62 +4269,56 @@ export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadVisualMutation,
   SchemaTypes.UploadVisualMutationVariables
 >;
-export const AdminEcoversesListDocument = gql`
-  query adminEcoversesList {
+export const AdminHubsListDocument = gql`
+  query adminHubsList {
     hubs {
-      ...AdminEcoverse
+      ...AdminHub
     }
   }
-  ${AdminEcoverseFragmentDoc}
+  ${AdminHubFragmentDoc}
 `;
 
 /**
- * __useAdminEcoversesListQuery__
+ * __useAdminHubsListQuery__
  *
- * To run a query within a React component, call `useAdminEcoversesListQuery` and pass it any options that fit your needs.
- * When your component renders, `useAdminEcoversesListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAdminHubsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdminHubsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useAdminEcoversesListQuery({
+ * const { data, loading, error } = useAdminHubsListQuery({
  *   variables: {
  *   },
  * });
  */
-export function useAdminEcoversesListQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.AdminEcoversesListQuery,
-    SchemaTypes.AdminEcoversesListQueryVariables
-  >
+export function useAdminHubsListQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AdminEcoversesListQuery, SchemaTypes.AdminEcoversesListQueryVariables>(
-    AdminEcoversesListDocument,
+  return Apollo.useQuery<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>(
+    AdminHubsListDocument,
     options
   );
 }
-export function useAdminEcoversesListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AdminEcoversesListQuery,
-    SchemaTypes.AdminEcoversesListQueryVariables
-  >
+export function useAdminHubsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AdminEcoversesListQuery, SchemaTypes.AdminEcoversesListQueryVariables>(
-    AdminEcoversesListDocument,
+  return Apollo.useLazyQuery<SchemaTypes.AdminHubsListQuery, SchemaTypes.AdminHubsListQueryVariables>(
+    AdminHubsListDocument,
     options
   );
 }
-export type AdminEcoversesListQueryHookResult = ReturnType<typeof useAdminEcoversesListQuery>;
-export type AdminEcoversesListLazyQueryHookResult = ReturnType<typeof useAdminEcoversesListLazyQuery>;
-export type AdminEcoversesListQueryResult = Apollo.QueryResult<
-  SchemaTypes.AdminEcoversesListQuery,
-  SchemaTypes.AdminEcoversesListQueryVariables
+export type AdminHubsListQueryHookResult = ReturnType<typeof useAdminHubsListQuery>;
+export type AdminHubsListLazyQueryHookResult = ReturnType<typeof useAdminHubsListLazyQuery>;
+export type AdminHubsListQueryResult = Apollo.QueryResult<
+  SchemaTypes.AdminHubsListQuery,
+  SchemaTypes.AdminHubsListQueryVariables
 >;
-export function refetchAdminEcoversesListQuery(variables?: SchemaTypes.AdminEcoversesListQueryVariables) {
-  return { query: AdminEcoversesListDocument, variables: variables };
+export function refetchAdminHubsListQuery(variables?: SchemaTypes.AdminHubsListQueryVariables) {
+  return { query: AdminHubsListDocument, variables: variables };
 }
 export const AllOpportunitiesDocument = gql`
   query allOpportunities($hubId: UUID_NAMEID!) {
@@ -4395,8 +4378,8 @@ export type AllOpportunitiesQueryResult = Apollo.QueryResult<
 export function refetchAllOpportunitiesQuery(variables: SchemaTypes.AllOpportunitiesQueryVariables) {
   return { query: AllOpportunitiesDocument, variables: variables };
 }
-export const ApplicationByEcoverseDocument = gql`
-  query applicationByEcoverse($hubId: UUID_NAMEID!, $appId: UUID!) {
+export const ApplicationByHubDocument = gql`
+  query applicationByHub($hubId: UUID_NAMEID!, $appId: UUID!) {
     hub(ID: $hubId) {
       id
       application(ID: $appId) {
@@ -4414,54 +4397,51 @@ export const ApplicationByEcoverseDocument = gql`
 `;
 
 /**
- * __useApplicationByEcoverseQuery__
+ * __useApplicationByHubQuery__
  *
- * To run a query within a React component, call `useApplicationByEcoverseQuery` and pass it any options that fit your needs.
- * When your component renders, `useApplicationByEcoverseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useApplicationByHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useApplicationByHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useApplicationByEcoverseQuery({
+ * const { data, loading, error } = useApplicationByHubQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *      appId: // value for 'appId'
  *   },
  * });
  */
-export function useApplicationByEcoverseQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ApplicationByEcoverseQuery,
-    SchemaTypes.ApplicationByEcoverseQueryVariables
-  >
+export function useApplicationByHubQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ApplicationByHubQuery, SchemaTypes.ApplicationByHubQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ApplicationByEcoverseQuery, SchemaTypes.ApplicationByEcoverseQueryVariables>(
-    ApplicationByEcoverseDocument,
+  return Apollo.useQuery<SchemaTypes.ApplicationByHubQuery, SchemaTypes.ApplicationByHubQueryVariables>(
+    ApplicationByHubDocument,
     options
   );
 }
-export function useApplicationByEcoverseLazyQuery(
+export function useApplicationByHubLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ApplicationByEcoverseQuery,
-    SchemaTypes.ApplicationByEcoverseQueryVariables
+    SchemaTypes.ApplicationByHubQuery,
+    SchemaTypes.ApplicationByHubQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ApplicationByEcoverseQuery, SchemaTypes.ApplicationByEcoverseQueryVariables>(
-    ApplicationByEcoverseDocument,
+  return Apollo.useLazyQuery<SchemaTypes.ApplicationByHubQuery, SchemaTypes.ApplicationByHubQueryVariables>(
+    ApplicationByHubDocument,
     options
   );
 }
-export type ApplicationByEcoverseQueryHookResult = ReturnType<typeof useApplicationByEcoverseQuery>;
-export type ApplicationByEcoverseLazyQueryHookResult = ReturnType<typeof useApplicationByEcoverseLazyQuery>;
-export type ApplicationByEcoverseQueryResult = Apollo.QueryResult<
-  SchemaTypes.ApplicationByEcoverseQuery,
-  SchemaTypes.ApplicationByEcoverseQueryVariables
+export type ApplicationByHubQueryHookResult = ReturnType<typeof useApplicationByHubQuery>;
+export type ApplicationByHubLazyQueryHookResult = ReturnType<typeof useApplicationByHubLazyQuery>;
+export type ApplicationByHubQueryResult = Apollo.QueryResult<
+  SchemaTypes.ApplicationByHubQuery,
+  SchemaTypes.ApplicationByHubQueryVariables
 >;
-export function refetchApplicationByEcoverseQuery(variables: SchemaTypes.ApplicationByEcoverseQueryVariables) {
-  return { query: ApplicationByEcoverseDocument, variables: variables };
+export function refetchApplicationByHubQuery(variables: SchemaTypes.ApplicationByHubQueryVariables) {
+  return { query: ApplicationByHubDocument, variables: variables };
 }
 export const ChallengeApplicationDocument = gql`
   query challengeApplication($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
@@ -4600,7 +4580,7 @@ export type ChallengeApplicationsQueryResult = Apollo.QueryResult<
 export function refetchChallengeApplicationsQuery(variables: SchemaTypes.ChallengeApplicationsQueryVariables) {
   return { query: ChallengeApplicationsDocument, variables: variables };
 }
-export const EcoverseApplicationDocument = gql`
+export const HubApplicationDocument = gql`
   query hubApplication($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -4621,55 +4601,49 @@ export const EcoverseApplicationDocument = gql`
 `;
 
 /**
- * __useEcoverseApplicationQuery__
+ * __useHubApplicationQuery__
  *
- * To run a query within a React component, call `useEcoverseApplicationQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubApplicationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubApplicationQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseApplicationQuery({
+ * const { data, loading, error } = useHubApplicationQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseApplicationQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoverseApplicationQuery,
-    SchemaTypes.EcoverseApplicationQueryVariables
-  >
+export function useHubApplicationQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubApplicationQuery, SchemaTypes.HubApplicationQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseApplicationQuery, SchemaTypes.EcoverseApplicationQueryVariables>(
-    EcoverseApplicationDocument,
+  return Apollo.useQuery<SchemaTypes.HubApplicationQuery, SchemaTypes.HubApplicationQueryVariables>(
+    HubApplicationDocument,
     options
   );
 }
-export function useEcoverseApplicationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseApplicationQuery,
-    SchemaTypes.EcoverseApplicationQueryVariables
-  >
+export function useHubApplicationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubApplicationQuery, SchemaTypes.HubApplicationQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseApplicationQuery, SchemaTypes.EcoverseApplicationQueryVariables>(
-    EcoverseApplicationDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubApplicationQuery, SchemaTypes.HubApplicationQueryVariables>(
+    HubApplicationDocument,
     options
   );
 }
-export type EcoverseApplicationQueryHookResult = ReturnType<typeof useEcoverseApplicationQuery>;
-export type EcoverseApplicationLazyQueryHookResult = ReturnType<typeof useEcoverseApplicationLazyQuery>;
-export type EcoverseApplicationQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseApplicationQuery,
-  SchemaTypes.EcoverseApplicationQueryVariables
+export type HubApplicationQueryHookResult = ReturnType<typeof useHubApplicationQuery>;
+export type HubApplicationLazyQueryHookResult = ReturnType<typeof useHubApplicationLazyQuery>;
+export type HubApplicationQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubApplicationQuery,
+  SchemaTypes.HubApplicationQueryVariables
 >;
-export function refetchEcoverseApplicationQuery(variables: SchemaTypes.EcoverseApplicationQueryVariables) {
-  return { query: EcoverseApplicationDocument, variables: variables };
+export function refetchHubApplicationQuery(variables: SchemaTypes.HubApplicationQueryVariables) {
+  return { query: HubApplicationDocument, variables: variables };
 }
-export const EcoverseApplicationsDocument = gql`
+export const HubApplicationsDocument = gql`
   query hubApplications($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -4685,55 +4659,49 @@ export const EcoverseApplicationsDocument = gql`
 `;
 
 /**
- * __useEcoverseApplicationsQuery__
+ * __useHubApplicationsQuery__
  *
- * To run a query within a React component, call `useEcoverseApplicationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseApplicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubApplicationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubApplicationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseApplicationsQuery({
+ * const { data, loading, error } = useHubApplicationsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseApplicationsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoverseApplicationsQuery,
-    SchemaTypes.EcoverseApplicationsQueryVariables
-  >
+export function useHubApplicationsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseApplicationsQuery, SchemaTypes.EcoverseApplicationsQueryVariables>(
-    EcoverseApplicationsDocument,
+  return Apollo.useQuery<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>(
+    HubApplicationsDocument,
     options
   );
 }
-export function useEcoverseApplicationsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseApplicationsQuery,
-    SchemaTypes.EcoverseApplicationsQueryVariables
-  >
+export function useHubApplicationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseApplicationsQuery, SchemaTypes.EcoverseApplicationsQueryVariables>(
-    EcoverseApplicationsDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubApplicationsQuery, SchemaTypes.HubApplicationsQueryVariables>(
+    HubApplicationsDocument,
     options
   );
 }
-export type EcoverseApplicationsQueryHookResult = ReturnType<typeof useEcoverseApplicationsQuery>;
-export type EcoverseApplicationsLazyQueryHookResult = ReturnType<typeof useEcoverseApplicationsLazyQuery>;
-export type EcoverseApplicationsQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseApplicationsQuery,
-  SchemaTypes.EcoverseApplicationsQueryVariables
+export type HubApplicationsQueryHookResult = ReturnType<typeof useHubApplicationsQuery>;
+export type HubApplicationsLazyQueryHookResult = ReturnType<typeof useHubApplicationsLazyQuery>;
+export type HubApplicationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubApplicationsQuery,
+  SchemaTypes.HubApplicationsQueryVariables
 >;
-export function refetchEcoverseApplicationsQuery(variables: SchemaTypes.EcoverseApplicationsQueryVariables) {
-  return { query: EcoverseApplicationsDocument, variables: variables };
+export function refetchHubApplicationsQuery(variables: SchemaTypes.HubApplicationsQueryVariables) {
+  return { query: HubApplicationsDocument, variables: variables };
 }
-export const EcoverseNameIdDocument = gql`
+export const HubNameIdDocument = gql`
   query hubNameId($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -4743,47 +4711,41 @@ export const EcoverseNameIdDocument = gql`
 `;
 
 /**
- * __useEcoverseNameIdQuery__
+ * __useHubNameIdQuery__
  *
- * To run a query within a React component, call `useEcoverseNameIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseNameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubNameIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubNameIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseNameIdQuery({
+ * const { data, loading, error } = useHubNameIdQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseNameIdQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseNameIdQuery, SchemaTypes.EcoverseNameIdQueryVariables>
+export function useHubNameIdQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubNameIdQuery, SchemaTypes.HubNameIdQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseNameIdQuery, SchemaTypes.EcoverseNameIdQueryVariables>(
-    EcoverseNameIdDocument,
+  return Apollo.useQuery<SchemaTypes.HubNameIdQuery, SchemaTypes.HubNameIdQueryVariables>(HubNameIdDocument, options);
+}
+export function useHubNameIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubNameIdQuery, SchemaTypes.HubNameIdQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubNameIdQuery, SchemaTypes.HubNameIdQueryVariables>(
+    HubNameIdDocument,
     options
   );
 }
-export function useEcoverseNameIdLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseNameIdQuery, SchemaTypes.EcoverseNameIdQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseNameIdQuery, SchemaTypes.EcoverseNameIdQueryVariables>(
-    EcoverseNameIdDocument,
-    options
-  );
-}
-export type EcoverseNameIdQueryHookResult = ReturnType<typeof useEcoverseNameIdQuery>;
-export type EcoverseNameIdLazyQueryHookResult = ReturnType<typeof useEcoverseNameIdLazyQuery>;
-export type EcoverseNameIdQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseNameIdQuery,
-  SchemaTypes.EcoverseNameIdQueryVariables
->;
-export function refetchEcoverseNameIdQuery(variables: SchemaTypes.EcoverseNameIdQueryVariables) {
-  return { query: EcoverseNameIdDocument, variables: variables };
+export type HubNameIdQueryHookResult = ReturnType<typeof useHubNameIdQuery>;
+export type HubNameIdLazyQueryHookResult = ReturnType<typeof useHubNameIdLazyQuery>;
+export type HubNameIdQueryResult = Apollo.QueryResult<SchemaTypes.HubNameIdQuery, SchemaTypes.HubNameIdQueryVariables>;
+export function refetchHubNameIdQuery(variables: SchemaTypes.HubNameIdQueryVariables) {
+  return { query: HubNameIdDocument, variables: variables };
 }
 export const ChallengeNameIdDocument = gql`
   query challengeNameId($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
@@ -5018,57 +4980,48 @@ export type ChallengeCardsQueryResult = Apollo.QueryResult<
 export function refetchChallengeCardsQuery(variables: SchemaTypes.ChallengeCardsQueryVariables) {
   return { query: ChallengeCardsDocument, variables: variables };
 }
-export const EcoverseCardDocument = gql`
+export const HubCardDocument = gql`
   query hubCard($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
-      ...EcoverseDetailsProvider
+      ...HubDetailsProvider
     }
   }
-  ${EcoverseDetailsProviderFragmentDoc}
+  ${HubDetailsProviderFragmentDoc}
 `;
 
 /**
- * __useEcoverseCardQuery__
+ * __useHubCardQuery__
  *
- * To run a query within a React component, call `useEcoverseCardQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubCardQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCardQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseCardQuery({
+ * const { data, loading, error } = useHubCardQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseCardQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseCardQuery, SchemaTypes.EcoverseCardQueryVariables>
+export function useHubCardQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCardQuery, SchemaTypes.HubCardQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseCardQuery, SchemaTypes.EcoverseCardQueryVariables>(
-    EcoverseCardDocument,
-    options
-  );
+  return Apollo.useQuery<SchemaTypes.HubCardQuery, SchemaTypes.HubCardQueryVariables>(HubCardDocument, options);
 }
-export function useEcoverseCardLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseCardQuery, SchemaTypes.EcoverseCardQueryVariables>
+export function useHubCardLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubCardQuery, SchemaTypes.HubCardQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseCardQuery, SchemaTypes.EcoverseCardQueryVariables>(
-    EcoverseCardDocument,
-    options
-  );
+  return Apollo.useLazyQuery<SchemaTypes.HubCardQuery, SchemaTypes.HubCardQueryVariables>(HubCardDocument, options);
 }
-export type EcoverseCardQueryHookResult = ReturnType<typeof useEcoverseCardQuery>;
-export type EcoverseCardLazyQueryHookResult = ReturnType<typeof useEcoverseCardLazyQuery>;
-export type EcoverseCardQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseCardQuery,
-  SchemaTypes.EcoverseCardQueryVariables
->;
-export function refetchEcoverseCardQuery(variables: SchemaTypes.EcoverseCardQueryVariables) {
-  return { query: EcoverseCardDocument, variables: variables };
+export type HubCardQueryHookResult = ReturnType<typeof useHubCardQuery>;
+export type HubCardLazyQueryHookResult = ReturnType<typeof useHubCardLazyQuery>;
+export type HubCardQueryResult = Apollo.QueryResult<SchemaTypes.HubCardQuery, SchemaTypes.HubCardQueryVariables>;
+export function refetchHubCardQuery(variables: SchemaTypes.HubCardQueryVariables) {
+  return { query: HubCardDocument, variables: variables };
 }
 export const UserCardDocument = gql`
   query userCard($id: UUID_NAMEID_EMAIL!) {
@@ -6033,7 +5986,7 @@ export type ChallengesWithCommunityQueryResult = Apollo.QueryResult<
 export function refetchChallengesWithCommunityQuery(variables: SchemaTypes.ChallengesWithCommunityQueryVariables) {
   return { query: ChallengesWithCommunityDocument, variables: variables };
 }
-export const EcoverseCommunityDocument = gql`
+export const HubCommunityDocument = gql`
   query hubCommunity($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -6046,50 +5999,47 @@ export const EcoverseCommunityDocument = gql`
 `;
 
 /**
- * __useEcoverseCommunityQuery__
+ * __useHubCommunityQuery__
  *
- * To run a query within a React component, call `useEcoverseCommunityQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubCommunityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCommunityQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseCommunityQuery({
+ * const { data, loading, error } = useHubCommunityQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseCommunityQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>
+export function useHubCommunityQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCommunityQuery, SchemaTypes.HubCommunityQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>(
-    EcoverseCommunityDocument,
+  return Apollo.useQuery<SchemaTypes.HubCommunityQuery, SchemaTypes.HubCommunityQueryVariables>(
+    HubCommunityDocument,
     options
   );
 }
-export function useEcoverseCommunityLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseCommunityQuery,
-    SchemaTypes.EcoverseCommunityQueryVariables
-  >
+export function useHubCommunityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubCommunityQuery, SchemaTypes.HubCommunityQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseCommunityQuery, SchemaTypes.EcoverseCommunityQueryVariables>(
-    EcoverseCommunityDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubCommunityQuery, SchemaTypes.HubCommunityQueryVariables>(
+    HubCommunityDocument,
     options
   );
 }
-export type EcoverseCommunityQueryHookResult = ReturnType<typeof useEcoverseCommunityQuery>;
-export type EcoverseCommunityLazyQueryHookResult = ReturnType<typeof useEcoverseCommunityLazyQuery>;
-export type EcoverseCommunityQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseCommunityQuery,
-  SchemaTypes.EcoverseCommunityQueryVariables
+export type HubCommunityQueryHookResult = ReturnType<typeof useHubCommunityQuery>;
+export type HubCommunityLazyQueryHookResult = ReturnType<typeof useHubCommunityLazyQuery>;
+export type HubCommunityQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubCommunityQuery,
+  SchemaTypes.HubCommunityQueryVariables
 >;
-export function refetchEcoverseCommunityQuery(variables: SchemaTypes.EcoverseCommunityQueryVariables) {
-  return { query: EcoverseCommunityDocument, variables: variables };
+export function refetchHubCommunityQuery(variables: SchemaTypes.HubCommunityQueryVariables) {
+  return { query: HubCommunityDocument, variables: variables };
 }
 export const CommunityMessagesDocument = gql`
   query communityMessages($hubId: UUID_NAMEID!, $communityId: UUID!) {
@@ -6389,59 +6339,50 @@ export type ConfigurationQueryResult = Apollo.QueryResult<
 export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQueryVariables) {
   return { query: ConfigurationDocument, variables: variables };
 }
-export const EcoverseInfoDocument = gql`
+export const HubInfoDocument = gql`
   query hubInfo($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
-      ...EcoverseInfo
+      ...HubInfo
     }
   }
-  ${EcoverseInfoFragmentDoc}
+  ${HubInfoFragmentDoc}
 `;
 
 /**
- * __useEcoverseInfoQuery__
+ * __useHubInfoQuery__
  *
- * To run a query within a React component, call `useEcoverseInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseInfoQuery({
+ * const { data, loading, error } = useHubInfoQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>
+export function useHubInfoQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>(
-    EcoverseInfoDocument,
-    options
-  );
+  return Apollo.useQuery<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>(HubInfoDocument, options);
 }
-export function useEcoverseInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>
+export function useHubInfoLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseInfoQuery, SchemaTypes.EcoverseInfoQueryVariables>(
-    EcoverseInfoDocument,
-    options
-  );
+  return Apollo.useLazyQuery<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>(HubInfoDocument, options);
 }
-export type EcoverseInfoQueryHookResult = ReturnType<typeof useEcoverseInfoQuery>;
-export type EcoverseInfoLazyQueryHookResult = ReturnType<typeof useEcoverseInfoLazyQuery>;
-export type EcoverseInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseInfoQuery,
-  SchemaTypes.EcoverseInfoQueryVariables
->;
-export function refetchEcoverseInfoQuery(variables: SchemaTypes.EcoverseInfoQueryVariables) {
-  return { query: EcoverseInfoDocument, variables: variables };
+export type HubInfoQueryHookResult = ReturnType<typeof useHubInfoQuery>;
+export type HubInfoLazyQueryHookResult = ReturnType<typeof useHubInfoLazyQuery>;
+export type HubInfoQueryResult = Apollo.QueryResult<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>;
+export function refetchHubInfoQuery(variables: SchemaTypes.HubInfoQueryVariables) {
+  return { query: HubInfoDocument, variables: variables };
 }
-export const EcoverseActivityDocument = gql`
+export const HubActivityDocument = gql`
   query hubActivity($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -6454,52 +6395,49 @@ export const EcoverseActivityDocument = gql`
 `;
 
 /**
- * __useEcoverseActivityQuery__
+ * __useHubActivityQuery__
  *
- * To run a query within a React component, call `useEcoverseActivityQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubActivityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseActivityQuery({
+ * const { data, loading, error } = useHubActivityQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseActivityQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseActivityQuery, SchemaTypes.EcoverseActivityQueryVariables>
+export function useHubActivityQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubActivityQuery, SchemaTypes.HubActivityQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseActivityQuery, SchemaTypes.EcoverseActivityQueryVariables>(
-    EcoverseActivityDocument,
+  return Apollo.useQuery<SchemaTypes.HubActivityQuery, SchemaTypes.HubActivityQueryVariables>(
+    HubActivityDocument,
     options
   );
 }
-export function useEcoverseActivityLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseActivityQuery,
-    SchemaTypes.EcoverseActivityQueryVariables
-  >
+export function useHubActivityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubActivityQuery, SchemaTypes.HubActivityQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseActivityQuery, SchemaTypes.EcoverseActivityQueryVariables>(
-    EcoverseActivityDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubActivityQuery, SchemaTypes.HubActivityQueryVariables>(
+    HubActivityDocument,
     options
   );
 }
-export type EcoverseActivityQueryHookResult = ReturnType<typeof useEcoverseActivityQuery>;
-export type EcoverseActivityLazyQueryHookResult = ReturnType<typeof useEcoverseActivityLazyQuery>;
-export type EcoverseActivityQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseActivityQuery,
-  SchemaTypes.EcoverseActivityQueryVariables
+export type HubActivityQueryHookResult = ReturnType<typeof useHubActivityQuery>;
+export type HubActivityLazyQueryHookResult = ReturnType<typeof useHubActivityLazyQuery>;
+export type HubActivityQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubActivityQuery,
+  SchemaTypes.HubActivityQueryVariables
 >;
-export function refetchEcoverseActivityQuery(variables: SchemaTypes.EcoverseActivityQueryVariables) {
-  return { query: EcoverseActivityDocument, variables: variables };
+export function refetchHubActivityQuery(variables: SchemaTypes.HubActivityQueryVariables) {
+  return { query: HubActivityDocument, variables: variables };
 }
-export const EcoverseApplicationTemplateDocument = gql`
+export const HubApplicationTemplateDocument = gql`
   query hubApplicationTemplate {
     configuration {
       template {
@@ -6520,56 +6458,54 @@ export const EcoverseApplicationTemplateDocument = gql`
 `;
 
 /**
- * __useEcoverseApplicationTemplateQuery__
+ * __useHubApplicationTemplateQuery__
  *
- * To run a query within a React component, call `useEcoverseApplicationTemplateQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseApplicationTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubApplicationTemplateQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubApplicationTemplateQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseApplicationTemplateQuery({
+ * const { data, loading, error } = useHubApplicationTemplateQuery({
  *   variables: {
  *   },
  * });
  */
-export function useEcoverseApplicationTemplateQuery(
+export function useHubApplicationTemplateQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    SchemaTypes.EcoverseApplicationTemplateQuery,
-    SchemaTypes.EcoverseApplicationTemplateQueryVariables
+    SchemaTypes.HubApplicationTemplateQuery,
+    SchemaTypes.HubApplicationTemplateQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.EcoverseApplicationTemplateQuery,
-    SchemaTypes.EcoverseApplicationTemplateQueryVariables
-  >(EcoverseApplicationTemplateDocument, options);
+  return Apollo.useQuery<SchemaTypes.HubApplicationTemplateQuery, SchemaTypes.HubApplicationTemplateQueryVariables>(
+    HubApplicationTemplateDocument,
+    options
+  );
 }
-export function useEcoverseApplicationTemplateLazyQuery(
+export function useHubApplicationTemplateLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseApplicationTemplateQuery,
-    SchemaTypes.EcoverseApplicationTemplateQueryVariables
+    SchemaTypes.HubApplicationTemplateQuery,
+    SchemaTypes.HubApplicationTemplateQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.EcoverseApplicationTemplateQuery,
-    SchemaTypes.EcoverseApplicationTemplateQueryVariables
-  >(EcoverseApplicationTemplateDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.HubApplicationTemplateQuery, SchemaTypes.HubApplicationTemplateQueryVariables>(
+    HubApplicationTemplateDocument,
+    options
+  );
 }
-export type EcoverseApplicationTemplateQueryHookResult = ReturnType<typeof useEcoverseApplicationTemplateQuery>;
-export type EcoverseApplicationTemplateLazyQueryHookResult = ReturnType<typeof useEcoverseApplicationTemplateLazyQuery>;
-export type EcoverseApplicationTemplateQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseApplicationTemplateQuery,
-  SchemaTypes.EcoverseApplicationTemplateQueryVariables
+export type HubApplicationTemplateQueryHookResult = ReturnType<typeof useHubApplicationTemplateQuery>;
+export type HubApplicationTemplateLazyQueryHookResult = ReturnType<typeof useHubApplicationTemplateLazyQuery>;
+export type HubApplicationTemplateQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubApplicationTemplateQuery,
+  SchemaTypes.HubApplicationTemplateQueryVariables
 >;
-export function refetchEcoverseApplicationTemplateQuery(
-  variables?: SchemaTypes.EcoverseApplicationTemplateQueryVariables
-) {
-  return { query: EcoverseApplicationTemplateDocument, variables: variables };
+export function refetchHubApplicationTemplateQuery(variables?: SchemaTypes.HubApplicationTemplateQueryVariables) {
+  return { query: HubApplicationTemplateDocument, variables: variables };
 }
-export const EcoverseGroupDocument = gql`
+export const HubGroupDocument = gql`
   query hubGroup($hubId: UUID_NAMEID!, $groupId: UUID!) {
     hub(ID: $hubId) {
       id
@@ -6582,50 +6518,41 @@ export const EcoverseGroupDocument = gql`
 `;
 
 /**
- * __useEcoverseGroupQuery__
+ * __useHubGroupQuery__
  *
- * To run a query within a React component, call `useEcoverseGroupQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseGroupQuery({
+ * const { data, loading, error } = useHubGroupQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *      groupId: // value for 'groupId'
  *   },
  * });
  */
-export function useEcoverseGroupQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>
+export function useHubGroupQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubGroupQuery, SchemaTypes.HubGroupQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>(
-    EcoverseGroupDocument,
-    options
-  );
+  return Apollo.useQuery<SchemaTypes.HubGroupQuery, SchemaTypes.HubGroupQueryVariables>(HubGroupDocument, options);
 }
-export function useEcoverseGroupLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>
+export function useHubGroupLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubGroupQuery, SchemaTypes.HubGroupQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseGroupQuery, SchemaTypes.EcoverseGroupQueryVariables>(
-    EcoverseGroupDocument,
-    options
-  );
+  return Apollo.useLazyQuery<SchemaTypes.HubGroupQuery, SchemaTypes.HubGroupQueryVariables>(HubGroupDocument, options);
 }
-export type EcoverseGroupQueryHookResult = ReturnType<typeof useEcoverseGroupQuery>;
-export type EcoverseGroupLazyQueryHookResult = ReturnType<typeof useEcoverseGroupLazyQuery>;
-export type EcoverseGroupQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseGroupQuery,
-  SchemaTypes.EcoverseGroupQueryVariables
->;
-export function refetchEcoverseGroupQuery(variables: SchemaTypes.EcoverseGroupQueryVariables) {
-  return { query: EcoverseGroupDocument, variables: variables };
+export type HubGroupQueryHookResult = ReturnType<typeof useHubGroupQuery>;
+export type HubGroupLazyQueryHookResult = ReturnType<typeof useHubGroupLazyQuery>;
+export type HubGroupQueryResult = Apollo.QueryResult<SchemaTypes.HubGroupQuery, SchemaTypes.HubGroupQueryVariables>;
+export function refetchHubGroupQuery(variables: SchemaTypes.HubGroupQueryVariables) {
+  return { query: HubGroupDocument, variables: variables };
 }
-export const EcoverseGroupsListDocument = gql`
+export const HubGroupsListDocument = gql`
   query hubGroupsList($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -6638,55 +6565,49 @@ export const EcoverseGroupsListDocument = gql`
 `;
 
 /**
- * __useEcoverseGroupsListQuery__
+ * __useHubGroupsListQuery__
  *
- * To run a query within a React component, call `useEcoverseGroupsListQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseGroupsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubGroupsListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubGroupsListQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseGroupsListQuery({
+ * const { data, loading, error } = useHubGroupsListQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseGroupsListQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoverseGroupsListQuery,
-    SchemaTypes.EcoverseGroupsListQueryVariables
-  >
+export function useHubGroupsListQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubGroupsListQuery, SchemaTypes.HubGroupsListQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseGroupsListQuery, SchemaTypes.EcoverseGroupsListQueryVariables>(
-    EcoverseGroupsListDocument,
+  return Apollo.useQuery<SchemaTypes.HubGroupsListQuery, SchemaTypes.HubGroupsListQueryVariables>(
+    HubGroupsListDocument,
     options
   );
 }
-export function useEcoverseGroupsListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseGroupsListQuery,
-    SchemaTypes.EcoverseGroupsListQueryVariables
-  >
+export function useHubGroupsListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubGroupsListQuery, SchemaTypes.HubGroupsListQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseGroupsListQuery, SchemaTypes.EcoverseGroupsListQueryVariables>(
-    EcoverseGroupsListDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubGroupsListQuery, SchemaTypes.HubGroupsListQueryVariables>(
+    HubGroupsListDocument,
     options
   );
 }
-export type EcoverseGroupsListQueryHookResult = ReturnType<typeof useEcoverseGroupsListQuery>;
-export type EcoverseGroupsListLazyQueryHookResult = ReturnType<typeof useEcoverseGroupsListLazyQuery>;
-export type EcoverseGroupsListQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseGroupsListQuery,
-  SchemaTypes.EcoverseGroupsListQueryVariables
+export type HubGroupsListQueryHookResult = ReturnType<typeof useHubGroupsListQuery>;
+export type HubGroupsListLazyQueryHookResult = ReturnType<typeof useHubGroupsListLazyQuery>;
+export type HubGroupsListQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubGroupsListQuery,
+  SchemaTypes.HubGroupsListQueryVariables
 >;
-export function refetchEcoverseGroupsListQuery(variables: SchemaTypes.EcoverseGroupsListQueryVariables) {
-  return { query: EcoverseGroupsListDocument, variables: variables };
+export function refetchHubGroupsListQuery(variables: SchemaTypes.HubGroupsListQueryVariables) {
+  return { query: HubGroupsListDocument, variables: variables };
 }
-export const EcoverseHostReferencesDocument = gql`
+export const HubHostReferencesDocument = gql`
   query hubHostReferences($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -6704,55 +6625,52 @@ export const EcoverseHostReferencesDocument = gql`
 `;
 
 /**
- * __useEcoverseHostReferencesQuery__
+ * __useHubHostReferencesQuery__
  *
- * To run a query within a React component, call `useEcoverseHostReferencesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseHostReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubHostReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubHostReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseHostReferencesQuery({
+ * const { data, loading, error } = useHubHostReferencesQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseHostReferencesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoverseHostReferencesQuery,
-    SchemaTypes.EcoverseHostReferencesQueryVariables
-  >
+export function useHubHostReferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubHostReferencesQuery, SchemaTypes.HubHostReferencesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseHostReferencesQuery, SchemaTypes.EcoverseHostReferencesQueryVariables>(
-    EcoverseHostReferencesDocument,
+  return Apollo.useQuery<SchemaTypes.HubHostReferencesQuery, SchemaTypes.HubHostReferencesQueryVariables>(
+    HubHostReferencesDocument,
     options
   );
 }
-export function useEcoverseHostReferencesLazyQuery(
+export function useHubHostReferencesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseHostReferencesQuery,
-    SchemaTypes.EcoverseHostReferencesQueryVariables
+    SchemaTypes.HubHostReferencesQuery,
+    SchemaTypes.HubHostReferencesQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseHostReferencesQuery, SchemaTypes.EcoverseHostReferencesQueryVariables>(
-    EcoverseHostReferencesDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubHostReferencesQuery, SchemaTypes.HubHostReferencesQueryVariables>(
+    HubHostReferencesDocument,
     options
   );
 }
-export type EcoverseHostReferencesQueryHookResult = ReturnType<typeof useEcoverseHostReferencesQuery>;
-export type EcoverseHostReferencesLazyQueryHookResult = ReturnType<typeof useEcoverseHostReferencesLazyQuery>;
-export type EcoverseHostReferencesQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseHostReferencesQuery,
-  SchemaTypes.EcoverseHostReferencesQueryVariables
+export type HubHostReferencesQueryHookResult = ReturnType<typeof useHubHostReferencesQuery>;
+export type HubHostReferencesLazyQueryHookResult = ReturnType<typeof useHubHostReferencesLazyQuery>;
+export type HubHostReferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubHostReferencesQuery,
+  SchemaTypes.HubHostReferencesQueryVariables
 >;
-export function refetchEcoverseHostReferencesQuery(variables: SchemaTypes.EcoverseHostReferencesQueryVariables) {
-  return { query: EcoverseHostReferencesDocument, variables: variables };
+export function refetchHubHostReferencesQuery(variables: SchemaTypes.HubHostReferencesQueryVariables) {
+  return { query: HubHostReferencesDocument, variables: variables };
 }
-export const EcoverseMembersDocument = gql`
+export const HubMembersDocument = gql`
   query hubMembers($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -6771,101 +6689,92 @@ export const EcoverseMembersDocument = gql`
 `;
 
 /**
- * __useEcoverseMembersQuery__
+ * __useHubMembersQuery__
  *
- * To run a query within a React component, call `useEcoverseMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseMembersQuery({
+ * const { data, loading, error } = useHubMembersQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>
+export function useHubMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubMembersQuery, SchemaTypes.HubMembersQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>(
-    EcoverseMembersDocument,
+  return Apollo.useQuery<SchemaTypes.HubMembersQuery, SchemaTypes.HubMembersQueryVariables>(
+    HubMembersDocument,
     options
   );
 }
-export function useEcoverseMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>
+export function useHubMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubMembersQuery, SchemaTypes.HubMembersQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseMembersQuery, SchemaTypes.EcoverseMembersQueryVariables>(
-    EcoverseMembersDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubMembersQuery, SchemaTypes.HubMembersQueryVariables>(
+    HubMembersDocument,
     options
   );
 }
-export type EcoverseMembersQueryHookResult = ReturnType<typeof useEcoverseMembersQuery>;
-export type EcoverseMembersLazyQueryHookResult = ReturnType<typeof useEcoverseMembersLazyQuery>;
-export type EcoverseMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseMembersQuery,
-  SchemaTypes.EcoverseMembersQueryVariables
+export type HubMembersQueryHookResult = ReturnType<typeof useHubMembersQuery>;
+export type HubMembersLazyQueryHookResult = ReturnType<typeof useHubMembersLazyQuery>;
+export type HubMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubMembersQuery,
+  SchemaTypes.HubMembersQueryVariables
 >;
-export function refetchEcoverseMembersQuery(variables: SchemaTypes.EcoverseMembersQueryVariables) {
-  return { query: EcoverseMembersDocument, variables: variables };
+export function refetchHubMembersQuery(variables: SchemaTypes.HubMembersQueryVariables) {
+  return { query: HubMembersDocument, variables: variables };
 }
-export const EcoverseNameDocument = gql`
+export const HubNameDocument = gql`
   query hubName($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
-      ...EcoverseName
+      ...HubName
     }
   }
-  ${EcoverseNameFragmentDoc}
+  ${HubNameFragmentDoc}
 `;
 
 /**
- * __useEcoverseNameQuery__
+ * __useHubNameQuery__
  *
- * To run a query within a React component, call `useEcoverseNameQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseNameQuery({
+ * const { data, loading, error } = useHubNameQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseNameQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>
+export function useHubNameQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubNameQuery, SchemaTypes.HubNameQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>(
-    EcoverseNameDocument,
-    options
-  );
+  return Apollo.useQuery<SchemaTypes.HubNameQuery, SchemaTypes.HubNameQueryVariables>(HubNameDocument, options);
 }
-export function useEcoverseNameLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>
+export function useHubNameLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubNameQuery, SchemaTypes.HubNameQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseNameQuery, SchemaTypes.EcoverseNameQueryVariables>(
-    EcoverseNameDocument,
-    options
-  );
+  return Apollo.useLazyQuery<SchemaTypes.HubNameQuery, SchemaTypes.HubNameQueryVariables>(HubNameDocument, options);
 }
-export type EcoverseNameQueryHookResult = ReturnType<typeof useEcoverseNameQuery>;
-export type EcoverseNameLazyQueryHookResult = ReturnType<typeof useEcoverseNameLazyQuery>;
-export type EcoverseNameQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseNameQuery,
-  SchemaTypes.EcoverseNameQueryVariables
->;
-export function refetchEcoverseNameQuery(variables: SchemaTypes.EcoverseNameQueryVariables) {
-  return { query: EcoverseNameDocument, variables: variables };
+export type HubNameQueryHookResult = ReturnType<typeof useHubNameQuery>;
+export type HubNameLazyQueryHookResult = ReturnType<typeof useHubNameLazyQuery>;
+export type HubNameQueryResult = Apollo.QueryResult<SchemaTypes.HubNameQuery, SchemaTypes.HubNameQueryVariables>;
+export function refetchHubNameQuery(variables: SchemaTypes.HubNameQueryVariables) {
+  return { query: HubNameDocument, variables: variables };
 }
-export const EcoverseUserIdsDocument = gql`
+export const HubUserIdsDocument = gql`
   query hubUserIds($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -6880,49 +6789,49 @@ export const EcoverseUserIdsDocument = gql`
 `;
 
 /**
- * __useEcoverseUserIdsQuery__
+ * __useHubUserIdsQuery__
  *
- * To run a query within a React component, call `useEcoverseUserIdsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseUserIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubUserIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubUserIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseUserIdsQuery({
+ * const { data, loading, error } = useHubUserIdsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseUserIdsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>
+export function useHubUserIdsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubUserIdsQuery, SchemaTypes.HubUserIdsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>(
-    EcoverseUserIdsDocument,
+  return Apollo.useQuery<SchemaTypes.HubUserIdsQuery, SchemaTypes.HubUserIdsQueryVariables>(
+    HubUserIdsDocument,
     options
   );
 }
-export function useEcoverseUserIdsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>
+export function useHubUserIdsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubUserIdsQuery, SchemaTypes.HubUserIdsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseUserIdsQuery, SchemaTypes.EcoverseUserIdsQueryVariables>(
-    EcoverseUserIdsDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubUserIdsQuery, SchemaTypes.HubUserIdsQueryVariables>(
+    HubUserIdsDocument,
     options
   );
 }
-export type EcoverseUserIdsQueryHookResult = ReturnType<typeof useEcoverseUserIdsQuery>;
-export type EcoverseUserIdsLazyQueryHookResult = ReturnType<typeof useEcoverseUserIdsLazyQuery>;
-export type EcoverseUserIdsQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseUserIdsQuery,
-  SchemaTypes.EcoverseUserIdsQueryVariables
+export type HubUserIdsQueryHookResult = ReturnType<typeof useHubUserIdsQuery>;
+export type HubUserIdsLazyQueryHookResult = ReturnType<typeof useHubUserIdsLazyQuery>;
+export type HubUserIdsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubUserIdsQuery,
+  SchemaTypes.HubUserIdsQueryVariables
 >;
-export function refetchEcoverseUserIdsQuery(variables: SchemaTypes.EcoverseUserIdsQueryVariables) {
-  return { query: EcoverseUserIdsDocument, variables: variables };
+export function refetchHubUserIdsQuery(variables: SchemaTypes.HubUserIdsQueryVariables) {
+  return { query: HubUserIdsDocument, variables: variables };
 }
-export const EcoverseVisualDocument = gql`
+export const HubVisualDocument = gql`
   query hubVisual($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -6937,92 +6846,83 @@ export const EcoverseVisualDocument = gql`
 `;
 
 /**
- * __useEcoverseVisualQuery__
+ * __useHubVisualQuery__
  *
- * To run a query within a React component, call `useEcoverseVisualQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseVisualQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubVisualQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubVisualQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseVisualQuery({
+ * const { data, loading, error } = useHubVisualQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseVisualQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>
+export function useHubVisualQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubVisualQuery, SchemaTypes.HubVisualQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>(
-    EcoverseVisualDocument,
+  return Apollo.useQuery<SchemaTypes.HubVisualQuery, SchemaTypes.HubVisualQueryVariables>(HubVisualDocument, options);
+}
+export function useHubVisualLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubVisualQuery, SchemaTypes.HubVisualQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubVisualQuery, SchemaTypes.HubVisualQueryVariables>(
+    HubVisualDocument,
     options
   );
 }
-export function useEcoverseVisualLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseVisualQuery, SchemaTypes.EcoverseVisualQueryVariables>(
-    EcoverseVisualDocument,
-    options
-  );
+export type HubVisualQueryHookResult = ReturnType<typeof useHubVisualQuery>;
+export type HubVisualLazyQueryHookResult = ReturnType<typeof useHubVisualLazyQuery>;
+export type HubVisualQueryResult = Apollo.QueryResult<SchemaTypes.HubVisualQuery, SchemaTypes.HubVisualQueryVariables>;
+export function refetchHubVisualQuery(variables: SchemaTypes.HubVisualQueryVariables) {
+  return { query: HubVisualDocument, variables: variables };
 }
-export type EcoverseVisualQueryHookResult = ReturnType<typeof useEcoverseVisualQuery>;
-export type EcoverseVisualLazyQueryHookResult = ReturnType<typeof useEcoverseVisualLazyQuery>;
-export type EcoverseVisualQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseVisualQuery,
-  SchemaTypes.EcoverseVisualQueryVariables
->;
-export function refetchEcoverseVisualQuery(variables: SchemaTypes.EcoverseVisualQueryVariables) {
-  return { query: EcoverseVisualDocument, variables: variables };
-}
-export const EcoversesDocument = gql`
+export const HubsDocument = gql`
   query hubs {
     hubs {
-      ...EcoverseDetailsProvider
+      ...HubDetailsProvider
     }
   }
-  ${EcoverseDetailsProviderFragmentDoc}
+  ${HubDetailsProviderFragmentDoc}
 `;
 
 /**
- * __useEcoversesQuery__
+ * __useHubsQuery__
  *
- * To run a query within a React component, call `useEcoversesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoversesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoversesQuery({
+ * const { data, loading, error } = useHubsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useEcoversesQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
+export function useHubsQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.HubsQuery, SchemaTypes.HubsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(EcoversesDocument, options);
+  return Apollo.useQuery<SchemaTypes.HubsQuery, SchemaTypes.HubsQueryVariables>(HubsDocument, options);
 }
-export function useEcoversesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>
+export function useHubsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubsQuery, SchemaTypes.HubsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>(
-    EcoversesDocument,
-    options
-  );
+  return Apollo.useLazyQuery<SchemaTypes.HubsQuery, SchemaTypes.HubsQueryVariables>(HubsDocument, options);
 }
-export type EcoversesQueryHookResult = ReturnType<typeof useEcoversesQuery>;
-export type EcoversesLazyQueryHookResult = ReturnType<typeof useEcoversesLazyQuery>;
-export type EcoversesQueryResult = Apollo.QueryResult<SchemaTypes.EcoversesQuery, SchemaTypes.EcoversesQueryVariables>;
-export function refetchEcoversesQuery(variables?: SchemaTypes.EcoversesQueryVariables) {
-  return { query: EcoversesDocument, variables: variables };
+export type HubsQueryHookResult = ReturnType<typeof useHubsQuery>;
+export type HubsLazyQueryHookResult = ReturnType<typeof useHubsLazyQuery>;
+export type HubsQueryResult = Apollo.QueryResult<SchemaTypes.HubsQuery, SchemaTypes.HubsQueryVariables>;
+export function refetchHubsQuery(variables?: SchemaTypes.HubsQueryVariables) {
+  return { query: HubsDocument, variables: variables };
 }
 export const GlobalActivityDocument = gql`
   query globalActivity {
@@ -9747,7 +9647,7 @@ export function refetchUsersWithCredentialsSimpleListQuery(
 ) {
   return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
 }
-export const EcoverseContributionDetailsDocument = gql`
+export const HubContributionDetailsDocument = gql`
   query hubContributionDetails($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -9770,55 +9670,53 @@ export const EcoverseContributionDetailsDocument = gql`
 `;
 
 /**
- * __useEcoverseContributionDetailsQuery__
+ * __useHubContributionDetailsQuery__
  *
- * To run a query within a React component, call `useEcoverseContributionDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseContributionDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubContributionDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubContributionDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseContributionDetailsQuery({
+ * const { data, loading, error } = useHubContributionDetailsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseContributionDetailsQuery(
+export function useHubContributionDetailsQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoverseContributionDetailsQuery,
-    SchemaTypes.EcoverseContributionDetailsQueryVariables
+    SchemaTypes.HubContributionDetailsQuery,
+    SchemaTypes.HubContributionDetailsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.EcoverseContributionDetailsQuery,
-    SchemaTypes.EcoverseContributionDetailsQueryVariables
-  >(EcoverseContributionDetailsDocument, options);
+  return Apollo.useQuery<SchemaTypes.HubContributionDetailsQuery, SchemaTypes.HubContributionDetailsQueryVariables>(
+    HubContributionDetailsDocument,
+    options
+  );
 }
-export function useEcoverseContributionDetailsLazyQuery(
+export function useHubContributionDetailsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseContributionDetailsQuery,
-    SchemaTypes.EcoverseContributionDetailsQueryVariables
+    SchemaTypes.HubContributionDetailsQuery,
+    SchemaTypes.HubContributionDetailsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.EcoverseContributionDetailsQuery,
-    SchemaTypes.EcoverseContributionDetailsQueryVariables
-  >(EcoverseContributionDetailsDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.HubContributionDetailsQuery, SchemaTypes.HubContributionDetailsQueryVariables>(
+    HubContributionDetailsDocument,
+    options
+  );
 }
-export type EcoverseContributionDetailsQueryHookResult = ReturnType<typeof useEcoverseContributionDetailsQuery>;
-export type EcoverseContributionDetailsLazyQueryHookResult = ReturnType<typeof useEcoverseContributionDetailsLazyQuery>;
-export type EcoverseContributionDetailsQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseContributionDetailsQuery,
-  SchemaTypes.EcoverseContributionDetailsQueryVariables
+export type HubContributionDetailsQueryHookResult = ReturnType<typeof useHubContributionDetailsQuery>;
+export type HubContributionDetailsLazyQueryHookResult = ReturnType<typeof useHubContributionDetailsLazyQuery>;
+export type HubContributionDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubContributionDetailsQuery,
+  SchemaTypes.HubContributionDetailsQueryVariables
 >;
-export function refetchEcoverseContributionDetailsQuery(
-  variables: SchemaTypes.EcoverseContributionDetailsQueryVariables
-) {
-  return { query: EcoverseContributionDetailsDocument, variables: variables };
+export function refetchHubContributionDetailsQuery(variables: SchemaTypes.HubContributionDetailsQueryVariables) {
+  return { query: HubContributionDetailsDocument, variables: variables };
 }
 export const ChallengeContributionDetailsDocument = gql`
   query challengeContributionDetails($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
@@ -10479,7 +10377,7 @@ export type OpportunityAspectSettingsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectSettingsQuery(variables: SchemaTypes.OpportunityAspectSettingsQueryVariables) {
   return { query: OpportunityAspectSettingsDocument, variables: variables };
 }
-export const EcoverseCanvasesDocument = gql`
+export const HubCanvasesDocument = gql`
   query hubCanvases($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
@@ -10495,52 +10393,49 @@ export const EcoverseCanvasesDocument = gql`
 `;
 
 /**
- * __useEcoverseCanvasesQuery__
+ * __useHubCanvasesQuery__
  *
- * To run a query within a React component, call `useEcoverseCanvasesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseCanvasesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubCanvasesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCanvasesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseCanvasesQuery({
+ * const { data, loading, error } = useHubCanvasesQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoverseCanvasesQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoverseCanvasesQuery, SchemaTypes.EcoverseCanvasesQueryVariables>
+export function useHubCanvasesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCanvasesQuery, SchemaTypes.HubCanvasesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseCanvasesQuery, SchemaTypes.EcoverseCanvasesQueryVariables>(
-    EcoverseCanvasesDocument,
+  return Apollo.useQuery<SchemaTypes.HubCanvasesQuery, SchemaTypes.HubCanvasesQueryVariables>(
+    HubCanvasesDocument,
     options
   );
 }
-export function useEcoverseCanvasesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseCanvasesQuery,
-    SchemaTypes.EcoverseCanvasesQueryVariables
-  >
+export function useHubCanvasesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubCanvasesQuery, SchemaTypes.HubCanvasesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseCanvasesQuery, SchemaTypes.EcoverseCanvasesQueryVariables>(
-    EcoverseCanvasesDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubCanvasesQuery, SchemaTypes.HubCanvasesQueryVariables>(
+    HubCanvasesDocument,
     options
   );
 }
-export type EcoverseCanvasesQueryHookResult = ReturnType<typeof useEcoverseCanvasesQuery>;
-export type EcoverseCanvasesLazyQueryHookResult = ReturnType<typeof useEcoverseCanvasesLazyQuery>;
-export type EcoverseCanvasesQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseCanvasesQuery,
-  SchemaTypes.EcoverseCanvasesQueryVariables
+export type HubCanvasesQueryHookResult = ReturnType<typeof useHubCanvasesQuery>;
+export type HubCanvasesLazyQueryHookResult = ReturnType<typeof useHubCanvasesLazyQuery>;
+export type HubCanvasesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubCanvasesQuery,
+  SchemaTypes.HubCanvasesQueryVariables
 >;
-export function refetchEcoverseCanvasesQuery(variables: SchemaTypes.EcoverseCanvasesQueryVariables) {
-  return { query: EcoverseCanvasesDocument, variables: variables };
+export function refetchHubCanvasesQuery(variables: SchemaTypes.HubCanvasesQueryVariables) {
+  return { query: HubCanvasesDocument, variables: variables };
 }
-export const EcoverseCanvasValuesDocument = gql`
+export const HubCanvasValuesDocument = gql`
   query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
     hub(ID: $hubId) {
       id
@@ -10558,54 +10453,48 @@ export const EcoverseCanvasValuesDocument = gql`
 `;
 
 /**
- * __useEcoverseCanvasValuesQuery__
+ * __useHubCanvasValuesQuery__
  *
- * To run a query within a React component, call `useEcoverseCanvasValuesQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoverseCanvasValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubCanvasValuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubCanvasValuesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoverseCanvasValuesQuery({
+ * const { data, loading, error } = useHubCanvasValuesQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *      canvasId: // value for 'canvasId'
  *   },
  * });
  */
-export function useEcoverseCanvasValuesQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoverseCanvasValuesQuery,
-    SchemaTypes.EcoverseCanvasValuesQueryVariables
-  >
+export function useHubCanvasValuesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubCanvasValuesQuery, SchemaTypes.HubCanvasValuesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoverseCanvasValuesQuery, SchemaTypes.EcoverseCanvasValuesQueryVariables>(
-    EcoverseCanvasValuesDocument,
+  return Apollo.useQuery<SchemaTypes.HubCanvasValuesQuery, SchemaTypes.HubCanvasValuesQueryVariables>(
+    HubCanvasValuesDocument,
     options
   );
 }
-export function useEcoverseCanvasValuesLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoverseCanvasValuesQuery,
-    SchemaTypes.EcoverseCanvasValuesQueryVariables
-  >
+export function useHubCanvasValuesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubCanvasValuesQuery, SchemaTypes.HubCanvasValuesQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoverseCanvasValuesQuery, SchemaTypes.EcoverseCanvasValuesQueryVariables>(
-    EcoverseCanvasValuesDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubCanvasValuesQuery, SchemaTypes.HubCanvasValuesQueryVariables>(
+    HubCanvasValuesDocument,
     options
   );
 }
-export type EcoverseCanvasValuesQueryHookResult = ReturnType<typeof useEcoverseCanvasValuesQuery>;
-export type EcoverseCanvasValuesLazyQueryHookResult = ReturnType<typeof useEcoverseCanvasValuesLazyQuery>;
-export type EcoverseCanvasValuesQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoverseCanvasValuesQuery,
-  SchemaTypes.EcoverseCanvasValuesQueryVariables
+export type HubCanvasValuesQueryHookResult = ReturnType<typeof useHubCanvasValuesQuery>;
+export type HubCanvasValuesLazyQueryHookResult = ReturnType<typeof useHubCanvasValuesLazyQuery>;
+export type HubCanvasValuesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubCanvasValuesQuery,
+  SchemaTypes.HubCanvasValuesQueryVariables
 >;
-export function refetchEcoverseCanvasValuesQuery(variables: SchemaTypes.EcoverseCanvasValuesQueryVariables) {
-  return { query: EcoverseCanvasValuesDocument, variables: variables };
+export function refetchHubCanvasValuesQuery(variables: SchemaTypes.HubCanvasValuesQueryVariables) {
+  return { query: HubCanvasValuesDocument, variables: variables };
 }
 export const ChallengeCanvasesDocument = gql`
   query challengeCanvases($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
@@ -11175,57 +11064,51 @@ export type ChallengeExplorerSearchQueryResult = Apollo.QueryResult<
 export function refetchChallengeExplorerSearchQuery(variables: SchemaTypes.ChallengeExplorerSearchQueryVariables) {
   return { query: ChallengeExplorerSearchDocument, variables: variables };
 }
-export const SimpleEcoverseDocument = gql`
-  query SimpleEcoverse($ID: UUID_NAMEID!) {
+export const SimpleHubDocument = gql`
+  query SimpleHub($ID: UUID_NAMEID!) {
     hub(ID: $ID) {
-      ...SimpleEcoverse
+      ...SimpleHub
     }
   }
-  ${SimpleEcoverseFragmentDoc}
+  ${SimpleHubFragmentDoc}
 `;
 
 /**
- * __useSimpleEcoverseQuery__
+ * __useSimpleHubQuery__
  *
- * To run a query within a React component, call `useSimpleEcoverseQuery` and pass it any options that fit your needs.
- * When your component renders, `useSimpleEcoverseQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSimpleHubQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSimpleHubQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSimpleEcoverseQuery({
+ * const { data, loading, error } = useSimpleHubQuery({
  *   variables: {
  *      ID: // value for 'ID'
  *   },
  * });
  */
-export function useSimpleEcoverseQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SimpleEcoverseQuery, SchemaTypes.SimpleEcoverseQueryVariables>
+export function useSimpleHubQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SimpleHubQuery, SchemaTypes.SimpleHubQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SimpleEcoverseQuery, SchemaTypes.SimpleEcoverseQueryVariables>(
-    SimpleEcoverseDocument,
+  return Apollo.useQuery<SchemaTypes.SimpleHubQuery, SchemaTypes.SimpleHubQueryVariables>(SimpleHubDocument, options);
+}
+export function useSimpleHubLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SimpleHubQuery, SchemaTypes.SimpleHubQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SimpleHubQuery, SchemaTypes.SimpleHubQueryVariables>(
+    SimpleHubDocument,
     options
   );
 }
-export function useSimpleEcoverseLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SimpleEcoverseQuery, SchemaTypes.SimpleEcoverseQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SimpleEcoverseQuery, SchemaTypes.SimpleEcoverseQueryVariables>(
-    SimpleEcoverseDocument,
-    options
-  );
-}
-export type SimpleEcoverseQueryHookResult = ReturnType<typeof useSimpleEcoverseQuery>;
-export type SimpleEcoverseLazyQueryHookResult = ReturnType<typeof useSimpleEcoverseLazyQuery>;
-export type SimpleEcoverseQueryResult = Apollo.QueryResult<
-  SchemaTypes.SimpleEcoverseQuery,
-  SchemaTypes.SimpleEcoverseQueryVariables
->;
-export function refetchSimpleEcoverseQuery(variables: SchemaTypes.SimpleEcoverseQueryVariables) {
-  return { query: SimpleEcoverseDocument, variables: variables };
+export type SimpleHubQueryHookResult = ReturnType<typeof useSimpleHubQuery>;
+export type SimpleHubLazyQueryHookResult = ReturnType<typeof useSimpleHubLazyQuery>;
+export type SimpleHubQueryResult = Apollo.QueryResult<SchemaTypes.SimpleHubQuery, SchemaTypes.SimpleHubQueryVariables>;
+export function refetchSimpleHubQuery(variables: SchemaTypes.SimpleHubQueryVariables) {
+  return { query: SimpleHubDocument, variables: variables };
 }
 export const ChallengeExplorerSearchEnricherDocument = gql`
   query ChallengeExplorerSearchEnricher($hubId: UUID_NAMEID!) {
@@ -11351,14 +11234,14 @@ export const ChallengesOverviewPageDocument = gql`
     membershipUser(membershipData: $membershipData) {
       hubs {
         id
-        ...SimpleEcoverseResultEntry
+        ...SimpleHubResultEntry
         challenges {
           id
         }
       }
     }
   }
-  ${SimpleEcoverseResultEntryFragmentDoc}
+  ${SimpleHubResultEntryFragmentDoc}
 `;
 
 /**
@@ -12640,60 +12523,51 @@ export type CommunicationDiscussionUpdatedSubscriptionHookResult = ReturnType<
 >;
 export type CommunicationDiscussionUpdatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CommunicationDiscussionUpdatedSubscription>;
-export const EcoversePageDocument = gql`
+export const HubPageDocument = gql`
   query hubPage($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
-      ...EcoversePage
+      ...HubPage
     }
   }
-  ${EcoversePageFragmentDoc}
+  ${HubPageFragmentDoc}
 `;
 
 /**
- * __useEcoversePageQuery__
+ * __useHubPageQuery__
  *
- * To run a query within a React component, call `useEcoversePageQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoversePageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoversePageQuery({
+ * const { data, loading, error } = useHubPageQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoversePageQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.EcoversePageQuery, SchemaTypes.EcoversePageQueryVariables>
+export function useHubPageQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoversePageQuery, SchemaTypes.EcoversePageQueryVariables>(
-    EcoversePageDocument,
-    options
-  );
+  return Apollo.useQuery<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>(HubPageDocument, options);
 }
-export function useEcoversePageLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.EcoversePageQuery, SchemaTypes.EcoversePageQueryVariables>
+export function useHubPageLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoversePageQuery, SchemaTypes.EcoversePageQueryVariables>(
-    EcoversePageDocument,
-    options
-  );
+  return Apollo.useLazyQuery<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>(HubPageDocument, options);
 }
-export type EcoversePageQueryHookResult = ReturnType<typeof useEcoversePageQuery>;
-export type EcoversePageLazyQueryHookResult = ReturnType<typeof useEcoversePageLazyQuery>;
-export type EcoversePageQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoversePageQuery,
-  SchemaTypes.EcoversePageQueryVariables
->;
-export function refetchEcoversePageQuery(variables: SchemaTypes.EcoversePageQueryVariables) {
-  return { query: EcoversePageDocument, variables: variables };
+export type HubPageQueryHookResult = ReturnType<typeof useHubPageQuery>;
+export type HubPageLazyQueryHookResult = ReturnType<typeof useHubPageLazyQuery>;
+export type HubPageQueryResult = Apollo.QueryResult<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>;
+export function refetchHubPageQuery(variables: SchemaTypes.HubPageQueryVariables) {
+  return { query: HubPageDocument, variables: variables };
 }
-export const EcoversePageProjectsDocument = gql`
-  query EcoversePageProjects($hubId: UUID_NAMEID!) {
+export const HubPageProjectsDocument = gql`
+  query HubPageProjects($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
       challenges {
@@ -12714,53 +12588,47 @@ export const EcoversePageProjectsDocument = gql`
 `;
 
 /**
- * __useEcoversePageProjectsQuery__
+ * __useHubPageProjectsQuery__
  *
- * To run a query within a React component, call `useEcoversePageProjectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEcoversePageProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubPageProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPageProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEcoversePageProjectsQuery({
+ * const { data, loading, error } = useHubPageProjectsQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useEcoversePageProjectsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.EcoversePageProjectsQuery,
-    SchemaTypes.EcoversePageProjectsQueryVariables
-  >
+export function useHubPageProjectsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPageProjectsQuery, SchemaTypes.HubPageProjectsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.EcoversePageProjectsQuery, SchemaTypes.EcoversePageProjectsQueryVariables>(
-    EcoversePageProjectsDocument,
+  return Apollo.useQuery<SchemaTypes.HubPageProjectsQuery, SchemaTypes.HubPageProjectsQueryVariables>(
+    HubPageProjectsDocument,
     options
   );
 }
-export function useEcoversePageProjectsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.EcoversePageProjectsQuery,
-    SchemaTypes.EcoversePageProjectsQueryVariables
-  >
+export function useHubPageProjectsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPageProjectsQuery, SchemaTypes.HubPageProjectsQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.EcoversePageProjectsQuery, SchemaTypes.EcoversePageProjectsQueryVariables>(
-    EcoversePageProjectsDocument,
+  return Apollo.useLazyQuery<SchemaTypes.HubPageProjectsQuery, SchemaTypes.HubPageProjectsQueryVariables>(
+    HubPageProjectsDocument,
     options
   );
 }
-export type EcoversePageProjectsQueryHookResult = ReturnType<typeof useEcoversePageProjectsQuery>;
-export type EcoversePageProjectsLazyQueryHookResult = ReturnType<typeof useEcoversePageProjectsLazyQuery>;
-export type EcoversePageProjectsQueryResult = Apollo.QueryResult<
-  SchemaTypes.EcoversePageProjectsQuery,
-  SchemaTypes.EcoversePageProjectsQueryVariables
+export type HubPageProjectsQueryHookResult = ReturnType<typeof useHubPageProjectsQuery>;
+export type HubPageProjectsLazyQueryHookResult = ReturnType<typeof useHubPageProjectsLazyQuery>;
+export type HubPageProjectsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPageProjectsQuery,
+  SchemaTypes.HubPageProjectsQueryVariables
 >;
-export function refetchEcoversePageProjectsQuery(variables: SchemaTypes.EcoversePageProjectsQueryVariables) {
-  return { query: EcoversePageProjectsDocument, variables: variables };
+export function refetchHubPageProjectsQuery(variables: SchemaTypes.HubPageProjectsQueryVariables) {
+  return { query: HubPageProjectsDocument, variables: variables };
 }
 export const AssignUserAsOpportunityAdminDocument = gql`
   mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {

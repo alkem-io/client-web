@@ -1,5 +1,5 @@
 query hubs {
   hubs {
-    ...EcoverseDetailsProvider
+    ...HubDetailsProvider
   }
 }

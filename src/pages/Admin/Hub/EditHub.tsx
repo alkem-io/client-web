@@ -1,29 +1,29 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import EcoverseEditForm, { EcoverseEditFormValuesType } from '../../../components/Admin/EcoverseEditForm';
+import HubEditForm, { HubEditFormValuesType } from '../../../components/Admin/HubEditForm';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
-import { useOrganizationsListQuery, useUpdateEcoverseMutation } from '../../../hooks/generated/graphql';
+import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
-import { useEcoverse } from '../../../hooks';
+import { useHub } from '../../../hooks';
 import { useUpdateNavigation } from '../../../hooks';
 import { useNotification } from '../../../hooks';
 import { PageProps } from '../../common';
 import { updateContextInput } from '../../../utils/buildContext';
 import { Box, Container } from '@mui/material';
 
-interface EcoverseEditProps extends PageProps {}
+interface HubEditProps extends PageProps {}
 
-export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
+export const EditHub: FC<HubEditProps> = ({ paths }) => {
   const { t } = useTranslation();
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'edit', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
-  const { hubNameId, hub } = useEcoverse();
+  const { hubNameId, hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
 
-  const [updateEcoverse, { loading: loading1 }] = useUpdateEcoverseMutation({
+  const [updateHub, { loading: loading1 }] = useUpdateHubMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
   });
@@ -39,9 +39,9 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
     notify(message, 'success');
   };
 
-  const onSubmit = async (values: EcoverseEditFormValuesType) => {
+  const onSubmit = async (values: HubEditFormValuesType) => {
     const { name, host, tagsets, anonymousReadAccess } = values;
-    updateEcoverse({
+    updateHub({
       variables: {
         input: {
           context: updateContextInput(values),
@@ -61,9 +61,9 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
   return (
     <Container maxWidth="xl">
       <Box marginY={4}>
-        <Typography variant={'h2'}>{'Edit Ecoverse'}</Typography>
+        <Typography variant={'h2'}>{'Edit Hub'}</Typography>
       </Box>
-      <EcoverseEditForm
+      <HubEditForm
         isEdit={true}
         name={hub?.displayName}
         nameID={hub?.nameID}
@@ -86,4 +86,4 @@ export const EditEcoverse: FC<EcoverseEditProps> = ({ paths }) => {
     </Container>
   );
 };
-export default EditEcoverse;
+export default EditHub;

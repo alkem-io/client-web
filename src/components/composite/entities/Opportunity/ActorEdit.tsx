@@ -9,7 +9,7 @@ import {
   useUpdateActorMutation,
 } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../hooks';
-import { useEcoverse } from '../../../../hooks';
+import { useHub } from '../../../../hooks';
 import { makeStyles } from '@mui/styles';
 import { Actor } from '../../../../models/graphql-schema';
 import Button from '../../../core/Button';
@@ -46,7 +46,7 @@ const useContextEditStyles = makeStyles(theme => ({
 
 const ActorEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, actorGroupId }) => {
   const { t } = useTranslation();
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
 

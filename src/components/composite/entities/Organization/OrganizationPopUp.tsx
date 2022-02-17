@@ -156,7 +156,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
               <Table size="small" className={styles.table}>
                 <TableHead>
                   <TableRow>
-                    <TableCell component="th">Ecoverses hosted</TableCell>
+                    <TableCell component="th">Hubs hosted</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

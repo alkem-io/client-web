@@ -63,7 +63,7 @@ export const managementData = {
       buttons: [
         {
           description: 'Hub admins',
-          url: `authorization/${AuthorizationCredential.EcoverseAdmin}`,
+          url: `authorization/${AuthorizationCredential.HubAdmin}`,
         },
       ],
     },

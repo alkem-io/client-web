@@ -167,7 +167,7 @@ export type AssignCommunityMemberInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type AssignEcoverseAdminInput = {
+export type AssignHubAdminInput = {
   hubID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -244,9 +244,9 @@ export enum AuthorizationCredential {
   ChallengeAdmin = 'CHALLENGE_ADMIN',
   ChallengeLead = 'CHALLENGE_LEAD',
   ChallengeMember = 'CHALLENGE_MEMBER',
-  EcoverseAdmin = 'ECOVERSE_ADMIN',
-  EcoverseHost = 'ECOVERSE_HOST',
-  EcoverseMember = 'ECOVERSE_MEMBER',
+  HubAdmin = 'ECOVERSE_ADMIN',
+  HubHost = 'ECOVERSE_HOST',
+  HubMember = 'ECOVERSE_MEMBER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAdminCommunity = 'GLOBAL_ADMIN_COMMUNITY',
   GlobalRegistered = 'GLOBAL_REGISTERED',
@@ -641,7 +641,7 @@ export type CreateChallengeOnChallengeInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type CreateChallengeOnEcoverseInput = {
+export type CreateChallengeOnHubInput = {
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName?: InputMaybe<Scalars['String']>;
@@ -664,7 +664,7 @@ export type CreateContextInput = {
   who?: InputMaybe<Scalars['Markdown']>;
 };
 
-export type CreateEcoverseInput = {
+export type CreateHubInput = {
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName?: InputMaybe<Scalars['String']>;
@@ -827,7 +827,7 @@ export type DeleteDiscussionInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteEcoverseInput = {
+export type DeleteHubInput = {
   ID: Scalars['UUID_NAMEID'];
 };
 
@@ -928,11 +928,11 @@ export type EcosystemModel = {
   id: Scalars['UUID'];
 };
 
-export type Ecoverse = {
-  __typename?: 'Ecoverse';
-  /** The activity within this Ecoverse. */
+export type Hub = {
+  __typename?: 'Hub';
+  /** The activity within this Hub. */
   activity?: Maybe<Array<Nvp>>;
-  /** The Agent representing this Ecoverse. */
+  /** The Agent representing this Hub. */
   agent?: Maybe<Agent>;
   /** A particular User Application within this Hub. */
   application: Application;
@@ -942,7 +942,7 @@ export type Ecoverse = {
   challenge: Challenge;
   /** The challenges for the hub. */
   challenges?: Maybe<Array<Challenge>>;
-  /** Get a Community within the Ecoverse. Defaults to the Community for the Ecoverse itself. */
+  /** Get a Community within the Hub. Defaults to the Community for the Hub itself. */
   community?: Maybe<Community>;
   /** The context for the hub. */
   context?: Maybe<Context>;
@@ -950,11 +950,11 @@ export type Ecoverse = {
   displayName: Scalars['String'];
   /** The user group with the specified id anywhere in the hub */
   group: UserGroup;
-  /** The User Groups on this Ecoverse */
+  /** The User Groups on this Hub */
   groups: Array<UserGroup>;
-  /** All groups on this Ecoverse that have the provided tag */
+  /** All groups on this Hub that have the provided tag */
   groupsWithTag: Array<UserGroup>;
-  /** The Ecoverse host. */
+  /** The Hub host. */
   host?: Maybe<Organization>;
   /** The ID of the entity */
   id: Scalars['UUID'];
@@ -974,44 +974,44 @@ export type Ecoverse = {
   template: HubTemplate;
 };
 
-export type EcoverseApplicationArgs = {
+export type HubApplicationArgs = {
   ID: Scalars['UUID'];
 };
 
-export type EcoverseChallengeArgs = {
+export type HubChallengeArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type EcoverseCommunityArgs = {
+export type HubCommunityArgs = {
   ID?: InputMaybe<Scalars['UUID']>;
 };
 
-export type EcoverseGroupArgs = {
+export type HubGroupArgs = {
   ID: Scalars['UUID'];
 };
 
-export type EcoverseGroupsWithTagArgs = {
+export type HubGroupsWithTagArgs = {
   tag: Scalars['String'];
 };
 
-export type EcoverseOpportunityArgs = {
+export type HubOpportunityArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type EcoverseProjectArgs = {
+export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
-export type EcoverseAuthorizationResetInput = {
-  /** The identifier of the Ecoverse whose Authorization Policy should be reset. */
+export type HubAuthorizationResetInput = {
+  /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
 };
 
-export type EcoverseTemplate = {
-  __typename?: 'EcoverseTemplate';
+export type HubTemplate = {
+  __typename?: 'HubTemplate';
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
-  /** Ecoverse template name. */
+  /** Hub template name. */
   name: Scalars['String'];
 };
 
@@ -1074,7 +1074,7 @@ export type MembershipOrganizationResultEntryChallenge = {
   __typename?: 'MembershipOrganizationResultEntryChallenge';
   /** Display name of the entity */
   displayName: Scalars['String'];
-  /** The ID of the Ecoverse hosting this Challenge. */
+  /** The ID of the Hub hosting this Challenge. */
   hubID: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
@@ -1097,13 +1097,13 @@ export type MembershipUserInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type MembershipUserResultEntryEcoverse = {
-  __typename?: 'MembershipUserResultEntryEcoverse';
+export type MembershipUserResultEntryHub = {
+  __typename?: 'MembershipUserResultEntryHub';
   /** Details of the Challenges the user is a member of */
   challenges: Array<MembershipResultEntry>;
   /** Display name of the entity */
   displayName: Scalars['String'];
-  /** The Ecoverse ID */
+  /** The Hub ID */
   hubID: Scalars['String'];
   /** A unique identifier for this membership result. */
   id: Scalars['String'];
@@ -1160,8 +1160,8 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
-  /** Assigns a User as an Ecoverse Admin. */
-  assignUserAsEcoverseAdmin: User;
+  /** Assigns a User as an Hub Admin. */
+  assignUserAsHubAdmin: User;
   /** Assigns a User as a Global Admin. */
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
@@ -1178,8 +1178,8 @@ export type Mutation = {
   assignUserToGroup: UserGroup;
   /** Assigns a User as a member of the specified Organization. */
   assignUserToOrganization: Organization;
-  /** Reset the Authorization Policy on the specified Ecoverse. */
-  authorizationPolicyResetOnEcoverse: Ecoverse;
+  /** Reset the Authorization Policy on the specified Hub. */
+  authorizationPolicyResetOnHub: Hub;
   /** Reset the Authorization Policy on the specified Organization. */
   authorizationPolicyResetOnOrganization: Organization;
   /** Reset the Authorization policy on the specified User. */
@@ -1194,14 +1194,14 @@ export type Mutation = {
   createAspectOnContext: Aspect;
   /** Create a new Canvas on the Context. */
   createCanvasOnContext: Canvas;
-  /** Creates a new Challenge within the specified Ecoverse. */
+  /** Creates a new Challenge within the specified Hub. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
   createChildChallenge: Challenge;
   /** Creates a new Discussion as part of this Communication. */
   createDiscussion: Discussion;
-  /** Creates a new Ecoverse. */
-  createEcoverse: Ecoverse;
+  /** Creates a new Hub. */
+  createHub: Hub;
   /** Creates a new User Group in the specified Community. */
   createGroupOnCommunity: UserGroup;
   /** Creates a new User Group for the specified Organization. */
@@ -1238,8 +1238,8 @@ export type Mutation = {
   deleteChallenge: Challenge;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
-  /** Deletes the specified Ecoverse. */
-  deleteEcoverse: Ecoverse;
+  /** Deletes the specified Hub. */
+  deleteHub: Hub;
   /** Deletes the specified Opportunity. */
   deleteOpportunity: Opportunity;
   /** Deletes the specified Organization. */
@@ -1282,8 +1282,8 @@ export type Mutation = {
   removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
-  /** Removes a User from being an Ecoverse Admin. */
-  removeUserAsEcoverseAdmin: User;
+  /** Removes a User from being an Hub Admin. */
+  removeUserAsHubAdmin: User;
   /** Removes a User from being a Global Admin. */
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
@@ -1320,8 +1320,8 @@ export type Mutation = {
   updateDiscussion: Discussion;
   /** Updates the specified EcosystemModel. */
   updateEcosystemModel: EcosystemModel;
-  /** Updates the Ecoverse. */
-  updateEcoverse: Ecoverse;
+  /** Updates the Hub. */
+  updateHub: Hub;
   /** Updates the specified Opportunity. */
   updateOpportunity: Opportunity;
   /** Updates the specified Organization. */
@@ -1358,8 +1358,8 @@ export type MutationAssignUserAsChallengeAdminArgs = {
   membershipData: AssignChallengeAdminInput;
 };
 
-export type MutationAssignUserAsEcoverseAdminArgs = {
-  membershipData: AssignEcoverseAdminInput;
+export type MutationAssignUserAsHubAdminArgs = {
+  membershipData: AssignHubAdminInput;
 };
 
 export type MutationAssignUserAsGlobalAdminArgs = {
@@ -1394,8 +1394,8 @@ export type MutationAssignUserToOrganizationArgs = {
   membershipData: AssignOrganizationMemberInput;
 };
 
-export type MutationAuthorizationPolicyResetOnEcoverseArgs = {
-  authorizationResetData: EcoverseAuthorizationResetInput;
+export type MutationAuthorizationPolicyResetOnHubArgs = {
+  authorizationResetData: HubAuthorizationResetInput;
 };
 
 export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
@@ -1427,7 +1427,7 @@ export type MutationCreateCanvasOnContextArgs = {
 };
 
 export type MutationCreateChallengeArgs = {
-  challengeData: CreateChallengeOnEcoverseInput;
+  challengeData: CreateChallengeOnHubInput;
 };
 
 export type MutationCreateChildChallengeArgs = {
@@ -1438,8 +1438,8 @@ export type MutationCreateDiscussionArgs = {
   createData: CommunicationCreateDiscussionInput;
 };
 
-export type MutationCreateEcoverseArgs = {
-  hubData: CreateEcoverseInput;
+export type MutationCreateHubArgs = {
+  hubData: CreateHubInput;
 };
 
 export type MutationCreateGroupOnCommunityArgs = {
@@ -1510,8 +1510,8 @@ export type MutationDeleteDiscussionArgs = {
   deleteData: DeleteDiscussionInput;
 };
 
-export type MutationDeleteEcoverseArgs = {
-  deleteData: DeleteEcoverseInput;
+export type MutationDeleteHubArgs = {
+  deleteData: DeleteHubInput;
 };
 
 export type MutationDeleteOpportunityArgs = {
@@ -1598,8 +1598,8 @@ export type MutationRemoveUserAsChallengeAdminArgs = {
   membershipData: RemoveChallengeAdminInput;
 };
 
-export type MutationRemoveUserAsEcoverseAdminArgs = {
-  membershipData: RemoveEcoverseAdminInput;
+export type MutationRemoveUserAsHubAdminArgs = {
+  membershipData: RemoveHubAdminInput;
 };
 
 export type MutationRemoveUserAsGlobalAdminArgs = {
@@ -1674,8 +1674,8 @@ export type MutationUpdateEcosystemModelArgs = {
   ecosystemModelData: UpdateEcosystemModelInput;
 };
 
-export type MutationUpdateEcoverseArgs = {
-  hubData: UpdateEcoverseInput;
+export type MutationUpdateHubArgs = {
+  hubData: UpdateHubInput;
 };
 
 export type MutationUpdateOpportunityArgs = {
@@ -1793,7 +1793,7 @@ export type Organization = Groupable &
     /** Groups defined on this organization. */
     groups?: Maybe<Array<UserGroup>>;
     id: Scalars['UUID'];
-    /** Legal name - required if hosting an Ecoverse */
+    /** Legal name - required if hosting an Hub */
     legalEntityName?: Maybe<Scalars['String']>;
     /** All users that are members of this Organization. */
     members?: Maybe<Array<User>>;
@@ -1819,7 +1819,7 @@ export type OrganizationMembership = {
   __typename?: 'OrganizationMembership';
   /** Details of the Challenges the Organization is leading. */
   challengesLeading: Array<MembershipOrganizationResultEntryChallenge>;
-  /** Details of Ecoverses the Organization is hosting. */
+  /** Details of Hubs the Organization is hosting. */
   hubsHosting: Array<MembershipResultEntry>;
   id: Scalars['UUID'];
 };
@@ -1929,10 +1929,10 @@ export type Query = {
   authorization: Authorization;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
-  /** An hub. If no ID is specified then the first Ecoverse is returned. */
-  hub: Ecoverse;
-  /** The Ecoverses on this platform */
-  hubs: Array<Ecoverse>;
+  /** An hub. If no ID is specified then the first Hub is returned. */
+  hub: Hub;
+  /** The Hubs on this platform */
+  hubs: Array<Hub>;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -1965,7 +1965,7 @@ export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
 };
 
-export type QueryEcoverseArgs = {
+export type QueryHubArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
@@ -2063,7 +2063,7 @@ export type RemoveCommunityMemberInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RemoveEcoverseAdminInput = {
+export type RemoveHubAdminInput = {
   hubID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -2114,7 +2114,7 @@ export type SearchInput = {
   challengesFilter?: InputMaybe<Array<Scalars['Float']>>;
   /** Expand the search to includes Tagsets with the provided names. Max 2. */
   tagsetNames?: InputMaybe<Array<Scalars['String']>>;
-  /** The terms to be searched for within this Ecoverse. Max 5. */
+  /** The terms to be searched for within this Hub. Max 5. */
   terms: Array<Scalars['String']>;
   /** Restrict the search to only the specified entity types. Values allowed: user, group, organization, Default is all. */
   typesFilter?: InputMaybe<Array<Scalars['String']>>;
@@ -2204,8 +2204,8 @@ export type Template = {
   challenges: Array<ChallengeTemplate>;
   /** Template description. */
   description: Scalars['String'];
-  /** Ecoverse templates. */
-  hubs: Array<EcoverseTemplate>;
+  /** Hub templates. */
+  hubs: Array<HubTemplate>;
   /** Template name. */
   name: Scalars['String'];
   /** Opportunity templates. */
@@ -2299,16 +2299,16 @@ export type UpdateEcosystemModelInput = {
   description?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateEcoverseInput = {
-  /** The ID or NameID of the Ecoverse. */
+export type UpdateHubInput = {
+  /** The ID or NameID of the Hub. */
   ID: Scalars['UUID_NAMEID'];
-  /** Update anonymous visibility for the Ecoverse. */
+  /** Update anonymous visibility for the Hub. */
   authorizationPolicy?: InputMaybe<UpdateAuthorizationPolicyInput>;
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
   /** The display name for this entity. */
   displayName?: InputMaybe<Scalars['String']>;
-  /** Update the host Organization for the Ecoverse. */
+  /** Update the host Organization for the Hub. */
   hostID?: InputMaybe<Scalars['UUID_NAMEID']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
@@ -2503,8 +2503,8 @@ export type UserMembership = {
   applications?: Maybe<Array<ApplicationResultEntry>>;
   /** All the communitites the user is a part of. */
   communities: Array<MembershipCommunityResultEntry>;
-  /** Details of Ecoverses the user is a member of, with child memberships */
-  hubs: Array<MembershipUserResultEntryEcoverse>;
+  /** Details of Hubs the user is a member of, with child memberships */
+  hubs: Array<MembershipUserResultEntryHub>;
   id: Scalars['UUID'];
   /** Details of the Organizations the user is a member of, with child memberships. */
   organizations: Array<MembershipUserResultEntryOrganization>;
@@ -2615,8 +2615,8 @@ export type VisualUploadImageInput = {
   visualID: Scalars['String'];
 };
 
-export type AdminEcoverseFragment = {
-  __typename?: 'Ecoverse';
+export type AdminHubFragment = {
+  __typename?: 'Hub';
   id: string;
   nameID: string;
   displayName: string;
@@ -2922,8 +2922,8 @@ export type ContextDetailsFragment = {
     | undefined;
 };
 
-export type EcoverseInfoFragment = {
-  __typename?: 'Ecoverse';
+export type HubInfoFragment = {
+  __typename?: 'Hub';
   id: string;
   nameID: string;
   displayName: string;
@@ -2990,8 +2990,8 @@ export type EcoverseInfoFragment = {
   host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
 };
 
-export type EcoverseDetailsFragment = {
-  __typename?: 'Ecoverse';
+export type HubDetailsFragment = {
+  __typename?: 'Hub';
   id: string;
   nameID: string;
   displayName: string;
@@ -3036,7 +3036,7 @@ export type EcoverseDetailsFragment = {
     | undefined;
 };
 
-export type EcoverseNameFragment = { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+export type HubNameFragment = { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 
 export type ContextDetailsProviderFragment = {
   __typename?: 'Context';
@@ -3049,8 +3049,8 @@ export type ContextDetailsProviderFragment = {
   visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
 };
 
-export type EcoverseDetailsProviderFragment = {
-  __typename?: 'Ecoverse';
+export type HubDetailsProviderFragment = {
+  __typename?: 'Hub';
   id: string;
   nameID: string;
   displayName: string;
@@ -3452,7 +3452,7 @@ export type UserDisplayNameFragment = { __typename?: 'User'; id: string; display
 export type UserMembershipDetailsFragment = {
   __typename?: 'UserMembership';
   hubs: Array<{
-    __typename?: 'MembershipUserResultEntryEcoverse';
+    __typename?: 'MembershipUserResultEntryHub';
     id: string;
     nameID: string;
     hubID: string;
@@ -3585,7 +3585,7 @@ export type CreateAspectMutation = {
 };
 
 export type CreateChallengeMutationVariables = Exact<{
-  input: CreateChallengeOnEcoverseInput;
+  input: CreateChallengeOnHubInput;
 }>;
 
 export type CreateChallengeMutation = {
@@ -3593,14 +3593,14 @@ export type CreateChallengeMutation = {
   createChallenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 };
 
-export type CreateEcoverseMutationVariables = Exact<{
-  input: CreateEcoverseInput;
+export type CreateHubMutationVariables = Exact<{
+  input: CreateHubInput;
 }>;
 
-export type CreateEcoverseMutation = {
+export type CreateHubMutation = {
   __typename?: 'Mutation';
-  createEcoverse: {
-    __typename?: 'Ecoverse';
+  createHub: {
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -3878,13 +3878,13 @@ export type DeleteDiscussionMutation = {
   deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
 };
 
-export type DeleteEcoverseMutationVariables = Exact<{
-  input: DeleteEcoverseInput;
+export type DeleteHubMutationVariables = Exact<{
+  input: DeleteHubInput;
 }>;
 
-export type DeleteEcoverseMutation = {
+export type DeleteHubMutation = {
   __typename?: 'Mutation';
-  deleteEcoverse: { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+  deleteHub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 };
 
 export type DeleteGroupMutationVariables = Exact<{
@@ -4004,13 +4004,13 @@ export type AssignUserAsChallengeAdminMutation = {
   assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
-export type AssignUserAsEcoverseAdminMutationVariables = Exact<{
-  input: AssignEcoverseAdminInput;
+export type AssignUserAsHubAdminMutationVariables = Exact<{
+  input: AssignHubAdminInput;
 }>;
 
-export type AssignUserAsEcoverseAdminMutation = {
+export type AssignUserAsHubAdminMutation = {
   __typename?: 'Mutation';
-  assignUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+  assignUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type AssignUserAsGlobalAdminMutationVariables = Exact<{
@@ -4049,13 +4049,13 @@ export type RemoveUserAsChallengeAdminMutation = {
   removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
-export type RemoveUserAsEcoverseAdminMutationVariables = Exact<{
-  input: RemoveEcoverseAdminInput;
+export type RemoveUserAsHubAdminMutationVariables = Exact<{
+  input: RemoveHubAdminInput;
 }>;
 
-export type RemoveUserAsEcoverseAdminMutation = {
+export type RemoveUserAsHubAdminMutation = {
   __typename?: 'Mutation';
-  removeUserAsEcoverseAdmin: { __typename?: 'User'; id: string; displayName: string };
+  removeUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
@@ -4174,14 +4174,14 @@ export type UpdateEcosystemModelMutation = {
   };
 };
 
-export type UpdateEcoverseMutationVariables = Exact<{
-  input: UpdateEcoverseInput;
+export type UpdateHubMutationVariables = Exact<{
+  input: UpdateHubInput;
 }>;
 
-export type UpdateEcoverseMutation = {
+export type UpdateHubMutation = {
   __typename?: 'Mutation';
-  updateEcoverse: {
-    __typename?: 'Ecoverse';
+  updateHub: {
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -4362,12 +4362,12 @@ export type UploadVisualMutation = {
   uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string };
 };
 
-export type AdminEcoversesListQueryVariables = Exact<{ [key: string]: never }>;
+export type AdminHubsListQueryVariables = Exact<{ [key: string]: never }>;
 
-export type AdminEcoversesListQuery = {
+export type AdminHubsListQuery = {
   __typename?: 'Query';
   hubs: Array<{
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -4384,21 +4384,21 @@ export type AllOpportunitiesQueryVariables = Exact<{
 export type AllOpportunitiesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunities: Array<{ __typename?: 'Opportunity'; id: string; nameID: string }>;
   };
 };
 
-export type ApplicationByEcoverseQueryVariables = Exact<{
+export type ApplicationByHubQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   appId: Scalars['UUID'];
 }>;
 
-export type ApplicationByEcoverseQuery = {
+export type ApplicationByHubQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     application: {
       __typename?: 'Application';
@@ -4418,7 +4418,7 @@ export type ChallengeApplicationQueryVariables = Exact<{
 export type ChallengeApplicationQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -4473,7 +4473,7 @@ export type ChallengeApplicationsQueryVariables = Exact<{
 export type ChallengeApplicationsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -4516,14 +4516,14 @@ export type ChallengeApplicationsQuery = {
   };
 };
 
-export type EcoverseApplicationQueryVariables = Exact<{
+export type HubApplicationQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseApplicationQuery = {
+export type HubApplicationQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     displayName: string;
     context?:
@@ -4537,14 +4537,14 @@ export type EcoverseApplicationQuery = {
   };
 };
 
-export type EcoverseApplicationsQueryVariables = Exact<{
+export type HubApplicationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseApplicationsQuery = {
+export type HubApplicationsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -4583,13 +4583,13 @@ export type EcoverseApplicationsQuery = {
   };
 };
 
-export type EcoverseNameIdQueryVariables = Exact<{
+export type HubNameIdQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseNameIdQuery = {
+export type HubNameIdQuery = {
   __typename?: 'Query';
-  hub: { __typename?: 'Ecoverse'; id: string; nameID: string };
+  hub: { __typename?: 'Hub'; id: string; nameID: string };
 };
 
 export type ChallengeNameIdQueryVariables = Exact<{
@@ -4600,7 +4600,7 @@ export type ChallengeNameIdQueryVariables = Exact<{
 export type ChallengeNameIdQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     challenge: { __typename?: 'Challenge'; id: string; nameID: string };
@@ -4615,7 +4615,7 @@ export type OpportunityNameIdQueryVariables = Exact<{
 export type OpportunityNameIdQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     opportunity: {
@@ -4635,7 +4635,7 @@ export type ChallengeCardQueryVariables = Exact<{
 export type ChallengeCardQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     challenge: {
@@ -4664,7 +4664,7 @@ export type ChallengeCardsQueryVariables = Exact<{
 export type ChallengeCardsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenges?:
       | Array<{
@@ -4687,14 +4687,14 @@ export type ChallengeCardsQuery = {
   };
 };
 
-export type EcoverseCardQueryVariables = Exact<{
+export type HubCardQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseCardQuery = {
+export type HubCardQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -4758,7 +4758,7 @@ export type ChallengeInfoQueryVariables = Exact<{
 export type ChallengeInfoQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     challenge: {
@@ -4807,7 +4807,7 @@ export type ChallengeActivityQueryVariables = Exact<{
 export type ChallengeActivityQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -4853,7 +4853,7 @@ export type ChallengeGroupsQueryVariables = Exact<{
 export type ChallengeGroupsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -4875,7 +4875,7 @@ export type ChallengeLeadOrganizationsQueryVariables = Exact<{
 export type ChallengeLeadOrganizationsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -4918,7 +4918,7 @@ export type ChallengeLifecycleQueryVariables = Exact<{
 export type ChallengeLifecycleQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -4945,7 +4945,7 @@ export type ChallengeMembersQueryVariables = Exact<{
 export type ChallengeMembersQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -4976,7 +4976,7 @@ export type ChallengeNameQueryVariables = Exact<{
 export type ChallengeNameQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -4995,7 +4995,7 @@ export type ChallengeProfileInfoQueryVariables = Exact<{
 export type ChallengeProfileInfoQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -5052,7 +5052,7 @@ export type ChallengeUserIdsQueryVariables = Exact<{
 export type ChallengeUserIdsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -5070,7 +5070,7 @@ export type ChallengesQueryVariables = Exact<{
 export type ChallengesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenges?:
       | Array<{
@@ -5099,7 +5099,7 @@ export type AllCommunitiesQueryVariables = Exact<{
 export type AllCommunitiesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
     challenges?:
       | Array<{
@@ -5124,7 +5124,7 @@ export type ChallengeCommunityQueryVariables = Exact<{
 export type ChallengeCommunityQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -5189,7 +5189,7 @@ export type ChallengesWithCommunityQueryVariables = Exact<{
 export type ChallengesWithCommunityQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenges?:
       | Array<{
@@ -5203,14 +5203,14 @@ export type ChallengesWithCommunityQuery = {
   };
 };
 
-export type EcoverseCommunityQueryVariables = Exact<{
+export type HubCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseCommunityQuery = {
+export type HubCommunityQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -5271,7 +5271,7 @@ export type CommunityMessagesQueryVariables = Exact<{
 export type CommunityMessagesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -5311,7 +5311,7 @@ export type OpportunityCommunityQueryVariables = Exact<{
 export type OpportunityCommunityQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -5377,7 +5377,7 @@ export type CommunityGroupsQueryVariables = Exact<{
 export type CommunityGroupsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -5398,7 +5398,7 @@ export type CommunityMembersQueryVariables = Exact<{
 export type CommunityMembersQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -5445,14 +5445,14 @@ export type ConfigurationQuery = {
   };
 };
 
-export type EcoverseInfoQueryVariables = Exact<{
+export type HubInfoQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseInfoQuery = {
+export type HubInfoQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -5520,29 +5520,29 @@ export type EcoverseInfoQuery = {
   };
 };
 
-export type EcoverseActivityQueryVariables = Exact<{
+export type HubActivityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseActivityQuery = {
+export type HubActivityQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
   };
 };
 
-export type EcoverseApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
+export type HubApplicationTemplateQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EcoverseApplicationTemplateQuery = {
+export type HubApplicationTemplateQuery = {
   __typename?: 'Query';
   configuration: {
     __typename?: 'Config';
     template: {
       __typename?: 'Template';
       hubs: Array<{
-        __typename?: 'EcoverseTemplate';
+        __typename?: 'HubTemplate';
         name: string;
         applications?:
           | Array<{
@@ -5561,15 +5561,15 @@ export type EcoverseApplicationTemplateQuery = {
   };
 };
 
-export type EcoverseGroupQueryVariables = Exact<{
+export type HubGroupQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   groupId: Scalars['UUID'];
 }>;
 
-export type EcoverseGroupQuery = {
+export type HubGroupQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     group: {
       __typename?: 'UserGroup';
@@ -5604,27 +5604,27 @@ export type EcoverseGroupQuery = {
   };
 };
 
-export type EcoverseGroupsListQueryVariables = Exact<{
+export type HubGroupsListQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseGroupsListQuery = {
+export type HubGroupsListQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     groups: Array<{ __typename?: 'UserGroup'; id: string; name: string }>;
   };
 };
 
-export type EcoverseHostReferencesQueryVariables = Exact<{
+export type HubHostReferencesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseHostReferencesQuery = {
+export type HubHostReferencesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     host?:
       | {
@@ -5639,14 +5639,14 @@ export type EcoverseHostReferencesQuery = {
   };
 };
 
-export type EcoverseMembersQueryVariables = Exact<{
+export type HubMembersQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseMembersQuery = {
+export type HubMembersQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -5667,23 +5667,23 @@ export type EcoverseMembersQuery = {
   };
 };
 
-export type EcoverseNameQueryVariables = Exact<{
+export type HubNameQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseNameQuery = {
+export type HubNameQuery = {
   __typename?: 'Query';
-  hub: { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 };
 
-export type EcoverseUserIdsQueryVariables = Exact<{
+export type HubUserIdsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseUserIdsQuery = {
+export type HubUserIdsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | { __typename?: 'Community'; id: string; members?: Array<{ __typename?: 'User'; id: string }> | undefined }
@@ -5691,14 +5691,14 @@ export type EcoverseUserIdsQuery = {
   };
 };
 
-export type EcoverseVisualQueryVariables = Exact<{
+export type HubVisualQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseVisualQuery = {
+export type HubVisualQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     context?:
       | {
@@ -5709,12 +5709,12 @@ export type EcoverseVisualQuery = {
   };
 };
 
-export type EcoversesQueryVariables = Exact<{ [key: string]: never }>;
+export type HubsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type EcoversesQuery = {
+export type HubsQuery = {
   __typename?: 'Query';
   hubs: Array<{
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -5752,7 +5752,7 @@ export type GroupMembersQueryVariables = Exact<{
 export type GroupMembersQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     group: {
       __typename?: 'UserGroup';
@@ -5859,7 +5859,7 @@ export type MembershipUserQuery = {
     __typename?: 'UserMembership';
     id: string;
     hubs: Array<{
-      __typename?: 'MembershipUserResultEntryEcoverse';
+      __typename?: 'MembershipUserResultEntryHub';
       id: string;
       nameID: string;
       hubID: string;
@@ -5899,7 +5899,7 @@ export type OpportunitiesQueryVariables = Exact<{
 export type OpportunitiesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -5919,7 +5919,7 @@ export type OpportunityInfoQueryVariables = Exact<{
 export type OpportunityInfoQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     opportunity: {
@@ -6035,7 +6035,7 @@ export type OpportunityActivityQueryVariables = Exact<{
 export type OpportunityActivityQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6053,7 +6053,7 @@ export type OpportunityActorGroupsQueryVariables = Exact<{
 export type OpportunityActorGroupsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6100,7 +6100,7 @@ export type OpportunityAspectsOldQueryVariables = Exact<{
 export type OpportunityAspectsOldQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6124,7 +6124,7 @@ export type OpportunityEcosystemDetailsQueryVariables = Exact<{
 export type OpportunityEcosystemDetailsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6170,7 +6170,7 @@ export type OpportunityGroupsQueryVariables = Exact<{
 export type OpportunityGroupsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6192,7 +6192,7 @@ export type OpportunityLifecycleQueryVariables = Exact<{
 export type OpportunityLifecycleQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6219,7 +6219,7 @@ export type OpportunityNameQueryVariables = Exact<{
 export type OpportunityNameQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: { __typename?: 'Opportunity'; id: string; displayName: string };
   };
@@ -6233,7 +6233,7 @@ export type OpportunityProfileInfoQueryVariables = Exact<{
 export type OpportunityProfileInfoQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6289,7 +6289,7 @@ export type OpportunityRelationsQueryVariables = Exact<{
 export type OpportunityRelationsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6315,7 +6315,7 @@ export type OpportunityUserIdsQueryVariables = Exact<{
 export type OpportunityUserIdsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6333,7 +6333,7 @@ export type OpportunityWithActivityQueryVariables = Exact<{
 export type OpportunityWithActivityQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunities: Array<{
       __typename?: 'Opportunity';
@@ -6581,7 +6581,7 @@ export type ProjectProfileQueryVariables = Exact<{
 export type ProjectProfileQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     project: {
       __typename?: 'Project';
@@ -6602,7 +6602,7 @@ export type ProjectsQueryVariables = Exact<{
 export type ProjectsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     projects: Array<{
       __typename?: 'Project';
@@ -6622,7 +6622,7 @@ export type ProjectsChainHistoryQueryVariables = Exact<{
 export type ProjectsChainHistoryQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenges?:
       | Array<{
@@ -6649,7 +6649,7 @@ export type RelationsQueryVariables = Exact<{
 export type RelationsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -6993,7 +6993,7 @@ export type UserProfileQuery = {
     __typename?: 'UserMembership';
     id: string;
     hubs: Array<{
-      __typename?: 'MembershipUserResultEntryEcoverse';
+      __typename?: 'MembershipUserResultEntryHub';
       id: string;
       nameID: string;
       hubID: string;
@@ -7126,14 +7126,14 @@ export type UsersWithCredentialsSimpleListQuery = {
   }>;
 };
 
-export type EcoverseContributionDetailsQueryVariables = Exact<{
+export type HubContributionDetailsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseContributionDetailsQuery = {
+export type HubContributionDetailsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -7156,7 +7156,7 @@ export type ChallengeContributionDetailsQueryVariables = Exact<{
 export type ChallengeContributionDetailsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     challenge: {
@@ -7184,7 +7184,7 @@ export type OpportunityContributionDetailsQueryVariables = Exact<{
 export type OpportunityContributionDetailsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     opportunity: {
@@ -7310,7 +7310,7 @@ export type HubAspectQueryVariables = Exact<{
 export type HubAspectQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     context?:
       | {
@@ -7367,7 +7367,7 @@ export type ChallengeAspectQueryVariables = Exact<{
 export type ChallengeAspectQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -7428,7 +7428,7 @@ export type OpportunityAspectQueryVariables = Exact<{
 export type OpportunityAspectQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -7569,7 +7569,7 @@ export type HubAspectSettingsQueryVariables = Exact<{
 export type HubAspectSettingsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     context?:
       | {
@@ -7636,7 +7636,7 @@ export type ChallengeAspectSettingsQueryVariables = Exact<{
 export type ChallengeAspectSettingsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -7707,7 +7707,7 @@ export type OpportunityAspectSettingsQueryVariables = Exact<{
 export type OpportunityAspectSettingsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -7853,14 +7853,14 @@ export type ChechkoutDetailsFragment = {
     | undefined;
 };
 
-export type EcoverseCanvasesQueryVariables = Exact<{
+export type HubCanvasesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoverseCanvasesQuery = {
+export type HubCanvasesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     context?:
       | {
@@ -7903,15 +7903,15 @@ export type EcoverseCanvasesQuery = {
   };
 };
 
-export type EcoverseCanvasValuesQueryVariables = Exact<{
+export type HubCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   canvasId: Scalars['UUID'];
 }>;
 
-export type EcoverseCanvasValuesQuery = {
+export type HubCanvasValuesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     context?:
       | {
@@ -7963,7 +7963,7 @@ export type ChallengeCanvasesQueryVariables = Exact<{
 export type ChallengeCanvasesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -8019,7 +8019,7 @@ export type ChallengeCanvasValuesQueryVariables = Exact<{
 export type ChallengeCanvasValuesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -8075,7 +8075,7 @@ export type OpportunityCanvasesQueryVariables = Exact<{
 export type OpportunityCanvasesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -8131,7 +8131,7 @@ export type OpportunityCanvasValuesQueryVariables = Exact<{
 export type OpportunityCanvasValuesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -8306,16 +8306,16 @@ export type ChallengeExplorerSearchResultFragment = {
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
 };
 
-export type SimpleEcoverseQueryVariables = Exact<{
+export type SimpleHubQueryVariables = Exact<{
   ID: Scalars['UUID_NAMEID'];
 }>;
 
-export type SimpleEcoverseQuery = {
+export type SimpleHubQuery = {
   __typename?: 'Query';
-  hub: { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 };
 
-export type SimpleEcoverseFragment = { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+export type SimpleHubFragment = { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 
 export type ChallengeExplorerSearchEnricherQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
@@ -8323,7 +8323,7 @@ export type ChallengeExplorerSearchEnricherQueryVariables = Exact<{
 
 export type ChallengeExplorerSearchEnricherQuery = {
   __typename?: 'Query';
-  hub: { __typename?: 'Ecoverse'; id: string; nameID: string; displayName: string };
+  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 };
 
 export type ChallengePageQueryVariables = Exact<{
@@ -8334,7 +8334,7 @@ export type ChallengePageQueryVariables = Exact<{
 export type ChallengePageQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -8605,7 +8605,7 @@ export type ChallengesOverviewPageQuery = {
   membershipUser: {
     __typename?: 'UserMembership';
     hubs: Array<{
-      __typename?: 'MembershipUserResultEntryEcoverse';
+      __typename?: 'MembershipUserResultEntryHub';
       id: string;
       hubID: string;
       nameID: string;
@@ -8615,8 +8615,8 @@ export type ChallengesOverviewPageQuery = {
   };
 };
 
-export type SimpleEcoverseResultEntryFragment = {
-  __typename?: 'MembershipUserResultEntryEcoverse';
+export type SimpleHubResultEntryFragment = {
+  __typename?: 'MembershipUserResultEntryHub';
   hubID: string;
   nameID: string;
   displayName: string;
@@ -8630,7 +8630,7 @@ export type CommunityUpdatesQueryVariables = Exact<{
 export type CommunityUpdatesQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -8697,7 +8697,7 @@ export type CommunityPageQueryVariables = Exact<{
 export type CommunityPageQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -8751,7 +8751,7 @@ export type CommunityPageWithHostQueryVariables = Exact<{
 export type CommunityPageWithHostQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     host?:
       | {
@@ -8821,7 +8821,7 @@ export type ChallengeLeadingOrganizationsQueryVariables = Exact<{
 export type ChallengeLeadingOrganizationsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -8851,7 +8851,7 @@ export type HubContextQueryVariables = Exact<{
 export type HubContextQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -8894,7 +8894,7 @@ export type HubContextExtraQueryVariables = Exact<{
 export type HubContextExtraQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -8932,7 +8932,7 @@ export type ChallengeContextQueryVariables = Exact<{
 export type ChallengeContextQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -8983,7 +8983,7 @@ export type ChallengeContextExtraQueryVariables = Exact<{
 export type ChallengeContextExtraQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -9028,7 +9028,7 @@ export type OpportunityContextQueryVariables = Exact<{
 export type OpportunityContextQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     opportunity: {
@@ -9078,7 +9078,7 @@ export type OpportunityContextExtraQueryVariables = Exact<{
 export type OpportunityContextExtraQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     opportunity: {
@@ -9211,7 +9211,7 @@ export type CommunityDiscussionQueryVariables = Exact<{
 export type CommunityDiscussionQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -9263,7 +9263,7 @@ export type CommunityDiscussionListQueryVariables = Exact<{
 export type CommunityDiscussionListQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     community?:
       | {
@@ -9379,14 +9379,14 @@ export type CommunicationDiscussionUpdatedSubscription = {
   };
 };
 
-export type EcoversePageQueryVariables = Exact<{
+export type HubPageQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoversePageQuery = {
+export type HubPageQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     nameID: string;
     displayName: string;
@@ -9432,8 +9432,8 @@ export type EcoversePageQuery = {
   };
 };
 
-export type EcoversePageFragment = {
-  __typename?: 'Ecoverse';
+export type HubPageFragment = {
+  __typename?: 'Hub';
   id: string;
   nameID: string;
   displayName: string;
@@ -9487,14 +9487,14 @@ export type ProjectInfoFragment = {
   lifecycle?: { __typename?: 'Lifecycle'; state?: string | undefined } | undefined;
 };
 
-export type EcoversePageProjectsQueryVariables = Exact<{
+export type HubPageProjectsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type EcoversePageProjectsQuery = {
+export type HubPageProjectsQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenges?:
       | Array<{
@@ -9550,7 +9550,7 @@ export type OpportunityPageQueryVariables = Exact<{
 export type OpportunityPageQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';
@@ -9867,7 +9867,7 @@ export type HubAspectProviderQueryVariables = Exact<{
 export type HubAspectProviderQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     context?:
       | {
@@ -9902,7 +9902,7 @@ export type ChallengeAspectProviderQueryVariables = Exact<{
 export type ChallengeAspectProviderQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     challenge: {
       __typename?: 'Challenge';
@@ -9941,7 +9941,7 @@ export type OpportunityAspectProviderQueryVariables = Exact<{
 export type OpportunityAspectProviderQuery = {
   __typename?: 'Query';
   hub: {
-    __typename?: 'Ecoverse';
+    __typename?: 'Hub';
     id: string;
     opportunity: {
       __typename?: 'Opportunity';

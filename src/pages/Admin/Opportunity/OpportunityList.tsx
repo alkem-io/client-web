@@ -10,7 +10,7 @@ import {
   useOpportunitiesQuery,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
-import { useEcoverse } from '../../../hooks';
+import { useHub } from '../../../hooks';
 import { useResolvedPath } from 'react-router-dom';
 
 interface OpportunityListProps extends PageProps {}
@@ -18,7 +18,7 @@ interface OpportunityListProps extends PageProps {}
 export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const { challengeNameId = '' } = useUrlParams();
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
     variables: { hubId: hubNameId, challengeId: challengeNameId },

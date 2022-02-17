@@ -3,7 +3,7 @@ import { Accordion } from '../../../components/composite/common/Accordion/Accord
 import GroupBy from '../../../components/core/GroupBy/GroupBy';
 import ChallengeExplorerSearchContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
 import ChallengeExplorerSearchEnricherContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
-import EcoverseNameResolver from '../../../containers/hub/EcoverseNameResolver';
+import HubNameResolver from '../../../containers/hub/HubNameResolver';
 import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
 import ChallengeCard, {
   ChallengeCardProps,
@@ -31,7 +31,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
           <GroupBy data={challenges} groupKey={groupKey}>
             {groups => {
               return groups.map(({ keyValue, values }) => (
-                <EcoverseNameResolver key={keyValue} hubId={keyValue}>
+                <HubNameResolver key={keyValue} hubId={keyValue}>
                   {({ displayName }) => (
                     <Accordion title={displayName} ariaKey={keyValue}>
                       <CardLayoutContainer>
@@ -50,7 +50,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
                       </CardLayoutContainer>
                     </Accordion>
                   )}
-                </EcoverseNameResolver>
+                </HubNameResolver>
               ));
             }}
           </GroupBy>

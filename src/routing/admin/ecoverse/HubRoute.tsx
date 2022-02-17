@@ -1,22 +1,22 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { managementData } from '../../../components/Admin/managementData';
-import { useEcoverse, useTransactionScope } from '../../../hooks';
+import { useHub, useTransactionScope } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { Error404, PageProps } from '../../../pages';
-import EditEcoverse from '../../../pages/Admin/Ecoverse/EditEcoverse';
+import EditHub from '../../../pages/Admin/Hub/EditHub';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
-import { buildEcoverseUrl } from '../../../utils/urlBuilders';
+import { buildHubUrl } from '../../../utils/urlBuilders';
 import { ChallengesRoute } from '../challenge/ChallengesRoute';
 import { CommunityRoute } from '../community';
-import EcoverseAuthorizationRoute from './EcoverseAuthorizationRoute';
-import EcoverseVisualsPage from '../../../pages/Admin/Ecoverse/EcoverseVisualsPage';
+import HubAuthorizationRoute from './HubAuthorizationRoute';
+import HubVisualsPage from '../../../pages/Admin/Hub/HubVisualsPage';
 
-interface EcoverseAdminRouteProps extends PageProps {}
+interface HubAdminRouteProps extends PageProps {}
 
-export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
+export const HubRoute: FC<HubAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
-  const { hubId, hubNameId, hub, loading: loadingEcoverse } = useEcoverse();
+  const { hubId, hubNameId, hub, loading: loadingHub } = useHub();
   const { pathname: url } = useResolvedPath('.');
 
   const currentPaths = useMemo(
@@ -34,30 +34,27 @@ export const EcoverseRoute: FC<EcoverseAdminRouteProps> = ({ paths }) => {
               data={managementData.hubLvl}
               paths={currentPaths}
               title={hub?.displayName}
-              entityUrl={buildEcoverseUrl(hubNameId)}
-              loading={loadingEcoverse}
+              entityUrl={buildHubUrl(hubNameId)}
+              loading={loadingHub}
             />
           }
         />
-        <Route path={'edit'} element={<EditEcoverse paths={currentPaths} />} />
-        <Route path={'visuals'} element={<EcoverseVisualsPage paths={currentPaths} />} />
+        <Route path={'edit'} element={<EditHub paths={currentPaths} />} />
+        <Route path={'visuals'} element={<HubVisualsPage paths={currentPaths} />} />
         <Route
           path={'community/*'}
           element={
             <CommunityRoute
               paths={currentPaths}
               communityId={hub?.community?.id}
-              credential={AuthorizationCredential.EcoverseMember}
+              credential={AuthorizationCredential.HubMember}
               resourceId={hubId}
               accessedFrom="hub"
             />
           }
         />
         <Route path={'challenges/*'} element={<ChallengesRoute paths={currentPaths} />} />
-        <Route
-          path={'authorization/*'}
-          element={<EcoverseAuthorizationRoute paths={currentPaths} resourceId={hubId} />}
-        />
+        <Route path={'authorization/*'} element={<HubAuthorizationRoute paths={currentPaths} resourceId={hubId} />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

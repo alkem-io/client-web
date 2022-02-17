@@ -1,18 +1,18 @@
 import React, { FC, useMemo } from 'react';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../common';
-import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/hub/EcoversePageContainer';
-import EcoverseChallengesView from '../../views/Ecoverse/EcoverseChallengesView';
+import { HubContainerEntities, HubContainerState } from '../../containers/hub/HubPageContainer';
+import HubChallengesView from '../../views/Hub/HubChallengesView';
 
 export interface HubChallengesPageProps extends PageProps {
-  entities: EcoverseContainerEntities;
-  state: EcoverseContainerState;
+  entities: HubContainerEntities;
+  state: HubContainerState;
 }
 
 const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths, entities, state }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/challenges', name: 'challenges', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  return <EcoverseChallengesView entities={entities} state={state} />;
+  return <HubChallengesView entities={entities} state={state} />;
 };
 export default HubChallengesPage;

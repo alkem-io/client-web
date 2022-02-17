@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
+import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
@@ -43,7 +43,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useUserContext();
-  const { hub, loading: loadingEcoverseContext } = useEcoverse();
+  const { hub, loading: loadingHubContext } = useHub();
   const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
 
   const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
@@ -127,7 +127,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           projects,
           discussions: discussionList,
         },
-        { loading: loading || loadingProfile || loadingEcoverseContext || loadingDiscussions },
+        { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions },
         {}
       )}
     </>

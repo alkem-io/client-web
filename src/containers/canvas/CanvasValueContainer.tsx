@@ -5,7 +5,7 @@ import { useApolloErrorHandler, useConfig, useNotification, useUrlParams, useUse
 import {
   CanvasContentUpdatedDocument,
   useChallengeCanvasValuesQuery,
-  useEcoverseCanvasValuesQuery,
+  useHubCanvasValuesQuery,
   useOpportunityCanvasValuesQuery,
 } from '../../hooks/generated/graphql';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
@@ -15,7 +15,7 @@ import {
   CanvasContentUpdatedSubscription,
   CanvasValueFragment,
   ChallengeCanvasValuesQuery,
-  EcoverseCanvasValuesQuery,
+  HubCanvasValuesQuery,
   OpportunityCanvasValuesQuery,
   SubscriptionCanvasContentUpdatedArgs,
 } from '../../models/graphql-schema';
@@ -49,7 +49,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   } = useUrlParams();
   let queryOpportunityId: string | undefined = opportunityId;
   let queryChallengeId: string | undefined = challengeId;
-  let queryEcoverseId: string | undefined = hubId;
+  let queryHubId: string | undefined = hubId;
 
   const { user: userMetadata } = useUserContext();
   const userId = userMetadata?.user.id;
@@ -57,24 +57,24 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   if (params) {
     queryOpportunityId = params?.opportunityId;
     queryChallengeId = params?.challengeId;
-    queryEcoverseId = params?.hubId;
+    queryHubId = params?.hubId;
   }
 
-  const skipEcoverse = Boolean(queryChallengeId) || Boolean(queryOpportunityId) || !Boolean(canvasId);
+  const skipHub = Boolean(queryChallengeId) || Boolean(queryOpportunityId) || !Boolean(canvasId);
   const skipChallenge = Boolean(queryOpportunityId) || !Boolean(queryChallengeId) || !Boolean(canvasId);
   const skipOpportunity = !Boolean(queryOpportunityId) || !Boolean(canvasId);
 
   const {
     data: hubData,
-    loading: loadingEcoverseCanvasValue,
-    subscribeToMore: subEcoverse,
-  } = useEcoverseCanvasValuesQuery({
+    loading: loadingHubCanvasValue,
+    subscribeToMore: subHub,
+  } = useHubCanvasValuesQuery({
     errorPolicy: 'all',
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
-    skip: skipEcoverse,
+    skip: skipHub,
     variables: {
-      hubId: queryEcoverseId,
+      hubId: queryHubId,
       canvasId: canvasId || '',
     },
   });
@@ -88,7 +88,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
     nextFetchPolicy: 'cache-and-network',
     skip: skipChallenge,
     variables: {
-      hubId: queryEcoverseId,
+      hubId: queryHubId,
       challengeId: queryChallengeId || '',
       canvasId: canvasId || '',
     },
@@ -103,7 +103,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
     nextFetchPolicy: 'cache-and-network',
     skip: skipOpportunity,
     variables: {
-      hubId: queryEcoverseId,
+      hubId: queryHubId,
       opportunityId: queryOpportunityId || '',
       canvasId: canvasId || '',
     },
@@ -137,19 +137,19 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
         CanvasContentUpdatedSubscription
       >
     ) => () => void;
-    type EcoverseSubscribeToMore = TypedSubscribeToMore<EcoverseCanvasValuesQuery>;
+    type HubSubscribeToMore = TypedSubscribeToMore<HubCanvasValuesQuery>;
     type ChallengeSubscribeToMore = TypedSubscribeToMore<ChallengeCanvasValuesQuery>;
     type OpportunitySubscribeToMore = TypedSubscribeToMore<OpportunityCanvasValuesQuery>;
-    let subscribeToMore: EcoverseSubscribeToMore | ChallengeSubscribeToMore | OpportunitySubscribeToMore;
+    let subscribeToMore: HubSubscribeToMore | ChallengeSubscribeToMore | OpportunitySubscribeToMore;
 
     // todo: better type
     let getCanvasesFn: (
-      state: EcoverseCanvasValuesQuery | ChallengeCanvasValuesQuery | OpportunityCanvasValuesQuery
+      state: HubCanvasValuesQuery | ChallengeCanvasValuesQuery | OpportunityCanvasValuesQuery
     ) => CanvasValueFragment[];
 
-    if (!skipEcoverse) {
-      subscribeToMore = subEcoverse;
-      getCanvasesFn = state => (state as EcoverseCanvasValuesQuery).hub.context?.canvases ?? [];
+    if (!skipHub) {
+      subscribeToMore = subHub;
+      getCanvasesFn = state => (state as HubCanvasValuesQuery).hub.context?.canvases ?? [];
     } else if (!skipChallenge) {
       subscribeToMore = subChallenge;
       getCanvasesFn = state => (state as ChallengeCanvasValuesQuery).hub.challenge?.context?.canvases ?? [];
@@ -192,7 +192,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
       },
     });
     return () => unSubscribe && unSubscribe();
-  }, [subEcoverse, subChallenge, subOpportunity, canvasId, skipEcoverse, skipChallenge, canvas, userId]);
+  }, [subHub, subChallenge, subOpportunity, canvasId, skipHub, skipChallenge, canvas, userId]);
 
   return (
     <>
@@ -201,8 +201,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
           canvas,
         },
         {
-          loadingCanvasValue:
-            loadingEcoverseCanvasValue || loadingChallengeCanvasValue || loadingOpportunityCanvasValue,
+          loadingCanvasValue: loadingHubCanvasValue || loadingChallengeCanvasValue || loadingOpportunityCanvasValue,
         },
         {}
       )}

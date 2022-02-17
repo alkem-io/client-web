@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { UserMetadata } from '../../../../hooks';
-import { EcoversesQuery } from '../../../../models/graphql-schema';
+import { HubsQuery } from '../../../../models/graphql-schema';
 import { CardLayoutItem, CardLayoutContainer } from '../../../core/CardLayoutContainer/CardLayoutContainer';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import HubCard from '../cards/HubCard/HubCard';
 
 interface DashboardHubSectionProps extends DashboardGenericSectionProps {
   entities: {
-    hubs: EcoversesQuery['hubs'];
+    hubs: HubsQuery['hubs'];
     user?: UserMetadata;
   };
   options: {

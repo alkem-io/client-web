@@ -1,7 +1,7 @@
 import { sortBy, uniq, merge } from 'lodash';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { useApolloErrorHandler, useConfig, useEcoverse, useUrlParams } from '../../hooks';
+import { useApolloErrorHandler, useConfig, useHub, useUrlParams } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionMessageReceivedDocument,
@@ -50,7 +50,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const { discussionId = '' } = useUrlParams();
-  const { hubNameId, loading: loadingEcoverse } = useEcoverse();
+  const { hubNameId, loading: loadingHub } = useHub();
   const { communityId, loading: loadingCommunity } = useCommunityContext();
 
   const { data, loading, subscribeToMore } = useCommunityDiscussionQuery({
@@ -195,7 +195,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
         discussion,
         handlePostComment,
         handleDeleteComment,
-        loading: loadingEcoverse || loadingCommunity || loadingAuthors || loading,
+        loading: loadingHub || loadingCommunity || loadingAuthors || loading,
         posting: postingComment,
         deleting: deletingComment,
       }}

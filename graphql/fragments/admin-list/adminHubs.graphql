@@ -1,4 +1,4 @@
-fragment AdminEcoverse on Ecoverse {
+fragment AdminHub on Hub {
   id
   nameID
   displayName

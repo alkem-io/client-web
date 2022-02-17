@@ -2,12 +2,12 @@ import React, { FC, useMemo } from 'react';
 import { ContributionCardV2Details } from '../../components/composite/common/cards';
 import {
   useChallengeContributionDetailsQuery,
-  useEcoverseContributionDetailsQuery,
+  useHubContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
 } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
-import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface EntityDetailsContainerEntities {
@@ -27,7 +27,7 @@ export interface EntityDetailsContainerProps
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
   const { hubId, challengeId, opportunityId } = entities;
-  const { data: hubData, loading: hubLoading } = useEcoverseContributionDetailsQuery({
+  const { data: hubData, loading: hubLoading } = useHubContributionDetailsQuery({
     variables: {
       hubId: hubId,
     },
@@ -57,7 +57,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         type: 'hub',
         mediaUrl: getVisualBanner(hubData.hub.context?.visuals),
         tags: hubData.hub.tagset?.tags || [],
-        url: buildEcoverseUrl(hubData.hub.nameID),
+        url: buildHubUrl(hubData.hub.nameID),
       } as ContributionCardV2Details;
 
     if (challengeData)

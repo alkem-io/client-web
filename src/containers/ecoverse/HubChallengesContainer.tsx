@@ -4,29 +4,25 @@ import { useChallengeCardsQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Challenge } from '../../models/graphql-schema';
 
-export interface EcoverseChallengesContainerEntities {
+export interface HubChallengesContainerEntities {
   challenges: Challenge[];
 }
 
-export interface EcoverseChallengesContainerActions {}
+export interface HubChallengesContainerActions {}
 
-export interface EcoverseChallengesContainerState {
+export interface HubChallengesContainerState {
   loading: boolean;
   error?: ApolloError;
 }
 
-export interface EcoverseChallengesContainerProps
-  extends ContainerProps<
-    EcoverseChallengesContainerEntities,
-    EcoverseChallengesContainerActions,
-    EcoverseChallengesContainerState
-  > {
+export interface HubChallengesContainerProps
+  extends ContainerProps<HubChallengesContainerEntities, HubChallengesContainerActions, HubChallengesContainerState> {
   entities: {
     hubNameId: string;
   };
 }
 
-export const EcoverseChallengesContainer: FC<EcoverseChallengesContainerProps> = ({ entities, children }) => {
+export const HubChallengesContainer: FC<HubChallengesContainerProps> = ({ entities, children }) => {
   const {
     data: _challenges,
     error: challengesError,
@@ -51,4 +47,4 @@ export const EcoverseChallengesContainer: FC<EcoverseChallengesContainerProps> =
     </>
   );
 };
-export default EcoverseChallengesContainer;
+export default HubChallengesContainer;

@@ -13,7 +13,7 @@ import {
   Message,
   Community,
   User,
-  Ecoverse,
+  Hub,
   CommunicationUpdateMessageReceivedSubscription,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
@@ -22,7 +22,7 @@ import { logger } from '../../services/logging/winston/logger';
 export interface CommunityUpdatesContainerProps {
   entities: {
     communityId?: Community['id'];
-    hubId?: Ecoverse['id'];
+    hubId?: Hub['id'];
   };
   children: (
     entities: CommunityUpdatesEntities,

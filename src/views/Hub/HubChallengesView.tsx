@@ -12,16 +12,16 @@ import {
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../components/core/ErrorBlock';
-import EcoverseChallengesContainer from '../../containers/hub/EcoverseChallengesContainer';
-import { EcoverseContainerEntities, EcoverseContainerState } from '../../containers/hub/EcoversePageContainer';
+import HubChallengesContainer from '../../containers/hub/HubChallengesContainer';
+import { HubContainerEntities, HubContainerState } from '../../containers/hub/HubPageContainer';
 import { CardLayoutItem, CardLayoutContainer } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
-interface EcoverseChallengesViewProps {
-  entities: EcoverseContainerEntities;
-  state: EcoverseContainerState;
+interface HubChallengesViewProps {
+  entities: HubContainerEntities;
+  state: HubContainerState;
 }
 
-export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entities }) => {
+export const HubChallengesView: FC<HubChallengesViewProps> = ({ entities }) => {
   const { t } = useTranslation();
   const { hub, permissions } = entities;
   const { challengesReadAccess } = permissions;
@@ -33,7 +33,7 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
         {t('pages.hub.sections.challenges.description')}
       </Box>
       <MembershipBackdrop show={!challengesReadAccess} blockName={t('pages.hub.sections.challenges.header')}>
-        <EcoverseChallengesContainer
+        <HubChallengesContainer
           entities={{
             hubNameId,
           }}
@@ -81,9 +81,9 @@ export const EcoverseChallengesView: FC<EcoverseChallengesViewProps> = ({ entiti
               </CardFilter>
             );
           }}
-        </EcoverseChallengesContainer>
+        </HubChallengesContainer>
       </MembershipBackdrop>
     </>
   );
 };
-export default EcoverseChallengesView;
+export default HubChallengesView;

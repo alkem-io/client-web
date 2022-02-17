@@ -4,22 +4,22 @@ import { useTranslation } from 'react-i18next';
 
 import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
 import { Loading } from '../../../components/core';
-import { useApolloErrorHandler, useEcoverse, useUpdateNavigation, useUrlParams } from '../../../hooks';
+import { useApolloErrorHandler, useHub, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
-  useAssignUserAsEcoverseAdminMutation,
-  useRemoveUserAsEcoverseAdminMutation,
+  useAssignUserAsHubAdminMutation,
+  useRemoveUserAsHubAdminMutation,
 } from '../../../hooks/generated/graphql';
 import { Member } from '../../../models/User';
 import AuthorizationPageProps from '../AuthorizationPageProps';
 import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 
-const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
+const HubAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
-  const { role: credential = AuthorizationCredential.EcoverseMember } = useUrlParams();
+  const { role: credential = AuthorizationCredential.HubMember } = useUrlParams();
   const currentPaths = useMemo(
     () => [
       ...paths,
@@ -35,11 +35,11 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
 
   const handleError = useApolloErrorHandler();
 
-  const [grant, { loading: addingMember }] = useAssignUserAsEcoverseAdminMutation({
+  const [grant, { loading: addingMember }] = useAssignUserAsHubAdminMutation({
     onError: handleError,
   });
 
-  const [revoke, { loading: removingMember }] = useRemoveUserAsEcoverseAdminMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsHubAdminMutation({
     onError: handleError,
   });
 
@@ -77,10 +77,10 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
     });
   };
 
-  const { hub, loading: loadingEcoverse } = useEcoverse();
+  const { hub, loading: loadingHub } = useHub();
   const communityId = hub?.community?.id || '';
 
-  if (loadingEcoverse) {
+  if (loadingHub) {
     return <Loading />;
   }
 
@@ -98,4 +98,4 @@ const EcoverseAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resource
     </Container>
   );
 };
-export default EcoverseAuthorizationPage;
+export default HubAuthorizationPage;

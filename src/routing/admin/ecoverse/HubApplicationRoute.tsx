@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { PageProps } from '../../../pages';
 import { ApplicationRoute } from '../ApplicationRoute';
-import { useEcoverseApplicationsQuery } from '../../../hooks/generated/graphql';
+import { useHubApplicationsQuery } from '../../../hooks/generated/graphql';
 import Loading from '../../../components/core/Loading/Loading';
 import { useUrlParams } from '../../../hooks';
 
 interface Props extends PageProps {}
 
-export const EcoverseApplicationRoute: FC<Props> = ({ paths }) => {
+export const HubApplicationRoute: FC<Props> = ({ paths }) => {
   const { hubNameId = '' } = useUrlParams();
-  const { data, loading } = useEcoverseApplicationsQuery({
+  const { data, loading } = useHubApplicationsQuery({
     variables: { hubId: hubNameId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',

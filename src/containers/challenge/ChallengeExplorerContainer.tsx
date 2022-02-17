@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerProps } from '../../models/container';
-import { SimpleEcoverseResultEntryFragment } from '../../models/graphql-schema';
+import { SimpleHubResultEntryFragment } from '../../models/graphql-schema';
 import { useChallengesOverviewPageQuery } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../hooks';
 
@@ -13,7 +13,7 @@ export type SimpleChallenge = {
 
 export interface ChallengesOverviewContainerEntities {
   userChallenges?: SimpleChallenge[];
-  userHubs?: SimpleEcoverseResultEntryFragment[];
+  userHubs?: SimpleHubResultEntryFragment[];
 }
 
 export interface ChallengesOverviewContainerActions {}
@@ -55,7 +55,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ ch
       }))
     );
 
-  const userHubs: SimpleEcoverseResultEntryFragment[] | undefined =
+  const userHubs: SimpleHubResultEntryFragment[] | undefined =
     hubs &&
     hubs.map(({ hubID, displayName, nameID }) => ({
       hubID,

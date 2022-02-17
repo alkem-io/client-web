@@ -25,9 +25,9 @@ export interface UserMetadata {
   user: User;
   hasCredentials: (credential: AuthorizationCredential, resourceId?: string) => boolean;
   ofChallenge: (id: string) => boolean;
-  ofEcoverse: (id: string) => boolean;
+  ofHub: (id: string) => boolean;
   ofOpportunity: (id: string) => boolean;
-  isEcoverseAdmin: (hubId: string) => boolean;
+  isHubAdmin: (hubId: string) => boolean;
   isChallengeAdmin: (hubId: string, challengeId: string) => boolean;
   isOpportunityAdmin: (hubId: string, challengeId: string, opportunityId: string) => boolean;
   /** has any admin role */
@@ -134,12 +134,11 @@ export const useUserMetadataWrapper = () => {
           ) !== -1
         );
 
-      const isEcoverseAdmin = (id: string) =>
-        hasCredentials(AuthorizationCredential.GlobalAdmin) ||
-        hasCredentials(AuthorizationCredential.EcoverseAdmin, id);
+      const isHubAdmin = (id: string) =>
+        hasCredentials(AuthorizationCredential.GlobalAdmin) || hasCredentials(AuthorizationCredential.HubAdmin, id);
 
       const isChallengeAdmin = (hubId: string, challengeId: string) =>
-        isEcoverseAdmin(hubId) || hasCredentials(AuthorizationCredential.ChallengeAdmin, challengeId);
+        isHubAdmin(hubId) || hasCredentials(AuthorizationCredential.ChallengeAdmin, challengeId);
 
       const isOpportunityAdmin = (hubId: string, challengeId: string, opportunityId) =>
         isChallengeAdmin(hubId, challengeId) || hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
@@ -160,9 +159,9 @@ export const useUserMetadataWrapper = () => {
         user,
         hasCredentials,
         ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
-        ofEcoverse: (id: string) => hasCredentials(AuthorizationCredential.EcoverseMember, id),
+        ofHub: (id: string) => hasCredentials(AuthorizationCredential.HubMember, id),
         ofOpportunity: (id: string) => hasCredentials(AuthorizationCredential.OpportunityMember, id),
-        isEcoverseAdmin,
+        isHubAdmin,
         isChallengeAdmin,
         isOpportunityAdmin,
         isAdmin: false,
@@ -207,13 +206,13 @@ export const AdminRoles = [
   AuthorizationCredential.GlobalAdmin,
   AuthorizationCredential.GlobalAdminCommunity,
   AuthorizationCredential.ChallengeAdmin,
-  AuthorizationCredential.EcoverseAdmin,
+  AuthorizationCredential.HubAdmin,
   AuthorizationCredential.OpportunityAdmin,
   AuthorizationCredential.OrganizationAdmin,
 ];
 
 const CommunityAdminRoles = [
   AuthorizationCredential.ChallengeAdmin,
-  AuthorizationCredential.EcoverseAdmin,
+  AuthorizationCredential.HubAdmin,
   AuthorizationCredential.OpportunityAdmin,
 ];

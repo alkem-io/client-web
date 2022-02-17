@@ -1,28 +1,28 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useConfig, useUrlParams } from '../hooks';
-import { useEcoverseInfoQuery } from '../hooks/generated/graphql';
-import { AspectTemplate, AuthorizationPrivilege, EcoverseInfoFragment, HubTemplate } from '../models/graphql-schema';
+import { useHubInfoQuery } from '../hooks/generated/graphql';
+import { AspectTemplate, AuthorizationPrivilege, HubInfoFragment, HubTemplate } from '../models/graphql-schema';
 
-interface EcoversePermissions {
+interface HubPermissions {
   viewerCanUpdate: boolean;
   canReadAspects: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
 
-interface EcoverseContextProps {
-  hub?: EcoverseInfoFragment;
+interface HubContextProps {
+  hub?: HubInfoFragment;
   hubId: string;
   hubNameId: string;
   displayName: string;
   template: HubTemplate;
   isPrivate: boolean;
   loading: boolean;
-  permissions: EcoversePermissions;
+  permissions: HubPermissions;
   error?: ApolloError;
 }
 
-const EcoverseContext = React.createContext<EcoverseContextProps>({
+const HubContext = React.createContext<HubContextProps>({
   loading: false,
   isPrivate: false,
   hubId: '',
@@ -36,9 +36,9 @@ const EcoverseContext = React.createContext<EcoverseContextProps>({
   },
 });
 
-interface EcoverseProviderProps {}
+interface HubProviderProps {}
 
-const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
+const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const { hubNameId = '' } = useUrlParams();
   const { template: platformTemplate, error: configError } = useConfig();
   const globalAspectTemplates = platformTemplate?.opportunities
@@ -48,7 +48,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
     error: hubError,
     data,
     loading,
-  } = useEcoverseInfoQuery({
+  } = useHubInfoQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
     skip: !hubNameId,
@@ -65,7 +65,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
 
   const contextPrivileges = hub?.context?.authorization?.myPrivileges ?? [];
 
-  const permissions = useMemo<EcoversePermissions>(
+  const permissions = useMemo<HubPermissions>(
     () => ({
       viewerCanUpdate: hub?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
       canReadAspects: contextPrivileges.includes(AuthorizationPrivilege.Read),
@@ -75,7 +75,7 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
   );
 
   return (
-    <EcoverseContext.Provider
+    <HubContext.Provider
       value={{
         hub,
         hubId,
@@ -89,8 +89,8 @@ const EcoverseProvider: FC<EcoverseProviderProps> = ({ children }) => {
       }}
     >
       {children}
-    </EcoverseContext.Provider>
+    </HubContext.Provider>
   );
 };
 
-export { EcoverseProvider, EcoverseContext };
+export { HubProvider, HubContext };

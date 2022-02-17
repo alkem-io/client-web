@@ -7,7 +7,7 @@ import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg'
 import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
 import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
 import React, { FC, useState } from 'react';
-import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
+import { useApolloErrorHandler, useHub } from '../../../../hooks';
 import {
   refetchOpportunityActorGroupsQuery,
   refetchOpportunityAspectsOldQuery,
@@ -77,7 +77,7 @@ export const RelationCard: FC<RelationCardProps> = ({
   opportunityId,
   isAdmin,
 }) => {
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const styles = useCardStyles();
   const handleError = useApolloErrorHandler();
   const [showRemove, setShowRemove] = useState<boolean>(false);
@@ -141,7 +141,7 @@ interface ActorCardProps {
 }
 
 export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, impact, opportunityId, isAdmin }) => {
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const styles = useCardStyles();
   const handleError = useApolloErrorHandler();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
@@ -291,7 +291,7 @@ export const AspectCard: FC<AspectCardProps> = ({
   contextId,
   isAdmin,
 }) => {
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const [isEditOpened, setEditOpened] = useState<boolean>(false);
   const [isRemoveConfirmOpened, setIsRemoveConfirmOpened] = useState<boolean>(false);
   const handleError = useApolloErrorHandler();

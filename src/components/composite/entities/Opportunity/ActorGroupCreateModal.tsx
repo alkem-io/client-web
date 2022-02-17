@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import Grid from '@mui/material/Grid';
 import { refetchOpportunityActorGroupsQuery, useCreateActorGroupMutation } from '../../../../hooks/generated/graphql';
-import { useEcoverse } from '../../../../hooks';
+import { useHub } from '../../../../hooks';
 import { replaceAll } from '../../../../utils/replaceAll';
 import Button from '../../../core/Button';
 import { Loading } from '../../../core';
@@ -21,7 +21,7 @@ interface P {
 
 const ActorGroupCreateModal: FC<P> = ({ onHide, show, opportunityId, ecosystemModelId, availableActorGroupNames }) => {
   const { t } = useTranslation();
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const [createActorGroup, { loading }] = useCreateActorGroupMutation({
     onCompleted: () => onHide(),
     refetchQueries: [refetchOpportunityActorGroupsQuery({ hubId: hubNameId, opportunityId })],

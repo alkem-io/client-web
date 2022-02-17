@@ -1,4 +1,4 @@
-fragment EcoverseDetailsProvider on Ecoverse {
+fragment HubDetailsProvider on Hub {
   id
   nameID
   displayName

@@ -1,6 +1,6 @@
 import React, { FC, memo } from 'react';
 import { ChallengeSearchResultFragment } from '../../../models/graphql-schema';
-import { useEcoverseNameQuery } from '../../../hooks/generated/graphql';
+import { useHubNameQuery } from '../../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
 import ChallengePopUp from '../entities/Challenge/ChallengePopUp';
 import getActivityCount from '../../../utils/get-activity-count';
@@ -13,7 +13,7 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
   entity: challenge,
 }) => {
   // todo: can we avoid this query?
-  const { data } = useEcoverseNameQuery({
+  const { data } = useHubNameQuery({
     variables: {
       hubId: challenge.hubID,
     },

@@ -17,7 +17,7 @@ import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsV
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 
-export interface EcoverseDashboardView2Props {
+export interface HubDashboardView2Props {
   title?: string;
   bannerUrl?: string;
   tagline?: string;
@@ -41,7 +41,7 @@ export interface EcoverseDashboardView2Props {
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
 
-const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
+const HubDashboardView2: FC<HubDashboardView2Props> = ({
   bannerUrl,
   title,
   tagline = '',
@@ -132,4 +132,4 @@ const EcoverseDashboardView2: FC<EcoverseDashboardView2Props> = ({
     </>
   );
 };
-export default EcoverseDashboardView2;
+export default HubDashboardView2;

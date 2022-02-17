@@ -8,7 +8,7 @@ import DashboardCommunitySectionV2 from '../../components/composite/common/secti
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardOpportunityStatistics from '../../components/composite/common/sections/DashboardOpportunityStatistics';
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
-import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
+import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useOpportunity } from '../../hooks';

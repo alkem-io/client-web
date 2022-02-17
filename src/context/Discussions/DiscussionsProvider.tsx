@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { merge, uniq } from 'lodash';
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { useApolloErrorHandler, useConfig, useEcoverse } from '../../hooks';
+import { useApolloErrorHandler, useConfig, useHub } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionUpdatedDocument,
@@ -57,7 +57,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const { pathname } = useResolvedPath('.');
   const { isFeatureEnabled } = useConfig();
   const handleError = useApolloErrorHandler();
-  const { hubNameId, loading: loadingEcoverse } = useEcoverse();
+  const { hubNameId, loading: loadingHub } = useHub();
   const { communityId, communicationId, loading: loadingCommunity } = useCommunityContext();
 
   const {
@@ -198,7 +198,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
         handleCreateDiscussion,
         permissions,
         handleDeleteDiscussion,
-        loading: loadingEcoverse || loadingCommunity || loadingDiscussionList || loadingAuthors,
+        loading: loadingHub || loadingCommunity || loadingDiscussionList || loadingAuthors,
         posting: creatingDiscussion,
         deleting: deletingDiscussion,
       }}

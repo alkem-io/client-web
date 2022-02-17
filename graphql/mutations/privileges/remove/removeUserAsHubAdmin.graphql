@@ -1,5 +1,5 @@
-mutation removeUserAsEcoverseAdmin($input: RemoveEcoverseAdminInput!) {
-  removeUserAsEcoverseAdmin(membershipData: $input) {
+mutation removeUserAsHubAdmin($input: RemoveHubAdminInput!) {
+  removeUserAsHubAdmin(membershipData: $input) {
     id
     displayName
   }

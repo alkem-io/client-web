@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
-import { useChallenge, useEcoverse } from '../../../hooks';
+import { useChallenge, useHub } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { Error404, PageProps } from '../../../pages';
 import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage';
@@ -18,9 +18,9 @@ import ChallengeVisualsPage from '../../../pages/Admin/Challenge/ChallengeVisual
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
-  const { hub, loading: loadingEcoverse } = useEcoverse();
+  const { hub, loading: loadingHub } = useHub();
   const { challenge, displayName, hubNameId, challengeId, challengeNameId, loading: loadingChallenge } = useChallenge();
-  const loading = loadingEcoverse || loadingChallenge;
+  const loading = loadingHub || loadingChallenge;
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: displayName || '', real: true }],

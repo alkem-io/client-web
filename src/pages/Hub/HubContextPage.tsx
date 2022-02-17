@@ -1,13 +1,13 @@
 import React, { FC, useMemo } from 'react';
 import { PageProps } from '../common';
-import { useEcoverse, useUpdateNavigation } from '../../hooks';
-import EcoverseContextView from '../../views/Ecoverse/EcoverseContextView';
+import { useHub, useUpdateNavigation } from '../../hooks';
+import HubContextView from '../../views/Hub/HubContextView';
 import ContextTabContainer from '../../containers/context/ContextTabContainer';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 
-export interface EcoverseContextPageProps extends PageProps {}
+export interface HubContextPageProps extends PageProps {}
 
-const EcoverseContextPage: FC<EcoverseContextPageProps> = ({ paths }) => {
+const HubContextPage: FC<HubContextPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/context', name: 'context', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
@@ -16,13 +16,13 @@ const EcoverseContextPage: FC<EcoverseContextPageProps> = ({ paths }) => {
     hubNameId,
     displayName,
     permissions: { contextPrivileges },
-  } = useEcoverse();
+  } = useHub();
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
     <ContextTabContainer hubNameId={hubNameId} loadAspectsAndReferences={loadAspectsAndReferences}>
       {(entities, state) => (
-        <EcoverseContextView
+        <HubContextView
           entities={{
             hubId: hubId,
             hubNameId: hubNameId,
@@ -46,4 +46,4 @@ const EcoverseContextPage: FC<EcoverseContextPageProps> = ({ paths }) => {
     </ContextTabContainer>
   );
 };
-export default EcoverseContextPage;
+export default HubContextPage;

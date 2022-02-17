@@ -3,11 +3,11 @@ import { useUrlParams } from '../../hooks';
 import {
   useChallengeApplicationQuery,
   useChallengeApplicationTemplateQuery,
-  useEcoverseApplicationQuery,
-  useEcoverseApplicationTemplateQuery,
+  useHubApplicationQuery,
+  useHubApplicationTemplateQuery,
 } from '../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { buildChallengeUrl, buildEcoverseUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl } from '../../utils/urlBuilders';
 import { getVisualAvatar } from '../../utils/visuals.utils';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
@@ -36,9 +36,9 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
 
   const {
     data: hubData,
-    loading: isEcoverseCommunityLoading,
+    loading: isHubCommunityLoading,
     error: hubCommunityError,
-  } = useEcoverseApplicationQuery({
+  } = useHubApplicationQuery({
     variables: {
       hubId: hubNameId,
     },
@@ -48,9 +48,9 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
 
   const {
     data: hubTemplateData,
-    loading: isEcoverseTemplateLoading,
+    loading: isHubTemplateLoading,
     error: hubTemplateError,
-  } = useEcoverseApplicationTemplateQuery({
+  } = useHubApplicationTemplateQuery({
     skip: type !== ApplicationTypeEnum.hub,
   });
 
@@ -62,7 +62,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
         avatar: getVisualAvatar(hubData?.hub.context?.visuals),
         tagline: hubData?.hub.context?.tagline || '',
         questions: hubTemplateData?.configuration.template.hubs[0].applications?.[0].questions || [],
-        backUrl: buildEcoverseUrl(hubNameId),
+        backUrl: buildHubUrl(hubNameId),
       };
     }
     if (type === ApplicationTypeEnum.challenge) {
@@ -80,10 +80,6 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
   return {
     data: result,
     error: challengeCommunityError || challengeTemplateError || hubCommunityError || hubTemplateError,
-    loading:
-      isChallengeCommunityLoading ||
-      isChallengeTemplateLoading ||
-      isEcoverseCommunityLoading ||
-      isEcoverseTemplateLoading,
+    loading: isChallengeCommunityLoading || isChallengeTemplateLoading || isHubCommunityLoading || isHubTemplateLoading,
   };
 };

@@ -3,7 +3,7 @@ import { ApplicationButtonProps } from '../../components/composite/common/Applic
 import { useAuthenticationContext, useUserContext } from '../../hooks';
 import { useUserApplicationsQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
-import { buildChallengeApplyUrl, buildEcoverseApplyUrl } from '../../utils/urlBuilders';
+import { buildChallengeApplyUrl, buildHubApplyUrl } from '../../utils/urlBuilders';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: ApplicationButtonProps;
@@ -45,18 +45,16 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ enti
     x => x.hubID === hubId && !x.challengeID && !x.opportunityID && challengeId
   );
 
-  const isMember = (challengeId && challengeNameId ? user?.ofChallenge(challengeId) : user?.ofEcoverse(hubId)) || false;
+  const isMember = (challengeId && challengeNameId ? user?.ofChallenge(challengeId) : user?.ofHub(hubId)) || false;
   const applyUrl =
-    challengeId && challengeNameId
-      ? buildChallengeApplyUrl(hubNameId, challengeNameId)
-      : buildEcoverseApplyUrl(hubNameId);
+    challengeId && challengeNameId ? buildChallengeApplyUrl(hubNameId, challengeNameId) : buildHubApplyUrl(hubNameId);
 
   const applicationButtonProps: ApplicationButtonProps = {
     isAuthenticated,
     isMember,
-    isNotParentMember: Boolean(challengeId) && !user?.ofEcoverse(hubId),
+    isNotParentMember: Boolean(challengeId) && !user?.ofHub(hubId),
     applyUrl,
-    parentApplyUrl: buildEcoverseApplyUrl(hubNameId),
+    parentApplyUrl: buildHubApplyUrl(hubNameId),
     applicationState: userApplication?.state,
     parentApplicationState: parentApplication?.state,
     hubName,

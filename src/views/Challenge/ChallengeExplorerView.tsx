@@ -6,7 +6,7 @@ import { Accordion } from '../../components/composite/common/Accordion/Accordion
 import SearchComponent from '../../components/composite/common/SearchComponent/SearchComponent';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { ChallengeCardContainer } from '../../containers/challenge/ChallengeCardContainer';
-import EcoverseChallengesContainer from '../../containers/hub/EcoverseChallengesContainer';
+import HubChallengesContainer from '../../containers/hub/HubChallengesContainer';
 import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
@@ -111,7 +111,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
         </Grid>
         {hubs &&
           hubs.map(({ displayName: hubName, nameID: hubNameId }, i) => (
-            <EcoverseChallengesContainer
+            <HubChallengesContainer
               key={i}
               entities={{
                 hubNameId: hubNameId,
@@ -138,7 +138,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
                   </Accordion>
                 </Grid>
               )}
-            </EcoverseChallengesContainer>
+            </HubChallengesContainer>
           ))}
       </Grid>
     </Box>

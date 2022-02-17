@@ -1,10 +1,10 @@
 query hubPage($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
-    ...EcoversePage
+    ...HubPage
   }
 }
 
-fragment EcoversePage on Ecoverse {
+fragment HubPage on Hub {
   id
   nameID
   displayName
@@ -67,7 +67,7 @@ fragment ProjectInfo on Project {
   }
 }
 
-query EcoversePageProjects($hubId: UUID_NAMEID!) {
+query HubPageProjects($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     challenges {

@@ -1,13 +1,13 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useApplicationByEcoverseLazyQuery,
+  useApplicationByHubLazyQuery,
   useChallengeNameIdQuery,
-  useEcoverseNameIdQuery,
+  useHubNameIdQuery,
   useOpportunityNameIdQuery,
 } from '../../hooks/generated/graphql';
 import { Application } from '../../models/graphql-schema';
-import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import getApplicationTypeTranslationKey from '../../utils/application/getApplicationTypeTranslation';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
 
@@ -69,16 +69,16 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
     url = buildChallengeUrl(hubNameId, challengeNameId);
   }
 
-  const { data: _hubNameId, loading: loadingEcoverse } = useEcoverseNameIdQuery({
+  const { data: _hubNameId, loading: loadingHub } = useHubNameIdQuery({
     variables: { hubId: hubID },
     skip: !!(hubID && (challengeID || opportunityID)),
   });
   if (hubID && !challengeID && !opportunityID) {
     const hubNameId = _hubNameId?.hub.nameID || '';
-    url = buildEcoverseUrl(hubNameId);
+    url = buildHubUrl(hubNameId);
   }
 
-  const [applicationByEcoverse, { loading: loadingDialog }] = useApplicationByEcoverseLazyQuery({
+  const [applicationByHub, { loading: loadingDialog }] = useApplicationByHubLazyQuery({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     onCompleted: ({ hub }) =>
@@ -91,7 +91,7 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
 
   const handleDialogOpen = useCallback(
     (application: ApplicationWithType) => {
-      applicationByEcoverse({
+      applicationByHub({
         variables: { hubId: application.hubID, appId: application.id },
       });
       setIsDialogOpened(true);
@@ -113,7 +113,7 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
         { url, typeName, applicationDetails: applicationDetails },
         { handleDialogOpen, handleDialogClose },
         {
-          loading: loadingEcoverse || loadingChallenge || loadingOpportunity,
+          loading: loadingHub || loadingChallenge || loadingOpportunity,
           loadingDialog,
           isDialogOpened,
         }

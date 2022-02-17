@@ -2,14 +2,14 @@ import React, { FC, useMemo } from 'react';
 import { Box } from '@mui/material';
 import { PageProps } from '../../common';
 import EditVisualsView from '../../../views/Visuals/EditVisualsView';
-import { useEcoverse, useUpdateNavigation } from '../../../hooks';
+import { useHub, useUpdateNavigation } from '../../../hooks';
 
-export interface EcoverseVisualsPageProps extends PageProps {}
+export interface HubVisualsPageProps extends PageProps {}
 
-const EcoverseVisualsPage: FC<EcoverseVisualsPageProps> = ({ paths }) => {
+const HubVisualsPage: FC<HubVisualsPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'visuals', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
-  const { hub } = useEcoverse();
+  const { hub } = useHub();
 
   return (
     <Box paddingY={2}>
@@ -17,4 +17,4 @@ const EcoverseVisualsPage: FC<EcoverseVisualsPageProps> = ({ paths }) => {
     </Box>
   );
 };
-export default EcoverseVisualsPage;
+export default HubVisualsPage;

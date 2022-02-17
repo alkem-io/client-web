@@ -3,18 +3,18 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import { useEcoverse, useUserContext } from '../../hooks';
-import { useEcoversePageProjectsQuery, useEcoversePageQuery } from '../../hooks/generated/graphql';
+import { useHub, useUserContext } from '../../hooks';
+import { useHubPageProjectsQuery, useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Project } from '../../models/Project';
-import { AuthorizationPrivilege, EcoversePageFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, HubPageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { buildProjectUrl } from '../../utils/urlBuilders';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../models/discussion/discussion';
 
-export interface EcoverseContainerEntities {
-  hub?: EcoversePageFragment;
+export interface HubContainerEntities {
+  hub?: HubPageFragment;
   isPrivate: boolean;
   permissions: {
     canEdit: boolean;
@@ -29,22 +29,22 @@ export interface EcoverseContainerEntities {
   discussionList: Discussion[];
 }
 
-export interface EcoverseContainerActions {}
+export interface HubContainerActions {}
 
-export interface EcoverseContainerState {
+export interface HubContainerState {
   loading: boolean;
   loadingProjects: boolean;
   error?: ApolloError;
 }
 
-export interface EcoversePageContainerProps
-  extends ContainerProps<EcoverseContainerEntities, EcoverseContainerActions, EcoverseContainerState> {}
+export interface HubPageContainerProps
+  extends ContainerProps<HubContainerEntities, HubContainerActions, HubContainerState> {}
 
-export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children }) => {
+export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { hubId, hubNameId, loading: loadingEcoverse } = useEcoverse();
-  const { data: _hub, loading: loadingEcoverseQuery } = useEcoversePageQuery({
+  const { hubId, hubNameId, loading: loadingHub } = useHub();
+  const { data: _hub, loading: loadingHubQuery } = useHubPageQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
   });
@@ -56,7 +56,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
     x => x === AuthorizationPrivilege.Read
   );
 
-  const { data: _projects, loading: loadingProjects } = useEcoversePageProjectsQuery({
+  const { data: _projects, loading: loadingProjects } = useHubPageProjectsQuery({
     variables: { hubId: hubNameId },
   });
 
@@ -110,12 +110,12 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
     ];
   }, [_hub]);
 
-  const isMember = user?.ofEcoverse(hubId) ?? false;
+  const isMember = user?.ofHub(hubId) ?? false;
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
   const isPrivate = !(_hub?.hub?.authorization?.anonymousReadAccess ?? true);
 
   const permissions = {
-    canEdit: user?.isEcoverseAdmin(hubId) || false,
+    canEdit: user?.isHubAdmin(hubId) || false,
     communityReadAccess,
     // todo: use privileges instead when authorization on challenges is public
     challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
@@ -136,7 +136,7 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
           isGlobalAdmin,
         },
         {
-          loading: loadingEcoverseQuery || loadingEcoverse || loadingDiscussions,
+          loading: loadingHubQuery || loadingHub || loadingDiscussions,
           loadingProjects,
         },
         {}
@@ -144,4 +144,4 @@ export const EcoversePageContainer: FC<EcoversePageContainerProps> = ({ children
     </>
   );
 };
-export default EcoversePageContainer;
+export default HubPageContainer;

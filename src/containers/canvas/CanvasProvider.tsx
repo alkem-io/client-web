@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '../../hooks';
 import {
   useChallengeCanvasesQuery,
-  useEcoverseCanvasesQuery,
+  useHubCanvasesQuery,
   useOpportunityCanvasesQuery,
 } from '../../hooks/generated/graphql';
 import { CanvasWithoutValue } from '../../models/entities/canvas';
@@ -35,7 +35,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     opportunityNameId: opportunityId = '',
   } = useUrlParams();
 
-  const { data: hubData, loading: loadingEcoverse } = useEcoverseCanvasesQuery({
+  const { data: hubData, loading: loadingHub } = useHubCanvasesQuery({
     variables: { hubId },
     errorPolicy: 'all',
   });
@@ -88,7 +88,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
       {children(
         // TODO: need to fix the typings
         { canvases: canvases as any, templates: templates as any },
-        { loading: loadingEcoverse || loadingChallenge || loadingOpportunity }
+        { loading: loadingHub || loadingChallenge || loadingOpportunity }
       )}
     </>
   );

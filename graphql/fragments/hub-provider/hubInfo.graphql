@@ -1,5 +1,5 @@
-fragment EcoverseInfo on Ecoverse {
-  ...EcoverseDetails
+fragment HubInfo on Hub {
+  ...HubDetails
   authorization {
     id
     myPrivileges

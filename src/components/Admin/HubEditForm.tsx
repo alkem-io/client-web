@@ -22,13 +22,13 @@ interface Props {
   tagset?: Tagset;
   organizations?: { id: string; name: string }[];
   anonymousReadAccess?: boolean;
-  onSubmit: (formData: EcoverseEditFormValuesType) => void;
+  onSubmit: (formData: HubEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
   isEdit: boolean;
 }
 
-export interface EcoverseEditFormValuesType {
+export interface HubEditFormValuesType {
   name: string;
   nameID: string;
   host: string;
@@ -44,7 +44,7 @@ export interface EcoverseEditFormValuesType {
   tagsets: Tagset[];
 }
 
-const EcoverseEditForm: FC<Props> = ({
+const HubEditForm: FC<Props> = ({
   context,
   name,
   nameID,
@@ -71,7 +71,7 @@ const EcoverseEditForm: FC<Props> = ({
 
   const contextId = context?.id;
 
-  const initialValues: EcoverseEditFormValuesType = {
+  const initialValues: HubEditFormValuesType = {
     name: name || '',
     nameID: nameID || '',
     background: context?.background || '',
@@ -128,11 +128,11 @@ const EcoverseEditForm: FC<Props> = ({
             <NameSegment disabled={isEdit} required={!isEdit} />
             <Grid item xs={12}>
               <FormikSelect
-                title={t('components.editEcoverseForm.host.title')}
+                title={t('components.editHubForm.host.title')}
                 name={'host'}
                 values={organizations}
                 required={true}
-                placeholder={t('components.editEcoverseForm.host.title')}
+                placeholder={t('components.editHubForm.host.title')}
               />
             </Grid>
             <ContextSegment />
@@ -151,10 +151,10 @@ const EcoverseEditForm: FC<Props> = ({
             {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
-                {t('components.editEcoverseForm.read-access-title')}
+                {t('components.editHubForm.read-access-title')}
               </Typography>
 
-              <FormikCheckboxField name="anonymousReadAccess" title={t('components.editEcoverseForm.read-access')} />
+              <FormikCheckboxField name="anonymousReadAccess" title={t('components.editHubForm.read-access')} />
             </Grid>
           </Grid>
         );
@@ -163,4 +163,4 @@ const EcoverseEditForm: FC<Props> = ({
   );
 };
 
-export default EcoverseEditForm;
+export default HubEditForm;

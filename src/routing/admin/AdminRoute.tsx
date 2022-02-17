@@ -6,7 +6,7 @@ import { AuthorizationCredential } from '../../models/graphql-schema';
 import { Error404 } from '../../pages';
 import ManagementPageTemplatePage from '../../pages/Admin/ManagementPageTemplatePage';
 import RestrictedRoute from '../RestrictedRoute';
-import { EcoversesRoute } from './hub/EcoversesRoute';
+import { HubsRoute } from './hub/HubsRoute';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { OrganizationsRoute } from './organization/OrganizationsRoute';
 import { UsersRoute } from './users/UsersRoute';
@@ -20,7 +20,7 @@ export const AdminRoute: FC = () => {
     <RestrictedRoute
       requiredCredentials={[
         AuthorizationCredential.GlobalAdmin,
-        AuthorizationCredential.EcoverseAdmin,
+        AuthorizationCredential.HubAdmin,
         AuthorizationCredential.OrganizationAdmin,
         AuthorizationCredential.ChallengeAdmin,
         AuthorizationCredential.GlobalAdminCommunity,
@@ -36,7 +36,7 @@ export const AdminRoute: FC = () => {
           ></Route>
           <Route path={'users/*'} element={<UsersRoute paths={currentPaths} />}></Route>
           <Route path={'authorization/*'} element={<GlobalAuthorizationRoute paths={currentPaths} />}></Route>
-          <Route path={'hubs/*'} element={<EcoversesRoute paths={currentPaths} />}></Route>
+          <Route path={'hubs/*'} element={<HubsRoute paths={currentPaths} />}></Route>
           <Route path={'organizations/*'} element={<OrganizationsRoute paths={currentPaths} />}></Route>
           <Route path="*" element={<Error404 />}></Route>
         </Route>

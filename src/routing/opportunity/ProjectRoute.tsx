@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useNavigate, useResolvedPath } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
-import { useApolloErrorHandler, useEcoverse, useOpportunity, useUrlParams } from '../../hooks';
+import { useApolloErrorHandler, useHub, useOpportunity, useUrlParams } from '../../hooks';
 import {
   ProjectDetailsFragmentDoc,
   useCreateProjectMutation,
@@ -96,7 +96,7 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
 const ProjectIndex: FC<ProjectRootProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const { projectNameId = '' } = useUrlParams();
-  const { hubNameId } = useEcoverse();
+  const { hubNameId } = useHub();
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
     variables: { hubId: hubNameId, projectId: projectNameId },

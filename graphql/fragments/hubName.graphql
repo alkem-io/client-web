@@ -1,4 +1,4 @@
-fragment EcoverseName on Ecoverse {
+fragment HubName on Hub {
   id
   nameID
   displayName

@@ -37,7 +37,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const discussionsRequiredCredentials: CredentialForResource[] = challengeId
     ? [
         { credential: AuthorizationCredential.ChallengeMember, resourceId: challengeId },
-        { credential: AuthorizationCredential.EcoverseAdmin, resourceId: hubId },
+        { credential: AuthorizationCredential.HubAdmin, resourceId: hubId },
       ]
     : [];
 

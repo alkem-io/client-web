@@ -1,5 +1,5 @@
-mutation updateEcoverse($input: UpdateEcoverseInput!) {
-  updateEcoverse(hubData: $input) {
-    ...EcoverseDetails
+mutation updateHub($input: UpdateHubInput!) {
+  updateHub(hubData: $input) {
+    ...HubDetails
   }
 }

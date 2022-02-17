@@ -13,7 +13,7 @@ import {
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
-interface EcoverseContextEntities {
+interface HubContextEntities {
   context?: ContextTabFragment;
   hubId?: string;
   hubNameId?: string;
@@ -22,20 +22,20 @@ interface EcoverseContextEntities {
   aspects?: AspectCardFragment[];
   references?: ReferenceContextTabFragment[];
 }
-interface EcoverseContextActions {}
-interface EcoverseContextState {
+interface HubContextActions {}
+interface HubContextState {
   loading: boolean;
   error?: ApolloError;
 }
-interface EcoverseContextOptions {
+interface HubContextOptions {
   canReadAspects: boolean;
   canCreateAspects: boolean;
 }
 
-interface EcoverseContextViewProps
-  extends ViewProps<EcoverseContextEntities, EcoverseContextActions, EcoverseContextState, EcoverseContextOptions> {}
+interface HubContextViewProps
+  extends ViewProps<HubContextEntities, HubContextActions, HubContextState, HubContextOptions> {}
 
-export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, state, options }) => {
+export const HubContextView: FC<HubContextViewProps> = ({ entities, state, options }) => {
   const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
@@ -85,4 +85,4 @@ export const EcoverseContextView: FC<EcoverseContextViewProps> = ({ entities, st
     />
   );
 };
-export default EcoverseContextView;
+export default HubContextView;

@@ -5,13 +5,13 @@ import CanvasActionsContainer from '../../containers/canvas/CanvasActionsContain
 import { CanvasProvider } from '../../containers/canvas/CanvasProvider';
 import { useConfig } from '../../hooks';
 import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
-import { AuthorizationPrivilege, EcoversePageFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, HubPageFragment } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { Error404 } from '../../pages';
 import CanvasManagementView from '../Canvas/CanvasManagementView';
 
 export interface HubContextViewEntities {
-  hub: EcoversePageFragment;
+  hub: HubPageFragment;
 }
 
 export interface HubContextViewState {

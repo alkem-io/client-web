@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
 
 import {
-  refetchAdminEcoversesListQuery,
-  useAdminEcoversesListQuery,
-  useDeleteEcoverseMutation,
+  refetchAdminHubsListQuery,
+  useAdminHubsListQuery,
+  useDeleteHubMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useNotification } from '../../../hooks';
 import { PageProps } from '../..';
@@ -13,15 +13,15 @@ import { SearchableListItem, searchableListItemMapper } from '../../../component
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 
-interface EcoverseListProps extends PageProps {}
+interface HubListProps extends PageProps {}
 
-export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
+export const HubList: FC<HubListProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { data: hubsData, loading: loadingEcoverses } = useAdminEcoversesListQuery();
+  const { data: hubsData, loading: loadingHubs } = useAdminHubsListQuery();
   const hubList = useMemo(
     () =>
       hubsData?.hubs
@@ -30,15 +30,15 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
     [hubsData]
   );
 
-  const [deleteEcoverse] = useDeleteEcoverseMutation({
-    refetchQueries: [refetchAdminEcoversesListQuery()],
+  const [deleteHub] = useDeleteHubMutation({
+    refetchQueries: [refetchAdminHubsListQuery()],
     awaitRefetchQueries: true,
     onError: handleError,
-    onCompleted: data => onSuccess(`Hub '${data.deleteEcoverse.displayName}' deleted successfuly`),
+    onCompleted: data => onSuccess(`Hub '${data.deleteHub.displayName}' deleted successfuly`),
   });
 
   const handleDelete = (item: SearchableListItem) => {
-    deleteEcoverse({
+    deleteHub({
       variables: {
         input: {
           ID: item.id,
@@ -47,7 +47,7 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
     });
   };
 
-  if (loadingEcoverses) return <Loading text={'Loading hubs'} />;
+  if (loadingHubs) return <Loading text={'Loading hubs'} />;
 
   return (
     <ListPage
@@ -58,4 +58,4 @@ export const EcoverseList: FC<EcoverseListProps> = ({ paths }) => {
     />
   );
 };
-export default EcoverseList;
+export default HubList;

@@ -12,10 +12,10 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import { useConfig, useEcoverse } from '../../hooks';
+import { useConfig, useHub } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
-import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
+import { buildAdminHubUrl } from '../../utils/urlBuilders';
 
 const routes = {
   discussions: 'discussions',
@@ -27,15 +27,15 @@ const routes = {
   context: 'context',
 };
 
-type EcoverseRoutesType = keyof typeof routes;
+type HubRoutesType = keyof typeof routes;
 
-export interface EcoverseTabsProps {
+export interface HubTabsProps {
   communityReadAccess: boolean;
   challengesReadAccess: boolean;
 }
 
 // todo unify in one tab config component
-const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challengesReadAccess }) => {
+const HubTabsNew: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }) => {
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
   const resolved = useResolvedPath('.');
@@ -45,10 +45,10 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
   );
 
   // todo provided it as an input
-  const { hubNameId, permissions } = useEcoverse();
+  const { hubNameId, permissions } = useHub();
 
   const tabValue = useCallback(
-    (route: EcoverseRoutesType | string) => resolvePath(route, resolved.pathname)?.pathname,
+    (route: HubRoutesType | string) => resolvePath(route, resolved.pathname)?.pathname,
     [resolved]
   );
 
@@ -61,7 +61,7 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
     <>
       <Tabs
         value={currentTab}
-        aria-label="Ecoverse tabs"
+        aria-label="Hub tabs"
         variant="scrollable"
         scrollButtons={'auto'}
         allowScrollButtonsMobile
@@ -106,7 +106,7 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
             icon={<SettingsOutlined />}
             label={t('common.settings')}
             value={tabValue('settings')}
-            to={buildAdminEcoverseUrl(hubNameId)}
+            to={buildAdminHubUrl(hubNameId)}
           />
         )}
       </Tabs>
@@ -116,4 +116,4 @@ const EcoverseTabsNew: FC<EcoverseTabsProps> = ({ communityReadAccess, challenge
   );
 };
 
-export default EcoverseTabsNew;
+export default HubTabsNew;

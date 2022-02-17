@@ -11,7 +11,7 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge, useEcoverse } from '../../hooks';
+import { useChallenge, useHub } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
@@ -30,7 +30,7 @@ interface ChallengeDashboardViewProps {
 export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
 
-  const { hub, loading: loadingEcoverseContext } = useEcoverse();
+  const { hub, loading: loadingHubContext } = useHub();
   const { hubNameId, hubId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
   const { challenge, activity, isMember, discussions, permissions } = entities;
@@ -49,7 +49,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
 
-  if (loading || loadingEcoverseContext || loadingChallengeContext) return <Loading />;
+  if (loading || loadingHubContext || loadingChallengeContext) return <Loading />;
 
   return (
     <>

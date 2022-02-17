@@ -2,7 +2,7 @@ import React, { FC, useContext, useMemo } from 'react';
 import { useUrlParams } from '../hooks';
 import {
   useChallengeCommunityQuery,
-  useEcoverseCommunityQuery,
+  useHubCommunityQuery,
   useOpportunityCommunityQuery,
 } from '../hooks/generated/graphql';
 import { AuthorizationPrivilege } from '../models/graphql-schema';
@@ -28,7 +28,7 @@ interface CommunityProviderProps {}
 const CommunityProvider: FC<CommunityProviderProps> = ({ children }) => {
   const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
 
-  const { data: hubData, loading: loadingEcoverse } = useEcoverseCommunityQuery({
+  const { data: hubData, loading: loadingHub } = useHubCommunityQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
     skip: !hubNameId || Boolean(challengeNameId) || Boolean(opportunityNameId),
@@ -59,7 +59,7 @@ const CommunityProvider: FC<CommunityProviderProps> = ({ children }) => {
         communityName: community?.displayName || '',
         communicationId: community?.communication?.id || '',
         communicationPrivileges: community?.communication?.authorization?.myPrivileges || [],
-        loading: loadingEcoverse || loadingChallenge || loadingOpportunity,
+        loading: loadingHub || loadingChallenge || loadingOpportunity,
       }}
     >
       {children}

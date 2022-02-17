@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import DashboardHubSection from '../../components/composite/common/sections/DashboardHubSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUserContext } from '../../hooks';
-import { useEcoversesQuery } from '../../hooks/generated/graphql';
+import { useHubsQuery } from '../../hooks/generated/graphql';
 
-// const EcoversesSection = () => {
+// const HubsSection = () => {
 //   const { t } = useTranslation();
 //   const { user } = useUserContext();
-//   const { data: hubsData, loading, error } = useEcoversesQuery({ fetchPolicy: 'cache-and-network' });
+//   const { data: hubsData, loading, error } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
 //   const hubs = useMemo(() => hubsData?.hubs || [], [hubsData]);
 
 //   const currentPaths = useMemo(() => [], []);
@@ -30,7 +30,7 @@ import { useEcoversesQuery } from '../../hooks/generated/graphql';
 //           {hubs.map((hub, i) => {
 //             const anonymousReadAccess = hub?.authorization?.anonymousReadAccess;
 //             return (
-//               <EcoverseCard
+//               <HubCard
 //                 key={i}
 //                 id={hub.id}
 //                 displayName={hub.displayName}
@@ -44,9 +44,9 @@ import { useEcoversesQuery } from '../../hooks/generated/graphql';
 //                 authorization={{
 //                   anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
 //                 }}
-//                 isMember={user?.ofEcoverse(hub.id) || false}
+//                 isMember={user?.ofHub(hub.id) || false}
 //                 tags={hub?.tagset?.tags || []}
-//                 url={buildEcoverseUrl(hub.nameID)}
+//                 url={buildHubUrl(hub.nameID)}
 //               />
 //             );
 //           })}
@@ -56,10 +56,10 @@ import { useEcoversesQuery } from '../../hooks/generated/graphql';
 //   );
 // };
 
-const EcoverseSectionV2 = () => {
+const HubSectionV2 = () => {
   const { t } = useTranslation();
   const { user } = useUserContext();
-  const { data: hubsData, loading } = useEcoversesQuery({ fetchPolicy: 'cache-and-network' });
+  const { data: hubsData, loading } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
   const hubs = useMemo(() => hubsData?.hubs || [], [hubsData]);
 
   return (
@@ -81,4 +81,4 @@ const EcoverseSectionV2 = () => {
   );
 };
 
-export default EcoverseSectionV2;
+export default HubSectionV2;

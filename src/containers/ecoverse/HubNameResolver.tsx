@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
 import { ReactNode } from 'react-markdown';
-import { useEcoverseNameQuery } from '../../hooks/generated/graphql';
+import { useHubNameQuery } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
 
-export interface EcoverseNameResolverProps {
+export interface HubNameResolverProps {
   hubId: string;
   children: ({ displayName: string, loading: boolean }) => ReactNode;
 }
 
-const EcoverseNameResolver: FC<EcoverseNameResolverProps> = ({ hubId, children }) => {
+const HubNameResolver: FC<HubNameResolverProps> = ({ hubId, children }) => {
   const handleError = useApolloErrorHandler();
-  const { data, loading } = useEcoverseNameQuery({
+  const { data, loading } = useHubNameQuery({
     variables: {
       hubId,
     },
@@ -18,4 +18,4 @@ const EcoverseNameResolver: FC<EcoverseNameResolverProps> = ({ hubId, children }
   });
   return <>{children({ displayName: data?.hub.displayName, loading })}</>;
 };
-export default EcoverseNameResolver;
+export default HubNameResolver;
