@@ -453,6 +453,15 @@ export type EcosystemModelFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type FeatureFlagKeySpecifier = ('enabled' | 'name' | FeatureFlagKeySpecifier)[];
+export type FeatureFlagFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
+export type GroupableFieldPolicy = {
+  groups?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type HubKeySpecifier = (
   | 'activity'
   | 'agent'
@@ -499,20 +508,6 @@ export type HubFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type HubTemplateKeySpecifier = ('applications' | 'name' | HubTemplateKeySpecifier)[];
-export type HubTemplateFieldPolicy = {
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type FeatureFlagKeySpecifier = ('enabled' | 'name' | FeatureFlagKeySpecifier)[];
-export type FeatureFlagFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
-export type GroupableFieldPolicy = {
-  groups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type HubTemplateKeySpecifier = ('aspectTemplates' | HubTemplateKeySpecifier)[];
 export type HubTemplateFieldPolicy = {
@@ -614,9 +609,9 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
   | 'assignUserAsChallengeAdmin'
-  | 'assignUserAsHubAdmin'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
+  | 'assignUserAsHubAdmin'
   | 'assignUserAsOpportunityAdmin'
   | 'assignUserAsOrganizationAdmin'
   | 'assignUserAsOrganizationOwner'
@@ -634,9 +629,9 @@ export type MutationKeySpecifier = (
   | 'createChallenge'
   | 'createChildChallenge'
   | 'createDiscussion'
-  | 'createHub'
   | 'createGroupOnCommunity'
   | 'createGroupOnOrganization'
+  | 'createHub'
   | 'createOpportunity'
   | 'createOrganization'
   | 'createProject'
@@ -675,9 +670,9 @@ export type MutationKeySpecifier = (
   | 'removeMessageFromDiscussion'
   | 'removeUpdate'
   | 'removeUserAsChallengeAdmin'
-  | 'removeUserAsHubAdmin'
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
+  | 'removeUserAsHubAdmin'
   | 'removeUserAsOpportunityAdmin'
   | 'removeUserAsOrganizationAdmin'
   | 'removeUserAsOrganizationOwner'
@@ -711,9 +706,9 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -731,9 +726,9 @@ export type MutationFieldPolicy = {
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
-  createHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -772,9 +767,9 @@ export type MutationFieldPolicy = {
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -943,6 +938,11 @@ export type PlatformFieldPolicy = {
   security?: FieldPolicy<any> | FieldReadFunction<any>;
   support?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PlatformHubTemplateKeySpecifier = ('applications' | 'name' | PlatformHubTemplateKeySpecifier)[];
+export type PlatformHubTemplateFieldPolicy = {
+  applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ProfileKeySpecifier = (
   | 'authorization'
@@ -1438,14 +1438,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | EcosystemModelKeySpecifier | (() => undefined | EcosystemModelKeySpecifier);
     fields?: EcosystemModelFieldPolicy;
   };
-  Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
-    fields?: HubFieldPolicy;
-  };
-  HubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | HubTemplateKeySpecifier | (() => undefined | HubTemplateKeySpecifier);
-    fields?: HubTemplateFieldPolicy;
-  };
   FeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | FeatureFlagKeySpecifier | (() => undefined | FeatureFlagKeySpecifier);
     fields?: FeatureFlagFieldPolicy;
@@ -1453,6 +1445,10 @@ export type StrictTypedTypePolicies = {
   Groupable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);
     fields?: GroupableFieldPolicy;
+  };
+  Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
+    fields?: HubFieldPolicy;
   };
   HubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubTemplateKeySpecifier | (() => undefined | HubTemplateKeySpecifier);
@@ -1541,6 +1537,10 @@ export type StrictTypedTypePolicies = {
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
     fields?: PlatformFieldPolicy;
+  };
+  PlatformHubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlatformHubTemplateKeySpecifier | (() => undefined | PlatformHubTemplateKeySpecifier);
+    fields?: PlatformHubTemplateFieldPolicy;
   };
   Profile?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ProfileKeySpecifier | (() => undefined | ProfileKeySpecifier);

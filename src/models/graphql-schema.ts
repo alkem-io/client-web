@@ -167,16 +167,16 @@ export type AssignCommunityMemberInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type AssignHubAdminInput = {
-  hubID: Scalars['UUID_NAMEID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
 export type AssignGlobalAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type AssignGlobalCommunityAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type AssignHubAdminInput = {
+  hubID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -244,12 +244,12 @@ export enum AuthorizationCredential {
   ChallengeAdmin = 'CHALLENGE_ADMIN',
   ChallengeLead = 'CHALLENGE_LEAD',
   ChallengeMember = 'CHALLENGE_MEMBER',
-  HubAdmin = 'ECOVERSE_ADMIN',
-  HubHost = 'ECOVERSE_HOST',
-  HubMember = 'ECOVERSE_MEMBER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAdminCommunity = 'GLOBAL_ADMIN_COMMUNITY',
   GlobalRegistered = 'GLOBAL_REGISTERED',
+  HubAdmin = 'HUB_ADMIN',
+  HubHost = 'HUB_HOST',
+  HubMember = 'HUB_MEMBER',
   OpportunityAdmin = 'OPPORTUNITY_ADMIN',
   OpportunityMember = 'OPPORTUNITY_MEMBER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
@@ -928,6 +928,27 @@ export type EcosystemModel = {
   id: Scalars['UUID'];
 };
 
+export type FeatureFlag = {
+  __typename?: 'FeatureFlag';
+  /** Whether the feature flag is enabled / disabled. */
+  enabled: Scalars['Boolean'];
+  /** The name of the feature flag */
+  name: Scalars['String'];
+};
+
+export type GrantAuthorizationCredentialInput = {
+  /** The resource to which this credential is tied. */
+  resourceID?: InputMaybe<Scalars['UUID']>;
+  type: AuthorizationCredential;
+  /** The user to whom the credential is being granted. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type Groupable = {
+  /** The groups contained by this entity. */
+  groups?: Maybe<Array<UserGroup>>;
+};
+
 export type Hub = {
   __typename?: 'Hub';
   /** The activity within this Hub. */
@@ -1005,35 +1026,6 @@ export type HubProjectArgs = {
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
-};
-
-export type HubTemplate = {
-  __typename?: 'HubTemplate';
-  /** Application templates. */
-  applications?: Maybe<Array<ApplicationTemplate>>;
-  /** Hub template name. */
-  name: Scalars['String'];
-};
-
-export type FeatureFlag = {
-  __typename?: 'FeatureFlag';
-  /** Whether the feature flag is enabled / disabled. */
-  enabled: Scalars['Boolean'];
-  /** The name of the feature flag */
-  name: Scalars['String'];
-};
-
-export type GrantAuthorizationCredentialInput = {
-  /** The resource to which this credential is tied. */
-  resourceID?: InputMaybe<Scalars['UUID']>;
-  type: AuthorizationCredential;
-  /** The user to whom the credential is being granted. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
-export type Groupable = {
-  /** The groups contained by this entity. */
-  groups?: Maybe<Array<UserGroup>>;
 };
 
 export type HubTemplate = {
@@ -1160,12 +1152,12 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
-  /** Assigns a User as an Hub Admin. */
-  assignUserAsHubAdmin: User;
   /** Assigns a User as a Global Admin. */
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
   assignUserAsGlobalCommunityAdmin: User;
+  /** Assigns a User as an Hub Admin. */
+  assignUserAsHubAdmin: User;
   /** Assigns a User as an Opportunity Admin. */
   assignUserAsOpportunityAdmin: User;
   /** Assigns a User as an Organization Admin. */
@@ -1200,12 +1192,12 @@ export type Mutation = {
   createChildChallenge: Challenge;
   /** Creates a new Discussion as part of this Communication. */
   createDiscussion: Discussion;
-  /** Creates a new Hub. */
-  createHub: Hub;
   /** Creates a new User Group in the specified Community. */
   createGroupOnCommunity: UserGroup;
   /** Creates a new User Group for the specified Organization. */
   createGroupOnOrganization: UserGroup;
+  /** Creates a new Hub. */
+  createHub: Hub;
   /** Creates a new Opportunity within the parent Challenge. */
   createOpportunity: Opportunity;
   /** Creates a new Organization on the platform. */
@@ -1282,12 +1274,12 @@ export type Mutation = {
   removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
-  /** Removes a User from being an Hub Admin. */
-  removeUserAsHubAdmin: User;
   /** Removes a User from being a Global Admin. */
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
   removeUserAsGlobalCommunityAdmin: User;
+  /** Removes a User from being an Hub Admin. */
+  removeUserAsHubAdmin: User;
   /** Removes a User from being an Opportunity Admin. */
   removeUserAsOpportunityAdmin: User;
   /** Removes a User from being an Organization Admin. */
@@ -1358,16 +1350,16 @@ export type MutationAssignUserAsChallengeAdminArgs = {
   membershipData: AssignChallengeAdminInput;
 };
 
-export type MutationAssignUserAsHubAdminArgs = {
-  membershipData: AssignHubAdminInput;
-};
-
 export type MutationAssignUserAsGlobalAdminArgs = {
   membershipData: AssignGlobalAdminInput;
 };
 
 export type MutationAssignUserAsGlobalCommunityAdminArgs = {
   membershipData: AssignGlobalCommunityAdminInput;
+};
+
+export type MutationAssignUserAsHubAdminArgs = {
+  membershipData: AssignHubAdminInput;
 };
 
 export type MutationAssignUserAsOpportunityAdminArgs = {
@@ -1438,16 +1430,16 @@ export type MutationCreateDiscussionArgs = {
   createData: CommunicationCreateDiscussionInput;
 };
 
-export type MutationCreateHubArgs = {
-  hubData: CreateHubInput;
-};
-
 export type MutationCreateGroupOnCommunityArgs = {
   groupData: CreateUserGroupInput;
 };
 
 export type MutationCreateGroupOnOrganizationArgs = {
   groupData: CreateUserGroupInput;
+};
+
+export type MutationCreateHubArgs = {
+  hubData: CreateHubInput;
 };
 
 export type MutationCreateOpportunityArgs = {
@@ -1598,16 +1590,16 @@ export type MutationRemoveUserAsChallengeAdminArgs = {
   membershipData: RemoveChallengeAdminInput;
 };
 
-export type MutationRemoveUserAsHubAdminArgs = {
-  membershipData: RemoveHubAdminInput;
-};
-
 export type MutationRemoveUserAsGlobalAdminArgs = {
   membershipData: RemoveGlobalAdminInput;
 };
 
 export type MutationRemoveUserAsGlobalCommunityAdminArgs = {
   membershipData: RemoveGlobalCommunityAdminInput;
+};
+
+export type MutationRemoveUserAsHubAdminArgs = {
+  membershipData: RemoveHubAdminInput;
 };
 
 export type MutationRemoveUserAsOpportunityAdminArgs = {
@@ -1879,6 +1871,14 @@ export type Platform = {
   terms: Scalars['String'];
 };
 
+export type PlatformHubTemplate = {
+  __typename?: 'PlatformHubTemplate';
+  /** Application templates. */
+  applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Hub template name. */
+  name: Scalars['String'];
+};
+
 export type Profile = {
   __typename?: 'Profile';
   /** The authorization rules for the entity */
@@ -2063,16 +2063,16 @@ export type RemoveCommunityMemberInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RemoveHubAdminInput = {
-  hubID: Scalars['UUID_NAMEID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
-};
-
 export type RemoveGlobalAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type RemoveGlobalCommunityAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveHubAdminInput = {
+  hubID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -2205,7 +2205,7 @@ export type Template = {
   /** Template description. */
   description: Scalars['String'];
   /** Hub templates. */
-  hubs: Array<HubTemplate>;
+  hubs: Array<PlatformHubTemplate>;
   /** Template name. */
   name: Scalars['String'];
   /** Opportunity templates. */
@@ -2922,6 +2922,48 @@ export type ContextDetailsFragment = {
     | undefined;
 };
 
+export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
+
+export type GroupInfoFragment = {
+  __typename?: 'UserGroup';
+  id: string;
+  name: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        description?: string | undefined;
+        avatar?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
+          | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
+          | undefined;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+      }
+    | undefined;
+};
+
+export type GroupMembersFragment = {
+  __typename?: 'User';
+  id: string;
+  displayName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
 export type HubInfoFragment = {
   __typename?: 'Hub';
   id: string;
@@ -3070,48 +3112,6 @@ export type HubDetailsProviderFragment = {
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
-};
-
-export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
-
-export type GroupInfoFragment = {
-  __typename?: 'UserGroup';
-  id: string;
-  name: string;
-  profile?:
-    | {
-        __typename?: 'Profile';
-        id: string;
-        description?: string | undefined;
-        avatar?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }
-          | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
-          | undefined;
-        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-      }
-    | undefined;
-};
-
-export type GroupMembersFragment = {
-  __typename?: 'User';
-  id: string;
-  displayName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
 };
 
 export type MyPrivilegesFragment = {
@@ -3593,6 +3593,24 @@ export type CreateChallengeMutation = {
   createChallenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 };
 
+export type CreateGroupOnCommunityMutationVariables = Exact<{
+  input: CreateUserGroupInput;
+}>;
+
+export type CreateGroupOnCommunityMutation = {
+  __typename?: 'Mutation';
+  createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
+};
+
+export type CreateGroupOnOrganizationMutationVariables = Exact<{
+  input: CreateUserGroupInput;
+}>;
+
+export type CreateGroupOnOrganizationMutation = {
+  __typename?: 'Mutation';
+  createGroupOnOrganization: { __typename?: 'UserGroup'; id: string; name: string };
+};
+
 export type CreateHubMutationVariables = Exact<{
   input: CreateHubInput;
 }>;
@@ -3644,24 +3662,6 @@ export type CreateHubMutation = {
         }
       | undefined;
   };
-};
-
-export type CreateGroupOnCommunityMutationVariables = Exact<{
-  input: CreateUserGroupInput;
-}>;
-
-export type CreateGroupOnCommunityMutation = {
-  __typename?: 'Mutation';
-  createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
-};
-
-export type CreateGroupOnOrganizationMutationVariables = Exact<{
-  input: CreateUserGroupInput;
-}>;
-
-export type CreateGroupOnOrganizationMutation = {
-  __typename?: 'Mutation';
-  createGroupOnOrganization: { __typename?: 'UserGroup'; id: string; name: string };
 };
 
 export type CreateOpportunityMutationVariables = Exact<{
@@ -3878,15 +3878,6 @@ export type DeleteDiscussionMutation = {
   deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
 };
 
-export type DeleteHubMutationVariables = Exact<{
-  input: DeleteHubInput;
-}>;
-
-export type DeleteHubMutation = {
-  __typename?: 'Mutation';
-  deleteHub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-};
-
 export type DeleteGroupMutationVariables = Exact<{
   input: DeleteUserGroupInput;
 }>;
@@ -3894,6 +3885,15 @@ export type DeleteGroupMutationVariables = Exact<{
 export type DeleteGroupMutation = {
   __typename?: 'Mutation';
   deleteUserGroup: { __typename?: 'UserGroup'; id: string; name: string };
+};
+
+export type DeleteHubMutationVariables = Exact<{
+  input: DeleteHubInput;
+}>;
+
+export type DeleteHubMutation = {
+  __typename?: 'Mutation';
+  deleteHub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 };
 
 export type DeleteOpportunityMutationVariables = Exact<{
@@ -4004,15 +4004,6 @@ export type AssignUserAsChallengeAdminMutation = {
   assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
-export type AssignUserAsHubAdminMutationVariables = Exact<{
-  input: AssignHubAdminInput;
-}>;
-
-export type AssignUserAsHubAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
 export type AssignUserAsGlobalAdminMutationVariables = Exact<{
   input: AssignGlobalAdminInput;
 }>;
@@ -4029,6 +4020,15 @@ export type AssignUserAsGlobalCommunityAdminMutationVariables = Exact<{
 export type AssignUserAsGlobalCommunityAdminMutation = {
   __typename?: 'Mutation';
   assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsHubAdminMutationVariables = Exact<{
+  input: AssignHubAdminInput;
+}>;
+
+export type AssignUserAsHubAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type AssignUserAsOrganizationOwnerMutationVariables = Exact<{
@@ -4049,15 +4049,6 @@ export type RemoveUserAsChallengeAdminMutation = {
   removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
-export type RemoveUserAsHubAdminMutationVariables = Exact<{
-  input: RemoveHubAdminInput;
-}>;
-
-export type RemoveUserAsHubAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
 export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
   input: RemoveGlobalAdminInput;
 }>;
@@ -4074,6 +4065,15 @@ export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
 export type RemoveUserAsGlobalCommunityAdminMutation = {
   __typename?: 'Mutation';
   removeUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsHubAdminMutationVariables = Exact<{
+  input: RemoveHubAdminInput;
+}>;
+
+export type RemoveUserAsHubAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
@@ -4174,6 +4174,29 @@ export type UpdateEcosystemModelMutation = {
   };
 };
 
+export type UpdateGroupMutationVariables = Exact<{
+  input: UpdateUserGroupInput;
+}>;
+
+export type UpdateGroupMutation = {
+  __typename?: 'Mutation';
+  updateUserGroup: {
+    __typename?: 'UserGroup';
+    id: string;
+    name: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          description?: string | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          references?: Array<{ __typename?: 'Reference'; uri: string; name: string; description: string }> | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type UpdateHubMutationVariables = Exact<{
   input: UpdateHubInput;
 }>;
@@ -4222,29 +4245,6 @@ export type UpdateHubMutation = {
                 anonymousReadAccess: boolean;
               }
             | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type UpdateGroupMutationVariables = Exact<{
-  input: UpdateUserGroupInput;
-}>;
-
-export type UpdateGroupMutation = {
-  __typename?: 'Mutation';
-  updateUserGroup: {
-    __typename?: 'UserGroup';
-    id: string;
-    name: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          references?: Array<{ __typename?: 'Reference'; uri: string; name: string; description: string }> | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
   };
@@ -4587,10 +4587,7 @@ export type HubNameIdQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubNameIdQuery = {
-  __typename?: 'Query';
-  hub: { __typename?: 'Hub'; id: string; nameID: string };
-};
+export type HubNameIdQuery = { __typename?: 'Query'; hub: { __typename?: 'Hub'; id: string; nameID: string } };
 
 export type ChallengeNameIdQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
@@ -5445,6 +5442,41 @@ export type ConfigurationQuery = {
   };
 };
 
+export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GlobalActivityQuery = {
+  __typename?: 'Query';
+  metadata: { __typename?: 'Metadata'; activity: Array<{ __typename?: 'NVP'; name: string; value: string }> };
+};
+
+export type GroupMembersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  groupId: Scalars['UUID'];
+}>;
+
+export type GroupMembersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    group: {
+      __typename?: 'UserGroup';
+      id: string;
+      name: string;
+      members?:
+        | Array<{
+            __typename?: 'User';
+            id: string;
+            displayName: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+          }>
+        | undefined;
+    };
+  };
+};
+
 export type HubInfoQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -5542,7 +5574,7 @@ export type HubApplicationTemplateQuery = {
     template: {
       __typename?: 'Template';
       hubs: Array<{
-        __typename?: 'HubTemplate';
+        __typename?: 'PlatformHubTemplate';
         name: string;
         applications?:
           | Array<{
@@ -5610,11 +5642,7 @@ export type HubGroupsListQueryVariables = Exact<{
 
 export type HubGroupsListQuery = {
   __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    groups: Array<{ __typename?: 'UserGroup'; id: string; name: string }>;
-  };
+  hub: { __typename?: 'Hub'; id: string; groups: Array<{ __typename?: 'UserGroup'; id: string; name: string }> };
 };
 
 export type HubHostReferencesQueryVariables = Exact<{
@@ -5735,41 +5763,6 @@ export type HubsQuery = {
         }
       | undefined;
   }>;
-};
-
-export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GlobalActivityQuery = {
-  __typename?: 'Query';
-  metadata: { __typename?: 'Metadata'; activity: Array<{ __typename?: 'NVP'; name: string; value: string }> };
-};
-
-export type GroupMembersQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  groupId: Scalars['UUID'];
-}>;
-
-export type GroupMembersQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    group: {
-      __typename?: 'UserGroup';
-      id: string;
-      name: string;
-      members?:
-        | Array<{
-            __typename?: 'User';
-            id: string;
-            displayName: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-          }>
-        | undefined;
-    };
-  };
 };
 
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
@@ -6218,11 +6211,7 @@ export type OpportunityNameQueryVariables = Exact<{
 
 export type OpportunityNameQuery = {
   __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    opportunity: { __typename?: 'Opportunity'; id: string; displayName: string };
-  };
+  hub: { __typename?: 'Hub'; id: string; opportunity: { __typename?: 'Opportunity'; id: string; displayName: string } };
 };
 
 export type OpportunityProfileInfoQueryVariables = Exact<{

@@ -142,17 +142,17 @@
           "order": 999,
           "hidden": true
         },
-        "ECOVERSE_ADMIN": {
+        "HUB_ADMIN": {
           "name": "Hub Admin",
           "order": 3,
           "hidden": false
         },
-        "ECOVERSE_HOST": {
+        "HUB_HOST": {
           "name": "Hub Host",
           "order": 4,
           "hidden": true
         },
-        "ECOVERSE_MEMBER": {
+        "HUB_MEMBER": {
           "name": "Hub Member",
           "order": 5,
           "hidden": true

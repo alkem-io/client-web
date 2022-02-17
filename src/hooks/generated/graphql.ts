@@ -302,6 +302,37 @@ export const ConfigurationFragmentDoc = gql`
     }
   }
 `;
+export const GroupDetailsFragmentDoc = gql`
+  fragment GroupDetails on UserGroup {
+    id
+    name
+  }
+`;
+export const GroupInfoFragmentDoc = gql`
+  fragment GroupInfo on UserGroup {
+    id
+    name
+    profile {
+      id
+      avatar {
+        ...VisualFull
+      }
+      description
+      references {
+        id
+        uri
+        name
+        description
+      }
+      tagsets {
+        id
+        name
+        tags
+      }
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -433,37 +464,6 @@ export const HubDetailsProviderFragmentDoc = gql`
     }
   }
   ${ContextDetailsProviderFragmentDoc}
-`;
-export const GroupDetailsFragmentDoc = gql`
-  fragment GroupDetails on UserGroup {
-    id
-    name
-  }
-`;
-export const GroupInfoFragmentDoc = gql`
-  fragment GroupInfo on UserGroup {
-    id
-    name
-    profile {
-      id
-      avatar {
-        ...VisualFull
-      }
-      description
-      references {
-        id
-        uri
-        name
-        description
-      }
-      tagsets {
-        id
-        name
-        tags
-      }
-    }
-  }
-  ${VisualFullFragmentDoc}
 `;
 export const MyPrivilegesFragmentDoc = gql`
   fragment MyPrivileges on Authorization {
@@ -1847,51 +1847,6 @@ export type CreateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateChallengeMutation,
   SchemaTypes.CreateChallengeMutationVariables
 >;
-export const CreateHubDocument = gql`
-  mutation createHub($input: CreateHubInput!) {
-    createHub(hubData: $input) {
-      ...HubDetails
-    }
-  }
-  ${HubDetailsFragmentDoc}
-`;
-export type CreateHubMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateHubMutation,
-  SchemaTypes.CreateHubMutationVariables
->;
-
-/**
- * __useCreateHubMutation__
- *
- * To run a mutation, you first call `useCreateHubMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateHubMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createHubMutation, { data, loading, error }] = useCreateHubMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateHubMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateHubMutation, SchemaTypes.CreateHubMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateHubMutation, SchemaTypes.CreateHubMutationVariables>(
-    CreateHubDocument,
-    options
-  );
-}
-export type CreateHubMutationHookResult = ReturnType<typeof useCreateHubMutation>;
-export type CreateHubMutationResult = Apollo.MutationResult<SchemaTypes.CreateHubMutation>;
-export type CreateHubMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateHubMutation,
-  SchemaTypes.CreateHubMutationVariables
->;
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {
     createGroupOnCommunity(groupData: $input) {
@@ -1988,6 +1943,51 @@ export type CreateGroupOnOrganizationMutationResult =
 export type CreateGroupOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateGroupOnOrganizationMutation,
   SchemaTypes.CreateGroupOnOrganizationMutationVariables
+>;
+export const CreateHubDocument = gql`
+  mutation createHub($input: CreateHubInput!) {
+    createHub(hubData: $input) {
+      ...HubDetails
+    }
+  }
+  ${HubDetailsFragmentDoc}
+`;
+export type CreateHubMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateHubMutation,
+  SchemaTypes.CreateHubMutationVariables
+>;
+
+/**
+ * __useCreateHubMutation__
+ *
+ * To run a mutation, you first call `useCreateHubMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateHubMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createHubMutation, { data, loading, error }] = useCreateHubMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateHubMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.CreateHubMutation, SchemaTypes.CreateHubMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.CreateHubMutation, SchemaTypes.CreateHubMutationVariables>(
+    CreateHubDocument,
+    options
+  );
+}
+export type CreateHubMutationHookResult = ReturnType<typeof useCreateHubMutation>;
+export type CreateHubMutationResult = Apollo.MutationResult<SchemaTypes.CreateHubMutation>;
+export type CreateHubMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateHubMutation,
+  SchemaTypes.CreateHubMutationVariables
 >;
 export const CreateOpportunityDocument = gql`
   mutation createOpportunity($input: CreateOpportunityInput!) {
@@ -2657,6 +2657,51 @@ export type DeleteDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteDiscussionMutation,
   SchemaTypes.DeleteDiscussionMutationVariables
 >;
+export const DeleteGroupDocument = gql`
+  mutation deleteGroup($input: DeleteUserGroupInput!) {
+    deleteUserGroup(deleteData: $input) {
+      id
+      name
+    }
+  }
+`;
+export type DeleteGroupMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteGroupMutation,
+  SchemaTypes.DeleteGroupMutationVariables
+>;
+
+/**
+ * __useDeleteGroupMutation__
+ *
+ * To run a mutation, you first call `useDeleteGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteGroupMutation, { data, loading, error }] = useDeleteGroupMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDeleteGroupMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteGroupMutation, SchemaTypes.DeleteGroupMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteGroupMutation, SchemaTypes.DeleteGroupMutationVariables>(
+    DeleteGroupDocument,
+    options
+  );
+}
+export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMutation>;
+export type DeleteGroupMutationResult = Apollo.MutationResult<SchemaTypes.DeleteGroupMutation>;
+export type DeleteGroupMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteGroupMutation,
+  SchemaTypes.DeleteGroupMutationVariables
+>;
 export const DeleteHubDocument = gql`
   mutation deleteHub($input: DeleteHubInput!) {
     deleteHub(deleteData: $input) {
@@ -2702,51 +2747,6 @@ export type DeleteHubMutationResult = Apollo.MutationResult<SchemaTypes.DeleteHu
 export type DeleteHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteHubMutation,
   SchemaTypes.DeleteHubMutationVariables
->;
-export const DeleteGroupDocument = gql`
-  mutation deleteGroup($input: DeleteUserGroupInput!) {
-    deleteUserGroup(deleteData: $input) {
-      id
-      name
-    }
-  }
-`;
-export type DeleteGroupMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteGroupMutation,
-  SchemaTypes.DeleteGroupMutationVariables
->;
-
-/**
- * __useDeleteGroupMutation__
- *
- * To run a mutation, you first call `useDeleteGroupMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteGroupMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteGroupMutation, { data, loading, error }] = useDeleteGroupMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useDeleteGroupMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteGroupMutation, SchemaTypes.DeleteGroupMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeleteGroupMutation, SchemaTypes.DeleteGroupMutationVariables>(
-    DeleteGroupDocument,
-    options
-  );
-}
-export type DeleteGroupMutationHookResult = ReturnType<typeof useDeleteGroupMutation>;
-export type DeleteGroupMutationResult = Apollo.MutationResult<SchemaTypes.DeleteGroupMutation>;
-export type DeleteGroupMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteGroupMutation,
-  SchemaTypes.DeleteGroupMutationVariables
 >;
 export const DeleteOpportunityDocument = gql`
   mutation deleteOpportunity($input: DeleteOpportunityInput!) {
@@ -3233,54 +3233,6 @@ export type AssignUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.AssignUserAsChallengeAdminMutation,
   SchemaTypes.AssignUserAsChallengeAdminMutationVariables
 >;
-export const AssignUserAsHubAdminDocument = gql`
-  mutation assignUserAsHubAdmin($input: AssignHubAdminInput!) {
-    assignUserAsHubAdmin(membershipData: $input) {
-      id
-      displayName
-    }
-  }
-`;
-export type AssignUserAsHubAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserAsHubAdminMutation,
-  SchemaTypes.AssignUserAsHubAdminMutationVariables
->;
-
-/**
- * __useAssignUserAsHubAdminMutation__
- *
- * To run a mutation, you first call `useAssignUserAsHubAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserAsHubAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [assignUserAsHubAdminMutation, { data, loading, error }] = useAssignUserAsHubAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAssignUserAsHubAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserAsHubAdminMutation,
-    SchemaTypes.AssignUserAsHubAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.AssignUserAsHubAdminMutation,
-    SchemaTypes.AssignUserAsHubAdminMutationVariables
-  >(AssignUserAsHubAdminDocument, options);
-}
-export type AssignUserAsHubAdminMutationHookResult = ReturnType<typeof useAssignUserAsHubAdminMutation>;
-export type AssignUserAsHubAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsHubAdminMutation>;
-export type AssignUserAsHubAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserAsHubAdminMutation,
-  SchemaTypes.AssignUserAsHubAdminMutationVariables
->;
 export const AssignUserAsGlobalAdminDocument = gql`
   mutation assignUserAsGlobalAdmin($input: AssignGlobalAdminInput!) {
     assignUserAsGlobalAdmin(membershipData: $input) {
@@ -3379,6 +3331,54 @@ export type AssignUserAsGlobalCommunityAdminMutationResult =
 export type AssignUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.AssignUserAsGlobalCommunityAdminMutation,
   SchemaTypes.AssignUserAsGlobalCommunityAdminMutationVariables
+>;
+export const AssignUserAsHubAdminDocument = gql`
+  mutation assignUserAsHubAdmin($input: AssignHubAdminInput!) {
+    assignUserAsHubAdmin(membershipData: $input) {
+      id
+      displayName
+    }
+  }
+`;
+export type AssignUserAsHubAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsHubAdminMutation,
+  SchemaTypes.AssignUserAsHubAdminMutationVariables
+>;
+
+/**
+ * __useAssignUserAsHubAdminMutation__
+ *
+ * To run a mutation, you first call `useAssignUserAsHubAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsHubAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignUserAsHubAdminMutation, { data, loading, error }] = useAssignUserAsHubAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAssignUserAsHubAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignUserAsHubAdminMutation,
+    SchemaTypes.AssignUserAsHubAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignUserAsHubAdminMutation,
+    SchemaTypes.AssignUserAsHubAdminMutationVariables
+  >(AssignUserAsHubAdminDocument, options);
+}
+export type AssignUserAsHubAdminMutationHookResult = ReturnType<typeof useAssignUserAsHubAdminMutation>;
+export type AssignUserAsHubAdminMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserAsHubAdminMutation>;
+export type AssignUserAsHubAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsHubAdminMutation,
+  SchemaTypes.AssignUserAsHubAdminMutationVariables
 >;
 export const AssignUserAsOrganizationOwnerDocument = gql`
   mutation assignUserAsOrganizationOwner($input: AssignOrganizationOwnerInput!) {
@@ -3480,54 +3480,6 @@ export type RemoveUserAsChallengeAdminMutationOptions = Apollo.BaseMutationOptio
   SchemaTypes.RemoveUserAsChallengeAdminMutation,
   SchemaTypes.RemoveUserAsChallengeAdminMutationVariables
 >;
-export const RemoveUserAsHubAdminDocument = gql`
-  mutation removeUserAsHubAdmin($input: RemoveHubAdminInput!) {
-    removeUserAsHubAdmin(membershipData: $input) {
-      id
-      displayName
-    }
-  }
-`;
-export type RemoveUserAsHubAdminMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserAsHubAdminMutation,
-  SchemaTypes.RemoveUserAsHubAdminMutationVariables
->;
-
-/**
- * __useRemoveUserAsHubAdminMutation__
- *
- * To run a mutation, you first call `useRemoveUserAsHubAdminMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserAsHubAdminMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeUserAsHubAdminMutation, { data, loading, error }] = useRemoveUserAsHubAdminMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useRemoveUserAsHubAdminMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserAsHubAdminMutation,
-    SchemaTypes.RemoveUserAsHubAdminMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveUserAsHubAdminMutation,
-    SchemaTypes.RemoveUserAsHubAdminMutationVariables
-  >(RemoveUserAsHubAdminDocument, options);
-}
-export type RemoveUserAsHubAdminMutationHookResult = ReturnType<typeof useRemoveUserAsHubAdminMutation>;
-export type RemoveUserAsHubAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsHubAdminMutation>;
-export type RemoveUserAsHubAdminMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserAsHubAdminMutation,
-  SchemaTypes.RemoveUserAsHubAdminMutationVariables
->;
 export const RemoveUserAsGlobalAdminDocument = gql`
   mutation removeUserAsGlobalAdmin($input: RemoveGlobalAdminInput!) {
     removeUserAsGlobalAdmin(membershipData: $input) {
@@ -3626,6 +3578,54 @@ export type RemoveUserAsGlobalCommunityAdminMutationResult =
 export type RemoveUserAsGlobalCommunityAdminMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveUserAsGlobalCommunityAdminMutation,
   SchemaTypes.RemoveUserAsGlobalCommunityAdminMutationVariables
+>;
+export const RemoveUserAsHubAdminDocument = gql`
+  mutation removeUserAsHubAdmin($input: RemoveHubAdminInput!) {
+    removeUserAsHubAdmin(membershipData: $input) {
+      id
+      displayName
+    }
+  }
+`;
+export type RemoveUserAsHubAdminMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsHubAdminMutation,
+  SchemaTypes.RemoveUserAsHubAdminMutationVariables
+>;
+
+/**
+ * __useRemoveUserAsHubAdminMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserAsHubAdminMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsHubAdminMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserAsHubAdminMutation, { data, loading, error }] = useRemoveUserAsHubAdminMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveUserAsHubAdminMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveUserAsHubAdminMutation,
+    SchemaTypes.RemoveUserAsHubAdminMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveUserAsHubAdminMutation,
+    SchemaTypes.RemoveUserAsHubAdminMutationVariables
+  >(RemoveUserAsHubAdminDocument, options);
+}
+export type RemoveUserAsHubAdminMutationHookResult = ReturnType<typeof useRemoveUserAsHubAdminMutation>;
+export type RemoveUserAsHubAdminMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserAsHubAdminMutation>;
+export type RemoveUserAsHubAdminMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsHubAdminMutation,
+  SchemaTypes.RemoveUserAsHubAdminMutationVariables
 >;
 export const RemoveUserAsOrganizationOwnerDocument = gql`
   mutation removeUserAsOrganizationOwner($input: RemoveOrganizationOwnerInput!) {
@@ -3975,51 +3975,6 @@ export type UpdateEcosystemModelMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateEcosystemModelMutation,
   SchemaTypes.UpdateEcosystemModelMutationVariables
 >;
-export const UpdateHubDocument = gql`
-  mutation updateHub($input: UpdateHubInput!) {
-    updateHub(hubData: $input) {
-      ...HubDetails
-    }
-  }
-  ${HubDetailsFragmentDoc}
-`;
-export type UpdateHubMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateHubMutation,
-  SchemaTypes.UpdateHubMutationVariables
->;
-
-/**
- * __useUpdateHubMutation__
- *
- * To run a mutation, you first call `useUpdateHubMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateHubMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateHubMutation, { data, loading, error }] = useUpdateHubMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateHubMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateHubMutation, SchemaTypes.UpdateHubMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateHubMutation, SchemaTypes.UpdateHubMutationVariables>(
-    UpdateHubDocument,
-    options
-  );
-}
-export type UpdateHubMutationHookResult = ReturnType<typeof useUpdateHubMutation>;
-export type UpdateHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdateHubMutation>;
-export type UpdateHubMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateHubMutation,
-  SchemaTypes.UpdateHubMutationVariables
->;
 export const UpdateGroupDocument = gql`
   mutation updateGroup($input: UpdateUserGroupInput!) {
     updateUserGroup(userGroupData: $input) {
@@ -4081,6 +4036,51 @@ export type UpdateGroupMutationResult = Apollo.MutationResult<SchemaTypes.Update
 export type UpdateGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateGroupMutation,
   SchemaTypes.UpdateGroupMutationVariables
+>;
+export const UpdateHubDocument = gql`
+  mutation updateHub($input: UpdateHubInput!) {
+    updateHub(hubData: $input) {
+      ...HubDetails
+    }
+  }
+  ${HubDetailsFragmentDoc}
+`;
+export type UpdateHubMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateHubMutation,
+  SchemaTypes.UpdateHubMutationVariables
+>;
+
+/**
+ * __useUpdateHubMutation__
+ *
+ * To run a mutation, you first call `useUpdateHubMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateHubMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateHubMutation, { data, loading, error }] = useUpdateHubMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateHubMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateHubMutation, SchemaTypes.UpdateHubMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateHubMutation, SchemaTypes.UpdateHubMutationVariables>(
+    UpdateHubDocument,
+    options
+  );
+}
+export type UpdateHubMutationHookResult = ReturnType<typeof useUpdateHubMutation>;
+export type UpdateHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdateHubMutation>;
+export type UpdateHubMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateHubMutation,
+  SchemaTypes.UpdateHubMutationVariables
 >;
 export const UpdateOpportunityDocument = gql`
   mutation updateOpportunity($input: UpdateOpportunityInput!) {
@@ -6339,6 +6339,119 @@ export type ConfigurationQueryResult = Apollo.QueryResult<
 export function refetchConfigurationQuery(variables?: SchemaTypes.ConfigurationQueryVariables) {
   return { query: ConfigurationDocument, variables: variables };
 }
+export const GlobalActivityDocument = gql`
+  query globalActivity {
+    metadata {
+      activity {
+        name
+        value
+      }
+    }
+  }
+`;
+
+/**
+ * __useGlobalActivityQuery__
+ *
+ * To run a query within a React component, call `useGlobalActivityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGlobalActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGlobalActivityQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGlobalActivityQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>(
+    GlobalActivityDocument,
+    options
+  );
+}
+export function useGlobalActivityLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>(
+    GlobalActivityDocument,
+    options
+  );
+}
+export type GlobalActivityQueryHookResult = ReturnType<typeof useGlobalActivityQuery>;
+export type GlobalActivityLazyQueryHookResult = ReturnType<typeof useGlobalActivityLazyQuery>;
+export type GlobalActivityQueryResult = Apollo.QueryResult<
+  SchemaTypes.GlobalActivityQuery,
+  SchemaTypes.GlobalActivityQueryVariables
+>;
+export function refetchGlobalActivityQuery(variables?: SchemaTypes.GlobalActivityQueryVariables) {
+  return { query: GlobalActivityDocument, variables: variables };
+}
+export const GroupMembersDocument = gql`
+  query groupMembers($hubId: UUID_NAMEID!, $groupId: UUID!) {
+    hub(ID: $hubId) {
+      id
+      group(ID: $groupId) {
+        id
+        name
+        members {
+          ...GroupMembers
+        }
+      }
+    }
+  }
+  ${GroupMembersFragmentDoc}
+`;
+
+/**
+ * __useGroupMembersQuery__
+ *
+ * To run a query within a React component, call `useGroupMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGroupMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGroupMembersQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useGroupMembersQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>(
+    GroupMembersDocument,
+    options
+  );
+}
+export function useGroupMembersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>(
+    GroupMembersDocument,
+    options
+  );
+}
+export type GroupMembersQueryHookResult = ReturnType<typeof useGroupMembersQuery>;
+export type GroupMembersLazyQueryHookResult = ReturnType<typeof useGroupMembersLazyQuery>;
+export type GroupMembersQueryResult = Apollo.QueryResult<
+  SchemaTypes.GroupMembersQuery,
+  SchemaTypes.GroupMembersQueryVariables
+>;
+export function refetchGroupMembersQuery(variables: SchemaTypes.GroupMembersQueryVariables) {
+  return { query: GroupMembersDocument, variables: variables };
+}
 export const HubInfoDocument = gql`
   query hubInfo($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -6923,119 +7036,6 @@ export type HubsLazyQueryHookResult = ReturnType<typeof useHubsLazyQuery>;
 export type HubsQueryResult = Apollo.QueryResult<SchemaTypes.HubsQuery, SchemaTypes.HubsQueryVariables>;
 export function refetchHubsQuery(variables?: SchemaTypes.HubsQueryVariables) {
   return { query: HubsDocument, variables: variables };
-}
-export const GlobalActivityDocument = gql`
-  query globalActivity {
-    metadata {
-      activity {
-        name
-        value
-      }
-    }
-  }
-`;
-
-/**
- * __useGlobalActivityQuery__
- *
- * To run a query within a React component, call `useGlobalActivityQuery` and pass it any options that fit your needs.
- * When your component renders, `useGlobalActivityQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGlobalActivityQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGlobalActivityQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>(
-    GlobalActivityDocument,
-    options
-  );
-}
-export function useGlobalActivityLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.GlobalActivityQuery, SchemaTypes.GlobalActivityQueryVariables>(
-    GlobalActivityDocument,
-    options
-  );
-}
-export type GlobalActivityQueryHookResult = ReturnType<typeof useGlobalActivityQuery>;
-export type GlobalActivityLazyQueryHookResult = ReturnType<typeof useGlobalActivityLazyQuery>;
-export type GlobalActivityQueryResult = Apollo.QueryResult<
-  SchemaTypes.GlobalActivityQuery,
-  SchemaTypes.GlobalActivityQueryVariables
->;
-export function refetchGlobalActivityQuery(variables?: SchemaTypes.GlobalActivityQueryVariables) {
-  return { query: GlobalActivityDocument, variables: variables };
-}
-export const GroupMembersDocument = gql`
-  query groupMembers($hubId: UUID_NAMEID!, $groupId: UUID!) {
-    hub(ID: $hubId) {
-      id
-      group(ID: $groupId) {
-        id
-        name
-        members {
-          ...GroupMembers
-        }
-      }
-    }
-  }
-  ${GroupMembersFragmentDoc}
-`;
-
-/**
- * __useGroupMembersQuery__
- *
- * To run a query within a React component, call `useGroupMembersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGroupMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGroupMembersQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *      groupId: // value for 'groupId'
- *   },
- * });
- */
-export function useGroupMembersQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>(
-    GroupMembersDocument,
-    options
-  );
-}
-export function useGroupMembersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.GroupMembersQuery, SchemaTypes.GroupMembersQueryVariables>(
-    GroupMembersDocument,
-    options
-  );
-}
-export type GroupMembersQueryHookResult = ReturnType<typeof useGroupMembersQuery>;
-export type GroupMembersLazyQueryHookResult = ReturnType<typeof useGroupMembersLazyQuery>;
-export type GroupMembersQueryResult = Apollo.QueryResult<
-  SchemaTypes.GroupMembersQuery,
-  SchemaTypes.GroupMembersQueryVariables
->;
-export function refetchGroupMembersQuery(variables: SchemaTypes.GroupMembersQueryVariables) {
-  return { query: GroupMembersDocument, variables: variables };
 }
 export const MeDocument = gql`
   query me {
