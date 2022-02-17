@@ -1,10 +1,26 @@
 import { useCallback } from 'react';
 import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../models/constants/tagset.constants';
 import { ContributionItem } from '../../models/entities/contribution';
-import { AuthorizationCredential, User, UserMembershipDetailsFragment } from '../../models/graphql-schema';
+import {
+  AuthorizationCredential,
+  AuthorizationPrivilege,
+  MyPrivilegesFragment,
+  User,
+  UserMembershipDetailsFragment,
+} from '../../models/graphql-schema';
 import { Role } from '../../models/Role';
 import { useCredentialsResolver } from '../useCredentialsResolver';
 
+export interface UserPermissions {
+  canCreate: boolean;
+  canGrant: boolean;
+  canRead: boolean;
+  canUpdate: boolean;
+  canDelete: boolean;
+  canReadUsers: boolean;
+  canCreateHub: boolean;
+  canCreateOrganization: boolean;
+}
 export interface UserMetadata {
   user: User;
   hasCredentials: (credential: AuthorizationCredential, resourceId?: string) => boolean;
@@ -32,6 +48,7 @@ export interface UserMetadata {
   contributions: ContributionItem[];
   pendingApplications: ContributionItem[];
   organizationNameIDs: string[];
+  permissions: UserPermissions;
 }
 
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
@@ -75,7 +92,11 @@ export const useUserMetadataWrapper = () => {
   const resolver = useCredentialsResolver();
 
   const toUserMetadata = useCallback(
-    (user: User | undefined, membershipData?: UserMembershipDetailsFragment): UserMetadata | undefined => {
+    (
+      user: User | undefined,
+      membershipData?: UserMembershipDetailsFragment,
+      authorization?: MyPrivilegesFragment
+    ): UserMetadata | undefined => {
       if (!user) {
         return;
       }
@@ -123,6 +144,18 @@ export const useUserMetadataWrapper = () => {
       const isOpportunityAdmin = (hubId: string, challengeId: string, opportunityId) =>
         isChallengeAdmin(hubId, challengeId) || hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
 
+      const myPrivileges = authorization?.myPrivileges ?? [];
+      const permissions: UserPermissions = {
+        canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
+        canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
+        canGrant: myPrivileges.includes(AuthorizationPrivilege.Grant),
+        canDelete: myPrivileges.includes(AuthorizationPrivilege.Delete),
+        canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
+        canCreateHub: myPrivileges.includes(AuthorizationPrivilege.CreateHub),
+        canCreateOrganization: myPrivileges.includes(AuthorizationPrivilege.CreateOrganization),
+        canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+      };
+
       const metadata: UserMetadata = {
         user,
         hasCredentials,
@@ -148,6 +181,7 @@ export const useUserMetadataWrapper = () => {
         contributions: getContributions(membershipData),
         pendingApplications: getPendingApplications(membershipData),
         organizationNameIDs: organizationNameIDs,
+        permissions: permissions,
       };
 
       metadata.isAdmin = hasAdminRole(metadata.roles);

@@ -7,4 +7,7 @@ query userProfile($input: UUID_NAMEID_EMAIL!) {
     id
     ...UserMembershipDetails
   }
+  authorization {
+    ...MyPrivileges
+  }
 }
