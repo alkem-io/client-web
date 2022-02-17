@@ -3,10 +3,11 @@ import { Author } from '../../models/discussion/author';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { useAuthorDetailsQuery } from '../generated/graphql';
 
-export const useAuthorsDetails = (authorIDds: string[]) => {
+export const useAuthorsDetails = (authorIDs: string[]) => {
+  const authorIds = authorIDs.filter(x => x);
   const { data: authorData, loading } = useAuthorDetailsQuery({
-    variables: { ids: authorIDds },
-    skip: authorIDds.length === 0,
+    variables: { ids: authorIds },
+    skip: authorIds.length === 0,
   });
 
   const authors = useMemo(
