@@ -19,6 +19,7 @@ import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
 
 const routes = {
   discussions: 'discussions',
+  discussion: 'discussions/:discussionId',
   community: 'community',
   dashboard: 'dashboard',
   opportunities: 'opportunities',
@@ -57,8 +58,12 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
+    if (routeMatch?.params?.discussionId) {
+      return tabValue('discussions');
+    }
+
     return routeMatch?.pattern?.path ?? tabValue('dashboard');
-  }, [routeMatch, routes]);
+  }, [routeMatch, tabValue]);
 
   return (
     <>

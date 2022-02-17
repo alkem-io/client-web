@@ -19,6 +19,7 @@ import { buildAdminEcoverseUrl } from '../../utils/urlBuilders';
 
 const routes = {
   discussions: 'discussions',
+  discussion: 'discussions/:discussionId',
   community: 'community',
   dashboard: 'dashboard',
   challenges: 'challenges',
@@ -40,7 +41,11 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ communityReadAccess, challengesRe
   const { isFeatureEnabled } = useConfig();
   const resolved = useResolvedPath('.');
   const matchPatterns = useMemo(
-    () => Object.values(routes).map(x => resolvePath(x, resolved.pathname)?.pathname),
+    () =>
+      Object.values(routes).map(x => {
+        const path = resolvePath(x, resolved.pathname);
+        return path?.pathname;
+      }),
     [routes, resolved, resolvePath]
   );
 
@@ -49,13 +54,17 @@ const EcoverseTabs: FC<EcoverseTabsProps> = ({ communityReadAccess, challengesRe
 
   const tabValue = useCallback(
     (route: EcoverseRoutesType | string) => resolvePath(route, resolved.pathname)?.pathname,
-    [resolved]
+    [resolved, resolvePath]
   );
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
+    if (routeMatch?.params?.discussionId) {
+      return tabValue('discussions');
+    }
+
     return routeMatch?.pattern?.path ?? tabValue('dashboard');
-  }, [routeMatch, routes]);
+  }, [routeMatch, tabValue]);
 
   return (
     <>
