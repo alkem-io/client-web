@@ -57,7 +57,7 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
               <Route path={'context'} element={<EcoverseContextPage paths={currentPaths} />} />
               <Route path={'community'} element={<EcoverseCommunityPage paths={currentPaths} />} />
               <Route
-                path={'community/discussions/*'}
+                path={'discussions/*'}
                 element={
                   <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
                     <DiscussionsRoute paths={currentPaths} />

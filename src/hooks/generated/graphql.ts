@@ -465,6 +465,11 @@ export const GroupInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
+export const MyPrivilegesFragmentDoc = gql`
+  fragment MyPrivileges on Authorization {
+    myPrivileges
+  }
+`;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
@@ -9458,10 +9463,14 @@ export const UserProfileDocument = gql`
       id
       ...UserMembershipDetails
     }
+    authorization {
+      ...MyPrivileges
+    }
   }
   ${UserDetailsFragmentDoc}
   ${UserAgentFragmentDoc}
   ${UserMembershipDetailsFragmentDoc}
+  ${MyPrivilegesFragmentDoc}
 `;
 
 /**
