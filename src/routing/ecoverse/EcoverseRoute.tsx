@@ -8,21 +8,21 @@ import { Error404, PageProps } from '../../pages';
 import EcoverseDashboardPage from '../../pages/Ecoverse/EcoverseDashboardPage';
 import ApplyRoute from '../application/apply.route';
 import { nameOfUrl } from '../url-params';
-import EcoverseTabsNew from './EcoverseTabsNew';
+import EcoverseTabs from './EcoverseTabs';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import EcoversePageContainer from '../../containers/ecoverse/EcoversePageContainer';
 import EcoverseCommunityPage from '../../pages/Community/EcoverseCommunityPage';
 import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
 import { AuthorizationCredential } from '../../models/graphql-schema';
-import ChallengeRouteNew from '../challenge/ChallengeRouteNew';
+import ChallengeRoute from '../challenge/ChallengeRoute';
 import EcoverseContextPage from '../../pages/Ecoverse/EcoverseContextPage';
 import HubCanvasPage from './HubCanvasPage';
 import HubChallengesPage from '../../pages/Ecoverse/EcoverseChallengesPage';
 import AspectRoute from '../aspect/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
 
-export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
+export const EcoverseRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
     ecoverse,
     displayName,
@@ -46,7 +46,7 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
             <Route
               path={'/'}
               element={
-                <EcoverseTabsNew
+                <EcoverseTabs
                   challengesReadAccess={e.permissions.challengesReadAccess}
                   communityReadAccess={e.permissions.communityReadAccess}
                 />
@@ -73,7 +73,7 @@ export const EcoverseRouteNew: FC<PageProps> = ({ paths: _paths }) => {
               element={
                 <ChallengeProvider>
                   <CommunityProvider>
-                    <ChallengeRouteNew paths={currentPaths} />
+                    <ChallengeRoute paths={currentPaths} />
                   </CommunityProvider>
                 </ChallengeProvider>
               }

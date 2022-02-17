@@ -8,7 +8,7 @@ import { Error404, PageProps } from '../../pages';
 import ApplyRoute from '../application/apply.route';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
-import ChallengeTabsNew from './ChallengeTabsNew';
+import ChallengeTabs from './ChallengeTabs';
 import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
 import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
 import DiscussionsRoute from '../discussions/DiscussionsRoute';
@@ -16,7 +16,7 @@ import { AuthorizationCredential } from '../../models/graphql-schema';
 import { nameOfUrl } from '../url-params';
 import { OpportunityProvider } from '../../context/OpportunityProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
-import OpportunityRouteNew from '../opportunity/OpportunityRouteNew';
+import OpportunityRoute from '../opportunity/OpportunityRoute';
 import ChallengeDashboardPage from '../../pages/Admin/Challenge/ChallengeDashboardPage';
 import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPage';
 import ChallengeOpportunityPage from '../../pages/Admin/Challenge/ChallengeOpportunityPage';
@@ -26,7 +26,7 @@ import AspectRoute from '../aspect/AspectRoute';
 
 interface ChallengeRootProps extends PageProps {}
 
-const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
+const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   const { ecoverseNameId, ecoverseId, challengeId, challengeNameId, displayName, loading } = useChallenge();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
@@ -57,7 +57,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
             <Route
               path={'/'}
               element={
-                <ChallengeTabsNew
+                <ChallengeTabs
                   communityReadAccess={e.permissions.communityReadAccess}
                   viewerCanUpdate={e.permissions.canEdit}
                   ecoverseNameId={ecoverseNameId}
@@ -95,7 +95,7 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
               element={
                 <OpportunityProvider>
                   <CommunityProvider>
-                    <OpportunityRouteNew paths={currentPaths} />
+                    <OpportunityRoute paths={currentPaths} />
                   </CommunityProvider>
                 </OpportunityProvider>
               }
@@ -115,4 +115,4 @@ const ChallengeRouteNew: FC<ChallengeRootProps> = ({ paths: _paths }) => {
     </DiscussionsProvider>
   );
 };
-export default ChallengeRouteNew;
+export default ChallengeRoute;

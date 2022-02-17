@@ -18,7 +18,7 @@ import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import UserRoute from './user/UserRoute';
-import { EcoverseRouteNew } from './ecoverse/EcoverseRouteNew';
+import { EcoverseRoute } from './ecoverse/EcoverseRoute';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ export const Routing: FC = () => {
           element={
             <EcoverseProvider>
               <CommunityProvider>
-                <EcoverseRouteNew paths={[{ value: '/', name: t('common.home'), real: true }]} />
+                <EcoverseRoute paths={[{ value: '/', name: t('common.home'), real: true }]} />
               </CommunityProvider>
             </EcoverseProvider>
           }
