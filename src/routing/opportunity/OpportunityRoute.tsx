@@ -7,7 +7,7 @@ import { Error404, PageProps } from '../../pages';
 import { ProjectRoute } from './ProjectRoute';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import { OpportunityPageContainer } from '../../containers';
-import OpportunityTabsNew from './OpportunityTabsNew';
+import OpportunityTabs from './OpportunityTabs';
 import OpportunityCommunityPage from '../../pages/Community/OpportunityCommunityPage';
 import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboardPage';
 import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
@@ -19,7 +19,7 @@ import AspectRoute from '../aspect/AspectRoute';
 
 interface OpportunityRootProps extends PageProps {}
 
-const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths: _paths }) => {
+const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
   const { opportunity, displayName, hubNameId, challengeNameId, opportunityNameId, loading, permissions } =
     useOpportunity();
   const resolved = useResolvedPath('.');
@@ -44,7 +44,7 @@ const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths: _paths }) => {
             <Route
               path={'/'}
               element={
-                <OpportunityTabsNew
+                <OpportunityTabs
                   communityReadAccess={e.permissions.communityReadAccess}
                   viewerCanUpdate={permissions.viewerCanUpdate}
                   hubNameId={hubNameId}
@@ -82,4 +82,4 @@ const OpportunityRouteNew: FC<OpportunityRootProps> = ({ paths: _paths }) => {
     </DiscussionsProvider>
   );
 };
-export default OpportunityRouteNew;
+export default OpportunityRoute;
