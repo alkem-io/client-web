@@ -8,21 +8,21 @@ import { Error404, PageProps } from '../../pages';
 import HubDashboardPage from '../../pages/Hub/HubDashboardPage';
 import ApplyRoute from '../application/apply.route';
 import { nameOfUrl } from '../url-params';
-import HubTabsNew from './HubTabsNew';
+import HubTabs from './HubTabs';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import HubPageContainer from '../../containers/hub/HubPageContainer';
 import HubCommunityPage from '../../pages/Community/HubCommunityPage';
 import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
 import { AuthorizationCredential } from '../../models/graphql-schema';
-import ChallengeRouteNew from '../challenge/ChallengeRouteNew';
+import ChallengeRoute from '../challenge/ChallengeRoute';
 import HubContextPage from '../../pages/Hub/HubContextPage';
 import HubCanvasPage from './HubCanvasPage';
 import HubChallengesPage from '../../pages/Hub/HubChallengesPage';
 import AspectRoute from '../aspect/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
 
-export const HubRouteNew: FC<PageProps> = ({ paths: _paths }) => {
+export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
     hub,
     displayName,
@@ -46,7 +46,7 @@ export const HubRouteNew: FC<PageProps> = ({ paths: _paths }) => {
             <Route
               path={'/'}
               element={
-                <HubTabsNew
+                <HubTabs
                   challengesReadAccess={e.permissions.challengesReadAccess}
                   communityReadAccess={e.permissions.communityReadAccess}
                 />
@@ -73,7 +73,7 @@ export const HubRouteNew: FC<PageProps> = ({ paths: _paths }) => {
               element={
                 <ChallengeProvider>
                   <CommunityProvider>
-                    <ChallengeRouteNew paths={currentPaths} />
+                    <ChallengeRoute paths={currentPaths} />
                   </CommunityProvider>
                 </ChallengeProvider>
               }

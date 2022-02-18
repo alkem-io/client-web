@@ -12,59 +12,65 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import { useConfig } from '../../hooks';
+import { useConfig, useHub } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
-import { buildAdminChallengeUrl } from '../../utils/urlBuilders';
+import { buildAdminHubUrl } from '../../utils/urlBuilders';
 
 const routes = {
   discussions: 'discussions',
+  discussion: 'discussions/:discussionId',
   community: 'community',
   dashboard: 'dashboard',
-  opportunities: 'opportunities',
+  challenges: 'challenges',
   canvases: 'canvases',
   settings: 'settings',
   context: 'context',
 };
 
-type ChallengeRoutesKey = keyof typeof routes;
+type HubRoutesType = keyof typeof routes;
 
-export interface ChallengeTabsProps {
+export interface HubTabsProps {
   communityReadAccess: boolean;
-  viewerCanUpdate: boolean;
-  hubNameId: string;
-  challengeNameId: string;
+  challengesReadAccess: boolean;
 }
 
 // todo unify in one tab config component
-const ChallengeTabsNew: FC<ChallengeTabsProps> = ({
-  communityReadAccess,
-  viewerCanUpdate,
-  hubNameId,
-  challengeNameId,
-}) => {
+const HubTabs: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }) => {
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
   const resolved = useResolvedPath('.');
   const matchPatterns = useMemo(
-    () => Object.values(routes).map(x => resolvePath(x, resolved.pathname)?.pathname),
+    () =>
+      Object.values(routes).map(x => {
+        const path = resolvePath(x, resolved.pathname);
+        return path?.pathname;
+      }),
     [routes, resolved, resolvePath]
   );
+
+  // todo provided it as an input
+  const { hubNameId, permissions } = useHub();
+
   const tabValue = useCallback(
-    (route: ChallengeRoutesKey | string) => resolvePath(route, resolved.pathname)?.pathname,
-    [resolved]
+    (route: HubRoutesType | string) => resolvePath(route, resolved.pathname)?.pathname,
+    [resolved, resolvePath]
   );
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
+    if (routeMatch?.params?.discussionId) {
+      return tabValue('discussions');
+    }
+
     return routeMatch?.pattern?.path ?? tabValue('dashboard');
-  }, [routeMatch, routes]);
+  }, [routeMatch, tabValue]);
 
   return (
     <>
       <Tabs
         value={currentTab}
-        aria-label="Challenge tabs"
+        aria-label="Hub tabs"
         variant="scrollable"
         scrollButtons={'auto'}
         allowScrollButtonsMobile
@@ -73,48 +79,43 @@ const ChallengeTabsNew: FC<ChallengeTabsProps> = ({
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
           value={tabValue('dashboard')}
-          to={routes['dashboard']}
+          to={'dashboard'}
         />
-        <NavigationTab
-          icon={<TocOutlined />}
-          label={t('common.context')}
-          value={tabValue('context')}
-          to={routes['context']}
-        />
+        <NavigationTab icon={<TocOutlined />} label={t('common.context')} value={tabValue('context')} to={'context'} />
         <NavigationTab
           disabled={!communityReadAccess}
           icon={<GroupOutlined />}
           label={t('common.community')}
           value={tabValue('community')}
-          to={routes['community']}
+          to={'community'}
         />
         <NavigationTab
+          disabled={!challengesReadAccess}
           icon={<ContentPasteOutlined />}
-          label={t('common.opportunities')}
-          value={tabValue('opportunities')}
-          to={routes['opportunities']}
+          label={t('common.challenges')}
+          value={tabValue('challenges')}
+          to={'challenges'}
         />
         <NavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
           icon={<ForumOutlined />}
           label={t('common.discussions')}
           value={tabValue('discussions')}
-          to={routes['discussions']}
+          to={'discussions'}
         />
         <NavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           value={tabValue('canvases')}
-          to={routes['canvases']}
+          to={'canvases'}
         />
-        {viewerCanUpdate && (
+        {permissions.viewerCanUpdate && (
           <NavigationTab
             icon={<SettingsOutlined />}
             label={t('common.settings')}
             value={tabValue('settings')}
-            /* can be provided with the tab config */
-            to={buildAdminChallengeUrl(hubNameId, challengeNameId)}
+            to={buildAdminHubUrl(hubNameId)}
           />
         )}
       </Tabs>
@@ -124,4 +125,4 @@ const ChallengeTabsNew: FC<ChallengeTabsProps> = ({
   );
 };
 
-export default ChallengeTabsNew;
+export default HubTabs;
