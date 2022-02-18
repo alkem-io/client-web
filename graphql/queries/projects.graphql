@@ -1,5 +1,5 @@
-query projects($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query projects($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     projects {
       id

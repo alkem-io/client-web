@@ -10,7 +10,7 @@ import {
   useDeleteChallengeMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
-import { useEcoverse } from '../../../hooks';
+import { useHub } from '../../../hooks';
 import { useResolvedPath } from 'react-router-dom';
 
 interface ChallengeListProps extends PageProps {}
@@ -18,15 +18,15 @@ interface ChallengeListProps extends PageProps {}
 export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
-  const { ecoverseNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({
     variables: {
-      ecoverseId: ecoverseNameId,
+      hubId: hubNameId,
     },
   });
 
   const challengeList =
-    challengesListQuery?.ecoverse?.challenges?.map(c => ({
+    challengesListQuery?.hub?.challenges?.map(c => ({
       id: c.id,
       value: c.displayName,
       url: `${c.nameID}`,
@@ -35,7 +35,7 @@ export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
   const [deleteChallenge] = useDeleteChallengeMutation({
     refetchQueries: [
       refetchChallengesWithCommunityQuery({
-        ecoverseId: ecoverseNameId,
+        hubId: hubNameId,
       }),
     ],
     awaitRefetchQueries: true,
@@ -52,7 +52,7 @@ export const ChallengeListPage: FC<ChallengeListProps> = ({ paths }) => {
     });
   };
 
-  if (loading) return <Loading text={'Loading ecoverses'} />;
+  if (loading) return <Loading text={'Loading hubs'} />;
 
   return <ListPage data={challengeList} paths={paths} newLink={`${url}/new`} onDelete={handleDelete} />;
 };

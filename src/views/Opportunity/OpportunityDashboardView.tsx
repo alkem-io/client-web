@@ -8,7 +8,7 @@ import DashboardCommunitySectionV2 from '../../components/composite/common/secti
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardOpportunityStatistics from '../../components/composite/common/sections/DashboardOpportunityStatistics';
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
-import InterestModal from '../../components/composite/entities/Ecoverse/InterestModal';
+import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useOpportunity } from '../../hooks';
@@ -72,7 +72,7 @@ export interface OpportunityDashboardViewProps
 const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities, state, options, actions }) => {
   const { t } = useTranslation();
 
-  const { ecoverseId } = useOpportunity();
+  const { hubId } = useOpportunity();
 
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
@@ -112,7 +112,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           {communityReadAccess && (
             <>
               <SectionSpacer />
-              <DashboardUpdatesSection entities={{ ecoverseId: ecoverseId, communityId: communityId }} />
+              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
               {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
               {/* <SectionSpacer />
               <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}

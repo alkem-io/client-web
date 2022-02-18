@@ -1,8 +1,8 @@
-import { EcoverseNameFragment } from '../../../models/graphql-schema';
+import { HubNameFragment } from '../../../models/graphql-schema';
 
 interface PopUpProps<T> {
   entity: T;
   onHide?: () => void;
-  ecoverse?: EcoverseNameFragment;
+  hub?: HubNameFragment;
 }
 export default PopUpProps;

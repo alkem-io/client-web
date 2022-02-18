@@ -1,5 +1,5 @@
 export enum ApplicationTypeEnum {
-  ecoverse,
+  hub,
   challenge,
   opportunity,
 }

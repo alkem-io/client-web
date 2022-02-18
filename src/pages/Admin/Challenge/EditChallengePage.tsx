@@ -30,7 +30,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeNameId = '', ecoverseNameId = '' } = useUrlParams();
+  const { challengeNameId = '', hubNameId = '' } = useUrlParams();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {
@@ -38,22 +38,22 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
       navigateToEdit(data.createChallenge.nameID);
     },
     onError: handleError,
-    refetchQueries: [refetchChallengesWithCommunityQuery({ ecoverseId: ecoverseNameId })],
+    refetchQueries: [refetchChallengesWithCommunityQuery({ hubId: hubNameId })],
     awaitRefetchQueries: true,
   });
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onCompleted: () => onSuccess('Successfully updated'),
     onError: handleError,
-    refetchQueries: [refetchChallengeProfileInfoQuery({ ecoverseId: ecoverseNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
+    variables: { hubId: hubNameId, challengeId: challengeNameId },
     skip: mode === FormMode.create,
   });
-  const challenge = challengeProfile?.ecoverse?.challenge;
+  const challenge = challengeProfile?.hub?.challenge;
   const challengeId = useMemo(() => challenge?.id || '', [challenge]);
 
   const isLoading = isCreating || isUpdating;
@@ -74,7 +74,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
             input: {
               nameID: nameID,
               displayName: name,
-              ecoverseID: ecoverseNameId,
+              hubID: hubNameId,
               context: createContextInput(values),
               tags: tagsets.flatMap(x => x.tags),
             },

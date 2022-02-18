@@ -1,0 +1,5 @@
+query adminHubsList {
+  hubs {
+    ...AdminHub
+  }
+}

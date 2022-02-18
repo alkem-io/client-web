@@ -1,0 +1,17 @@
+query hubApplicationTemplate {
+  configuration {
+    template {
+      hubs {
+        name
+        applications {
+          name
+          questions {
+            required
+            question
+            sortOrder
+          }
+        }
+      }
+    }
+  }
+}

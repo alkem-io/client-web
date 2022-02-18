@@ -30,7 +30,7 @@ type OpportunityRoutesType = keyof typeof routes;
 export interface OpportunityTabsProps {
   communityReadAccess: boolean;
   viewerCanUpdate: boolean;
-  ecoverseNameId: string;
+  hubNameId: string;
   challengeNameId: string;
   opportunityNameId: string;
 }
@@ -38,7 +38,7 @@ export interface OpportunityTabsProps {
 const OpportunityTabsNew: FC<OpportunityTabsProps> = ({
   viewerCanUpdate,
   communityReadAccess,
-  ecoverseNameId,
+  hubNameId,
   challengeNameId,
   opportunityNameId,
 }) => {
@@ -106,7 +106,7 @@ const OpportunityTabsNew: FC<OpportunityTabsProps> = ({
             label={t('common.settings')}
             value={tabValue('settings')}
             /* can be provided with the tab config */
-            to={buildAdminOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId)}
+            to={buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
           />
         )}
       </Tabs>

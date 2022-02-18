@@ -2,7 +2,7 @@ import nameof from '../utils/name-of';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
 export default interface UrlParams extends Record<string, string | undefined> {
-  ecoverseNameId?: string;
+  hubNameId?: string;
   challengeNameId?: string;
   opportunityNameId?: string;
   organizationNameId?: string;

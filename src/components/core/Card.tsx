@@ -341,7 +341,7 @@ const Card: FC<CardProps> = ({
   const styles = useCardStyles(classes);
 
   //TODO this should not be here...
-  const isEcoverseLevel = level?.level === 'Ecoverse';
+  const isHubLevel = level?.level === 'Hub';
 
   return (
     <div
@@ -358,7 +358,7 @@ const Card: FC<CardProps> = ({
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
         {level && (
           <Typography color={'background'}>
-            {!isEcoverseLevel && `${level.level}: `}
+            {!isHubLevel && `${level.level}: `}
             {`${level.name} `}
           </Typography>
         )}

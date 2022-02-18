@@ -4,14 +4,14 @@ import { APPLICATION_STATE_NEW } from '../../models/constants';
 
 const sortApplications = (a: ApplicationWithType, b: ApplicationWithType) => {
   if (
-    (a.type === ApplicationTypeEnum.ecoverse && b.type !== ApplicationTypeEnum.ecoverse) ||
+    (a.type === ApplicationTypeEnum.hub && b.type !== ApplicationTypeEnum.hub) ||
     (a.type === ApplicationTypeEnum.challenge && b.type === ApplicationTypeEnum.opportunity)
   ) {
     return -1;
   }
 
   if (
-    (b.type === ApplicationTypeEnum.ecoverse && a.type !== ApplicationTypeEnum.ecoverse) ||
+    (b.type === ApplicationTypeEnum.hub && a.type !== ApplicationTypeEnum.hub) ||
     (b.type === ApplicationTypeEnum.challenge && a.type === ApplicationTypeEnum.opportunity)
   ) {
     return 1;

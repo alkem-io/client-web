@@ -1,8 +1,8 @@
 fragment UserMembershipDetails on UserMembership {
-  ecoverses {
+  hubs {
     id
     nameID
-    ecoverseID
+    hubID
     displayName
     challenges {
       id
@@ -39,7 +39,7 @@ fragment UserMembershipDetails on UserMembership {
     communityID
     displayName
     state
-    ecoverseID
+    hubID
     challengeID
     opportunityID
   }

@@ -70,7 +70,7 @@ export type ApplicationResultEntryKeySpecifier = (
   | 'communityID'
   | 'createdDate'
   | 'displayName'
-  | 'ecoverseID'
+  | 'hubID'
   | 'id'
   | 'opportunityID'
   | 'state'
@@ -82,7 +82,7 @@ export type ApplicationResultEntryFieldPolicy = {
   communityID?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunityID?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -219,7 +219,7 @@ export type ChallengeKeySpecifier = (
   | 'community'
   | 'context'
   | 'displayName'
-  | 'ecoverseID'
+  | 'hubID'
   | 'id'
   | 'leadOrganizations'
   | 'lifecycle'
@@ -236,7 +236,7 @@ export type ChallengeFieldPolicy = {
   community?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -453,7 +453,16 @@ export type EcosystemModelFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type EcoverseKeySpecifier = (
+export type FeatureFlagKeySpecifier = ('enabled' | 'name' | FeatureFlagKeySpecifier)[];
+export type FeatureFlagFieldPolicy = {
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
+export type GroupableFieldPolicy = {
+  groups?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type HubKeySpecifier = (
   | 'activity'
   | 'agent'
   | 'application'
@@ -475,9 +484,9 @@ export type EcoverseKeySpecifier = (
   | 'projects'
   | 'tagset'
   | 'template'
-  | EcoverseKeySpecifier
+  | HubKeySpecifier
 )[];
-export type EcoverseFieldPolicy = {
+export type HubFieldPolicy = {
   activity?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   application?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -499,20 +508,6 @@ export type EcoverseFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type EcoverseTemplateKeySpecifier = ('applications' | 'name' | EcoverseTemplateKeySpecifier)[];
-export type EcoverseTemplateFieldPolicy = {
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type FeatureFlagKeySpecifier = ('enabled' | 'name' | FeatureFlagKeySpecifier)[];
-export type FeatureFlagFieldPolicy = {
-  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
-export type GroupableFieldPolicy = {
-  groups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type HubTemplateKeySpecifier = ('aspectTemplates' | HubTemplateKeySpecifier)[];
 export type HubTemplateFieldPolicy = {
@@ -546,14 +541,14 @@ export type MembershipCommunityResultEntryFieldPolicy = {
 };
 export type MembershipOrganizationResultEntryChallengeKeySpecifier = (
   | 'displayName'
-  | 'ecoverseID'
+  | 'hubID'
   | 'id'
   | 'nameID'
   | MembershipOrganizationResultEntryChallengeKeySpecifier
 )[];
 export type MembershipOrganizationResultEntryChallengeFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -563,20 +558,20 @@ export type MembershipResultEntryFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MembershipUserResultEntryEcoverseKeySpecifier = (
+export type MembershipUserResultEntryHubKeySpecifier = (
   | 'challenges'
   | 'displayName'
-  | 'ecoverseID'
+  | 'hubID'
   | 'id'
   | 'nameID'
   | 'opportunities'
   | 'userGroups'
-  | MembershipUserResultEntryEcoverseKeySpecifier
+  | MembershipUserResultEntryHubKeySpecifier
 )[];
-export type MembershipUserResultEntryEcoverseFieldPolicy = {
+export type MembershipUserResultEntryHubFieldPolicy = {
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverseID?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -614,16 +609,16 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
   | 'assignUserAsChallengeAdmin'
-  | 'assignUserAsEcoverseAdmin'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
+  | 'assignUserAsHubAdmin'
   | 'assignUserAsOpportunityAdmin'
   | 'assignUserAsOrganizationAdmin'
   | 'assignUserAsOrganizationOwner'
   | 'assignUserToCommunity'
   | 'assignUserToGroup'
   | 'assignUserToOrganization'
-  | 'authorizationPolicyResetOnEcoverse'
+  | 'authorizationPolicyResetOnHub'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnUser'
   | 'createActor'
@@ -634,9 +629,9 @@ export type MutationKeySpecifier = (
   | 'createChallenge'
   | 'createChildChallenge'
   | 'createDiscussion'
-  | 'createEcoverse'
   | 'createGroupOnCommunity'
   | 'createGroupOnOrganization'
+  | 'createHub'
   | 'createOpportunity'
   | 'createOrganization'
   | 'createProject'
@@ -653,7 +648,7 @@ export type MutationKeySpecifier = (
   | 'deleteCanvasOnContext'
   | 'deleteChallenge'
   | 'deleteDiscussion'
-  | 'deleteEcoverse'
+  | 'deleteHub'
   | 'deleteOpportunity'
   | 'deleteOrganization'
   | 'deleteProject'
@@ -675,9 +670,9 @@ export type MutationKeySpecifier = (
   | 'removeMessageFromDiscussion'
   | 'removeUpdate'
   | 'removeUserAsChallengeAdmin'
-  | 'removeUserAsEcoverseAdmin'
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
+  | 'removeUserAsHubAdmin'
   | 'removeUserAsOpportunityAdmin'
   | 'removeUserAsOrganizationAdmin'
   | 'removeUserAsOrganizationOwner'
@@ -694,7 +689,7 @@ export type MutationKeySpecifier = (
   | 'updateChallenge'
   | 'updateDiscussion'
   | 'updateEcosystemModel'
-  | 'updateEcoverse'
+  | 'updateHub'
   | 'updateOpportunity'
   | 'updateOrganization'
   | 'updateProfile'
@@ -711,16 +706,16 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  assignUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorizationPolicyResetOnEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorizationPolicyResetOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -731,9 +726,9 @@ export type MutationFieldPolicy = {
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
-  createEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createHub?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -750,7 +745,7 @@ export type MutationFieldPolicy = {
   deleteCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteProject?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -772,9 +767,9 @@ export type MutationFieldPolicy = {
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeUserAsEcoverseAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationOwner?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -791,7 +786,7 @@ export type MutationFieldPolicy = {
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateEcoverse?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -893,13 +888,13 @@ export type OrganizationFieldPolicy = {
 };
 export type OrganizationMembershipKeySpecifier = (
   | 'challengesLeading'
-  | 'ecoversesHosting'
+  | 'hubsHosting'
   | 'id'
   | OrganizationMembershipKeySpecifier
 )[];
 export type OrganizationMembershipFieldPolicy = {
   challengesLeading?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoversesHosting?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubsHosting?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationTemplateKeySpecifier = ('name' | 'tagsets' | OrganizationTemplateKeySpecifier)[];
@@ -944,6 +939,11 @@ export type PlatformFieldPolicy = {
   support?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PlatformHubTemplateKeySpecifier = ('applications' | 'name' | PlatformHubTemplateKeySpecifier)[];
+export type PlatformHubTemplateFieldPolicy = {
+  applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ProfileKeySpecifier = (
   | 'authorization'
   | 'avatar'
@@ -985,8 +985,8 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
   | 'configuration'
-  | 'ecoverse'
-  | 'ecoverses'
+  | 'hub'
+  | 'hubs'
   | 'me'
   | 'meHasProfile'
   | 'membershipOrganization'
@@ -1007,8 +1007,8 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverse?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
+  hub?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   meHasProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   membershipOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1111,7 +1111,7 @@ export type TagsetTemplateFieldPolicy = {
 export type TemplateKeySpecifier = (
   | 'challenges'
   | 'description'
-  | 'ecoverses'
+  | 'hubs'
   | 'name'
   | 'opportunities'
   | 'organizations'
@@ -1121,7 +1121,7 @@ export type TemplateKeySpecifier = (
 export type TemplateFieldPolicy = {
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1192,7 +1192,7 @@ export type UserGroupFieldPolicy = {
 export type UserMembershipKeySpecifier = (
   | 'applications'
   | 'communities'
-  | 'ecoverses'
+  | 'hubs'
   | 'id'
   | 'organizations'
   | UserMembershipKeySpecifier
@@ -1200,7 +1200,7 @@ export type UserMembershipKeySpecifier = (
 export type UserMembershipFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   communities?: FieldPolicy<any> | FieldReadFunction<any>;
-  ecoverses?: FieldPolicy<any> | FieldReadFunction<any>;
+  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1438,14 +1438,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | EcosystemModelKeySpecifier | (() => undefined | EcosystemModelKeySpecifier);
     fields?: EcosystemModelFieldPolicy;
   };
-  Ecoverse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | EcoverseKeySpecifier | (() => undefined | EcoverseKeySpecifier);
-    fields?: EcoverseFieldPolicy;
-  };
-  EcoverseTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | EcoverseTemplateKeySpecifier | (() => undefined | EcoverseTemplateKeySpecifier);
-    fields?: EcoverseTemplateFieldPolicy;
-  };
   FeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | FeatureFlagKeySpecifier | (() => undefined | FeatureFlagKeySpecifier);
     fields?: FeatureFlagFieldPolicy;
@@ -1453,6 +1445,10 @@ export type StrictTypedTypePolicies = {
   Groupable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);
     fields?: GroupableFieldPolicy;
+  };
+  Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
+    fields?: HubFieldPolicy;
   };
   HubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubTemplateKeySpecifier | (() => undefined | HubTemplateKeySpecifier);
@@ -1480,12 +1476,12 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | MembershipResultEntryKeySpecifier | (() => undefined | MembershipResultEntryKeySpecifier);
     fields?: MembershipResultEntryFieldPolicy;
   };
-  MembershipUserResultEntryEcoverse?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  MembershipUserResultEntryHub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | MembershipUserResultEntryEcoverseKeySpecifier
-      | (() => undefined | MembershipUserResultEntryEcoverseKeySpecifier);
-    fields?: MembershipUserResultEntryEcoverseFieldPolicy;
+      | MembershipUserResultEntryHubKeySpecifier
+      | (() => undefined | MembershipUserResultEntryHubKeySpecifier);
+    fields?: MembershipUserResultEntryHubFieldPolicy;
   };
   MembershipUserResultEntryOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -1541,6 +1537,10 @@ export type StrictTypedTypePolicies = {
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
     fields?: PlatformFieldPolicy;
+  };
+  PlatformHubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PlatformHubTemplateKeySpecifier | (() => undefined | PlatformHubTemplateKeySpecifier);
+    fields?: PlatformHubTemplateFieldPolicy;
   };
   Profile?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ProfileKeySpecifier | (() => undefined | ProfileKeySpecifier);

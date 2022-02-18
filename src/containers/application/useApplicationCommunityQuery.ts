@@ -3,15 +3,15 @@ import { useUrlParams } from '../../hooks';
 import {
   useChallengeApplicationQuery,
   useChallengeApplicationTemplateQuery,
-  useEcoverseApplicationQuery,
-  useEcoverseApplicationTemplateQuery,
+  useHubApplicationQuery,
+  useHubApplicationTemplateQuery,
 } from '../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { buildChallengeUrl, buildEcoverseUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl } from '../../utils/urlBuilders';
 import { getVisualAvatar } from '../../utils/visuals.utils';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
-  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
 
   const {
     data: challengeData,
@@ -19,7 +19,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     error: challengeCommunityError,
   } = useChallengeApplicationQuery({
     variables: {
-      ecoverseId: ecoverseNameId,
+      hubId: hubNameId,
       challengeId: challengeNameId,
     },
     errorPolicy: 'all',
@@ -35,55 +35,51 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
   });
 
   const {
-    data: ecoverseData,
-    loading: isEcoverseCommunityLoading,
-    error: ecoverseCommunityError,
-  } = useEcoverseApplicationQuery({
+    data: hubData,
+    loading: isHubCommunityLoading,
+    error: hubCommunityError,
+  } = useHubApplicationQuery({
     variables: {
-      ecoverseId: ecoverseNameId,
+      hubId: hubNameId,
     },
     errorPolicy: 'all',
-    skip: type !== ApplicationTypeEnum.ecoverse,
+    skip: type !== ApplicationTypeEnum.hub,
   });
 
   const {
-    data: ecoverseTemplateData,
-    loading: isEcoverseTemplateLoading,
-    error: ecoverseTemplateError,
-  } = useEcoverseApplicationTemplateQuery({
-    skip: type !== ApplicationTypeEnum.ecoverse,
+    data: hubTemplateData,
+    loading: isHubTemplateLoading,
+    error: hubTemplateError,
+  } = useHubApplicationTemplateQuery({
+    skip: type !== ApplicationTypeEnum.hub,
   });
 
   const result = useMemo(() => {
-    if (type === ApplicationTypeEnum.ecoverse) {
+    if (type === ApplicationTypeEnum.hub) {
       return {
-        communityId: ecoverseData?.ecoverse.community?.id || '',
-        displayName: ecoverseData?.ecoverse.displayName || '',
-        avatar: getVisualAvatar(ecoverseData?.ecoverse.context?.visuals),
-        tagline: ecoverseData?.ecoverse.context?.tagline || '',
-        questions: ecoverseTemplateData?.configuration.template.ecoverses[0].applications?.[0].questions || [],
-        backUrl: buildEcoverseUrl(ecoverseNameId),
+        communityId: hubData?.hub.community?.id || '',
+        displayName: hubData?.hub.displayName || '',
+        avatar: getVisualAvatar(hubData?.hub.context?.visuals),
+        tagline: hubData?.hub.context?.tagline || '',
+        questions: hubTemplateData?.configuration.template.hubs[0].applications?.[0].questions || [],
+        backUrl: buildHubUrl(hubNameId),
       };
     }
     if (type === ApplicationTypeEnum.challenge) {
       return {
-        communityId: challengeData?.ecoverse.challenge.community?.id || '',
-        displayName: challengeData?.ecoverse.challenge.displayName || '',
-        avatar: getVisualAvatar(challengeData?.ecoverse.challenge.context?.visuals),
-        tagline: challengeData?.ecoverse.challenge.context?.tagline || '',
+        communityId: challengeData?.hub.challenge.community?.id || '',
+        displayName: challengeData?.hub.challenge.displayName || '',
+        avatar: getVisualAvatar(challengeData?.hub.challenge.context?.visuals),
+        tagline: challengeData?.hub.challenge.context?.tagline || '',
         questions: challengeTemplateData?.configuration.template.challenges[0].applications?.[0].questions || [],
-        backUrl: buildChallengeUrl(ecoverseNameId, challengeNameId),
+        backUrl: buildChallengeUrl(hubNameId, challengeNameId),
       };
     }
-  }, [type, challengeData, challengeTemplateData, ecoverseData, ecoverseTemplateData]);
+  }, [type, challengeData, challengeTemplateData, hubData, hubTemplateData]);
 
   return {
     data: result,
-    error: challengeCommunityError || challengeTemplateError || ecoverseCommunityError || ecoverseTemplateError,
-    loading:
-      isChallengeCommunityLoading ||
-      isChallengeTemplateLoading ||
-      isEcoverseCommunityLoading ||
-      isEcoverseTemplateLoading,
+    error: challengeCommunityError || challengeTemplateError || hubCommunityError || hubTemplateError,
+    loading: isChallengeCommunityLoading || isChallengeTemplateLoading || isHubCommunityLoading || isHubTemplateLoading,
   };
 };

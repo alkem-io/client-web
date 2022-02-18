@@ -2,7 +2,7 @@ fragment ChallengeSearchResult on Challenge {
   id
   displayName
   nameID
-  ecoverseID
+  hubID
   activity {
     name
     value

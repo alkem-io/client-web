@@ -1,0 +1,5 @@
+query hubCard($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    ...HubDetailsProvider
+  }
+}
