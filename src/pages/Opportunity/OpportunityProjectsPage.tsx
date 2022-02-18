@@ -1,24 +1,26 @@
 import React, { FC, useMemo } from 'react';
-import { OpportunityContainerEntities } from '../../containers';
+import { OpportunityPageContainer } from '../../containers';
 import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
 
-export interface OpportunityProjectsPageProps extends PageProps {
-  entities: OpportunityContainerEntities;
-}
+export interface OpportunityProjectsPageProps extends PageProps {}
 
-const OpportunityProjectsPage: FC<OpportunityProjectsPageProps> = ({ paths, entities }) => {
+const OpportunityProjectsPage: FC<OpportunityProjectsPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/projects', name: 'projects', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
   return (
-    <OpportunityProjectsView
-      entities={{ opportunityProjects: entities.opportunityProjects }}
-      state={{}}
-      actions={{}}
-      options={{}}
-    />
+    <OpportunityPageContainer>
+      {e => (
+        <OpportunityProjectsView
+          entities={{ opportunityProjects: e.opportunityProjects }}
+          state={{}}
+          actions={{}}
+          options={{}}
+        />
+      )}
+    </OpportunityPageContainer>
   );
 };
 export default OpportunityProjectsPage;

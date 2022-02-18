@@ -3207,6 +3207,9 @@ export type OpportunityInfoFragment = {
     | {
         __typename?: 'Community';
         id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
         members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
       }
     | undefined;
@@ -6007,6 +6010,9 @@ export type OpportunityInfoQuery = {
         | {
             __typename?: 'Community';
             id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
           }
         | undefined;

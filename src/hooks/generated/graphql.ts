@@ -513,6 +513,10 @@ export const OpportunityInfoFragmentDoc = gql`
     }
     community {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       members {
         id
         displayName
