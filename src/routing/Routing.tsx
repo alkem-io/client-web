@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 import App from '../components/composite/layout/App/App';
 import { CommunityProvider } from '../context/CommunityProvider';
-import { EcoverseProvider } from '../context/EcoverseProvider';
+import { HubProvider } from '../context/HubProvider';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
 import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
@@ -18,7 +18,7 @@ import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import UserRoute from './user/UserRoute';
-import { EcoverseRouteNew } from './ecoverse/EcoverseRouteNew';
+import { HubRouteNew } from './hub/HubRouteNew';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -28,13 +28,13 @@ export const Routing: FC = () => {
       <Route path="/" element={<App />}>
         <Route index element={<HomePage />} />
         <Route
-          path={`:${nameOfUrl.ecoverseNameId}/*`}
+          path={`:${nameOfUrl.hubNameId}/*`}
           element={
-            <EcoverseProvider>
+            <HubProvider>
               <CommunityProvider>
-                <EcoverseRouteNew paths={[{ value: '/', name: t('common.home'), real: true }]} />
+                <HubRouteNew paths={[{ value: '/', name: t('common.home'), real: true }]} />
               </CommunityProvider>
-            </EcoverseProvider>
+            </HubProvider>
           }
         />
         <Route path="/admin/*" element={<AdminRoute />} />

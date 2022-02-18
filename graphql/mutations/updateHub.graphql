@@ -1,0 +1,5 @@
+mutation updateHub($input: UpdateHubInput!) {
+  updateHub(hubData: $input) {
+    ...HubDetails
+  }
+}

@@ -111,17 +111,17 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   }, [usersWithRoles]);
 
   const contributions = useMemo(() => {
-    const { ecoversesHosting = [], challengesLeading = [] } = membershipData?.membershipOrganization || {};
-    const ecoverseContributions = ecoversesHosting.map<ContributionItem>(x => ({
-      ecoverseId: x.id,
+    const { hubsHosting = [], challengesLeading = [] } = membershipData?.membershipOrganization || {};
+    const hubContributions = hubsHosting.map<ContributionItem>(x => ({
+      hubId: x.id,
     }));
 
     const challengeContributions = challengesLeading.map<ContributionItem>(x => ({
-      ecoverseId: x.ecoverseID,
+      hubId: x.hubID,
       challengeId: x.id,
     }));
 
-    return [...ecoverseContributions, ...challengeContributions];
+    return [...hubContributions, ...challengeContributions];
   }, [membershipData]);
 
   return (

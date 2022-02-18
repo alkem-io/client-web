@@ -23,7 +23,7 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
   const { t } = useTranslation();
   const opportunities = (entities.challenge?.opportunities ?? []) as Opportunity[];
 
-  const { ecoverseNameId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
+  const { hubNameId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
   if (loadingChallengeContext || state.loading) return <Loading />;
 
@@ -61,7 +61,7 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
           <CardLayoutContainer>
             {filteredData.map((opp, i) => (
               <CardLayoutItem key={i}>
-                <OpportunityCard opportunity={opp} ecoverseNameId={ecoverseNameId} challengeNameId={challengeNameId} />
+                <OpportunityCard opportunity={opp} hubNameId={hubNameId} challengeNameId={challengeNameId} />
               </CardLayoutItem>
             ))}
           </CardLayoutContainer>

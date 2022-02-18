@@ -3,7 +3,7 @@ import { useResolvedPath } from 'react-router-dom';
 
 import { ListPage } from '../../../components/Admin';
 import { Loading } from '../../../components/core';
-import { useDeleteUserGroup, useEcoverse } from '../../../hooks';
+import { useDeleteUserGroup, useHub } from '../../../hooks';
 import { useCommunityGroupsQuery } from '../../../hooks/generated/graphql';
 import { PageProps } from '../../common';
 
@@ -13,21 +13,21 @@ interface CommunityGroupListPageProps extends PageProps {
 
 export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ paths, communityId }) => {
   const { pathname: url } = useResolvedPath('.');
-  const { ecoverseId, loading: loadingEcoverse } = useEcoverse();
+  const { hubId, loading: loadingHub } = useHub();
 
   const { data, loading } = useCommunityGroupsQuery({
     variables: {
-      ecoverseId,
+      hubId,
       communityId,
     },
   });
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
   const { handleDelete } = useDeleteUserGroup();
 
-  const community = data?.ecoverse.community;
+  const community = data?.hub.community;
   const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` })) || [];
 
-  if (loading || loadingEcoverse) return <Loading />;
+  if (loading || loadingHub) return <Loading />;
 
   return (
     <ListPage

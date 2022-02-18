@@ -53,10 +53,10 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
   const { t } = useTranslation();
   const sectionTitle = t('pages.community.title', { name: title });
   const organizationTitle = hostOrganization
-    ? t('pages.community.ecoverse-host.title')
+    ? t('pages.community.hub-host.title')
     : t('pages.community.leading-organizations.title', { count: leadingOrganizations.length });
   const organizationHelpText = hostOrganization
-    ? t('pages.community.ecoverse-host.help-text')
+    ? t('pages.community.hub-host.help-text')
     : t('pages.community.leading-organizations.help-text');
   const organizations = hostOrganization ? [hostOrganization] : leadingOrganizations;
   const membersTitle = t('pages.community.members.title', { count: members.length });

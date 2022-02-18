@@ -1,5 +1,5 @@
-query ChallengeExplorerSearchEnricher($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query ChallengeExplorerSearchEnricher($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     nameID
     displayName

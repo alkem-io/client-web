@@ -1,0 +1,86 @@
+query hubPage($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    ...HubPage
+  }
+}
+
+fragment HubPage on Hub {
+  id
+  nameID
+  displayName
+  tagset {
+    id
+    name
+    tags
+  }
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  host {
+    id
+    displayName
+    nameID
+  }
+  context {
+    id
+    tagline
+    vision
+    visuals {
+      ...VisualUri
+    }
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  community {
+    id
+    displayName
+    members {
+      id
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  activity {
+    id
+    name
+    value
+  }
+}
+
+fragment ProjectInfo on Project {
+  id
+  nameID
+  displayName
+  description
+  lifecycle {
+    state
+  }
+}
+
+query HubPageProjects($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    challenges {
+      id
+      displayName
+      nameID
+      opportunities {
+        id
+        nameID
+        projects {
+          ...ProjectInfo
+        }
+      }
+    }
+  }
+}

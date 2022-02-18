@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { merge, uniq } from 'lodash';
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { useApolloErrorHandler, useConfig, useEcoverse } from '../../hooks';
+import { useApolloErrorHandler, useConfig, useHub } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionUpdatedDocument,
@@ -57,7 +57,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const { pathname } = useResolvedPath('.');
   const { isFeatureEnabled } = useConfig();
   const handleError = useApolloErrorHandler();
-  const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
+  const { hubNameId, loading: loadingHub } = useHub();
   const { communityId, communicationId, loading: loadingCommunity } = useCommunityContext();
 
   const {
@@ -66,11 +66,11 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     subscribeToMore,
   } = useCommunityDiscussionListQuery({
     variables: {
-      ecoverseId: ecoverseNameId,
+      hubId: hubNameId,
       communityId: communityId || '',
     },
     errorPolicy: 'all',
-    skip: !ecoverseNameId || !communityId,
+    skip: !hubNameId || !communityId,
     onError: handleError,
   });
 
@@ -87,7 +87,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
       variables: { communicationID: communicationId },
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       updateQuery: (prev, { subscriptionData }) => {
-        const discussions = prev?.ecoverse?.community?.communication?.discussions;
+        const discussions = prev?.hub?.community?.communication?.discussions;
 
         if (!discussions) {
           return prev;
@@ -105,7 +105,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
         }
 
         return merge({}, prev, {
-          ecoverse: {
+          hub: {
             community: {
               communication: {
                 discussions: updatedDiscussions,
@@ -118,7 +118,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     return () => unSubscribe && unSubscribe();
   }, [isFeatureEnabled, subscribeToMore, communicationId]);
 
-  const discussions = data?.ecoverse.community?.communication?.discussions || [];
+  const discussions = data?.hub.community?.communication?.discussions || [];
 
   const senders = uniq([...discussions.map(d => d.createdBy)]);
   const { getAuthor, loading: loadingAuthors } = useAuthorsDetails(senders);
@@ -140,7 +140,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const permissions: Permissions = useMemo(
     () => ({
       canCreateDiscussion:
-        data?.ecoverse.community?.communication?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create) ||
+        data?.hub.community?.communication?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Create) ||
         false,
     }),
     [data]
@@ -152,7 +152,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
         communityId: communityId,
-        ecoverseId: ecoverseNameId,
+        hubId: hubNameId,
       }),
     ],
   });
@@ -163,7 +163,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
         communityId: communityId,
-        ecoverseId: ecoverseNameId,
+        hubId: hubNameId,
       }),
     ],
   });
@@ -198,7 +198,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
         handleCreateDiscussion,
         permissions,
         handleDeleteDiscussion,
-        loading: loadingEcoverse || loadingCommunity || loadingDiscussionList || loadingAuthors,
+        loading: loadingHub || loadingCommunity || loadingDiscussionList || loadingAuthors,
         posting: creatingDiscussion,
         deleting: deletingDiscussion,
       }}

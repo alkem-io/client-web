@@ -5,7 +5,7 @@ import { useResolvedPath } from 'react-router-dom';
 import { WithCommunity } from '../../../components/Admin/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../containers/community-updates/CommunityUpdatesContainer';
 import { AvatarsProvider } from '../../../context/AvatarsProvider';
-import { useEcoverse, useUpdateNavigation } from '../../../hooks';
+import { useHub, useUpdateNavigation } from '../../../hooks';
 import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';
 import { PageProps } from '../../common';
 
@@ -16,15 +16,15 @@ export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, com
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'updates', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const { ecoverseId } = useEcoverse();
+  const { hubId } = useHub();
 
-  if (!communityId || !ecoverseId) {
+  if (!communityId || !hubId) {
     return <Container maxWidth="xl">No community</Container>;
   }
 
   return (
     <Container maxWidth="xl">
-      <CommunityUpdatesContainer entities={{ ecoverseId, communityId }}>
+      <CommunityUpdatesContainer entities={{ hubId, communityId }}>
         {({ messages, senders }, actions, loading) => (
           <AvatarsProvider users={senders}>
             {populatedUsers => (

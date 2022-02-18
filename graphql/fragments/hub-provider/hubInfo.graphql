@@ -1,0 +1,31 @@
+fragment HubInfo on Hub {
+  ...HubDetails
+  authorization {
+    id
+    myPrivileges
+  }
+  community {
+    id
+    displayName
+    members {
+      id
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  context {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  template {
+    aspectTemplates {
+      description
+      type
+    }
+  }
+}

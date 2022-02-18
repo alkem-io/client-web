@@ -5,10 +5,10 @@ import PopUp, { PopUpViewmodel } from '../../search/PopUp';
 import PopUpProps from '../../dialogs/PopUpProps';
 import { getVisualAvatar } from '../../../../utils/visuals.utils';
 
-const ChallengePopUp: FC<PopUpProps<ChallengeSearchResultFragment>> = ({ onHide, entity: challenge, ecoverse }) => {
+const ChallengePopUp: FC<PopUpProps<ChallengeSearchResultFragment>> = ({ onHide, entity: challenge, hub }) => {
   const url = useMemo(
-    () => (ecoverse && challenge ? buildChallengeUrl(ecoverse.nameID, challenge.nameID) : ''),
-    [ecoverse, challenge]
+    () => (hub && challenge ? buildChallengeUrl(hub.nameID, challenge.nameID) : ''),
+    [hub, challenge]
   );
 
   const model = useMemo(
@@ -18,10 +18,10 @@ const ChallengePopUp: FC<PopUpProps<ChallengeSearchResultFragment>> = ({ onHide,
         displayName: challenge?.displayName,
         tagline: challenge?.context?.tagline,
         tags: challenge?.tagset?.tags,
-        ecoverseName: ecoverse?.displayName,
+        hubName: hub?.displayName,
         url: url,
       } as PopUpViewmodel),
-    [ecoverse, challenge]
+    [hub, challenge]
   );
 
   return <PopUp onHide={() => onHide && onHide()} model={model} />;

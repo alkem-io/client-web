@@ -2,12 +2,12 @@ import React, { FC, useMemo } from 'react';
 import { ContributionCardV2Details } from '../../components/composite/common/cards';
 import {
   useChallengeContributionDetailsQuery,
-  useEcoverseContributionDetailsQuery,
+  useHubContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
 } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
-import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface EntityDetailsContainerEntities {
@@ -26,17 +26,17 @@ export interface EntityDetailsContainerProps
 }
 
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
-  const { ecoverseId, challengeId, opportunityId } = entities;
-  const { data: ecoverseData, loading: ecoverseLoading } = useEcoverseContributionDetailsQuery({
+  const { hubId, challengeId, opportunityId } = entities;
+  const { data: hubData, loading: hubLoading } = useHubContributionDetailsQuery({
     variables: {
-      ecoverseId: ecoverseId,
+      hubId: hubId,
     },
     skip: Boolean(challengeId) || Boolean(opportunityId),
   });
 
   const { data: challengeData, loading: challengeLoading } = useChallengeContributionDetailsQuery({
     variables: {
-      ecoverseId: ecoverseId,
+      hubId: hubId,
       challengeId: challengeId || '',
     },
     skip: !challengeId || Boolean(opportunityId),
@@ -44,51 +44,51 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
 
   const { data: opportunityData, loading: opportunityLoading } = useOpportunityContributionDetailsQuery({
     variables: {
-      ecoverseId: ecoverseId,
+      hubId: hubId,
       opportunityId: opportunityId || '',
     },
     skip: !opportunityId,
   });
 
   const details = useMemo(() => {
-    if (ecoverseData)
+    if (hubData)
       return {
-        headerText: ecoverseData.ecoverse.displayName,
+        headerText: hubData.hub.displayName,
         type: 'hub',
-        mediaUrl: getVisualBanner(ecoverseData.ecoverse.context?.visuals),
-        tags: ecoverseData.ecoverse.tagset?.tags || [],
-        url: buildEcoverseUrl(ecoverseData.ecoverse.nameID),
+        mediaUrl: getVisualBanner(hubData.hub.context?.visuals),
+        tags: hubData.hub.tagset?.tags || [],
+        url: buildHubUrl(hubData.hub.nameID),
       } as ContributionCardV2Details;
 
     if (challengeData)
       return {
-        headerText: challengeData.ecoverse.challenge.displayName,
+        headerText: challengeData.hub.challenge.displayName,
         type: 'challenge',
-        mediaUrl: getVisualBanner(challengeData.ecoverse.challenge.context?.visuals),
-        tags: challengeData.ecoverse.challenge.tagset?.tags || [],
-        url: buildChallengeUrl(challengeData.ecoverse.nameID, challengeData.ecoverse.challenge.nameID),
+        mediaUrl: getVisualBanner(challengeData.hub.challenge.context?.visuals),
+        tags: challengeData.hub.challenge.tagset?.tags || [],
+        url: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
       } as ContributionCardV2Details;
 
     if (opportunityData)
       return {
-        headerText: opportunityData.ecoverse.opportunity.displayName,
+        headerText: opportunityData.hub.opportunity.displayName,
         type: 'opportunity',
-        mediaUrl: getVisualBanner(opportunityData.ecoverse.opportunity.context?.visuals),
-        tags: opportunityData.ecoverse.opportunity.tagset?.tags || [],
+        mediaUrl: getVisualBanner(opportunityData.hub.opportunity.context?.visuals),
+        tags: opportunityData.hub.opportunity.tagset?.tags || [],
         url: buildOpportunityUrl(
-          opportunityData.ecoverse.nameID,
-          opportunityData.ecoverse.opportunity.parentNameID || '',
-          opportunityData.ecoverse.opportunity.nameID
+          opportunityData.hub.nameID,
+          opportunityData.hub.opportunity.parentNameID || '',
+          opportunityData.hub.opportunity.nameID
         ),
       } as ContributionCardV2Details;
-  }, [ecoverseData, challengeData, opportunityData]);
+  }, [hubData, challengeData, opportunityData]);
 
   return (
     <>
       {children(
         { details },
         {
-          loading: ecoverseLoading || challengeLoading || opportunityLoading,
+          loading: hubLoading || challengeLoading || opportunityLoading,
         },
         {}
       )}

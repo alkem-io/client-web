@@ -1,5 +1,5 @@
-query groupMembers($ecoverseId: UUID_NAMEID!, $groupId: UUID!) {
-  ecoverse(ID: $ecoverseId) {
+query groupMembers($hubId: UUID_NAMEID!, $groupId: UUID!) {
+  hub(ID: $hubId) {
     id
     group(ID: $groupId) {
       id

@@ -1,7 +1,7 @@
 import { ValueType } from '../filterFn';
-import { Challenge, Ecoverse, Opportunity } from '../../../../models/graphql-schema';
+import { Challenge, Hub, Opportunity } from '../../../../models/graphql-schema';
 
-type EntityType = Ecoverse | Challenge | Opportunity;
+type EntityType = Hub | Challenge | Opportunity;
 
 export const entityValueGetter = ({ id, displayName, tagset, context: c }: EntityType): ValueType => ({
   id,

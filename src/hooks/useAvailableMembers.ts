@@ -6,7 +6,7 @@ import {
   useUsersWithCredentialsSimpleListQuery,
 } from './generated/graphql';
 import { Member } from '../models/User';
-import { useEcoverse } from './useEcoverse';
+import { useHub } from './useHub';
 
 export interface AvailableMembersResults {
   available: UserDisplayNameFragment[];
@@ -21,7 +21,7 @@ export interface AvailableMembersResults {
  * @param credential The credential type of the authorization group
  * @param resourceId The resource
  * @param parentCommunityId The parent entity community id (if applicable)
- * are the members of its parent ecoverse or challenge
+ * are the members of its parent hub or challenge
  */
 export const useAvailableMembers = (
   credential: AuthorizationCredential,
@@ -29,7 +29,7 @@ export const useAvailableMembers = (
   parentCommunityId?: string,
   parentMembers?: Member[] // Just because the organizations doesn't have community.
 ): AvailableMembersResults => {
-  const { ecoverseId, loading: loadingEcoverse } = useEcoverse();
+  const { hubId, loading: loadingHub } = useHub();
   const {
     data: _allUsers,
     loading: loadingUsers,
@@ -64,18 +64,18 @@ export const useAvailableMembers = (
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
     variables: {
-      ecoverseId: ecoverseId,
+      hubId: hubId,
       communityId: parentCommunityId || '',
     },
-    skip: Boolean(!ecoverseId || !parentCommunityId || parentMembers),
+    skip: Boolean(!hubId || !parentCommunityId || parentMembers),
   });
 
   const current = _current?.usersWithAuthorizationCredential || [];
 
-  const isLoading = loadingUsers || loadingMembers || loadingParentCommunityMembers || loadingEcoverse;
+  const isLoading = loadingUsers || loadingMembers || loadingParentCommunityMembers || loadingHub;
   const hasError = !!(membersError || userError || parentCommunityMembersError);
   const entityMembers = (parentMembers ||
-    _parentCommunityMembers?.ecoverse.community?.members ||
+    _parentCommunityMembers?.hub.community?.members ||
     allUsers ||
     []) as UserDisplayNameFragment[];
 

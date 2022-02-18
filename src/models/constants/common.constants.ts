@@ -5,7 +5,7 @@ export const LOGO_REFERENCE_NAME = 'logo';
 export const LOCAL_STORAGE_RETURN_URL_KEY = 'returnUrl';
 
 export enum CommunityType {
-  ECOVERSE = 'hub',
+  HUB = 'hub',
   CHALLENGE = 'challenge',
   OPPORTUNITY = 'opportunity',
 }

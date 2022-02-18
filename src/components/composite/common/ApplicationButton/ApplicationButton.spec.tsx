@@ -182,7 +182,7 @@ describe.skip('ApplicationButton component', () => {
       parentApplyUrl: '/parent/apply',
       parentApplicationState: 'new',
       challengeName: 'test challenge',
-      ecoverseName: 'test ecoverse',
+      hubName: 'test hub',
     };
 
     render(

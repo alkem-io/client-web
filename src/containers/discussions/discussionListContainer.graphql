@@ -21,8 +21,8 @@ fragment DiscussionDetailsNoAuth on Discussion {
   commentsCount
 }
 
-query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
-  ecoverse(ID: $ecoverseId) {
+query communityDiscussion($hubId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
+  hub(ID: $hubId) {
     id
     community(ID: $communityId) {
       id
@@ -42,8 +42,8 @@ query communityDiscussion($ecoverseId: UUID_NAMEID!, $communityId: UUID!, $discu
   }
 }
 
-query communityDiscussionList($ecoverseId: UUID_NAMEID!, $communityId: UUID!) {
-  ecoverse(ID: $ecoverseId) {
+query communityDiscussionList($hubId: UUID_NAMEID!, $communityId: UUID!) {
+  hub(ID: $hubId) {
     id
     community(ID: $communityId) {
       id

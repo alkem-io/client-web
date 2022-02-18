@@ -12,11 +12,11 @@ export interface ChallengeCardProps {
   challenge: Pick<Challenge, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
     context?: { tagline?: string; visuals?: VisualUriFragment[] };
   };
-  ecoverseNameId: string;
+  hubNameId: string;
   loading?: boolean;
 }
 
-const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, ecoverseNameId, loading = false }) => {
+const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading = false }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
 
@@ -38,7 +38,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, ecoverseNameId, load
         mediaUrl: bannerNarrow,
         tags: challenge.tagset?.tags || [],
         tagsFor: 'challenge',
-        url: buildChallengeUrl(ecoverseNameId, challenge.nameID),
+        url: buildChallengeUrl(hubNameId, challenge.nameID),
       }}
       isMember={isMember(challenge.id)}
       loading={loading}

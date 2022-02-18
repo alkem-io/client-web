@@ -32,7 +32,7 @@ type ChallengeRoutesKey = keyof typeof routes;
 export interface ChallengeTabsProps {
   communityReadAccess: boolean;
   viewerCanUpdate: boolean;
-  ecoverseNameId: string;
+  hubNameId: string;
   challengeNameId: string;
 }
 
@@ -40,7 +40,7 @@ export interface ChallengeTabsProps {
 const ChallengeTabsNew: FC<ChallengeTabsProps> = ({
   communityReadAccess,
   viewerCanUpdate,
-  ecoverseNameId,
+  hubNameId,
   challengeNameId,
 }) => {
   const { t } = useTranslation();
@@ -114,7 +114,7 @@ const ChallengeTabsNew: FC<ChallengeTabsProps> = ({
             label={t('common.settings')}
             value={tabValue('settings')}
             /* can be provided with the tab config */
-            to={buildAdminChallengeUrl(ecoverseNameId, challengeNameId)}
+            to={buildAdminChallengeUrl(hubNameId, challengeNameId)}
           />
         )}
       </Tabs>

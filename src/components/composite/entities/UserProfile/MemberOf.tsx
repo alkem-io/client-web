@@ -24,11 +24,11 @@ export type MemberOfProps = {
   groups: string[];
   challenges: string[];
   opportunities: string[];
-  ecoverses: string[];
+  hubs: string[];
   organizations: string[];
 };
 
-const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecoverses, organizations }) => {
+const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, hubs, organizations }) => {
   const { t } = useTranslation();
   const styles = useMemberOfStyles();
 
@@ -49,7 +49,7 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, ecover
   return (
     <Box marginY={1}>
       <Card primaryTextProps={{ text: t('pages.user-profile.member-of') }}>
-        {membershipItems(ecoverses, t('common.hub'))}
+        {membershipItems(hubs, t('common.hub'))}
         {membershipItems(groups, t('common.group'))}
         {membershipItems(challenges, t('common.challenge'))}
         {membershipItems(opportunities, t('common.opportunity'))}
