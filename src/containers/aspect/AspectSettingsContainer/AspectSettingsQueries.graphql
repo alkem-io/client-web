@@ -1,5 +1,5 @@
 query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     context {
       id
@@ -11,7 +11,7 @@ query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
 }
 
 query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
@@ -26,7 +26,7 @@ query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_N
 }
 
 query OpportunityAspectSettings($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id

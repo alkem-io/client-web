@@ -10,8 +10,8 @@ import CommunityGroupListPage from '../../pages/Admin/Community/CommunityListPag
 import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
 import { nameOfUrl } from '../url-params';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
-import { EcoverseApplicationRoute } from './ecoverse/EcoverseApplicationRoute';
-import { EcoverseGroupRoute } from './ecoverse/EcoverseGroupRoute';
+import { HubApplicationRoute } from './hub/HubApplicationRoute';
+import { HubGroupRoute } from './hub/HubGroupRoute';
 
 type AccessedFrom = 'hub' | 'challenge' | 'opportunity';
 
@@ -51,7 +51,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         path={'applications/*'}
         element={
           <>
-            {accessedFrom === 'hub' && <EcoverseApplicationRoute paths={paths} />}
+            {accessedFrom === 'hub' && <HubApplicationRoute paths={paths} />}
             {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
           </>
         }
@@ -75,7 +75,7 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
       <Route path={'new'} element={<CreateCommunityGroup paths={currentPaths} communityId={communityId} />} />
       <Route
         path={`:${nameOfUrl.groupId}/*`}
-        element={<EcoverseGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />}
+        element={<HubGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />}
       />
       <Route path="*" element={<Error404 />} />
     </Routes>

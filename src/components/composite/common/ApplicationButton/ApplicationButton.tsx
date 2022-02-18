@@ -14,7 +14,7 @@ export interface ApplicationButtonProps {
   parentApplicationState?: string;
   applyUrl?: string;
   parentApplyUrl?: string;
-  ecoverseName?: string;
+  hubName?: string;
   challengeName?: string;
   loading?: boolean;
 }
@@ -27,7 +27,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
   parentApplyUrl,
   isMember = false,
   isNotParentMember = false,
-  ecoverseName,
+  hubName,
   challengeName,
   loading = false,
 }) => {
@@ -90,7 +90,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
         <DialogContent dividers>
           <Trans
             i18nKey={`components.application-button.${dialogVariant}.body` as const}
-            values={{ ecoverseName, challengeName }}
+            values={{ hubName, challengeName }}
             components={{
               strong: <strong />,
             }}

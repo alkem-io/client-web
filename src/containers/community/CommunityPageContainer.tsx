@@ -29,7 +29,7 @@ export interface CommunityContainerState {
 
 export interface CommunityContainerProps
   extends ContainerProps<CommunityContainerEntities, CommunityContainerActions, CommunityContainerState> {
-  ecoverseId?: Scalars['UUID_NAMEID'];
+  hubId?: Scalars['UUID_NAMEID'];
   challengeId?: Scalars['UUID_NAMEID'];
   communityId?: Scalars['UUID'];
   opportunityId?: Scalars['UUID'];
@@ -37,13 +37,13 @@ export interface CommunityContainerProps
 
 const CommunityPageContainer: FC<CommunityContainerProps> = ({
   children,
-  ecoverseId = '',
+  hubId = '',
   communityId = '',
   challengeId = '',
   opportunityId = '',
 }) => {
   const handleError = useApolloErrorHandler();
-  const isMissingData = !ecoverseId || !communityId;
+  const isMissingData = !hubId || !communityId;
   // use this
   // if you have an opportunity
   // if you have a challenge
@@ -55,7 +55,7 @@ const CommunityPageContainer: FC<CommunityContainerProps> = ({
     onError: handleError,
     errorPolicy: 'all',
     variables: {
-      ecoverseId,
+      hubId,
       communityId,
     },
     skip: (!opportunityId && !challengeId) || isMissingData,
@@ -71,7 +71,7 @@ const CommunityPageContainer: FC<CommunityContainerProps> = ({
     onError: handleError,
     errorPolicy: 'all',
     variables: {
-      ecoverseId,
+      hubId,
       communityId,
     },
     skip: !!opportunityId || !!challengeId || isMissingData,
@@ -87,10 +87,10 @@ const CommunityPageContainer: FC<CommunityContainerProps> = ({
     onError: handleError,
     errorPolicy: 'all',
     variables: {
-      ecoverseId,
+      hubId,
       challengeId,
     },
-    skip: !!opportunityId || !challengeId || !ecoverseId,
+    skip: !!opportunityId || !challengeId || !hubId,
   });
 
   const loading = communityLoading;
@@ -101,10 +101,10 @@ const CommunityPageContainer: FC<CommunityContainerProps> = ({
   const organizationsError = communityWithHostError || leadingOrganizationError;
   const membersError = communityError || communityWithHostError;
 
-  const communityName = (communityData || communityWithHostData)?.ecoverse?.community?.displayName;
-  const hostOrganization = communityWithHostData?.ecoverse?.host;
-  const leadingOrganizations = leadingOrganizationData?.ecoverse?.challenge?.leadOrganizations ?? [];
-  const members = (communityData || communityWithHostData)?.ecoverse?.community?.members ?? [];
+  const communityName = (communityData || communityWithHostData)?.hub?.community?.displayName;
+  const hostOrganization = communityWithHostData?.hub?.host;
+  const leadingOrganizations = leadingOrganizationData?.hub?.challenge?.leadOrganizations ?? [];
+  const members = (communityData || communityWithHostData)?.hub?.community?.members ?? [];
 
   return (
     <>

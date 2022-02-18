@@ -11,7 +11,7 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge, useEcoverse } from '../../hooks';
+import { useChallenge, useHub } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
@@ -30,8 +30,8 @@ interface ChallengeDashboardViewProps {
 export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
 
-  const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
-  const { ecoverseNameId, ecoverseId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
+  const { hub, loading: loadingHubContext } = useHub();
+  const { hubNameId, hubId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
   const { challenge, activity, isMember, discussions, permissions } = entities;
 
@@ -49,7 +49,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
 
-  if (loading || loadingEcoverseContext || loadingChallengeContext) return <Loading />;
+  if (loading || loadingHubContext || loadingChallengeContext) return <Loading />;
 
   return (
     <>
@@ -61,9 +61,9 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             primaryAction={
               <ApplicationButtonContainer
                 entities={{
-                  ecoverseId,
-                  ecoverseNameId,
-                  ecoverseName: ecoverse?.displayName || '',
+                  hubId,
+                  hubNameId,
+                  hubName: hub?.displayName || '',
                   challengeId,
                   challengeName: challenge?.displayName || '',
                   challengeNameId,
@@ -85,7 +85,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           {communityReadAccess && (
             <>
               <SectionSpacer />
-              <DashboardUpdatesSection entities={{ ecoverseId: ecoverseNameId, communityId }} />
+              <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
               <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
             </>
@@ -106,7 +106,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             <CardLayoutContainer>
               {opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => (
                 <CardLayoutItem key={i} flexBasis={'50%'}>
-                  <OpportunityCard opportunity={x} ecoverseNameId={ecoverseNameId} challengeNameId={challengeNameId} />
+                  <OpportunityCard opportunity={x} hubNameId={hubNameId} challengeNameId={challengeNameId} />
                 </CardLayoutItem>
               ))}
             </CardLayoutContainer>

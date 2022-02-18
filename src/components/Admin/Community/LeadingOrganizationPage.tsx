@@ -42,17 +42,17 @@ const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) =>
 
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
 
   const { data: _challenge } = useChallengeNameQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
+    variables: { hubId: hubNameId, challengeId: challengeNameId },
   });
-  const challengeId = _challenge?.ecoverse?.challenge.id || '';
+  const challengeId = _challenge?.hub?.challenge.id || '';
 
   const { data: _leadingOrganizations } = useChallengeLeadOrganizationsQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeID: challengeNameId },
+    variables: { hubId: hubNameId, challengeID: challengeNameId },
   });
-  const leadingOrganizations = (_leadingOrganizations?.ecoverse.challenge.leadOrganizations ||
+  const leadingOrganizations = (_leadingOrganizations?.hub.challenge.leadOrganizations ||
     []) as OrganizationDetailsFragment[];
   const organizations = (_leadingOrganizations?.organizations || []) as OrganizationDetailsFragment[];
 
@@ -63,7 +63,7 @@ const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) =>
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
     onError: handleError,
-    refetchQueries: [refetchChallengeLeadOrganizationsQuery({ ecoverseId: ecoverseNameId, challengeID: challengeId })],
+    refetchQueries: [refetchChallengeLeadOrganizationsQuery({ hubId: hubNameId, challengeID: challengeId })],
     awaitRefetchQueries: true,
   });
 

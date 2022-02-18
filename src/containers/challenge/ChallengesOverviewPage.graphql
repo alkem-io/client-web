@@ -1,8 +1,8 @@
 query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
   membershipUser(membershipData: $membershipData) {
-    ecoverses {
+    hubs {
       id
-      ...SimpleEcoverseResultEntry
+      ...SimpleHubResultEntry
       challenges {
         id
       }
@@ -10,8 +10,8 @@ query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
   }
 }
 
-fragment SimpleEcoverseResultEntry on MembershipUserResultEntryEcoverse {
-  ecoverseID
+fragment SimpleHubResultEntry on MembershipUserResultEntryHub {
+  hubID
   nameID
   displayName
 }

@@ -278,7 +278,7 @@ export const MessagesPage: FC<PageProps> = () => {
     <>
       <Section gutters={{ root: true, avatar: false, content: false }}>
         <Header text="Messages" tagText="coming soon" />
-        <SubHeader text="You'll be able to use the messaging system to chat with other members of this ecoverse" />
+        <SubHeader text="You'll be able to use the messaging system to chat with other members of this hub" />
       </Section>
       <Section details={<DummyChatList />} gutters={{ root: true, avatar: false, content: false }}>
         <DummyChat />

@@ -8,7 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import HelpButton from '../../../../../core/HelpButton';
 import { InputAdornment } from '@mui/material';
-import { useEcoverse } from '../../../../../../hooks';
+import { useHub } from '../../../../../../hooks';
 
 export interface AspectTypeStepProps {
   type?: string;
@@ -17,7 +17,7 @@ export interface AspectTypeStepProps {
 
 const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
   const { t } = useTranslation();
-  const { error, loading, template } = useEcoverse();
+  const { error, loading, template } = useHub();
 
   if (error) {
     return <Typography>{t('components.aspect-creation.type-step.error')}</Typography>;

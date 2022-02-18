@@ -12,8 +12,8 @@ interface ChallengeContextProps {
   challenge?: ChallengeInfoFragment;
   challengeId: string;
   challengeNameId: string;
-  ecoverseId: string;
-  ecoverseNameId: string;
+  hubId: string;
+  hubNameId: string;
   displayName: string;
   loading: boolean;
   permissions: ChallengePermissions;
@@ -23,8 +23,8 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   loading: true,
   challengeId: '',
   challengeNameId: '',
-  ecoverseId: '',
-  ecoverseNameId: '',
+  hubId: '',
+  hubNameId: '',
   displayName: '',
   permissions: {
     viewerCanUpdate: false,
@@ -35,14 +35,14 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
 interface ChallengeProviderProps {}
 
 const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
-  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
   const { data, loading } = useChallengeInfoQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
+    variables: { hubId: hubNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
-    skip: !ecoverseNameId || !challengeNameId,
+    skip: !hubNameId || !challengeNameId,
   });
-  const ecoverseId = data?.ecoverse?.id || '';
-  const challenge = data?.ecoverse?.challenge;
+  const hubId = data?.hub?.id || '';
+  const challenge = data?.hub?.challenge;
   const challengeId = challenge?.id || '';
   const displayName = challenge?.displayName || '';
 
@@ -60,8 +60,8 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
         challenge,
         challengeId,
         challengeNameId,
-        ecoverseId,
-        ecoverseNameId,
+        hubId,
+        hubNameId,
         permissions,
         displayName,
         loading,

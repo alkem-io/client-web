@@ -19,7 +19,7 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
 
   if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
   return (
-    // DiscussionsProvider provided at EcoversePage
+    // DiscussionsProvider provided at HubPage
     <Routes>
       <Route path={'/'}>
         <Route index element={<DiscussionListPage paths={currentPaths} />} />

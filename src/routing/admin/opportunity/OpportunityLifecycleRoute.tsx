@@ -10,16 +10,16 @@ interface Props extends PageProps {}
 const OpportunityLifecycleRoute: FC<Props> = ({ paths }) => {
   const handleError = useApolloErrorHandler();
 
-  const { ecoverseNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
 
   const { data, loading } = useOpportunityLifecycleQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
+    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
 
-  const lifecycle = data?.ecoverse.opportunity?.lifecycle;
-  const opportunityId = data?.ecoverse.opportunity?.id || '';
+  const lifecycle = data?.hub.opportunity?.lifecycle;
+  const opportunityId = data?.hub.opportunity?.id || '';
 
   const [updateOpportunityLifecycle] = useEventOnOpportunityMutation({
     onError: handleError,

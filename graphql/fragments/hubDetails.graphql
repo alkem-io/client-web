@@ -1,0 +1,22 @@
+fragment HubDetails on Hub {
+  id
+  nameID
+  displayName
+  tagset {
+    id
+    name
+    tags
+  }
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  host {
+    id
+    displayName
+    nameID
+  }
+  context {
+    ...ContextDetails
+  }
+}
