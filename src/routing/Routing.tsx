@@ -18,7 +18,7 @@ import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import UserRoute from './user/UserRoute';
-import { HubRouteNew } from './hub/HubRouteNew';
+import { HubRoute } from './hub/HubRoute';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ export const Routing: FC = () => {
           element={
             <HubProvider>
               <CommunityProvider>
-                <HubRouteNew paths={[{ value: '/', name: t('common.home'), real: true }]} />
+                <HubRoute paths={[{ value: '/', name: t('common.home'), real: true }]} />
               </CommunityProvider>
             </HubProvider>
           }

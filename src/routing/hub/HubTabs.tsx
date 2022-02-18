@@ -19,6 +19,7 @@ import { buildAdminHubUrl } from '../../utils/urlBuilders';
 
 const routes = {
   discussions: 'discussions',
+  discussion: 'discussions/:discussionId',
   community: 'community',
   dashboard: 'dashboard',
   challenges: 'challenges',
@@ -35,12 +36,16 @@ export interface HubTabsProps {
 }
 
 // todo unify in one tab config component
-const HubTabsNew: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }) => {
+const HubTabs: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }) => {
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
   const resolved = useResolvedPath('.');
   const matchPatterns = useMemo(
-    () => Object.values(routes).map(x => resolvePath(x, resolved.pathname)?.pathname),
+    () =>
+      Object.values(routes).map(x => {
+        const path = resolvePath(x, resolved.pathname);
+        return path?.pathname;
+      }),
     [routes, resolved, resolvePath]
   );
 
@@ -49,13 +54,17 @@ const HubTabsNew: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAcces
 
   const tabValue = useCallback(
     (route: HubRoutesType | string) => resolvePath(route, resolved.pathname)?.pathname,
-    [resolved]
+    [resolved, resolvePath]
   );
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
+    if (routeMatch?.params?.discussionId) {
+      return tabValue('discussions');
+    }
+
     return routeMatch?.pattern?.path ?? tabValue('dashboard');
-  }, [routeMatch, routes]);
+  }, [routeMatch, tabValue]);
 
   return (
     <>
@@ -116,4 +125,4 @@ const HubTabsNew: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAcces
   );
 };
 
-export default HubTabsNew;
+export default HubTabs;
