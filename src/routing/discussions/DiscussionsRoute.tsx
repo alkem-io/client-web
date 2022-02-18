@@ -8,6 +8,7 @@ import DiscussionListPage from '../../pages/Discussions/DiscussionListPage';
 import DiscussionPage from '../../pages/Discussions/DiscussionPage';
 import NewDiscussionPage from '../../pages/Discussions/NewDiscussionPage';
 import { nameOfUrl } from '../url-params';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 
 interface DiscussionsRouteProps extends PageProps {}
 
@@ -22,7 +23,14 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
     // DiscussionsProvider provided at HubPage
     <Routes>
       <Route path={'/'}>
-        <Route index element={<DiscussionListPage paths={currentPaths} />} />
+        <Route
+          index
+          element={
+            <DiscussionsProvider>
+              <DiscussionListPage paths={currentPaths} />
+            </DiscussionsProvider>
+          }
+        />
         <Route path={'new'} element={<NewDiscussionPage paths={currentPaths} />} />
         <Route
           path={`:${nameOfUrl.discussionId}`}

@@ -209,6 +209,12 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
 };
 
 const useDiscussionsContext = () => {
+  const context = useContext(DiscussionsContext);
+
+  if (!context) {
+    throw new Error('Discussion context not found');
+  }
+
   return useContext(DiscussionsContext);
 };
 

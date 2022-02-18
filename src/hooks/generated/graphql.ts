@@ -103,31 +103,6 @@ export const UserCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const ChallengeCardFragmentDoc = gql`
-  fragment ChallengeCard on Challenge {
-    id
-    displayName
-    nameID
-    activity {
-      id
-      name
-      value
-    }
-    context {
-      id
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    tagset {
-      id
-      name
-      tags
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const VisualFullFragmentDoc = gql`
   fragment VisualFull on Visual {
     id
@@ -148,6 +123,10 @@ export const ChallengeInfoFragmentDoc = gql`
     nameID
     community {
       id
+      authorization {
+        id
+        myPrivileges
+      }
     }
     authorization {
       id
@@ -1270,19 +1249,45 @@ export const DiscussionDetailsNoAuthFragmentDoc = gql`
     commentsCount
   }
 `;
-export const HubPageFragmentDoc = gql`
-  fragment HubPage on Hub {
+export const ChallengeCardFragmentDoc = gql`
+  fragment ChallengeCard on Challenge {
     id
-    nameID
     displayName
+    nameID
+    activity {
+      id
+      name
+      value
+    }
+    context {
+      id
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
     tagset {
       id
       name
       tags
     }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const HubPageFragmentDoc = gql`
+  fragment HubPage on Hub {
+    id
+    nameID
+    displayName
+    activity {
+      id
+      name
+      value
+    }
     authorization {
       id
       anonymousReadAccess
+      myPrivileges
     }
     host {
       id
@@ -1302,13 +1307,8 @@ export const HubPageFragmentDoc = gql`
         myPrivileges
       }
     }
-    authorization {
-      id
-      myPrivileges
-    }
     community {
       id
-      displayName
       members {
         id
       }
@@ -1317,24 +1317,17 @@ export const HubPageFragmentDoc = gql`
         myPrivileges
       }
     }
-    activity {
+    challenges(limit: 2, shuffle: true) {
+      ...ChallengeCard
+    }
+    tagset {
       id
       name
-      value
+      tags
     }
   }
   ${VisualUriFragmentDoc}
-`;
-export const ProjectInfoFragmentDoc = gql`
-  fragment ProjectInfo on Project {
-    id
-    nameID
-    displayName
-    description
-    lifecycle {
-      state
-    }
-  }
+  ${ChallengeCardFragmentDoc}
 `;
 export const OpportunityPageFragmentDoc = gql`
   fragment OpportunityPage on Opportunity {
@@ -12565,70 +12558,6 @@ export type HubPageLazyQueryHookResult = ReturnType<typeof useHubPageLazyQuery>;
 export type HubPageQueryResult = Apollo.QueryResult<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>;
 export function refetchHubPageQuery(variables: SchemaTypes.HubPageQueryVariables) {
   return { query: HubPageDocument, variables: variables };
-}
-export const HubPageProjectsDocument = gql`
-  query HubPageProjects($hubId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
-      id
-      challenges {
-        id
-        displayName
-        nameID
-        opportunities {
-          id
-          nameID
-          projects {
-            ...ProjectInfo
-          }
-        }
-      }
-    }
-  }
-  ${ProjectInfoFragmentDoc}
-`;
-
-/**
- * __useHubPageProjectsQuery__
- *
- * To run a query within a React component, call `useHubPageProjectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubPageProjectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubPageProjectsQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *   },
- * });
- */
-export function useHubPageProjectsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPageProjectsQuery, SchemaTypes.HubPageProjectsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubPageProjectsQuery, SchemaTypes.HubPageProjectsQueryVariables>(
-    HubPageProjectsDocument,
-    options
-  );
-}
-export function useHubPageProjectsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPageProjectsQuery, SchemaTypes.HubPageProjectsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubPageProjectsQuery, SchemaTypes.HubPageProjectsQueryVariables>(
-    HubPageProjectsDocument,
-    options
-  );
-}
-export type HubPageProjectsQueryHookResult = ReturnType<typeof useHubPageProjectsQuery>;
-export type HubPageProjectsLazyQueryHookResult = ReturnType<typeof useHubPageProjectsLazyQuery>;
-export type HubPageProjectsQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubPageProjectsQuery,
-  SchemaTypes.HubPageProjectsQueryVariables
->;
-export function refetchHubPageProjectsQuery(variables: SchemaTypes.HubPageProjectsQueryVariables) {
-  return { query: HubPageProjectsDocument, variables: variables };
 }
 export const AssignUserAsOpportunityAdminDocument = gql`
   mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
