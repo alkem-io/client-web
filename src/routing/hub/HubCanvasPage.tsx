@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { PageProps } from '../../pages';
-import EcoversePageContainer from '../../containers/hub/HubPageContainer';
+import HubPageContainer from '../../containers/hub/HubPageContainer';
 import HubCanvasManagementView from '../../views/Hub/HubCanvasManagementView';
 import { useUpdateNavigation } from '../../hooks';
 
@@ -11,7 +11,7 @@ const HubCanvasPage: FC<HubCanvasPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <EcoversePageContainer>
+    <HubPageContainer>
       {(e, s) => {
         if (!e.hub) {
           return <></>;
@@ -26,7 +26,7 @@ const HubCanvasPage: FC<HubCanvasPageProps> = ({ paths }) => {
           />
         );
       }}
-    </EcoversePageContainer>
+    </HubPageContainer>
   );
 };
 export default HubCanvasPage;
