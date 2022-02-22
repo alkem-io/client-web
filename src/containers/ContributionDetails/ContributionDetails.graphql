@@ -14,6 +14,9 @@ query ecoverseContributionDetails($ecoverseId: UUID_NAMEID!) {
         ...VisualUri
       }
     }
+    community {
+      id
+    }
   }
 }
 
@@ -35,6 +38,9 @@ query challengeContributionDetails($ecoverseId: UUID_NAMEID!, $challengeId: UUID
         visuals {
           ...VisualUri
         }
+      }
+      community {
+        id
       }
     }
   }
@@ -60,6 +66,9 @@ query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: 
         visuals {
           ...VisualUri
         }
+      }
+      community {
+        id
       }
     }
   }

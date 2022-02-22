@@ -11,6 +11,14 @@ fragment UserCard on User {
       type
       resourceID
     }
+    verifiedCredentials {
+      type
+      claim
+      issued
+      issuer
+      context
+      name
+    }
   }
   profile {
     id

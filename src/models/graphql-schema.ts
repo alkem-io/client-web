@@ -281,11 +281,21 @@ export enum AuthorizationPrivilege {
   UpdateCanvas = 'UPDATE_CANVAS',
 }
 
+export type BeginCredentialOfferOutput = {
+  __typename?: 'BeginCredentialOfferOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential offer. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and the credentials offered */
+  jwt: Scalars['String'];
+};
+
 export type BeginCredentialRequestOutput = {
   __typename?: 'BeginCredentialRequestOutput';
   /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
   expiresOn: Scalars['Float'];
-  /** The interaction id for this credential share request. */
+  /** The interaction id for this credential request. */
   interactionId: Scalars['String'];
   /** The token containing the information about issuer, callback endpoint and credential requirements */
   jwt: Scalars['String'];
@@ -808,6 +818,22 @@ export type Credential = {
   type: AuthorizationCredential;
 };
 
+export type CredentialMetadataOutput = {
+  __typename?: 'CredentialMetadataOutput';
+  /** A json description of what the claim contains and schema validation definition */
+  context: Scalars['String'];
+  /** The purpose of the credential */
+  description: Scalars['String'];
+  /** The display name of the credential */
+  name: Scalars['String'];
+  /** The schema that the credential will be validated against */
+  schema: Scalars['String'];
+  /** The credential types that are associated with this credential */
+  types: Array<Scalars['String']>;
+  /** System recognized unique type for the credential */
+  uniqueType: Scalars['String'];
+};
+
 export type DeleteActorGroupInput = {
   ID: Scalars['UUID'];
 };
@@ -1194,6 +1220,12 @@ export type Mutation = {
   authorizationPolicyResetOnOrganization: Organization;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
+  /** Generate Alkemio user credential offer */
+  beginAlkemioUserCredentialOfferInteraction: BeginCredentialOfferOutput;
+  /** Generate community member credential offer */
+  beginCommunityMemberCredentialOfferInteraction: BeginCredentialOfferOutput;
+  /** Generate credential share request */
+  beginCredentialRequestInteraction: BeginCredentialRequestOutput;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
@@ -1414,6 +1446,14 @@ export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
 
 export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
+};
+
+export type MutationBeginCommunityMemberCredentialOfferInteractionArgs = {
+  communityID: Scalars['String'];
+};
+
+export type MutationBeginCredentialRequestInteractionArgs = {
+  types: Array<Scalars['String']>;
 };
 
 export type MutationCreateActorArgs = {
@@ -1937,14 +1977,14 @@ export type Query = {
   adminCommunicationOrphanedUsage: CommunicationAdminOrphanedUsageResult;
   /** The authorization policy for the platform */
   authorization: Authorization;
-  /** Generate credential share request */
-  beginCredentialRequestInteraction: BeginCredentialRequestOutput;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** An ecoverse. If no ID is specified then the first Ecoverse is returned. */
   ecoverse: Ecoverse;
   /** The Ecoverses on this platform */
   ecoverses: Array<Ecoverse>;
+  /** Get supported credential metadata */
+  getSupportedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** The currently logged in user */
   me: User;
   /** Check if the currently logged in user has a User profile */
@@ -1975,10 +2015,6 @@ export type Query = {
 
 export type QueryAdminCommunicationMembershipArgs = {
   communicationData: CommunicationAdminMembershipInput;
-};
-
-export type QueryBeginCredentialRequestInteractionArgs = {
-  types: Array<Scalars['String']>;
 };
 
 export type QueryEcoverseArgs = {
@@ -2602,10 +2638,14 @@ export type VerifiedCredential = {
   __typename?: 'VerifiedCredential';
   /** JSON for the claim in the credential */
   claim: Scalars['JSON'];
+  /** JSON for the context in the credential */
+  context: Scalars['JSON'];
   /** The time at which the credential was issued */
   issued: Scalars['String'];
   /** The challenge issuing the VC */
   issuer: Scalars['String'];
+  /** The name of the VC */
+  name: Scalars['String'];
   /** The type of VC */
   type: Scalars['String'];
 };
@@ -2700,6 +2740,17 @@ export type UserCardFragment = {
         id: string;
         credentials?:
           | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          | undefined;
+        verifiedCredentials?:
+          | Array<{
+              __typename?: 'VerifiedCredential';
+              type: string;
+              claim: string;
+              issued: string;
+              issuer: string;
+              context: string;
+              name: string;
+            }>
           | undefined;
       }
     | undefined;
@@ -3437,6 +3488,17 @@ export type UserDetailsFragment = {
         credentials?:
           | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
           | undefined;
+        verifiedCredentials?:
+          | Array<{
+              __typename?: 'VerifiedCredential';
+              type: string;
+              claim: string;
+              issued: string;
+              issuer: string;
+              context: string;
+              name: string;
+            }>
+          | undefined;
       }
     | undefined;
   profile?:
@@ -3777,6 +3839,17 @@ export type CreateUserMutation = {
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
             | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                type: string;
+                claim: string;
+                issued: string;
+                issuer: string;
+                context: string;
+                name: string;
+              }>
+            | undefined;
         }
       | undefined;
     profile?:
@@ -3827,6 +3900,17 @@ export type CreateUserNewRegistrationMutation = {
           __typename?: 'Agent';
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
+            | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                type: string;
+                claim: string;
+                issued: string;
+                issuer: string;
+                context: string;
+                name: string;
+              }>
             | undefined;
         }
       | undefined;
@@ -4341,6 +4425,17 @@ export type UpdateUserMutation = {
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
             | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                type: string;
+                claim: string;
+                issued: string;
+                issuer: string;
+                context: string;
+                name: string;
+              }>
+            | undefined;
         }
       | undefined;
     profile?:
@@ -4753,6 +4848,17 @@ export type UserCardQuery = {
           id: string;
           credentials?:
             | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+            | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                type: string;
+                claim: string;
+                issued: string;
+                issuer: string;
+                context: string;
+                name: string;
+              }>
             | undefined;
         }
       | undefined;
@@ -5813,6 +5919,17 @@ export type MeQuery = {
           did?: string | undefined;
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
+            | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                type: string;
+                claim: string;
+                issued: string;
+                issuer: string;
+                context: string;
+                name: string;
+              }>
             | undefined;
         }
       | undefined;
@@ -6877,6 +6994,17 @@ export type UserQuery = {
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
             | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                type: string;
+                claim: string;
+                issued: string;
+                issuer: string;
+                context: string;
+                name: string;
+              }>
+            | undefined;
         }
       | undefined;
     profile?:
@@ -6980,6 +7108,17 @@ export type UserProfileQuery = {
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
             | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                type: string;
+                claim: string;
+                issued: string;
+                issuer: string;
+                context: string;
+                name: string;
+              }>
+            | undefined;
         }
       | undefined;
     profile?:
@@ -7067,6 +7206,17 @@ export type UsersQuery = {
           __typename?: 'Agent';
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
+            | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                type: string;
+                claim: string;
+                issued: string;
+                issuer: string;
+                context: string;
+                name: string;
+              }>
             | undefined;
         }
       | undefined;
@@ -7161,6 +7311,7 @@ export type EcoverseContributionDetailsQuery = {
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
+    community?: { __typename?: 'Community'; id: string } | undefined;
   };
 };
 
@@ -7188,6 +7339,7 @@ export type ChallengeContributionDetailsQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
+      community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
 };
@@ -7218,6 +7370,7 @@ export type OpportunityContributionDetailsQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
+      community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
 };
@@ -8467,6 +8620,17 @@ export type CommunityPageQuery = {
                             resourceID: string;
                           }>
                         | undefined;
+                      verifiedCredentials?:
+                        | Array<{
+                            __typename?: 'VerifiedCredential';
+                            type: string;
+                            claim: string;
+                            issued: string;
+                            issuer: string;
+                            context: string;
+                            name: string;
+                          }>
+                        | undefined;
                     }
                   | undefined;
                 profile?:
@@ -8535,6 +8699,17 @@ export type CommunityPageWithHostQuery = {
                             id: string;
                             type: AuthorizationCredential;
                             resourceID: string;
+                          }>
+                        | undefined;
+                      verifiedCredentials?:
+                        | Array<{
+                            __typename?: 'VerifiedCredential';
+                            type: string;
+                            claim: string;
+                            issued: string;
+                            issuer: string;
+                            context: string;
+                            name: string;
                           }>
                         | undefined;
                     }
@@ -9549,14 +9724,55 @@ export type OrganizationMembersQuery = {
   };
 };
 
-export type BeginCredentialRequestInteractionQueryVariables = Exact<{
+export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSupportedCredentialMetadataQuery = {
+  __typename?: 'Query';
+  getSupportedCredentialMetadata: Array<{
+    __typename?: 'CredentialMetadataOutput';
+    name: string;
+    description: string;
+    schema: string;
+    types: Array<string>;
+    uniqueType: string;
+    context: string;
+  }>;
+};
+
+export type BeginCredentialRequestInteractionMutationVariables = Exact<{
   types: Array<Scalars['String']> | Scalars['String'];
 }>;
 
-export type BeginCredentialRequestInteractionQuery = {
-  __typename?: 'Query';
+export type BeginCredentialRequestInteractionMutation = {
+  __typename?: 'Mutation';
   beginCredentialRequestInteraction: {
     __typename?: 'BeginCredentialRequestOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type BeginAlkemioUserCredentialOfferInteractionMutationVariables = Exact<{ [key: string]: never }>;
+
+export type BeginAlkemioUserCredentialOfferInteractionMutation = {
+  __typename?: 'Mutation';
+  beginAlkemioUserCredentialOfferInteraction: {
+    __typename?: 'BeginCredentialOfferOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type BeginCommunityMemberCredentialOfferInteractionMutationVariables = Exact<{
+  communityID: Scalars['String'];
+}>;
+
+export type BeginCommunityMemberCredentialOfferInteractionMutation = {
+  __typename?: 'Mutation';
+  beginCommunityMemberCredentialOfferInteraction: {
+    __typename?: 'BeginCredentialOfferOutput';
     interactionId: string;
     jwt: string;
     expiresOn: number;

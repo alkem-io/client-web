@@ -15,7 +15,7 @@ export const QRCode: FC<{ value?: string | null }> = ({ value }) => {
     loadCanvas();
   }, [value, container]);
 
-  return <div ref={container} />;
+  return <div ref={container} style={{ display: 'flex', justifyContent: 'center' }} />;
 };
 
 export default QRCode;

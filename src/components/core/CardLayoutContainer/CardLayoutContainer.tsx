@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Grid } from '@mui/material';
+import { Grid, GridProps } from '@mui/material';
 
 export const CardLayoutContainer: FC = ({ children }) => {
   return (
@@ -9,13 +9,13 @@ export const CardLayoutContainer: FC = ({ children }) => {
   );
 };
 
-interface CardLayoutItemProps {
+interface CardLayoutItemProps extends Pick<GridProps, 'maxWidth'> {
   flexBasis?: '25%' | '33%' | '50%';
 }
 
-export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = '25%' }) => {
+export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = '25%', maxWidth }) => {
   return (
-    <Grid item flexBasis={flexBasis}>
+    <Grid item flexBasis={flexBasis} maxWidth={maxWidth}>
       {children}
     </Grid>
   );

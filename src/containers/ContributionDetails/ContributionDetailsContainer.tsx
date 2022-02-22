@@ -58,6 +58,9 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         mediaUrl: getVisualBanner(ecoverseData.ecoverse.context?.visuals),
         tags: ecoverseData.ecoverse.tagset?.tags || [],
         url: buildEcoverseUrl(ecoverseData.ecoverse.nameID),
+        metadata: {
+          communityID: ecoverseData.ecoverse.community?.id,
+        },
       } as ContributionCardV2Details;
 
     if (challengeData)
@@ -67,6 +70,9 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         mediaUrl: getVisualBanner(challengeData.ecoverse.challenge.context?.visuals),
         tags: challengeData.ecoverse.challenge.tagset?.tags || [],
         url: buildChallengeUrl(challengeData.ecoverse.nameID, challengeData.ecoverse.challenge.nameID),
+        metadata: {
+          communityID: challengeData.ecoverse.challenge.community?.id,
+        },
       } as ContributionCardV2Details;
 
     if (opportunityData)
@@ -80,6 +86,9 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
           opportunityData.ecoverse.opportunity.parentNameID || '',
           opportunityData.ecoverse.opportunity.nameID
         ),
+        metadata: {
+          communityID: opportunityData.ecoverse.opportunity.community?.id,
+        },
       } as ContributionCardV2Details;
   }, [ecoverseData, challengeData, opportunityData]);
 
