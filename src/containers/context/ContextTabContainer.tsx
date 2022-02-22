@@ -76,10 +76,10 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
     skip: !loadAspectsAndReferences || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubContext = hubData?.ecoverse?.context;
-  const hugTagset = hubData?.ecoverse?.tagset;
-  const hubAspects = hubExtra?.ecoverse?.context?.aspects;
-  const hubReferences = hubExtra?.ecoverse?.context?.references;
+  const hubContext = hubData?.hub?.context;
+  const hugTagset = hubData?.hub?.tagset;
+  const hubAspects = hubExtra?.hub?.context?.aspects;
+  const hubReferences = hubExtra?.hub?.context?.references;
   const hubContextPrivileges = hubContext && (hubContext?.authorization?.myPrivileges ?? []);
   const canReadHubContext = hubContextPrivileges && hubContextPrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateAspectOnHub =
@@ -103,11 +103,11 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
     skip: !loadAspectsAndReferences || !challengeNameId,
     onError: handleError,
   });
-  const challengeContext = challengeData?.ecoverse?.challenge?.context;
-  const challengeTagset = challengeData?.ecoverse?.challenge?.tagset;
-  const challengeLifecycle = challengeData?.ecoverse?.challenge?.lifecycle;
-  const challengeAspects = challengeExtra?.ecoverse?.challenge?.context?.aspects;
-  const challengeReferences = challengeExtra?.ecoverse?.challenge?.context?.references;
+  const challengeContext = challengeData?.hub?.challenge?.context;
+  const challengeTagset = challengeData?.hub?.challenge?.tagset;
+  const challengeLifecycle = challengeData?.hub?.challenge?.lifecycle;
+  const challengeAspects = challengeExtra?.hub?.challenge?.context?.aspects;
+  const challengeReferences = challengeExtra?.hub?.challenge?.context?.references;
   const challengeContextPrivileges = challengeContext && (challengeContext?.authorization?.myPrivileges ?? []);
   const canReadChallengeContext =
     challengeContextPrivileges && challengeContextPrivileges.includes(AuthorizationPrivilege.Read);
@@ -132,11 +132,11 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
     skip: !loadAspectsAndReferences || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityContext = opportunityData?.ecoverse?.opportunity?.context;
-  const opportunityTagset = opportunityData?.ecoverse?.opportunity?.tagset;
-  const opportunityLifecycle = opportunityData?.ecoverse?.opportunity?.lifecycle;
-  const opportunityAspects = opportunityExtra?.ecoverse?.opportunity?.context?.aspects;
-  const opportunityReferences = opportunityExtra?.ecoverse?.opportunity?.context?.references;
+  const opportunityContext = opportunityData?.hub?.opportunity?.context;
+  const opportunityTagset = opportunityData?.hub?.opportunity?.tagset;
+  const opportunityLifecycle = opportunityData?.hub?.opportunity?.lifecycle;
+  const opportunityAspects = opportunityExtra?.hub?.opportunity?.context?.aspects;
+  const opportunityReferences = opportunityExtra?.hub?.opportunity?.context?.references;
   const opportunityContextPrivileges = opportunityContext && (opportunityContext?.authorization?.myPrivileges ?? []);
   const canReadOpportunityContext =
     opportunityContextPrivileges && opportunityContextPrivileges.includes(AuthorizationPrivilege.Read);

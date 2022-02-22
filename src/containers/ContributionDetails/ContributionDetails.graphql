@@ -1,5 +1,5 @@
-query ecoverseContributionDetails($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query hubContributionDetails($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     nameID
     displayName
@@ -20,8 +20,8 @@ query ecoverseContributionDetails($ecoverseId: UUID_NAMEID!) {
   }
 }
 
-query challengeContributionDetails($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query challengeContributionDetails($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     nameID
     challenge(ID: $challengeId) {
@@ -46,8 +46,8 @@ query challengeContributionDetails($ecoverseId: UUID_NAMEID!, $challengeId: UUID
   }
 }
 
-query opportunityContributionDetails($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query opportunityContributionDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     nameID
     opportunity(ID: $opportunityId) {

@@ -7,6 +7,6 @@ export interface Tagset {
 export interface Reference {
   id?: string;
   name: string;
-  uri: string;
+  uri?: string;
   description?: string;
 }

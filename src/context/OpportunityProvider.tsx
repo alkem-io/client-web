@@ -15,8 +15,8 @@ interface OpportunityContextProps {
   opportunityNameId: string;
   challengeId: string;
   challengeNameId: string;
-  ecoverseId: string;
-  ecoverseNameId: string;
+  hubId: string;
+  hubNameId: string;
   displayName: string;
   loading: boolean;
   permissions: OpportunityViewerPermissions;
@@ -28,8 +28,8 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   opportunityNameId: '',
   challengeId: '',
   challengeNameId: '',
-  ecoverseId: '',
-  ecoverseNameId: '',
+  hubId: '',
+  hubNameId: '',
   displayName: '',
   permissions: {
     viewerCanUpdate: false,
@@ -40,13 +40,13 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
 interface OpportunityProviderProps {}
 
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
-  const { ecoverseNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const { data, loading } = useOpportunityInfoQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
+    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
   });
-  const ecoverseId = data?.ecoverse?.id || '';
-  const opportunity = data?.ecoverse?.opportunity;
+  const hubId = data?.hub?.id || '';
+  const opportunity = data?.hub?.opportunity;
   const opportunityId = opportunity?.id || '';
   // using the challenge provider
   const { challengeId } = useChallenge();
@@ -64,8 +64,8 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     <OpportunityContext.Provider
       value={{
         opportunity,
-        ecoverseId,
-        ecoverseNameId,
+        hubId,
+        hubNameId,
         challengeId,
         challengeNameId,
         opportunityId,

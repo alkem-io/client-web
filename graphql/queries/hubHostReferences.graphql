@@ -1,0 +1,14 @@
+query hubHostReferences($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    host {
+      profile {
+        id
+        references {
+          name
+          uri
+        }
+      }
+    }
+  }
+}

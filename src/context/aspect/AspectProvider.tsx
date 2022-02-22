@@ -6,26 +6,30 @@ import {
   useOpportunityAspectProviderQuery,
 } from '../../hooks/generated/graphql';
 import { ApolloError } from '@apollo/client';
+import { AuthorizationPrivilege } from '../../models/graphql-schema';
+
+interface AspectPermissions {
+  canUpdate: boolean;
+}
 
 interface AspectContextProps {
   id?: string;
   nameId?: string;
   displayName?: string;
+  permissions: AspectPermissions;
   loading: boolean;
   error?: ApolloError;
 }
 
 const AspectContext = React.createContext<AspectContextProps>({
   loading: false,
+  permissions: {
+    canUpdate: true,
+  },
 });
 
 const AspectProvider: FC = ({ children }) => {
-  const {
-    ecoverseNameId: hubNameId = '',
-    challengeNameId = '',
-    opportunityNameId = '',
-    aspectNameId = '',
-  } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '', opportunityNameId = '', aspectNameId = '' } = useUrlParams();
 
   const handleError = useApolloErrorHandler();
   const isAspectDefined = aspectNameId && hubNameId;
@@ -39,7 +43,7 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = hubData?.ecoverse?.context?.aspects?.[0];
+  const hubAspect = hubData?.hub?.context?.aspects?.[0];
 
   const {
     data: challengeData,
@@ -50,7 +54,7 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = challengeData?.ecoverse?.challenge?.context?.aspects?.[0];
+  const challengeAspect = challengeData?.hub?.challenge?.context?.aspects?.[0];
 
   const {
     data: opportunityData,
@@ -61,11 +65,16 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = opportunityData?.ecoverse?.opportunity?.context?.aspects?.[0];
+  const opportunityAspect = opportunityData?.hub?.opportunity?.context?.aspects?.[0];
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
+
+  const myPrivileges = aspect?.authorization?.myPrivileges;
+  const permissions: AspectPermissions = {
+    canUpdate: myPrivileges?.includes(AuthorizationPrivilege.Update) ?? true,
+  };
 
   return (
     <AspectContext.Provider
@@ -75,6 +84,7 @@ const AspectProvider: FC = ({ children }) => {
         id: aspect?.id,
         nameId: aspect?.nameID,
         displayName: aspect?.displayName,
+        permissions,
       }}
     >
       {children}

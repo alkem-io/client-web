@@ -1,7 +1,7 @@
 import { sortBy, uniq, merge } from 'lodash';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { useApolloErrorHandler, useConfig, useEcoverse, useUrlParams } from '../../hooks';
+import { useApolloErrorHandler, useConfig, useHub, useUrlParams } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionMessageReceivedDocument,
@@ -14,10 +14,11 @@ import {
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
 import {
-  CommunicationDiscussionMessageReceivedSubscription,
   Discussion as DiscussionGraphql,
   Message,
   MessageDetailsFragment,
+  CommunicationDiscussionMessageReceivedSubscription,
+  SubscriptionCommunicationDiscussionMessageReceivedArgs,
 } from '../../models/graphql-schema';
 import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
 import { useCommunityContext } from '../CommunityProvider';
@@ -49,12 +50,12 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const { discussionId = '' } = useUrlParams();
-  const { ecoverseNameId, loading: loadingEcoverse } = useEcoverse();
+  const { hubNameId, loading: loadingHub } = useHub();
   const { communityId, loading: loadingCommunity } = useCommunityContext();
 
   const { data, loading, subscribeToMore } = useCommunityDiscussionQuery({
-    variables: { ecoverseId: ecoverseNameId, communityId: communityId, discussionId: discussionId },
-    skip: !communityId || !ecoverseNameId || !discussionId,
+    variables: { hubId: hubNameId, communityId: communityId, discussionId: discussionId },
+    skip: !communityId || !hubNameId || !discussionId,
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -62,15 +63,19 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   });
 
   useEffect(() => {
-    if (!isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+    if (!isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !discussionId) {
       return;
     }
 
-    const unSubscribe = subscribeToMore<CommunicationDiscussionMessageReceivedSubscription>({
+    const unSubscribe = subscribeToMore<
+      CommunicationDiscussionMessageReceivedSubscription,
+      SubscriptionCommunicationDiscussionMessageReceivedArgs
+    >({
       document: CommunicationDiscussionMessageReceivedDocument,
+      variables: { discussionID: discussionId },
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       updateQuery: (prev, { subscriptionData }) => {
-        const discussion = prev?.ecoverse?.community?.communication?.discussion;
+        const discussion = prev?.hub?.community?.communication?.discussion;
 
         if (!discussion) {
           return prev;
@@ -80,7 +85,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
         const newMessage = subscriptionData.data.communicationDiscussionMessageReceived.message;
 
         return merge({}, prev, {
-          ecoverse: {
+          hub: {
             community: {
               communication: {
                 discussion: {
@@ -93,9 +98,9 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
       },
     });
     return () => unSubscribe && unSubscribe();
-  }, [isFeatureEnabled, subscribeToMore]);
+  }, [isFeatureEnabled, subscribeToMore, discussionId]);
 
-  const discussionData = data?.ecoverse.community?.communication?.discussion;
+  const discussionData = data?.hub.community?.communication?.discussion;
 
   const senders = useMemo(() => {
     if (!discussionData) return [];
@@ -168,7 +173,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
     refetchQueries: [
       refetchCommunityDiscussionListQuery({
         communityId: communityId,
-        ecoverseId: ecoverseNameId,
+        hubId: hubNameId,
       }),
     ],
   });
@@ -190,7 +195,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
         discussion,
         handlePostComment,
         handleDeleteComment,
-        loading: loadingEcoverse || loadingCommunity || loadingAuthors || loading,
+        loading: loadingHub || loadingCommunity || loadingAuthors || loading,
         posting: postingComment,
         deleting: deletingComment,
       }}

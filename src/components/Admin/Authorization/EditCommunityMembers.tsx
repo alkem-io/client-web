@@ -17,7 +17,7 @@ interface EditCredentialsProps extends WithCommunity {
 }
 
 export type CommunityCredentials =
-  | AuthorizationCredential.EcoverseMember
+  | AuthorizationCredential.HubMember
   | AuthorizationCredential.OpportunityMember
   | AuthorizationCredential.OrganizationMember
   | AuthorizationCredential.ChallengeMember;

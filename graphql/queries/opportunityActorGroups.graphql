@@ -1,5 +1,5 @@
-query opportunityActorGroups($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query opportunityActorGroups($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     opportunity(ID: $opportunityId) {
       id

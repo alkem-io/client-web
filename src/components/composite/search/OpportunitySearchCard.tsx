@@ -3,7 +3,7 @@ import { OpportunitySearchResultFragment } from '../../../models/graphql-schema'
 import { ActivityItem } from '../common/ActivityPanel/Activities';
 import getActivityCount from '../../../utils/get-activity-count';
 import OpportunityPopUp from '../entities/Opportunity/OpportunityPopUp';
-import { useEcoverseNameQuery } from '../../../hooks/generated/graphql';
+import { useHubNameQuery } from '../../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
 import EntitySearchCardProps from './EntitySearchCardProps';
 import { getVisualBannerNarrow } from '../../../utils/visuals.utils';
@@ -13,12 +13,12 @@ const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResu
   entity: opportunity,
 }) => {
   // todo: can we avoid this query?
-  const { data } = useEcoverseNameQuery({
+  const { data } = useHubNameQuery({
     variables: {
-      ecoverseId: opportunity?.challenge?.ecoverseID || '',
+      hubId: opportunity?.challenge?.hubID || '',
     },
   });
-  const ecoverse = data?.ecoverse;
+  const hub = data?.hub;
   const tag = opportunity.challenge?.displayName || '';
 
   const backgroundImg = getVisualBannerNarrow(opportunity.context?.visuals) ?? '';
@@ -37,7 +37,7 @@ const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResu
       activity={activity}
       backgroundImg={backgroundImg}
       tag={tag}
-      dialog={<OpportunityPopUp entity={opportunity} ecoverse={ecoverse} />}
+      dialog={<OpportunityPopUp entity={opportunity} hub={hub} />}
     />
   );
 };

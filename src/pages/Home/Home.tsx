@@ -5,7 +5,7 @@ import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUpdateNavigation } from '../../hooks';
 import AlkemioActivitySection from './AlkemioActivitySection';
 import ContributorsSection from './ContributorsSection';
-import EcoversesSection from './EcoversesSection';
+import HubsSection from './HubsSection';
 import GettingStartedSection from './GettingStartedSection';
 import ShowInterestSection from './ShowInterestSection';
 import WelcomeSection from './WelcomeSection';
@@ -49,7 +49,7 @@ export const HomePage = () => {
           />
         </Grid>
         <Grid item xs={12}>
-          <EcoversesSection />
+          <HubsSection />
         </Grid>
         <Grid item xs={12}>
           <ContributorsSection />

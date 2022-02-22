@@ -2,11 +2,11 @@ import React, { FC, useEffect } from 'react';
 import CookieConsent from 'react-cookie-consent';
 import { Outlet } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useTheme } from '@mui/material';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import { useConfig, useNavigation, useUserContext, useUserScope } from '../../../../hooks';
+import { useNavigation, useUserContext, useUserScope } from '../../../../hooks';
 import { ScrollButton } from '../../../core';
 import Breadcrumbs from '../../../core/Breadcrumbs';
-import Loading from '../../../core/Loading/Loading';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
@@ -16,9 +16,9 @@ import useCommunityUpdatesNotifier from '../../../../hooks/subscription/Communit
 const App: FC = () => {
   const { t } = useTranslation();
   const { paths } = useNavigation();
+  const theme = useTheme();
 
-  const { user, loading } = useUserContext();
-  const { loading: configLoading } = useConfig();
+  const { user } = useUserContext();
 
   useUserScope(user);
   useCommunityUpdatesNotifier();
@@ -39,10 +39,6 @@ const App: FC = () => {
     }
   }, [services]);
 
-  if (loading || configLoading) {
-    return <Loading text={'Loading Application ...'} />;
-  }
-
   return (
     <div id="app">
       <div id="main">
@@ -57,10 +53,20 @@ const App: FC = () => {
       </div>
       <CookieConsent
         location="bottom"
-        buttonText="Ok"
+        buttonText={t('buttons.ok')}
         cookieName="cookie_consent"
-        style={{ background: '#09bcd4', zIndex: 1500 }}
-        buttonStyle={{ width: '150px', background: '#2d546a', color: '#FFFFFF', fontSize: '16px' }}
+        style={{
+          background: theme.palette.primary.main,
+          fontFamily: theme.typography.fontFamily,
+          zIndex: 1500,
+        }}
+        buttonStyle={{
+          width: '150px',
+          color: '#FFFFFF',
+          background: theme.palette.primary.dark,
+          borderRadius: theme.shape.borderRadius,
+          ...theme.typography.button,
+        }}
         expires={150}
       >
         {t('cookie.consent')}

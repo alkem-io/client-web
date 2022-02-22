@@ -4,10 +4,10 @@ import { useChallenge } from '../../hooks';
 import CommunityPage from './CommunityPage';
 
 const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
-  const { challenge, ecoverseId } = useChallenge();
+  const { challenge, hubId } = useChallenge();
   const communityId = challenge?.community?.id;
   const challengeId = challenge?.id;
 
-  return <CommunityPage paths={paths} ecoverseId={ecoverseId} communityId={communityId} challengeId={challengeId} />;
+  return <CommunityPage paths={paths} hubId={hubId} communityId={communityId} challengeId={challengeId} />;
 };
 export default ChallengeCommunityPage;

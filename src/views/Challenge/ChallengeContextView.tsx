@@ -83,9 +83,9 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
           <SectionSpacer />
           <ApplicationButtonContainer
             entities={{
-              ecoverseId: hubId,
-              ecoverseNameId: hubNameId,
-              ecoverseName: hubDisplayName,
+              hubId: hubId,
+              hubNameId: hubNameId,
+              hubName: hubDisplayName,
               challengeId,
               challengeName: challengeDisplayName,
               challengeNameId,

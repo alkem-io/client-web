@@ -13,8 +13,8 @@ const AlkemioActivitySection: FC<{
 
   const { activity, loading } = useServerMetadata();
 
-  const [ecoverseCount, challengeCount, opportunityCount, userCount, orgCount] = [
-    getActivityCount(activity, 'ecoverses') || 0,
+  const [hubCount, challengeCount, opportunityCount, userCount, orgCount] = [
+    getActivityCount(activity, 'hubs') || 0,
     getActivityCount(activity, 'challenges') || 0,
     getActivityCount(activity, 'opportunities') || 0,
     getActivityCount(activity, 'users') || 0,
@@ -22,7 +22,7 @@ const AlkemioActivitySection: FC<{
   ];
   const summary: ActivityItem[] = useMemo(
     () => [
-      { name: t('pages.activity.hubs'), isLoading: loading, digit: ecoverseCount, color: 'primary' },
+      { name: t('pages.activity.hubs'), isLoading: loading, digit: hubCount, color: 'primary' },
       {
         name: t('pages.activity.challenges'),
         isLoading: loading,

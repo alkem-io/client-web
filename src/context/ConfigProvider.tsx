@@ -1,10 +1,11 @@
 import React, { FC, useEffect, useState } from 'react';
+import { ApolloError } from '@apollo/client';
 import { ConfigurationDocument } from '../hooks/generated/graphql';
 import { ConfigurationQuery } from '../models/graphql-schema';
 import queryRequest from '../utils/query-request/query-request';
 import { Configuration } from '../models/configuration';
 import { logger } from '../services/logging/winston/logger';
-import { ApolloError } from '@apollo/client';
+import { Loading } from '../components/core/Loading/Loading';
 
 export interface ConfigContextProps {
   config?: Configuration;
@@ -41,13 +42,9 @@ const ConfigProvider: FC<ConfigProviderProps> = ({ children, url }) => {
       .finally(() => setLoading(false));
   }, [url]);
 
-  // if (loading) {
-  //   return <Loading text={'Loading configuration ...'} />;
-  // }
-
-  // if (error) {
-  //   return <ErrorPage error={error} />;
-  // }
+  if (loading) {
+    return <Loading text={'Loading configuration ...'} />;
+  }
 
   return (
     <ConfigContext.Provider

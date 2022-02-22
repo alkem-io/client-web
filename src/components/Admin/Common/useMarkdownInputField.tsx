@@ -11,11 +11,21 @@ interface MarkdownInputFieldProps {
   rows?: number;
   disabled?: boolean;
   required?: boolean;
+  loading?: boolean;
 }
 
 export const useMarkdownInputField = () => {
   const styles = useProfileStyles();
-  return ({ name, label, tooltipLabel, placeholder, rows, disabled = false, required }: MarkdownInputFieldProps) => (
+  return ({
+    name,
+    label,
+    tooltipLabel,
+    placeholder,
+    rows,
+    disabled = false,
+    required,
+    loading,
+  }: MarkdownInputFieldProps) => (
     <Grid item xs={12}>
       <FormikMarkdownField
         name={name}
@@ -26,6 +36,7 @@ export const useMarkdownInputField = () => {
         disabled={disabled}
         rows={rows}
         required={required}
+        loading={loading}
       />
     </Grid>
   );

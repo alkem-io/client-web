@@ -1,7 +1,8 @@
 import { Box, Button, Container, Hidden } from '@mui/material';
 import { useSelector } from '@xstate/react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import Skeleton from '@mui/material/Skeleton';
 import { useGlobalState, useUserContext } from '../../../../hooks';
 import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
@@ -12,7 +13,7 @@ import TopSearchComponent from './TopSearchComponent';
 
 const SearchBar = () => {
   const { t } = useTranslation();
-  const { user, verified, isAuthenticated } = useUserContext();
+  const { user, verified, isAuthenticated, loading } = useUserContext();
   const breakpoint = useCurrentBreakpoint();
 
   const {
@@ -23,23 +24,9 @@ const SearchBar = () => {
     return state.matches('visible');
   });
 
-  return (
-    <Container maxWidth={breakpoint}>
-      <Box paddingY={2} display="flex" alignItems="center" justifyContent="space-between">
-        <LogoComponent />
-        <Hidden mdDown>
-          <Box
-            flexGrow={1}
-            justifyContent="center"
-            paddingX={2}
-            sx={{
-              minWidth: 256,
-              maxWidth: 512,
-            }}
-          >
-            <TopSearchComponent />
-          </Box>
-        </Hidden>
+  const userProfileComponent = useMemo(
+    () => (
+      <>
         {!isAuthenticated && (
           <Box>
             <Button
@@ -69,10 +56,29 @@ const SearchBar = () => {
           </Box>
         )}
         {isUserSegmentVisible && user && <UserSegment userMetadata={user} emailVerified={verified} />}
-        {/* <Grid container alignItems="center">
-          <Grid item xs={3}></Grid>
-          <Grid container item xs={4} justifyContent="end"></Grid>
-        </Grid> */}
+      </>
+    ),
+    [isAuthenticated, isUserSegmentVisible, user, verified]
+  );
+
+  return (
+    <Container maxWidth={breakpoint}>
+      <Box paddingY={2} display="flex" alignItems="center" justifyContent="space-between">
+        <LogoComponent />
+        <Hidden mdDown>
+          <Box
+            flexGrow={1}
+            justifyContent="center"
+            paddingX={2}
+            sx={{
+              minWidth: 256,
+              maxWidth: 512,
+            }}
+          >
+            <TopSearchComponent />
+          </Box>
+        </Hidden>
+        <Box width={155}>{loading ? <Skeleton /> : <>{userProfileComponent}</>}</Box>
       </Box>
     </Container>
   );

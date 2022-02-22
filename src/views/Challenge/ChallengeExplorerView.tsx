@@ -6,7 +6,7 @@ import { Accordion } from '../../components/composite/common/Accordion/Accordion
 import SearchComponent from '../../components/composite/common/SearchComponent/SearchComponent';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { ChallengeCardContainer } from '../../containers/challenge/ChallengeCardContainer';
-import EcoverseChallengesContainer from '../../containers/ecoverse/EcoverseChallengesContainer';
+import HubChallengesContainer from '../../containers/hub/HubChallengesContainer';
 import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
@@ -21,15 +21,15 @@ import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardL
 // ];
 
 export interface HubOverview {
-  ecoverseID: string;
+  hubID: string;
   nameID: string;
   displayName: string;
 }
 
 interface ChallengeOverview {
   id: string;
-  ecoverseId: string;
-  ecoverseNameId: string;
+  hubId: string;
+  hubNameId: string;
 }
 
 export interface ChallengeExplorerViewProps {
@@ -56,12 +56,12 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
               ariaKey="my-challenges"
             >
               <CardLayoutContainer>
-                {myChallenges.map(({ ecoverseNameId, id: challengeId }, i) => (
-                  <ChallengeCardContainer key={i} ecoverseNameId={ecoverseNameId} challengeNameId={challengeId}>
+                {myChallenges.map(({ hubNameId, id: challengeId }, i) => (
+                  <ChallengeCardContainer key={i} hubNameId={hubNameId} challengeNameId={challengeId}>
                     {({ challenge }) =>
                       challenge && (
                         <CardLayoutItem>
-                          <ChallengeCard challenge={challenge} ecoverseNameId={ecoverseNameId} />
+                          <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
                         </CardLayoutItem>
                       )
                     }
@@ -111,10 +111,10 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
         </Grid>
         {hubs &&
           hubs.map(({ displayName: hubName, nameID: hubNameId }, i) => (
-            <EcoverseChallengesContainer
+            <HubChallengesContainer
               key={i}
               entities={{
-                ecoverseNameId: hubNameId,
+                hubNameId: hubNameId,
               }}
             >
               {cEntities => (
@@ -131,14 +131,14 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
                     <CardLayoutContainer>
                       {cEntities.challenges.map((challenge, i) => (
                         <CardLayoutItem key={i}>
-                          <ChallengeCard challenge={challenge} ecoverseNameId={hubNameId} />
+                          <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
                         </CardLayoutItem>
                       ))}
                     </CardLayoutContainer>
                   </Accordion>
                 </Grid>
               )}
-            </EcoverseChallengesContainer>
+            </HubChallengesContainer>
           ))}
       </Grid>
     </Box>

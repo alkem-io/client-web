@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useApolloErrorHandler, useEcoverse } from '../../../../hooks';
+import { useApolloErrorHandler, useHub } from '../../../../hooks';
 import {
   refetchOpportunityAspectsOldQuery,
   useOpportunityTemplateQuery,
@@ -49,7 +49,7 @@ const useContextEditStyles = makeStyles(theme => ({
 
 const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, contextId, existingAspectNames }) => {
   const { t } = useTranslation();
-  const { ecoverseNameId } = useEcoverse();
+  const { hubNameId } = useHub();
   const styles = useContextEditStyles();
   const handleError = useApolloErrorHandler();
   const { data: config } = useOpportunityTemplateQuery();
@@ -75,7 +75,7 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, contextI
   const [updateAspect] = useUpdateAspectMutation({
     onCompleted: () => onHide(),
     onError: handleError,
-    refetchQueries: [refetchOpportunityAspectsOldQuery({ ecoverseId: ecoverseNameId, opportunityId })],
+    refetchQueries: [refetchOpportunityAspectsOldQuery({ hubId: hubNameId, opportunityId })],
     awaitRefetchQueries: true,
   });
 

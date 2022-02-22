@@ -1,0 +1,24 @@
+fragment HubDetailsProvider on Hub {
+  id
+  nameID
+  displayName
+  authorization {
+    id
+    anonymousReadAccess
+  }
+  activity {
+    name
+    value
+  }
+  community {
+    id
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+  context {
+    ...ContextDetailsProvider
+  }
+}

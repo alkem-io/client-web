@@ -7,6 +7,7 @@ import EntityContributionCard from '../ContributionCard/EntityContributionCard';
 import { styled } from '@mui/material';
 import remToPx from '../../../../../utils/remToPx/remToPx';
 import { buildAspectUrl } from '../../../../../utils/urlBuilders';
+import Markdown from '../../../../core/Markdown';
 
 const DEFAULT_LINE_HEIGHT = 1.5;
 const DEFAULT_FONT_SIZE = '1rem';
@@ -25,6 +26,7 @@ const Root = styled('div')(({ theme }) => ({
       remToPx(theme.typography.htmlFontSize, theme?.typography?.body1.fontSize ?? DEFAULT_FONT_SIZE) *
       ((theme?.typography?.body1?.lineHeight ?? DEFAULT_LINE_HEIGHT) as number) *
       LINE_CLAMP,
+    marginBottom: theme.spacing(1),
   },
   [`& .${classes.textClamp}`]: {
     overflow: 'hidden',
@@ -62,7 +64,7 @@ const AspectCard: FC<AspectCardProps> = ({
         mediaUrl: bannerNarrow,
         labelText: type,
         tags: tagset?.tags ?? [],
-        url: hubNameId && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
+        url: hubNameId && nameID && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
       }}
       loading={loading}
     >
@@ -76,7 +78,9 @@ const AspectCard: FC<AspectCardProps> = ({
       ) : (
         <Root>
           <Box className={classes.clampContainer}>
-            <Typography className={classes.textClamp}>{description}</Typography>
+            <Typography component={Markdown} className={classes.textClamp}>
+              {description}
+            </Typography>
           </Box>
         </Root>
       )}

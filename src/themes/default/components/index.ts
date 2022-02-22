@@ -11,6 +11,7 @@ import MuiPaper from './MuiPaper';
 import MuiSkeleton from './MuiSkeleton';
 import MuiTab from './MuiTab';
 import MuiTabPanel from './MuiTabPanel';
+import MuiSelect from './MuiSelect';
 import type {} from '@mui/lab/themeAugmentation';
 
 const componentsOverride = (theme: Theme): Components => ({
@@ -26,6 +27,7 @@ const componentsOverride = (theme: Theme): Components => ({
   MuiTab: MuiTab(theme),
   MuiSkeleton: MuiSkeleton(theme),
   MuiTabPanel: MuiTabPanel(theme),
+  MuiSelect: MuiSelect(theme),
 });
 
 export default componentsOverride;

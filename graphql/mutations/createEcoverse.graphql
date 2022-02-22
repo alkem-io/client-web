@@ -1,5 +1,0 @@
-mutation createEcoverse($input: CreateEcoverseInput!) {
-  createEcoverse(ecoverseData: $input) {
-    ...EcoverseDetails
-  }
-}

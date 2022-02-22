@@ -1,0 +1,9 @@
+fragment AdminHub on Hub {
+  id
+  nameID
+  displayName
+  authorization {
+    id
+    myPrivileges
+  }
+}

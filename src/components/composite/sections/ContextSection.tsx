@@ -47,7 +47,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   background,
   displayName,
   tagline,
-  keywords,
+  keywords = [],
   vision,
   impact,
   who,
@@ -60,7 +60,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   const { t } = useTranslation();
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
-  const { ecoverseNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
 
   // todo: move handlers to the contextTabContainer
@@ -109,7 +109,6 @@ const ContextSection: FC<ContextSectionProps> = ({
       variables: {
         aspectData: {
           contextID: contextId,
-          nameID: aspect.nameID,
           displayName: aspect.displayName,
           description: aspect.description,
           type: aspect.type,
@@ -158,7 +157,7 @@ const ContextSection: FC<ContextSectionProps> = ({
             headerSpacing={'none'}
             options={{ collapsible: { maxHeight: 240 } }}
           >
-            <TagsComponent tags={keywords ?? []} count={10} />
+            <TagsComponent tags={keywords} count={10} />
             <SectionSpacer />
             <SectionHeader text={t('components.contextSegment.vision.title')} />
             <Typography component={Markdown} variant="body1" children={vision} />
@@ -227,7 +226,13 @@ const ContextSection: FC<ContextSectionProps> = ({
           <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
             <DashboardGenericSection
               headerText={`${t('common.aspects')} (${aspects ? aspects.length : 0})`}
-              primaryAction={canCreateAspects && <Button onClick={handleCreateDialogOpened}>Create</Button>}
+              primaryAction={
+                canCreateAspects && (
+                  <Button variant="contained" onClick={handleCreateDialogOpened}>
+                    {t('buttons.create')}
+                  </Button>
+                )
+              }
             >
               {aspectsLoading ? (
                 <CardLayoutContainer>
@@ -246,7 +251,7 @@ const ContextSection: FC<ContextSectionProps> = ({
                         <CardLayoutItem key={i}>
                           <AspectCard
                             aspect={x}
-                            hubNameId={ecoverseNameId}
+                            hubNameId={hubNameId}
                             challengeNameId={challengeNameId}
                             opportunityNameId={opportunityNameId}
                           />
@@ -258,7 +263,12 @@ const ContextSection: FC<ContextSectionProps> = ({
               )}
             </DashboardGenericSection>
           </MembershipBackdrop>
-          <AspectCreationDialog open={aspectDialogOpen} onCancel={handleCreateDialogClosed} onCreate={onCreate} />
+          <AspectCreationDialog
+            open={aspectDialogOpen}
+            onCancel={handleCreateDialogClosed}
+            onCreate={onCreate}
+            aspectNames={aspects.map(x => x.displayName)}
+          />
         </Grid>
       </Grid>
     </>

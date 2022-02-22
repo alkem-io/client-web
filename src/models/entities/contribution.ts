@@ -1,5 +1,5 @@
 export interface ContributionItem {
-  ecoverseId: string;
+  hubId: string;
   challengeId?: string;
   opportunityId?: string;
 }

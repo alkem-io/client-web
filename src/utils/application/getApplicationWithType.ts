@@ -10,22 +10,22 @@ const getApplicationWithType = (application: ApplicationResultEntry): Applicatio
 });
 export default getApplicationWithType;
 
-const getType = ({ ecoverseID, challengeID, opportunityID }: ApplicationResultEntry): ApplicationTypeEnum | never => {
-  if (ecoverseID && challengeID && opportunityID) {
+const getType = ({ hubID, challengeID, opportunityID }: ApplicationResultEntry): ApplicationTypeEnum | never => {
+  if (hubID && challengeID && opportunityID) {
     return ApplicationTypeEnum.opportunity;
   }
 
-  if (ecoverseID && opportunityID && !challengeID) {
-    throw new TypeError("'challengeID' parameter expected when 'ecoverseID' and 'opportunityID' are provided");
+  if (hubID && opportunityID && !challengeID) {
+    throw new TypeError("'challengeID' parameter expected when 'hubID' and 'opportunityID' are provided");
   }
 
-  if (ecoverseID && challengeID) {
+  if (hubID && challengeID) {
     return ApplicationTypeEnum.challenge;
   }
 
-  if (ecoverseID) {
-    return ApplicationTypeEnum.ecoverse;
+  if (hubID) {
+    return ApplicationTypeEnum.hub;
   }
 
-  throw new TypeError("'ecoverseID' parameter expected");
+  throw new TypeError("'hubID' parameter expected");
 };

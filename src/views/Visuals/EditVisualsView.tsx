@@ -19,7 +19,7 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
   return (
     <>
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
-        <VisualUpload visual={banner} width={300} height={100} />
+        <VisualUpload visual={banner} />
         <Box paddingLeft={2}>
           <Typography variant={'h4'}>{t('pages.visual-edit.banner.title')}</Typography>
           <Typography variant={'subtitle2'}>
@@ -29,7 +29,7 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
         </Box>
       </Box>
       <Box display={'flex'} flexDirection={'row'} paddingBottom={3}>
-        <VisualUpload visual={bannerNarrow} width={400} height={150} />
+        <VisualUpload visual={bannerNarrow} />
         <Box paddingLeft={2}>
           <Typography variant={'h4'}>{t('pages.visual-edit.banner-narrow.title')}</Typography>
           <Typography variant={'subtitle2'}>

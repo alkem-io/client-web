@@ -2,7 +2,7 @@ import React, { FC, useContext, useMemo } from 'react';
 import { useUrlParams } from '../hooks';
 import {
   useChallengeCommunityQuery,
-  useEcoverseCommunityQuery,
+  useHubCommunityQuery,
   useOpportunityCommunityQuery,
 } from '../hooks/generated/graphql';
 import { AuthorizationPrivilege } from '../models/graphql-schema';
@@ -26,33 +26,31 @@ const CommunityContext = React.createContext<CommunityContextProps>({
 interface CommunityProviderProps {}
 
 const CommunityProvider: FC<CommunityProviderProps> = ({ children }) => {
-  const { ecoverseNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
 
-  const { data: ecoverseData, loading: loadingEcoverse } = useEcoverseCommunityQuery({
-    variables: { ecoverseId: ecoverseNameId },
+  const { data: hubData, loading: loadingHub } = useHubCommunityQuery({
+    variables: { hubId: hubNameId },
     errorPolicy: 'all',
-    skip: !ecoverseNameId || Boolean(challengeNameId) || Boolean(opportunityNameId),
+    skip: !hubNameId || Boolean(challengeNameId) || Boolean(opportunityNameId),
   });
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCommunityQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
+    variables: { hubId: hubNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
-    skip: !ecoverseNameId || !challengeNameId || Boolean(opportunityNameId),
+    skip: !hubNameId || !challengeNameId || Boolean(opportunityNameId),
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCommunityQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
+    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
-    skip: !ecoverseNameId || !opportunityNameId,
+    skip: !hubNameId || !opportunityNameId,
   });
 
   const community = useMemo(() => {
     return (
-      ecoverseData?.ecoverse.community ||
-      challengeData?.ecoverse.challenge.community ||
-      opportunityData?.ecoverse.opportunity.community
+      hubData?.hub.community || challengeData?.hub.challenge.community || opportunityData?.hub.opportunity.community
     );
-  }, [ecoverseData, challengeData, opportunityData]);
+  }, [hubData, challengeData, opportunityData]);
 
   return (
     <CommunityContext.Provider
@@ -61,7 +59,7 @@ const CommunityProvider: FC<CommunityProviderProps> = ({ children }) => {
         communityName: community?.displayName || '',
         communicationId: community?.communication?.id || '',
         communicationPrivileges: community?.communication?.authorization?.myPrivileges || [],
-        loading: loadingEcoverse || loadingChallenge || loadingOpportunity,
+        loading: loadingHub || loadingChallenge || loadingOpportunity,
       }}
     >
       {children}

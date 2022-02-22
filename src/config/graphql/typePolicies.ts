@@ -33,6 +33,13 @@ export const typePolicies: TypedTypePolicies = {
       },
     },
   },
+  Aspect: {
+    fields: {
+      references: {
+        merge: false,
+      },
+    },
+  },
   Query: {
     fields: {},
   },

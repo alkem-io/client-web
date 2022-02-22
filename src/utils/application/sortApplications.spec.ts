@@ -15,17 +15,17 @@ const data = (): TestData[] =>
       name: '1',
       data: [
         { id: '1', type: ApplicationTypeEnum.challenge },
-        { id: '2', type: ApplicationTypeEnum.ecoverse },
+        { id: '2', type: ApplicationTypeEnum.hub },
         { id: '3', type: ApplicationTypeEnum.opportunity },
-        { id: '4', type: ApplicationTypeEnum.ecoverse },
+        { id: '4', type: ApplicationTypeEnum.hub },
       ],
       result: ['2', '4', '1', '3'],
     },
     {
       name: '2',
       data: [
-        { id: '1', type: ApplicationTypeEnum.ecoverse, state: APPLICATION_STATE_REJECTED },
-        { id: '2', type: ApplicationTypeEnum.ecoverse, state: APPLICATION_STATE_NEW },
+        { id: '1', type: ApplicationTypeEnum.hub, state: APPLICATION_STATE_REJECTED },
+        { id: '2', type: ApplicationTypeEnum.hub, state: APPLICATION_STATE_NEW },
       ],
       result: ['2', '1'],
     },
@@ -50,8 +50,8 @@ const data = (): TestData[] =>
       data: [
         { id: '1', type: ApplicationTypeEnum.challenge, state: APPLICATION_STATE_REJECTED },
         { id: '2', type: ApplicationTypeEnum.challenge, state: APPLICATION_STATE_NEW },
-        { id: '3', type: ApplicationTypeEnum.ecoverse, state: APPLICATION_STATE_NEW },
-        { id: '4', type: ApplicationTypeEnum.ecoverse, state: APPLICATION_STATE_REJECTED },
+        { id: '3', type: ApplicationTypeEnum.hub, state: APPLICATION_STATE_NEW },
+        { id: '4', type: ApplicationTypeEnum.hub, state: APPLICATION_STATE_REJECTED },
       ],
       result: ['3', '4', '2', '1'],
     },

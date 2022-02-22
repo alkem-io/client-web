@@ -10,14 +10,14 @@ const ownerRoles = [AuthorizationCredential.OrganizationOwner];
 
 const adminRoles = [
   AuthorizationCredential.OrganizationAdmin,
-  AuthorizationCredential.EcoverseAdmin,
+  AuthorizationCredential.HubAdmin,
   AuthorizationCredential.ChallengeAdmin,
   AuthorizationCredential.OpportunityAdmin,
 ];
 
 const memberRoles = [
   AuthorizationCredential.OrganizationMember,
-  AuthorizationCredential.EcoverseMember,
+  AuthorizationCredential.HubMember,
   AuthorizationCredential.ChallengeMember,
   AuthorizationCredential.OpportunityMember,
 ];
