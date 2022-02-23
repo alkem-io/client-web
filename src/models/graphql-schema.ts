@@ -3141,112 +3141,6 @@ export type NewChallengeFragment = { __typename?: 'Challenge'; id: string; nameI
 
 export type NewOpportunityFragment = { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
 
-export type OpportunityInfoFragment = {
-  __typename?: 'Opportunity';
-  id: string;
-  nameID: string;
-  displayName: string;
-  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        background?: string | undefined;
-        vision?: string | undefined;
-        impact?: string | undefined;
-        who?: string | undefined;
-        aspects?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
-        ecosystemModel?:
-          | {
-              __typename?: 'EcosystemModel';
-              id: string;
-              actorGroups?:
-                | Array<{
-                    __typename?: 'ActorGroup';
-                    id: string;
-                    name: string;
-                    description?: string | undefined;
-                    actors?:
-                      | Array<{
-                          __typename?: 'Actor';
-                          id: string;
-                          name: string;
-                          description?: string | undefined;
-                          value?: string | undefined;
-                          impact?: string | undefined;
-                        }>
-                      | undefined;
-                  }>
-                | undefined;
-            }
-          | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-          | undefined;
-        visuals?:
-          | Array<{
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }>
-          | undefined;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-      }
-    | undefined;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  projects?:
-    | Array<{
-        __typename?: 'Project';
-        id: string;
-        nameID: string;
-        displayName: string;
-        description?: string | undefined;
-        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      }>
-    | undefined;
-  relations?:
-    | Array<{
-        __typename?: 'Relation';
-        id: string;
-        type: string;
-        actorRole: string;
-        actorName: string;
-        actorType: string;
-        description: string;
-      }>
-    | undefined;
-  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-};
-
 export type OrganizationInfoFragment = {
   __typename?: 'Organization';
   id: string;
@@ -5506,11 +5400,11 @@ export type GroupMembersQuery = {
   };
 };
 
-export type HubInfoQueryVariables = Exact<{
+export type HubProviderQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubInfoQuery = {
+export type HubProviderQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';

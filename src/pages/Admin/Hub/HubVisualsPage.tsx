@@ -9,11 +9,12 @@ export interface HubVisualsPageProps extends PageProps {}
 const HubVisualsPage: FC<HubVisualsPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'visuals', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
-  const { hub } = useHub();
+  const { visuals } = useHub();
 
+  // todo: decouple from the hub provider
   return (
     <Box paddingY={2}>
-      <EditVisualsView visuals={hub?.context?.visuals} />
+      <EditVisualsView visuals={visuals} />
     </Box>
   );
 };

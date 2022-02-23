@@ -18,7 +18,7 @@ import ChallengeVisualsPage from '../../../pages/Admin/Challenge/ChallengeVisual
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
-  const { hub, loading: loadingHub } = useHub();
+  const { communityId: hubCommunityId, loading: loadingHub } = useHub();
   const { challenge, displayName, hubNameId, challengeId, challengeNameId, loading: loadingChallenge } = useChallenge();
   const loading = loadingHub || loadingChallenge;
 
@@ -59,7 +59,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
             <CommunityRoute
               paths={currentPaths}
               communityId={challenge?.community?.id}
-              parentCommunityId={hub?.community?.id}
+              parentCommunityId={hubCommunityId}
               credential={AuthorizationCredential.ChallengeMember}
               resourceId={challengeId}
               accessedFrom="challenge"

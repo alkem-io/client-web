@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useOpportunityProviderQuery } from '../../hooks/generated/graphql';
-import { AuthorizationPrivilege, OpportunityInfoFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, OpportunityProviderFragment } from '../../models/graphql-schema';
 import { useChallenge } from '../../hooks';
 import { useUrlParams } from '../../hooks';
 
@@ -10,8 +10,8 @@ interface OpportunityViewerPermissions {
   contextPrivileges: AuthorizationPrivilege[];
 }
 
-interface OpportunityContextProps {
-  opportunity?: OpportunityInfoFragment;
+export interface OpportunityContextProps {
+  opportunity?: OpportunityProviderFragment;
   opportunityId: string;
   opportunityNameId: string;
   challengeId: string;

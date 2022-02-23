@@ -463,93 +463,6 @@ export const NewOpportunityFragmentDoc = gql`
     displayName
   }
 `;
-export const ProjectDetailsFragmentDoc = gql`
-  fragment ProjectDetails on Project {
-    id
-    nameID
-    displayName
-    description
-    lifecycle {
-      id
-      state
-    }
-    tagset {
-      id
-      name
-      tags
-    }
-  }
-`;
-export const OpportunityInfoFragmentDoc = gql`
-  fragment OpportunityInfo on Opportunity {
-    id
-    nameID
-    displayName
-    lifecycle {
-      id
-      state
-    }
-    context {
-      ...ContextDetails
-      aspects {
-        id
-        displayName
-      }
-      ecosystemModel {
-        id
-        actorGroups {
-          id
-          name
-          description
-          actors {
-            id
-            name
-            description
-            value
-            impact
-          }
-        }
-      }
-    }
-    community {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-      members {
-        id
-        displayName
-      }
-    }
-    tagset {
-      id
-      name
-      tags
-    }
-    projects {
-      ...ProjectDetails
-    }
-    relations {
-      id
-      type
-      actorRole
-      actorName
-      actorType
-      description
-    }
-    activity {
-      name
-      value
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${ContextDetailsFragmentDoc}
-  ${ProjectDetailsFragmentDoc}
-`;
 export const OrganizationInfoFragmentDoc = gql`
   fragment OrganizationInfo on Organization {
     id
@@ -639,6 +552,23 @@ export const OrganizationProfileInfoFragmentDoc = gql`
     }
   }
   ${VisualFullFragmentDoc}
+`;
+export const ProjectDetailsFragmentDoc = gql`
+  fragment ProjectDetails on Project {
+    id
+    nameID
+    displayName
+    description
+    lifecycle {
+      id
+      state
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
 `;
 export const ReferenceDetailsFragmentDoc = gql`
   fragment ReferenceDetails on Reference {
@@ -6479,8 +6409,8 @@ export type GroupMembersQueryResult = Apollo.QueryResult<
 export function refetchGroupMembersQuery(variables: SchemaTypes.GroupMembersQueryVariables) {
   return { query: GroupMembersDocument, variables: variables };
 }
-export const HubInfoDocument = gql`
-  query hubInfo($hubId: UUID_NAMEID!) {
+export const HubProviderDocument = gql`
+  query hubProvider($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       ...HubInfo
     }
@@ -6489,38 +6419,47 @@ export const HubInfoDocument = gql`
 `;
 
 /**
- * __useHubInfoQuery__
+ * __useHubProviderQuery__
  *
- * To run a query within a React component, call `useHubInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHubProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHubInfoQuery({
+ * const { data, loading, error } = useHubProviderQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
  *   },
  * });
  */
-export function useHubInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>
+export function useHubProviderQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>(HubInfoDocument, options);
+  return Apollo.useQuery<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>(
+    HubProviderDocument,
+    options
+  );
 }
-export function useHubInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>
+export function useHubProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>(HubInfoDocument, options);
+  return Apollo.useLazyQuery<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>(
+    HubProviderDocument,
+    options
+  );
 }
-export type HubInfoQueryHookResult = ReturnType<typeof useHubInfoQuery>;
-export type HubInfoLazyQueryHookResult = ReturnType<typeof useHubInfoLazyQuery>;
-export type HubInfoQueryResult = Apollo.QueryResult<SchemaTypes.HubInfoQuery, SchemaTypes.HubInfoQueryVariables>;
-export function refetchHubInfoQuery(variables: SchemaTypes.HubInfoQueryVariables) {
-  return { query: HubInfoDocument, variables: variables };
+export type HubProviderQueryHookResult = ReturnType<typeof useHubProviderQuery>;
+export type HubProviderLazyQueryHookResult = ReturnType<typeof useHubProviderLazyQuery>;
+export type HubProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubProviderQuery,
+  SchemaTypes.HubProviderQueryVariables
+>;
+export function refetchHubProviderQuery(variables: SchemaTypes.HubProviderQueryVariables) {
+  return { query: HubProviderDocument, variables: variables };
 }
 export const HubActivityDocument = gql`
   query hubActivity($hubId: UUID_NAMEID!) {

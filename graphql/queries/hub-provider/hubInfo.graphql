@@ -1,5 +1,0 @@
-query hubInfo($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    ...HubInfo
-  }
-}
