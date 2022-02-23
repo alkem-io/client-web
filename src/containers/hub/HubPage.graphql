@@ -8,14 +8,15 @@ fragment HubPage on Hub {
   id
   nameID
   displayName
-  tagset {
+  activity {
     id
     name
-    tags
+    value
   }
   authorization {
     id
     anonymousReadAccess
+    myPrivileges
   }
   host {
     id
@@ -35,13 +36,8 @@ fragment HubPage on Hub {
       myPrivileges
     }
   }
-  authorization {
-    id
-    myPrivileges
-  }
   community {
     id
-    displayName
     members {
       id
     }
@@ -50,37 +46,12 @@ fragment HubPage on Hub {
       myPrivileges
     }
   }
-  activity {
+  challenges(limit: 2, shuffle: true) {
+    ...ChallengeCard
+  }
+  tagset {
     id
     name
-    value
-  }
-}
-
-fragment ProjectInfo on Project {
-  id
-  nameID
-  displayName
-  description
-  lifecycle {
-    state
-  }
-}
-
-query HubPageProjects($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    challenges {
-      id
-      displayName
-      nameID
-      opportunities {
-        id
-        nameID
-        projects {
-          ...ProjectInfo
-        }
-      }
-    }
+    tags
   }
 }

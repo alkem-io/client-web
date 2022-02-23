@@ -30,6 +30,10 @@ fragment OpportunityInfo on Opportunity {
   }
   community {
     id
+    authorization {
+      id
+      myPrivileges
+    }
     members {
       id
       displayName

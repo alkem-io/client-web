@@ -1003,6 +1003,11 @@ export type HubChallengeArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type HubChallengesArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type HubCommunityArgs = {
   ID?: InputMaybe<Scalars['UUID']>;
 };
@@ -2727,7 +2732,15 @@ export type ChallengeInfoFragment = {
   id: string;
   displayName: string;
   nameID: string;
-  community?: { __typename?: 'Community'; id: string } | undefined;
+  community?:
+    | {
+        __typename?: 'Community';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }
+    | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -3194,6 +3207,9 @@ export type OpportunityInfoFragment = {
     | {
         __typename?: 'Community';
         id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
         members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
       }
     | undefined;
@@ -4763,7 +4779,15 @@ export type ChallengeInfoQuery = {
       id: string;
       displayName: string;
       nameID: string;
-      community?: { __typename?: 'Community'; id: string } | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
       authorization?:
         | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
@@ -5986,6 +6010,9 @@ export type OpportunityInfoQuery = {
         | {
             __typename?: 'Community';
             id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
           }
         | undefined;
@@ -9379,7 +9406,7 @@ export type HubPageQuery = {
     id: string;
     nameID: string;
     displayName: string;
-    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     authorization?:
       | {
           __typename?: 'Authorization';
@@ -9410,14 +9437,31 @@ export type HubPageQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          displayName: string;
           members?: Array<{ __typename?: 'User'; id: string }> | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
         }
       | undefined;
-    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          displayName: string;
+          nameID: string;
+          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          context?:
+            | {
+                __typename?: 'Context';
+                id: string;
+                tagline?: string | undefined;
+                visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+              }
+            | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        }>
+      | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   };
 };
 
@@ -9426,7 +9470,7 @@ export type HubPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   authorization?:
     | {
         __typename?: 'Authorization';
@@ -9457,60 +9501,31 @@ export type HubPageFragment = {
     | {
         __typename?: 'Community';
         id: string;
-        displayName: string;
         members?: Array<{ __typename?: 'User'; id: string }> | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
       }
     | undefined;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-};
-
-export type ProjectInfoFragment = {
-  __typename?: 'Project';
-  id: string;
-  nameID: string;
-  displayName: string;
-  description?: string | undefined;
-  lifecycle?: { __typename?: 'Lifecycle'; state?: string | undefined } | undefined;
-};
-
-export type HubPageProjectsQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubPageProjectsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenges?:
-      | Array<{
-          __typename?: 'Challenge';
-          id: string;
-          displayName: string;
-          nameID: string;
-          opportunities?:
-            | Array<{
-                __typename?: 'Opportunity';
-                id: string;
-                nameID: string;
-                projects?:
-                  | Array<{
-                      __typename?: 'Project';
-                      id: string;
-                      nameID: string;
-                      displayName: string;
-                      description?: string | undefined;
-                      lifecycle?: { __typename?: 'Lifecycle'; state?: string | undefined } | undefined;
-                    }>
-                  | undefined;
-              }>
-            | undefined;
-        }>
-      | undefined;
-  };
+  challenges?:
+    | Array<{
+        __typename?: 'Challenge';
+        id: string;
+        displayName: string;
+        nameID: string;
+        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        context?:
+          | {
+              __typename?: 'Context';
+              id: string;
+              tagline?: string | undefined;
+              visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+            }
+          | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
 };
 
 export type AssignUserAsOpportunityAdminMutationVariables = Exact<{
