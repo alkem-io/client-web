@@ -91,7 +91,7 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
     onError: handleError,
   });
 
-  const onChange = async (elements, appstate) => {
+  const onChange = async (elements, appstate, files) => {
     console.log('Identifier arra', Array.from(identifierMap.entries()));
     const elementsThatNeedUpdating = elements.filter(element => {
       // console.log('Filter', element.text, identifierMap.get(element.id)?.originalText);
@@ -113,12 +113,12 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
       updateIdentifierMap(element.id, { actorId: identifierMap.get(element.id).actorId, originalText: element.text });
     });
 
-    saveToBackend(elements, appstate);
+    saveToBackend(elements, appstate, files);
   };
 
-  const saveToBackend = (elements, appState) => {
+  const saveToBackend = (elements, appState, files) => {
     if (ecosystemModel && elements.length > 0) {
-      const canvasValue = serializeAsJSON(elements, appState);
+      const canvasValue = serializeAsJSON(elements, appState, files, 'local');
       const newecosystemModel = JSON.stringify({
         value: canvasValue,
         identifierMap: Array.from(identifierMap.entries()),
