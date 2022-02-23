@@ -1429,6 +1429,36 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const OpportunityProviderFragmentDoc = gql`
+  fragment OpportunityProvider on Opportunity {
+    id
+    nameID
+    displayName
+    authorization {
+      id
+      myPrivileges
+    }
+    context {
+      id
+      authorization {
+        id
+        myPrivileges
+        anonymousReadAccess
+      }
+      visuals {
+        ...VisualFull
+      }
+    }
+    community {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
 export const AspectProvidedFragmentDoc = gql`
   fragment AspectProvided on Aspect {
     id
@@ -7305,63 +7335,6 @@ export type OpportunitiesQueryResult = Apollo.QueryResult<
 export function refetchOpportunitiesQuery(variables: SchemaTypes.OpportunitiesQueryVariables) {
   return { query: OpportunitiesDocument, variables: variables };
 }
-export const OpportunityInfoDocument = gql`
-  query opportunityInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
-      id
-      nameID
-      opportunity(ID: $opportunityId) {
-        ...OpportunityInfo
-      }
-    }
-  }
-  ${OpportunityInfoFragmentDoc}
-`;
-
-/**
- * __useOpportunityInfoQuery__
- *
- * To run a query within a React component, call `useOpportunityInfoQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityInfoQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *      opportunityId: // value for 'opportunityId'
- *   },
- * });
- */
-export function useOpportunityInfoQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.OpportunityInfoQuery, SchemaTypes.OpportunityInfoQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityInfoQuery, SchemaTypes.OpportunityInfoQueryVariables>(
-    OpportunityInfoDocument,
-    options
-  );
-}
-export function useOpportunityInfoLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.OpportunityInfoQuery, SchemaTypes.OpportunityInfoQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.OpportunityInfoQuery, SchemaTypes.OpportunityInfoQueryVariables>(
-    OpportunityInfoDocument,
-    options
-  );
-}
-export type OpportunityInfoQueryHookResult = ReturnType<typeof useOpportunityInfoQuery>;
-export type OpportunityInfoLazyQueryHookResult = ReturnType<typeof useOpportunityInfoLazyQuery>;
-export type OpportunityInfoQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityInfoQuery,
-  SchemaTypes.OpportunityInfoQueryVariables
->;
-export function refetchOpportunityInfoQuery(variables: SchemaTypes.OpportunityInfoQueryVariables) {
-  return { query: OpportunityInfoDocument, variables: variables };
-}
 export const OpportunityActivityDocument = gql`
   query opportunityActivity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -13177,6 +13150,69 @@ export type UserCardsContainerQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsContainerQueryVariables) {
   return { query: UserCardsContainerDocument, variables: variables };
+}
+export const OpportunityProviderDocument = gql`
+  query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      nameID
+      opportunity(ID: $opportunityId) {
+        ...OpportunityProvider
+      }
+    }
+  }
+  ${OpportunityProviderFragmentDoc}
+`;
+
+/**
+ * __useOpportunityProviderQuery__
+ *
+ * To run a query within a React component, call `useOpportunityProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityProviderQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityProviderQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityProviderQuery,
+    SchemaTypes.OpportunityProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityProviderQuery, SchemaTypes.OpportunityProviderQueryVariables>(
+    OpportunityProviderDocument,
+    options
+  );
+}
+export function useOpportunityProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityProviderQuery,
+    SchemaTypes.OpportunityProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.OpportunityProviderQuery, SchemaTypes.OpportunityProviderQueryVariables>(
+    OpportunityProviderDocument,
+    options
+  );
+}
+export type OpportunityProviderQueryHookResult = ReturnType<typeof useOpportunityProviderQuery>;
+export type OpportunityProviderLazyQueryHookResult = ReturnType<typeof useOpportunityProviderLazyQuery>;
+export type OpportunityProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityProviderQuery,
+  SchemaTypes.OpportunityProviderQueryVariables
+>;
+export function refetchOpportunityProviderQuery(variables: SchemaTypes.OpportunityProviderQueryVariables) {
+  return { query: OpportunityProviderDocument, variables: variables };
 }
 export const HubAspectProviderDocument = gql`
   query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {

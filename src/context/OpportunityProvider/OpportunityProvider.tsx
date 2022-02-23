@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
-import { useOpportunityInfoQuery } from '../hooks/generated/graphql';
-import { AuthorizationPrivilege, OpportunityInfoFragment } from '../models/graphql-schema';
-import { useChallenge } from '../hooks';
-import { useUrlParams } from '../hooks';
+import { useOpportunityProviderQuery } from '../../hooks/generated/graphql';
+import { AuthorizationPrivilege, OpportunityInfoFragment } from '../../models/graphql-schema';
+import { useChallenge } from '../../hooks';
+import { useUrlParams } from '../../hooks';
 
 interface OpportunityViewerPermissions {
   viewerCanUpdate: boolean;
@@ -43,7 +43,7 @@ interface OpportunityProviderProps {}
 
 const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
   const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
-  const { data, loading } = useOpportunityInfoQuery({
+  const { data, loading } = useOpportunityProviderQuery({
     variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
   });
@@ -58,8 +58,8 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     () => ({
       viewerCanUpdate: opportunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
       contextPrivileges: opportunity?.context?.authorization?.myPrivileges ?? [],
-      communityReadAccess: (opportunity?.community?.authorization?.myPrivileges ?? []).some(
-        x => x === AuthorizationPrivilege.Read
+      communityReadAccess: (opportunity?.community?.authorization?.myPrivileges ?? []).includes(
+        AuthorizationPrivilege.Read
       ),
     }),
     [opportunity]
