@@ -47,7 +47,7 @@ export const buildProjectUrl = (
 ) => `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}/projects/${projectNameId}`;
 
 export const buildDiscussionUrl = (url: string, id: string) => {
-  const stripUrl = url.replace('/discussions', '');
+  const stripUrl = url.replaceAll(/\/discussions|\/new/g, '');
   return `${stripUrl}/discussions/${id}`;
 };
 

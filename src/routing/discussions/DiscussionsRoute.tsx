@@ -31,13 +31,22 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
             </DiscussionsProvider>
           }
         />
-        <Route path={'new'} element={<NewDiscussionPage paths={currentPaths} />} />
+        <Route
+          path={'new'}
+          element={
+            <DiscussionsProvider>
+              <NewDiscussionPage paths={currentPaths} />
+            </DiscussionsProvider>
+          }
+        />
         <Route
           path={`:${nameOfUrl.discussionId}`}
           element={
-            <DiscussionProvider>
-              <DiscussionPage paths={currentPaths} />
-            </DiscussionProvider>
+            <DiscussionsProvider>
+              <DiscussionProvider>
+                <DiscussionPage paths={currentPaths} />
+              </DiscussionProvider>
+            </DiscussionsProvider>
           }
         >
           <Route path="*" element={<Error404 />} />
