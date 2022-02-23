@@ -1,12 +1,14 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useConfig, useUrlParams } from '../hooks';
+import { useConfig, useUrlParams, useUserContext } from '../hooks';
 import { useHubInfoQuery } from '../hooks/generated/graphql';
 import { AspectTemplate, AuthorizationPrivilege, HubInfoFragment, HubTemplate } from '../models/graphql-schema';
 
 interface HubPermissions {
   viewerCanUpdate: boolean;
   canReadAspects: boolean;
+  canReadChallenges: boolean;
+  communityReadAccess: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
 
@@ -32,6 +34,8 @@ const HubContext = React.createContext<HubContextProps>({
   permissions: {
     viewerCanUpdate: false,
     canReadAspects: false,
+    canReadChallenges: false,
+    communityReadAccess: false,
     contextPrivileges: [],
   },
 });
@@ -41,6 +45,7 @@ interface HubProviderProps {}
 const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const { hubNameId = '' } = useUrlParams();
   const { template: platformTemplate, error: configError } = useConfig();
+  const { user } = useUserContext();
   const globalAspectTemplates = platformTemplate?.opportunities
     .flatMap(x => x.aspects)
     .map(x => ({ type: x, description: '' } as AspectTemplate));
@@ -64,14 +69,23 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const error = configError || hubError;
 
   const contextPrivileges = hub?.context?.authorization?.myPrivileges ?? [];
+  const hubPrivileges = hub?.authorization?.myPrivileges ?? [];
+
+  const isMember = user?.ofHub(hubId) ?? false;
+  const isGlobalAdmin = user?.isGlobalAdmin ?? false;
+  const canReadChallenges = isPrivate ? isMember || isGlobalAdmin : true;
+
+  const communityReadAccess = (hub?.community?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
 
   const permissions = useMemo<HubPermissions>(
     () => ({
-      viewerCanUpdate: hub?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+      viewerCanUpdate: hubPrivileges.includes(AuthorizationPrivilege.Update),
+      canReadChallenges,
+      communityReadAccess,
       canReadAspects: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
     }),
-    [hub]
+    [hubPrivileges, contextPrivileges, canReadChallenges]
   );
 
   return (

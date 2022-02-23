@@ -4,7 +4,8 @@ import { AuthorizationPrivilege, ChallengeInfoFragment } from '../models/graphql
 import { useUrlParams } from '../hooks';
 
 interface ChallengePermissions {
-  viewerCanUpdate: boolean;
+  canUpdate: boolean;
+  canReadCommunity: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
 
@@ -27,7 +28,8 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   hubNameId: '',
   displayName: '',
   permissions: {
-    viewerCanUpdate: false,
+    canUpdate: false,
+    canReadCommunity: false,
     contextPrivileges: [],
   },
 });
@@ -46,9 +48,15 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
   const challengeId = challenge?.id || '';
   const displayName = challenge?.displayName || '';
 
+  const myPrivileges = challenge?.authorization?.myPrivileges ?? [];
+  const canReadCommunity = (challenge?.community?.authorization?.myPrivileges ?? []).includes(
+    AuthorizationPrivilege.Read
+  );
+
   const permissions = useMemo<ChallengePermissions>(
     () => ({
-      viewerCanUpdate: challenge?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+      canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
+      canReadCommunity,
       contextPrivileges: challenge?.context?.authorization?.myPrivileges ?? [],
     }),
     [challenge]

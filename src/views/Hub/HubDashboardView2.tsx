@@ -11,7 +11,7 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { Discussion } from '../../models/discussion/discussion';
-import { Challenge, User } from '../../models/graphql-schema';
+import { ChallengeCardFragment, User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
@@ -29,7 +29,7 @@ export interface HubDashboardView2Props {
   activity: ActivityItem[];
   discussions: Discussion[];
   organization?: any;
-  challenges: Challenge[];
+  challenges: ChallengeCardFragment[];
   members?: User[];
   community?: any;
   loading: boolean;
@@ -38,7 +38,6 @@ export interface HubDashboardView2Props {
   challengesReadAccess?: boolean;
 }
 
-const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
 
 const HubDashboardView2: FC<HubDashboardView2Props> = ({
@@ -113,7 +112,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
               navLink={'challenges'}
             >
               <CardLayoutContainer>
-                {challenges.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => (
+                {challenges.map((x, i) => (
                   <CardLayoutItem key={i} flexBasis={'50%'}>
                     <ChallengeCard challenge={x} hubNameId={hubNameId} />
                   </CardLayoutItem>

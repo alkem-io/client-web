@@ -6,6 +6,7 @@ import { useUrlParams } from '../hooks';
 
 interface OpportunityViewerPermissions {
   viewerCanUpdate: boolean;
+  communityReadAccess: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
 
@@ -33,6 +34,7 @@ const OpportunityContext = React.createContext<OpportunityContextProps>({
   displayName: '',
   permissions: {
     viewerCanUpdate: false,
+    communityReadAccess: false,
     contextPrivileges: [],
   },
 });
@@ -56,6 +58,9 @@ const OpportunityProvider: FC<OpportunityProviderProps> = ({ children }) => {
     () => ({
       viewerCanUpdate: opportunity?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
       contextPrivileges: opportunity?.context?.authorization?.myPrivileges ?? [],
+      communityReadAccess: (opportunity?.community?.authorization?.myPrivileges ?? []).some(
+        x => x === AuthorizationPrivilege.Read
+      ),
     }),
     [opportunity]
   );
