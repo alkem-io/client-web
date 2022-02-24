@@ -2,14 +2,15 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
-import { ContributionsView } from '../ProfileView';
+import { CredentialsView, ContributionsView } from '../ProfileView';
 import UserProfileView, { UserProfileViewProps } from '../ProfileView/UserProfileView';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {}
 
 export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, options }) => {
   const { t } = useTranslation();
-  const { contributions, pendingApplications, organizationNameIDs } = entities.userMetadata;
+  const { contributions, pendingApplications, organizationNameIDs, verifiedCredentials, user } = entities.userMetadata;
+  const { id } = user;
 
   return (
     <Grid container spacing={2}>
@@ -22,6 +23,14 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, op
             organizationNameIDs={organizationNameIDs}
             title={t('pages.user-profile.associated-organizations.title')}
             helpText={t('pages.user-profile.associated-organizations.help')}
+          />
+        </Grid>
+        <Grid item>
+          <CredentialsView
+            userID={id}
+            credentials={verifiedCredentials}
+            title={t('pages.user-profile.verifiable-credentials.title')}
+            helpText={t('pages.user-profile.verifiable-credentials.help')}
           />
         </Grid>
       </Grid>

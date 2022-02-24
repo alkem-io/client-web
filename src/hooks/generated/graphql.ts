@@ -761,6 +761,15 @@ export const UserAgentFragmentDoc = gql`
         resourceID
         type
       }
+      verifiedCredentials {
+        claim
+        context
+        issued
+        expires
+        issuer
+        name
+        type
+      }
     }
   }
 `;

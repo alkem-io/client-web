@@ -7,6 +7,7 @@ import {
   MyPrivilegesFragment,
   User,
   UserMembershipDetailsFragment,
+  VerifiedCredential,
 } from '../../models/graphql-schema';
 import { Role } from '../../models/Role';
 import { useCredentialsResolver } from '../useCredentialsResolver';
@@ -48,6 +49,7 @@ export interface UserMetadata {
   contributions: ContributionItem[];
   pendingApplications: ContributionItem[];
   organizationNameIDs: string[];
+  verifiedCredentials: VerifiedCredential[];
   permissions: UserPermissions;
 }
 
@@ -180,6 +182,7 @@ export const useUserMetadataWrapper = () => {
         contributions: getContributions(membershipData),
         pendingApplications: getPendingApplications(membershipData),
         organizationNameIDs: organizationNameIDs,
+        verifiedCredentials: user.agent?.verifiedCredentials || [],
         permissions: permissions,
       };
 

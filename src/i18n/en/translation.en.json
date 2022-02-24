@@ -1104,6 +1104,10 @@
       "associated-organizations": {
         "title": "Associated Organizations",
         "help": "Organizations who the user is related to"
+      },
+      "verifiable-credentials": {
+        "title": "Verifiable Credentials",
+        "help": "Credentials that the user holds issued by trusted parties"
       }
     },
     "user-credentials": {
@@ -1180,6 +1184,9 @@
   },
   "contributions-view": {
     "no-data": "No {{name, lowercase}} available"
+  },
+  "credentials-view": {
+    "no-data": "No credentials have been presented"
   },
   "associated-organizations-view": {
     "no-data": "No {{name, lowercase}} available"

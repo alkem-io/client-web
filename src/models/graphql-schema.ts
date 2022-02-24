@@ -3477,6 +3477,18 @@ export type UserAgentFragment = {
         credentials?:
           | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
           | undefined;
+        verifiedCredentials?:
+          | Array<{
+              __typename?: 'VerifiedCredential';
+              claim: string;
+              context: string;
+              issued: string;
+              expires: string;
+              issuer: string;
+              name: string;
+              type: string;
+            }>
+          | undefined;
       }
     | undefined;
 };

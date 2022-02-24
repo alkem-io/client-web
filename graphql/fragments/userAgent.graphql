@@ -7,5 +7,14 @@ fragment UserAgent on User {
       resourceID
       type
     }
+    verifiedCredentials {
+      claim
+      context
+      issued
+      expires
+      issuer
+      name
+      type
+    }
   }
 }

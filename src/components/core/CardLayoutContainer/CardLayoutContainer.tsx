@@ -9,13 +9,13 @@ export const CardLayoutContainer: FC = ({ children }) => {
   );
 };
 
-interface CardLayoutItemProps extends Pick<GridProps, 'maxWidth'> {
+interface CardLayoutItemProps extends Pick<GridProps, 'maxWidth' | 'flexGrow'> {
   flexBasis?: '25%' | '33%' | '50%';
 }
 
-export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = '25%', maxWidth }) => {
+export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = '25%', flexGrow, maxWidth }) => {
   return (
-    <Grid item flexBasis={flexBasis} maxWidth={maxWidth}>
+    <Grid item flexBasis={flexBasis} maxWidth={maxWidth} flexGrow={flexGrow}>
       {children}
     </Grid>
   );
