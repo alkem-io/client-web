@@ -12,11 +12,9 @@ export interface CredentialCardEntities {
   claim: Record<string, string>;
   context: Record<string, string>;
   issued: string;
+  expires: string;
   issuer: string;
 }
-
-export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
-export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
 
 export interface CredentialCardProps {
   entities?: CredentialCardEntities;
@@ -43,13 +41,6 @@ const useStyles = makeStyles(theme =>
     entityType: {
       color: '#FFFFFF',
     },
-    entityTypeWrapper: {
-      background: theme.palette.neutralMedium.main,
-      boxShadow: '0px 3px 6px #00000029',
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      flexShrink: 0,
-    },
   })
 );
 
@@ -58,6 +49,9 @@ const issuerURLResolver = _ => 'url-to-issuer';
 const claimParser = (claim, context) => {
   return (
     <>
+      <Typography variant="h6" color="neutralMedium">
+        Claims:
+      </Typography>
       {Object.keys(context).map((key, i) => (
         <Box key={i} sx={{ whiteSpace: 'initial', wordBreak: 'break-all' }}>
           <Typography variant="h6" color="neutralMedium">
@@ -70,13 +64,17 @@ const claimParser = (claim, context) => {
 };
 
 const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = false, children }) => {
-  const { claim, description, issued, issuer, name, context } = details || {};
+  const { claim, description, issued, expires, issuer, name, context } = details || {};
 
   const url = issuerURLResolver(issuer);
   const issuerName = issuerResolver(issuer);
   const issueDate = issued ? new Date(Date.parse(issued)) : undefined;
+  const expiryDate = expires ? new Date(Date.parse(expires)) : undefined;
 
-  const descriptionText = description ?? `Credential issued by ${issuerName}`;
+  const descriptionText = description;
+  const credentialInfo = `Credential issued by ${issuerName}${
+    issueDate ? ` on ${issueDate.toLocaleDateString()}` : ''
+  }`;
 
   const styles = useStyles();
 
@@ -95,7 +93,7 @@ const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = 
               <Typography color="primary" weight="boldLight" clamp={1}>
                 {name}
               </Typography>
-              {issueDate && <Typography variant="caption">{issueDate.toLocaleDateString()}</Typography>}
+              {expiryDate && <Typography variant="caption">Valid before {expiryDate.toLocaleDateString()}</Typography>}
             </Box>
             <Box paddingY={1}>
               {descriptionText && (
@@ -103,6 +101,9 @@ const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = 
                   {descriptionText}
                 </Typography>
               )}
+              <Typography variant="body2" color="neutralMedium" sx={{ wordWrap: 'break-word' }}>
+                {credentialInfo}
+              </Typography>
               <pre>{claimParser(claim, context)}</pre>
             </Box>
           </>

@@ -2646,6 +2646,8 @@ export type VerifiedCredential = {
   claim: Scalars['JSON'];
   /** JSON for the context in the credential */
   context: Scalars['JSON'];
+  /** The time at which the credential is no longer valid */
+  expires: Scalars['String'];
   /** The time at which the credential was issued */
   issued: Scalars['String'];
   /** The challenge issuing the VC */
@@ -2753,6 +2755,7 @@ export type UserCardFragment = {
               type: string;
               claim: string;
               issued: string;
+              expires: string;
               issuer: string;
               context: string;
               name: string;
@@ -3503,6 +3506,7 @@ export type UserDetailsFragment = {
               type: string;
               claim: string;
               issued: string;
+              expires: string;
               issuer: string;
               context: string;
               name: string;
@@ -3863,6 +3867,7 @@ export type CreateUserMutation = {
                 type: string;
                 claim: string;
                 issued: string;
+                expires: string;
                 issuer: string;
                 context: string;
                 name: string;
@@ -3925,6 +3930,7 @@ export type CreateUserNewRegistrationMutation = {
                 type: string;
                 claim: string;
                 issued: string;
+                expires: string;
                 issuer: string;
                 context: string;
                 name: string;
@@ -4440,6 +4446,7 @@ export type UpdateUserMutation = {
                 type: string;
                 claim: string;
                 issued: string;
+                expires: string;
                 issuer: string;
                 context: string;
                 name: string;
@@ -4861,6 +4868,7 @@ export type UserCardQuery = {
                 type: string;
                 claim: string;
                 issued: string;
+                expires: string;
                 issuer: string;
                 context: string;
                 name: string;
@@ -5928,6 +5936,7 @@ export type MeQuery = {
                 type: string;
                 claim: string;
                 issued: string;
+                expires: string;
                 issuer: string;
                 context: string;
                 name: string;
@@ -6998,6 +7007,7 @@ export type UserQuery = {
                 type: string;
                 claim: string;
                 issued: string;
+                expires: string;
                 issuer: string;
                 context: string;
                 name: string;
@@ -7112,6 +7122,7 @@ export type UserProfileQuery = {
                 type: string;
                 claim: string;
                 issued: string;
+                expires: string;
                 issuer: string;
                 context: string;
                 name: string;
@@ -7212,6 +7223,7 @@ export type UsersQuery = {
                 type: string;
                 claim: string;
                 issued: string;
+                expires: string;
                 issuer: string;
                 context: string;
                 name: string;
@@ -8898,6 +8910,7 @@ export type CommunityPageQuery = {
                             type: string;
                             claim: string;
                             issued: string;
+                            expires: string;
                             issuer: string;
                             context: string;
                             name: string;
@@ -8979,6 +8992,7 @@ export type CommunityPageWithHostQuery = {
                             type: string;
                             claim: string;
                             issued: string;
+                            expires: string;
                             issuer: string;
                             context: string;
                             name: string;

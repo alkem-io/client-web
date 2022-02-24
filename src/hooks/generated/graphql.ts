@@ -92,6 +92,7 @@ export const UserCardFragmentDoc = gql`
         type
         claim
         issued
+        expires
         issuer
         context
         name
@@ -785,6 +786,7 @@ export const UserDetailsFragmentDoc = gql`
         type
         claim
         issued
+        expires
         issuer
         context
         name

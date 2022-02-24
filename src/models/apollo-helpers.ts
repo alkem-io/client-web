@@ -1289,6 +1289,7 @@ export type UserTemplateFieldPolicy = {
 export type VerifiedCredentialKeySpecifier = (
   | 'claim'
   | 'context'
+  | 'expires'
   | 'issued'
   | 'issuer'
   | 'name'
@@ -1298,6 +1299,7 @@ export type VerifiedCredentialKeySpecifier = (
 export type VerifiedCredentialFieldPolicy = {
   claim?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
+  expires?: FieldPolicy<any> | FieldReadFunction<any>;
   issued?: FieldPolicy<any> | FieldReadFunction<any>;
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;

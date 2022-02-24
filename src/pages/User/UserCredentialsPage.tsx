@@ -80,6 +80,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
                         claim: JSON.parse(c.claim),
                         context: JSON.parse(c.context),
                         issued: c.issued,
+                        expires: c.expires,
                         issuer: c.issuer,
                         description: credentialMetadata?.find(cm => cm.uniqueType === c.type)?.description,
                         name: c.name,

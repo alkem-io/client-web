@@ -15,6 +15,7 @@ fragment UserCard on User {
       type
       claim
       issued
+      expires
       issuer
       context
       name

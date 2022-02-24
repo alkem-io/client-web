@@ -19,6 +19,7 @@ fragment UserDetails on User {
       type
       claim
       issued
+      expires
       issuer
       context
       name
