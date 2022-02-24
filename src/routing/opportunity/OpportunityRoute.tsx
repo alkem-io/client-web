@@ -5,8 +5,6 @@ import Loading from '../../components/core/Loading/Loading';
 import { useOpportunity } from '../../hooks';
 import { Error404, PageProps } from '../../pages';
 import { ProjectRoute } from './ProjectRoute';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import { OpportunityPageContainer } from '../../containers';
 import OpportunityTabs from './OpportunityTabs';
 import OpportunityCommunityPage from '../../pages/Community/OpportunityCommunityPage';
 import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboardPage';
@@ -37,49 +35,37 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
   }
 
   return (
-    <DiscussionsProvider>
-      <OpportunityPageContainer>
-        {(e, s, a) => (
-          <Routes>
-            <Route
-              path={'/'}
-              element={
-                <OpportunityTabs
-                  communityReadAccess={e.permissions.communityReadAccess}
-                  viewerCanUpdate={permissions.viewerCanUpdate}
-                  hubNameId={hubNameId}
-                  challengeNameId={challengeNameId}
-                  opportunityNameId={opportunityNameId}
-                />
-              }
-            >
-              <Route index element={<Navigate replace to={'dashboard'} />} />
-              <Route
-                path={'dashboard'}
-                element={<OpportunityDashboardPage paths={currentPaths} entities={e} state={s} actions={a} />}
-              />
-              <Route path={'context'} element={<OpportunityContextPage paths={currentPaths} />} />
-              <Route path={'community'} element={<OpportunityCommunityPage paths={currentPaths} />} />
-              <Route path={'projects'} element={<OpportunityProjectsPage paths={currentPaths} entities={e} />} />
-              <Route
-                path={'canvases'}
-                element={<OpportunityCanvasPage paths={currentPaths} entities={e} state={s} />}
-              />
-            </Route>
-            <Route path={'projects/*'} element={<ProjectRoute paths={currentPaths} />} />
-            <Route
-              path={`aspects/:${nameOfUrl.aspectNameId}/*`}
-              element={
-                <AspectProvider>
-                  <AspectRoute paths={currentPaths} />
-                </AspectProvider>
-              }
-            />
-            <Route path="*" element={<Error404 />} />
-          </Routes>
-        )}
-      </OpportunityPageContainer>
-    </DiscussionsProvider>
+    <Routes>
+      <Route
+        path={'/'}
+        element={
+          <OpportunityTabs
+            communityReadAccess={permissions.communityReadAccess}
+            viewerCanUpdate={permissions.viewerCanUpdate}
+            hubNameId={hubNameId}
+            challengeNameId={challengeNameId}
+            opportunityNameId={opportunityNameId}
+          />
+        }
+      >
+        <Route index element={<Navigate replace to={'dashboard'} />} />
+        <Route path={'dashboard'} element={<OpportunityDashboardPage paths={currentPaths} />} />
+        <Route path={'context'} element={<OpportunityContextPage paths={currentPaths} />} />
+        <Route path={'community'} element={<OpportunityCommunityPage paths={currentPaths} />} />
+        <Route path={'projects'} element={<OpportunityProjectsPage paths={currentPaths} />} />
+        <Route path={'canvases'} element={<OpportunityCanvasPage paths={currentPaths} />} />
+      </Route>
+      <Route path={'projects/*'} element={<ProjectRoute paths={currentPaths} />} />
+      <Route
+        path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+        element={
+          <AspectProvider>
+            <AspectRoute paths={currentPaths} />
+          </AspectProvider>
+        }
+      />
+      <Route path="*" element={<Error404 />} />
+    </Routes>
   );
 };
 export default OpportunityRoute;

@@ -1,28 +1,29 @@
 import React, { FC, useMemo } from 'react';
-import { OpportunityContainerEntities, OpportunityContainerState } from '../../containers';
+import { OpportunityPageContainer } from '../../containers';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
 import OpportunityCanvasView from '../../views/Opportunity/OpportunityCanvasManagementView';
 
-export interface OpportunityCanvasPageProps extends PageProps {
-  entities: OpportunityContainerEntities;
-  state: OpportunityContainerState;
-}
+export interface OpportunityCanvasPageProps extends PageProps {}
 
-const OpportunityCanvasPage: FC<OpportunityCanvasPageProps> = ({ paths, entities, state }) => {
+const OpportunityCanvasPage: FC<OpportunityCanvasPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/canvases', name: 'canvases', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
   return (
-    <OpportunityCanvasView
-      entities={entities}
-      state={{
-        loading: state.loading,
-        error: state.error,
-      }}
-      actions={undefined}
-      options={undefined}
-    />
+    <OpportunityPageContainer>
+      {(entities, state) => (
+        <OpportunityCanvasView
+          entities={entities}
+          state={{
+            loading: state.loading,
+            error: state.error,
+          }}
+          actions={undefined}
+          options={undefined}
+        />
+      )}
+    </OpportunityPageContainer>
   );
 };
 export default OpportunityCanvasPage;

@@ -1,15 +1,12 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useHub, useUserContext } from '../../hooks';
-import { useHubPageProjectsQuery, useHubPageQuery } from '../../hooks/generated/graphql';
+import { useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
-import { Project } from '../../models/Project';
-import { AuthorizationPrivilege, HubPageFragment } from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
-import { buildProjectUrl } from '../../utils/urlBuilders';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../models/discussion/discussion';
 
@@ -21,19 +18,18 @@ export interface HubContainerEntities {
     communityReadAccess: boolean;
     challengesReadAccess: boolean;
   };
-  projects: Project[];
   activity: ActivityItem[];
   isAuthenticated: boolean;
   isMember: boolean;
   isGlobalAdmin: boolean;
   discussionList: Discussion[];
+  challenges: ChallengeCardFragment[];
 }
 
 export interface HubContainerActions {}
 
 export interface HubContainerState {
   loading: boolean;
-  loadingProjects: boolean;
   error?: ApolloError;
 }
 
@@ -42,7 +38,6 @@ export interface HubPageContainerProps
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { hubId, hubNameId, loading: loadingHub } = useHub();
   const { data: _hub, loading: loadingHubQuery } = useHubPageQuery({
     variables: { hubId: hubNameId },
@@ -55,39 +50,6 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const communityReadAccess = (_hub?.hub?.community?.authorization?.myPrivileges ?? []).some(
     x => x === AuthorizationPrivilege.Read
   );
-
-  const { data: _projects, loading: loadingProjects } = useHubPageProjectsQuery({
-    variables: { hubId: hubNameId },
-  });
-
-  const projects = useMemo(() => {
-    const result =
-      _projects?.hub.challenges?.flatMap(
-        c =>
-          c.opportunities?.flatMap(
-            o =>
-              o.projects?.map(
-                p =>
-                  ({
-                    title: p.displayName || '',
-                    description: p.description || '',
-                    caption: c.displayName || '',
-                    tag: { status: 'positive', text: p?.lifecycle?.state || '' },
-                    type: 'display',
-                    onSelect: () => navigate(buildProjectUrl(hubNameId, c.nameID, o.nameID, p.nameID)),
-                  } as Project)
-              ) || []
-          ) || []
-      ) || [];
-
-    return [
-      ...result,
-      {
-        title: t('pages.opportunity.sections.projects.more-projects'),
-        type: 'more',
-      } as Project,
-    ];
-  }, [_projects]);
 
   const activity: ActivityItem[] = useMemo(() => {
     const _activity = _hub?.hub.activity || [];
@@ -121,6 +83,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
   };
 
+  const challenges = _hub?.hub?.challenges ?? [];
+
   return (
     <>
       {children(
@@ -130,14 +94,13 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           isPrivate,
           permissions,
           activity,
-          projects,
           isAuthenticated,
           isMember,
           isGlobalAdmin,
+          challenges,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,
-          loadingProjects,
         },
         {}
       )}

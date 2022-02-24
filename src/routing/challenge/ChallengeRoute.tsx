@@ -6,8 +6,6 @@ import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Error404, PageProps } from '../../pages';
 import ApplyRoute from '../application/apply.route';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
 import ChallengeTabs from './ChallengeTabs';
 import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
 import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
@@ -27,7 +25,7 @@ import AspectRoute from '../aspect/AspectRoute';
 interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
-  const { hubNameId, hubId, challengeId, challengeNameId, displayName, loading } = useChallenge();
+  const { hubNameId, hubId, challengeId, challengeNameId, displayName, loading, permissions } = useChallenge();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
@@ -50,69 +48,54 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
   }
 
   return (
-    <DiscussionsProvider>
-      <ChallengePageContainer>
-        {(e, s) => (
-          <Routes>
-            <Route
-              path={'/'}
-              element={
-                <ChallengeTabs
-                  communityReadAccess={e.permissions.communityReadAccess}
-                  viewerCanUpdate={e.permissions.canEdit}
-                  hubNameId={hubNameId}
-                  challengeNameId={challengeNameId}
-                />
-              }
-            >
-              <Route index element={<Navigate replace to={'dashboard'} />} />
-              <Route
-                path={'dashboard'}
-                element={<ChallengeDashboardPage paths={currentPaths} entities={e} state={s} />}
-              />
-              <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} />} />
-              <Route path={'community'} element={<ChallengeCommunityPage paths={currentPaths} />} />
-              <Route
-                path={'discussions/*'}
-                element={
-                  <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
-                    <DiscussionsRoute paths={currentPaths} />
-                  </RestrictedRoute>
-                }
-              />
-              <Route path={'canvases'} element={<ChallengeCanvasPage paths={currentPaths} entities={e} state={s} />} />
-              <Route
-                path={'opportunities'}
-                element={<ChallengeOpportunityPage paths={currentPaths} entities={e} state={s} />}
-              />
-            </Route>
-            <Route
-              path={'apply/*'}
-              element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />}
-            />
-            <Route
-              path={`opportunities/:${nameOfUrl.opportunityNameId}/*`}
-              element={
-                <OpportunityProvider>
-                  <CommunityProvider>
-                    <OpportunityRoute paths={currentPaths} />
-                  </CommunityProvider>
-                </OpportunityProvider>
-              }
-            />
-            <Route
-              path={`aspects/:${nameOfUrl.aspectNameId}/*`}
-              element={
-                <AspectProvider>
-                  <AspectRoute paths={currentPaths} />
-                </AspectProvider>
-              }
-            />
-            <Route path="*" element={<Error404 />} />
-          </Routes>
-        )}
-      </ChallengePageContainer>
-    </DiscussionsProvider>
+    <Routes>
+      <Route
+        path={'/'}
+        element={
+          <ChallengeTabs
+            communityReadAccess={permissions.canReadCommunity}
+            viewerCanUpdate={permissions.canUpdate}
+            hubNameId={hubNameId}
+            challengeNameId={challengeNameId}
+          />
+        }
+      >
+        <Route index element={<Navigate replace to={'dashboard'} />} />
+        <Route path={'dashboard'} element={<ChallengeDashboardPage paths={currentPaths} />} />
+        <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} />} />
+        <Route path={'community'} element={<ChallengeCommunityPage paths={currentPaths} />} />
+        <Route
+          path={'discussions/*'}
+          element={
+            <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
+              <DiscussionsRoute paths={currentPaths} />
+            </RestrictedRoute>
+          }
+        />
+        <Route path={'canvases'} element={<ChallengeCanvasPage paths={currentPaths} />} />
+        <Route path={'opportunities'} element={<ChallengeOpportunityPage paths={currentPaths} />} />
+      </Route>
+      <Route path={'apply/*'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />} />
+      <Route
+        path={`opportunities/:${nameOfUrl.opportunityNameId}/*`}
+        element={
+          <OpportunityProvider>
+            <CommunityProvider>
+              <OpportunityRoute paths={currentPaths} />
+            </CommunityProvider>
+          </OpportunityProvider>
+        }
+      />
+      <Route
+        path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+        element={
+          <AspectProvider>
+            <AspectRoute paths={currentPaths} />
+          </AspectProvider>
+        }
+      />
+      <Route path="*" element={<Error404 />} />
+    </Routes>
   );
 };
 export default ChallengeRoute;

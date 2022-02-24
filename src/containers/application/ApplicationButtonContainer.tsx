@@ -28,10 +28,12 @@ interface ApplicationContainerProps
 export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ entities, children }) => {
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
+  const userId = user?.user?.id ?? '';
   // challengeId = null, because the query returns null rather than undefined
   const { hubNameId, hubId, challengeId = null, challengeNameId, hubName, challengeName } = entities;
   const { data: memberShip, loading } = useUserApplicationsQuery({
-    variables: { input: { userID: user?.user?.id || '' } },
+    variables: { input: { userID: userId } },
+    skip: !userId,
   });
 
   // todo: refactor logic or use entity privileges
