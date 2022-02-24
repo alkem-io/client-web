@@ -104,7 +104,7 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
                 variant="primary"
                 text={isSubmitting ? t('buttons.processing') : t('components.new-discussion.buttons.post')}
                 type="submit"
-                disabled={!isValid || !dirty || isSubmitting}
+                disabled={!isValid || !dirty || isSubmitting || !onPost}
               />
             </Grid>
           </Grid>
