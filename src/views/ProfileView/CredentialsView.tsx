@@ -9,11 +9,9 @@ import {
 import ProfileCard, { ProfileCardProps } from '../../components/composite/common/cards/ProfileCard/ProfileCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 import UserCredentialsContainer from '../../containers/user/UserCredentialsContainer';
-import { VerifiedCredential } from '../../models/graphql-schema';
 
 export interface CredentialsViewProps extends ProfileCardProps {
   userID: string;
-  credentials: VerifiedCredential[];
   loading?: boolean;
 }
 
@@ -39,21 +37,22 @@ const SkeletonItem = () => (
   </Grid>
 );
 
-export const CredentialsView: FC<CredentialsViewProps> = ({ userID, credentials, loading, ...rest }) => {
+export const CredentialsView: FC<CredentialsViewProps> = ({ userID, loading, ...rest }) => {
   const { t } = useTranslation();
   return (
     <UserCredentialsContainer userID={userID}>
-      {({ credentialMetadata }) => (
+      {({ verifiedCredentials, credentialMetadata }, { getCredentialMetadataLoading, getUserCredentialsLoading }) => (
         <ProfileCard {...rest}>
           <CardLayoutContainer>
-            {loading && (
+            {getUserCredentialsLoading && getCredentialMetadataLoading && (
               <>
                 <SkeletonItem />
                 <SkeletonItem />
               </>
             )}
-            {!loading &&
-              credentials?.map((c, i) => (
+            {!getUserCredentialsLoading &&
+              !getCredentialMetadataLoading &&
+              verifiedCredentials?.map((c, i) => (
                 <CardLayoutItem
                   key={i}
                   maxWidth={{ xs: 'auto', sm: 'auto', md: '50%' }}
@@ -73,7 +72,7 @@ export const CredentialsView: FC<CredentialsViewProps> = ({ userID, credentials,
                   />
                 </CardLayoutItem>
               ))}
-            {!credentials.length && (
+            {!verifiedCredentials.length && (
               <Grid item flexGrow={1} flexBasis={'50%'}>
                 {t('credentials-view.no-data')}
               </Grid>

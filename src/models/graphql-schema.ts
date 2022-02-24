@@ -2749,18 +2749,6 @@ export type UserCardFragment = {
         credentials?:
           | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
           | undefined;
-        verifiedCredentials?:
-          | Array<{
-              __typename?: 'VerifiedCredential';
-              type: string;
-              claim: string;
-              issued: string;
-              expires: string;
-              issuer: string;
-              context: string;
-              name: string;
-            }>
-          | undefined;
       }
     | undefined;
   profile?:
@@ -3477,18 +3465,6 @@ export type UserAgentFragment = {
         credentials?:
           | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
           | undefined;
-        verifiedCredentials?:
-          | Array<{
-              __typename?: 'VerifiedCredential';
-              claim: string;
-              context: string;
-              issued: string;
-              expires: string;
-              issuer: string;
-              name: string;
-              type: string;
-            }>
-          | undefined;
       }
     | undefined;
 };
@@ -3511,18 +3487,6 @@ export type UserDetailsFragment = {
         __typename?: 'Agent';
         credentials?:
           | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-        verifiedCredentials?:
-          | Array<{
-              __typename?: 'VerifiedCredential';
-              type: string;
-              claim: string;
-              issued: string;
-              expires: string;
-              issuer: string;
-              context: string;
-              name: string;
-            }>
           | undefined;
       }
     | undefined;
@@ -3873,18 +3837,6 @@ export type CreateUserMutation = {
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
             | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                type: string;
-                claim: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                context: string;
-                name: string;
-              }>
-            | undefined;
         }
       | undefined;
     profile?:
@@ -3935,18 +3887,6 @@ export type CreateUserNewRegistrationMutation = {
           __typename?: 'Agent';
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                type: string;
-                claim: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                context: string;
-                name: string;
-              }>
             | undefined;
         }
       | undefined;
@@ -4452,18 +4392,6 @@ export type UpdateUserMutation = {
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
             | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                type: string;
-                claim: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                context: string;
-                name: string;
-              }>
-            | undefined;
         }
       | undefined;
     profile?:
@@ -4873,18 +4801,6 @@ export type UserCardQuery = {
           id: string;
           credentials?:
             | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                type: string;
-                claim: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                context: string;
-                name: string;
-              }>
             | undefined;
         }
       | undefined;
@@ -5941,18 +5857,6 @@ export type MeQuery = {
           did?: string | undefined;
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
-            | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                type: string;
-                claim: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                context: string;
-                name: string;
-              }>
             | undefined;
         }
       | undefined;
@@ -7013,18 +6917,6 @@ export type UserQuery = {
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
             | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                type: string;
-                claim: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                context: string;
-                name: string;
-              }>
-            | undefined;
         }
       | undefined;
     profile?:
@@ -7128,18 +7020,6 @@ export type UserProfileQuery = {
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string; id: string }>
             | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                type: string;
-                claim: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                context: string;
-                name: string;
-              }>
-            | undefined;
         }
       | undefined;
     profile?:
@@ -7228,18 +7108,6 @@ export type UsersQuery = {
           __typename?: 'Agent';
           credentials?:
             | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-          verifiedCredentials?:
-            | Array<{
-                __typename?: 'VerifiedCredential';
-                type: string;
-                claim: string;
-                issued: string;
-                expires: string;
-                issuer: string;
-                context: string;
-                name: string;
-              }>
             | undefined;
         }
       | undefined;
@@ -8916,18 +8784,6 @@ export type CommunityPageQuery = {
                             resourceID: string;
                           }>
                         | undefined;
-                      verifiedCredentials?:
-                        | Array<{
-                            __typename?: 'VerifiedCredential';
-                            type: string;
-                            claim: string;
-                            issued: string;
-                            expires: string;
-                            issuer: string;
-                            context: string;
-                            name: string;
-                          }>
-                        | undefined;
                     }
                   | undefined;
                 profile?:
@@ -8996,18 +8852,6 @@ export type CommunityPageWithHostQuery = {
                             id: string;
                             type: AuthorizationCredential;
                             resourceID: string;
-                          }>
-                        | undefined;
-                      verifiedCredentials?:
-                        | Array<{
-                            __typename?: 'VerifiedCredential';
-                            type: string;
-                            claim: string;
-                            issued: string;
-                            expires: string;
-                            issuer: string;
-                            context: string;
-                            name: string;
                           }>
                         | undefined;
                     }
@@ -10094,6 +9938,67 @@ export type BeginCommunityMemberCredentialOfferInteractionMutation = {
     interactionId: string;
     jwt: string;
     expiresOn: number;
+  };
+};
+
+export type UserAgentSsiFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  agent?:
+    | {
+        __typename?: 'Agent';
+        id: string;
+        did?: string | undefined;
+        credentials?:
+          | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+          | undefined;
+        verifiedCredentials?:
+          | Array<{
+              __typename?: 'VerifiedCredential';
+              claim: string;
+              context: string;
+              issued: string;
+              expires: string;
+              issuer: string;
+              name: string;
+              type: string;
+            }>
+          | undefined;
+      }
+    | undefined;
+};
+
+export type UserSsiQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserSsiQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    agent?:
+      | {
+          __typename?: 'Agent';
+          id: string;
+          did?: string | undefined;
+          credentials?:
+            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+            | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                claim: string;
+                context: string;
+                issued: string;
+                expires: string;
+                issuer: string;
+                name: string;
+                type: string;
+              }>
+            | undefined;
+        }
+      | undefined;
   };
 };
 

@@ -5,7 +5,7 @@ import {
   useBeginCommunityMemberCredentialOfferInteractionMutation,
   useBeginCredentialRequestInteractionMutation,
   useGetSupportedCredentialMetadataQuery,
-  useUserQuery,
+  useUserSsiQuery,
 } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import {
@@ -17,7 +17,7 @@ import {
 
 interface UserCredentialsContainerEntities {
   credentialMetadata: CredentialMetadataOutput[] | undefined;
-  verifiedCredentials: VerifiedCredential[] | undefined;
+  verifiedCredentials: VerifiedCredential[];
 }
 
 interface UserCredentialsContainerState {
@@ -43,18 +43,16 @@ interface UserCredentialsContainerProps
   userID: string;
 }
 
-export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ children, userID }) => {
+export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ children /* userID */ }) => {
   const handleError = useApolloErrorHandler();
 
-  const { data: userData, loading: getUserCredentialsLoading } = useUserQuery({
-    variables: {
-      id: userID,
-    },
+  // TODO - the container should retrieve specific users VCs, hence the userID
+  const { data: userData, loading: getUserCredentialsLoading } = useUserSsiQuery({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
     errorPolicy: 'all',
   });
-  const verifiedCredentials = userData?.user?.agent?.verifiedCredentials;
+  const verifiedCredentials = userData?.me?.agent?.verifiedCredentials || [];
 
   const { data: credentialMetadata, loading: getCredentialMetadataLoading } = useGetSupportedCredentialMetadataQuery();
   const [_generateAlkemioUserCredentialOffer, { loading: generateAlkemioUserCredentialOfferLoading }] =

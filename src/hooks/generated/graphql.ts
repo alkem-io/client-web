@@ -88,15 +88,6 @@ export const UserCardFragmentDoc = gql`
         type
         resourceID
       }
-      verifiedCredentials {
-        type
-        claim
-        issued
-        expires
-        issuer
-        context
-        name
-      }
     }
     profile {
       id
@@ -761,15 +752,6 @@ export const UserAgentFragmentDoc = gql`
         resourceID
         type
       }
-      verifiedCredentials {
-        claim
-        context
-        issued
-        expires
-        issuer
-        name
-        type
-      }
     }
   }
 `;
@@ -790,15 +772,6 @@ export const UserDetailsFragmentDoc = gql`
       credentials {
         type
         resourceID
-      }
-      verifiedCredentials {
-        type
-        claim
-        issued
-        expires
-        issuer
-        context
-        name
       }
     }
     profile {
@@ -1458,6 +1431,30 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+`;
+export const UserAgentSsiFragmentDoc = gql`
+  fragment UserAgentSsi on User {
+    id
+    nameID
+    agent {
+      id
+      did
+      credentials {
+        id
+        resourceID
+        type
+      }
+      verifiedCredentials {
+        claim
+        context
+        issued
+        expires
+        issuer
+        name
+        type
+      }
+    }
+  }
 `;
 export const AspectProvidedFragmentDoc = gql`
   fragment AspectProvided on Aspect {
@@ -13420,6 +13417,48 @@ export type BeginCommunityMemberCredentialOfferInteractionMutationOptions = Apol
   SchemaTypes.BeginCommunityMemberCredentialOfferInteractionMutation,
   SchemaTypes.BeginCommunityMemberCredentialOfferInteractionMutationVariables
 >;
+export const UserSsiDocument = gql`
+  query userSsi {
+    me {
+      ...UserAgentSsi
+    }
+  }
+  ${UserAgentSsiFragmentDoc}
+`;
+
+/**
+ * __useUserSsiQuery__
+ *
+ * To run a query within a React component, call `useUserSsiQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserSsiQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserSsiQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserSsiQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserSsiQuery, SchemaTypes.UserSsiQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserSsiQuery, SchemaTypes.UserSsiQueryVariables>(UserSsiDocument, options);
+}
+export function useUserSsiLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserSsiQuery, SchemaTypes.UserSsiQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserSsiQuery, SchemaTypes.UserSsiQueryVariables>(UserSsiDocument, options);
+}
+export type UserSsiQueryHookResult = ReturnType<typeof useUserSsiQuery>;
+export type UserSsiLazyQueryHookResult = ReturnType<typeof useUserSsiLazyQuery>;
+export type UserSsiQueryResult = Apollo.QueryResult<SchemaTypes.UserSsiQuery, SchemaTypes.UserSsiQueryVariables>;
+export function refetchUserSsiQuery(variables?: SchemaTypes.UserSsiQueryVariables) {
+  return { query: UserSsiDocument, variables: variables };
+}
 export const UserCardsContainerDocument = gql`
   query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {

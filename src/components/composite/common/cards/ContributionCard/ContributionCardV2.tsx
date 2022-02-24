@@ -18,7 +18,7 @@ export interface ContributionCardV2Details {
   mediaUrl?: string;
   mediaSize?: mediaSize;
   url?: string;
-  metadata?: {
+  domain?: {
     communityID: string;
   };
 }

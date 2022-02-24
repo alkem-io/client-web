@@ -123,9 +123,9 @@ const OfferAlkemioCommunityCredentialDialog: FC<OfferAlkemioCommunityCredentialD
         )}
         <Button
           onClick={async () => {
-            if (selectedContribution && selectedContribution.metadata) {
+            if (selectedContribution && selectedContribution.domain) {
               setLoadingToken(true);
-              const result = await actions.onGenerate(selectedContribution.metadata?.communityID);
+              const result = await actions.onGenerate(selectedContribution.domain?.communityID);
               setToken(result);
               setLoadingToken(false);
             }

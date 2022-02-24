@@ -15,15 +15,6 @@ fragment UserDetails on User {
       type
       resourceID
     }
-    verifiedCredentials {
-      type
-      claim
-      issued
-      expires
-      issuer
-      context
-      name
-    }
   }
   profile {
     id
