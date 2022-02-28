@@ -2,7 +2,7 @@ import * as SchemaTypes from '../../models/graphql-schema';
 
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-const defaultOptions = {};
+const defaultOptions = {} as const;
 export const AdminHubFragmentDoc = gql`
   fragment AdminHub on Hub {
     id

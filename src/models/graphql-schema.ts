@@ -358,6 +358,11 @@ export type Challenge = Searchable & {
   tagset?: Maybe<Tagset>;
 };
 
+export type ChallengeOpportunitiesArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type ChallengeAuthorizeStateModificationInput = {
   /** The challenge whose state can be udpated. */
   challengeID: Scalars['UUID'];
