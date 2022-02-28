@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import NavigationTabs from '../../components/core/NavigationTab/NavigationTabs';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import { useConfig } from '../../hooks';
+import { FEATURE_SSI } from '../../models/constants';
 
 const routes = {
   profile: 'profile',
@@ -18,6 +20,7 @@ export interface UserTabsProps {}
 
 const UserTabs: FC<UserTabsProps> = ({ children }) => {
   const { t } = useTranslation();
+  const { isFeatureEnabled } = useConfig();
 
   return (
     <>
@@ -37,7 +40,13 @@ const UserTabs: FC<UserTabsProps> = ({ children }) => {
               label={t('common.notifications')}
               {...routesObj['notifications']}
             />
-            <NavigationTab icon={<VerifiedUserIcon />} label={t('common.credentials')} {...routesObj['credentials']} />
+            {isFeatureEnabled(FEATURE_SSI) && (
+              <NavigationTab
+                icon={<VerifiedUserIcon />}
+                label={t('common.credentials')}
+                {...routesObj['credentials']}
+              />
+            )}
           </Tabs>
         )}
       </NavigationTabs>
