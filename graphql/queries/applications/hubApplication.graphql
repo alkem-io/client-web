@@ -1,0 +1,16 @@
+query hubApplication($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    displayName
+    context{
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    community {
+      id
+      displayName
+    }
+  }
+}

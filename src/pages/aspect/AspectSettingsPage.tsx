@@ -16,7 +16,7 @@ export interface AspectSettingsPageProps extends PageProps {}
 
 const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
   const { t } = useTranslation();
-  const { ecoverseNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(() => [..._paths, { value: '', name: 'Settings', real: false }], [_paths, resolved]);
   useUpdateNavigation({ currentPaths });
@@ -35,7 +35,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
 
   return (
     <AspectSettingsContainer
-      hubNameId={ecoverseNameId}
+      hubNameId={hubNameId}
       aspectNameId={aspectNameId}
       challengeNameId={challengeNameId}
       opportunityNameId={opportunityNameId}

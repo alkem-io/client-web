@@ -1,5 +1,5 @@
-subscription communicationDiscussionMessageReceived {
-  communicationDiscussionMessageReceived {
+subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
+  communicationDiscussionMessageReceived(discussionID: $discussionID) {
     discussionID
     message {
       ...MessageDetails

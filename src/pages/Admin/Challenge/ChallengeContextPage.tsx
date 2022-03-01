@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { PageProps } from '../../common';
-import { useChallenge, useEcoverse, useUpdateNavigation } from '../../../hooks';
+import { useChallenge, useHub, useUpdateNavigation } from '../../../hooks';
 import { ChallengeContextView } from '../../../views/Challenge/ChallengeContextView';
 import ContextTabContainer from '../../../containers/context/ContextTabContainer';
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
@@ -11,10 +11,10 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/context', name: 'context', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const { displayName: hubDisplayName } = useEcoverse();
+  const { displayName: hubDisplayName } = useHub();
   const {
-    ecoverseId,
-    ecoverseNameId,
+    hubId,
+    hubNameId,
     displayName: challengeDisplayName,
     challengeId,
     challengeNameId,
@@ -24,15 +24,15 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
 
   return (
     <ContextTabContainer
-      hubNameId={ecoverseNameId}
+      hubNameId={hubNameId}
       challengeNameId={challengeNameId}
       loadAspectsAndReferences={loadAspectsAndReferences}
     >
       {(entities, state) => (
         <ChallengeContextView
           entities={{
-            hubId: ecoverseId,
-            hubNameId: ecoverseNameId,
+            hubId: hubId,
+            hubNameId: hubNameId,
             hubDisplayName: hubDisplayName,
             challengeId,
             challengeNameId,

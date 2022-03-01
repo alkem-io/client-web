@@ -1,9 +1,0 @@
-query ecoverseGroupsList($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
-    id
-    groups {
-      id
-      name
-    }
-  }
-}

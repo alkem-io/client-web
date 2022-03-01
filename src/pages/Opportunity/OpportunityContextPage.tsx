@@ -12,7 +12,7 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   const {
-    ecoverseNameId,
+    hubNameId,
     opportunityNameId,
     displayName,
     permissions: { contextPrivileges },
@@ -21,7 +21,7 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
 
   return (
     <ContextTabContainer
-      hubNameId={ecoverseNameId}
+      hubNameId={hubNameId}
       opportunityNameId={opportunityNameId}
       loadAspectsAndReferences={loadAspectsAndReferences}
     >

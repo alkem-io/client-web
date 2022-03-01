@@ -2,7 +2,6 @@ import { ApolloError } from '@apollo/client';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useResolvedPath } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
@@ -74,12 +73,10 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { pathname: url } = useResolvedPath('.');
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
-  const { ecoverseId, ecoverseNameId, challengeId, challengeNameId, opportunityId, opportunityNameId } =
-    useOpportunity();
+  const { hubId, hubNameId, challengeId, challengeNameId, opportunityId, opportunityNameId } = useOpportunity();
 
   const { isAuthenticated } = useAuthenticationContext();
   const { user } = useUserContext();
@@ -91,14 +88,14 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     loading: loadingOpportunity,
     error: errorOpportunity,
   } = useOpportunityPageQuery({
-    variables: { ecoverseId: ecoverseNameId, opportunityId: opportunityNameId },
+    variables: { hubId: hubNameId, opportunityId: opportunityNameId },
     errorPolicy: 'all',
   });
 
-  const opportunity = (query?.ecoverse.opportunity ?? {}) as OpportunityPageFragment;
+  const opportunity = (query?.hub.opportunity ?? {}) as OpportunityPageFragment;
 
   const permissions = useMemo(() => {
-    const isAdmin = user?.isOpportunityAdmin(ecoverseId, challengeId, opportunityId) || false;
+    const isAdmin = user?.isOpportunityAdmin(hubId, challengeId, opportunityId) || false;
     return {
       canEdit: isAdmin,
       projectWrite: isAdmin,
@@ -110,7 +107,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
         x => x === AuthorizationPrivilege.Read
       ),
     };
-  }, [user, opportunity, ecoverseId, challengeId, opportunityId]);
+  }, [user, opportunity, hubId, challengeId, opportunityId]);
 
   const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
@@ -135,7 +132,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
   const onProjectTransition = (project?: any) => {
-    navigate(`${url}/projects/${project?.nameID ?? 'new'}`, { replace: true });
+    navigate(project?.nameID ?? 'new');
   };
 
   // const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
@@ -188,7 +185,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
       {children(
         {
           opportunity,
-          url: buildAdminOpportunityUrl(ecoverseNameId, challengeNameId, opportunity.nameID),
+          url: buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
           activity,
           meme,
           links,

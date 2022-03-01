@@ -1,5 +1,5 @@
-query challengeInfo($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query challengeInfo($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     nameID
     challenge(ID: $challengeId) {

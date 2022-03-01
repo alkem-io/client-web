@@ -1,0 +1,15 @@
+query applicationByHub($hubId: UUID_NAMEID!, $appId: UUID!) {
+  hub(ID: $hubId) {
+    id
+    application(ID: $appId) {
+      id
+      createdDate
+      updatedDate
+      questions {
+        id
+        name
+        value
+      }
+    }
+  }
+}

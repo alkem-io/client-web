@@ -1,13 +1,13 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  useApplicationByEcoverseLazyQuery,
+  useApplicationByHubLazyQuery,
   useChallengeNameIdQuery,
-  useEcoverseNameIdQuery,
+  useHubNameIdQuery,
   useOpportunityNameIdQuery,
 } from '../../hooks/generated/graphql';
 import { Application } from '../../models/graphql-schema';
-import { buildChallengeUrl, buildEcoverseUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import getApplicationTypeTranslationKey from '../../utils/application/getApplicationTypeTranslation';
 import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
 
@@ -41,7 +41,7 @@ export interface PendingApplicationContainerProps {
 
 const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ entities, children }) => {
   const { t } = useTranslation();
-  const { type, ecoverseID, challengeID = '', opportunityID = '' } = entities.application;
+  const { type, hubID, challengeID = '', opportunityID = '' } = entities.application;
 
   const [applicationDetails, setApplicationDetails] = useState<ApplicationDialogDetails>();
   const [isDialogOpened, setIsDialogOpened] = useState(false);
@@ -49,50 +49,50 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
   let url = '';
 
   const { data: _opportunityNameId, loading: loadingOpportunity } = useOpportunityNameIdQuery({
-    variables: { ecoverseId: ecoverseID, opportunityId: opportunityID },
+    variables: { hubId: hubID, opportunityId: opportunityID },
     skip: !opportunityID,
   });
   if (opportunityID) {
-    const ecoverseNameId = _opportunityNameId?.ecoverse.nameID || '';
-    const challengeNameId = _opportunityNameId?.ecoverse.opportunity.challenge?.nameID || '';
-    const opportunityNameId = _opportunityNameId?.ecoverse.opportunity.nameID || '';
-    url = buildOpportunityUrl(ecoverseNameId, challengeNameId, opportunityNameId);
+    const hubNameId = _opportunityNameId?.hub.nameID || '';
+    const challengeNameId = _opportunityNameId?.hub.opportunity.challenge?.nameID || '';
+    const opportunityNameId = _opportunityNameId?.hub.opportunity.nameID || '';
+    url = buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId);
   }
 
   const { data: _challengeNameId, loading: loadingChallenge } = useChallengeNameIdQuery({
-    variables: { ecoverseId: ecoverseID, challengeId: challengeID },
+    variables: { hubId: hubID, challengeId: challengeID },
     skip: !challengeID,
   });
   if (challengeID && !opportunityID) {
-    const ecoverseNameId = _challengeNameId?.ecoverse.nameID || '';
-    const challengeNameId = _challengeNameId?.ecoverse.challenge.nameID || '';
-    url = buildChallengeUrl(ecoverseNameId, challengeNameId);
+    const hubNameId = _challengeNameId?.hub.nameID || '';
+    const challengeNameId = _challengeNameId?.hub.challenge.nameID || '';
+    url = buildChallengeUrl(hubNameId, challengeNameId);
   }
 
-  const { data: _ecoverseNameId, loading: loadingEcoverse } = useEcoverseNameIdQuery({
-    variables: { ecoverseId: ecoverseID },
-    skip: !!(ecoverseID && (challengeID || opportunityID)),
+  const { data: _hubNameId, loading: loadingHub } = useHubNameIdQuery({
+    variables: { hubId: hubID },
+    skip: !!(hubID && (challengeID || opportunityID)),
   });
-  if (ecoverseID && !challengeID && !opportunityID) {
-    const ecoverseNameId = _ecoverseNameId?.ecoverse.nameID || '';
-    url = buildEcoverseUrl(ecoverseNameId);
+  if (hubID && !challengeID && !opportunityID) {
+    const hubNameId = _hubNameId?.hub.nameID || '';
+    url = buildHubUrl(hubNameId);
   }
 
-  const [applicationByEcoverse, { loading: loadingDialog }] = useApplicationByEcoverseLazyQuery({
+  const [applicationByHub, { loading: loadingDialog }] = useApplicationByHubLazyQuery({
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
-    onCompleted: ({ ecoverse }) =>
+    onCompleted: ({ hub }) =>
       setApplicationDetails({
-        questions: ecoverse.application.questions,
-        createdDate: ecoverse.application.createdDate,
-        updatedDate: ecoverse.application.updatedDate,
+        questions: hub.application.questions,
+        createdDate: hub.application.createdDate,
+        updatedDate: hub.application.updatedDate,
       }),
   });
 
   const handleDialogOpen = useCallback(
     (application: ApplicationWithType) => {
-      applicationByEcoverse({
-        variables: { ecoverseId: application.ecoverseID, appId: application.id },
+      applicationByHub({
+        variables: { hubId: application.hubID, appId: application.id },
       });
       setIsDialogOpened(true);
     },
@@ -113,7 +113,7 @@ const PendingApplicationContainer: FC<PendingApplicationContainerProps> = ({ ent
         { url, typeName, applicationDetails: applicationDetails },
         { handleDialogOpen, handleDialogClose },
         {
-          loading: loadingEcoverse || loadingChallenge || loadingOpportunity,
+          loading: loadingHub || loadingChallenge || loadingOpportunity,
           loadingDialog,
           isDialogOpened,
         }

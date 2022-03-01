@@ -35,8 +35,8 @@ fragment ChechkoutDetails on CanvasCheckout {
   }
 }
 
-query ecoverseCanvases($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query hubCanvases($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     context {
       id
@@ -47,8 +47,8 @@ query ecoverseCanvases($ecoverseId: UUID_NAMEID!) {
   }
 }
 
-query ecoverseCanvasValues($ecoverseId: UUID_NAMEID!, $canvasId: UUID!) {
-  ecoverse(ID: $ecoverseId) {
+query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
+  hub(ID: $hubId) {
     id
     context {
       id
@@ -60,8 +60,8 @@ query ecoverseCanvasValues($ecoverseId: UUID_NAMEID!, $canvasId: UUID!) {
   }
 }
 
-query challengeCanvases($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query challengeCanvases($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     challenge(ID: $challengeId) {
       id
@@ -75,8 +75,8 @@ query challengeCanvases($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   }
 }
 
-query challengeCanvasValues($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasId: UUID!) {
-  ecoverse(ID: $ecoverseId) {
+query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasId: UUID!) {
+  hub(ID: $hubId) {
     id
     challenge(ID: $challengeId) {
       id
@@ -91,8 +91,8 @@ query challengeCanvasValues($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID
   }
 }
 
-query opportunityCanvases($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query opportunityCanvases($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     opportunity(ID: $opportunityId) {
       id
@@ -106,8 +106,8 @@ query opportunityCanvases($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID
   }
 }
 
-query opportunityCanvasValues($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasId: UUID!) {
-  ecoverse(ID: $ecoverseId) {
+query opportunityCanvasValues($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasId: UUID!) {
+  hub(ID: $hubId) {
     id
     opportunity(ID: $opportunityId) {
       id

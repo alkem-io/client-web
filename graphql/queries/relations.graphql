@@ -1,5 +1,5 @@
-query relations($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query relations($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     opportunity(ID: $opportunityId) {
       relations {

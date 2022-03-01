@@ -1,7 +1,7 @@
 # normal query and "extra" one with JUST the aspects and references
 # hub queries
 query HubContext($hubNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     nameID
     displayName
@@ -16,7 +16,7 @@ query HubContext($hubNameId: UUID_NAMEID!) {
   }
 }
 query HubContextExtra($hubNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     nameID
     displayName
@@ -32,7 +32,7 @@ query HubContextExtra($hubNameId: UUID_NAMEID!) {
 }
 # chall queries
 query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     nameID
     displayName
@@ -55,7 +55,7 @@ query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
   }
 }
 query ChallengeContextExtra($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     nameID
     displayName
@@ -79,7 +79,7 @@ query ChallengeContextExtra($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAM
 }
 # opp queries
 query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     nameID
     opportunity(ID: $opportunityNameId) {
@@ -101,7 +101,7 @@ query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
   }
 }
 query OpportunityContextExtra($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-  ecoverse(ID: $hubNameId) {
+  hub(ID: $hubNameId) {
     id
     nameID
     opportunity(ID: $opportunityNameId) {

@@ -1,12 +1,12 @@
-query ecoverseNameId($ecoverseId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query hubNameId($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     nameID
   }
 }
 
-query challengeNameId($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query challengeNameId($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     nameID
     challenge(ID: $challengeId) {
@@ -16,8 +16,8 @@ query challengeNameId($ecoverseId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   }
 }
 
-query opportunityNameId($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
+query opportunityNameId($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
     id
     nameID
     opportunity(ID: $opportunityId) {

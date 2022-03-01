@@ -1,19 +1,19 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerProps } from '../../models/container';
-import { SimpleEcoverseResultEntryFragment } from '../../models/graphql-schema';
+import { SimpleHubResultEntryFragment } from '../../models/graphql-schema';
 import { useChallengesOverviewPageQuery } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../hooks';
 
 export type SimpleChallenge = {
   id: string;
-  ecoverseId: string;
-  ecoverseNameId: string;
+  hubId: string;
+  hubNameId: string;
 };
 
 export interface ChallengesOverviewContainerEntities {
   userChallenges?: SimpleChallenge[];
-  userHubs?: SimpleEcoverseResultEntryFragment[];
+  userHubs?: SimpleHubResultEntryFragment[];
 }
 
 export interface ChallengesOverviewContainerActions {}
@@ -44,21 +44,21 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ ch
     },
     skip: !user,
   });
-  const ecoverses = data?.membershipUser.ecoverses;
+  const hubs = data?.membershipUser.hubs;
   const userChallenges: SimpleChallenge[] | undefined =
-    ecoverses &&
-    ecoverses.flatMap(x =>
+    hubs &&
+    hubs.flatMap(x =>
       x?.challenges.map(y => ({
         id: y.id,
-        ecoverseNameId: x.nameID,
-        ecoverseId: x.ecoverseID,
+        hubNameId: x.nameID,
+        hubId: x.hubID,
       }))
     );
 
-  const userHubs: SimpleEcoverseResultEntryFragment[] | undefined =
-    ecoverses &&
-    ecoverses.map(({ ecoverseID, displayName, nameID }) => ({
-      ecoverseID,
+  const userHubs: SimpleHubResultEntryFragment[] | undefined =
+    hubs &&
+    hubs.map(({ hubID, displayName, nameID }) => ({
+      hubID,
       displayName,
       nameID,
     }));

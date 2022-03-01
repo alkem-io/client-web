@@ -1,0 +1,57 @@
+query hubPage($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    ...HubPage
+  }
+}
+
+fragment HubPage on Hub {
+  id
+  nameID
+  displayName
+  activity {
+    id
+    name
+    value
+  }
+  authorization {
+    id
+    anonymousReadAccess
+    myPrivileges
+  }
+  host {
+    id
+    displayName
+    nameID
+  }
+  context {
+    id
+    tagline
+    vision
+    visuals {
+      ...VisualUri
+    }
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+  }
+  community {
+    id
+    members {
+      id
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  challenges(limit: 2, shuffle: true) {
+    ...ChallengeCard
+  }
+  tagset {
+    id
+    name
+    tags
+  }
+}

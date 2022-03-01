@@ -29,12 +29,7 @@ const AspectContext = React.createContext<AspectContextProps>({
 });
 
 const AspectProvider: FC = ({ children }) => {
-  const {
-    ecoverseNameId: hubNameId = '',
-    challengeNameId = '',
-    opportunityNameId = '',
-    aspectNameId = '',
-  } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '', opportunityNameId = '', aspectNameId = '' } = useUrlParams();
 
   const handleError = useApolloErrorHandler();
   const isAspectDefined = aspectNameId && hubNameId;
@@ -48,7 +43,7 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = hubData?.ecoverse?.context?.aspects?.[0];
+  const hubAspect = hubData?.hub?.context?.aspects?.[0];
 
   const {
     data: challengeData,
@@ -59,7 +54,7 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = challengeData?.ecoverse?.challenge?.context?.aspects?.[0];
+  const challengeAspect = challengeData?.hub?.challenge?.context?.aspects?.[0];
 
   const {
     data: opportunityData,
@@ -70,7 +65,7 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = opportunityData?.ecoverse?.opportunity?.context?.aspects?.[0];
+  const opportunityAspect = opportunityData?.hub?.opportunity?.context?.aspects?.[0];
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;

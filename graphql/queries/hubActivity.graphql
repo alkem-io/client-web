@@ -1,0 +1,9 @@
+query hubActivity($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    activity {
+      name
+      value
+    }
+  }
+}

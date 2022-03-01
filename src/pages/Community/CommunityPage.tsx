@@ -20,13 +20,13 @@ import { CommunityUpdatesContainer } from '../../containers/community-updates/Co
 import { AvatarsProvider } from '../../context/AvatarsProvider';
 
 export interface CommunityPageV2Props extends PageProps {
-  ecoverseId?: Scalars['UUID_NAMEID'];
+  hubId?: Scalars['UUID_NAMEID'];
   communityId?: Scalars['UUID'];
   challengeId?: Scalars['UUID_NAMEID'];
   opportunityId?: Scalars['UUID'];
 }
 
-const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityId, challengeId, opportunityId }) => {
+const CommunityPage: FC<CommunityPageV2Props> = ({ paths, hubId, communityId, challengeId, opportunityId }) => {
   const { t } = useTranslation();
 
   const { pathname: url } = useResolvedPath('.');
@@ -36,13 +36,13 @@ const CommunityPage: FC<CommunityPageV2Props> = ({ paths, ecoverseId, communityI
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const resourceId = opportunityId ?? challengeId ?? ecoverseId;
+  const resourceId = opportunityId ?? challengeId ?? hubId;
 
   return (
-    <CommunityUpdatesContainer entities={{ ecoverseId, communityId }}>
+    <CommunityUpdatesContainer entities={{ hubId, communityId }}>
       {({ messages, senders }, actions, loading) => (
         <CommunityPageContainer
-          ecoverseId={ecoverseId}
+          hubId={hubId}
           communityId={communityId}
           challengeId={challengeId}
           opportunityId={opportunityId}

@@ -1,25 +1,21 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { useChallenge, useEcoverse, useUserContext } from '../../hooks';
+import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
-import { Project } from '../../models/Project';
 import getActivityCount from '../../utils/get-activity-count';
-import { buildProjectUrl } from '../../utils/urlBuilders';
 
 export interface ChallengeContainerEntities {
-  ecoverseId: string;
-  ecoverseNameId: string;
-  ecoverseDisplayName: string;
+  hubId: string;
+  hubNameId: string;
+  hubDisplayName: string;
   challenge?: ChallengeProfileFragment;
   activity: ActivityItem[];
-  projects: Project[];
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -41,22 +37,21 @@ export interface ChallengePageContainerProps
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const { user, isAuthenticated } = useUserContext();
-  const { ecoverse, loading: loadingEcoverseContext } = useEcoverse();
-  const { ecoverseId, ecoverseNameId, challengeId, challengeNameId, loading } = useChallenge();
+  const { hub, loading: loadingHubContext } = useHub();
+  const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
 
   const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
     variables: {
-      ecoverseId: ecoverseNameId,
+      hubId: hubNameId,
       challengeId: challengeNameId,
     },
     errorPolicy: 'all',
   });
 
   const permissions = {
-    canEdit: user?.isChallengeAdmin(ecoverseId, challengeId) || false,
-    communityReadAccess: (_challenge?.ecoverse?.challenge?.community?.authorization?.myPrivileges || []).some(
+    canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
+    communityReadAccess: (_challenge?.hub?.challenge?.community?.authorization?.myPrivileges || []).some(
       x => x === AuthorizationPrivilege.Read
     ),
   };
@@ -64,7 +59,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const activity: ActivityItem[] = useMemo(() => {
-    const _activity = _challenge?.ecoverse.challenge.activity || [];
+    const _activity = _challenge?.hub.challenge.activity || [];
     return [
       {
         name: t('pages.activity.opportunities'),
@@ -84,50 +79,21 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ];
   }, [_challenge]);
 
-  const _opportunities = _challenge?.ecoverse.challenge.opportunities || [];
-
-  const projects = useMemo(() => {
-    const result =
-      _opportunities?.flatMap(
-        o =>
-          o.projects?.map(
-            p =>
-              ({
-                title: p.displayName || '',
-                description: p.description || '',
-                caption: o.displayName || '',
-                tag: { status: 'positive', text: p?.lifecycle?.state || '' },
-                type: 'display',
-                onSelect: () => navigate(buildProjectUrl(ecoverseNameId, challengeNameId, o.nameID, p.nameID)),
-              } as Project)
-          ) || []
-      ) || [];
-
-    return [
-      ...result,
-      {
-        title: t('pages.opportunity.sections.projects.more-projects'),
-        type: 'more',
-      } as Project,
-    ];
-  }, [_opportunities]);
-
   return (
     <>
       {children(
         {
-          ecoverseId,
-          ecoverseNameId,
-          ecoverseDisplayName: ecoverse?.displayName || '',
-          challenge: _challenge?.ecoverse.challenge,
+          hubId,
+          hubNameId,
+          hubDisplayName: hub?.displayName || '',
+          challenge: _challenge?.hub.challenge,
           activity,
           permissions,
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,
-          projects,
           discussions: discussionList,
         },
-        { loading: loading || loadingProfile || loadingEcoverseContext || loadingDiscussions },
+        { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions },
         {}
       )}
     </>

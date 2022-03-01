@@ -1,5 +1,0 @@
-fragment EcoverseName on Ecoverse {
-  id
-  nameID
-  displayName
-}

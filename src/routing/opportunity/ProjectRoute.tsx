@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useNavigate, useResolvedPath } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
-import { useApolloErrorHandler, useEcoverse, useOpportunity, useUrlParams } from '../../hooks';
+import { useApolloErrorHandler, useHub, useOpportunity, useUrlParams } from '../../hooks';
 import {
   ProjectDetailsFragmentDoc,
   useCreateProjectMutation,
@@ -15,13 +15,16 @@ import { nameOfUrl } from '../url-params';
 interface ProjectRootProps extends PageProps {}
 
 export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
+  const [lastPath] = paths.slice(-1);
+  const projectsPath = `${lastPath.value}/projects`;
+  const currentPaths = useMemo(() => [...paths, { value: projectsPath, name: 'projects', real: true }], [paths]);
   return (
     <Routes>
       <Route
         path={'new'}
         element={
           <RestrictedRoute requiredCredentials={[]}>
-            <ProjectNewRoute paths={paths} />
+            <ProjectNewRoute paths={currentPaths} />
           </RestrictedRoute>
         }
       />
@@ -29,7 +32,7 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
         path={`:${nameOfUrl.projectNameId}`}
         element={
           <RestrictedRoute>
-            <ProjectIndex paths={paths} />
+            <ProjectIndex paths={currentPaths} />
           </RestrictedRoute>
         }
       />
@@ -49,7 +52,7 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
       navigate(url.split('/').reverse().slice(1).reverse().join('/'), { replace: true });
     },
     onError: handleError,
-    refetchQueries: ['opportunityProfile', 'challengeProfile', 'ecoverseDetails'],
+    refetchQueries: ['opportunityProfile', 'challengeProfile', 'hubDetails'],
     awaitRefetchQueries: true,
   });
 
@@ -96,13 +99,13 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
 const ProjectIndex: FC<ProjectRootProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const { projectNameId = '' } = useUrlParams();
-  const { ecoverseNameId } = useEcoverse();
+  const { hubNameId } = useHub();
 
   const { data: query, loading: projectLoading } = useProjectProfileQuery({
-    variables: { ecoverseId: ecoverseNameId, projectId: projectNameId },
+    variables: { hubId: hubNameId, projectId: projectNameId },
   });
 
-  const project = query?.ecoverse.project;
+  const project = query?.hub.project;
 
   const currentPaths = useMemo(
     () => (project ? [...paths, { value: url, name: project.displayName, real: true }] : paths),

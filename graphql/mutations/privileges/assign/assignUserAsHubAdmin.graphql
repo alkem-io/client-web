@@ -1,0 +1,6 @@
+mutation assignUserAsHubAdmin($input: AssignHubAdminInput!) {
+  assignUserAsHubAdmin(membershipData: $input) {
+    id
+    displayName
+  }
+}

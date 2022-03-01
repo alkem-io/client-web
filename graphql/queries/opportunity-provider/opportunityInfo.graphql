@@ -1,9 +1,0 @@
-query opportunityInfo($ecoverseId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  ecoverse(ID: $ecoverseId) {
-    id
-    nameID
-    opportunity(ID: $opportunityId) {
-      ...OpportunityInfo
-    }
-  }
-}

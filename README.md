@@ -9,7 +9,7 @@
 
 # Alkemio Web Client
 
-Welcome to the Alkemio web client - allowing you to browse the contents of an Ecoverse. Please see the [Alkemio repository](../alkemio) for more details on the Alkemio platform.
+Welcome to the Alkemio web client - allowing you to browse the contents of an Hub. Please see the [Alkemio repository](../alkemio) for more details on the Alkemio platform.
 
 This client is based on React, and is intended to showcase how clients in general can interact with the domain model exposed by the [Alkemio server](../server).
 

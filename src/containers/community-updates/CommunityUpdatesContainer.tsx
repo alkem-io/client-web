@@ -13,7 +13,7 @@ import {
   Message,
   Community,
   User,
-  Ecoverse,
+  Hub,
   CommunicationUpdateMessageReceivedSubscription,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
@@ -22,7 +22,7 @@ import { logger } from '../../services/logging/winston/logger';
 export interface CommunityUpdatesContainerProps {
   entities: {
     communityId?: Community['id'];
-    ecoverseId?: Ecoverse['id'];
+    hubId?: Hub['id'];
   };
   children: (
     entities: CommunityUpdatesEntities,
@@ -51,17 +51,17 @@ export interface CommunityUpdatesEntities {
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
-  const { communityId, ecoverseId } = entities;
-  const { data, loading } = useCommunityUpdatesData(ecoverseId, communityId);
+  const { communityId, hubId } = entities;
+  const { data, loading } = useCommunityUpdatesData(hubId, communityId);
 
-  const updatesId = data?.ecoverse.community?.communication?.updates?.id || '';
+  const updatesId = data?.hub.community?.communication?.updates?.id || '';
 
   const [sendUpdate, { loading: loadingSendUpdate }] = useSendUpdateMutation({
     onError: handleError,
     refetchQueries:
-      isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !ecoverseId || !communityId
+      isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !hubId || !communityId
         ? []
-        : [refetchCommunityUpdatesQuery({ ecoverseId, communityId })],
+        : [refetchCommunityUpdatesQuery({ hubId, communityId })],
   });
 
   const onSubmit = useCallback<CommunityUpdatesActions['onSubmit']>(
@@ -80,7 +80,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     async messageId => {
       const update = await removeUpdate({
         variables: { msgData: { messageID: messageId, updatesID: updatesId } },
-        refetchQueries: ecoverseId && communityId ? [refetchCommunityUpdatesQuery({ ecoverseId, communityId })] : [],
+        refetchQueries: hubId && communityId ? [refetchCommunityUpdatesQuery({ hubId, communityId })] : [],
       });
       return update.data?.removeUpdate;
     },
@@ -91,7 +91,7 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     throw new Error('Not implemented');
   };
 
-  const messages = data?.ecoverse.community?.communication?.updates?.messages || [];
+  const messages = data?.hub.community?.communication?.updates?.messages || [];
   const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
 
   return (
@@ -109,20 +109,20 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   );
 };
 
-const useCommunityUpdatesData = (ecoverseNameId?: string, communityId?: string) => {
+const useCommunityUpdatesData = (hubNameId?: string, communityId?: string) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
   const { data, loading, subscribeToMore } = useCommunityUpdatesQuery({
     variables: {
-      ecoverseId: ecoverseNameId ?? '',
+      hubId: hubNameId ?? '',
       communityId: communityId ?? '',
     },
-    skip: !ecoverseNameId || !communityId,
+    skip: !hubNameId || !communityId,
     onError: handleError,
   });
 
   useEffect(() => {
-    if (!ecoverseNameId || !communityId || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+    if (!hubNameId || !communityId || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
       return;
     }
 
@@ -130,7 +130,7 @@ const useCommunityUpdatesData = (ecoverseNameId?: string, communityId?: string) 
       document: CommunicationUpdateMessageReceivedDocument,
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       updateQuery: (prev, { subscriptionData }) => {
-        const oldUpdates = prev?.ecoverse?.community?.communication?.updates;
+        const oldUpdates = prev?.hub?.community?.communication?.updates;
 
         if (!oldUpdates) {
           return prev;
@@ -149,7 +149,7 @@ const useCommunityUpdatesData = (ecoverseNameId?: string, communityId?: string) 
         const newMessage = newUpdate.message;
 
         return merge({}, prev, {
-          ecoverse: {
+          hub: {
             community: {
               communication: {
                 updates: {
@@ -162,7 +162,7 @@ const useCommunityUpdatesData = (ecoverseNameId?: string, communityId?: string) 
       },
     });
     return () => unSubscribe && unSubscribe();
-  }, [isFeatureEnabled, subscribeToMore, ecoverseNameId, communityId]);
+  }, [isFeatureEnabled, subscribeToMore, hubNameId, communityId]);
 
   return { data, loading };
 };

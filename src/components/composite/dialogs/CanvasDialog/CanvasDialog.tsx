@@ -151,7 +151,8 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
       canvasRef.current?.readyPromise?.then(async canvasApi => {
         const appState = canvasApi.getAppState();
         const elements = canvasApi.getSceneElements();
-        await actions.onUpdate({ ...c, value: serializeAsJSON(elements, appState) });
+        const files = canvasApi.getFiles();
+        await actions.onUpdate({ ...c, value: serializeAsJSON(elements, appState, files, 'local') });
         await actions.onCheckin(c);
       });
     },
@@ -160,7 +161,8 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
       canvasRef.current?.readyPromise?.then(canvasApi => {
         const appState = canvasApi.getAppState();
         const elements = canvasApi.getSceneElements();
-        actions.onUpdate({ ...c, value: serializeAsJSON(elements, appState) });
+        const files = canvasApi.getFiles();
+        actions.onUpdate({ ...c, value: serializeAsJSON(elements, appState, files, 'local') });
       });
     },
   };
@@ -172,7 +174,8 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     if (canvasApi && options.canEdit) {
       const elements = canvasApi.getSceneElements();
       const appState = canvasApi.getAppState();
-      const value = serializeAsJSON(elements, appState);
+      const files = canvasApi.getFiles();
+      const value = serializeAsJSON(elements, appState, files, 'local');
       if (!isEqual(canvas?.value, value)) {
         if (
           !window.confirm('It seems you have unsaved changes which will be lost. Are you sure you want to continue?')
@@ -324,7 +327,10 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             }}
             actions={{
               onUpdate: state =>
-                actions.onUpdate({ ...canvas, value: serializeAsJSON(state.elements, state.appState) }),
+                actions.onUpdate({
+                  ...canvas,
+                  value: serializeAsJSON(state.elements, state.appState, state.files ?? {}, 'local'),
+                }),
             }}
           />
         )}

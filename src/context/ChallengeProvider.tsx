@@ -4,7 +4,8 @@ import { AuthorizationPrivilege, ChallengeInfoFragment } from '../models/graphql
 import { useUrlParams } from '../hooks';
 
 interface ChallengePermissions {
-  viewerCanUpdate: boolean;
+  canUpdate: boolean;
+  canReadCommunity: boolean;
   contextPrivileges: AuthorizationPrivilege[];
 }
 
@@ -12,8 +13,8 @@ interface ChallengeContextProps {
   challenge?: ChallengeInfoFragment;
   challengeId: string;
   challengeNameId: string;
-  ecoverseId: string;
-  ecoverseNameId: string;
+  hubId: string;
+  hubNameId: string;
   displayName: string;
   loading: boolean;
   permissions: ChallengePermissions;
@@ -23,11 +24,12 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
   loading: true,
   challengeId: '',
   challengeNameId: '',
-  ecoverseId: '',
-  ecoverseNameId: '',
+  hubId: '',
+  hubNameId: '',
   displayName: '',
   permissions: {
-    viewerCanUpdate: false,
+    canUpdate: false,
+    canReadCommunity: false,
     contextPrivileges: [],
   },
 });
@@ -35,20 +37,26 @@ const ChallengeContext = React.createContext<ChallengeContextProps>({
 interface ChallengeProviderProps {}
 
 const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
-  const { ecoverseNameId = '', challengeNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId = '' } = useUrlParams();
   const { data, loading } = useChallengeInfoQuery({
-    variables: { ecoverseId: ecoverseNameId, challengeId: challengeNameId },
+    variables: { hubId: hubNameId, challengeId: challengeNameId },
     errorPolicy: 'all',
-    skip: !ecoverseNameId || !challengeNameId,
+    skip: !hubNameId || !challengeNameId,
   });
-  const ecoverseId = data?.ecoverse?.id || '';
-  const challenge = data?.ecoverse?.challenge;
+  const hubId = data?.hub?.id || '';
+  const challenge = data?.hub?.challenge;
   const challengeId = challenge?.id || '';
   const displayName = challenge?.displayName || '';
 
+  const myPrivileges = challenge?.authorization?.myPrivileges ?? [];
+  const canReadCommunity = (challenge?.community?.authorization?.myPrivileges ?? []).includes(
+    AuthorizationPrivilege.Read
+  );
+
   const permissions = useMemo<ChallengePermissions>(
     () => ({
-      viewerCanUpdate: challenge?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) || false,
+      canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
+      canReadCommunity,
       contextPrivileges: challenge?.context?.authorization?.myPrivileges ?? [],
     }),
     [challenge]
@@ -60,8 +68,8 @@ const ChallengeProvider: FC<ChallengeProviderProps> = ({ children }) => {
         challenge,
         challengeId,
         challengeNameId,
-        ecoverseId,
-        ecoverseNameId,
+        hubId,
+        hubNameId,
         permissions,
         displayName,
         loading,

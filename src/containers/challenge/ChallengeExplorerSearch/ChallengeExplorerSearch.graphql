@@ -10,7 +10,7 @@ fragment ChallengeExplorerSearchResult on Challenge {
   id
   displayName
   nameID
-  ecoverseID
+  hubID
   activity {
     id
     name
@@ -29,12 +29,12 @@ fragment ChallengeExplorerSearchResult on Challenge {
   }
 }
 
-query SimpleEcoverse($ID: UUID_NAMEID!) {
-  ecoverse(ID: $ID) {
-    ...SimpleEcoverse
+query SimpleHub($ID: UUID_NAMEID!) {
+  hub(ID: $ID) {
+    ...SimpleHub
   }
 }
-fragment SimpleEcoverse on Ecoverse {
+fragment SimpleHub on Hub {
   id
   nameID
   displayName

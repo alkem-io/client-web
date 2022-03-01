@@ -5,19 +5,13 @@ import { buildOpportunityUrl } from '../../../../utils/urlBuilders';
 import PopUpProps from '../../dialogs/PopUpProps';
 import { getVisualAvatar } from '../../../../utils/visuals.utils';
 
-const OpportunityPopUp: FC<PopUpProps<OpportunitySearchResultFragment>> = ({
-  onHide,
-  entity: opportunity,
-  ecoverse,
-}) => {
+const OpportunityPopUp: FC<PopUpProps<OpportunitySearchResultFragment>> = ({ onHide, entity: opportunity, hub }) => {
   const challenge = opportunity.challenge;
 
   const url = useMemo(
     () =>
-      ecoverse && challenge && opportunity
-        ? buildOpportunityUrl(ecoverse?.nameID, challenge?.nameID, opportunity?.nameID)
-        : '',
-    [ecoverse, challenge, opportunity]
+      hub && challenge && opportunity ? buildOpportunityUrl(hub?.nameID, challenge?.nameID, opportunity?.nameID) : '',
+    [hub, challenge, opportunity]
   );
 
   const model = useMemo(
@@ -28,10 +22,10 @@ const OpportunityPopUp: FC<PopUpProps<OpportunitySearchResultFragment>> = ({
         tagline: opportunity?.context?.tagline,
         tags: opportunity?.tagset?.tags,
         challengeName: opportunity.challenge?.displayName,
-        ecoverseName: ecoverse?.displayName,
+        hubName: hub?.displayName,
         url: url,
       } as PopUpViewmodel),
-    [ecoverse, opportunity]
+    [hub, opportunity]
   );
 
   return <PopUp onHide={() => onHide && onHide()} model={model} />;
