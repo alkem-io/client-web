@@ -115,27 +115,29 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
                     {t('pages.community.leading-organizations.no-data')}
                   </Box>
                 )}
-                <Grid container spacing={3}>
-                  {organizations.map((x, i) => (
-                    <Grid
-                      key={i}
-                      item
-                      flexGrow={1}
-                      flexBasis="100%"
-                      maxWidth={{ xs: 'auto', sm: 'auto', md: 'auto', lg: '50%', xl: '50%' }}
-                    >
-                      <OrganizationCard
-                        url={x.url}
-                        members={x.members}
-                        avatar={x.avatar}
-                        name={x.name}
-                        role={x.role}
-                        information={x.information}
-                        verified={x.verified}
-                      />
-                    </Grid>
-                  ))}
-                </Grid>
+                {!!organizations.length && (
+                  <Grid container spacing={3}>
+                    {organizations.map((x, i) => (
+                      <Grid
+                        key={i}
+                        item
+                        flexGrow={1}
+                        flexBasis="100%"
+                        maxWidth={{ xs: 'auto', sm: 'auto', md: 'auto', lg: '50%', xl: '50%' }}
+                      >
+                        <OrganizationCard
+                          url={x.url}
+                          members={x.members}
+                          avatar={x.avatar}
+                          name={x.name}
+                          role={x.role}
+                          information={x.information}
+                          verified={x.verified}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                )}
               </>
             )}
           </Accordion>
