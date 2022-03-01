@@ -30,7 +30,7 @@ interface ChallengeDashboardViewProps {
 export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
 
-  const { hub, loading: loadingHubContext } = useHub();
+  const { displayName: hubDisplayName, loading: loadingHubContext } = useHub();
   const { hubNameId, hubId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
   const { challenge, activity, isMember, discussions, permissions } = entities;
@@ -63,7 +63,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
                 entities={{
                   hubId,
                   hubNameId,
-                  hubName: hub?.displayName || '',
+                  hubName: hubDisplayName,
                   challengeId,
                   challengeName: challenge?.displayName || '',
                   challengeNameId,
