@@ -22,7 +22,6 @@ import AspectProvider from '../../context/aspect/AspectProvider';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
-    hub,
     displayName,
     isPrivate,
     hubId,
@@ -30,7 +29,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   } = useHub();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
-    () => (hub ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
+    () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
     [_paths, displayName, resolved]
   );
   const discussionsRequiredCredentials: CredentialForResource[] =

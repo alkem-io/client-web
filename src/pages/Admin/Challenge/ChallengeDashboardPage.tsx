@@ -3,7 +3,7 @@ import { PageProps } from '../../common';
 import { useUpdateNavigation } from '../../../hooks';
 import ChallengePageContainer from '../../../containers/challenge/ChallengePageContainer';
 import { ChallengeDashboardView } from '../../../views/Challenge/ChallengeDashboardView';
-import { DiscussionProvider } from '../../../context/Discussions/DiscussionProvider';
+import { DiscussionsProvider } from '../../../context/Discussions/DiscussionsProvider';
 
 export interface ChallengeDashboardPageProps extends PageProps {}
 
@@ -12,11 +12,11 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <DiscussionProvider>
+    <DiscussionsProvider>
       <ChallengePageContainer>
         {(entities, state) => <ChallengeDashboardView entities={entities} state={state} />}
       </ChallengePageContainer>
-    </DiscussionProvider>
+    </DiscussionsProvider>
   );
 };
 export default ChallengeDashboardPage;
