@@ -32,7 +32,7 @@ const DashboardDiscussionsSection: FC<DashboardDiscussionsSectionProps> = ({ dis
         <DiscussionOverview key={index} discussion={item} />
       ))}
       {!discussionsInCard.length && (
-        <Link component={RouterLink} to={isMember ? '../community/discussions/new' : '../apply'}>
+        <Link component={RouterLink} to={isMember ? '../discussions/new' : '../apply'}>
           {t(`dashboard-discussions-section.${isMember ? 'no-data-create' : 'no-data-join'}` as const)}
         </Link>
       )}
