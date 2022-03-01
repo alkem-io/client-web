@@ -26,13 +26,13 @@ const DashboardDiscussionsSection: FC<DashboardDiscussionsSectionProps> = ({ dis
     <DashboardGenericSection
       headerText={t('dashboard-discussions-section.title', { count: discussions.length })}
       navText={t('buttons.see-all')}
-      navLink={'community/discussions'}
+      navLink={'discussions'}
     >
       {discussionsInCard.map((item, index) => (
         <DiscussionOverview key={index} discussion={item} />
       ))}
       {!discussionsInCard.length && (
-        <Link component={RouterLink} to={isMember ? '../community/discussions/new' : '../apply'}>
+        <Link component={RouterLink} to={isMember ? '../discussions/new' : '../apply'}>
           {t(`dashboard-discussions-section.${isMember ? 'no-data-create' : 'no-data-join'}` as const)}
         </Link>
       )}

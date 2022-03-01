@@ -52,7 +52,7 @@ export const buildDiscussionUrl = (url: string, id: string) => {
 };
 
 export const buildDiscussionsUrl = (url: string) => {
-  const stripUrl = url.replace('/discussions', '');
+  const stripUrl = url.replace(/\/discussions\/.*/g, '');
   return `${stripUrl}/discussions/`;
 };
 

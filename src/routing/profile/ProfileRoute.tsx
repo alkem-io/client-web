@@ -4,9 +4,13 @@ import { useUserContext } from '../../hooks';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 
 export const ProfileRoute: FC = () => {
-  const { user } = useUserContext();
+  const { user, loading } = useUserContext();
 
-  if (user) return <Navigate to={buildUserProfileUrl(user?.user.nameID)} />;
+  if (loading) {
+    return <></>;
+  }
+
+  if (user) return <Navigate to={buildUserProfileUrl(user?.user.nameID)} replace />;
   return <Navigate to={'/'} />;
 };
 export default ProfileRoute;

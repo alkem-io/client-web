@@ -77,8 +77,7 @@ const HubAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = 
     });
   };
 
-  const { hub, loading: loadingHub } = useHub();
-  const communityId = hub?.community?.id || '';
+  const { communityId, loading: loadingHub } = useHub();
 
   if (loadingHub) {
     return <Loading />;
