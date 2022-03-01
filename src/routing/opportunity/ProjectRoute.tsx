@@ -15,13 +15,16 @@ import { nameOfUrl } from '../url-params';
 interface ProjectRootProps extends PageProps {}
 
 export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
+  const [lastPath] = paths.slice(-1);
+  const projectsPath = `${lastPath.value}/projects`;
+  const currentPaths = useMemo(() => [...paths, { value: projectsPath, name: 'projects', real: true }], [paths]);
   return (
     <Routes>
       <Route
         path={'new'}
         element={
           <RestrictedRoute requiredCredentials={[]}>
-            <ProjectNewRoute paths={paths} />
+            <ProjectNewRoute paths={currentPaths} />
           </RestrictedRoute>
         }
       />
@@ -29,7 +32,7 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
         path={`:${nameOfUrl.projectNameId}`}
         element={
           <RestrictedRoute>
-            <ProjectIndex paths={paths} />
+            <ProjectIndex paths={currentPaths} />
           </RestrictedRoute>
         }
       />
