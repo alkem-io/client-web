@@ -1,9 +1,0 @@
-query opportunityInfo($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    nameID
-    opportunity(ID: $opportunityId) {
-      ...OpportunityInfo
-    }
-  }
-}

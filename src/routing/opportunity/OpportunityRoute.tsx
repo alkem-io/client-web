@@ -18,8 +18,7 @@ import AspectRoute from '../aspect/AspectRoute';
 interface OpportunityRootProps extends PageProps {}
 
 const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
-  const { opportunity, displayName, hubNameId, challengeNameId, opportunityNameId, loading, permissions } =
-    useOpportunity();
+  const { displayName, hubNameId, challengeNameId, opportunityNameId, loading, permissions } = useOpportunity();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
@@ -30,7 +29,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
     return <Loading text={'Loading opportunity'} />;
   }
 
-  if (!opportunity) {
+  if (!opportunityNameId) {
     return <Error404 />;
   }
 

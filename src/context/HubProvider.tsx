@@ -1,8 +1,8 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useConfig, useUrlParams, useUserContext } from '../hooks';
-import { useHubInfoQuery } from '../hooks/generated/graphql';
-import { AspectTemplate, AuthorizationPrivilege, HubInfoFragment, HubTemplate } from '../models/graphql-schema';
+import { useHubProviderQuery } from '../hooks/generated/graphql';
+import { AspectTemplate, AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
 
 interface HubPermissions {
   viewerCanUpdate: boolean;
@@ -17,6 +17,8 @@ interface HubContextProps {
   hubId: string;
   hubNameId: string;
   displayName: string;
+  communityId: string;
+  visuals: Visual[];
   template: HubTemplate;
   isPrivate: boolean;
   loading: boolean;
@@ -30,6 +32,8 @@ const HubContext = React.createContext<HubContextProps>({
   hubId: '',
   hubNameId: '',
   displayName: '',
+  communityId: '',
+  visuals: [],
   template: { aspectTemplates: [] },
   permissions: {
     viewerCanUpdate: false,
@@ -53,7 +57,7 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
     error: hubError,
     data,
     loading,
-  } = useHubInfoQuery({
+  } = useHubProviderQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
     skip: !hubNameId,
@@ -61,6 +65,8 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const hub = data?.hub;
   const hubId = hub?.id || '';
   const displayName = hub?.displayName || '';
+  const communityId = hub?.community?.id ?? '';
+  const visuals = hub?.context?.visuals ?? [];
   const template: HubTemplate =
     hub && hub.template.aspectTemplates.length > 0
       ? { aspectTemplates: hub?.template.aspectTemplates }
@@ -94,6 +100,8 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
         hub,
         hubId,
         hubNameId,
+        communityId,
+        visuals,
         template,
         permissions,
         displayName,

@@ -20,7 +20,6 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
 
   if (!isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)) return <Error404 />;
   return (
-    // DiscussionsProvider provided at HubPage
     <Routes>
       <Route path={'/'}>
         <Route

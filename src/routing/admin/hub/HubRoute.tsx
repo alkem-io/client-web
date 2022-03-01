@@ -16,13 +16,10 @@ interface HubAdminRouteProps extends PageProps {}
 
 export const HubRoute: FC<HubAdminRouteProps> = ({ paths }) => {
   useTransactionScope({ type: 'admin' });
-  const { hubId, hubNameId, hub, loading: loadingHub } = useHub();
+  const { hubId, hubNameId, displayName, communityId, loading: loadingHub } = useHub();
   const { pathname: url } = useResolvedPath('.');
 
-  const currentPaths = useMemo(
-    () => [...paths, { value: url, name: hub?.displayName || '', real: true }],
-    [paths, hub]
-  );
+  const currentPaths = useMemo(() => [...paths, { value: url, name: displayName, real: true }], [paths, displayName]);
 
   return (
     <Routes>
@@ -33,7 +30,7 @@ export const HubRoute: FC<HubAdminRouteProps> = ({ paths }) => {
             <ManagementPageTemplatePage
               data={managementData.hubLvl}
               paths={currentPaths}
-              title={hub?.displayName}
+              title={displayName}
               entityUrl={buildHubUrl(hubNameId)}
               loading={loadingHub}
             />
@@ -46,7 +43,7 @@ export const HubRoute: FC<HubAdminRouteProps> = ({ paths }) => {
           element={
             <CommunityRoute
               paths={currentPaths}
-              communityId={hub?.community?.id}
+              communityId={communityId}
               credential={AuthorizationCredential.HubMember}
               resourceId={hubId}
               accessedFrom="hub"
