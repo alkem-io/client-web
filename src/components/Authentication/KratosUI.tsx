@@ -23,6 +23,7 @@ import KratosCheckbox from './Kratos/KratosCheckbox';
 import KratosHidden from './Kratos/KratosHidden';
 import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
+import { KratosFriendlierMessageMapper } from './Kratos/messages';
 
 type FormType =
   | SubmitSelfServiceLoginFlowBody
@@ -52,11 +53,14 @@ const toAlertVariant = (type: string) => {
 };
 
 const KratosMessages: FC<{ messages?: Array<UiText> }> = ({ messages }) => {
+  const { t } = useTranslation();
+  const getFriendlierMessage = useMemo(() => KratosFriendlierMessageMapper(t), []);
+
   return (
     <>
-      {messages?.map(x => (
-        <Alert key={x.id} severity={toAlertVariant(x.type)}>
-          {x.text}
+      {messages?.map(message => (
+        <Alert key={message.id} severity={toAlertVariant(message.type)}>
+          {getFriendlierMessage(message)}
         </Alert>
       ))}
     </>
@@ -165,6 +169,8 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
       return doc.body;
     }
   };
+
+  console.log(ui.messages);
 
   return (
     <KratosUIProvider {...rest}>
