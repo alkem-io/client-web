@@ -55,17 +55,17 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     const _activity = _hub?.hub.activity || [];
     return [
       {
-        name: t('pages.activity.challenges'),
+        name: t('common.challenges'),
         digit: getActivityCount(_activity, 'challenges') || 0,
         color: 'neutral',
       },
       {
-        name: t('pages.activity.opportunities'),
+        name: t('common.opportunities'),
         digit: getActivityCount(_activity, 'opportunities') || 0,
         color: 'primary',
       },
       {
-        name: t('pages.activity.members'),
+        name: t('common.members'),
         digit: getActivityCount(_activity, 'members') || 0,
         color: 'neutralMedium',
       },

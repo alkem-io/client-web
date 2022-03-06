@@ -24,25 +24,25 @@ const AlkemioActivitySection: FC<{
     () => [
       { name: t('pages.activity.hubs'), isLoading: loading, digit: hubCount, color: 'primary' },
       {
-        name: t('pages.activity.challenges'),
+        name: t('common.challenges'),
         isLoading: loading,
         digit: challengeCount,
         color: 'primary',
       },
       {
-        name: t('pages.activity.opportunities'),
+        name: t('common.opportunities'),
         isLoading: loading,
         digit: opportunityCount,
         color: 'primary',
       },
       {
-        name: t('pages.activity.users'),
+        name: t('common.users'),
         isLoading: loading,
         digit: userCount,
         color: 'primary',
       },
       {
-        name: t('pages.activity.organizations'),
+        name: t('common.organizations'),
         isLoading: loading,
         digit: orgCount,
         color: 'primary',
