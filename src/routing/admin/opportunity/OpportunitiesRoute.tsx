@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
-import { OpportunityProvider } from '../../../context/OpportunityProvider';
+import { OpportunityProvider } from '../../../context/OpportunityProvider/OpportunityProvider';
 import { Error404, PageProps } from '../../../pages';
 import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
 import { nameOfUrl } from '../../url-params';

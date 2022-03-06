@@ -1,0 +1,37 @@
+query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    nameID
+    opportunity(ID: $opportunityId) {
+      ...OpportunityProvider
+    }
+  }
+}
+
+fragment OpportunityProvider on Opportunity {
+  id
+  nameID
+  displayName
+  authorization {
+    id
+    myPrivileges
+  }
+  context {
+    id
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+    visuals {
+      ...VisualFull
+    }
+  }
+  community {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+}

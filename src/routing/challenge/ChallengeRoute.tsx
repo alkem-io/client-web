@@ -12,7 +12,7 @@ import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
 import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { nameOfUrl } from '../url-params';
-import { OpportunityProvider } from '../../context/OpportunityProvider';
+import { OpportunityProvider } from '../../context/OpportunityProvider/OpportunityProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
 import ChallengeDashboardPage from '../../pages/Admin/Challenge/ChallengeDashboardPage';
