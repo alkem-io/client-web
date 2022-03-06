@@ -216,7 +216,7 @@ export const UserForm: FC<UserProps> = ({
                         <FormikInputField
                           name={'firstName'}
                           title={'First Name'}
-                          required={true && !isReadOnlyMode}
+                          required={!isReadOnlyMode}
                           readOnly={isReadOnlyMode}
                           placeholder={'First Name'}
                           disabled={isSubmitting}
@@ -226,7 +226,7 @@ export const UserForm: FC<UserProps> = ({
                         <FormikInputField
                           name={'lastName'}
                           title={'Last name'}
-                          required={true && !isReadOnlyMode}
+                          required={!isReadOnlyMode}
                           readOnly={isReadOnlyMode}
                           placeholder={'Last name'}
                           disabled={isSubmitting}
@@ -237,7 +237,7 @@ export const UserForm: FC<UserProps> = ({
                         <FormikInputField
                           name={'displayName'}
                           title={'Full Name'}
-                          required={true && !isReadOnlyMode}
+                          required={!isReadOnlyMode}
                           readOnly={isReadOnlyMode}
                           placeholder={'Full Name'}
                           disabled={isSubmitting}

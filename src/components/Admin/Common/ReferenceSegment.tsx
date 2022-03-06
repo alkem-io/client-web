@@ -78,7 +78,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
             </Grid>
           ) : (
             references?.map((ref, index) => (
-              <Grid key={index} container item spacing={4} wrap="nowrap">
+              <Grid key={index} container item spacing={4}>
                 <Grid item xs="auto">
                   <FormikInputField
                     name={`references.${index}.name`}
@@ -87,7 +87,7 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                     disabled={disabled || index === removing}
                   />
                 </Grid>
-                <Grid item xs>
+                <Grid item flexGrow={1}>
                   <FormikInputField
                     name={`references.${index}.uri`}
                     title={'URI'}
@@ -121,6 +121,14 @@ export const ReferenceSegment: FC<ReferenceSegmentProps> = ({
                       <DeleteOutline />
                     </IconButton>
                   </Tooltip>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormikInputField
+                    name={`references.${index}.description`}
+                    title={'Description'}
+                    readOnly={readOnly}
+                    disabled={disabled || index === removing}
+                  />
                 </Grid>
               </Grid>
             ))
