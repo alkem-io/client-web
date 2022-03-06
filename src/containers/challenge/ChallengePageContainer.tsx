@@ -62,17 +62,17 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     const _activity = _challenge?.hub.challenge.activity || [];
     return [
       {
-        name: t('pages.activity.opportunities'),
+        name: t('common.opportunities'),
         digit: getActivityCount(_activity, 'opportunities') || 0,
         color: 'primary',
       },
       {
-        name: t('pages.activity.projects'),
+        name: t('common.projects'),
         digit: getActivityCount(_activity, 'projects') || 0,
         color: 'positive',
       },
       {
-        name: t('pages.activity.members'),
+        name: t('common.members'),
         digit: getActivityCount(_activity, 'members') || 0,
         color: 'neutralMedium',
       },

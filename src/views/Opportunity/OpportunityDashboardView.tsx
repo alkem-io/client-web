@@ -95,7 +95,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             headerText={displayName}
             primaryAction={
               <Button onClick={actions.onInterestOpen} variant="contained">
-                {t('pages.opportunity.sections.potential.buttons.apply.text')}
+                {t('pages.opportunity.sections.apply')}
               </Button>
             }
           >
