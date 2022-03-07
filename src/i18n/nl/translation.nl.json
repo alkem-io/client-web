@@ -1,983 +1,1513 @@
 {
   "cookie": {
-    "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
+    "consent": "Om de best mogelijke ervaring te bieden maakt deze site gebruik van noodzakelijke cookies, conform ons privacybeleid."
   },
+
   "buttons": {
-    "learn-more": "Learn more",
-    "apply": "Apply",
-    "apply-not-signed": "Sign in to apply",
-    "apply-pending": "Application pending",
-    "explore": "Explore",
+    "learn-more": "Meer leren",
+
+    "apply": "Schrijf in",
+
+    "apply-not-signed": "Log in om in te schrijven",
+
+    "apply-pending": "Lopende inschrijving",
+
+    "explore": "Verken",
+
     "ok": "Ok",
-    "create": "Create",
-    "save": "Save",
-    "back": "Back",
-    "edit": "Edit",
-    "see-more": "See more",
-    "see-all": "See all",
-    "home": "Home",
-    "take-me-home": "Take me home",
-    "close": "Close",
-    "delete": "Delete",
-    "submit": "Submit",
-    "remove": "Remove",
-    "cancel": "Cancel",
-    "explore-and-connect": "Explore and connect",
-    "send-message": "Send message",
-    "edit-members": "Edit members",
-    "my-profile": "My profile",
-    "new": "New",
-    "sign-out": "Sign out",
-    "cancel-project": "Cancel project",
-    "create-project": "Create project",
-    "processing": "Processing...",
+
+    "create": "Maak aan",
+
+    "save": "Opslaan",
+
+    "back": "Terug",
+
+    "edit": "Pas aan",
+
+    "see-more": "Zie meer",
+
+    "see-all": "Zie alles",
+
+    "home": "Startpagina",
+
+    "take-me-home": "Terug naar startpagina",
+
+    "close": "Sluit",
+
+    "delete": "Verwijder",
+
+    "submit": "Verstuur",
+
+    "remove": "Verwijder",
+
+    "cancel": "Annuleer",
+
+    "explore-and-connect": "Verken en verbind",
+
+    "send-message": "Verstuur bericht",
+
+    "edit-members": "Pas leden aan",
+
+    "my-profile": "Mijn profiel",
+
+    "new": "Nieuw",
+
+    "sign-out": "Log uit",
+
+    "cancel-project": "Annuleer project",
+
+    "create-project": "Maak project aan",
+
+    "processing": "Verwerken...",
+
     "details": "Details",
-    "settings": "Settings",
-    "member": "Member",
-    "profile": "Profile",
-    "view-profile": "View Profile",
-    "edit-photo": "Edit Photo"
+
+    "settings": "Instellingen",
+
+    "member": "Lid",
+
+    "profile": "Profiel",
+
+    "view-profile": "Bekijk Profiel",
+
+    "edit-photo": "Pas foto aan"
   },
+
   "tooltips": {
-    "click-more-info": "Click for more information",
-    "click-delete": "Click to delete"
+    "click-more-info": "Klik voor meer informatie",
+
+    "click-delete": "Klik om te verwijderen"
   },
+
   "authentication": {
-    "sign-in": "Sign in",
-    "sign-up": "Sign up",
-    "sign-out": "Sign out",
-    "log-out": "Log out",
+    "sign-in": "Log in",
+
+    "sign-up": "Schrijf in",
+
+    "sign-out": "Log uit",
+
+    "log-out": "Log uit",
+
     "log-in": "Log in",
+
     "login": "Login",
-    "register": "Register",
+
+    "register": "Registreer",
+
     "validation": {
-      "fill-fields": "Please fill required fields!"
+      "fill-fields": "Vul a.u.b. de vereiste velden in!"
     }
   },
+
   "common": {
     "avatar": "Avatar",
-    "name": "Name",
-    "username": "Username",
-    "tags": "Tags",
-    "add": "Add",
-    "remove": "Remove",
-    "comment": "Comment",
-    "comments": "Comments",
+
+    "name": "Naam",
+
+    "username": "Gebruikersnaam",
+
+    "tags": "Labels",
+
+    "add": "Voeg toe",
+
+    "remove": "Verwijder",
+
+    "comment": "Operking",
+
+    "comments": "Opmerkingen",
+
     "email": "Email",
-    "state": "State",
+
+    "state": "Staat",
+
     "aspect": "Aspect",
-    "aspects": "Aspects",
+
+    "aspects": "Aspecten",
+
     "hub": "Hub",
+
     "hubs": "Hubs",
-    "challenge": "Challenge",
-    "challenges": "Challenges",
-    "opportunity": "Opportunity",
-    "opportunities": "Opportunities",
-    "organization": "Organization",
-    "organizations": "Organizations",
-    "interest": "Interest",
-    "interests": "Interests",
+
+    "challenge": "Uitdaging",
+
+    "challenges": "Uitdagingen",
+
+    "opportunity": "Mogelijkheid",
+
+    "opportunities": "Mogelijkheden",
+
+    "organization": "Organisatie",
+
+    "organizations": "Organisaties",
+
+    "interest": "Interesse",
+
+    "interests": "Interesses",
+
     "project": "Project",
-    "projects": "Projects",
-    "group": "Group",
-    "groups": "Groups",
-    "user-group": "User group",
-    "user-groups": "User groups",
-    "user": "User",
-    "users": "Users",
+
+    "projects": "Projecten",
+
+    "group": "Groep",
+
+    "groups": "Groepen",
+
+    "user-group": "Gebruikersgroep",
+
+    "user-groups": "Gebruikersgroepen",
+
+    "user": "Gebruiker",
+
+    "users": "Gebruikers",
+
     "update": "Update",
+
     "updates": "Updates",
-    "no-updates": "No updates",
-    "no-tags": "No tags available",
-    "no-references": "No references available",
-    "membership": "Membership",
-    "owner": "Owner",
-    "admin": "Admin",
-    "member": "Member",
-    "members": "Members",
+
+    "no-updates": "Geen updates",
+
+    "no-tags": "Geen labels beschikbaar",
+
+    "no-references": "Geen referenties beschikbaar",
+
+    "membership": "Lidmaatschap",
+
+    "owner": "Eigenaar",
+
+    "admin": "Beheerder",
+
+    "member": "Lid",
+
+    "members": "Leden",
+
     "empty-string": "",
-    "discussion": "Discussion",
-    "discussions": "Discussions",
-    "dashboard": "Dashboard",
+
+    "discussion": "Discussie",
+
+    "discussions": "Discussies",
+
+    "dashboard": "Overzicht",
+
     "context": "Context",
-    "community": "Community",
-    "canvases": "Canvases",
-    "settings": "Settings",
-    "search": "Search",
-    "reference": "Reference",
-    "references": "References",
-    "notifications": "Notifications",
-    "my-profile": "My profile",
-    "my-memberships": "My memberships",
-    "social": "Social",
-    "lifecycle": "Lifecycle",
-    "home": "Home",
-    "visuals": "Visuals",
+
+    "community": "Gemeenschap",
+
+    "canvases": "Doeken",
+
+    "settings": "Instellingen",
+
+    "search": "Zoek",
+
+    "reference": "Referentie",
+
+    "references": "Referenties",
+
+    "notifications": "Notificaties",
+
+    "my-profile": "Mijn profiel",
+
+    "my-memberships": "My lidmaatschappen",
+
+    "social": "Sociaal",
+
+    "lifecycle": "Levenscyclus",
+
+    "home": "Startpagina",
+
+    "visuals": "Beeldmateriaal",
+
     "genders": {
-      "notSpecified": "not specified",
-      "male": "male",
-      "female": "female"
+      "notSpecified": "niet gespecificeerd",
+
+      "male": "man",
+
+      "female": "vrouw"
     },
+
     "verified-status": {
-      "verified": "Verified",
-      "not-verified": "Not verified"
+      "verified": "Geverifieerd",
+
+      "not-verified": "Niet geverifieerd"
     },
+
     "enums": {
       "authorization-credentials": {
         "GLOBAL_ADMIN": {
-          "name": "Global Admin",
+          "name": "Globale Beheerder",
+
           "order": 0,
+
           "hidden": false
         },
+
         "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Global Community Admin",
+          "name": "Globale Gemeenschap Beheerder",
+
           "order": 1,
+
           "hidden": false
         },
+
         "GLOBAL_ADMIN_CHALLENGES": {
-          "name": "Global Challenges Admin",
+          "name": "Globale Uitdagingen Beheerder",
+
           "order": 2,
+
           "hidden": false
         },
+
         "GLOBAL_REGISTERED": {
-          "name": "Registered",
+          "name": "Geregistreerd",
+
           "order": 999,
+
           "hidden": true
         },
+
         "HUB_ADMIN": {
-          "name": "Hub Admin",
+          "name": "Beheerder Hub",
+
           "order": 3,
+
           "hidden": false
         },
+
         "HUB_HOST": {
-          "name": "Hub Host",
+          "name": "Organisator Hub",
+
           "order": 4,
+
           "hidden": true
         },
+
         "HUB_MEMBER": {
-          "name": "Hub Member",
+          "name": "Hub Lid",
+
           "order": 5,
+
           "hidden": true
         },
+
         "CHALLENGE_ADMIN": {
-          "name": "Challenge Admin",
+          "name": "Beheerder Uitdaging",
+
           "order": 6,
+
           "hidden": false
         },
+
         "CHALLENGE_LEAD": {
-          "name": "Challenge Lead",
+          "name": "Leidinggevende Uitdaging",
+
           "order": 7,
+
           "hidden": true
         },
+
         "CHALLENGE_MEMBER": {
-          "name": "Challenge Member",
+          "name": "Lid Uitdaging",
+
           "order": 8,
+
           "hidden": true
         },
+
         "OPPORTUNITY_ADMIN": {
-          "name": "Opportunity Admin",
+          "name": "Beheerder Mogelijkheid",
+
           "order": 9,
+
           "hidden": true
         },
+
         "OPPORTUNITY_MEMBER": {
-          "name": "Opportunity Member",
+          "name": "Lid Mogelijkheid",
+
           "order": 10,
+
           "hidden": true
         },
+
         "ORGANIZATION_OWNER": {
-          "name": "Organization Owner",
+          "name": "Eigenaar Organisatie",
+
           "order": 11,
+
           "hidden": false
         },
+
         "ORGANIZATION_ADMIN": {
-          "name": "Organization Admin",
+          "name": "Beheerder Organisatie",
+
           "order": 12,
+
           "hidden": false
         },
+
         "ORGANIZATION_MEMBER": {
-          "name": "Organization Member",
+          "name": "Lid Organisatie",
+
           "order": 13,
+
           "hidden": true
         },
+
         "USER_SELF_MANAGEMENT": {
-          "name": "User Self Management",
+          "name": "Gebruiker Eigen Management",
+
           "order": 14,
+
           "hidden": true
         },
+
         "COMMUNITY_MEMBER": {
-          "name": "Community Member",
+          "name": "Lid Gemeenschap",
+
           "order": 15,
+
           "hidden": true
         },
+
         "USER_GROUP_MEMBER": {
-          "name": "User Group Member",
+          "name": "Lid Gebruikersgroep",
+
           "order": 16,
+
           "hidden": true
         }
       },
+
       "edit-mode": {
-        "new": "New",
-        "edit": "Edit",
-        "read-only": "Read only"
+        "new": "Nieuw",
+
+        "edit": "Pas aan",
+
+        "read-only": "Alleen-lezen"
       },
+
       "discussion-category": {
-        "GENERAL": "General",
-        "IDEAS": "Ideas",
-        "QUESTIONS": "Questions",
-        "SHARING": "Sharing"
+        "GENERAL": "Algemeen",
+
+        "IDEAS": "Ideeën",
+
+        "QUESTIONS": "Vragen",
+
+        "SHARING": "Delen"
       }
     }
   },
+
   "forms": {
     "validations": {
-      "required": "This field is required!"
+      "required": "Dit veld is vereist!"
     }
   },
+
   "components": {
     "context-section": {
-      "create-aspect": "Successfully created the aspect"
+      "create-aspect": "Aspect succesvol aangemaakt"
     },
+
     "aspect-creation": {
-      "title": "Create a new aspect",
+      "title": "Maak nieuw Aspect aan",
+
       "type-step": {
-        "title": "The type of the additional context to add.",
-        "error": "Error occurred while loading the types",
-        "label": "Aspect Type",
-        "type-help-text": "Aspects allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of aspect types that are avaialble in this context is fixed. Please choose the aspect type that best matches the context you wish to share."
+        "title": "Het soort additionele context om toe te voegen.",
+
+        "error": "Fout opgetreden tijdens het laden van de types",
+
+        "label": "Soort Aspect",
+
+        "type-help-text": "Aspecten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke actoren. De set Aspect-types dat hier beschikbaar is staat vast. Kies a.u.b. het aspect-type dat het best overeenkomt met de context die u wilt delen."
       },
+
       "info-step": {
         "title": "Details",
-        "description": "Please share the details",
-        "description-placeholder": "A description for this aspect",
-        "description-help-text": "Add here the key information about the aspect. Why is it relevant? How does it relate?",
-        "tags-help-text": "Add free form tags to help quickly convey the key information about the aspect. Good tags also help make the Aspect easier to find in searches.",
-        "name-help-text": "A descriptive name for this aspect.",
-        "name-id-help-text": "Name ID help text",
-        "unique-name-validation-text": "${path} is already used in another aspect"
+
+        "description": "Deel a.u.b. de details.",
+
+        "description-placeholder": "Een beschrijving voor dit Aspect",
+
+        "description-help-text": "Voeg hier de belangrijkste informatie toe over het Aspect. Waarom is het relevant? Hoe is het gerelateerd?",
+
+        "tags-help-text": "Voeg labels toe om effectief de informatie over het Aspect over te dragen. Goede labels maken Aspecten makkelijker vindbaar.",
+
+        "name-help-text": "Een beschrijvende naam voor het Aspect.",
+
+        "name-id-help-text": "Naam-ID help tekst",
+
+        "unique-name-validation-text": "${path} is al in gebruik voor een ander Aspect."
       },
+
       "final-step": {
-        "title": "Final check",
-        "type": "Type",
-        "name": "Name",
-        "description": "Description",
-        "links": "Relevant Links",
-        "explanation": "By completing this step the Aspect will be created. The next step is to further edit the Aspect via the settings tab. For example to add references, select images for the banners etc."
+        "title": "Laatste controle",
+
+        "type": "Soort",
+
+        "name": "Naam",
+
+        "description": "Omschrijving",
+
+        "links": "Relevante links",
+
+        "explanation": "Door het voltooien van deze stap zal het Aspect aangemaakt worden. In de volgende stap kan het Aspect verder worden bewerkt via het instellingen blad. Daar kunen bijvoorbeeld referenties en afbeeldingen voor de omslagfoto geselecteerd worden."
       }
     },
+
     "visual-upload": {
-      "loading": "Image is loading",
-      "success": "Image uploaded successfully",
-      "upload-hover": "Upload image",
-      "no-data": "Not yet set"
+      "loading": "Afbeelding aan het laden",
+
+      "success": "Afbeelding succesvol geupload",
+
+      "upload-hover": "Upload afbeelding",
+
+      "no-data": "Nog niet ingesteld"
     },
+
     "tags-component": {
-      "more": "+{{count}} more",
-      "no-tags": "No tags available."
+      "more": "+{{count}} meer",
+
+      "no-tags": "Geen labels beschikbaar."
     },
+
     "remove-modal": {
-      "title": "Confirm remove"
+      "title": "Bevestig verwijderen"
     },
+
     "application-dialog": {
-      "title": "Application details",
-      "created": "Created on {{date}}",
-      "updated": "Last updated on {{date}}"
+      "title": "Aanmeldingsdetails",
+
+      "created": "Aangemaakt op {{date}}",
+
+      "updated": "Laatst geupdate op {{date}}"
     },
+
     "edit-members": {
-      "no-available-members": "No users available to add; please check members of containing community",
-      "user-not-found": "User not found!"
+      "no-available-members": "Geen gebruikers beschikbaar om toe te voegen; controleer a.u.b. leden van de betreffende gemeenschap.",
+
+      "user-not-found": "Gebruiker niet gevonden!"
     },
+
     "application-button": {
       "dialog-join-parent": {
-        "title": "Want to join the parent Hub?",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
+        "title": "Wilt u lid worden van de bovenliggende Hub?",
+
+        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet u eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Voeg a.u.b. de Uitdaging waarvan u lid wilt worden toe in het aanmeldingsformulier van de Hub."
       },
+
       "dialog-parent-app-pending": {
-        "title": "Parent application pending!",
-        "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. There is already an application pending for that <strong title='Hub name'>'{{hubName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "title": "Bovenliggende aanmelding loopt!",
+
+        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet u eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Er loopt al een aanmelding voor die <strong title='Hub name'>'{{hubName}}'</strong>, dus u kunt ook een aanmelding indienen voor <strong title='Challenge name'>'{{challengeName}}'</strong>."
       }
     },
+
     "organization-verified": {
-      "verified": "Verified",
-      "not-verified": "Not verified"
+      "verified": "Geverifieerd",
+
+      "not-verified": "Niet geverifieerd"
     },
+
     "card-filter": {
       "title": "Filter"
     },
+
     "backdrop": {
-      "private": "Please become a member to access {{blockName}}",
-      "authentication": "Please sign in to see details about the {{blockName}}."
+      "private": "Wordt a.u.b. lid om toegang te krijgen tot {{blockName}}",
+
+      "authentication": "Log a.u.b. in om details te zien over {{blockName}}."
     },
+
     "referenceSegment": {
-      "title": "References",
-      "missing-refreneces": "No references yet",
+      "title": "Referenties",
+
+      "missing-refreneces": "Nog geen referenties",
+
       "tooltips": {
-        "add-reference": "Add a reference",
-        "remove-reference": "Remove the reference"
+        "add-reference": "Voeg een referentie toe",
+
+        "remove-reference": "Verwijder de referentie"
       }
     },
+
     "editHubForm": {
       "host": {
-        "title": "Host",
-        "select": "Select a host"
+        "title": "Organisator",
+
+        "select": "Select een organisator"
       },
-      "read-access": "Allow read access for non-hub members to challenges",
-      "read-access-title": "Visibility"
+
+      "read-access": "Sta niet-leden van de hub toe de Uitdagingen te lezen",
+
+      "read-access-title": "Zichtbaarheid"
     },
+
     "nameSegment": {
-      "name": "Name",
+      "name": "Naam",
+
       "nameID": {
-        "title": "NameID",
-        "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
+        "title": "NaamID",
+
+        "placeholder": "Unieke textuele identificator, gebruikt voor URL-paden. Opmerking: kan niet aangepast worden na aanmaak."
       }
     },
+
     "contextSegment": {
-      "tagline": "Tagline",
+      "tagline": "Slagzin",
+
       "background": {
-        "title": "Background",
-        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
+        "title": "Achtergrond",
+
+        "tooltip": "Wat is de huidige situatie? Wat is al gedaan om voortgang te boeken? Welke resultaten zijn behaald?"
       },
+
       "impact": {
         "title": "Impact",
-        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
+
+        "tooltip": "Wat verandert er als de visie wordt behaald? Welke gebruikers of organisaties zullen een andere realiteit bemerken, in goede of slechte zin?"
       },
+
       "vision": {
-        "title": "Vision",
-        "tooltip": "What does success look like? How will you know when you have achieved it?"
+        "title": "Visie",
+
+        "tooltip": "Hoe wordt succes gedefinieerd? Hoe weet je dat je het hebt bereikt?"
       },
+
       "who": {
-        "title": "Who",
-        "tooltip": "What organisations or users should contribute? Why should they want to engage?"
+        "title": "Wie",
+
+        "tooltip": "Welke organisaties of gebruikers zouden moeten bijdragen? Waarom zouden zij willen meedoen?"
       }
     },
+
     "visualSegment": {
-      "title": "Visual",
+      "title": "Visueel",
+
       "avatar": "Avatar",
-      "banner": "Banner",
-      "background": "Background"
+
+      "banner": "Omslagfoto",
+
+      "background": "Achtergrond"
     },
+
     "tagsSegment": {
-      "title": "Tags"
+      "title": "Labels"
     },
+
     "profileSegment": {
       "avatar": {
         "name": "Avatar",
-        "placeholder": "Enter an avatar URL..."
+
+        "placeholder": "Voeg een avatar URL toe..."
       },
+
       "description": {
-        "name": "Description",
-        "placeholder": "Enter a description"
+        "name": "Omschrijving",
+
+        "placeholder": "Voeg een omschrijving toe"
       }
     },
+
     "organizationSegment": {
       "contactEmail": {
         "name": "Contact email",
-        "placeholder": "Enter a contact email"
+
+        "placeholder": "Voeg een contact email toe"
       },
+
       "domain": {
-        "name": "Domain",
-        "placeholder": "Enter the domain"
+        "name": "Domein",
+
+        "placeholder": "Voeg het domein toe"
       },
+
       "legalEntityName": {
-        "name": "Legal entity name",
-        "placeholder": "Enter the legal name of this organization"
+        "name": "Wettelijke naam van organisatie",
+
+        "placeholder": "Voeg de wettelijke naam van de organisatie toe"
       },
+
       "website": {
         "name": "Website",
-        "placeholder": "Enter a website"
+
+        "placeholder": "Voeg een website toe"
       },
+
       "verified": {
-        "name": "Verified status",
-        "placeholder": "Verified status"
+        "name": "Geverifieerde status",
+
+        "placeholder": "Geverifieerde status"
       }
     },
+
     "card": {
-      "member": "Member",
-      "private": "Private"
+      "member": "Lid",
+
+      "private": "Privé"
     },
+
     "errorblock": {
-      "message": "Sorry, an error occurred while loading {{blockName}}."
+      "message": "Excuses, er is een fout opgetreden tijdens het laden van {{blockName}}."
     },
+
     "loading": {
-      "message": "Loading {{blockName}}..."
+      "message": "Laden van {{blockName}}..."
     },
+
     "groupForm": {
-      "title": "Edit group"
+      "title": "Pas groep aan"
     },
+
     "searchableList": {
-      "placeholder": "Search",
-      "load-more": "Load more",
-      "info": "Showing {{count}} from {{total}}"
+      "placeholder": "Zoek",
+
+      "load-more": "Laad meer",
+
+      "info": "{{count}} van {{total}} zichtbaar"
     },
+
     "filter": {
-      "placeholder": "Search"
+      "placeholder": "Zoek"
     },
+
     "communityUpdates": {
-      "title": "Let your community know what's next",
-      "updatesTitle": "Published updates",
-      "msg-not-empty": "Message cannot be empty",
+      "title": "Laat de gemeenschap weten wat eraan komt",
+
+      "updatesTitle": "Gepubliceerde updates",
+
+      "msg-not-empty": "Bericht kan niet leeg zijn",
+
       "actions": {
         "add": {
-          "buttonTitle": "Post Update"
+          "buttonTitle": "Plaats Update"
         },
+
         "remove": {
-          "confirmationTitle": "Removing update",
-          "confirmationContent": "Removing a community update is an irreversible. Are you sure you want to continue?",
-          "confirmationButtonTitle": "Yes"
+          "confirmationTitle": "Update aan het verwijderen",
+
+          "confirmationContent": "Het verwijderen van een gemeenschap-update is onomkeerbaar. Weet u zeker dat u door wilt gaan?",
+
+          "confirmationButtonTitle": "Ja"
         }
       }
     },
+
     "profile": {
       "fields": {
         "bio": {
           "title": "Bio"
         },
+
         "description": {
-          "title": "Description"
+          "title": "Omschrijving"
         },
+
         "phone": {
-          "title": "Phone"
+          "title": "Telefoon"
         },
+
         "telephone": {
-          "title": "Telephone"
+          "title": "Telefoon"
         },
+
         "mobile": {
-          "title": "Mobile"
+          "title": "Mobiel"
         },
+
         "keywords": {
-          "title": "Keywords"
+          "title": "Trefwoorden"
         },
+
         "skills": {
-          "title": "Skills"
+          "title": "Vaardigheden"
         },
+
         "capabilities": {
-          "title": "Capabilities"
+          "title": "Competenties"
         },
+
         "links": {
           "title": "Links"
         },
+
         "location": {
-          "title": "Location"
+          "title": "Locatie"
         },
+
         "website": {
           "title": "Website"
         },
+
         "work": {
-          "title": "Work"
+          "title": "Beroep"
         }
       }
     },
+
     "associates": {
-      "title": "Associates ({{count}})",
-      "help": "Users associated with this organization"
+      "title": "Relaties ({{count}})",
+
+      "help": "Gebruikers gerelateerd aan deze organisatie"
     },
+
     "contributions": {
-      "title": "Contributions",
-      "help": "The Hubs and Challenges that this organization is contributing to"
+      "title": "Bijdragen",
+
+      "help": "De Hubs en Uitdagingen waar deze organisatie aan bijdraagt"
     },
+
     "discussions-list": {
-      "name": "Discussions - {{community}}",
-      "title": "Discussions ({{count}})",
-      "help": "List of all discussions",
-      "posted": "{{name}} on {{- date}} - {{count}} comment",
-      "posted_plural": "{{name}} on {{- date}} - {{count}} comments"
+      "name": "Discussies - {{community}}",
+
+      "title": "Discussies ({{count}})",
+
+      "help": "Lijst van alle discussies",
+
+      "posted": "{{name}} op {{- date}} - {{count}} opmerking",
+
+      "posted_plural": "{{name}} op {{- date}} - {{count}} opmerkingen"
     },
+
     "discussion": {
-      "posted": "{{name}} initiated on {{- date}} - {{count}} comment",
-      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} comments",
+      "posted": "{{name}} gestart op {{- date}} - {{count}} operking",
+
+      "posted_plural": "{{name}} gestart op {{- date}} - {{count}} operkingen",
+
       "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
-      "comment": "{{count}} Comment",
-      "comment_plural": "{{count}} Comments",
-      "contributed": "{{count}} Person contributed",
-      "contributed_plural": "{{count}} People contributed",
-      "cant-post": "You can't reply to this discussion",
-      "delete-discussion": "Delete discussion?",
-      "delete-comment": "Delete comment?"
+
+      "comment": "{{count}} Opmerking",
+
+      "comment_plural": "{{count}} Opmerkingen",
+
+      "contributed": "{{count}} Persoon heeft bijgedragen",
+
+      "contributed_plural": "{{count}} Personen hebben bijgedragen",
+
+      "cant-post": "Je kan niet reageren op deze discussie",
+
+      "delete-discussion": "Discussie verwijderen?",
+
+      "delete-comment": "Opmerking verwijderen?"
     },
+
     "comment": {
-      "posted": "{{name}} on {{- date}}",
-      "reply": "Reply to this comment"
+      "posted": "{{name}} op {{- date}}",
+
+      "reply": "Op deze opmerking reageren"
     },
+
     "discussions-layout": {
       "buttons": {
-        "new-discussion": "Initiate new discussion"
+        "new-discussion": "Nieuwe discussie starten"
       }
     },
+
     "post-comment": {
       "fields": {
         "description": {
-          "title": "Comment on this discussion",
-          "placeholder": "Add further information on the discussion here"
+          "title": "Op deze discussie reageren",
+
+          "placeholder": "Voeg hier aanvullende informatie over de discussie toe"
         }
       },
+
       "buttons": {
-        "post": "Post comment"
+        "post": "Plaats opmerking"
       }
     },
+
     "new-discussion": {
       "title": {
-        "title": "Title",
-        "placeholder": "Discussion title"
+        "title": "Titel",
+
+        "placeholder": "Titel discussie"
       },
+
       "category": {
-        "title": "Category"
+        "title": "Categorie"
       },
+
       "description": {
-        "title": "Further information",
-        "placeholder": "Add further information on the discussion here"
+        "title": "Aanvullende informatie",
+
+        "placeholder": "Voeg hier aanvullende informatie over de discussie toe"
       },
+
       "buttons": {
-        "post": "Create discussion"
+        "post": "Maak discussie aan"
       }
     },
+
     "members-view": {
-      "title": "Active community members"
+      "title": "Actieve leden gemeenschap"
     },
+
     "discussion-category-selector": {
-      "ALL": "SHOW ALL",
-      "GENERAL": "GENERAL",
-      "IDEAS": "IDEAS",
-      "QUESTIONS": "QUESTIONS",
-      "SHARING": "SHARING"
+      "ALL": "TOON ALLES",
+
+      "GENERAL": "ALGEMEEN",
+
+      "IDEAS": "IDEEËN",
+
+      "QUESTIONS": "VRAGEN",
+
+      "SHARING": "DELEN"
     },
+
     "community-section": {
       "discussions": {
-        "no-data-create": "No discussions. Create a new discussion",
-        "no-data-join": "No discussions. Please join the community to create a discussion",
-        "explore": "Explore discussions"
+        "no-data-create": "Geen discussies. Maak een nieuwe discussie aan",
+
+        "no-data-join": "Geen discussies. Neem a.u.b. deel aan de gemeenschap om een discussie aan te maken.",
+
+        "explore": "Verken discussies"
       }
     }
   },
+
   "navigation": {
     "admin": {
       "opportunity": {
-        "create": "Create opportunity",
-        "edit": "Edit opportunity"
+        "create": "Maak mogelijkheid aan",
+
+        "edit": "Pas mogelijkheid aan"
       },
+
       "challenge": {
-        "create": "Create challenge",
-        "edit": "Edit challenge"
+        "create": "Maak uitdaging aan",
+
+        "edit": "Pas uitdaging aan"
       }
     }
   },
+
   "pages": {
     "aspect": {
       "dashboard": {
         "comment": {
-          "placeholder": "Type your comment here"
+          "placeholder": "Typ hier uw opmerking"
         }
       }
     },
+
     "visual-edit": {
       "avatar": {
         "title": "Avatar",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
+
+        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+
         "description2": "??"
       },
+
       "banner": {
-        "title": "Banner",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Banner on dashboard tab"
+        "title": "Omslagfoto",
+
+        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+
+        "description2": "Gebruik: Omslagfoto op het overzicht-tabblad"
       },
+
       "banner-narrow": {
-        "title": "Banner for cards",
-        "description1": "Resolution: {{width}} width x {{height}} height (pixels)",
-        "description2": "Usage: Banner on cards"
+        "title": "Omslagfoto voor kaarten",
+
+        "description1": "Resolutie: {{width}} breedte x {{height}} hoogte (pixels)",
+
+        "description2": "Gebruik: Omslagfoto op kaarten"
       }
     },
+
     "contributors": {
       "search": {
-        "title": "Explore the users and organizations that are contributing!",
-        "subtitle": "Enter one or more search terms. Click on the cards in the search results to see the profiles.",
-        "placeholder": "Search for users and organizations"
+        "title": "Verken de gebruikers en organisaties die al bijdragen!",
+
+        "subtitle": "Voeg een of meer zoektermen toe. Klik op de kaarten in de zoekresultaten om de profielen te bekijken.",
+
+        "placeholder": "Zoek naar gebruikers en organisaties"
       },
+
       "organizations": {
-        "title": "Organizations ({{count}})",
-        "subtitle": "Organizations matching the search terms entered.",
-        "help-text": "Click on the cards below to see where each Organization is contributing."
+        "title": "Organisaties ({{count}})",
+
+        "subtitle": "Organisaties die overeenkomen met uw zoektermen.",
+
+        "help-text": "Klik op de kaarten hieronder om te kijken welke organisatie bijdraagt."
       },
+
       "users": {
-        "title": "Users ({{count}})",
-        "subtitle": "Users matching the search terms entered.",
+        "title": "Gebruikers ({{count}})",
+
+        "subtitle": "Gebruikers die overeenkomen met uw zoektermen.",
+
         "help-text": ""
       }
     },
+
     "search": {
-      "header": "Search",
-      "subheader": "Find relevant users, organizations, groups and not least Challenges!",
-      "alternativesubheader": "Need help? Find relevant users, organizations, groups and not least Challenges!",
+      "header": "Zoek",
+
+      "subheader": "Vind relevante gebruikers, organizaties, groepen en - niet onbelangrijk - Uitdagingen!",
+
+      "alternativesubheader": "Hulp nodig? Need help? Vind relevante gebruikers, organizaties, groepen en - niet onbelangrijk - Uitdagingen!",
+
       "body": "",
+
       "organization": {
-        "no-hosted": "None",
-        "no-leading": "None"
+        "no-hosted": "Geen",
+
+        "no-leading": "Geen"
       },
-      "no-results": "No results",
-      "more-results": "There are more search results. Please use more specific search criteria to narrow down the results",
-      "user-not-logged": "Login or Register to include users in your search results"
+
+      "no-results": "Geen resultaten",
+
+      "more-results": "Er zijn meer zoekresultaten. Gebruik a.u.b. specifiekrere zoekcriteria om het aantal resultaten te reduceren",
+
+      "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten"
     },
+
     "challenge-explorer": {
       "search": {
-        "title": "Explore Challenges",
-        "subtitle": "This section allows you to search through all the Challenges hosted on Alkemio that are visible to you.",
-        "placeholder": "Search by terms for challenges in Alkemio..."
+        "title": "Verken Uitdagingen",
+
+        "subtitle": "In deze sectie kunt u alle door Uitdagingen op Alkemio zoeken die voor u zichtbaar zijn.",
+
+        "placeholder": "Zoek met termen naar Uitdagingen op Alkemio..."
       },
+
       "my": {
-        "title": "My challenges ({{count}})",
-        "subtitle": "This section shows you the challenges you are contributing to. ",
-        "help-text": "One card per Challenge membership, including the role you have in each."
+        "title": "Mijn uitdagingen ({{count}})",
+
+        "subtitle": "Deze sectie toont de uitdagingen waar u aan bijdraagt. ",
+
+        "help-text": "Een kaart per Uitdaging-lidmaatschap, inclusief de rol die u in elke Uitdaging heeft."
       },
+
       "hubs": {
-        "title": "Challenges hosted by '{{name}}' Hub ({{count}})",
-        "subtitle": "This section shows you the Challenges hosted in the {{name}} hub, where you are a member.",
-        "help-text": "A Challenge Hub hosts one or more Challenges. You are member of the Hub below."
+        "title": "Uitdagingen beheerd door '{{name}}' Hub ({{count}})",
+
+        "subtitle": "Deze sectie toont u de Uitdagingen die worden beheerd in de {{name}} hub, waarvan u lid bent.",
+
+        "help-text": "Een Uitdaging Hub beheert een of meer Uitdagingen. U bent lid van onderstaande Hub."
       }
     },
+
     "lead-organization": {
       "search": {
-        "leading-placeholder": "Search in name or tags",
-        "available-placeholder": "Search in name"
+        "leading-placeholder": "Zoek met namen of labels",
+
+        "available-placeholder": "Zoek met namen"
       }
     },
+
     "activity": {
-      "title": "{{blockName}} Activity",
-      "hubs": "Challenge Hubs",
-      "lifecycle-info": "Click to view lifecycle graph"
+      "title": "{{blockName}} Activiteit",
+
+      "hubs": "Uitdagingen Hubs",
+
+      "lifecycle-info": "Klik om de levenscyclus te bekijken"
     },
+
     "home": {
       "sections": {
         "welcome": {
-          "header": "Where Open Innovation Happens in DUTCH",
-          "subheader": "Putting Challenges centralXXXXX. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Realising society's potential. Building a better future, together.",
-          "join": "Want to join the community and see more?"
+          "header": "Waar Open Innovatie Plaatsvindt",
+
+          "subheader": "Uitdagingen centraal stellen. <br>Iedereen toestaan om bij te dragen. <br>Connecties mogelijk maken en capaciteiten vinden.",
+
+          "body": "Het potentieel van de gemeenschap verwezelijken. Een betere toekomst bouwen, samen.",
+
+          "join": "Deelnemen aan de gemeenschap en meer zien?"
         },
+
         "interested-in-collaboration": {
-          "header": "Alkemio and You",
-          "innovation-facilitator": "Are you driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
-          "suggestions": "Do you have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!",
-          "contributor": "Do you want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Backed by a <a href='https://alkem.io' target='_blank'>non-profit foundation</a>."
+          "header": "Alkemio en U",
+
+          "innovation-facilitator": "Bent u een drijfveer voor Innovatie binnen uw gemeenschap of organisatie?<br/>Neem <a href='https://alkem.io/feedback' target='_blank'> contact op </a> zodat we een een-op-een sessie kunnen plannen!",
+
+          "suggestions": "Heeft u suggesties voor Uitdagingen waar Alkemio aan kan bijdragen?<br/>Deel het op onze <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussies</a> en neem deel aan de gemeenschap!",
+
+          "contributor": "Wilt u een bijdrage of ondersteuning leveren aan Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Gedragen door een <a href='https://alkem.io' target='_blank'>non-profit stichting</a>."
         },
+
         "getting-started": {
-          "header": "Getting Started",
-          "subheader": "Here are some suggestions to help get you up to speed.",
-          "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' >contributors</a>.",
-          "joining-a-challenge": "Eager to join a Challenge? Explore all <a href='./challenges' >Challenges</a>.",
-          "your-profile": "Keen to be found by other contributors? Fill out your <a href='./profile' >profile</a>.</br>"
+          "header": "Aan de slag",
+
+          "subheader": "Hier zijn wat suggesties om u op gang te krijgen.",
+
+          "connecting-with-people": "Wilt u zien wie bijdraagt? Verken alle <a href='./contributors' >bijdragers</a>.",
+
+          "joining-a-challenge": "Gemotiveerd om deel te nemen aan een Uitdaging? Verken alle <a href='./challenges' >Uitdagingen</a>.",
+
+          "your-profile": "Belangstelling om gevonden te worden door andere bijdragers? Vul uw <a href='./profile' >profiel in</a>.</br>"
         },
+
         "hub": {
-          "header": "Explore the Challenge Hubs!",
-          "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
-          "body": "A Hub can be Public or Private, and has a facilitating Organization."
+          "header": "Verken de Uitdaging Hubs!",
+
+          "subheader": "Elke Hub bevat een of meer Uitdagingen, en biedt context en een gemeenschap voor de Uitdagingen die er worden beheerd. <br> Een omgeving om te coördineren en samen te werken. Verbinden.",
+
+          "body": "Een Hub can Openbaar of Besloten zijn en heeft een faciliterende Organisatie."
         },
+
         "organizations": {
-          "header": "Organizations",
-          "subheader": "The entities that want to bring innnovation."
+          "header": "Organisaties",
+
+          "subheader": "De instanties die innovatie tot stand willen brengen."
         }
       }
     },
+
     "organization": {
       "settings": {
-        "tooltip": "Organization settings"
+        "tooltip": "Organisatie instellingen"
       },
+
       "verified-status": {
-        "help": "Verification status: has the identity and information about this Organization been formally verified"
+        "help": "Verificatie status: is de identiteit en informatie over de Organisatie formeel geverifieerd"
       }
     },
+
     "hub": {
       "title": "Hub",
+
       "application": {
-        "title": "Application to join {{entity}} \"{{name}}\"",
-        "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
-        "finish": "Thank you for completing your application for ",
-        "backButton": "Back",
-        "loading": "Loading questions",
-        "errorBlockName": "the questions"
+        "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
+
+        "subheader": "Vul a.u.b. de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
+
+        "finish": "Bedankt voor het voltooien van uw inschrijving voor ",
+
+        "backButton": "Terug",
+
+        "loading": "Vragen laden",
+
+        "errorBlockName": "de vragen"
       },
+
       "sections": {
         "dashboard": {
-          "organization": "Facilitating organization",
-          "activity": "Hub statistics",
+          "organization": "Faciliterende organizatie",
+
+          "activity": "Hub statistieken",
+
           "challenges": {
-            "title": "Challenges",
-            "help-text": "This shows the different challenges you can contribute to in this hub."
+            "title": "Uitdagingen",
+
+            "help-text": "Hier ziet u de verschillende Uitdagingen waaraan u kunt bijdragen in de Hub."
           },
-          "community": "Community"
+
+          "community": "Gemeenschap"
         },
+
         "challenges": {
-          "header": "Challenges",
+          "header": "Uitdagingen",
+
           "subheader": "There is no final frontier",
+
           "body": "",
-          "no-data": "No challenges available for this hub",
-          "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
+
+          "no-data": "Er zijn geen uitdagingen beschikbaar voor deze hub",
+
+          "description": "Hier kunt u Uitdagingen verkennen die door deze Hub worden ondergebracht. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken. "
         }
       }
     },
+
     "challenge": {
-      "title": "Challenge",
+      "title": "Uitdaging",
+
       "organizationBanner": {
-        "load-more": "And more ..."
+        "load-more": "En meer ..."
       },
+
       "sections": {
         "dashboard": {
-          "organization": "Leading organizations",
+          "organization": "Leidende organisaties",
+
           "statistics": {
-            "title": "Challenge statistics",
-            "help-text": "Challenge statistics"
+            "title": "Statistieken van Uitdaging",
+
+            "help-text": "Statistieken van Uitdaging"
           },
+
           "opportunities": {
-            "title": "Opportunities",
-            "help-text": "Opportunities related to this challenge"
+            "title": "Mogelijkheden",
+
+            "help-text": "Mogelijkheden gerelateerd aan deze uitdaging"
           },
+
           "projects": {
-            "title": "Projects",
-            "help-text": "Projects related to this challenge"
+            "title": "Projecten",
+
+            "help-text": "Projecten gerelateerd aan deze uitdaging"
           }
         },
+
         "opportunities": {
-          "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about.",
-          "body-missing": "No opportunities found for this challenge"
+          "description": "Hier kunt u de Mogelijkheden verkennen die zijn geïdentificeerd om voortgang te maken op de Uitdaging. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken.",
+
+          "body-missing": "Geen mogelijkheden gevonden voor deze uitdaging"
         }
       }
     },
+
     "opportunity": {
-      "title": "Opportunity",
+      "title": "Mogelijkheid",
+
       "sections": {
         "dashboard": {
           "statistics": {
-            "title": "Opportunity statistics",
-            "help-text": "Opportunity statistics"
+            "title": "Statistieken van Mogelijkheid",
+
+            "help-text": "Statistieken van Mogelijkheid"
           },
+
           "projects": {
-            "title": "Projects",
-            "help-text": "Projects related to this opportunity"
+            "title": "Projecten",
+
+            "help-text": "Projecten gerelateerd aan deze mogelijkeid"
           }
         },
-        "apply": "Interested in collaboration?",
+
+        "apply": "Geïnteresseerd in samenwerking?",
+
         "projects": {
           "header": {
-            "text": "Projects",
-            "tag": "Coming soon"
+            "text": "Projecten",
+
+            "tag": "Binnenkort beschikbaar"
           },
-          "subheader": "Changing the world one project at a time",
-          "body": "Manage your projects and suggest new ones to your stakeholders.",
-          "more-projects": "MORE PROJECTS STARTING SOON",
+
+          "subheader": "Impact maken met een project tegelijkertijd",
+
+          "body": "Manage uw projecten en stel nieuwe voor aan uw belanghebbenden.",
+
+          "more-projects": "MEER PROJECTEN STARTEN BINNENKORT",
+
           "new-project": {
-            "header": "New project",
-            "subheader": "This could be the project that makes the difference",
-            "body": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
+            "header": "Nieuw project",
+
+            "subheader": "Dit zou het project kunnen zijn dat het verschil maakt",
+
+            "body": "Een nieuw project beginnen is makkelijk. In slechts een paar stappen is het project klaar voor gebruik. Stel een doel, wijs resources toe, pik uw helden uit en laat belanghebbenden stemmen op uw voorstel. Als iedereen heeft getekend kan de pret beginnen. Aan de slag!"
           }
         }
       }
     },
+
     "community": {
-      "title": "{{name}} community page",
+      "title": "{{name}} gemeenschap pagina",
+
       "subtitle": "",
+
       "leading-organizations": {
-        "title": "Leading organizations ({{count}})",
-        "help-text": "Shows different organizations, including the role you have",
-        "no-data": "No organization is leading at this time"
+        "title": "Leidende organisaties ({{count}})",
+
+        "help-text": "Laat verschillende organisaties zien, inclusief de rol die u heeft",
+
+        "no-data": "Er is op dit moment geen leidende organisatie"
       },
+
       "hub-host": {
-        "title": "Hosting organization",
-        "help-text": "Shows different organizations, including the role you have"
+        "title": "Beherende organisatie",
+
+        "help-text": "Laat verschillende organisaties zien, inclusief de rol die u heeft"
       },
+
       "members": {
-        "title": "Members ({{count}})",
-        "help-text": "Shows members is this community, including the role they have",
-        "no-data": "No members available"
+        "title": "Leden ({{count}})",
+
+        "help-text": "Laat leden in deze gemeenschap zien, inclusief hun rol",
+
+        "no-data": "Geen leden beschikbaar"
       },
+
       "updates": {
-        "no-data": "No updates available"
+        "no-data": "Geen updates beschikbaar"
       }
     },
+
     "canvas": {
-      "header": "Canvases in this {{blockName}}",
-      "subheader": "Create your custom visualization and share it with others.",
-      "add-canvas": "Create canvas",
-      "no-canvases": "No canvases have been created yet. Be the first to add one.",
+      "header": "Doeken in deze {{blockName}}",
+
+      "subheader": "Maak een custom visualisatie en deel deze met anderen.",
+
+      "add-canvas": "Maak doek aan",
+
+      "no-canvases": "Er zijn nog geen doeken aangemaakt. Ben de eerste die er een toevoegt.",
+
       "state": {
-        "available": "You are free to work on this canvas",
-        "checkedout": "Someone else is already working on this canvas",
-        "unknown": "There is a checkout conflict with this canvas"
+        "available": "U kunt nu vrijuit werken op het doek",
+
+        "checkedout": "Iemand anders is al aan het werk op het doek",
+
+        "unknown": "Er is een checkout conflict met dit doek"
       },
+
       "state-actions": {
-        "check-out": "Edit",
+        "check-out": "Bewerk",
+
         "check-in": "Check-in",
-        "save-as-template": "Save as template",
-        "save-and-check-in": "Save & stop editing",
-        "save": "Save"
+
+        "save-as-template": "Opslaan als template",
+
+        "save-and-check-in": "Opslaan & stop bewerken",
+
+        "save": "Opslaan"
       },
+
       "delete": {
-        "confirmation-title": "Deleting <b>{{ blockName }}</b>",
-        "confirmation-text": "Are you sure you want to delete this canvas? The action is irreversible."
+        "confirmation-title": "Verwijderen van <b>{{ blockName }}</b>",
+
+        "confirmation-text": "Weet u zeker dat u dit doek wilt verwijderen? Deze actie is onomkeerbaar."
       },
+
       "create-dialog": {
-        "header": "Create a new canvas",
+        "header": "Maak nieuw doek aan",
+
         "steps": {
-          "naming": "Define a suitable name for your canvas. What will your canvas capture?",
-          "templating": "Choose from the list of templates if you want to use it as a blueprint for your canvas.",
-          "completing": "The canvas will be created with the following parameters"
+          "naming": "Definieer een passende naam voor uw doek. Wat zal uw doek omvatten?",
+
+          "templating": "Kies uit de lijst met templates als u deze als blauwdruk wilt gebruiken voor uw doek.",
+
+          "completing": "Het doek zal gecreeërd worden met de volgende parameters"
         },
-        "no-template-selected": "To see a preview of the template please select one."
+
+        "no-template-selected": "Selecteer een template om een voorvertoning te zien."
       },
+
       "template": {
-        "header": "Templates defined in Alkemio",
-        "no-templates": "There are no templates defined here yet. Be the first to add one.",
-        "how-to": "To create a template create a new canvas or use an existing one and save it as a template."
+        "header": "Templates gedefinieerd in Alkemio",
+
+        "no-templates": "Er zijn hier nog geen templates gedefinieerd. Ben de eerste die er een toevoegt.",
+
+        "how-to": "Om een template te creeëren moet u een nieuw doek aanmaken of een bestaande selecteren en die als template opslaan."
       },
+
       "hub": {
-        "templatesHeader": "Templates defined in this hub",
-        "templatesSubheader": "The templates defined in this hub can be used in every challenge and opportunity that this hub hosts."
+        "templatesHeader": "Templates gedefinieerd in deze hub",
+
+        "templatesSubheader": "De templates gedefinieerd in deze hub kunnen in elke uitdaging en mogelijkheid die binnen deze hub vallen gebruikt worden."
       },
+
       "challenge": {
-        "templatesHeader": "Templates defined in this challenge",
-        "templatesSubheader": "The templates defined in this challenge can be used in every opportunity that is in the scope of this challenge."
+        "templatesHeader": "Templates gedefinieerd in deze uitdaging",
+
+        "templatesSubheader": "De templates gedefinieerd in deze uitdaging kunnen in elke mogelijkheid die binnen deze uitdaging valt gebruikt worden."
       },
+
       "opportunity": {
-        "templatesHeader": "Templates defined in this opportunity"
+        "templatesHeader": "Templates gedefinieerd in deze mogelijkheid"
       }
     },
+
     "login": {
-      "title": "Sign in",
-      "register": "Don't have an account?"
+      "title": "Log in",
+
+      "register": "Geen account?"
     },
+
     "about": {
-      "title": "Reimagining collaboration",
-      "description": "Alkemio puts the Challenges central, each Challenge providing a central, neutral place for collaboration.",
+      "title": "Samenwerking hervormen",
+
+      "description": "Alkemio stelt de Uitdagingen centraal, waarbij elke Uitdaging een centrale en neutrale plaats biedt voor samenwerking.",
+
       "powered-by": "Powered by {{name}} v{{version}}"
     },
+
     "error": {
-      "title": "Ooops!",
-      "line1": "Looks like something went wrong: <italic>{{message}}</italic>",
-      "line2": "Please check that your server ({{graphQLEndpoint}}) is available, and reload the page.",
-      "line3": "If the error persists please contact support.",
+      "title": "Oooeps!",
+
+      "line1": "Het lijkt erop dat iets fout is gegaan: <italic>{{message}}</italic>",
+
+      "line2": "Controleer of uw server ({{graphQLEndpoint}}) beschikbaar is en herlaad de pagina.",
+
+      "line3": "Als de fout aanblijft, neem a.u.b. contact op met de klantenservice.",
+
       "buttons": {
-        "reload": "Reload"
+        "reload": "Herlaad"
       }
     },
+
     "four-ou-four": {
-      "message": "The resource you are looking for could not be found.",
+      "message": "De bron waarnaar u op zoek bent kan niet gevonden worden.",
+
       "buttons": {
-        "home": "Take me home"
+        "home": "Naar de startpagina"
       }
     },
+
     "logout": {
-      "loading": "Signing off ..."
+      "loading": "Uitloggen ..."
     },
+
     "registration": {
-      "header": "Create an account to start using Alkemio",
-      "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
-      "login": "Have an account?"
+      "header": "Maak een account aan om Alkemio te gebruiken",
+
+      "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
+
+      "login": "Heeft u een account?"
     },
+
     "registration-success": {
-      "header": "Thank you for signing up!",
-      "subheader": "For security purposes we need to validate the provided email address. Please check your inbox and follow instructions there.",
-      "message": "Suggested next steps:"
+      "header": "Bedankt voor uw inschrijving!",
+
+      "subheader": "Om veiligheidsredenen moeten we het opgegeven emailadres valideren. Controleer a.u.b. uw inbox en volg de instructies uit de email.",
+
+      "message": "Voorgestelde volgende stappen:"
     },
+
     "verification-success": {
-      "header": "Thank you for verifying your email address!",
-      "subheader": "Your profile is now fully activated on the platform. Enjoy!",
-      "message": "Please do consider filling out all aspects of your [profile](/profile) - helps with both applying to join communities and with others being able to connect with you. "
+      "header": "Bedankt voor het verifiëren van uw email!",
+
+      "subheader": "Uw profiel is nu volledig geactiveerd op het platform. Veel plezier!",
+
+      "message": "Overweeg a.u.b. alle aspecten van uw profiel [profiel](/profile) in te vullen. Dat helpt bij zowel het lid worden van gemeenschappen als uw vindbaarheid voor andere gebruikers. "
     },
+
     "recovery": {
-      "header": "Password Reset",
-      "message": "Please enter your email address below to receive a link to reset your password."
+      "header": "Wachtwoord Reset",
+
+      "message": "Vul hieronder uw email adres in om een link te ontvangen waarmee uw wachtwoord gereset kan worden."
     },
+
     "verification": {
-      "header": "Email verification",
-      "message": "Users of Alkemio are required to verify their email address.<br/><br/>Please enter your email address below to recieve a new verification link."
+      "header": "Email verificatie",
+
+      "message": "Gebruikers van Alkemio zijn verplicht hun email adres te verifiëren.<br/><br/>Vul a.u.b. hieronder uw email adres in om een nieuwe verificatielink te ontvangen."
     },
+
     "settings": {
-      "header": "User Settings"
+      "header": "Instellingen gebruiker"
     },
+
     "user-profile": {
       "tooltips": {
-        "settings": "User profile settings"
+        "settings": "Instellingen gebruikersprofiel"
       },
-      "member-of": "Member of",
+
+      "member-of": "Lid van",
+
       "applications": {
-        "title": "Pending applications"
+        "title": "Lopende aanmeldingen"
       },
+
       "communities": {
-        "title": "Communities",
-        "help": "Communities the user is part of"
+        "title": "Gemeenschappen",
+
+        "help": "Gemeenschappen waarvan de gebruiker lid is"
       },
+
       "pending-applications": {
-        "title": "Pending Applications",
-        "help": "Applications Pending for this user"
+        "title": "Lopende Aanmeldingen",
+
+        "help": "Lopende aanmeldingen voor deze gebruiker"
       },
+
       "associated-organizations": {
-        "title": "Associated Organizations",
-        "help": "Organizations who the user is related to"
+        "title": "Gerelateerde Organisaties",
+
+        "help": "Organisaties waar de gebruiker aan gerelateerd is"
       }
     },
+
     "authentication-required": {
-      "header": "The page you are trying to reach requires you to be logged in.",
-      "subheader": "Please sign-in or register to continue!"
+      "header": "U moet ingelogd zijn voor de pagina die u probeert te bereiken.",
+
+      "subheader": "Log in of registreer om door te gaan!"
     },
+
     "user-notifications-settings": {
       "general": {
-        "title": "General",
-        "subtitle": "This section allows you to select your preferences regarding receiving messages"
+        "title": "Algemeen",
+
+        "subtitle": "In deze sectie kunt u uw voorkeur aangeven met betrekking tot het ontvangen van berichten"
       },
+
       "user-administration": {
-        "title": "Platform Administration",
-        "subtitle": "This section is only visible to users that are a global admin on the platform"
+        "title": "Platform Administratie",
+
+        "subtitle": "Deze sectie is alleen zichtbaar voor gebruikers die Globale Beheerder zijn op het platform"
       },
+
       "community-administration": {
-        "title": "Community administration",
-        "subtitle": "This section allows you to select your preferences regarding the community administration"
+        "title": "Gemeenschap administratie",
+
+        "subtitle": "In deze sectie kunt u uw voorkeur aangeven met betrekking tot de administratie van de gemeenschap"
       }
     }
   },
+
   "operations": {
     "user-group": {
-      "updated-successfuly": "Group {{name}} has been updated!",
-      "deleted-successfuly": "Group {{name}} deleted successfully"
+      "updated-successfuly": "Groep {{name}} is geupdate!",
+
+      "deleted-successfuly": "Groep {{name}} is succesvol verwijderd"
     }
   },
+
   "kratos": {
     "errors": {
-      "401": "Unauthenticated",
+      "401": "Niet geauthenticeerd",
+
       "session": {
-        "default": "Can't get session information!"
+        "default": "Kan geen sessie informatie krijgen!"
       }
     },
+
     "loading-flow": "Loading flow",
+
     "loading-error": "Loading error"
   },
+
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",
-    "no-data": "No updates available."
+
+    "no-data": "Geen updates beschikbaar."
   },
+
   "dashboard-discussions-section": {
-    "title": "Discussions ({{count}})",
-    "no-data-create": "No discussions available. Create a new discussion",
-    "no-data-join": "No discussions available. Please join the community to create a discussion"
+    "title": "Discussies ({{count}})",
+
+    "no-data-create": "Geen discussies beschikbaar. Maak een nieuwe discussie aan",
+
+    "no-data-join": "Geen discussies beschikbaar. Neem deel aan de gemeenschap om een discussie te starten"
   },
+
   "dashboard-community-section": {
-    "title": "Community"
+    "title": "Gemeenschap"
   },
+
   "aspect-edit": {
-    "new": "New Aspect",
-    "edit": "Edit Aspect"
+    "new": "Nieuw Aspect",
+
+    "edit": "Pas Aspect aan"
   },
+
   "contributors-section": {
-    "title": "Contributors",
-    "subheader": "Making progress on Challenges needs many types of contributions, from users and organizations. Explore to see who is contributing where!",
-    "users-title": "Users",
-    "organizations-title": "Organizations"
+    "title": "Bijdragers",
+
+    "subheader": "Voortgang maken op Uitdagingen vereist vele soorten bijdragen, van gebruikers en organisaties. Verken om te zien wie waar bijdraagt!",
+
+    "users-title": "Gebruikers",
+
+    "organizations-title": "Organisaties"
   },
+
   "contributions-view": {
-    "no-data": "No {{name, lowercase}} available"
+    "no-data": "Geen {{name, lowercase}} beschikbaar"
   },
+
   "associated-organizations-view": {
-    "no-data": "No {{name, lowercase}} available"
+    "no-data": "Geen {{name, lowercase}} beschikbaar"
   },
+
   "dashboard-contributors-section": {
-    "more": "...plus {{count}} more"
+    "more": "...plus {{count}} meer"
   },
+
   "associates-view": {
-    "less": "show less",
-    "more": "...plus {{count}} more"
+    "less": "toon minder",
+
+    "more": "...plus {{count}} meer"
   }
 }

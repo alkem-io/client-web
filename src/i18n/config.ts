@@ -17,7 +17,7 @@ i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .init({
-    fallbackLng: 'en',
+    fallbackLng: 'nl', // todo: revert to en before pushing this to develop
     supportedLngs: ['en', 'nl'],
     resources,
     interpolation: {
