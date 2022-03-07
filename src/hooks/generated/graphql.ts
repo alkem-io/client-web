@@ -1383,6 +1383,7 @@ export const UserAgentSsiFragmentDoc = gql`
       }
     }
   }
+`;
 export const OpportunityProviderFragmentDoc = gql`
   fragment OpportunityProvider on Opportunity {
     id
