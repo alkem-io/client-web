@@ -3414,7 +3414,9 @@ export type UserDetailsFragment = {
               minWidth: number;
             }
           | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       }
     | undefined;
@@ -3763,7 +3765,9 @@ export type CreateUserMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -3814,7 +3818,9 @@ export type CreateUserNewRegistrationMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -4318,7 +4324,9 @@ export type UpdateUserMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -5792,7 +5800,9 @@ export type MeQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -6735,7 +6745,9 @@ export type UserQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -6838,7 +6850,9 @@ export type UserProfileQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -6927,7 +6941,9 @@ export type UsersQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;

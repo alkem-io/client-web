@@ -76,7 +76,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({
       >
         <NavigationTab
           icon={<DashboardOutlined />}
-          label={t('common.dashboard')}
+          label={t('common.challenge')}
           value={tabValue('dashboard')}
           to={routes['dashboard']}
         />

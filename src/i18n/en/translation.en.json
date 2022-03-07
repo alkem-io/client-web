@@ -790,8 +790,8 @@
         "no-data": "No organization is leading at this time"
       },
       "hub-host": {
-        "title": "Hosting organization",
-        "help-text": "Shows different organizations, including the role you have"
+        "title": "Facilitating organization",
+        "help-text": "The Organization that is facilitating this Hub."
       },
       "members": {
         "title": "Members ({{count}})",
@@ -967,7 +967,10 @@
       }
     },
     "loading-flow": "Loading flow",
-    "loading-error": "Loading error"
+    "loading-error": "Loading error",
+    "messages": {
+      "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting you email once again."
+    }
   },
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",

@@ -697,6 +697,7 @@ export const UserDetailsFragmentDoc = gql`
         id
         name
         uri
+        description
       }
       tagsets {
         id
