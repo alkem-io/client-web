@@ -281,6 +281,26 @@ export enum AuthorizationPrivilege {
   UpdateCanvas = 'UPDATE_CANVAS',
 }
 
+export type BeginCredentialOfferOutput = {
+  __typename?: 'BeginCredentialOfferOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential offer. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and the credentials offered */
+  jwt: Scalars['String'];
+};
+
+export type BeginCredentialRequestOutput = {
+  __typename?: 'BeginCredentialRequestOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential request. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  jwt: Scalars['String'];
+};
+
 export type Canvas = {
   __typename?: 'Canvas';
   /** The authorization rules for the entity */
@@ -803,6 +823,22 @@ export type Credential = {
   type: AuthorizationCredential;
 };
 
+export type CredentialMetadataOutput = {
+  __typename?: 'CredentialMetadataOutput';
+  /** A json description of what the claim contains and schema validation definition */
+  context: Scalars['String'];
+  /** The purpose of the credential */
+  description: Scalars['String'];
+  /** The display name of the credential */
+  name: Scalars['String'];
+  /** The schema that the credential will be validated against */
+  schema: Scalars['String'];
+  /** The credential types that are associated with this credential */
+  types: Array<Scalars['String']>;
+  /** System recognized unique type for the credential */
+  uniqueType: Scalars['String'];
+};
+
 export type DeleteActorGroupInput = {
   ID: Scalars['UUID'];
 };
@@ -1186,6 +1222,12 @@ export type Mutation = {
   authorizationPolicyResetOnOrganization: Organization;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
+  /** Generate Alkemio user credential offer */
+  beginAlkemioUserCredentialOfferInteraction: BeginCredentialOfferOutput;
+  /** Generate community member credential offer */
+  beginCommunityMemberCredentialOfferInteraction: BeginCredentialOfferOutput;
+  /** Generate credential share request */
+  beginCredentialRequestInteraction: BeginCredentialRequestOutput;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
@@ -1406,6 +1448,14 @@ export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
 
 export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
+};
+
+export type MutationBeginCommunityMemberCredentialOfferInteractionArgs = {
+  communityID: Scalars['String'];
+};
+
+export type MutationBeginCredentialRequestInteractionArgs = {
+  types: Array<Scalars['String']>;
 };
 
 export type MutationCreateActorArgs = {
@@ -1939,6 +1989,8 @@ export type Query = {
   authorization: Authorization;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
+  /** Get supported credential metadata */
+  getSupportedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** An hub. If no ID is specified then the first Hub is returned. */
   hub: Hub;
   /** The Hubs on this platform */
@@ -2592,10 +2644,16 @@ export type VerifiedCredential = {
   __typename?: 'VerifiedCredential';
   /** JSON for the claim in the credential */
   claim: Scalars['JSON'];
+  /** JSON for the context in the credential */
+  context: Scalars['JSON'];
+  /** The time at which the credential is no longer valid */
+  expires: Scalars['String'];
   /** The time at which the credential was issued */
   issued: Scalars['String'];
   /** The challenge issuing the VC */
   issuer: Scalars['String'];
+  /** The name of the VC */
+  name: Scalars['String'];
   /** The type of VC */
   type: Scalars['String'];
 };
@@ -6957,6 +7015,7 @@ export type HubContributionDetailsQuery = {
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
+    community?: { __typename?: 'Community'; id: string } | undefined;
   };
 };
 
@@ -6984,6 +7043,7 @@ export type ChallengeContributionDetailsQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
+      community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
 };
@@ -7014,6 +7074,7 @@ export type OpportunityContributionDetailsQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
+      community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
 };
@@ -9622,6 +9683,122 @@ export type OrganizationMembersQuery = {
           lastName: string;
           email: string;
         }>
+      | undefined;
+  };
+};
+
+export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSupportedCredentialMetadataQuery = {
+  __typename?: 'Query';
+  getSupportedCredentialMetadata: Array<{
+    __typename?: 'CredentialMetadataOutput';
+    name: string;
+    description: string;
+    schema: string;
+    types: Array<string>;
+    uniqueType: string;
+    context: string;
+  }>;
+};
+
+export type BeginCredentialRequestInteractionMutationVariables = Exact<{
+  types: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type BeginCredentialRequestInteractionMutation = {
+  __typename?: 'Mutation';
+  beginCredentialRequestInteraction: {
+    __typename?: 'BeginCredentialRequestOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type BeginAlkemioUserCredentialOfferInteractionMutationVariables = Exact<{ [key: string]: never }>;
+
+export type BeginAlkemioUserCredentialOfferInteractionMutation = {
+  __typename?: 'Mutation';
+  beginAlkemioUserCredentialOfferInteraction: {
+    __typename?: 'BeginCredentialOfferOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type BeginCommunityMemberCredentialOfferInteractionMutationVariables = Exact<{
+  communityID: Scalars['String'];
+}>;
+
+export type BeginCommunityMemberCredentialOfferInteractionMutation = {
+  __typename?: 'Mutation';
+  beginCommunityMemberCredentialOfferInteraction: {
+    __typename?: 'BeginCredentialOfferOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type UserAgentSsiFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  agent?:
+    | {
+        __typename?: 'Agent';
+        id: string;
+        did?: string | undefined;
+        credentials?:
+          | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+          | undefined;
+        verifiedCredentials?:
+          | Array<{
+              __typename?: 'VerifiedCredential';
+              claim: string;
+              context: string;
+              issued: string;
+              expires: string;
+              issuer: string;
+              name: string;
+              type: string;
+            }>
+          | undefined;
+      }
+    | undefined;
+};
+
+export type UserSsiQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserSsiQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    agent?:
+      | {
+          __typename?: 'Agent';
+          id: string;
+          did?: string | undefined;
+          credentials?:
+            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+            | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                claim: string;
+                context: string;
+                issued: string;
+                expires: string;
+                issuer: string;
+                name: string;
+                type: string;
+              }>
+            | undefined;
+        }
       | undefined;
   };
 };

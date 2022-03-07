@@ -174,6 +174,28 @@ export type AuthorizationPolicyRuleCredentialFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type BeginCredentialOfferOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | BeginCredentialOfferOutputKeySpecifier
+)[];
+export type BeginCredentialOfferOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type BeginCredentialRequestOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | BeginCredentialRequestOutputKeySpecifier
+)[];
+export type BeginCredentialRequestOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CanvasKeySpecifier = (
   | 'authorization'
   | 'checkout'
@@ -408,6 +430,23 @@ export type CredentialFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CredentialMetadataOutputKeySpecifier = (
+  | 'context'
+  | 'description'
+  | 'name'
+  | 'schema'
+  | 'types'
+  | 'uniqueType'
+  | CredentialMetadataOutputKeySpecifier
+)[];
+export type CredentialMetadataOutputFieldPolicy = {
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  schema?: FieldPolicy<any> | FieldReadFunction<any>;
+  types?: FieldPolicy<any> | FieldReadFunction<any>;
+  uniqueType?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type DirectRoomKeySpecifier = ('displayName' | 'id' | 'messages' | 'receiverID' | DirectRoomKeySpecifier)[];
 export type DirectRoomFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -621,6 +660,9 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnHub'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnUser'
+  | 'beginAlkemioUserCredentialOfferInteraction'
+  | 'beginCommunityMemberCredentialOfferInteraction'
+  | 'beginCredentialRequestInteraction'
   | 'createActor'
   | 'createActorGroup'
   | 'createApplication'
@@ -718,6 +760,9 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginAlkemioUserCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginCommunityMemberCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createApplication?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -985,6 +1030,7 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
   | 'configuration'
+  | 'getSupportedCredentialMetadata'
   | 'hub'
   | 'hubs'
   | 'me'
@@ -1007,6 +1053,7 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
+  getSupportedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   hub?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1241,15 +1288,21 @@ export type UserTemplateFieldPolicy = {
 };
 export type VerifiedCredentialKeySpecifier = (
   | 'claim'
+  | 'context'
+  | 'expires'
   | 'issued'
   | 'issuer'
+  | 'name'
   | 'type'
   | VerifiedCredentialKeySpecifier
 )[];
 export type VerifiedCredentialFieldPolicy = {
   claim?: FieldPolicy<any> | FieldReadFunction<any>;
+  context?: FieldPolicy<any> | FieldReadFunction<any>;
+  expires?: FieldPolicy<any> | FieldReadFunction<any>;
   issued?: FieldPolicy<any> | FieldReadFunction<any>;
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VisualKeySpecifier = (
@@ -1331,6 +1384,20 @@ export type StrictTypedTypePolicies = {
       | AuthorizationPolicyRuleCredentialKeySpecifier
       | (() => undefined | AuthorizationPolicyRuleCredentialKeySpecifier);
     fields?: AuthorizationPolicyRuleCredentialFieldPolicy;
+  };
+  BeginCredentialOfferOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | BeginCredentialOfferOutputKeySpecifier
+      | (() => undefined | BeginCredentialOfferOutputKeySpecifier);
+    fields?: BeginCredentialOfferOutputFieldPolicy;
+  };
+  BeginCredentialRequestOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | BeginCredentialRequestOutputKeySpecifier
+      | (() => undefined | BeginCredentialRequestOutputKeySpecifier);
+    fields?: BeginCredentialRequestOutputFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
@@ -1425,6 +1492,10 @@ export type StrictTypedTypePolicies = {
   Credential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialKeySpecifier | (() => undefined | CredentialKeySpecifier);
     fields?: CredentialFieldPolicy;
+  };
+  CredentialMetadataOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CredentialMetadataOutputKeySpecifier | (() => undefined | CredentialMetadataOutputKeySpecifier);
+    fields?: CredentialMetadataOutputFieldPolicy;
   };
   DirectRoom?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DirectRoomKeySpecifier | (() => undefined | DirectRoomKeySpecifier);
