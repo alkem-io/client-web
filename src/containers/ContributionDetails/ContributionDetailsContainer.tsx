@@ -7,7 +7,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface EntityDetailsContainerEntities {
@@ -57,7 +57,9 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         type: 'hub',
         mediaUrl: getVisualBanner(hubData.hub.context?.visuals),
         tags: hubData.hub.tagset?.tags || [],
-        url: buildHubUrl(hubData.hub.nameID),
+        domain: {
+          communityID: hubData.hub.community?.id,
+        },
       } as ContributionCardV2Details;
 
     if (challengeData)
@@ -67,6 +69,9 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         mediaUrl: getVisualBanner(challengeData.hub.challenge.context?.visuals),
         tags: challengeData.hub.challenge.tagset?.tags || [],
         url: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
+        domain: {
+          communityID: challengeData.hub.challenge.community?.id,
+        },
       } as ContributionCardV2Details;
 
     if (opportunityData)
@@ -80,6 +85,9 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
           opportunityData.hub.opportunity.parentNameID || '',
           opportunityData.hub.opportunity.nameID
         ),
+        metadata: {
+          communityID: opportunityData.hub.opportunity.community?.id,
+        },
       } as ContributionCardV2Details;
   }, [hubData, challengeData, opportunityData]);
 

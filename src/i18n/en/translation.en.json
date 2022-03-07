@@ -107,6 +107,7 @@
     "reference": "Reference",
     "references": "References",
     "notifications": "Notifications",
+    "credentials": "Credentials",
     "my-profile": "My profile",
     "my-memberships": "My memberships",
     "social": "Social",
@@ -281,6 +282,18 @@
       "title": "Application details",
       "created": "Created on {{date}}",
       "updated": "Last updated on {{date}}"
+    },
+    "credential-share-request-dialog": {
+      "title": "Share your verified credentials",
+      "content": "Please select the credentials you would like to share with Alkemio."
+    },
+    "alkemio-user-credential-offer-dialog": {
+      "title": "Alkemio User",
+      "content": "This credential will allow you to login in your Alkemio account when you present it."
+    },
+    "alkemio-community-member-credential-offer-dialog": {
+      "title": "Alkemio Community Member",
+      "content": "This credential will allow you to join communities without applying."
     },
     "edit-members": {
       "no-available-members": "No users available to add; please check members of containing community",
@@ -908,6 +921,17 @@
       "associated-organizations": {
         "title": "Associated Organizations",
         "help": "Organizations who the user is related to"
+      },
+      "verifiable-credentials": {
+        "title": "Verifiable Credentials",
+        "help": "Credentials that the user holds issued by trusted parties"
+      }
+    },
+    "user-credentials": {
+      "your-credentials": {
+        "title": "My Verifiable Credentials",
+        "description": "Alkemio caches your verifiable credentials in your cloud hosted wallet. The credentials you share will grant you privileges in communities accross the platform.",
+        "add-credential": "Add Credential"
       }
     },
     "authentication-required": {
@@ -943,7 +967,10 @@
       }
     },
     "loading-flow": "Loading flow",
-    "loading-error": "Loading error"
+    "loading-error": "Loading error",
+    "messages": {
+      "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting you email once again."
+    }
   },
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",
@@ -969,6 +996,9 @@
   },
   "contributions-view": {
     "no-data": "No {{name, lowercase}} available"
+  },
+  "credentials-view": {
+    "no-data": "No credentials have been presented"
   },
   "associated-organizations-view": {
     "no-data": "No {{name, lowercase}} available"
