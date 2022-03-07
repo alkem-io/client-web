@@ -1,5 +1,10 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PageProps } from '../..';
+import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';
+import UserForm from '../../../components/composite/forms/UserForm';
+import { Loading } from '../../../components/core/Loading/Loading';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../../hooks';
 import {
   useCreateTagsetOnProfileMutation,
   useCreateUserMutation,
@@ -8,18 +13,11 @@ import {
   useUpdateUserMutation,
   useUserQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
-import { useUpdateNavigation } from '../../../hooks';
-import { useNotification } from '../../../hooks';
-import { UserModel } from '../../../models/User';
-import { PageProps } from '../..';
-import { CreateUserInput } from '../../../models/graphql-schema';
-import { createUserNameID } from '../../../utils/createUserNameId';
 import { EditMode } from '../../../models/editMode';
-import { Loading } from '../../../components/core/Loading/Loading';
-import UserForm from '../../../components/composite/forms/UserForm';
-import UserRemoveModal from '../../../components/Admin/User/UserRemoveModal';
+import { CreateUserInput } from '../../../models/graphql-schema';
+import { UserModel } from '../../../models/User';
 import { logger } from '../../../services/logging/winston/logger';
+import { createUserNameID } from '../../../utils/createUserNameId';
 import { getUpdateUserInput } from '../../User/EditUserProfilePage';
 
 interface UserPageProps extends PageProps {
