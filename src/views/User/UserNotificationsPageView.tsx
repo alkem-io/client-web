@@ -1,14 +1,14 @@
 import { FormControl, FormControlLabel, FormGroup, Grid, Skeleton, Switch } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserPreference, UserPreferenceType } from '../../models/graphql-schema';
+import { Preference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUserContext } from '../../hooks';
 
 export interface UserNotificationsPageViewEntities {
-  preferences: UserPreference[];
+  preferences: Preference[];
 }
 
 export interface UserNotificationsPageViewState {
@@ -16,7 +16,7 @@ export interface UserNotificationsPageViewState {
 }
 
 export interface UserNotificationsPageViewActions {
-  updatePreference: (type: UserPreferenceType, checked: boolean, id: string) => void;
+  updatePreference: (checked: boolean, id: string) => void;
 }
 
 export interface UserNotificationsPageViewProps
@@ -50,7 +50,7 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
           subHeaderText={t('pages.user-notifications-settings.general.subtitle')}
           preferences={generalGroup}
           loading={loading}
-          onUpdate={(id, type, value) => updatePreference(type, value, id)}
+          onUpdate={(id, value) => updatePreference(value, id)}
         />
       </Grid>
       {!!(adminGroup.length || communityGroup.length) && (
@@ -61,7 +61,7 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
               subHeaderText={t('pages.user-notifications-settings.user-administration.subtitle')}
               preferences={adminGroup}
               loading={loading}
-              onUpdate={(id, type, value) => updatePreference(type, value, id)}
+              onUpdate={(id, value) => updatePreference(value, id)}
             />
           )}
           {adminGroup.length > 0 && communityGroup.length > 0 && <SectionSpacer />}
@@ -71,7 +71,7 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
               subHeaderText={t('pages.user-notifications-settings.community-administration.subtitle')}
               preferences={communityGroup}
               loading={loading}
-              onUpdate={(id, type, value) => updatePreference(type, value, id)}
+              onUpdate={(id, value) => updatePreference(value, id)}
             />
           )}
         </Grid>
@@ -84,9 +84,9 @@ export default UserNotificationsPageView;
 interface NotificationGroupSectionProps {
   headerText: string;
   subHeaderText: string;
-  preferences: UserPreference[];
+  preferences: Preference[];
   loading?: boolean;
-  onUpdate: (id: string, type: UserPreferenceType, value: boolean) => void;
+  onUpdate: (id: string, value: boolean) => void;
 }
 
 const NotificationGroupSection: FC<NotificationGroupSectionProps> = ({
@@ -115,7 +115,7 @@ const NotificationGroupSection: FC<NotificationGroupSectionProps> = ({
                   <Switch
                     checked={value !== 'false'}
                     name={definition.type}
-                    onChange={(event, checked) => onUpdate(id, event.target.name as UserPreferenceType, checked)}
+                    onChange={(event, checked) => onUpdate(id, checked)}
                   />
                 }
                 label={definition.description}
