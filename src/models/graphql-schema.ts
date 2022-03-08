@@ -1370,6 +1370,8 @@ export type Mutation = {
   updateOpportunity: Opportunity;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
+  /** Updates a preference */
+  updatePreference: Preference;
   /** Updates the specified Profile. */
   updateProfile: Profile;
   /** Updates the specified Project. */
@@ -1378,8 +1380,6 @@ export type Mutation = {
   updateUser: User;
   /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
-  /** Updates an user preference */
-  updateUserPreference: UserPreference;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Uploads and sets an image for the specified Visual. */
@@ -1738,6 +1738,10 @@ export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
 };
 
+export type MutationUpdatePreferenceArgs = {
+  preferenceData: UpdatePreferenceInput;
+};
+
 export type MutationUpdateProfileArgs = {
   profileData: UpdateProfileInput;
 };
@@ -1752,10 +1756,6 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateUserGroupInput;
-};
-
-export type MutationUpdateUserPreferenceArgs = {
-  userPreferenceData: UpdateUserPreferenceInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -1938,6 +1938,41 @@ export type PlatformHubTemplate = {
   /** Hub template name. */
   name: Scalars['String'];
 };
+
+export type Preference = {
+  __typename?: 'Preference';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The definition for the Preference */
+  definition: PreferenceDefinition;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Value of the preference */
+  value: Scalars['String'];
+};
+
+export type PreferenceDefinition = {
+  __typename?: 'PreferenceDefinition';
+  /** Preference description */
+  description: Scalars['String'];
+  /** The name */
+  displayName: Scalars['String'];
+  /** The group */
+  group: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Type of preference */
+  type: UserPreferenceType;
+  /** Preference value type */
+  valueType: PreferenceValueType;
+};
+
+export enum PreferenceValueType {
+  Boolean = 'BOOLEAN',
+  Float = 'FLOAT',
+  Int = 'INT',
+  String = 'STRING',
+}
 
 export type Profile = {
   __typename?: 'Profile';
@@ -2411,6 +2446,12 @@ export type UpdateOrganizationInput = {
   website?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdatePreferenceInput = {
+  /** ID of the Preference */
+  preferenceID: Scalars['UUID'];
+  value: Scalars['String'];
+};
+
 export type UpdateProfileInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
@@ -2462,14 +2503,6 @@ export type UpdateUserInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Set this user profile as being used as a service account or not. */
   serviceProfile?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type UpdateUserPreferenceInput = {
-  /** Type of the user preference */
-  type: UserPreferenceType;
-  /** ID of the user */
-  userID: Scalars['UUID'];
-  value: Scalars['String'];
 };
 
 export type UpdateVisualInput = {
@@ -2528,7 +2561,7 @@ export type User = Searchable & {
   /** The phone number for this User. */
   phone: Scalars['String'];
   /** The preferences for this user */
-  preferences: Array<UserPreference>;
+  preferences: Array<Preference>;
   /** The Profile for this User. */
   profile?: Maybe<Profile>;
 };
@@ -2572,34 +2605,6 @@ export type UserMembership = {
   organizations: Array<MembershipUserResultEntryOrganization>;
 };
 
-export type UserPreference = {
-  __typename?: 'UserPreference';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The definition for the Preference */
-  definition: UserPreferenceDefinition;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Value of the preference */
-  value: Scalars['String'];
-};
-
-export type UserPreferenceDefinition = {
-  __typename?: 'UserPreferenceDefinition';
-  /** Preference description */
-  description: Scalars['String'];
-  /** The name */
-  displayName: Scalars['String'];
-  /** The group */
-  group: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Type of preference */
-  type: UserPreferenceType;
-  /** Preference value type */
-  valueType: UserPreferenceValueType;
-};
-
 export enum UserPreferenceType {
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
   NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
@@ -2609,13 +2614,6 @@ export enum UserPreferenceType {
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
-}
-
-export enum UserPreferenceValueType {
-  Boolean = 'BOOLEAN',
-  Float = 'FLOAT',
-  Int = 'INT',
-  String = 'STRING',
 }
 
 export type UserSendMessageInput = {
@@ -3473,13 +3471,13 @@ export type VisualFullFragment = {
 
 export type VisualUriFragment = { __typename?: 'Visual'; id: string; uri: string; name: string };
 
-export type UpdateUserPreferencesMutationVariables = Exact<{
-  input: UpdateUserPreferenceInput;
+export type UpdatePreferencesMutationVariables = Exact<{
+  input: UpdatePreferenceInput;
 }>;
 
-export type UpdateUserPreferencesMutation = {
+export type UpdatePreferencesMutation = {
   __typename?: 'Mutation';
-  updateUserPreference: { __typename?: 'UserPreference'; id: string; value: string };
+  updatePreference: { __typename?: 'Preference'; id: string; value: string };
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -6681,17 +6679,17 @@ export type UserNotificationsPreferencesQuery = {
     __typename?: 'User';
     id: string;
     preferences: Array<{
-      __typename?: 'UserPreference';
+      __typename?: 'Preference';
       id: string;
       value: string;
       definition: {
-        __typename?: 'UserPreferenceDefinition';
+        __typename?: 'PreferenceDefinition';
         id: string;
         description: string;
         displayName: string;
         group: string;
         type: UserPreferenceType;
-        valueType: UserPreferenceValueType;
+        valueType: PreferenceValueType;
       };
     }>;
   };

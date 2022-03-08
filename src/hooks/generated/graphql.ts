@@ -1434,53 +1434,53 @@ export const AspectProviderDataFragmentDoc = gql`
   }
   ${AspectProvidedFragmentDoc}
 `;
-export const UpdateUserPreferencesDocument = gql`
-  mutation updateUserPreferences($input: UpdateUserPreferenceInput!) {
-    updateUserPreference(userPreferenceData: $input) {
+export const UpdatePreferencesDocument = gql`
+  mutation updatePreferences($input: UpdatePreferenceInput!) {
+    updatePreference(preferenceData: $input) {
       id
       value
     }
   }
 `;
-export type UpdateUserPreferencesMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateUserPreferencesMutation,
-  SchemaTypes.UpdateUserPreferencesMutationVariables
+export type UpdatePreferencesMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePreferencesMutation,
+  SchemaTypes.UpdatePreferencesMutationVariables
 >;
 
 /**
- * __useUpdateUserPreferencesMutation__
+ * __useUpdatePreferencesMutation__
  *
- * To run a mutation, you first call `useUpdateUserPreferencesMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateUserPreferencesMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdatePreferencesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePreferencesMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateUserPreferencesMutation, { data, loading, error }] = useUpdateUserPreferencesMutation({
+ * const [updatePreferencesMutation, { data, loading, error }] = useUpdatePreferencesMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateUserPreferencesMutation(
+export function useUpdatePreferencesMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateUserPreferencesMutation,
-    SchemaTypes.UpdateUserPreferencesMutationVariables
+    SchemaTypes.UpdatePreferencesMutation,
+    SchemaTypes.UpdatePreferencesMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateUserPreferencesMutation,
-    SchemaTypes.UpdateUserPreferencesMutationVariables
-  >(UpdateUserPreferencesDocument, options);
+  return Apollo.useMutation<SchemaTypes.UpdatePreferencesMutation, SchemaTypes.UpdatePreferencesMutationVariables>(
+    UpdatePreferencesDocument,
+    options
+  );
 }
-export type UpdateUserPreferencesMutationHookResult = ReturnType<typeof useUpdateUserPreferencesMutation>;
-export type UpdateUserPreferencesMutationResult = Apollo.MutationResult<SchemaTypes.UpdateUserPreferencesMutation>;
-export type UpdateUserPreferencesMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateUserPreferencesMutation,
-  SchemaTypes.UpdateUserPreferencesMutationVariables
+export type UpdatePreferencesMutationHookResult = ReturnType<typeof useUpdatePreferencesMutation>;
+export type UpdatePreferencesMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferencesMutation>;
+export type UpdatePreferencesMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePreferencesMutation,
+  SchemaTypes.UpdatePreferencesMutationVariables
 >;
 export const AssignUserToCommunityDocument = gql`
   mutation assignUserToCommunity($input: AssignCommunityMemberInput!) {

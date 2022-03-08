@@ -1,5 +1,5 @@
-mutation updateUserPreferences($input: UpdateUserPreferenceInput!) {
-  updateUserPreference(userPreferenceData: $input) {
+mutation updatePreferences($input: UpdatePreferenceInput!) {
+  updatePreference(preferenceData: $input) {
     id
     value
   }

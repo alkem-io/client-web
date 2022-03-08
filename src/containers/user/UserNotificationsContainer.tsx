@@ -1,12 +1,12 @@
 import { sortBy } from 'lodash';
 import React, { FC, useMemo } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../hooks';
-import { useUpdateUserPreferencesMutation, useUserNotificationsPreferencesQuery } from '../../hooks/generated/graphql';
+import { useUpdatePreferencesMutation, useUserNotificationsPreferencesQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
-import { UserPreference, UserPreferenceType } from '../../models/graphql-schema';
+import { Preference, UserPreferenceType } from '../../models/graphql-schema';
 
 export interface UserNotificationsContainerEntities {
-  preferences: UserPreference[];
+  preferences: Preference[];
 }
 
 export interface UserNotificationsContainerState {
@@ -14,7 +14,7 @@ export interface UserNotificationsContainerState {
 }
 
 export interface UserNotificationsContainerActions {
-  updatePreference: (type: UserPreferenceType, checked: boolean, id: string) => void;
+  updatePreference: (checked: boolean, id: string) => void;
 }
 
 export interface UserNotificationsContainerProps
@@ -44,25 +44,22 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
     },
   });
 
-  const userUUID = data?.user.id;
-
-  const [updateUserPreferences] = useUpdateUserPreferencesMutation({
+  const [updateUserPreferences] = useUpdatePreferencesMutation({
     onError: handleError,
   });
 
-  const updatePreference = (type: UserPreferenceType, checked: boolean, id: string) => {
+  const updatePreference = (checked: boolean, id: string) => {
     updateUserPreferences({
       variables: {
         input: {
-          type: type,
-          userID: userUUID || '',
+          preferenceID: id || '',
           value: checked ? 'true' : 'false',
         },
       },
       optimisticResponse: {
-        updateUserPreference: {
+        updatePreference: {
           id: id,
-          __typename: 'UserPreference',
+          __typename: 'Preference',
           value: checked ? 'true' : 'false',
         },
       },
