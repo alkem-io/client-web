@@ -2,7 +2,6 @@ import { ApolloError } from '@apollo/client';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useResolvedPath } from 'react-router-dom';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
@@ -74,7 +73,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const { pathname: url } = useResolvedPath('.');
   const [hideMeme, setHideMeme] = useState<boolean>(false);
   const [showInterestModal, setShowInterestModal] = useState<boolean>(false);
   const [showActorGroupModal, setShowActorGroupModal] = useState<boolean>(false);
@@ -134,7 +132,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
   const onProjectTransition = (project?: any) => {
-    navigate(`${url}/projects/${project?.nameID ?? 'new'}`, { replace: true });
+    navigate(project?.nameID ?? 'new');
   };
 
   // const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
@@ -142,17 +140,17 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const activity: ActivityItem[] = useMemo(() => {
     return [
       {
-        name: t('pages.activity.projects'),
+        name: t('common.projects'),
         digit: getActivityCount(_activity, 'projects') || 0,
         color: 'positive',
       },
       {
-        name: t('pages.activity.interests'),
+        name: t('common.interests'),
         digit: getActivityCount(_activity, 'relations') || 0,
         color: 'primary',
       },
       {
-        name: t('pages.activity.members'),
+        name: t('common.members'),
         digit: getActivityCount(_activity, 'members') || 0,
         color: 'neutralMedium',
       },

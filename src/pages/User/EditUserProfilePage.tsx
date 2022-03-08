@@ -14,6 +14,15 @@ import { PageProps } from '../common';
 
 interface EditUserProfilePageProps extends PageProps {}
 
+type HavingId<Entity extends { id?: unknown }> = Entity & { id: Exclude<Entity['id'], undefined> };
+const doesHaveId = <Entity extends { id?: unknown }>(entity: Entity): entity is HavingId<Entity> => !!entity.id;
+const convertIdAttrToUppercase = <Id extends string, Entity extends { id: Id }>({ id, ...attrs }: Entity) => {
+  return {
+    ID: id,
+    ...attrs,
+  };
+};
+
 // TODO [ATS] Need optimization this code is copy paste a few times.
 export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
   const { id: userID, email, memberof, profile, agent, ...rest } = user;
@@ -24,8 +33,8 @@ export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
     profileData: {
       ID: user.profile.id || '',
       description: profile.description,
-      references: profile.references.filter(r => r.id).map(t => ({ ID: t.id || '', name: t.name, uri: t.uri })),
-      tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: t.id || '', name: t.name, tags: [...t.tags] })),
+      references: profile.references.filter(doesHaveId).map(convertIdAttrToUppercase),
+      tagsets: profile.tagsets.filter(doesHaveId).map(convertIdAttrToUppercase),
     },
   };
 };

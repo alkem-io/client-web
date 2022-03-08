@@ -1,4 +1,4 @@
-import { Box, Button, Grid } from '@mui/material';
+import { Box, Button, Grid, IconButton } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,8 @@ import { Loading } from '../../core';
 import VisualUpload from '../common/VisualUpload/VisualUpload';
 import CountrySelect from './CountrySelect';
 import { FormikInputField } from './FormikInputField';
+// import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -40,6 +42,7 @@ interface UserProps {
   editMode?: EditMode;
   onSave?: (user: UserModel) => Promise<void>;
   onDelete?: (userId: string) => void;
+  onVerify?: (type: string) => Promise<void>;
   title?: string;
 }
 
@@ -49,6 +52,7 @@ export const UserForm: FC<UserProps> = ({
   editMode = EditMode.readOnly,
   onSave,
   onDelete,
+  onVerify,
 }) => {
   const { t } = useTranslation();
 
@@ -216,7 +220,7 @@ export const UserForm: FC<UserProps> = ({
                         <FormikInputField
                           name={'firstName'}
                           title={'First Name'}
-                          required={true && !isReadOnlyMode}
+                          required={!isReadOnlyMode}
                           readOnly={isReadOnlyMode}
                           placeholder={'First Name'}
                           disabled={isSubmitting}
@@ -226,7 +230,7 @@ export const UserForm: FC<UserProps> = ({
                         <FormikInputField
                           name={'lastName'}
                           title={'Last name'}
-                          required={true && !isReadOnlyMode}
+                          required={!isReadOnlyMode}
                           readOnly={isReadOnlyMode}
                           placeholder={'Last name'}
                           disabled={isSubmitting}
@@ -237,7 +241,7 @@ export const UserForm: FC<UserProps> = ({
                         <FormikInputField
                           name={'displayName'}
                           title={'Full Name'}
-                          required={true && !isReadOnlyMode}
+                          required={!isReadOnlyMode}
                           readOnly={isReadOnlyMode}
                           placeholder={'Full Name'}
                           disabled={isSubmitting}
@@ -257,13 +261,23 @@ export const UserForm: FC<UserProps> = ({
                         <CountrySelect readOnly={isReadOnlyMode} disabled={isSubmitting} />
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <FormikInputField
-                          name={'city'}
-                          title={'City'}
-                          readOnly={isReadOnlyMode}
-                          placeholder={'City'}
-                          disabled={isSubmitting}
-                        />
+                        <Box display="flex" alignItems="center">
+                          <FormikInputField
+                            name={'city'}
+                            title={'City'}
+                            readOnly={isReadOnlyMode}
+                            placeholder={'City'}
+                            disabled={isSubmitting}
+                          />
+                          {onVerify && (
+                            <>
+                              <Box marginLeft={1} />
+                              <IconButton sx={{ flexShrink: 0 }} onClick={() => onVerify('ProofOfNameCredential')}>
+                                <HealthAndSafetyIcon />
+                              </IconButton>
+                            </>
+                          )}
+                        </Box>
                       </Grid>
                     </Grid>
                   </Grid>

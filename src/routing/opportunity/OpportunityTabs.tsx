@@ -70,7 +70,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
       >
         <NavigationTab
           icon={<DashboardOutlined />}
-          label={t('common.dashboard')}
+          label={t('common.opportunity')}
           value={tabValue('dashboard')}
           to={routes['dashboard']}
         />
