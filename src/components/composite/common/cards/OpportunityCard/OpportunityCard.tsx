@@ -44,8 +44,8 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
       isMember={isMember(opportunity.id)}
       loading={loading}
       activities={[
-        { name: t('common.projects'), digit: getActivityCount(activity, 'projects') ?? 0 },
-        { name: t('common.members'), digit: getActivityCount(activity, 'members') ?? 0 },
+        { name: t('common.projects'), count: getActivityCount(activity, 'projects') ?? 0 },
+        { name: t('common.members'), count: getActivityCount(activity, 'members') ?? 0 },
       ]}
     />
   );
