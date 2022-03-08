@@ -9,6 +9,7 @@ import { has } from 'lodash';
 
 const messages = {
   '4070005': 'verification-flow-expired',
+  '4060005': 'recovery-flow-expired',
 };
 
 export default messages;

@@ -969,7 +969,8 @@
     "loading-flow": "Loading flow",
     "loading-error": "Loading error",
     "messages": {
-      "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting you email once again."
+      "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
+      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
     }
   },
   "dashboard-updates-section": {
