@@ -59,6 +59,7 @@ fragment AspectDashboard on Aspect {
     id
     name
     uri
+    description
   }
   comments {
     id

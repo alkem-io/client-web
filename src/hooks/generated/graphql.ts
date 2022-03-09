@@ -847,6 +847,7 @@ export const AspectDashboardFragmentDoc = gql`
       id
       name
       uri
+      description
     }
     comments {
       id

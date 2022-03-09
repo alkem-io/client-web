@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Box, Link } from '@mui/material';
+import { Box } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
@@ -16,6 +16,7 @@ import { Comment } from '../../models/discussion/comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
 import clsx from 'clsx';
 import Markdown from '../../components/core/Markdown';
+import ReferenceView from '../../components/composite/common/Reference/Reference';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
@@ -43,7 +44,7 @@ export interface AspectDashboardViewEntities {
   messages?: Comment[];
   commentId?: string;
   tags?: string[];
-  references?: Pick<Reference, 'id' | 'name' | 'uri'>[];
+  references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
   currentUserId?: string;
 }
 
@@ -168,15 +169,9 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
             </>
           ) : (
             <>
-              {references &&
-                references.length > 0 &&
-                references.map((l, i) => (
-                  <Link key={i} href={l.uri} target="_blank">
-                    <Typography sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                      {l.name}
-                    </Typography>
-                  </Link>
-                ))}
+              {!references?.length
+                ? null
+                : references.map((reference, i) => <ReferenceView key={i} reference={reference} />)}
               {references && !references.length && <Typography>{t('common.no-references')}</Typography>}
             </>
           )}

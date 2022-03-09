@@ -22,7 +22,7 @@ export type Scalars = {
   MessageID: string;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
-  /** A uuid identifier. Length 36 charachters. */
+  /** A uuid identifier. Length 36 characters. */
   UUID: string;
   /** A UUID or NameID identifier. */
   UUID_NAMEID: string;
@@ -267,6 +267,7 @@ export type AuthorizationPolicyRuleCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  CommunityJoin = 'COMMUNITY_JOIN',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCanvas = 'CREATE_CANVAS',
@@ -7199,7 +7200,9 @@ export type HubAspectQuery = {
                 description: string;
                 banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                references?:
+                  | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                  | undefined;
                 comments?:
                   | {
                       __typename?: 'Comments';
@@ -7259,7 +7262,9 @@ export type ChallengeAspectQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -7320,7 +7325,9 @@ export type OpportunityAspectQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -7366,7 +7373,9 @@ export type AspectDashboardDataFragment = {
         description: string;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
         comments?:
           | {
               __typename?: 'Comments';
@@ -7391,7 +7400,9 @@ export type AspectDashboardFragment = {
   description: string;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+  references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+    | undefined;
   comments?:
     | {
         __typename?: 'Comments';
