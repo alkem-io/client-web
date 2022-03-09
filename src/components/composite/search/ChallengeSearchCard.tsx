@@ -26,8 +26,8 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
 
   const _activity = challenge?.activity || [];
   const activity: ActivityItem[] = [
-    { name: 'Opportunities', digit: getActivityCount(_activity, 'opportunities') || 0, color: 'primary' },
-    { name: 'Members', digit: getActivityCount(_activity, 'members') || 0, color: 'positive' },
+    { name: 'Opportunities', count: getActivityCount(_activity, 'opportunities') || 0, color: 'primary' },
+    { name: 'Members', count: getActivityCount(_activity, 'members') || 0, color: 'positive' },
   ];
 
   return (

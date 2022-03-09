@@ -22,29 +22,29 @@ const AlkemioActivitySection: FC<{
   ];
   const summary: ActivityItem[] = useMemo(
     () => [
-      { name: t('pages.activity.hubs'), isLoading: loading, digit: hubCount, color: 'primary' },
+      { name: t('pages.activity.hubs'), isLoading: loading, count: hubCount, color: 'primary' },
       {
         name: t('common.challenges'),
         isLoading: loading,
-        digit: challengeCount,
+        count: challengeCount,
         color: 'primary',
       },
       {
         name: t('common.opportunities'),
         isLoading: loading,
-        digit: opportunityCount,
+        count: opportunityCount,
         color: 'primary',
       },
       {
         name: t('common.users'),
         isLoading: loading,
-        digit: userCount,
+        count: userCount,
         color: 'primary',
       },
       {
         name: t('common.organizations'),
         isLoading: loading,
-        digit: orgCount,
+        count: orgCount,
         color: 'primary',
       },
     ],
