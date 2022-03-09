@@ -35,11 +35,11 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
     : [
         {
           name: t('common.opportunities'),
-          digit: getActivityCount(activity, 'opportunities') ?? 0,
+          count: getActivityCount(activity, 'opportunities') ?? 0,
         },
         {
           name: t('common.members'),
-          digit: getActivityCount(activity, 'members') ?? 0,
+          count: getActivityCount(activity, 'members') ?? 0,
         },
       ];
 

@@ -141,17 +141,17 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     return [
       {
         name: t('common.projects'),
-        digit: getActivityCount(_activity, 'projects') || 0,
+        count: getActivityCount(_activity, 'projects') || 0,
         color: 'positive',
       },
       {
         name: t('common.interests'),
-        digit: getActivityCount(_activity, 'relations') || 0,
+        count: getActivityCount(_activity, 'relations') || 0,
         color: 'primary',
       },
       {
         name: t('common.members'),
-        digit: getActivityCount(_activity, 'members') || 0,
+        count: getActivityCount(_activity, 'members') || 0,
         color: 'neutralMedium',
       },
     ];
