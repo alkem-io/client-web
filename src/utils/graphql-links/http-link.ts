@@ -1,8 +1,12 @@
 import { createUploadLink } from 'apollo-upload-client';
-import { WebSocketLink } from '@apollo/client/link/ws';
-import { logger } from '../../services/logging/winston/logger';
 import { split } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+
+import { logger } from '../../services/logging/winston/logger';
+
+const WS_RETRY_ATTEMPTS = 10;
 
 export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => {
   const uploadLink = createUploadLink({
@@ -16,19 +20,27 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
       // building the url plainly instead of using URL
       // URL forces the default protocol on the uri
       const wsUrl = `${wsProtocol}//${window.location.hostname}:${window.location.port}/graphql`;
-      const wsLink = new WebSocketLink({
-        uri: wsUrl,
-        options: {
-          reconnect: true,
-          // we shouldn't switch to lazy in order to capture the error early on
+      // https://github.com/enisdenjo/graphql-ws/blob/master/docs/interfaces/client.ClientOptions.md
+      const wsLink = new GraphQLWsLink(
+        createClient({
+          url: wsUrl,
           lazy: false,
-          connectionCallback: errors => {
-            if (errors) {
-              logger.error('Unable to connect over WS', errors);
+          retryAttempts: WS_RETRY_ATTEMPTS,
+          // https://www.apollographql.com/docs/react/data/subscriptions/#5-authenticate-over-websocket-optional
+          // connectionParams: {},
+          onNonLazyError: errorOrCloseEvent => {
+            if (!errorOrCloseEvent) {
+              return;
             }
+
+            const message = isError(errorOrCloseEvent)
+              ? 'Fatal ws lazy error'
+              : 'ws lazy error: retry attempts have been exceeded or the specific close event is labeled as fatal';
+
+            logger.error(message, errorOrCloseEvent);
           },
-        },
-      });
+        })
+      );
       return split(
         ({ query }) => {
           const definition = getMainDefinition(query);
@@ -43,3 +55,5 @@ export const httpLink = (graphQLEndpoint: string, enableWebSockets: boolean) => 
   }
   return uploadLink;
 };
+
+const isError = (obj: unknown): obj is Error => !!(obj as Error)?.message;
