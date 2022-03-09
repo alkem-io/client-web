@@ -40,7 +40,7 @@ export const EditHub: FC<HubEditProps> = ({ paths }) => {
   };
 
   const onSubmit = async (values: HubEditFormValuesType) => {
-    const { name, host, tagsets, anonymousReadAccess } = values;
+    const { name, host, tagsets } = values;
     updateHub({
       variables: {
         input: {
@@ -49,9 +49,6 @@ export const EditHub: FC<HubEditProps> = ({ paths }) => {
           ID: hubNameId,
           hostID: host,
           tags: tagsets.flatMap(x => x.tags),
-          authorizationPolicy: {
-            anonymousReadAccess: anonymousReadAccess,
-          },
         },
       },
     });
@@ -70,7 +67,6 @@ export const EditHub: FC<HubEditProps> = ({ paths }) => {
         hostID={hub?.host?.id}
         tagset={hub?.tagset}
         context={hub?.context}
-        anonymousReadAccess={hub?.authorization?.anonymousReadAccess}
         organizations={organizations}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
