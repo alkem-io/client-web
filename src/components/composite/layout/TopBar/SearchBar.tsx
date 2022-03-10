@@ -79,7 +79,7 @@ const SearchBar = () => {
             <TopSearchComponent />
           </Box>
         </Hidden>
-        <Box>
+        <Box marginRight={2}>
           <LanguageSelect />
         </Box>
         <Box width={155}>{loading ? <Skeleton /> : <>{userProfileComponent}</>}</Box>
