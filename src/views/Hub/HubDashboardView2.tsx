@@ -16,6 +16,7 @@ import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import { ActivityType } from '../../models/constants';
 
 export interface HubDashboardView2Props {
   title?: string;
@@ -60,6 +61,10 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
 }) => {
   const { t } = useTranslation();
   const orgNameIds = useMemo(() => (organizationNameId ? [organizationNameId] : []), [organizationNameId]);
+
+  const challengesCount = useMemo(() => {
+    return activity.find(({ type }) => type === ActivityType.Challenge)?.count;
+  }, [activity]);
 
   return (
     <>
@@ -106,7 +111,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
           <SectionSpacer />
           {challengesReadAccess && (
             <DashboardGenericSection
-              headerText={t('pages.hub.sections.dashboard.challenges.title')}
+              headerText={`${t('pages.hub.sections.dashboard.challenges.title')} (${challengesCount})`}
               helpText={t('pages.hub.sections.dashboard.challenges.help-text')}
               navText={t('buttons.see-all')}
               navLink={'challenges'}

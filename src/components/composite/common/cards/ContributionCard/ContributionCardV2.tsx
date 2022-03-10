@@ -18,6 +18,9 @@ export interface ContributionCardV2Details {
   mediaUrl?: string;
   mediaSize?: mediaSize;
   url?: string;
+  domain?: {
+    communityID: string;
+  };
 }
 
 export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
@@ -27,6 +30,9 @@ export interface ContributionCardV2Props {
   details?: ContributionCardV2Details;
   classes?: {
     label?: string;
+  };
+  options?: {
+    noMedia?: boolean;
   };
   loading?: boolean;
 }
@@ -74,20 +80,25 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
   })
 );
 
-const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = false, classes, children }) => {
+const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = false, classes, options, children }) => {
   const { headerText = '', labelText, tags = [], mediaUrl, mediaSize = 'medium', url = '', tagsFor } = details || {};
+  const { noMedia } = options || {};
 
   const styles = useStyles({ mediaSize });
 
   return (
     <LinkCard to={url} className={styles.card} aria-label="contribution-card">
-      {loading ? (
-        <Skeleton variant="rectangular" className={styles.cardMedia} animation="wave" />
-      ) : (
-        <CardMedia image={mediaUrl} className={styles.cardMedia}>
-          {/* Workaround console error when image is missing. */}
-          <div />
-        </CardMedia>
+      {!noMedia && (
+        <>
+          {loading ? (
+            <Skeleton variant="rectangular" className={styles.cardMedia} animation="wave" />
+          ) : (
+            <CardMedia image={mediaUrl} className={styles.cardMedia}>
+              {/* Workaround console error when image is missing. */}
+              <div />
+            </CardMedia>
+          )}
+        </>
       )}
       <CardContent className={styles.cardContent}>
         {loading ? (

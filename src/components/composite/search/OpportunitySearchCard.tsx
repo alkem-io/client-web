@@ -26,8 +26,8 @@ const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResu
 
   const _activity = opportunity?.activity || [];
   const activity: ActivityItem[] = [
-    { name: 'Projects', digit: getActivityCount(_activity, 'projects') || 0, color: 'primary' },
-    { name: 'Members', digit: getActivityCount(_activity, 'members') || 0, color: 'positive' },
+    { name: 'Projects', count: getActivityCount(_activity, 'projects') || 0, color: 'primary' },
+    { name: 'Members', count: getActivityCount(_activity, 'members') || 0, color: 'positive' },
   ];
 
   return (

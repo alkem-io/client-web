@@ -44,18 +44,18 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false }) => {
       loading={loading}
       activities={[
         {
-          name: t('pages.activity.challenges'),
-          digit: getActivityCount(activity, 'challenges') ?? 0,
+          name: t('common.challenges'),
+          count: getActivityCount(activity, 'challenges') ?? 0,
           color: 'primary',
         },
         {
-          name: t('pages.activity.opportunities'),
-          digit: getActivityCount(activity, 'opportunities') ?? 0,
+          name: t('common.opportunities'),
+          count: getActivityCount(activity, 'opportunities') ?? 0,
           color: 'primary',
         },
         {
-          name: t('pages.activity.members'),
-          digit: getActivityCount(activity, 'members') ?? 0,
+          name: t('common.members'),
+          count: getActivityCount(activity, 'members') ?? 0,
           color: 'positive',
         },
       ]}

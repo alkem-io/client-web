@@ -22,7 +22,7 @@ export type Scalars = {
   MessageID: string;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
-  /** A uuid identifier. Length 36 charachters. */
+  /** A uuid identifier. Length 36 characters. */
   UUID: string;
   /** A UUID or NameID identifier. */
   UUID_NAMEID: string;
@@ -267,6 +267,8 @@ export type AuthorizationPolicyRuleCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  CommunityApply = 'COMMUNITY_APPLY',
+  CommunityJoin = 'COMMUNITY_JOIN',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCanvas = 'CREATE_CANVAS',
@@ -280,6 +282,26 @@ export enum AuthorizationPrivilege {
   Update = 'UPDATE',
   UpdateCanvas = 'UPDATE_CANVAS',
 }
+
+export type BeginCredentialOfferOutput = {
+  __typename?: 'BeginCredentialOfferOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential offer. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and the credentials offered */
+  jwt: Scalars['String'];
+};
+
+export type BeginCredentialRequestOutput = {
+  __typename?: 'BeginCredentialRequestOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential request. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  jwt: Scalars['String'];
+};
 
 export type Canvas = {
   __typename?: 'Canvas';
@@ -803,6 +825,22 @@ export type Credential = {
   type: AuthorizationCredential;
 };
 
+export type CredentialMetadataOutput = {
+  __typename?: 'CredentialMetadataOutput';
+  /** A json description of what the claim contains and schema validation definition */
+  context: Scalars['String'];
+  /** The purpose of the credential */
+  description: Scalars['String'];
+  /** The display name of the credential */
+  name: Scalars['String'];
+  /** The schema that the credential will be validated against */
+  schema: Scalars['String'];
+  /** The credential types that are associated with this credential */
+  types: Array<Scalars['String']>;
+  /** System recognized unique type for the credential */
+  uniqueType: Scalars['String'];
+};
+
 export type DeleteActorGroupInput = {
   ID: Scalars['UUID'];
 };
@@ -990,6 +1028,8 @@ export type Hub = {
   opportunities: Array<Opportunity>;
   /** A particular Opportunity, either by its ID or nameID */
   opportunity: Opportunity;
+  /** The preferences for this user */
+  preferences: Array<Preference>;
   /** A particular Project, identified by the ID */
   project: Project;
   /** All projects within this hub */
@@ -1037,6 +1077,13 @@ export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
 };
+
+export enum HubPreferenceType {
+  AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
+  MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
+  MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
+  MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
+}
 
 export type HubTemplate = {
   __typename?: 'HubTemplate';
@@ -1186,6 +1233,12 @@ export type Mutation = {
   authorizationPolicyResetOnOrganization: Organization;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
+  /** Generate Alkemio user credential offer */
+  beginAlkemioUserCredentialOfferInteraction: BeginCredentialOfferOutput;
+  /** Generate community member credential offer */
+  beginCommunityMemberCredentialOfferInteraction: BeginCredentialOfferOutput;
+  /** Generate credential share request */
+  beginCredentialRequestInteraction: BeginCredentialRequestOutput;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
@@ -1328,6 +1381,10 @@ export type Mutation = {
   updateOpportunity: Opportunity;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
+  /** Updates one of the Preferences on a Hub */
+  updatePreferenceOnHub: Preference;
+  /** Updates one of the Preferences on a Hub */
+  updatePreferenceOnUser: Preference;
   /** Updates the specified Profile. */
   updateProfile: Profile;
   /** Updates the specified Project. */
@@ -1336,8 +1393,6 @@ export type Mutation = {
   updateUser: User;
   /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
-  /** Updates an user preference */
-  updateUserPreference: UserPreference;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Uploads and sets an image for the specified Visual. */
@@ -1406,6 +1461,14 @@ export type MutationAuthorizationPolicyResetOnOrganizationArgs = {
 
 export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
+};
+
+export type MutationBeginCommunityMemberCredentialOfferInteractionArgs = {
+  communityID: Scalars['String'];
+};
+
+export type MutationBeginCredentialRequestInteractionArgs = {
+  types: Array<Scalars['String']>;
 };
 
 export type MutationCreateActorArgs = {
@@ -1688,6 +1751,14 @@ export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
 };
 
+export type MutationUpdatePreferenceOnHubArgs = {
+  preferenceData: UpdateHubPreferenceInput;
+};
+
+export type MutationUpdatePreferenceOnUserArgs = {
+  preferenceData: UpdateUserPreferenceInput;
+};
+
 export type MutationUpdateProfileArgs = {
   profileData: UpdateProfileInput;
 };
@@ -1702,10 +1773,6 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateUserGroupInput;
-};
-
-export type MutationUpdateUserPreferenceArgs = {
-  userPreferenceData: UpdateUserPreferenceInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -1889,6 +1956,41 @@ export type PlatformHubTemplate = {
   name: Scalars['String'];
 };
 
+export type Preference = {
+  __typename?: 'Preference';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The definition for the Preference */
+  definition: PreferenceDefinition;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Value of the preference */
+  value: Scalars['String'];
+};
+
+export type PreferenceDefinition = {
+  __typename?: 'PreferenceDefinition';
+  /** Preference description */
+  description: Scalars['String'];
+  /** The name */
+  displayName: Scalars['String'];
+  /** The group for the preference within the containing entity type. */
+  group: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The type of the Preference, specific to the Entity it is on. */
+  type: UserPreferenceType;
+  /** Preference value type */
+  valueType: PreferenceValueType;
+};
+
+export enum PreferenceValueType {
+  Boolean = 'BOOLEAN',
+  Float = 'FLOAT',
+  Int = 'INT',
+  String = 'STRING',
+}
+
 export type Profile = {
   __typename?: 'Profile';
   /** The authorization rules for the entity */
@@ -1939,6 +2041,8 @@ export type Query = {
   authorization: Authorization;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
+  /** Get supported credential metadata */
+  getSupportedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** An hub. If no ID is specified then the first Hub is returned. */
   hub: Hub;
   /** The Hubs on this platform */
@@ -2252,10 +2356,6 @@ export type UpdateAspectTemplateInput = {
   type: Scalars['String'];
 };
 
-export type UpdateAuthorizationPolicyInput = {
-  anonymousReadAccess: Scalars['Boolean'];
-};
-
 export type UpdateCanvasDirectInput = {
   ID: Scalars['UUID'];
   isTemplate?: InputMaybe<Scalars['Boolean']>;
@@ -2312,8 +2412,6 @@ export type UpdateEcosystemModelInput = {
 export type UpdateHubInput = {
   /** The ID or NameID of the Hub. */
   ID: Scalars['UUID_NAMEID'];
-  /** Update anonymous visibility for the Hub. */
-  authorizationPolicy?: InputMaybe<UpdateAuthorizationPolicyInput>;
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -2326,6 +2424,14 @@ export type UpdateHubInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
   /** Update the template for this Hub. */
   template?: InputMaybe<UpdateHubTemplateInput>;
+};
+
+export type UpdateHubPreferenceInput = {
+  /** ID of the Hub */
+  hubID: Scalars['UUID_NAMEID'];
+  /** Type of the user preference */
+  type: HubPreferenceType;
+  value: Scalars['String'];
 };
 
 export type UpdateHubTemplateInput = {
@@ -2415,8 +2521,8 @@ export type UpdateUserInput = {
 export type UpdateUserPreferenceInput = {
   /** Type of the user preference */
   type: UserPreferenceType;
-  /** ID of the user */
-  userID: Scalars['UUID'];
+  /** ID of the User */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
   value: Scalars['String'];
 };
 
@@ -2476,7 +2582,7 @@ export type User = Searchable & {
   /** The phone number for this User. */
   phone: Scalars['String'];
   /** The preferences for this user */
-  preferences: Array<UserPreference>;
+  preferences: Array<Preference>;
   /** The Profile for this User. */
   profile?: Maybe<Profile>;
 };
@@ -2520,34 +2626,6 @@ export type UserMembership = {
   organizations: Array<MembershipUserResultEntryOrganization>;
 };
 
-export type UserPreference = {
-  __typename?: 'UserPreference';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The definition for the Preference */
-  definition: UserPreferenceDefinition;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Value of the preference */
-  value: Scalars['String'];
-};
-
-export type UserPreferenceDefinition = {
-  __typename?: 'UserPreferenceDefinition';
-  /** Preference description */
-  description: Scalars['String'];
-  /** The name */
-  displayName: Scalars['String'];
-  /** The group */
-  group: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Type of preference */
-  type: UserPreferenceType;
-  /** Preference value type */
-  valueType: UserPreferenceValueType;
-};
-
 export enum UserPreferenceType {
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
   NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
@@ -2557,13 +2635,6 @@ export enum UserPreferenceType {
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
-}
-
-export enum UserPreferenceValueType {
-  Boolean = 'BOOLEAN',
-  Float = 'FLOAT',
-  Int = 'INT',
-  String = 'STRING',
 }
 
 export type UserSendMessageInput = {
@@ -2592,10 +2663,16 @@ export type VerifiedCredential = {
   __typename?: 'VerifiedCredential';
   /** JSON for the claim in the credential */
   claim: Scalars['JSON'];
+  /** JSON for the context in the credential */
+  context: Scalars['JSON'];
+  /** The time at which the credential is no longer valid */
+  expires: Scalars['String'];
   /** The time at which the credential was issued */
   issued: Scalars['String'];
   /** The challenge issuing the VC */
   issuer: Scalars['String'];
+  /** The name of the VC */
+  name: Scalars['String'];
   /** The type of VC */
   type: Scalars['String'];
 };
@@ -3356,7 +3433,9 @@ export type UserDetailsFragment = {
               minWidth: number;
             }
           | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       }
     | undefined;
@@ -3413,13 +3492,13 @@ export type VisualFullFragment = {
 
 export type VisualUriFragment = { __typename?: 'Visual'; id: string; uri: string; name: string };
 
-export type UpdateUserPreferencesMutationVariables = Exact<{
+export type UpdatePreferenceOnUserMutationVariables = Exact<{
   input: UpdateUserPreferenceInput;
 }>;
 
-export type UpdateUserPreferencesMutation = {
+export type UpdatePreferenceOnUserMutation = {
   __typename?: 'Mutation';
-  updateUserPreference: { __typename?: 'UserPreference'; id: string; value: string };
+  updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -3705,7 +3784,9 @@ export type CreateUserMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -3756,7 +3837,9 @@ export type CreateUserNewRegistrationMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -4260,7 +4343,9 @@ export type UpdateUserMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -5734,7 +5819,9 @@ export type MeQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -6613,17 +6700,17 @@ export type UserNotificationsPreferencesQuery = {
     __typename?: 'User';
     id: string;
     preferences: Array<{
-      __typename?: 'UserPreference';
+      __typename?: 'Preference';
       id: string;
       value: string;
       definition: {
-        __typename?: 'UserPreferenceDefinition';
+        __typename?: 'PreferenceDefinition';
         id: string;
         description: string;
         displayName: string;
         group: string;
         type: UserPreferenceType;
-        valueType: UserPreferenceValueType;
+        valueType: PreferenceValueType;
       };
     }>;
   };
@@ -6677,7 +6764,9 @@ export type UserQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -6780,7 +6869,9 @@ export type UserProfileQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -6869,7 +6960,9 @@ export type UsersQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -6941,6 +7034,7 @@ export type HubContributionDetailsQuery = {
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
+    community?: { __typename?: 'Community'; id: string } | undefined;
   };
 };
 
@@ -6968,6 +7062,7 @@ export type ChallengeContributionDetailsQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
+      community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
 };
@@ -6998,6 +7093,7 @@ export type OpportunityContributionDetailsQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
+      community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
 };
@@ -7124,7 +7220,9 @@ export type HubAspectQuery = {
                 description: string;
                 banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                references?:
+                  | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                  | undefined;
                 comments?:
                   | {
                       __typename?: 'Comments';
@@ -7184,7 +7282,9 @@ export type ChallengeAspectQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -7245,7 +7345,9 @@ export type OpportunityAspectQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -7291,7 +7393,9 @@ export type AspectDashboardDataFragment = {
         description: string;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
         comments?:
           | {
               __typename?: 'Comments';
@@ -7316,7 +7420,9 @@ export type AspectDashboardFragment = {
   description: string;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+  references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+    | undefined;
   comments?:
     | {
         __typename?: 'Comments';
@@ -9606,6 +9712,122 @@ export type OrganizationMembersQuery = {
           lastName: string;
           email: string;
         }>
+      | undefined;
+  };
+};
+
+export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSupportedCredentialMetadataQuery = {
+  __typename?: 'Query';
+  getSupportedCredentialMetadata: Array<{
+    __typename?: 'CredentialMetadataOutput';
+    name: string;
+    description: string;
+    schema: string;
+    types: Array<string>;
+    uniqueType: string;
+    context: string;
+  }>;
+};
+
+export type BeginCredentialRequestInteractionMutationVariables = Exact<{
+  types: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type BeginCredentialRequestInteractionMutation = {
+  __typename?: 'Mutation';
+  beginCredentialRequestInteraction: {
+    __typename?: 'BeginCredentialRequestOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type BeginAlkemioUserCredentialOfferInteractionMutationVariables = Exact<{ [key: string]: never }>;
+
+export type BeginAlkemioUserCredentialOfferInteractionMutation = {
+  __typename?: 'Mutation';
+  beginAlkemioUserCredentialOfferInteraction: {
+    __typename?: 'BeginCredentialOfferOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type BeginCommunityMemberCredentialOfferInteractionMutationVariables = Exact<{
+  communityID: Scalars['String'];
+}>;
+
+export type BeginCommunityMemberCredentialOfferInteractionMutation = {
+  __typename?: 'Mutation';
+  beginCommunityMemberCredentialOfferInteraction: {
+    __typename?: 'BeginCredentialOfferOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type UserAgentSsiFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  agent?:
+    | {
+        __typename?: 'Agent';
+        id: string;
+        did?: string | undefined;
+        credentials?:
+          | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+          | undefined;
+        verifiedCredentials?:
+          | Array<{
+              __typename?: 'VerifiedCredential';
+              claim: string;
+              context: string;
+              issued: string;
+              expires: string;
+              issuer: string;
+              name: string;
+              type: string;
+            }>
+          | undefined;
+      }
+    | undefined;
+};
+
+export type UserSsiQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserSsiQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    agent?:
+      | {
+          __typename?: 'Agent';
+          id: string;
+          did?: string | undefined;
+          credentials?:
+            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+            | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                claim: string;
+                context: string;
+                issued: string;
+                expires: string;
+                issuer: string;
+                name: string;
+                type: string;
+              }>
+            | undefined;
+        }
       | undefined;
   };
 };

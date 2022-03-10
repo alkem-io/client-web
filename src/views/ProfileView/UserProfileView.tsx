@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, CardContent, CardHeader, Grid, Link, Typography as MUITypography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, CardHeader, Grid, Typography as MUITypography } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, useMemo } from 'react';
@@ -10,6 +10,7 @@ import TagsComponent from '../../components/composite/common/TagsComponent/TagsC
 import Typography from '../../components/core/Typography';
 import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
+import References from '../../components/composite/common/References/References';
 
 export interface UserProfileViewProps {
   entities: {
@@ -77,20 +78,16 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   const location = [city, country].filter(x => !!x).join(', ');
 
   const socialLinks = useMemo(() => {
-    const result = (references || [])
-      .map(s => ({
+    return references
+      ?.map(s => ({
         type: toSocialNetworkEnum(s.name),
         url: s.uri,
       }))
       .filter(isSocialLink);
-
-    return result;
   }, [references]);
 
-  const links = useMemo(() => {
-    let result = (references || []).filter(x => !isSocialNetworkSupported(x.name)).map(s => s.uri);
-
-    return result;
+  const nonSocialReferences = useMemo(() => {
+    return references?.filter(x => !isSocialNetworkSupported(x.name));
   }, [references]);
 
   return (
@@ -167,11 +164,14 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
             <Typography color="primary" weight="boldLight" aria-label="links">
               {t('components.profile.fields.links.title')}
             </Typography>
-            {links?.map((l, i) => (
-              <Link key={i} href={l} target="_blank">
-                {l}
-              </Link>
-            ))}
+            <References
+              references={nonSocialReferences}
+              noItemsView={
+                <MUITypography color="neutral.main" variant="subtitle2">
+                  {t('common.no-references')}
+                </MUITypography>
+              }
+            />
           </Grid>
         </Grid>
       </CardContent>
