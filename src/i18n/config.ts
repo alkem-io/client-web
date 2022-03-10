@@ -13,12 +13,16 @@ export const resources = {
   },
 } as const;
 
+type Language = keyof typeof resources;
+
+export const supportedLngs: Language[] = ['en', 'nl'];
+
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)
   .init({
-    fallbackLng: 'nl', // todo: revert to en before pushing this to develop
-    supportedLngs: ['en', 'nl'],
+    fallbackLng: supportedLngs[0],
+    supportedLngs,
     resources,
     interpolation: {
       format: function (value, format, _lng) {
