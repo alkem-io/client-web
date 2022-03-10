@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash';
 import React, { FC, useMemo } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../hooks';
-import { useUpdatePreferencesMutation, useUserNotificationsPreferencesQuery } from '../../hooks/generated/graphql';
+import { useUpdatePreferenceOnUserMutation, useUserNotificationsPreferencesQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Preference, UserPreferenceType } from '../../models/graphql-schema';
 
@@ -14,7 +14,7 @@ export interface UserNotificationsContainerState {
 }
 
 export interface UserNotificationsContainerActions {
-  updatePreference: (checked: boolean, id: string) => void;
+  updatePreference: (type: UserPreferenceType, checked: boolean, id: string) => void;
 }
 
 export interface UserNotificationsContainerProps
@@ -44,20 +44,27 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
     },
   });
 
-  const [updateUserPreferences] = useUpdatePreferencesMutation({
+  const [updatePreferenceOnUser] = useUpdatePreferenceOnUserMutation({
     onError: handleError,
   });
 
-  const updatePreference = (checked: boolean, id: string) => {
-    updateUserPreferences({
+  const userUUID = data?.user.id;
+
+  const updatePreference = (type: UserPreferenceType, checked: boolean, id: string) => {
+    if (!userUUID) {
+      return;
+    }
+
+    updatePreferenceOnUser({
       variables: {
         input: {
-          preferenceID: id || '',
+          type: type,
+          userID: userUUID,
           value: checked ? 'true' : 'false',
         },
       },
       optimisticResponse: {
-        updatePreference: {
+        updatePreferenceOnUser: {
           id: id,
           __typename: 'Preference',
           value: checked ? 'true' : 'false',
@@ -69,7 +76,9 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
   const preferences = useMemo(
     () =>
       sortBy(
-        (data?.user.preferences || []).filter(p => limitNotificationsTo.includes(p.definition.type)),
+        (data?.user.preferences || []).filter(p =>
+          limitNotificationsTo.includes(p.definition.type as UserPreferenceType)
+        ),
         x => x.definition.displayName
       ),
     [data]

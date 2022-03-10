@@ -22,7 +22,7 @@ export type Scalars = {
   MessageID: string;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
-  /** A uuid identifier. Length 36 charachters. */
+  /** A uuid identifier. Length 36 characters. */
   UUID: string;
   /** A UUID or NameID identifier. */
   UUID_NAMEID: string;
@@ -267,6 +267,8 @@ export type AuthorizationPolicyRuleCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  CommunityApply = 'COMMUNITY_APPLY',
+  CommunityJoin = 'COMMUNITY_JOIN',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCanvas = 'CREATE_CANVAS',
@@ -1026,6 +1028,8 @@ export type Hub = {
   opportunities: Array<Opportunity>;
   /** A particular Opportunity, either by its ID or nameID */
   opportunity: Opportunity;
+  /** The preferences for this user */
+  preferences: Array<Preference>;
   /** A particular Project, identified by the ID */
   project: Project;
   /** All projects within this hub */
@@ -1073,6 +1077,13 @@ export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
 };
+
+export enum HubPreferenceType {
+  AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
+  MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
+  MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
+  MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
+}
 
 export type HubTemplate = {
   __typename?: 'HubTemplate';
@@ -1370,8 +1381,10 @@ export type Mutation = {
   updateOpportunity: Opportunity;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
-  /** Updates a preference */
-  updatePreference: Preference;
+  /** Updates one of the Preferences on a Hub */
+  updatePreferenceOnHub: Preference;
+  /** Updates one of the Preferences on a Hub */
+  updatePreferenceOnUser: Preference;
   /** Updates the specified Profile. */
   updateProfile: Profile;
   /** Updates the specified Project. */
@@ -1738,8 +1751,12 @@ export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
 };
 
-export type MutationUpdatePreferenceArgs = {
-  preferenceData: UpdatePreferenceInput;
+export type MutationUpdatePreferenceOnHubArgs = {
+  preferenceData: UpdateHubPreferenceInput;
+};
+
+export type MutationUpdatePreferenceOnUserArgs = {
+  preferenceData: UpdateUserPreferenceInput;
 };
 
 export type MutationUpdateProfileArgs = {
@@ -1957,12 +1974,12 @@ export type PreferenceDefinition = {
   description: Scalars['String'];
   /** The name */
   displayName: Scalars['String'];
-  /** The group */
+  /** The group for the preference within the containing entity type. */
   group: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Type of preference */
-  type: UserPreferenceType;
+  /** The type of the Preference, specific to the Entity it is on. */
+  type: Scalars['String'];
   /** Preference value type */
   valueType: PreferenceValueType;
 };
@@ -2339,10 +2356,6 @@ export type UpdateAspectTemplateInput = {
   type: Scalars['String'];
 };
 
-export type UpdateAuthorizationPolicyInput = {
-  anonymousReadAccess: Scalars['Boolean'];
-};
-
 export type UpdateCanvasDirectInput = {
   ID: Scalars['UUID'];
   isTemplate?: InputMaybe<Scalars['Boolean']>;
@@ -2399,8 +2412,6 @@ export type UpdateEcosystemModelInput = {
 export type UpdateHubInput = {
   /** The ID or NameID of the Hub. */
   ID: Scalars['UUID_NAMEID'];
-  /** Update anonymous visibility for the Hub. */
-  authorizationPolicy?: InputMaybe<UpdateAuthorizationPolicyInput>;
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -2413,6 +2424,14 @@ export type UpdateHubInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
   /** Update the template for this Hub. */
   template?: InputMaybe<UpdateHubTemplateInput>;
+};
+
+export type UpdateHubPreferenceInput = {
+  /** ID of the Hub */
+  hubID: Scalars['UUID_NAMEID'];
+  /** Type of the user preference */
+  type: HubPreferenceType;
+  value: Scalars['String'];
 };
 
 export type UpdateHubTemplateInput = {
@@ -2444,12 +2463,6 @@ export type UpdateOrganizationInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData?: InputMaybe<UpdateProfileInput>;
   website?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdatePreferenceInput = {
-  /** ID of the Preference */
-  preferenceID: Scalars['UUID'];
-  value: Scalars['String'];
 };
 
 export type UpdateProfileInput = {
@@ -2503,6 +2516,14 @@ export type UpdateUserInput = {
   profileData?: InputMaybe<UpdateProfileInput>;
   /** Set this user profile as being used as a service account or not. */
   serviceProfile?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type UpdateUserPreferenceInput = {
+  /** Type of the user preference */
+  type: UserPreferenceType;
+  /** ID of the User */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+  value: Scalars['String'];
 };
 
 export type UpdateVisualInput = {
@@ -3471,13 +3492,13 @@ export type VisualFullFragment = {
 
 export type VisualUriFragment = { __typename?: 'Visual'; id: string; uri: string; name: string };
 
-export type UpdatePreferencesMutationVariables = Exact<{
-  input: UpdatePreferenceInput;
+export type UpdatePreferenceOnUserMutationVariables = Exact<{
+  input: UpdateUserPreferenceInput;
 }>;
 
-export type UpdatePreferencesMutation = {
+export type UpdatePreferenceOnUserMutation = {
   __typename?: 'Mutation';
-  updatePreference: { __typename?: 'Preference'; id: string; value: string };
+  updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -6688,7 +6709,7 @@ export type UserNotificationsPreferencesQuery = {
         description: string;
         displayName: string;
         group: string;
-        type: UserPreferenceType;
+        type: string;
         valueType: PreferenceValueType;
       };
     }>;

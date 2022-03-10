@@ -333,8 +333,7 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-hub members to challenges",
-      "read-access-title": "Visibility"
+      "read-access": "Allow read access for non-hub members to challenges"
     },
     "nameSegment": {
       "name": "Name",
