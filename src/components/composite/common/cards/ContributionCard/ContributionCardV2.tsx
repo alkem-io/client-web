@@ -122,7 +122,7 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
           {loading ? (
             <Skeleton variant="rectangular" animation="wave" />
           ) : (
-            <TagsComponent tags={tags} tagsFor={tagsFor} count={4} />
+            <TagsComponent tags={tags} tagsFor={tagsFor} />
           )}
         </Box>
       </CardContent>
