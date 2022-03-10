@@ -519,6 +519,7 @@ export type HubKeySpecifier = (
   | 'nameID'
   | 'opportunities'
   | 'opportunity'
+  | 'preferences'
   | 'project'
   | 'projects'
   | 'tagset'
@@ -543,6 +544,7 @@ export type HubFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -734,7 +736,8 @@ export type MutationKeySpecifier = (
   | 'updateHub'
   | 'updateOpportunity'
   | 'updateOrganization'
-  | 'updatePreference'
+  | 'updatePreferenceOnHub'
+  | 'updatePreferenceOnUser'
   | 'updateProfile'
   | 'updateProject'
   | 'updateUser'
@@ -834,7 +837,8 @@ export type MutationFieldPolicy = {
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatePreference?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatePreferenceOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
   updateUser?: FieldPolicy<any> | FieldReadFunction<any>;
