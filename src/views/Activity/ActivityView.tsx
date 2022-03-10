@@ -46,16 +46,16 @@ const ActivityView: FC<ActivityViewProps> = ({ activity, loading }) => {
 };
 export default ActivityView;
 
-const ActivityViewColumn = ({ activity }) => {
+const ActivityViewColumn = ({ activity }: { activity: ActivityItem[] }) => {
   if (!activity.length) {
     return null;
   }
 
   return (
     <Grid container item xs={6} spacing={1}>
-      {activity.map(({ name, digit }, i) => (
+      {activity.map(({ name, count }, i) => (
         <Grid key={i} item xs={12}>
-          <ActivityViewItem text={name} count={digit} />
+          <ActivityViewItem text={name} count={count} />
         </Grid>
       ))}
     </Grid>
