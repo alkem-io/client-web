@@ -1979,7 +1979,7 @@ export type PreferenceDefinition = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The type of the Preference, specific to the Entity it is on. */
-  type: Scalars['String'];
+  type: UserPreferenceType;
   /** Preference value type */
   valueType: PreferenceValueType;
 };
@@ -6709,7 +6709,7 @@ export type UserNotificationsPreferencesQuery = {
         description: string;
         displayName: string;
         group: string;
-        type: string;
+        type: UserPreferenceType;
         valueType: PreferenceValueType;
       };
     }>;
@@ -7220,7 +7220,9 @@ export type HubAspectQuery = {
                 description: string;
                 banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                references?:
+                  | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                  | undefined;
                 comments?:
                   | {
                       __typename?: 'Comments';
@@ -7280,7 +7282,9 @@ export type ChallengeAspectQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -7341,7 +7345,9 @@ export type OpportunityAspectQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -7387,7 +7393,9 @@ export type AspectDashboardDataFragment = {
         description: string;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
         comments?:
           | {
               __typename?: 'Comments';
@@ -7412,7 +7420,9 @@ export type AspectDashboardFragment = {
   description: string;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+  references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+    | undefined;
   comments?:
     | {
         __typename?: 'Comments';

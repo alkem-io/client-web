@@ -10,7 +10,7 @@ import TagsComponent from '../../components/composite/common/TagsComponent/TagsC
 import Typography from '../../components/core/Typography';
 import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
-import ReferenceView from '../../components/composite/common/Reference/Reference';
+import References from '../../components/composite/common/References/References';
 
 export interface UserProfileViewProps {
   entities: {
@@ -164,9 +164,14 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
             <Typography color="primary" weight="boldLight" aria-label="links">
               {t('components.profile.fields.links.title')}
             </Typography>
-            {nonSocialReferences?.map((reference, i) => (
-              <ReferenceView key={i} reference={reference} />
-            ))}
+            <References
+              references={nonSocialReferences}
+              noItemsView={
+                <MUITypography color="neutral.main" variant="subtitle2">
+                  {t('common.no-references')}
+                </MUITypography>
+              }
+            />
           </Grid>
         </Grid>
       </CardContent>
