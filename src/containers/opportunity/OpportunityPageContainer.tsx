@@ -115,7 +115,11 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const { references = [], aspects = [] } = context ?? {};
 
   const { data: config, loading: loadingTemplate, error: errorTemplate } = useOpportunityTemplateQuery();
-  const aspectsTypes = config?.configuration.template.opportunities[0].aspects ?? [];
+  const aspectTemplates = config?.configuration.template.hubs[0].aspects ?? [];
+  const aspectsTypes: string[] = [];
+  for (const aspectTemplate of aspectTemplates) {
+    aspectsTypes.push(aspectTemplate.type);
+  }
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
   const meme = references?.find(x => x.name === 'meme') as Reference;

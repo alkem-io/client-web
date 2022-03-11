@@ -32,8 +32,11 @@ fragment Configuration on Config {
     submitPII
   }
   template {
-    opportunities {
-      aspects
+    hubs {
+       aspects {
+          type
+          description
+       }
     }
   }
 }

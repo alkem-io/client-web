@@ -550,6 +550,11 @@ export type HubFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type HubAspectTemplateKeySpecifier = ('description' | 'type' | HubAspectTemplateKeySpecifier)[];
+export type HubAspectTemplateFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type HubTemplateKeySpecifier = ('aspectTemplates' | HubTemplateKeySpecifier)[];
 export type HubTemplateFieldPolicy = {
   aspectTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -888,7 +893,6 @@ export type OpportunityFieldPolicy = {
 export type OpportunityTemplateKeySpecifier = (
   | 'actorGroups'
   | 'applications'
-  | 'aspects'
   | 'name'
   | 'relations'
   | OpportunityTemplateKeySpecifier
@@ -896,7 +900,6 @@ export type OpportunityTemplateKeySpecifier = (
 export type OpportunityTemplateFieldPolicy = {
   actorGroups?: FieldPolicy<any> | FieldReadFunction<any>;
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -988,9 +991,10 @@ export type PlatformFieldPolicy = {
   support?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformHubTemplateKeySpecifier = ('applications' | 'name' | PlatformHubTemplateKeySpecifier)[];
+export type PlatformHubTemplateKeySpecifier = ('applications' | 'aspects' | 'name' | PlatformHubTemplateKeySpecifier)[];
 export type PlatformHubTemplateFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PreferenceKeySpecifier = ('authorization' | 'definition' | 'id' | 'value' | PreferenceKeySpecifier)[];
@@ -1518,6 +1522,10 @@ export type StrictTypedTypePolicies = {
   Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
     fields?: HubFieldPolicy;
+  };
+  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
+    fields?: HubAspectTemplateFieldPolicy;
   };
   HubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubTemplateKeySpecifier | (() => undefined | HubTemplateKeySpecifier);

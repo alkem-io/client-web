@@ -54,7 +54,12 @@ const AspectEdit: FC<Props> = ({ show, onHide, data, id, opportunityId, contextI
   const handleError = useApolloErrorHandler();
   const { data: config } = useOpportunityTemplateQuery();
 
-  const aspectsTypes = config?.configuration.template.opportunities[0].aspects;
+  const aspectTemplates = config?.configuration.template.hubs[0].aspects ?? [];
+  const aspectsTypes: string[] = [];
+  for (const aspectTemplate of aspectTemplates) {
+    aspectsTypes.push(aspectTemplate.type);
+  }
+
   const isCreate = !id;
 
   const availableTypes =

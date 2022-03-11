@@ -81,8 +81,13 @@ query opportunityTemplate {
   configuration {
     template {
       opportunities {
-        aspects
         actorGroups
+      }
+      hubs {
+        aspects {
+          type
+          description
+        }
       }
     }
   }
