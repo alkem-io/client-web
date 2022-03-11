@@ -847,6 +847,7 @@ export const AspectDashboardFragmentDoc = gql`
       id
       name
       uri
+      description
     }
     comments {
       id
@@ -901,6 +902,7 @@ export const AspectSettingsFragmentDoc = gql`
       id
       name
       uri
+      description
     }
   }
   ${VisualFullFragmentDoc}
