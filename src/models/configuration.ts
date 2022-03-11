@@ -26,8 +26,6 @@ export interface Configuration {
 export interface AspectTemplate {
   type: string;
   description: string;
-
-  // __typename?: 'HubAspectTemplate' | undefined;
 }
 
 interface AuthenticationProvider {
