@@ -10,10 +10,10 @@ export interface ActivitiesV2Props {
 const ActivitiesV2: FC<ActivitiesV2Props> = ({ activity }) => {
   return (
     <Grid container spacing={1} direction="column">
-      {activity.map(({ digit, name }, i) => (
+      {activity.map(({ count, name }, i) => (
         <Grid key={i} item>
           <Box component="span" paddingRight={0.5} fontWeight="bold">
-            {digit}
+            {count}
           </Box>
           {name}
         </Grid>

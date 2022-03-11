@@ -9,6 +9,7 @@ import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment } from '
 import getActivityCount from '../../utils/get-activity-count';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../models/discussion/discussion';
+import { ActivityType } from '../../models/constants';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -56,17 +57,18 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     return [
       {
         name: t('common.challenges'),
-        digit: getActivityCount(_activity, 'challenges') || 0,
+        type: ActivityType.Challenge,
+        count: getActivityCount(_activity, 'challenges') || 0,
         color: 'neutral',
       },
       {
         name: t('common.opportunities'),
-        digit: getActivityCount(_activity, 'opportunities') || 0,
+        count: getActivityCount(_activity, 'opportunities') || 0,
         color: 'primary',
       },
       {
         name: t('common.members'),
-        digit: getActivityCount(_activity, 'members') || 0,
+        count: getActivityCount(_activity, 'members') || 0,
         color: 'neutralMedium',
       },
     ];
