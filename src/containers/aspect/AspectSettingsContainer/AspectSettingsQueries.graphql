@@ -65,5 +65,6 @@ fragment AspectSettings on Aspect {
     id
     name
     uri
+    description
   }
 }
