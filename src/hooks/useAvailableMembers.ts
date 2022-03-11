@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../models/graphql-schema';
+import { useCallback, useMemo } from 'react';
+import { AuthorizationCredential, User, UserDisplayNameFragment } from '../models/graphql-schema';
 import {
   useCommunityMembersQuery,
   useUsersDisplayNameQuery,
@@ -11,6 +11,8 @@ import { useHub } from './useHub';
 export interface AvailableMembersResults {
   available: UserDisplayNameFragment[];
   current: Member[];
+  onLoadMore: (amount?: number) => void;
+  isLastAvailableUserPage: boolean;
   loading: boolean;
   error: boolean;
 }
@@ -34,12 +36,17 @@ export const useAvailableMembers = (
     data: _allUsers,
     loading: loadingUsers,
     error: userError,
+    fetchMore,
   } = useUsersDisplayNameQuery({
+    variables: { first: 1 },
+    notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
     skip: Boolean(parentCommunityId || parentMembers),
   });
-  const allUsers = _allUsers?.users as UserDisplayNameFragment[];
+  const allUsers = _allUsers?.users2?.edges?.map(x => x.node) as Pick<User, 'id' | 'displayName'>[];
+  const usersEndCursor = _allUsers?.users2?.pageInfo?.endCursor;
+  const isUsersLastPage = !Boolean(_allUsers?.users2?.pageInfo?.hasNextPage);
 
   const {
     data: _current,
@@ -84,10 +91,24 @@ export const useAvailableMembers = (
     [entityMembers, current]
   );
 
+  const onLoadMore = useCallback(
+    (amount = 1) => {
+      fetchMore({
+        variables: {
+          first: amount,
+          after: usersEndCursor,
+        },
+      });
+    },
+    [fetchMore, usersEndCursor]
+  );
+
   return {
     available: availableMembers,
     current: current,
     error: hasError,
     loading: isLoading,
+    onLoadMore,
+    isLastAvailableUserPage: isUsersLastPage,
   };
 };

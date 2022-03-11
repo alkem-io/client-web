@@ -1930,6 +1930,50 @@ export type OryConfig = {
   kratosPublicBaseURL: Scalars['String'];
 };
 
+export type PaginatedUser = Searchable & {
+  __typename?: 'PaginatedUser';
+  /** The unique personal identifier (upn) for the account associated with this user profile */
+  accountUpn: Scalars['String'];
+  /** The Agent representing this User. */
+  agent?: Maybe<Agent>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  city: Scalars['String'];
+  /** The Community rooms this user is a member of */
+  communityRooms?: Maybe<Array<CommunicationRoom>>;
+  country: Scalars['String'];
+  /** The direct rooms this user is a member of */
+  directRooms?: Maybe<Array<DirectRoom>>;
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The email address for this User. */
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  gender: Scalars['String'];
+  id: Scalars['UUID'];
+  lastName: Scalars['String'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The phone number for this User. */
+  phone: Scalars['String'];
+  /** The preferences for this user */
+  preferences: Array<Preference>;
+  /** The Profile for this User. */
+  profile?: Maybe<Profile>;
+};
+
+export type PaginatedUserEdge = {
+  __typename?: 'PaginatedUserEdge';
+  node: PaginatedUser;
+};
+
+export type PaginatedUserPageInfo = {
+  __typename?: 'PaginatedUserPageInfo';
+  endCursor: Scalars['String'];
+  hasNextPage: Scalars['Boolean'];
+  startCursor: Scalars['String'];
+};
+
 export type Platform = {
   __typename?: 'Platform';
   /** URL to a page about the platform */
@@ -1979,7 +2023,7 @@ export type PreferenceDefinition = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The type of the Preference, specific to the Entity it is on. */
-  type: Scalars['String'];
+  type: UserPreferenceType;
   /** Preference value type */
   valueType: PreferenceValueType;
 };
@@ -2069,6 +2113,8 @@ export type Query = {
   userAuthorizationPrivileges: Array<AuthorizationPrivilege>;
   /** The users who have profiles on this platform */
   users: Array<User>;
+  /** The users who have profiles on this platform */
+  users2: RelayStylePaginatedUser;
   /** The users filtered by list of IDs. */
   usersById: Array<User>;
   /** All Users that hold credentials matching the supplied criteria. */
@@ -2115,6 +2161,11 @@ export type QueryUserAuthorizationPrivilegesArgs = {
 export type QueryUsersArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type QueryUsers2Args = {
+  after?: InputMaybe<Scalars['UUID']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryUsersByIdArgs = {
@@ -2165,6 +2216,12 @@ export type Relation = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   type: Scalars['String'];
+};
+
+export type RelayStylePaginatedUser = {
+  __typename?: 'RelayStylePaginatedUser';
+  edges?: Maybe<Array<PaginatedUserEdge>>;
+  pageInfo?: Maybe<PaginatedUserPageInfo>;
 };
 
 export type RemoveChallengeAdminInput = {
@@ -6609,6 +6666,7 @@ export type SearchQuery = {
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
           };
         }
+      | { __typename?: 'PaginatedUser' }
       | { __typename?: 'User'; displayName: string; id: string }
       | { __typename?: 'UserGroup'; name: string; id: string }
       | undefined;
@@ -6709,7 +6767,7 @@ export type UserNotificationsPreferencesQuery = {
         description: string;
         displayName: string;
         group: string;
-        type: string;
+        type: UserPreferenceType;
         valueType: PreferenceValueType;
       };
     }>;
@@ -6969,11 +7027,23 @@ export type UsersQuery = {
   }>;
 };
 
-export type UsersDisplayNameQueryVariables = Exact<{ [key: string]: never }>;
+export type UsersDisplayNameQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['UUID']>;
+}>;
 
 export type UsersDisplayNameQuery = {
   __typename?: 'Query';
-  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+  users2: {
+    __typename?: 'RelayStylePaginatedUser';
+    pageInfo?: { __typename?: 'PaginatedUserPageInfo'; endCursor: string; hasNextPage: boolean } | undefined;
+    edges?:
+      | Array<{
+          __typename?: 'PaginatedUserEdge';
+          node: { __typename?: 'PaginatedUser'; id: string; displayName: string };
+        }>
+      | undefined;
+  };
 };
 
 export type UsersWithCredentialsQueryVariables = Exact<{
@@ -7123,6 +7193,7 @@ export type ContributorsSearchQuery = {
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         }
+      | { __typename?: 'PaginatedUser' }
       | {
           __typename?: 'User';
           id: string;
@@ -8175,6 +8246,7 @@ export type ChallengeExplorerSearchQuery = {
         }
       | { __typename?: 'Opportunity' }
       | { __typename?: 'Organization' }
+      | { __typename?: 'PaginatedUser' }
       | { __typename?: 'User' }
       | { __typename?: 'UserGroup' }
       | undefined;

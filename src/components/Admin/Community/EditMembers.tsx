@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -60,6 +60,8 @@ export interface EditMembersProps {
   loadingMembers?: boolean;
   onAdd?: (member: UserDisplayNameFragment) => void;
   onRemove?: (member: Member) => void;
+  onLoadMore?: (amount?: number) => void;
+  lastMembersPage?: boolean;
 }
 
 export const EditMembers: FC<EditMembersProps> = ({
@@ -73,7 +75,10 @@ export const EditMembers: FC<EditMembersProps> = ({
   loadingMembers = false,
   onAdd,
   onRemove,
+  onLoadMore,
+  lastMembersPage = true,
 }) => {
+  const { t } = useTranslation();
   const membersData = useMemo<Member[]>(
     () => (loadingMembers ? new Array(3).fill({}) : members),
     [loadingMembers, members]
@@ -170,6 +175,9 @@ export const EditMembers: FC<EditMembersProps> = ({
                     </Table>
                   </TableContainer>
                 </Box>
+                <Button onClick={() => onLoadMore && onLoadMore(1)} disabled={lastMembersPage}>
+                  {t('buttons.load-more')}
+                </Button>
               </Root>
             );
           }}

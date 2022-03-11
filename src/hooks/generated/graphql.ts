@@ -9395,12 +9395,20 @@ export function refetchUsersQuery(variables?: SchemaTypes.UsersQueryVariables) {
   return { query: UsersDocument, variables: variables };
 }
 export const UsersDisplayNameDocument = gql`
-  query usersDisplayName {
-    users {
-      ...UserDisplayName
+  query usersDisplayName($first: Int, $after: UUID) {
+    users2(first: $first, after: $after) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        node {
+          id
+          displayName
+        }
+      }
     }
   }
-  ${UserDisplayNameFragmentDoc}
 `;
 
 /**
@@ -9415,6 +9423,8 @@ export const UsersDisplayNameDocument = gql`
  * @example
  * const { data, loading, error } = useUsersDisplayNameQuery({
  *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
  *   },
  * });
  */

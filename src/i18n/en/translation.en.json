@@ -4,6 +4,7 @@
   },
   "buttons": {
     "learn-more": "Learn more",
+    "load-more": "Load more",
     "apply": "Apply",
     "apply-not-signed": "Sign in to apply",
     "apply-pending": "Application pending",
