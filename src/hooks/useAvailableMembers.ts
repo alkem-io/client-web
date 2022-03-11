@@ -47,9 +47,9 @@ export const useAvailableMembers = (
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
     skip: Boolean(parentCommunityId || parentMembers),
   });
-  const allUsers = _allUsers?.users2?.edges?.map(x => x.node) as Pick<User, 'id' | 'displayName'>[];
-  const usersEndCursor = _allUsers?.users2?.pageInfo?.endCursor;
-  const isUsersLastPage = !Boolean(_allUsers?.users2?.pageInfo?.hasNextPage);
+  const allUsers = _allUsers?.usersPaginated?.edges?.map(x => x.node) as Pick<User, 'id' | 'displayName'>[];
+  const usersEndCursor = _allUsers?.usersPaginated?.pageInfo?.endCursor;
+  const isUsersLastPage = !Boolean(_allUsers?.usersPaginated?.pageInfo?.hasNextPage);
 
   const {
     data: _current,

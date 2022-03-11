@@ -1126,8 +1126,8 @@ export type QueryKeySpecifier = (
   | 'user'
   | 'userAuthorizationPrivileges'
   | 'users'
-  | 'users2'
   | 'usersById'
+  | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
   | QueryKeySpecifier
 )[];
@@ -1150,8 +1150,8 @@ export type QueryFieldPolicy = {
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
-  users2?: FieldPolicy<any> | FieldReadFunction<any>;
   usersById?: FieldPolicy<any> | FieldReadFunction<any>;
+  usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QuestionKeySpecifier = ('id' | 'name' | 'value' | QuestionKeySpecifier)[];

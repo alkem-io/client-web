@@ -2113,10 +2113,10 @@ export type Query = {
   userAuthorizationPrivileges: Array<AuthorizationPrivilege>;
   /** The users who have profiles on this platform */
   users: Array<User>;
-  /** The users who have profiles on this platform */
-  users2: RelayStylePaginatedUser;
   /** The users filtered by list of IDs. */
   usersById: Array<User>;
+  /** The users who have profiles on this platform */
+  usersPaginated: RelayStylePaginatedUser;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
 };
@@ -2163,13 +2163,13 @@ export type QueryUsersArgs = {
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
-export type QueryUsers2Args = {
-  after?: InputMaybe<Scalars['UUID']>;
-  first?: InputMaybe<Scalars['Int']>;
-};
-
 export type QueryUsersByIdArgs = {
   IDs: Array<Scalars['UUID_NAMEID_EMAIL']>;
+};
+
+export type QueryUsersPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']>;
+  first?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryUsersWithAuthorizationCredentialArgs = {
@@ -7034,7 +7034,7 @@ export type UsersDisplayNameQueryVariables = Exact<{
 
 export type UsersDisplayNameQuery = {
   __typename?: 'Query';
-  users2: {
+  usersPaginated: {
     __typename?: 'RelayStylePaginatedUser';
     pageInfo?: { __typename?: 'PaginatedUserPageInfo'; endCursor: string; hasNextPage: boolean } | undefined;
     edges?:

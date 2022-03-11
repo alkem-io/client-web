@@ -9396,7 +9396,7 @@ export function refetchUsersQuery(variables?: SchemaTypes.UsersQueryVariables) {
 }
 export const UsersDisplayNameDocument = gql`
   query usersDisplayName($first: Int, $after: UUID) {
-    users2(first: $first, after: $after) {
+    usersPaginated(first: $first, after: $after) {
       pageInfo {
         endCursor
         hasNextPage
