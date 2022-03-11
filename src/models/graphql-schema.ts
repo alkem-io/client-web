@@ -7521,7 +7521,9 @@ export type HubAspectSettingsQuery = {
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                references?:
+                  | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                  | undefined;
               }>
             | undefined;
         }
@@ -7591,7 +7593,9 @@ export type ChallengeAspectSettingsQuery = {
                       }
                     | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                 }>
               | undefined;
           }
@@ -7662,7 +7666,9 @@ export type OpportunityAspectSettingsQuery = {
                       }
                     | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                 }>
               | undefined;
           }
@@ -7710,7 +7716,9 @@ export type AspectSettingsFragment = {
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+  references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+    | undefined;
 };
 
 export type CanvasDetailsFragment = {
