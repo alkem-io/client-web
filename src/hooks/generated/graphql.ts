@@ -902,6 +902,7 @@ export const AspectSettingsFragmentDoc = gql`
       id
       name
       uri
+      description
     }
   }
   ${VisualFullFragmentDoc}
