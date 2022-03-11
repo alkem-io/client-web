@@ -17,6 +17,8 @@ import { Filter } from '../Common/Filter';
 import { UserDisplayNameFragment } from '../../../models/graphql-schema';
 import { Skeleton } from '@mui/material';
 
+const LOAD_MORE_DEFAULT = 25;
+
 const PREFIX = 'EditMembers';
 
 const classes = {
@@ -61,6 +63,7 @@ export interface EditMembersProps {
   onAdd?: (member: UserDisplayNameFragment) => void;
   onRemove?: (member: Member) => void;
   onLoadMore?: (amount?: number) => void;
+  loadMore?: number;
   lastMembersPage?: boolean;
 }
 
@@ -76,6 +79,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   onAdd,
   onRemove,
   onLoadMore,
+  loadMore,
   lastMembersPage = true,
 }) => {
   const { t } = useTranslation();
@@ -175,9 +179,11 @@ export const EditMembers: FC<EditMembersProps> = ({
                     </Table>
                   </TableContainer>
                 </Box>
-                <Button onClick={() => onLoadMore && onLoadMore(1)} disabled={lastMembersPage}>
-                  {t('buttons.load-more')}
-                </Button>
+                {onLoadMore && (
+                  <Button onClick={() => onLoadMore(loadMore ?? LOAD_MORE_DEFAULT)} disabled={lastMembersPage}>
+                    {t('buttons.load-count-more', { count: loadMore })}
+                  </Button>
+                )}
               </Root>
             );
           }}

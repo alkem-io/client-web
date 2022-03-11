@@ -75,7 +75,9 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
   const { available, current, loading, onLoadMore, isLastAvailableUserPage } = useAvailableMembers(
     credential,
     resourceId,
-    parentCommunityId
+    parentCommunityId,
+    undefined,
+    10
   );
 
   return (
@@ -89,6 +91,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
       loadingMembers={loading}
       loadingAvailableMembers={loading}
       onLoadMore={onLoadMore}
+      loadMore={25}
       lastMembersPage={isLastAvailableUserPage}
     />
   );

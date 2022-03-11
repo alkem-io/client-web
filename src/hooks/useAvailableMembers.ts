@@ -24,12 +24,15 @@ export interface AvailableMembersResults {
  * @param resourceId The resource
  * @param parentCommunityId The parent entity community id (if applicable)
  * are the members of its parent hub or challenge
+ * @param parentMembers
+ * @param limitFirstUserFetch The first page of users to be fetched
  */
 export const useAvailableMembers = (
   credential: AuthorizationCredential,
   resourceId?: string,
   parentCommunityId?: string,
-  parentMembers?: Member[] // Just because the organizations doesn't have community.
+  parentMembers?: Member[], // Just because the organizations doesn't have community.
+  limitFirstUserFetch = 10
 ): AvailableMembersResults => {
   const { hubId, loading: loadingHub } = useHub();
   const {
@@ -38,7 +41,7 @@ export const useAvailableMembers = (
     error: userError,
     fetchMore,
   } = useUsersDisplayNameQuery({
-    variables: { first: 1 },
+    variables: { first: limitFirstUserFetch },
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
