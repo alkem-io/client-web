@@ -1,0 +1,5 @@
+mutation applyForCommunityMembership($input: CreateApplicationInput!) {
+  applyForCommunityMembership(applicationData: $input) {
+    id
+  }
+}

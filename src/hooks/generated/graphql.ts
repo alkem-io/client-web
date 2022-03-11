@@ -1676,52 +1676,53 @@ export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateActorGroupMutation,
   SchemaTypes.CreateActorGroupMutationVariables
 >;
-export const CreateApplicationDocument = gql`
-  mutation createApplication($input: CreateApplicationInput!) {
-    createApplication(applicationData: $input) {
+export const ApplyForCommunityMembershipDocument = gql`
+  mutation applyForCommunityMembership($input: CreateApplicationInput!) {
+    applyForCommunityMembership(applicationData: $input) {
       id
     }
   }
 `;
-export type CreateApplicationMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateApplicationMutation,
-  SchemaTypes.CreateApplicationMutationVariables
+export type ApplyForCommunityMembershipMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ApplyForCommunityMembershipMutation,
+  SchemaTypes.ApplyForCommunityMembershipMutationVariables
 >;
 
 /**
- * __useCreateApplicationMutation__
+ * __useApplyForCommunityMembershipMutation__
  *
- * To run a mutation, you first call `useCreateApplicationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateApplicationMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useApplyForCommunityMembershipMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useApplyForCommunityMembershipMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createApplicationMutation, { data, loading, error }] = useCreateApplicationMutation({
+ * const [applyForCommunityMembershipMutation, { data, loading, error }] = useApplyForCommunityMembershipMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateApplicationMutation(
+export function useApplyForCommunityMembershipMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateApplicationMutation,
-    SchemaTypes.CreateApplicationMutationVariables
+    SchemaTypes.ApplyForCommunityMembershipMutation,
+    SchemaTypes.ApplyForCommunityMembershipMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.CreateApplicationMutation, SchemaTypes.CreateApplicationMutationVariables>(
-    CreateApplicationDocument,
-    options
-  );
+  return Apollo.useMutation<
+    SchemaTypes.ApplyForCommunityMembershipMutation,
+    SchemaTypes.ApplyForCommunityMembershipMutationVariables
+  >(ApplyForCommunityMembershipDocument, options);
 }
-export type CreateApplicationMutationHookResult = ReturnType<typeof useCreateApplicationMutation>;
-export type CreateApplicationMutationResult = Apollo.MutationResult<SchemaTypes.CreateApplicationMutation>;
-export type CreateApplicationMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateApplicationMutation,
-  SchemaTypes.CreateApplicationMutationVariables
+export type ApplyForCommunityMembershipMutationHookResult = ReturnType<typeof useApplyForCommunityMembershipMutation>;
+export type ApplyForCommunityMembershipMutationResult =
+  Apollo.MutationResult<SchemaTypes.ApplyForCommunityMembershipMutation>;
+export type ApplyForCommunityMembershipMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ApplyForCommunityMembershipMutation,
+  SchemaTypes.ApplyForCommunityMembershipMutationVariables
 >;
 export const CreateAspectDocument = gql`
   mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {

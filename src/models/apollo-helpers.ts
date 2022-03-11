@@ -649,6 +649,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
+  | 'applyForCommunityMembership'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
@@ -667,7 +668,6 @@ export type MutationKeySpecifier = (
   | 'beginCredentialRequestInteraction'
   | 'createActor'
   | 'createActorGroup'
-  | 'createApplication'
   | 'createAspectOnContext'
   | 'createCanvasOnContext'
   | 'createChallenge'
@@ -709,6 +709,7 @@ export type MutationKeySpecifier = (
   | 'eventOnProject'
   | 'grantCredentialToUser'
   | 'grantStateModificationOnChallenge'
+  | 'joinCommunity'
   | 'messageUser'
   | 'removeComment'
   | 'removeMessageFromDiscussion'
@@ -750,6 +751,7 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -768,7 +770,6 @@ export type MutationFieldPolicy = {
   beginCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  createApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   createAspectOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -810,6 +811,7 @@ export type MutationFieldPolicy = {
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   grantStateModificationOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeComment?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
