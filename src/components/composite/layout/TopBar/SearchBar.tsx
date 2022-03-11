@@ -10,6 +10,7 @@ import { RouterLink } from '../../../core/RouterLink';
 import UserSegment from '../../entities/User/UserSegment';
 import LogoComponent from './LogoComponent';
 import TopSearchComponent from './TopSearchComponent';
+import LanguageSelect from '../../../LanguageSelect/LanguageSelect';
 
 const SearchBar = () => {
   const { t } = useTranslation();
@@ -78,6 +79,9 @@ const SearchBar = () => {
             <TopSearchComponent />
           </Box>
         </Hidden>
+        <Box marginRight={2}>
+          <LanguageSelect />
+        </Box>
         <Box width={155}>{loading ? <Skeleton /> : <>{userProfileComponent}</>}</Box>
       </Box>
     </Container>
