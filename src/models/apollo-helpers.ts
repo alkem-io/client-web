@@ -46,6 +46,28 @@ export type AgentFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   verifiedCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AgentBeginVerifiedCredentialOfferOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
+)[];
+export type AgentBeginVerifiedCredentialOfferOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AgentBeginVerifiedCredentialRequestOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
+)[];
+export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ApplicationKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -173,28 +195,6 @@ export type AuthorizationPolicyRuleCredentialFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type BeginCredentialOfferOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
-  | 'jwt'
-  | BeginCredentialOfferOutputKeySpecifier
-)[];
-export type BeginCredentialOfferOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
-  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type BeginCredentialRequestOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
-  | 'jwt'
-  | BeginCredentialRequestOutputKeySpecifier
-)[];
-export type BeginCredentialRequestOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
-  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CanvasKeySpecifier = (
   | 'authorization'
@@ -662,9 +662,9 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnHub'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnUser'
-  | 'beginAlkemioUserCredentialOfferInteraction'
-  | 'beginCommunityMemberCredentialOfferInteraction'
-  | 'beginCredentialRequestInteraction'
+  | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
+  | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
+  | 'beginVerifiedCredentialRequestInteraction'
   | 'createActor'
   | 'createActorGroup'
   | 'createApplication'
@@ -763,9 +763,9 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginAlkemioUserCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginCommunityMemberCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createApplication?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1058,7 +1058,7 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
   | 'configuration'
-  | 'getSupportedCredentialMetadata'
+  | 'getSupportedVerifiedCredentialMetadata'
   | 'hub'
   | 'hubs'
   | 'me'
@@ -1081,7 +1081,7 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
-  getSupportedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   hub?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1341,6 +1341,20 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
     fields?: AgentFieldPolicy;
   };
+  AgentBeginVerifiedCredentialOfferOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
+      | (() => undefined | AgentBeginVerifiedCredentialOfferOutputKeySpecifier);
+    fields?: AgentBeginVerifiedCredentialOfferOutputFieldPolicy;
+  };
+  AgentBeginVerifiedCredentialRequestOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
+      | (() => undefined | AgentBeginVerifiedCredentialRequestOutputKeySpecifier);
+    fields?: AgentBeginVerifiedCredentialRequestOutputFieldPolicy;
+  };
   Application?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationKeySpecifier | (() => undefined | ApplicationKeySpecifier);
     fields?: ApplicationFieldPolicy;
@@ -1382,20 +1396,6 @@ export type StrictTypedTypePolicies = {
       | AuthorizationPolicyRuleCredentialKeySpecifier
       | (() => undefined | AuthorizationPolicyRuleCredentialKeySpecifier);
     fields?: AuthorizationPolicyRuleCredentialFieldPolicy;
-  };
-  BeginCredentialOfferOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | BeginCredentialOfferOutputKeySpecifier
-      | (() => undefined | BeginCredentialOfferOutputKeySpecifier);
-    fields?: BeginCredentialOfferOutputFieldPolicy;
-  };
-  BeginCredentialRequestOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | BeginCredentialRequestOutputKeySpecifier
-      | (() => undefined | BeginCredentialRequestOutputKeySpecifier);
-    fields?: BeginCredentialRequestOutputFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
