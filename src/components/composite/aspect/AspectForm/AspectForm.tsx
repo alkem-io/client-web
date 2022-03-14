@@ -71,7 +71,7 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const initialValues: FormValueType = {
     name: aspect?.displayName ?? '',
-    description: aspect?.description ?? templateDescription ?? '',
+    description: templateDescription ?? '',
     tagsets,
     aspectNames: aspectNames ?? [],
     type: aspect?.type ?? '',
@@ -80,10 +80,9 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const uniqueNameValidator = yup
     .string()
-    .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value => {
-      if (value && aspectNames && !aspectNames.includes(value)) return true;
-      return false;
-    });
+    .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value =>
+      Boolean(value && aspectNames && !aspectNames.includes(value))
+    );
 
   const validationSchema = yup.object().shape({
     name: uniqueNameValidator.concat(nameValidator),
