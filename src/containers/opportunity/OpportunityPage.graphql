@@ -76,19 +76,3 @@ fragment OpportunityPage on Opportunity {
     }
   }
 }
-
-query opportunityTemplate {
-  configuration {
-    template {
-      opportunities {
-        actorGroups
-      }
-      hubs {
-        aspects {
-          type
-          description
-        }
-      }
-    }
-  }
-}
