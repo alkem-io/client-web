@@ -17,10 +17,15 @@ export interface Configuration {
     submitPII: boolean;
   };
   template: {
-    opportunities: {
-      aspects?: string[];
+    hubs: {
+      aspects?: AspectTemplate[];
     }[];
   };
+}
+
+export interface AspectTemplate {
+  type: string;
+  description: string;
 }
 
 interface AuthenticationProvider {

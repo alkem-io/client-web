@@ -275,8 +275,11 @@ export const ConfigurationFragmentDoc = gql`
       submitPII
     }
     template {
-      opportunities {
-        aspects
+      hubs {
+        aspects {
+          type
+          description
+        }
       }
     }
   }
@@ -12680,8 +12683,13 @@ export const OpportunityTemplateDocument = gql`
     configuration {
       template {
         opportunities {
-          aspects
           actorGroups
+        }
+        hubs {
+          aspects {
+            type
+            description
+          }
         }
       }
     }
