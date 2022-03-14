@@ -74,6 +74,26 @@ export type Agent = {
   verifiedCredentials?: Maybe<Array<VerifiedCredential>>;
 };
 
+export type AgentBeginVerifiedCredentialOfferOutput = {
+  __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential offer. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and the credentials offered */
+  jwt: Scalars['String'];
+};
+
+export type AgentBeginVerifiedCredentialRequestOutput = {
+  __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential request. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  jwt: Scalars['String'];
+};
+
 export type Application = {
   __typename?: 'Application';
   /** The authorization rules for the entity */
@@ -282,26 +302,6 @@ export enum AuthorizationPrivilege {
   Update = 'UPDATE',
   UpdateCanvas = 'UPDATE_CANVAS',
 }
-
-export type BeginCredentialOfferOutput = {
-  __typename?: 'BeginCredentialOfferOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential offer. */
-  interactionId: Scalars['String'];
-  /** The token containing the information about issuer, callback endpoint and the credentials offered */
-  jwt: Scalars['String'];
-};
-
-export type BeginCredentialRequestOutput = {
-  __typename?: 'BeginCredentialRequestOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential request. */
-  interactionId: Scalars['String'];
-  /** The token containing the information about issuer, callback endpoint and credential requirements */
-  jwt: Scalars['String'];
-};
 
 export type Canvas = {
   __typename?: 'Canvas';
@@ -1247,11 +1247,11 @@ export type Mutation = {
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
   /** Generate Alkemio user credential offer */
-  beginAlkemioUserCredentialOfferInteraction: BeginCredentialOfferOutput;
+  beginAlkemioUserVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
   /** Generate community member credential offer */
-  beginCommunityMemberCredentialOfferInteraction: BeginCredentialOfferOutput;
-  /** Generate credential share request */
-  beginCredentialRequestInteraction: BeginCredentialRequestOutput;
+  beginCommunityMemberVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
+  /** Generate verified credential share request */
+  beginVerifiedCredentialRequestInteraction: AgentBeginVerifiedCredentialRequestOutput;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
@@ -1480,11 +1480,11 @@ export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
 };
 
-export type MutationBeginCommunityMemberCredentialOfferInteractionArgs = {
+export type MutationBeginCommunityMemberVerifiedCredentialOfferInteractionArgs = {
   communityID: Scalars['String'];
 };
 
-export type MutationBeginCredentialRequestInteractionArgs = {
+export type MutationBeginVerifiedCredentialRequestInteractionArgs = {
   types: Array<Scalars['String']>;
 };
 
@@ -2103,7 +2103,7 @@ export type Query = {
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** Get supported credential metadata */
-  getSupportedCredentialMetadata: Array<CredentialMetadataOutput>;
+  getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** An hub. If no ID is specified then the first Hub is returned. */
   hub: Hub;
   /** The Hubs on this platform */
@@ -9823,7 +9823,7 @@ export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]
 
 export type GetSupportedCredentialMetadataQuery = {
   __typename?: 'Query';
-  getSupportedCredentialMetadata: Array<{
+  getSupportedVerifiedCredentialMetadata: Array<{
     __typename?: 'CredentialMetadataOutput';
     name: string;
     description: string;
@@ -9840,8 +9840,8 @@ export type BeginCredentialRequestInteractionMutationVariables = Exact<{
 
 export type BeginCredentialRequestInteractionMutation = {
   __typename?: 'Mutation';
-  beginCredentialRequestInteraction: {
-    __typename?: 'BeginCredentialRequestOutput';
+  beginVerifiedCredentialRequestInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
     interactionId: string;
     jwt: string;
     expiresOn: number;
@@ -9852,8 +9852,8 @@ export type BeginAlkemioUserCredentialOfferInteractionMutationVariables = Exact<
 
 export type BeginAlkemioUserCredentialOfferInteractionMutation = {
   __typename?: 'Mutation';
-  beginAlkemioUserCredentialOfferInteraction: {
-    __typename?: 'BeginCredentialOfferOutput';
+  beginAlkemioUserVerifiedCredentialOfferInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
     interactionId: string;
     jwt: string;
     expiresOn: number;
@@ -9866,8 +9866,8 @@ export type BeginCommunityMemberCredentialOfferInteractionMutationVariables = Ex
 
 export type BeginCommunityMemberCredentialOfferInteractionMutation = {
   __typename?: 'Mutation';
-  beginCommunityMemberCredentialOfferInteraction: {
-    __typename?: 'BeginCredentialOfferOutput';
+  beginCommunityMemberVerifiedCredentialOfferInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
     interactionId: string;
     jwt: string;
     expiresOn: number;

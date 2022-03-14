@@ -9,8 +9,8 @@ import {
 } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import {
-  BeginCredentialOfferOutput,
-  BeginCredentialRequestOutput,
+  AgentBeginVerifiedCredentialOfferOutput,
+  AgentBeginVerifiedCredentialRequestOutput,
   CredentialMetadataOutput,
   VerifiedCredential,
 } from '../../models/graphql-schema';
@@ -29,9 +29,9 @@ interface UserCredentialsContainerState {
 }
 
 interface UserCredentialsContainerActions {
-  generateAlkemioUserCredentialOffer(): Promise<BeginCredentialOfferOutput>;
-  generateCommunityMemberCredentialOffer(communityID: string): Promise<BeginCredentialOfferOutput>;
-  generateCredentialRequest(credential: CredentialMetadataOutput): Promise<BeginCredentialRequestOutput>;
+  generateAlkemioUserCredentialOffer(): Promise<AgentBeginVerifiedCredentialOfferOutput>;
+  generateCommunityMemberCredentialOffer(communityID: string): Promise<AgentBeginVerifiedCredentialOfferOutput>;
+  generateCredentialRequest(credential: CredentialMetadataOutput): Promise<AgentBeginVerifiedCredentialRequestOutput>;
 }
 
 interface UserCredentialsContainerProps
@@ -63,7 +63,7 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
 
   const generateAlkemioUserCredentialOffer = useCallback(async () => {
     const response = await _generateAlkemioUserCredentialOffer({});
-    const data = response.data?.beginAlkemioUserCredentialOfferInteraction;
+    const data = response.data?.beginAlkemioUserVerifiedCredentialOfferInteraction;
 
     if (!data) {
       throw new Error('Could not beginAlkemioUserCredentialOfferInteraction');
@@ -81,7 +81,7 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
   const generateCommunityMemberCredentialOffer = useCallback(
     async (communityID: string) => {
       const response = await _generateCommunityMemberCredentialOffer({ variables: { communityID } });
-      const data = response.data?.beginCommunityMemberCredentialOfferInteraction;
+      const data = response.data?.beginCommunityMemberVerifiedCredentialOfferInteraction;
 
       if (!data) {
         throw new Error('Could not beginCommunityMemberCredentialOfferInteraction');
@@ -101,7 +101,7 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
   const generateCredentialRequest = useCallback(
     async (credential: CredentialMetadataOutput) => {
       const response = await _generateCredentialRequest({ variables: { types: [credential.uniqueType] } });
-      const data = response.data?.beginCredentialRequestInteraction;
+      const data = response.data?.beginVerifiedCredentialRequestInteraction;
 
       if (!data) {
         throw new Error('Could not beginCredentialRequestInteraction');
@@ -116,7 +116,7 @@ export const UserCredentialsContainer: FC<UserCredentialsContainerProps> = ({ ch
     <>
       {children(
         {
-          credentialMetadata: credentialMetadata?.getSupportedCredentialMetadata,
+          credentialMetadata: credentialMetadata?.getSupportedVerifiedCredentialMetadata,
           verifiedCredentials,
         },
         {

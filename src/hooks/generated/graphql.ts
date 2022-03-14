@@ -13066,7 +13066,7 @@ export function refetchOrganizationMembersQuery(variables: SchemaTypes.Organizat
 }
 export const GetSupportedCredentialMetadataDocument = gql`
   query getSupportedCredentialMetadata {
-    getSupportedCredentialMetadata {
+    getSupportedVerifiedCredentialMetadata {
       name
       description
       schema
@@ -13131,7 +13131,7 @@ export function refetchGetSupportedCredentialMetadataQuery(
 }
 export const BeginCredentialRequestInteractionDocument = gql`
   mutation beginCredentialRequestInteraction($types: [String!]!) {
-    beginCredentialRequestInteraction(types: $types) {
+    beginVerifiedCredentialRequestInteraction(types: $types) {
       interactionId
       jwt
       expiresOn
@@ -13183,7 +13183,7 @@ export type BeginCredentialRequestInteractionMutationOptions = Apollo.BaseMutati
 >;
 export const BeginAlkemioUserCredentialOfferInteractionDocument = gql`
   mutation beginAlkemioUserCredentialOfferInteraction {
-    beginAlkemioUserCredentialOfferInteraction {
+    beginAlkemioUserVerifiedCredentialOfferInteraction {
       interactionId
       jwt
       expiresOn
@@ -13234,7 +13234,7 @@ export type BeginAlkemioUserCredentialOfferInteractionMutationOptions = Apollo.B
 >;
 export const BeginCommunityMemberCredentialOfferInteractionDocument = gql`
   mutation beginCommunityMemberCredentialOfferInteraction($communityID: String!) {
-    beginCommunityMemberCredentialOfferInteraction(communityID: $communityID) {
+    beginCommunityMemberVerifiedCredentialOfferInteraction(communityID: $communityID) {
       interactionId
       jwt
       expiresOn
