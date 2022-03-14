@@ -972,6 +972,60 @@ export type OryConfigFieldPolicy = {
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
   kratosPublicBaseURL?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedUserKeySpecifier = (
+  | 'accountUpn'
+  | 'agent'
+  | 'authorization'
+  | 'city'
+  | 'communityRooms'
+  | 'country'
+  | 'directRooms'
+  | 'displayName'
+  | 'email'
+  | 'firstName'
+  | 'gender'
+  | 'id'
+  | 'lastName'
+  | 'nameID'
+  | 'phone'
+  | 'preferences'
+  | 'profile'
+  | PaginatedUserKeySpecifier
+)[];
+export type PaginatedUserFieldPolicy = {
+  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
+  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  gender?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  phone?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedUserEdgeKeySpecifier = ('node' | PaginatedUserEdgeKeySpecifier)[];
+export type PaginatedUserEdgeFieldPolicy = {
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedUserPageInfoKeySpecifier = (
+  | 'endCursor'
+  | 'hasNextPage'
+  | 'startCursor'
+  | PaginatedUserPageInfoKeySpecifier
+)[];
+export type PaginatedUserPageInfoFieldPolicy = {
+  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PlatformKeySpecifier = (
   | 'about'
   | 'featureFlags'
@@ -1077,6 +1131,7 @@ export type QueryKeySpecifier = (
   | 'userAuthorizationPrivileges'
   | 'users'
   | 'usersById'
+  | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
   | QueryKeySpecifier
 )[];
@@ -1100,6 +1155,7 @@ export type QueryFieldPolicy = {
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
   usersById?: FieldPolicy<any> | FieldReadFunction<any>;
+  usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QuestionKeySpecifier = ('id' | 'name' | 'value' | QuestionKeySpecifier)[];
@@ -1140,6 +1196,11 @@ export type RelationFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RelayStylePaginatedUserKeySpecifier = ('edges' | 'pageInfo' | RelayStylePaginatedUserKeySpecifier)[];
+export type RelayStylePaginatedUserFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SearchResultEntryKeySpecifier = ('result' | 'score' | 'terms' | SearchResultEntryKeySpecifier)[];
 export type SearchResultEntryFieldPolicy = {
@@ -1611,6 +1672,18 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | OryConfigKeySpecifier | (() => undefined | OryConfigKeySpecifier);
     fields?: OryConfigFieldPolicy;
   };
+  PaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedUserKeySpecifier | (() => undefined | PaginatedUserKeySpecifier);
+    fields?: PaginatedUserFieldPolicy;
+  };
+  PaginatedUserEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedUserEdgeKeySpecifier | (() => undefined | PaginatedUserEdgeKeySpecifier);
+    fields?: PaginatedUserEdgeFieldPolicy;
+  };
+  PaginatedUserPageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedUserPageInfoKeySpecifier | (() => undefined | PaginatedUserPageInfoKeySpecifier);
+    fields?: PaginatedUserPageInfoFieldPolicy;
+  };
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
     fields?: PlatformFieldPolicy;
@@ -1654,6 +1727,10 @@ export type StrictTypedTypePolicies = {
   Relation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RelationKeySpecifier | (() => undefined | RelationKeySpecifier);
     fields?: RelationFieldPolicy;
+  };
+  RelayStylePaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RelayStylePaginatedUserKeySpecifier | (() => undefined | RelayStylePaginatedUserKeySpecifier);
+    fields?: RelayStylePaginatedUserFieldPolicy;
   };
   SearchResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultEntryKeySpecifier | (() => undefined | SearchResultEntryKeySpecifier);
