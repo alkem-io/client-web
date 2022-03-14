@@ -570,6 +570,15 @@ export type Community = Groupable & {
   members?: Maybe<Array<User>>;
 };
 
+export type CommunityApplyInput = {
+  communityID: Scalars['UUID'];
+  questions: Array<CreateNvpInput>;
+};
+
+export type CommunityJoinInput = {
+  communityID: Scalars['UUID'];
+};
+
 export type Config = {
   __typename?: 'Config';
   /** Authentication configuration. */
@@ -630,12 +639,6 @@ export type CreateActorInput = {
   impact?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   value?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateApplicationInput = {
-  parentID: Scalars['UUID'];
-  questions: Array<CreateNvpInput>;
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type CreateAspectOnContextInput = {
@@ -1215,6 +1218,8 @@ export type Mutation = {
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Allow updating the rule for joining rooms: public or invite. */
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
+  /** Apply to join the specified Community as a member. */
+  applyForCommunityMembership: Application;
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as a Global Admin. */
@@ -1251,8 +1256,6 @@ export type Mutation = {
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
   createActorGroup: ActorGroup;
-  /** Creates Application for a User to join this Community. */
-  createApplication: Application;
   /** Create a new Aspect on the Context. */
   createAspectOnContext: Aspect;
   /** Create a new Canvas on the Context. */
@@ -1335,6 +1338,8 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Authorizes a User to be able to modify the state on the specified Challenge. */
   grantStateModificationOnChallenge: User;
+  /** Join the specified Community as a member. */
+  joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Removes a comment message. */
@@ -1419,6 +1424,10 @@ export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
   changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
 };
 
+export type MutationApplyForCommunityMembershipArgs = {
+  applicationData: CommunityApplyInput;
+};
+
 export type MutationAssignUserAsChallengeAdminArgs = {
   membershipData: AssignChallengeAdminInput;
 };
@@ -1485,10 +1494,6 @@ export type MutationCreateActorArgs = {
 
 export type MutationCreateActorGroupArgs = {
   actorGroupData: CreateActorGroupInput;
-};
-
-export type MutationCreateApplicationArgs = {
-  applicationData: CreateApplicationInput;
 };
 
 export type MutationCreateAspectOnContextArgs = {
@@ -1649,6 +1654,10 @@ export type MutationGrantCredentialToUserArgs = {
 
 export type MutationGrantStateModificationOnChallengeArgs = {
   grantStateModificationVCData: ChallengeAuthorizeStateModificationInput;
+};
+
+export type MutationJoinCommunityArgs = {
+  joinCommunityData: CommunityJoinInput;
 };
 
 export type MutationMessageUserArgs = {
@@ -3569,6 +3578,15 @@ export type UpdatePreferenceOnUserMutation = {
   updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
 };
 
+export type ApplyForCommunityMembershipMutationVariables = Exact<{
+  input: CommunityApplyInput;
+}>;
+
+export type ApplyForCommunityMembershipMutation = {
+  __typename?: 'Mutation';
+  applyForCommunityMembership: { __typename?: 'Application'; id: string };
+};
+
 export type AssignUserToCommunityMutationVariables = Exact<{
   input: AssignCommunityMemberInput;
 }>;
@@ -3616,15 +3634,6 @@ export type CreateActorGroupMutationVariables = Exact<{
 export type CreateActorGroupMutation = {
   __typename?: 'Mutation';
   createActorGroup: { __typename?: 'ActorGroup'; id: string; name: string };
-};
-
-export type CreateApplicationMutationVariables = Exact<{
-  input: CreateApplicationInput;
-}>;
-
-export type CreateApplicationMutation = {
-  __typename?: 'Mutation';
-  createApplication: { __typename?: 'Application'; id: string };
 };
 
 export type CreateAspectMutationVariables = Exact<{
