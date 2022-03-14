@@ -1073,6 +1073,14 @@ export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  description: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+};
+
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
@@ -1834,8 +1842,6 @@ export type OpportunityTemplate = {
   actorGroups?: Maybe<Array<Scalars['String']>>;
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
-  /** Template aspects. */
-  aspects?: Maybe<Array<Scalars['String']>>;
   /** Template opportunity name. */
   name: Scalars['String'];
   /** Template relations. */
@@ -1996,6 +2002,8 @@ export type PlatformHubTemplate = {
   __typename?: 'PlatformHubTemplate';
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Application templates. */
+  aspects?: Maybe<Array<HubAspectTemplate>>;
   /** Hub template name. */
   name: Scalars['String'];
 };
@@ -3035,7 +3043,10 @@ export type ConfigurationFragment = {
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   template: {
     __typename?: 'Template';
-    opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+    hubs: Array<{
+      __typename?: 'PlatformHubTemplate';
+      aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
+    }>;
   };
 };
 
@@ -5502,7 +5513,10 @@ export type ConfigurationQuery = {
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
     template: {
       __typename?: 'Template';
-      opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+      hubs: Array<{
+        __typename?: 'PlatformHubTemplate';
+        aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
+      }>;
     };
   };
 };
@@ -9692,10 +9706,10 @@ export type OpportunityTemplateQuery = {
     __typename?: 'Config';
     template: {
       __typename?: 'Template';
-      opportunities: Array<{
-        __typename?: 'OpportunityTemplate';
-        aspects?: Array<string> | undefined;
-        actorGroups?: Array<string> | undefined;
+      opportunities: Array<{ __typename?: 'OpportunityTemplate'; actorGroups?: Array<string> | undefined }>;
+      hubs: Array<{
+        __typename?: 'PlatformHubTemplate';
+        aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
       }>;
     };
   };
