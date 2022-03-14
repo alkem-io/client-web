@@ -1338,7 +1338,7 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Authorizes a User to be able to modify the state on the specified Challenge. */
   grantStateModificationOnChallenge: User;
-  /** Join the specified Community as a member. */
+  /** Join the specified Community as a member, without going through an approval process. */
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
@@ -2040,10 +2040,25 @@ export type PreferenceDefinition = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The type of the Preference, specific to the Entity it is on. */
-  type: UserPreferenceType;
+  type: PreferenceType;
   /** Preference value type */
   valueType: PreferenceValueType;
 };
+
+export enum PreferenceType {
+  AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
+  MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
+  MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
+  MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
+  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
+  NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
+  NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
+  NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
+  NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
+  NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
+  NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
+}
 
 export enum PreferenceValueType {
   Boolean = 'BOOLEAN',
@@ -6790,7 +6805,7 @@ export type UserNotificationsPreferencesQuery = {
         description: string;
         displayName: string;
         group: string;
-        type: UserPreferenceType;
+        type: PreferenceType;
         valueType: PreferenceValueType;
       };
     }>;
@@ -9705,23 +9720,6 @@ export type OpportunityPageFragment = {
         members?: Array<{ __typename?: 'User'; id: string; nameID: string }> | undefined;
       }
     | undefined;
-};
-
-export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;
-
-export type OpportunityTemplateQuery = {
-  __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    template: {
-      __typename?: 'Template';
-      opportunities: Array<{ __typename?: 'OpportunityTemplate'; actorGroups?: Array<string> | undefined }>;
-      hubs: Array<{
-        __typename?: 'PlatformHubTemplate';
-        aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
-      }>;
-    };
-  };
 };
 
 export type AssociatedOrganizationQueryVariables = Exact<{
