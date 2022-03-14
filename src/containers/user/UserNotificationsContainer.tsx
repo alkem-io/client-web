@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../hooks';
 import { useUpdatePreferenceOnUserMutation, useUserNotificationsPreferencesQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
-import { Preference, UserPreferenceType } from '../../models/graphql-schema';
+import { Preference, PreferenceType, UserPreferenceType } from '../../models/graphql-schema';
 
 export interface UserNotificationsContainerEntities {
   preferences: Preference[];
@@ -25,13 +25,13 @@ export interface UserNotificationsContainerProps
   > {}
 
 const limitNotificationsTo = [
-  UserPreferenceType.NotificationApplicationReceived,
-  UserPreferenceType.NotificationApplicationSubmitted,
-  UserPreferenceType.NotificationCommunicationUpdates,
-  UserPreferenceType.NotificationCommunicationUpdateSentAdmin,
-  UserPreferenceType.NotificationCommunicationDiscussionCreated,
-  UserPreferenceType.NotificationCommunicationDiscussionCreatedAdmin,
-  UserPreferenceType.NotificationUserSignUp,
+  PreferenceType.NotificationApplicationReceived,
+  PreferenceType.NotificationApplicationSubmitted,
+  PreferenceType.NotificationCommunicationUpdates,
+  PreferenceType.NotificationCommunicationUpdateSentAdmin,
+  PreferenceType.NotificationCommunicationDiscussionCreated,
+  PreferenceType.NotificationCommunicationDiscussionCreatedAdmin,
+  PreferenceType.NotificationUserSignUp,
 ];
 
 const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ children }) => {
@@ -76,9 +76,7 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
   const preferences = useMemo(
     () =>
       sortBy(
-        (data?.user.preferences || []).filter(p =>
-          limitNotificationsTo.includes(p.definition.type as UserPreferenceType)
-        ),
+        (data?.user.preferences || []).filter(p => limitNotificationsTo.includes(p.definition.type)),
         x => x.definition.displayName
       ),
     [data]
