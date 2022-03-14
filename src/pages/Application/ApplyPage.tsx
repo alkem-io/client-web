@@ -13,7 +13,7 @@ import { Loading } from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
 import { useApplicationCommunityQuery } from '../../containers/application/useApplicationCommunityQuery';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
-import { refetchUserApplicationsQuery, useCreateApplicationMutation } from '../../hooks/generated/graphql';
+import { refetchUserApplicationsQuery, useApplyForCommunityMembershipMutation } from '../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { CreateNvpInput } from '../../models/graphql-schema';
 import getApplicationTypeKey from '../../utils/translation/get-application-type-key';
@@ -62,7 +62,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
 
   const [hasApplied, setHasApplied] = useState(false);
 
-  const [createApplication, { loading: isCreationLoading }] = useCreateApplicationMutation({
+  const [createApplication, { loading: isCreationLoading }] = useApplyForCommunityMembershipMutation({
     onCompleted: () => setHasApplied(true),
     // refetch user applications
     refetchQueries: [refetchUserApplicationsQuery({ input: { userID: userId } })],
@@ -103,8 +103,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
     await createApplication({
       variables: {
         input: {
-          userID: userId,
-          parentID: communityId,
+          communityID: communityId,
           questions: questionArrayInput,
         },
       },
