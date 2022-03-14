@@ -107,6 +107,10 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInR
   );
 
   const renderTags = () => {
+    if (tags.length === 0) {
+      return;
+    }
+
     if (keepInRow) {
       const tagsToDisplay = count && count > 0 ? tags.slice(0, count) : tags;
       const moreTags = count ? tags.slice(count) : [];

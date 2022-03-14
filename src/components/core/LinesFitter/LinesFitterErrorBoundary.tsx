@@ -20,6 +20,6 @@ export default class LinesFitterErrorBoundary extends React.Component<
       return <div {...wrapperProps} />;
     }
 
-    return this.props.children;
+    return children;
   }
 }

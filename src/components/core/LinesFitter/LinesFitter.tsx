@@ -131,13 +131,12 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, ...wrapperProps }: 
           dispatch({
             type: ActionTypes.RemoveChild,
           });
-          return;
         } else {
           dispatch({
             type: ActionTypes.Finish,
           });
-          return;
         }
+        return;
       }
     }
   }, [state]);
