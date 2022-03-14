@@ -570,9 +570,13 @@ export type Community = Groupable & {
   members?: Maybe<Array<User>>;
 };
 
+export type CommunityApplyInput = {
+  communityID: Scalars['UUID'];
+  questions: Array<CreateNvpInput>;
+};
+
 export type CommunityJoinInput = {
   communityID: Scalars['UUID'];
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type Config = {
@@ -635,12 +639,6 @@ export type CreateActorInput = {
   impact?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   value?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateApplicationInput = {
-  parentID: Scalars['UUID'];
-  questions: Array<CreateNvpInput>;
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type CreateAspectOnContextInput = {
@@ -1419,7 +1417,7 @@ export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
 };
 
 export type MutationApplyForCommunityMembershipArgs = {
-  applicationData: CreateApplicationInput;
+  applicationData: CommunityApplyInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -3569,6 +3567,15 @@ export type UpdatePreferenceOnUserMutation = {
   updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
 };
 
+export type ApplyForCommunityMembershipMutationVariables = Exact<{
+  input: CommunityApplyInput;
+}>;
+
+export type ApplyForCommunityMembershipMutation = {
+  __typename?: 'Mutation';
+  applyForCommunityMembership: { __typename?: 'Application'; id: string };
+};
+
 export type AssignUserToCommunityMutationVariables = Exact<{
   input: AssignCommunityMemberInput;
 }>;
@@ -3616,15 +3623,6 @@ export type CreateActorGroupMutationVariables = Exact<{
 export type CreateActorGroupMutation = {
   __typename?: 'Mutation';
   createActorGroup: { __typename?: 'ActorGroup'; id: string; name: string };
-};
-
-export type ApplyForCommunityMembershipMutationVariables = Exact<{
-  input: CreateApplicationInput;
-}>;
-
-export type ApplyForCommunityMembershipMutation = {
-  __typename?: 'Mutation';
-  applyForCommunityMembership: { __typename?: 'Application'; id: string };
 };
 
 export type CreateAspectMutationVariables = Exact<{
