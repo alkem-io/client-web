@@ -79,7 +79,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInR
           icon={<FiberManualRecordIcon fontSize="small" />}
           className={clsx(styles.tagMargin, {
             [styles[`count-${count}`]]: keepInRow && count && count <= 5,
-            [styles.maxWidth]: !keepInRow && (!count || count > 5),
+            [styles.maxWidth]: !keepInRow,
           })}
         />
       </Tooltip>
