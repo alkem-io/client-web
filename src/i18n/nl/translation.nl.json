@@ -559,6 +559,9 @@
       }
     }
   },
+  "footer": {
+    "copyright": "© 2022 Stichting Alkemio"
+  },
   "pages": {
     "aspect": {
       "dashboard": {
