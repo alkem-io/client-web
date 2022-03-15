@@ -77,7 +77,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
                   <CardLayoutItem key={i} css={{ flexGrow: 1 }} maxWidth={{ xs: 'auto', sm: 'auto', md: '25%' }}>
                     <CredentialCard
                       entities={{
-                        claim: JSON.parse(c.claim),
+                        claims: c.claims || [],
                         context: JSON.parse(c.context),
                         issued: c.issued,
                         expires: c.expires,

@@ -2750,8 +2750,8 @@ export type UsersWithAuthorizationCredentialInput = {
 
 export type VerifiedCredential = {
   __typename?: 'VerifiedCredential';
-  /** JSON for the claim in the credential */
-  claim: Scalars['JSON'];
+  /** The claims for this VerifiedCredential. */
+  claims?: Maybe<Array<VerifiedCredentialClaim>>;
   /** JSON for the context in the credential */
   context: Scalars['JSON'];
   /** The time at which the credential is no longer valid */
@@ -2764,6 +2764,14 @@ export type VerifiedCredential = {
   name: Scalars['String'];
   /** The type of VC */
   type: Scalars['String'];
+};
+
+export type VerifiedCredentialClaim = {
+  __typename?: 'VerifiedCredentialClaim';
+  /** The name of the claim */
+  name: Scalars['JSON'];
+  /** The value for the claim */
+  value: Scalars['JSON'];
 };
 
 export type Visual = {
@@ -9887,13 +9895,13 @@ export type UserAgentSsiFragment = {
         verifiedCredentials?:
           | Array<{
               __typename?: 'VerifiedCredential';
-              claim: string;
               context: string;
               issued: string;
               expires: string;
               issuer: string;
               name: string;
               type: string;
+              claims?: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }> | undefined;
             }>
           | undefined;
       }
@@ -9919,13 +9927,13 @@ export type UserSsiQuery = {
           verifiedCredentials?:
             | Array<{
                 __typename?: 'VerifiedCredential';
-                claim: string;
                 context: string;
                 issued: string;
                 expires: string;
                 issuer: string;
                 name: string;
                 type: string;
+                claims?: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }> | undefined;
               }>
             | undefined;
         }
