@@ -14,7 +14,9 @@ const LanguageSelect: FC = () => {
   return (
     <TextField select size="small" value={i18n.language} label={<LanguageIcon />} onChange={handleLanguageSelection}>
       {supportedLngs.map(lng => (
-        <MenuItem value={lng}>{lng}</MenuItem>
+        <MenuItem key={lng} value={lng}>
+          {lng}
+        </MenuItem>
       ))}
     </TextField>
   );
