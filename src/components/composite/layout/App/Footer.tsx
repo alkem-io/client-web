@@ -8,6 +8,7 @@ import Image from '../../../core/Image';
 import { useConfig } from '../../../../hooks';
 import { RouterLink } from '../../../core/RouterLink';
 import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
+import { useTranslation } from 'react-i18next';
 
 const useFooterStyles = makeStyles(theme => ({
   footer: {
@@ -24,6 +25,7 @@ const useFooterStyles = makeStyles(theme => ({
 }));
 
 const Footer: FC = ({ children }) => {
+  const { t } = useTranslation();
   const styles = useFooterStyles();
   const { platform } = useConfig();
   const breakpoint = useCurrentBreakpoint();
@@ -94,7 +96,7 @@ const Footer: FC = ({ children }) => {
               <Toolbar dense className={styles.footerSecondary}>
                 <Grid container justifyContent={'flex-start'}>
                   <Typography variant="caption" color="neutralMedium" weight="boldLight">
-                    © 2021 Alkemio Foundation
+                    {t('footer.copyright')}
                   </Typography>
                 </Grid>
                 <Grid container justifyContent={'flex-end'}>
