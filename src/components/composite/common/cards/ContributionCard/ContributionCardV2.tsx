@@ -47,8 +47,7 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
   createStyles({
     card: {
       height: '100%',
-      width: '100%',
-      minWidth: 254, // magic
+      width: 254,
       display: 'flex',
       flexDirection: 'column',
     },
