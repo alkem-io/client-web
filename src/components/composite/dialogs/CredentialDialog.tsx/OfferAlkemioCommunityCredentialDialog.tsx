@@ -13,7 +13,7 @@ import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributionDetailsContainer from '../../../../containers/ContributionDetails/ContributionDetailsContainer';
 import { ContributionItem } from '../../../../models/entities/contribution';
-import { BeginCredentialOfferOutput } from '../../../../models/graphql-schema';
+import { AgentBeginVerifiedCredentialOfferOutput } from '../../../../models/graphql-schema';
 import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
@@ -31,7 +31,7 @@ interface OfferAlkemioCommunityCredentialDialogProps {
   actions: {
     onCancel: () => void;
     onConfirm?: () => void;
-    onGenerate: (communityID: string) => Promise<BeginCredentialOfferOutput>;
+    onGenerate: (communityID: string) => Promise<AgentBeginVerifiedCredentialOfferOutput>;
   };
   options: {
     show: boolean;
@@ -54,7 +54,7 @@ const OfferAlkemioCommunityCredentialDialog: FC<OfferAlkemioCommunityCredentialD
   const containerRef = useRef(null);
   const [loadingToken, setLoadingToken] = useState(false);
   const [selectedContribution, setSelectedContribution] = useState<ContributionCardV2Details>();
-  const [token, setToken] = useState<BeginCredentialOfferOutput>();
+  const [token, setToken] = useState<AgentBeginVerifiedCredentialOfferOutput>();
 
   const title = entities.titleId ? t(entities.titleId) : entities.title;
   if (!title) {
