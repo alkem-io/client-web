@@ -46,6 +46,28 @@ export type AgentFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   verifiedCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AgentBeginVerifiedCredentialOfferOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
+)[];
+export type AgentBeginVerifiedCredentialOfferOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AgentBeginVerifiedCredentialRequestOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
+)[];
+export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ApplicationKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -173,28 +195,6 @@ export type AuthorizationPolicyRuleCredentialFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type BeginCredentialOfferOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
-  | 'jwt'
-  | BeginCredentialOfferOutputKeySpecifier
-)[];
-export type BeginCredentialOfferOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
-  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type BeginCredentialRequestOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
-  | 'jwt'
-  | BeginCredentialRequestOutputKeySpecifier
-)[];
-export type BeginCredentialRequestOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
-  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CanvasKeySpecifier = (
   | 'authorization'
@@ -550,6 +550,11 @@ export type HubFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type HubAspectTemplateKeySpecifier = ('description' | 'type' | HubAspectTemplateKeySpecifier)[];
+export type HubAspectTemplateFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type HubTemplateKeySpecifier = ('aspectTemplates' | HubTemplateKeySpecifier)[];
 export type HubTemplateFieldPolicy = {
   aspectTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -649,6 +654,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
+  | 'applyForCommunityMembership'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
@@ -662,12 +668,11 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnHub'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnUser'
-  | 'beginAlkemioUserCredentialOfferInteraction'
-  | 'beginCommunityMemberCredentialOfferInteraction'
-  | 'beginCredentialRequestInteraction'
+  | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
+  | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
+  | 'beginVerifiedCredentialRequestInteraction'
   | 'createActor'
   | 'createActorGroup'
-  | 'createApplication'
   | 'createAspectOnContext'
   | 'createCanvasOnContext'
   | 'createChallenge'
@@ -709,6 +714,7 @@ export type MutationKeySpecifier = (
   | 'eventOnProject'
   | 'grantCredentialToUser'
   | 'grantStateModificationOnChallenge'
+  | 'joinCommunity'
   | 'messageUser'
   | 'removeComment'
   | 'removeMessageFromDiscussion'
@@ -750,6 +756,7 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -763,12 +770,11 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginAlkemioUserCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginCommunityMemberCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  createApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   createAspectOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -810,6 +816,7 @@ export type MutationFieldPolicy = {
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   grantStateModificationOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeComment?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -888,7 +895,6 @@ export type OpportunityFieldPolicy = {
 export type OpportunityTemplateKeySpecifier = (
   | 'actorGroups'
   | 'applications'
-  | 'aspects'
   | 'name'
   | 'relations'
   | OpportunityTemplateKeySpecifier
@@ -896,7 +902,6 @@ export type OpportunityTemplateKeySpecifier = (
 export type OpportunityTemplateFieldPolicy = {
   actorGroups?: FieldPolicy<any> | FieldReadFunction<any>;
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1042,9 +1047,10 @@ export type PlatformFieldPolicy = {
   support?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformHubTemplateKeySpecifier = ('applications' | 'name' | PlatformHubTemplateKeySpecifier)[];
+export type PlatformHubTemplateKeySpecifier = ('applications' | 'aspects' | 'name' | PlatformHubTemplateKeySpecifier)[];
 export type PlatformHubTemplateFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PreferenceKeySpecifier = ('authorization' | 'definition' | 'id' | 'value' | PreferenceKeySpecifier)[];
@@ -1112,7 +1118,7 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
   | 'configuration'
-  | 'getSupportedCredentialMetadata'
+  | 'getSupportedVerifiedCredentialMetadata'
   | 'hub'
   | 'hubs'
   | 'me'
@@ -1136,7 +1142,7 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
-  getSupportedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   hub?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1402,6 +1408,20 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
     fields?: AgentFieldPolicy;
   };
+  AgentBeginVerifiedCredentialOfferOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
+      | (() => undefined | AgentBeginVerifiedCredentialOfferOutputKeySpecifier);
+    fields?: AgentBeginVerifiedCredentialOfferOutputFieldPolicy;
+  };
+  AgentBeginVerifiedCredentialRequestOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
+      | (() => undefined | AgentBeginVerifiedCredentialRequestOutputKeySpecifier);
+    fields?: AgentBeginVerifiedCredentialRequestOutputFieldPolicy;
+  };
   Application?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationKeySpecifier | (() => undefined | ApplicationKeySpecifier);
     fields?: ApplicationFieldPolicy;
@@ -1443,20 +1463,6 @@ export type StrictTypedTypePolicies = {
       | AuthorizationPolicyRuleCredentialKeySpecifier
       | (() => undefined | AuthorizationPolicyRuleCredentialKeySpecifier);
     fields?: AuthorizationPolicyRuleCredentialFieldPolicy;
-  };
-  BeginCredentialOfferOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | BeginCredentialOfferOutputKeySpecifier
-      | (() => undefined | BeginCredentialOfferOutputKeySpecifier);
-    fields?: BeginCredentialOfferOutputFieldPolicy;
-  };
-  BeginCredentialRequestOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | BeginCredentialRequestOutputKeySpecifier
-      | (() => undefined | BeginCredentialRequestOutputKeySpecifier);
-    fields?: BeginCredentialRequestOutputFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
@@ -1579,6 +1585,10 @@ export type StrictTypedTypePolicies = {
   Hub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
     fields?: HubFieldPolicy;
+  };
+  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
+    fields?: HubAspectTemplateFieldPolicy;
   };
   HubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubTemplateKeySpecifier | (() => undefined | HubTemplateKeySpecifier);

@@ -56,7 +56,6 @@ export interface OpportunityDashboardViewOptions {
   removeRelations: boolean;
   isMemberOfOpportunity: boolean;
   isNoRelations: boolean;
-  isAspectAddAllowed: boolean;
   isAuthenticated: boolean;
   communityReadAccess: boolean;
 }

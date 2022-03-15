@@ -74,6 +74,26 @@ export type Agent = {
   verifiedCredentials?: Maybe<Array<VerifiedCredential>>;
 };
 
+export type AgentBeginVerifiedCredentialOfferOutput = {
+  __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential offer. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and the credentials offered */
+  jwt: Scalars['String'];
+};
+
+export type AgentBeginVerifiedCredentialRequestOutput = {
+  __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential request. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  jwt: Scalars['String'];
+};
+
 export type Application = {
   __typename?: 'Application';
   /** The authorization rules for the entity */
@@ -282,26 +302,6 @@ export enum AuthorizationPrivilege {
   Update = 'UPDATE',
   UpdateCanvas = 'UPDATE_CANVAS',
 }
-
-export type BeginCredentialOfferOutput = {
-  __typename?: 'BeginCredentialOfferOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential offer. */
-  interactionId: Scalars['String'];
-  /** The token containing the information about issuer, callback endpoint and the credentials offered */
-  jwt: Scalars['String'];
-};
-
-export type BeginCredentialRequestOutput = {
-  __typename?: 'BeginCredentialRequestOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential request. */
-  interactionId: Scalars['String'];
-  /** The token containing the information about issuer, callback endpoint and credential requirements */
-  jwt: Scalars['String'];
-};
 
 export type Canvas = {
   __typename?: 'Canvas';
@@ -570,6 +570,15 @@ export type Community = Groupable & {
   members?: Maybe<Array<User>>;
 };
 
+export type CommunityApplyInput = {
+  communityID: Scalars['UUID'];
+  questions: Array<CreateNvpInput>;
+};
+
+export type CommunityJoinInput = {
+  communityID: Scalars['UUID'];
+};
+
 export type Config = {
   __typename?: 'Config';
   /** Authentication configuration. */
@@ -630,12 +639,6 @@ export type CreateActorInput = {
   impact?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   value?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateApplicationInput = {
-  parentID: Scalars['UUID'];
-  questions: Array<CreateNvpInput>;
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type CreateAspectOnContextInput = {
@@ -1073,6 +1076,14 @@ export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  description: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+};
+
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
@@ -1207,6 +1218,8 @@ export type Mutation = {
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Allow updating the rule for joining rooms: public or invite. */
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
+  /** Apply to join the specified Community as a member. */
+  applyForCommunityMembership: Application;
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as a Global Admin. */
@@ -1234,17 +1247,15 @@ export type Mutation = {
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
   /** Generate Alkemio user credential offer */
-  beginAlkemioUserCredentialOfferInteraction: BeginCredentialOfferOutput;
+  beginAlkemioUserVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
   /** Generate community member credential offer */
-  beginCommunityMemberCredentialOfferInteraction: BeginCredentialOfferOutput;
-  /** Generate credential share request */
-  beginCredentialRequestInteraction: BeginCredentialRequestOutput;
+  beginCommunityMemberVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
+  /** Generate verified credential share request */
+  beginVerifiedCredentialRequestInteraction: AgentBeginVerifiedCredentialRequestOutput;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
   createActorGroup: ActorGroup;
-  /** Creates Application for a User to join this Community. */
-  createApplication: Application;
   /** Create a new Aspect on the Context. */
   createAspectOnContext: Aspect;
   /** Create a new Canvas on the Context. */
@@ -1327,6 +1338,8 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Authorizes a User to be able to modify the state on the specified Challenge. */
   grantStateModificationOnChallenge: User;
+  /** Join the specified Community as a member, without going through an approval process. */
+  joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Removes a comment message. */
@@ -1411,6 +1424,10 @@ export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
   changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
 };
 
+export type MutationApplyForCommunityMembershipArgs = {
+  applicationData: CommunityApplyInput;
+};
+
 export type MutationAssignUserAsChallengeAdminArgs = {
   membershipData: AssignChallengeAdminInput;
 };
@@ -1463,11 +1480,11 @@ export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
 };
 
-export type MutationBeginCommunityMemberCredentialOfferInteractionArgs = {
+export type MutationBeginCommunityMemberVerifiedCredentialOfferInteractionArgs = {
   communityID: Scalars['String'];
 };
 
-export type MutationBeginCredentialRequestInteractionArgs = {
+export type MutationBeginVerifiedCredentialRequestInteractionArgs = {
   types: Array<Scalars['String']>;
 };
 
@@ -1477,10 +1494,6 @@ export type MutationCreateActorArgs = {
 
 export type MutationCreateActorGroupArgs = {
   actorGroupData: CreateActorGroupInput;
-};
-
-export type MutationCreateApplicationArgs = {
-  applicationData: CreateApplicationInput;
 };
 
 export type MutationCreateAspectOnContextArgs = {
@@ -1641,6 +1654,10 @@ export type MutationGrantCredentialToUserArgs = {
 
 export type MutationGrantStateModificationOnChallengeArgs = {
   grantStateModificationVCData: ChallengeAuthorizeStateModificationInput;
+};
+
+export type MutationJoinCommunityArgs = {
+  joinCommunityData: CommunityJoinInput;
 };
 
 export type MutationMessageUserArgs = {
@@ -1834,8 +1851,6 @@ export type OpportunityTemplate = {
   actorGroups?: Maybe<Array<Scalars['String']>>;
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
-  /** Template aspects. */
-  aspects?: Maybe<Array<Scalars['String']>>;
   /** Template opportunity name. */
   name: Scalars['String'];
   /** Template relations. */
@@ -1996,6 +2011,8 @@ export type PlatformHubTemplate = {
   __typename?: 'PlatformHubTemplate';
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Application templates. */
+  aspects?: Maybe<Array<HubAspectTemplate>>;
   /** Hub template name. */
   name: Scalars['String'];
 };
@@ -2023,10 +2040,25 @@ export type PreferenceDefinition = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The type of the Preference, specific to the Entity it is on. */
-  type: UserPreferenceType;
+  type: PreferenceType;
   /** Preference value type */
   valueType: PreferenceValueType;
 };
+
+export enum PreferenceType {
+  AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
+  MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
+  MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
+  MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
+  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
+  NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
+  NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
+  NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
+  NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
+  NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
+  NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
+}
 
 export enum PreferenceValueType {
   Boolean = 'BOOLEAN',
@@ -2086,7 +2118,7 @@ export type Query = {
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
   /** Get supported credential metadata */
-  getSupportedCredentialMetadata: Array<CredentialMetadataOutput>;
+  getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** An hub. If no ID is specified then the first Hub is returned. */
   hub: Hub;
   /** The Hubs on this platform */
@@ -3035,7 +3067,10 @@ export type ConfigurationFragment = {
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   template: {
     __typename?: 'Template';
-    opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+    hubs: Array<{
+      __typename?: 'PlatformHubTemplate';
+      aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
+    }>;
   };
 };
 
@@ -3558,6 +3593,15 @@ export type UpdatePreferenceOnUserMutation = {
   updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
 };
 
+export type ApplyForCommunityMembershipMutationVariables = Exact<{
+  input: CommunityApplyInput;
+}>;
+
+export type ApplyForCommunityMembershipMutation = {
+  __typename?: 'Mutation';
+  applyForCommunityMembership: { __typename?: 'Application'; id: string };
+};
+
 export type AssignUserToCommunityMutationVariables = Exact<{
   input: AssignCommunityMemberInput;
 }>;
@@ -3605,15 +3649,6 @@ export type CreateActorGroupMutationVariables = Exact<{
 export type CreateActorGroupMutation = {
   __typename?: 'Mutation';
   createActorGroup: { __typename?: 'ActorGroup'; id: string; name: string };
-};
-
-export type CreateApplicationMutationVariables = Exact<{
-  input: CreateApplicationInput;
-}>;
-
-export type CreateApplicationMutation = {
-  __typename?: 'Mutation';
-  createApplication: { __typename?: 'Application'; id: string };
 };
 
 export type CreateAspectMutationVariables = Exact<{
@@ -5502,7 +5537,10 @@ export type ConfigurationQuery = {
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
     template: {
       __typename?: 'Template';
-      opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+      hubs: Array<{
+        __typename?: 'PlatformHubTemplate';
+        aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
+      }>;
     };
   };
 };
@@ -6767,7 +6805,7 @@ export type UserNotificationsPreferencesQuery = {
         description: string;
         displayName: string;
         group: string;
-        type: UserPreferenceType;
+        type: PreferenceType;
         valueType: PreferenceValueType;
       };
     }>;
@@ -9684,23 +9722,6 @@ export type OpportunityPageFragment = {
     | undefined;
 };
 
-export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;
-
-export type OpportunityTemplateQuery = {
-  __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    template: {
-      __typename?: 'Template';
-      opportunities: Array<{
-        __typename?: 'OpportunityTemplate';
-        aspects?: Array<string> | undefined;
-        actorGroups?: Array<string> | undefined;
-      }>;
-    };
-  };
-};
-
 export type AssociatedOrganizationQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
 }>;
@@ -9800,7 +9821,7 @@ export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]
 
 export type GetSupportedCredentialMetadataQuery = {
   __typename?: 'Query';
-  getSupportedCredentialMetadata: Array<{
+  getSupportedVerifiedCredentialMetadata: Array<{
     __typename?: 'CredentialMetadataOutput';
     name: string;
     description: string;
@@ -9817,8 +9838,8 @@ export type BeginCredentialRequestInteractionMutationVariables = Exact<{
 
 export type BeginCredentialRequestInteractionMutation = {
   __typename?: 'Mutation';
-  beginCredentialRequestInteraction: {
-    __typename?: 'BeginCredentialRequestOutput';
+  beginVerifiedCredentialRequestInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
     interactionId: string;
     jwt: string;
     expiresOn: number;
@@ -9829,8 +9850,8 @@ export type BeginAlkemioUserCredentialOfferInteractionMutationVariables = Exact<
 
 export type BeginAlkemioUserCredentialOfferInteractionMutation = {
   __typename?: 'Mutation';
-  beginAlkemioUserCredentialOfferInteraction: {
-    __typename?: 'BeginCredentialOfferOutput';
+  beginAlkemioUserVerifiedCredentialOfferInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
     interactionId: string;
     jwt: string;
     expiresOn: number;
@@ -9843,8 +9864,8 @@ export type BeginCommunityMemberCredentialOfferInteractionMutationVariables = Ex
 
 export type BeginCommunityMemberCredentialOfferInteractionMutation = {
   __typename?: 'Mutation';
-  beginCommunityMemberCredentialOfferInteraction: {
-    __typename?: 'BeginCredentialOfferOutput';
+  beginCommunityMemberVerifiedCredentialOfferInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
     interactionId: string;
     jwt: string;
     expiresOn: number;
