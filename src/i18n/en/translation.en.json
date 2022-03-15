@@ -573,6 +573,9 @@
       }
     }
   },
+  "footer": {
+    "copyright": "© 2022 Alkemio Foundation"
+  },
   "pages": {
     "aspect": {
       "dashboard": {
