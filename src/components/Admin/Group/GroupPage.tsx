@@ -7,31 +7,14 @@ import {
   useUpdateGroupMutation,
   useUsersWithCredentialsQuery,
 } from '../../../hooks/generated/graphql';
-import {
-  AuthorizationCredential,
-  Maybe,
-  Profile,
-  UpdateProfileInput,
-  User,
-  UserGroup,
-} from '../../../models/graphql-schema';
+import { AuthorizationCredential, User, UserGroup } from '../../../models/graphql-schema';
 import { PageProps } from '../../../pages';
 import { logger } from '../../../services/logging/winston/logger';
 import GroupForm from './GroupForm';
+import { getUpdateProfileInput } from '../../../utils/getUpdateUserInput';
 interface GroupPageProps extends PageProps {
   group?: UserGroup;
 }
-
-export const getUpdateProfileInput = (profile?: Profile): Maybe<UpdateProfileInput> => {
-  if (!profile) return;
-
-  return {
-    ID: profile.id || '',
-    description: profile.description,
-    references: profile.references?.filter(r => r.id).map(t => ({ ID: t.id, name: t.name, uri: t.uri })),
-    tagsets: profile.tagsets?.filter(t => t.id).map(t => ({ ID: t.id, name: t.name, tags: [...t.tags] })),
-  };
-};
 
 export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
   const { t } = useTranslation();
