@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode, useCallback } from 'react';
 import Chip from '@mui/material/Chip';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import Skeleton from '@mui/material/Skeleton';
+import LinesFitter from '../../../core/LinesFitter/LinesFitter';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -18,6 +19,7 @@ const useStyles = makeStyles(theme =>
       display: 'flex',
       gap: theme.spacing(0.3),
       flexWrap: 'wrap',
+      minHeight: '55px', // TODO specify depending on Chip size
     },
     iconSmall: {
       width: 8,
@@ -59,60 +61,96 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInR
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const tagsToDisplay = loading ? new Array(count).fill('') : count && count > 0 ? tags.slice(0, count) : tags;
-  const moreTags = count ? tags.slice(count) : [];
-  const moreTagsText = moreTags.length ? t('components.tags-component.more', { count: moreTags.length }) : '';
-  const moreTagsTooltipTitle = moreTags.join(', ');
+  const getMoreTagsText = (count: number) => t('components.tags-component.more', { count });
+  const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
+  const wrapped = (children: ReactNode) => <div className={styles.tagWrapper}>{children}</div>;
+
+  const renderTag = useCallback(
+    (item: string, i: number) => (
+      <Tooltip key={i} title={item} arrow placement="bottom">
+        <Chip
+          classes={{
+            iconSmall: styles.iconSmall,
+          }}
+          label={item}
+          variant="outlined"
+          color="primary"
+          size="small"
+          icon={<FiberManualRecordIcon fontSize="small" />}
+          className={clsx(styles.tagMargin, {
+            [styles[`count-${count}`]]: keepInRow && count && count <= 5,
+            [styles.maxWidth]: !keepInRow,
+          })}
+        />
+      </Tooltip>
+    ),
+    []
+  );
+
+  const renderMore = useCallback(
+    (remainingTags: string[]) => (
+      <Tooltip title={getMoreTagsTooltipTitle(remainingTags)} arrow placement="bottom">
+        <Chip
+          classes={{
+            iconSmall: styles.iconSmall,
+          }}
+          label={getMoreTagsText(remainingTags.length)}
+          variant="outlined"
+          color="primary"
+          size="small"
+          icon={<FiberManualRecordIcon />}
+          className={styles.tagMargin}
+        />
+      </Tooltip>
+    ),
+    []
+  );
+
+  const renderTags = () => {
+    if (tags.length === 0) {
+      return;
+    }
+
+    if (keepInRow) {
+      const tagsToDisplay = count && count > 0 ? tags.slice(0, count) : tags;
+      const moreTags = count ? tags.slice(count) : [];
+
+      return wrapped(
+        <>
+          {tagsToDisplay.map(renderTag)}
+          {moreTags.length > 0 && renderMore(moreTags)}
+        </>
+      );
+    }
+
+    return <LinesFitter items={tags} className={styles.tagWrapper} renderItem={renderTag} renderMore={renderMore} />;
+  };
 
   return (
     <div className={className}>
-      <div className={styles.tagWrapper}>
-        {tags.length === 0 && !loading && (
+      {tags.length === 0 &&
+        !loading &&
+        wrapped(
           <Typography color="neutral.main" variant="subtitle2">
             {t('components.tags-component.no-tags', { name: tagsFor || 'item' })}
           </Typography>
         )}
-        {tagsToDisplay.map((x, i) => {
-          return loading ? (
-            <Skeleton key={i} width={`${100 / count}%`}>
-              <Chip variant="outlined" color="primary" size="small" icon={<FiberManualRecordIcon fontSize="small" />} />
-            </Skeleton>
-          ) : (
-            <Tooltip key={i} title={x} arrow placement="bottom">
-              <Chip
-                classes={{
-                  iconSmall: styles.iconSmall,
-                }}
-                label={x}
-                variant="outlined"
-                color="primary"
-                size="small"
-                icon={<FiberManualRecordIcon fontSize="small" />}
-                className={clsx(styles.tagMargin, {
-                  [styles[`count-${count}`]]: keepInRow && count && count <= 5,
-                  [styles.maxWidth]: !keepInRow && (!count || count > 5),
-                })}
-              />
-            </Tooltip>
-          );
-        })}
-        {!loading && moreTags.length > 0 && (
-          <Tooltip title={moreTagsTooltipTitle} arrow placement="bottom">
-            <Chip
-              classes={{
-                iconSmall: styles.iconSmall,
-              }}
-              label={moreTagsText}
-              variant="outlined"
-              color="primary"
-              size="small"
-              icon={<FiberManualRecordIcon />}
-              className={styles.tagMargin}
-            />
-          </Tooltip>
-        )}
-      </div>
+      {loading
+        ? wrapped(
+            new Array(count).fill('').map((x, i) => (
+              <Skeleton key={i} width={`${100 / count}%`}>
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  icon={<FiberManualRecordIcon fontSize="small" />}
+                />
+              </Skeleton>
+            ))
+          )
+        : renderTags()}
     </div>
   );
 };
+
 export default TagsComponent;
