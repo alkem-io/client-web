@@ -2,7 +2,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PublicIcon from '@mui/icons-material/Public';
 import SchoolIcon from '@mui/icons-material/School';
-import { Box, Grid, Link, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ReactElement } from 'react-markdown';
@@ -21,6 +21,7 @@ import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../hooks/g
 import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../hooks';
 import CardFilter from '../../core/card-filter/CardFilter';
 import { aspectTagsValueGetter, aspectValueGetter } from '../../core/card-filter/value-getters/aspect-value-getter';
+import References from '../common/References/References';
 
 export interface ContextSectionProps {
   contextId?: string;
@@ -187,13 +188,7 @@ const ContextSection: FC<ContextSectionProps> = ({
             }
             options={{ collapsible: { maxHeight: 192 } }}
           >
-            {references?.map((l, i) => (
-              <Link key={i} href={l.uri} target="_blank">
-                <Typography sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                  {l.name} - {l.description}
-                </Typography>
-              </Link>
-            ))}
+            <References references={references} />
           </DashboardGenericSection>
           <SectionSpacer />
           <DashboardGenericSection
