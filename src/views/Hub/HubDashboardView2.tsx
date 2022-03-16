@@ -16,7 +16,8 @@ import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
-import { ActivityType } from '../../models/constants';
+import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
+import { useConfig } from '../../hooks';
 
 export interface HubDashboardView2Props {
   title?: string;
@@ -60,6 +61,8 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   challengesReadAccess = true,
 }) => {
   const { t } = useTranslation();
+  const { isFeatureEnabled } = useConfig();
+
   const orgNameIds = useMemo(() => (organizationNameId ? [organizationNameId] : []), [organizationNameId]);
 
   const challengesCount = useMemo(() => {
@@ -99,7 +102,9 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
               <SectionSpacer />
               <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
-              <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+              {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
+                <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+              )}
             </>
           )}
         </Grid>

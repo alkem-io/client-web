@@ -1,13 +1,14 @@
 import {
   ContentPasteOutlined,
   DashboardOutlined,
+  ForumOutlined,
   GroupOutlined,
   SettingsOutlined,
   TocOutlined,
   WbIncandescentOutlined,
 } from '@mui/icons-material';
 import { Box, Tabs } from '@mui/material';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
@@ -23,7 +24,8 @@ const routes = {
   canvases: 'canvases',
   settings: 'settings',
   context: 'context',
-};
+  contribute: 'contribute',
+} as const;
 
 type OpportunityRoutesType = keyof typeof routes;
 
@@ -49,10 +51,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
     () => Object.values(routes).map(x => resolvePath(x, resolved.pathname)?.pathname),
     [routes, resolved, resolvePath]
   );
-  const tabValue = useCallback(
-    (route: OpportunityRoutesType | string) => resolvePath(route, resolved.pathname)?.pathname,
-    [resolved]
-  );
+  const tabValue = (route: OpportunityRoutesType) => resolvePath(route, resolved.pathname)?.pathname;
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
@@ -73,6 +72,12 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
           label={t('common.opportunity')}
           value={tabValue('dashboard')}
           to={routes['dashboard']}
+        />
+        <NavigationTab
+          icon={<ForumOutlined />}
+          label={t('common.contribute')}
+          value={tabValue('contribute')}
+          to={routes.contribute}
         />
         <NavigationTab
           icon={<TocOutlined />}

@@ -14,6 +14,7 @@ import OpportunityCanvasPage from '../../pages/Opportunity/OpportunityCanvasPage
 import { nameOfUrl } from '../url-params';
 import AspectProvider from '../../context/aspect/AspectProvider';
 import AspectRoute from '../aspect/AspectRoute';
+import OpportunityContributePage from '../../pages/Opportunity/OpportunityContributePage';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -49,6 +50,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
       >
         <Route index element={<Navigate replace to={'dashboard'} />} />
         <Route path={'dashboard'} element={<OpportunityDashboardPage paths={currentPaths} />} />
+        <Route path={'contribute'} element={<OpportunityContributePage paths={currentPaths} />} />
         <Route path={'context'} element={<OpportunityContextPage paths={currentPaths} />} />
         <Route path={'community'} element={<OpportunityCommunityPage paths={currentPaths} />} />
         <Route path={'projects'} element={<OpportunityProjectsPage paths={currentPaths} />} />

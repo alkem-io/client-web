@@ -8,7 +8,7 @@ import {
   WbIncandescentOutlined,
 } from '@mui/icons-material';
 import { Box, Tabs } from '@mui/material';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
@@ -26,7 +26,8 @@ const routes = {
   canvases: 'canvases',
   settings: 'settings',
   context: 'context',
-};
+  contribute: 'contribute',
+} as const;
 
 type HubRoutesType = keyof typeof routes;
 
@@ -52,10 +53,7 @@ const HubTabs: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }
   // todo provided it as an input
   const { hubNameId, permissions } = useHub();
 
-  const tabValue = useCallback(
-    (route: HubRoutesType | string) => resolvePath(route, resolved.pathname)?.pathname,
-    [resolved, resolvePath]
-  );
+  const tabValue = (route: HubRoutesType) => resolvePath(route, resolved.pathname)?.pathname;
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
@@ -79,7 +77,13 @@ const HubTabs: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }
           icon={<DashboardOutlined />}
           label={t('common.dashboard')}
           value={tabValue('dashboard')}
-          to={'dashboard'}
+          to={routes.dashboard}
+        />
+        <NavigationTab
+          icon={<ForumOutlined />}
+          label={t('common.contribute')}
+          value={tabValue('contribute')}
+          to={routes.contribute}
         />
         <NavigationTab icon={<TocOutlined />} label={t('common.context')} value={tabValue('context')} to={'context'} />
         <NavigationTab
@@ -87,28 +91,30 @@ const HubTabs: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }
           icon={<GroupOutlined />}
           label={t('common.community')}
           value={tabValue('community')}
-          to={'community'}
+          to={routes.community}
         />
         <NavigationTab
           disabled={!challengesReadAccess}
           icon={<ContentPasteOutlined />}
           label={t('common.challenges')}
           value={tabValue('challenges')}
-          to={'challenges'}
+          to={routes.challenges}
         />
-        <NavigationTab
-          disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS)}
-          icon={<ForumOutlined />}
-          label={t('common.discussions')}
-          value={tabValue('discussions')}
-          to={'discussions'}
-        />
+        {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
+          <NavigationTab
+            disabled={!communityReadAccess}
+            icon={<ForumOutlined />}
+            label={t('common.discussions')}
+            value={tabValue('discussions')}
+            to={routes.discussions}
+          />
+        )}
         <NavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           value={tabValue('canvases')}
-          to={'canvases'}
+          to={routes.canvases}
         />
         {permissions.viewerCanUpdate && (
           <NavigationTab
