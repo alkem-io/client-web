@@ -1352,7 +1352,7 @@ export type UserTemplateFieldPolicy = {
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VerifiedCredentialKeySpecifier = (
-  | 'claim'
+  | 'claims'
   | 'context'
   | 'expires'
   | 'issued'
@@ -1362,13 +1362,18 @@ export type VerifiedCredentialKeySpecifier = (
   | VerifiedCredentialKeySpecifier
 )[];
 export type VerifiedCredentialFieldPolicy = {
-  claim?: FieldPolicy<any> | FieldReadFunction<any>;
+  claims?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   expires?: FieldPolicy<any> | FieldReadFunction<any>;
   issued?: FieldPolicy<any> | FieldReadFunction<any>;
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VerifiedCredentialClaimKeySpecifier = ('name' | 'value' | VerifiedCredentialClaimKeySpecifier)[];
+export type VerifiedCredentialClaimFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VisualKeySpecifier = (
   | 'allowedTypes'
@@ -1789,6 +1794,10 @@ export type StrictTypedTypePolicies = {
   VerifiedCredential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VerifiedCredentialKeySpecifier | (() => undefined | VerifiedCredentialKeySpecifier);
     fields?: VerifiedCredentialFieldPolicy;
+  };
+  VerifiedCredentialClaim?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VerifiedCredentialClaimKeySpecifier | (() => undefined | VerifiedCredentialClaimKeySpecifier);
+    fields?: VerifiedCredentialClaimFieldPolicy;
   };
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);

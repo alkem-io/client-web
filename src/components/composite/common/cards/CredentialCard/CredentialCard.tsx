@@ -9,7 +9,10 @@ export interface CredentialCardEntities {
   name: string;
   description?: string;
   type: string;
-  claim: Record<string, string>;
+  claims: {
+    name: string;
+    value: string;
+  }[];
   context: Record<string, string>;
   issued: string;
   expires: string;
@@ -46,16 +49,17 @@ const useStyles = makeStyles(theme =>
 
 const issuerResolver = _ => 'Alkemio';
 const issuerURLResolver = _ => 'url-to-issuer';
-const claimParser = (claim, context) => {
+let i = 0;
+const claimParser = claims => {
   return (
     <>
       <Typography variant="h6" color="neutralMedium">
         Claims:
       </Typography>
-      {Object.keys(context).map((key, i) => (
-        <Box key={i} sx={{ whiteSpace: 'initial', wordBreak: 'break-all' }}>
-          <Typography variant="h6" color="neutralMedium">
-            {key}: {claim[key]}
+      {claims.map(claim => (
+        <Box sx={{ whiteSpace: 'initial', wordBreak: 'break-all' }}>
+          <Typography key={i++} variant="h6" color="neutralMedium">
+            {claim.name}: {claim.value}
           </Typography>
         </Box>
       ))}
@@ -64,7 +68,7 @@ const claimParser = (claim, context) => {
 };
 
 const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = false, children }) => {
-  const { claim, description, issued, expires, issuer, name, context } = details || {};
+  const { claims, description, issued, expires, issuer, name } = details || {};
 
   const url = issuerURLResolver(issuer);
   const issuerName = issuerResolver(issuer);
@@ -104,7 +108,7 @@ const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = 
               <Typography variant="body2" color="neutralMedium" sx={{ wordWrap: 'break-word' }}>
                 {credentialInfo}
               </Typography>
-              <pre>{claimParser(claim, context)}</pre>
+              <pre>{claimParser(claims)}</pre>
             </Box>
           </>
         )}

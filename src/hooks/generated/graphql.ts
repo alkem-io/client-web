@@ -1379,7 +1379,10 @@ export const UserAgentSsiFragmentDoc = gql`
         type
       }
       verifiedCredentials {
-        claim
+        claims {
+          name
+          value
+        }
         context
         issued
         expires
