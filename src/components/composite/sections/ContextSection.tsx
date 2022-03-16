@@ -7,19 +7,11 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ReactElement } from 'react-markdown';
 import { Reference } from '../../../models/graphql-schema';
-// import { CardLayoutContainer, CardLayoutItem } from '../../core/CardLayoutContainer/CardLayoutContainer';
 import Markdown from '../../core/Markdown';
 import { SectionSpacer } from '../../core/Section/Section';
 import SectionHeader from '../../core/Section/SectionHeader';
-// import MembershipBackdrop from '../common/Backdrops/MembershipBackdrop';
-// import AspectCard from '../common/cards/AspectCard/AspectCard';
 import DashboardGenericSection from '../common/sections/DashboardGenericSection';
 import TagsComponent from '../common/TagsComponent/TagsComponent';
-// import Button from '@mui/material/Button';
-// import AspectCreationDialog, { AspectCreationOutput } from '../aspect/AspectCreationDialog/AspectCreationDialog';
-// import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../hooks/generated/graphql';
-// import CardFilter from '../../core/card-filter/CardFilter';
-// import { aspectTagsValueGetter, aspectValueGetter } from '../../core/card-filter/value-getters/aspect-value-getter';
 import References from '../common/References/References';
 
 export interface ContextSectionProps {
@@ -34,14 +26,12 @@ export interface ContextSectionProps {
   impact?: string;
   who?: string;
   references?: Reference[];
-  // aspects?: AspectCardFragment[];
   aspectsLoading?: boolean;
   canReadAspects?: boolean;
   canCreateAspects?: boolean;
 }
 
 const ContextSection: FC<ContextSectionProps> = ({
-  // contextId,
   primaryAction,
   banner,
   background,
@@ -52,10 +42,6 @@ const ContextSection: FC<ContextSectionProps> = ({
   impact,
   who,
   references,
-  // aspects = [],
-  // aspectsLoading,
-  // canReadAspects,
-  // canCreateAspects,
 }) => {
   const { t } = useTranslation();
 
