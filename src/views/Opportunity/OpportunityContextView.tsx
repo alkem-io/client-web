@@ -58,7 +58,6 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
     id = '',
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
-  // const aspects = entities?.aspects;
   const references = entities?.references;
 
   return (

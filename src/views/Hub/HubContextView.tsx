@@ -50,7 +50,6 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state, optio
     id = '',
   } = context || ({} as Context);
   const hubBanner = getVisualBanner(visuals);
-  // const aspects = entities?.aspects;
   const references = entities?.references;
 
   return (
