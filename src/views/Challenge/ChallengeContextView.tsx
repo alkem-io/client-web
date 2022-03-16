@@ -72,7 +72,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
     id = '',
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
-  const aspects = entities?.aspects;
+  // const aspects = entities?.aspects;
   const references = entities?.references;
 
   return (
@@ -105,7 +105,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
       contextId={id}
       keywords={challengeTagset?.tags}
       references={references}
-      aspects={aspects}
       aspectsLoading={loading}
       canReadAspects={canReadAspects}
       canCreateAspects={canCreateAspects}
