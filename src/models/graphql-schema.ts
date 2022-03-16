@@ -3406,7 +3406,9 @@ export type OrganizationProfileInfoFragment = {
           minWidth: number;
         }
       | undefined;
-    references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+      | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
   };
 };
@@ -4391,7 +4393,9 @@ export type UpdateOrganizationMutation = {
             minWidth: number;
           }
         | undefined;
-      references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+        | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
   };
@@ -6533,7 +6537,9 @@ export type OrganizationProfileInfoQuery = {
             minWidth: number;
           }
         | undefined;
-      references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+        | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
   };

@@ -546,6 +546,7 @@ export const OrganizationProfileInfoFragmentDoc = gql`
         id
         name
         uri
+        description
       }
       tagsets {
         id
