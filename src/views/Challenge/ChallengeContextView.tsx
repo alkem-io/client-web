@@ -51,17 +51,7 @@ interface ChallengeContextViewProps
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
   const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
-  const {
-    context,
-    hubId = '',
-    hubNameId = '',
-    hubDisplayName = '',
-    challengeId,
-    challengeNameId,
-    challengeDisplayName = '',
-    challengeTagset,
-    challengeLifecycle,
-  } = entities;
+  const { context, challengeDisplayName = '', challengeTagset, challengeLifecycle } = entities;
   const {
     tagline = '',
     impact = '',
@@ -81,16 +71,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         <Box display="flex">
           <LifecycleState lifecycle={challengeLifecycle} />
           <SectionSpacer />
-          <ApplicationButtonContainer
-            entities={{
-              hubId: hubId,
-              hubNameId: hubNameId,
-              hubName: hubDisplayName,
-              challengeId,
-              challengeName: challengeDisplayName,
-              challengeNameId,
-            }}
-          >
+          <ApplicationButtonContainer>
             {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
           </ApplicationButtonContainer>
         </Box>

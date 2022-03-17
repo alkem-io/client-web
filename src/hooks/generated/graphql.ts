@@ -9905,6 +9905,125 @@ export type ContributorsSearchQueryResult = Apollo.QueryResult<
 export function refetchContributorsSearchQuery(variables: SchemaTypes.ContributorsSearchQueryVariables) {
   return { query: ContributorsSearchDocument, variables: variables };
 }
+export const CommunityUserPrivilegesDocument = gql`
+  query communityUserPrivileges($hubNameId: UUID_NAMEID!, $communityId: UUID!) {
+    hub(ID: $hubNameId) {
+      id
+      hubCommunity: community {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+      community(ID: $communityId) {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCommunityUserPrivilegesQuery__
+ *
+ * To run a query within a React component, call `useCommunityUserPrivilegesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityUserPrivilegesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityUserPrivilegesQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      communityId: // value for 'communityId'
+ *   },
+ * });
+ */
+export function useCommunityUserPrivilegesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityUserPrivilegesQuery,
+    SchemaTypes.CommunityUserPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CommunityUserPrivilegesQuery, SchemaTypes.CommunityUserPrivilegesQueryVariables>(
+    CommunityUserPrivilegesDocument,
+    options
+  );
+}
+export function useCommunityUserPrivilegesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityUserPrivilegesQuery,
+    SchemaTypes.CommunityUserPrivilegesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityUserPrivilegesQuery,
+    SchemaTypes.CommunityUserPrivilegesQueryVariables
+  >(CommunityUserPrivilegesDocument, options);
+}
+export type CommunityUserPrivilegesQueryHookResult = ReturnType<typeof useCommunityUserPrivilegesQuery>;
+export type CommunityUserPrivilegesLazyQueryHookResult = ReturnType<typeof useCommunityUserPrivilegesLazyQuery>;
+export type CommunityUserPrivilegesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityUserPrivilegesQuery,
+  SchemaTypes.CommunityUserPrivilegesQueryVariables
+>;
+export function refetchCommunityUserPrivilegesQuery(variables: SchemaTypes.CommunityUserPrivilegesQueryVariables) {
+  return { query: CommunityUserPrivilegesDocument, variables: variables };
+}
+export const JoinCommunityDocument = gql`
+  mutation joinCommunity($joiningData: CommunityJoinInput!) {
+    joinCommunity(joinCommunityData: $joiningData) {
+      id
+    }
+  }
+`;
+export type JoinCommunityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.JoinCommunityMutation,
+  SchemaTypes.JoinCommunityMutationVariables
+>;
+
+/**
+ * __useJoinCommunityMutation__
+ *
+ * To run a mutation, you first call `useJoinCommunityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useJoinCommunityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [joinCommunityMutation, { data, loading, error }] = useJoinCommunityMutation({
+ *   variables: {
+ *      joiningData: // value for 'joiningData'
+ *   },
+ * });
+ */
+export function useJoinCommunityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.JoinCommunityMutation,
+    SchemaTypes.JoinCommunityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.JoinCommunityMutation, SchemaTypes.JoinCommunityMutationVariables>(
+    JoinCommunityDocument,
+    options
+  );
+}
+export type JoinCommunityMutationHookResult = ReturnType<typeof useJoinCommunityMutation>;
+export type JoinCommunityMutationResult = Apollo.MutationResult<SchemaTypes.JoinCommunityMutation>;
+export type JoinCommunityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.JoinCommunityMutation,
+  SchemaTypes.JoinCommunityMutationVariables
+>;
 export const HubAspectDocument = gql`
   query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {

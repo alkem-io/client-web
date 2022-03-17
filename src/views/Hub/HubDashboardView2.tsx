@@ -48,7 +48,6 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   vision = '',
   challenges,
   members = [],
-  hubId = '',
   hubNameId = '',
   communityId = '',
   organizationNameId,
@@ -74,13 +73,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
             bannerUrl={bannerUrl}
             headerText={title}
             primaryAction={
-              <ApplicationButtonContainer
-                entities={{
-                  hubId,
-                  hubNameId,
-                  hubName: title || '',
-                }}
-              >
+              <ApplicationButtonContainer>
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
               </ApplicationButtonContainer>
             }
