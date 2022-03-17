@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { PageProps } from '../common';
 import { useHub, useUpdateNavigation } from '../../hooks';
-import ContributeView from '../../components/composite/entities/ContributeView/ContributeView';
+import ContributeView from '../../views/ContributeView/ContributeView';
 import ContextTabContainer from '../../containers/context/ContextTabContainer';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 

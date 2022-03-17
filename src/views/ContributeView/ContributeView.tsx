@@ -1,8 +1,8 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
-import { AspectCardFragment } from '../../../../models/graphql-schema';
-import { ViewProps } from '../../../../models/view';
-import AspectsView from '../../aspect/AspectsView/AspectsView';
+import { AspectCardFragment } from '../../models/graphql-schema';
+import { ViewProps } from '../../models/view';
+import AspectsView from '../aspect/AspectsView/AspectsView';
 
 interface ContextIdHolder {
   id: string;

@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import ContributeView from '../../components/composite/entities/ContributeView/ContributeView';
+import ContributeView from '../../views/ContributeView/ContributeView';
 import { PageProps } from '../common';
 import { useOpportunity, useUpdateNavigation } from '../../hooks';
 import ContextTabContainer from '../../containers/context/ContextTabContainer';

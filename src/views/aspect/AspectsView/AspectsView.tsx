@@ -1,17 +1,22 @@
 import React, { FC, useState } from 'react';
-import MembershipBackdrop from '../../common/Backdrops/MembershipBackdrop';
-import DashboardGenericSection from '../../common/sections/DashboardGenericSection';
+import MembershipBackdrop from '../../../components/composite/common/Backdrops/MembershipBackdrop';
+import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
 import Button from '@mui/material/Button';
-import { CardLayoutContainer, CardLayoutItem } from '../../../core/CardLayoutContainer/CardLayoutContainer';
-import AspectCard from '../../common/cards/AspectCard/AspectCard';
-import CardFilter from '../../../core/card-filter/CardFilter';
-import { aspectTagsValueGetter, aspectValueGetter } from '../../../core/card-filter/value-getters/aspect-value-getter';
-import AspectCreationDialog, { AspectCreationOutput } from '../AspectCreationDialog/AspectCreationDialog';
+import { CardLayoutContainer, CardLayoutItem } from '../../../components/core/CardLayoutContainer/CardLayoutContainer';
+import AspectCard from '../../../components/composite/common/cards/AspectCard/AspectCard';
+import CardFilter from '../../../components/core/card-filter/CardFilter';
+import {
+  aspectTagsValueGetter,
+  aspectValueGetter,
+} from '../../../components/core/card-filter/value-getters/aspect-value-getter';
+import AspectCreationDialog, {
+  AspectCreationOutput,
+} from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { Grid } from '@mui/material';
-import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../hooks';
-import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../hooks';
+import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../hooks/generated/graphql';
 import { useTranslation } from 'react-i18next';
-import { AspectCardFragment } from '../../../../models/graphql-schema';
+import { AspectCardFragment } from '../../../models/graphql-schema';
 
 interface AspectsViewProps {
   aspects?: AspectCardFragment[];
