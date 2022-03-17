@@ -1,11 +1,11 @@
 import { makeStyles } from '@mui/styles';
-import { ReactComponent as CupStrawIcon } from 'bootstrap-icons/icons/cup-straw.svg';
-import { ReactComponent as InfoSquareIcon } from 'bootstrap-icons/icons/info-square.svg';
-import { ReactComponent as MinecartLoadedIcon } from 'bootstrap-icons/icons/minecart-loaded.svg';
-import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
-import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
-import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
-import { ReactComponent as Delete } from 'bootstrap-icons/icons/trash.svg';
+import LocalDrink from '@mui/icons-material/LocalDrink';
+import Info from '@mui/icons-material/Info';
+import ProductionQuantityLimits from '@mui/icons-material/ProductionQuantityLimits';
+import HelpOutline from '@mui/icons-material/HelpOutline';
+import Edit from '@mui/icons-material/Edit';
+import Add from '@mui/icons-material/Add';
+import Delete from '@mui/icons-material/Delete';
 import React, { FC, useState } from 'react';
 import { useApolloErrorHandler, useHub } from '../../../../hooks';
 import {
@@ -19,7 +19,6 @@ import {
 import hexToRGBA from '../../../../utils/hexToRGBA';
 import { replaceAll } from '../../../../utils/replaceAll';
 import Card from '../../../core/Card';
-import Icon from '../../../core/Icon';
 import RemoveModal from '../../../core/RemoveModal';
 import { Spacer } from '../../../core/Spacer';
 import Typography from '../../../core/Typography';
@@ -179,7 +178,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
         <Spacer />
         <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
           {'wins how? (juice)'}
-          <Icon component={CupStrawIcon} size="sm" color="neutral" />
+          <LocalDrink fontSize="small" color="secondary" />
         </Typography>
         <Typography as="h3" variant="body1">
           {value}
@@ -187,7 +186,7 @@ export const ActorCard: FC<ActorCardProps> = ({ id, name, description, value, im
         <Spacer variant="lg" />
         <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
           {'required effort for pilot'}
-          <Icon component={MinecartLoadedIcon} size="sm" color="neutral" />
+          <ProductionQuantityLimits fontSize="small" color="secondary" />
         </Typography>
         <Typography as="h3" variant="body1">
           {impact}
@@ -254,7 +253,7 @@ export const NewActorCard: FC<NewActorProps> = ({ text, actorGroupId, opportunit
         sectionProps={{
           children: (
             <div className={styles.inner}>
-              <Icon component={PlusIcon} color="inherit" size="xxl" />
+              <Add color="inherit" fontSize="large" />
             </div>
           ),
           className: styles.section,
@@ -328,7 +327,7 @@ export const AspectCard: FC<AspectCardProps> = ({
         <Spacer />
         <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
           {'explanation'}
-          <Icon component={InfoSquareIcon} size="sm" color="neutral" />
+          <Info fontSize="small" color="secondary" />
         </Typography>
         <Typography as="h3" variant="body1">
           {explanation}
@@ -336,7 +335,7 @@ export const AspectCard: FC<AspectCardProps> = ({
         <Spacer variant="lg" />
         <Typography as="h3" variant="caption" color="neutralMedium" weight="bold" className={styles.iconWrapper}>
           {'where we need help'}
-          <Icon component={PatchQuestionIcon} size="sm" color="neutral" />
+          <HelpOutline fontSize="small" color="primary" />
         </Typography>
         <Typography as="h3" variant="body1">
           {framing}
@@ -382,7 +381,7 @@ export const NewAspectCard: FC<NewAspectProps> = ({
     <div className={styles.relative}>
       <Card className={styles.card} primaryTextProps={{ text }} onClick={() => setEditOpened(true)}>
         <div className={styles.inner}>
-          <Icon component={PlusIcon} color="inherit" size="xxl" />
+          <Add color="inherit" fontSize="large" />
         </div>
       </Card>
 
