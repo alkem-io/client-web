@@ -79,7 +79,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   onAdd,
   onRemove,
   onLoadMore,
-  loadMore,
+  loadMore = LOAD_MORE_DEFAULT,
   lastMembersPage = true,
 }) => {
   const { t } = useTranslation();
@@ -180,7 +180,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                   </TableContainer>
                 </Box>
                 {onLoadMore && (
-                  <Button onClick={() => onLoadMore(loadMore ?? LOAD_MORE_DEFAULT)} disabled={lastMembersPage}>
+                  <Button onClick={() => onLoadMore(loadMore)} disabled={lastMembersPage}>
                     {t('buttons.load-count-more', { count: loadMore })}
                   </Button>
                 )}
