@@ -14,27 +14,9 @@ import { Loading } from '../../components/core';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 import UserCredentialsContainer from '../../containers/user/UserCredentialsContainer';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
-import { UpdateUserInput } from '../../models/graphql-schema';
-import { UserModel } from '../../models/User';
 import { PageProps } from '../common';
 
 interface UserCredentialsPageProps extends PageProps {}
-
-// TODO [ATS] Need optimization this code is copy paste a few times.
-export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
-  const { id: userID, email, memberof, profile, agent, ...rest } = user;
-
-  return {
-    ...rest,
-    ID: userID,
-    profileData: {
-      ID: user.profile.id || '',
-      description: profile.description,
-      references: profile.references.filter(r => r.id).map(t => ({ ID: t.id || '', name: t.name, uri: t.uri })),
-      tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: t.id || '', name: t.name, tags: [...t.tags] })),
-    },
-  };
-};
 
 export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -77,7 +59,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
                   <CardLayoutItem key={i} css={{ flexGrow: 1 }} maxWidth={{ xs: 'auto', sm: 'auto', md: '25%' }}>
                     <CredentialCard
                       entities={{
-                        claim: JSON.parse(c.claim),
+                        claims: c.claims || [],
                         context: JSON.parse(c.context),
                         issued: c.issued,
                         expires: c.expires,

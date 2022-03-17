@@ -103,8 +103,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
     await createApplication({
       variables: {
         input: {
-          userID: userId,
-          parentID: communityId,
+          communityID: communityId,
           questions: questionArrayInput,
         },
       },

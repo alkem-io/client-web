@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useConfig, useUrlParams, useUserContext } from '../hooks';
 import { useHubProviderQuery } from '../hooks/generated/graphql';
-import { AspectTemplate, AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
+import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
 
 interface HubPermissions {
   viewerCanUpdate: boolean;
@@ -50,9 +50,8 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const { hubNameId = '' } = useUrlParams();
   const { template: platformTemplate, error: configError } = useConfig();
   const { user } = useUserContext();
-  const globalAspectTemplates = platformTemplate?.opportunities
-    .flatMap(x => x.aspects)
-    .map(x => ({ type: x, description: '' } as AspectTemplate));
+  const globalAspectTemplates = platformTemplate?.hubs[0].aspects;
+
   const {
     error: hubError,
     data,
