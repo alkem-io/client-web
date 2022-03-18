@@ -30,12 +30,14 @@ export interface OpportunityMembersProps {
 export interface OpportunityMembersActions {
   handleAssignAdmin: (member: UserDisplayNameFragment) => void;
   handleRemoveAdmin: (member: Member) => void;
+  handleLoadMore: () => void;
 }
 
 export interface OpportunityMembersState {
   addingAdmin: boolean;
   removingAdmin: boolean;
   loading: boolean;
+  isLastAvailableUserPage: boolean;
 }
 
 export interface OpportunityMembersEntities {
@@ -101,7 +103,11 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
     available: availableMembers,
     current: allMembers,
     loading,
-  } = useAvailableMembers(entities.credential, entities.opportunityId, communityId);
+    onLoadMore,
+    isLastAvailableUserPage,
+  } = useAvailableMembers(entities.credential, entities.opportunityId, communityId, undefined, 3);
+
+  const handleLoadMore = onLoadMore;
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -121,11 +127,13 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
         {
           handleAssignAdmin,
           handleRemoveAdmin,
+          handleLoadMore,
         },
         {
           addingAdmin,
           removingAdmin,
           loading: loading,
+          isLastAvailableUserPage,
         }
       )}
     </>

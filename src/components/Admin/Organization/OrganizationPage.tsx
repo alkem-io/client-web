@@ -153,7 +153,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
     }
   };
 
-  if (loading) return <Loading text={t('components.loading.message', { bloackName: t('common.organization') })} />;
+  if (loading) return <Loading text={t('components.loading.message', { blockName: t('common.organization') })} />;
 
   return <OrganizationForm organization={organization} onSave={handleSubmit} editMode={mode} title={title} />;
 };
