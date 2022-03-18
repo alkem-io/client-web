@@ -1,5 +1,7 @@
 import { ApolloError } from '@apollo/client';
+import Box from '@mui/material/Box';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AspectCardFragment } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import AspectsView from '../aspect/AspectsView/AspectsView';
@@ -29,6 +31,7 @@ export interface ContributeViewProps
   extends ViewProps<ContributeViewEntities, ContributeViewActions, ContributeViewState, ContributeViewOptions> {}
 
 const ContributeView: FC<ContributeViewProps> = ({ entities, options, state }) => {
+  const { t } = useTranslation();
   const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
   const { context } = entities;
@@ -38,13 +41,21 @@ const ContributeView: FC<ContributeViewProps> = ({ entities, options, state }) =
   const aspects = entities?.aspects;
 
   return (
-    <AspectsView
-      contextId={contextId}
-      aspects={aspects}
-      aspectsLoading={loading}
-      canReadAspects={canReadAspects}
-      canCreateAspects={canCreateAspects}
-    />
+    <>
+      <Box paddingBottom={2} display="flex" justifyContent="center">
+        {t('pages.hub.sections.contribute.description')}
+      </Box>
+      <Box paddingBottom={2} display="flex" justifyContent="center">
+        {t('pages.hub.sections.contribute.description2')}
+      </Box>
+      <AspectsView
+        contextId={contextId}
+        aspects={aspects}
+        aspectsLoading={loading}
+        canReadAspects={canReadAspects}
+        canCreateAspects={canCreateAspects}
+      />
+    </>
   );
 };
 
