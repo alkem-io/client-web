@@ -44,6 +44,8 @@ export const OpportunityAdminAuthorizationPage: FC<OpportunityAuthorizationPageP
             executor={entities.currentMember}
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
+            onLoadMore={actions.handleLoadMore}
+            lastMembersPage={state.isLastAvailableUserPage}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
           />

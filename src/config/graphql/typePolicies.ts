@@ -43,7 +43,7 @@ export const typePolicies: TypedTypePolicies = {
   },
   Query: {
     fields: {
-      users2: relayStylePagination(),
+      usersPaginated: relayStylePagination(),
     },
   },
 };
