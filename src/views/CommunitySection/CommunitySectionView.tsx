@@ -2,12 +2,11 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab/Tab';
 import makeStyles from '@mui/styles/makeStyles';
-import { ReactComponent as PeopleIcon } from 'bootstrap-icons/icons/people.svg';
+import PeopleOutline from '@mui/icons-material/PeopleOutline';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useResolvedPath } from 'react-router-dom';
 import Button from '../../components/core/Button';
-import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
@@ -91,7 +90,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
   ].filter(x => x.enabled);
 
   return (
-    <Section avatar={<Icon component={PeopleIcon} color="primary" size="xl" />} hideDetails>
+    <Section avatar={<PeopleOutline color="primary" sx={{ fontSize: 120 }} />} hideDetails>
       <SectionHeader text={title} />
       <SubHeader text={subTitle} />
       <Body>

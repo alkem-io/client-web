@@ -1,10 +1,9 @@
 import { FormControl, InputLabel, List, ListItem, ListItemIcon, ListItemText, OutlinedInput } from '@mui/material';
-import { ReactComponent as Trash } from 'bootstrap-icons/icons/trash.svg';
+import Delete from '@mui/icons-material/Delete';
 import React, { FC, ReactElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import Button from '../core/Button';
-import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
 import RemoveModal from '../core/RemoveModal';
 
@@ -109,7 +108,7 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
             icon={
               onDelete && (
                 <IconButton onClick={e => openModal(e, item)} size="large">
-                  <Icon component={Trash} color="negative" size={'sm'} />
+                  <Delete color="error" fontSize="large" />
                 </IconButton>
               )
             }
