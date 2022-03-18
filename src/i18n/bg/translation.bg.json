@@ -5,8 +5,6 @@
   "buttons": {
     "learn-more": "Научете повече",
     "apply": "Кандидатствай",
-    "apply-not-signed": "Впиши се, за да кандидатстваш",
-    "apply-pending": "Заявката се разглежда",
     "explore": "Разгледай",
     "ok": "Ок",
     "create": "Създай",
@@ -300,9 +298,11 @@
       "user-not-found": "Потребителят не е намерен!"
     },
     "application-button": {
-      "dialog-join-parent": {
+      "apply-not-signed": "Впиши се, за да кандидатстваш",
+      "apply-pending": "Заявката се разглежда",
+      "dialog-apply-parent": {
         "title": "Искаш да се присъединиш към родителския хъб?",
-        "body": "За да се присъединиш към <strong title='Challenge name'>'{{challengeName}}'</strong> трябва да първо да се включиш в  <strong title='Hub name'>'{{hubName}}'</strong> хъба. PМоля, добави предизвикателството, към което искаш да се присъединиш към формата за кандидатстване в хъба."
+        "body": "За да се присъединиш към <strong title='Challenge name'>'{{challengeName}}'</strong> трябва да първо да се включиш в  <strong title='Hub name'>'{{hubName}}'</strong> хъба. Моля, добави предизвикателството, към което искаш да се присъединиш към формата за кандидатстване в хъба."
       },
       "dialog-parent-app-pending": {
         "title": "Родителското заявление се разглежда!",
