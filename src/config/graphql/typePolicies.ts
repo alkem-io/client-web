@@ -1,3 +1,4 @@
+import { relayStylePagination } from '@apollo/client/utilities';
 import { TypedTypePolicies } from '../../models/apollo-helpers';
 
 export const typePolicies: TypedTypePolicies = {
@@ -41,6 +42,8 @@ export const typePolicies: TypedTypePolicies = {
     },
   },
   Query: {
-    fields: {},
+    fields: {
+      usersPaginated: relayStylePagination(),
+    },
   },
 };

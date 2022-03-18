@@ -51,17 +51,7 @@ interface ChallengeContextViewProps
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
   const { canReadAspects, canCreateAspects } = options;
   const { loading } = state;
-  const {
-    context,
-    hubId = '',
-    hubNameId = '',
-    hubDisplayName = '',
-    challengeId,
-    challengeNameId,
-    challengeDisplayName = '',
-    challengeTagset,
-    challengeLifecycle,
-  } = entities;
+  const { context, challengeDisplayName = '', challengeTagset, challengeLifecycle } = entities;
   const {
     tagline = '',
     impact = '',
@@ -72,7 +62,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
     id = '',
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
-  const aspects = entities?.aspects;
   const references = entities?.references;
 
   return (
@@ -81,16 +70,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         <Box display="flex">
           <LifecycleState lifecycle={challengeLifecycle} />
           <SectionSpacer />
-          <ApplicationButtonContainer
-            entities={{
-              hubId: hubId,
-              hubNameId: hubNameId,
-              hubName: hubDisplayName,
-              challengeId,
-              challengeName: challengeDisplayName,
-              challengeNameId,
-            }}
-          >
+          <ApplicationButtonContainer>
             {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
           </ApplicationButtonContainer>
         </Box>
@@ -105,7 +85,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
       contextId={id}
       keywords={challengeTagset?.tags}
       references={references}
-      aspects={aspects}
       aspectsLoading={loading}
       canReadAspects={canReadAspects}
       canCreateAspects={canCreateAspects}

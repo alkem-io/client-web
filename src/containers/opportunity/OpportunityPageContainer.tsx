@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
-import { useOpportunityPageQuery, useOpportunityTemplateQuery } from '../../hooks/generated/graphql';
+import { useOpportunityPageQuery } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
@@ -30,7 +30,6 @@ export interface OpportunityContainerEntities {
     removeRelations: boolean;
     isMemberOfOpportunity: boolean;
     isNoRelations: boolean;
-    isAspectAddAllowed: boolean;
     isAuthenticated: boolean;
     communityReadAccess: boolean;
   };
@@ -114,8 +113,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const { references = [], aspects = [] } = context ?? {};
 
-  const { data: config, loading: loadingTemplate, error: errorTemplate } = useOpportunityTemplateQuery();
-  const aspectsTypes = config?.configuration.template.opportunities[0].aspects ?? [];
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
   const meme = references?.find(x => x.name === 'meme') as Reference;
@@ -127,7 +124,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const isNoRelations = !(incoming && incoming.length > 0) && !(outgoing && outgoing.length > 0);
 
   const existingAspectNames = aspects?.map(a => replaceAll('_', ' ', a.displayName)) || [];
-  const isAspectAddAllowed = permissions.editAspect && aspectsTypes && aspectsTypes.length > existingAspectNames.length;
   // const existingActorGroupTypes = actorGroups?.map(ag => ag.name);
   const availableActorGroupNames = []; // actorGroupTypes?.filter(ag => !existingActorGroupTypes?.includes(ag)) || [];
 
@@ -193,7 +189,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
             ...permissions,
             isMemberOfOpportunity,
             isNoRelations,
-            isAspectAddAllowed,
             isAuthenticated,
           },
           hideMeme,
@@ -210,8 +205,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           aspects,
         },
         {
-          loading: loadingOpportunity || loadingTemplate, // || loadingDiscussions,
-          error: errorOpportunity || errorTemplate,
+          loading: loadingOpportunity, // || loadingDiscussions,
+          error: errorOpportunity,
         },
         {
           onMemeError: () => setHideMeme(true),

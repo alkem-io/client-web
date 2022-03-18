@@ -46,6 +46,28 @@ export type AgentFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   verifiedCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AgentBeginVerifiedCredentialOfferOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
+)[];
+export type AgentBeginVerifiedCredentialOfferOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AgentBeginVerifiedCredentialRequestOutputKeySpecifier = (
+  | 'expiresOn'
+  | 'interactionId'
+  | 'jwt'
+  | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
+)[];
+export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
+  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
+  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
+  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ApplicationKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -153,7 +175,8 @@ export type AuthorizationKeySpecifier = (
   | 'credentialRules'
   | 'id'
   | 'myPrivileges'
-  | 'verifiedCredentialRules'
+  | 'privilegeRules'
+  | 'verifiedCredentialClaimRules'
   | AuthorizationKeySpecifier
 )[];
 export type AuthorizationFieldPolicy = {
@@ -161,40 +184,41 @@ export type AuthorizationFieldPolicy = {
   credentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
-  verifiedCredentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  privilegeRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  verifiedCredentialClaimRules?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRuleCredentialKeySpecifier = (
   | 'grantedPrivileges'
+  | 'inheritable'
   | 'resourceID'
   | 'type'
   | AuthorizationPolicyRuleCredentialKeySpecifier
 )[];
 export type AuthorizationPolicyRuleCredentialFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  inheritable?: FieldPolicy<any> | FieldReadFunction<any>;
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type BeginCredentialOfferOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
-  | 'jwt'
-  | BeginCredentialOfferOutputKeySpecifier
+export type AuthorizationPolicyRulePrivilegeKeySpecifier = (
+  | 'grantedPrivileges'
+  | 'sourcePrivilege'
+  | AuthorizationPolicyRulePrivilegeKeySpecifier
 )[];
-export type BeginCredentialOfferOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
-  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+export type AuthorizationPolicyRulePrivilegeFieldPolicy = {
+  grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourcePrivilege?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type BeginCredentialRequestOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
-  | 'jwt'
-  | BeginCredentialRequestOutputKeySpecifier
+export type AuthorizationPolicyRuleVerifiedCredentialClaimKeySpecifier = (
+  | 'grantedPrivileges'
+  | 'name'
+  | 'value'
+  | AuthorizationPolicyRuleVerifiedCredentialClaimKeySpecifier
 )[];
-export type BeginCredentialRequestOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
-  jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+export type AuthorizationPolicyRuleVerifiedCredentialClaimFieldPolicy = {
+  grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CanvasKeySpecifier = (
   | 'authorization'
@@ -550,6 +574,11 @@ export type HubFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type HubAspectTemplateKeySpecifier = ('description' | 'type' | HubAspectTemplateKeySpecifier)[];
+export type HubAspectTemplateFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type HubTemplateKeySpecifier = ('aspectTemplates' | HubTemplateKeySpecifier)[];
 export type HubTemplateFieldPolicy = {
   aspectTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -649,6 +678,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationEnsureAccessToCommunications'
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
+  | 'applyForCommunityMembership'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
@@ -662,12 +692,11 @@ export type MutationKeySpecifier = (
   | 'authorizationPolicyResetOnHub'
   | 'authorizationPolicyResetOnOrganization'
   | 'authorizationPolicyResetOnUser'
-  | 'beginAlkemioUserCredentialOfferInteraction'
-  | 'beginCommunityMemberCredentialOfferInteraction'
-  | 'beginCredentialRequestInteraction'
+  | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
+  | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
+  | 'beginVerifiedCredentialRequestInteraction'
   | 'createActor'
   | 'createActorGroup'
-  | 'createApplication'
   | 'createAspectOnContext'
   | 'createCanvasOnContext'
   | 'createChallenge'
@@ -708,7 +737,7 @@ export type MutationKeySpecifier = (
   | 'eventOnOrganizationVerification'
   | 'eventOnProject'
   | 'grantCredentialToUser'
-  | 'grantStateModificationOnChallenge'
+  | 'joinCommunity'
   | 'messageUser'
   | 'removeComment'
   | 'removeMessageFromDiscussion'
@@ -750,6 +779,7 @@ export type MutationFieldPolicy = {
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -763,12 +793,11 @@ export type MutationFieldPolicy = {
   authorizationPolicyResetOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   authorizationPolicyResetOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginAlkemioUserCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginCommunityMemberCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
-  beginCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
-  createApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   createAspectOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -809,7 +838,7 @@ export type MutationFieldPolicy = {
   eventOnOrganizationVerification?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnProject?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
-  grantStateModificationOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeComment?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -888,7 +917,6 @@ export type OpportunityFieldPolicy = {
 export type OpportunityTemplateKeySpecifier = (
   | 'actorGroups'
   | 'applications'
-  | 'aspects'
   | 'name'
   | 'relations'
   | OpportunityTemplateKeySpecifier
@@ -896,7 +924,6 @@ export type OpportunityTemplateKeySpecifier = (
 export type OpportunityTemplateFieldPolicy = {
   actorGroups?: FieldPolicy<any> | FieldReadFunction<any>;
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -969,6 +996,60 @@ export type OryConfigFieldPolicy = {
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
   kratosPublicBaseURL?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedUserKeySpecifier = (
+  | 'accountUpn'
+  | 'agent'
+  | 'authorization'
+  | 'city'
+  | 'communityRooms'
+  | 'country'
+  | 'directRooms'
+  | 'displayName'
+  | 'email'
+  | 'firstName'
+  | 'gender'
+  | 'id'
+  | 'lastName'
+  | 'nameID'
+  | 'phone'
+  | 'preferences'
+  | 'profile'
+  | PaginatedUserKeySpecifier
+)[];
+export type PaginatedUserFieldPolicy = {
+  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
+  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  gender?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  phone?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedUserEdgeKeySpecifier = ('node' | PaginatedUserEdgeKeySpecifier)[];
+export type PaginatedUserEdgeFieldPolicy = {
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedUserPageInfoKeySpecifier = (
+  | 'endCursor'
+  | 'hasNextPage'
+  | 'startCursor'
+  | PaginatedUserPageInfoKeySpecifier
+)[];
+export type PaginatedUserPageInfoFieldPolicy = {
+  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PlatformKeySpecifier = (
   | 'about'
   | 'featureFlags'
@@ -988,9 +1069,10 @@ export type PlatformFieldPolicy = {
   support?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PlatformHubTemplateKeySpecifier = ('applications' | 'name' | PlatformHubTemplateKeySpecifier)[];
+export type PlatformHubTemplateKeySpecifier = ('applications' | 'aspects' | 'name' | PlatformHubTemplateKeySpecifier)[];
 export type PlatformHubTemplateFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  aspects?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PreferenceKeySpecifier = ('authorization' | 'definition' | 'id' | 'value' | PreferenceKeySpecifier)[];
@@ -1058,7 +1140,7 @@ export type QueryKeySpecifier = (
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
   | 'configuration'
-  | 'getSupportedCredentialMetadata'
+  | 'getSupportedVerifiedCredentialMetadata'
   | 'hub'
   | 'hubs'
   | 'me'
@@ -1073,6 +1155,7 @@ export type QueryKeySpecifier = (
   | 'userAuthorizationPrivileges'
   | 'users'
   | 'usersById'
+  | 'usersPaginated'
   | 'usersWithAuthorizationCredential'
   | QueryKeySpecifier
 )[];
@@ -1081,7 +1164,7 @@ export type QueryFieldPolicy = {
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   configuration?: FieldPolicy<any> | FieldReadFunction<any>;
-  getSupportedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
+  getSupportedVerifiedCredentialMetadata?: FieldPolicy<any> | FieldReadFunction<any>;
   hub?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1096,6 +1179,7 @@ export type QueryFieldPolicy = {
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
   usersById?: FieldPolicy<any> | FieldReadFunction<any>;
+  usersPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   usersWithAuthorizationCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QuestionKeySpecifier = ('id' | 'name' | 'value' | QuestionKeySpecifier)[];
@@ -1136,6 +1220,11 @@ export type RelationFieldPolicy = {
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RelayStylePaginatedUserKeySpecifier = ('edges' | 'pageInfo' | RelayStylePaginatedUserKeySpecifier)[];
+export type RelayStylePaginatedUserFieldPolicy = {
+  edges?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SearchResultEntryKeySpecifier = ('result' | 'score' | 'terms' | SearchResultEntryKeySpecifier)[];
 export type SearchResultEntryFieldPolicy = {
@@ -1285,7 +1374,7 @@ export type UserTemplateFieldPolicy = {
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VerifiedCredentialKeySpecifier = (
-  | 'claim'
+  | 'claims'
   | 'context'
   | 'expires'
   | 'issued'
@@ -1295,13 +1384,18 @@ export type VerifiedCredentialKeySpecifier = (
   | VerifiedCredentialKeySpecifier
 )[];
 export type VerifiedCredentialFieldPolicy = {
-  claim?: FieldPolicy<any> | FieldReadFunction<any>;
+  claims?: FieldPolicy<any> | FieldReadFunction<any>;
   context?: FieldPolicy<any> | FieldReadFunction<any>;
   expires?: FieldPolicy<any> | FieldReadFunction<any>;
   issued?: FieldPolicy<any> | FieldReadFunction<any>;
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VerifiedCredentialClaimKeySpecifier = ('name' | 'value' | VerifiedCredentialClaimKeySpecifier)[];
+export type VerifiedCredentialClaimFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VisualKeySpecifier = (
   | 'allowedTypes'
@@ -1340,6 +1434,20 @@ export type StrictTypedTypePolicies = {
   Agent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AgentKeySpecifier | (() => undefined | AgentKeySpecifier);
     fields?: AgentFieldPolicy;
+  };
+  AgentBeginVerifiedCredentialOfferOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
+      | (() => undefined | AgentBeginVerifiedCredentialOfferOutputKeySpecifier);
+    fields?: AgentBeginVerifiedCredentialOfferOutputFieldPolicy;
+  };
+  AgentBeginVerifiedCredentialRequestOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
+      | (() => undefined | AgentBeginVerifiedCredentialRequestOutputKeySpecifier);
+    fields?: AgentBeginVerifiedCredentialRequestOutputFieldPolicy;
   };
   Application?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationKeySpecifier | (() => undefined | ApplicationKeySpecifier);
@@ -1383,19 +1491,19 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | AuthorizationPolicyRuleCredentialKeySpecifier);
     fields?: AuthorizationPolicyRuleCredentialFieldPolicy;
   };
-  BeginCredentialOfferOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  AuthorizationPolicyRulePrivilege?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | BeginCredentialOfferOutputKeySpecifier
-      | (() => undefined | BeginCredentialOfferOutputKeySpecifier);
-    fields?: BeginCredentialOfferOutputFieldPolicy;
+      | AuthorizationPolicyRulePrivilegeKeySpecifier
+      | (() => undefined | AuthorizationPolicyRulePrivilegeKeySpecifier);
+    fields?: AuthorizationPolicyRulePrivilegeFieldPolicy;
   };
-  BeginCredentialRequestOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  AuthorizationPolicyRuleVerifiedCredentialClaim?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | BeginCredentialRequestOutputKeySpecifier
-      | (() => undefined | BeginCredentialRequestOutputKeySpecifier);
-    fields?: BeginCredentialRequestOutputFieldPolicy;
+      | AuthorizationPolicyRuleVerifiedCredentialClaimKeySpecifier
+      | (() => undefined | AuthorizationPolicyRuleVerifiedCredentialClaimKeySpecifier);
+    fields?: AuthorizationPolicyRuleVerifiedCredentialClaimFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
@@ -1519,6 +1627,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | HubKeySpecifier | (() => undefined | HubKeySpecifier);
     fields?: HubFieldPolicy;
   };
+  HubAspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
+    fields?: HubAspectTemplateFieldPolicy;
+  };
   HubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | HubTemplateKeySpecifier | (() => undefined | HubTemplateKeySpecifier);
     fields?: HubTemplateFieldPolicy;
@@ -1603,6 +1715,18 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | OryConfigKeySpecifier | (() => undefined | OryConfigKeySpecifier);
     fields?: OryConfigFieldPolicy;
   };
+  PaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedUserKeySpecifier | (() => undefined | PaginatedUserKeySpecifier);
+    fields?: PaginatedUserFieldPolicy;
+  };
+  PaginatedUserEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedUserEdgeKeySpecifier | (() => undefined | PaginatedUserEdgeKeySpecifier);
+    fields?: PaginatedUserEdgeFieldPolicy;
+  };
+  PaginatedUserPageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedUserPageInfoKeySpecifier | (() => undefined | PaginatedUserPageInfoKeySpecifier);
+    fields?: PaginatedUserPageInfoFieldPolicy;
+  };
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
     fields?: PlatformFieldPolicy;
@@ -1646,6 +1770,10 @@ export type StrictTypedTypePolicies = {
   Relation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | RelationKeySpecifier | (() => undefined | RelationKeySpecifier);
     fields?: RelationFieldPolicy;
+  };
+  RelayStylePaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RelayStylePaginatedUserKeySpecifier | (() => undefined | RelayStylePaginatedUserKeySpecifier);
+    fields?: RelayStylePaginatedUserFieldPolicy;
   };
   SearchResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultEntryKeySpecifier | (() => undefined | SearchResultEntryKeySpecifier);
@@ -1702,6 +1830,10 @@ export type StrictTypedTypePolicies = {
   VerifiedCredential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VerifiedCredentialKeySpecifier | (() => undefined | VerifiedCredentialKeySpecifier);
     fields?: VerifiedCredentialFieldPolicy;
+  };
+  VerifiedCredentialClaim?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VerifiedCredentialClaimKeySpecifier | (() => undefined | VerifiedCredentialClaimKeySpecifier);
+    fields?: VerifiedCredentialClaimFieldPolicy;
   };
   Visual?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VisualKeySpecifier | (() => undefined | VisualKeySpecifier);

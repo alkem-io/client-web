@@ -60,7 +60,7 @@ export const CredentialsView: FC<CredentialsViewProps> = ({ userID, loading, ...
                 >
                   <CredentialCard
                     entities={{
-                      claim: JSON.parse(c.claim),
+                      claims: c.claims || [],
                       context: JSON.parse(c.context),
                       issued: c.issued,
                       expires: c.expires,

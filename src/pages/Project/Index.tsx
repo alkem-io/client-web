@@ -1,7 +1,6 @@
-import { ReactComponent as CardListIcon } from 'bootstrap-icons/icons/card-list.svg';
+import ListAlt from '@mui/icons-material/ListAlt';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Tag from '../../components/core/Tag';
 import { useUpdateNavigation } from '../../hooks';
@@ -50,7 +49,7 @@ const ProjectIndex: FC<ProjectPageProps> = ({ paths, project }): React.ReactElem
           <Tag text={lifecycle?.state} className={clsx('position-absolute', styles.tag)} color="neutralMedium" />
         )}
       </Section>
-      <Section hideDetails avatar={<Icon component={CardListIcon} color="primary" size="xl" />}>
+      <Section hideDetails avatar={<ListAlt color="primary" sx={{ fontSize: 120 }} />}>
         <SectionHeader text={'Solution details'} />
         <SubHeader text={'How we envision the first steps'} />
         <Body />

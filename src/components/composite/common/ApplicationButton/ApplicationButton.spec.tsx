@@ -1,13 +1,35 @@
+import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { fireEvent, render, screen } from '../../../../utils/test/test-utils';
 import { ApplicationButton } from './ApplicationButton';
+import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH } from '../../../../models/constants';
 
-describe.skip('ApplicationButton component', () => {
-  test('render application button - not authenticated', () => {
+describe('ApplicationButton component', () => {
+  test('buttons is loading', () => {
     // arrange
     const props = {
+      loading: true,
+      onJoin: () => void 0,
+    };
+    render(
+      <MemoryRouter>
+        <ApplicationButton {...props} />
+      </MemoryRouter>
+    );
+    // act
+
+    // assert
+    const button = screen.getByRole('button') as HTMLButtonElement;
+    expect(button).toBeInTheDocument();
+    expect(button).toBeDisabled();
+  });
+
+  test('not authenticated', () => {
+    // arrange
+    const props = {
+      loading: false,
       isAuthenticated: false,
-      isMember: false,
+      onJoin: () => void 0,
     };
     render(
       <MemoryRouter>
@@ -17,111 +39,124 @@ describe.skip('ApplicationButton component', () => {
     // act
 
     // assert
-    const button = screen.getByText('Sign in to apply');
+    const button = screen.getByText('Sign in to apply') as HTMLAnchorElement;
 
     expect(button).toBeInTheDocument();
+    expect(button.href).toContain(AUTH_LOGIN_PATH);
+    expect(button).toBeEnabled();
   });
 
-  test('render application button - authenticated', () => {
+  test('is member', () => {
     // arrange
     const props = {
+      loading: false,
       isAuthenticated: true,
-      isMember: false,
-      applyUrl: '/apply',
-    };
-
-    render(
-      <MemoryRouter>
-        <ApplicationButton {...props} />
-      </MemoryRouter>
-    );
-    // act
-
-    // assert
-    const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent('Apply');
-    expect(button).toHaveAttribute('href');
-    expect(button['href']).toBe('http://localhost/apply');
-  });
-
-  test('render application button - disabled, status - new', () => {
-    // arrange
-    const props = {
-      isAuthenticated: true,
-      isMember: false,
-      applicationState: 'new',
-      applyUrl: '/apply',
-    };
-
-    render(
-      <MemoryRouter>
-        <ApplicationButton {...props} />
-      </MemoryRouter>
-    );
-    // act
-
-    // assert
-    const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
-    expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('pending');
-  });
-
-  test('render application button - disabled, status - new, not parent member', () => {
-    // arrange
-    const props = {
-      isAuthenticated: true,
-      isMember: false,
-      applicationState: 'new',
-      parentApplicationState: 'new',
-      applyUrl: '/apply',
-    };
-
-    render(
-      <MemoryRouter>
-        <ApplicationButton {...props} />
-      </MemoryRouter>
-    );
-    // act
-
-    // assert
-    const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
-    expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('Application pending');
-  });
-
-  test('render application button - disabled, status - rejected', () => {
-    // arrange
-    const props = {
-      isAuthenticated: true,
-      isMember: false,
-      applicationState: 'rejected',
-      applyUrl: '/apply',
-    };
-
-    render(
-      <MemoryRouter>
-        <ApplicationButton {...props} />
-      </MemoryRouter>
-    );
-    // act
-
-    // assert
-    const button = screen.getByRole('button');
-    expect(button).toBeInTheDocument();
-    expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('Application pending');
-  });
-
-  test('render application button - disabled, member', () => {
-    // arrange
-    const props = {
-      isAuthenticated: true,
+      onJoin: () => void 0,
       isMember: true,
-      applicationState: 'rejected',
-      applyUrl: '/apply',
+    };
+
+    render(
+      <MemoryRouter>
+        <ApplicationButton {...props} />
+      </MemoryRouter>
+    );
+    // act
+
+    // assert
+    const button = screen.getByRole('button') as HTMLButtonElement;
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent('Member');
+    expect(button).toBeDisabled();
+  });
+
+  describe('has pending application', () => {
+    [APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED].forEach(x =>
+      test(x, () => {
+        // arrange
+        const props = {
+          loading: false,
+          isAuthenticated: true,
+          onJoin: () => void 0,
+          isMember: false,
+          applicationState: x,
+        };
+
+        render(
+          <MemoryRouter>
+            <ApplicationButton {...props} />
+          </MemoryRouter>
+        );
+        // act
+
+        // assert
+        const button = screen.getByRole('button') as HTMLButtonElement;
+        expect(button).toBeInTheDocument();
+        expect(button).toHaveTextContent('Application pending');
+        expect(button).toBeDisabled();
+      })
+    );
+  });
+
+  test('can join community', () => {
+    // arrange
+    const props = {
+      loading: false,
+      isAuthenticated: true,
+      onJoin: () => void 0,
+      isMember: false,
+      canJoinCommunity: true,
+    };
+
+    render(
+      <MemoryRouter>
+        <ApplicationButton {...props} />
+      </MemoryRouter>
+    );
+    // act
+
+    // assert
+    const button = screen.getByRole('button');
+    expect(button).toBeInTheDocument();
+    expect(button).toBeEnabled();
+    expect(button).toHaveTextContent('Join');
+  });
+
+  test('can apply to community', () => {
+    // arrange
+    const props = {
+      loading: false,
+      isAuthenticated: true,
+      onJoin: () => void 0,
+      isMember: false,
+      canApplyToCommunity: true,
+      applyUrl: 'hub1/apply',
+    };
+
+    render(
+      <MemoryRouter>
+        <ApplicationButton {...props} />
+      </MemoryRouter>
+    );
+    // act
+
+    // assert
+    const button = screen.getByRole('link');
+    expect(button).toBeInTheDocument();
+    expect(button).toBeEnabled();
+    expect(button).toHaveTextContent('Apply');
+    expect(button['href']).toContain('hub1/apply');
+  });
+
+  test('isParentMember & CANT apply & CANT join', () => {
+    // arrange
+    const props = {
+      loading: false,
+      isAuthenticated: true,
+      onJoin: () => void 0,
+      isMember: false,
+      isParentMember: true,
+      canJoinCommunity: false,
+      canApplyToCommunity: false,
     };
 
     render(
@@ -135,17 +170,18 @@ describe.skip('ApplicationButton component', () => {
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
     expect(button).toBeDisabled();
-    expect(button).toHaveTextContent('Member');
+    expect(button).toHaveTextContent('Applications not enabled');
   });
 
-  test('render application button - dialog opened', async () => {
+  test('parent has pending application', () => {
     // arrange
     const props = {
+      loading: false,
       isAuthenticated: true,
+      onJoin: () => void 0,
       isMember: false,
-      isNotParentMember: true,
-      applyUrl: '/apply',
-      parentApplyUrl: '/parent/apply',
+      isParentMember: false,
+      parentApplicationState: APPLICATION_STATE_NEW,
     };
 
     render(
@@ -158,31 +194,21 @@ describe.skip('ApplicationButton component', () => {
     // assert
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent('Apply');
-
-    fireEvent.click(button);
-
-    await screen.findByRole('dialog');
-
-    const dialog = screen.getByRole('dialog');
-    expect(dialog).toBeInTheDocument();
-    const dialogButton = screen.getAllByRole('button')[0];
-    expect(dialogButton).toHaveTextContent('Apply');
-    expect(dialogButton).toHaveAttribute('href');
-    expect(dialogButton['href']).toBe('http://localhost/parent/apply');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Parent application pending');
   });
 
-  test('render application button - dialog opened - pending parent application', async () => {
+  test('can join parent', () => {
     // arrange
     const props = {
+      loading: false,
       isAuthenticated: true,
+      onJoin: () => void 0,
       isMember: false,
-      isNotParentMember: true,
-      applyUrl: '/apply',
-      parentApplyUrl: '/parent/apply',
-      parentApplicationState: 'new',
-      challengeName: 'test challenge',
-      hubName: 'test hub',
+      isParentMember: false,
+      canJoinCommunity: false,
+      canApplyToCommunity: false,
+      canJoinParentCommunity: true,
     };
 
     render(
@@ -195,17 +221,131 @@ describe.skip('ApplicationButton component', () => {
     // assert
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent('Apply');
+    expect(button).toBeEnabled();
+    expect(button).toHaveTextContent('Join parent');
+  });
 
-    fireEvent.click(button);
+  test('can apply to parent', () => {
+    // arrange
+    const props = {
+      loading: false,
+      isAuthenticated: true,
+      onJoin: () => void 0,
+      isMember: false,
+      isParentMember: false,
+      canJoinCommunity: false,
+      canApplyToCommunity: false,
+      canJoinParentCommunity: false,
+      canApplyToParentCommunity: true,
+    };
 
-    await screen.findByRole('dialog');
+    render(
+      <MemoryRouter>
+        <ApplicationButton {...props} />
+      </MemoryRouter>
+    );
+    // act
 
-    const dialog = screen.getByRole('dialog');
-    expect(dialog).toBeInTheDocument();
-    const dialogButton = screen.getAllByRole('button')[1];
-    expect(dialogButton).toHaveTextContent('Apply');
-    expect(dialogButton).toHaveAttribute('href');
-    expect(dialogButton['href']).toBe('http://localhost/apply');
+    // assert
+    const button = screen.getByRole('button');
+    expect(button).toBeInTheDocument();
+    expect(button).toBeEnabled();
+    expect(button).toHaveTextContent('Apply to parent');
+  });
+
+  test('cant do anything - default state', () => {
+    // arrange
+    const props = {
+      loading: false,
+      isAuthenticated: true,
+      onJoin: () => void 0,
+      isMember: false,
+      isParentMember: false,
+      canJoinCommunity: false,
+      canApplyToCommunity: false,
+      canJoinParentCommunity: false,
+      canApplyToParentCommunity: false,
+    };
+
+    render(
+      <MemoryRouter>
+        <ApplicationButton {...props} />
+      </MemoryRouter>
+    );
+    // act
+
+    // assert
+    const button = screen.getByRole('button');
+    expect(button).toBeInTheDocument();
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Applications not enabled');
+  });
+
+  describe('join dialog', () => {
+    test('is opening', async () => {
+      // arrange
+      const props = {
+        loading: false,
+        isAuthenticated: true,
+        onJoin: () => void 0,
+        isMember: false,
+        canJoinCommunity: true,
+      };
+
+      render(
+        <MemoryRouter>
+          <ApplicationButton {...props} />
+        </MemoryRouter>
+      );
+      // act
+      const button = screen.getByText('Join');
+      fireEvent.click(button);
+
+      // assert
+      await screen.findByRole('dialog');
+      const dialog = screen.getByRole('dialog');
+
+      expect(dialog).toBeInTheDocument();
+    });
+  });
+
+  describe("'apply to parent' dialog", () => {
+    test('parent type & is opening', async () => {
+      // arrange
+      const props = {
+        loading: false,
+        isAuthenticated: true,
+        onJoin: () => void 0,
+        isMember: false,
+        isParentMember: false,
+        canJoinCommunity: false,
+        canApplyToCommunity: false,
+        canJoinParentCommunity: false,
+        canApplyToParentCommunity: true,
+        parentApplyUrl: '/parent/apply',
+      };
+
+      render(
+        <MemoryRouter>
+          <ApplicationButton {...props} />
+        </MemoryRouter>
+      );
+      // act
+      const button = screen.getByText('Apply to parent');
+      fireEvent.click(button);
+
+      // assert
+      await screen.findByRole('dialog');
+      const dialog = screen.getByRole('dialog');
+
+      expect(dialog).toBeInTheDocument();
+
+      const dialogButton = screen.getByText('Apply');
+      expect(dialogButton).toHaveAttribute('href');
+      expect(dialogButton['href']).toContain('/parent/apply');
+
+      const title = screen.getByText('Want to join the parent Hub?');
+      expect(title).toBeInTheDocument();
+    });
   });
 });

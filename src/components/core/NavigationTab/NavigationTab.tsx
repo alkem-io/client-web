@@ -13,9 +13,18 @@ const StyledTab = styled(Tab)(({ theme }) => ({
   },
 })) as typeof Tab;
 
-const NavigationTab = forwardRef<HTMLAnchorElement, NagivationTabProps>(({ to, value, icon, label }, ref) => {
+const NavigationTab = forwardRef<HTMLAnchorElement, NagivationTabProps>(({ to, value, icon, label, disabled }, ref) => {
   return (
-    <StyledTab ref={ref} iconPosition="start" component={RouterLink} to={to} value={value} icon={icon} label={label} />
+    <StyledTab
+      ref={ref}
+      iconPosition="start"
+      component={RouterLink}
+      to={to}
+      value={value}
+      icon={icon}
+      label={label}
+      disabled={disabled}
+    />
   );
 });
 

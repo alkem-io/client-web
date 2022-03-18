@@ -42,6 +42,7 @@ export interface OrganizationMembersActions {
   handleRemoveAdmin: (member: Member) => void;
   handleAssignOwner: (member: UserDisplayNameFragment) => void;
   handleRemoveOwner: (member: Member) => void;
+  handleLoadMore: () => void;
 }
 
 export interface OrganizationMembersState {
@@ -52,6 +53,7 @@ export interface OrganizationMembersState {
   addingOwner: boolean;
   removingOwner: boolean;
   loading: boolean;
+  isLastAvailableUserPage: boolean;
 }
 
 export interface OrganizationMembersEntities {
@@ -212,7 +214,11 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     available: availableMembers,
     current: allMembers,
     loading,
-  } = useAvailableMembers(entities.credential, entities.organizationId, undefined, entities.parentMembers);
+    onLoadMore,
+    isLastAvailableUserPage,
+  } = useAvailableMembers(entities.credential, entities.organizationId, undefined, entities.parentMembers, 3);
+
+  const handleLoadMore = onLoadMore;
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -236,6 +242,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
           handleRemoveAdmin,
           handleAssignOwner,
           handleRemoveOwner,
+          handleLoadMore,
         },
         {
           addingUser,
@@ -245,6 +252,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
           addingOwner,
           removingOwner,
           loading: loading,
+          isLastAvailableUserPage,
         }
       )}
     </>

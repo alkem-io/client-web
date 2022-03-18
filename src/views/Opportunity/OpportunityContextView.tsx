@@ -58,7 +58,6 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
     id = '',
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
-  const aspects = entities?.aspects;
   const references = entities?.references;
 
   return (
@@ -78,7 +77,6 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
       contextId={id}
       keywords={opportunityTagset?.tags}
       references={references}
-      aspects={aspects}
       aspectsLoading={loading}
       canReadAspects={canReadAspects}
       canCreateAspects={canCreateAspects}

@@ -19,6 +19,7 @@ import HubCanvasPage from './HubCanvasPage';
 import HubChallengesPage from '../../pages/Hub/HubChallengesPage';
 import AspectRoute from '../aspect/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
+import HubContributePage from '../../pages/Hub/HubContributePage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
@@ -43,6 +44,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
       >
         <Route index element={<Navigate replace to={'dashboard'} />} />
         <Route path={'dashboard'} element={<HubDashboardPage paths={currentPaths} />} />
+        <Route path={'contribute'} element={<HubContributePage paths={currentPaths} />} />
         <Route path={'context'} element={<HubContextPage paths={currentPaths} />} />
         <Route path={'community'} element={<HubCommunityPage paths={currentPaths} />} />
         <Route

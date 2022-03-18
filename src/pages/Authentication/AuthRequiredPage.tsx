@@ -1,9 +1,8 @@
-import { ReactComponent as CheckCircle } from 'bootstrap-icons/icons/exclamation-circle.svg';
+import ErrorOutline from '@mui/icons-material/ErrorOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Button from '../../components/core/Button';
-import Icon from '../../components/core/Icon';
 import Typography from '../../components/core/Typography';
 import { useQueryParams } from '../../hooks';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
@@ -25,7 +24,7 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
     <AuthenticationLayout>
       <Box textAlign={'center'}>
         <Typography variant={'h2'}>
-          <Icon component={CheckCircle} color={'primary'} size={'xl'} />
+          <ErrorOutline color={'primary'} fontSize={'large'} />
         </Typography>
         <Typography variant={'h2'}>{t('pages.authentication-required.header')}</Typography>
         <Typography variant={'h3'}>{t('pages.authentication-required.subheader')}</Typography>

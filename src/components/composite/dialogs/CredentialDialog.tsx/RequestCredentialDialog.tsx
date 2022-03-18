@@ -11,7 +11,7 @@ import {
 import Dialog from '@mui/material/Dialog';
 import React, { FC, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BeginCredentialRequestOutput, CredentialMetadataOutput } from '../../../../models/graphql-schema';
+import { AgentBeginVerifiedCredentialRequestOutput, CredentialMetadataOutput } from '../../../../models/graphql-schema';
 import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
@@ -28,7 +28,7 @@ interface RequestCredentialDialogProps {
   actions: {
     onCancel: () => void;
     onConfirm?: () => void;
-    onGenerate: (credential: CredentialMetadataOutput) => Promise<BeginCredentialRequestOutput>;
+    onGenerate: (credential: CredentialMetadataOutput) => Promise<AgentBeginVerifiedCredentialRequestOutput>;
   };
   options: {
     show: boolean;
@@ -46,7 +46,7 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
   const containerRef = useRef(null);
   const [loadingToken, setLoadingToken] = useState(false);
   const [selectedCredentialMetadata, setSelectedCredentialMetadata] = useState<CredentialMetadataOutput>();
-  const [token, setToken] = useState<BeginCredentialRequestOutput>();
+  const [token, setToken] = useState<AgentBeginVerifiedCredentialRequestOutput>();
 
   const title = entities.titleId ? t(entities.titleId) : entities.title;
   if (!title) {

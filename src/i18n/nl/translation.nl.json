@@ -5,8 +5,6 @@
   "buttons": {
     "learn-more": "Meer leren",
     "apply": "Schrijf in",
-    "apply-not-signed": "Log in om in te schrijven",
-    "apply-pending": "Uw inschrijving loopt",
     "explore": "Verken",
     "ok": "Ok",
     "create": "Maak aan",
@@ -287,7 +285,9 @@
       "user-not-found": "Gebruiker niet gevonden!"
     },
     "application-button": {
-      "dialog-join-parent": {
+      "apply-not-signed": "Log in om in te schrijven",
+      "apply-pending": "Uw inschrijving loopt",
+      "dialog-apply-parent": {
         "title": "Wilt u lid worden van de bovenliggende Hub?",
         "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet u eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Voeg a.u.b. de Challenge waarvan u lid wilt worden toe in het aanmeldingsformulier van de Hub."
       },
@@ -558,6 +558,9 @@
         "edit": "Pas Challenge aan"
       }
     }
+  },
+  "footer": {
+    "copyright": "© 2022 Stichting Alkemio"
   },
   "pages": {
     "aspect": {
