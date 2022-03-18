@@ -1,14 +1,14 @@
 import { FormControl, FormControlLabel, FormGroup, Grid, Skeleton, Switch } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserPreference, UserPreferenceType } from '../../models/graphql-schema';
+import { Preference, UserPreferenceType } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUserContext } from '../../hooks';
 
 export interface UserNotificationsPageViewEntities {
-  preferences: UserPreference[];
+  preferences: Preference[];
 }
 
 export interface UserNotificationsPageViewState {
@@ -84,7 +84,7 @@ export default UserNotificationsPageView;
 interface NotificationGroupSectionProps {
   headerText: string;
   subHeaderText: string;
-  preferences: UserPreference[];
+  preferences: Preference[];
   loading?: boolean;
   onUpdate: (id: string, type: UserPreferenceType, value: boolean) => void;
 }

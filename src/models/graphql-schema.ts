@@ -22,7 +22,7 @@ export type Scalars = {
   MessageID: string;
   /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
-  /** A uuid identifier. Length 36 charachters. */
+  /** A uuid identifier. Length 36 characters. */
   UUID: string;
   /** A UUID or NameID identifier. */
   UUID_NAMEID: string;
@@ -72,6 +72,26 @@ export type Agent = {
   id: Scalars['UUID'];
   /** The Verfied Credentials for this Agent. */
   verifiedCredentials?: Maybe<Array<VerifiedCredential>>;
+};
+
+export type AgentBeginVerifiedCredentialOfferOutput = {
+  __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential offer. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and the credentials offered */
+  jwt: Scalars['String'];
+};
+
+export type AgentBeginVerifiedCredentialRequestOutput = {
+  __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
+  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
+  expiresOn: Scalars['Float'];
+  /** The interaction id for this credential request. */
+  interactionId: Scalars['String'];
+  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  jwt: Scalars['String'];
 };
 
 export type Application = {
@@ -267,6 +287,8 @@ export type AuthorizationPolicyRuleCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  CommunityApply = 'COMMUNITY_APPLY',
+  CommunityJoin = 'COMMUNITY_JOIN',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
   CreateCanvas = 'CREATE_CANVAS',
@@ -356,6 +378,11 @@ export type Challenge = Searchable & {
   opportunities?: Maybe<Array<Opportunity>>;
   /** The set of tags for the challenge */
   tagset?: Maybe<Tagset>;
+};
+
+export type ChallengeOpportunitiesArgs = {
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type ChallengeAuthorizeStateModificationInput = {
@@ -543,6 +570,15 @@ export type Community = Groupable & {
   members?: Maybe<Array<User>>;
 };
 
+export type CommunityApplyInput = {
+  communityID: Scalars['UUID'];
+  questions: Array<CreateNvpInput>;
+};
+
+export type CommunityJoinInput = {
+  communityID: Scalars['UUID'];
+};
+
 export type Config = {
   __typename?: 'Config';
   /** Authentication configuration. */
@@ -603,12 +639,6 @@ export type CreateActorInput = {
   impact?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   value?: InputMaybe<Scalars['String']>;
-};
-
-export type CreateApplicationInput = {
-  parentID: Scalars['UUID'];
-  questions: Array<CreateNvpInput>;
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type CreateAspectOnContextInput = {
@@ -798,6 +828,22 @@ export type Credential = {
   type: AuthorizationCredential;
 };
 
+export type CredentialMetadataOutput = {
+  __typename?: 'CredentialMetadataOutput';
+  /** A json description of what the claim contains and schema validation definition */
+  context: Scalars['String'];
+  /** The purpose of the credential */
+  description: Scalars['String'];
+  /** The display name of the credential */
+  name: Scalars['String'];
+  /** The schema that the credential will be validated against */
+  schema: Scalars['String'];
+  /** The credential types that are associated with this credential */
+  types: Array<Scalars['String']>;
+  /** System recognized unique type for the credential */
+  uniqueType: Scalars['String'];
+};
+
 export type DeleteActorGroupInput = {
   ID: Scalars['UUID'];
 };
@@ -985,6 +1031,8 @@ export type Hub = {
   opportunities: Array<Opportunity>;
   /** A particular Opportunity, either by its ID or nameID */
   opportunity: Opportunity;
+  /** The preferences for this user */
+  preferences: Array<Preference>;
   /** A particular Project, identified by the ID */
   project: Project;
   /** All projects within this hub */
@@ -1028,10 +1076,25 @@ export type HubProjectArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type HubAspectTemplate = {
+  __typename?: 'HubAspectTemplate';
+  /** A default description for this Aspect. */
+  description: Scalars['String'];
+  /** The type of the Aspect */
+  type: Scalars['String'];
+};
+
 export type HubAuthorizationResetInput = {
   /** The identifier of the Hub whose Authorization Policy should be reset. */
   hubID: Scalars['UUID_NAMEID'];
 };
+
+export enum HubPreferenceType {
+  AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
+  MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
+  MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
+  MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
+}
 
 export type HubTemplate = {
   __typename?: 'HubTemplate';
@@ -1155,6 +1218,8 @@ export type Mutation = {
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
   /** Allow updating the rule for joining rooms: public or invite. */
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
+  /** Apply to join the specified Community as a member. */
+  applyForCommunityMembership: Application;
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
   /** Assigns a User as a Global Admin. */
@@ -1181,12 +1246,16 @@ export type Mutation = {
   authorizationPolicyResetOnOrganization: Organization;
   /** Reset the Authorization policy on the specified User. */
   authorizationPolicyResetOnUser: User;
+  /** Generate Alkemio user credential offer */
+  beginAlkemioUserVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
+  /** Generate community member credential offer */
+  beginCommunityMemberVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
+  /** Generate verified credential share request */
+  beginVerifiedCredentialRequestInteraction: AgentBeginVerifiedCredentialRequestOutput;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
   createActorGroup: ActorGroup;
-  /** Creates Application for a User to join this Community. */
-  createApplication: Application;
   /** Create a new Aspect on the Context. */
   createAspectOnContext: Aspect;
   /** Create a new Canvas on the Context. */
@@ -1269,6 +1338,8 @@ export type Mutation = {
   grantCredentialToUser: User;
   /** Authorizes a User to be able to modify the state on the specified Challenge. */
   grantStateModificationOnChallenge: User;
+  /** Join the specified Community as a member, without going through an approval process. */
+  joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
   messageUser: Scalars['String'];
   /** Removes a comment message. */
@@ -1323,6 +1394,10 @@ export type Mutation = {
   updateOpportunity: Opportunity;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
+  /** Updates one of the Preferences on a Hub */
+  updatePreferenceOnHub: Preference;
+  /** Updates one of the Preferences on a Hub */
+  updatePreferenceOnUser: Preference;
   /** Updates the specified Profile. */
   updateProfile: Profile;
   /** Updates the specified Project. */
@@ -1331,8 +1406,6 @@ export type Mutation = {
   updateUser: User;
   /** Updates the specified User Group. */
   updateUserGroup: UserGroup;
-  /** Updates an user preference */
-  updateUserPreference: UserPreference;
   /** Updates the image URI for the specified Visual. */
   updateVisual: Visual;
   /** Uploads and sets an image for the specified Visual. */
@@ -1349,6 +1422,10 @@ export type MutationAdminCommunicationRemoveOrphanedRoomArgs = {
 
 export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
   changeRoomAccessData: CommunicationAdminUpdateRoomsJoinRuleInput;
+};
+
+export type MutationApplyForCommunityMembershipArgs = {
+  applicationData: CommunityApplyInput;
 };
 
 export type MutationAssignUserAsChallengeAdminArgs = {
@@ -1403,16 +1480,20 @@ export type MutationAuthorizationPolicyResetOnUserArgs = {
   authorizationResetData: UserAuthorizationResetInput;
 };
 
+export type MutationBeginCommunityMemberVerifiedCredentialOfferInteractionArgs = {
+  communityID: Scalars['String'];
+};
+
+export type MutationBeginVerifiedCredentialRequestInteractionArgs = {
+  types: Array<Scalars['String']>;
+};
+
 export type MutationCreateActorArgs = {
   actorData: CreateActorInput;
 };
 
 export type MutationCreateActorGroupArgs = {
   actorGroupData: CreateActorGroupInput;
-};
-
-export type MutationCreateApplicationArgs = {
-  applicationData: CreateApplicationInput;
 };
 
 export type MutationCreateAspectOnContextArgs = {
@@ -1575,6 +1656,10 @@ export type MutationGrantStateModificationOnChallengeArgs = {
   grantStateModificationVCData: ChallengeAuthorizeStateModificationInput;
 };
 
+export type MutationJoinCommunityArgs = {
+  joinCommunityData: CommunityJoinInput;
+};
+
 export type MutationMessageUserArgs = {
   messageData: UserSendMessageInput;
 };
@@ -1683,6 +1768,14 @@ export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
 };
 
+export type MutationUpdatePreferenceOnHubArgs = {
+  preferenceData: UpdateHubPreferenceInput;
+};
+
+export type MutationUpdatePreferenceOnUserArgs = {
+  preferenceData: UpdateUserPreferenceInput;
+};
+
 export type MutationUpdateProfileArgs = {
   profileData: UpdateProfileInput;
 };
@@ -1697,10 +1790,6 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUpdateUserGroupArgs = {
   userGroupData: UpdateUserGroupInput;
-};
-
-export type MutationUpdateUserPreferenceArgs = {
-  userPreferenceData: UpdateUserPreferenceInput;
 };
 
 export type MutationUpdateVisualArgs = {
@@ -1762,8 +1851,6 @@ export type OpportunityTemplate = {
   actorGroups?: Maybe<Array<Scalars['String']>>;
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
-  /** Template aspects. */
-  aspects?: Maybe<Array<Scalars['String']>>;
   /** Template opportunity name. */
   name: Scalars['String'];
   /** Template relations. */
@@ -1858,6 +1945,50 @@ export type OryConfig = {
   kratosPublicBaseURL: Scalars['String'];
 };
 
+export type PaginatedUser = Searchable & {
+  __typename?: 'PaginatedUser';
+  /** The unique personal identifier (upn) for the account associated with this user profile */
+  accountUpn: Scalars['String'];
+  /** The Agent representing this User. */
+  agent?: Maybe<Agent>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  city: Scalars['String'];
+  /** The Community rooms this user is a member of */
+  communityRooms?: Maybe<Array<CommunicationRoom>>;
+  country: Scalars['String'];
+  /** The direct rooms this user is a member of */
+  directRooms?: Maybe<Array<DirectRoom>>;
+  /** The display name. */
+  displayName: Scalars['String'];
+  /** The email address for this User. */
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  gender: Scalars['String'];
+  id: Scalars['UUID'];
+  lastName: Scalars['String'];
+  /** A name identifier of the entity, unique within a given scope. */
+  nameID: Scalars['NameID'];
+  /** The phone number for this User. */
+  phone: Scalars['String'];
+  /** The preferences for this user */
+  preferences: Array<Preference>;
+  /** The Profile for this User. */
+  profile?: Maybe<Profile>;
+};
+
+export type PaginatedUserEdge = {
+  __typename?: 'PaginatedUserEdge';
+  node: PaginatedUser;
+};
+
+export type PaginatedUserPageInfo = {
+  __typename?: 'PaginatedUserPageInfo';
+  endCursor: Scalars['String'];
+  hasNextPage: Scalars['Boolean'];
+  startCursor: Scalars['String'];
+};
+
 export type Platform = {
   __typename?: 'Platform';
   /** URL to a page about the platform */
@@ -1880,9 +2011,61 @@ export type PlatformHubTemplate = {
   __typename?: 'PlatformHubTemplate';
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Application templates. */
+  aspects?: Maybe<Array<HubAspectTemplate>>;
   /** Hub template name. */
   name: Scalars['String'];
 };
+
+export type Preference = {
+  __typename?: 'Preference';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The definition for the Preference */
+  definition: PreferenceDefinition;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** Value of the preference */
+  value: Scalars['String'];
+};
+
+export type PreferenceDefinition = {
+  __typename?: 'PreferenceDefinition';
+  /** Preference description */
+  description: Scalars['String'];
+  /** The name */
+  displayName: Scalars['String'];
+  /** The group for the preference within the containing entity type. */
+  group: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The type of the Preference, specific to the Entity it is on. */
+  type: PreferenceType;
+  /** Preference value type */
+  valueType: PreferenceValueType;
+};
+
+export enum PreferenceType {
+  AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
+  MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
+  MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
+  MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
+  NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
+  NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
+  NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
+  NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
+  NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
+  NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
+  NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
+}
+
+export enum PreferenceValueType {
+  Boolean = 'BOOLEAN',
+  Float = 'FLOAT',
+  Int = 'INT',
+  String = 'STRING',
+}
 
 export type Profile = {
   __typename?: 'Profile';
@@ -1934,6 +2117,8 @@ export type Query = {
   authorization: Authorization;
   /** Alkemio configuration. Provides configuration to external services in the Alkemio ecosystem. */
   configuration: Config;
+  /** Get supported credential metadata */
+  getSupportedVerifiedCredentialMetadata: Array<CredentialMetadataOutput>;
   /** An hub. If no ID is specified then the first Hub is returned. */
   hub: Hub;
   /** The Hubs on this platform */
@@ -1962,6 +2147,8 @@ export type Query = {
   users: Array<User>;
   /** The users filtered by list of IDs. */
   usersById: Array<User>;
+  /** The users who have profiles on this platform */
+  usersPaginated: RelayStylePaginatedUser;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
 };
@@ -2012,6 +2199,11 @@ export type QueryUsersByIdArgs = {
   IDs: Array<Scalars['UUID_NAMEID_EMAIL']>;
 };
 
+export type QueryUsersPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']>;
+  first?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryUsersWithAuthorizationCredentialArgs = {
   credentialsCriteriaData: UsersWithAuthorizationCredentialInput;
 };
@@ -2056,6 +2248,12 @@ export type Relation = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   type: Scalars['String'];
+};
+
+export type RelayStylePaginatedUser = {
+  __typename?: 'RelayStylePaginatedUser';
+  edges?: Maybe<Array<PaginatedUserEdge>>;
+  pageInfo?: Maybe<PaginatedUserPageInfo>;
 };
 
 export type RemoveChallengeAdminInput = {
@@ -2247,10 +2445,6 @@ export type UpdateAspectTemplateInput = {
   type: Scalars['String'];
 };
 
-export type UpdateAuthorizationPolicyInput = {
-  anonymousReadAccess: Scalars['Boolean'];
-};
-
 export type UpdateCanvasDirectInput = {
   ID: Scalars['UUID'];
   isTemplate?: InputMaybe<Scalars['Boolean']>;
@@ -2307,8 +2501,6 @@ export type UpdateEcosystemModelInput = {
 export type UpdateHubInput = {
   /** The ID or NameID of the Hub. */
   ID: Scalars['UUID_NAMEID'];
-  /** Update anonymous visibility for the Hub. */
-  authorizationPolicy?: InputMaybe<UpdateAuthorizationPolicyInput>;
   /** Update the contained Context entity. */
   context?: InputMaybe<UpdateContextInput>;
   /** The display name for this entity. */
@@ -2321,6 +2513,14 @@ export type UpdateHubInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
   /** Update the template for this Hub. */
   template?: InputMaybe<UpdateHubTemplateInput>;
+};
+
+export type UpdateHubPreferenceInput = {
+  /** ID of the Hub */
+  hubID: Scalars['UUID_NAMEID'];
+  /** Type of the user preference */
+  type: HubPreferenceType;
+  value: Scalars['String'];
 };
 
 export type UpdateHubTemplateInput = {
@@ -2410,8 +2610,8 @@ export type UpdateUserInput = {
 export type UpdateUserPreferenceInput = {
   /** Type of the user preference */
   type: UserPreferenceType;
-  /** ID of the user */
-  userID: Scalars['UUID'];
+  /** ID of the User */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
   value: Scalars['String'];
 };
 
@@ -2471,7 +2671,7 @@ export type User = Searchable & {
   /** The phone number for this User. */
   phone: Scalars['String'];
   /** The preferences for this user */
-  preferences: Array<UserPreference>;
+  preferences: Array<Preference>;
   /** The Profile for this User. */
   profile?: Maybe<Profile>;
 };
@@ -2515,34 +2715,6 @@ export type UserMembership = {
   organizations: Array<MembershipUserResultEntryOrganization>;
 };
 
-export type UserPreference = {
-  __typename?: 'UserPreference';
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  /** The definition for the Preference */
-  definition: UserPreferenceDefinition;
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Value of the preference */
-  value: Scalars['String'];
-};
-
-export type UserPreferenceDefinition = {
-  __typename?: 'UserPreferenceDefinition';
-  /** Preference description */
-  description: Scalars['String'];
-  /** The name */
-  displayName: Scalars['String'];
-  /** The group */
-  group: Scalars['String'];
-  /** The ID of the entity */
-  id: Scalars['UUID'];
-  /** Type of preference */
-  type: UserPreferenceType;
-  /** Preference value type */
-  valueType: UserPreferenceValueType;
-};
-
 export enum UserPreferenceType {
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
   NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
@@ -2552,13 +2724,6 @@ export enum UserPreferenceType {
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
-}
-
-export enum UserPreferenceValueType {
-  Boolean = 'BOOLEAN',
-  Float = 'FLOAT',
-  Int = 'INT',
-  String = 'STRING',
 }
 
 export type UserSendMessageInput = {
@@ -2585,14 +2750,28 @@ export type UsersWithAuthorizationCredentialInput = {
 
 export type VerifiedCredential = {
   __typename?: 'VerifiedCredential';
-  /** JSON for the claim in the credential */
-  claim: Scalars['JSON'];
+  /** The claims for this VerifiedCredential. */
+  claims?: Maybe<Array<VerifiedCredentialClaim>>;
+  /** JSON for the context in the credential */
+  context: Scalars['JSON'];
+  /** The time at which the credential is no longer valid */
+  expires: Scalars['String'];
   /** The time at which the credential was issued */
   issued: Scalars['String'];
   /** The challenge issuing the VC */
   issuer: Scalars['String'];
+  /** The name of the VC */
+  name: Scalars['String'];
   /** The type of VC */
   type: Scalars['String'];
+};
+
+export type VerifiedCredentialClaim = {
+  __typename?: 'VerifiedCredentialClaim';
+  /** The name of the claim */
+  name: Scalars['JSON'];
+  /** The value for the claim */
+  value: Scalars['JSON'];
 };
 
 export type Visual = {
@@ -2896,7 +3075,10 @@ export type ConfigurationFragment = {
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
   template: {
     __typename?: 'Template';
-    opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+    hubs: Array<{
+      __typename?: 'PlatformHubTemplate';
+      aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
+    }>;
   };
 };
 
@@ -3136,112 +3318,6 @@ export type NewChallengeFragment = { __typename?: 'Challenge'; id: string; nameI
 
 export type NewOpportunityFragment = { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
 
-export type OpportunityInfoFragment = {
-  __typename?: 'Opportunity';
-  id: string;
-  nameID: string;
-  displayName: string;
-  lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        background?: string | undefined;
-        vision?: string | undefined;
-        impact?: string | undefined;
-        who?: string | undefined;
-        aspects?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
-        ecosystemModel?:
-          | {
-              __typename?: 'EcosystemModel';
-              id: string;
-              actorGroups?:
-                | Array<{
-                    __typename?: 'ActorGroup';
-                    id: string;
-                    name: string;
-                    description?: string | undefined;
-                    actors?:
-                      | Array<{
-                          __typename?: 'Actor';
-                          id: string;
-                          name: string;
-                          description?: string | undefined;
-                          value?: string | undefined;
-                          impact?: string | undefined;
-                        }>
-                      | undefined;
-                  }>
-                | undefined;
-            }
-          | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-          | undefined;
-        visuals?:
-          | Array<{
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }>
-          | undefined;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-      }
-    | undefined;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  projects?:
-    | Array<{
-        __typename?: 'Project';
-        id: string;
-        nameID: string;
-        displayName: string;
-        description?: string | undefined;
-        lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      }>
-    | undefined;
-  relations?:
-    | Array<{
-        __typename?: 'Relation';
-        id: string;
-        type: string;
-        actorRole: string;
-        actorName: string;
-        actorType: string;
-        description: string;
-      }>
-    | undefined;
-  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-};
-
 export type OrganizationInfoFragment = {
   __typename?: 'Organization';
   id: string;
@@ -3330,7 +3406,9 @@ export type OrganizationProfileInfoFragment = {
           minWidth: number;
         }
       | undefined;
-    references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+      | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
   };
 };
@@ -3457,7 +3535,9 @@ export type UserDetailsFragment = {
               minWidth: number;
             }
           | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       }
     | undefined;
@@ -3514,13 +3594,22 @@ export type VisualFullFragment = {
 
 export type VisualUriFragment = { __typename?: 'Visual'; id: string; uri: string; name: string };
 
-export type UpdateUserPreferencesMutationVariables = Exact<{
+export type UpdatePreferenceOnUserMutationVariables = Exact<{
   input: UpdateUserPreferenceInput;
 }>;
 
-export type UpdateUserPreferencesMutation = {
+export type UpdatePreferenceOnUserMutation = {
   __typename?: 'Mutation';
-  updateUserPreference: { __typename?: 'UserPreference'; id: string; value: string };
+  updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
+};
+
+export type ApplyForCommunityMembershipMutationVariables = Exact<{
+  input: CommunityApplyInput;
+}>;
+
+export type ApplyForCommunityMembershipMutation = {
+  __typename?: 'Mutation';
+  applyForCommunityMembership: { __typename?: 'Application'; id: string };
 };
 
 export type AssignUserToCommunityMutationVariables = Exact<{
@@ -3570,15 +3659,6 @@ export type CreateActorGroupMutationVariables = Exact<{
 export type CreateActorGroupMutation = {
   __typename?: 'Mutation';
   createActorGroup: { __typename?: 'ActorGroup'; id: string; name: string };
-};
-
-export type CreateApplicationMutationVariables = Exact<{
-  input: CreateApplicationInput;
-}>;
-
-export type CreateApplicationMutation = {
-  __typename?: 'Mutation';
-  createApplication: { __typename?: 'Application'; id: string };
 };
 
 export type CreateAspectMutationVariables = Exact<{
@@ -3806,7 +3886,9 @@ export type CreateUserMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -3857,7 +3939,9 @@ export type CreateUserNewRegistrationMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -4309,7 +4393,9 @@ export type UpdateOrganizationMutation = {
             minWidth: number;
           }
         | undefined;
-      references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+        | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
   };
@@ -4361,7 +4447,9 @@ export type UpdateUserMutation = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -5461,7 +5549,10 @@ export type ConfigurationQuery = {
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
     template: {
       __typename?: 'Template';
-      opportunities: Array<{ __typename?: 'OpportunityTemplate'; aspects?: Array<string> | undefined }>;
+      hubs: Array<{
+        __typename?: 'PlatformHubTemplate';
+        aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
+      }>;
     };
   };
 };
@@ -5501,11 +5592,11 @@ export type GroupMembersQuery = {
   };
 };
 
-export type HubInfoQueryVariables = Exact<{
+export type HubProviderQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubInfoQuery = {
+export type HubProviderQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -5835,7 +5926,9 @@ export type MeQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -5923,125 +6016,6 @@ export type OpportunitiesQuery = {
       id: string;
       opportunities?:
         | Array<{ __typename?: 'Opportunity'; id: string; nameID: string; displayName: string }>
-        | undefined;
-    };
-  };
-};
-
-export type OpportunityInfoQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityInfoQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      nameID: string;
-      displayName: string;
-      lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            tagline?: string | undefined;
-            background?: string | undefined;
-            vision?: string | undefined;
-            impact?: string | undefined;
-            who?: string | undefined;
-            aspects?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
-            ecosystemModel?:
-              | {
-                  __typename?: 'EcosystemModel';
-                  id: string;
-                  actorGroups?:
-                    | Array<{
-                        __typename?: 'ActorGroup';
-                        id: string;
-                        name: string;
-                        description?: string | undefined;
-                        actors?:
-                          | Array<{
-                              __typename?: 'Actor';
-                              id: string;
-                              name: string;
-                              description?: string | undefined;
-                              value?: string | undefined;
-                              impact?: string | undefined;
-                            }>
-                          | undefined;
-                      }>
-                    | undefined;
-                }
-              | undefined;
-            references?:
-              | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-              | undefined;
-            visuals?:
-              | Array<{
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                }>
-              | undefined;
-            authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
-              | undefined;
-          }
-        | undefined;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-            members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
-          }
-        | undefined;
-      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      projects?:
-        | Array<{
-            __typename?: 'Project';
-            id: string;
-            nameID: string;
-            displayName: string;
-            description?: string | undefined;
-            lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
-            tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-          }>
-        | undefined;
-      relations?:
-        | Array<{
-            __typename?: 'Relation';
-            id: string;
-            type: string;
-            actorRole: string;
-            actorName: string;
-            actorType: string;
-            description: string;
-          }>
-        | undefined;
-      activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
         | undefined;
     };
   };
@@ -6563,7 +6537,9 @@ export type OrganizationProfileInfoQuery = {
             minWidth: number;
           }
         | undefined;
-      references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+      references?:
+        | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+        | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     };
   };
@@ -6742,6 +6718,7 @@ export type SearchQuery = {
             tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
           };
         }
+      | { __typename?: 'PaginatedUser' }
       | { __typename?: 'User'; displayName: string; id: string }
       | { __typename?: 'UserGroup'; name: string; id: string }
       | undefined;
@@ -6833,17 +6810,17 @@ export type UserNotificationsPreferencesQuery = {
     __typename?: 'User';
     id: string;
     preferences: Array<{
-      __typename?: 'UserPreference';
+      __typename?: 'Preference';
       id: string;
       value: string;
       definition: {
-        __typename?: 'UserPreferenceDefinition';
+        __typename?: 'PreferenceDefinition';
         id: string;
         description: string;
         displayName: string;
         group: string;
-        type: UserPreferenceType;
-        valueType: UserPreferenceValueType;
+        type: PreferenceType;
+        valueType: PreferenceValueType;
       };
     }>;
   };
@@ -6897,7 +6874,9 @@ export type UserQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -7000,7 +6979,9 @@ export type UserProfileQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
@@ -7089,18 +7070,32 @@ export type UsersQuery = {
                 minWidth: number;
               }
             | undefined;
-          references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+          references?:
+            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+            | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
   }>;
 };
 
-export type UsersDisplayNameQueryVariables = Exact<{ [key: string]: never }>;
+export type UsersDisplayNameQueryVariables = Exact<{
+  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['UUID']>;
+}>;
 
 export type UsersDisplayNameQuery = {
   __typename?: 'Query';
-  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+  usersPaginated: {
+    __typename?: 'RelayStylePaginatedUser';
+    pageInfo?: { __typename?: 'PaginatedUserPageInfo'; endCursor: string; hasNextPage: boolean } | undefined;
+    edges?:
+      | Array<{
+          __typename?: 'PaginatedUserEdge';
+          node: { __typename?: 'PaginatedUser'; id: string; displayName: string };
+        }>
+      | undefined;
+  };
 };
 
 export type UsersWithCredentialsQueryVariables = Exact<{
@@ -7161,6 +7156,7 @@ export type HubContributionDetailsQuery = {
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         }
       | undefined;
+    community?: { __typename?: 'Community'; id: string } | undefined;
   };
 };
 
@@ -7188,6 +7184,7 @@ export type ChallengeContributionDetailsQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
+      community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
 };
@@ -7218,6 +7215,7 @@ export type OpportunityContributionDetailsQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
+      community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
 };
@@ -7247,6 +7245,7 @@ export type ContributorsSearchQuery = {
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
         }
+      | { __typename?: 'PaginatedUser' }
       | {
           __typename?: 'User';
           id: string;
@@ -7344,7 +7343,9 @@ export type HubAspectQuery = {
                 description: string;
                 banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                references?:
+                  | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                  | undefined;
                 comments?:
                   | {
                       __typename?: 'Comments';
@@ -7404,7 +7405,9 @@ export type ChallengeAspectQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -7465,7 +7468,9 @@ export type OpportunityAspectQuery = {
                   description: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                   comments?:
                     | {
                         __typename?: 'Comments';
@@ -7511,7 +7516,9 @@ export type AspectDashboardDataFragment = {
         description: string;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+          | undefined;
         comments?:
           | {
               __typename?: 'Comments';
@@ -7536,7 +7543,9 @@ export type AspectDashboardFragment = {
   description: string;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+  references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+    | undefined;
   comments?:
     | {
         __typename?: 'Comments';
@@ -7635,7 +7644,9 @@ export type HubAspectSettingsQuery = {
                     }
                   | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                references?:
+                  | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                  | undefined;
               }>
             | undefined;
         }
@@ -7705,7 +7716,9 @@ export type ChallengeAspectSettingsQuery = {
                       }
                     | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                 }>
               | undefined;
           }
@@ -7776,7 +7789,9 @@ export type OpportunityAspectSettingsQuery = {
                       }
                     | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+                  references?:
+                    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+                    | undefined;
                 }>
               | undefined;
           }
@@ -7824,7 +7839,9 @@ export type AspectSettingsFragment = {
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+  references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+    | undefined;
 };
 
 export type CanvasDetailsFragment = {
@@ -8299,6 +8316,7 @@ export type ChallengeExplorerSearchQuery = {
         }
       | { __typename?: 'Opportunity' }
       | { __typename?: 'Organization' }
+      | { __typename?: 'PaginatedUser' }
       | { __typename?: 'User' }
       | { __typename?: 'UserGroup' }
       | undefined;
@@ -9718,23 +9736,6 @@ export type OpportunityPageFragment = {
     | undefined;
 };
 
-export type OpportunityTemplateQueryVariables = Exact<{ [key: string]: never }>;
-
-export type OpportunityTemplateQuery = {
-  __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    template: {
-      __typename?: 'Template';
-      opportunities: Array<{
-        __typename?: 'OpportunityTemplate';
-        aspects?: Array<string> | undefined;
-        actorGroups?: Array<string> | undefined;
-      }>;
-    };
-  };
-};
-
 export type AssociatedOrganizationQueryVariables = Exact<{
   organizationId: Scalars['UUID_NAMEID'];
 }>;
@@ -9830,6 +9831,122 @@ export type OrganizationMembersQuery = {
   };
 };
 
+export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetSupportedCredentialMetadataQuery = {
+  __typename?: 'Query';
+  getSupportedVerifiedCredentialMetadata: Array<{
+    __typename?: 'CredentialMetadataOutput';
+    name: string;
+    description: string;
+    schema: string;
+    types: Array<string>;
+    uniqueType: string;
+    context: string;
+  }>;
+};
+
+export type BeginCredentialRequestInteractionMutationVariables = Exact<{
+  types: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+export type BeginCredentialRequestInteractionMutation = {
+  __typename?: 'Mutation';
+  beginVerifiedCredentialRequestInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type BeginAlkemioUserCredentialOfferInteractionMutationVariables = Exact<{ [key: string]: never }>;
+
+export type BeginAlkemioUserCredentialOfferInteractionMutation = {
+  __typename?: 'Mutation';
+  beginAlkemioUserVerifiedCredentialOfferInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type BeginCommunityMemberCredentialOfferInteractionMutationVariables = Exact<{
+  communityID: Scalars['String'];
+}>;
+
+export type BeginCommunityMemberCredentialOfferInteractionMutation = {
+  __typename?: 'Mutation';
+  beginCommunityMemberVerifiedCredentialOfferInteraction: {
+    __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
+    interactionId: string;
+    jwt: string;
+    expiresOn: number;
+  };
+};
+
+export type UserAgentSsiFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  agent?:
+    | {
+        __typename?: 'Agent';
+        id: string;
+        did?: string | undefined;
+        credentials?:
+          | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+          | undefined;
+        verifiedCredentials?:
+          | Array<{
+              __typename?: 'VerifiedCredential';
+              context: string;
+              issued: string;
+              expires: string;
+              issuer: string;
+              name: string;
+              type: string;
+              claims?: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }> | undefined;
+            }>
+          | undefined;
+      }
+    | undefined;
+};
+
+export type UserSsiQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserSsiQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    agent?:
+      | {
+          __typename?: 'Agent';
+          id: string;
+          did?: string | undefined;
+          credentials?:
+            | Array<{ __typename?: 'Credential'; id: string; resourceID: string; type: AuthorizationCredential }>
+            | undefined;
+          verifiedCredentials?:
+            | Array<{
+                __typename?: 'VerifiedCredential';
+                context: string;
+                issued: string;
+                expires: string;
+                issuer: string;
+                name: string;
+                type: string;
+                claims?: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }> | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type UserCardsContainerQueryVariables = Exact<{
   ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
 }>;
@@ -9861,6 +9978,113 @@ export type UserCardsContainerQuery = {
         }
       | undefined;
   }>;
+};
+
+export type OpportunityProviderQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityProviderQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      displayName: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
+              | undefined;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
+              | undefined;
+          }
+        | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityProviderFragment = {
+  __typename?: 'Opportunity';
+  id: string;
+  nameID: string;
+  displayName: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
+      }
+    | undefined;
+  community?:
+    | {
+        __typename?: 'Community';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }
+    | undefined;
 };
 
 export type HubAspectProviderQueryVariables = Exact<{

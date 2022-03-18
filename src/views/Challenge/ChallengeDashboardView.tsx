@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
@@ -18,6 +18,7 @@ import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsV
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 import { getVisualBanner } from '../../utils/visuals.utils';
+import { ActivityType } from '../../models/constants';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -30,8 +31,12 @@ interface ChallengeDashboardViewProps {
 export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
 
-  const { hub, loading: loadingHubContext } = useHub();
+  const { displayName: hubDisplayName, loading: loadingHubContext } = useHub();
   const { hubNameId, hubId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
+
+  const opportunitiesCount = useMemo(() => {
+    return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
+  }, [entities.activity]);
 
   const { challenge, activity, isMember, discussions, permissions } = entities;
 
@@ -63,7 +68,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
                 entities={{
                   hubId,
                   hubNameId,
-                  hubName: hub?.displayName || '',
+                  hubName: hubDisplayName,
                   challengeId,
                   challengeName: challenge?.displayName || '',
                   challengeNameId,
@@ -98,7 +103,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           />
           <SectionSpacer />
           <DashboardGenericSection
-            headerText={t('pages.challenge.sections.dashboard.opportunities.title')}
+            headerText={`${t('pages.challenge.sections.dashboard.opportunities.title')} (${opportunitiesCount})`}
             helpText={t('pages.challenge.sections.dashboard.opportunities.help-text')}
             navText={t('buttons.see-all')}
             navLink={'opportunities'}

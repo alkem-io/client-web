@@ -4,6 +4,8 @@
   },
   "buttons": {
     "learn-more": "Learn more",
+    "load-more": "Load more",
+    "load-count-more": "Load {{count}} more",
     "apply": "Apply",
     "apply-not-signed": "Sign in to apply",
     "apply-pending": "Application pending",
@@ -75,6 +77,8 @@
     "opportunities": "Opportunities",
     "organization": "Organization",
     "organizations": "Organizations",
+    "interest": "Interest",
+    "interests": "Interests",
     "project": "Project",
     "projects": "Projects",
     "group": "Group",
@@ -105,6 +109,7 @@
     "reference": "Reference",
     "references": "References",
     "notifications": "Notifications",
+    "credentials": "Credentials",
     "my-profile": "My profile",
     "my-memberships": "My memberships",
     "social": "Social",
@@ -280,6 +285,18 @@
       "created": "Created on {{date}}",
       "updated": "Last updated on {{date}}"
     },
+    "credential-share-request-dialog": {
+      "title": "Share your verified credentials",
+      "content": "Please select the credentials you would like to store on your Alkemio hosted wallet."
+    },
+    "alkemio-user-credential-offer-dialog": {
+      "title": "Alkemio User",
+      "content": "This credential allows the holder to prove that they are a verified Alkemio user."
+    },
+    "alkemio-community-member-credential-offer-dialog": {
+      "title": "Alkemio Community Member",
+      "content": "This credential allows the holder to prove that they are a member of the specified community within Alkemio."
+    },
     "edit-members": {
       "no-available-members": "No users available to add; please check members of containing community",
       "user-not-found": "User not found!"
@@ -305,12 +322,6 @@
       "private": "Please become a member to access {{blockName}}",
       "authentication": "Please sign in to see details about the {{blockName}}."
     },
-    "notifications": {
-      "error": "Error",
-      "information": "Information",
-      "warning": "Warning",
-      "success": "Success"
-    },
     "referenceSegment": {
       "title": "References",
       "missing-refreneces": "No references yet",
@@ -324,8 +335,7 @@
         "title": "Host",
         "select": "Select a host"
       },
-      "read-access": "Allow read access for non-hub members to challenges",
-      "read-access-title": "Visibility"
+      "read-access": "Allow read access for non-hub members to challenges"
     },
     "nameSegment": {
       "name": "Name",
@@ -396,8 +406,7 @@
     },
     "card": {
       "member": "Member",
-      "private": "Private",
-      "status": "Status: {{statusName}}"
+      "private": "Private"
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
@@ -430,9 +439,6 @@
           "confirmationButtonTitle": "Yes"
         }
       }
-    },
-    "settingsButton": {
-      "tooltip": "Settings"
     },
     "profile": {
       "fields": {
@@ -480,10 +486,6 @@
     },
     "contributions": {
       "title": "Contributions",
-      "help": "The Hubs and Challenges that this organization is contributing to"
-    },
-    "pending-applications": {
-      "title": "Pending Applications",
       "help": "The Hubs and Challenges that this organization is contributing to"
     },
     "discussions-list": {
@@ -571,6 +573,9 @@
       }
     }
   },
+  "footer": {
+    "copyright": "© 2022 Alkemio Foundation"
+  },
   "pages": {
     "aspect": {
       "dashboard": {
@@ -652,13 +657,6 @@
     "activity": {
       "title": "{{blockName}} Activity",
       "hubs": "Challenge Hubs",
-      "challenges": "Challenges",
-      "opportunities": "Opportunities",
-      "projects": "Projects",
-      "members": "Members",
-      "interests": "Interests",
-      "users": "Users",
-      "organizations": "Organizations",
       "lifecycle-info": "Click to view lifecycle graph"
     },
     "home": {
@@ -687,11 +685,6 @@
           "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
           "body": "A Hub can be Public or Private, and has a facilitating Organization."
         },
-        "community": {
-          "header": "The most active members",
-          "subheader": "Alkemio has over {{count}} registered members",
-          "helpText": "Activity is calculated based on their contribution to challenges, profile completeness, etc."
-        },
         "organizations": {
           "header": "Organizations",
           "subheader": "The entities that want to bring innnovation."
@@ -701,19 +694,6 @@
     "organization": {
       "settings": {
         "tooltip": "Organization settings"
-      },
-      "hubs": {
-        "title": "Challenge Hubs hosting",
-        "subtitle": "Challenge Hubs which this organization is hosting",
-        "no-data": "No Hubs are hosted at the moment"
-      },
-      "challenges": {
-        "title": "Challenges leading",
-        "subtitle": "Challenges which this organization is leading",
-        "no-data": "No challenges are being led at the moment"
-      },
-      "users": {
-        "no-data": "None"
       },
       "verified-status": {
         "help": "Verification status: has the identity and information about this Organization been formally verified"
@@ -739,29 +719,12 @@
           },
           "community": "Community"
         },
-        "header": {
-          "buttons": {
-            "settings": {
-              "tooltip": "Hub settings"
-            }
-          }
-        },
         "challenges": {
           "header": "Challenges",
           "subheader": "There is no final frontier",
           "body": "",
           "no-data": "No challenges available for this hub",
           "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
-        },
-        "community": {
-          "header": "Community",
-          "subheader": "Connect with the users contributing, get updates and discuss!",
-          "body": ""
-        },
-        "projects": {
-          "header": "Projects",
-          "subheader": "Recently initiated projects in the {{hub}} Hub",
-          "new-project": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
         }
       }
     },
@@ -786,35 +749,9 @@
             "help-text": "Projects related to this challenge"
           }
         },
-        "header": {
-          "buttons": {
-            "settings": {
-              "tooltip": "Challenge settings"
-            }
-          }
-        },
-        "details": {
-          "header": "Challenge details"
-        },
-        "community": {
-          "header": "Community",
-          "subheader": "Building the future together",
-          "alternativesubheader": "Need help? Find skilled masters within the ecosystem",
-          "body": ""
-        },
         "opportunities": {
           "description": "Here you can explore the Opportunities that have been identified for making progress on the Challenge. Filter by key words to show just the topics you care about.",
-          "header": "Opportunities",
-          "subheader": "Potential solutions for this challenge",
           "body-missing": "No opportunities found for this challenge"
-        },
-        "projects": {
-          "header": {
-            "text": "Projects",
-            "tag": "Coming soon"
-          },
-          "subheader": "Potential solutions for this challenge",
-          "body": "Manage your projects and suggest new ones to your stakeholders."
         }
       }
     },
@@ -831,61 +768,7 @@
             "help-text": "Projects related to this opportunity"
           }
         },
-        "header": {
-          "buttons": {
-            "settings": {
-              "tooltip": "Opportunity settings"
-            },
-            "projects": {
-              "text": "Projects"
-            }
-          }
-        },
-        "problem": {
-          "header": "Problem"
-        },
-        "long-term-vision": {
-          "header": "Long term vision"
-        },
-        "who": {
-          "header": "Who"
-        },
-        "impact": {
-          "header": "Impact"
-        },
-        "adoption-ecosystem": {
-          "header": "Adoption ecosystem",
-          "subheader": "Stakeholders & Key users",
-          "buttons": {
-            "add-actor-group": {
-              "text": "Add actor group"
-            }
-          }
-        },
-        "potential": {
-          "header": "Collaborative potential",
-          "subheader": "Teams & People that showed interest",
-          "buttons": {
-            "apply": {
-              "text": "Interested in collaborating?"
-            }
-          }
-        },
-        "collaborators": {
-          "missing-collaborators": "Sorry, there are no related people or groups yet",
-          "cards": {
-            "users": {
-              "title": "Users"
-            },
-            "groups": {
-              "title": "Groups"
-            }
-          }
-        },
-        "solution": {
-          "header": "Solution details",
-          "subheader": "How we envision the first steps"
-        },
+        "apply": "Interested in collaboration?",
         "projects": {
           "header": {
             "text": "Projects",
@@ -899,11 +782,6 @@
             "subheader": "This could be the project that makes the difference",
             "body": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
           }
-        },
-        "community": {
-          "header": "Community",
-          "subheader": "Connect with the users contributing, get updates and discuss!",
-          "body": ""
         }
       }
     },
@@ -916,15 +794,14 @@
         "no-data": "No organization is leading at this time"
       },
       "hub-host": {
-        "title": "Hosting organization",
-        "help-text": "Shows different organizations, including the role you have"
+        "title": "Facilitating organization",
+        "help-text": "The Organization that is facilitating this Hub."
       },
       "members": {
         "title": "Members ({{count}})",
         "help-text": "Shows members is this community, including the role they have",
         "no-data": "No members available"
       },
-      "no-user-groups": "There are no user groups",
       "updates": {
         "no-data": "No updates available"
       }
@@ -978,13 +855,7 @@
     },
     "login": {
       "title": "Sign in",
-      "validations": {
-        "email": "Please enter your email address.",
-        "password": "Please enter your password."
-      },
-      "logo": "{{hub}} Hub logo",
-      "register": "Don't have an account?",
-      "recovery": "Forgot your password?"
+      "register": "Don't have an account?"
     },
     "about": {
       "title": "Reimagining collaboration",
@@ -1010,20 +881,8 @@
       "loading": "Signing off ..."
     },
     "registration": {
-      "form": {
-        "validations": {
-          "email": "Email is not valid",
-          "password": "Password can not be empty",
-          "password-strength": "Password must be at least 8 symbols long",
-          "confirm-password": "Passwords must match",
-          "terms": "The terms of use and the privacy policy must be accepted."
-        }
-      },
       "header": "Create an account to start using Alkemio",
       "terms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
-      "buttons": {
-        "register": "Register"
-      },
       "login": "Have an account?"
     },
     "registration-success": {
@@ -1037,42 +896,17 @@
       "message": "Please do consider filling out all aspects of your [profile](/profile) - helps with both applying to join communities and with others being able to connect with you. "
     },
     "recovery": {
-      "form": {
-        "validations": {
-          "email": "Email is not valid"
-        }
-      },
       "header": "Password Reset",
-      "message": "Please enter your email address below to recieve a link to reset your password.",
-      "buttons": {
-        "register": "Register"
-      }
+      "message": "Please enter your email address below to receive a link to reset your password."
     },
     "verification": {
-      "form": {
-        "validations": {
-          "email": "Email is not valid"
-        }
-      },
       "header": "Email verification",
-      "message": "Users of Alkemio are required to verify their email address.<br/><br/>Please enter your email address below to recieve a new verification link.",
-      "buttons": {
-        "register": "Verify"
-      }
+      "message": "Users of Alkemio are required to verify their email address.<br/><br/>Please enter your email address below to recieve a new verification link."
     },
     "settings": {
-      "form": {
-        "validations": {
-          "email": "Email is not valid"
-        }
-      },
-      "header": "User Settings",
-      "buttons": {
-        "register": "Verify"
-      }
+      "header": "User Settings"
     },
     "user-profile": {
-      "email-not-verified": " Please verify your <l>email</l>.",
       "tooltips": {
         "settings": "User profile settings"
       },
@@ -1091,6 +925,17 @@
       "associated-organizations": {
         "title": "Associated Organizations",
         "help": "Organizations who the user is related to"
+      },
+      "verifiable-credentials": {
+        "title": "Verifiable Credentials",
+        "help": "Credentials that the user holds issued by trusted parties"
+      }
+    },
+    "user-credentials": {
+      "your-credentials": {
+        "title": "My Verifiable Credentials",
+        "description": "Alkemio caches your verifiable credentials in your cloud hosted wallet. The credentials you share will grant you privileges in communities accross the platform.",
+        "add-credential": "Add Credential"
       }
     },
     "authentication-required": {
@@ -1101,14 +946,6 @@
       "general": {
         "title": "General",
         "subtitle": "This section allows you to select your preferences regarding receiving messages"
-      },
-      "community": {
-        "title": "Community management",
-        "subtitle": "This section allows you to select your preferences regarding the community management"
-      },
-      "discussions": {
-        "title": "Discussions",
-        "subtitle": "This section allows you to select your preferences regarding the discussions"
       },
       "user-administration": {
         "title": "Platform Administration",
@@ -1134,7 +971,11 @@
       }
     },
     "loading-flow": "Loading flow",
-    "loading-error": "Loading error"
+    "loading-error": "Loading error",
+    "messages": {
+      "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
+      "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
+    }
   },
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",
@@ -1160,6 +1001,9 @@
   },
   "contributions-view": {
     "no-data": "No {{name, lowercase}} available"
+  },
+  "credentials-view": {
+    "no-data": "No credentials have been presented"
   },
   "associated-organizations-view": {
     "no-data": "No {{name, lowercase}} available"

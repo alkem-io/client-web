@@ -6,29 +6,14 @@ import { Loading } from '../../components/core';
 import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
 import { useCreateTagsetOnProfileMutation, useUpdateUserMutation, useUserQuery } from '../../hooks/generated/graphql';
 import { EditMode } from '../../models/editMode';
-import { UpdateUserInput, User } from '../../models/graphql-schema';
+import { User } from '../../models/graphql-schema';
 import { UserModel } from '../../models/User';
 import { logger } from '../../services/logging/winston/logger';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 import { PageProps } from '../common';
+import { getUpdateUserInput } from '../../utils/getUpdateUserInput';
 
 interface EditUserProfilePageProps extends PageProps {}
-
-// TODO [ATS] Need optimization this code is copy paste a few times.
-export const getUpdateUserInput = (user: UserModel): UpdateUserInput => {
-  const { id: userID, email, memberof, profile, agent, ...rest } = user;
-
-  return {
-    ...rest,
-    ID: userID,
-    profileData: {
-      ID: user.profile.id || '',
-      description: profile.description,
-      references: profile.references.filter(r => r.id).map(t => ({ ID: t.id || '', name: t.name, uri: t.uri })),
-      tagsets: profile.tagsets.filter(t => t.id).map(t => ({ ID: t.id || '', name: t.name, tags: [...t.tags] })),
-    },
-  };
-};
 
 export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => {
   const navigate = useNavigate();

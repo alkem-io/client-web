@@ -1,15 +1,20 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useConfig } from '../../hooks';
+import { FEATURE_SSI } from '../../models/constants';
+import { ContributionsView, CredentialsView } from '../ProfileView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
-import { ContributionsView } from '../ProfileView';
 import UserProfileView, { UserProfileViewProps } from '../ProfileView/UserProfileView';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {}
 
 export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, options }) => {
   const { t } = useTranslation();
-  const { contributions, pendingApplications, organizationNameIDs } = entities.userMetadata;
+  const { contributions, pendingApplications, organizationNameIDs, user } = entities.userMetadata;
+  const { id } = user;
+
+  const { isFeatureEnabled } = useConfig();
 
   return (
     <Grid container spacing={2}>
@@ -24,6 +29,15 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, op
             helpText={t('pages.user-profile.associated-organizations.help')}
           />
         </Grid>
+        {isFeatureEnabled(FEATURE_SSI) && (
+          <Grid item>
+            <CredentialsView
+              userID={id}
+              title={t('pages.user-profile.verifiable-credentials.title')}
+              helpText={t('pages.user-profile.verifiable-credentials.help')}
+            />
+          </Grid>
+        )}
       </Grid>
       <Grid item xs={12} xl={6}>
         <Grid container spacing={2}>

@@ -4,9 +4,7 @@ import { useHub } from '../../hooks';
 import CommunityPage from './CommunityPage';
 
 const HubCommunityPage: FC<PageProps> = ({ paths }) => {
-  const { hub } = useHub();
-  const hubId = hub?.id || '';
-  const communityId = hub?.community?.id;
+  const { hubId, communityId } = useHub();
 
   return <CommunityPage paths={paths} hubId={hubId} communityId={communityId} />;
 };

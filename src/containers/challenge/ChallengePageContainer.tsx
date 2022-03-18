@@ -9,6 +9,7 @@ import { ContainerProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
+import { ActivityType } from '../../models/constants';
 
 export interface ChallengeContainerEntities {
   hubId: string;
@@ -62,18 +63,19 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     const _activity = _challenge?.hub.challenge.activity || [];
     return [
       {
-        name: t('pages.activity.opportunities'),
-        digit: getActivityCount(_activity, 'opportunities') || 0,
+        name: t('common.opportunities'),
+        type: ActivityType.Opportunity,
+        count: getActivityCount(_activity, 'opportunities') || 0,
         color: 'primary',
       },
       {
-        name: t('pages.activity.projects'),
-        digit: getActivityCount(_activity, 'projects') || 0,
+        name: t('common.projects'),
+        count: getActivityCount(_activity, 'projects') || 0,
         color: 'positive',
       },
       {
-        name: t('pages.activity.members'),
-        digit: getActivityCount(_activity, 'members') || 0,
+        name: t('common.members'),
+        count: getActivityCount(_activity, 'members') || 0,
         color: 'neutralMedium',
       },
     ];

@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -16,6 +16,8 @@ import { Member } from '../../../models/User';
 import { Filter } from '../Common/Filter';
 import { UserDisplayNameFragment } from '../../../models/graphql-schema';
 import { Skeleton } from '@mui/material';
+
+const LOAD_MORE_DEFAULT = 25;
 
 const PREFIX = 'EditMembers';
 
@@ -60,6 +62,9 @@ export interface EditMembersProps {
   loadingMembers?: boolean;
   onAdd?: (member: UserDisplayNameFragment) => void;
   onRemove?: (member: Member) => void;
+  onLoadMore?: (amount?: number) => void;
+  loadMore?: number;
+  lastMembersPage?: boolean;
 }
 
 export const EditMembers: FC<EditMembersProps> = ({
@@ -73,7 +78,11 @@ export const EditMembers: FC<EditMembersProps> = ({
   loadingMembers = false,
   onAdd,
   onRemove,
+  onLoadMore,
+  loadMore,
+  lastMembersPage = true,
 }) => {
+  const { t } = useTranslation();
   const membersData = useMemo<Member[]>(
     () => (loadingMembers ? new Array(3).fill({}) : members),
     [loadingMembers, members]
@@ -170,6 +179,11 @@ export const EditMembers: FC<EditMembersProps> = ({
                     </Table>
                   </TableContainer>
                 </Box>
+                {onLoadMore && (
+                  <Button onClick={() => onLoadMore(loadMore ?? LOAD_MORE_DEFAULT)} disabled={lastMembersPage}>
+                    {t('buttons.load-count-more', { count: loadMore })}
+                  </Button>
+                )}
               </Root>
             );
           }}

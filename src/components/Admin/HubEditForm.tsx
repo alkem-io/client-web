@@ -7,7 +7,6 @@ import { Context, Reference, Tagset } from '../../models/graphql-schema';
 import Typography from '../core/Typography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
-import FormikCheckboxField from '../composite/forms/FormikCheckboxField';
 import FormikSelect from '../composite/forms/FormikSelect';
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
@@ -21,7 +20,6 @@ interface Props {
   hostID?: string;
   tagset?: Tagset;
   organizations?: { id: string; name: string }[];
-  anonymousReadAccess?: boolean;
   onSubmit: (formData: HubEditFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
@@ -40,7 +38,6 @@ export interface HubEditFormValuesType {
   references: Reference[];
   // todo: https://app.zenhub.com/workspaces/alkemio-5ecb98b262ebd9f4aec4194c/issues/alkem-io/client-web/1628
   // visual: Pick<Visual, 'avatar' | 'background' | 'banner'>;
-  anonymousReadAccess: boolean;
   tagsets: Tagset[];
 }
 
@@ -53,7 +50,6 @@ const HubEditForm: FC<Props> = ({
   onSubmit,
   wireSubmit,
   isEdit,
-  anonymousReadAccess,
   organizations = [],
 }) => {
   const { t } = useTranslation();
@@ -88,7 +84,6 @@ const HubEditForm: FC<Props> = ({
       background: context?.visual?.background || '',
       banner: context?.visual?.banner || '',
     },*/
-    anonymousReadAccess: anonymousReadAccess != null ? anonymousReadAccess : true,
   };
 
   const validationSchema = yup.object().shape({
@@ -103,7 +98,6 @@ const HubEditForm: FC<Props> = ({
     references: referenceSegmentSchema,
     visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
-    anonymousReadAccess: yup.boolean(),
   });
 
   let isSubmitWired = false;
@@ -149,13 +143,6 @@ const HubEditForm: FC<Props> = ({
             </Grid>
             <VisualSegment />*/}
             {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}
-            <Grid item xs={12}>
-              <Typography variant={'h4'} color={'primary'}>
-                {t('components.editHubForm.read-access-title')}
-              </Typography>
-
-              <FormikCheckboxField name="anonymousReadAccess" title={t('components.editHubForm.read-access')} />
-            </Grid>
           </Grid>
         );
       }}
