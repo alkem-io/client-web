@@ -7,8 +7,6 @@
     "load-more": "Load more",
     "load-count-more": "Load {{count}} more",
     "apply": "Apply",
-    "apply-not-signed": "Sign in to apply",
-    "apply-pending": "Application pending",
     "explore": "Explore",
     "ok": "Ok",
     "create": "Create",
@@ -302,13 +300,29 @@
       "user-not-found": "User not found!"
     },
     "application-button": {
-      "dialog-join-parent": {
+      "apply-parent": "Apply to parent",
+      "apply-disabled": "Applications not enabled",
+      "apply-not-signed": "Sign in to apply",
+      "apply-pending": "Application pending",
+      "join": "Join",
+      "join-parent": "Join parent",
+      "parent-pending": "Parent application pending",
+      "dialog-apply-parent": {
         "title": "Want to join the parent Hub?",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parent application pending!",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. There is already an application pending for that <strong title='Hub name'>'{{hubName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+      },
+      "dialog-join": {
+        "title": "Join community",
+        "body": "You can join this community without applying for a membership, because you have the right credentials.",
+        "accept-terms": "I understand and accept the terms and conditions for community members"
+      },
+      "dialog-join-parent": {
+        "title": "Join parent community",
+        "body": "You can join this community without applying for a membership, because you have the right credentials. But first you have to join the parent community and accept the terms and conditions there, then you can join this one."
       }
     },
     "organization-verified": {
