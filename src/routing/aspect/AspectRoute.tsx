@@ -8,21 +8,22 @@ import AspectTabs from './AspectTabs';
 
 export interface AspectRouteProps extends PageProps {}
 
-const AspectRoute: FC<AspectRouteProps> = ({ paths: _paths }) => {
+const AspectRoute: FC<AspectRouteProps> = ({ paths }) => {
   const { displayName = '' } = useAspect();
   const { pathname } = useResolvedPath('.');
-  const [lastPath] = _paths.slice(-1);
-  const contextPath = `${lastPath.value}/context`;
+  const [lastPath] = paths.slice(-1);
+  const contextPath = `${lastPath.value}/contribute`;
 
   const currentPaths = useMemo(
     () => [
-      ..._paths,
-      { value: contextPath, name: 'context', real: true },
+      ...paths,
+      { value: contextPath, name: 'contribute', real: true },
       { value: '', name: 'aspects', real: false },
       { value: pathname, name: displayName, real: true },
     ],
-    [_paths, displayName, pathname, contextPath]
+    [paths, displayName, pathname, contextPath]
   );
+
   return (
     <Routes>
       <Route path={'/'} element={<AspectTabs />}>
@@ -33,4 +34,5 @@ const AspectRoute: FC<AspectRouteProps> = ({ paths: _paths }) => {
     </Routes>
   );
 };
+
 export default AspectRoute;

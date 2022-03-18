@@ -11,14 +11,14 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge } from '../../hooks';
+import { useChallenge, useConfig } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 import { getVisualBanner } from '../../utils/visuals.utils';
-import { ActivityType } from '../../models/constants';
+import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -30,6 +30,7 @@ interface ChallengeDashboardViewProps {
 
 export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
+  const { isFeatureEnabled } = useConfig();
 
   const { hubNameId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
@@ -82,7 +83,9 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               <SectionSpacer />
               <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
-              <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+              {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
+                <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+              )}
             </>
           )}
         </Grid>

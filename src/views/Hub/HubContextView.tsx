@@ -50,7 +50,6 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state, optio
     id = '',
   } = context || ({} as Context);
   const hubBanner = getVisualBanner(visuals);
-  const aspects = entities?.aspects;
   const references = entities?.references;
 
   return (
@@ -72,7 +71,6 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state, optio
       who={who}
       contextId={id}
       references={references}
-      aspects={aspects}
       aspectsLoading={loading}
       canReadAspects={canReadAspects}
       canCreateAspects={canCreateAspects}
