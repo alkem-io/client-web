@@ -1,7 +1,6 @@
 import { Box, Fade, useTheme } from '@mui/material';
-import { ReactComponent as ChevronUpIcon } from 'bootstrap-icons/icons/chevron-up.svg';
+import ExpandLess from '@mui/icons-material/ExpandLess';
 import React, { useEffect, useState } from 'react';
-import Icon from '../Icon';
 import IconButton from '../IconButton';
 
 const SCROLL_OFFSET = 36;
@@ -31,7 +30,7 @@ const ScrollButton = () => {
     <Fade in={visible}>
       <Box position="fixed" zIndex={theme.zIndex.snackbar - 50} bottom={24} right={24}>
         <IconButton onClick={scrollToTop} size="large">
-          <Icon component={ChevronUpIcon} color="inherit" size={'lg'} />
+          <ExpandLess color="inherit" fontSize="large" />
         </IconButton>
       </Box>
     </Fade>
