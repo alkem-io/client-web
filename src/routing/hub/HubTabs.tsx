@@ -79,12 +79,6 @@ const HubTabs: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }
           value={tabValue('dashboard')}
           to={routes.dashboard}
         />
-        <NavigationTab
-          icon={<ForumOutlined />}
-          label={t('common.contribute')}
-          value={tabValue('contribute')}
-          to={routes.contribute}
-        />
         <NavigationTab icon={<TocOutlined />} label={t('common.context')} value={tabValue('context')} to={'context'} />
         <NavigationTab
           disabled={!communityReadAccess}
@@ -92,6 +86,12 @@ const HubTabs: FC<HubTabsProps> = ({ communityReadAccess, challengesReadAccess }
           label={t('common.community')}
           value={tabValue('community')}
           to={routes.community}
+        />
+        <NavigationTab
+          icon={<ForumOutlined />}
+          label={t('common.contribute')}
+          value={tabValue('contribute')}
+          to={routes.contribute}
         />
         <NavigationTab
           disabled={!challengesReadAccess}

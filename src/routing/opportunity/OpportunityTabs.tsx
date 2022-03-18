@@ -74,12 +74,6 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
           to={routes['dashboard']}
         />
         <NavigationTab
-          icon={<ForumOutlined />}
-          label={t('common.contribute')}
-          value={tabValue('contribute')}
-          to={routes.contribute}
-        />
-        <NavigationTab
           icon={<TocOutlined />}
           label={t('common.context')}
           value={tabValue('context')}
@@ -91,6 +85,12 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
           label={t('common.community')}
           value={tabValue('community')}
           to={routes['community']}
+        />
+        <NavigationTab
+          icon={<ForumOutlined />}
+          label={t('common.contribute')}
+          value={tabValue('contribute')}
+          to={routes.contribute}
         />
         <NavigationTab
           icon={<ContentPasteOutlined />}
