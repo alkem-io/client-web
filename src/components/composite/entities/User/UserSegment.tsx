@@ -1,6 +1,6 @@
 import { Box, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
-import { ReactComponent as DoorOpenIcon } from 'bootstrap-icons/icons/door-open.svg';
-import { ReactComponent as PersonFill } from 'bootstrap-icons/icons/person-fill.svg';
+import MeetingRoom from '@mui/icons-material/MeetingRoom';
+import Person from '@mui/icons-material/Person';
 import React, { FC, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -85,7 +85,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
                 }}
               >
                 <ListItemIcon>
-                  <PersonFill />
+                  <Person />
                 </ListItemIcon>
                 <ListItemText primary={t('buttons.my-profile')} />
               </ListItemButton>
@@ -96,7 +96,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
                 }}
               >
                 <ListItemIcon>
-                  <DoorOpenIcon />
+                  <MeetingRoom />
                 </ListItemIcon>
                 <ListItemText primary={t('buttons.sign-out')} />
               </ListItemButton>
