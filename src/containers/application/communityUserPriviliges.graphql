@@ -1,0 +1,19 @@
+query communityUserPrivileges($hubNameId: UUID_NAMEID!, $communityId: UUID!) {
+  hub(ID: $hubNameId) {
+    id
+    hubCommunity: community {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    community(ID: $communityId) {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+  }
+}

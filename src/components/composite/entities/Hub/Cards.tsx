@@ -1,12 +1,11 @@
 import { Box } from '@mui/material';
-import { ReactComponent as HourglassIcon } from 'bootstrap-icons/icons/hourglass.svg';
-import { ReactComponent as PlusIcon } from 'bootstrap-icons/icons/plus.svg';
+import HourglassEmptyOutlined from '@mui/icons-material/HourglassEmptyOutlined';
+import Add from '@mui/icons-material/Add';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
 import Button from '../../../core/Button';
 import Card from '../../../core/Card';
-import Icon from '../../../core/Icon';
 import Typography from '../../../core/Typography';
 
 const useCardStyles = makeStyles(theme => ({
@@ -144,7 +143,7 @@ export const MoreProjectsCard: FC<ProjectCardProps> = ({ title }) => {
   return (
     <ProjectCard title={title} blank>
       <Box display={'flex'} flexGrow={1} flexDirection={'column-reverse'}>
-        <Icon component={HourglassIcon} color="primary" size="xl" />
+        <HourglassEmptyOutlined color="primary" sx={{ fontSize: 120 }} />
       </Box>
     </ProjectCard>
   );
@@ -156,7 +155,7 @@ export const AddProjectsCard: FC<ProjectCardProps> = ({ onSelect, title }) => {
   return (
     <ProjectCard title={title} blank onClick={onSelect} className={styles.activeCard}>
       <Box display={'flex'} flexGrow={1} alignItems={'center'} justifyContent={'center'}>
-        <Icon component={PlusIcon} color="inherit" size="xxl" />
+        <Add color="inherit" fontSize="large" />
       </Box>
     </ProjectCard>
   );

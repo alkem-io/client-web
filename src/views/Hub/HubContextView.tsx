@@ -56,13 +56,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state, optio
     <ContextSection
       primaryAction={
         hubId && hubNameId && hubDisplayName ? (
-          <ApplicationButtonContainer
-            entities={{
-              hubId: hubId,
-              hubNameId: hubNameId,
-              hubName: hubDisplayName,
-            }}
-          >
+          <ApplicationButtonContainer>
             {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
           </ApplicationButtonContainer>
         ) : undefined

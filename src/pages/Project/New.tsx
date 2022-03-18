@@ -1,12 +1,11 @@
 import { Box, TextField } from '@mui/material';
-import { ReactComponent as FileEarmarkPostIcon } from 'bootstrap-icons/icons/file-earmark-post.svg';
+import FilePresent from '@mui/icons-material/FilePresent';
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import Button from '../../components/core/Button';
-import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { ContentCard } from '../../components/composite/entities/Project/Cards';
 import { useUpdateNavigation } from '../../hooks';
@@ -60,7 +59,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
 
   return (
     <>
-      <Section avatar={<Icon component={FileEarmarkPostIcon} color="primary" size="xl" />}>
+      <Section avatar={<FilePresent color="primary" sx={{ fontSize: 120 }} />}>
         <SectionHeader text={t('pages.opportunity.sections.projects.new-project.header')} />
         <SubHeader text={t('pages.opportunity.sections.projects.new-project.subheader')} />
         <Body text={t('pages.opportunity.sections.projects.new-project.body')}></Body>

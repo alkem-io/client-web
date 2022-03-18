@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Link from '@mui/material/Link';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { makeStyles } from '@mui/styles';
-import { ReactComponent as PatchQuestionIcon } from 'bootstrap-icons/icons/patch-question.svg';
+import HelpOutline from '@mui/icons-material/HelpOutline';
 import {
   ChallengeSearchCard,
   OpportunitySearchCard,
@@ -18,7 +18,6 @@ import {
 } from '../../components/composite/search';
 import { Loading } from '../../components/core';
 import { CardContainer } from '../../components/core/CardContainer';
-import Icon from '../../components/core/Icon';
 import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import Typography from '../../components/core/Typography';
@@ -201,7 +200,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
   return (
     <>
-      <Section hideDetails avatar={<Icon component={PatchQuestionIcon} color="primary" size="xl" />}>
+      <Section hideDetails avatar={<HelpOutline color="primary" sx={{ fontSize: 120 }} />}>
         <SectionHeader text={t('pages.search.header')} />
         <Box marginBottom={2}>
           <SubHeader text={t('pages.search.alternativesubheader')} />

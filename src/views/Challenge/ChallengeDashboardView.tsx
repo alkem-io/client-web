@@ -11,7 +11,7 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge, useConfig, useHub } from '../../hooks';
+import { useChallenge, useConfig } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
@@ -32,8 +32,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
 
-  const { displayName: hubDisplayName, loading: loadingHubContext } = useHub();
-  const { hubNameId, hubId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
+  const { hubNameId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
   const opportunitiesCount = useMemo(() => {
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
@@ -55,7 +54,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
 
-  if (loading || loadingHubContext || loadingChallengeContext) return <Loading />;
+  if (loading || loadingChallengeContext) return <Loading />;
 
   return (
     <>
@@ -65,16 +64,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             bannerUrl={bannerUrl}
             headerText={displayName}
             primaryAction={
-              <ApplicationButtonContainer
-                entities={{
-                  hubId,
-                  hubNameId,
-                  hubName: hubDisplayName,
-                  challengeId,
-                  challengeName: challenge?.displayName || '',
-                  challengeNameId,
-                }}
-              >
+              <ApplicationButtonContainer>
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
               </ApplicationButtonContainer>
             }

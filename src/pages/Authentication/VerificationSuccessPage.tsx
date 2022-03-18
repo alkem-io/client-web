@@ -1,9 +1,8 @@
-import { ReactComponent as CheckCircle } from 'bootstrap-icons/icons/check-circle.svg';
+import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Button from '../../components/core/Button';
-import Icon from '../../components/core/Icon';
 import Markdown from '../../components/core/Markdown';
 import Typography from '../../components/core/Typography';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
@@ -18,7 +17,7 @@ export const VerificationSuccessPage: FC<VerificationSuccessPageProps> = () => {
     <AuthenticationLayout>
       <Box textAlign={'center'}>
         <Typography variant={'h2'}>
-          <Icon component={CheckCircle} color={'primary'} size={'xl'} />
+          <CheckCircleOutline color="primary" fontSize="large" />
         </Typography>
         <Typography variant={'h2'}>{t('pages.verification-success.header')}</Typography>
         <Typography variant={'h3'}>{t('pages.verification-success.subheader')}</Typography>

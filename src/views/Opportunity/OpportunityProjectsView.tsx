@@ -1,9 +1,8 @@
-import { ReactComponent as FileEarmarkIcon } from 'bootstrap-icons/icons/file-earmark.svg';
+import InsertDriveFile from '@mui/icons-material/InsertDriveFile';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SwitchCardComponent } from '../../components/composite/entities/Hub/Cards';
 import { CardContainer } from '../../components/core/CardContainer';
-import Icon from '../../components/core/Icon';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import { ViewProps } from '../../models/view';
@@ -31,7 +30,7 @@ const OpportunityProjectsView: FC<OpportunityProjectsViewProps> = ({ entities })
 
   return (
     <>
-      <Section avatar={<Icon component={FileEarmarkIcon} color="primary" size="xl" />}>
+      <Section avatar={<InsertDriveFile color="primary" fontSize="large" />}>
         <SectionHeader
           text={t('pages.opportunity.sections.projects.header.text')}
           tagText={t('pages.opportunity.sections.projects.header.tag')}
