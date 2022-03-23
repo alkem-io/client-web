@@ -9,7 +9,7 @@ import {
   Slide,
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AgentBeginVerifiedCredentialRequestOutput, CredentialMetadataOutput } from '../../../../models/graphql-schema';
 import TranslationKey from '../../../../types/TranslationKey';
@@ -56,6 +56,11 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
   if (!content) {
     throw new Error('The credential request dialog needs text content provided');
   }
+
+  useEffect(() => {
+    setSelectedCredentialMetadata(undefined);
+    setToken(undefined);
+  }, [options.show]);
 
   return (
     <Dialog open={options.show} aria-labelledby="confirmation-dialog">
