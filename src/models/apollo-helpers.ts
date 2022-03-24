@@ -1116,6 +1116,10 @@ export type ProfileFieldPolicy = {
   references?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ProfileCredentialVerifiedKeySpecifier = ('vc' | ProfileCredentialVerifiedKeySpecifier)[];
+export type ProfileCredentialVerifiedFieldPolicy = {
+  vc?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ProjectKeySpecifier = (
   | 'authorization'
   | 'description'
@@ -1252,6 +1256,7 @@ export type SubscriptionKeySpecifier = (
   | 'communicationDiscussionMessageReceived'
   | 'communicationDiscussionUpdated'
   | 'communicationUpdateMessageReceived'
+  | 'profileVerifiedCredential'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
@@ -1259,6 +1264,7 @@ export type SubscriptionFieldPolicy = {
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdateMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = ('authorization' | 'id' | 'name' | 'tags' | TagsetKeySpecifier)[];
 export type TagsetFieldPolicy = {
@@ -1746,6 +1752,13 @@ export type StrictTypedTypePolicies = {
   Profile?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ProfileKeySpecifier | (() => undefined | ProfileKeySpecifier);
     fields?: ProfileFieldPolicy;
+  };
+  ProfileCredentialVerified?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ProfileCredentialVerifiedKeySpecifier
+      | (() => undefined | ProfileCredentialVerifiedKeySpecifier);
+    fields?: ProfileCredentialVerifiedFieldPolicy;
   };
   Project?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ProjectKeySpecifier | (() => undefined | ProjectKeySpecifier);
