@@ -11911,6 +11911,9 @@ export const ChallengeContextDocument = gql`
         id
         nameID
         displayName
+        authorization {
+          myPrivileges
+        }
         tagset {
           id
           name

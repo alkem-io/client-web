@@ -237,7 +237,8 @@
   },
   "components": {
     "context-section": {
-      "create-aspect": "Successfully created the aspect"
+      "create-aspect": "Successfully created the aspect",
+      "give-feedback": "Give feedback"
     },
     "aspect-creation": {
       "title": "Create a new aspect",

@@ -16,6 +16,8 @@ import {
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
+import Button from '@mui/material/Button';
+import { useTranslation } from 'react-i18next';
 
 interface ChallengeContextEntities {
   context?: ContextTabFragment;
@@ -38,6 +40,7 @@ interface ChallengeContextState {
 interface ChallengeContextOptions {
   canReadAspects: boolean;
   canCreateAspects: boolean;
+  canCreateCommunityContextReview: boolean;
 }
 
 interface ChallengeContextViewProps
@@ -49,7 +52,8 @@ interface ChallengeContextViewProps
   > {}
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
-  const { canReadAspects, canCreateAspects } = options;
+  const { t } = useTranslation();
+  const { canReadAspects, canCreateAspects, canCreateCommunityContextReview } = options;
   const { loading } = state;
   const { context, challengeDisplayName = '', challengeTagset, challengeLifecycle } = entities;
   const {
@@ -70,9 +74,13 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         <Box display="flex">
           <LifecycleState lifecycle={challengeLifecycle} />
           <SectionSpacer />
-          <ApplicationButtonContainer>
-            {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
-          </ApplicationButtonContainer>
+          {canCreateCommunityContextReview ? (
+            <Button variant="contained">{t('components.context-section.give-feedback')}</Button>
+          ) : (
+            <ApplicationButtonContainer>
+              {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+            </ApplicationButtonContainer>
+          )}
         </Box>
       }
       banner={banner}

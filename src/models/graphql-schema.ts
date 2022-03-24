@@ -304,6 +304,7 @@ export type AuthorizationPolicyRuleVerifiedCredentialClaim = {
 
 export enum AuthorizationPrivilege {
   CommunityApply = 'COMMUNITY_APPLY',
+  CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
   CommunityJoin = 'COMMUNITY_JOIN',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
@@ -9018,6 +9019,9 @@ export type ChallengeContextQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string } | undefined;
       context?:
