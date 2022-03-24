@@ -115,6 +115,8 @@
     "lifecycle": "Lifecycle",
     "home": "Home",
     "visuals": "Visuals",
+    "question": "Question",
+    "questions": "Questions",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -593,6 +595,10 @@
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {
+    "feedback": {
+      "title": "Give feedback on this community context",
+      "success": "Feedback submitted"
+    },
     "aspect": {
       "dashboard": {
         "comment": {
