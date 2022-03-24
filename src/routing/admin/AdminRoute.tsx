@@ -1,10 +1,8 @@
 import React, { FC, useMemo } from 'react';
-import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { managementData } from '../../components/Admin/managementData';
+import { Route, Routes, Navigate, useResolvedPath } from 'react-router-dom';
 import { useTransactionScope } from '../../hooks';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { Error404 } from '../../pages';
-import ManagementPageTemplatePage from '../../pages/Admin/ManagementPageTemplatePage';
 import RestrictedRoute from '../RestrictedRoute';
 import { HubsRoute } from './hub/HubsRoute';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
@@ -29,18 +27,12 @@ export const AdminRoute: FC = () => {
       ]}
     >
       <Routes>
-        <Route path={'/'}>
-          <Route
-            index
-            element={<ManagementPageTemplatePage data={managementData.adminLvl} paths={currentPaths} />}
-          ></Route>
-          <Route path={'users/*'} element={<UsersRoute paths={currentPaths} />}></Route>
-          <Route path={'authorization/*'} element={<GlobalAuthorizationRoute paths={currentPaths} />}></Route>
-          <Route path={'hubs/*'} element={<HubsRoute paths={currentPaths} />}></Route>
-          <Route path={'organizations/*'} element={<OrganizationsRoute paths={currentPaths} />}></Route>
-          <Route path="*" element={<Error404 />}></Route>
-        </Route>
-        <Route path="*" element={<Error404 />}></Route>
+        <Route index element={<Navigate to="hubs" replace />} />
+        <Route path={'hubs/*'} element={<HubsRoute paths={currentPaths} />} />
+        <Route path={'users/*'} element={<UsersRoute paths={currentPaths} />}></Route>
+        <Route path={'authorization/*'} element={<GlobalAuthorizationRoute paths={currentPaths} />} />
+        <Route path={'organizations/*'} element={<OrganizationsRoute paths={currentPaths} />} />
+        <Route path="*" element={<Error404 />} />
       </Routes>
     </RestrictedRoute>
   );
