@@ -256,8 +256,10 @@ export type Authorization = {
   id: Scalars['UUID'];
   /** The privileges granted to the current user based on this Authorization Policy. */
   myPrivileges?: Maybe<Array<AuthorizationPrivilege>>;
+  /** The set of privilege rules that are contained by this Authorization Policy. */
+  privilegeRules?: Maybe<Array<AuthorizationPolicyRulePrivilege>>;
   /** The set of verified credential rules that are contained by this Authorization Policy. */
-  verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleCredential>>;
+  verifiedCredentialClaimRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredentialClaim>>;
 };
 
 export enum AuthorizationCredential {
@@ -281,9 +283,23 @@ export enum AuthorizationCredential {
 
 export type AuthorizationPolicyRuleCredential = {
   __typename?: 'AuthorizationPolicyRuleCredential';
-  grantedPrivileges: Array<Scalars['String']>;
+  grantedPrivileges: Array<AuthorizationPrivilege>;
+  inheritable: Scalars['Boolean'];
   resourceID: Scalars['String'];
   type: Scalars['String'];
+};
+
+export type AuthorizationPolicyRulePrivilege = {
+  __typename?: 'AuthorizationPolicyRulePrivilege';
+  grantedPrivileges: Array<AuthorizationPrivilege>;
+  sourcePrivilege: Scalars['String'];
+};
+
+export type AuthorizationPolicyRuleVerifiedCredentialClaim = {
+  __typename?: 'AuthorizationPolicyRuleVerifiedCredentialClaim';
+  grantedPrivileges: Array<AuthorizationPrivilege>;
+  name: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export enum AuthorizationPrivilege {
@@ -383,13 +399,6 @@ export type Challenge = Searchable & {
 export type ChallengeOpportunitiesArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
-};
-
-export type ChallengeAuthorizeStateModificationInput = {
-  /** The challenge whose state can be udpated. */
-  challengeID: Scalars['UUID'];
-  /** The user who is being authorized to update the Challenge state. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 export type ChallengeEventInput = {
@@ -1336,8 +1345,6 @@ export type Mutation = {
   eventOnProject: Project;
   /** Grants an authorization credential to a User. */
   grantCredentialToUser: User;
-  /** Authorizes a User to be able to modify the state on the specified Challenge. */
-  grantStateModificationOnChallenge: User;
   /** Join the specified Community as a member, without going through an approval process. */
   joinCommunity: Community;
   /** Sends a message on the specified User`s behalf and returns the room id */
@@ -1650,10 +1657,6 @@ export type MutationEventOnProjectArgs = {
 
 export type MutationGrantCredentialToUserArgs = {
   grantCredentialData: GrantAuthorizationCredentialInput;
-};
-
-export type MutationGrantStateModificationOnChallengeArgs = {
-  grantStateModificationVCData: ChallengeAuthorizeStateModificationInput;
 };
 
 export type MutationJoinCommunityArgs = {
@@ -2083,6 +2086,12 @@ export type Profile = {
   tagsets?: Maybe<Array<Tagset>>;
 };
 
+export type ProfileCredentialVerified = {
+  __typename?: 'ProfileCredentialVerified';
+  /** The vc. */
+  vc: Scalars['String'];
+};
+
 export type Project = {
   __typename?: 'Project';
   /** The authorization rules for the entity */
@@ -2365,6 +2374,8 @@ export type Subscription = {
   communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
+  /** Received on verified credentials change */
+  profileVerifiedCredential: ProfileCredentialVerified;
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
@@ -2750,8 +2761,8 @@ export type UsersWithAuthorizationCredentialInput = {
 
 export type VerifiedCredential = {
   __typename?: 'VerifiedCredential';
-  /** The claims for this VerifiedCredential. */
-  claims?: Maybe<Array<VerifiedCredentialClaim>>;
+  /** The time at which the credential is no longer valid */
+  claims: Array<VerifiedCredentialClaim>;
   /** JSON for the context in the credential */
   context: Scalars['JSON'];
   /** The time at which the credential is no longer valid */
@@ -7137,6 +7148,13 @@ export type UsersWithCredentialsSimpleListQuery = {
   }>;
 };
 
+export type ProfileVerifiedCredentialSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type ProfileVerifiedCredentialSubscription = {
+  __typename?: 'Subscription';
+  profileVerifiedCredential: { __typename?: 'ProfileCredentialVerified'; vc: string };
+};
+
 export type HubContributionDetailsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -7315,6 +7333,46 @@ export type UserContributorFragment = {
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       }
     | undefined;
+};
+
+export type CommunityUserPrivilegesQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityUserPrivilegesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    hubCommunity?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type JoinCommunityMutationVariables = Exact<{
+  joiningData: CommunityJoinInput;
+}>;
+
+export type JoinCommunityMutation = {
+  __typename?: 'Mutation';
+  joinCommunity: { __typename?: 'Community'; id: string };
 };
 
 export type HubAspectQueryVariables = Exact<{
@@ -9907,7 +9965,7 @@ export type UserAgentSsiFragment = {
               issuer: string;
               name: string;
               type: string;
-              claims?: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }> | undefined;
+              claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
             }>
           | undefined;
       }
@@ -9939,7 +9997,7 @@ export type UserSsiQuery = {
                 issuer: string;
                 name: string;
                 type: string;
-                claims?: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }> | undefined;
+                claims: Array<{ __typename?: 'VerifiedCredentialClaim'; name: string; value: string }>;
               }>
             | undefined;
         }

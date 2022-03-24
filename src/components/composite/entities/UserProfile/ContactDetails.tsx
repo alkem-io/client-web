@@ -5,7 +5,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '@mui/styles';
 import { User } from '../../../../models/graphql-schema';
 import Card from '../../../core/Card';
-import { ReactComponent as Edit } from 'bootstrap-icons/icons/pencil-square.svg';
+import Edit from '@mui/icons-material/Edit';
 import { COUNTRIES } from '../../../../models/constants';
 import Typography from '../../../core/Typography';
 

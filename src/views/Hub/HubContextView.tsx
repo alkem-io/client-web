@@ -50,20 +50,13 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state, optio
     id = '',
   } = context || ({} as Context);
   const hubBanner = getVisualBanner(visuals);
-  const aspects = entities?.aspects;
   const references = entities?.references;
 
   return (
     <ContextSection
       primaryAction={
         hubId && hubNameId && hubDisplayName ? (
-          <ApplicationButtonContainer
-            entities={{
-              hubId: hubId,
-              hubNameId: hubNameId,
-              hubName: hubDisplayName,
-            }}
-          >
+          <ApplicationButtonContainer>
             {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
           </ApplicationButtonContainer>
         ) : undefined
@@ -78,7 +71,6 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state, optio
       who={who}
       contextId={id}
       references={references}
-      aspects={aspects}
       aspectsLoading={loading}
       canReadAspects={canReadAspects}
       canCreateAspects={canCreateAspects}

@@ -11,14 +11,14 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge, useHub } from '../../hooks';
+import { useChallenge, useConfig } from '../../hooks';
 import { User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 import { getVisualBanner } from '../../utils/visuals.utils';
-import { ActivityType } from '../../models/constants';
+import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -30,9 +30,9 @@ interface ChallengeDashboardViewProps {
 
 export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entities, state }) => {
   const { t } = useTranslation();
+  const { isFeatureEnabled } = useConfig();
 
-  const { displayName: hubDisplayName, loading: loadingHubContext } = useHub();
-  const { hubNameId, hubId, challengeId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
+  const { hubNameId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
   const opportunitiesCount = useMemo(() => {
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
@@ -54,7 +54,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
 
-  if (loading || loadingHubContext || loadingChallengeContext) return <Loading />;
+  if (loading || loadingChallengeContext) return <Loading />;
 
   return (
     <>
@@ -64,16 +64,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             bannerUrl={bannerUrl}
             headerText={displayName}
             primaryAction={
-              <ApplicationButtonContainer
-                entities={{
-                  hubId,
-                  hubNameId,
-                  hubName: hubDisplayName,
-                  challengeId,
-                  challengeName: challenge?.displayName || '',
-                  challengeNameId,
-                }}
-              >
+              <ApplicationButtonContainer>
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
               </ApplicationButtonContainer>
             }
@@ -92,7 +83,9 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               <SectionSpacer />
               <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
-              <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+              {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
+                <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
+              )}
             </>
           )}
         </Grid>

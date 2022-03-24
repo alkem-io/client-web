@@ -7,8 +7,6 @@
     "load-more": "Load more",
     "load-count-more": "Load {{count}} more",
     "apply": "Apply",
-    "apply-not-signed": "Sign in to apply",
-    "apply-pending": "Application pending",
     "explore": "Explore",
     "ok": "Ok",
     "create": "Create",
@@ -101,6 +99,7 @@
     "discussion": "Discussion",
     "discussions": "Discussions",
     "dashboard": "Dashboard",
+    "contribute": "Contribute",
     "context": "Context",
     "community": "Community",
     "canvases": "Canvases",
@@ -247,7 +246,7 @@
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
         "label": "Aspect Type",
-        "type-help-text": "Aspects allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of aspect types that are avaialble in this context is fixed. Please choose the aspect type that best matches the context you wish to share."
+        "type-help-text": "Aspects allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of aspect types that are available in this context is fixed. Please choose the aspect type that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Details",
@@ -303,13 +302,29 @@
       "user-not-found": "User not found!"
     },
     "application-button": {
-      "dialog-join-parent": {
+      "apply-parent": "Apply to parent",
+      "apply-disabled": "Applications not enabled",
+      "apply-not-signed": "Sign in to apply",
+      "apply-pending": "Application pending",
+      "join": "Join",
+      "join-parent": "Join parent",
+      "parent-pending": "Parent application pending",
+      "dialog-apply-parent": {
         "title": "Want to join the parent Hub?",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. Please add the challenge you want to join in the hub's application form."
       },
       "dialog-parent-app-pending": {
         "title": "Parent application pending!",
         "body": "To join <strong title='Challenge name'>'{{challengeName}}'</strong> you must join <strong title='Hub name'>'{{hubName}}'</strong> hub first. There is already an application pending for that <strong title='Hub name'>'{{hubName}}'</strong>, so you can also submit a parallel application for <strong title='Challenge name'>'{{challengeName}}'</strong>."
+      },
+      "dialog-join": {
+        "title": "Join community",
+        "body": "You can join this community without applying for a membership, because you have the right credentials.",
+        "accept-terms": "I understand and accept the terms and conditions for community members"
+      },
+      "dialog-join-parent": {
+        "title": "Join parent community",
+        "body": "You can join this community without applying for a membership, because you have the right credentials. But first you have to join the parent community and accept the terms and conditions there, then you can join this one."
       }
     },
     "organization-verified": {
@@ -726,6 +741,10 @@
           "body": "",
           "no-data": "No challenges available for this hub",
           "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
+        },
+        "contribute": {
+          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community. ",
+          "description2": "Add additional aspects that are relevant, as well as comment on aspects added by others. "
         }
       }
     },
@@ -917,7 +936,7 @@
       },
       "communities": {
         "title": "Communities",
-        "help": "Communities the user is part of"
+        "help": "Communities the user is a part of"
       },
       "pending-applications": {
         "title": "Pending Applications",
@@ -935,9 +954,11 @@
     "user-credentials": {
       "your-credentials": {
         "title": "My Verifiable Credentials",
-        "description": "Alkemio caches your verifiable credentials in your cloud hosted wallet. The credentials you share will grant you privileges in communities accross the platform.",
+        "description": "Alkemio caches your verifiable credentials in your cloud hosted wallet. The credentials you share will grant you privileges in communities across the platform.",
         "add-credential": "Add Credential"
-      }
+      },
+      "issue": "Issue",
+      "added-successfully": "Credential successfully added"
     },
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",

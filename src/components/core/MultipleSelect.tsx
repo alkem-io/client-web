@@ -2,10 +2,8 @@ import React, { useEffect, useRef, useState, FC } from 'react';
 import clsx from 'clsx';
 
 import Typography from '../../components/core/Typography';
-import Icon from '../core/Icon';
 import IconButton from '../core/IconButton';
-
-import { ReactComponent as SearchIcon } from 'bootstrap-icons/icons/search.svg';
+import SearchIcon from '@mui/icons-material/Search';
 import { makeStyles } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -285,7 +283,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
         >
           <section className={styles.flexCenterContainer}>
             <IconButton onClick={onSearch} className={styles.searchButton} size="large">
-              <Icon component={SearchIcon} color="inherit" size={'sm'} />
+              <SearchIcon color="inherit" fontSize="small" />
             </IconButton>
             <Tooltip id="overlay-example" title={'You have reached the tags limit of 5'} open={isTooltipShown}>
               <input
