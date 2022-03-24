@@ -2087,6 +2087,12 @@ export type Profile = {
   tagsets?: Maybe<Array<Tagset>>;
 };
 
+export type ProfileCredentialVerified = {
+  __typename?: 'ProfileCredentialVerified';
+  /** The vc. */
+  vc: Scalars['String'];
+};
+
 export type Project = {
   __typename?: 'Project';
   /** The authorization rules for the entity */
@@ -2369,6 +2375,8 @@ export type Subscription = {
   communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
+  /** Received on verified credentials change */
+  profileVerifiedCredential: ProfileCredentialVerified;
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
@@ -7139,6 +7147,13 @@ export type UsersWithCredentialsSimpleListQuery = {
     lastName: string;
     email: string;
   }>;
+};
+
+export type ProfileVerifiedCredentialSubscriptionVariables = Exact<{ [key: string]: never }>;
+
+export type ProfileVerifiedCredentialSubscription = {
+  __typename?: 'Subscription';
+  profileVerifiedCredential: { __typename?: 'ProfileCredentialVerified'; vc: string };
 };
 
 export type HubContributionDetailsQueryVariables = Exact<{

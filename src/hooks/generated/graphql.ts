@@ -9601,6 +9601,46 @@ export function refetchUsersWithCredentialsSimpleListQuery(
 ) {
   return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
 }
+export const ProfileVerifiedCredentialDocument = gql`
+  subscription profileVerifiedCredential {
+    profileVerifiedCredential {
+      vc
+    }
+  }
+`;
+
+/**
+ * __useProfileVerifiedCredentialSubscription__
+ *
+ * To run a query within a React component, call `useProfileVerifiedCredentialSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useProfileVerifiedCredentialSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileVerifiedCredentialSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProfileVerifiedCredentialSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ProfileVerifiedCredentialSubscription,
+    SchemaTypes.ProfileVerifiedCredentialSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ProfileVerifiedCredentialSubscription,
+    SchemaTypes.ProfileVerifiedCredentialSubscriptionVariables
+  >(ProfileVerifiedCredentialDocument, options);
+}
+export type ProfileVerifiedCredentialSubscriptionHookResult = ReturnType<
+  typeof useProfileVerifiedCredentialSubscription
+>;
+export type ProfileVerifiedCredentialSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.ProfileVerifiedCredentialSubscription>;
 export const HubContributionDetailsDocument = gql`
   query hubContributionDetails($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {

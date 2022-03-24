@@ -956,7 +956,9 @@
         "title": "My Verifiable Credentials",
         "description": "Alkemio caches your verifiable credentials in your cloud hosted wallet. The credentials you share will grant you privileges in communities across the platform.",
         "add-credential": "Add Credential"
-      }
+      },
+      "issue": "Issue",
+      "added-successfully": "Credential successfully added"
     },
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",
