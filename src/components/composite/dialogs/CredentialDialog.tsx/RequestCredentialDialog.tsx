@@ -100,7 +100,7 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
               Scan the QR code to share the credential with your cloud hosted wallet
             </DialogContentText>
             {loadingToken && <Loading text="Generating credential request" />}
-            {!loadingToken && token?.jwt && <QRCode value={token?.jwt} />}
+            {!loadingToken && <QRCode jwt={token?.jwt} qrCode={token?.qrCode} />}
           </Box>
         </Slide>
       </DialogContent>

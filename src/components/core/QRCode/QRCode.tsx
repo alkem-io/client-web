@@ -1,19 +1,21 @@
-import qrcode from 'qrcode';
 import React, { FC, useEffect, useRef } from 'react';
+import qrcode from 'qrcode';
 
-export const QRCode: FC<{ value?: string | null }> = ({ value }) => {
+export const QRCode: FC<{ jwt?: string | null; qrCode?: string | null }> = ({ jwt, qrCode }) => {
   const container = useRef<HTMLDivElement>(null);
   useEffect(() => {
     async function loadCanvas() {
-      if (container.current && value) {
-        const canvas = await qrcode.toCanvas(value);
+      if (container.current && jwt) {
+        const canvas = await qrcode.toCanvas(jwt);
         container.current.innerHTML = '';
         container.current.append(canvas);
+      } else if (container.current && qrCode) {
+        <img src={qrCode} />;
       }
     }
 
     loadCanvas();
-  }, [value, container]);
+  }, [jwt, qrCode, container]);
 
   return <div ref={container} style={{ display: 'flex', justifyContent: 'center' }} />;
 };

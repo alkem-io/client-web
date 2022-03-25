@@ -76,22 +76,16 @@ export type Agent = {
 
 export type AgentBeginVerifiedCredentialOfferOutput = {
   __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential offer. */
-  interactionId: Scalars['String'];
   /** The token containing the information about issuer, callback endpoint and the credentials offered */
   jwt: Scalars['String'];
 };
 
 export type AgentBeginVerifiedCredentialRequestOutput = {
   __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential request. */
-  interactionId: Scalars['String'];
-  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  /** The token containing the information about issuer, callback endpoint and the credentials offered */
   jwt: Scalars['String'];
+  /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
+  qrCode: Scalars['String'];
 };
 
 export type Application = {
@@ -9912,9 +9906,8 @@ export type BeginCredentialRequestInteractionMutation = {
   __typename?: 'Mutation';
   beginVerifiedCredentialRequestInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
-    interactionId: string;
+    qrCode: string;
     jwt: string;
-    expiresOn: number;
   };
 };
 
@@ -9924,9 +9917,7 @@ export type BeginAlkemioUserCredentialOfferInteractionMutation = {
   __typename?: 'Mutation';
   beginAlkemioUserVerifiedCredentialOfferInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-    interactionId: string;
     jwt: string;
-    expiresOn: number;
   };
 };
 
@@ -9938,9 +9929,7 @@ export type BeginCommunityMemberCredentialOfferInteractionMutation = {
   __typename?: 'Mutation';
   beginCommunityMemberVerifiedCredentialOfferInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-    interactionId: string;
     jwt: string;
-    expiresOn: number;
   };
 };
 

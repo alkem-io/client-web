@@ -106,7 +106,7 @@ const OfferAlkemioCommunityCredentialDialog: FC<OfferAlkemioCommunityCredentialD
               Scan the QR code to share the credential with your cloud hosted wallet
             </DialogContentText>
             {loadingToken && <Loading text="Generating credential request" />}
-            {!loadingToken && token?.jwt && <QRCode value={token?.jwt} />}
+            {!loadingToken && token?.jwt && <QRCode jwt={token?.jwt} />}
           </Box>
         </Slide>
       </DialogContent>
