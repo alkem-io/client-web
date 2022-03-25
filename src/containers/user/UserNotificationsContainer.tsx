@@ -24,15 +24,7 @@ export interface UserNotificationsContainerProps
     UserNotificationsContainerState
   > {}
 
-const limitNotificationsTo = [
-  PreferenceType.NotificationApplicationReceived,
-  PreferenceType.NotificationApplicationSubmitted,
-  PreferenceType.NotificationCommunicationUpdates,
-  PreferenceType.NotificationCommunicationUpdateSentAdmin,
-  PreferenceType.NotificationCommunicationDiscussionCreated,
-  PreferenceType.NotificationCommunicationDiscussionCreatedAdmin,
-  PreferenceType.NotificationUserSignUp,
-];
+const excludeNotifications = [PreferenceType.NotificationCommunicationDiscussionResponse];
 
 const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ children }) => {
   const { userId = '' } = useUrlParams();
@@ -76,7 +68,7 @@ const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ child
   const preferences = useMemo(
     () =>
       sortBy(
-        (data?.user.preferences || []).filter(p => limitNotificationsTo.includes(p.definition.type)),
+        (data?.user.preferences || []).filter(p => !excludeNotifications.includes(p.definition.type)),
         x => x.definition.displayName
       ),
     [data]

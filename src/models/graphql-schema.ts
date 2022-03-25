@@ -2082,6 +2082,8 @@ export enum PreferenceType {
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
+  NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
@@ -2756,6 +2758,8 @@ export enum UserPreferenceType {
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
+  NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
