@@ -63,6 +63,7 @@
     "react-image-file-resizer": "^0.4.7",
     "react-jss": "^10.5.0",
     "react-markdown": "^6.0.2",
+    "react-resize-detector": "^7.0.0",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "react-visibility-sensor": "^5.1.1",
