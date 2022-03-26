@@ -60,7 +60,7 @@ export type AgentBeginVerifiedCredentialRequestOutputKeySpecifier = (
 )[];
 export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
   jwt?: FieldPolicy<any> | FieldReadFunction<any>;
-  qrCode?: FieldPolicy<any> | FieldReadFunction<any>;
+  qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationKeySpecifier = (
   | 'authorization'

@@ -85,7 +85,7 @@ export type AgentBeginVerifiedCredentialRequestOutput = {
   /** The token containing the information about issuer, callback endpoint and the credentials offered */
   jwt: Scalars['String'];
   /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
-  qrCode: Scalars['String'];
+  qrCodeImg: Scalars['String'];
 };
 
 export type Application = {
@@ -9906,7 +9906,7 @@ export type BeginCredentialRequestInteractionMutation = {
   __typename?: 'Mutation';
   beginVerifiedCredentialRequestInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
-    qrCode: string;
+    qrCodeImg: string;
     jwt: string;
   };
 };

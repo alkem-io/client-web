@@ -13229,7 +13229,7 @@ export function refetchGetSupportedCredentialMetadataQuery(
 export const BeginCredentialRequestInteractionDocument = gql`
   mutation beginCredentialRequestInteraction($types: [String!]!) {
     beginVerifiedCredentialRequestInteraction(types: $types) {
-      qrCode
+      qrCodeImg
       jwt
     }
   }
