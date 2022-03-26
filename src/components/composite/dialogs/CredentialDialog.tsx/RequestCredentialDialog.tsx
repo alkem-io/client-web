@@ -16,6 +16,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import QRCode from '../../../core/QRCode/QRCode';
+import { makeStyles } from '@mui/styles';
 
 interface RequestCredentialDialogProps {
   entities: {
@@ -39,8 +40,28 @@ interface RequestCredentialDialogProps {
   };
 }
 
+const useStyles = makeStyles({
+  dialogPaper: {
+    height: '100vh',
+  },
+  dialogContent: {
+    overflowX: 'hidden',
+    display: 'flex',
+    flexFlow: 'column nowrap',
+  },
+  slideContent: {
+    flexGrow: 1,
+    display: 'flex',
+    flexFlow: 'column nowrap',
+  },
+  qrCode: {
+    flexGrow: 1,
+  },
+});
+
 const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, actions, options, state }) => {
   const { t } = useTranslation();
+  const styles = useStyles();
   const { credentialMetadata } = entities;
 
   const containerRef = useRef(null);
@@ -63,7 +84,7 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
   }, [options.show]);
 
   return (
-    <Dialog open={options.show} aria-labelledby="confirmation-dialog">
+    <Dialog open={options.show} aria-labelledby="confirmation-dialog" classes={{ paper: styles.dialogPaper }}>
       <DialogTitle
         id="credential-request-dialog-title"
         onClose={() => {
@@ -74,7 +95,7 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
       >
         {title}
       </DialogTitle>
-      <DialogContent ref={containerRef} sx={{ minHeight: 400, overflow: 'hidden' }}>
+      <DialogContent ref={containerRef} className={styles.dialogContent}>
         <Slide direction="right" unmountOnExit in={!Boolean(token) && !loadingToken} container={containerRef.current}>
           <Box>
             <DialogContentText>{content}</DialogContentText>
@@ -95,12 +116,12 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
           </Box>
         </Slide>
         <Slide direction="left" unmountOnExit in={Boolean(token) || loadingToken} container={containerRef.current}>
-          <Box>
+          <Box className={styles.slideContent}>
             <DialogContentText>
               Scan the QR code to share the credential with your cloud hosted wallet
             </DialogContentText>
             {loadingToken && <Loading text="Generating credential request" />}
-            {!loadingToken && token?.jwt && <QRCode value={token?.jwt} />}
+            {!loadingToken && token?.jwt && <QRCode value={token.jwt} className={styles.qrCode} />}
           </Box>
         </Slide>
       </DialogContent>
