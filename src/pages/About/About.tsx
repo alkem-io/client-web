@@ -67,7 +67,7 @@ export const AboutPage = () => {
               <img src="/logo.png" className={styles.logo} alt="Alkemio" />
               <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
             </div>
-            {services && (
+            {services.length >= 1 && (
               <Box marginBottom={4}>
                 <Typography color={'neutralMedium'}>
                   {t('pages.about.powered-by', {

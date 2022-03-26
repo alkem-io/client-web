@@ -13,4 +13,5 @@ const useServerMetadata = () => {
     [ctx]
   );
 };
+
 export default useServerMetadata;
