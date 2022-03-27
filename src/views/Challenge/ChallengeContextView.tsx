@@ -1,6 +1,8 @@
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
-import React, { FC } from 'react';
+import Button from '@mui/material/Button';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import LifecycleState from '../../components/composite/entities/Lifecycle/LifecycleState';
 import ContextSection from '../../components/composite/sections/ContextSection';
@@ -16,6 +18,7 @@ import {
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
+import { RouterLink } from '../../components/core/RouterLink';
 
 interface ChallengeContextEntities {
   context?: ContextTabFragment;
@@ -38,6 +41,7 @@ interface ChallengeContextState {
 interface ChallengeContextOptions {
   canReadAspects: boolean;
   canCreateAspects: boolean;
+  canCreateCommunityContextReview: boolean;
 }
 
 interface ChallengeContextViewProps
@@ -49,7 +53,8 @@ interface ChallengeContextViewProps
   > {}
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
-  const { canReadAspects, canCreateAspects } = options;
+  const { t } = useTranslation();
+  const { canReadAspects, canCreateAspects, canCreateCommunityContextReview } = options;
   const { loading } = state;
   const { context, challengeDisplayName = '', challengeTagset, challengeLifecycle } = entities;
   const {
@@ -65,29 +70,37 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
   const references = entities?.references;
 
   return (
-    <ContextSection
-      primaryAction={
-        <Box display="flex">
-          <LifecycleState lifecycle={challengeLifecycle} />
-          <SectionSpacer />
-          <ApplicationButtonContainer>
-            {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
-          </ApplicationButtonContainer>
-        </Box>
-      }
-      banner={banner}
-      background={background}
-      displayName={challengeDisplayName}
-      impact={impact}
-      tagline={tagline}
-      vision={vision}
-      who={who}
-      contextId={id}
-      keywords={challengeTagset?.tags}
-      references={references}
-      aspectsLoading={loading}
-      canReadAspects={canReadAspects}
-      canCreateAspects={canCreateAspects}
-    />
+    <>
+      <ContextSection
+        primaryAction={
+          <Box display="flex">
+            <LifecycleState lifecycle={challengeLifecycle} />
+            <SectionSpacer />
+            {canCreateCommunityContextReview ? (
+              <Button variant="contained" component={RouterLink} to={'../feedback'}>
+                {t('components.context-section.give-feedback')}
+              </Button>
+            ) : (
+              <ApplicationButtonContainer>
+                {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
+              </ApplicationButtonContainer>
+            )}
+          </Box>
+        }
+        banner={banner}
+        background={background}
+        displayName={challengeDisplayName}
+        impact={impact}
+        tagline={tagline}
+        vision={vision}
+        who={who}
+        contextId={id}
+        keywords={challengeTagset?.tags}
+        references={references}
+        aspectsLoading={loading}
+        canReadAspects={canReadAspects}
+        canCreateAspects={canCreateAspects}
+      />
+    </>
   );
 };
