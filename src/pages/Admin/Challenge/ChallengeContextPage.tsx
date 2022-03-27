@@ -50,6 +50,7 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
           options={{
             canReadAspects: entities.permissions.canReadAspects,
             canCreateAspects: entities.permissions.canCreateAspects,
+            canCreateCommunityContextReview: entities.permissions.canCreateCommunityContextReview,
           }}
           actions={{}}
         />
