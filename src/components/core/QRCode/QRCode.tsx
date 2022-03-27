@@ -35,8 +35,9 @@ export const QRCode: FC<QRCodeProps> = ({ qrCodeJwt, qrCodeImg, className }) => 
         canvas.style.height = `${size}px`;
         canvas.style.width = `${size}px`;
         container.current.append(canvas);
-      } else if (container.current && qrCodeImg) {
-        <img src={qrCodeImg} alt="qr code" />;
+      } else if (container.current && qrCodeImg && typeof height !== 'undefined' && typeof width !== 'undefined') {
+        //const image = <img src={qrCodeImg} alt='qr code' />;
+        container.current.append(qrCodeImg);
       }
     }
 
