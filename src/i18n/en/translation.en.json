@@ -115,6 +115,7 @@
     "lifecycle": "Lifecycle",
     "home": "Home",
     "visuals": "Visuals",
+    "authorization": "Authorization",
     "question": "Question",
     "questions": "Questions",
     "genders": {

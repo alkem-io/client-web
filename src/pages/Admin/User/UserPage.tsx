@@ -161,7 +161,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
   if (loading) return <Loading text={'Loading user...'} />;
 
   return (
-    <div>
+    <>
       {isSaving && <Loading text={'Saving...'} />}
       <UserForm
         editMode={mode}
@@ -178,7 +178,7 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
         name={user?.displayName}
         loading={userRemoveLoading}
       />
-    </div>
+    </>
   );
 };
 export default UserPage;
