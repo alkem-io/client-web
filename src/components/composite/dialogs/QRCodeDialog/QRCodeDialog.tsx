@@ -13,7 +13,8 @@ interface QRCodeDialogProps {
     title?: string | React.ReactNode;
     contentId?: TranslationKey;
     content?: string;
-    qrValue: string | null;
+    qrCodeJwt?: string;
+    qrCodeImg?: string;
   };
   actions: {
     onCancel: () => void;
@@ -61,7 +62,10 @@ const QRCodeDialog: FC<QRCodeDialogProps> = ({ entities, actions, options, state
       <DialogContent className={styles.content}>
         {content}
         {state?.isLoading && <Loading text="Generating credential request" />}
-        {!state?.isLoading && <QRCode value={entities.qrValue} className={styles.qrCode} />}
+        {!state?.isLoading && entities.qrCodeJwt && (
+          <QRCode qrCodeJwt={entities.qrCodeJwt} qrCodeImg={entities.qrCodeImg} className={styles.qrCode} />
+        )}
+        {!state?.isLoading && entities.qrCodeImg && <img src={entities.qrCodeImg} alt="qr code" />}
       </DialogContent>
     </Dialog>
   );

@@ -47,26 +47,20 @@ export type AgentFieldPolicy = {
   verifiedCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AgentBeginVerifiedCredentialOfferOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
   | 'jwt'
   | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
 )[];
 export type AgentBeginVerifiedCredentialOfferOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
   jwt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AgentBeginVerifiedCredentialRequestOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
   | 'jwt'
+  | 'qrCode'
   | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
 )[];
 export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
   jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+  qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationKeySpecifier = (
   | 'authorization'
@@ -290,9 +284,10 @@ export type ChallengeFieldPolicy = {
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ChallengeTemplateKeySpecifier = ('applications' | 'name' | ChallengeTemplateKeySpecifier)[];
+export type ChallengeTemplateKeySpecifier = ('applications' | 'feedback' | 'name' | ChallengeTemplateKeySpecifier)[];
 export type ChallengeTemplateFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
+  feedback?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommentsKeySpecifier = ('authorization' | 'id' | 'messages' | CommentsKeySpecifier)[];
@@ -521,6 +516,11 @@ export type FeatureFlagFieldPolicy = {
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
   name?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type FeedbackTemplateKeySpecifier = ('name' | 'questions' | FeedbackTemplateKeySpecifier)[];
+export type FeedbackTemplateFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  questions?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type GroupableKeySpecifier = ('groups' | GroupableKeySpecifier)[];
 export type GroupableFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -702,6 +702,7 @@ export type MutationKeySpecifier = (
   | 'createChallenge'
   | 'createChildChallenge'
   | 'createDiscussion'
+  | 'createFeedbackOnCommunityContext'
   | 'createGroupOnCommunity'
   | 'createGroupOnOrganization'
   | 'createHub'
@@ -803,6 +804,7 @@ export type MutationFieldPolicy = {
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  createFeedbackOnCommunityContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createHub?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1624,6 +1626,10 @@ export type StrictTypedTypePolicies = {
   FeatureFlag?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | FeatureFlagKeySpecifier | (() => undefined | FeatureFlagKeySpecifier);
     fields?: FeatureFlagFieldPolicy;
+  };
+  FeedbackTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | FeedbackTemplateKeySpecifier | (() => undefined | FeedbackTemplateKeySpecifier);
+    fields?: FeedbackTemplateFieldPolicy;
   };
   Groupable?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | GroupableKeySpecifier | (() => undefined | GroupableKeySpecifier);

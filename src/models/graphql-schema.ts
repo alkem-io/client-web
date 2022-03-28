@@ -76,22 +76,16 @@ export type Agent = {
 
 export type AgentBeginVerifiedCredentialOfferOutput = {
   __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential offer. */
-  interactionId: Scalars['String'];
   /** The token containing the information about issuer, callback endpoint and the credentials offered */
   jwt: Scalars['String'];
 };
 
 export type AgentBeginVerifiedCredentialRequestOutput = {
   __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
-  /** The token can be consumed until the expiresOn date (milliseconds since the UNIX epoch) is reached */
-  expiresOn: Scalars['Float'];
-  /** The interaction id for this credential request. */
-  interactionId: Scalars['String'];
-  /** The token containing the information about issuer, callback endpoint and credential requirements */
+  /** The token containing the information about issuer, callback endpoint and the credentials offered */
   jwt: Scalars['String'];
+  /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
+  qrCodeImg: Scalars['String'];
 };
 
 export type Application = {
@@ -304,6 +298,7 @@ export type AuthorizationPolicyRuleVerifiedCredentialClaim = {
 
 export enum AuthorizationPrivilege {
   CommunityApply = 'COMMUNITY_APPLY',
+  CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
   CommunityJoin = 'COMMUNITY_JOIN',
   Create = 'CREATE',
   CreateAspect = 'CREATE_ASPECT',
@@ -410,6 +405,8 @@ export type ChallengeTemplate = {
   __typename?: 'ChallengeTemplate';
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
+  /** Feedback templates. */
+  feedback?: Maybe<Array<FeedbackTemplate>>;
   /** Challenge template name. */
   name: Scalars['String'];
 };
@@ -703,6 +700,11 @@ export type CreateContextInput = {
   who?: InputMaybe<Scalars['Markdown']>;
 };
 
+export type CreateFeedbackOnCommunityContextInput = {
+  communityID: Scalars['UUID'];
+  questions: Array<CreateNvpInput>;
+};
+
 export type CreateHubInput = {
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
@@ -991,6 +993,14 @@ export type FeatureFlag = {
   name: Scalars['String'];
 };
 
+export type FeedbackTemplate = {
+  __typename?: 'FeedbackTemplate';
+  /** Feedback template name. */
+  name: Scalars['String'];
+  /** Template questions. */
+  questions: Array<QuestionTemplate>;
+};
+
 export type GrantAuthorizationCredentialInput = {
   /** The resource to which this credential is tied. */
   resourceID?: InputMaybe<Scalars['UUID']>;
@@ -1275,6 +1285,8 @@ export type Mutation = {
   createChildChallenge: Challenge;
   /** Creates a new Discussion as part of this Communication. */
   createDiscussion: Discussion;
+  /** Creates feedback on community context from users having COMMUNITY_CONTEXT_REVIEW privilege */
+  createFeedbackOnCommunityContext: Scalars['Boolean'];
   /** Creates a new User Group in the specified Community. */
   createGroupOnCommunity: UserGroup;
   /** Creates a new User Group for the specified Organization. */
@@ -1521,6 +1533,10 @@ export type MutationCreateChildChallengeArgs = {
 
 export type MutationCreateDiscussionArgs = {
   createData: CommunicationCreateDiscussionInput;
+};
+
+export type MutationCreateFeedbackOnCommunityContextArgs = {
+  feedbackData: CreateFeedbackOnCommunityContextInput;
 };
 
 export type MutationCreateGroupOnCommunityArgs = {
@@ -2014,7 +2030,7 @@ export type PlatformHubTemplate = {
   __typename?: 'PlatformHubTemplate';
   /** Application templates. */
   applications?: Maybe<Array<ApplicationTemplate>>;
-  /** Application templates. */
+  /** Hub aspect templates. */
   aspects?: Maybe<Array<HubAspectTemplate>>;
   /** Hub template name. */
   name: Scalars['String'];
@@ -2060,6 +2076,8 @@ export enum PreferenceType {
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
+  NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
@@ -2734,6 +2752,8 @@ export enum UserPreferenceType {
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
+  NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
 }
 
@@ -9033,6 +9053,9 @@ export type ChallengeContextQuery = {
       id: string;
       nameID: string;
       displayName: string;
+      authorization?:
+        | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined; machineDef: string } | undefined;
       context?:
@@ -9267,6 +9290,42 @@ export type ReferenceContextTabFragment = {
   name: string;
   uri: string;
   description: string;
+};
+
+export type CommunityFeedbackTemplatesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CommunityFeedbackTemplatesQuery = {
+  __typename?: 'Query';
+  configuration: {
+    __typename?: 'Config';
+    template: {
+      __typename?: 'Template';
+      challenges: Array<{
+        __typename?: 'ChallengeTemplate';
+        feedback?:
+          | Array<{
+              __typename?: 'FeedbackTemplate';
+              name: string;
+              questions: Array<{
+                __typename?: 'QuestionTemplate';
+                question: string;
+                required: boolean;
+                sortOrder?: number | undefined;
+              }>;
+            }>
+          | undefined;
+      }>;
+    };
+  };
+};
+
+export type CreateFeedbackOnCommunityContextMutationVariables = Exact<{
+  feedbackData: CreateFeedbackOnCommunityContextInput;
+}>;
+
+export type CreateFeedbackOnCommunityContextMutation = {
+  __typename?: 'Mutation';
+  createFeedbackOnCommunityContext: boolean;
 };
 
 export type DiscussionDetailsFragment = {
@@ -9912,9 +9971,8 @@ export type BeginCredentialRequestInteractionMutation = {
   __typename?: 'Mutation';
   beginVerifiedCredentialRequestInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialRequestOutput';
-    interactionId: string;
+    qrCodeImg: string;
     jwt: string;
-    expiresOn: number;
   };
 };
 
@@ -9924,9 +9982,7 @@ export type BeginAlkemioUserCredentialOfferInteractionMutation = {
   __typename?: 'Mutation';
   beginAlkemioUserVerifiedCredentialOfferInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-    interactionId: string;
     jwt: string;
-    expiresOn: number;
   };
 };
 
@@ -9938,9 +9994,7 @@ export type BeginCommunityMemberCredentialOfferInteractionMutation = {
   __typename?: 'Mutation';
   beginCommunityMemberVerifiedCredentialOfferInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
-    interactionId: string;
     jwt: string;
-    expiresOn: number;
   };
 };
 

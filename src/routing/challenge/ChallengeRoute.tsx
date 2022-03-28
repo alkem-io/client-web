@@ -22,6 +22,7 @@ import ChallengeCanvasPage from '../../pages/Admin/Challenge/ChallengeCanvasPage
 import AspectProvider from '../../context/aspect/AspectProvider';
 import AspectRoute from '../aspect/AspectRoute';
 import ChallengeContributePage from '../../pages/Admin/Challenge/ChallengeContributePage';
+import CommunityFeedbackRoute from './CommunityContextFeedback';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -78,6 +79,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={'opportunities'} element={<ChallengeOpportunityPage paths={currentPaths} />} />
       </Route>
       <Route path={'apply/*'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />} />
+      <Route path={'feedback/*'} element={<CommunityFeedbackRoute paths={currentPaths} />} />
       <Route
         path={`opportunities/:${nameOfUrl.opportunityNameId}/*`}
         element={

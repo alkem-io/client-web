@@ -67,7 +67,7 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
   const containerRef = useRef(null);
   const [loadingToken, setLoadingToken] = useState(false);
   const [selectedCredentialMetadata, setSelectedCredentialMetadata] = useState<CredentialMetadataOutput>();
-  const [token, setToken] = useState<AgentBeginVerifiedCredentialRequestOutput>();
+  const [vcInteraction, setVcInteraction] = useState<AgentBeginVerifiedCredentialRequestOutput>();
 
   const title = entities.titleId ? t(entities.titleId) : entities.title;
   if (!title) {
@@ -80,7 +80,7 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
 
   useEffect(() => {
     setSelectedCredentialMetadata(undefined);
-    setToken(undefined);
+    setVcInteraction(undefined);
   }, [options.show]);
 
   return (
@@ -89,14 +89,19 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
         id="credential-request-dialog-title"
         onClose={() => {
           setSelectedCredentialMetadata(undefined);
-          setToken(undefined);
+          setVcInteraction(undefined);
           actions.onCancel();
         }}
       >
         {title}
       </DialogTitle>
       <DialogContent ref={containerRef} className={styles.dialogContent}>
-        <Slide direction="right" unmountOnExit in={!Boolean(token) && !loadingToken} container={containerRef.current}>
+        <Slide
+          direction="right"
+          unmountOnExit
+          in={!Boolean(vcInteraction) && !loadingToken}
+          container={containerRef.current}
+        >
           <Box>
             <DialogContentText>{content}</DialogContentText>
             {state?.isLoadingCredentialMetadata && <Loading text="Loading credential metadata" />}
@@ -115,22 +120,29 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
             )}
           </Box>
         </Slide>
-        <Slide direction="left" unmountOnExit in={Boolean(token) || loadingToken} container={containerRef.current}>
+        <Slide
+          direction="left"
+          unmountOnExit
+          in={Boolean(vcInteraction) || loadingToken}
+          container={containerRef.current}
+        >
           <Box className={styles.slideContent}>
             <DialogContentText>
               Scan the QR code to share the credential with your cloud hosted wallet
             </DialogContentText>
             {loadingToken && <Loading text="Generating credential request" />}
-            {!loadingToken && token?.jwt && <QRCode value={token.jwt} className={styles.qrCode} />}
+            {!loadingToken && (vcInteraction?.jwt || vcInteraction?.qrCodeImg) && (
+              <QRCode qrCodeJwt={vcInteraction.jwt} qrCodeImg={vcInteraction.qrCodeImg} className={styles.qrCode} />
+            )}
           </Box>
         </Slide>
       </DialogContent>
       <DialogActions>
-        {token && (
+        {vcInteraction && (
           <Button
             onClick={async () => {
               setSelectedCredentialMetadata(undefined);
-              setToken(undefined);
+              setVcInteraction(undefined);
             }}
           >
             Back
@@ -141,11 +153,11 @@ const RequestCredentialDialog: FC<RequestCredentialDialogProps> = ({ entities, a
             if (selectedCredentialMetadata) {
               setLoadingToken(true);
               const result = await actions.onGenerate(selectedCredentialMetadata);
-              setToken(result);
+              setVcInteraction(result);
               setLoadingToken(false);
             }
           }}
-          disabled={!Boolean(selectedCredentialMetadata) || Boolean(token) || state?.isLoadingToken}
+          disabled={!Boolean(selectedCredentialMetadata) || Boolean(vcInteraction) || state?.isLoadingToken}
         >
           Generate QR Code
         </Button>
