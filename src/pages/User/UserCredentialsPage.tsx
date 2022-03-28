@@ -32,7 +32,6 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
   const [communityCredentialOfferDialogOpen, setCommunityCredentialOfferDialogOpen] = useState(false);
   const [qrDialogOpen, setQRDialogOpen] = useState(false);
   const [jwt, setJWT] = useState<string | null>(null);
-
   const [refetchUserSsiQuery] = useUserSsiLazyQuery();
 
   useProfileVerifiedCredentialSubscription({
@@ -185,7 +184,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
               onCancel: () => setQRDialogOpen(false),
             }}
             entities={{
-              qrValue: jwt,
+              qrCodeJwt: jwt || '',
               titleId: 'components.alkemio-user-credential-offer-dialog.title',
               contentId: 'components.alkemio-user-credential-offer-dialog.content',
             }}

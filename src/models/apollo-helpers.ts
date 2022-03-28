@@ -47,26 +47,20 @@ export type AgentFieldPolicy = {
   verifiedCredentials?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AgentBeginVerifiedCredentialOfferOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
   | 'jwt'
   | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
 )[];
 export type AgentBeginVerifiedCredentialOfferOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
   jwt?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AgentBeginVerifiedCredentialRequestOutputKeySpecifier = (
-  | 'expiresOn'
-  | 'interactionId'
   | 'jwt'
+  | 'qrCode'
   | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
 )[];
 export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
-  expiresOn?: FieldPolicy<any> | FieldReadFunction<any>;
-  interactionId?: FieldPolicy<any> | FieldReadFunction<any>;
   jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+  qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ApplicationKeySpecifier = (
   | 'authorization'

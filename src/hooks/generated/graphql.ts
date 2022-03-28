@@ -13349,9 +13349,8 @@ export function refetchGetSupportedCredentialMetadataQuery(
 export const BeginCredentialRequestInteractionDocument = gql`
   mutation beginCredentialRequestInteraction($types: [String!]!) {
     beginVerifiedCredentialRequestInteraction(types: $types) {
-      interactionId
+      qrCodeImg
       jwt
-      expiresOn
     }
   }
 `;
@@ -13401,9 +13400,7 @@ export type BeginCredentialRequestInteractionMutationOptions = Apollo.BaseMutati
 export const BeginAlkemioUserCredentialOfferInteractionDocument = gql`
   mutation beginAlkemioUserCredentialOfferInteraction {
     beginAlkemioUserVerifiedCredentialOfferInteraction {
-      interactionId
       jwt
-      expiresOn
     }
   }
 `;
@@ -13452,9 +13449,7 @@ export type BeginAlkemioUserCredentialOfferInteractionMutationOptions = Apollo.B
 export const BeginCommunityMemberCredentialOfferInteractionDocument = gql`
   mutation beginCommunityMemberCredentialOfferInteraction($communityID: String!) {
     beginCommunityMemberVerifiedCredentialOfferInteraction(communityID: $communityID) {
-      interactionId
       jwt
-      expiresOn
     }
   }
 `;
