@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useEffect, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
@@ -12,10 +12,17 @@ import Typography from '../../components/core/Typography';
 import { useUpdateNavigation } from '../../hooks';
 import { useKratos } from '../../hooks';
 import { AUTH_REGISTER_PATH } from '../../models/constants';
+import { SelfServiceLoginFlow } from '@ory/kratos-client';
 
 interface LoginPageProps {
   flow?: string;
 }
+
+const EMAIL_NOT_VERIFIED_MESSAGE_ID = 4000010;
+
+const isEmailNotVerified = (flow: SelfServiceLoginFlow) => {
+  return flow.ui.messages?.some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
+};
 
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   const { loginFlow, getLoginFlow, loading } = useKratos();
@@ -28,6 +35,12 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
   useEffect(() => {
     getLoginFlow(flow);
   }, [getLoginFlow, flow]);
+
+  useLayoutEffect(() => {
+    if (loginFlow && isEmailNotVerified(loginFlow)) {
+      navigate('/identity/verify/reminder');
+    }
+  }, [loginFlow]);
 
   if (loading) return <Loading text={t('kratos.loading-flow')} />;
 
