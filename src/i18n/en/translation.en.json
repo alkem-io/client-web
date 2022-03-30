@@ -929,9 +929,10 @@
       "header": "Email verification",
       "message": "Users of Alkemio are required to verify their email address.<br/><br/>Please enter your email address below to recieve a new verification link."
     },
-    "verification-reminder": {
+    "verification-required": {
       "header": "Your email has not yet been validated!",
-      "message": "If you do not validate your email, you will not be able to join the platform!"
+      "message": "If you do not validate your email, you will not be able to join the platform!",
+      "link": "If you have not received an email, click on this link to send again"
     },
     "settings": {
       "header": "User Settings"
