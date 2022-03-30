@@ -47,7 +47,16 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const issuerResolver = _ => 'Alkemio';
+const issuerResolver = (issuer: string | undefined) => {
+  if (!issuer) return 'Undefined';
+  if (issuer.startsWith('did:jolo')) {
+    return 'Alkemio';
+  } else if (issuer.startsWith('did:dock')) {
+    return 'Sovrhd';
+  } else {
+    return 'Unknown';
+  }
+};
 const issuerURLResolver = _ => 'url-to-issuer';
 let i = 0;
 const claimParser = claims => {
