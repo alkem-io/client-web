@@ -913,8 +913,8 @@
       "login": "Have an account?"
     },
     "registration-success": {
-      "header": "Thank you for signing up!",
-      "subheader": "For security purposes we need to validate the provided email address. Please check your inbox and follow instructions there."
+      "header": "Thank you for signing up.",
+      "subheader": "Nearly there! One last step is to verify your email."
     },
     "verification-success": {
       "header": "Thank you for verifying your email address!",
@@ -927,12 +927,12 @@
     },
     "verification": {
       "header": "Email verification",
-      "message": "Users of Alkemio are required to verify their email address.<br/><br/>Please enter your email address below to recieve a new verification link."
+      "message": "To receive a new verification email, please enter your email address below."
     },
     "verification-required": {
-      "header": "Your email has not yet been validated!",
-      "message": "If you do not validate your email, you will not be able to join the platform!",
-      "link": "If you have not received an email, click on this link to send again"
+      "header": "Email verification is pending.",
+      "message": "Please check your inbox for an email with instructions.",
+      "link": "(If you have not received an email, click on this link to send again)"
     },
     "settings": {
       "header": "User Settings"
