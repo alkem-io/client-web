@@ -1,22 +1,19 @@
 import { Box, Container } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
-import { useKratos } from '../../hooks';
+import useKratosFlow, { FlowTypeName } from '../../hooks/kratos/useKratosFlow';
+
 interface RegisterPageProps {
   flow: string;
 }
 
 export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
-  const { recoveryFlow, getRecoveryFlow, loading } = useKratos();
-
-  useEffect(() => {
-    getRecoveryFlow(flow);
-  }, [getRecoveryFlow, flow]);
+  const { flow: recoveryFlow, loading } = useKratosFlow(FlowTypeName.Recovery, flow);
 
   if (loading) return <Loading text={t('kratos.loading-flow')} />;
 

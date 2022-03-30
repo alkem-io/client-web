@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import Button from '../../components/core/Button';
 import Typography from '../../components/core/Typography';
-import { Typography as MUITypography } from '@mui/material';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
 import { Box } from '@mui/material';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import EmailVerificationNotice from '../../components/EmailVerificationNotice/EmailVerificationNotice';
 
 interface RegistrationSuccessPageProps {}
 
@@ -28,17 +27,8 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
         <Typography variant={'h2'}>{t('pages.registration-success.header')}</Typography>
         <Typography variant={'h3'}>{t('pages.registration-success.subheader')}</Typography>
       </Box>
-      <Box flex="1 0 0" display="flex" flexDirection="row" alignItems="center" justifyContent="center">
-        <ErrorOutlineIcon
-          color="primary"
-          sx={theme => ({
-            fontSize: '3rem',
-            marginRight: theme.spacing(3),
-          })}
-        />
-        <MUITypography variant="h3" sx={{ fontWeight: 'normal' }}>
-          {t('pages.verification-reminder.message')}
-        </MUITypography>
+      <Box flex="1 0 0" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <EmailVerificationNotice />
       </Box>
       <Box marginTop={4} textAlign={'center'}>
         <Button as={RouterLink} to={'/'} text={t('buttons.home')} />

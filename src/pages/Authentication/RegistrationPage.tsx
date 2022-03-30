@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
@@ -10,8 +10,8 @@ import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
 import { useConfig } from '../../hooks';
-import { useKratos } from '../../hooks';
 import { AUTH_LOGIN_PATH } from '../../models/constants';
+import useKratosFlow, { FlowTypeName } from '../../hooks/kratos/useKratosFlow';
 
 interface RegisterPageProps {
   flow?: string;
@@ -20,11 +20,7 @@ interface RegisterPageProps {
 export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { registrationFlow, getRegistrationFlow, loading } = useKratos();
-
-  useEffect(() => {
-    getRegistrationFlow(flow);
-  }, [getRegistrationFlow, flow]);
+  const { flow: registrationFlow, loading } = useKratosFlow(FlowTypeName.Registration, flow);
 
   const { platform, loading: loadingPlatform } = useConfig();
 

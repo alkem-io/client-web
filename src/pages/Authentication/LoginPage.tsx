@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import React, { FC, useEffect, useLayoutEffect, useMemo } from 'react';
+import React, { FC, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import KratosUI from '../../components/Authentication/KratosUI';
@@ -10,9 +10,9 @@ import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
 import { useUpdateNavigation } from '../../hooks';
-import { useKratos } from '../../hooks';
 import { AUTH_REGISTER_PATH } from '../../models/constants';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
+import useKratosFlow, { FlowTypeName } from '../../hooks/kratos/useKratosFlow';
 
 interface LoginPageProps {
   flow?: string;
@@ -24,20 +24,35 @@ const isEmailNotVerified = (flow: SelfServiceLoginFlow) => {
   return flow.ui.messages?.some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
 };
 
+// See a TODO below
+// const EMAIL_FIELD_NAME = 'password_identifier';
+//
+// const getEmailAddress = (flow: SelfServiceLoginFlow): string | undefined => {
+//   const node = flow.ui.nodes.find((node ) => {
+//     const attributes = node.attributes as UiNodeInputAttributes;
+//     return attributes.name === EMAIL_FIELD_NAME;
+//   });
+//   return node && (node.attributes as UiNodeInputAttributes).value;
+// };
+
 export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
-  const { loginFlow, getLoginFlow, loading } = useKratos();
+  const { flow: loginFlow, loading } = useKratosFlow(FlowTypeName.Login, flow);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
 
-  useEffect(() => {
-    getLoginFlow(flow);
-  }, [getLoginFlow, flow]);
-
   useLayoutEffect(() => {
     if (loginFlow && isEmailNotVerified(loginFlow)) {
+      // TODO When Kratos starts sending email value back, this snippet may be used
+      // to allow users request the verification email once again
+      // without having to input email manually.
+      // const email = getEmailAddress(loginFlow);
+      // const params = new URLSearchParams();
+      // if (email) {
+      //   params.set('email', email);
+      // }
       navigate('/identity/verify/reminder');
     }
   }, [loginFlow]);
@@ -62,7 +77,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           <Typography variant={'h5'}>{t('pages.login.register')}</Typography>
           <Button
             variant="primary"
-            type={'submit'}
+            type="submit"
             small
             block
             onClick={() => navigate(AUTH_REGISTER_PATH, { replace: true })}
