@@ -163,7 +163,7 @@ export const useKratos = () => {
   }, [client]);
 
   return {
-    loginFlow: flow as SelfServiceLoginFlow,
+    loginFlow: flow as SelfServiceLoginFlow | undefined,
     registrationFlow: flow as SelfServiceRegistrationFlow,
     recoveryFlow: flow as SelfServiceRecoveryFlow,
     settingsFlow: flow as SelfServiceSettingsFlow,

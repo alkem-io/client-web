@@ -9,36 +9,33 @@ import AuthenticationLayout from '../../components/composite/layout/Authenticati
 import { Box } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
-interface RegistrationSuccessPageProps {}
-
-export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
+export const EmailVerificationReminderPage: FC = () => {
   const { t } = useTranslation();
 
   return (
     <AuthenticationLayout sx={{ flexGrow: 1, display: 'flex', flexFlow: 'column nowrap' }}>
       <Box textAlign={'center'}>
-        <Typography variant={'h2'}>
-          <CheckCircleOutline
-            color="primary"
-            sx={{
-              fontSize: '8.25rem',
-            }}
-          />
-        </Typography>
-        <Typography variant={'h2'}>{t('pages.registration-success.header')}</Typography>
-        <Typography variant={'h3'}>{t('pages.registration-success.subheader')}</Typography>
-      </Box>
-      <Box flex="1 0 0" display="flex" flexDirection="row" alignItems="center" justifyContent="center">
-        <ErrorOutlineIcon
+        <CheckCircleOutline
           color="primary"
-          sx={theme => ({
-            fontSize: '3rem',
-            marginRight: theme.spacing(3),
-          })}
+          sx={{
+            fontSize: '8.25rem',
+          }}
         />
-        <MUITypography variant="h3" sx={{ fontWeight: 'normal' }}>
-          {t('pages.verification-reminder.message')}
-        </MUITypography>
+      </Box>
+      <Box flex="1 0 0" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+        <Typography variant={'h2'}>{t('pages.verification-reminder.header')}</Typography>
+        <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center">
+          <ErrorOutlineIcon
+            color="primary"
+            sx={theme => ({
+              fontSize: '3rem',
+              marginRight: theme.spacing(3),
+            })}
+          />
+          <MUITypography variant="h3" sx={{ fontWeight: 'normal' }}>
+            {t('pages.verification-reminder.message')}
+          </MUITypography>
+        </Box>
       </Box>
       <Box marginTop={4} textAlign={'center'}>
         <Button as={RouterLink} to={'/'} text={t('buttons.home')} />
@@ -46,4 +43,5 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
     </AuthenticationLayout>
   );
 };
-export default RegistrationSuccessPage;
+
+export default EmailVerificationReminderPage;

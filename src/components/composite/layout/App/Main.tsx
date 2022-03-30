@@ -6,6 +6,8 @@ import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
 const useMainStyles = makeStyles(() => ({
   main: {
     flexGrow: 1,
+    display: 'flex',
+    flexFlow: 'column nowrap',
   },
 }));
 
