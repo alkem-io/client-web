@@ -13401,6 +13401,7 @@ export const BeginAlkemioUserCredentialOfferInteractionDocument = gql`
   mutation beginAlkemioUserCredentialOfferInteraction {
     beginAlkemioUserVerifiedCredentialOfferInteraction {
       jwt
+      qrCodeImg
     }
   }
 `;
@@ -13450,6 +13451,7 @@ export const BeginCommunityMemberCredentialOfferInteractionDocument = gql`
   mutation beginCommunityMemberCredentialOfferInteraction($communityID: String!) {
     beginCommunityMemberVerifiedCredentialOfferInteraction(communityID: $communityID) {
       jwt
+      qrCodeImg
     }
   }
 `;

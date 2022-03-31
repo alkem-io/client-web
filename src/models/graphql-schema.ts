@@ -78,6 +78,8 @@ export type AgentBeginVerifiedCredentialOfferOutput = {
   __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
   /** The token containing the information about issuer, callback endpoint and the credentials offered */
   jwt: Scalars['String'];
+  /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
+  qrCodeImg: Scalars['String'];
 };
 
 export type AgentBeginVerifiedCredentialRequestOutput = {
@@ -253,7 +255,7 @@ export type Authorization = {
   /** The set of privilege rules that are contained by this Authorization Policy. */
   privilegeRules?: Maybe<Array<AuthorizationPolicyRulePrivilege>>;
   /** The set of verified credential rules that are contained by this Authorization Policy. */
-  verifiedCredentialClaimRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredentialClaim>>;
+  verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredential>>;
 };
 
 export enum AuthorizationCredential {
@@ -289,11 +291,11 @@ export type AuthorizationPolicyRulePrivilege = {
   sourcePrivilege: Scalars['String'];
 };
 
-export type AuthorizationPolicyRuleVerifiedCredentialClaim = {
-  __typename?: 'AuthorizationPolicyRuleVerifiedCredentialClaim';
+export type AuthorizationPolicyRuleVerifiedCredential = {
+  __typename?: 'AuthorizationPolicyRuleVerifiedCredential';
+  claimRule: Scalars['String'];
+  credentialName: Scalars['String'];
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  name: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export enum AuthorizationPrivilege {
@@ -2106,6 +2108,8 @@ export type Profile = {
 
 export type ProfileCredentialVerified = {
   __typename?: 'ProfileCredentialVerified';
+  /** The email */
+  userEmail: Scalars['String'];
   /** The vc. */
   vc: Scalars['String'];
 };
@@ -2789,7 +2793,7 @@ export type VerifiedCredential = {
   expires: Scalars['String'];
   /** The time at which the credential was issued */
   issued: Scalars['String'];
-  /** The challenge issuing the VC */
+  /** The party issuing the VC */
   issuer: Scalars['String'];
   /** The name of the VC */
   name: Scalars['String'];
@@ -9983,6 +9987,7 @@ export type BeginAlkemioUserCredentialOfferInteractionMutation = {
   beginAlkemioUserVerifiedCredentialOfferInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
     jwt: string;
+    qrCodeImg: string;
   };
 };
 
@@ -9995,6 +10000,7 @@ export type BeginCommunityMemberCredentialOfferInteractionMutation = {
   beginCommunityMemberVerifiedCredentialOfferInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
     jwt: string;
+    qrCodeImg: string;
   };
 };
 

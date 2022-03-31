@@ -48,14 +48,16 @@ export type AgentFieldPolicy = {
 };
 export type AgentBeginVerifiedCredentialOfferOutputKeySpecifier = (
   | 'jwt'
+  | 'qrCodeImg'
   | AgentBeginVerifiedCredentialOfferOutputKeySpecifier
 )[];
 export type AgentBeginVerifiedCredentialOfferOutputFieldPolicy = {
   jwt?: FieldPolicy<any> | FieldReadFunction<any>;
+  qrCodeImg?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AgentBeginVerifiedCredentialRequestOutputKeySpecifier = (
   | 'jwt'
-  | 'qrCode'
+  | 'qrCodeImg'
   | AgentBeginVerifiedCredentialRequestOutputKeySpecifier
 )[];
 export type AgentBeginVerifiedCredentialRequestOutputFieldPolicy = {
@@ -170,7 +172,7 @@ export type AuthorizationKeySpecifier = (
   | 'id'
   | 'myPrivileges'
   | 'privilegeRules'
-  | 'verifiedCredentialClaimRules'
+  | 'verifiedCredentialRules'
   | AuthorizationKeySpecifier
 )[];
 export type AuthorizationFieldPolicy = {
@@ -179,7 +181,7 @@ export type AuthorizationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   myPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   privilegeRules?: FieldPolicy<any> | FieldReadFunction<any>;
-  verifiedCredentialClaimRules?: FieldPolicy<any> | FieldReadFunction<any>;
+  verifiedCredentialRules?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthorizationPolicyRuleCredentialKeySpecifier = (
   | 'grantedPrivileges'
@@ -203,16 +205,16 @@ export type AuthorizationPolicyRulePrivilegeFieldPolicy = {
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
   sourcePrivilege?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type AuthorizationPolicyRuleVerifiedCredentialClaimKeySpecifier = (
+export type AuthorizationPolicyRuleVerifiedCredentialKeySpecifier = (
+  | 'claimRule'
+  | 'credentialName'
   | 'grantedPrivileges'
-  | 'name'
-  | 'value'
-  | AuthorizationPolicyRuleVerifiedCredentialClaimKeySpecifier
+  | AuthorizationPolicyRuleVerifiedCredentialKeySpecifier
 )[];
-export type AuthorizationPolicyRuleVerifiedCredentialClaimFieldPolicy = {
+export type AuthorizationPolicyRuleVerifiedCredentialFieldPolicy = {
+  claimRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentialName?: FieldPolicy<any> | FieldReadFunction<any>;
   grantedPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
-  name?: FieldPolicy<any> | FieldReadFunction<any>;
-  value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CanvasKeySpecifier = (
   | 'authorization'
@@ -1118,8 +1120,9 @@ export type ProfileFieldPolicy = {
   references?: FieldPolicy<any> | FieldReadFunction<any>;
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ProfileCredentialVerifiedKeySpecifier = ('vc' | ProfileCredentialVerifiedKeySpecifier)[];
+export type ProfileCredentialVerifiedKeySpecifier = ('userEmail' | 'vc' | ProfileCredentialVerifiedKeySpecifier)[];
 export type ProfileCredentialVerifiedFieldPolicy = {
+  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   vc?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ProjectKeySpecifier = (
@@ -1506,12 +1509,12 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | AuthorizationPolicyRulePrivilegeKeySpecifier);
     fields?: AuthorizationPolicyRulePrivilegeFieldPolicy;
   };
-  AuthorizationPolicyRuleVerifiedCredentialClaim?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+  AuthorizationPolicyRuleVerifiedCredential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
-      | AuthorizationPolicyRuleVerifiedCredentialClaimKeySpecifier
-      | (() => undefined | AuthorizationPolicyRuleVerifiedCredentialClaimKeySpecifier);
-    fields?: AuthorizationPolicyRuleVerifiedCredentialClaimFieldPolicy;
+      | AuthorizationPolicyRuleVerifiedCredentialKeySpecifier
+      | (() => undefined | AuthorizationPolicyRuleVerifiedCredentialKeySpecifier);
+    fields?: AuthorizationPolicyRuleVerifiedCredentialFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
