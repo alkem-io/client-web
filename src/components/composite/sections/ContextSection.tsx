@@ -3,9 +3,8 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PublicIcon from '@mui/icons-material/Public';
 import SchoolIcon from '@mui/icons-material/School';
 import { Box, Grid, Typography } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ReactElement } from 'react-markdown';
 import { Reference } from '../../../models/graphql-schema';
 import Markdown from '../../core/Markdown';
 import { SectionSpacer } from '../../core/Section/Section';
@@ -16,7 +15,7 @@ import References from '../common/References/References';
 
 export interface ContextSectionProps {
   contextId?: string;
-  primaryAction?: ReactElement;
+  primaryAction?: ReactNode;
   banner?: string;
   displayName?: string;
   tagline?: string;

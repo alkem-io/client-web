@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-import { ReactNode } from 'react-markdown';
+import React, { FC, ReactNode } from 'react';
 import { useHubNameQuery } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
 
