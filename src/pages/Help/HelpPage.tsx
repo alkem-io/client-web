@@ -3,9 +3,15 @@ import HelpContainer from '../../containers/help/HelpContainer';
 import helpHttpApi from '../../api/HelpHttpApi';
 import HelpView from '../../views/Help/HelpView';
 import { useUpdateNavigation } from '../../hooks';
-import { PageProps } from '../common';
+import { Path } from '../../context/NavigationProvider';
 
-const HelpPage: FC<PageProps> = ({ paths }) => {
+interface HelpPageProps {
+  paths?: Path[];
+}
+
+const EMPTY_PATHS = [];
+
+const HelpPage: FC<HelpPageProps> = ({ paths = EMPTY_PATHS }) => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'help', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 

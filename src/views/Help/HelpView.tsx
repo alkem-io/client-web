@@ -23,9 +23,11 @@ const HelpView: FC<HelpViewProps> = ({ helpTextMd, isLoading }) => {
   }
 
   return (
-    <Markdown components={components} rehypePlugins={[rehypeRaw] as MarkdownProps['rehypePlugins']}>
-      {helpTextMd!}
-    </Markdown>
+    <Box marginTop={2}>
+      <Markdown components={components} rehypePlugins={[rehypeRaw] as MarkdownProps['rehypePlugins']}>
+        {helpTextMd!}
+      </Markdown>
+    </Box>
   );
 };
 

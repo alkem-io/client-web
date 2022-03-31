@@ -74,7 +74,7 @@ export const Routing: FC = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/profile" element={<ProfileRoute />} />
         <Route path="/restricted" element={<Restricted />} />
-        <Route path="/help" element={<HelpPage paths={paths} />} />
+        <Route path="/help" element={<HelpPage />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

@@ -11,6 +11,8 @@ import UserSegment from '../../entities/User/UserSegment';
 import LogoComponent from './LogoComponent';
 import TopSearchComponent from './TopSearchComponent';
 import LanguageSelect from '../../../LanguageSelect/LanguageSelect';
+import { Link } from 'react-router-dom';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const SearchBar = () => {
   const { t } = useTranslation();
@@ -64,13 +66,12 @@ const SearchBar = () => {
 
   return (
     <Container maxWidth={breakpoint}>
-      <Box paddingY={2} display="flex" alignItems="center" justifyContent="space-between">
+      <Box paddingY={2} display="flex" gap={2} alignItems="center" justifyContent="space-between">
         <LogoComponent />
         <Hidden mdDown>
           <Box
             flexGrow={1}
             justifyContent="center"
-            paddingX={2}
             sx={{
               minWidth: 256,
               maxWidth: 512,
@@ -79,9 +80,10 @@ const SearchBar = () => {
             <TopSearchComponent />
           </Box>
         </Hidden>
-        <Box marginRight={2}>
-          <LanguageSelect />
-        </Box>
+        <LanguageSelect />
+        <Link to="/help">
+          <HelpOutlineIcon color="primary" />
+        </Link>
         <Box width={155}>{loading ? <Skeleton /> : <>{userProfileComponent}</>}</Box>
       </Box>
     </Container>
