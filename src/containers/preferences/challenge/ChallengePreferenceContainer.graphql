@@ -1,0 +1,27 @@
+query challengePreferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  hub(ID: $hubId){
+    id
+    challenge(ID: $challengeId) {
+      id
+      preferences {
+        id
+        value
+        definition {
+          id
+          description
+          displayName
+          group
+          type
+          valueType
+        }
+      }
+    }
+  }
+}
+
+mutation updatePreferenceOnChallenge($preferenceData: UpdateChallengePreferenceInput!) {
+  updatePreferenceOnChallenge(preferenceData: $preferenceData) {
+    id
+    value
+  }
+}

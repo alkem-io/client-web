@@ -3,6 +3,7 @@ query organizationPreferences($orgId: UUID_NAMEID!) {
     id
     preferences {
       id
+      value
       definition {
         id
         description
@@ -11,7 +12,6 @@ query organizationPreferences($orgId: UUID_NAMEID!) {
         type
         valueType
       }
-      value
     }
   }
 }

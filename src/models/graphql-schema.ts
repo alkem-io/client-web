@@ -9998,6 +9998,46 @@ export type OrganizationMembersQuery = {
   };
 };
 
+export type ChallengePreferencesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengePreferencesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      preferences: Array<{
+        __typename?: 'Preference';
+        id: string;
+        value: string;
+        definition: {
+          __typename?: 'PreferenceDefinition';
+          id: string;
+          description: string;
+          displayName: string;
+          group: string;
+          type: PreferenceType;
+          valueType: PreferenceValueType;
+        };
+      }>;
+    };
+  };
+};
+
+export type UpdatePreferenceOnChallengeMutationVariables = Exact<{
+  preferenceData: UpdateChallengePreferenceInput;
+}>;
+
+export type UpdatePreferenceOnChallengeMutation = {
+  __typename?: 'Mutation';
+  updatePreferenceOnChallenge: { __typename?: 'Preference'; id: string; value: string };
+};
+
 export type OrganizationPreferencesQueryVariables = Exact<{
   orgId: Scalars['UUID_NAMEID'];
 }>;
