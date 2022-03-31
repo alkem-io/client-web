@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Loading from '../../components/core/Loading/Loading';
-import { useKratos, useUpdateNavigation } from '../../hooks';
+import { useLogoutUrl, useUpdateNavigation } from '../../hooks';
 
 interface LogoutPageProps {}
 
@@ -10,7 +10,7 @@ export const LogoutPage: FC<LogoutPageProps> = () => {
   const { t } = useTranslation();
   const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
-  const { getLogoutUrl, logoutUrl, error } = useKratos();
+  const { getLogoutUrl, logoutUrl, error } = useLogoutUrl();
 
   useEffect(() => {
     if (logoutUrl) {

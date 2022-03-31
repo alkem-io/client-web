@@ -1,11 +1,11 @@
 import { Box, Container } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
-import { useKratos } from '../../hooks';
+import useKratosFlow, { FlowTypeName } from '../../hooks/kratos/useKratosFlow';
 
 interface RegisterPageProps {
   flow: string;
@@ -13,16 +13,12 @@ interface RegisterPageProps {
 
 export const SettingsPage: FC<RegisterPageProps> = ({ flow }) => {
   const { t } = useTranslation();
-  const { settingsFlow, getSettingsFlow, loading } = useKratos();
+  const { flow: settingsFlow, loading } = useKratosFlow(FlowTypeName.Settings, flow);
 
   const hideFields = useMemo(
     () => ['traits.name.first', 'traits.name.last', 'traits.accepted_terms', 'profile', 'traits.email'],
     []
   );
-
-  useEffect(() => {
-    getSettingsFlow(flow);
-  }, [getSettingsFlow, flow]);
 
   if (loading) return <Loading text={t('kratos.loading-flow')} />;
 

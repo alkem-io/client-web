@@ -9601,6 +9601,46 @@ export function refetchUsersWithCredentialsSimpleListQuery(
 ) {
   return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
 }
+export const ProfileVerifiedCredentialDocument = gql`
+  subscription profileVerifiedCredential {
+    profileVerifiedCredential {
+      vc
+    }
+  }
+`;
+
+/**
+ * __useProfileVerifiedCredentialSubscription__
+ *
+ * To run a query within a React component, call `useProfileVerifiedCredentialSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useProfileVerifiedCredentialSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProfileVerifiedCredentialSubscription({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useProfileVerifiedCredentialSubscription(
+  baseOptions?: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ProfileVerifiedCredentialSubscription,
+    SchemaTypes.ProfileVerifiedCredentialSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ProfileVerifiedCredentialSubscription,
+    SchemaTypes.ProfileVerifiedCredentialSubscriptionVariables
+  >(ProfileVerifiedCredentialDocument, options);
+}
+export type ProfileVerifiedCredentialSubscriptionHookResult = ReturnType<
+  typeof useProfileVerifiedCredentialSubscription
+>;
+export type ProfileVerifiedCredentialSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.ProfileVerifiedCredentialSubscription>;
 export const HubContributionDetailsDocument = gql`
   query hubContributionDetails($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -11911,6 +11951,9 @@ export const ChallengeContextDocument = gql`
         id
         nameID
         displayName
+        authorization {
+          myPrivileges
+        }
         tagset {
           id
           name
@@ -12208,6 +12251,123 @@ export type OpportunityContextExtraQueryResult = Apollo.QueryResult<
 export function refetchOpportunityContextExtraQuery(variables: SchemaTypes.OpportunityContextExtraQueryVariables) {
   return { query: OpportunityContextExtraDocument, variables: variables };
 }
+export const CommunityFeedbackTemplatesDocument = gql`
+  query communityFeedbackTemplates {
+    configuration {
+      template {
+        challenges {
+          feedback {
+            name
+            questions {
+              question
+              required
+              sortOrder
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCommunityFeedbackTemplatesQuery__
+ *
+ * To run a query within a React component, call `useCommunityFeedbackTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCommunityFeedbackTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommunityFeedbackTemplatesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCommunityFeedbackTemplatesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.CommunityFeedbackTemplatesQuery,
+    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CommunityFeedbackTemplatesQuery,
+    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+  >(CommunityFeedbackTemplatesDocument, options);
+}
+export function useCommunityFeedbackTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CommunityFeedbackTemplatesQuery,
+    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CommunityFeedbackTemplatesQuery,
+    SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+  >(CommunityFeedbackTemplatesDocument, options);
+}
+export type CommunityFeedbackTemplatesQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesQuery>;
+export type CommunityFeedbackTemplatesLazyQueryHookResult = ReturnType<typeof useCommunityFeedbackTemplatesLazyQuery>;
+export type CommunityFeedbackTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CommunityFeedbackTemplatesQuery,
+  SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+>;
+export function refetchCommunityFeedbackTemplatesQuery(
+  variables?: SchemaTypes.CommunityFeedbackTemplatesQueryVariables
+) {
+  return { query: CommunityFeedbackTemplatesDocument, variables: variables };
+}
+export const CreateFeedbackOnCommunityContextDocument = gql`
+  mutation createFeedbackOnCommunityContext($feedbackData: CreateFeedbackOnCommunityContextInput!) {
+    createFeedbackOnCommunityContext(feedbackData: $feedbackData)
+  }
+`;
+export type CreateFeedbackOnCommunityContextMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateFeedbackOnCommunityContextMutation,
+  SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
+>;
+
+/**
+ * __useCreateFeedbackOnCommunityContextMutation__
+ *
+ * To run a mutation, you first call `useCreateFeedbackOnCommunityContextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFeedbackOnCommunityContextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFeedbackOnCommunityContextMutation, { data, loading, error }] = useCreateFeedbackOnCommunityContextMutation({
+ *   variables: {
+ *      feedbackData: // value for 'feedbackData'
+ *   },
+ * });
+ */
+export function useCreateFeedbackOnCommunityContextMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateFeedbackOnCommunityContextMutation,
+    SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateFeedbackOnCommunityContextMutation,
+    SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
+  >(CreateFeedbackOnCommunityContextDocument, options);
+}
+export type CreateFeedbackOnCommunityContextMutationHookResult = ReturnType<
+  typeof useCreateFeedbackOnCommunityContextMutation
+>;
+export type CreateFeedbackOnCommunityContextMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateFeedbackOnCommunityContextMutation>;
+export type CreateFeedbackOnCommunityContextMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateFeedbackOnCommunityContextMutation,
+  SchemaTypes.CreateFeedbackOnCommunityContextMutationVariables
+>;
 export const CommunityDiscussionDocument = gql`
   query communityDiscussion($hubId: UUID_NAMEID!, $communityId: UUID!, $discussionId: String!) {
     hub(ID: $hubId) {
@@ -13189,9 +13349,8 @@ export function refetchGetSupportedCredentialMetadataQuery(
 export const BeginCredentialRequestInteractionDocument = gql`
   mutation beginCredentialRequestInteraction($types: [String!]!) {
     beginVerifiedCredentialRequestInteraction(types: $types) {
-      interactionId
+      qrCodeImg
       jwt
-      expiresOn
     }
   }
 `;
@@ -13241,9 +13400,7 @@ export type BeginCredentialRequestInteractionMutationOptions = Apollo.BaseMutati
 export const BeginAlkemioUserCredentialOfferInteractionDocument = gql`
   mutation beginAlkemioUserCredentialOfferInteraction {
     beginAlkemioUserVerifiedCredentialOfferInteraction {
-      interactionId
       jwt
-      expiresOn
     }
   }
 `;
@@ -13292,9 +13449,7 @@ export type BeginAlkemioUserCredentialOfferInteractionMutationOptions = Apollo.B
 export const BeginCommunityMemberCredentialOfferInteractionDocument = gql`
   mutation beginCommunityMemberCredentialOfferInteraction($communityID: String!) {
     beginCommunityMemberVerifiedCredentialOfferInteraction(communityID: $communityID) {
-      interactionId
       jwt
-      expiresOn
     }
   }
 `;

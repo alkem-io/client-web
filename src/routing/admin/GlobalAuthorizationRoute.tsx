@@ -5,6 +5,7 @@ import GlobalAuthorizationPage from '../../pages/Admin/GlobalAuthorizationPage';
 import GlobalCommunityAuthorizationPage from '../../pages/Admin/GlobalCommunityAuthorizationPage';
 import { nameOfUrl } from '../url-params';
 import AuthorizationRouteProps from './AuthorizationRouteProps';
+import AdminAuthorizationPage from '../../pages/Admin/AdminAuthorization/AdminAuthorizationPage';
 
 const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
@@ -12,12 +13,13 @@ const GlobalAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route path={`:${nameOfUrl.role}`} element={<GlobalAuthorizationPage paths={currentPaths} />}></Route>
+      <Route path="/" element={<AdminAuthorizationPage paths={currentPaths} />} />
+      <Route path={`:${nameOfUrl.role}`} element={<GlobalAuthorizationPage paths={currentPaths} />} />
       <Route
         path={`community/:${nameOfUrl.role}`}
         element={<GlobalCommunityAuthorizationPage paths={currentPaths} />}
-      ></Route>
-      <Route path="*" element={<Error404 />}></Route>
+      />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };

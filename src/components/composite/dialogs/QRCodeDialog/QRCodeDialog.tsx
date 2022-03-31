@@ -5,6 +5,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import QRCode from '../../../core/QRCode/QRCode';
+import { makeStyles } from '@mui/styles';
 
 interface QRCodeDialogProps {
   entities: {
@@ -12,7 +13,8 @@ interface QRCodeDialogProps {
     title?: string | React.ReactNode;
     contentId?: TranslationKey;
     content?: string;
-    qrValue?: string | null;
+    qrCodeJwt?: string;
+    qrCodeImg?: string;
   };
   actions: {
     onCancel: () => void;
@@ -26,8 +28,22 @@ interface QRCodeDialogProps {
   };
 }
 
+const useStyles = makeStyles({
+  paper: {
+    height: '100vh',
+  },
+  content: {
+    display: 'flex',
+    flexFlow: 'column nowrap',
+  },
+  qrCode: {
+    flexGrow: 1,
+  },
+});
+
 const QRCodeDialog: FC<QRCodeDialogProps> = ({ entities, actions, options, state }) => {
   const { t } = useTranslation();
+  const styles = useStyles();
 
   const title = entities.titleId ? t(entities.titleId) : entities.title;
   if (!title) {
@@ -39,14 +55,17 @@ const QRCodeDialog: FC<QRCodeDialogProps> = ({ entities, actions, options, state
   }
 
   return (
-    <Dialog open={options.show} aria-labelledby="confirmation-dialog">
+    <Dialog open={options.show} aria-labelledby="confirmation-dialog" classes={{ paper: styles.paper }}>
       <DialogTitle id="confirmation-dialog-title" onClose={actions.onCancel}>
         {title}
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={styles.content}>
         {content}
         {state?.isLoading && <Loading text="Generating credential request" />}
-        {!state?.isLoading && <QRCode value={entities.qrValue} />}
+        {!state?.isLoading && entities.qrCodeJwt && (
+          <QRCode qrCodeJwt={entities.qrCodeJwt} qrCodeImg={entities.qrCodeImg} className={styles.qrCode} />
+        )}
+        {!state?.isLoading && entities.qrCodeImg && <img src={entities.qrCodeImg} alt="qr code" />}
       </DialogContent>
     </Dialog>
   );

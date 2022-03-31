@@ -40,6 +40,9 @@ query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
       id
       nameID
       displayName
+      authorization {
+        myPrivileges
+      }
       tagset {
         id
         name

@@ -13,13 +13,15 @@ import QRCodeDialog from '../../components/composite/dialogs/QRCodeDialog/QRCode
 import { Loading } from '../../components/core';
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 import UserCredentialsContainer from '../../containers/user/UserCredentialsContainer';
-import { useUpdateNavigation, useUserContext } from '../../hooks';
+import { useNotification, useUpdateNavigation, useUserContext } from '../../hooks';
 import { PageProps } from '../common';
+import { useProfileVerifiedCredentialSubscription, useUserSsiLazyQuery } from '../../hooks/generated/graphql';
 
 interface UserCredentialsPageProps extends PageProps {}
 
 export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
+  const notify = useNotification();
   const { pathname: url } = useResolvedPath('.');
 
   const { user: currentUser, loading: loadingUserContext } = useUserContext();
@@ -30,6 +32,17 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
   const [communityCredentialOfferDialogOpen, setCommunityCredentialOfferDialogOpen] = useState(false);
   const [qrDialogOpen, setQRDialogOpen] = useState(false);
   const [jwt, setJWT] = useState<string | null>(null);
+  const [refetchUserSsiQuery] = useUserSsiLazyQuery();
+
+  useProfileVerifiedCredentialSubscription({
+    shouldResubscribe: true,
+    onSubscriptionData: async () => {
+      await refetchUserSsiQuery();
+      setRequestCredentialDialogOpen(false);
+      notify(t('pages.user-credentials.added-successfully'), 'success');
+    },
+    skip: !requestCredentialDialogOpen,
+  });
 
   if (!currentUser?.user.id) {
     return <Loading />;
@@ -87,7 +100,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
                     setQRDialogOpen(true);
                   }}
                 >
-                  Issue
+                  {t('pages.user-credentials.issue')}
                 </Button>
               }
             >
@@ -113,7 +126,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
                     setCommunityCredentialOfferDialogOpen(true);
                   }}
                 >
-                  Issue
+                  {t('pages.user-credentials.issue')}
                 </Button>
               }
             >
@@ -171,7 +184,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
               onCancel: () => setQRDialogOpen(false),
             }}
             entities={{
-              qrValue: jwt,
+              qrCodeJwt: jwt || '',
               titleId: 'components.alkemio-user-credential-offer-dialog.title',
               contentId: 'components.alkemio-user-credential-offer-dialog.content',
             }}

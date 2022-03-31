@@ -1,10 +1,10 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useLayoutEffect } from 'react';
 import { NavigationContext } from '../context/NavigationProvider';
 
 export const useUpdateNavigation = ({ currentPaths }) => {
   const { set } = useContext(NavigationContext);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     set(currentPaths);
   }, [currentPaths]);
 };

@@ -23,6 +23,7 @@ import { useApolloErrorHandler } from '../../hooks';
 interface ContextTabPermissions {
   canReadAspects: boolean;
   canCreateAspects: boolean;
+  canCreateCommunityContextReview: boolean;
 }
 
 export interface ContextTabContainerEntities {
@@ -113,6 +114,8 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
     challengeContextPrivileges && challengeContextPrivileges.includes(AuthorizationPrivilege.Read);
   const canCreateAspectOnChallenge =
     challengeContextPrivileges && challengeContextPrivileges.includes(AuthorizationPrivilege.CreateAspect);
+  const challengePrivileges = challengeData?.hub.challenge?.authorization?.myPrivileges ?? [];
+  const canCreateCommunityContextReview = challengePrivileges.includes(AuthorizationPrivilege.CommunityContextReview);
 
   const {
     data: opportunityData,
@@ -161,6 +164,7 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
   const permissions: ContextTabPermissions = {
     canReadAspects: canReadHubContext ?? canReadChallengeContext ?? canReadOpportunityContext ?? true,
     canCreateAspects: canCreateAspectOnHub ?? canCreateAspectOnChallenge ?? canCreateAspectOnOpportunity ?? false,
+    canCreateCommunityContextReview,
   };
 
   return <>{children({ context, tagset, lifecycle, aspects, references, permissions }, { loading, error }, {})}</>;

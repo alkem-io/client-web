@@ -115,6 +115,9 @@
     "lifecycle": "Lifecycle",
     "home": "Home",
     "visuals": "Visuals",
+    "authorization": "Authorization",
+    "question": "Question",
+    "questions": "Questions",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -237,7 +240,8 @@
   },
   "components": {
     "context-section": {
-      "create-aspect": "Successfully created the aspect"
+      "create-aspect": "Successfully created the aspect",
+      "give-feedback": "Give feedback"
     },
     "aspect-creation": {
       "title": "Create a new aspect",
@@ -592,6 +596,10 @@
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {
+    "feedback": {
+      "title": "Give feedback on this community context",
+      "success": "Feedback submitted"
+    },
     "aspect": {
       "dashboard": {
         "comment": {
@@ -684,9 +692,9 @@
         },
         "interested-in-collaboration": {
           "header": "Alkemio and You",
-          "innovation-facilitator": "Are you driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
-          "suggestions": "Do you have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!",
-          "contributor": "Do you want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Backed by a <a href='https://alkem.io' target='_blank'>non-profit foundation</a>."
+          "innovation-facilitator": "Driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
+          "suggestions": "Have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!",
+          "contributor": "Want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Backed by a <a href='https://alkem.io' target='_blank'>non-profit foundation</a>."
         },
         "getting-started": {
           "header": "Getting Started",
@@ -905,9 +913,8 @@
       "login": "Have an account?"
     },
     "registration-success": {
-      "header": "Thank you for signing up!",
-      "subheader": "For security purposes we need to validate the provided email address. Please check your inbox and follow instructions there.",
-      "message": "Suggested next steps:"
+      "header": "Thank you for signing up.",
+      "subheader": "Nearly there! One last step is to verify your email."
     },
     "verification-success": {
       "header": "Thank you for verifying your email address!",
@@ -920,7 +927,12 @@
     },
     "verification": {
       "header": "Email verification",
-      "message": "Users of Alkemio are required to verify their email address.<br/><br/>Please enter your email address below to recieve a new verification link."
+      "message": "To receive a new verification email, please enter your email address below."
+    },
+    "verification-required": {
+      "header": "Email verification is pending.",
+      "message": "Please check your inbox for an email with instructions.",
+      "link": "(If you have not received an email, click on this link to send again)"
     },
     "settings": {
       "header": "User Settings"
@@ -955,7 +967,9 @@
         "title": "My Verifiable Credentials",
         "description": "Alkemio caches your verifiable credentials in your cloud hosted wallet. The credentials you share will grant you privileges in communities across the platform.",
         "add-credential": "Add Credential"
-      }
+      },
+      "issue": "Issue",
+      "added-successfully": "Credential successfully added"
     },
     "authentication-required": {
       "header": "The page you are trying to reach requires you to be logged in.",
