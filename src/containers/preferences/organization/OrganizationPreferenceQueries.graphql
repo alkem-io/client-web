@@ -1,0 +1,24 @@
+query organizationPreferences($orgId: UUID_NAMEID!) {
+  organization(ID: $orgId) {
+    id
+    preferences {
+      id
+      definition {
+        id
+        description
+        displayName
+        group
+        type
+        valueType
+      }
+      value
+    }
+  }
+}
+
+mutation updatePreferenceOnOrganization($preferenceData: UpdateOrganizationPreferenceInput!) {
+  updatePreferenceOnOrganization(preferenceData: $preferenceData) {
+    id
+    value
+  }
+}

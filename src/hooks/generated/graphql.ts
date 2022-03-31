@@ -13281,6 +13281,126 @@ export type OrganizationMembersQueryResult = Apollo.QueryResult<
 export function refetchOrganizationMembersQuery(variables: SchemaTypes.OrganizationMembersQueryVariables) {
   return { query: OrganizationMembersDocument, variables: variables };
 }
+export const OrganizationPreferencesDocument = gql`
+  query organizationPreferences($orgId: UUID_NAMEID!) {
+    organization(ID: $orgId) {
+      id
+      preferences {
+        id
+        definition {
+          id
+          description
+          displayName
+          group
+          type
+          valueType
+        }
+        value
+      }
+    }
+  }
+`;
+
+/**
+ * __useOrganizationPreferencesQuery__
+ *
+ * To run a query within a React component, call `useOrganizationPreferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationPreferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationPreferencesQuery({
+ *   variables: {
+ *      orgId: // value for 'orgId'
+ *   },
+ * });
+ */
+export function useOrganizationPreferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OrganizationPreferencesQuery,
+    SchemaTypes.OrganizationPreferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OrganizationPreferencesQuery, SchemaTypes.OrganizationPreferencesQueryVariables>(
+    OrganizationPreferencesDocument,
+    options
+  );
+}
+export function useOrganizationPreferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OrganizationPreferencesQuery,
+    SchemaTypes.OrganizationPreferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OrganizationPreferencesQuery,
+    SchemaTypes.OrganizationPreferencesQueryVariables
+  >(OrganizationPreferencesDocument, options);
+}
+export type OrganizationPreferencesQueryHookResult = ReturnType<typeof useOrganizationPreferencesQuery>;
+export type OrganizationPreferencesLazyQueryHookResult = ReturnType<typeof useOrganizationPreferencesLazyQuery>;
+export type OrganizationPreferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.OrganizationPreferencesQuery,
+  SchemaTypes.OrganizationPreferencesQueryVariables
+>;
+export function refetchOrganizationPreferencesQuery(variables: SchemaTypes.OrganizationPreferencesQueryVariables) {
+  return { query: OrganizationPreferencesDocument, variables: variables };
+}
+export const UpdatePreferenceOnOrganizationDocument = gql`
+  mutation updatePreferenceOnOrganization($preferenceData: UpdateOrganizationPreferenceInput!) {
+    updatePreferenceOnOrganization(preferenceData: $preferenceData) {
+      id
+      value
+    }
+  }
+`;
+export type UpdatePreferenceOnOrganizationMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePreferenceOnOrganizationMutation,
+  SchemaTypes.UpdatePreferenceOnOrganizationMutationVariables
+>;
+
+/**
+ * __useUpdatePreferenceOnOrganizationMutation__
+ *
+ * To run a mutation, you first call `useUpdatePreferenceOnOrganizationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePreferenceOnOrganizationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePreferenceOnOrganizationMutation, { data, loading, error }] = useUpdatePreferenceOnOrganizationMutation({
+ *   variables: {
+ *      preferenceData: // value for 'preferenceData'
+ *   },
+ * });
+ */
+export function useUpdatePreferenceOnOrganizationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdatePreferenceOnOrganizationMutation,
+    SchemaTypes.UpdatePreferenceOnOrganizationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdatePreferenceOnOrganizationMutation,
+    SchemaTypes.UpdatePreferenceOnOrganizationMutationVariables
+  >(UpdatePreferenceOnOrganizationDocument, options);
+}
+export type UpdatePreferenceOnOrganizationMutationHookResult = ReturnType<
+  typeof useUpdatePreferenceOnOrganizationMutation
+>;
+export type UpdatePreferenceOnOrganizationMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnOrganizationMutation>;
+export type UpdatePreferenceOnOrganizationMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePreferenceOnOrganizationMutation,
+  SchemaTypes.UpdatePreferenceOnOrganizationMutationVariables
+>;
 export const GetSupportedCredentialMetadataDocument = gql`
   query getSupportedCredentialMetadata {
     getSupportedVerifiedCredentialMetadata {

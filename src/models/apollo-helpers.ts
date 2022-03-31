@@ -267,6 +267,7 @@ export type ChallengeKeySpecifier = (
   | 'lifecycle'
   | 'nameID'
   | 'opportunities'
+  | 'preferences'
   | 'tagset'
   | ChallengeKeySpecifier
 )[];
@@ -284,6 +285,7 @@ export type ChallengeFieldPolicy = {
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeTemplateKeySpecifier = ('applications' | 'feedback' | 'name' | ChallengeTemplateKeySpecifier)[];
@@ -768,7 +770,9 @@ export type MutationKeySpecifier = (
   | 'updateHub'
   | 'updateOpportunity'
   | 'updateOrganization'
+  | 'updatePreferenceOnChallenge'
   | 'updatePreferenceOnHub'
+  | 'updatePreferenceOnOrganization'
   | 'updatePreferenceOnUser'
   | 'updateProfile'
   | 'updateProject'
@@ -870,7 +874,9 @@ export type MutationFieldPolicy = {
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatePreferenceOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatePreferenceOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnUser?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProfile?: FieldPolicy<any> | FieldReadFunction<any>;
   updateProject?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -944,6 +950,7 @@ export type OrganizationKeySpecifier = (
   | 'legalEntityName'
   | 'members'
   | 'nameID'
+  | 'preferences'
   | 'profile'
   | 'verification'
   | 'website'
@@ -962,6 +969,7 @@ export type OrganizationFieldPolicy = {
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;

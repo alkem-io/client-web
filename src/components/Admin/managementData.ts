@@ -85,6 +85,7 @@ export const managementData = {
         { description: 'Applications', url: 'community/applications' },
         { description: 'Lead Organizations', url: 'community/lead' },
         { description: 'Updates', url: 'community/updates' },
+        { description: 'Preferences', url: 'community/preferences' },
       ],
     },
     {
@@ -149,6 +150,7 @@ export const managementData = {
       buttons: [
         { description: 'Admins', url: 'authorization/admins' },
         { description: 'Owners', url: 'authorization/owners' },
+        { description: 'Preferences', url: 'authorization/preferences' },
       ],
     },
   ],
