@@ -13,7 +13,7 @@ import ReferenceSegment, { referenceSegmentSchema } from '../../../Admin/Common/
 import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
 import { nameValidator } from '../../../Admin/Common/NameSegment';
-import { useMarkdownInputField } from '../../../Admin/Common/useMarkdownInputField';
+import MarkdownInput from '../../../Admin/Common/MarkdownInput';
 
 type FormValueType = {
   name: string;
@@ -38,7 +38,7 @@ export interface AspectFormProps {
   aspect?: AspectFormInput;
   aspectNames?: string[];
   edit?: boolean;
-  templateDescription?: string;
+  descriptionTemplate?: string;
   loading?: boolean;
   onChange?: (aspect: AspectFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
@@ -49,7 +49,7 @@ export interface AspectFormProps {
 const AspectForm: FC<AspectFormProps> = ({
   aspect,
   aspectNames,
-  templateDescription,
+  descriptionTemplate,
   edit = false,
   loading,
   onChange,
@@ -59,7 +59,6 @@ const AspectForm: FC<AspectFormProps> = ({
 }) => {
   const { t } = useTranslation();
   const getInputField = useInputField();
-  const getMarkdownInput = useMarkdownInputField();
 
   const tagsets: Tagset[] = [
     {
@@ -69,9 +68,16 @@ const AspectForm: FC<AspectFormProps> = ({
     },
   ];
 
+  const getDescriptionValue = () => {
+    if (!aspect) {
+      return '';
+    }
+    return aspect.description ?? descriptionTemplate ?? '';
+  };
+
   const initialValues: FormValueType = {
     name: aspect?.displayName ?? '',
-    description: templateDescription ?? '',
+    description: getDescriptionValue(),
     tagsets,
     aspectNames: aspectNames ?? [],
     type: aspect?.type ?? '',
@@ -121,15 +127,15 @@ const AspectForm: FC<AspectFormProps> = ({
             helpText: t('components.aspect-creation.info-step.name-help-text'),
           })}
           <SectionSpacer />
-          {getMarkdownInput({
-            name: 'description',
-            label: t('components.aspect-creation.info-step.description'),
-            placeholder: t('components.aspect-creation.info-step.description-placeholder'),
-            tooltipLabel: t('components.aspect-creation.info-step.description-help-text'),
-            required: true,
-            loading: loading,
-            rows: 7,
-          })}
+          <MarkdownInput
+            name="description"
+            label={t('components.aspect-creation.info-step.description')}
+            placeholder={t('components.aspect-creation.info-step.description-placeholder')}
+            tooltipLabel={t('components.aspect-creation.info-step.description-help-text')}
+            required
+            loading={loading}
+            rows={7}
+          />
           <SectionSpacer />
           <TagsetSegment
             tagsets={tagsets}

@@ -29,7 +29,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useMarkdownInputField } from '../../components/Admin/Common/useMarkdownInputField';
+import MarkdownInput from '../../components/Admin/Common/MarkdownInput';
 import ConfirmationDialog from '../../components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../components/core/Avatar';
 import Button from '../../components/core/Button';
@@ -88,10 +88,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, actions, state, options }) => {
-  // styling
   const styles = useStyles();
-  // components
-  const getMarkdownInput = useMarkdownInputField();
   const notify = useNotification();
   const { t } = useTranslation();
   // entities
@@ -154,7 +151,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    {getMarkdownInput({ name: 'community-update', rows: 30, label: '', required: true })}
+                    <MarkdownInput name="community-update" rows={30} label="" required />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
                     <Button
