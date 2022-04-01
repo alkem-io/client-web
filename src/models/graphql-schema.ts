@@ -78,6 +78,8 @@ export type AgentBeginVerifiedCredentialOfferOutput = {
   __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
   /** The token containing the information about issuer, callback endpoint and the credentials offered */
   jwt: Scalars['String'];
+  /** The QR Code Image to be offered on the client for scanning by a mobile wallet */
+  qrCodeImg: Scalars['String'];
 };
 
 export type AgentBeginVerifiedCredentialRequestOutput = {
@@ -253,7 +255,7 @@ export type Authorization = {
   /** The set of privilege rules that are contained by this Authorization Policy. */
   privilegeRules?: Maybe<Array<AuthorizationPolicyRulePrivilege>>;
   /** The set of verified credential rules that are contained by this Authorization Policy. */
-  verifiedCredentialClaimRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredentialClaim>>;
+  verifiedCredentialRules?: Maybe<Array<AuthorizationPolicyRuleVerifiedCredential>>;
 };
 
 export enum AuthorizationCredential {
@@ -289,11 +291,11 @@ export type AuthorizationPolicyRulePrivilege = {
   sourcePrivilege: Scalars['String'];
 };
 
-export type AuthorizationPolicyRuleVerifiedCredentialClaim = {
-  __typename?: 'AuthorizationPolicyRuleVerifiedCredentialClaim';
+export type AuthorizationPolicyRuleVerifiedCredential = {
+  __typename?: 'AuthorizationPolicyRuleVerifiedCredential';
+  claimRule: Scalars['String'];
+  credentialName: Scalars['String'];
   grantedPrivileges: Array<AuthorizationPrivilege>;
-  name: Scalars['String'];
-  value: Scalars['String'];
 };
 
 export enum AuthorizationPrivilege {
@@ -387,6 +389,8 @@ export type Challenge = Searchable & {
   nameID: Scalars['NameID'];
   /** The Opportunities for the challenge. */
   opportunities?: Maybe<Array<Opportunity>>;
+  /** The preferences for this Challenge */
+  preferences: Array<Preference>;
   /** The set of tags for the challenge */
   tagset?: Maybe<Tagset>;
 };
@@ -400,6 +404,12 @@ export type ChallengeEventInput = {
   ID: Scalars['UUID'];
   eventName: Scalars['String'];
 };
+
+export enum ChallengePreferenceType {
+  MembershipApplyChallengeFromHubMembers = 'MEMBERSHIP_APPLY_CHALLENGE_FROM_HUB_MEMBERS',
+  MembershipFeedbackOnChallengeContext = 'MEMBERSHIP_FEEDBACK_ON_CHALLENGE_CONTEXT',
+  MembershipJoinChallengeFromHubMembers = 'MEMBERSHIP_JOIN_CHALLENGE_FROM_HUB_MEMBERS',
+}
 
 export type ChallengeTemplate = {
   __typename?: 'ChallengeTemplate';
@@ -1050,7 +1060,7 @@ export type Hub = {
   opportunities: Array<Opportunity>;
   /** A particular Opportunity, either by its ID or nameID */
   opportunity: Opportunity;
-  /** The preferences for this user */
+  /** The preferences for this Hub */
   preferences: Array<Preference>;
   /** A particular Project, identified by the ID */
   project: Project;
@@ -1413,8 +1423,12 @@ export type Mutation = {
   updateOpportunity: Opportunity;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
+  /** Updates one of the Preferences on a Challenge */
+  updatePreferenceOnChallenge: Preference;
   /** Updates one of the Preferences on a Hub */
   updatePreferenceOnHub: Preference;
+  /** Updates one of the Preferences on an Organization */
+  updatePreferenceOnOrganization: Preference;
   /** Updates one of the Preferences on a Hub */
   updatePreferenceOnUser: Preference;
   /** Updates the specified Profile. */
@@ -1787,8 +1801,16 @@ export type MutationUpdateOrganizationArgs = {
   organizationData: UpdateOrganizationInput;
 };
 
+export type MutationUpdatePreferenceOnChallengeArgs = {
+  preferenceData: UpdateChallengePreferenceInput;
+};
+
 export type MutationUpdatePreferenceOnHubArgs = {
   preferenceData: UpdateHubPreferenceInput;
+};
+
+export type MutationUpdatePreferenceOnOrganizationArgs = {
+  preferenceData: UpdateOrganizationPreferenceInput;
 };
 
 export type MutationUpdatePreferenceOnUserArgs = {
@@ -1902,6 +1924,8 @@ export type Organization = Groupable &
     members?: Maybe<Array<User>>;
     /** A name identifier of the entity, unique within a given scope. */
     nameID: Scalars['NameID'];
+    /** The preferences for this Organization */
+    preferences: Array<Preference>;
     /** The profile for this organization. */
     profile: Profile;
     verification: OrganizationVerification;
@@ -1926,6 +1950,10 @@ export type OrganizationMembership = {
   hubsHosting: Array<MembershipResultEntry>;
   id: Scalars['UUID'];
 };
+
+export enum OrganizationPreferenceType {
+  AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
+}
 
 export type OrganizationTemplate = {
   __typename?: 'OrganizationTemplate';
@@ -2066,7 +2094,11 @@ export type PreferenceDefinition = {
 
 export enum PreferenceType {
   AuthorizationAnonymousReadAccess = 'AUTHORIZATION_ANONYMOUS_READ_ACCESS',
+  AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
   MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
+  MembershipApplyChallengeFromHubMembers = 'MEMBERSHIP_APPLY_CHALLENGE_FROM_HUB_MEMBERS',
+  MembershipFeedbackOnChallengeContext = 'MEMBERSHIP_FEEDBACK_ON_CHALLENGE_CONTEXT',
+  MembershipJoinChallengeFromHubMembers = 'MEMBERSHIP_JOIN_CHALLENGE_FROM_HUB_MEMBERS',
   MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
   MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
@@ -2106,6 +2138,8 @@ export type Profile = {
 
 export type ProfileCredentialVerified = {
   __typename?: 'ProfileCredentialVerified';
+  /** The email */
+  userEmail: Scalars['String'];
   /** The vc. */
   vc: Scalars['String'];
 };
@@ -2501,6 +2535,14 @@ export type UpdateChallengeInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type UpdateChallengePreferenceInput = {
+  /** ID of the Challenge */
+  challengeID: Scalars['UUID_NAMEID'];
+  /** Type of the challenge preference */
+  type: ChallengePreferenceType;
+  value: Scalars['String'];
+};
+
 export type UpdateContextInput = {
   background?: InputMaybe<Scalars['Markdown']>;
   impact?: InputMaybe<Scalars['Markdown']>;
@@ -2581,6 +2623,14 @@ export type UpdateOrganizationInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   profileData?: InputMaybe<UpdateProfileInput>;
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateOrganizationPreferenceInput = {
+  /** ID of the Organization */
+  organizationID: Scalars['UUID_NAMEID'];
+  /** Type of the organization preference */
+  type: OrganizationPreferenceType;
+  value: Scalars['String'];
 };
 
 export type UpdateProfileInput = {
@@ -2789,7 +2839,7 @@ export type VerifiedCredential = {
   expires: Scalars['String'];
   /** The time at which the credential was issued */
   issued: Scalars['String'];
-  /** The challenge issuing the VC */
+  /** The party issuing the VC */
   issuer: Scalars['String'];
   /** The name of the VC */
   name: Scalars['String'];
@@ -9948,6 +9998,81 @@ export type OrganizationMembersQuery = {
   };
 };
 
+export type ChallengePreferencesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengePreferencesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      preferences: Array<{
+        __typename?: 'Preference';
+        id: string;
+        value: string;
+        definition: {
+          __typename?: 'PreferenceDefinition';
+          id: string;
+          description: string;
+          displayName: string;
+          group: string;
+          type: PreferenceType;
+          valueType: PreferenceValueType;
+        };
+      }>;
+    };
+  };
+};
+
+export type UpdatePreferenceOnChallengeMutationVariables = Exact<{
+  preferenceData: UpdateChallengePreferenceInput;
+}>;
+
+export type UpdatePreferenceOnChallengeMutation = {
+  __typename?: 'Mutation';
+  updatePreferenceOnChallenge: { __typename?: 'Preference'; id: string; value: string };
+};
+
+export type OrganizationPreferencesQueryVariables = Exact<{
+  orgId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OrganizationPreferencesQuery = {
+  __typename?: 'Query';
+  organization: {
+    __typename?: 'Organization';
+    id: string;
+    preferences: Array<{
+      __typename?: 'Preference';
+      id: string;
+      value: string;
+      definition: {
+        __typename?: 'PreferenceDefinition';
+        id: string;
+        description: string;
+        displayName: string;
+        group: string;
+        type: PreferenceType;
+        valueType: PreferenceValueType;
+      };
+    }>;
+  };
+};
+
+export type UpdatePreferenceOnOrganizationMutationVariables = Exact<{
+  preferenceData: UpdateOrganizationPreferenceInput;
+}>;
+
+export type UpdatePreferenceOnOrganizationMutation = {
+  __typename?: 'Mutation';
+  updatePreferenceOnOrganization: { __typename?: 'Preference'; id: string; value: string };
+};
+
 export type GetSupportedCredentialMetadataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetSupportedCredentialMetadataQuery = {
@@ -9983,6 +10108,7 @@ export type BeginAlkemioUserCredentialOfferInteractionMutation = {
   beginAlkemioUserVerifiedCredentialOfferInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
     jwt: string;
+    qrCodeImg: string;
   };
 };
 
@@ -9995,6 +10121,7 @@ export type BeginCommunityMemberCredentialOfferInteractionMutation = {
   beginCommunityMemberVerifiedCredentialOfferInteraction: {
     __typename?: 'AgentBeginVerifiedCredentialOfferOutput';
     jwt: string;
+    qrCodeImg: string;
   };
 };
 

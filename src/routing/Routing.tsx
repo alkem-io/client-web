@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 import App from '../components/composite/layout/App/App';
@@ -19,9 +19,12 @@ import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import UserRoute from './user/UserRoute';
 import { HubRoute } from './hub/HubRoute';
+import HelpPage from '../pages/Help/HelpPage';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
+
+  const paths = useMemo(() => [{ value: '/', name: t('common.home'), real: true }], []);
 
   return (
     <Routes>
@@ -32,7 +35,7 @@ export const Routing: FC = () => {
           element={
             <HubProvider>
               <CommunityProvider>
-                <HubRoute paths={[{ value: '/', name: t('common.home'), real: true }]} />
+                <HubRoute paths={paths} />
               </CommunityProvider>
             </HubProvider>
           }
@@ -71,6 +74,7 @@ export const Routing: FC = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/profile" element={<ProfileRoute />} />
         <Route path="/restricted" element={<Restricted />} />
+        <Route path="/help" element={<HelpPage />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

@@ -15,6 +15,9 @@ export interface ContributionViewProps extends ProfileCardProps {
   loading?: boolean;
 }
 
+const getContributionItemKey = ({ hubId, challengeId, opportunityId }: ContributionItem) =>
+  [hubId, challengeId, opportunityId].filter(id => id).join('/');
+
 const SkeletonItem = () => (
   <Grid item>
     <Skeleton
@@ -49,9 +52,9 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
           </>
         )}
         {!loading &&
-          contributions.map((x, i) => (
-            <Grid item key={i} flexGrow={1} flexBasis={'50%'}>
-              <ContributionDetailsContainer entities={x}>
+          contributions.map(contributionItem => (
+            <Grid item key={getContributionItemKey(contributionItem)}>
+              <ContributionDetailsContainer entities={contributionItem}>
                 {({ details }, state) => <ContributionCardV2 details={details} loading={state.loading} />}
               </ContributionDetailsContainer>
             </Grid>

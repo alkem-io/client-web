@@ -1,11 +1,11 @@
-import { FormControl, FormControlLabel, FormGroup, Grid, Skeleton, Switch } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Preference, UserPreferenceType } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUserContext } from '../../hooks';
+import PreferenceSection from '../../components/composite/common/PreferenceSection/PreferenceSection';
 
 export interface UserNotificationsPageViewEntities {
   preferences: Preference[];
@@ -45,33 +45,33 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
   return (
     <Grid container spacing={4}>
       <Grid item xs={6}>
-        <NotificationGroupSection
+        <PreferenceSection
           headerText={t('pages.user-notifications-settings.general.title')}
           subHeaderText={t('pages.user-notifications-settings.general.subtitle')}
           preferences={generalGroup}
           loading={loading}
-          onUpdate={(id, type, value) => updatePreference(type, value, id)}
+          onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
         />
       </Grid>
       {!!(adminGroup.length || communityGroup.length) && (
         <Grid item xs={6}>
           {adminGroup.length > 0 && (
-            <NotificationGroupSection
+            <PreferenceSection
               headerText={t('pages.user-notifications-settings.user-administration.title')}
               subHeaderText={t('pages.user-notifications-settings.user-administration.subtitle')}
               preferences={adminGroup}
               loading={loading}
-              onUpdate={(id, type, value) => updatePreference(type, value, id)}
+              onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
             />
           )}
           {adminGroup.length > 0 && communityGroup.length > 0 && <SectionSpacer />}
           {communityGroup.length > 0 && (
-            <NotificationGroupSection
+            <PreferenceSection
               headerText={t('pages.user-notifications-settings.community-administration.title')}
               subHeaderText={t('pages.user-notifications-settings.community-administration.subtitle')}
               preferences={communityGroup}
               loading={loading}
-              onUpdate={(id, type, value) => updatePreference(type, value, id)}
+              onUpdate={(id, type, value) => updatePreference(type as UserPreferenceType, value, id)}
             />
           )}
         </Grid>
@@ -80,50 +80,3 @@ const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entitie
   );
 };
 export default UserNotificationsPageView;
-
-interface NotificationGroupSectionProps {
-  headerText: string;
-  subHeaderText: string;
-  preferences: Preference[];
-  loading?: boolean;
-  onUpdate: (id: string, type: UserPreferenceType, value: boolean) => void;
-}
-
-const NotificationGroupSection: FC<NotificationGroupSectionProps> = ({
-  loading,
-  headerText,
-  subHeaderText,
-  preferences,
-  onUpdate,
-}) => {
-  return (
-    <DashboardGenericSection headerText={headerText} subHeaderText={subHeaderText} headerSpacing={'none'}>
-      {loading ? (
-        <>
-          <Skeleton />
-          <Skeleton />
-          <Skeleton />
-        </>
-      ) : (
-        <FormControl>
-          <FormGroup>
-            {preferences.map(({ value, definition, id }, i) => (
-              <FormControlLabel
-                key={i}
-                aria-label={`notification-${definition.type}`}
-                control={
-                  <Switch
-                    checked={value !== 'false'}
-                    name={definition.type}
-                    onChange={(event, checked) => onUpdate(id, event.target.name as UserPreferenceType, checked)}
-                  />
-                }
-                label={definition.description}
-              />
-            ))}
-          </FormGroup>
-        </FormControl>
-      )}
-    </DashboardGenericSection>
-  );
-};
