@@ -8,11 +8,6 @@ import {
   SelfServiceSettingsFlow,
   SelfServiceVerificationFlow,
   SelfServiceRecoveryFlow,
-  SubmitSelfServiceLoginFlowBody,
-  SubmitSelfServiceRegistrationFlowBody,
-  SubmitSelfServiceVerificationFlowWithLinkMethodBody,
-  SubmitSelfServiceRecoveryFlowWithLinkMethodBody,
-  SubmitSelfServiceSettingsFlowBody,
 } from '@ory/kratos-client';
 import React, { FC, FormEvent, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,12 +20,6 @@ import KratosInput from './Kratos/KratosInput';
 import { KratosInputExtraProps } from './Kratos/KratosProps';
 import { KratosFriendlierMessageMapper } from './Kratos/messages';
 
-type FormType =
-  | SubmitSelfServiceLoginFlowBody
-  | SubmitSelfServiceSettingsFlowBody
-  | SubmitSelfServiceRegistrationFlowBody
-  | SubmitSelfServiceVerificationFlowWithLinkMethodBody
-  | SubmitSelfServiceRecoveryFlowWithLinkMethodBody;
 interface KratosUIProps {
   flow?:
     | SelfServiceLoginFlow
@@ -147,16 +136,6 @@ export const KratosUI: FC<KratosUIProps> = ({ resetPasswordComponent, flow, ...r
   if (!nodesByGroup || !flow) return null;
 
   const ui = flow.ui;
-
-  const initialState: Partial<FormType> = {};
-
-  ui.nodes.forEach((node: UiNode) => {
-    const name = getNodeName(node);
-    const value = getNodeValue(node);
-
-    const key = name as keyof FormType;
-    initialState[key] = value || ('' as any);
-  });
 
   const getActiveElement = (doc?: Document): Element | null => {
     doc = doc || (typeof document !== 'undefined' ? document : undefined);

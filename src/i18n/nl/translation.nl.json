@@ -872,9 +872,14 @@
       "login": "Heeft u een account?"
     },
     "registration-success": {
-      "header": "Bedankt voor uw inschrijving!",
-      "subheader": "Om veiligheidsredenen moeten we het opgegeven emailadres valideren. Controleer a.u.b. uw inbox en volg de instructies uit de email.",
+      "header": "Bedankt voor uw inschrijving",
+      "subheader": "Bijna klaar! Een laatste stap is de validate van jou emailadres.",
       "message": "Voorgestelde volgende stappen:"
+    },
+    "verification-required": {
+      "header": "Email validate is nog open.",
+      "message": "Kijk a.u.b. in jouw inbox voor een email met instructies.",
+      "link": "(Als je geen email hebt ontvangen, click op deze link om nog een te laten sturen)"
     },
     "verification-success": {
       "header": "Bedankt voor het verifiëren van uw email!",
