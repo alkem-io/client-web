@@ -26,7 +26,7 @@ const PreferenceSection: FC<PreferenceSectionProps> = ({
   onUpdate,
 }) => {
   return (
-    <DashboardGenericSection headerText={headerText} subHeaderText={subHeaderText} headerSpacing={'none'}>
+    <DashboardGenericSection headerText={headerText} subHeaderText={subHeaderText} headerSpacing="none">
       {loading ? (
         <>
           <Skeleton />
@@ -36,9 +36,9 @@ const PreferenceSection: FC<PreferenceSectionProps> = ({
       ) : (
         <FormControl>
           <FormGroup>
-            {preferences.map(({ value, definition, id }, i) => (
+            {preferences.map(({ value, definition, id }) => (
               <FormControlLabel
-                key={i}
+                key={id}
                 aria-label={`preference-${definition.type}`}
                 control={
                   <Switch
