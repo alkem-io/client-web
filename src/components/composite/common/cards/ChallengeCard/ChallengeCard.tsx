@@ -51,7 +51,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
         mediaUrl: bannerNarrow,
         tags: challenge?.tagset?.tags || [],
         tagsFor: 'challenge',
-        url: url,
+        url,
       }}
       isMember={isMember(id)}
       loading={loading}

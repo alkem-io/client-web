@@ -7,7 +7,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { ContainerProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
-import { buildChallengeUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface EntityDetailsContainerEntities {
@@ -57,6 +57,7 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
         type: 'hub',
         mediaUrl: getVisualBanner(hubData.hub.context?.visuals),
         tags: hubData.hub.tagset?.tags || [],
+        url: buildHubUrl(hubData.hub.nameID),
         domain: {
           communityID: hubData.hub.community?.id,
         },
