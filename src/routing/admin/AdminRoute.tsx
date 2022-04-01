@@ -28,10 +28,10 @@ export const AdminRoute: FC = () => {
     >
       <Routes>
         <Route index element={<Navigate to="hubs" replace />} />
-        <Route path={'hubs/*'} element={<HubsRoute paths={currentPaths} />} />
-        <Route path={'users/*'} element={<UsersRoute paths={currentPaths} />} />
-        <Route path={'authorization/*'} element={<GlobalAuthorizationRoute paths={currentPaths} />} />
-        <Route path={'organizations/*'} element={<OrganizationsRoute paths={currentPaths} />} />
+        <Route path="hubs/*" element={<HubsRoute paths={currentPaths} />} />
+        <Route path="users/*" element={<UsersRoute paths={currentPaths} />} />
+        <Route path="authorization/*" element={<GlobalAuthorizationRoute paths={currentPaths} />} />
+        <Route path="organizations/*" element={<OrganizationsRoute paths={currentPaths} />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </RestrictedRoute>
