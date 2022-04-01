@@ -4,6 +4,7 @@ import { Error404 } from '../../../pages';
 import OrganizationAdminAuthorizationPage from '../../../pages/Admin/Organization/OrganizationAdminAuthorizationPage';
 import OrganizationOwnerAuthorizationPage from '../../../pages/Admin/Organization/OrganizationOwnerAuthorizationPage';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
+import OrganizationAuthorizationPreferencesPage from '../../../pages/Admin/Organization/OrganizationAuthorizationPreferencesPage';
 
 interface OrganizationAuthorizationRouteProps extends AuthorizationRouteProps {}
 
@@ -13,9 +14,10 @@ const OrganizationAuthorizationRoute: FC<OrganizationAuthorizationRouteProps> = 
 
   return (
     <Routes>
-      <Route path={'admins'} element={<OrganizationAdminAuthorizationPage paths={currentPaths} />}></Route>
-      <Route path={'owners'} element={<OrganizationOwnerAuthorizationPage paths={currentPaths} />}></Route>
-      <Route path="*" element={<Error404 />}></Route>
+      <Route path="admins" element={<OrganizationAdminAuthorizationPage paths={currentPaths} />} />
+      <Route path="owners" element={<OrganizationOwnerAuthorizationPage paths={currentPaths} />} />
+      <Route path="preferences" element={<OrganizationAuthorizationPreferencesPage paths={currentPaths} />} />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };
