@@ -20,7 +20,7 @@ const AspectInfoStep: FC<AspectInfoStepProps> = ({ aspect, aspectNames, onChange
       aspectNames={aspectNames}
       onChange={onChange}
       onStatusChanged={onStatusChanged}
-      templateDescription={description}
+      descriptionTemplate={description}
     />
   );
 };

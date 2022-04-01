@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React from 'react';
+import React, { FC } from 'react';
 import FormikMarkdownField from '../../composite/forms/FormikMarkdownField';
 import useProfileStyles from './useProfileStyles';
 
@@ -14,18 +14,19 @@ interface MarkdownInputFieldProps {
   loading?: boolean;
 }
 
-export const useMarkdownInputField = () => {
+const MarkdownInput: FC<MarkdownInputFieldProps> = ({
+  name,
+  label,
+  tooltipLabel,
+  placeholder,
+  rows,
+  disabled = false,
+  required,
+  loading,
+}: MarkdownInputFieldProps) => {
   const styles = useProfileStyles();
-  return ({
-    name,
-    label,
-    tooltipLabel,
-    placeholder,
-    rows,
-    disabled = false,
-    required,
-    loading,
-  }: MarkdownInputFieldProps) => (
+
+  return (
     <Grid item xs={12}>
       <FormikMarkdownField
         name={name}
@@ -41,3 +42,5 @@ export const useMarkdownInputField = () => {
     </Grid>
   );
 };
+
+export default MarkdownInput;

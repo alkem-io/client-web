@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useInputField } from './useInputField';
 import * as yup from 'yup';
-import { useMarkdownInputField } from './useMarkdownInputField';
+import MarkdownInput from './MarkdownInput';
 
 export const contextSegmentSchema = yup.object().shape({
   background: yup.string(),
@@ -17,34 +17,33 @@ interface ContextSegmentProps {}
 export const ContextSegment: FC<ContextSegmentProps> = () => {
   const { t } = useTranslation();
   const getInputField = useInputField();
-  const getMarkdownInput = useMarkdownInputField();
   return (
     <>
       {getInputField({ name: 'tagline', label: t('components.contextSegment.tagline'), rows: 3 })}
-      {getMarkdownInput({
-        name: 'vision',
-        label: t('components.contextSegment.vision.title'),
-        tooltipLabel: t('components.contextSegment.vision.tooltip'),
-        rows: 10,
-      })}
-      {getMarkdownInput({
-        name: 'background',
-        label: t('components.contextSegment.background.title'),
-        tooltipLabel: t('components.contextSegment.background.tooltip'),
-        rows: 10,
-      })}
-      {getMarkdownInput({
-        name: 'impact',
-        label: t('components.contextSegment.impact.title'),
-        tooltipLabel: t('components.contextSegment.impact.tooltip'),
-        rows: 10,
-      })}
-      {getMarkdownInput({
-        name: 'who',
-        label: t('components.contextSegment.who.title'),
-        tooltipLabel: t('components.contextSegment.who.tooltip'),
-        rows: 10,
-      })}
+      <MarkdownInput
+        name="vision"
+        label={t('components.contextSegment.vision.title')}
+        tooltipLabel={t('components.contextSegment.vision.tooltip')}
+        rows={10}
+      />
+      <MarkdownInput
+        name="background"
+        label={t('components.contextSegment.background.title')}
+        tooltipLabel={t('components.contextSegment.background.tooltip')}
+        rows={10}
+      />
+      <MarkdownInput
+        name="impact"
+        label={t('components.contextSegment.impact.title')}
+        tooltipLabel={t('components.contextSegment.impact.tooltip')}
+        rows={10}
+      />
+      <MarkdownInput
+        name="who"
+        label={t('components.contextSegment.who.title')}
+        tooltipLabel={t('components.contextSegment.who.tooltip')}
+        rows={10}
+      />
     </>
   );
 };
