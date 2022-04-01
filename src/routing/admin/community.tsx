@@ -12,6 +12,7 @@ import { nameOfUrl } from '../url-params';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { HubApplicationRoute } from './hub/HubApplicationRoute';
 import { HubGroupRoute } from './hub/HubGroupRoute';
+import ChallengeMembershipPreferencePage from '../../pages/Admin/Challenge/ChallengeMembershipPreferencePage';
 
 type AccessedFrom = 'hub' | 'challenge' | 'opportunity';
 
@@ -32,7 +33,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
   return (
     <Routes>
       <Route
-        path={'members'}
+        path="members"
         element={
           <CommunityPage
             paths={paths}
@@ -44,11 +45,11 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         }
       />
       <Route
-        path={'groups/*'}
+        path="groups/*"
         element={<CommunityGroupsRoute paths={paths} communityId={communityId} parentCommunityId={parentCommunityId} />}
       />
       <Route
-        path={'applications/*'}
+        path="applications/*"
         element={
           <>
             {accessedFrom === 'hub' && <HubApplicationRoute paths={paths} />}
@@ -56,8 +57,9 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
           </>
         }
       />
-      <Route path={'updates'} element={<CommunityUpdatesPage paths={paths} communityId={communityId} />} />
-      <Route path={'lead'} element={<LeadingOrganizationPage paths={paths} />} />
+      <Route path="updates" element={<CommunityUpdatesPage paths={paths} communityId={communityId} />} />
+      <Route path="lead" element={<LeadingOrganizationPage paths={paths} />} />
+      <Route path="preferences" element={<ChallengeMembershipPreferencePage paths={paths} />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );
@@ -71,8 +73,8 @@ export const CommunityGroupsRoute: FC<CommunityGroupsRouteProps> = ({ paths, com
 
   return (
     <Routes>
-      <Route path={'/'} element={<CommunityGroupListPage communityId={communityId || ''} paths={currentPaths} />} />
-      <Route path={'new'} element={<CreateCommunityGroup paths={currentPaths} communityId={communityId} />} />
+      <Route path="/" element={<CommunityGroupListPage communityId={communityId || ''} paths={currentPaths} />} />
+      <Route path="new" element={<CreateCommunityGroup paths={currentPaths} communityId={communityId} />} />
       <Route
         path={`:${nameOfUrl.groupId}/*`}
         element={<HubGroupRoute paths={currentPaths} parentCommunityId={parentCommunityId} />}

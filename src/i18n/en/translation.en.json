@@ -596,6 +596,24 @@
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {
+    "admin": {
+      "organization": {
+        "authorization": {
+          "preferences": {
+            "title": "Authorization",
+            "subtitle": "This section allows you to modify the organizations authorization"
+          }
+        }
+      },
+      "challenge": {
+        "community": {
+          "preferences": {
+            "title": "Membership",
+            "subtitle": "This section allows you to modify the challenge membership preferences"
+          }
+        }
+      }
+    },
     "feedback": {
       "title": "Give feedback on this community context",
       "success": "Feedback submitted"
