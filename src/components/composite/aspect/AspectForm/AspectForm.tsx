@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { Box } from '@mui/material';
-import { useInputField } from '../../../Admin/Common/useInputField';
+import InputField from '../../../Admin/Common/InputField';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
 import { SectionSpacer } from '../../../core/Section/Section';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
@@ -58,7 +58,6 @@ const AspectForm: FC<AspectFormProps> = ({
   onRemoveReference,
 }) => {
   const { t } = useTranslation();
-  const getInputField = useInputField();
 
   const tagsets: Tagset[] = [
     {
@@ -106,7 +105,7 @@ const AspectForm: FC<AspectFormProps> = ({
       references: values.references,
     };
 
-    onChange && onChange(aspect);
+    onChange?.(aspect);
   };
 
   return (
@@ -120,12 +119,12 @@ const AspectForm: FC<AspectFormProps> = ({
       {({ values: { references } }) => (
         <Box>
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          {getInputField({
-            name: 'name',
-            label: t('components.nameSegment.name'),
-            required: true,
-            helpText: t('components.aspect-creation.info-step.name-help-text'),
-          })}
+          <InputField
+            name="name"
+            label={t('components.nameSegment.name')}
+            required
+            helpText={t('components.aspect-creation.info-step.name-help-text')}
+          />
           <SectionSpacer />
           <MarkdownInput
             name="description"

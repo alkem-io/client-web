@@ -13,4 +13,5 @@ const useProfileStyles = makeStyles(theme => ({
     },
   },
 }));
+
 export default useProfileStyles;

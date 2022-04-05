@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInputField } from './useInputField';
+import InputField from './InputField';
 import * as yup from 'yup';
 
 export const visualSegmentSchema = yup.object().shape({
@@ -13,12 +13,12 @@ interface VisualSegmentProps {}
 
 export const VisualSegment: FC<VisualSegmentProps> = () => {
   const { t } = useTranslation();
-  const getInputField = useInputField();
+
   return (
     <>
-      {getInputField({ name: 'visual.avatar', label: t('components.visualSegment.avatar') })}
-      {getInputField({ name: 'visual.background', label: t('components.visualSegment.background') })}
-      {getInputField({ name: 'visual.banner', label: t('components.visualSegment.banner') })}
+      <InputField name="visual.avatar" label={t('components.visualSegment.avatar')} />
+      <InputField name="visual.background" label={t('components.visualSegment.background')} />
+      <InputField name="visual.banner" label={t('components.visualSegment.banner')} />
     </>
   );
 };

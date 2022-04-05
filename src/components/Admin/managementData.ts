@@ -48,7 +48,6 @@ export const managementData = {
         { description: 'Members', url: 'community/members' },
         { description: 'Groups', url: 'community/groups' },
         { description: 'Applications', url: 'community/applications' },
-        { description: 'Updates', url: 'community/updates' },
       ],
     },
     {

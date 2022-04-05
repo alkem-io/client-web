@@ -2,20 +2,20 @@ import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
-import { Loading } from '../../../components/core';
-import { useApolloErrorHandler, useHub, useUpdateNavigation, useUrlParams } from '../../../hooks';
+import EditMemberCredentials from '../../../../components/Admin/Authorization/EditMemberCredentials';
+import { Loading } from '../../../../components/core';
+import { useApolloErrorHandler, useHub, useUpdateNavigation, useUrlParams } from '../../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsHubAdminMutation,
   useRemoveUserAsHubAdminMutation,
-} from '../../../hooks/generated/graphql';
-import { Member } from '../../../models/User';
-import AuthorizationPageProps from '../AuthorizationPageProps';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
+} from '../../../../hooks/generated/graphql';
+import { Member } from '../../../../models/User';
+import AuthorizationPageProps from '../../AuthorizationPageProps';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 
-const HubAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
+const HubAuthorizationView: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
   // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
@@ -97,4 +97,4 @@ const HubAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = 
     </Container>
   );
 };
-export default HubAuthorizationPage;
+export default HubAuthorizationView;

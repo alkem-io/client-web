@@ -1,18 +1,13 @@
-import { Grid } from '@mui/material';
 import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset } from '../../models/graphql-schema';
-import Typography from '../core/Typography';
-import ContextReferenceSegment from './Common/ContextReferenceSegment';
-import { contextSegmentSchema } from './Common/ContextSegment';
-import FormikSelect from '../composite/forms/FormikSelect';
-import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
+import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
+import { nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
-import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
+import { tagsetSegmentSchema } from './Common/TagsetSegment';
 import { visualSegmentSchema } from './Common/VisualSegment';
-import InputField from './Common/InputField';
 
 interface Props {
   context?: Context;
@@ -42,17 +37,7 @@ export interface HubEditFormValuesType {
   tagsets: Tagset[];
 }
 
-const HubEditForm: FC<Props> = ({
-  context,
-  name,
-  nameID,
-  hostID,
-  tagset,
-  onSubmit,
-  wireSubmit,
-  isEdit,
-  organizations = [],
-}) => {
+const HubEditForm: FC<Props> = ({ context, name, nameID, hostID, tagset, onSubmit, wireSubmit }) => {
   const { t } = useTranslation();
 
   const tagsets = useMemo(() => {
@@ -65,8 +50,6 @@ const HubEditForm: FC<Props> = ({
       },
     ] as Tagset[];
   }, [tagset]);
-
-  const contextId = context?.id;
 
   const initialValues: HubEditFormValuesType = {
     name: name || '',
@@ -112,40 +95,13 @@ const HubEditForm: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references }, handleSubmit }) => {
+      {({ handleSubmit }) => {
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
         }
 
-        return (
-          <Grid container spacing={2}>
-            <NameSegment disabled={isEdit} required={!isEdit} />
-            <Grid item xs={12}>
-              <FormikSelect
-                title={t('components.editHubForm.host.title')}
-                name={'host'}
-                values={organizations}
-                required={true}
-                placeholder={t('components.editHubForm.host.title')}
-              />
-            </Grid>
-            <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
-            <Grid item xs={12}>
-              <Typography variant={'h4'} color={'primary'}>
-                {t('components.tagsSegment.title')}
-              </Typography>
-            </Grid>
-            <TagsetSegment tagsets={tagsets} />
-            {/* <Grid item xs={12}>
-              <Typography variant={'h4'} color={'primary'}>
-                {t('components.visualSegment.title')}
-              </Typography>
-            </Grid>
-            <VisualSegment />*/}
-            {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}
-          </Grid>
-        );
+        return <ContextSegment />;
       }}
     </Formik>
   );

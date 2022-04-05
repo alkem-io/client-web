@@ -13,6 +13,7 @@ import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute
 import { HubApplicationRoute } from './hub/HubApplicationRoute';
 import { HubGroupRoute } from './hub/HubGroupRoute';
 import ChallengeMembershipPreferencePage from '../../pages/Admin/Challenge/ChallengeMembershipPreferencePage';
+import { useAppendCurrentPath } from '../../hooks/usePathUtils';
 
 type AccessedFrom = 'hub' | 'challenge' | 'opportunity';
 
@@ -30,13 +31,15 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
   resourceId,
   accessedFrom,
 }) => {
+  const currentPaths = useAppendCurrentPath(paths, 'community');
+
   return (
     <Routes>
       <Route
         path="members"
         element={
           <CommunityPage
-            paths={paths}
+            paths={currentPaths}
             credential={credential}
             resourceId={resourceId}
             communityId={communityId}
@@ -46,14 +49,16 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
       />
       <Route
         path="groups/*"
-        element={<CommunityGroupsRoute paths={paths} communityId={communityId} parentCommunityId={parentCommunityId} />}
+        element={
+          <CommunityGroupsRoute paths={currentPaths} communityId={communityId} parentCommunityId={parentCommunityId} />
+        }
       />
       <Route
         path="applications/*"
         element={
           <>
-            {accessedFrom === 'hub' && <HubApplicationRoute paths={paths} />}
-            {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={paths} />}
+            {accessedFrom === 'hub' && <HubApplicationRoute paths={currentPaths} />}
+            {accessedFrom === 'challenge' && <ChallengeApplicationRoute paths={currentPaths} />}
           </>
         }
       />

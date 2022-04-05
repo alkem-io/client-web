@@ -4,10 +4,10 @@ import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import FormMode from '../../../components/Admin/FormMode';
 import { ChallengeProvider } from '../../../context/ChallengeProvider';
 import { Error404, PageProps } from '../../../pages';
-import ChallengeListPage from '../../../pages/Admin/Challenge/ChallengeListPage';
 import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage';
 import { nameOfUrl } from '../../url-params';
 import { ChallengeRoute } from './ChallengeRoute';
+import ChallengeListPage from '../../../pages/Admin/Challenge/ChallengeListPage';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -17,28 +17,26 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route path={'/'}>
-        <Route index element={<ChallengeListPage paths={currentPaths} />} />
-        <Route
-          path={'new'}
-          element={
-            <EditChallengePage
-              mode={FormMode.create}
-              paths={currentPaths}
-              title={t('navigation.admin.challenge.create')}
-            />
-          }
-        />
-        <Route
-          path={`:${nameOfUrl.challengeNameId}/*`}
-          element={
-            <ChallengeProvider>
-              <ChallengeRoute paths={currentPaths} />
-            </ChallengeProvider>
-          }
-        />
-        <Route path="*" element={<Error404 />} />
-      </Route>
+      <Route index element={<ChallengeListPage paths={currentPaths} routePrefix="../../" />} />
+      <Route
+        path="new"
+        element={
+          <EditChallengePage
+            mode={FormMode.create}
+            paths={currentPaths}
+            title={t('navigation.admin.challenge.create')}
+          />
+        }
+      />
+      <Route
+        path={`:${nameOfUrl.challengeNameId}/*`}
+        element={
+          <ChallengeProvider>
+            <ChallengeRoute paths={currentPaths} />
+          </ChallengeProvider>
+        }
+      />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };

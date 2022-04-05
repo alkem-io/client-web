@@ -14,6 +14,7 @@ export type IconMapping<Section extends string | number> = Record<Section, Compo
 export interface PageTabsProps<Section extends string | number> extends TabsProps {
   currentTab: Section;
   tabs: TabDefinition<Section>[];
+  routePrefix?: string;
 }
 
 const createPageTabs =
@@ -21,8 +22,13 @@ const createPageTabs =
     iconMapping: IconMapping<Section>,
     getTranslationLabel?: (section: Section) => string
   ): FC<PageTabsProps<Section>> =>
-  ({ currentTab, tabs, ...tabsPops }) => {
+  ({ currentTab, tabs, routePrefix = '', ...tabsPops }) => {
     const { t } = useTranslation();
+
+    const getTabRoute = (tab: TabDefinition<Section>) => {
+      const { route } = tab;
+      return `${routePrefix}${route}`;
+    };
 
     return (
       <>
@@ -35,7 +41,7 @@ const createPageTabs =
                 icon={<Icon />}
                 label={getTranslationLabel && t(getTranslationLabel(tab.section) as Parameters<typeof t>[0])}
                 value={tab.section}
-                to={tab.route}
+                to={getTabRoute(tab)}
               />
             );
           })}
