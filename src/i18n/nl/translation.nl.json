@@ -11,7 +11,7 @@
     "save": "Opslaan",
     "back": "Terug",
     "edit": "Pas aan",
-    "see-more": "Zie meer",
+    "see-more": "Lees verder",
     "see-all": "Zie alles",
     "home": "Startpagina",
     "take-me-home": "Terug naar startpagina",
@@ -49,7 +49,7 @@
     "login": "Login",
     "register": "Registreer",
     "validation": {
-      "fill-fields": "Vul a.u.b. de vereiste velden in!"
+      "fill-fields": "Vul alsjeblieft de vereiste velden in!"
     }
   },
   "common": {
@@ -98,7 +98,7 @@
     "discussions": "Discussies",
     "dashboard": "Overzicht",
     "context": "Context",
-    "community": "Gemeenschap",
+    "community": "Community",
     "canvases": "Canvassen",
     "settings": "Instellingen",
     "search": "Zoek",
@@ -128,7 +128,7 @@
           "hidden": false
         },
         "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Globale Gemeenschap Beheerder",
+          "name": "Globale Community Beheerder",
           "order": 1,
           "hidden": false
         },
@@ -203,7 +203,7 @@
           "hidden": true
         },
         "COMMUNITY_MEMBER": {
-          "name": "Lid Gemeenschap",
+          "name": "Lid Community",
           "order": 15,
           "hidden": true
         },
@@ -241,11 +241,11 @@
         "title": "Het soort additionele context om toe te voegen.",
         "error": "Fout opgetreden tijdens het laden van de types",
         "label": "Soort Aspect",
-        "type-help-text": "Aspecten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke actoren. De set Aspect-types dat hier beschikbaar is staat vast. Kies a.u.b. het aspect-type dat het best overeenkomt met de context die u wilt delen."
+        "type-help-text": "Aspecten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke actoren. De set Aspect-types dat hier beschikbaar is staat vast. Kies het aspect-type dat het best overeenkomt met de context die je wilt delen."
       },
       "info-step": {
         "title": "Details",
-        "description": "Deel a.u.b. de details.",
+        "description": "Deel alsjeblieft de details.",
         "description-placeholder": "Een beschrijving voor dit Aspect",
         "description-help-text": "Voeg hier de belangrijkste informatie toe over het Aspect. Waarom is het relevant? Hoe is het gerelateerd?",
         "tags-help-text": "Voeg labels toe om effectief de informatie over het Aspect over te dragen. Goede labels maken Aspecten makkelijker vindbaar.",
@@ -281,19 +281,19 @@
       "updated": "Laatst geupdate op {{date}}"
     },
     "edit-members": {
-      "no-available-members": "Geen gebruikers beschikbaar om toe te voegen; controleer a.u.b. leden van de betreffende gemeenschap.",
+      "no-available-members": "Geen gebruikers beschikbaar om toe te voegen; controleer leden van de betreffende community.",
       "user-not-found": "Gebruiker niet gevonden!"
     },
     "application-button": {
       "apply-not-signed": "Log in om in te schrijven",
       "apply-pending": "Uw inschrijving loopt",
       "dialog-apply-parent": {
-        "title": "Wilt u lid worden van de bovenliggende Hub?",
-        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet u eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Voeg a.u.b. de Challenge waarvan u lid wilt worden toe in het aanmeldingsformulier van de Hub."
+        "title": "Wil je lid worden van de bovenliggende Hub?",
+        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Hub."
       },
       "dialog-parent-app-pending": {
         "title": "Bovenliggende aanmelding loopt!",
-        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet u eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Er loopt al een aanmelding voor die <strong title='Hub name'>'{{hubName}}'</strong>, dus u kunt ook een aanmelding indienen voor <strong title='Challenge name'>'{{challengeName}}'</strong>."
+        "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Er loopt al een aanmelding voor die <strong title='Hub name'>'{{hubName}}'</strong>, dus je kan ook een aanmelding indienen voor <strong title='Challenge name'>'{{challengeName}}'</strong>."
       }
     },
     "organization-verified": {
@@ -304,8 +304,8 @@
       "title": "Filter"
     },
     "backdrop": {
-      "private": "Wordt a.u.b. lid om toegang te krijgen tot {{blockName}}",
-      "authentication": "Log a.u.b. in om details te zien over {{blockName}}."
+      "private": "Wordt lid om toegang te krijgen tot {{blockName}}",
+      "authentication": "Log in om details te zien over {{blockName}}."
     },
     "referenceSegment": {
       "title": "Referenties",
@@ -412,7 +412,7 @@
       "placeholder": "Zoek"
     },
     "communityUpdates": {
-      "title": "Laat de gemeenschap weten wat eraan komt",
+      "title": "Laat de community weten wat eraan komt",
       "updatesTitle": "Gepubliceerde updates",
       "msg-not-empty": "Bericht kan niet leeg zijn",
       "actions": {
@@ -421,7 +421,7 @@
         },
         "remove": {
           "confirmationTitle": "Update aan het verwijderen",
-          "confirmationContent": "Het verwijderen van een gemeenschap-update is onomkeerbaar. Weet u zeker dat u door wilt gaan?",
+          "confirmationContent": "Het verwijderen van een community-update is onomkeerbaar. Weet je zeker dat je door wilt gaan?",
           "confirmationButtonTitle": "Ja"
         }
       }
@@ -530,7 +530,7 @@
       }
     },
     "members-view": {
-      "title": "Actieve leden gemeenschap"
+      "title": "Actieve leden community"
     },
     "discussion-category-selector": {
       "ALL": "TOON ALLES",
@@ -542,7 +542,7 @@
     "community-section": {
       "discussions": {
         "no-data-create": "Geen discussies. Maak een nieuwe discussie aan",
-        "no-data-join": "Geen discussies. Neem a.u.b. deel aan de gemeenschap om een discussie aan te maken.",
+        "no-data-join": "Geen discussies. Neem deel aan de community om een discussie aan te maken.",
         "explore": "Verken discussies"
       }
     }
@@ -614,24 +614,24 @@
         "no-leading": "Geen"
       },
       "no-results": "Geen resultaten",
-      "more-results": "Er zijn meer zoekresultaten. Gebruik a.u.b. specifiekrere zoekcriteria om het aantal resultaten te reduceren",
+      "more-results": "Er zijn meer zoekresultaten. Gebruik specifiekere zoekcriteria om het aantal resultaten te reduceren",
       "user-not-logged": "Log in of registreer om gebruikers toe te voegen in uw zoekresultaten"
     },
     "challenge-explorer": {
       "search": {
         "title": "Verken Challenges",
-        "subtitle": "In deze sectie kunt u alle door Challenges op Alkemio zoeken die voor u zichtbaar zijn.",
+        "subtitle": "In deze sectie kan je alle door Challenges op Alkemio zoeken die voor jou zichtbaar zijn.",
         "placeholder": "Zoek met termen naar Challenges op Alkemio..."
       },
       "my": {
         "title": "Mijn Challenges ({{count}})",
-        "subtitle": "Deze sectie toont de Challenges waar u aan bijdraagt. ",
-        "help-text": "Een kaart per Challenge-lidmaatschap, inclusief de rol die u in elke Challenge heeft."
+        "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. ",
+        "help-text": "Een kaart per Challenge-lidmaatschap, inclusief de rol die je in elke Challenge hebt."
       },
       "hubs": {
         "title": "Challenges beheerd door '{{name}}' Hub ({{count}})",
-        "subtitle": "Deze sectie toont u de Challenges die worden beheerd in de {{name}} Hub waarvan u lid bent.",
-        "help-text": "Een Challenge Hub beheert een of meer Challenges. U bent lid van onderstaande Hub."
+        "subtitle": "Deze sectie toont je de Challenges die worden beheerd in de {{name}} Hub waarvan je lid bent.",
+        "help-text": "Een Challenge Hub beheert een of meer Challenges. Je bent lid van onderstaande Hub."
       }
     },
     "lead-organization": {
@@ -650,25 +650,25 @@
         "welcome": {
           "header": "Waar Open Innovatie Plaatsvindt",
           "subheader": "Challenges centraal stellen. <br>Iedereen toestaan om bij te dragen. <br>Connecties mogelijk maken en capaciteiten vinden.",
-          "body": "Het potentieel van de gemeenschap verwezelijken. Een betere toekomst bouwen, samen.",
-          "join": "Deelnemen aan de gemeenschap en meer zien?"
+          "body": "Het potentieel van de community verwezelijken. Een betere toekomst bouwen, samen.",
+          "join": "Deelnemen aan de community en meer zien?"
         },
         "interested-in-collaboration": {
-          "header": "Alkemio en U",
-          "innovation-facilitator": "Bent u een drijfveer voor Innovatie binnen uw gemeenschap of organisatie?<br/>Neem <a href='https://alkem.io/feedback' target='_blank'> contact op </a> zodat we een een-op-een sessie kunnen plannen!",
-          "suggestions": "Heeft u suggesties voor Challenges waar Alkemio aan kan bijdragen?<br/>Deel het op onze <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussies</a> en neem deel aan de gemeenschap!",
-          "contributor": "Wilt u een bijdrage of ondersteuning leveren aan Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Gedragen door een <a href='https://alkem.io' target='_blank'>non-profit stichting</a>."
+          "header": "Wat kun jij met Alkemio?",
+          "innovation-facilitator": "Ben je een drijfveer voor Innovatie binnen uw community of organisatie?<br/>Neem <a href='https://alkem.io/feedback' target='_blank'> contact op </a> zodat we een een-op-een sessie kunnen plannen!",
+          "suggestions": "Heb je suggesties voor Challenges waar Alkemio aan kan bijdragen?<br/>Deel het op onze <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussies</a> en neem deel aan de community!",
+          "contributor": "Wil je een bijdrage of ondersteuning leveren aan Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Gedragen door een <a href='https://alkem.io' target='_blank'>non-profit stichting</a>."
         },
         "getting-started": {
           "header": "Aan de slag",
-          "subheader": "Hier zijn wat suggesties om u op gang te krijgen.",
-          "connecting-with-people": "Wilt u zien wie bijdraagt? Verken alle <a href='./contributors' >bijdragers</a>.",
+          "subheader": "Hier zijn wat suggesties om je op gang te krijgen.",
+          "connecting-with-people": "Wil je zien wie bijdraagt? Verken alle <a href='./contributors' >bijdragers</a>.",
           "joining-a-challenge": "Gemotiveerd om deel te nemen aan een Challenge? Verken alle <a href='./challenges' >Challenges</a>.",
           "your-profile": "Belangstelling om gevonden te worden door andere bijdragers? Vul uw <a href='./profile' >profiel in</a>.</br>"
         },
         "Hub": {
           "header": "Verken de Challenge Hubs!",
-          "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een gemeenschap voor de Challenges die er worden beheerd. <br> Een omgeving om te coördineren en samen te werken. Om te verbinden.",
+          "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een community voor de Challenges die er worden beheerd. <br> Een omgeving om te coördineren en samen te werken. Om te verbinden.",
           "body": "Een Hub kan Openbaar of Besloten zijn en heeft een faciliterende Organisatie."
         },
         "organizations": {
@@ -689,7 +689,7 @@
       "title": "Hub",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
-        "subheader": "Vul a.u.b. de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
+        "subheader": "Vul de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
         "finish": "Bedankt voor het voltooien van uw inschrijving voor ",
         "backButton": "Terug",
         "loading": "Vragen laden",
@@ -701,16 +701,16 @@
           "activity": "Hub statistieken",
           "challenges": {
             "title": "Challenges",
-            "help-text": "Hier ziet u de verschillende Challenges waaraan u kunt bijdragen in de Hub."
+            "help-text": "Hier zie je de verschillende Challenges waaraan je kunt bijdragen in de Hub."
           },
-          "community": "Gemeenschap"
+          "community": "Community"
         },
         "challenges": {
           "header": "Challenges",
           "subheader": "There is no final frontier",
           "body": "",
           "no-data": "Er zijn geen Challenges beschikbaar voor deze Hub",
-          "description": "Hier kunt u Challenges verkennen die door deze Hub worden ondergebracht. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken. "
+          "description": "Hier kan je Challenges verkennen die door deze Hub worden ondergebracht. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken. "
         }
       }
     },
@@ -736,7 +736,7 @@
           }
         },
         "opportunities": {
-          "description": "Hier kunt u de Opportunities verkennen die zijn geïdentificeerd om voortgang te maken op de Challenge. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken.",
+          "description": "Hier kan je de Opportunities verkennen die zijn geïdentificeerd om voortgang te maken op de Challenge. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken.",
           "body-missing": "Geen Opportunities gevonden voor deze Challenge"
         }
       }
@@ -772,20 +772,20 @@
       }
     },
     "community": {
-      "title": "{{name}} gemeenschapspagina",
+      "title": "{{name}} community-pagina",
       "subtitle": "",
       "leading-organizations": {
         "title": "Leidende organisaties ({{count}})",
-        "help-text": "Laat verschillende organisaties zien, inclusief de rol die u heeft",
+        "help-text": "Laat verschillende organisaties zien, inclusief de rol die je hebt",
         "no-data": "Er is op dit moment geen leidende organisatie"
       },
       "Hub-host": {
         "title": "Beherende organisatie",
-        "help-text": "Laat verschillende organisaties zien, inclusief de rol die u heeft"
+        "help-text": "Laat verschillende organisaties zien, inclusief de rol die je hebt"
       },
       "members": {
         "title": "Leden ({{count}})",
-        "help-text": "Laat leden in deze gemeenschap zien, inclusief hun rol",
+        "help-text": "Laat leden in deze community zien, inclusief hun rol",
         "no-data": "Geen leden beschikbaar"
       },
       "updates": {
@@ -794,11 +794,11 @@
     },
     "canvas": {
       "header": "Canvassen in deze {{blockName}}",
-      "subheader": "Maak een custom visualisatie en deel deze met anderen.",
+      "subheader": "Maak een visualisatie en deel deze met anderen.",
       "add-canvas": "Maak Canvas aan",
       "no-canvases": "Er zijn nog geen Canvassen aangemaakt. Wees de eerste die er een toevoegt.",
       "state": {
-        "available": "U kunt nu vrijuit werken op het Canvas",
+        "available": "Je kan nu vrijuit werken op het Canvas",
         "checkedout": "Iemand anders is al aan het werk op het Canvas",
         "unknown": "Er is een checkout conflict met dit Canvas"
       },
@@ -811,13 +811,13 @@
       },
       "delete": {
         "confirmation-title": "Verwijderen van <b>{{ blockName }}</b>",
-        "confirmation-text": "Weet u zeker dat u dit Canvas wilt verwijderen? Deze actie is onomkeerbaar."
+        "confirmation-text": "Weet je zeker dat je dit Canvas wilt verwijderen? Deze actie is onomkeerbaar."
       },
       "create-dialog": {
         "header": "Maak nieuw Canvas aan",
         "steps": {
           "naming": "Definieer een passende naam voor uw Canvas. Wat zal uw Canvas omvatten?",
-          "templating": "Kies uit de lijst met templates als u deze als blauwdruk wilt gebruiken voor uw Canvas.",
+          "templating": "Kies uit de lijst met templates als je deze als blauwdruk wilt gebruiken voor uw Canvas.",
           "completing": "Het Canvas zal gecreeërd worden met de volgende parameters"
         },
         "no-template-selected": "Selecteer een template om een voorvertoning te zien."
@@ -825,7 +825,7 @@
       "template": {
         "header": "Templates gedefinieerd in Alkemio",
         "no-templates": "Er zijn hier nog geen templates gedefinieerd. Wees de eerste die er een toevoegt.",
-        "how-to": "Om een template te creeëren moet u een nieuw Canvas aanmaken of een bestaande selecteren en die als template opslaan."
+        "how-to": "Om een template te creeëren moet je een nieuw Canvas aanmaken of een bestaande selecteren en die als template opslaan."
       },
       "Hub": {
         "templatesHeader": "Templates gedefinieerd in deze Hub",
@@ -852,13 +852,13 @@
       "title": "Oooeps!",
       "line1": "Het lijkt erop dat iets fout is gegaan: <italic>{{message}}</italic>",
       "line2": "Controleer of uw server ({{graphQLEndpoint}}) beschikbaar is en herlaad de pagina.",
-      "line3": "Als de fout aanblijft, neem a.u.b. contact op met de klantenservice.",
+      "line3": "Als de fout aanblijft, neem contact op met de klantenservice.",
       "buttons": {
         "reload": "Herlaad"
       }
     },
     "four-ou-four": {
-      "message": "De bron waarnaar u op zoek bent kan niet gevonden worden.",
+      "message": "De bron waarnaar je op zoek bent kan niet gevonden worden.",
       "buttons": {
         "home": "Naar startpagina"
       }
@@ -869,7 +869,7 @@
     "registration": {
       "header": "Maak een account aan om Alkemio te gebruiken",
       "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
-      "login": "Heeft u een account?"
+      "login": "Heb je een account?"
     },
     "registration-success": {
       "header": "Bedankt voor uw inschrijving",
@@ -878,13 +878,13 @@
     },
     "verification-required": {
       "header": "Email validate is nog open.",
-      "message": "Kijk a.u.b. in jouw inbox voor een email met instructies.",
+      "message": "Kijk in je inbox voor een email met instructies.",
       "link": "(Als je geen email hebt ontvangen, click op deze link om nog een te laten sturen)"
     },
     "verification-success": {
       "header": "Bedankt voor het verifiëren van uw email!",
       "subheader": "Uw profiel is nu volledig geactiveerd op het platform. Veel plezier!",
-      "message": "Overweeg a.u.b. alle aspecten van uw profiel [profiel](/profile) in te vullen. Dat helpt bij zowel het lid worden van gemeenschappen als uw vindbaarheid voor andere gebruikers. "
+      "message": "Overweeg alle aspecten van uw profiel [profiel](/profile) in te vullen. Dat helpt bij zowel het lid worden van communities als uw vindbaarheid voor andere gebruikers. "
     },
     "recovery": {
       "header": "Wachtwoord Reset",
@@ -892,7 +892,7 @@
     },
     "verification": {
       "header": "Email verificatie",
-      "message": "Gebruikers van Alkemio zijn verplicht hun email adres te verifiëren.<br/><br/>Vul a.u.b. hieronder uw email adres in om een nieuwe verificatielink te ontvangen."
+      "message": "Gebruikers van Alkemio zijn verplicht hun email adres te verifiëren.<br/><br/>Vul hieronder uw email adres in om een nieuwe verificatielink te ontvangen."
     },
     "settings": {
       "header": "Instellingen gebruiker"
@@ -906,8 +906,8 @@
         "title": "Lopende aanmeldingen"
       },
       "communities": {
-        "title": "Gemeenschappen",
-        "help": "Gemeenschappen waarvan de gebruiker lid is"
+        "title": "Communities",
+        "help": "Communities waarvan de gebruiker lid is"
       },
       "pending-applications": {
         "title": "Lopende Aanmeldingen",
@@ -919,21 +919,21 @@
       }
     },
     "authentication-required": {
-      "header": "U moet ingelogd zijn voor de pagina die u probeert te bereiken.",
+      "header": "Je moet ingelogd zijn voor de pagina die je probeert te bereiken.",
       "subheader": "Log in of registreer om door te gaan!"
     },
     "user-notifications-settings": {
       "general": {
         "title": "Algemeen",
-        "subtitle": "In deze sectie kunt u uw voorkeur aangeven met betrekking tot het ontvangen van berichten"
+        "subtitle": "In deze sectie kun je jouw voorkeur aangeven met betrekking tot het ontvangen van berichten"
       },
       "user-administration": {
         "title": "Platform Administratie",
         "subtitle": "Deze sectie is alleen zichtbaar voor gebruikers die Globale Beheerder zijn op het platform"
       },
       "community-administration": {
-        "title": "Gemeenschap administratie",
-        "subtitle": "In deze sectie kunt u uw voorkeur aangeven met betrekking tot de administratie van de gemeenschap"
+        "title": "Community administratie",
+        "subtitle": "In deze sectie kunt je jouw voorkeur aangeven met betrekking tot de administratie van de community"
       }
     }
   },
@@ -960,10 +960,10 @@
   "dashboard-discussions-section": {
     "title": "Discussies ({{count}})",
     "no-data-create": "Geen discussies beschikbaar. Maak een nieuwe discussie aan.",
-    "no-data-join": "Geen discussies beschikbaar. Neem deel aan de gemeenschap om een discussie te starten."
+    "no-data-join": "Geen discussies beschikbaar. Neem deel aan de community om een discussie te starten."
   },
   "dashboard-community-section": {
-    "title": "Gemeenschap"
+    "title": "Community"
   },
   "aspect-edit": {
     "new": "Nieuw Aspect",
