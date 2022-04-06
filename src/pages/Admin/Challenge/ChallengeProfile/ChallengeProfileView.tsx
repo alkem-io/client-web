@@ -14,7 +14,7 @@ import { createContextInput, updateContextInput } from '../../../../utils/buildC
 import Button from '../../../../components/core/Button';
 import Typography from '../../../../components/core/Typography';
 import FormMode from '../../../../components/Admin/FormMode';
-import ProfileForm, { ProfileFormValues } from '../../../../components/composite/forms/ProfileForm2';
+import ProfileForm, { ProfileFormValues } from '../../../../components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../views/Visuals/EditVisualsView';
 
 interface Props {

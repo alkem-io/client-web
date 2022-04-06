@@ -14,7 +14,7 @@ import { useNavigateToEdit } from '../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../utils/buildContext';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
-import ProfileForm, { ProfileFormValuesType } from '../composite/forms/ProfileForm';
+import ProfileFormWithContext, { ProfileFormValuesType } from '../composite/forms/ProfileFormWithContext';
 import FormMode from './FormMode';
 import { Context } from '../../models/graphql-schema';
 
@@ -108,7 +108,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
       <Grid item>
         <Typography variant={'h2'}>{title}</Typography>
       </Grid>
-      <ProfileForm
+      <ProfileFormWithContext
         isEdit={mode === FormMode.update}
         name={opportunity?.displayName}
         nameID={opportunity?.nameID}
