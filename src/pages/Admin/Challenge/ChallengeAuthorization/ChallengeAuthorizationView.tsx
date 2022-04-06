@@ -2,20 +2,20 @@ import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
-import { Loading } from '../../../components/core';
-import { useApolloErrorHandler, useChallenge, useUpdateNavigation, useUrlParams } from '../../../hooks';
+import EditMemberCredentials from '../../../../components/Admin/Authorization/EditMemberCredentials';
+import { Loading } from '../../../../components/core';
+import { useApolloErrorHandler, useChallenge, useUpdateNavigation, useUrlParams } from '../../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsChallengeAdminMutation,
   useRemoveUserAsChallengeAdminMutation,
-} from '../../../hooks/generated/graphql';
-import { Member } from '../../../models/User';
-import AuthorizationPageProps from '../AuthorizationPageProps';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
+} from '../../../../hooks/generated/graphql';
+import { Member } from '../../../../models/User';
+import AuthorizationPageProps from '../../AuthorizationPageProps';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 
-const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
+const ChallengeAuthorizationView: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
 
@@ -102,4 +102,4 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
     </Container>
   );
 };
-export default ChallengeAuthorizationPage;
+export default ChallengeAuthorizationView;

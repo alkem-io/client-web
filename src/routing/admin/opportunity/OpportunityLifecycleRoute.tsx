@@ -2,12 +2,9 @@ import React, { FC } from 'react';
 import EditLifecycle from '../../../components/Admin/EditLifecycle';
 import { useEventOnOpportunityMutation, useOpportunityLifecycleQuery } from '../../../hooks/generated/graphql';
 import Loading from '../../../components/core/Loading/Loading';
-import { PageProps } from '../../../pages';
 import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 
-interface Props extends PageProps {}
-
-const OpportunityLifecycleRoute: FC<Props> = ({ paths }) => {
+const OpportunityLifecycleRoute: FC = () => {
   const handleError = useApolloErrorHandler();
 
   const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
@@ -39,6 +36,6 @@ const OpportunityLifecycleRoute: FC<Props> = ({ paths }) => {
     return <Loading text="Loading" />;
   }
 
-  return <EditLifecycle paths={paths} data={lifecycle} id={opportunityId} onSetNewState={setNextState} />;
+  return <EditLifecycle lifecycle={lifecycle} id={opportunityId} onSetNewState={setNextState} />;
 };
 export default OpportunityLifecycleRoute;

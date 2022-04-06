@@ -1,21 +1,14 @@
 import { Container } from '@mui/material';
-import React, { FC, useMemo } from 'react';
-import { useResolvedPath } from 'react-router-dom';
-
+import React, { FC } from 'react';
 import { WithCommunity } from '../../../components/Admin/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../containers/community-updates/CommunityUpdatesContainer';
 import { AvatarsProvider } from '../../../context/AvatarsProvider';
-import { useHub, useUpdateNavigation } from '../../../hooks';
+import { useHub } from '../../../hooks';
 import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';
-import { PageProps } from '../../common';
 
-interface CommunityUpdatesPageProps extends PageProps, WithCommunity {}
+interface CommunityUpdatesPageProps extends WithCommunity {}
 
-export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ paths, communityId }) => {
-  const { pathname: url } = useResolvedPath('.');
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'updates', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
-
+export const CommunityUpdatesPage: FC<CommunityUpdatesPageProps> = ({ communityId }) => {
   const { hubId } = useHub();
 
   if (!communityId || !hubId) {

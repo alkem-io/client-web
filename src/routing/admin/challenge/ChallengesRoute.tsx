@@ -7,7 +7,7 @@ import { Error404, PageProps } from '../../../pages';
 import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage';
 import { nameOfUrl } from '../../url-params';
 import { ChallengeRoute } from './ChallengeRoute';
-import ChallengeListPage from '../../../pages/Admin/Challenge/ChallengeListPage';
+import ChallengeListPage from '../../../pages/Admin/Hub/HubChallenges/ChallengeListPage';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();

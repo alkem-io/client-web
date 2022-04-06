@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import HubSettingsLayout from '../../../../components/composite/layout/HubSettingsLayout/HubSettingsLayout';
+import ChallengeSettingsLayout from '../../../../components/composite/layout/ChallengeSettingsLayout/ChallengeSettingsLayout';
 import { SettingsSection } from '../../../../components/composite/layout/EntitySettingsLayout/constants';
 import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../../../../components/composite/layout/EntitySettingsLayout/types';
@@ -9,13 +9,13 @@ import Button from '../../../../components/core/Button';
 import { Link as RouterLink } from 'react-router-dom';
 import { managementData } from '../../../../components/Admin/managementData';
 
-const { buttons } = managementData.hubLvl.find(({ name }) => name === 'Community')!;
+const { buttons } = managementData.challengeLvl.find(({ name }) => name === 'Community')!;
 
-const HubCommunityPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
+const ChallengeCommunityPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'community' });
 
   return (
-    <HubSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
+    <ChallengeSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <Container maxWidth="xl">
         <Card
           classes={{
@@ -31,8 +31,8 @@ const HubCommunityPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' })
           </Grid>
         </Card>
       </Container>
-    </HubSettingsLayout>
+    </ChallengeSettingsLayout>
   );
 };
 
-export default HubCommunityPage;
+export default ChallengeCommunityPage;

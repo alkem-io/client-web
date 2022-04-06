@@ -83,7 +83,6 @@ export const managementData = {
         { description: 'Groups', url: 'community/groups' },
         { description: 'Applications', url: 'community/applications' },
         { description: 'Lead Organizations', url: 'community/lead' },
-        { description: 'Updates', url: 'community/updates' },
         { description: 'Preferences', url: 'community/preferences' },
       ],
     },

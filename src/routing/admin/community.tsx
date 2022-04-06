@@ -7,13 +7,13 @@ import { CreateCommunityGroup } from '../../components/Admin/Community/CreateCom
 import LeadingOrganizationPage from '../../components/Admin/Community/LeadingOrganizationPage';
 import { Error404, PageProps } from '../../pages';
 import CommunityGroupListPage from '../../pages/Admin/Community/CommunityListPage';
-import CommunityUpdatesPage from '../../pages/Admin/Community/CommunityUpdatesPage';
 import { nameOfUrl } from '../url-params';
 import { ChallengeApplicationRoute } from './challenge/ChallengeApplicationRoute';
 import { HubApplicationRoute } from './hub/HubApplicationRoute';
 import { HubGroupRoute } from './hub/HubGroupRoute';
 import ChallengeMembershipPreferencePage from '../../pages/Admin/Challenge/ChallengeMembershipPreferencePage';
 import { useAppendCurrentPath } from '../../hooks/usePathUtils';
+import ChallengeCommunityPage from '../../pages/Admin/Challenge/ChallengeCommunity/ChallengeCommunityPage';
 
 type AccessedFrom = 'hub' | 'challenge' | 'opportunity';
 
@@ -35,6 +35,7 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
 
   return (
     <Routes>
+      <Route index element={<ChallengeCommunityPage paths={paths} routePrefix="../../" />} />
       <Route
         path="members"
         element={
@@ -62,7 +63,6 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
           </>
         }
       />
-      <Route path="updates" element={<CommunityUpdatesPage paths={paths} communityId={communityId} />} />
       <Route path="lead" element={<LeadingOrganizationPage paths={paths} />} />
       <Route path="preferences" element={<ChallengeMembershipPreferencePage paths={paths} />} />
       <Route path="*" element={<Error404 />} />

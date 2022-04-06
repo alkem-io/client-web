@@ -1,5 +1,5 @@
 import { PageProps } from '../../../../pages';
 
-export interface HubSettingsPageProps extends PageProps {
+export interface SettingsPageProps extends PageProps {
   routePrefix?: string;
 }

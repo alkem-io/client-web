@@ -3,7 +3,7 @@ import SettingsTabs from '../EntitySettingsLayout/SettingsTabs';
 import { SettingsSection } from '../EntitySettingsLayout/constants';
 import { TabDefinition } from '../../../core/PageTabs/PageTabs';
 
-interface HubSettingsLayoutProps {
+interface ChallengeSettingsLayoutProps {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
 }
@@ -30,18 +30,23 @@ export const tabs: TabDefinition<SettingsSection>[] = [
     route: 'authorization',
   },
   {
-    section: SettingsSection.Challenges,
-    route: 'challenges',
+    section: SettingsSection.Opportunities,
+    route: 'opportunities',
   },
 ];
 
-const HubSettingsLayout: FC<HubSettingsLayoutProps> = ({ currentTab, tabRoutePrefix, children }) => {
+const ChallengeSettingsLayout: FC<ChallengeSettingsLayoutProps> = ({ currentTab, tabRoutePrefix, children }) => {
   return (
     <>
-      <SettingsTabs tabs={tabs} currentTab={currentTab} aria-label="Hub Settings tabs" routePrefix={tabRoutePrefix} />
+      <SettingsTabs
+        tabs={tabs}
+        currentTab={currentTab}
+        aria-label="Challenge Settings tabs"
+        routePrefix={tabRoutePrefix}
+      />
       {children}
     </>
   );
 };
 
-export default HubSettingsLayout;
+export default ChallengeSettingsLayout;

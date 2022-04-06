@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import HubContext from './HubContext';
 import HubSettingsLayout from '../../../../components/composite/layout/HubSettingsLayout/HubSettingsLayout';
-import { HubSettingsSection } from '../../../../components/composite/layout/HubSettingsLayout/constants';
+import { SettingsSection } from '../../../../components/composite/layout/EntitySettingsLayout/constants';
 import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
-import { HubSettingsPageProps } from '../../../../components/composite/layout/HubSettingsLayout/types';
+import { SettingsPageProps } from '../../../../components/composite/layout/EntitySettingsLayout/types';
 
-const HubContextPage: FC<HubSettingsPageProps> = ({ paths, routePrefix = '../' }) => {
+const HubContextPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'context' });
 
   return (
-    <HubSettingsLayout currentTab={HubSettingsSection.Context} tabRoutePrefix={routePrefix}>
+    <HubSettingsLayout currentTab={SettingsSection.Context} tabRoutePrefix={routePrefix}>
       <HubContext />
     </HubSettingsLayout>
   );

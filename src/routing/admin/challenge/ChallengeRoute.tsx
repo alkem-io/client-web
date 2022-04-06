@@ -1,25 +1,23 @@
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import FormMode from '../../../components/Admin/FormMode';
 import { managementData } from '../../../components/Admin/managementData';
 import { useChallenge, useHub } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { Error404, PageProps } from '../../../pages';
-import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage';
 import ManagementPageTemplatePage from '../../../pages/Admin/ManagementPageTemplatePage';
 import { buildChallengeUrl } from '../../../utils/urlBuilders';
 import { CommunityRoute } from '../community';
 import { OpportunitiesRoute } from '../opportunity/OpportunitiesRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
-import { ChallengeLifecycleRoute } from './ChallengeLifecycleRoute';
-import ChallengeVisualsPage from '../../../pages/Admin/Challenge/ChallengeVisualsPage';
+import ChallengeProfilePage from '../../../pages/Admin/Challenge/ChallengeProfile/ChallengeProfilePage';
+import ChallengeContextPage from '../../../pages/Admin/Challenge/ChallengeContext/ChallengeContextPage';
+import ChallengeCommunicationsPage from '../../../pages/Admin/Challenge/ChallengeCommunications/ChallengeCommunicationsPage';
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
-  const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
-  const { communityId: hubCommunityId, loading: loadingHub } = useHub();
+  const { communityId: parentCommunityId, loading: loadingHub } = useHub();
   const { challenge, displayName, hubNameId, challengeId, challengeNameId, loading: loadingChallenge } = useChallenge();
+  const communityId = challenge?.community?.id;
   const loading = loadingHub || loadingChallenge;
 
   const currentPaths = useMemo(
@@ -42,24 +40,25 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
             />
           }
         />
+        <Route path="profile" element={<ChallengeProfilePage paths={currentPaths} />} />
+        <Route path="context" element={<ChallengeContextPage paths={currentPaths} />} />
         <Route
-          path={'edit'}
+          path="communications"
           element={
-            <EditChallengePage
-              mode={FormMode.update}
+            <ChallengeCommunicationsPage
               paths={currentPaths}
-              title={t('navigation.admin.challenge.edit')}
+              communityId={communityId}
+              parentCommunityId={parentCommunityId}
             />
           }
         />
-        <Route path={'visuals'} element={<ChallengeVisualsPage paths={currentPaths} />} />
         <Route
-          path={'community/*'}
+          path="community/*"
           element={
             <CommunityRoute
               paths={currentPaths}
               communityId={challenge?.community?.id}
-              parentCommunityId={hubCommunityId}
+              parentCommunityId={parentCommunityId}
               credential={AuthorizationCredential.ChallengeMember}
               resourceId={challengeId}
               accessedFrom="challenge"
@@ -68,10 +67,9 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
         />
         <Route path={'opportunities/*'} element={<OpportunitiesRoute paths={currentPaths} />} />
         <Route
-          path={'authorization/*'}
+          path="authorization/*"
           element={<ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />}
         />
-        <Route path={'lifecycle'} element={<ChallengeLifecycleRoute paths={currentPaths} />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
 
-import { PageProps } from '../..';
-import ListPage from '../../../components/Admin/ListPage';
-import { SearchableListItem } from '../../../components/Admin/SearchableList';
-import Loading from '../../../components/core/Loading/Loading';
+import { PageProps } from '../../../index';
+import ListPage from '../../../../components/Admin/ListPage';
+import { SearchableListItem } from '../../../../components/Admin/SearchableList';
+import Loading from '../../../../components/core/Loading/Loading';
 import {
   refetchChallengesWithCommunityQuery,
   useChallengesWithCommunityQuery,
   useDeleteChallengeMutation,
-} from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import { useHub } from '../../../hooks';
+} from '../../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../../hooks';
+import { useHub } from '../../../../hooks';
 
 interface ChallengeListProps extends PageProps {}
 
