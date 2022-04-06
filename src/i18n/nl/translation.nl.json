@@ -97,6 +97,7 @@
     "discussion": "Discussie",
     "discussions": "Discussies",
     "dashboard": "Overzicht",
+    "contribute": "Bijdragen",
     "context": "Context",
     "community": "Community",
     "canvases": "Canvassen",
@@ -711,6 +712,10 @@
           "body": "",
           "no-data": "Er zijn geen Challenges beschikbaar voor deze Hub",
           "description": "Hier kan je Challenges verkennen die door deze Hub worden ondergebracht. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken. "
+        },
+        "contribute": {
+          "description": "Hier kan je een bijdrage leveren met inzichten die de context verduidelijken. Het draait om het openbaren van de kennis van de community. ",
+          "description2": "Voeg extra aspecten toe die relevant zijn en reageer op aspecten die door anderen zijn toegevoegd. "
         }
       }
     },
