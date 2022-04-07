@@ -18,6 +18,7 @@ import MarkdownInput from '../../../Admin/Common/MarkdownInput';
 type FormValueType = {
   name: string;
   defaultDescription: string;
+  typeDescription: string;
   tagsets: Tagset[];
   aspectNames: string[];
   type: string;
@@ -29,7 +30,8 @@ const FormikEffect = FormikEffectFactory<FormValueType>();
 type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { references?: Reference[] };
 export type AspectFormOutput = {
   displayName: string;
-  description: string;
+  defaultDescription: string;
+  typeDescription: string;
   tags: string[];
   type: string;
 } & AspectEditFields;
@@ -78,6 +80,7 @@ const AspectForm: FC<AspectFormProps> = ({
   const initialValues: FormValueType = {
     name: aspect?.displayName ?? '',
     defaultDescription: getDescriptionValue(),
+    typeDescription: aspect?.typeDescription ?? '',
     tagsets,
     aspectNames: aspectNames ?? [],
     type: aspect?.type ?? '',
@@ -100,7 +103,8 @@ const AspectForm: FC<AspectFormProps> = ({
   const handleChange = (values: FormValueType) => {
     const aspect: AspectFormOutput = {
       displayName: values.name,
-      description: values.description,
+      defaultDescription: values.defaultDescription,
+      typeDescription: values.defaultDescription,
       tags: values.tagsets[0].tags,
       type: values.type,
       references: values.references,

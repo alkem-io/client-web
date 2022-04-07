@@ -12,7 +12,7 @@ import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 
-type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description'> & {
+type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'defaultDescription' | 'typeDescription'> & {
   tags: string[];
   references?: Reference[];
 };

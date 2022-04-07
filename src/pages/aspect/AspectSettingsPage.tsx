@@ -72,6 +72,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
                     id: entities.aspect.id,
                     displayName: aspect.displayName,
                     defaultDescription: aspect.defaultDescription,
+                    typeDescription: aspect.typeDescription,
                     tags: aspect.tags,
                     references: aspect.references,
                   });

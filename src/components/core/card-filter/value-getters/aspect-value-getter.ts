@@ -1,9 +1,16 @@
 import { ValueType } from '../filterFn';
 import { AspectCardFragment } from '../../../../models/graphql-schema';
 
-export const aspectValueGetter = ({ id, displayName, tagset, description, type }: AspectCardFragment): ValueType => ({
+export const aspectValueGetter = ({
   id,
-  values: [displayName, description || '', type || '', (tagset?.tags || []).join(' ')],
+  displayName,
+  tagset,
+  defaultDescription,
+  typeDescription,
+  type,
+}: AspectCardFragment): ValueType => ({
+  id,
+  values: [displayName, defaultDescription || '', typeDescription || '', type || '', (tagset?.tags || []).join(' ')],
 });
 
 export const aspectTagsValueGetter = ({ tagset }: AspectCardFragment): string[] => tagset?.tags || [];

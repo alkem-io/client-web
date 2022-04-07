@@ -37,7 +37,7 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'description' | 'type' | 'tagset';
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'defaultDescription' | 'type' | 'tagset';
 type AspectType = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment };
 export interface AspectCardProps {
   aspect?: AspectType;
@@ -54,7 +54,7 @@ const AspectCard: FC<AspectCardProps> = ({
   challengeNameId,
   opportunityNameId,
 }) => {
-  const { nameID = '', displayName = '', description = '', type = '', tagset } = (aspect || {}) as AspectType;
+  const { nameID = '', displayName = '', defaultDescription = '', type = '', tagset } = (aspect || {}) as AspectType;
   const bannerNarrow = aspect?.bannerNarrow?.uri;
 
   return (
@@ -79,7 +79,7 @@ const AspectCard: FC<AspectCardProps> = ({
         <Root>
           <Box className={classes.clampContainer}>
             <Typography component={Markdown} className={classes.textClamp}>
-              {description}
+              {defaultDescription}
             </Typography>
           </Box>
         </Root>
