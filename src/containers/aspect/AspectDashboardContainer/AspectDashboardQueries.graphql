@@ -46,7 +46,7 @@ fragment AspectDashboard on Aspect {
   id
   type
   displayName
-  description
+  defaultDescription
   banner {
     ...VisualUri
   }

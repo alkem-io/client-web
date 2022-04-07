@@ -17,7 +17,7 @@ import MarkdownInput from '../../../Admin/Common/MarkdownInput';
 
 type FormValueType = {
   name: string;
-  description: string;
+  defaultDescription: string;
   tagsets: Tagset[];
   aspectNames: string[];
   type: string;
@@ -72,12 +72,12 @@ const AspectForm: FC<AspectFormProps> = ({
     if (!aspect) {
       return '';
     }
-    return aspect.description ?? descriptionTemplate ?? '';
+    return aspect.defaultDescription ?? descriptionTemplate ?? '';
   };
 
   const initialValues: FormValueType = {
     name: aspect?.displayName ?? '',
-    description: getDescriptionValue(),
+    defaultDescription: getDescriptionValue(),
     tagsets,
     aspectNames: aspectNames ?? [],
     type: aspect?.type ?? '',

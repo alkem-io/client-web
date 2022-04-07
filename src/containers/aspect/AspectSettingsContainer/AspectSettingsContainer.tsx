@@ -107,7 +107,8 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
         input: {
           ID: aspect.id,
           displayName: aspect.displayName,
-          description: aspect.description,
+          defaultDescription: aspect.defaultDescription,
+          typeDescription: aspect.typeDescription,
           tags: aspect.tags,
           references: aspect.references?.map(x => ({
             ID: x.id ?? '',

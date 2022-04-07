@@ -3,7 +3,8 @@ mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {
     id
     nameID
     displayName
-    description
+    defaultDescription
+    typeDescription
     type
     tagset {
       id

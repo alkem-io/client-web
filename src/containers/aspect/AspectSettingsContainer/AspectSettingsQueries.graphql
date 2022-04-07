@@ -44,7 +44,7 @@ fragment AspectSettings on Aspect {
   id
   nameID
   displayName
-  description
+  defaultDescription
   type
   authorization {
     id

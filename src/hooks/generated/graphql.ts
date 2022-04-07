@@ -278,7 +278,8 @@ export const ConfigurationFragmentDoc = gql`
       hubs {
         aspects {
           type
-          description
+          defaultDescription
+          typeDescription
         }
       }
     }
@@ -392,7 +393,8 @@ export const HubInfoFragmentDoc = gql`
     }
     template {
       aspectTemplates {
-        description
+        defaultDescription
+        typeDescription
         type
       }
     }
@@ -838,7 +840,7 @@ export const AspectDashboardFragmentDoc = gql`
     id
     type
     displayName
-    description
+    defaultDescription
     banner {
       ...VisualUri
     }
@@ -885,7 +887,7 @@ export const AspectSettingsFragmentDoc = gql`
     id
     nameID
     displayName
-    description
+    defaultDescription
     type
     authorization {
       id
@@ -1122,7 +1124,8 @@ export const AspectCardFragmentDoc = gql`
     nameID
     displayName
     type
-    description
+    defaultDescription
+    typeDescription
     banner {
       ...VisualUri
     }
@@ -1737,7 +1740,8 @@ export const CreateAspectDocument = gql`
       id
       nameID
       displayName
-      description
+      defaultDescription
+      typeDescription
       type
       tagset {
         id
@@ -10241,7 +10245,8 @@ export const UpdateAspectDocument = gql`
   mutation updateAspect($input: UpdateAspectInput!) {
     updateAspect(aspectData: $input) {
       id
-      description
+      defaultDescription
+      typeDescription
       displayName
       tagset {
         id

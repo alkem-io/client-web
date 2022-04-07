@@ -3,7 +3,8 @@ fragment AspectCard on Aspect {
   nameID
   displayName
   type
-  description
+  defaultDescription
+  typeDescription
   banner {
     ...VisualUri
   }
