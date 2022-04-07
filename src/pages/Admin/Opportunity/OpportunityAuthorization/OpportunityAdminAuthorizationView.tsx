@@ -1,29 +1,11 @@
 import { Container } from '@mui/material';
-import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import EditMembers from '../../../components/Admin/Community/EditMembers';
-import OpportunityMembers from '../../../containers/opportunity/OpportunityMembers';
-import { useOpportunity, useUpdateNavigation } from '../../../hooks';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
-import OpportunityAuthorizationPageProps from './OpportunityAuthorizationPageProps';
+import React, { FC } from 'react';
+import EditMembers from '../../../../components/Admin/Community/EditMembers';
+import OpportunityMembers from '../../../../containers/opportunity/OpportunityMembers';
+import { useOpportunity } from '../../../../hooks';
+import { AuthorizationCredential } from '../../../../models/graphql-schema';
 
-export const OpportunityAdminAuthorizationPage: FC<OpportunityAuthorizationPageProps> = ({ paths }) => {
-  const { t } = useTranslation();
-
-  const currentPaths = useMemo(
-    () => [
-      ...paths,
-      {
-        value: '',
-        name: t(`common.enums.authorization-credentials.${AuthorizationCredential.OpportunityAdmin}.name` as const),
-        real: false,
-      },
-    ],
-    [paths]
-  );
-
-  useUpdateNavigation({ currentPaths });
-
+export const OpportunityAdminAuthorizationView: FC = () => {
   const { opportunityId, opportunity } = useOpportunity();
 
   return (
@@ -55,4 +37,4 @@ export const OpportunityAdminAuthorizationPage: FC<OpportunityAuthorizationPageP
   );
 };
 
-export default OpportunityAdminAuthorizationPage;
+export default OpportunityAdminAuthorizationView;

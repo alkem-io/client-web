@@ -9,6 +9,7 @@ import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import ChallengeProfilePage from '../../../pages/Admin/Challenge/ChallengeProfile/ChallengeProfilePage';
 import ChallengeContextPage from '../../../pages/Admin/Challenge/ChallengeContext/ChallengeContextPage';
 import ChallengeCommunicationsPage from '../../../pages/Admin/Challenge/ChallengeCommunications/ChallengeCommunicationsPage';
+import ChallengeCommunityPage from '../../../pages/Admin/Challenge/ChallengeCommunity/ChallengeCommunityPage';
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
@@ -37,6 +38,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
             />
           }
         />
+        <Route path="community" element={<ChallengeCommunityPage paths={paths} />} />
         <Route
           path="community/*"
           element={

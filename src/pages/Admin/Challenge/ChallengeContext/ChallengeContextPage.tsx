@@ -5,14 +5,14 @@ import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../../../../components/composite/layout/EntitySettingsLayout/types';
 import ChallengeContextView from './ChallengeContextView';
 
-const ChallengeProfilePage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
+const ChallengeContextPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'context' });
 
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Context} tabRoutePrefix={routePrefix}>
-      <ChallengeContextView paths={paths} />
+      <ChallengeContextView />
     </ChallengeSettingsLayout>
   );
 };
 
-export default ChallengeProfilePage;
+export default ChallengeContextPage;

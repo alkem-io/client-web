@@ -1,7 +1,8 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../hooks';
+import { Path } from '../../../../context/NavigationProvider';
+import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../../../hooks';
 import {
   refetchChallengeProfileInfoQuery,
   useChallengeProfileInfoQuery,
@@ -14,7 +15,11 @@ import Loading from '../../../../components/core/Loading/Loading';
 import EditLifecycle from '../../../../components/Admin/EditLifecycle';
 import ChallengeLifecycleContainer from '../../../../containers/challenge/ChallengeLifecycleContainer';
 
-const ChallengeContextView: FC = () => {
+interface Props {
+  paths: Path[];
+}
+
+const EditChallengePage: FC<Props> = ({ paths }) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
@@ -36,12 +41,21 @@ const ChallengeContextView: FC = () => {
   const challenge = challengeProfile?.hub?.challenge;
   const challengeId = challenge?.id || '';
 
+  const currentPaths = useMemo(
+    () => [...paths, { name: challengeId ? 'edit' : 'new', real: false }],
+    [paths, challenge]
+  );
+  useUpdateNavigation({ currentPaths });
+
   const onSubmit = async (values: ContextFormValues) => {
     updateChallenge({
       variables: {
         input: {
           ID: challengeId,
+          // nameID: nameID,
+          // displayName: name,
           context: updateContextInput(values),
+          // tags: tagsets.flatMap(x => x.tags),
         },
       },
     });
@@ -59,7 +73,7 @@ const ChallengeContextView: FC = () => {
           text={t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
         />
       </Grid>
-      <ChallengeLifecycleContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
+      <ChallengeLifecycleContainer hubNameId={hubNameId} challengeNameId={challengeId}>
         {({ loading, ...provided }) => {
           if (loading) {
             return <Loading text="Loading" />;
@@ -72,4 +86,4 @@ const ChallengeContextView: FC = () => {
   );
 };
 
-export default ChallengeContextView;
+export default EditChallengePage;

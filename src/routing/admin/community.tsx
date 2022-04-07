@@ -13,7 +13,6 @@ import { HubApplicationRoute } from './hub/HubApplicationRoute';
 import { HubGroupRoute } from './hub/HubGroupRoute';
 import ChallengeMembershipPreferencePage from '../../pages/Admin/Challenge/ChallengeMembershipPreferencePage';
 import { useAppendCurrentPath } from '../../hooks/usePathUtils';
-import ChallengeCommunityPage from '../../pages/Admin/Challenge/ChallengeCommunity/ChallengeCommunityPage';
 
 type AccessedFrom = 'hub' | 'challenge' | 'opportunity';
 
@@ -35,7 +34,6 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
 
   return (
     <Routes>
-      <Route index element={<ChallengeCommunityPage paths={paths} routePrefix="../../" />} />
       <Route
         path="members"
         element={
