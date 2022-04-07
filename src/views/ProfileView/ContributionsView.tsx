@@ -44,7 +44,7 @@ export const ContributionsView: FC<ContributionViewProps> = ({ contributions, lo
   const { t } = useTranslation();
   return (
     <ProfileCard {...rest}>
-      <Grid container spacing={1} justifyContent="space-between" alignItems="stretch">
+      <Grid container spacing={1}>
         {loading && (
           <>
             <SkeletonItem />
