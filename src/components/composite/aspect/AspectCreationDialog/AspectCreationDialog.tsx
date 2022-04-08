@@ -147,8 +147,10 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, aspectNames
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="aspect-creation-title">
       <DialogTitle id="aspect-creation-title" onClose={handleCancel}>
-        {t('components.aspect-creation.title')}
-        <HelpButton helpText={t('components.aspect-creation.type-step.type-help-text')} />
+        <Box display="flex" alignItems="center">
+          {t('components.aspect-creation.title')}
+          <HelpButton helpText={t('components.aspect-creation.type-step.type-help-text')} />
+        </Box>
       </DialogTitle>
       <DialogContent dividers>
         <Stepper activeStep={activeStep.index}>
