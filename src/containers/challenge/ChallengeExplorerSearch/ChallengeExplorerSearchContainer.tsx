@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerProps } from '../../../models/container';
+import { ContainerChildProps } from '../../../models/container';
 import { useChallengeExplorerSearchQuery } from '../../../hooks/generated/graphql';
 import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
 import { useApolloErrorHandler } from '../../../hooks';
@@ -17,7 +17,7 @@ export interface ChallengeSearchResultContainerState {
 }
 
 export interface ChallengeSearchResultContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     ChallengeSearchResultContainerEntities,
     ChallengeSearchResultContainerActions,
     ChallengeSearchResultContainerState

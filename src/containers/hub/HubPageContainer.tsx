@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useHub, useUserContext } from '../../hooks';
 import { useHubPageQuery } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
@@ -35,7 +35,7 @@ export interface HubContainerState {
 }
 
 export interface HubPageContainerProps
-  extends ContainerProps<HubContainerEntities, HubContainerActions, HubContainerState> {}
+  extends ContainerChildProps<HubContainerEntities, HubContainerActions, HubContainerState> {}
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { t } = useTranslation();

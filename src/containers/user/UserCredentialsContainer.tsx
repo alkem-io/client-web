@@ -7,7 +7,7 @@ import {
   useGetSupportedCredentialMetadataQuery,
   useUserSsiQuery,
 } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import {
   AgentBeginVerifiedCredentialOfferOutput,
   AgentBeginVerifiedCredentialRequestOutput,
@@ -35,7 +35,7 @@ interface UserCredentialsContainerActions {
 }
 
 interface UserCredentialsContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     UserCredentialsContainerEntities,
     UserCredentialsContainerActions,
     UserCredentialsContainerState

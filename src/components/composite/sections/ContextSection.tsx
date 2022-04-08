@@ -25,9 +25,7 @@ export interface ContextSectionProps {
   impact?: string;
   who?: string;
   references?: Reference[];
-  aspectsLoading?: boolean;
-  canReadAspects?: boolean;
-  canCreateAspects?: boolean;
+  loading: boolean | undefined;
 }
 
 const ContextSection: FC<ContextSectionProps> = ({

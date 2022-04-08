@@ -13,114 +13,39 @@ import AspectCreationDialog, {
   AspectCreationOutput,
 } from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { Grid } from '@mui/material';
-import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../hooks';
-import { AspectCardFragmentDoc, useCreateAspectMutation } from '../../../hooks/generated/graphql';
+import { useUrlParams } from '../../../hooks';
 import { useTranslation } from 'react-i18next';
-import { AspectCardFragment } from '../../../models/graphql-schema';
+import { AspectWithPermissions } from '../../../containers/ContributeTabContainer/ContributeTabContainer';
 
 interface AspectsViewProps {
-  aspects?: AspectCardFragment[];
-  contextId?: string;
+  aspects?: AspectWithPermissions[];
   aspectsLoading?: boolean;
   canReadAspects?: boolean;
   canCreateAspects?: boolean;
+  onCreate: (aspect: AspectCreationOutput) => void;
+  onDelete: (id: string) => void;
 }
 
 const EMPTY_ASPECTS = []; // re-rendering prevention
 
 const AspectsView: FC<AspectsViewProps> = ({
   aspects = EMPTY_ASPECTS,
-  contextId,
   aspectsLoading,
   canReadAspects,
   canCreateAspects,
+  onCreate,
+  onDelete,
 }) => {
   const { t } = useTranslation();
-  const handleError = useApolloErrorHandler();
-  const notify = useNotification();
 
   const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
 
-  // todo: move handlers to the contextTabContainer
-  const [createAspect] = useCreateAspectMutation({
-    onError: handleError,
-    onCompleted: () => notify(t('components.context-section.create-aspect'), 'success'),
-    update: (cache, { data }) => {
-      if (!data) {
-        return;
-      }
-      const { createAspectOnContext } = data;
-
-      const contextRefId = cache.identify({
-        __typename: 'Context',
-        id: contextId,
-      });
-
-      if (!contextRefId) {
-        return;
-      }
-
-      cache.modify({
-        id: contextRefId,
-        fields: {
-          aspects(existingAspects = []) {
-            const newAspectRef = cache.writeFragment({
-              data: createAspectOnContext,
-              fragment: AspectCardFragmentDoc,
-              fragmentName: 'AspectCard',
-            });
-            return [...existingAspects, newAspectRef];
-          },
-        },
-      });
-    },
-  });
-
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
   const handleCreateDialogClosed = () => setAspectDialogOpen(false);
-  const onCreate = async (aspect: AspectCreationOutput) => {
-    if (!contextId) {
-      return;
-    }
 
-    createAspect({
-      variables: {
-        aspectData: {
-          contextID: contextId,
-          displayName: aspect.displayName,
-          description: aspect.description,
-          type: aspect.type,
-          tags: aspect.tags,
-        },
-      },
-      optimisticResponse: {
-        createAspectOnContext: {
-          __typename: 'Aspect',
-          id: '',
-          nameID: aspect.nameID || '',
-          displayName: aspect.displayName ?? '',
-          description: aspect.description,
-          type: aspect.type,
-          tagset: {
-            id: '-1',
-            name: 'default',
-            tags: aspect.tags ?? [],
-          },
-          banner: {
-            id: '-1',
-            name: '',
-            uri: '',
-          },
-          bannerNarrow: {
-            id: '-1',
-            name: '',
-            uri: '',
-          },
-        },
-      },
-    });
-
+  const handleCreate = (aspect: AspectCreationOutput) => {
+    onCreate(aspect);
     setAspectDialogOpen(false);
   };
 
@@ -157,6 +82,7 @@ const AspectsView: FC<AspectsViewProps> = ({
                         hubNameId={hubNameId}
                         challengeNameId={challengeNameId}
                         opportunityNameId={opportunityNameId}
+                        onDelete={x.canDelete ? onDelete : undefined}
                       />
                     </CardLayoutItem>
                   ))}
@@ -169,7 +95,7 @@ const AspectsView: FC<AspectsViewProps> = ({
       <AspectCreationDialog
         open={aspectDialogOpen}
         onCancel={handleCreateDialogClosed}
-        onCreate={onCreate}
+        onCreate={handleCreate}
         aspectNames={aspects.map(x => x.displayName)}
       />
     </Grid>

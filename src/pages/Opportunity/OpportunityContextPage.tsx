@@ -23,7 +23,7 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
     <ContextTabContainer
       hubNameId={hubNameId}
       opportunityNameId={opportunityNameId}
-      loadAspectsAndReferences={loadAspectsAndReferences}
+      loadReferences={loadAspectsAndReferences}
     >
       {(entities, state) => (
         <OpportunityContextView
@@ -32,17 +32,13 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
             opportunityTagset: entities.tagset,
             opportunityLifecycle: entities.lifecycle,
             context: entities.context,
-            aspects: entities?.aspects,
             references: entities?.references,
           }}
           state={{
             loading: state.loading,
             error: state.error,
           }}
-          options={{
-            canReadAspects: entities.permissions.canReadAspects,
-            canCreateAspects: entities.permissions.canCreateAspects,
-          }}
+          options={{}}
           actions={{}}
         />
       )}

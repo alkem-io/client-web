@@ -7,7 +7,7 @@ import {
   useUserApplicationsQuery,
   useUserProfileLazyQuery,
 } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../utils/urlBuilders';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 import { useCommunityContext } from '../../context/CommunityProvider';
@@ -21,7 +21,7 @@ interface ApplicationContainerState {
 }
 
 interface ApplicationContainerProps
-  extends ContainerProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {}
+  extends ContainerChildProps<ApplicationContainerEntities, ApplicationContainerActions, ApplicationContainerState> {}
 
 export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ children }) => {
   const { isAuthenticated } = useAuthenticationContext();
