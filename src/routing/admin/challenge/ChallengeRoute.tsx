@@ -13,7 +13,7 @@ import ChallengeCommunityPage from '../../../pages/Admin/Challenge/ChallengeComm
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
-  const { communityId: parentCommunityId } = useHub();
+  const { communityId: hubCommunityId } = useHub();
   const { challenge, displayName, challengeId } = useChallenge();
   const communityId = challenge?.community?.id;
 
@@ -34,7 +34,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
             <ChallengeCommunicationsPage
               paths={currentPaths}
               communityId={communityId}
-              parentCommunityId={parentCommunityId}
+              parentCommunityId={hubCommunityId}
             />
           }
         />
@@ -45,7 +45,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
             <CommunityRoute
               paths={currentPaths}
               communityId={challenge?.community?.id}
-              parentCommunityId={parentCommunityId}
+              parentCommunityId={hubCommunityId}
               credential={AuthorizationCredential.ChallengeMember}
               resourceId={challengeId}
               accessedFrom="challenge"
