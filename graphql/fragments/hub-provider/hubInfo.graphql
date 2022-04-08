@@ -24,7 +24,8 @@ fragment HubInfo on Hub {
   }
   template {
     aspectTemplates {
-      description
+      defaultDescription
+      typeDescription
       type
     }
   }

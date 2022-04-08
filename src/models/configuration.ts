@@ -25,7 +25,8 @@ export interface Configuration {
 
 export interface AspectTemplate {
   type: string;
-  description: string;
+  defaultDescription: string;
+  typeDescription: string;
 }
 
 interface AuthenticationProvider {

@@ -142,10 +142,16 @@ export type AspectFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type AspectTemplateKeySpecifier = ('description' | 'type' | AspectTemplateKeySpecifier)[];
+export type AspectTemplateKeySpecifier = (
+  | 'defaultDescription'
+  | 'type'
+  | 'typeDescription'
+  | AspectTemplateKeySpecifier
+)[];
 export type AspectTemplateFieldPolicy = {
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
 export type AuthenticationConfigFieldPolicy = {
@@ -578,10 +584,16 @@ export type HubFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   template?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type HubAspectTemplateKeySpecifier = ('description' | 'type' | HubAspectTemplateKeySpecifier)[];
+export type HubAspectTemplateKeySpecifier = (
+  | 'defaultDescription'
+  | 'type'
+  | 'typeDescription'
+  | HubAspectTemplateKeySpecifier
+)[];
 export type HubAspectTemplateFieldPolicy = {
-  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type HubTemplateKeySpecifier = ('aspectTemplates' | HubTemplateKeySpecifier)[];
 export type HubTemplateFieldPolicy = {
