@@ -35,7 +35,8 @@ fragment Configuration on Config {
     hubs {
        aspects {
           type
-          description
+          defaultDescription
+          typeDescription
        }
     }
   }

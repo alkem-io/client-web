@@ -10,6 +10,7 @@ import AspectReviewStep from './steps/AspectReviewStep/AspectReviewStep';
 import { AspectFormOutput } from '../AspectForm/AspectForm';
 import AspectInfoStep from './steps/AspectInfoStep/AspectInfoStep';
 import { CreateAspectOnContextInput } from '../../../../models/graphql-schema';
+import HelpButton from '../../../core/HelpButton';
 
 export type AspectCreationType = Partial<CreateAspectOnContextInput>;
 export type AspectCreationOutput = Omit<CreateAspectOnContextInput, 'contextID'>;
@@ -145,7 +146,10 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, aspectNames
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="aspect-creation-title">
       <DialogTitle id="aspect-creation-title" onClose={handleCancel}>
-        {t('components.aspect-creation.title')}
+        <Box display="flex" alignItems="center">
+          {t('components.aspect-creation.title')}
+          <HelpButton helpText={t('components.aspect-creation.type-step.type-help-text')} />
+        </Box>
       </DialogTitle>
       <DialogContent dividers>
         <Stepper activeStep={activeStep.index}>
