@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerProps } from '../../../models/container';
+import { ContainerChildProps } from '../../../models/container';
 import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
 import {
   useChallengeAspectSettingsQuery,
@@ -35,7 +35,7 @@ export interface AspectSettingsContainerState {
 }
 
 export interface AspectSettingsContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     AspectSettingsContainerEntities,
     AspectSettingsContainerActions,
     AspectSettingsContainerState

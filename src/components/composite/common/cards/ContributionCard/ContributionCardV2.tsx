@@ -1,6 +1,8 @@
 import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
+import IconButton from '@mui/material/IconButton';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
@@ -21,6 +23,8 @@ export interface ContributionCardV2Details {
   domain?: {
     communityID: string;
   };
+  id?: string;
+  onDelete?: (id: string) => void;
 }
 
 export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
@@ -80,10 +84,25 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
 );
 
 const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = false, classes, options, children }) => {
-  const { headerText = '', labelText, tags = [], mediaUrl, mediaSize = 'medium', url = '', tagsFor } = details || {};
+  const {
+    headerText = '',
+    labelText,
+    tags = [],
+    mediaUrl,
+    mediaSize = 'medium',
+    url = '',
+    tagsFor,
+    onDelete,
+    id,
+  } = details || {};
   const { noMedia } = options || {};
 
   const styles = useStyles({ mediaSize });
+
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    id && onDelete?.(id);
+  };
 
   return (
     <LinkCard to={url} className={styles.card} aria-label="contribution-card">
@@ -92,10 +111,17 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
           {loading ? (
             <Skeleton variant="rectangular" className={styles.cardMedia} animation="wave" />
           ) : (
-            <CardMedia image={mediaUrl} className={styles.cardMedia}>
-              {/* Workaround console error when image is missing. */}
-              <div />
-            </CardMedia>
+            <>
+              <CardMedia image={mediaUrl} className={styles.cardMedia} sx={{ position: 'relative' }}>
+                {onDelete && id && (
+                  <IconButton aria-label="delete" sx={{ position: 'absolute', right: 0 }} onClick={handleDelete}>
+                    <DeleteOutlinedIcon sx={{ color: 'negative.main' }} />
+                  </IconButton>
+                )}
+                {/* Workaround console error when image is missing. */}
+                <div />
+              </CardMedia>
+            </>
           )}
         </>
       )}

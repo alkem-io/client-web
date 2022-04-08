@@ -2,44 +2,29 @@ import { ApolloError } from '@apollo/client';
 import Box from '@mui/material/Box';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AspectCardFragment } from '../../models/graphql-schema';
-import { ViewProps } from '../../models/view';
 import AspectsView from '../aspect/AspectsView/AspectsView';
+import { AspectCreationOutput } from '../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
+import { AspectWithPermissions } from '../../containers/ContributeTabContainer/ContributeTabContainer';
 
-interface ContextIdHolder {
-  id: string;
-}
-
-export interface ContributeViewEntities {
-  context?: ContextIdHolder;
-  aspects?: AspectCardFragment[];
-}
-
-export interface ContributeViewActions {}
-
-export interface ContributeViewState {
+export interface ContributeViewProps {
+  aspects?: AspectWithPermissions[];
   loading: boolean;
   error?: ApolloError;
-}
-
-export interface ContributeViewOptions {
   canReadAspects: boolean;
   canCreateAspects: boolean;
+  onCreate: (aspect: AspectCreationOutput) => void;
+  onDelete: (id: string) => void;
 }
 
-export interface ContributeViewProps
-  extends ViewProps<ContributeViewEntities, ContributeViewActions, ContributeViewState, ContributeViewOptions> {}
-
-const ContributeView: FC<ContributeViewProps> = ({ entities, options, state }) => {
+const ContributeView: FC<ContributeViewProps> = ({
+  loading,
+  aspects,
+  canReadAspects,
+  canCreateAspects,
+  onCreate,
+  onDelete,
+}) => {
   const { t } = useTranslation();
-  const { canReadAspects, canCreateAspects } = options;
-  const { loading } = state;
-  const { context } = entities;
-
-  const contextId = context?.id;
-
-  const aspects = entities?.aspects;
-
   return (
     <>
       <Box paddingBottom={2} display="flex" justifyContent="center">
@@ -49,11 +34,12 @@ const ContributeView: FC<ContributeViewProps> = ({ entities, options, state }) =
         {t('pages.hub.sections.contribute.description2')}
       </Box>
       <AspectsView
-        contextId={contextId}
         aspects={aspects}
         aspectsLoading={loading}
         canReadAspects={canReadAspects}
         canCreateAspects={canCreateAspects}
+        onCreate={onCreate}
+        onDelete={onDelete}
       />
     </>
   );

@@ -2,7 +2,7 @@ import { sortBy } from 'lodash';
 import React, { FC, useMemo } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../hooks';
 import { useUpdatePreferenceOnUserMutation, useUserNotificationsPreferencesQuery } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { Preference, PreferenceType, UserPreferenceType } from '../../models/graphql-schema';
 
 export interface UserNotificationsContainerEntities {
@@ -18,7 +18,7 @@ export interface UserNotificationsContainerActions {
 }
 
 export interface UserNotificationsContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     UserNotificationsContainerEntities,
     UserNotificationsContainerActions,
     UserNotificationsContainerState

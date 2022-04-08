@@ -5,7 +5,7 @@ import { ActivityItem } from '../../components/composite/common/ActivityPanel/Ac
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
@@ -34,7 +34,7 @@ export interface ChallengeContainerState {
 }
 
 export interface ChallengePageContainerProps
-  extends ContainerProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
+  extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();

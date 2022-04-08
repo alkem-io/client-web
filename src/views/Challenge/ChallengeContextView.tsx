@@ -9,7 +9,6 @@ import ContextSection from '../../components/composite/sections/ContextSection';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import {
-  AspectCardFragment,
   Context,
   ContextTabFragment,
   LifecycleContextTabFragment,
@@ -30,7 +29,6 @@ interface ChallengeContextEntities {
   challengeDisplayName?: string;
   challengeTagset?: Tagset;
   challengeLifecycle?: LifecycleContextTabFragment;
-  aspects?: AspectCardFragment[];
   references?: ReferenceContextTabFragment[];
 }
 interface ChallengeContextActions {}
@@ -39,8 +37,6 @@ interface ChallengeContextState {
   error?: ApolloError;
 }
 interface ChallengeContextOptions {
-  canReadAspects: boolean;
-  canCreateAspects: boolean;
   canCreateCommunityContextReview: boolean;
 }
 
@@ -54,7 +50,7 @@ interface ChallengeContextViewProps
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
   const { t } = useTranslation();
-  const { canReadAspects, canCreateAspects, canCreateCommunityContextReview } = options;
+  const { canCreateCommunityContextReview } = options;
   const { loading } = state;
   const { context, challengeDisplayName = '', challengeTagset, challengeLifecycle } = entities;
   const {
@@ -97,9 +93,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         contextId={id}
         keywords={challengeTagset?.tags}
         references={references}
-        aspectsLoading={loading}
-        canReadAspects={canReadAspects}
-        canCreateAspects={canCreateAspects}
+        loading={loading}
       />
     </>
   );

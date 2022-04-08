@@ -7,7 +7,7 @@ import {
   useDeleteCanvasOnContextMutation,
   useUpdateCanvasOnContextMutation,
 } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { CanvasWithoutValue } from '../../models/entities/canvas';
 import {
   Canvas,
@@ -33,7 +33,8 @@ export interface CanvasActionsContainerState {
   updatingCanvas?: boolean;
 }
 
-export interface CanvasActionsContainerProps extends ContainerProps<{}, ICanvasActions, CanvasActionsContainerState> {}
+export interface CanvasActionsContainerProps
+  extends ContainerChildProps<{}, ICanvasActions, CanvasActionsContainerState> {}
 
 const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) => {
   const handleError = useApolloErrorHandler();

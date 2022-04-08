@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerProps } from '../../../models/container';
+import { ContainerChildProps } from '../../../models/container';
 import { AspectDashboardFragment, AuthorizationPrivilege } from '../../../models/graphql-schema';
 import {
   AspectMessageFragmentDoc,
@@ -41,7 +41,7 @@ export interface AspectDashboardContainerState {
 }
 
 export interface AspectDashboardContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     AspectDashboardContainerEntities,
     AspectDashboardContainerActions,
     AspectDashboardContainerState

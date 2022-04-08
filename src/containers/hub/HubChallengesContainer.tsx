@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC } from 'react';
 import { useChallengeCardsQuery } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { Challenge } from '../../models/graphql-schema';
 
 export interface HubChallengesContainerEntities {
@@ -16,7 +16,11 @@ export interface HubChallengesContainerState {
 }
 
 export interface HubChallengesContainerProps
-  extends ContainerProps<HubChallengesContainerEntities, HubChallengesContainerActions, HubChallengesContainerState> {
+  extends ContainerChildProps<
+    HubChallengesContainerEntities,
+    HubChallengesContainerActions,
+    HubChallengesContainerState
+  > {
   entities: {
     hubNameId: string;
   };
