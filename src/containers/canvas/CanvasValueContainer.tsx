@@ -9,7 +9,7 @@ import {
   useOpportunityCanvasValuesQuery,
 } from '../../hooks/generated/graphql';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import {
   Canvas,
   CanvasContentUpdatedSubscription,
@@ -35,7 +35,7 @@ export interface CanvasValueParams {
 }
 
 export interface CanvasValueContainerProps
-  extends ContainerProps<ICanvasValueEntities, {}, CanvasValueContainerState>,
+  extends ContainerChildProps<ICanvasValueEntities, {}, CanvasValueContainerState>,
     CanvasValueParams {}
 
 const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasId, params }) => {

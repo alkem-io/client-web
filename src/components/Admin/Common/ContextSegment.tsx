@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useInputField } from './useInputField';
 import * as yup from 'yup';
 import MarkdownInput from './MarkdownInput';
 
@@ -16,10 +15,9 @@ interface ContextSegmentProps {}
 
 export const ContextSegment: FC<ContextSegmentProps> = () => {
   const { t } = useTranslation();
-  const getInputField = useInputField();
+
   return (
     <>
-      {getInputField({ name: 'tagline', label: t('components.contextSegment.tagline'), rows: 3 })}
       <MarkdownInput
         name="vision"
         label={t('components.contextSegment.vision.title')}

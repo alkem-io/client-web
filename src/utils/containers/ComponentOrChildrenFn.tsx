@@ -8,6 +8,8 @@ export type ComponentOrChildrenFn<Provided> =
       children: (props: Provided) => ReactElement | null;
     };
 
+export type ContainerPropsWithProvided<TProps, TProvidedProps> = TProps & ComponentOrChildrenFn<TProvidedProps>;
+
 export const renderComponentOrChildrenFn = <Provided,>(props: ComponentOrChildrenFn<Provided>, provided: Provided) => {
   if ('component' in props) {
     const Component = props.component;

@@ -14,7 +14,9 @@ import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../utils/buildContext';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
-import ProfileForm, { ProfileFormValuesType } from '../../../components/composite/forms/ProfileForm';
+import ProfileFormWithContext, {
+  ProfileFormValuesType,
+} from '../../../components/composite/forms/ProfileFormWithContext';
 import FormMode from '../../../components/Admin/FormMode';
 
 interface Props {
@@ -105,7 +107,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
       <Grid item>
         <Typography variant={'h2'}>{title}</Typography>
       </Grid>
-      <ProfileForm
+      <ProfileFormWithContext
         isEdit={mode === FormMode.update}
         name={challenge?.displayName}
         nameID={challenge?.nameID}

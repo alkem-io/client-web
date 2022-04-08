@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerProps } from '../../../models/container';
+import { ContainerChildProps } from '../../../models/container';
 import {
   useOrganizationPreferencesQuery,
   useUpdatePreferenceOnOrganizationMutation,
@@ -22,7 +22,7 @@ export interface OrganizationPreferenceContainerState {
 }
 
 export interface OrganizationPreferenceContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     OrganizationPreferenceContainerEntities,
     OrganizationPreferenceContainerActions,
     OrganizationPreferenceContainerState

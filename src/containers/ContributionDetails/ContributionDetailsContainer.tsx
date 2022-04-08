@@ -5,7 +5,7 @@ import {
   useHubContributionDetailsQuery,
   useOpportunityContributionDetailsQuery,
 } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import { getVisualBanner } from '../../utils/visuals.utils';
@@ -21,7 +21,11 @@ export interface EntityDetailsContainerState {
 export interface EntityDetailsContainerActions {}
 
 export interface EntityDetailsContainerProps
-  extends ContainerProps<EntityDetailsContainerEntities, EntityDetailsContainerActions, EntityDetailsContainerState> {
+  extends ContainerChildProps<
+    EntityDetailsContainerEntities,
+    EntityDetailsContainerActions,
+    EntityDetailsContainerState
+  > {
   entities: ContributionItem;
 }
 

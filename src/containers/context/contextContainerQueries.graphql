@@ -133,19 +133,12 @@ fragment ContextTab on Context {
   vision
   impact
   who
-  authorization {
-    id
-    myPrivileges
-  }
   visuals {
     ...VisualFull
   }
 }
 fragment ContextTabExtra on Context {
   id
-  aspects {
-    ...AspectCard
-  }
   references {
     ...ReferenceContextTab
   }

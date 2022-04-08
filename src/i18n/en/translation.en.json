@@ -75,6 +75,7 @@
     "opportunities": "Opportunities",
     "organization": "Organization",
     "organizations": "Organizations",
+    "communications": "Communications",
     "interest": "Interest",
     "interests": "Interests",
     "project": "Project",
@@ -111,6 +112,7 @@
     "credentials": "Credentials",
     "my-profile": "My profile",
     "my-memberships": "My memberships",
+    "profile": "Profile",
     "social": "Social",
     "lifecycle": "Lifecycle",
     "home": "Home",
@@ -249,6 +251,7 @@
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
         "label": "Aspect Type",
+        "type-help-text-short": "Please choose the aspect type that best matches the context you wish to share.",
         "type-help-text": "Aspects allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of aspect types that are available in this context is fixed. Please choose the aspect type that best matches the context you wish to share."
       },
       "info-step": {

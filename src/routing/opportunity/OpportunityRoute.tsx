@@ -11,10 +11,10 @@ import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboa
 import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
 import OpportunityProjectsPage from '../../pages/Opportunity/OpportunityProjectsPage';
 import OpportunityCanvasPage from '../../pages/Opportunity/OpportunityCanvasPage';
+import ContributePage from '../../pages/Contribute/ContributePage';
 import { nameOfUrl } from '../url-params';
 import AspectProvider from '../../context/aspect/AspectProvider';
 import AspectRoute from '../aspect/AspectRoute';
-import OpportunityContributePage from '../../pages/Opportunity/OpportunityContributePage';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -50,7 +50,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
       >
         <Route index element={<Navigate replace to={'dashboard'} />} />
         <Route path={'dashboard'} element={<OpportunityDashboardPage paths={currentPaths} />} />
-        <Route path={'contribute'} element={<OpportunityContributePage paths={currentPaths} />} />
+        <Route path={'contribute'} element={<ContributePage paths={currentPaths} />} />
         <Route path={'context'} element={<OpportunityContextPage paths={currentPaths} />} />
         <Route path={'community'} element={<OpportunityCommunityPage paths={currentPaths} />} />
         <Route path={'projects'} element={<OpportunityProjectsPage paths={currentPaths} />} />

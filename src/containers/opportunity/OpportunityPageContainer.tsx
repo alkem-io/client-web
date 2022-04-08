@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery } from '../../hooks/generated/graphql';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import {
@@ -65,7 +65,7 @@ export interface OpportunityContainerState {
 }
 
 export interface OpportunityPageContainerProps
-  extends ContainerProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
+  extends ContainerChildProps<OpportunityContainerEntities, OpportunityContainerActions, OpportunityContainerState> {}
 
 // todo: Do cleanup when the aspect are extended further
 const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children }) => {

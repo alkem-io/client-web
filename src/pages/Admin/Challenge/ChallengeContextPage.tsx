@@ -26,7 +26,7 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
     <ContextTabContainer
       hubNameId={hubNameId}
       challengeNameId={challengeNameId}
-      loadAspectsAndReferences={loadAspectsAndReferences}
+      loadReferences={loadAspectsAndReferences}
     >
       {(entities, state) => (
         <ChallengeContextView
@@ -40,7 +40,6 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
             challengeTagset: entities.tagset,
             challengeLifecycle: entities.lifecycle,
             context: entities.context,
-            aspects: entities?.aspects,
             references: entities?.references,
           }}
           state={{
@@ -48,8 +47,6 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
             error: state.error,
           }}
           options={{
-            canReadAspects: entities.permissions.canReadAspects,
-            canCreateAspects: entities.permissions.canCreateAspects,
             canCreateCommunityContextReview: entities.permissions.canCreateCommunityContextReview,
           }}
           actions={{}}

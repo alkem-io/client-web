@@ -1,18 +1,18 @@
-import React, { FC, useMemo } from 'react';
-import { Route, Routes, useResolvedPath } from 'react-router-dom';
+import React, { FC } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../pages';
-import OpportunityAdminAuthorizationPage from '../../../pages/Admin/Opportunity/OpportunityAdminAuthorizationPage';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
+import OpportunityAuthorizationPage from '../../../pages/Admin/Opportunity/OpportunityAuthorization/OpportunityAuthorizationPage';
+import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 
 interface OpportunityAuthorizationRouteProps extends AuthorizationRouteProps {}
 
 const OpportunityAuthorizationRoute: FC<OpportunityAuthorizationRouteProps> = ({ paths }) => {
-  const { pathname: url } = useResolvedPath('.');
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'authorization', real: false }], [paths]);
+  const currentPaths = useAppendBreadcrumb(paths, { name: 'authorization' });
 
   return (
     <Routes>
-      <Route path={'admins'} element={<OpportunityAdminAuthorizationPage paths={currentPaths} />}></Route>
+      <Route index element={<OpportunityAuthorizationPage paths={currentPaths} routePrefix="../../" />} />
       <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );

@@ -1,0 +1,102 @@
+query PrivilegesOnHubContext($hubNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    context {
+      ...PrivilegesOnContext
+    }
+  }
+}
+query HubAspects($hubNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    context {
+      ...ApsectsOnContext
+    }
+  }
+}
+# challenge
+query PrivilegesOnChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      context {
+        ...PrivilegesOnContext
+      }
+    }
+  }
+}
+query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      context {
+        ...ApsectsOnContext
+      }
+    }
+  }
+}
+# opportunity
+query PrivilegesOnOpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      context {
+        ...PrivilegesOnContext
+      }
+    }
+  }
+}
+query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      context {
+        ...ApsectsOnContext
+      }
+    }
+  }
+}
+
+fragment ApsectsOnContext on Context {
+  id
+  aspects {
+    ...AspectCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+}
+
+fragment PrivilegesOnContext on Context {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+}
+
+mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {
+  createAspectOnContext(aspectData: $aspectData) {
+    id
+    nameID
+    displayName
+    description
+    type
+    tagset {
+      id
+      name
+      tags
+    }
+    banner {
+      ...VisualUri
+    }
+    bannerNarrow {
+      ...VisualUri
+    }
+  }
+}

@@ -4,22 +4,22 @@ import { ChallengeProvider } from '../../context/ChallengeProvider';
 import { CommunityProvider } from '../../context/CommunityProvider';
 import { useHub } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { Error404, PageProps } from '../../pages';
-import HubDashboardPage from '../../pages/Hub/HubDashboardPage';
 import ApplyRoute from '../application/apply.route';
 import { nameOfUrl } from '../url-params';
 import HubTabs from './HubTabs';
-import HubCommunityPage from '../../pages/Community/HubCommunityPage';
 import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import ChallengeRoute from '../challenge/ChallengeRoute';
+import HubCommunityPage from '../../pages/Community/HubCommunityPage';
+import { Error404, PageProps } from '../../pages';
+import HubDashboardPage from '../../pages/Hub/HubDashboardPage';
 import HubContextPage from '../../pages/Hub/HubContextPage';
-import HubCanvasPage from './HubCanvasPage';
 import HubChallengesPage from '../../pages/Hub/HubChallengesPage';
+import ContributePage from '../../pages/Contribute/ContributePage';
+import HubCanvasPage from './HubCanvasPage';
 import AspectRoute from '../aspect/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
-import HubContributePage from '../../pages/Hub/HubContributePage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const {
@@ -44,7 +44,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
       >
         <Route index element={<Navigate replace to={'dashboard'} />} />
         <Route path={'dashboard'} element={<HubDashboardPage paths={currentPaths} />} />
-        <Route path={'contribute'} element={<HubContributePage paths={currentPaths} />} />
+        <Route path={'contribute'} element={<ContributePage paths={currentPaths} />} />
         <Route path={'context'} element={<HubContextPage paths={currentPaths} />} />
         <Route path={'community'} element={<HubCommunityPage paths={currentPaths} />} />
         <Route

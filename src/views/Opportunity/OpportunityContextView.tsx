@@ -30,10 +30,7 @@ export interface OpportunityContextViewState {
   error?: ApolloError;
 }
 
-export interface OpportunityContextViewOptions {
-  canReadAspects: boolean;
-  canCreateAspects: boolean;
-}
+export interface OpportunityContextViewOptions {}
 
 export interface OpportunityContextViewProps
   extends ViewProps<
@@ -43,8 +40,7 @@ export interface OpportunityContextViewProps
     OpportunityContextViewOptions
   > {}
 
-const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, options, state }) => {
-  const { canReadAspects, canCreateAspects } = options;
+const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, state }) => {
   const { loading } = state;
   const { context, opportunityDisplayName, opportunityTagset, opportunityLifecycle } = entities;
 
@@ -77,9 +73,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, opt
       contextId={id}
       keywords={opportunityTagset?.tags}
       references={references}
-      aspectsLoading={loading}
-      canReadAspects={canReadAspects}
-      canCreateAspects={canCreateAspects}
+      loading={loading}
     />
   );
 };
