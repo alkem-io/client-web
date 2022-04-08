@@ -20,7 +20,7 @@ const HubContextPage: FC<HubContextPageProps> = ({ paths }) => {
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <ContextTabContainer hubNameId={hubNameId} loadAspectsAndReferences={loadAspectsAndReferences}>
+    <ContextTabContainer hubNameId={hubNameId} loadReferences={loadAspectsAndReferences}>
       {(entities, state) => (
         <HubContextView
           entities={{
@@ -29,17 +29,13 @@ const HubContextPage: FC<HubContextPageProps> = ({ paths }) => {
             hubDisplayName: displayName,
             hubTagSet: entities.tagset,
             context: entities.context,
-            aspects: entities?.aspects,
             references: entities?.references,
           }}
           state={{
             loading: state.loading,
             error: state.error,
           }}
-          options={{
-            canReadAspects: entities.permissions.canReadAspects,
-            canCreateAspects: entities.permissions.canCreateAspects,
-          }}
+          options={{}}
           actions={{}}
         />
       )}

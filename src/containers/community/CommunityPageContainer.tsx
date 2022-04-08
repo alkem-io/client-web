@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { OrganizationCardFragment, Scalars, UserCardFragment } from '../../models/graphql-schema';
 import {
   useChallengeLeadingOrganizationsQuery,
@@ -28,7 +28,7 @@ export interface CommunityContainerState {
 }
 
 export interface CommunityContainerProps
-  extends ContainerProps<CommunityContainerEntities, CommunityContainerActions, CommunityContainerState> {
+  extends ContainerChildProps<CommunityContainerEntities, CommunityContainerActions, CommunityContainerState> {
   hubId?: Scalars['UUID_NAMEID'];
   challengeId?: Scalars['UUID_NAMEID'];
   communityId?: Scalars['UUID'];

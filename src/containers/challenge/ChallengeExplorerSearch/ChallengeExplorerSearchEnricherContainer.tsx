@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
 import { useChallengeExplorerSearchEnricherQuery } from '../../../hooks/generated/graphql';
-import { ContainerProps } from '../../../models/container';
+import { ContainerChildProps } from '../../../models/container';
 import { useApolloErrorHandler } from '../../../hooks';
 
 type EnrichInfo = {
@@ -24,7 +24,7 @@ export interface ChallengeExplorerSearchEnricherContainerState {
 }
 
 export interface ChallengeExplorerSearchEnricherContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     ChallengeExplorerSearchEnricherContainerEntities,
     ChallengeExplorerSearchEnricherContainerActions,
     ChallengeExplorerSearchEnricherContainerState

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApolloError } from '@apollo/client';
-import { ContainerProps } from '../../../models/container';
+import { ContainerChildProps } from '../../../models/container';
 import {
   useCommunityFeedbackTemplatesQuery,
   useCreateFeedbackOnCommunityContextMutation,
@@ -29,7 +29,7 @@ export interface CommunityFeedbackContainerState {
 }
 
 export interface CommunityFeedbackContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     CommunityFeedbackContainerEntities,
     CommunityFeedbackContainerActions,
     CommunityFeedbackContainerState

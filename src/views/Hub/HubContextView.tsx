@@ -3,13 +3,7 @@ import React, { FC } from 'react';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import ContextSection from '../../components/composite/sections/ContextSection';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import {
-  AspectCardFragment,
-  Context,
-  ContextTabFragment,
-  ReferenceContextTabFragment,
-  Tagset,
-} from '../../models/graphql-schema';
+import { Context, ContextTabFragment, ReferenceContextTabFragment, Tagset } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
@@ -19,7 +13,6 @@ interface HubContextEntities {
   hubNameId?: string;
   hubDisplayName?: string;
   hubTagSet?: Tagset;
-  aspects?: AspectCardFragment[];
   references?: ReferenceContextTabFragment[];
 }
 interface HubContextActions {}
@@ -27,16 +20,12 @@ interface HubContextState {
   loading: boolean;
   error?: ApolloError;
 }
-interface HubContextOptions {
-  canReadAspects: boolean;
-  canCreateAspects: boolean;
-}
+interface HubContextOptions {}
 
 interface HubContextViewProps
   extends ViewProps<HubContextEntities, HubContextActions, HubContextState, HubContextOptions> {}
 
-export const HubContextView: FC<HubContextViewProps> = ({ entities, state, options }) => {
-  const { canReadAspects, canCreateAspects } = options;
+export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => {
   const { loading } = state;
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
 
@@ -71,9 +60,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state, optio
       who={who}
       contextId={id}
       references={references}
-      aspectsLoading={loading}
-      canReadAspects={canReadAspects}
-      canCreateAspects={canCreateAspects}
+      loading={loading}
     />
   );
 };

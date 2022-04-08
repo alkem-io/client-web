@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { useContributorsSearchQuery } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../hooks';
 import { OrganizationContributorFragment, UserContributorFragment } from '../../models/graphql-schema';
@@ -18,7 +18,7 @@ export interface ContributorsSearchContainerState {
 }
 
 export interface ContributorsSearchContainerProps
-  extends ContainerProps<
+  extends ContainerChildProps<
     ContributorsSearchContainerEntities,
     ContributorsSearchContainerActions,
     ContributorsSearchContainerState

@@ -7225,6 +7225,232 @@ export type ProfileVerifiedCredentialSubscription = {
   profileVerifiedCredential: { __typename?: 'ProfileCredentialVerified'; vc: string };
 };
 
+export type PrivilegesOnHubContextQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type PrivilegesOnHubContextQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type HubAspectsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubAspectsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          aspects?:
+            | Array<{
+                __typename?: 'Aspect';
+                id: string;
+                nameID: string;
+                displayName: string;
+                type: string;
+                description: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+                banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type PrivilegesOnChallengeContextQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type PrivilegesOnChallengeContextQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type ChallengeAspectsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeAspectsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            aspects?:
+              | Array<{
+                  __typename?: 'Aspect';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  type: string;
+                  description: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type PrivilegesOnOpportunityContextQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type PrivilegesOnOpportunityContextQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAspectsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityAspectsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            aspects?:
+              | Array<{
+                  __typename?: 'Aspect';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  type: string;
+                  description: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type ApsectsOnContextFragment = {
+  __typename?: 'Context';
+  id: string;
+  aspects?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        nameID: string;
+        displayName: string;
+        type: string;
+        description: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+};
+
+export type PrivilegesOnContextFragment = {
+  __typename?: 'Context';
+  id: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
 export type HubContributionDetailsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -9027,9 +9253,6 @@ export type HubContextQuery = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
           visuals?:
             | Array<{
                 __typename?: 'Visual';
@@ -9065,19 +9288,6 @@ export type HubContextExtraQuery = {
       | {
           __typename?: 'Context';
           id: string;
-          aspects?:
-            | Array<{
-                __typename?: 'Aspect';
-                id: string;
-                nameID: string;
-                displayName: string;
-                type: string;
-                description: string;
-                banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-              }>
-            | undefined;
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
@@ -9117,9 +9327,6 @@ export type ChallengeContextQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -9163,19 +9370,6 @@ export type ChallengeContextExtraQuery = {
         | {
             __typename?: 'Context';
             id: string;
-            aspects?:
-              | Array<{
-                  __typename?: 'Aspect';
-                  id: string;
-                  nameID: string;
-                  displayName: string;
-                  type: string;
-                  description: string;
-                  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                }>
-              | undefined;
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
@@ -9212,9 +9406,6 @@ export type OpportunityContextQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -9257,19 +9448,6 @@ export type OpportunityContextExtraQuery = {
         | {
             __typename?: 'Context';
             id: string;
-            aspects?:
-              | Array<{
-                  __typename?: 'Aspect';
-                  id: string;
-                  nameID: string;
-                  displayName: string;
-                  type: string;
-                  description: string;
-                  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-                }>
-              | undefined;
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
@@ -9287,9 +9465,6 @@ export type ContextTabFragment = {
   vision?: string | undefined;
   impact?: string | undefined;
   who?: string | undefined;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
   visuals?:
     | Array<{
         __typename?: 'Visual';
@@ -9309,19 +9484,6 @@ export type ContextTabFragment = {
 export type ContextTabExtraFragment = {
   __typename?: 'Context';
   id: string;
-  aspects?:
-    | Array<{
-        __typename?: 'Aspect';
-        id: string;
-        nameID: string;
-        displayName: string;
-        type: string;
-        description: string;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      }>
-    | undefined;
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
     | undefined;

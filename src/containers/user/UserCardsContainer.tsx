@@ -3,7 +3,7 @@ import { UserCardProps } from '../../components/composite/common/cards';
 import { useUserCardRoleName } from '../../hooks';
 import { useUserCardsContainerQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { User } from '../../models/graphql-schema';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
 
@@ -15,7 +15,7 @@ interface UserCardsContainerState {
   loading: boolean;
 }
 
-interface UserCardsContainerProps extends ContainerProps<UserCardsContainerEntities, {}, UserCardsContainerState> {
+interface UserCardsContainerProps extends ContainerChildProps<UserCardsContainerEntities, {}, UserCardsContainerState> {
   userIDs: string[];
   resourceId: string;
 }

@@ -6,7 +6,7 @@ import { useOrganization, useUserCardRoleName, useUserContext } from '../../hook
 import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../models/constants/tagset.constants';
-import { ContainerProps } from '../../models/container';
+import { ContainerChildProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
 import { isSocialNetworkSupported, SocialNetworkEnum, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
 import { AuthorizationCredential, OrganizationInfoFragment, User } from '../../models/graphql-schema';
@@ -34,7 +34,11 @@ export interface OrganizationContainerState {
 }
 
 export interface OrganizationPageContainerProps
-  extends ContainerProps<OrganizationContainerEntities, OrganizationContainerActions, OrganizationContainerState> {}
+  extends ContainerChildProps<
+    OrganizationContainerEntities,
+    OrganizationContainerActions,
+    OrganizationContainerState
+  > {}
 
 export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ children }) => {
   const { organizationId, organizationNameId, loading, organization } = useOrganization();
