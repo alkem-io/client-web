@@ -7,7 +7,7 @@ export const useNavigateToEdit = () => {
 
   return useCallback(
     (id: string) => {
-      navigate(`../${id}/edit`, { replace: true });
+      navigate(`../${id}/profile`, { replace: true });
     },
     [url, navigate]
   );
