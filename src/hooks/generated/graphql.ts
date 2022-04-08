@@ -840,7 +840,7 @@ export const AspectDashboardFragmentDoc = gql`
     id
     type
     displayName
-    defaultDescription
+    description
     banner {
       ...VisualUri
     }
@@ -887,7 +887,7 @@ export const AspectSettingsFragmentDoc = gql`
     id
     nameID
     displayName
-    defaultDescription
+    description
     type
     authorization {
       id
@@ -1124,7 +1124,7 @@ export const AspectCardFragmentDoc = gql`
     nameID
     displayName
     type
-    defaultDescription
+    description
     typeDescription
     banner {
       ...VisualUri
@@ -1740,7 +1740,7 @@ export const CreateAspectDocument = gql`
       id
       nameID
       displayName
-      defaultDescription
+      description
       typeDescription
       type
       tagset {
@@ -10245,7 +10245,7 @@ export const UpdateAspectDocument = gql`
   mutation updateAspect($input: UpdateAspectInput!) {
     updateAspect(aspectData: $input) {
       id
-      defaultDescription
+      description
       typeDescription
       displayName
       tagset {

@@ -30,7 +30,7 @@ const FormikEffect = FormikEffectFactory<FormValueType>();
 type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { references?: Reference[] };
 export type AspectFormOutput = {
   displayName: string;
-  defaultDescription: string;
+  description: string;
   typeDescription: string;
   tags: string[];
   type: string;
@@ -74,7 +74,7 @@ const AspectForm: FC<AspectFormProps> = ({
     if (!aspect) {
       return '';
     }
-    return aspect.defaultDescription ?? descriptionTemplate ?? '';
+    return aspect.description ?? descriptionTemplate ?? '';
   };
 
   const initialValues: FormValueType = {
@@ -103,7 +103,7 @@ const AspectForm: FC<AspectFormProps> = ({
   const handleChange = (values: FormValueType) => {
     const aspect: AspectFormOutput = {
       displayName: values.name,
-      defaultDescription: values.description,
+      description: values.description,
       typeDescription: values.typeDescription,
       tags: values.tagsets[0].tags,
       type: values.type,

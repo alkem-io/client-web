@@ -27,7 +27,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
     aspect && {
       nameID: aspect.nameID,
       type: aspect.type,
-      defaultDescription: aspect.defaultDescription,
+      description: aspect.description,
       displayName: aspect.displayName,
       tags: aspect?.tagset?.tags,
       references: aspect?.references,
@@ -71,7 +71,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
                   actions.handleUpdate({
                     id: entities.aspect.id,
                     displayName: aspect.displayName,
-                    defaultDescription: aspect.defaultDescription,
+                    description: aspect.description,
                     typeDescription: aspect.typeDescription,
                     tags: aspect.tags,
                     references: aspect.references,

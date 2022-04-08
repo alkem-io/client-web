@@ -5,12 +5,12 @@ export const aspectValueGetter = ({
   id,
   displayName,
   tagset,
-  defaultDescription,
+  description,
   typeDescription,
   type,
 }: AspectCardFragment): ValueType => ({
   id,
-  values: [displayName, defaultDescription || '', typeDescription || '', type || '', (tagset?.tags || []).join(' ')],
+  values: [displayName, description || '', typeDescription || '', type || '', (tagset?.tags || []).join(' ')],
 });
 
 export const aspectTagsValueGetter = ({ tagset }: AspectCardFragment): string[] => tagset?.tags || [];

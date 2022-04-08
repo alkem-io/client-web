@@ -14,7 +14,7 @@ export interface AspectReviewStepProps {
 const AspectReviewStep: FC<AspectReviewStepProps> = ({ aspect }) => {
   const { t } = useTranslation();
 
-  const { displayName, defaultDescription, tags = [], type } = aspect;
+  const { displayName, description, tags = [], type } = aspect;
 
   return (
     <>
@@ -23,7 +23,7 @@ const AspectReviewStep: FC<AspectReviewStepProps> = ({ aspect }) => {
       </LabelRow>
       <LabelRow title={t('components.aspect-creation.final-step.name')}>{displayName}</LabelRow>
       <LabelRow title={t('components.aspect-creation.final-step.description')}>
-        <Typography component={Markdown}>{defaultDescription}</Typography>
+        <Typography component={Markdown}>{description}</Typography>
       </LabelRow>
       <LabelRow title={t('common.tags')}>
         <Box marginTop={1}>
