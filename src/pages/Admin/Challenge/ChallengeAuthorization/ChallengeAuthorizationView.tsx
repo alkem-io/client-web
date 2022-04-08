@@ -1,42 +1,23 @@
 import { Container } from '@mui/material';
-import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { FC } from 'react';
 
-import EditMemberCredentials from '../../../components/Admin/Authorization/EditMemberCredentials';
-import { Loading } from '../../../components/core';
-import { useApolloErrorHandler, useChallenge, useUpdateNavigation, useUrlParams } from '../../../hooks';
+import EditMemberCredentials from '../../../../components/Admin/Authorization/EditMemberCredentials';
+import { Loading } from '../../../../components/core';
+import { useApolloErrorHandler, useChallenge } from '../../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsChallengeAdminMutation,
   useRemoveUserAsChallengeAdminMutation,
-} from '../../../hooks/generated/graphql';
-import { Member } from '../../../models/User';
-import AuthorizationPageProps from '../AuthorizationPageProps';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
-import { useResolvedPath } from 'react-router-dom';
+} from '../../../../hooks/generated/graphql';
+import { Member } from '../../../../models/User';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../../models/graphql-schema';
 
-const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourceId = '' }) => {
-  const { t } = useTranslation();
-  const { pathname: url } = useResolvedPath('.');
+interface ChallengeAuthorizationViewProps {
+  credential: AuthorizationCredential;
+  resourceId: string | undefined;
+}
 
-  // TODO Needs refactor. If credential is missing page should not be rendered or error should be shown.
-  const { role: credential = AuthorizationCredential.ChallengeMember } = useUrlParams();
-  const currentPaths = useMemo(
-    () => [
-      ...paths,
-      {
-        value: url,
-        name: credential
-          ? t(`common.enums.authorization-credentials.${credential}.name` as const)
-          : 'Missing credential',
-        real: true,
-      },
-    ],
-    [paths]
-  );
-
-  useUpdateNavigation({ currentPaths });
-
+const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ credential, resourceId = '' }) => {
   const handleError = useApolloErrorHandler();
 
   const [grant, { loading: addingMember }] = useAssignUserAsChallengeAdminMutation({
@@ -102,4 +83,4 @@ const ChallengeAuthorizationPage: FC<AuthorizationPageProps> = ({ paths, resourc
     </Container>
   );
 };
-export default ChallengeAuthorizationPage;
+export default ChallengeAuthorizationView;

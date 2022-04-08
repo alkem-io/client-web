@@ -5,7 +5,7 @@ import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { OpportunityProvider } from '../../../context/OpportunityProvider/OpportunityProvider';
 import { Error404, PageProps } from '../../../pages';
-import OpportunityList from '../../../pages/Admin/Opportunity/OpportunityList';
+import ChallengeOpportunitiesPage from '../../../pages/Admin/Challenge/ChallengeOpportunities/ChallengeOpportunitiesPage';
 import { nameOfUrl } from '../../url-params';
 import { OpportunityRoute } from './OpportunityRoute';
 
@@ -19,28 +19,26 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route path={'/'}>
-        <Route index element={<OpportunityList paths={currentPaths} />} />
-        <Route
-          path={'new'}
-          element={
-            <EditOpportunity
-              title={t('navigation.admin.opportunity.create')}
-              mode={FormMode.create}
-              paths={currentPaths}
-            />
-          }
-        />
-        <Route
-          path={`:${nameOfUrl.opportunityNameId}/*`}
-          element={
-            <OpportunityProvider>
-              <OpportunityRoute paths={currentPaths} />
-            </OpportunityProvider>
-          }
-        />
-        <Route path="*" element={<Error404 />} />
-      </Route>
+      <Route index element={<ChallengeOpportunitiesPage paths={currentPaths} routePrefix="../../" />} />
+      <Route
+        path="new"
+        element={
+          <EditOpportunity
+            title={t('navigation.admin.opportunity.create')}
+            mode={FormMode.create}
+            paths={currentPaths}
+          />
+        }
+      />
+      <Route
+        path={`:${nameOfUrl.opportunityNameId}/*`}
+        element={
+          <OpportunityProvider>
+            <OpportunityRoute paths={currentPaths} />
+          </OpportunityProvider>
+        }
+      />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };

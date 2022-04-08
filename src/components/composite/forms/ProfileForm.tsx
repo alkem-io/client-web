@@ -5,22 +5,18 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset } from '../../../models/graphql-schema';
 import ContextReferenceSegment from '../../Admin/Common/ContextReferenceSegment';
-import { ContextSegment, contextSegmentSchema } from '../../Admin/Common/ContextSegment';
+import { contextSegmentSchema } from '../../Admin/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../Admin/Common/NameSegment';
 import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import Typography from '../../core/Typography';
 
-export interface ProfileFormValuesType {
+export interface ProfileFormValues {
   name: string;
   nameID: string;
-  background: string;
-  impact: string;
   tagline: string;
-  vision: string;
   who: string;
   references: Reference[];
-  // visuals: Visual2[]; todo: enable when it's time
   tagsets: Tagset[];
 }
 
@@ -29,12 +25,12 @@ interface Props {
   name?: string;
   nameID?: string;
   tagset?: Tagset;
-  onSubmit: (formData: ProfileFormValuesType) => void;
+  onSubmit: (formData: ProfileFormValues) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
   isEdit: boolean;
 }
-// TODO: Should be renamed. Maybe 'ContextForm'
+
 const ProfileForm: FC<Props> = ({
   context,
   name,
@@ -57,28 +53,20 @@ const ProfileForm: FC<Props> = ({
     ] as Tagset[];
   }, [tagset]);
 
-  const initialValues: ProfileFormValuesType = {
+  const initialValues: ProfileFormValues = {
     name: name || '',
     nameID: nameID || '',
-    background: context?.background || '',
-    impact: context?.impact || '',
     tagline: context?.tagline || '',
-    vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
-    tagsets: tagsets,
+    tagsets,
   };
 
   const validationSchema = yup.object().shape({
     name: contextOnly ? yup.string() : nameSegmentSchema.fields?.name || yup.string(),
     nameID: contextOnly ? yup.string() : nameSegmentSchema.fields?.nameID || yup.string(),
-    background: contextSegmentSchema.fields?.background || yup.string(),
-    impact: contextSegmentSchema.fields?.impact || yup.string(),
     tagline: contextSegmentSchema.fields?.tagline || yup.string(),
-    vision: contextSegmentSchema.fields?.vision || yup.string(),
-    who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
-    // visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
   });
 
@@ -102,27 +90,14 @@ const ProfileForm: FC<Props> = ({
 
         return (
           <>
-            {!contextOnly && <NameSegment disabled={isEdit} required={!isEdit} />}
-            <ContextSegment />
-
-            {!contextOnly && (
-              <>
-                <Grid item xs={12}>
-                  <Typography variant={'h4'} color={'primary'}>
-                    {t('components.tagsSegment.title')}
-                  </Typography>
-                </Grid>
-                <TagsetSegment tagsets={tagsets} />
-              </>
-            )}
-            {/*<Grid item xs={12}>
+            <NameSegment disabled={isEdit} required={!isEdit} />
+            <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
-                {t('components.visualSegment.title')}
+                {t('components.tagsSegment.title')}
               </Typography>
             </Grid>
-            <VisualSegment />*/}
-
-            {isEdit && <ContextReferenceSegment references={references || []} contextId={context?.id} />}
+            <TagsetSegment tagsets={tagsets} />
+            <ContextReferenceSegment references={references || []} contextId={context?.id} />
           </>
         );
       }}

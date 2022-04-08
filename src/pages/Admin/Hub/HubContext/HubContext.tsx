@@ -1,23 +1,18 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import HubEditForm, { HubEditFormValuesType } from '../../../components/Admin/HubEditForm';
-import Button from '../../../components/core/Button';
-import Typography from '../../../components/core/Typography';
-import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import { useHub } from '../../../hooks';
-import { useUpdateNavigation } from '../../../hooks';
-import { useNotification } from '../../../hooks';
-import { PageProps } from '../../common';
-import { updateContextInput } from '../../../utils/buildContext';
-import { Box, Container } from '@mui/material';
+import { HubEditFormValuesType } from '../../../../components/Admin/HubEditForm';
+import Button from '../../../../components/core/Button';
+import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../../hooks';
+import { useHub } from '../../../../hooks';
+import { useNotification } from '../../../../hooks';
+import { updateContextInput } from '../../../../utils/buildContext';
+import { Box, Container, Grid } from '@mui/material';
+import HubContextForm from '../../../../components/Admin/HubContextForm';
 
-interface HubEditProps extends PageProps {}
-
-export const EditHub: FC<HubEditProps> = ({ paths }) => {
+export const HubContext: FC = () => {
   const { t } = useTranslation();
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'edit', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
+
   const { hubNameId, hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
@@ -57,20 +52,19 @@ export const EditHub: FC<HubEditProps> = ({ paths }) => {
   let submitWired;
   return (
     <Container maxWidth="xl">
-      <Box marginY={4}>
-        <Typography variant={'h2'}>{'Edit Hub'}</Typography>
-      </Box>
-      <HubEditForm
-        isEdit={true}
-        name={hub?.displayName}
-        nameID={hub?.nameID}
-        hostID={hub?.host?.id}
-        tagset={hub?.tagset}
-        context={hub?.context}
-        organizations={organizations}
-        onSubmit={onSubmit}
-        wireSubmit={submit => (submitWired = submit)}
-      />
+      <Grid container spacing={2}>
+        <HubContextForm
+          isEdit
+          name={hub?.displayName}
+          nameID={hub?.nameID}
+          hostID={hub?.host?.id}
+          tagset={hub?.tagset}
+          context={hub?.context}
+          organizations={organizations}
+          onSubmit={onSubmit}
+          wireSubmit={submit => (submitWired = submit)}
+        />
+      </Grid>
       <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
         <Button
           disabled={isLoading}
@@ -82,4 +76,4 @@ export const EditHub: FC<HubEditProps> = ({ paths }) => {
     </Container>
   );
 };
-export default EditHub;
+export default HubContext;

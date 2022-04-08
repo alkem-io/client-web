@@ -62,7 +62,7 @@ export const ManagementPageTemplatePage: FC<Props> = ({ title, entityUrl, data, 
               <Grid container spacing={2}>
                 {x.buttons.map((btn, index) => (
                   <Grid key={index} item>
-                    <Button as={RouterLink} to={`${btn.url}`} text={btn.description} />
+                    <Button as={RouterLink} to={btn.url} text={btn.description} />
                   </Grid>
                 ))}
               </Grid>

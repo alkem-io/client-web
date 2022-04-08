@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { useInputField } from './useInputField';
+import InputField from './InputField';
 
 export const nameValidator = yup
   .string()
@@ -32,25 +32,25 @@ interface NameSegmentProps {
 
 export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelpText, nameIDHelpText, loading }) => {
   const { t } = useTranslation();
-  const getInputField = useInputField();
+
   return (
     <>
-      {getInputField({
-        name: 'name',
-        label: t('components.nameSegment.name'),
-        required: true,
-        helpText: nameHelpText,
-        loading: loading,
-      })}
-      {getInputField({
-        name: 'nameID',
-        label: t('components.nameSegment.nameID.title'),
-        placeholder: t('components.nameSegment.nameID.placeholder'),
-        disabled: disabled,
-        required: required,
-        helpText: nameIDHelpText,
-        loading: loading,
-      })}
+      <InputField
+        name="name"
+        label={t('components.nameSegment.name')}
+        required
+        helpText={nameHelpText}
+        loading={loading}
+      />
+      <InputField
+        name="nameID"
+        label={t('components.nameSegment.nameID.title')}
+        placeholder={t('components.nameSegment.nameID.placeholder')}
+        disabled={disabled}
+        required={required}
+        helpText={nameIDHelpText}
+        loading={loading}
+      />
     </>
   );
 };

@@ -6,12 +6,13 @@ import * as yup from 'yup';
 import { Context, Reference, Tagset } from '../../models/graphql-schema';
 import Typography from '../core/Typography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
-import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
+import { contextSegmentSchema } from './Common/ContextSegment';
 import FormikSelect from '../composite/forms/FormikSelect';
 import { NameSegment, nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
 import { visualSegmentSchema } from './Common/VisualSegment';
+import InputField from './Common/InputField';
 
 interface Props {
   context?: Context;
@@ -129,7 +130,7 @@ const HubEditForm: FC<Props> = ({
                 placeholder={t('components.editHubForm.host.title')}
               />
             </Grid>
-            <ContextSegment />
+            <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}
