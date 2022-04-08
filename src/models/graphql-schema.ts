@@ -153,6 +153,7 @@ export type Aspect = {
   /** The id of the user that created this Aspect */
   createdBy: Scalars['UUID'];
   createdDate: Scalars['DateTime'];
+  /** The description of this aspect */
   description: Scalars['String'];
   /** The display name. */
   displayName: Scalars['String'];
@@ -164,13 +165,18 @@ export type Aspect = {
   references?: Maybe<Array<Reference>>;
   /** The set of tags for the Aspect */
   tagset?: Maybe<Tagset>;
+  /** The aspect type, e.g. knowledge, idea, stakeholder persona etc. */
   type: Scalars['String'];
 };
 
 export type AspectTemplate = {
   __typename?: 'AspectTemplate';
-  description: Scalars['String'];
+  /** Default description of an aspect of this type */
+  defaultDescription: Scalars['String'];
+  /** The type of the templated aspect */
   type: Scalars['String'];
+  /** Default description of this type of aspect */
+  typeDescription: Scalars['String'];
 };
 
 export type AssignChallengeAdminInput = {
@@ -1108,9 +1114,11 @@ export type HubProjectArgs = {
 export type HubAspectTemplate = {
   __typename?: 'HubAspectTemplate';
   /** A default description for this Aspect. */
-  description: Scalars['String'];
+  defaultDescription: Scalars['String'];
   /** The type of the Aspect */
   type: Scalars['String'];
+  /** A description for this Aspect type. */
+  typeDescription: Scalars['String'];
 };
 
 export type HubAuthorizationResetInput = {
@@ -2504,8 +2512,9 @@ export type UpdateAspectInput = {
 };
 
 export type UpdateAspectTemplateInput = {
-  description?: InputMaybe<Scalars['String']>;
+  defaultDescription?: InputMaybe<Scalars['String']>;
   type: Scalars['String'];
+  typeDescription?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateCanvasDirectInput = {
@@ -3158,7 +3167,9 @@ export type ConfigurationFragment = {
     __typename?: 'Template';
     hubs: Array<{
       __typename?: 'PlatformHubTemplate';
-      aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
+      aspects?:
+        | Array<{ __typename?: 'HubAspectTemplate'; type: string; defaultDescription: string; typeDescription: string }>
+        | undefined;
     }>;
   };
 };
@@ -3302,7 +3313,12 @@ export type HubInfoFragment = {
     | undefined;
   template: {
     __typename?: 'HubTemplate';
-    aspectTemplates: Array<{ __typename?: 'AspectTemplate'; description: string; type: string }>;
+    aspectTemplates: Array<{
+      __typename?: 'AspectTemplate';
+      defaultDescription: string;
+      typeDescription: string;
+      type: string;
+    }>;
   };
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
@@ -5632,7 +5648,14 @@ export type ConfigurationQuery = {
       __typename?: 'Template';
       hubs: Array<{
         __typename?: 'PlatformHubTemplate';
-        aspects?: Array<{ __typename?: 'HubAspectTemplate'; type: string; description: string }> | undefined;
+        aspects?:
+          | Array<{
+              __typename?: 'HubAspectTemplate';
+              type: string;
+              defaultDescription: string;
+              typeDescription: string;
+            }>
+          | undefined;
       }>;
     };
   };
@@ -5741,7 +5764,12 @@ export type HubProviderQuery = {
       | undefined;
     template: {
       __typename?: 'HubTemplate';
-      aspectTemplates: Array<{ __typename?: 'AspectTemplate'; description: string; type: string }>;
+      aspectTemplates: Array<{
+        __typename?: 'AspectTemplate';
+        defaultDescription: string;
+        typeDescription: string;
+        type: string;
+      }>;
     };
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;

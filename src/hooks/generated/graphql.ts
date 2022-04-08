@@ -278,7 +278,8 @@ export const ConfigurationFragmentDoc = gql`
       hubs {
         aspects {
           type
-          description
+          defaultDescription
+          typeDescription
         }
       }
     }
@@ -392,7 +393,8 @@ export const HubInfoFragmentDoc = gql`
     }
     template {
       aspectTemplates {
-        description
+        defaultDescription
+        typeDescription
         type
       }
     }
