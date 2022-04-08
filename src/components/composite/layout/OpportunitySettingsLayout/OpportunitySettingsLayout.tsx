@@ -37,7 +37,7 @@ const OpportunitySettingsLayout: FC<OpportunitySettingsLayoutProps> = ({ current
       <SettingsTabs
         tabs={tabs}
         currentTab={currentTab}
-        aria-label="Challenge Settings tabs"
+        aria-label="Opportunity Settings tabs"
         routePrefix={tabRoutePrefix}
       />
       {children}
