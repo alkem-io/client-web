@@ -153,6 +153,7 @@ export type Aspect = {
   /** The id of the user that created this Aspect */
   createdBy: Scalars['UUID'];
   createdDate: Scalars['DateTime'];
+  /** The description of this aspect */
   description: Scalars['String'];
   /** The display name. */
   displayName: Scalars['String'];
@@ -164,14 +165,17 @@ export type Aspect = {
   references?: Maybe<Array<Reference>>;
   /** The set of tags for the Aspect */
   tagset?: Maybe<Tagset>;
+  /** The aspect type, e.g. knowledge, idea, stakeholder persona etc. */
   type: Scalars['String'];
-  typeDescription: Scalars['String'];
 };
 
 export type AspectTemplate = {
   __typename?: 'AspectTemplate';
+  /** Default description of an aspect of this type */
   defaultDescription: Scalars['String'];
+  /** The type of the templated aspect */
   type: Scalars['String'];
+  /** Default description of this type of aspect */
   typeDescription: Scalars['String'];
 };
 
@@ -668,7 +672,6 @@ export type CreateAspectOnContextInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
-  typeDescription: Scalars['String'];
 };
 
 export type CreateCanvasOnContextInput = {
@@ -2972,7 +2975,6 @@ export type AspectCardFragment = {
   displayName: string;
   type: string;
   description: string;
-  typeDescription: string;
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -3769,7 +3771,6 @@ export type CreateAspectMutation = {
     nameID: string;
     displayName: string;
     description: string;
-    typeDescription: string;
     type: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
@@ -7734,7 +7735,6 @@ export type UpdateAspectMutation = {
     __typename?: 'Aspect';
     id: string;
     description: string;
-    typeDescription: string;
     displayName: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     references?:
@@ -9102,7 +9102,6 @@ export type HubContextExtraQuery = {
                 displayName: string;
                 type: string;
                 description: string;
-                typeDescription: string;
                 banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -9201,7 +9200,6 @@ export type ChallengeContextExtraQuery = {
                   displayName: string;
                   type: string;
                   description: string;
-                  typeDescription: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -9296,7 +9294,6 @@ export type OpportunityContextExtraQuery = {
                   displayName: string;
                   type: string;
                   description: string;
-                  typeDescription: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -9349,7 +9346,6 @@ export type ContextTabExtraFragment = {
         displayName: string;
         type: string;
         description: string;
-        typeDescription: string;
         banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -9825,7 +9821,6 @@ export type OpportunityPageQuery = {
                   displayName: string;
                   type: string;
                   description: string;
-                  typeDescription: string;
                   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -9908,7 +9903,6 @@ export type OpportunityPageFragment = {
               displayName: string;
               type: string;
               description: string;
-              typeDescription: string;
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;

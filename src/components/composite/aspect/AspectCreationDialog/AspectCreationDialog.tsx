@@ -107,7 +107,6 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, aspectNames
   const handleFinish = () => {
     onCreate({
       displayName: aspect?.displayName ?? '',
-      typeDescription: aspect?.typeDescription ?? '',
       description: aspect?.description ?? '',
       type: aspect?.type ?? '',
       tags: aspect?.tags ?? [],

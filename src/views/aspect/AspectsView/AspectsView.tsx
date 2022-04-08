@@ -90,7 +90,6 @@ const AspectsView: FC<AspectsViewProps> = ({
           contextID: contextId,
           displayName: aspect.displayName,
           description: aspect.description,
-          typeDescription: aspect.typeDescription,
           type: aspect.type,
           tags: aspect.tags,
         },
@@ -102,7 +101,6 @@ const AspectsView: FC<AspectsViewProps> = ({
           nameID: aspect.nameID || '',
           displayName: aspect.displayName ?? '',
           description: aspect.description,
-          typeDescription: aspect.typeDescription,
           type: aspect.type,
           tagset: {
             id: '-1',

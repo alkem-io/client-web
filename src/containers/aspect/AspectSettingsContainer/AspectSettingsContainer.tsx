@@ -12,7 +12,7 @@ import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 
-type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'typeDescription'> & {
+type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description'> & {
   tags: string[];
   references?: Reference[];
 };
@@ -108,7 +108,6 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
           ID: aspect.id,
           displayName: aspect.displayName,
           description: aspect.description,
-          typeDescription: aspect.typeDescription,
           tags: aspect.tags,
           references: aspect.references?.map(x => ({
             ID: x.id ?? '',

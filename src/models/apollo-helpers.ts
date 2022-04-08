@@ -125,7 +125,6 @@ export type AspectKeySpecifier = (
   | 'references'
   | 'tagset'
   | 'type'
-  | 'typeDescription'
   | AspectKeySpecifier
 )[];
 export type AspectFieldPolicy = {
@@ -142,7 +141,6 @@ export type AspectFieldPolicy = {
   references?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AspectTemplateKeySpecifier = (
   | 'defaultDescription'

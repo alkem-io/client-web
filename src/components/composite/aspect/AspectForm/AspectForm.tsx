@@ -18,7 +18,6 @@ import MarkdownInput from '../../../Admin/Common/MarkdownInput';
 type FormValueType = {
   name: string;
   description: string;
-  typeDescription: string;
   tagsets: Tagset[];
   aspectNames: string[];
   type: string;
@@ -31,7 +30,6 @@ type AspectEditFields = Partial<Pick<Aspect, 'banner' | 'bannerNarrow'>> & { ref
 export type AspectFormOutput = {
   displayName: string;
   description: string;
-  typeDescription: string;
   tags: string[];
   type: string;
 } & AspectEditFields;
@@ -80,7 +78,6 @@ const AspectForm: FC<AspectFormProps> = ({
   const initialValues: FormValueType = {
     name: aspect?.displayName ?? '',
     description: getDescriptionValue(),
-    typeDescription: aspect?.typeDescription ?? '',
     tagsets,
     aspectNames: aspectNames ?? [],
     type: aspect?.type ?? '',
@@ -104,7 +101,6 @@ const AspectForm: FC<AspectFormProps> = ({
     const aspect: AspectFormOutput = {
       displayName: values.name,
       description: values.description,
-      typeDescription: values.typeDescription,
       tags: values.tagsets[0].tags,
       type: values.type,
       references: values.references,

@@ -2,7 +2,6 @@ mutation updateAspect($input: UpdateAspectInput!) {
   updateAspect(aspectData: $input) {
     id
     description
-    typeDescription
     displayName
     tagset {
       id

@@ -1125,7 +1125,6 @@ export const AspectCardFragmentDoc = gql`
     displayName
     type
     description
-    typeDescription
     banner {
       ...VisualUri
     }
@@ -1741,7 +1740,6 @@ export const CreateAspectDocument = gql`
       nameID
       displayName
       description
-      typeDescription
       type
       tagset {
         id
@@ -10246,7 +10244,6 @@ export const UpdateAspectDocument = gql`
     updateAspect(aspectData: $input) {
       id
       description
-      typeDescription
       displayName
       tagset {
         id
