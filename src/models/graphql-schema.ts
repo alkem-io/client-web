@@ -2509,7 +2509,6 @@ export type UpdateAspectInput = {
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   /** Update the tags on the Aspect. */
   tags?: InputMaybe<Array<Scalars['String']>>;
-  typeDescription?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateAspectTemplateInput = {
