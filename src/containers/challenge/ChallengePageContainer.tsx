@@ -7,7 +7,7 @@ import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
+import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { ActivityType } from '../../models/constants';
 
@@ -17,6 +17,7 @@ export interface ChallengeContainerEntities {
   hubDisplayName: string;
   challenge?: ChallengeProfileFragment;
   activity: ActivityItem[];
+  aspects: AspectCardFragment[];
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -32,6 +33,8 @@ export interface ChallengeContainerState {
   loading: boolean;
   error?: ApolloError;
 }
+
+const EMPTY = [];
 
 export interface ChallengePageContainerProps
   extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
@@ -81,6 +84,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ];
   }, [_challenge]);
 
+  const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
+
   return (
     <>
       {children(
@@ -90,6 +95,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           hubDisplayName: hub?.displayName || '',
           challenge: _challenge?.hub.challenge,
           activity,
+          aspects,
           permissions,
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,

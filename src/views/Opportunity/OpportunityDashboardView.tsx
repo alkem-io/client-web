@@ -10,16 +10,19 @@ import DashboardOpportunityStatistics from '../../components/composite/common/se
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
-import { SectionSpacer } from '../../components/core/Section/Section';
-import { useOpportunity } from '../../hooks';
+import { useChallenge, useHub, useOpportunity } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityPageFragment, Reference, User } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
+import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
+import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
+import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
 
+// TODO flat props
 export interface OpportunityDashboardViewEntities {
   opportunity: OpportunityPageFragment;
   activity: ActivityItem[];
@@ -33,6 +36,7 @@ export interface OpportunityDashboardViewEntities {
     incoming: OpportunityPageFragment['relations'];
     outgoing: OpportunityPageFragment['relations'];
   };
+  aspects: AspectCardAspect[];
 }
 
 export interface OpportunityDashboardViewActions {
@@ -71,6 +75,8 @@ export interface OpportunityDashboardViewProps
 const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities, state, options, actions }) => {
   const { t } = useTranslation();
 
+  const { hubNameId } = useHub();
+  const { challengeNameId } = useChallenge();
   const { hubId } = useOpportunity();
 
   const { opportunity } = entities;
@@ -88,7 +94,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={12} lg={6}>
+        <DashboardColumn>
           <DashboardGenericSection
             bannerUrl={banner}
             headerText={displayName}
@@ -101,7 +107,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             <Markdown children={tagline} />
             <Markdown children={vision} />
           </DashboardGenericSection>
-          <SectionSpacer />
           <DashboardOpportunityStatistics
             headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
             activities={entities.activity}
@@ -110,15 +115,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           />
           {communityReadAccess && (
             <>
-              <SectionSpacer />
               <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
               {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
               {/* <SectionSpacer />
               <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
             </>
           )}
-        </Grid>
-        <Grid item xs={12} lg={6}>
+        </DashboardColumn>
+        <DashboardColumn>
           <DashboardGenericSection
             headerText={t('pages.opportunity.sections.dashboard.projects.title')}
             helpText={t('pages.opportunity.sections.dashboard.projects.help-text')}
@@ -143,13 +147,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               })}
             </Grid>
           </DashboardGenericSection>
-          {communityReadAccess && (
-            <>
-              <SectionSpacer />
-              <DashboardCommunitySectionV2 members={members} />
-            </>
-          )}
-        </Grid>
+          <DashboardSectionAspects
+            aspects={entities.aspects}
+            hubNameId={hubNameId}
+            challengeNameId={challengeNameId}
+            opportunityNameId={opportunity.nameID}
+          />
+          {communityReadAccess && <DashboardCommunitySectionV2 members={members} />}
+        </DashboardColumn>
       </Grid>
       <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />
     </>

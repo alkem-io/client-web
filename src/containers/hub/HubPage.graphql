@@ -35,6 +35,9 @@ fragment HubPage on Hub {
       anonymousReadAccess
       myPrivileges
     }
+    aspects {
+      ...AspectCard
+    }
   }
   community {
     id

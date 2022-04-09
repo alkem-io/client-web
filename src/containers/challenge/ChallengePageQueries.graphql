@@ -38,6 +38,9 @@ fragment ChallengeProfile on Challenge {
     visuals {
       ...VisualFull
     }
+    aspects {
+      ...AspectCard
+    }
   }
   community {
     id
