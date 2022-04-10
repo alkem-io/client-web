@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme =>
   })
 );
 
-const REFERENCE_DESCRIPTION_MAX_LENGTH = 30; // characters
+const REFERENCE_DESCRIPTION_MAX_LENGTH = 80; // characters
 
 interface ReferenceDescriptionProps {
   children: string | undefined;

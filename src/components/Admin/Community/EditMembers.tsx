@@ -65,6 +65,7 @@ export interface EditMembersProps {
   onLoadMore?: (amount?: number) => void;
   loadMore?: number;
   lastMembersPage?: boolean;
+  title?: string;
 }
 
 export const EditMembers: FC<EditMembersProps> = ({
@@ -81,6 +82,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   onLoadMore,
   loadMore = LOAD_MORE_DEFAULT,
   lastMembersPage = true,
+  title,
 }) => {
   const { t } = useTranslation();
   const membersData = useMemo<Member[]>(
@@ -91,6 +93,13 @@ export const EditMembers: FC<EditMembersProps> = ({
 
   return (
     <Grid container spacing={2}>
+      {title && (
+        <Grid container item xs={10}>
+          <Grid item xs={10}>
+            {title && <Typography variant={'h3'}>{title}</Typography>}
+          </Grid>
+        </Grid>
+      )}
       <Grid item xs={8}>
         Group members:
         <Filter data={membersData}>
