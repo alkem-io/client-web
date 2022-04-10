@@ -38,7 +38,6 @@ export interface CommunityPageViewProps {
 }
 
 const CommunityPageView: FC<CommunityPageViewProps> = ({
-  title,
   loading,
   showOrganizations = true,
   hostOrganization,
@@ -51,7 +50,6 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
   authors = [],
 }) => {
   const { t } = useTranslation();
-  const sectionTitle = t('pages.community.title', { name: title });
   const organizationTitle = hostOrganization
     ? t('pages.community.hub-host.title')
     : t('pages.community.leading-organizations.title', { count: leadingOrganizations.length });
@@ -60,16 +58,32 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
     : t('pages.community.leading-organizations.help-text');
   const organizations = hostOrganization ? [hostOrganization] : leadingOrganizations;
   const membersTitle = t('pages.community.members.title', { count: members.length });
+  const updatesTitle = t('pages.community.updates.title', { count: members.length });
   return (
     <>
-      <DashboardGenericSection>
-        <Typography variant={'h1'}>{loading ? <Skeleton width="60%" /> : sectionTitle}</Typography>
-        <Typography variant={'subtitle2'}>
-          {loading ? <Skeleton width="50%" /> : t('pages.community.subtitle')}
-        </Typography>
-      </DashboardGenericSection>
+      <Box paddingBottom={2} display="flex" justifyContent="center">
+        {t('pages.hub.sections.community.description')}
+      </Box>
+      <Typography variant={'subtitle2'}>
+        {loading ? <Skeleton width="50%" /> : t('pages.community.subtitle')}
+      </Typography>
+
       <SectionSpacer />
       <DashboardGenericSection>
+        <Box display="flex" alignItems="center">
+          <Box
+            component={Typography}
+            variant="h3"
+            sx={{
+              paddingBottom: t => t.spacing(0.5),
+              display: 'flex',
+              alignItems: 'center',
+              flexGrow: 1,
+            }}
+          >
+            {loading ? <Skeleton width="80%" /> : updatesTitle}
+          </Box>
+        </Box>
         {!messages.length && !messagesLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Typography>{t('pages.community.updates.no-data')}</Typography>
