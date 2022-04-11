@@ -30,6 +30,7 @@ export const OpportunityAdminAuthorizationView: FC = () => {
             lastMembersPage={state.isLastAvailableUserPage}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
+            title="Opportunity Admins"
           />
         )}
       </OpportunityMembers>

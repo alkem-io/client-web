@@ -79,6 +79,7 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
         parentCommunityId={communityId}
         addingMember={addingMember}
         removingMember={removingMember}
+        title="Challenge Admins"
       />
     </Container>
   );
