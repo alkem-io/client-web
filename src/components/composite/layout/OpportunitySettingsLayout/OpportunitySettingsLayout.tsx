@@ -1,7 +1,10 @@
 import React, { FC } from 'react';
+import { Box } from '@mui/material';
 import SettingsTabs from '../EntitySettingsLayout/SettingsTabs';
 import { SettingsSection } from '../EntitySettingsLayout/constants';
 import { TabDefinition } from '../../../core/PageTabs/PageTabs';
+import { useOpportunity } from '../../../../hooks';
+import { EntityLinkComponent } from '../../../Admin/EntityLinkComponent';
 
 interface OpportunitySettingsLayoutProps {
   currentTab: SettingsSection;
@@ -32,8 +35,13 @@ export const tabs: TabDefinition<SettingsSection>[] = [
 ];
 
 const OpportunitySettingsLayout: FC<OpportunitySettingsLayoutProps> = ({ currentTab, tabRoutePrefix, children }) => {
+  const provided = useOpportunity();
+
   return (
     <>
+      <Box paddingY={1}>
+        <EntityLinkComponent {...provided} />
+      </Box>
       <SettingsTabs
         tabs={tabs}
         currentTab={currentTab}
