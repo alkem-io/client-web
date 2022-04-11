@@ -770,9 +770,6 @@
           "no-data": "No challenges available for this hub",
           "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
         },
-        "community": {
-          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared."
-        },
         "contribute": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community. ",
           "description2": "Add additional aspects that are relevant, as well as comment on aspects added by others. "
@@ -839,6 +836,7 @@
     "community": {
       "title": "{{name}} community page",
       "subtitle": "",
+      "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
       "leading-organizations": {
         "title": "Leading organizations ({{count}})",
         "help-text": "Shows different organizations, including the role you have",
@@ -854,7 +852,7 @@
         "no-data": "No members available"
       },
       "updates": {
-        "title": "Updates",
+        "title": "Updates ({{count}})",
         "no-data": "No updates available"
       }
     },

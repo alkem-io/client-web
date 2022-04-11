@@ -58,11 +58,11 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
     : t('pages.community.leading-organizations.help-text');
   const organizations = hostOrganization ? [hostOrganization] : leadingOrganizations;
   const membersTitle = t('pages.community.members.title', { count: members.length });
-  const updatesTitle = t('pages.community.updates.title', { count: members.length });
+  const updatesTitle = t('pages.community.updates.title', { count: messages.length });
   return (
     <>
       <Box paddingBottom={2} display="flex" justifyContent="center">
-        {t('pages.hub.sections.community.description')}
+        {t('pages.community.description')}
       </Box>
       <Typography variant={'subtitle2'}>
         {loading ? <Skeleton width="50%" /> : t('pages.community.subtitle')}
@@ -70,19 +70,8 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
 
       <SectionSpacer />
       <DashboardGenericSection>
-        <Box display="flex" alignItems="center">
-          <Box
-            component={Typography}
-            variant="h3"
-            sx={{
-              paddingBottom: t => t.spacing(0.5),
-              display: 'flex',
-              alignItems: 'center',
-              flexGrow: 1,
-            }}
-          >
-            {loading ? <Skeleton width="80%" /> : updatesTitle}
-          </Box>
+        <Box component={Typography} variant="h3" paddingBottom={0.5}>
+          {messagesLoading ? <Skeleton width="20%" /> : updatesTitle}
         </Box>
         {!messages.length && !messagesLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
