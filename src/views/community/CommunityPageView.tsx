@@ -38,7 +38,6 @@ export interface CommunityPageViewProps {
 }
 
 const CommunityPageView: FC<CommunityPageViewProps> = ({
-  title,
   loading,
   showOrganizations = true,
   hostOrganization,
@@ -51,7 +50,6 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
   authors = [],
 }) => {
   const { t } = useTranslation();
-  const sectionTitle = t('pages.community.title', { name: title });
   const organizationTitle = hostOrganization
     ? t('pages.community.hub-host.title')
     : t('pages.community.leading-organizations.title', { count: leadingOrganizations.length });
@@ -60,16 +58,21 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
     : t('pages.community.leading-organizations.help-text');
   const organizations = hostOrganization ? [hostOrganization] : leadingOrganizations;
   const membersTitle = t('pages.community.members.title', { count: members.length });
+  const updatesTitle = t('pages.community.updates.title', { count: messages.length });
   return (
     <>
-      <DashboardGenericSection>
-        <Typography variant={'h1'}>{loading ? <Skeleton width="60%" /> : sectionTitle}</Typography>
-        <Typography variant={'subtitle2'}>
-          {loading ? <Skeleton width="50%" /> : t('pages.community.subtitle')}
-        </Typography>
-      </DashboardGenericSection>
+      <Box paddingBottom={2} display="flex" justifyContent="center">
+        {t('pages.community.description')}
+      </Box>
+      <Typography variant={'subtitle2'}>
+        {loading ? <Skeleton width="50%" /> : t('pages.community.subtitle')}
+      </Typography>
+
       <SectionSpacer />
       <DashboardGenericSection>
+        <Box component={Typography} variant="h3" paddingBottom={0.5}>
+          {messagesLoading ? <Skeleton width="20%" /> : updatesTitle}
+        </Box>
         {!messages.length && !messagesLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Typography>{t('pages.community.updates.no-data')}</Typography>

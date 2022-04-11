@@ -65,6 +65,7 @@ export interface EditMembersProps {
   onLoadMore?: (amount?: number) => void;
   loadMore?: number;
   lastMembersPage?: boolean;
+  title?: string;
 }
 
 export const EditMembers: FC<EditMembersProps> = ({
@@ -81,6 +82,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   onLoadMore,
   loadMore = LOAD_MORE_DEFAULT,
   lastMembersPage = true,
+  title,
 }) => {
   const { t } = useTranslation();
   const membersData = useMemo<Member[]>(
@@ -90,106 +92,113 @@ export const EditMembers: FC<EditMembersProps> = ({
   const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={8}>
-        Group members:
-        <Filter data={membersData}>
-          {filteredMembers => (
-            <Root>
-              <hr />
-              <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
-                <Table size="small">
-                  <TableHead className={classes.thead}>
-                    <TableRow>
-                      <TableCell>Full Name</TableCell>
-                      <TableCell>First Name</TableCell>
-                      <TableCell>Last Name</TableCell>
-                      <TableCell>Email</TableCell>
-                      {onRemove && <TableCell />}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredMembers.map((m, i) => {
-                      const disableExecutor = m.id === executor?.id && !deleteExecutor;
-                      return (
-                        <TableRow key={i} className={classes.trow}>
-                          <TableCell>
-                            <Cell>{m.displayName}</Cell>
-                          </TableCell>
-                          <TableCell>
-                            <Cell>{m.firstName}</Cell>
-                          </TableCell>
-                          <TableCell>
-                            <Cell>{m.lastName}</Cell>
-                          </TableCell>
-                          <TableCell>
-                            <Cell>{m.email}</Cell>
-                          </TableCell>
-                          {onRemove && (
-                            <TableCell align={'right'}>
-                              <Cell>
-                                <IconButton
-                                  aria-label="Remove"
-                                  size="small"
-                                  disabled={disableExecutor || addingMember || removingMember}
-                                  className={classes.iconButtonNegative}
-                                  onClick={() => onRemove(m)}
-                                >
-                                  <RemoveIcon />
-                                </IconButton>
-                              </Cell>
-                            </TableCell>
-                          )}
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </Box>
-            </Root>
-          )}
-        </Filter>
-      </Grid>
-      <Grid item sm={4}>
-        Available users:
-        <Filter data={availableMembers} limitKeys={['displayName']}>
-          {filteredData => {
-            return (
+    <>
+      {title && (
+        <Box component={Typography} paddingBottom={1} variant="h3">
+          {title}
+        </Box>
+      )}
+      <Grid container spacing={2}>
+        <Grid item xs={8}>
+          Group members:
+          <Filter data={membersData}>
+            {filteredMembers => (
               <Root>
                 <hr />
                 <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
-                  <TableContainer>
-                    <Table size="small" style={{ position: 'relative' }}>
-                      <TableHead className={classes.thead}>
-                        <TableRow>
-                          <TableCell />
-                          <TableCell>Full Name</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <AvailableMembersFragment
-                          availableMembers={availableMembers}
-                          filteredMembers={filteredData}
-                          loading={loadingAvailableMembers}
-                          onAdd={onAdd}
-                          addingMember={addingMember}
-                          removingMember={removingMember}
-                        />
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                  <Table size="small">
+                    <TableHead className={classes.thead}>
+                      <TableRow>
+                        <TableCell>Full Name</TableCell>
+                        <TableCell>First Name</TableCell>
+                        <TableCell>Last Name</TableCell>
+                        <TableCell>Email</TableCell>
+                        {onRemove && <TableCell />}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredMembers.map((m, i) => {
+                        const disableExecutor = m.id === executor?.id && !deleteExecutor;
+                        return (
+                          <TableRow key={i} className={classes.trow}>
+                            <TableCell>
+                              <Cell>{m.displayName}</Cell>
+                            </TableCell>
+                            <TableCell>
+                              <Cell>{m.firstName}</Cell>
+                            </TableCell>
+                            <TableCell>
+                              <Cell>{m.lastName}</Cell>
+                            </TableCell>
+                            <TableCell>
+                              <Cell>{m.email}</Cell>
+                            </TableCell>
+                            {onRemove && (
+                              <TableCell align={'right'}>
+                                <Cell>
+                                  <IconButton
+                                    aria-label="Remove"
+                                    size="small"
+                                    disabled={disableExecutor || addingMember || removingMember}
+                                    className={classes.iconButtonNegative}
+                                    onClick={() => onRemove(m)}
+                                  >
+                                    <RemoveIcon />
+                                  </IconButton>
+                                </Cell>
+                              </TableCell>
+                            )}
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
                 </Box>
-                {onLoadMore && (
-                  <Button onClick={() => onLoadMore(loadMore)} disabled={lastMembersPage}>
-                    {t('buttons.load-count-more', { count: loadMore })}
-                  </Button>
-                )}
               </Root>
-            );
-          }}
-        </Filter>
+            )}
+          </Filter>
+        </Grid>
+        <Grid item sm={4}>
+          Available users:
+          <Filter data={availableMembers} limitKeys={['displayName']}>
+            {filteredData => {
+              return (
+                <Root>
+                  <hr />
+                  <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
+                    <TableContainer>
+                      <Table size="small" style={{ position: 'relative' }}>
+                        <TableHead className={classes.thead}>
+                          <TableRow>
+                            <TableCell />
+                            <TableCell>Full Name</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <AvailableMembersFragment
+                            availableMembers={availableMembers}
+                            filteredMembers={filteredData}
+                            loading={loadingAvailableMembers}
+                            onAdd={onAdd}
+                            addingMember={addingMember}
+                            removingMember={removingMember}
+                          />
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Box>
+                  {onLoadMore && (
+                    <Button onClick={() => onLoadMore(loadMore)} disabled={lastMembersPage}>
+                      {t('buttons.load-count-more', { count: loadMore })}
+                    </Button>
+                  )}
+                </Root>
+              );
+            }}
+          </Filter>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 

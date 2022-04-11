@@ -10,6 +10,7 @@ interface EditAdminCredentialsProps
   credential: AuthorizationCredential;
   /** Members of the edited entity */
   parentCommunityId?: string;
+  title?: string;
 }
 
 export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
@@ -17,6 +18,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   onRemove,
   credential,
   resourceId,
+  title,
   parentCommunityId,
   addingMember = false,
   removingMember = false,
@@ -45,6 +47,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
       loadingAvailableMembers={loading}
       onLoadMore={onLoadMore}
       lastMembersPage={isLastAvailableUserPage}
+      title={title}
     />
   );
 };
