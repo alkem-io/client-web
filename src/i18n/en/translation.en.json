@@ -836,6 +836,7 @@
     "community": {
       "title": "{{name}} community page",
       "subtitle": "",
+      "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
       "leading-organizations": {
         "title": "Leading organizations ({{count}})",
         "help-text": "Shows different organizations, including the role you have",
@@ -851,6 +852,7 @@
         "no-data": "No members available"
       },
       "updates": {
+        "title": "Updates ({{count}})",
         "no-data": "No updates available"
       }
     },
