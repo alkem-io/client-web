@@ -3,7 +3,7 @@ import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../models/container';
 import { useApolloErrorHandler } from '../../../hooks';
 import { useChallengePreferencesQuery, useUpdatePreferenceOnChallengeMutation } from '../../../hooks/generated/graphql';
-import { ChallengePreferenceType, Preference } from '../../../models/graphql-schema';
+import { ChallengePreferenceType, Preference, PreferenceType } from '../../../models/graphql-schema';
 
 export interface ChallengePreferenceContainerEntities {
   preferences: Preference[];
@@ -28,6 +28,8 @@ export interface ChallengePreferenceContainerProps
   challengeId: string;
 }
 
+const excludedPreferences = [PreferenceType.MembershipFeedbackOnChallengeContext];
+
 const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ children, hubId, challengeId }) => {
   const handleError = useApolloErrorHandler();
   const { data, loading, error } = useChallengePreferencesQuery({
@@ -40,7 +42,9 @@ const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ c
     onError: handleError,
   });
 
-  const preferences = data?.hub?.challenge?.preferences ?? [];
+  const preferences = (data?.hub?.challenge?.preferences ?? []).filter(
+    p => !excludedPreferences.includes(p.definition.type)
+  );
 
   const onUpdate = useCallback(
     (id: string, type: ChallengePreferenceType, checked: boolean) => {
