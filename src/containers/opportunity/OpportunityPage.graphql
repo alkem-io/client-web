@@ -50,11 +50,11 @@ fragment OpportunityPage on Opportunity {
       name
       uri
     }
-    aspects {
-      ...AspectCard
-    }
     visuals {
       ...VisualUri
+    }
+    aspects(limit: 2, shuffle: true) {
+      ...AspectCard
     }
   }
   #

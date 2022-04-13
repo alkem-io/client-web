@@ -19,6 +19,7 @@ export enum ActivityType {
   Hub = 'hubs',
   Challenge = 'challenges',
   Relation = 'relations',
+  Aspect = 'aspects',
 }
 
 export const APPLICATION_STATE_NEW = 'new';
