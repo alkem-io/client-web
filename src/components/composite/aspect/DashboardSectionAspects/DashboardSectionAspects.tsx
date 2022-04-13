@@ -15,7 +15,8 @@ interface DashboardSectionAspectsProps {
 const DashboardSectionAspects: FC<DashboardSectionAspectsProps> = ({ aspects, aspectsCount, ...parentEntityIds }) => {
   const { t } = useTranslation();
 
-  const headerText = aspectsCount ? `${t('common.aspects')} (${aspectsCount})` : t('common.aspects');
+  const headerText =
+    typeof aspectsCount === 'undefined' ? t('common.aspects') : `${t('common.aspects')} (${aspectsCount})`;
 
   return (
     <DashboardSection headerText={headerText} navText={t('buttons.see-all')} navLink="contribute">
