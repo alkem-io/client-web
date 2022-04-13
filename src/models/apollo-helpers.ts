@@ -426,6 +426,7 @@ export type ConfigFieldPolicy = {
 };
 export type ContextKeySpecifier = (
   | 'aspects'
+  | 'aspectsCount'
   | 'authorization'
   | 'background'
   | 'canvases'
@@ -441,6 +442,7 @@ export type ContextKeySpecifier = (
 )[];
 export type ContextFieldPolicy = {
   aspects?: FieldPolicy<any> | FieldReadFunction<any>;
+  aspectsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   background?: FieldPolicy<any> | FieldReadFunction<any>;
   canvases?: FieldPolicy<any> | FieldReadFunction<any>;

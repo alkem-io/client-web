@@ -35,9 +35,10 @@ fragment HubPage on Hub {
       anonymousReadAccess
       myPrivileges
     }
-    aspects {
+    aspects(limit: 2, shuffle: true) {
       ...AspectCard
     }
+    aspectsCount
   }
   community {
     id

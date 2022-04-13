@@ -37,6 +37,7 @@ export interface HubDashboardView2Props {
   challenges: ChallengeCardFragment[];
   members?: User[];
   aspects: AspectCardAspect[];
+  aspectsCount: number | undefined;
   community?: any;
   loading: boolean;
   isMember?: boolean;
@@ -59,6 +60,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   activity,
   discussions,
   aspects,
+  aspectsCount,
   loading,
   isMember = false,
   communityReadAccess = false,
@@ -125,7 +127,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
               </CardLayoutContainer>
             </DashboardGenericSection>
           )}
-          <DashboardSectionAspects aspects={aspects} hubNameId={hubNameId} />
+          <DashboardSectionAspects aspects={aspects} aspectsCount={aspectsCount} hubNameId={hubNameId} />
           {communityReadAccess && <DashboardCommunitySectionV2 members={members} />}
         </DashboardColumn>
       </Grid>

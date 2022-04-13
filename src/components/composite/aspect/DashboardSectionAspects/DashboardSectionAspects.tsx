@@ -6,22 +6,21 @@ import { CardLayoutContainer, CardLayoutItem } from '../../../core/CardLayoutCon
 
 interface DashboardSectionAspectsProps {
   aspects: AspectCardAspect[];
+  aspectsCount?: number;
   hubNameId?: string;
   challengeNameId?: string;
   opportunityNameId?: string;
 }
 
-const DashboardSectionAspects: FC<DashboardSectionAspectsProps> = ({ aspects, ...parentEntityIds }) => {
+const DashboardSectionAspects: FC<DashboardSectionAspectsProps> = ({ aspects, aspectsCount, ...parentEntityIds }) => {
   const { t } = useTranslation();
 
+  const headerText = aspectsCount ? `${t('common.aspects')} (${aspectsCount})` : t('common.aspects');
+
   return (
-    <DashboardSection
-      headerText={`${t('common.aspects')} (${aspects.length})`}
-      navText={t('buttons.see-all')}
-      navLink="contribute"
-    >
+    <DashboardSection headerText={headerText} navText={t('buttons.see-all')} navLink="contribute">
       <CardLayoutContainer>
-        {aspects.slice(0, 2).map(aspect => (
+        {aspects.map(aspect => (
           <CardLayoutItem key={aspect.id}>
             <AspectCard aspect={aspect} {...parentEntityIds} />
           </CardLayoutItem>

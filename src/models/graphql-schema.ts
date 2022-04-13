@@ -617,6 +617,8 @@ export type Context = {
   __typename?: 'Context';
   /** The Aspects for this Context. */
   aspects?: Maybe<Array<Aspect>>;
+  /** The total number of Aspects for this Context. */
+  aspectsCount?: Maybe<Scalars['Float']>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** A detailed description of the current situation */
@@ -643,6 +645,8 @@ export type Context = {
 
 export type ContextAspectsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type ContextCanvasesArgs = {
@@ -8787,6 +8791,7 @@ export type ChallengePageQuery = {
             id: string;
             tagline?: string | undefined;
             vision?: string | undefined;
+            aspectsCount?: number | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -8931,6 +8936,7 @@ export type ChallengeProfileFragment = {
         id: string;
         tagline?: string | undefined;
         vision?: string | undefined;
+        aspectsCount?: number | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -9823,6 +9829,7 @@ export type HubPageQuery = {
           id: string;
           tagline?: string | undefined;
           vision?: string | undefined;
+          aspectsCount?: number | undefined;
           visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           authorization?:
             | {
@@ -9900,6 +9907,7 @@ export type HubPageFragment = {
         id: string;
         tagline?: string | undefined;
         vision?: string | undefined;
+        aspectsCount?: number | undefined;
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         authorization?:
           | {
@@ -10017,6 +10025,7 @@ export type OpportunityPageQuery = {
             id: string;
             tagline?: string | undefined;
             vision?: string | undefined;
+            aspectsCount?: number | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -10026,6 +10035,7 @@ export type OpportunityPageQuery = {
                 }
               | undefined;
             references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+            visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
             aspects?:
               | Array<{
                   __typename?: 'Aspect';
@@ -10039,7 +10049,6 @@ export type OpportunityPageQuery = {
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                 }>
               | undefined;
-            visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
       projects?:
@@ -10099,6 +10108,7 @@ export type OpportunityPageFragment = {
         id: string;
         tagline?: string | undefined;
         vision?: string | undefined;
+        aspectsCount?: number | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -10108,6 +10118,7 @@ export type OpportunityPageFragment = {
             }
           | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         aspects?:
           | Array<{
               __typename?: 'Aspect';
@@ -10121,7 +10132,6 @@ export type OpportunityPageFragment = {
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
             }>
           | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
   projects?:

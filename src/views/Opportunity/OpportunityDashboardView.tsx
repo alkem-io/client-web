@@ -37,6 +37,7 @@ export interface OpportunityDashboardViewEntities {
     outgoing: OpportunityPageFragment['relations'];
   };
   aspects: AspectCardAspect[];
+  aspectsCount: number | undefined;
 }
 
 export interface OpportunityDashboardViewActions {
@@ -149,6 +150,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           </DashboardGenericSection>
           <DashboardSectionAspects
             aspects={entities.aspects}
+            aspectsCount={entities.aspectsCount}
             hubNameId={hubNameId}
             challengeNameId={challengeNameId}
             opportunityNameId={opportunity.nameID}

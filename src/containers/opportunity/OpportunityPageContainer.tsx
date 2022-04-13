@@ -49,6 +49,7 @@ export interface OpportunityContainerEntities {
   };
   discussions: Discussion[];
   aspects: AspectCardFragment[];
+  aspectsCount: number | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -111,7 +112,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references = [], aspects = [] } = context ?? {};
+  const { references = [], aspects = [], aspectsCount } = context ?? {};
 
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
@@ -203,6 +204,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           },
           discussions: [], //discussionList,
           aspects,
+          aspectsCount,
         },
         {
           loading: loadingOpportunity, // || loadingDiscussions,
