@@ -795,8 +795,8 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const ApsectsOnContextFragmentDoc = gql`
-  fragment ApsectsOnContext on Context {
+export const AspectsOnContextFragmentDoc = gql`
+  fragment AspectsOnContext on Context {
     id
     aspects {
       ...AspectCard
@@ -1082,6 +1082,9 @@ export const ChallengeProfileFragmentDoc = gql`
       visuals {
         ...VisualFull
       }
+      aspects(limit: 2, shuffle: true) {
+        ...AspectCard
+      }
     }
     community {
       id
@@ -1134,6 +1137,7 @@ export const ChallengeProfileFragmentDoc = gql`
   }
   ${OrganizationDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
+  ${AspectCardFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
@@ -1263,6 +1267,9 @@ export const HubPageFragmentDoc = gql`
         anonymousReadAccess
         myPrivileges
       }
+      aspects(limit: 2, shuffle: true) {
+        ...AspectCard
+      }
     }
     community {
       id
@@ -1284,6 +1291,7 @@ export const HubPageFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+  ${AspectCardFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
 export const OpportunityPageFragmentDoc = gql`
@@ -1330,11 +1338,11 @@ export const OpportunityPageFragmentDoc = gql`
         name
         uri
       }
-      aspects {
-        ...AspectCard
-      }
       visuals {
         ...VisualUri
+      }
+      aspects(limit: 2, shuffle: true) {
+        ...AspectCard
       }
     }
     projects {
@@ -1355,8 +1363,8 @@ export const OpportunityPageFragmentDoc = gql`
       }
     }
   }
-  ${AspectCardFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${AspectCardFragmentDoc}
 `;
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {
@@ -9723,11 +9731,11 @@ export const HubAspectsDocument = gql`
     hub(ID: $hubNameId) {
       id
       context {
-        ...ApsectsOnContext
+        ...AspectsOnContext
       }
     }
   }
-  ${ApsectsOnContextFragmentDoc}
+  ${AspectsOnContextFragmentDoc}
 `;
 
 /**
@@ -9849,12 +9857,12 @@ export const ChallengeAspectsDocument = gql`
       challenge(ID: $challengeNameId) {
         id
         context {
-          ...ApsectsOnContext
+          ...AspectsOnContext
         }
       }
     }
   }
-  ${ApsectsOnContextFragmentDoc}
+  ${AspectsOnContextFragmentDoc}
 `;
 
 /**
@@ -9980,12 +9988,12 @@ export const OpportunityAspectsDocument = gql`
       opportunity(ID: $opportunityNameId) {
         id
         context {
-          ...ApsectsOnContext
+          ...AspectsOnContext
         }
       }
     }
   }
-  ${ApsectsOnContextFragmentDoc}
+  ${AspectsOnContextFragmentDoc}
 `;
 
 /**

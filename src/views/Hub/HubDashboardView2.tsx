@@ -18,6 +18,9 @@ import ChallengeCard from '../../components/composite/common/cards/ChallengeCard
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { useConfig } from '../../hooks';
+import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
+import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
+import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
 
 export interface HubDashboardView2Props {
   title?: string;
@@ -33,6 +36,8 @@ export interface HubDashboardView2Props {
   organization?: any;
   challenges: ChallengeCardFragment[];
   members?: User[];
+  aspects: AspectCardAspect[];
+  aspectsCount: number | undefined;
   community?: any;
   loading: boolean;
   isMember?: boolean;
@@ -54,6 +59,8 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   organizationNameId,
   activity,
   discussions,
+  aspects,
+  aspectsCount,
   loading,
   isMember = false,
   communityReadAccess = false,
@@ -71,7 +78,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   return (
     <>
       <Grid container spacing={SPACING}>
-        <Grid item xs={12} md={6}>
+        <DashboardColumn>
           <DashboardGenericSection
             bannerUrl={bannerUrl}
             headerText={title}
@@ -86,13 +93,11 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
             <Markdown children={tagline} />
             <Markdown children={vision} />
           </DashboardGenericSection>
-          <SectionSpacer />
           <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>
             <ActivityView activity={activity} loading={loading} />
           </DashboardGenericSection>
           {communityReadAccess && (
             <>
-              <SectionSpacer />
               <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
               {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
@@ -100,13 +105,12 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
               )}
             </>
           )}
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </DashboardColumn>
+        <DashboardColumn>
           <AssociatedOrganizationsView
             title={t('pages.hub.sections.dashboard.organization')}
             organizationNameIDs={orgNameIds}
           />
-          <SectionSpacer />
           {challengesReadAccess && (
             <DashboardGenericSection
               headerText={`${t('pages.hub.sections.dashboard.challenges.title')} (${challengesCount})`}
@@ -115,23 +119,20 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
               navLink={'challenges'}
             >
               <CardLayoutContainer>
-                {challenges.map((x, i) => (
-                  <CardLayoutItem key={i} flexBasis={'50%'}>
-                    <ChallengeCard challenge={x} hubNameId={hubNameId} />
+                {challenges.map(challenge => (
+                  <CardLayoutItem key={challenge.id}>
+                    <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
                   </CardLayoutItem>
                 ))}
               </CardLayoutContainer>
             </DashboardGenericSection>
           )}
-          {communityReadAccess && (
-            <>
-              <SectionSpacer />
-              <DashboardCommunitySectionV2 members={members} />
-            </>
-          )}
-        </Grid>
+          <DashboardSectionAspects aspects={aspects} aspectsCount={aspectsCount} hubNameId={hubNameId} />
+          {communityReadAccess && <DashboardCommunitySectionV2 members={members} />}
+        </DashboardColumn>
       </Grid>
     </>
   );
 };
+
 export default HubDashboardView2;

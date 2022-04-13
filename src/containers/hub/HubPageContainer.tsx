@@ -5,7 +5,12 @@ import { ActivityItem } from '../../components/composite/common/ActivityPanel/Ac
 import { useHub, useUserContext } from '../../hooks';
 import { useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  AuthorizationPrivilege,
+  ChallengeCardFragment,
+  HubPageFragment,
+} from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../models/discussion/discussion';
@@ -25,6 +30,8 @@ export interface HubContainerEntities {
   isGlobalAdmin: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
+  aspects: AspectCardFragment[];
+  aspectsCount: number | undefined;
 }
 
 export interface HubContainerActions {}
@@ -36,6 +43,8 @@ export interface HubContainerState {
 
 export interface HubPageContainerProps
   extends ContainerChildProps<HubContainerEntities, HubContainerActions, HubContainerState> {}
+
+const EMPTY = [];
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
@@ -85,7 +94,13 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
   };
 
-  const challenges = _hub?.hub?.challenges ?? [];
+  const challenges = _hub?.hub.challenges ?? EMPTY;
+
+  const aspects = _hub?.hub.context?.aspects ?? EMPTY;
+  const aspectsCount = useMemo(() => {
+    const stringValue = _hub?.hub.activity?.find(activity => activity.name === ActivityType.Aspect)?.value;
+    return Number(stringValue);
+  }, [_hub?.hub.activity]);
 
   return (
     <>
@@ -100,6 +115,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           isMember,
           isGlobalAdmin,
           challenges,
+          aspects,
+          aspectsCount,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,
