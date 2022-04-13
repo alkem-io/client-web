@@ -31,6 +31,7 @@ export interface HubContainerEntities {
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
   aspects: AspectCardFragment[];
+  aspectsCount: number | undefined;
 }
 
 export interface HubContainerActions {}
@@ -96,6 +97,10 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
   const aspects = _hub?.hub.context?.aspects ?? EMPTY;
+  const aspectsCount = useMemo(() => {
+    const stringValue = _hub?.hub.activity?.find(activity => activity.name === ActivityType.Aspect)?.value;
+    return Number(stringValue);
+  }, [_hub?.hub.activity]);
 
   return (
     <>
@@ -111,6 +116,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           isGlobalAdmin,
           challenges,
           aspects,
+          aspectsCount,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,

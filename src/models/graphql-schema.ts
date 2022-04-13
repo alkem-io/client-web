@@ -643,6 +643,8 @@ export type Context = {
 
 export type ContextAspectsArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type ContextCanvasesArgs = {
@@ -10026,6 +10028,7 @@ export type OpportunityPageQuery = {
                 }
               | undefined;
             references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+            visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
             aspects?:
               | Array<{
                   __typename?: 'Aspect';
@@ -10039,7 +10042,6 @@ export type OpportunityPageQuery = {
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                 }>
               | undefined;
-            visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
       projects?:
@@ -10108,6 +10110,7 @@ export type OpportunityPageFragment = {
             }
           | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
         aspects?:
           | Array<{
               __typename?: 'Aspect';
@@ -10121,7 +10124,6 @@ export type OpportunityPageFragment = {
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
             }>
           | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
   projects?:

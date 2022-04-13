@@ -1082,7 +1082,7 @@ export const ChallengeProfileFragmentDoc = gql`
       visuals {
         ...VisualFull
       }
-      aspects {
+      aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
     }
@@ -1267,7 +1267,7 @@ export const HubPageFragmentDoc = gql`
         anonymousReadAccess
         myPrivileges
       }
-      aspects {
+      aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
     }
@@ -1338,11 +1338,11 @@ export const OpportunityPageFragmentDoc = gql`
         name
         uri
       }
-      aspects {
-        ...AspectCard
-      }
       visuals {
         ...VisualUri
+      }
+      aspects(limit: 2, shuffle: true) {
+        ...AspectCard
       }
     }
     projects {
@@ -1363,8 +1363,8 @@ export const OpportunityPageFragmentDoc = gql`
       }
     }
   }
-  ${AspectCardFragmentDoc}
   ${VisualUriFragmentDoc}
+  ${AspectCardFragmentDoc}
 `;
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {

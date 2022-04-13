@@ -40,7 +40,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
   }, [entities.activity]);
 
-  const { challenge, activity, isMember, discussions, permissions, aspects } = entities;
+  const { challenge, activity, isMember, discussions, permissions, aspects, aspectsCount } = entities;
 
   const { loading } = state;
 
@@ -108,7 +108,12 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               ))}
             </CardLayoutContainer>
           </DashboardGenericSection>
-          <DashboardSectionAspects aspects={aspects} hubNameId={hubNameId} challengeNameId={challengeNameId} />
+          <DashboardSectionAspects
+            aspects={aspects}
+            aspectsCount={aspectsCount}
+            hubNameId={hubNameId}
+            challengeNameId={challengeNameId}
+          />
           {communityReadAccess && <DashboardCommunitySectionV2 members={members} />}
         </DashboardColumn>
       </Grid>

@@ -18,6 +18,7 @@ export interface ChallengeContainerEntities {
   challenge?: ChallengeProfileFragment;
   activity: ActivityItem[];
   aspects: AspectCardFragment[];
+  aspectsCount: number | undefined;
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -85,6 +86,12 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   }, [_challenge]);
 
   const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
+  const aspectsCount = useMemo(() => {
+    const stringValue = _challenge?.hub.challenge.activity?.find(
+      activity => activity.name === ActivityType.Aspect
+    )?.value;
+    return Number(stringValue);
+  }, [_challenge?.hub.challenge.activity]);
 
   return (
     <>
@@ -96,6 +103,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           challenge: _challenge?.hub.challenge,
           activity,
           aspects,
+          aspectsCount,
           permissions,
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,

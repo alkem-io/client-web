@@ -38,7 +38,7 @@ fragment ChallengeProfile on Challenge {
     visuals {
       ...VisualFull
     }
-    aspects {
+    aspects(limit: 2, shuffle: true) {
       ...AspectCard
     }
   }
