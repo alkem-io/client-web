@@ -46,12 +46,7 @@ const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) =
   },
 }));
 
-export const CategorySelector: FC<CategorySelectorProps> = ({
-  categories,
-  value = null,
-  showLabels = true,
-  onSelect,
-}) => {
+export const CategorySelector: FC<CategorySelectorProps> = ({ categories, value, showLabels = true, onSelect }) => {
   const items = useMemo(
     () =>
       categories.map(({ title, icon: Icon }) => (

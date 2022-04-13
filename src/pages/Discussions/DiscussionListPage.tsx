@@ -37,9 +37,10 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   );
 
   const [category, setCategory] = useState<string>(categoryConfig[0].title);
+  const shouldSkipFiltering = !category || category === showAllTitle;
 
   const filtered = useMemo(
-    () => discussionList?.filter(d => !category || category === showAllTitle || d.category === category),
+    () => discussionList?.filter(d => shouldSkipFiltering || d.category === category),
     [discussionList, category]
   );
 
