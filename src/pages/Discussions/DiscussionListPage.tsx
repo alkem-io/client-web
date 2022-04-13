@@ -40,8 +40,8 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const shouldSkipFiltering = !category || category === showAllTitle;
 
   const filtered = useMemo(
-    () => discussionList?.filter(d => shouldSkipFiltering || d.category === category),
-    [discussionList, category]
+    () => (shouldSkipFiltering ? discussionList : discussionList?.filter(d => d.category === category)),
+    [discussionList, category, shouldSkipFiltering]
   );
 
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));

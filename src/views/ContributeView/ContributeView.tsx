@@ -37,10 +37,11 @@ const ContributeView: FC<ContributeViewProps> = ({
     return types;
   }, [aspectTypes, showAllTitle]);
   const [category, setCategory] = useState<string | null>(categoryConfig?.[0]?.title ?? null);
+  const shouldSkipFiltering = !category || category === showAllTitle;
 
   const filteredAspects = useMemo(
-    () => aspects?.filter(({ type }) => !category || category === showAllTitle || type === category),
-    [aspects, category]
+    () => (shouldSkipFiltering ? aspects : aspects?.filter(({ type }) => type === category)),
+    [shouldSkipFiltering, aspects, category]
   );
   return (
     <>
