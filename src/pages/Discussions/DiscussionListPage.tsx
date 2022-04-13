@@ -1,24 +1,20 @@
-import { Theme, useMediaQuery } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import CategorySelector, {
-  CATEGORY_ALL,
-  CategoryConfig,
-} from '../../components/composite/common/CategorySelector/CategorySelector';
+import { Theme, useMediaQuery } from '@mui/material';
+import {
+  HelpOutlined,
+  LightbulbOutlined,
+  QuestionAnswerOutlined,
+  ShareOutlined,
+  AllInclusive,
+} from '@mui/icons-material';
+import CategorySelector, { CategoryConfig } from '../../components/composite/common/CategorySelector/CategorySelector';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../context/CommunityProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
-import { HelpOutlined, LightbulbOutlined, QuestionAnswerOutlined, ShareOutlined } from '@mui/icons-material';
-
-const categoryConfig: CategoryConfig[] = [
-  { title: 'General', icon: QuestionAnswerOutlined },
-  { title: 'Ideas', icon: LightbulbOutlined },
-  { title: 'Questions', icon: HelpOutlined },
-  { title: 'Sharing', icon: ShareOutlined },
-];
 
 interface DiscussionsPageProps extends PageProps {}
 
@@ -27,10 +23,23 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
 
-  const [category, setCategory] = useState<string>();
+  const showAllTitle = t('common.show-all');
+
+  const categoryConfig = useMemo<CategoryConfig[]>(
+    () => [
+      { title: showAllTitle, icon: AllInclusive },
+      { title: t('common.enums.discussion-category.GENERAL'), icon: QuestionAnswerOutlined },
+      { title: t('common.enums.discussion-category.IDEAS'), icon: LightbulbOutlined },
+      { title: t('common.enums.discussion-category.QUESTIONS'), icon: HelpOutlined },
+      { title: t('common.enums.discussion-category.SHARING'), icon: ShareOutlined },
+    ],
+    [showAllTitle, t]
+  );
+
+  const [category, setCategory] = useState<string>(categoryConfig[0].title);
 
   const filtered = useMemo(
-    () => discussionList?.filter(d => category === CATEGORY_ALL || d.category === category),
+    () => discussionList?.filter(d => !category || category === showAllTitle || d.category === category),
     [discussionList, category]
   );
 

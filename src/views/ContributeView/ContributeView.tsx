@@ -5,10 +5,7 @@ import { Box, Grid, Paper } from '@mui/material';
 import AspectsView from '../aspect/AspectsView/AspectsView';
 import { AspectCreationOutput } from '../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectWithPermissions } from '../../containers/ContributeTabContainer/ContributeTabContainer';
-import CategorySelector, {
-  CATEGORY_ALL,
-  CategoryConfig,
-} from '../../components/composite/common/CategorySelector/CategorySelector';
+import CategorySelector, { CategoryConfig } from '../../components/composite/common/CategorySelector/CategorySelector';
 
 export interface ContributeViewProps {
   aspects?: AspectWithPermissions[];
@@ -32,11 +29,17 @@ const ContributeView: FC<ContributeViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const categoryConfig = useMemo(() => aspectTypes.map<CategoryConfig>(x => ({ title: x })), [aspectTypes]);
-  const [category, setCategory] = useState<string>(CATEGORY_ALL);
+  const showAllTitle = t('common.show-all');
+
+  const categoryConfig = useMemo(() => {
+    const types = aspectTypes.map<CategoryConfig>(x => ({ title: x }));
+    types.unshift({ title: showAllTitle });
+    return types;
+  }, [aspectTypes, showAllTitle]);
+  const [category, setCategory] = useState<string | null>(categoryConfig?.[0]?.title ?? null);
 
   const filteredAspects = useMemo(
-    () => aspects?.filter(({ type }) => category === CATEGORY_ALL || type === category),
+    () => aspects?.filter(({ type }) => !category || category === showAllTitle || type === category),
     [aspects, category]
   );
   return (
@@ -49,7 +52,7 @@ const ContributeView: FC<ContributeViewProps> = ({
       </Box>
       <Grid container spacing={2}>
         <Grid item xs={3}>
-          <Paper square variant={'outlined'}>
+          <Paper square variant="outlined">
             <CategorySelector categories={categoryConfig} value={category} onSelect={setCategory} />
           </Paper>
         </Grid>

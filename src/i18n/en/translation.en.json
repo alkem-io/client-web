@@ -120,6 +120,7 @@
     "authorization": "Authorization",
     "question": "Question",
     "questions": "Questions",
+    "show-all": "Show all",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -567,9 +568,6 @@
     },
     "members-view": {
       "title": "Active community members"
-    },
-    "category-selector": {
-      "all": "SHOW ALL"
     },
     "community-section": {
       "discussions": {

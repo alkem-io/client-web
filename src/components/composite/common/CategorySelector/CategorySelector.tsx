@@ -1,16 +1,15 @@
+import React, { ComponentType, FC, useMemo } from 'react';
 import {
   alpha,
   Box,
+  styled,
+  Typography,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemProps,
   ListItemText,
-  styled,
-  Typography,
 } from '@mui/material';
-import React, { ComponentType, FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 export interface CategoryConfig {
   title: string;
@@ -19,12 +18,10 @@ export interface CategoryConfig {
 
 interface CategorySelectorProps {
   categories: CategoryConfig[];
-  value?: string;
+  value: string | null;
   showLabels?: boolean;
   onSelect?: (category: string) => void;
 }
-
-export const CATEGORY_ALL = 'Show all';
 
 const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) => ({
   '&.Mui-selected': {
@@ -51,71 +48,45 @@ const StyledListItemButton = styled(ListItemButton)<ListItemProps>(({ theme }) =
 
 export const CategorySelector: FC<CategorySelectorProps> = ({
   categories,
-  value = CATEGORY_ALL,
+  value = null,
   showLabels = true,
   onSelect,
 }) => {
-  const { t } = useTranslation();
-
-  const handleSelect = (selectedValue: string) => onSelect?.(selectedValue);
-
   const items = useMemo(
-    () => (
-      <>
+    () =>
+      categories.map(({ title, icon: Icon }) => (
         <StyledListItemButton
+          key={title}
+          selected={value === title}
           disableGutters={!showLabels}
-          selected={value === CATEGORY_ALL}
-          onClick={() => handleSelect(CATEGORY_ALL)}
+          onClick={() => onSelect?.(title)}
         >
+          {Icon && (
+            <ListItemIcon
+              sx={{
+                justifyContent: !showLabels ? 'center' : 'flex-start',
+                color: value === title ? 'neutralLight.main' : undefined,
+              }}
+            >
+              <Icon />
+            </ListItemIcon>
+          )}
           {showLabels && (
-            <ListItemText sx={{ justifyContent: 'center' }}>
+            <ListItemText>
               <Box
                 component={Typography}
                 noWrap
                 fontWeight="bold"
                 display="flex"
-                sx={{ textTransform: 'uppercase', justifyContent: 'center' }}
+                sx={{ textTransform: 'uppercase', justifyContent: !Icon ? 'center' : 'flex-start' }}
               >
-                {t('components.category-selector.all')}
+                {title}
               </Box>
             </ListItemText>
           )}
         </StyledListItemButton>
-        {categories.map(({ title, icon: Icon }) => (
-          <StyledListItemButton
-            key={title}
-            selected={value === title}
-            disableGutters={!showLabels}
-            onClick={() => handleSelect(title)}
-          >
-            {Icon && (
-              <ListItemIcon
-                sx={{
-                  justifyContent: !showLabels ? 'center' : 'flex-start',
-                  color: value === title ? 'neutralLight.main' : undefined,
-                }}
-              >
-                <Icon />
-              </ListItemIcon>
-            )}
-            {showLabels && (
-              <ListItemText>
-                <Box
-                  component={Typography}
-                  noWrap
-                  fontWeight="bold"
-                  display="flex"
-                  sx={{ textTransform: 'uppercase', justifyContent: !Icon ? 'center' : 'flex-start' }}
-                >
-                  {title}
-                </Box>
-              </ListItemText>
-            )}
-          </StyledListItemButton>
-        ))}
-      </>
-    ),
-    [handleSelect, showLabels, categories, value]
+      )),
+    [showLabels, categories, value]
   );
 
   return <List disablePadding>{items}</List>;

@@ -78,8 +78,8 @@ const AspectsView: FC<AspectsViewProps> = ({
                   t('pages.contribute.no-aspects')
                 ) : (
                   <CardLayoutContainer>
-                    {filteredAspects.map((x, i) => (
-                      <CardLayoutItem key={i}>
+                    {filteredAspects.map(x => (
+                      <CardLayoutItem key={x.id}>
                         <AspectCard
                           aspect={x}
                           hubNameId={hubNameId}
