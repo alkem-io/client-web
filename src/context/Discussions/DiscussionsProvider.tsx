@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { merge, uniq } from 'lodash';
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useApolloErrorHandler, useConfig, useHub } from '../../hooks';
 import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
@@ -13,7 +13,6 @@ import {
 } from '../../hooks/generated/graphql';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { Discussion } from '../../models/discussion/discussion';
-import { DiscussionCategoryExt, DiscussionCategoryExtEnum } from '../../models/enums/DiscussionCategoriesExt';
 import {
   AuthorizationPrivilege,
   Discussion as DiscussionGraphql,
@@ -218,12 +217,4 @@ const useDiscussionsContext = () => {
   return useContext(DiscussionsContext);
 };
 
-const useDiscussionCategoryFilter = (discussions: Discussion[]) => {
-  const [categoryFilter, setCategoryFilter] = useState<DiscussionCategoryExt>(DiscussionCategoryExtEnum.All);
-  const filtered = useMemo(() => {
-    return discussions.filter(d => categoryFilter === DiscussionCategoryExtEnum.All || d.category === categoryFilter);
-  }, [discussions, categoryFilter]);
-  return { filtered, categoryFilter, setCategoryFilter };
-};
-
-export { DiscussionsProvider, DiscussionsContext, useDiscussionsContext, useDiscussionCategoryFilter };
+export { DiscussionsProvider, DiscussionsContext, useDiscussionsContext };

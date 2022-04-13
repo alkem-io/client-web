@@ -120,6 +120,7 @@
     "authorization": "Authorization",
     "question": "Question",
     "questions": "Questions",
+    "show-all": "Show all",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -568,13 +569,6 @@
     "members-view": {
       "title": "Active community members"
     },
-    "discussion-category-selector": {
-      "ALL": "SHOW ALL",
-      "GENERAL": "GENERAL",
-      "IDEAS": "IDEAS",
-      "QUESTIONS": "QUESTIONS",
-      "SHARING": "SHARING"
-    },
     "community-section": {
       "discussions": {
         "no-data-create": "No discussions. Create a new discussion",
@@ -599,6 +593,9 @@
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {
+    "contribute": {
+      "no-aspects": "No aspects found"
+    },
     "admin": {
       "organization": {
         "authorization": {

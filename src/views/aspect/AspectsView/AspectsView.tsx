@@ -53,7 +53,7 @@ const AspectsView: FC<AspectsViewProps> = ({
     <Grid item xs={12}>
       <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
         <DashboardGenericSection
-          headerText={`${t('common.aspects')} (${aspects ? aspects.length : 0})`}
+          headerText={`${t('common.aspects')} (${aspects.length})`}
           primaryAction={
             canCreateAspects && (
               <Button variant="contained" onClick={handleCreateDialogOpened}>
@@ -73,21 +73,25 @@ const AspectsView: FC<AspectsViewProps> = ({
             </CardLayoutContainer>
           ) : (
             <CardFilter data={aspects} tagsValueGetter={aspectTagsValueGetter} valueGetter={aspectValueGetter}>
-              {filteredAspects => (
-                <CardLayoutContainer>
-                  {filteredAspects.map((x, i) => (
-                    <CardLayoutItem key={i}>
-                      <AspectCard
-                        aspect={x}
-                        hubNameId={hubNameId}
-                        challengeNameId={challengeNameId}
-                        opportunityNameId={opportunityNameId}
-                        onDelete={x.canDelete ? onDelete : undefined}
-                      />
-                    </CardLayoutItem>
-                  ))}
-                </CardLayoutContainer>
-              )}
+              {filteredAspects =>
+                !filteredAspects.length ? (
+                  t('pages.contribute.no-aspects')
+                ) : (
+                  <CardLayoutContainer>
+                    {filteredAspects.map(x => (
+                      <CardLayoutItem key={x.id}>
+                        <AspectCard
+                          aspect={x}
+                          hubNameId={hubNameId}
+                          challengeNameId={challengeNameId}
+                          opportunityNameId={opportunityNameId}
+                          onDelete={x.canDelete ? onDelete : undefined}
+                        />
+                      </CardLayoutItem>
+                    ))}
+                  </CardLayoutContainer>
+                )
+              }
             </CardFilter>
           )}
         </DashboardGenericSection>
