@@ -6,7 +6,7 @@ import {
   CreateAspectOnContextInput,
   Scalars,
 } from '../../models/graphql-schema';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler, useHub } from '../../hooks';
 import {
   AspectCardFragmentDoc,
   useChallengeAspectsQuery,
@@ -34,6 +34,7 @@ export interface Provided {
   canReadAspects: boolean;
   canCreateAspects: boolean;
   aspects?: AspectWithPermissions[];
+  aspectTypes?: string[];
   loading: boolean;
   creating: boolean;
   deleting: boolean;
@@ -51,6 +52,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
   ...rendered
 }) => {
   const handleError = useApolloErrorHandler();
+  const { template, loading: hubLoading } = useHub();
 
   const {
     data: hubContextData,
@@ -142,7 +144,8 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     opportunityContextLoading ||
     hubAspectLoading ||
     challengeAspectLoading ||
-    opportunityAspectLoading;
+    opportunityAspectLoading ||
+    hubLoading;
   const error =
     hubContextError ??
     challengeContextError ??
@@ -155,6 +158,8 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
   const canCreateAspects = canCreateAspectOnHub ?? canCreateAspectOnChallenge ?? canCreateAspectOnOpportunity ?? false;
 
   const contextId = hubContext?.id ?? challengeContext?.id ?? opportunityContext?.id;
+
+  const aspectTypes = template.aspectTemplates.map(x => x.type);
 
   const [createAspect, { loading: creating }] = useCreateAspectMutation({
     onError: handleError,
@@ -243,6 +248,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
 
   return renderComponentOrChildrenFn(rendered, {
     aspects,
+    aspectTypes,
     loading,
     creating,
     deleting,

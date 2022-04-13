@@ -1,13 +1,24 @@
 import { Theme, useMediaQuery } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DiscussionCategorySelector from '../../components/composite/entities/Communication/DiscussionCategorySelector';
+import CategorySelector, {
+  CATEGORY_ALL,
+  CategoryConfig,
+} from '../../components/composite/common/CategorySelector/CategorySelector';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../context/CommunityProvider';
-import { useDiscussionCategoryFilter, useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
+import { HelpOutlined, LightbulbOutlined, QuestionAnswerOutlined, ShareOutlined } from '@mui/icons-material';
+
+const categoryConfig: CategoryConfig[] = [
+  { title: 'General', icon: QuestionAnswerOutlined },
+  { title: 'Ideas', icon: LightbulbOutlined },
+  { title: 'Questions', icon: HelpOutlined },
+  { title: 'Sharing', icon: ShareOutlined },
+];
 
 interface DiscussionsPageProps extends PageProps {}
 
@@ -15,7 +26,13 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
-  const { filtered, categoryFilter, setCategoryFilter } = useDiscussionCategoryFilter(discussionList);
+
+  const [category, setCategory] = useState<string>();
+
+  const filtered = useMemo(
+    () => discussionList?.filter(d => category === CATEGORY_ALL || d.category === category),
+    [discussionList, category]
+  );
 
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
 
@@ -27,9 +44,10 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
       newUrl={'new'}
       canCreateDiscussion={permissions.canCreateDiscussion}
       categorySelector={
-        <DiscussionCategorySelector
-          onSelect={selectedCategory => setCategoryFilter(selectedCategory)}
-          value={categoryFilter}
+        <CategorySelector
+          categories={categoryConfig}
+          onSelect={setCategory}
+          value={category}
           showLabels={!mediumScreen}
         />
       }

@@ -568,12 +568,8 @@
     "members-view": {
       "title": "Active community members"
     },
-    "discussion-category-selector": {
-      "ALL": "SHOW ALL",
-      "GENERAL": "GENERAL",
-      "IDEAS": "IDEAS",
-      "QUESTIONS": "QUESTIONS",
-      "SHARING": "SHARING"
+    "category-selector": {
+      "all": "SHOW ALL"
     },
     "community-section": {
       "discussions": {
@@ -599,6 +595,9 @@
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {
+    "contribute": {
+      "no-aspects": "No aspects found"
+    },
     "admin": {
       "organization": {
         "authorization": {
