@@ -80,8 +80,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
   };
 
   const handleBack = () => {
-    const newActiveStep = getPrevStepIndex(activeStepIndex);
-    setActiveStepIndex(newActiveStep);
+    setActiveStepIndex(prevActiveStepIndex => getPrevStepIndex(prevActiveStepIndex));
   };
 
   const handleClose = () => {
