@@ -115,11 +115,15 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       createdAt: new Date(x.timestamp),
     }));
 
+  const isAuthor = useCallback(
+    (msgId: string, userId?: string) => messages.find(x => x.id === msgId)?.author?.id === userId ?? false,
+    [messages, user]
+  );
+
   const commentsPrivileges = aspect?.comments?.authorization?.myPrivileges ?? [];
-  const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete) ?? false;
+  const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteMessage = useCallback(
-    msgId =>
-      canDeleteComments || (isAuthenticated && (messages.find(x => x.id === msgId)?.author?.id === user?.id ?? false)),
+    msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
     [messages, user, isAuthenticated]
   );
 
