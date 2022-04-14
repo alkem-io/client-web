@@ -1,10 +1,17 @@
-import { Theme, useMediaQuery } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DiscussionCategorySelector from '../../components/composite/entities/Communication/DiscussionCategorySelector';
+import { Theme, useMediaQuery } from '@mui/material';
+import {
+  HelpOutlined,
+  LightbulbOutlined,
+  QuestionAnswerOutlined,
+  ShareOutlined,
+  AllInclusive,
+} from '@mui/icons-material';
+import CategorySelector, { CategoryConfig } from '../../components/composite/common/CategorySelector/CategorySelector';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../context/CommunityProvider';
-import { useDiscussionCategoryFilter, useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
+import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
@@ -15,7 +22,27 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
-  const { filtered, categoryFilter, setCategoryFilter } = useDiscussionCategoryFilter(discussionList);
+
+  const showAllTitle = t('common.show-all');
+
+  const categoryConfig = useMemo<CategoryConfig[]>(
+    () => [
+      { title: showAllTitle, icon: AllInclusive },
+      { title: t('common.enums.discussion-category.GENERAL'), icon: QuestionAnswerOutlined },
+      { title: t('common.enums.discussion-category.IDEAS'), icon: LightbulbOutlined },
+      { title: t('common.enums.discussion-category.QUESTIONS'), icon: HelpOutlined },
+      { title: t('common.enums.discussion-category.SHARING'), icon: ShareOutlined },
+    ],
+    [showAllTitle, t]
+  );
+
+  const [category, setCategory] = useState<string>(categoryConfig[0].title);
+  const shouldSkipFiltering = !category || category === showAllTitle;
+
+  const filtered = useMemo(
+    () => (shouldSkipFiltering ? discussionList : discussionList?.filter(d => d.category === category)),
+    [discussionList, category, shouldSkipFiltering]
+  );
 
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('lg'));
 
@@ -27,9 +54,10 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
       newUrl={'new'}
       canCreateDiscussion={permissions.canCreateDiscussion}
       categorySelector={
-        <DiscussionCategorySelector
-          onSelect={selectedCategory => setCategoryFilter(selectedCategory)}
-          value={categoryFilter}
+        <CategorySelector
+          categories={categoryConfig}
+          onSelect={setCategory}
+          value={category}
           showLabels={!mediumScreen}
         />
       }

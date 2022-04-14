@@ -91,7 +91,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         }
       />
       <Route
-        path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+        path={`contribute/aspects/:${nameOfUrl.aspectNameId}/*`}
         element={
           <AspectProvider>
             <AspectRoute paths={currentPaths} />

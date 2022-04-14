@@ -19,6 +19,8 @@ import OpportunityCard from '../../components/composite/common/cards/Opportunity
 import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
+import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
+import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -38,7 +40,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
   }, [entities.activity]);
 
-  const { challenge, activity, isMember, discussions, permissions } = entities;
+  const { challenge, activity, isMember, discussions, permissions, aspects, aspectsCount } = entities;
 
   const { loading } = state;
 
@@ -59,7 +61,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   return (
     <>
       <Grid container spacing={SPACING}>
-        <Grid item xs={12} md={6}>
+        <DashboardColumn>
           <DashboardGenericSection
             bannerUrl={bannerUrl}
             headerText={displayName}
@@ -74,13 +76,11 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             <Markdown children={tagline} />
             <Markdown children={vision} />
           </DashboardGenericSection>
-          <SectionSpacer />
           <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.statistics.title')}>
             <ActivityView activity={activity} loading={loading} />
           </DashboardGenericSection>
           {communityReadAccess && (
             <>
-              <SectionSpacer />
               <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
               {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
@@ -88,13 +88,12 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               )}
             </>
           )}
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </DashboardColumn>
+        <DashboardColumn>
           <AssociatedOrganizationsView
             title={t('pages.challenge.sections.dashboard.organization')}
             organizationNameIDs={orgNameIds}
           />
-          <SectionSpacer />
           <DashboardGenericSection
             headerText={`${t('pages.challenge.sections.dashboard.opportunities.title')} (${opportunitiesCount})`}
             helpText={t('pages.challenge.sections.dashboard.opportunities.help-text')}
@@ -109,13 +108,14 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               ))}
             </CardLayoutContainer>
           </DashboardGenericSection>
-          {communityReadAccess && (
-            <>
-              <SectionSpacer />
-              <DashboardCommunitySectionV2 members={members} />
-            </>
-          )}
-        </Grid>
+          <DashboardSectionAspects
+            aspects={aspects}
+            aspectsCount={aspectsCount}
+            hubNameId={hubNameId}
+            challengeNameId={challengeNameId}
+          />
+          {communityReadAccess && <DashboardCommunitySectionV2 members={members} />}
+        </DashboardColumn>
       </Grid>
     </>
   );

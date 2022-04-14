@@ -18,6 +18,7 @@ import {
 import getActivityCount from '../../utils/get-activity-count';
 import { replaceAll } from '../../utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
+import { ActivityType } from '../../models/constants';
 
 export interface OpportunityContainerEntities {
   opportunity: OpportunityPageFragment;
@@ -49,6 +50,7 @@ export interface OpportunityContainerEntities {
   };
   discussions: Discussion[];
   aspects: AspectCardFragment[];
+  aspectsCount: number | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -176,6 +178,11 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     return projectList;
   }, [projects, onProjectTransition, permissions.projectWrite, t]);
 
+  const aspectsCount = useMemo(() => {
+    const stringValue = _activity.find(activity => activity.name === ActivityType.Aspect)?.value;
+    return Number(stringValue);
+  }, [_activity]);
+
   return (
     <>
       {children(
@@ -203,6 +210,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           },
           discussions: [], //discussionList,
           aspects,
+          aspectsCount,
         },
         {
           loading: loadingOpportunity, // || loadingDiscussions,

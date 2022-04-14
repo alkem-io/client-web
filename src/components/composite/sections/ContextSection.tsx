@@ -2,16 +2,18 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PublicIcon from '@mui/icons-material/Public';
 import SchoolIcon from '@mui/icons-material/School';
-import { Box, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Reference } from '../../../models/graphql-schema';
 import Markdown from '../../core/Markdown';
 import { SectionSpacer } from '../../core/Section/Section';
 import SectionHeader from '../../core/Section/SectionHeader';
-import DashboardGenericSection from '../common/sections/DashboardGenericSection';
 import TagsComponent from '../common/TagsComponent/TagsComponent';
 import References from '../common/References/References';
+import DashboardSection from './DashboardSection/DashboardSection';
+import ContextSectionIcon from './ContextSectionIcon';
+import DashboardColumn from './DashboardSection/DashboardColumn';
 
 export interface ContextSectionProps {
   contextId?: string;
@@ -45,74 +47,51 @@ const ContextSection: FC<ContextSectionProps> = ({
   return (
     <>
       <Grid container spacing={2}>
-        <Grid item xs={12} lg={6}>
-          <DashboardGenericSection
+        <DashboardColumn>
+          <DashboardSection
             primaryAction={primaryAction}
             bannerUrl={banner}
             headerText={displayName}
             subHeaderText={<Typography component={Markdown} variant="h5" children={tagline} color="primary" />}
-            headerSpacing={'none'}
-            options={{ collapsible: { maxHeight: 240 } }}
+            size="large"
+            collapsible
           >
             <TagsComponent tags={keywords} count={10} />
             <SectionSpacer />
             <SectionHeader text={t('components.contextSegment.vision.title')} />
             <Typography component={Markdown} variant="body1" children={vision} />
-          </DashboardGenericSection>
-          <SectionSpacer />
-          <DashboardGenericSection
+          </DashboardSection>
+          <DashboardSection
             headerText={t('components.contextSegment.background.title')}
-            headerSpacing={'none'}
-            primaryAction={
-              <Box color="grey.main" fontSize={48} display="flex">
-                <MenuBookIcon fontSize="inherit" color="inherit" />
-              </Box>
-            }
-            options={{ collapsible: { maxHeight: 192 } }}
+            primaryAction={<ContextSectionIcon component={MenuBookIcon} />}
+            collapsible
           >
             <Typography component={Markdown} variant="body1" children={background} />
-          </DashboardGenericSection>
-        </Grid>
-        <Grid item xs={12} lg={6} zeroMinWidth>
-          <DashboardGenericSection
+          </DashboardSection>
+        </DashboardColumn>
+        <DashboardColumn zeroMinWidth>
+          <DashboardSection
             headerText={t('components.referenceSegment.title')}
-            headerSpacing={'none'}
-            primaryAction={
-              <Box color="grey.main" fontSize={48} display="flex">
-                <SchoolIcon fontSize="inherit" color="inherit" />
-              </Box>
-            }
-            options={{ collapsible: { maxHeight: 192 } }}
+            primaryAction={<ContextSectionIcon component={SchoolIcon} />}
+            collapsible
           >
             <References references={references} />
-          </DashboardGenericSection>
-          <SectionSpacer />
-          <DashboardGenericSection
+          </DashboardSection>
+          <DashboardSection
             headerText={t('components.contextSegment.impact.title')}
-            headerSpacing={'none'}
-            primaryAction={
-              <Box color="grey.main" fontSize={48} display="flex">
-                <PublicIcon fontSize="inherit" color="inherit" />
-              </Box>
-            }
-            options={{ collapsible: { maxHeight: 192 } }}
+            primaryAction={<ContextSectionIcon component={PublicIcon} />}
+            collapsible
           >
             <Typography component={Markdown} variant="body1" children={impact} />
-          </DashboardGenericSection>
-          <SectionSpacer />
-          <DashboardGenericSection
+          </DashboardSection>
+          <DashboardSection
             headerText={t('components.contextSegment.who.title')}
-            headerSpacing={'none'}
-            primaryAction={
-              <Box color="grey.main" fontSize={48} display="flex">
-                <PeopleAltIcon fontSize="inherit" color="inherit" />
-              </Box>
-            }
-            options={{ collapsible: { maxHeight: 192 } }}
+            primaryAction={<ContextSectionIcon component={PeopleAltIcon} />}
+            collapsible
           >
             <Typography component={Markdown} variant="body1" children={who} />
-          </DashboardGenericSection>
-        </Grid>
+          </DashboardSection>
+        </DashboardColumn>
       </Grid>
     </>
   );

@@ -10,20 +10,19 @@ import {
   aspectValueGetter,
 } from '../../../components/core/card-filter/value-getters/aspect-value-getter';
 import AspectCreationDialog, {
-  AspectCreationOutput,
+  AspectCreationDialogProps,
 } from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { Grid } from '@mui/material';
 import { useUrlParams } from '../../../hooks';
 import { useTranslation } from 'react-i18next';
 import { AspectWithPermissions } from '../../../containers/ContributeTabContainer/ContributeTabContainer';
 
-interface AspectsViewProps {
+export interface AspectsViewProps {
   aspects?: AspectWithPermissions[];
   aspectsLoading?: boolean;
   canReadAspects?: boolean;
   canCreateAspects?: boolean;
-  onCreate: (aspect: AspectCreationOutput) => void;
-  onDelete: (id: string) => void;
+  onCreate: AspectCreationDialogProps['onCreate'];
 }
 
 const EMPTY_ASPECTS = []; // re-rendering prevention
@@ -34,7 +33,6 @@ const AspectsView: FC<AspectsViewProps> = ({
   canReadAspects,
   canCreateAspects,
   onCreate,
-  onDelete,
 }) => {
   const { t } = useTranslation();
 
@@ -44,16 +42,11 @@ const AspectsView: FC<AspectsViewProps> = ({
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
   const handleCreateDialogClosed = () => setAspectDialogOpen(false);
 
-  const handleCreate = (aspect: AspectCreationOutput) => {
-    onCreate(aspect);
-    setAspectDialogOpen(false);
-  };
-
   return (
     <Grid item xs={12}>
       <MembershipBackdrop show={!canReadAspects} blockName={t('common.aspects')}>
         <DashboardGenericSection
-          headerText={`${t('common.aspects')} (${aspects ? aspects.length : 0})`}
+          headerText={`${t('common.aspects')} (${aspects.length})`}
           primaryAction={
             canCreateAspects && (
               <Button variant="contained" onClick={handleCreateDialogOpened}>
@@ -73,30 +66,36 @@ const AspectsView: FC<AspectsViewProps> = ({
             </CardLayoutContainer>
           ) : (
             <CardFilter data={aspects} tagsValueGetter={aspectTagsValueGetter} valueGetter={aspectValueGetter}>
-              {filteredAspects => (
-                <CardLayoutContainer>
-                  {filteredAspects.map((x, i) => (
-                    <CardLayoutItem key={i}>
-                      <AspectCard
-                        aspect={x}
-                        hubNameId={hubNameId}
-                        challengeNameId={challengeNameId}
-                        opportunityNameId={opportunityNameId}
-                        onDelete={x.canDelete ? onDelete : undefined}
-                      />
-                    </CardLayoutItem>
-                  ))}
-                </CardLayoutContainer>
-              )}
+              {filteredAspects =>
+                !filteredAspects.length ? (
+                  t('pages.contribute.no-aspects')
+                ) : (
+                  <CardLayoutContainer>
+                    {filteredAspects.map(x => (
+                      <CardLayoutItem key={x.id}>
+                        <AspectCard
+                          aspect={x}
+                          hubNameId={hubNameId}
+                          challengeNameId={challengeNameId}
+                          opportunityNameId={opportunityNameId}
+                        />
+                      </CardLayoutItem>
+                    ))}
+                  </CardLayoutContainer>
+                )
+              }
             </CardFilter>
           )}
         </DashboardGenericSection>
       </MembershipBackdrop>
       <AspectCreationDialog
         open={aspectDialogOpen}
-        onCancel={handleCreateDialogClosed}
-        onCreate={handleCreate}
+        onClose={handleCreateDialogClosed}
+        onCreate={onCreate}
         aspectNames={aspects.map(x => x.displayName)}
+        hubNameId={hubNameId}
+        challengeNameId={challengeNameId}
+        opportunityNameId={opportunityNameId}
       />
     </Grid>
   );

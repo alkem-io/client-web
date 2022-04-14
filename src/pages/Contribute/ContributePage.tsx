@@ -23,4 +23,5 @@ const ContributePage: FC<PageProps> = ({ paths }) => {
     />
   );
 };
+
 export default ContributePage;

@@ -1,19 +1,18 @@
+import React, { FC } from 'react';
 import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import IconButton from '@mui/material/IconButton';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import clsx from 'clsx';
-import React, { FC } from 'react';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import Typography from '../../../../core/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
+import TagLabel from '../../TagLabel/TagLabel';
 
 type mediaSize = 'small' | 'medium' | 'large';
 
 export interface ContributionCardV2Details {
   headerText?: string;
   labelText?: string;
+  labelAboveTitle?: boolean; // if true, the label will appear above the title - temp solution
   descriptionText?: string;
   tagsFor?: string;
   tags?: string[];
@@ -23,8 +22,6 @@ export interface ContributionCardV2Details {
   domain?: {
     communityID: string;
   };
-  id?: string;
-  onDelete?: (id: string) => void;
 }
 
 export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
@@ -68,17 +65,10 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
       height: ({ mediaSize = 'medium' }) => mediaSizes[mediaSize],
       maxHeight: '100%',
     },
-    entityType: {
-      color: '#FFFFFF',
-    },
-    entityTypeWrapper: {
-      background: theme.palette.neutralMedium.main,
-      boxShadow: '0px 3px 6px #00000029',
-      borderRadius: '15px 0px 0px 15px',
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      marginRight: theme.spacing(-1),
-      flexShrink: 0,
+    textClamp: {
+      width: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
   })
 );
@@ -87,22 +77,16 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
   const {
     headerText = '',
     labelText,
+    labelAboveTitle,
     tags = [],
     mediaUrl,
     mediaSize = 'medium',
     url = '',
     tagsFor,
-    onDelete,
-    id,
   } = details || {};
   const { noMedia } = options || {};
 
   const styles = useStyles({ mediaSize });
-
-  const handleDelete = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    id && onDelete?.(id);
-  };
 
   return (
     <LinkCard to={url} className={styles.card} aria-label="contribution-card">
@@ -113,11 +97,6 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
           ) : (
             <>
               <CardMedia image={mediaUrl} className={styles.cardMedia} sx={{ position: 'relative' }}>
-                {onDelete && id && (
-                  <IconButton aria-label="delete" sx={{ position: 'absolute', right: 0 }} onClick={handleDelete}>
-                    <DeleteOutlinedIcon sx={{ color: 'negative.main' }} />
-                  </IconButton>
-                )}
                 {/* Workaround console error when image is missing. */}
                 <div />
               </CardMedia>
@@ -129,18 +108,13 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
         {loading ? (
           <Skeleton variant="rectangular" animation="wave" />
         ) : (
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography color="primary" weight="boldLight" clamp={1}>
-              {headerText}
-            </Typography>
-            {labelText && (
-              <Box className={clsx(styles.entityTypeWrapper, classes?.label)}>
-                <Typography variant="caption" className={styles.entityType}>
-                  {labelText}
-                </Typography>
-              </Box>
-            )}
-          </Box>
+          <LabelAndTitleComponent
+            headerText={headerText}
+            labelText={labelText}
+            labelAboveTitle={labelAboveTitle}
+            mediaSize={mediaSize}
+            classes={classes}
+          />
         )}
         {children}
         <Box paddingTop={2}>
@@ -155,3 +129,40 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
   );
 };
 export default ContributionCardV2;
+
+interface LabelAndTitleComponentProps {
+  headerText: string;
+  labelText?: string;
+  labelAboveTitle?: boolean;
+  mediaSize: mediaSize;
+  classes?: ContributionCardV2Props['classes'];
+}
+
+const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
+  headerText,
+  labelText,
+  labelAboveTitle,
+  classes,
+  mediaSize,
+}) => {
+  const styles = useStyles({ mediaSize });
+  return labelAboveTitle ? (
+    <Box display="flex" sx={{ flexDirection: 'column' }}>
+      {labelText && (
+        <TagLabel className={classes?.label} sx={{ alignSelf: 'end' }}>
+          {labelText}
+        </TagLabel>
+      )}
+      <Typography color="primary" weight="boldLight" className={styles.textClamp}>
+        {headerText}
+      </Typography>
+    </Box>
+  ) : (
+    <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Typography color="primary" weight="boldLight" className={styles.textClamp}>
+        {headerText}
+      </Typography>
+      {labelText && <TagLabel className={classes?.label}>{labelText}</TagLabel>}
+    </Box>
+  );
+};

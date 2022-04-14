@@ -6,11 +6,11 @@ import {
   CreateAspectOnContextInput,
   Scalars,
 } from '../../models/graphql-schema';
-import { useApolloErrorHandler } from '../../hooks';
+import { useApolloErrorHandler, useHub } from '../../hooks';
 import {
   AspectCardFragmentDoc,
   useChallengeAspectsQuery,
-  useCreateAspectMutation,
+  useCreateAspectFromContributeTabMutation,
   useDeleteAspectMutation,
   useHubAspectsQuery,
   useOpportunityAspectsQuery,
@@ -34,12 +34,13 @@ export interface Provided {
   canReadAspects: boolean;
   canCreateAspects: boolean;
   aspects?: AspectWithPermissions[];
+  aspectTypes?: string[];
   loading: boolean;
   creating: boolean;
   deleting: boolean;
   error?: ApolloError;
-  onCreate(aspect: OnCreateInput);
-  onDelete(ID: string);
+  onCreate: (aspect: OnCreateInput) => Promise<{ nameID: string } | undefined>;
+  onDelete: (ID: string) => void;
 }
 
 export type ContributeContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
@@ -51,6 +52,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
   ...rendered
 }) => {
   const handleError = useApolloErrorHandler();
+  const { template, loading: hubLoading } = useHub();
 
   const {
     data: hubContextData,
@@ -142,7 +144,8 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     opportunityContextLoading ||
     hubAspectLoading ||
     challengeAspectLoading ||
-    opportunityAspectLoading;
+    opportunityAspectLoading ||
+    hubLoading;
   const error =
     hubContextError ??
     challengeContextError ??
@@ -156,7 +159,9 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
 
   const contextId = hubContext?.id ?? challengeContext?.id ?? opportunityContext?.id;
 
-  const [createAspect, { loading: creating }] = useCreateAspectMutation({
+  const aspectTypes = template.aspectTemplates.map(x => x.type);
+
+  const [createAspect, { loading: creating }] = useCreateAspectFromContributeTabMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (!data) {
@@ -188,15 +193,12 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
       });
     },
   });
-  const onCreate = async (aspect: OnCreateInput) => {
-    if (!contextId) {
-      return;
-    }
 
-    createAspect({
+  const onCreate = async (aspect: OnCreateInput) => {
+    const { data } = await createAspect({
       variables: {
         aspectData: {
-          contextID: contextId,
+          contextID: contextId!,
           displayName: aspect.displayName,
           description: aspect.description,
           type: aspect.type,
@@ -229,6 +231,10 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
         },
       },
     });
+
+    const nameID = data?.createAspectOnContext.nameID;
+
+    return nameID ? { nameID } : undefined;
   };
 
   const [deleteAspect, { loading: deleting }] = useDeleteAspectMutation({
@@ -243,6 +249,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
 
   return renderComponentOrChildrenFn(rendered, {
     aspects,
+    aspectTypes,
     loading,
     creating,
     deleting,
@@ -253,4 +260,5 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     onDelete,
   });
 };
+
 export default ContributeTabContainer;
