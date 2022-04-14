@@ -53,7 +53,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
             return;
           }
 
-          await actions.handleDelete(entities.aspect.id);
+          actions.handleDelete(entities.aspect.id);
           navigate(contributeUrl);
         };
 
