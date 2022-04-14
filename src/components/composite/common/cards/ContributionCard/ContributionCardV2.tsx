@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
@@ -8,6 +7,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import Typography from '../../../../core/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
+import TagLabel from '../../TagLabel/TagLabel';
 
 type mediaSize = 'small' | 'medium' | 'large';
 
@@ -166,17 +166,13 @@ const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
   labelText,
   labelAboveTitle,
   classes,
-  mediaSize,
 }) => {
-  const styles = useStyles({ mediaSize });
   return labelAboveTitle ? (
     <Box display="flex" sx={{ flexDirection: 'column' }}>
       {labelText && (
-        <Box className={clsx(styles.entityTypeWrapper, classes?.label)} sx={{ alignSelf: 'end' }}>
-          <Typography variant="caption" className={styles.entityType}>
-            {labelText}
-          </Typography>
-        </Box>
+        <TagLabel className={classes?.label} sx={{ alignSelf: 'end' }}>
+          {labelText}
+        </TagLabel>
       )}
       <Typography color="primary" weight="boldLight" sx={{}}>
         {headerText}
@@ -187,13 +183,7 @@ const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
       <Typography color="primary" weight="boldLight">
         {headerText}
       </Typography>
-      {labelText && (
-        <Box className={clsx(styles.entityTypeWrapper, classes?.label)}>
-          <Typography variant="caption" className={styles.entityType}>
-            {labelText}
-          </Typography>
-        </Box>
-      )}
+      {labelText && <TagLabel className={classes?.label}>{labelText}</TagLabel>}
     </Box>
   );
 };
