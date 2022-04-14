@@ -1112,7 +1112,7 @@ export const ChallengeProfileFragmentDoc = gql`
       name
       tags
     }
-    opportunities {
+    opportunities(limit: 2, shuffle: true) {
       id
       nameID
       displayName
