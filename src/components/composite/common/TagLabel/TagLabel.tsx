@@ -12,6 +12,7 @@ const classes = {
 
 const Root = styled('div')(({ theme }) => ({
   [`& .${classes.entityTypeWrapper}`]: {
+    background: theme.palette.augmentColor({ color: theme.palette.positive }).dark,
     boxShadow: '0px 3px 6px #00000029',
     borderRadius: '15px 0px 0px 15px',
     paddingLeft: theme.spacing(1),
@@ -21,6 +22,7 @@ const Root = styled('div')(({ theme }) => ({
   },
   [`& .${classes.entityType}`]: {
     color: '#FFFFFF',
+    textTransform: 'uppercase',
   },
 }));
 
