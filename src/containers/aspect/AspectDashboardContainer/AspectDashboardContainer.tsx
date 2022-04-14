@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../models/container';
 import { AspectDashboardFragment, AuthorizationPrivilege } from '../../../models/graphql-schema';
@@ -10,7 +10,7 @@ import {
   usePostCommentInAspectMutation,
   useRemoveCommentFromAspectMutation,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
+import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Comment } from '../../../models/discussion/comment';
 import { useAuthorsDetails } from '../../../hooks/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../utils/apollo-cache/removeFromCache';
@@ -18,7 +18,7 @@ import { evictFromCache } from '../../../utils/apollo-cache/removeFromCache';
 export interface AspectDashboardPermissions {
   canReadComments: boolean;
   canPostComments: boolean;
-  canDeleteComments: boolean;
+  canDeleteMessage: (msgId: string) => boolean;
 }
 
 export interface AspectDashboardContainerEntities {
@@ -60,6 +60,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   opportunityNameId = '',
 }) => {
   const handleError = useApolloErrorHandler();
+  const { user: userMetadata, isAuthenticated } = useUserContext();
+  const user = userMetadata?.user;
 
   const isAspectDefined = aspectNameId && hubNameId;
 
@@ -114,10 +116,17 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     }));
 
   const commentsPrivileges = aspect?.comments?.authorization?.myPrivileges ?? [];
+  const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete) ?? false;
+  const canDeleteMessage = useCallback(
+    msgId =>
+      canDeleteComments || (isAuthenticated && (messages.find(x => x.id === msgId)?.author?.id === user?.id ?? false)),
+    [messages, user, isAuthenticated]
+  );
+
   const permissions: AspectDashboardPermissions = {
     canReadComments: commentsPrivileges.includes(AuthorizationPrivilege.Read) ?? false,
     canPostComments: commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) ?? false,
-    canDeleteComments: commentsPrivileges.includes(AuthorizationPrivilege.Delete) ?? false,
+    canDeleteMessage,
   };
 
   const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromAspectMutation({

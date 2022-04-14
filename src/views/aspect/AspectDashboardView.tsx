@@ -45,7 +45,6 @@ export interface AspectDashboardViewEntities {
   commentId?: string;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
-  currentUserId?: string;
 }
 
 export interface AspectDashboardViewActions {
@@ -61,7 +60,7 @@ export interface AspectDashboardViewState {
 export interface AspectDashboardViewOptions {
   canReadComments: boolean;
   canPostComments: boolean;
-  canDeleteComments: boolean;
+  canDeleteMessage: (msgId: string) => boolean;
 }
 
 export interface AspectDashboardViewProps
@@ -77,22 +76,10 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
   const loading = state.loading;
   const styles = useStyles();
 
-  const {
-    banner,
-    description,
-    displayName,
-    type,
-    messages = [],
-    commentId,
-    tags = [],
-    references,
-    currentUserId,
-  } = entities;
-  const { canReadComments, canDeleteComments, canPostComments } = options;
+  const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = entities;
+  const { canReadComments, canDeleteMessage, canPostComments } = options;
   const { handlePostComment, handleDeleteComment } = actions;
 
-  const canDeleteComment = (authorId?: string) =>
-    (currentUserId && authorId && authorId === currentUserId) || canDeleteComments;
   const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
   const onDeleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
 
@@ -103,7 +90,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
           <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}>
             {messages.map((x, i) => (
               <Box key={i}>
-                <DiscussionComment comment={x} canDelete={canDeleteComment(x.author?.id)} onDelete={onDeleteComment} />
+                <DiscussionComment comment={x} canDelete={canDeleteMessage(x.id)} onDelete={onDeleteComment} />
                 {i < messages.length - 1 && <SectionSpacer />}
               </Box>
             ))}
