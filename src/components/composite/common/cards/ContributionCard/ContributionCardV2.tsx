@@ -1,17 +1,18 @@
+import React, { FC } from 'react';
 import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import clsx from 'clsx';
-import React, { FC } from 'react';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import Typography from '../../../../core/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
+import TagLabel from '../../TagLabel/TagLabel';
 
 type mediaSize = 'small' | 'medium' | 'large';
 
 export interface ContributionCardV2Details {
   headerText?: string;
   labelText?: string;
+  labelAboveTitle?: boolean; // if true, the label will appear above the title - temp solution
   descriptionText?: string;
   tagsFor?: string;
   tags?: string[];
@@ -64,23 +65,25 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
       height: ({ mediaSize = 'medium' }) => mediaSizes[mediaSize],
       maxHeight: '100%',
     },
-    entityType: {
-      color: '#FFFFFF',
-    },
-    entityTypeWrapper: {
-      background: theme.palette.neutralMedium.main,
-      boxShadow: '0px 3px 6px #00000029',
-      borderRadius: '15px 0px 0px 15px',
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      marginRight: theme.spacing(-1),
-      flexShrink: 0,
+    textClamp: {
+      width: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
   })
 );
 
 const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = false, classes, options, children }) => {
-  const { headerText = '', labelText, tags = [], mediaUrl, mediaSize = 'medium', url = '', tagsFor } = details || {};
+  const {
+    headerText = '',
+    labelText,
+    labelAboveTitle,
+    tags = [],
+    mediaUrl,
+    mediaSize = 'medium',
+    url = '',
+    tagsFor,
+  } = details || {};
   const { noMedia } = options || {};
 
   const styles = useStyles({ mediaSize });
@@ -105,18 +108,13 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
         {loading ? (
           <Skeleton variant="rectangular" animation="wave" />
         ) : (
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography color="primary" weight="boldLight" clamp={1}>
-              {headerText}
-            </Typography>
-            {labelText && (
-              <Box className={clsx(styles.entityTypeWrapper, classes?.label)}>
-                <Typography variant="caption" className={styles.entityType}>
-                  {labelText}
-                </Typography>
-              </Box>
-            )}
-          </Box>
+          <LabelAndTitleComponent
+            headerText={headerText}
+            labelText={labelText}
+            labelAboveTitle={labelAboveTitle}
+            mediaSize={mediaSize}
+            classes={classes}
+          />
         )}
         {children}
         <Box paddingTop={2}>
@@ -131,3 +129,40 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
   );
 };
 export default ContributionCardV2;
+
+interface LabelAndTitleComponentProps {
+  headerText: string;
+  labelText?: string;
+  labelAboveTitle?: boolean;
+  mediaSize: mediaSize;
+  classes?: ContributionCardV2Props['classes'];
+}
+
+const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
+  headerText,
+  labelText,
+  labelAboveTitle,
+  classes,
+  mediaSize,
+}) => {
+  const styles = useStyles({ mediaSize });
+  return labelAboveTitle ? (
+    <Box display="flex" sx={{ flexDirection: 'column' }}>
+      {labelText && (
+        <TagLabel className={classes?.label} sx={{ alignSelf: 'end' }}>
+          {labelText}
+        </TagLabel>
+      )}
+      <Typography color="primary" weight="boldLight" className={styles.textClamp}>
+        {headerText}
+      </Typography>
+    </Box>
+  ) : (
+    <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Typography color="primary" weight="boldLight" className={styles.textClamp}>
+        {headerText}
+      </Typography>
+      {labelText && <TagLabel className={classes?.label}>{labelText}</TagLabel>}
+    </Box>
+  );
+};
