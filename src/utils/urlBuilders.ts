@@ -71,13 +71,14 @@ export const buildAspectUrl = (
   challengeNameId?: string,
   opportunityNameId?: string
 ) => {
+  const aspectUrl = `/contribute/aspects/${aspectNameId}`;
   if (challengeNameId) {
     if (opportunityNameId) {
-      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}/aspects/${aspectNameId}`;
+      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${aspectUrl}`;
     } else {
-      return `${buildChallengeUrl(hubNameId, challengeNameId)}/aspects/${aspectNameId}`;
+      return `${buildChallengeUrl(hubNameId, challengeNameId)}${aspectUrl}`;
     }
   } else {
-    return `${buildHubUrl(hubNameId)}/aspects/${aspectNameId}`;
+    return `${buildHubUrl(hubNameId)}${aspectUrl}`;
   }
 };

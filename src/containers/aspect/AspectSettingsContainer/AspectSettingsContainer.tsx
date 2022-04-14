@@ -4,6 +4,7 @@ import { ContainerChildProps } from '../../../models/container';
 import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
 import {
   useChallengeAspectSettingsQuery,
+  useDeleteAspectMutation,
   useHubAspectSettingsQuery,
   useOpportunityAspectSettingsQuery,
   useUpdateAspectMutation,
@@ -11,6 +12,7 @@ import {
 import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
+import removeFromCache from '../../../utils/apollo-cache/removeFromCache';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description'> & {
   tags: string[];
@@ -25,11 +27,13 @@ export interface AspectSettingsContainerActions {
   handleUpdate: (aspect: AspectUpdateData) => void;
   handleAddReference: (push: PushFunc) => void;
   handleRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
+  handleDelete: (id: string) => Promise<void>;
 }
 
 export interface AspectSettingsContainerState {
   loading: boolean;
   updating: boolean;
+  deleting: boolean;
   error?: ApolloError;
   updateError?: ApolloError;
 }
@@ -120,6 +124,21 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     });
   };
 
+  const [deleteAspect, { loading: deleting }] = useDeleteAspectMutation({
+    onError: handleError,
+    update: removeFromCache,
+  });
+
+  const handleDelete = async (id: string) => {
+    await deleteAspect({
+      variables: {
+        input: {
+          ID: id,
+        },
+      },
+    });
+  };
+
   const handleAddReference = (push: PushFunc) => {
     setPush(push);
     if (aspect?.id) {
@@ -141,8 +160,8 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     <>
       {children(
         { aspect },
-        { loading, error, updating, updateError },
-        { handleUpdate, handleAddReference, handleRemoveReference }
+        { loading, error, updating, deleting, updateError },
+        { handleUpdate, handleAddReference, handleRemoveReference, handleDelete }
       )}
     </>
   );
