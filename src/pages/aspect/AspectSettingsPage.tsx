@@ -1,5 +1,5 @@
 import React, { FC, useMemo, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
+import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useUpdateNavigation, useUrlParams } from '../../hooks';
 import { PageProps } from '../common';
 import AspectSettingsContainer from '../../containers/aspect/AspectSettingsContainer/AspectSettingsContainer';
@@ -18,6 +18,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
   const { t } = useTranslation();
   const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
   const resolved = useResolvedPath('.');
+  const navigate = useNavigate();
   const currentPaths = useMemo(() => [..._paths, { value: '', name: 'Settings', real: false }], [_paths, resolved]);
   useUpdateNavigation({ currentPaths });
 
@@ -33,6 +34,9 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
       references: aspect?.references,
     };
 
+  const aspectIndex = resolved.pathname.indexOf('/aspects');
+  const contributeUrl = resolved.pathname.substring(0, aspectIndex);
+
   return (
     <AspectSettingsContainer
       hubNameId={hubNameId}
@@ -42,6 +46,30 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
     >
       {(entities, state, actions) => {
         const visuals = (entities.aspect ? [entities.aspect.banner, entities.aspect.bannerNarrow] : []) as Visual[];
+        const btnDisabled = !aspect || !entities.aspect || state.updating || state.deleting;
+
+        const handleDelete = async () => {
+          if (!entities.aspect || !aspect) {
+            return;
+          }
+
+          actions.handleDelete(entities.aspect.id);
+          navigate(contributeUrl);
+        };
+
+        const handleUpdate = () => {
+          if (!entities.aspect || !aspect) {
+            return;
+          }
+
+          actions.handleUpdate({
+            id: entities.aspect.id,
+            displayName: aspect.displayName,
+            description: aspect.description,
+            tags: aspect.tags,
+            references: aspect.references,
+          });
+        };
         return (
           <>
             <AspectForm
@@ -58,25 +86,17 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
               <SectionSpacer />
               <EditVisualsView visuals={visuals} />
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
               <Button
-                aria-label="save-aspect"
-                variant={'contained'}
-                disabled={!aspect || !entities.aspect || state.updating}
-                onClick={() => {
-                  if (!entities.aspect || !aspect) {
-                    return;
-                  }
-
-                  actions.handleUpdate({
-                    id: entities.aspect.id,
-                    displayName: aspect.displayName,
-                    description: aspect.description,
-                    tags: aspect.tags,
-                    references: aspect.references,
-                  });
-                }}
+                aria-label="delete-aspect"
+                variant="outlined"
+                color="error"
+                disabled={btnDisabled}
+                onClick={handleDelete}
               >
+                {t('buttons.delete')}
+              </Button>
+              <Button aria-label="save-aspect" variant="contained" disabled={btnDisabled} onClick={handleUpdate}>
                 {t('buttons.save')}
               </Button>
             </Box>
