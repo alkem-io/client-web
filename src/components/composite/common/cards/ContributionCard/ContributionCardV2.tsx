@@ -69,17 +69,10 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
       height: ({ mediaSize = 'medium' }) => mediaSizes[mediaSize],
       maxHeight: '100%',
     },
-    entityType: {
-      color: '#FFFFFF',
-    },
-    entityTypeWrapper: {
-      background: theme.palette.neutralMedium.main,
-      boxShadow: '0px 3px 6px #00000029',
-      borderRadius: '15px 0px 0px 15px',
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      marginRight: theme.spacing(-1),
-      flexShrink: 0,
+    textClamp: {
+      width: '100%',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
   })
 );
@@ -166,7 +159,9 @@ const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
   labelText,
   labelAboveTitle,
   classes,
+  mediaSize,
 }) => {
+  const styles = useStyles({ mediaSize });
   return labelAboveTitle ? (
     <Box display="flex" sx={{ flexDirection: 'column' }}>
       {labelText && (
@@ -174,13 +169,13 @@ const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
           {labelText}
         </TagLabel>
       )}
-      <Typography color="primary" weight="boldLight" sx={{}}>
+      <Typography color="primary" weight="boldLight" className={styles.textClamp}>
         {headerText}
       </Typography>
     </Box>
   ) : (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <Typography color="primary" weight="boldLight">
+      <Typography color="primary" weight="boldLight" className={styles.textClamp}>
         {headerText}
       </Typography>
       {labelText && <TagLabel className={classes?.label}>{labelText}</TagLabel>}
