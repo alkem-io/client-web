@@ -12,6 +12,7 @@
     "create": "Create",
     "save": "Save",
     "back": "Back",
+    "next": "Next",
     "edit": "Edit",
     "see-more": "See more",
     "see-all": "See all",
@@ -265,13 +266,19 @@
         "name-id-help-text": "Name ID help text",
         "unique-name-validation-text": "${path} is already used in another aspect"
       },
-      "final-step": {
-        "title": "Final check",
+      "create-step": {
+        "title": "Create",
         "type": "Type",
         "name": "Name",
         "description": "Description",
         "links": "Relevant Links",
-        "explanation": "By completing this step the Aspect will be created. The next step is to further edit the Aspect via the settings tab. For example to add references, select images for the banners etc."
+        "explanation": "By completing this step the Aspect will be created and you will have the option to add visuals."
+      },
+      "visuals-step": {
+        "title": "Visuals",
+        "headline": "Congratulations, you have now successfully created an aspect!",
+        "explanation": "To further personalize your aspect, please consider adding visuals such as a Banner to the card.",
+        "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding references and a Banner for the Dashboard card."
       }
     },
     "visual-upload": {

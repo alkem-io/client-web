@@ -2,8 +2,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box, Grid, Paper } from '@mui/material';
-import AspectsView from '../aspect/AspectsView/AspectsView';
-import { AspectCreationOutput } from '../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
+import AspectsView, { AspectsViewProps } from '../aspect/AspectsView/AspectsView';
 import { AspectWithPermissions } from '../../containers/ContributeTabContainer/ContributeTabContainer';
 import CategorySelector, { CategoryConfig } from '../../components/composite/common/CategorySelector/CategorySelector';
 
@@ -14,7 +13,7 @@ export interface ContributeViewProps {
   error?: ApolloError;
   canReadAspects: boolean;
   canCreateAspects: boolean;
-  onCreate: (aspect: AspectCreationOutput) => void;
+  onCreate: AspectsViewProps['onCreate'];
 }
 
 const ContributeView: FC<ContributeViewProps> = ({

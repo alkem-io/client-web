@@ -10,7 +10,7 @@ import { useApolloErrorHandler, useHub } from '../../hooks';
 import {
   AspectCardFragmentDoc,
   useChallengeAspectsQuery,
-  useCreateAspectMutation,
+  useCreateAspectFromContributeTabMutation,
   useDeleteAspectMutation,
   useHubAspectsQuery,
   useOpportunityAspectsQuery,
@@ -39,8 +39,8 @@ export interface Provided {
   creating: boolean;
   deleting: boolean;
   error?: ApolloError;
-  onCreate(aspect: OnCreateInput);
-  onDelete(ID: string);
+  onCreate: (aspect: OnCreateInput) => Promise<{ nameID: string } | undefined>;
+  onDelete: (ID: string) => void;
 }
 
 export type ContributeContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
@@ -161,7 +161,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
 
   const aspectTypes = template.aspectTemplates.map(x => x.type);
 
-  const [createAspect, { loading: creating }] = useCreateAspectMutation({
+  const [createAspect, { loading: creating }] = useCreateAspectFromContributeTabMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (!data) {
@@ -193,15 +193,12 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
       });
     },
   });
-  const onCreate = async (aspect: OnCreateInput) => {
-    if (!contextId) {
-      return;
-    }
 
-    createAspect({
+  const onCreate = async (aspect: OnCreateInput) => {
+    const { data } = await createAspect({
       variables: {
         aspectData: {
-          contextID: contextId,
+          contextID: contextId!,
           displayName: aspect.displayName,
           description: aspect.description,
           type: aspect.type,
@@ -234,6 +231,10 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
         },
       },
     });
+
+    const nameID = data?.createAspectOnContext.nameID;
+
+    return nameID ? { nameID } : undefined;
   };
 
   const [deleteAspect, { loading: deleting }] = useDeleteAspectMutation({
@@ -259,4 +260,5 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     onDelete,
   });
 };
+
 export default ContributeTabContainer;
