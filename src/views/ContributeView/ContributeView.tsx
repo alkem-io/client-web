@@ -14,7 +14,6 @@ export interface ContributeViewProps {
   canReadAspects: boolean;
   canCreateAspects: boolean;
   onCreate: AspectsViewProps['onCreate'];
-  onDelete: (id: string) => void;
 }
 
 const ContributeView: FC<ContributeViewProps> = ({
@@ -24,7 +23,6 @@ const ContributeView: FC<ContributeViewProps> = ({
   canReadAspects,
   canCreateAspects,
   onCreate,
-  onDelete,
 }) => {
   const { t } = useTranslation();
 
@@ -63,7 +61,6 @@ const ContributeView: FC<ContributeViewProps> = ({
             canReadAspects={canReadAspects}
             canCreateAspects={canCreateAspects}
             onCreate={onCreate}
-            onDelete={onDelete}
           />
         </Grid>
       </Grid>

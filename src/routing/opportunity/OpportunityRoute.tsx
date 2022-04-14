@@ -58,7 +58,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
       </Route>
       <Route path={'projects/*'} element={<ProjectRoute paths={currentPaths} />} />
       <Route
-        path={`aspects/:${nameOfUrl.aspectNameId}/*`}
+        path={`contribute/aspects/:${nameOfUrl.aspectNameId}/*`}
         element={
           <AspectProvider>
             <AspectRoute paths={currentPaths} />

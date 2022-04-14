@@ -26,7 +26,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
     displayName,
     isPrivate,
     hubId,
-    permissions: { canReadAspects, communityReadAccess, canReadChallenges },
+    permissions: { communityReadAccess, canReadChallenges },
   } = useHub();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
@@ -69,16 +69,14 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
           </ChallengeProvider>
         }
       />
-      {canReadAspects && (
-        <Route
-          path={`aspects/:${nameOfUrl.aspectNameId}/*`}
-          element={
-            <AspectProvider>
-              <AspectRoute paths={currentPaths} />
-            </AspectProvider>
-          }
-        />
-      )}
+      <Route
+        path={`contribute/aspects/:${nameOfUrl.aspectNameId}/*`}
+        element={
+          <AspectProvider>
+            <AspectRoute paths={currentPaths} />
+          </AspectProvider>
+        }
+      />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

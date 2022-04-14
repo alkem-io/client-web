@@ -43,7 +43,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ paths: _paths }) =>
           options={{
             canReadComments: entities.permissions.canReadComments,
             canPostComments: entities.permissions.canPostComments,
-            canDeleteComments: entities.permissions.canDeleteComments,
+            canDeleteMessage: entities.permissions.canDeleteMessage,
           }}
         />
       )}
