@@ -133,7 +133,7 @@ export const managementData = {
   organizationLvl: [
     {
       name: 'Organization Context',
-      buttons: [{ description: 'Edit', url: 'edit' }],
+      buttons: [{ description: 'Edit', url: 'profile' }],
     },
     {
       name: 'Community',
