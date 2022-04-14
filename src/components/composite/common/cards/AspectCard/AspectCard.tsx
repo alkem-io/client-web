@@ -19,7 +19,7 @@ const PREFIX = 'AspectCard';
 
 const classes = {
   clampContainer: `${PREFIX}-clampContainer`,
-  textClamp: `${PREFIX}-textClamp`,
+  text: `${PREFIX}-text`,
 };
 
 const Root = styled('div')(({ theme }) => ({
@@ -29,13 +29,27 @@ const Root = styled('div')(({ theme }) => ({
       ((theme?.typography?.body1?.lineHeight ?? DEFAULT_LINE_HEIGHT) as number) *
       LINE_CLAMP,
     marginBottom: theme.spacing(1),
-  },
-  [`& .${classes.textClamp}`]: {
+    position: 'relative',
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    display: '-webkit-box',
-    WebkitBoxOrient: 'vertical',
-    WebkitLineClamp: LINE_CLAMP,
+    '&::after': {
+      content: '""',
+      display: 'block',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      pointerEvents: 'none',
+      background: 'linear-gradient(to top, rgba(255,255,255, 1) 0, rgba(255,255,255, 0) 1em)',
+    },
+  },
+  [`& .${classes.text}`]: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(1),
+    '& p': {
+      margin: 0,
+    },
   },
 }));
 
@@ -90,7 +104,7 @@ const AspectCard: FC<AspectCardProps> = ({
       ) : (
         <Root>
           <Box className={classes.clampContainer}>
-            <Typography component={Markdown} className={classes.textClamp}>
+            <Typography component={Markdown} className={classes.text}>
               {description}
             </Typography>
           </Box>
