@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import { ViewProps } from '../../models/view';
@@ -14,27 +13,11 @@ import ContextLayout from '../../components/composite/layout/Context/ContextLayo
 import DiscussionComment from '../../components/composite/common/Discussion/Comment';
 import { Comment } from '../../models/discussion/comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
-import clsx from 'clsx';
 import Markdown from '../../components/core/Markdown';
 import References from '../../components/composite/common/References/References';
+import TagLabel from '../../components/composite/common/TagLabel/TagLabel';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
-
-const useStyles = makeStyles(theme => ({
-  entityType: {
-    color: '#FFFFFF',
-    textTransform: 'uppercase',
-  },
-  entityTypeWrapper: {
-    background: theme.palette.augmentColor({ color: theme.palette.positive }).dark,
-    boxShadow: '0px 3px 6px #00000029',
-    borderRadius: '15px 0px 0px 15px',
-    paddingLeft: theme.spacing(1),
-    paddingRight: theme.spacing(1),
-    marginRight: theme.spacing(-2),
-    flexShrink: 0,
-  },
-}));
 
 export interface AspectDashboardViewEntities {
   banner?: string;
@@ -74,7 +57,6 @@ export interface AspectDashboardViewProps
 const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, options, actions }) => {
   const { t } = useTranslation();
   const loading = state.loading;
-  const styles = useStyles();
 
   const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = entities;
   const { canReadComments, canDeleteMessage, canPostComments } = options;
@@ -120,17 +102,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
         <DashboardGenericSection
           bannerUrl={banner}
           headerText={displayName}
-          primaryAction={
-            <>
-              {type && (
-                <Box className={clsx(styles.entityTypeWrapper)}>
-                  <Typography variant="caption" className={styles.entityType}>
-                    {type}
-                  </Typography>
-                </Box>
-              )}
-            </>
-          }
+          primaryAction={loading ? <Skeleton width={'30%'} /> : <TagLabel>{type}</TagLabel>}
         >
           {loading ? (
             <>
