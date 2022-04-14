@@ -23,7 +23,6 @@ interface AspectsViewProps {
   canReadAspects?: boolean;
   canCreateAspects?: boolean;
   onCreate: (aspect: AspectCreationOutput) => void;
-  onDelete: (id: string) => void;
 }
 
 const EMPTY_ASPECTS = []; // re-rendering prevention
@@ -34,7 +33,6 @@ const AspectsView: FC<AspectsViewProps> = ({
   canReadAspects,
   canCreateAspects,
   onCreate,
-  onDelete,
 }) => {
   const { t } = useTranslation();
 
@@ -85,7 +83,6 @@ const AspectsView: FC<AspectsViewProps> = ({
                           hubNameId={hubNameId}
                           challengeNameId={challengeNameId}
                           opportunityNameId={opportunityNameId}
-                          onDelete={x.canDelete ? onDelete : undefined}
                         />
                       </CardLayoutItem>
                     ))}

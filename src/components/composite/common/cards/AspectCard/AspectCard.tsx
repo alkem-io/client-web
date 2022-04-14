@@ -45,7 +45,6 @@ export interface AspectCardProps {
   challengeNameId?: string;
   opportunityNameId?: string;
   loading?: boolean;
-  onDelete?: (id: string) => void;
 }
 
 const AspectCard: FC<AspectCardProps> = ({
@@ -54,9 +53,8 @@ const AspectCard: FC<AspectCardProps> = ({
   hubNameId,
   challengeNameId,
   opportunityNameId,
-  onDelete,
 }) => {
-  const { id, nameID = '', displayName = '', description = '', type = '', tagset } = (aspect || {}) as AspectCardAspect;
+  const { nameID = '', displayName = '', description = '', type = '', tagset } = (aspect || {}) as AspectCardAspect;
   const bannerNarrow = aspect?.bannerNarrow?.uri;
 
   return (
@@ -67,8 +65,6 @@ const AspectCard: FC<AspectCardProps> = ({
         labelText: type,
         tags: tagset?.tags ?? [],
         url: hubNameId && nameID && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
-        id,
-        onDelete,
       }}
       loading={loading}
     >
