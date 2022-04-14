@@ -80,7 +80,7 @@ fragment PrivilegesOnContext on Context {
   }
 }
 
-mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {
+mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnContextInput!) {
   createAspectOnContext(aspectData: $aspectData) {
     id
     nameID

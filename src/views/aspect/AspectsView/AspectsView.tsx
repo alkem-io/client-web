@@ -10,19 +10,19 @@ import {
   aspectValueGetter,
 } from '../../../components/core/card-filter/value-getters/aspect-value-getter';
 import AspectCreationDialog, {
-  AspectCreationOutput,
+  AspectCreationDialogProps,
 } from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { Grid } from '@mui/material';
 import { useUrlParams } from '../../../hooks';
 import { useTranslation } from 'react-i18next';
 import { AspectWithPermissions } from '../../../containers/ContributeTabContainer/ContributeTabContainer';
 
-interface AspectsViewProps {
+export interface AspectsViewProps {
   aspects?: AspectWithPermissions[];
   aspectsLoading?: boolean;
   canReadAspects?: boolean;
   canCreateAspects?: boolean;
-  onCreate: (aspect: AspectCreationOutput) => void;
+  onCreate: AspectCreationDialogProps['onCreate'];
   onDelete: (id: string) => void;
 }
 
@@ -43,11 +43,6 @@ const AspectsView: FC<AspectsViewProps> = ({
 
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
   const handleCreateDialogClosed = () => setAspectDialogOpen(false);
-
-  const handleCreate = (aspect: AspectCreationOutput) => {
-    onCreate(aspect);
-    setAspectDialogOpen(false);
-  };
 
   return (
     <Grid item xs={12}>
@@ -98,9 +93,12 @@ const AspectsView: FC<AspectsViewProps> = ({
       </MembershipBackdrop>
       <AspectCreationDialog
         open={aspectDialogOpen}
-        onCancel={handleCreateDialogClosed}
-        onCreate={handleCreate}
+        onClose={handleCreateDialogClosed}
+        onCreate={onCreate}
         aspectNames={aspects.map(x => x.displayName)}
+        hubNameId={hubNameId}
+        challengeNameId={challengeNameId}
+        opportunityNameId={opportunityNameId}
       />
     </Grid>
   );

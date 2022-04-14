@@ -774,6 +774,16 @@ export const AllCommunityDetailsFragmentDoc = gql`
     displayName
   }
 `;
+export const AspectVisualsFragmentDoc = gql`
+  fragment AspectVisuals on Aspect {
+    id
+    nameID
+    bannerNarrow {
+      ...VisualFull
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
 export const AspectCardFragmentDoc = gql`
   fragment AspectCard on Aspect {
     id
@@ -9665,6 +9675,210 @@ export type ProfileVerifiedCredentialSubscriptionHookResult = ReturnType<
 >;
 export type ProfileVerifiedCredentialSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ProfileVerifiedCredentialSubscription>;
+export const HubAspectVisualsDocument = gql`
+  query HubAspectVisuals($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      context {
+        id
+        aspects(IDs: [$aspectNameId]) {
+          ...AspectVisuals
+        }
+      }
+    }
+  }
+  ${AspectVisualsFragmentDoc}
+`;
+
+/**
+ * __useHubAspectVisualsQuery__
+ *
+ * To run a query within a React component, call `useHubAspectVisualsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubAspectVisualsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubAspectVisualsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      aspectNameId: // value for 'aspectNameId'
+ *   },
+ * });
+ */
+export function useHubAspectVisualsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubAspectVisualsQuery, SchemaTypes.HubAspectVisualsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubAspectVisualsQuery, SchemaTypes.HubAspectVisualsQueryVariables>(
+    HubAspectVisualsDocument,
+    options
+  );
+}
+export function useHubAspectVisualsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubAspectVisualsQuery,
+    SchemaTypes.HubAspectVisualsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubAspectVisualsQuery, SchemaTypes.HubAspectVisualsQueryVariables>(
+    HubAspectVisualsDocument,
+    options
+  );
+}
+export type HubAspectVisualsQueryHookResult = ReturnType<typeof useHubAspectVisualsQuery>;
+export type HubAspectVisualsLazyQueryHookResult = ReturnType<typeof useHubAspectVisualsLazyQuery>;
+export type HubAspectVisualsQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubAspectVisualsQuery,
+  SchemaTypes.HubAspectVisualsQueryVariables
+>;
+export function refetchHubAspectVisualsQuery(variables: SchemaTypes.HubAspectVisualsQueryVariables) {
+  return { query: HubAspectVisualsDocument, variables: variables };
+}
+export const ChallengeAspectVisualsDocument = gql`
+  query ChallengeAspectVisuals($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      challenge(ID: $challengeNameId) {
+        id
+        context {
+          id
+          aspects(IDs: [$aspectNameId]) {
+            ...AspectVisuals
+          }
+        }
+      }
+    }
+  }
+  ${AspectVisualsFragmentDoc}
+`;
+
+/**
+ * __useChallengeAspectVisualsQuery__
+ *
+ * To run a query within a React component, call `useChallengeAspectVisualsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeAspectVisualsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeAspectVisualsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      challengeNameId: // value for 'challengeNameId'
+ *      aspectNameId: // value for 'aspectNameId'
+ *   },
+ * });
+ */
+export function useChallengeAspectVisualsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeAspectVisualsQuery,
+    SchemaTypes.ChallengeAspectVisualsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeAspectVisualsQuery, SchemaTypes.ChallengeAspectVisualsQueryVariables>(
+    ChallengeAspectVisualsDocument,
+    options
+  );
+}
+export function useChallengeAspectVisualsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeAspectVisualsQuery,
+    SchemaTypes.ChallengeAspectVisualsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeAspectVisualsQuery, SchemaTypes.ChallengeAspectVisualsQueryVariables>(
+    ChallengeAspectVisualsDocument,
+    options
+  );
+}
+export type ChallengeAspectVisualsQueryHookResult = ReturnType<typeof useChallengeAspectVisualsQuery>;
+export type ChallengeAspectVisualsLazyQueryHookResult = ReturnType<typeof useChallengeAspectVisualsLazyQuery>;
+export type ChallengeAspectVisualsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeAspectVisualsQuery,
+  SchemaTypes.ChallengeAspectVisualsQueryVariables
+>;
+export function refetchChallengeAspectVisualsQuery(variables: SchemaTypes.ChallengeAspectVisualsQueryVariables) {
+  return { query: ChallengeAspectVisualsDocument, variables: variables };
+}
+export const OpportunityAspectVisualsDocument = gql`
+  query OpportunityAspectVisuals(
+    $hubNameId: UUID_NAMEID!
+    $opportunityNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+  ) {
+    hub(ID: $hubNameId) {
+      id
+      opportunity(ID: $opportunityNameId) {
+        id
+        context {
+          id
+          aspects(IDs: [$aspectNameId]) {
+            ...AspectVisuals
+          }
+        }
+      }
+    }
+  }
+  ${AspectVisualsFragmentDoc}
+`;
+
+/**
+ * __useOpportunityAspectVisualsQuery__
+ *
+ * To run a query within a React component, call `useOpportunityAspectVisualsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityAspectVisualsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityAspectVisualsQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *      opportunityNameId: // value for 'opportunityNameId'
+ *      aspectNameId: // value for 'aspectNameId'
+ *   },
+ * });
+ */
+export function useOpportunityAspectVisualsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityAspectVisualsQuery,
+    SchemaTypes.OpportunityAspectVisualsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.OpportunityAspectVisualsQuery, SchemaTypes.OpportunityAspectVisualsQueryVariables>(
+    OpportunityAspectVisualsDocument,
+    options
+  );
+}
+export function useOpportunityAspectVisualsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityAspectVisualsQuery,
+    SchemaTypes.OpportunityAspectVisualsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityAspectVisualsQuery,
+    SchemaTypes.OpportunityAspectVisualsQueryVariables
+  >(OpportunityAspectVisualsDocument, options);
+}
+export type OpportunityAspectVisualsQueryHookResult = ReturnType<typeof useOpportunityAspectVisualsQuery>;
+export type OpportunityAspectVisualsLazyQueryHookResult = ReturnType<typeof useOpportunityAspectVisualsLazyQuery>;
+export type OpportunityAspectVisualsQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityAspectVisualsQuery,
+  SchemaTypes.OpportunityAspectVisualsQueryVariables
+>;
+export function refetchOpportunityAspectVisualsQuery(variables: SchemaTypes.OpportunityAspectVisualsQueryVariables) {
+  return { query: OpportunityAspectVisualsDocument, variables: variables };
+}
 export const PrivilegesOnHubContextDocument = gql`
   query PrivilegesOnHubContext($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -10046,6 +10260,72 @@ export type OpportunityAspectsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectsQuery(variables: SchemaTypes.OpportunityAspectsQueryVariables) {
   return { query: OpportunityAspectsDocument, variables: variables };
 }
+export const CreateAspectFromContributeTabDocument = gql`
+  mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnContextInput!) {
+    createAspectOnContext(aspectData: $aspectData) {
+      id
+      nameID
+      displayName
+      description
+      type
+      tagset {
+        id
+        name
+        tags
+      }
+      banner {
+        ...VisualUri
+      }
+      bannerNarrow {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export type CreateAspectFromContributeTabMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateAspectFromContributeTabMutation,
+  SchemaTypes.CreateAspectFromContributeTabMutationVariables
+>;
+
+/**
+ * __useCreateAspectFromContributeTabMutation__
+ *
+ * To run a mutation, you first call `useCreateAspectFromContributeTabMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAspectFromContributeTabMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAspectFromContributeTabMutation, { data, loading, error }] = useCreateAspectFromContributeTabMutation({
+ *   variables: {
+ *      aspectData: // value for 'aspectData'
+ *   },
+ * });
+ */
+export function useCreateAspectFromContributeTabMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateAspectFromContributeTabMutation,
+    SchemaTypes.CreateAspectFromContributeTabMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateAspectFromContributeTabMutation,
+    SchemaTypes.CreateAspectFromContributeTabMutationVariables
+  >(CreateAspectFromContributeTabDocument, options);
+}
+export type CreateAspectFromContributeTabMutationHookResult = ReturnType<
+  typeof useCreateAspectFromContributeTabMutation
+>;
+export type CreateAspectFromContributeTabMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateAspectFromContributeTabMutation>;
+export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateAspectFromContributeTabMutation,
+  SchemaTypes.CreateAspectFromContributeTabMutationVariables
+>;
 export const HubContributionDetailsDocument = gql`
   query hubContributionDetails($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {

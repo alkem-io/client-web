@@ -1,0 +1,49 @@
+query HubAspectVisuals($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    context {
+      id
+      aspects(IDs: [$aspectNameId]) {
+        ...AspectVisuals
+      }
+    }
+  }
+}
+
+query ChallengeAspectVisuals($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      context {
+        id
+        aspects(IDs: [$aspectNameId]) {
+          ...AspectVisuals
+        }
+      }
+    }
+  }
+}
+
+query OpportunityAspectVisuals($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      context {
+        id
+        aspects(IDs: [$aspectNameId]) {
+          ...AspectVisuals
+        }
+      }
+    }
+  }
+}
+
+fragment AspectVisuals on Aspect {
+  id
+  nameID
+  bannerNarrow {
+    ...VisualFull
+  }
+}

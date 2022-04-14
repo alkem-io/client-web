@@ -2516,7 +2516,7 @@ export type UpdateAspectInput = {
 export type UpdateAspectTemplateInput = {
   defaultDescription?: InputMaybe<Scalars['String']>;
   type: Scalars['String'];
-  typeDescription?: InputMaybe<Scalars['String']>;
+  typeDescription: Scalars['String'];
 };
 
 export type UpdateCanvasDirectInput = {
@@ -7255,6 +7255,156 @@ export type ProfileVerifiedCredentialSubscription = {
   profileVerifiedCredential: { __typename?: 'ProfileCredentialVerified'; vc: string };
 };
 
+export type HubAspectVisualsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubAspectVisualsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    context?:
+      | {
+          __typename?: 'Context';
+          id: string;
+          aspects?:
+            | Array<{
+                __typename?: 'Aspect';
+                id: string;
+                nameID: string;
+                bannerNarrow?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeAspectVisualsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeAspectVisualsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            aspects?:
+              | Array<{
+                  __typename?: 'Aspect';
+                  id: string;
+                  nameID: string;
+                  bannerNarrow?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAspectVisualsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityAspectVisualsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            aspects?:
+              | Array<{
+                  __typename?: 'Aspect';
+                  id: string;
+                  nameID: string;
+                  bannerNarrow?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type AspectVisualsFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  nameID: string;
+  bannerNarrow?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }
+    | undefined;
+};
+
 export type PrivilegesOnHubContextQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
 }>;
@@ -7479,6 +7629,25 @@ export type PrivilegesOnContextFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+};
+
+export type CreateAspectFromContributeTabMutationVariables = Exact<{
+  aspectData: CreateAspectOnContextInput;
+}>;
+
+export type CreateAspectFromContributeTabMutation = {
+  __typename?: 'Mutation';
+  createAspectOnContext: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    displayName: string;
+    description: string;
+    type: string;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
 };
 
 export type HubContributionDetailsQueryVariables = Exact<{

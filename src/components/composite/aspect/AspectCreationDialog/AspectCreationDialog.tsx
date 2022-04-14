@@ -2,166 +2,185 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import Stepper from '@mui/material/Stepper';
-import { Box, Button, Step } from '@mui/material';
+import { Box, Button, DialogActions, Step } from '@mui/material';
 import StepLabel from '@mui/material/StepLabel';
-import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
+import { DialogContent, DialogTitle } from '../../../core/dialog';
 import AspectTypeStep from './steps/AspectTypeStep/AspectTypeStep';
 import AspectReviewStep from './steps/AspectReviewStep/AspectReviewStep';
 import { AspectFormOutput } from '../AspectForm/AspectForm';
 import AspectInfoStep from './steps/AspectInfoStep/AspectInfoStep';
 import { CreateAspectOnContextInput } from '../../../../models/graphql-schema';
 import HelpButton from '../../../core/HelpButton';
+import AspectVisualsStep, { AspectVisualsStepProps } from './steps/AspectVisualsStep/AspectVisualsStep';
 
 export type AspectCreationType = Partial<CreateAspectOnContextInput>;
 export type AspectCreationOutput = Omit<CreateAspectOnContextInput, 'contextID'>;
 
-interface IStep {
-  /** identifier  */
-  index: number;
-  /** text label */
-  label: string;
-  /** is it already completed */
-  isCompleted: boolean;
-  /** is ir valid to complete */
-  isInvalid?: boolean;
-  /** is this the first step */
-  isFirst?: boolean;
-  /** is this the last step */
-  isFinal?: boolean;
+enum DialogStep {
+  Type,
+  Details,
+  Create,
+  Visuals,
 }
 
-export interface AspectCreationDialogProps {
+interface StepDefinition {
+  label: string;
+  isInvalid?: () => boolean;
+}
+
+export interface AspectCreationDialogProps extends Omit<AspectVisualsStepProps, 'aspectNameId'> {
   open: boolean;
   aspectNames: string[];
-  onCancel: () => void;
-  onCreate: (aspect: AspectCreationOutput) => void;
+  onClose: () => void;
+  onCreate: (aspect: AspectCreationOutput) => Promise<{ nameID: string } | undefined>;
 }
 
-const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, aspectNames, onCancel, onCreate }) => {
+const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
+  open,
+  aspectNames,
+  onClose,
+  onCreate,
+  ...visualsStepProps
+}) => {
   const { t } = useTranslation();
 
-  const [completedSteps, setCompletedStep] = useState(new Set<number>());
+  const [activeStepIndex, setActiveStepIndex] = useState(DialogStep.Type);
   const [aspect, setAspect] = useState<AspectCreationType>({});
   const [isFormValid, setIsFormValid] = useState(false);
+  const [aspectNameId, setAspectNameId] = useState<string>();
 
-  const getNextStep = (step: IStep) => {
-    if (getStep(step).isFinal) {
-      throw new Error('Unable to find next step for the Final step');
+  const getNextStepIndex = (index: number) => {
+    if (index >= steps.length - 1) {
+      throw new Error('Last step cannot have a next step.');
     }
 
-    const newStep = steps.find(x => x.index === step.index + 1);
-
-    if (!newStep) {
-      throw new Error(`Unable to find next step for stepId ${step.index}`);
-    }
-
-    return newStep;
+    return index + 1;
   };
-  const getPrevStep = (step: IStep) => {
-    if (getStep(step).isFirst) {
-      throw new Error('Unable to find prev step for the First step');
+
+  const getPrevStepIndex = (index: number) => {
+    if (index <= 0) {
+      throw new Error('First step cannot have a previous step.');
     }
 
-    const newStep = steps.find(x => x.index === step.index - 1);
-
-    if (!newStep) {
-      throw new Error(`Unable to find prev step for stepId ${step.index}`);
-    }
-
-    return newStep;
+    return index - 1;
   };
-  const getStep = (step: IStep) => {
-    const stepRef = steps.find(x => x.index === step.index);
 
-    if (!stepRef) {
-      throw new Error(`Unable to find step for stepId ${step.index}`);
+  const getStep = (index: number) => {
+    const step = steps[index];
+
+    if (!step) {
+      throw new Error(`Unable to find step number ${index}.`);
     }
 
-    return stepRef;
+    return step;
   };
 
   const handleNext = () => {
-    setCompletedStep(completedSteps.add(activeStep.index));
-    setActiveStep(prevActiveStep => getNextStep(prevActiveStep));
+    setActiveStepIndex(prevActiveStepIndex => getNextStepIndex(prevActiveStepIndex));
   };
 
   const handleBack = () => {
-    const newActiveStep = getPrevStep(activeStep);
-    setActiveStep(newActiveStep);
-    // state is not updated
-    completedSteps.delete(newActiveStep.index);
-    setCompletedStep(completedSteps);
+    const newActiveStep = getPrevStepIndex(activeStepIndex);
+    setActiveStepIndex(newActiveStep);
   };
 
-  const handleCancel = () => {
+  const handleClose = () => {
     resetState();
-    onCancel();
+    onClose();
   };
 
   const resetState = () => {
-    setActiveStep(steps[0]);
+    setActiveStepIndex(DialogStep.Type);
     setAspect({});
-    setCompletedStep(new Set<number>());
+    setAspectNameId(undefined);
   };
 
-  const handleFinish = () => {
-    onCreate({
+  const handleFinish = async () => {
+    handleNext();
+    const created = await onCreate({
       displayName: aspect?.displayName ?? '',
       description: aspect?.description ?? '',
       type: aspect?.type ?? '',
       tags: aspect?.tags ?? [],
     });
-    resetState();
+    setAspectNameId(created?.nameID);
   };
+
   const handleTypeChange = (type: string) => setAspect({ ...aspect, type });
   const handleFormChange = (newAspect: AspectFormOutput) => setAspect({ ...aspect, ...newAspect });
   const handleFormStatusChange = (isValid: boolean) => setIsFormValid(isValid);
 
-  const _isStepCompleted = (step: number) => completedSteps.has(step);
-
-  const steps: IStep[] = [
+  const steps: StepDefinition[] = [
     {
-      index: 0,
       label: t('components.aspect-creation.type-step.title'),
-      isCompleted: _isStepCompleted(0),
-      isInvalid: !aspect.type,
-      isFirst: true,
+      isInvalid: () => !aspect.type,
     },
     {
-      index: 1,
       label: t('components.aspect-creation.info-step.title'),
-      isCompleted: _isStepCompleted(1),
-      isInvalid: !isFormValid,
+      isInvalid: () => !isFormValid,
     },
     {
-      index: 2,
-      label: t('components.aspect-creation.final-step.title'),
-      isCompleted: _isStepCompleted(2),
-      isFinal: true,
+      label: t('components.aspect-creation.create-step.title'),
+    },
+    {
+      label: t('components.aspect-creation.visuals-step.title'),
     },
   ];
-  // todo: how to move this at the beginning
-  const [activeStep, setActiveStep] = useState<IStep>(steps[0]);
+
+  const isStepCompleted = (index: number) => index < activeStepIndex;
+  const isStepLast = (index: number) => index === steps.length - 1;
+
+  const renderButtons = () => {
+    switch (activeStepIndex) {
+      case DialogStep.Visuals: {
+        return <Button onClick={handleClose}>{t('buttons.close')}</Button>;
+      }
+      case DialogStep.Create: {
+        return (
+          <>
+            <Button color="inherit" onClick={handleBack}>
+              {t('buttons.back')}
+            </Button>
+            <Box sx={{ flex: '1 1 auto' }} />
+            <Button onClick={handleFinish}>{t('buttons.create')}</Button>
+          </>
+        );
+      }
+      default: {
+        return (
+          <>
+            <Button color="inherit" disabled={activeStepIndex === 0} onClick={handleBack}>
+              {t('buttons.back')}
+            </Button>
+            <Box sx={{ flex: '1 1 auto' }} />
+            <Button disabled={getStep(activeStepIndex).isInvalid?.()} onClick={handleNext}>
+              {t('buttons.next')}
+            </Button>
+          </>
+        );
+      }
+    }
+  };
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="aspect-creation-title">
-      <DialogTitle id="aspect-creation-title" onClose={handleCancel}>
+      <DialogTitle id="aspect-creation-title" onClose={handleClose}>
         <Box display="flex" alignItems="center">
           {t('components.aspect-creation.title')}
           <HelpButton helpText={t('components.aspect-creation.type-step.type-help-text')} />
         </Box>
       </DialogTitle>
       <DialogContent dividers>
-        <Stepper activeStep={activeStep.index}>
+        <Stepper activeStep={activeStepIndex}>
           {steps.map((x, i) => (
-            <Step key={i} last={getStep(x).isFinal} completed={getStep(x).isCompleted}>
+            <Step key={i} last={isStepLast(i)} completed={isStepCompleted(i)}>
               <StepLabel>{x.label}</StepLabel>
             </Step>
           ))}
         </Stepper>
         <Box marginBottom={2} marginTop={4}>
-          {activeStep.index === 0 && <AspectTypeStep type={aspect?.type} onChange={handleTypeChange} />}
-          {activeStep.index === 1 && (
+          {activeStepIndex === DialogStep.Type && <AspectTypeStep type={aspect?.type} onChange={handleTypeChange} />}
+          {activeStepIndex === DialogStep.Details && (
             <AspectInfoStep
               aspect={aspect}
               aspectNames={aspectNames}
@@ -169,23 +188,15 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({ open, aspectNames
               onStatusChanged={handleFormStatusChange}
             />
           )}
-          {activeStep.index === 2 && <AspectReviewStep aspect={aspect} />}
+          {activeStepIndex === DialogStep.Create && <AspectReviewStep aspect={aspect} />}
+          {activeStepIndex === DialogStep.Visuals && (
+            <AspectVisualsStep aspectNameId={aspectNameId} {...visualsStepProps} />
+          )}
         </Box>
       </DialogContent>
-      <DialogActions>
-        <Button color="inherit" disabled={getStep(activeStep).isFirst} onClick={handleBack}>
-          Back
-        </Button>
-        <Box sx={{ flex: '1 1 auto' }} />
-        {getStep(activeStep).isFinal ? (
-          <Button onClick={handleFinish}>Create</Button>
-        ) : (
-          <Button disabled={getStep(activeStep).isInvalid} onClick={handleNext}>
-            Next
-          </Button>
-        )}
-      </DialogActions>
+      <DialogActions>{renderButtons()}</DialogActions>
     </Dialog>
   );
 };
+
 export default AspectCreationDialog;
