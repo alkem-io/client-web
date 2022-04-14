@@ -10,7 +10,7 @@ query HubAspects($hubNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     context {
-      ...ApsectsOnContext
+      ...AspectsOnContext
     }
   }
 }
@@ -32,7 +32,7 @@ query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
     challenge(ID: $challengeNameId) {
       id
       context {
-        ...ApsectsOnContext
+        ...AspectsOnContext
       }
     }
   }
@@ -55,13 +55,13 @@ query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
     opportunity(ID: $opportunityNameId) {
       id
       context {
-        ...ApsectsOnContext
+        ...AspectsOnContext
       }
     }
   }
 }
 
-fragment ApsectsOnContext on Context {
+fragment AspectsOnContext on Context {
   id
   aspects {
     ...AspectCard
