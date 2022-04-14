@@ -31,7 +31,7 @@ export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
             />
           }
         ></Route>
-        <Route path={'edit'} element={<OrganizationPage mode={EditMode.edit} paths={currentPaths} />}></Route>
+        <Route path={'profile'} element={<OrganizationPage mode={EditMode.edit} paths={currentPaths} />}></Route>
         <Route path={'community/*'} element={<OrganizationCommunityRoute paths={currentPaths} />}></Route>
         <Route path={'authorization/*'} element={<OrganizationAuthorizationRoute paths={currentPaths} />}></Route>
         <Route path="*" element={<Error404 />}></Route>
