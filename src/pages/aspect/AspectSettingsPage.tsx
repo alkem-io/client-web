@@ -86,7 +86,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
               <SectionSpacer />
               <EditVisualsView visuals={visuals} />
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: t => t.spacing(1) }}>
+            <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
               <Button
                 aria-label="delete-aspect"
                 variant="outlined"
