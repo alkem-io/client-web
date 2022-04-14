@@ -12,6 +12,8 @@ import Markdown from '../../../../core/Markdown';
 const DEFAULT_LINE_HEIGHT = 1.5;
 const DEFAULT_FONT_SIZE = '1rem';
 const LINE_CLAMP = 4;
+const HEADER_TEXT_MAX_LENGTH = 20;
+const HEADER_TEXT_POSTFIX = '...';
 
 const PREFIX = 'AspectCard';
 
@@ -59,12 +61,18 @@ const AspectCard: FC<AspectCardProps> = ({
   const { id, nameID = '', displayName = '', description = '', type = '', tagset } = (aspect || {}) as AspectType;
   const bannerNarrow = aspect?.bannerNarrow?.uri;
 
+  const headerText =
+    displayName.length > HEADER_TEXT_MAX_LENGTH
+      ? displayName.substring(0, HEADER_TEXT_MAX_LENGTH - HEADER_TEXT_POSTFIX.length).concat(HEADER_TEXT_POSTFIX)
+      : displayName;
+
   return (
     <EntityContributionCard
       details={{
-        headerText: displayName,
+        headerText,
         mediaUrl: bannerNarrow,
         labelText: type,
+        labelAboveTitle: true,
         tags: tagset?.tags ?? [],
         url: hubNameId && nameID && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
         id,
