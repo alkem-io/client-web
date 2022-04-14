@@ -1,19 +1,20 @@
+import React, { FC } from 'react';
 import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import IconButton from '@mui/material/IconButton';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import clsx from 'clsx';
-import React, { FC } from 'react';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
 import Typography from '../../../../core/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
+import TagLabel from '../../TagLabel/TagLabel';
 
 type mediaSize = 'small' | 'medium' | 'large';
 
 export interface ContributionCardV2Details {
   headerText?: string;
   labelText?: string;
+  labelAboveTitle?: boolean; // if true, the label will appear above the title - temp solution
   descriptionText?: string;
   tagsFor?: string;
   tags?: string[];
@@ -87,6 +88,7 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
   const {
     headerText = '',
     labelText,
+    labelAboveTitle,
     tags = [],
     mediaUrl,
     mediaSize = 'medium',
@@ -129,18 +131,13 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
         {loading ? (
           <Skeleton variant="rectangular" animation="wave" />
         ) : (
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            <Typography color="primary" weight="boldLight" clamp={1}>
-              {headerText}
-            </Typography>
-            {labelText && (
-              <Box className={clsx(styles.entityTypeWrapper, classes?.label)}>
-                <Typography variant="caption" className={styles.entityType}>
-                  {labelText}
-                </Typography>
-              </Box>
-            )}
-          </Box>
+          <LabelAndTitleComponent
+            headerText={headerText}
+            labelText={labelText}
+            labelAboveTitle={labelAboveTitle}
+            mediaSize={mediaSize}
+            classes={classes}
+          />
         )}
         {children}
         <Box paddingTop={2}>
@@ -155,3 +152,38 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
   );
 };
 export default ContributionCardV2;
+
+interface LabelAndTitleComponentProps {
+  headerText: string;
+  labelText?: string;
+  labelAboveTitle?: boolean;
+  mediaSize: mediaSize;
+  classes?: ContributionCardV2Props['classes'];
+}
+
+const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
+  headerText,
+  labelText,
+  labelAboveTitle,
+  classes,
+}) => {
+  return labelAboveTitle ? (
+    <Box display="flex" sx={{ flexDirection: 'column' }}>
+      {labelText && (
+        <TagLabel className={classes?.label} sx={{ alignSelf: 'end' }}>
+          {labelText}
+        </TagLabel>
+      )}
+      <Typography color="primary" weight="boldLight" sx={{}}>
+        {headerText}
+      </Typography>
+    </Box>
+  ) : (
+    <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Typography color="primary" weight="boldLight">
+        {headerText}
+      </Typography>
+      {labelText && <TagLabel className={classes?.label}>{labelText}</TagLabel>}
+    </Box>
+  );
+};
