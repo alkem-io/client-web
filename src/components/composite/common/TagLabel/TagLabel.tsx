@@ -21,7 +21,7 @@ const Root = styled('div')(({ theme }) => ({
     flexShrink: 0,
   },
   [`& .${classes.entityType}`]: {
-    color: '#FFFFFF',
+    color: theme.palette.neutralLight.main,
     textTransform: 'uppercase',
   },
 }));
