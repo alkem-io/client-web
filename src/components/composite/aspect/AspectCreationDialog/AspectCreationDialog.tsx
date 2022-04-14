@@ -94,7 +94,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
     setAspectNameId(undefined);
   };
 
-  const handleFinish = async () => {
+  const handleCreate = async () => {
     handleNext();
     const created = await onCreate({
       displayName: aspect?.displayName ?? '',
@@ -141,7 +141,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
               {t('buttons.back')}
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleFinish}>{t('buttons.create')}</Button>
+            <Button onClick={handleCreate}>{t('buttons.create')}</Button>
           </>
         );
       }
