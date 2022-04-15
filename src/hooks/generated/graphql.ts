@@ -14548,6 +14548,49 @@ export type UserCardsContainerQueryResult = Apollo.QueryResult<
 export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsContainerQueryVariables) {
   return { query: UserCardsContainerDocument, variables: variables };
 }
+export const UserListDocument = gql`
+  query userList {
+    users {
+      id
+      displayName
+      email
+    }
+  }
+`;
+
+/**
+ * __useUserListQuery__
+ *
+ * To run a query within a React component, call `useUserListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserListQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
+}
+export function useUserListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
+}
+export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
+export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
+export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
+export function refetchUserListQuery(variables?: SchemaTypes.UserListQueryVariables) {
+  return { query: UserListDocument, variables: variables };
+}
 export const OpportunityProviderDocument = gql`
   query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
