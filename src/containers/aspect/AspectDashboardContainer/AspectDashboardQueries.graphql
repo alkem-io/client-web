@@ -47,6 +47,8 @@ fragment AspectDashboard on Aspect {
   type
   displayName
   description
+  createdBy
+  createdDate
   banner {
     ...VisualUri
   }
@@ -78,4 +80,18 @@ fragment AspectMessage on Message {
   message
   sender
   timestamp
+}
+
+query AspectCreator($userId: UUID_NAMEID_EMAIL!) {
+  user(ID: $userId) {
+    id
+    displayName
+    profile {
+      id
+      avatar {
+        id
+        uri
+      }
+    }
+  }
 }
