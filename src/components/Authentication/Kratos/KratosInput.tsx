@@ -40,7 +40,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
       ...InputProps,
       endAdornment: (
         <InputAdornment position="end">
-          <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')} size="small">
+          <IconButton onClick={() => setInputType(isInputTextObscured ? 'text' : 'password')} size="small">
             {isInputTextObscured ? <VisibilityIcon /> : <VisibilityOffIcon />}
           </IconButton>
         </InputAdornment>
