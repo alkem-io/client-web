@@ -19,7 +19,8 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ paths: _paths }) =>
       aspectNameId={aspectNameId}
       challengeNameId={challengeNameId}
       opportunityNameId={opportunityNameId}
-      component={({ aspect, messages, commentId, ...rest }) => (
+    >
+      {({ aspect, messages, commentId, ...rest }) => (
         <AspectDashboardView
           banner={aspect?.banner?.uri}
           displayName={aspect?.displayName}
@@ -32,7 +33,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ paths: _paths }) =>
           {...rest}
         />
       )}
-    />
+    </AspectDashboardContainer>
   );
 };
 export default AspectDashboardPage;

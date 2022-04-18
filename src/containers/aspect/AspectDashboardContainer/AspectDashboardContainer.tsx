@@ -103,7 +103,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const creator = creatorData?.user;
   const creatorAvatar = creator?.profile?.avatar?.uri;
   const creatorName = creator?.displayName;
-  const createdDate = aspect && new Date(aspect.createdDate);
+  const createdDate = aspect?.createdDate;
 
   const commentId = aspect?.comments?.id;
   const _messages = aspect?.comments?.messages ?? [];
@@ -128,8 +128,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     [messages, user, isAuthenticated]
   );
 
-  const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read) ?? false;
-  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) ?? false;
+  const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
+  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromAspectMutation({
     onError: handleError,
