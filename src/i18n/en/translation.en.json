@@ -619,6 +619,13 @@
             "subtitle": "This section allows you to modify the challenge membership preferences"
           }
         }
+      },
+      "hub": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.hub) authorization preferences"
+          }
+        }
       }
     },
     "feedback": {
