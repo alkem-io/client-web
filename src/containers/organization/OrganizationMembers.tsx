@@ -216,7 +216,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     loading,
     onLoadMore,
     isLastAvailableUserPage,
-  } = useAvailableMembers(entities.credential, entities.organizationId, undefined, entities.parentMembers, 3);
+  } = useAvailableMembers(entities.credential, entities.organizationId, undefined, entities.parentMembers);
 
   const handleLoadMore = onLoadMore;
 

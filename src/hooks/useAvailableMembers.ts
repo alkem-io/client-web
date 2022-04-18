@@ -1,10 +1,6 @@
-import { useCallback, useMemo } from 'react';
-import { AuthorizationCredential, User, UserDisplayNameFragment } from '../models/graphql-schema';
-import {
-  useCommunityMembersQuery,
-  useUsersDisplayNameQuery,
-  useUsersWithCredentialsSimpleListQuery,
-} from './generated/graphql';
+import { useMemo } from 'react';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../models/graphql-schema';
+import { useCommunityMembersQuery, useUsersQuery, useUsersWithCredentialsSimpleListQuery } from './generated/graphql';
 import { Member } from '../models/User';
 import { useHub } from './useHub';
 
@@ -16,6 +12,8 @@ export interface AvailableMembersResults {
   loading: boolean;
   error: boolean;
 }
+
+const noop = () => {};
 
 /***
  * Hook to fetch available users in a curtain context, defined by the parent members (if applicable),
@@ -31,25 +29,19 @@ export const useAvailableMembers = (
   credential: AuthorizationCredential,
   resourceId?: string,
   parentCommunityId?: string,
-  parentMembers?: Member[], // Just because the organizations doesn't have community.
-  limitFirstUserFetch = 10
+  parentMembers?: Member[] // Just because the organizations doesn't have community.
 ): AvailableMembersResults => {
   const { hubId, loading: loadingHub } = useHub();
   const {
-    data: _allUsers,
+    data: usersQueryData,
     loading: loadingUsers,
     error: userError,
-    fetchMore,
-  } = useUsersDisplayNameQuery({
-    variables: { first: limitFirstUserFetch },
+  } = useUsersQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
     skip: Boolean(parentCommunityId || parentMembers),
   });
-  const allUsers = _allUsers?.usersPaginated?.edges?.map(x => x.node) as Pick<User, 'id' | 'displayName'>[];
-  const usersEndCursor = _allUsers?.usersPaginated?.pageInfo?.endCursor;
-  const isUsersLastPage = !Boolean(_allUsers?.usersPaginated?.pageInfo?.hasNextPage);
 
   const {
     data: _current,
@@ -86,7 +78,7 @@ export const useAvailableMembers = (
   const hasError = !!(membersError || userError || parentCommunityMembersError);
   const entityMembers = (parentMembers ||
     _parentCommunityMembers?.hub.community?.members ||
-    allUsers ||
+    usersQueryData?.users ||
     []) as UserDisplayNameFragment[];
 
   const availableMembers = useMemo<UserDisplayNameFragment[]>(
@@ -94,24 +86,13 @@ export const useAvailableMembers = (
     [entityMembers, current]
   );
 
-  const onLoadMore = useCallback(
-    (amount = 1) => {
-      fetchMore({
-        variables: {
-          first: amount,
-          after: usersEndCursor,
-        },
-      });
-    },
-    [fetchMore, usersEndCursor]
-  );
-
   return {
     available: availableMembers,
     current: current,
     error: hasError,
     loading: isLoading,
-    onLoadMore,
-    isLastAvailableUserPage: isUsersLastPage,
+    // the rest is to keep contract intact until the pagination is re-introduced
+    onLoadMore: noop,
+    isLastAvailableUserPage: true,
   };
 };

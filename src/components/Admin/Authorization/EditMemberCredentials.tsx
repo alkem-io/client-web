@@ -29,9 +29,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   const { available, current, loading, onLoadMore, isLastAvailableUserPage } = useAvailableMembers(
     credential,
     resourceId,
-    parentCommunityId,
-    undefined,
-    3
+    parentCommunityId
   );
 
   return (
