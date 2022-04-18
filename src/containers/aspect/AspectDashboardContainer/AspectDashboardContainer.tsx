@@ -35,7 +35,7 @@ interface Provided {
   commentId?: string;
   creatorAvatar?: string;
   creatorName?: string;
-  createdDate?: Date;
+  createdDate?: string;
   handlePostComment: (commentId: string, message: string) => void;
   handleDeleteComment: (commentId: string, messageId: string) => void;
   loading: boolean;
@@ -103,7 +103,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const creator = creatorData?.user;
   const creatorAvatar = creator?.profile?.avatar?.uri;
   const creatorName = creator?.displayName;
-  const createdDate = aspect?.createdDate;
+  const createdDate = aspect?.createdDate.toString();
 
   const commentId = aspect?.comments?.id;
   const _messages = aspect?.comments?.messages ?? [];

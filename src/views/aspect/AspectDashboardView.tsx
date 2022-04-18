@@ -32,7 +32,7 @@ export interface AspectDashboardViewProps {
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
   creatorAvatar?: string;
   creatorName?: string;
-  createdDate?: Date;
+  createdDate?: string;
   handlePostComment: (commentId: string, message: string) => void;
   handleDeleteComment: (commentId: string, messageId: string) => void;
   loading: boolean;
@@ -131,12 +131,12 @@ export default AspectDashboardView;
 interface AuthorComponentProps {
   avatarSrc: string | undefined;
   name: string | undefined;
-  createdDate: Date | undefined;
+  createdDate: string | undefined;
   loading?: boolean;
 }
 
 const AuthorComponent: FC<AuthorComponentProps> = ({ avatarSrc, name, createdDate, loading }) => {
-  const localeCreatedDate = createdDate?.toLocaleDateString();
+  const localeCreatedDate = createdDate && new Date(createdDate)?.toLocaleDateString();
   return (
     <Box
       sx={{
@@ -158,7 +158,9 @@ const AuthorComponent: FC<AuthorComponentProps> = ({ avatarSrc, name, createdDat
       ) : (
         <Avatar src={avatarSrc} />
       )}
-      <Typography noWrap>{loading ? <Skeleton width="100%" /> : name}</Typography>
+      <Typography noWrap sx={{ maxWidth: '100%' }}>
+        {loading ? <Skeleton width="100%" /> : name}
+      </Typography>
       <Typography noWrap>{loading ? <Skeleton width="100%" /> : localeCreatedDate}</Typography>
     </Box>
   );
