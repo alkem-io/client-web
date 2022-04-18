@@ -10847,7 +10847,7 @@ export type AvailableUsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type AvailableUsersQuery = {
   __typename?: 'Query';
-  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
 };
 
 export type ContributingUsersQueryVariables = Exact<{

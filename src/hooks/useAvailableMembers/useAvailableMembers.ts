@@ -86,7 +86,7 @@ export const useAvailableMembers = (
     []) as UserDisplayNameFragment[];
 
   const availableMembers = useMemo<UserDisplayNameFragment[]>(
-    () => entityMembers.filter(p => current.findIndex(m => m.id === p.id) < 0),
+    () => entityMembers.filter(member => !current.some(m => m.id === member.id)),
     [entityMembers, current]
   );
 

@@ -2,6 +2,5 @@ query availableUsers {
   users {
     id
     displayName
-    email
   }
 }

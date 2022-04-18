@@ -14905,7 +14905,6 @@ export const AvailableUsersDocument = gql`
     users {
       id
       displayName
-      email
     }
   }
 `;
