@@ -1,8 +1,12 @@
 import { useMemo } from 'react';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../models/graphql-schema';
-import { useCommunityMembersQuery, useUsersQuery, useUsersWithCredentialsSimpleListQuery } from './generated/graphql';
-import { Member } from '../models/User';
-import { useHub } from './useHub';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../models/graphql-schema';
+import {
+  useAvailableUsersQuery,
+  useCommunityMembersQuery,
+  useUsersWithCredentialsSimpleListQuery,
+} from '../generated/graphql';
+import { Member } from '../../models/User';
+import { useHub } from '../useHub';
 
 export interface AvailableMembersResults {
   available: UserDisplayNameFragment[];
@@ -36,7 +40,7 @@ export const useAvailableMembers = (
     data: usersQueryData,
     loading: loadingUsers,
     error: userError,
-  } = useUsersQuery({
+  } = useAvailableUsersQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions

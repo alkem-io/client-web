@@ -1,0 +1,17 @@
+query contributingUsers($limit: Float, $shuffle: Boolean) {
+  users(limit: $limit, shuffle: $shuffle) {
+    id
+    displayName
+    nameID
+    city
+    country
+    profile {
+      avatar {
+        uri
+      }
+      tagsets {
+        tags
+      }
+    }
+  }
+}

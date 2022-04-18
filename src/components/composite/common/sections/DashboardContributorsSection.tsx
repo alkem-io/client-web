@@ -9,6 +9,7 @@ import ContributorCard, {
   ContributorCardSkeleton,
 } from '../cards/ContributorCard/ContributorCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
+import { WithId } from '../../../../types/WithId';
 
 const MAX_USERS_TO_SHOWN = 12;
 const MAX_ORGANIZATIONS_TO_SHOWN = 12;
@@ -18,10 +19,10 @@ export interface DashboardContributorsSectionSectionProps extends DashboardGener
   organizationTitle: string;
   entities: {
     usersCount: number;
-    users: ContributorCardProps[];
+    users: WithId<ContributorCardProps>[];
     user?: UserMetadata;
     organizationsCount: number;
-    organizations: ContributorCardProps[];
+    organizations: WithId<ContributorCardProps>[];
   };
   loading: {
     users?: boolean;
@@ -56,9 +57,9 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
                   <ContributorCardSkeleton />
                 </Grid>
               ))}
-            {users.map((user, i) => {
+            {users.map(user => {
               return (
-                <Grid item flexBasis={'16.6%'} key={i}>
+                <Grid item flexBasis={'16.6%'} key={user.id}>
                   <ContributorCard {...user} />
                 </Grid>
               );
@@ -87,9 +88,9 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
                   <ContributorCardSkeleton />
                 </Grid>
               ))}
-            {organizations.map((organization, i) => {
+            {organizations.map(organization => {
               return (
-                <Grid item flexBasis={'16.6%'} key={i}>
+                <Grid item flexBasis={'16.6%'} key={organization.id}>
                   <ContributorCard {...organization} />
                 </Grid>
               );

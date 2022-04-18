@@ -7134,62 +7134,6 @@ export type UserProfileQuery = {
   authorization: { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined };
 };
 
-export type UsersQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Float']>;
-  shuffle?: InputMaybe<Scalars['Boolean']>;
-}>;
-
-export type UsersQuery = {
-  __typename?: 'Query';
-  users: Array<{
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    displayName: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    gender: string;
-    country: string;
-    city: string;
-    phone: string;
-    accountUpn: string;
-    agent?:
-      | {
-          __typename?: 'Agent';
-          credentials?:
-            | Array<{ __typename?: 'Credential'; type: AuthorizationCredential; resourceID: string }>
-            | undefined;
-        }
-      | undefined;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-              }
-            | undefined;
-          references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-            | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-        }
-      | undefined;
-  }>;
-};
-
 export type UsersDisplayNameQueryVariables = Exact<{
   first?: InputMaybe<Scalars['Int']>;
   after?: InputMaybe<Scalars['UUID']>;
@@ -10898,3 +10842,34 @@ export type RemoveCommentFromAspectMutationVariables = Exact<{
 }>;
 
 export type RemoveCommentFromAspectMutation = { __typename?: 'Mutation'; removeComment: string };
+
+export type AvailableUsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AvailableUsersQuery = {
+  __typename?: 'Query';
+  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+};
+
+export type ContributingUsersQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+export type ContributingUsersQuery = {
+  __typename?: 'Query';
+  users: Array<{
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    nameID: string;
+    city: string;
+    country: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+        }
+      | undefined;
+  }>;
+};
