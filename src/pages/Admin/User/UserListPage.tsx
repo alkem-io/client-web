@@ -7,11 +7,11 @@ interface UserListPageProps extends PageProps {}
 
 export const UserListPage: FC<UserListPageProps> = ({ paths }) => {
   return (
-    <UserListContainer
-      component={({ userList, onDelete, loading }) => (
+    <UserListContainer>
+      {({ userList, onDelete, loading }) => (
         <ListPage data={userList} paths={paths} onDelete={onDelete} loading={loading} />
       )}
-    />
+    </UserListContainer>
   );
 };
 

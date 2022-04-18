@@ -1,14 +1,13 @@
 import { Grid, InputAdornment, OutlinedInputProps, TextField } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
-import { ReactComponent as EyeSlash } from 'bootstrap-icons/icons/eye-slash.svg';
-import { ReactComponent as Eye } from 'bootstrap-icons/icons/eye.svg';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import React, { FC, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import Icon from '../../core/Icon';
-import IconButton from '../../core/IconButton';
 import { KratosUIContext } from '../KratosUI';
 import { getNodeName, getNodeTitle, getNodeValue, isInvalidNode, isRequired } from './helpers';
 import { KratosInputExtraProps, KratosProps } from './KratosProps';
+import IconButton from '@mui/material/IconButton';
 
 interface KratosInputProps extends KratosProps, KratosInputExtraProps {}
 
@@ -24,6 +23,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
   const invalid = isInvalidNode(node) || (touched && !value);
   const name = getNodeName(node);
   const required = isRequired(node);
+  const isInputTextObscured = inputType === 'password';
 
   let helperText = '';
   if (!value && touched) helperText = t('forms.validations.required') + ' ';
@@ -40,8 +40,8 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
       ...InputProps,
       endAdornment: (
         <InputAdornment position="end">
-          <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')} size="large">
-            <Icon component={inputType === 'password' ? Eye : EyeSlash} color="inherit" size={'xs'} />
+          <IconButton onClick={() => setInputType(isInputTextObscured ? 'text' : 'password')} size="small">
+            {isInputTextObscured ? <VisibilityIcon /> : <VisibilityOffIcon />}
           </IconButton>
         </InputAdornment>
       ),
