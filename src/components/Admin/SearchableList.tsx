@@ -1,4 +1,14 @@
-import { FormControl, InputLabel, List, ListItem, ListItemIcon, ListItemText, OutlinedInput } from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  OutlinedInput,
+  Skeleton,
+  Box,
+} from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
 import React, { FC, ReactElement, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +22,7 @@ interface SearchableListProps {
   edit?: boolean;
   active?: number | string;
   onDelete?: (item: SearchableListItem) => void;
+  loading?: boolean;
 }
 
 export const searchableListItemMapper =
@@ -21,6 +32,13 @@ export const searchableListItemMapper =
     value: item.displayName,
     url: `${item.nameID ?? item.id}${editSuffix ?? ''}`,
   });
+
+const LoadingListItem = () => (
+  <Box height="50px" display="flex" justifyContent="space-between">
+    <Skeleton width="50%" />
+    <Skeleton width="5%" />
+  </Box>
+);
 
 interface ListItemLinkProps {
   icon?: ReactElement;
@@ -54,7 +72,7 @@ export interface SearchableListItem {
   url: string;
 }
 
-export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, onDelete }) => {
+export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = false, onDelete, loading }) => {
   const { t } = useTranslation();
   const [filterBy, setFilterBy] = useState('');
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
@@ -100,20 +118,31 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
       <InputLabel> {t('components.searchableList.info', { count: slicedData.length, total: data.length })}</InputLabel>
       <hr />
       <List>
-        {slicedData.map(item => (
-          <ListItemLink
-            key={item.id}
-            to={`${item.url}${editSuffix}`}
-            primary={item.value}
-            icon={
-              onDelete && (
-                <IconButton onClick={e => openModal(e, item)} size="large">
-                  <Delete color="error" fontSize="large" />
-                </IconButton>
-              )
-            }
-          />
-        ))}
+        {loading ? (
+          <>
+            <LoadingListItem />
+            <LoadingListItem />
+            <LoadingListItem />
+            <LoadingListItem />
+            <LoadingListItem />
+            <LoadingListItem />
+          </>
+        ) : (
+          slicedData.map(item => (
+            <ListItemLink
+              key={item.id}
+              to={`${item.url}${editSuffix}`}
+              primary={item.value}
+              icon={
+                onDelete && (
+                  <IconButton onClick={e => openModal(e, item)} size="large">
+                    <Delete color="error" fontSize="large" />
+                  </IconButton>
+                )
+              }
+            />
+          ))
+        )}
       </List>
       <RemoveModal
         show={isModalOpened}

@@ -10632,6 +10632,13 @@ export type UserCardsContainerQuery = {
   }>;
 };
 
+export type UserListQueryVariables = Exact<{ [key: string]: never }>;
+
+export type UserListQuery = {
+  __typename?: 'Query';
+  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+};
+
 export type OpportunityProviderQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];

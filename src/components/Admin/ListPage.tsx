@@ -13,9 +13,10 @@ interface ListPageProps extends PageProps {
   title?: string;
   newLink?: string;
   onDelete?: (item: SearchableListItem) => void;
+  loading?: boolean;
 }
 
-export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDelete }) => {
+export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDelete, loading }) => {
   const { t } = useTranslation();
   useUpdateNavigation({ currentPaths: paths });
 
@@ -32,7 +33,7 @@ export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDel
         </Grid>
       )}
       <Grid item xs={10}>
-        <SearchableList data={data} onDelete={onDelete} />
+        <SearchableList data={data} onDelete={onDelete} loading={loading} />
       </Grid>
     </Grid>
   );
