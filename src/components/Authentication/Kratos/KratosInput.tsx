@@ -23,6 +23,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
   const invalid = isInvalidNode(node) || (touched && !value);
   const name = getNodeName(node);
   const required = isRequired(node);
+  const isInputTextObscured = inputType === 'password';
 
   let helperText = '';
   if (!value && touched) helperText = t('forms.validations.required') + ' ';
@@ -40,7 +41,7 @@ export const KratosInput: FC<KratosInputProps> = ({ node, autoCapitalize, autoCo
       endAdornment: (
         <InputAdornment position="end">
           <IconButton onClick={() => setInputType(inputType === 'password' ? 'text' : 'password')} size="small">
-            {inputType === 'password' ? <VisibilityIcon /> : <VisibilityOffIcon />}
+            {isInputTextObscured ? <VisibilityIcon /> : <VisibilityOffIcon />}
           </IconButton>
         </InputAdornment>
       ),
