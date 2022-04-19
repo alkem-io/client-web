@@ -70,6 +70,7 @@ export function Filter<T>({ data, limitKeys = [], sort, placeholder, children }:
             size="small"
             fullWidth
             InputLabelProps={{ shrink: true }}
+            sx={{ background: theme => theme.palette.primary.contrastText }}
           />
         </Grid>
         {sort && (

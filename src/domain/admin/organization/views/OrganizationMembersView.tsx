@@ -1,20 +1,17 @@
-import { Container } from '@mui/material';
 import React, { FC } from 'react';
-import EditMembers from '../../../components/Admin/Community/EditMembers';
-import OrganizationMembers from '../../../containers/organization/OrganizationMembers';
-import { useOrganization, useUpdateNavigation } from '../../../hooks';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
-import { PageProps } from '../../common';
+import EditMembers from '../../../../components/Admin/Community/EditMembers';
+import OrganizationMembers from '../../../../containers/organization/OrganizationMembers';
+import { useOrganization } from '../../../../hooks';
+import { AuthorizationCredential } from '../../../../models/graphql-schema';
+import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import { useTranslation } from 'react-i18next';
 
-interface OrganizationCommunityPageProps extends PageProps {}
-
-export const OrganizationCommunityPage: FC<OrganizationCommunityPageProps> = ({ paths }) => {
-  useUpdateNavigation({ currentPaths: paths });
-
+export const OrganizationMembersView: FC = () => {
   const { organizationId } = useOrganization();
+  const { t } = useTranslation();
 
   return (
-    <Container maxWidth="xl">
+    <DashboardGenericSection headerText={t('common.members')}>
       <OrganizationMembers
         entities={{
           organizationId,
@@ -37,8 +34,8 @@ export const OrganizationCommunityPage: FC<OrganizationCommunityPageProps> = ({ 
           />
         )}
       </OrganizationMembers>
-    </Container>
+    </DashboardGenericSection>
   );
 };
 
-export default OrganizationCommunityPage;
+export default OrganizationMembersView;

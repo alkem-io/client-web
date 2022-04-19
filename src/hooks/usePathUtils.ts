@@ -8,6 +8,16 @@ interface PathDef {
   name: string;
 }
 
+export const useAppendPaths = (initialPaths: Path[], ...pathDefs: PathDef[]) => {
+  const appendedPaths = pathDefs.map(pathDef => ({
+    value: '',
+    ...pathDef,
+    real: !!pathDef.value,
+  }));
+
+  return useMemo(() => [...initialPaths, ...appendedPaths], [initialPaths]);
+};
+
 export const useAppendPath = (paths: Path[], pathDef: PathDef) => {
   const path = {
     value: '',

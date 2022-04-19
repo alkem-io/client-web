@@ -49,7 +49,7 @@ interface ListItemLinkProps {
 const ListItemLink = (props: ListItemLinkProps) => {
   const { icon, primary, to } = props;
 
-  const renderLink = React.useMemo(
+  const Link = React.useMemo(
     () =>
       React.forwardRef<any, Omit<RouterLinkProps, 'to'>>((itemProps, ref) => (
         <RouterLink to={to} ref={ref} {...itemProps} />
@@ -59,7 +59,7 @@ const ListItemLink = (props: ListItemLinkProps) => {
 
   return (
     <li>
-      <ListItem button component={renderLink}>
+      <ListItem button component={Link}>
         <ListItemText primary={primary} />
         {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
       </ListItem>
@@ -113,7 +113,11 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
   return (
     <>
       <FormControl fullWidth size={'small'}>
-        <OutlinedInput placeholder={t('components.searchableList.placeholder')} onChange={handleSearch} />
+        <OutlinedInput
+          placeholder={t('components.searchableList.placeholder')}
+          onChange={handleSearch}
+          sx={{ background: theme => theme.palette.primary.contrastText }}
+        />
       </FormControl>
       <InputLabel> {t('components.searchableList.info', { count: slicedData.length, total: data.length })}</InputLabel>
       <hr />

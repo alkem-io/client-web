@@ -5,7 +5,7 @@ import { OrganizationProvider } from '../../../context/OrganizationProvider';
 import { EditMode } from '../../../models/editMode';
 import { Error404, PageProps } from '../../../pages';
 import { nameOfUrl } from '../../url-params';
-import { OrganizationRoute } from './OrganizationRoute';
+import { OrganizationRoute } from '../../../domain/admin/organization/OrganizationRoute';
 import AdminOrganizationsPage from '../../../pages/Admin/AdminOrganizations/AdminOrganizationsPage';
 
 export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
