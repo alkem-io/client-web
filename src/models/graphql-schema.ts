@@ -10867,8 +10867,9 @@ export type ContributingUsersQuery = {
     profile?:
       | {
           __typename?: 'Profile';
-          avatar?: { __typename?: 'Visual'; uri: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; tags: Array<string> }> | undefined;
+          id: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
         }
       | undefined;
   }>;

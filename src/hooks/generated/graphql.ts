@@ -14960,10 +14960,13 @@ export const ContributingUsersDocument = gql`
       city
       country
       profile {
+        id
         avatar {
+          id
           uri
         }
         tagsets {
+          id
           tags
         }
       }

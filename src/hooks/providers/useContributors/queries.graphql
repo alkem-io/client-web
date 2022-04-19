@@ -6,10 +6,13 @@ query contributingUsers($limit: Float, $shuffle: Boolean) {
     city
     country
     profile {
+      id
       avatar {
+        id
         uri
       }
       tagsets {
+        id
         tags
       }
     }
