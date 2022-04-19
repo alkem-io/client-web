@@ -1,25 +1,27 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Box } from '@mui/material';
+import { alpha, Avatar, Box, Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import { ViewProps } from '../../models/view';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { Reference } from '../../models/graphql-schema';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
-import ContextLayout from '../../components/composite/layout/Context/ContextLayout';
 import DiscussionComment from '../../components/composite/common/Discussion/Comment';
 import { Comment } from '../../models/discussion/comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
 import Markdown from '../../components/core/Markdown';
 import References from '../../components/composite/common/References/References';
 import TagLabel from '../../components/composite/common/TagLabel/TagLabel';
+import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
-export interface AspectDashboardViewEntities {
+export interface AspectDashboardViewProps {
+  canReadComments: boolean;
+  canPostComments: boolean;
+  canDeleteMessage: (msgId: string) => boolean;
   banner?: string;
   displayName?: string;
   description?: string;
@@ -28,79 +30,42 @@ export interface AspectDashboardViewEntities {
   commentId?: string;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
-}
-
-export interface AspectDashboardViewActions {
+  creatorAvatar?: string;
+  creatorName?: string;
+  createdDate?: string;
   handlePostComment: (commentId: string, message: string) => void;
   handleDeleteComment: (commentId: string, messageId: string) => void;
-}
-
-export interface AspectDashboardViewState {
   loading: boolean;
+  loadingCreator: boolean;
   error?: ApolloError;
 }
 
-export interface AspectDashboardViewOptions {
-  canReadComments: boolean;
-  canPostComments: boolean;
-  canDeleteMessage: (msgId: string) => boolean;
-}
-
-export interface AspectDashboardViewProps
-  extends ViewProps<
-    AspectDashboardViewEntities,
-    AspectDashboardViewActions,
-    AspectDashboardViewState,
-    AspectDashboardViewOptions
-  > {}
-
-const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, options, actions }) => {
+const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const { t } = useTranslation();
-  const loading = state.loading;
+  const { loading, loadingCreator } = props;
 
-  const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = entities;
-  const { canReadComments, canDeleteMessage, canPostComments } = options;
-  const { handlePostComment, handleDeleteComment } = actions;
+  const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = props;
+  const { creatorName, creatorAvatar, createdDate } = props;
+  const { canReadComments, canDeleteMessage, canPostComments } = props;
+  const { handlePostComment, handleDeleteComment } = props;
 
   const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
   const onDeleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
 
-  const rightPanel = (
-    <>
-      {canReadComments && (
-        <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
-          <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}>
-            {messages.map((x, i) => (
-              <Box key={i}>
-                <DiscussionComment comment={x} canDelete={canDeleteMessage(x.id)} onDelete={onDeleteComment} />
-                {i < messages.length - 1 && <SectionSpacer />}
-              </Box>
-            ))}
-          </Box>
-          <SectionSpacer double />
-          <Box>
-            {canPostComments && (
-              <PostComment
-                placeholder={t('pages.aspect.dashboard.comment.placeholder')}
-                onPostComment={onPostComment}
-              />
-            )}
-            {!canPostComments && (
-              <Box paddingY={4} display="flex" justifyContent="center">
-                <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
-              </Box>
-            )}
-          </Box>
-        </DashboardGenericSection>
-      )}
-    </>
-  );
-
   return (
-    <ContextLayout rightPanel={rightPanel}>
-      <>
+    <Grid container spacing={2}>
+      <DashboardColumn>
         <DashboardGenericSection
           bannerUrl={banner}
+          alwaysShowBanner
+          bannerOverlay={
+            <AuthorComponent
+              avatarSrc={creatorAvatar}
+              name={creatorName}
+              createdDate={createdDate}
+              loading={loadingCreator}
+            />
+          }
           headerText={displayName}
           primaryAction={loading ? <Skeleton width={'30%'} /> : <TagLabel>{type}</TagLabel>}
         >
@@ -118,7 +83,6 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
             </>
           )}
         </DashboardGenericSection>
-        <SectionSpacer />
         <DashboardGenericSection headerText={t('common.references')}>
           {loading ? (
             <>
@@ -130,8 +94,74 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = ({ entities, state, op
             <References references={references} noItemsView={<Typography>{t('common.no-references')}</Typography>} />
           )}
         </DashboardGenericSection>
-      </>
-    </ContextLayout>
+      </DashboardColumn>
+      {canReadComments && (
+        <DashboardColumn>
+          <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
+            <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}>
+              {messages.map((x, i) => (
+                <Box key={i}>
+                  <DiscussionComment comment={x} canDelete={canDeleteMessage(x.id)} onDelete={onDeleteComment} />
+                  {i < messages.length - 1 && <SectionSpacer />}
+                </Box>
+              ))}
+            </Box>
+            <SectionSpacer double />
+            <Box>
+              {canPostComments && (
+                <PostComment
+                  placeholder={t('pages.aspect.dashboard.comment.placeholder')}
+                  onPostComment={onPostComment}
+                />
+              )}
+              {!canPostComments && (
+                <Box paddingY={4} display="flex" justifyContent="center">
+                  <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
+                </Box>
+              )}
+            </Box>
+          </DashboardGenericSection>
+        </DashboardColumn>
+      )}
+    </Grid>
   );
 };
 export default AspectDashboardView;
+
+interface AuthorComponentProps {
+  avatarSrc: string | undefined;
+  name: string | undefined;
+  createdDate: string | undefined;
+  loading?: boolean;
+}
+
+const AuthorComponent: FC<AuthorComponentProps> = ({ avatarSrc, name, createdDate, loading }) => {
+  const localeCreatedDate = createdDate && new Date(createdDate)?.toLocaleDateString();
+  return (
+    <Box
+      sx={{
+        width: '150px',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        padding: theme => theme.spacing(1),
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        background: theme => alpha(theme.palette.neutralLight.main, 0.3),
+      }}
+    >
+      {loading ? (
+        <Skeleton variant="rectangular">
+          <Avatar />
+        </Skeleton>
+      ) : (
+        <Avatar src={avatarSrc} />
+      )}
+      <Typography noWrap sx={{ maxWidth: '100%' }}>
+        {loading ? <Skeleton width="100%" /> : name}
+      </Typography>
+      <Typography noWrap>{loading ? <Skeleton width="100%" /> : localeCreatedDate}</Typography>
+    </Box>
+  );
+};
