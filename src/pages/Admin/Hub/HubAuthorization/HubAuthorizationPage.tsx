@@ -36,6 +36,7 @@ const HubAuthorizationPage: FC<HubAuthorizationPageProps> = ({ paths, resourceId
     name: t(`common.enums.authorization-credentials.${authorizationCredential}.name` as const),
   });
 
+  // todo: how can these two be extracted in a util
   const queryVariables: HubPreferencesQueryVariables = { hubNameId };
   const mutationVariables = (
     queryVariables: HubPreferencesQueryVariables,
