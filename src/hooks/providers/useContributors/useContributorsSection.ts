@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
-import { useUserContext } from '..';
-import { useContributingUsersQuery, useOrganizationsListQuery } from '../generated/graphql';
-import useServerMetadata from '../useServerMetadata';
-import { COUNTRIES_BY_CODE } from '../../models/constants';
-import getActivityCount from '../../utils/get-activity-count';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
-import { getVisualAvatar } from '../../utils/visuals.utils';
-import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
-import { WithId } from '../../types/WithId';
+import { useUserContext } from '../../index';
+import { useContributingUsersQuery, useOrganizationsListQuery } from '../../generated/graphql';
+import useServerMetadata from '../../useServerMetadata';
+import { COUNTRIES_BY_CODE } from '../../../models/constants';
+import getActivityCount from '../../../utils/get-activity-count';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../../utils/urlBuilders';
+import { getVisualAvatar } from '../../../utils/visuals.utils';
+import { ContributorCardProps } from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
+import { WithId } from '../../../types/WithId';
 
 const MAX_USERS_TO_SHOW = 12;
 const MAX_ORGANIZATIONS_TO_SHOW = 12;

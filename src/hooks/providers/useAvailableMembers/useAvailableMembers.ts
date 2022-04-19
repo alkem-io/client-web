@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../models/graphql-schema';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
 import {
   useAvailableUsersQuery,
   useCommunityMembersQuery,
   useUsersWithCredentialsSimpleListQuery,
-} from '../generated/graphql';
-import { Member } from '../../models/User';
-import { useHub } from '../useHub';
+} from '../../generated/graphql';
+import { Member } from '../../../models/User';
+import { useHub } from '../../useHub';
 
 export interface AvailableMembersResults {
   available: UserDisplayNameFragment[];
