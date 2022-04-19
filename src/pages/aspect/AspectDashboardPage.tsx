@@ -20,31 +20,17 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ paths: _paths }) =>
       challengeNameId={challengeNameId}
       opportunityNameId={opportunityNameId}
     >
-      {(entities, state, actions) => (
+      {({ aspect, messages, commentId, ...rest }) => (
         <AspectDashboardView
-          entities={{
-            banner: entities.aspect?.banner?.uri,
-            displayName: entities.aspect?.displayName,
-            description: entities.aspect?.description,
-            type: entities.aspect?.type,
-            tags: entities.aspect?.tagset?.tags,
-            references: entities.aspect?.references,
-            messages: entities.messages,
-            commentId: entities.commentId,
-          }}
-          state={{
-            loading: state.loading,
-            error: state.error,
-          }}
-          actions={{
-            handlePostComment: actions.handlePostComment,
-            handleDeleteComment: actions.handleDeleteComment,
-          }}
-          options={{
-            canReadComments: entities.permissions.canReadComments,
-            canPostComments: entities.permissions.canPostComments,
-            canDeleteMessage: entities.permissions.canDeleteMessage,
-          }}
+          banner={aspect?.banner?.uri}
+          displayName={aspect?.displayName}
+          description={aspect?.description}
+          type={aspect?.type}
+          tags={aspect?.tagset?.tags}
+          references={aspect?.references}
+          messages={messages}
+          commentId={commentId}
+          {...rest}
         />
       )}
     </AspectDashboardContainer>
