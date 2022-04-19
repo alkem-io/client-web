@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import HubSettingsLayout from '../../../../components/composite/layout/HubSettingsLayout/HubSettingsLayout';
 import { SettingsSection } from '../../../../components/composite/layout/EntitySettingsLayout/constants';
@@ -12,7 +12,7 @@ import {
   HubPreferenceType,
   UpdatePreferenceOnHubMutationVariables,
 } from '../../../../models/graphql-schema';
-import PreferenceContainer from '../../../../containers/preferences/PreferenceContainer';
+import { usePreferences } from '../../../../hooks/providers';
 import PreferenceSection from '../../../../components/composite/common/PreferenceSection/PreferenceSection';
 import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../../hooks/generated/graphql';
 import { useHub } from '../../../../hooks';
@@ -26,6 +26,8 @@ interface HubAuthorizationPageProps extends SettingsPageProps {
 const authorizationCredential = AuthorizationCredential.HubAdmin;
 const selectedGroups = ['Authorization'];
 
+const querySelector = (query: HubPreferencesQuery) => query.hub.preferences;
+
 const HubAuthorizationPage: FC<HubAuthorizationPageProps> = ({ paths, resourceId, routePrefix = '../' }) => {
   const { t } = useTranslation();
   const { hubNameId } = useHub();
@@ -34,8 +36,7 @@ const HubAuthorizationPage: FC<HubAuthorizationPageProps> = ({ paths, resourceId
     name: t(`common.enums.authorization-credentials.${authorizationCredential}.name` as const),
   });
 
-  const queryVariables = useMemo<HubPreferencesQueryVariables>(() => ({ hubNameId }), [hubNameId]);
-  const querySelector = (query: HubPreferencesQuery) => query.hub.preferences;
+  const queryVariables: HubPreferencesQueryVariables = { hubNameId };
   const mutationVariables = (
     queryVariables: HubPreferencesQueryVariables,
     type: PreferenceTypes,
@@ -48,31 +49,31 @@ const HubAuthorizationPage: FC<HubAuthorizationPageProps> = ({ paths, resourceId
     },
   });
 
+  const { preferences, onUpdate, loading, submitting } = usePreferences<
+    HubPreferencesQuery,
+    HubPreferencesQueryVariables,
+    UpdatePreferenceOnHubMutationVariables
+  >(
+    HubPreferencesDocument,
+    queryVariables,
+    querySelector,
+    UpdatePreferenceOnHubDocument,
+    mutationVariables,
+    selectedGroups
+  );
+
   return (
     <HubSettingsLayout currentTab={SettingsSection.Authorization} tabRoutePrefix={routePrefix}>
       <HubAuthorizationView credential={authorizationCredential} resourceId={resourceId} />
       <SectionSpacer />
-      <PreferenceContainer<HubPreferencesQuery, HubPreferencesQueryVariables, UpdatePreferenceOnHubMutationVariables>
-        queryDocument={HubPreferencesDocument}
-        queryVariables={queryVariables}
-        querySelector={querySelector}
-        mutationDocument={UpdatePreferenceOnHubDocument}
-        mutationVariables={mutationVariables}
-        selectedGroups={selectedGroups}
-      >
-        {({ preferences, loading, submitting, onUpdate }) => {
-          return (
-            <PreferenceSection
-              headerText={t('common.authorization')}
-              subHeaderText={t('pages.admin.hub.authorization.preferences.subtitle')}
-              preferences={preferences}
-              onUpdate={(id, type, value) => onUpdate(type, value)}
-              loading={loading}
-              submitting={submitting}
-            />
-          );
-        }}
-      </PreferenceContainer>
+      <PreferenceSection
+        headerText={t('common.authorization')}
+        subHeaderText={t('pages.admin.hub.authorization.preferences.subtitle')}
+        preferences={preferences}
+        onUpdate={(id, type, value) => onUpdate(type, value)}
+        loading={loading}
+        submitting={submitting}
+      />
     </HubSettingsLayout>
   );
 };
