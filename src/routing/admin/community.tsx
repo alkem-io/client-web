@@ -13,6 +13,7 @@ import { HubApplicationRoute } from './hub/HubApplicationRoute';
 import { HubGroupRoute } from './hub/HubGroupRoute';
 import ChallengeMembershipPreferencePage from '../../pages/Admin/Challenge/ChallengeMembershipPreferencePage';
 import { useAppendCurrentPath } from '../../hooks/usePathUtils';
+import { HubMembershipPreferencePage } from '../../pages/Admin/Hub/HubCommunity/HubMembershipPreferencePage';
 
 type AccessedFrom = 'hub' | 'challenge' | 'opportunity';
 
@@ -62,7 +63,15 @@ export const CommunityRoute: FC<CommunityRouteProps> = ({
         }
       />
       <Route path="lead" element={<LeadingOrganizationPage paths={paths} />} />
-      <Route path="preferences" element={<ChallengeMembershipPreferencePage paths={paths} />} />
+      <Route
+        path="preferences"
+        element={
+          <>
+            {accessedFrom === 'hub' && <HubMembershipPreferencePage />}
+            {accessedFrom === 'challenge' && <ChallengeMembershipPreferencePage paths={paths} />}
+          </>
+        }
+      />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

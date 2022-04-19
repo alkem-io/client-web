@@ -1,0 +1,24 @@
+query hubPreferences($hubNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    preferences {
+      id
+      value
+      definition {
+        id
+        description
+        displayName
+        group
+        type
+        valueType
+      }
+    }
+  }
+}
+
+mutation updatePreferenceOnHub($preferenceData: UpdateHubPreferenceInput!) {
+  updatePreferenceOnHub(preferenceData: $preferenceData) {
+    id
+    value
+  }
+}

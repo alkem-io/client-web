@@ -10421,6 +10421,41 @@ export type UpdatePreferenceOnChallengeMutation = {
   updatePreferenceOnChallenge: { __typename?: 'Preference'; id: string; value: string };
 };
 
+export type HubPreferencesQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubPreferencesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    preferences: Array<{
+      __typename?: 'Preference';
+      id: string;
+      value: string;
+      definition: {
+        __typename?: 'PreferenceDefinition';
+        id: string;
+        description: string;
+        displayName: string;
+        group: string;
+        type: PreferenceType;
+        valueType: PreferenceValueType;
+      };
+    }>;
+  };
+};
+
+export type UpdatePreferenceOnHubMutationVariables = Exact<{
+  preferenceData: UpdateHubPreferenceInput;
+}>;
+
+export type UpdatePreferenceOnHubMutation = {
+  __typename?: 'Mutation';
+  updatePreferenceOnHub: { __typename?: 'Preference'; id: string; value: string };
+};
+
 export type OrganizationPreferencesQueryVariables = Exact<{
   orgId: Scalars['UUID_NAMEID'];
 }>;

@@ -616,7 +616,20 @@
         "community": {
           "preferences": {
             "title": "Membership",
-            "subtitle": "This section allows you to modify the challenge membership preferences"
+            "subtitle": "This section allows you to modify the $t(common.challenge) membership preferences"
+          }
+        }
+      },
+      "hub": {
+        "authorization": {
+          "preferences": {
+            "subtitle": "This section allows you to modify the $t(common.hub) authorization preferences"
+          }
+        },
+        "community": {
+          "preferences": {
+            "title": "Membership",
+            "subtitle": "This section allows you to modify the $t(common.hub) membership preferences"
           }
         }
       }

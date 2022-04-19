@@ -14105,6 +14105,117 @@ export type UpdatePreferenceOnChallengeMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.UpdatePreferenceOnChallengeMutation,
   SchemaTypes.UpdatePreferenceOnChallengeMutationVariables
 >;
+export const HubPreferencesDocument = gql`
+  query hubPreferences($hubNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      preferences {
+        id
+        value
+        definition {
+          id
+          description
+          displayName
+          group
+          type
+          valueType
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHubPreferencesQuery__
+ *
+ * To run a query within a React component, call `useHubPreferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPreferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPreferencesQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *   },
+ * });
+ */
+export function useHubPreferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>(
+    HubPreferencesDocument,
+    options
+  );
+}
+export function useHubPreferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>(
+    HubPreferencesDocument,
+    options
+  );
+}
+export type HubPreferencesQueryHookResult = ReturnType<typeof useHubPreferencesQuery>;
+export type HubPreferencesLazyQueryHookResult = ReturnType<typeof useHubPreferencesLazyQuery>;
+export type HubPreferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPreferencesQuery,
+  SchemaTypes.HubPreferencesQueryVariables
+>;
+export function refetchHubPreferencesQuery(variables: SchemaTypes.HubPreferencesQueryVariables) {
+  return { query: HubPreferencesDocument, variables: variables };
+}
+export const UpdatePreferenceOnHubDocument = gql`
+  mutation updatePreferenceOnHub($preferenceData: UpdateHubPreferenceInput!) {
+    updatePreferenceOnHub(preferenceData: $preferenceData) {
+      id
+      value
+    }
+  }
+`;
+export type UpdatePreferenceOnHubMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePreferenceOnHubMutation,
+  SchemaTypes.UpdatePreferenceOnHubMutationVariables
+>;
+
+/**
+ * __useUpdatePreferenceOnHubMutation__
+ *
+ * To run a mutation, you first call `useUpdatePreferenceOnHubMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePreferenceOnHubMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePreferenceOnHubMutation, { data, loading, error }] = useUpdatePreferenceOnHubMutation({
+ *   variables: {
+ *      preferenceData: // value for 'preferenceData'
+ *   },
+ * });
+ */
+export function useUpdatePreferenceOnHubMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdatePreferenceOnHubMutation,
+    SchemaTypes.UpdatePreferenceOnHubMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdatePreferenceOnHubMutation,
+    SchemaTypes.UpdatePreferenceOnHubMutationVariables
+  >(UpdatePreferenceOnHubDocument, options);
+}
+export type UpdatePreferenceOnHubMutationHookResult = ReturnType<typeof useUpdatePreferenceOnHubMutation>;
+export type UpdatePreferenceOnHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnHubMutation>;
+export type UpdatePreferenceOnHubMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePreferenceOnHubMutation,
+  SchemaTypes.UpdatePreferenceOnHubMutationVariables
+>;
 export const OrganizationPreferencesDocument = gql`
   query organizationPreferences($orgId: UUID_NAMEID!) {
     organization(ID: $orgId) {
