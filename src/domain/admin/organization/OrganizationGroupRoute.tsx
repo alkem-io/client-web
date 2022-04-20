@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '../../../hooks';
 import { useOrganizationGroupQuery } from '../../../hooks/generated/graphql';
 import { PageProps } from '../../../pages';
-import { GroupRoute } from '../GroupRoute';
+import { GroupRoute } from '../../../routing/admin/GroupRoute';
 
 interface GroupRouteProps extends PageProps {}
 

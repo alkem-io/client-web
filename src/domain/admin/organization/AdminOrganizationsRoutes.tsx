@@ -4,11 +4,11 @@ import OrganizationPage from '../../../components/Admin/Organization/Organizatio
 import { OrganizationProvider } from '../../../context/OrganizationProvider';
 import { EditMode } from '../../../models/editMode';
 import { Error404, PageProps } from '../../../pages';
-import { nameOfUrl } from '../../url-params';
-import { OrganizationRoute } from './OrganizationRoute';
+import { nameOfUrl } from '../../../routing/url-params';
+import OrganizationAdminRoutes from './OrganizationAdminRoutes';
 import AdminOrganizationsPage from '../../../pages/Admin/AdminOrganizations/AdminOrganizationsPage';
 
-export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
+const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths]);
 
@@ -24,7 +24,7 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
           path={`:${nameOfUrl.organizationNameId}/*`}
           element={
             <OrganizationProvider>
-              <OrganizationRoute paths={currentPaths} />
+              <OrganizationAdminRoutes paths={currentPaths} />
             </OrganizationProvider>
           }
         ></Route>
@@ -33,3 +33,5 @@ export const OrganizationsRoute: FC<PageProps> = ({ paths }) => {
     </Routes>
   );
 };
+
+export default AdminOrganizationsRoutes;

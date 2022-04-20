@@ -11,7 +11,7 @@ interface OpportunitySettingsLayoutProps {
   tabRoutePrefix?: string;
 }
 
-export const tabs: TabDefinition<SettingsSection>[] = [
+const tabs: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.Profile,
     route: 'profile',

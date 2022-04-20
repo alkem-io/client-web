@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 
 export interface Path {
-  value: string;
+  value?: string;
   name: string;
   real: boolean;
 }
