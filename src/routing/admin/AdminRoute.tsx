@@ -6,7 +6,7 @@ import { Error404 } from '../../pages';
 import RestrictedRoute from '../RestrictedRoute';
 import { HubsRoute } from './hub/HubsRoute';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
-import { OrganizationsRoute } from './organization/OrganizationsRoute';
+import { AdminOrganizationsRoutes } from '../../domain/admin/organization';
 import { UsersRoute } from './users/UsersRoute';
 
 export const AdminRoute: FC = () => {
@@ -31,7 +31,7 @@ export const AdminRoute: FC = () => {
         <Route path="hubs/*" element={<HubsRoute paths={currentPaths} />} />
         <Route path="users/*" element={<UsersRoute paths={currentPaths} />} />
         <Route path="authorization/*" element={<GlobalAuthorizationRoute paths={currentPaths} />} />
-        <Route path="organizations/*" element={<OrganizationsRoute paths={currentPaths} />} />
+        <Route path="organizations/*" element={<AdminOrganizationsRoutes paths={currentPaths} />} />
         <Route path="*" element={<Error404 />} />
       </Routes>
     </RestrictedRoute>

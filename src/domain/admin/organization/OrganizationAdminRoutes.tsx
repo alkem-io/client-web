@@ -7,7 +7,7 @@ import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
 import OrganizationCommunityPage from './OrganizationCommunityPage';
 import OrganizationAuthorizationPage from './OrganizationAuthorizationPage';
 
-export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
+const OrganizationAdminRoutes: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
 
   const { displayName } = useOrganization();
@@ -25,3 +25,5 @@ export const OrganizationRoute: FC<PageProps> = ({ paths }) => {
     </Routes>
   );
 };
+
+export default OrganizationAdminRoutes;

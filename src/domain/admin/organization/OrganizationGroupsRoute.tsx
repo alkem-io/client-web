@@ -3,7 +3,7 @@ import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { CreateOrganizationGroupPage } from '../../../components/Admin/Organization/CreateOrganizationGroup';
 import { Error404, PageProps } from '../../../pages';
 import { nameOfUrl } from '../../../routing/url-params';
-import { OrganizationGroupRoute } from '../../../routing/admin/organization/OrganizationGroupRoute';
+import { OrganizationGroupRoute } from './OrganizationGroupRoute';
 import { useAppendPaths } from '../../../hooks/usePathUtils';
 
 export const OrganizationGroupsRoute: FC<PageProps> = ({ paths }) => {
