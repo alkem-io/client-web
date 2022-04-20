@@ -1,3 +1,1 @@
-import AdminOrganizationsRoutes from './AdminOrganizationsRoutes';
-
-export { AdminOrganizationsRoutes };
+export { default as AdminOrganizationsRoutes } from './AdminOrganizationsRoutes';
