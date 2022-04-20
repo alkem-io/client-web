@@ -3,7 +3,7 @@ import SettingsTabs from '../../../components/composite/layout/EntitySettingsLay
 import { TabDefinition } from '../../../components/core/PageTabs/PageTabs';
 import { SettingsSection } from '../../../components/composite/layout/EntitySettingsLayout/constants';
 
-/*export */ const tabs: TabDefinition<SettingsSection>[] = [
+const tabs: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.Context,
     route: 'context',
