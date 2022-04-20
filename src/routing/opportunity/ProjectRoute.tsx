@@ -16,7 +16,7 @@ interface ProjectRootProps extends PageProps {}
 
 export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
   const [lastPath] = paths.slice(-1);
-  const projectsPath = lastPath.real ? `${lastPath.value}/projects` : '';
+  const projectsPath = `${lastPath.value}/projects`;
   const currentPaths = useMemo(() => [...paths, { value: projectsPath, name: 'projects', real: true }], [paths]);
   return (
     <Routes>
