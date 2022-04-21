@@ -86,7 +86,7 @@ interface FontWeight {
   bold: number;
 }
 
-const fontWeight: FontWeight = {
+export const fontWeight: FontWeight = {
   regular: 400,
   medium: 500,
   boldLight: 700,
