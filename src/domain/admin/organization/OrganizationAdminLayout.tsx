@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 import SettingsTabs from '../../../components/composite/layout/EntitySettingsLayout/SettingsTabs';
 import { TabDefinition } from '../../../components/core/PageTabs/PageTabs';
 import { SettingsSection } from '../../../components/composite/layout/EntitySettingsLayout/constants';
+import AdminLayoutEntityTitle from '../layout/AdminLayoutEntityTitle';
+import { useOrganization } from '../../../hooks';
 
 const tabs: TabDefinition<SettingsSection>[] = [
   {
@@ -28,8 +30,11 @@ const OrganizationAdminLayout: FC<OrganizationAdminLayoutProps> = ({
   tabRoutePrefix = '../',
   children,
 }) => {
+  const provided = useOrganization();
+
   return (
     <>
+      <AdminLayoutEntityTitle {...provided} />
       <SettingsTabs
         tabs={tabs}
         currentTab={currentTab}
