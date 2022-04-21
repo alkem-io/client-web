@@ -1,14 +1,17 @@
-import { useCallback } from 'react';
-import { useNavigate, useResolvedPath } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-export const useNavigateToEdit = () => {
-  const { pathname: url } = useResolvedPath('.');
+interface Options {
+  editRoute?: string;
+}
+
+const defaultOptions: Options = {
+  editRoute: 'profile',
+};
+
+export const useNavigateToEdit = (options: Options = defaultOptions) => {
   const navigate = useNavigate();
 
-  return useCallback(
-    (id: string) => {
-      navigate(`../${id}/profile`, { replace: true });
-    },
-    [url, navigate]
-  );
+  return (id: string) => {
+    navigate(`../${id}/${options.editRoute}`, { replace: true });
+  };
 };

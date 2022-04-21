@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
-import { Box } from '@mui/material';
 import SettingsTabs from '../EntitySettingsLayout/SettingsTabs';
 import { SettingsSection } from '../EntitySettingsLayout/constants';
 import { TabDefinition } from '../../../core/PageTabs/PageTabs';
 import { useHub } from '../../../../hooks';
-import { EntityLinkComponent } from '../../../Admin/EntityLinkComponent';
+import AdminLayoutEntityTitle from '../../../../domain/admin/layout/AdminLayoutEntityTitle';
 
 interface HubSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -43,9 +42,7 @@ const HubSettingsLayout: FC<HubSettingsLayoutProps> = ({ currentTab, tabRoutePre
 
   return (
     <>
-      <Box paddingY={1}>
-        <EntityLinkComponent {...provided} />
-      </Box>
+      <AdminLayoutEntityTitle {...provided} />
       <SettingsTabs tabs={tabs} currentTab={currentTab} aria-label="Hub Settings tabs" routePrefix={tabRoutePrefix} />
       {children}
     </>
