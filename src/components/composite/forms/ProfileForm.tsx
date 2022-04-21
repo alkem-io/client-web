@@ -10,6 +10,7 @@ import { NameSegment, nameSegmentSchema } from '../../Admin/Common/NameSegment';
 import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import Typography from '../../core/Typography';
+import InputField from '../../Admin/Common/InputField';
 
 export interface ProfileFormValues {
   name: string;
@@ -91,6 +92,7 @@ const ProfileForm: FC<Props> = ({
         return (
           <>
             <NameSegment disabled={isEdit} required={!isEdit} />
+            <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}
