@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 
 import { Loading } from '../../../components/core';
 import { useDeleteUserGroup, useHub } from '../../../hooks';
@@ -26,8 +26,10 @@ export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ commun
   const { handleDelete } = useDeleteUserGroup();
 
   const community = data?.hub.community;
-  const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `groups/${u.id}` })) || [];
-
+  const groupsList = useMemo(
+    () => community?.groups?.map(u => ({ id: u.id, value: u.name, url: `groups/${u.id}` })) || [],
+    [community?.groups]
+  );
   const onDelete = useCallback((item: SearchableListItem) => handleDelete(item.id), [handleDelete]);
 
   if (loading || loadingHub) {
