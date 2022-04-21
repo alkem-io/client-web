@@ -1,11 +1,13 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
-import { ListPage } from '../../../components/Admin';
 import { Loading } from '../../../components/core';
 import { useDeleteUserGroup, useHub } from '../../../hooks';
 import { useCommunityGroupsQuery } from '../../../hooks/generated/graphql';
 import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
+import SearchableList, { SearchableListItem } from '../../../components/Admin/SearchableList';
+import { Link } from 'react-router-dom';
+import Button from '../../../components/core/Button';
 
 interface CommunityGroupListPageProps {
   communityId: string;
@@ -26,16 +28,18 @@ export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ commun
   const community = data?.hub.community;
   const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `groups/${u.id}` })) || [];
 
-  if (loading || loadingHub) return <Loading />;
+  const onDelete = useCallback((item: SearchableListItem) => handleDelete(item.id), [handleDelete]);
+
+  if (loading || loadingHub) {
+    return <Loading />;
+  }
 
   return (
-    <DashboardGenericSection headerText={t('common.groups')}>
-      <ListPage
-        data={groupsList}
-        title={community ? `${community?.displayName} Groups` : 'Groups'}
-        onDelete={x => handleDelete(x.id)}
-        newLink="groups/new"
-      />
+    <DashboardGenericSection
+      headerText={t('common.groups')}
+      primaryAction={<Button as={Link} to="groups/new" text={t('buttons.new')} />}
+    >
+      <SearchableList data={groupsList} onDelete={onDelete} loading={loading} />
     </DashboardGenericSection>
   );
 };
