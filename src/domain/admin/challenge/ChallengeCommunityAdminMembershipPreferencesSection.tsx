@@ -1,14 +1,15 @@
-import React, { FC, useMemo } from 'react';
-import { PageProps } from '../../common';
-import { useChallenge, useUpdateNavigation } from '../../../hooks';
+import React, { FC } from 'react';
 import ChallengePreferenceContainer from '../../../containers/preferences/challenge/ChallengePreferenceContainer';
 import ChallengeMembershipPreferenceView from '../../../views/Challenge/ChallengeMembershipPreferenceView';
 
-const ChallengeMembershipPreferencePage: FC<PageProps> = ({ paths }) => {
-  const { hubId, challengeId } = useChallenge();
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'preferences', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
+interface Props {
+  hubId: string;
+  challengeId: string;
+}
 
+// TODO remove this "wrapper" component after migration from PreferenceContainer to a hook
+// It's only here in order not to put a massive block in parent's rendered JSX
+const ChallengeCommunityAdminMembershipPreferencesSection: FC<Props> = ({ hubId, challengeId }) => {
   return (
     <ChallengePreferenceContainer hubId={hubId} challengeId={challengeId}>
       {(entities, state, actions) => {
@@ -25,4 +26,5 @@ const ChallengeMembershipPreferencePage: FC<PageProps> = ({ paths }) => {
     </ChallengePreferenceContainer>
   );
 };
-export default ChallengeMembershipPreferencePage;
+
+export default ChallengeCommunityAdminMembershipPreferencesSection;

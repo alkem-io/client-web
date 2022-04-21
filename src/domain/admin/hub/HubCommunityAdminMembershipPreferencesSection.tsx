@@ -4,19 +4,20 @@ import {
   HubPreferencesQueryVariables,
   HubPreferenceType,
   UpdatePreferenceOnHubMutationVariables,
-} from '../../../../models/graphql-schema';
+} from '../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import { useHub } from '../../../../hooks';
-import { PreferenceTypes } from '../../../../models/preference-types';
-import { usePreferences } from '../../../../hooks/providers/preference';
-import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../../hooks/generated/graphql';
-import PreferenceSection from '../../../../components/composite/common/PreferenceSection/PreferenceSection';
+import { useHub } from '../../../hooks';
+import { PreferenceTypes } from '../../../models/preference-types';
+import { usePreferences } from '../../../hooks/providers/preference';
+import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../hooks/generated/graphql';
+import PreferenceSection from '../../../components/composite/common/PreferenceSection/PreferenceSection';
 
 const querySelector = (query: HubPreferencesQuery) => query.hub.preferences;
 
 const selectedGroups = ['MembershipHub'];
 
-export const HubMembershipPreferencePage: FC = () => {
+// TODO migrate to hook+view
+export const HubCommunityAdminMembershipPreferencesSection: FC = () => {
   const { t } = useTranslation();
   const { hubNameId } = useHub();
 

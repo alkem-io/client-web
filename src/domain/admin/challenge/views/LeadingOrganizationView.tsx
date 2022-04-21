@@ -8,18 +8,18 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import makeStyles from '@mui/styles/makeStyles';
 import { ClassNameMap } from '@mui/styles';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useUpdateNavigation, useUrlParams } from '../../../hooks';
-import { PageProps } from '../../../pages';
+import { useUrlParams } from '../../../../hooks';
 import {
   refetchChallengeLeadOrganizationsQuery,
   useChallengeLeadOrganizationsQuery,
   useChallengeNameQuery,
   useUpdateChallengeMutation,
-} from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../hooks';
-import { OrganizationDetailsFragment, UpdateChallengeInput } from '../../../models/graphql-schema';
-import Avatar from '../../core/Avatar';
-import { Filter } from '../Common/Filter';
+} from '../../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../../hooks';
+import { OrganizationDetailsFragment, UpdateChallengeInput } from '../../../../models/graphql-schema';
+import Avatar from '../../../../components/core/Avatar';
+import { Filter } from '../../../../components/Admin/Common/Filter';
+import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
 
 const useStyles = makeStyles(theme => ({
   iconButtonSuccess: {
@@ -34,12 +34,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface LeadingOrganizationPageProps extends PageProps {}
-
-const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) => {
-  const currentPaths = useMemo(() => [...paths, { name: 'lead', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
-
+const LeadingOrganizationView: FC = () => {
   const handleError = useApolloErrorHandler();
 
   const { hubNameId = '', challengeNameId = '' } = useUrlParams();
@@ -100,14 +95,18 @@ const LeadingOrganizationPage: FC<LeadingOrganizationPageProps> = ({ paths }) =>
     });
   };
 
+  const { t } = useTranslation();
+
   return (
-    <EditLeadingOrganization
-      available={toOrganizationDetailsVm(available)}
-      leading={toOrganizationDetailsVm(leadingOrganizations)}
-      onAdd={handleAdd}
-      onRemove={handleRemove}
-      isUpdating={isUpdating}
-    />
+    <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.organization')}>
+      <EditLeadingOrganization
+        available={toOrganizationDetailsVm(available)}
+        leading={toOrganizationDetailsVm(leadingOrganizations)}
+        onAdd={handleAdd}
+        onRemove={handleRemove}
+        isUpdating={isUpdating}
+      />
+    </DashboardGenericSection>
   );
 };
 
@@ -192,7 +191,7 @@ const EditLeadingOrganization: FC<EditLeadingOrganizationProps> = ({
     </Grid>
   );
 };
-export default LeadingOrganizationPage;
+export default LeadingOrganizationView;
 
 const leadingColumns = (t: TFunction, styles: ClassNameMap<string>, onRemove: (orgId: string) => void) =>
   [

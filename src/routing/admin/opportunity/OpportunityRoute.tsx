@@ -1,11 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath, Navigate } from 'react-router-dom';
 import { useChallenge, useOpportunity } from '../../../hooks';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { Error404, PageProps } from '../../../pages';
-import { CommunityRoute } from '../community';
+import CommunityGroupsRoute from '../../../domain/admin/community/routes/CommunityGroupsAdminRoutes';
 import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
-import OpportunityCommunityPage from '../../../pages/Admin/Opportunity/OpportunityCommunity/OpportunityCommunityPage';
+import OpportunityCommunityAdminPage from '../../../domain/admin/opportunity/OpportunityCommunityAdminPage';
 import OpportunityProfilePage from '../../../pages/Admin/Opportunity/OpportunityProfile/OpportunityProfilePage';
 import OpportunityCommunicationsPage from '../../../pages/Admin/Opportunity/OpportunityCommunications/OpportunityCommunicationsPage';
 import OpportunityContextPage from '../../../pages/Admin/Opportunity/OpportunityContext/OpportunityContextPage';
@@ -15,7 +14,7 @@ interface Props extends PageProps {}
 export const OpportunityRoute: FC<Props> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const { challenge } = useChallenge();
-  const { opportunity, opportunityId, displayName } = useOpportunity();
+  const { opportunity, displayName } = useOpportunity();
 
   const currentPaths = useMemo(
     () => [...paths, { value: url, name: displayName || '', real: true }],
@@ -37,17 +36,14 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
           />
         }
       />
-      <Route path="community" element={<OpportunityCommunityPage paths={currentPaths} />} />
+      <Route path="community" element={<OpportunityCommunityAdminPage paths={currentPaths} />} />
       <Route
-        path="community/*"
+        path="community/groups/*"
         element={
-          <CommunityRoute
+          <CommunityGroupsRoute
             paths={currentPaths}
             communityId={opportunity?.community?.id}
             parentCommunityId={challenge?.community?.id}
-            credential={AuthorizationCredential.OpportunityMember}
-            resourceId={opportunityId}
-            accessedFrom="opportunity"
           />
         }
       />
