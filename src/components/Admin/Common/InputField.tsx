@@ -17,7 +17,7 @@ interface InputFieldProps {
 const InputField: FC<InputFieldProps> = ({
   name,
   label,
-  placeholder,
+  placeholder = label,
   rows,
   disabled = false,
   required,
@@ -31,7 +31,7 @@ const InputField: FC<InputFieldProps> = ({
       <FormikInputField
         name={name}
         title={label}
-        placeholder={placeholder || label}
+        placeholder={placeholder}
         className={styles.field}
         disabled={disabled}
         required={required}

@@ -121,7 +121,7 @@ const AspectForm: FC<AspectFormProps> = ({
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
           <InputField
             name="name"
-            label={t('components.nameSegment.name')}
+            label={t('common.title')}
             required
             helpText={t('components.aspect-creation.info-step.name-help-text')}
           />
