@@ -1,17 +1,16 @@
 import React, { FC } from 'react';
-import { Box } from '@mui/material';
 import SettingsTabs from '../EntitySettingsLayout/SettingsTabs';
 import { SettingsSection } from '../EntitySettingsLayout/constants';
 import { TabDefinition } from '../../../core/PageTabs/PageTabs';
-import { EntityLinkComponent } from '../../../Admin/EntityLinkComponent';
 import { useChallenge } from '../../../../hooks';
+import AdminLayoutEntityTitle from '../../../../domain/admin/layout/AdminLayoutEntityTitle';
 
 interface ChallengeSettingsLayoutProps {
   currentTab: SettingsSection;
   tabRoutePrefix?: string;
 }
 
-export const tabs: TabDefinition<SettingsSection>[] = [
+const tabs: TabDefinition<SettingsSection>[] = [
   {
     section: SettingsSection.Profile,
     route: 'profile',
@@ -43,9 +42,7 @@ const ChallengeSettingsLayout: FC<ChallengeSettingsLayoutProps> = ({ currentTab,
 
   return (
     <>
-      <Box paddingY={1}>
-        <EntityLinkComponent {...provided} />
-      </Box>
+      <AdminLayoutEntityTitle {...provided} />
       <SettingsTabs
         tabs={tabs}
         currentTab={currentTab}

@@ -17,7 +17,7 @@ const Breadcrumbs: FC<BreadcrumbProps> = ({ paths }) => {
       <MUIBreadcrumbs>
         {paths.map((p, i) => {
           return p.real && i !== paths.length - 1 ? (
-            <Link key={i} component={RouterLink} to={p.value}>
+            <Link key={i} component={RouterLink} to={p.value!}>
               <Typography variant="caption" fontWeight="600">
                 {p.name.toUpperCase()}
               </Typography>

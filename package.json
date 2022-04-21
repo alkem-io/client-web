@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.20.2",
+  "version": "0.20.3",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -35,7 +35,6 @@
     "@xstate/react": "^1.5.1",
     "apollo-upload-client": "^17.0.0",
     "axios": "^0.21.2",
-    "bootstrap-icons": "1.1.0",
     "clamp-js": "^0.7.0",
     "clsx": "^1.1.1",
     "cross-env": "^7.0.3",

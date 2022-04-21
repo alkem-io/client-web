@@ -5,15 +5,11 @@ import Typography from '@mui/material/Typography';
 import { Aspect, VisualUriFragment } from '../../../../../models/graphql-schema';
 import EntityContributionCard from '../ContributionCard/EntityContributionCard';
 import { styled } from '@mui/material';
-import remToPx from '../../../../../utils/remToPx/remToPx';
 import { buildAspectUrl } from '../../../../../utils/urlBuilders';
 import Markdown from '../../../../core/Markdown';
 
 const DEFAULT_LINE_HEIGHT = 1.5;
-const DEFAULT_FONT_SIZE = '1rem';
 const LINE_CLAMP = 4;
-const HEADER_TEXT_MAX_LENGTH = 20;
-const HEADER_TEXT_POSTFIX = '...';
 
 const PREFIX = 'AspectCard';
 
@@ -24,10 +20,7 @@ const classes = {
 
 const Root = styled('div')(({ theme }) => ({
   [`& .${classes.clampContainer}`]: {
-    height:
-      remToPx(theme.typography.htmlFontSize, theme?.typography?.body1.fontSize ?? DEFAULT_FONT_SIZE) *
-      ((theme?.typography?.body1?.lineHeight ?? DEFAULT_LINE_HEIGHT) as number) *
-      LINE_CLAMP,
+    height: `${LINE_CLAMP * ((theme?.typography?.body1?.lineHeight ?? DEFAULT_LINE_HEIGHT) as number)}em`,
     marginBottom: theme.spacing(1),
     position: 'relative',
     overflow: 'hidden',
@@ -73,15 +66,10 @@ const AspectCard: FC<AspectCardProps> = ({
   const { nameID = '', displayName = '', description = '', type = '', tagset } = (aspect || {}) as AspectCardAspect;
   const bannerNarrow = aspect?.bannerNarrow?.uri;
 
-  const headerText =
-    displayName.length > HEADER_TEXT_MAX_LENGTH
-      ? displayName.substring(0, HEADER_TEXT_MAX_LENGTH - HEADER_TEXT_POSTFIX.length).concat(HEADER_TEXT_POSTFIX)
-      : displayName;
-
   return (
     <EntityContributionCard
       details={{
-        headerText,
+        headerText: displayName,
         mediaUrl: bannerNarrow,
         labelText: type,
         labelAboveTitle: true,

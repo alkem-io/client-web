@@ -10,6 +10,8 @@ import SectionSubHeader from '../../../core/Section/SectionSubheader';
 
 export interface DashboardGenericSectionProps {
   bannerUrl?: string;
+  alwaysShowBanner?: boolean;
+  bannerOverlay?: React.ReactNode;
   headerText?: string;
   helpText?: string;
   headerSpacing?: 'double' | 'none' | 'default';
@@ -44,6 +46,8 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   bannerUrl,
+  alwaysShowBanner,
+  bannerOverlay,
   headerText,
   subHeaderText,
   helpText,
@@ -64,7 +68,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   const styles = useStyles();
 
   return (
-    <Section bannerUrl={bannerUrl} classes={classes}>
+    <Section bannerUrl={bannerUrl} classes={classes} alwaysShowBanner={alwaysShowBanner} bannerOverlay={bannerOverlay}>
       {headerText && (
         <SectionHeader text={headerText} helpText={helpText}>
           {primaryAction}

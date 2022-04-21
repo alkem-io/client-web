@@ -1,9 +1,9 @@
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../models/container';
-import { AspectDashboardFragment, AuthorizationPrivilege } from '../../../models/graphql-schema';
+import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
   AspectMessageFragmentDoc,
+  useAspectCreatorQuery,
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
@@ -14,50 +14,44 @@ import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Comment } from '../../../models/discussion/comment';
 import { useAuthorsDetails } from '../../../hooks/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../utils/apollo-cache/removeFromCache';
+import {
+  ContainerPropsWithProvided,
+  renderComponentOrChildrenFn,
+} from '../../../utils/containers/ComponentOrChildrenFn';
 
-export interface AspectDashboardPermissions {
+interface EntityIds {
+  aspectNameId: Scalars['UUID_NAMEID'];
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId?: Scalars['UUID_NAMEID'];
+  opportunityNameId?: Scalars['UUID_NAMEID'];
+}
+
+interface Provided {
   canReadComments: boolean;
   canPostComments: boolean;
   canDeleteMessage: (msgId: string) => boolean;
-}
-
-export interface AspectDashboardContainerEntities {
   aspect?: AspectDashboardFragment;
   messages: Comment[];
   commentId?: string;
-  permissions: AspectDashboardPermissions;
-}
-
-export interface AspectDashboardContainerActions {
+  creatorAvatar?: string;
+  creatorName?: string;
+  createdDate?: string;
   handlePostComment: (commentId: string, message: string) => void;
   handleDeleteComment: (commentId: string, messageId: string) => void;
-}
-
-export interface AspectDashboardContainerState {
   loading: boolean;
+  loadingCreator: boolean;
   error?: ApolloError;
   deletingComment?: boolean;
   postingComment?: boolean;
 }
-
-export interface AspectDashboardContainerProps
-  extends ContainerChildProps<
-    AspectDashboardContainerEntities,
-    AspectDashboardContainerActions,
-    AspectDashboardContainerState
-  > {
-  hubNameId: string;
-  challengeNameId?: string;
-  opportunityNameId?: string;
-  aspectNameId: string;
-}
+export type AspectDashboardContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
 const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
-  children,
   hubNameId,
   aspectNameId,
   challengeNameId = '',
   opportunityNameId = '',
+  ...rendered
 }) => {
   const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated } = useUserContext();
@@ -102,6 +96,15 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
+  const { data: creatorData, loading: loadingCreator } = useAspectCreatorQuery({
+    variables: { userId: aspect?.createdBy ?? '' },
+    skip: !aspect,
+  });
+  const creator = creatorData?.user;
+  const creatorAvatar = creator?.profile?.avatar?.uri;
+  const creatorName = creator?.displayName;
+  const createdDate = aspect?.createdDate.toString();
+
   const commentId = aspect?.comments?.id;
   const _messages = aspect?.comments?.messages ?? [];
   const senders = _messages.map(x => x.sender);
@@ -125,11 +128,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     [messages, user, isAuthenticated]
   );
 
-  const permissions: AspectDashboardPermissions = {
-    canReadComments: commentsPrivileges.includes(AuthorizationPrivilege.Read) ?? false,
-    canPostComments: commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) ?? false,
-    canDeleteMessage,
-  };
+  const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
+  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
   const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromAspectMutation({
     onError: handleError,
@@ -188,14 +188,23 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     });
   };
 
-  return (
-    <>
-      {children(
-        { aspect, permissions, messages, commentId },
-        { loading, error, postingComment, deletingComment },
-        { handlePostComment, handleDeleteComment }
-      )}
-    </>
-  );
+  return renderComponentOrChildrenFn(rendered, {
+    canReadComments,
+    canPostComments,
+    canDeleteMessage,
+    aspect,
+    messages,
+    commentId,
+    creatorAvatar,
+    creatorName,
+    createdDate,
+    handlePostComment,
+    handleDeleteComment,
+    loading,
+    loadingCreator,
+    error,
+    deletingComment,
+    postingComment,
+  });
 };
 export default AspectDashboardContainer;

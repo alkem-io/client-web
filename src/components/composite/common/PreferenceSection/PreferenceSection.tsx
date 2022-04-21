@@ -1,25 +1,21 @@
 import React, { FC } from 'react';
 import DashboardGenericSection from '../sections/DashboardGenericSection';
 import { FormControl, FormControlLabel, FormGroup, Skeleton, Switch } from '@mui/material';
-import {
-  ChallengePreferenceType,
-  OrganizationPreferenceType,
-  Preference,
-  UserPreferenceType,
-} from '../../../../models/graphql-schema';
-
-export type PreferenceTypes = UserPreferenceType | OrganizationPreferenceType | ChallengePreferenceType;
+import { Preference } from '../../../../models/graphql-schema';
+import { PreferenceTypes } from '../../../../models/preference-types';
 
 export interface PreferenceSectionProps {
   headerText: string;
   subHeaderText: string;
   preferences: Preference[];
   loading?: boolean;
+  submitting?: boolean;
   onUpdate: (id: string, type: PreferenceTypes, value: boolean) => void;
 }
 
 const PreferenceSection: FC<PreferenceSectionProps> = ({
   loading,
+  submitting,
   headerText,
   subHeaderText,
   preferences,
@@ -45,6 +41,7 @@ const PreferenceSection: FC<PreferenceSectionProps> = ({
                     checked={value !== 'false'}
                     name={definition.type}
                     onChange={(event, checked) => onUpdate(id, event.target.name as PreferenceTypes, checked)}
+                    disabled={submitting}
                   />
                 }
                 label={definition.description}

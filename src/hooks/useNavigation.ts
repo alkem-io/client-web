@@ -1,11 +1,17 @@
 import { useContext, useLayoutEffect } from 'react';
-import { NavigationContext } from '../context/NavigationProvider';
+import { NavigationContext, Path } from '../context/NavigationProvider';
 
-export const useUpdateNavigation = ({ currentPaths }) => {
+interface UseUpdateNavigationOptions {
+  currentPaths: Path[] | undefined;
+}
+
+export const useUpdateNavigation = ({ currentPaths }: UseUpdateNavigationOptions) => {
   const { set } = useContext(NavigationContext);
 
   useLayoutEffect(() => {
-    set(currentPaths);
+    if (currentPaths) {
+      set(currentPaths);
+    }
   }, [currentPaths]);
 };
 

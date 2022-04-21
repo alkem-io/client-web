@@ -894,6 +894,8 @@ export const AspectDashboardFragmentDoc = gql`
     type
     displayName
     description
+    createdBy
+    createdDate
     banner {
       ...VisualUri
     }
@@ -9394,50 +9396,6 @@ export type UserProfileQueryResult = Apollo.QueryResult<
 export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryVariables) {
   return { query: UserProfileDocument, variables: variables };
 }
-export const UsersDocument = gql`
-  query users($limit: Float, $shuffle: Boolean) {
-    users(limit: $limit, shuffle: $shuffle) {
-      ...UserDetails
-    }
-  }
-  ${UserDetailsFragmentDoc}
-`;
-
-/**
- * __useUsersQuery__
- *
- * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      shuffle: // value for 'shuffle'
- *   },
- * });
- */
-export function useUsersQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>(UsersDocument, options);
-}
-export function useUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>(UsersDocument, options);
-}
-export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
-export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
-export type UsersQueryResult = Apollo.QueryResult<SchemaTypes.UsersQuery, SchemaTypes.UsersQueryVariables>;
-export function refetchUsersQuery(variables?: SchemaTypes.UsersQueryVariables) {
-  return { query: UsersDocument, variables: variables };
-}
 export const UsersDisplayNameDocument = gql`
   query usersDisplayName($first: Int, $after: UUID) {
     usersPaginated(first: $first, after: $after) {
@@ -10921,6 +10879,65 @@ export type OpportunityAspectQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityAspectQuery(variables: SchemaTypes.OpportunityAspectQueryVariables) {
   return { query: OpportunityAspectDocument, variables: variables };
+}
+export const AspectCreatorDocument = gql`
+  query AspectCreator($userId: UUID_NAMEID_EMAIL!) {
+    user(ID: $userId) {
+      id
+      displayName
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useAspectCreatorQuery__
+ *
+ * To run a query within a React component, call `useAspectCreatorQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAspectCreatorQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAspectCreatorQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useAspectCreatorQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>(
+    AspectCreatorDocument,
+    options
+  );
+}
+export function useAspectCreatorLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AspectCreatorQuery, SchemaTypes.AspectCreatorQueryVariables>(
+    AspectCreatorDocument,
+    options
+  );
+}
+export type AspectCreatorQueryHookResult = ReturnType<typeof useAspectCreatorQuery>;
+export type AspectCreatorLazyQueryHookResult = ReturnType<typeof useAspectCreatorLazyQuery>;
+export type AspectCreatorQueryResult = Apollo.QueryResult<
+  SchemaTypes.AspectCreatorQuery,
+  SchemaTypes.AspectCreatorQueryVariables
+>;
+export function refetchAspectCreatorQuery(variables: SchemaTypes.AspectCreatorQueryVariables) {
+  return { query: AspectCreatorDocument, variables: variables };
 }
 export const UpdateAspectDocument = gql`
   mutation updateAspect($input: UpdateAspectInput!) {
@@ -14088,6 +14105,117 @@ export type UpdatePreferenceOnChallengeMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.UpdatePreferenceOnChallengeMutation,
   SchemaTypes.UpdatePreferenceOnChallengeMutationVariables
 >;
+export const HubPreferencesDocument = gql`
+  query hubPreferences($hubNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      preferences {
+        id
+        value
+        definition {
+          id
+          description
+          displayName
+          group
+          type
+          valueType
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHubPreferencesQuery__
+ *
+ * To run a query within a React component, call `useHubPreferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubPreferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubPreferencesQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *   },
+ * });
+ */
+export function useHubPreferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>(
+    HubPreferencesDocument,
+    options
+  );
+}
+export function useHubPreferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubPreferencesQuery, SchemaTypes.HubPreferencesQueryVariables>(
+    HubPreferencesDocument,
+    options
+  );
+}
+export type HubPreferencesQueryHookResult = ReturnType<typeof useHubPreferencesQuery>;
+export type HubPreferencesLazyQueryHookResult = ReturnType<typeof useHubPreferencesLazyQuery>;
+export type HubPreferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubPreferencesQuery,
+  SchemaTypes.HubPreferencesQueryVariables
+>;
+export function refetchHubPreferencesQuery(variables: SchemaTypes.HubPreferencesQueryVariables) {
+  return { query: HubPreferencesDocument, variables: variables };
+}
+export const UpdatePreferenceOnHubDocument = gql`
+  mutation updatePreferenceOnHub($preferenceData: UpdateHubPreferenceInput!) {
+    updatePreferenceOnHub(preferenceData: $preferenceData) {
+      id
+      value
+    }
+  }
+`;
+export type UpdatePreferenceOnHubMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdatePreferenceOnHubMutation,
+  SchemaTypes.UpdatePreferenceOnHubMutationVariables
+>;
+
+/**
+ * __useUpdatePreferenceOnHubMutation__
+ *
+ * To run a mutation, you first call `useUpdatePreferenceOnHubMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePreferenceOnHubMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePreferenceOnHubMutation, { data, loading, error }] = useUpdatePreferenceOnHubMutation({
+ *   variables: {
+ *      preferenceData: // value for 'preferenceData'
+ *   },
+ * });
+ */
+export function useUpdatePreferenceOnHubMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdatePreferenceOnHubMutation,
+    SchemaTypes.UpdatePreferenceOnHubMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdatePreferenceOnHubMutation,
+    SchemaTypes.UpdatePreferenceOnHubMutationVariables
+  >(UpdatePreferenceOnHubDocument, options);
+}
+export type UpdatePreferenceOnHubMutationHookResult = ReturnType<typeof useUpdatePreferenceOnHubMutation>;
+export type UpdatePreferenceOnHubMutationResult = Apollo.MutationResult<SchemaTypes.UpdatePreferenceOnHubMutation>;
+export type UpdatePreferenceOnHubMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdatePreferenceOnHubMutation,
+  SchemaTypes.UpdatePreferenceOnHubMutationVariables
+>;
 export const OrganizationPreferencesDocument = gql`
   query organizationPreferences($orgId: UUID_NAMEID!) {
     organization(ID: $orgId) {
@@ -14548,6 +14676,49 @@ export type UserCardsContainerQueryResult = Apollo.QueryResult<
 export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsContainerQueryVariables) {
   return { query: UserCardsContainerDocument, variables: variables };
 }
+export const UserListDocument = gql`
+  query userList {
+    users {
+      id
+      displayName
+      email
+    }
+  }
+`;
+
+/**
+ * __useUserListQuery__
+ *
+ * To run a query within a React component, call `useUserListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserListQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUserListQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
+}
+export function useUserListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
+}
+export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
+export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
+export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
+export function refetchUserListQuery(variables?: SchemaTypes.UserListQueryVariables) {
+  return { query: UserListDocument, variables: variables };
+}
 export const OpportunityProviderDocument = gql`
   query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -14901,3 +15072,124 @@ export type RemoveCommentFromAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveCommentFromAspectMutation,
   SchemaTypes.RemoveCommentFromAspectMutationVariables
 >;
+export const AvailableUsersDocument = gql`
+  query availableUsers {
+    users {
+      id
+      displayName
+    }
+  }
+`;
+
+/**
+ * __useAvailableUsersQuery__
+ *
+ * To run a query within a React component, call `useAvailableUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAvailableUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAvailableUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAvailableUsersQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>(
+    AvailableUsersDocument,
+    options
+  );
+}
+export function useAvailableUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AvailableUsersQuery, SchemaTypes.AvailableUsersQueryVariables>(
+    AvailableUsersDocument,
+    options
+  );
+}
+export type AvailableUsersQueryHookResult = ReturnType<typeof useAvailableUsersQuery>;
+export type AvailableUsersLazyQueryHookResult = ReturnType<typeof useAvailableUsersLazyQuery>;
+export type AvailableUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.AvailableUsersQuery,
+  SchemaTypes.AvailableUsersQueryVariables
+>;
+export function refetchAvailableUsersQuery(variables?: SchemaTypes.AvailableUsersQueryVariables) {
+  return { query: AvailableUsersDocument, variables: variables };
+}
+export const ContributingUsersDocument = gql`
+  query contributingUsers($limit: Float, $shuffle: Boolean) {
+    users(limit: $limit, shuffle: $shuffle) {
+      id
+      displayName
+      nameID
+      city
+      country
+      profile {
+        id
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useContributingUsersQuery__
+ *
+ * To run a query within a React component, call `useContributingUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributingUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributingUsersQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      shuffle: // value for 'shuffle'
+ *   },
+ * });
+ */
+export function useContributingUsersQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>(
+    ContributingUsersDocument,
+    options
+  );
+}
+export function useContributingUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributingUsersQuery,
+    SchemaTypes.ContributingUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>(
+    ContributingUsersDocument,
+    options
+  );
+}
+export type ContributingUsersQueryHookResult = ReturnType<typeof useContributingUsersQuery>;
+export type ContributingUsersLazyQueryHookResult = ReturnType<typeof useContributingUsersLazyQuery>;
+export type ContributingUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributingUsersQuery,
+  SchemaTypes.ContributingUsersQueryVariables
+>;
+export function refetchContributingUsersQuery(variables?: SchemaTypes.ContributingUsersQueryVariables) {
+  return { query: ContributingUsersDocument, variables: variables };
+}

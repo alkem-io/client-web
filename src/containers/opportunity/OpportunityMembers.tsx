@@ -105,7 +105,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
     loading,
     onLoadMore,
     isLastAvailableUserPage,
-  } = useAvailableMembers(entities.credential, entities.opportunityId, communityId, undefined, 3);
+  } = useAvailableMembers(entities.credential, entities.opportunityId, communityId);
 
   const handleLoadMore = onLoadMore;
 

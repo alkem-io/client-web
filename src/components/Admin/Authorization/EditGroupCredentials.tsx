@@ -72,8 +72,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
     credential,
     resourceId,
     parentCommunityId,
-    parentMembers,
-    3
+    parentMembers
   );
 
   return (

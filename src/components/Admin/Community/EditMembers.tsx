@@ -105,7 +105,7 @@ export const EditMembers: FC<EditMembersProps> = ({
             {filteredMembers => (
               <Root>
                 <hr />
-                <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
+                <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
                   <Table size="small">
                     <TableHead className={classes.thead}>
                       <TableRow>
@@ -165,7 +165,7 @@ export const EditMembers: FC<EditMembersProps> = ({
               return (
                 <Root>
                   <hr />
-                  <Box component={'div'} height={TABLE_HEIGHT} overflow={'auto'}>
+                  <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
                     <TableContainer>
                       <Table size="small" style={{ position: 'relative' }}>
                         <TableHead className={classes.thead}>

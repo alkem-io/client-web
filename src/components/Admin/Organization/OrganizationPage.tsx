@@ -43,7 +43,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
     [paths]
   );
   const notify = useNotification();
-  const navigateToEdit = useNavigateToEdit();
+  const navigateToEdit = useNavigateToEdit({ editRoute: 'context' });
   const [createTagset] = useCreateTagsetOnProfileMutation({
     // Just log the error. Do not send it to the notification handler.
     // there is an issue handling multiple snackbars.

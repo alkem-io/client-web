@@ -3,19 +3,24 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useUpdateNavigation } from '../../hooks';
-import { PageProps } from '../../pages';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
 import SearchableList, { SearchableListItem } from './SearchableList';
+import { Path } from '../../context/NavigationProvider';
 
-interface ListPageProps extends PageProps {
+interface ListPageProps {
   data: SearchableListItem[];
   title?: string;
   newLink?: string;
   onDelete?: (item: SearchableListItem) => void;
+  loading?: boolean;
+  // TODO Manipulating navigation from a simple view is bad design.
+  // We should only touch top-level UI parts from top-level components,
+  // that are aware of the app structure / rendering context, i.e. Pages.
+  paths?: Path[];
 }
 
-export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDelete }) => {
+export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDelete, loading }) => {
   const { t } = useTranslation();
   useUpdateNavigation({ currentPaths: paths });
 
@@ -32,7 +37,7 @@ export const ListPage: FC<ListPageProps> = ({ data, paths, title, newLink, onDel
         </Grid>
       )}
       <Grid item xs={10}>
-        <SearchableList data={data} onDelete={onDelete} />
+        <SearchableList data={data} onDelete={onDelete} loading={loading} />
       </Grid>
     </Grid>
   );
