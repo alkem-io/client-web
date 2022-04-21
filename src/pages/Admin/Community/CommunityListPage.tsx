@@ -1,18 +1,18 @@
-import React, { FC, useMemo } from 'react';
-import { useResolvedPath } from 'react-router-dom';
+import React, { FC } from 'react';
 
 import { ListPage } from '../../../components/Admin';
 import { Loading } from '../../../components/core';
 import { useDeleteUserGroup, useHub } from '../../../hooks';
 import { useCommunityGroupsQuery } from '../../../hooks/generated/graphql';
-import { PageProps } from '../../common';
+import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
+import { useTranslation } from 'react-i18next';
 
-interface CommunityGroupListPageProps extends PageProps {
+interface CommunityGroupListPageProps {
   communityId: string;
 }
 
-export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ paths, communityId }) => {
-  const { pathname: url } = useResolvedPath('.');
+export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ communityId }) => {
+  const { t } = useTranslation();
   const { hubId, loading: loadingHub } = useHub();
 
   const { data, loading } = useCommunityGroupsQuery({
@@ -21,22 +21,22 @@ export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ paths,
       communityId,
     },
   });
-  const currentPaths = useMemo(() => [...paths, { value: url, name: 'groups', real: true }], [paths, url]);
   const { handleDelete } = useDeleteUserGroup();
 
   const community = data?.hub.community;
-  const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `${url}/${u.id}` })) || [];
+  const groupsList = community?.groups?.map(u => ({ id: u.id, value: u.name, url: `groups/${u.id}` })) || [];
 
   if (loading || loadingHub) return <Loading />;
 
   return (
-    <ListPage
-      data={groupsList}
-      paths={currentPaths}
-      title={community ? `${community?.displayName} Groups` : 'Groups'}
-      onDelete={x => handleDelete(x.id)}
-      newLink={`${url}/new`}
-    />
+    <DashboardGenericSection headerText={t('common.groups')}>
+      <ListPage
+        data={groupsList}
+        title={community ? `${community?.displayName} Groups` : 'Groups'}
+        onDelete={x => handleDelete(x.id)}
+        newLink="groups/new"
+      />
+    </DashboardGenericSection>
   );
 };
 

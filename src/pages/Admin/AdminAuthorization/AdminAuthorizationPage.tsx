@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { managementData } from '../../../components/Admin/managementData';
 import AdminLayout from '../../../components/composite/layout/AdminLayout/AdminLayout';
 import { PageProps } from '../../common';
 import { Container, Grid } from '@mui/material';
@@ -8,10 +7,20 @@ import Button from '../../../components/core/Button';
 import { Link as RouterLink } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';
 import { AdminSection } from '../../../components/composite/layout/AdminLayout/constants';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
 
 interface AdminAuthorizationPageProps extends PageProps {}
 
-const { buttons } = managementData.adminLvl.find(({ name }) => name === 'Authorization')!;
+const buttons = [
+  {
+    description: 'Global admins',
+    url: `authorization/${AuthorizationCredential.GlobalAdmin}`,
+  },
+  {
+    description: 'Global community admins',
+    url: `authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
+  },
+];
 
 const AdminAuthorizationPage: FC<AdminAuthorizationPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
