@@ -21,7 +21,7 @@ const AspectReviewStep: FC<AspectReviewStepProps> = ({ aspect }) => {
       <LabelRow title={t('components.aspect-creation.create-step.type')} spacer={false}>
         {type}
       </LabelRow>
-      <LabelRow title={t('components.aspect-creation.create-step.name')}>{displayName}</LabelRow>
+      <LabelRow title={t('common.title')}>{displayName}</LabelRow>
       <LabelRow title={t('components.aspect-creation.create-step.description')}>
         <Typography component={Markdown}>{description}</Typography>
       </LabelRow>
