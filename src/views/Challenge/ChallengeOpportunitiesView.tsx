@@ -44,7 +44,7 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
     );
   }
 
-  if (opportunities.length <= 0)
+  if (opportunities.length <= 0) {
     return (
       <>
         {description}
@@ -53,6 +53,8 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
         </Box>
       </>
     );
+  }
+
   return (
     <>
       {description}

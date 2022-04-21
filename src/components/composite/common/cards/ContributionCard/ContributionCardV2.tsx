@@ -3,9 +3,10 @@ import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
-import Typography from '../../../../core/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
 import TagLabel from '../../TagLabel/TagLabel';
+import Typography from '@mui/material/Typography';
+import { fontWeight } from '../../../../core/Typography';
 
 type mediaSize = 'small' | 'medium' | 'large';
 
@@ -73,12 +74,14 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
   })
 );
 
+const EMPTY = [];
+
 const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = false, classes, options, children }) => {
   const {
     headerText = '',
     labelText,
     labelAboveTitle,
-    tags = [],
+    tags = EMPTY,
     mediaUrl,
     mediaSize = 'medium',
     url = '',
@@ -108,7 +111,7 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
         {loading ? (
           <Skeleton variant="rectangular" animation="wave" />
         ) : (
-          <LabelAndTitleComponent
+          <LabelAndTitle
             headerText={headerText}
             labelText={labelText}
             labelAboveTitle={labelAboveTitle}
@@ -138,7 +141,7 @@ interface LabelAndTitleComponentProps {
   classes?: ContributionCardV2Props['classes'];
 }
 
-const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
+const LabelAndTitle: FC<LabelAndTitleComponentProps> = ({
   headerText,
   labelText,
   labelAboveTitle,
@@ -146,6 +149,12 @@ const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
   mediaSize,
 }) => {
   const styles = useStyles({ mediaSize });
+  const title = (
+    <Typography color="primary" className={styles.textClamp} noWrap sx={{ fontWeight: fontWeight.boldLight }}>
+      {headerText}
+    </Typography>
+  );
+
   return labelAboveTitle ? (
     <Box display="flex" sx={{ flexDirection: 'column' }}>
       {labelText && (
@@ -153,15 +162,11 @@ const LabelAndTitleComponent: FC<LabelAndTitleComponentProps> = ({
           {labelText}
         </TagLabel>
       )}
-      <Typography color="primary" weight="boldLight" className={styles.textClamp}>
-        {headerText}
-      </Typography>
+      {title}
     </Box>
   ) : (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <Typography color="primary" weight="boldLight" className={styles.textClamp}>
-        {headerText}
-      </Typography>
+      {title}
       {labelText && <TagLabel className={classes?.label}>{labelText}</TagLabel>}
     </Box>
   );
