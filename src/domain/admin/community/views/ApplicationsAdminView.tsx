@@ -2,11 +2,12 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { TFunction } from 'i18next';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useUpdateNavigation } from '../../../hooks';
-import { useEventOnApplicationMutation } from '../../../hooks/generated/graphql';
-import { ApplicationInfoFragment } from '../../../models/graphql-schema';
-import { PageProps } from '../../../pages';
-import { ApplicationDialog } from '../../composite';
+import { useApolloErrorHandler } from '../../../../hooks';
+import { useEventOnApplicationMutation } from '../../../../hooks/generated/graphql';
+import { ApplicationInfoFragment } from '../../../../models/graphql-schema';
+import { ApplicationDialog } from '../../../../components/composite';
+import { Box } from '@mui/material';
+import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
 
 interface ApplicationViewmodel {
   id: string;
@@ -23,17 +24,14 @@ const toApplicationViewmodel = (applications: ApplicationInfoFragment[]): Applic
     state: x.lifecycle?.state || '',
   }));
 
-interface ApplicationPageProps extends PageProps {
+interface ApplicationsAdminViewProps {
   applications: ApplicationInfoFragment[];
 }
 
-export const ApplicationPage: FC<ApplicationPageProps> = ({ paths, applications }) => {
+export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applications }) => {
   const { t } = useTranslation();
 
   const [appChosen, setAppChosen] = useState<ApplicationInfoFragment | undefined>(undefined);
-
-  const currentPaths = useMemo(() => [...paths, { name: 'applications', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
 
   const applicationsVm = useMemo(() => toApplicationViewmodel(applications), [applications]);
 
@@ -54,13 +52,15 @@ export const ApplicationPage: FC<ApplicationPageProps> = ({ paths, applications 
     });
   };
 
+  const columnDefinitions = useMemo(() => getColumnDefinitions(t), [t]);
+
   return (
-    <>
-      <div style={{ height: 400 }}>
+    <DashboardGenericSection headerText={t('common.applications')}>
+      <Box height={400}>
         <DataGrid
           disableSelectionOnClick
           rows={applicationsVm}
-          columns={colDef(t)}
+          columns={columnDefinitions}
           density="compact"
           hideFooter={true}
           disableColumnSelector={true}
@@ -69,16 +69,16 @@ export const ApplicationPage: FC<ApplicationPageProps> = ({ paths, applications 
             setAppChosen(applications.find(x => x.id === appId));
           }}
         />
-      </div>
+      </Box>
       {appChosen && (
         <ApplicationDialog app={appChosen} onHide={() => setAppChosen(undefined)} onSetNewState={setNewStateHandler} />
       )}
-    </>
+    </DashboardGenericSection>
   );
 };
-export default ApplicationPage;
+export default ApplicationsAdminView;
 
-const colDef = (t: TFunction) =>
+const getColumnDefinitions = (t: TFunction) =>
   [
     {
       field: 'username',
