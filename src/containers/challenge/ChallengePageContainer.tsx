@@ -10,6 +10,7 @@ import { Discussion } from '../../models/discussion/discussion';
 import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../utils/get-activity-count';
 import { ActivityType } from '../../models/constants';
+import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 
 export interface ChallengeContainerEntities {
   hubId: string;
@@ -86,12 +87,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   }, [_challenge]);
 
   const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
-  const aspectsCount = useMemo(() => {
-    const stringValue = _challenge?.hub.challenge.activity?.find(
-      activity => activity.name === ActivityType.Aspect
-    )?.value;
-    return Number(stringValue);
-  }, [_challenge?.hub.challenge.activity]);
+  const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
   return (
     <>
