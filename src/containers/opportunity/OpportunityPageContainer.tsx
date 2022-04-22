@@ -18,7 +18,7 @@ import {
 import getActivityCount from '../../utils/get-activity-count';
 import { replaceAll } from '../../utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
-import { ActivityType } from '../../models/constants';
+import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 
 export interface OpportunityContainerEntities {
   opportunity: OpportunityPageFragment;
@@ -178,10 +178,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     return projectList;
   }, [projects, onProjectTransition, permissions.projectWrite, t]);
 
-  const aspectsCount = useMemo(() => {
-    const stringValue = _activity.find(activity => activity.name === ActivityType.Aspect)?.value;
-    return Number(stringValue);
-  }, [_activity]);
+  const aspectsCount = useAspectsCount(_activity);
 
   return (
     <>

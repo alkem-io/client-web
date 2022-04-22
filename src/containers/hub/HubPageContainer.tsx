@@ -15,6 +15,7 @@ import getActivityCount from '../../utils/get-activity-count';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../models/discussion/discussion';
 import { ActivityType } from '../../models/constants';
+import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -97,10 +98,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
   const aspects = _hub?.hub.context?.aspects ?? EMPTY;
-  const aspectsCount = useMemo(() => {
-    const stringValue = _hub?.hub.activity?.find(activity => activity.name === ActivityType.Aspect)?.value;
-    return Number(stringValue);
-  }, [_hub?.hub.activity]);
+  const aspectsCount = useAspectsCount(_hub?.hub.activity);
 
   return (
     <>
