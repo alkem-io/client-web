@@ -1089,5 +1089,13 @@
   "associates-view": {
     "less": "show less",
     "more": "...plus {{count}} more"
+  },
+  "admin": {
+    "tab-explanation-header": {
+      "profile": "Here you can edit profile for this {{entity}}.",
+      "challenges": "Here you can edit challenges for this {{entity}}.",
+      "opportunities": "Here you can edit opportunities for this {{entity}}.",
+      "generic": "Here you can tweak {{section}} settings for this {{entity}}."
+    }
   }
 }

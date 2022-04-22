@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
-import AdminLayout from '../../../components/composite/layout/AdminLayout/AdminLayout';
+import AdminLayout from '../../../domain/admin/toplevel/AdminLayout';
 import { PageProps } from '../../common';
 import { Container, Grid } from '@mui/material';
 import Card from '../../../components/core/Card';
 import Button from '../../../components/core/Button';
 import { Link as RouterLink } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';
-import { AdminSection } from '../../../components/composite/layout/AdminLayout/constants';
+import { AdminSection } from '../../../domain/admin/toplevel/constants';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 
 interface AdminAuthorizationPageProps extends PageProps {}

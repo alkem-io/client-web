@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import ChallengeSettingsLayout from '../../../../components/composite/layout/ChallengeSettingsLayout/ChallengeSettingsLayout';
-import { SettingsSection } from '../../../../components/composite/layout/EntitySettingsLayout/constants';
+import ChallengeSettingsLayout from '../../../../domain/admin/challenge/ChallengeSettingsLayout';
+import { SettingsSection } from '../../../../domain/admin/layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../../../../components/composite/layout/EntitySettingsLayout/types';
+import { SettingsPageProps } from '../../../../domain/admin/layout/EntitySettings/types';
 import ChallengeAuthorizationView from './ChallengeAuthorizationView';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';

@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import HubList from '../Hub/HubList';
-import AdminLayout from '../../../components/composite/layout/AdminLayout/AdminLayout';
+import AdminLayout from '../../../domain/admin/toplevel/AdminLayout';
 import { PageProps } from '../../common';
-import { AdminSection } from '../../../components/composite/layout/AdminLayout/constants';
+import { AdminSection } from '../../../domain/admin/toplevel/constants';
 
 interface AdminDashboardPageProps extends PageProps {}
 

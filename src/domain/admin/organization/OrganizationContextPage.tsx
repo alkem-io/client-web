@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import OrganizationAdminLayout from './OrganizationAdminLayout';
-import { SettingsSection } from '../../../components/composite/layout/EntitySettingsLayout/constants';
+import { SettingsSection } from '../layout/EntitySettings/constants';
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
 import { EditMode } from '../../../models/editMode';
-import { SettingsPageProps } from '../../../components/composite/layout/EntitySettingsLayout/types';
+import { SettingsPageProps } from '../layout/EntitySettings/types';
 
 const OrganizationContextPage: FC<SettingsPageProps> = ({ paths }) => {
   return (
