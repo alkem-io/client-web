@@ -24,12 +24,15 @@ const SearchBar = () => {
     return state.matches('visible');
   });
 
-  const renderUserProfileSegment = () => (
-    <>
-      {!isAuthenticated && <SignInSegment />}
-      {isUserSegmentVisible && user && <UserSegment userMetadata={user} emailVerified={verified} />}
-    </>
-  );
+  const renderUserProfileSegment = () => {
+    if (loading) {
+      return <Skeleton />;
+    }
+    if (!isAuthenticated) {
+      return <SignInSegment />;
+    }
+    return isUserSegmentVisible && user && <UserSegment userMetadata={user} emailVerified={verified} />;
+  };
 
   return (
     <Container maxWidth={breakpoint}>
@@ -51,7 +54,7 @@ const SearchBar = () => {
         <Link to="/help">
           <HelpOutlineIcon color="primary" />
         </Link>
-        <Box width={155}>{loading ? <Skeleton /> : renderUserProfileSegment()}</Box>
+        <Box width={155}>{renderUserProfileSegment()}</Box>
       </Box>
     </Container>
   );
