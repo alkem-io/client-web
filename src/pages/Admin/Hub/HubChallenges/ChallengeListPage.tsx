@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import HubSettingsLayout from '../../../../components/composite/layout/HubSettingsLayout/HubSettingsLayout';
-import { SettingsSection } from '../../../../components/composite/layout/EntitySettingsLayout/constants';
+import HubSettingsLayout from '../../../../domain/admin/hub/HubSettingsLayout';
+import { SettingsSection } from '../../../../domain/admin/layout/EntitySettings/constants';
 import ChallengeListView from './ChallengeListView';
-import { SettingsPageProps } from '../../../../components/composite/layout/EntitySettingsLayout/types';
+import { SettingsPageProps } from '../../../../domain/admin/layout/EntitySettings/types';
 
 const ChallengeListPage: FC<SettingsPageProps> = ({ paths, routePrefix }) => {
   return (
