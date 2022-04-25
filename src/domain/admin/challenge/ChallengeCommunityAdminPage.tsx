@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import ChallengeSettingsLayout from '../../../components/composite/layout/ChallengeSettingsLayout/ChallengeSettingsLayout';
-import { SettingsSection } from '../../../components/composite/layout/EntitySettingsLayout/constants';
+import ChallengeSettingsLayout from './ChallengeSettingsLayout';
+import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../../../components/composite/layout/EntitySettingsLayout/types';
+import { SettingsPageProps } from '../layout/EntitySettings/types';
 import LeadingOrganizationView from './views/LeadingOrganizationView';
 import CommunityAdminView from '../community/views/CommunityAdminView';
 import { useChallenge, useHub } from '../../../hooks';

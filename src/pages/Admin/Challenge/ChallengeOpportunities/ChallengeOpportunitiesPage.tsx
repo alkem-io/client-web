@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import ChallengeSettingsLayout from '../../../../components/composite/layout/ChallengeSettingsLayout/ChallengeSettingsLayout';
-import { SettingsSection } from '../../../../components/composite/layout/EntitySettingsLayout/constants';
+import ChallengeSettingsLayout from '../../../../domain/admin/challenge/ChallengeSettingsLayout';
+import { SettingsSection } from '../../../../domain/admin/layout/EntitySettings/constants';
 import OpportunityList from '../../Opportunity/OpportunityList';
-import { SettingsPageProps } from '../../../../components/composite/layout/EntitySettingsLayout/types';
+import { SettingsPageProps } from '../../../../domain/admin/layout/EntitySettings/types';
 
 const ChallengeOpportunitiesPage: FC<SettingsPageProps> = ({ paths, routePrefix }) => {
   return (
