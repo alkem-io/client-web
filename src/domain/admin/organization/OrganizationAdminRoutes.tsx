@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath, Navigate } from 'react-router-dom';
 import { useOrganization } from '../../../hooks';
 import { Error404, PageProps } from '../../../pages';
-import OrganizationContextPage from './OrganizationContextPage';
+import OrganizationProfilePage from './OrganizationProfilePage';
 import { OrganizationGroupsRoute } from './OrganizationGroupsRoute';
 import OrganizationCommunityPage from './OrganizationCommunityPage';
 import OrganizationAuthorizationPage from './OrganizationAuthorizationPage';
@@ -16,8 +16,8 @@ const OrganizationAdminRoutes: FC<PageProps> = ({ paths }) => {
 
   return (
     <Routes>
-      <Route index element={<Navigate to="context" replace />} />
-      <Route path="context" element={<OrganizationContextPage paths={currentPaths} />} />
+      <Route index element={<Navigate to="profile" replace />} />
+      <Route path="profile" element={<OrganizationProfilePage paths={currentPaths} />} />
       <Route path="community" element={<OrganizationCommunityPage paths={currentPaths} />} />
       <Route path="community/groups/*" element={<OrganizationGroupsRoute paths={currentPaths} />} />
       <Route path="authorization" element={<OrganizationAuthorizationPage paths={currentPaths} />} />

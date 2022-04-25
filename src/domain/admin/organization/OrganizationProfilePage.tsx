@@ -5,12 +5,12 @@ import OrganizationPage from '../../../components/Admin/Organization/Organizatio
 import { EditMode } from '../../../models/editMode';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 
-const OrganizationContextPage: FC<SettingsPageProps> = ({ paths }) => {
+const OrganizationProfilePage: FC<SettingsPageProps> = ({ paths }) => {
   return (
-    <OrganizationAdminLayout currentTab={SettingsSection.Context}>
+    <OrganizationAdminLayout currentTab={SettingsSection.Profile}>
       <OrganizationPage mode={EditMode.edit} paths={paths} />
     </OrganizationAdminLayout>
   );
 };
 
-export default OrganizationContextPage;
+export default OrganizationProfilePage;

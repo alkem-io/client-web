@@ -3,7 +3,7 @@ import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants'
 import { useOrganization } from '../../../hooks';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
 
-const tabs = [SettingsSection.Context, SettingsSection.Community, SettingsSection.Authorization].map(section => {
+const tabs = [SettingsSection.Profile, SettingsSection.Community, SettingsSection.Authorization].map(section => {
   return CommonTabs.find(tab => tab.section === section)!;
 });
 
