@@ -1091,11 +1091,20 @@
     "more": "...plus {{count}} more"
   },
   "admin": {
-    "tab-explanation-header": {
-      "profile": "Here you can edit profile for this {{entity}}.",
-      "challenges": "Here you can edit challenges for this {{entity}}.",
-      "opportunities": "Here you can edit opportunities for this {{entity}}.",
-      "generic": "Here you can tweak {{section}} settings for this {{entity}}."
-    }
+    "generic": {
+      "profile": { "explanation": "Here you can edit profile for this {{entity}}." },
+      "context": { "explanation": "Here you can edit context for this {{entity}}." },
+      "community": { "explanation": "Here you can edit community settings for this {{entity}}." },
+      "communications": { "explanation": "Here you can post updates about this {{entity}}." },
+      "authorization": { "explanation": "Here you can tweak authorization settings for this {{entity}}." }
+    },
+    "hub": {
+      "challenges": { "explanation": "Here you can edit challenges for this hub." }
+    },
+    "challenge": {
+      "opportunities": { "explanation": "Here you can edit opportunities for this hub." }
+    },
+    "opportunity": {},
+    "organization": {}
   }
 }

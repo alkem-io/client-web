@@ -31,14 +31,9 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   type TLabel = Parameters<typeof t>[0];
 
   const tabExplanationHeader = t(
-    [
-      `admin.tab-explanation-header.${entityTypeName}.${currentTab}`,
-      `admin.tab-explanation-header.${currentTab}`,
-      'admin.tab-explanation-header.generic',
-    ] as TLabel,
+    [`admin.${entityTypeName}.${currentTab}.explanation`, `admin.generic.${currentTab}.explanation`] as TLabel,
     {
-      section: t(`common.${currentTab}` as const),
-      entity: t(`common.${entityTypeName}` as const),
+      entity: t(`common.${entityTypeName}` as const).toLowerCase(),
     }
   );
 
