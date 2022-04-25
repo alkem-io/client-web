@@ -20,7 +20,7 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   entityTypeName,
   tabs,
   currentTab,
-  tabRoutePrefix,
+  tabRoutePrefix = '../',
   children,
   ...entityTitleProps
 }) => {
