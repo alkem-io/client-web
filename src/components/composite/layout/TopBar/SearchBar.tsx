@@ -12,6 +12,8 @@ import { Link } from 'react-router-dom';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SignInSegment from '../../../../domain/session/SignInSegment';
 
+const USER_SEGMENT_MAX_WIDTH = '16.5rem'; // approx. 25 characters
+
 const SearchBar = () => {
   const { user, verified, isAuthenticated, loading } = useUserContext();
   const breakpoint = useCurrentBreakpoint();
@@ -26,12 +28,23 @@ const SearchBar = () => {
 
   const renderUserProfileSegment = () => {
     if (loading) {
-      return <Skeleton />;
+      return <Skeleton sx={{ flexBasis: '9.5rem', flexShrink: 1 }} />;
     }
     if (!isAuthenticated) {
       return <SignInSegment />;
     }
-    return isUserSegmentVisible && user && <UserSegment userMetadata={user} emailVerified={verified} />;
+    return (
+      isUserSegmentVisible &&
+      user && (
+        <UserSegment
+          flexShrink={1}
+          minWidth={0}
+          maxWidth={USER_SEGMENT_MAX_WIDTH}
+          userMetadata={user}
+          emailVerified={verified}
+        />
+      )
+    );
   };
 
   return (
@@ -50,11 +63,11 @@ const SearchBar = () => {
             <TopSearchComponent />
           </Box>
         </Hidden>
-        <LanguageSelect />
+        <LanguageSelect sx={{ flexShrink: 0 }} />
         <Link to="/help">
           <HelpOutlineIcon color="primary" />
         </Link>
-        <Box width={155}>{renderUserProfileSegment()}</Box>
+        {renderUserProfileSegment()}
       </Box>
     </Container>
   );

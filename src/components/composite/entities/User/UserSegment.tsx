@@ -1,7 +1,7 @@
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
+import { Box, BoxProps, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
 import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Person from '@mui/icons-material/Person';
-import React, { FC, useMemo, useRef, useState } from 'react';
+import React, { ElementType, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { UserMetadata } from '../../../../hooks';
@@ -16,24 +16,28 @@ const classes = {
   userHeader: `${PREFIX}-userHeader`,
 };
 
-const Root = styled('div')(({ theme }) => ({
+const PopoverRoot = styled('div')(({ theme }) => ({
   [`& .${classes.userHeader}`]: {
     background: theme.palette.neutralLight.main,
     padding: theme.spacing(2, 4),
   },
 }));
 
-interface UserSegmentProps {
+type UserSegmentProps<El extends ElementType> = BoxProps<El> & {
   userMetadata: UserMetadata;
   emailVerified: boolean;
-}
+};
 
-const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
+const UserSegment = <El extends ElementType>({
+  userMetadata,
+  emailVerified,
+  ...userBoxProps
+}: UserSegmentProps<El>) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const popoverAnchor = useRef(null);
+  const popoverAnchor = useRef<HTMLDivElement>(null);
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
@@ -50,8 +54,9 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
         name={user.displayName}
         title={role}
         src={user.profile?.avatar?.uri}
-        ref={popoverAnchor as any}
+        ref={popoverAnchor}
         onClick={() => setDropdownOpen(true)}
+        {...userBoxProps}
       />
       <Popover
         open={dropdownOpen}
@@ -66,7 +71,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
           horizontal: 'center',
         }}
       >
-        <Root>
+        <PopoverRoot>
           <Box display="flex" flexDirection={'column'} maxWidth={280}>
             <Box display="flex" flexDirection="column" alignItems="center" className={classes.userHeader}>
               <Avatar size={'lg'} src={user.profile?.avatar?.uri} />
@@ -102,7 +107,7 @@ const UserSegment: FC<UserSegmentProps> = ({ userMetadata, emailVerified }) => {
               </ListItemButton>
             </List>
           </Box>
-        </Root>
+        </PopoverRoot>
       </Popover>
     </>
   );
