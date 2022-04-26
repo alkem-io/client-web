@@ -32,17 +32,18 @@ const Root = styled(Box)(({ theme }) => ({
   },
 }));
 
-interface UserProps extends BoxProps {
+export interface UserProps extends BoxProps {
   name: string;
   title: string;
   src: string | undefined;
   onClick?: () => void;
+  userNameProps?: BoxProps;
 }
 
-const User = forwardRef<HTMLDivElement, UserProps>(({ name, title, src, ...boxProps }, ref) => {
+const User = forwardRef<HTMLDivElement, UserProps>(({ name, title, src, userNameProps, ...boxProps }, ref) => {
   return (
     <Root ref={ref} display="flex" {...boxProps}>
-      <Box display="flex" flexDirection="column" flexWrap="nowrap" flexShrink={1} minWidth={0}>
+      <Box flexDirection="column" flexWrap="nowrap" flexShrink={1} minWidth={0} {...userNameProps}>
         <Typography
           variant="caption"
           color="neutral.main"

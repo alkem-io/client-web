@@ -8,7 +8,7 @@ import { UserMetadata } from '../../../../hooks';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
 import Typography from '../../../core/Typography';
-import User from './User';
+import User, { UserProps } from './User';
 
 const PREFIX = 'UserSegment';
 
@@ -26,6 +26,7 @@ const PopoverRoot = styled('div')(({ theme }) => ({
 type UserSegmentProps<El extends ElementType> = BoxProps<El> & {
   userMetadata: UserMetadata;
   emailVerified: boolean;
+  userNameProps?: UserProps['userNameProps'];
 };
 
 const UserSegment = <El extends ElementType>({
