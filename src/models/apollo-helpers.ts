@@ -1020,59 +1020,23 @@ export type OryConfigFieldPolicy = {
   issuer?: FieldPolicy<any> | FieldReadFunction<any>;
   kratosPublicBaseURL?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type PaginatedUserKeySpecifier = (
-  | 'accountUpn'
-  | 'agent'
-  | 'authorization'
-  | 'city'
-  | 'communityRooms'
-  | 'country'
-  | 'directRooms'
-  | 'displayName'
-  | 'email'
-  | 'firstName'
-  | 'gender'
-  | 'id'
-  | 'lastName'
-  | 'nameID'
-  | 'phone'
-  | 'preferences'
-  | 'profile'
-  | PaginatedUserKeySpecifier
-)[];
-export type PaginatedUserFieldPolicy = {
-  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  city?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  country?: FieldPolicy<any> | FieldReadFunction<any>;
-  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  email?: FieldPolicy<any> | FieldReadFunction<any>;
-  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
-  gender?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  phone?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type PaginatedUserEdgeKeySpecifier = ('node' | PaginatedUserEdgeKeySpecifier)[];
-export type PaginatedUserEdgeFieldPolicy = {
-  node?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type PaginatedUserPageInfoKeySpecifier = (
+export type PageInfoKeySpecifier = (
   | 'endCursor'
   | 'hasNextPage'
+  | 'hasPreviousPage'
   | 'startCursor'
-  | PaginatedUserPageInfoKeySpecifier
+  | PageInfoKeySpecifier
 )[];
-export type PaginatedUserPageInfoFieldPolicy = {
+export type PageInfoFieldPolicy = {
   endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
   hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedUsersKeySpecifier = ('pageInfo' | 'users' | PaginatedUsersKeySpecifier)[];
+export type PaginatedUsersFieldPolicy = {
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformKeySpecifier = (
   | 'about'
@@ -1250,10 +1214,61 @@ export type RelationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type RelayStylePaginatedUserKeySpecifier = ('edges' | 'pageInfo' | RelayStylePaginatedUserKeySpecifier)[];
-export type RelayStylePaginatedUserFieldPolicy = {
-  edges?: FieldPolicy<any> | FieldReadFunction<any>;
-  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+export type RelayPaginatedUserKeySpecifier = (
+  | 'accountUpn'
+  | 'agent'
+  | 'authorization'
+  | 'city'
+  | 'communityRooms'
+  | 'country'
+  | 'directRooms'
+  | 'displayName'
+  | 'email'
+  | 'firstName'
+  | 'gender'
+  | 'id'
+  | 'lastName'
+  | 'nameID'
+  | 'phone'
+  | 'preferences'
+  | 'profile'
+  | RelayPaginatedUserKeySpecifier
+)[];
+export type RelayPaginatedUserFieldPolicy = {
+  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
+  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  gender?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  phone?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RelayPaginatedUserEdgeKeySpecifier = ('node' | RelayPaginatedUserEdgeKeySpecifier)[];
+export type RelayPaginatedUserEdgeFieldPolicy = {
+  node?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type RelayPaginatedUserPageInfoKeySpecifier = (
+  | 'endCursor'
+  | 'hasNextPage'
+  | 'hasPreviousPage'
+  | 'startCursor'
+  | RelayPaginatedUserPageInfoKeySpecifier
+)[];
+export type RelayPaginatedUserPageInfoFieldPolicy = {
+  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SearchResultEntryKeySpecifier = ('result' | 'score' | 'terms' | SearchResultEntryKeySpecifier)[];
 export type SearchResultEntryFieldPolicy = {
@@ -1349,6 +1364,45 @@ export type UserKeySpecifier = (
   | UserKeySpecifier
 )[];
 export type UserFieldPolicy = {
+  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
+  agent?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
+  gender?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  phone?: FieldPolicy<any> | FieldReadFunction<any>;
+  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type User1KeySpecifier = (
+  | 'accountUpn'
+  | 'agent'
+  | 'authorization'
+  | 'city'
+  | 'communityRooms'
+  | 'country'
+  | 'directRooms'
+  | 'displayName'
+  | 'email'
+  | 'firstName'
+  | 'gender'
+  | 'id'
+  | 'lastName'
+  | 'nameID'
+  | 'phone'
+  | 'preferences'
+  | 'profile'
+  | User1KeySpecifier
+)[];
+export type User1FieldPolicy = {
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1750,17 +1804,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | OryConfigKeySpecifier | (() => undefined | OryConfigKeySpecifier);
     fields?: OryConfigFieldPolicy;
   };
-  PaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PaginatedUserKeySpecifier | (() => undefined | PaginatedUserKeySpecifier);
-    fields?: PaginatedUserFieldPolicy;
+  PageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
+    fields?: PageInfoFieldPolicy;
   };
-  PaginatedUserEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PaginatedUserEdgeKeySpecifier | (() => undefined | PaginatedUserEdgeKeySpecifier);
-    fields?: PaginatedUserEdgeFieldPolicy;
-  };
-  PaginatedUserPageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | PaginatedUserPageInfoKeySpecifier | (() => undefined | PaginatedUserPageInfoKeySpecifier);
-    fields?: PaginatedUserPageInfoFieldPolicy;
+  PaginatedUsers?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedUsersKeySpecifier | (() => undefined | PaginatedUsersKeySpecifier);
+    fields?: PaginatedUsersFieldPolicy;
   };
   Platform?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PlatformKeySpecifier | (() => undefined | PlatformKeySpecifier);
@@ -1813,9 +1863,20 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | RelationKeySpecifier | (() => undefined | RelationKeySpecifier);
     fields?: RelationFieldPolicy;
   };
-  RelayStylePaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | RelayStylePaginatedUserKeySpecifier | (() => undefined | RelayStylePaginatedUserKeySpecifier);
-    fields?: RelayStylePaginatedUserFieldPolicy;
+  RelayPaginatedUser?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RelayPaginatedUserKeySpecifier | (() => undefined | RelayPaginatedUserKeySpecifier);
+    fields?: RelayPaginatedUserFieldPolicy;
+  };
+  RelayPaginatedUserEdge?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | RelayPaginatedUserEdgeKeySpecifier | (() => undefined | RelayPaginatedUserEdgeKeySpecifier);
+    fields?: RelayPaginatedUserEdgeFieldPolicy;
+  };
+  RelayPaginatedUserPageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | RelayPaginatedUserPageInfoKeySpecifier
+      | (() => undefined | RelayPaginatedUserPageInfoKeySpecifier);
+    fields?: RelayPaginatedUserPageInfoFieldPolicy;
   };
   SearchResultEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultEntryKeySpecifier | (() => undefined | SearchResultEntryKeySpecifier);
@@ -1856,6 +1917,10 @@ export type StrictTypedTypePolicies = {
   User?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier);
     fields?: UserFieldPolicy;
+  };
+  User1?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | User1KeySpecifier | (() => undefined | User1KeySpecifier);
+    fields?: User1FieldPolicy;
   };
   UserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserGroupKeySpecifier | (() => undefined | UserGroupKeySpecifier);
