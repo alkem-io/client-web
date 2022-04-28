@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
-import { Box, Grid, Paper } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import AspectsView, { AspectsViewProps } from '../aspect/AspectsView/AspectsView';
 import { AspectWithPermissions } from '../../containers/ContributeTabContainer/ContributeTabContainer';
 import CategorySelector, { CategoryConfig } from '../../components/composite/common/CategorySelector/CategorySelector';
@@ -41,30 +41,22 @@ const ContributeView: FC<ContributeViewProps> = ({
     [shouldSkipFiltering, aspects, category]
   );
   return (
-    <>
-      <Box paddingBottom={2} display="flex" justifyContent="center">
-        {t('pages.hub.sections.contribute.description')}
-      </Box>
-      <Box paddingBottom={2} display="flex" justifyContent="center">
-        {t('pages.hub.sections.contribute.description2')}
-      </Box>
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Paper square variant="outlined">
-            <CategorySelector categories={categoryConfig} value={category} onSelect={setCategory} />
-          </Paper>
-        </Grid>
-        <Grid item xs>
-          <AspectsView
-            aspects={filteredAspects}
-            aspectsLoading={loading}
-            canReadAspects={canReadAspects}
-            canCreateAspects={canCreateAspects}
-            onCreate={onCreate}
-          />
-        </Grid>
+    <Grid container spacing={2}>
+      <Grid item xs={3}>
+        <Paper square variant="outlined">
+          <CategorySelector categories={categoryConfig} value={category} onSelect={setCategory} />
+        </Paper>
       </Grid>
-    </>
+      <Grid item xs>
+        <AspectsView
+          aspects={filteredAspects}
+          aspectsLoading={loading}
+          canReadAspects={canReadAspects}
+          canCreateAspects={canCreateAspects}
+          onCreate={onCreate}
+        />
+      </Grid>
+    </Grid>
   );
 };
 

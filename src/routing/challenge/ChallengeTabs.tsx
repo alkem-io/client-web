@@ -7,7 +7,7 @@ import {
   TocOutlined,
   WbIncandescentOutlined,
 } from '@mui/icons-material';
-import { Box, Tabs } from '@mui/material';
+import { Tabs } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
@@ -129,7 +129,6 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({
           />
         )}
       </Tabs>
-      <Box paddingTop={3} />
       <Outlet />
     </>
   );

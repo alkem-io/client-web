@@ -6,6 +6,6 @@ import CommunityPage from './CommunityPage';
 const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   const { hubId, communityId } = useHub();
 
-  return <CommunityPage paths={paths} hubId={hubId} communityId={communityId} />;
+  return <CommunityPage entityTypeName="hub" paths={paths} hubId={hubId} communityId={communityId} />;
 };
 export default HubCommunityPage;

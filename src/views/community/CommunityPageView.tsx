@@ -61,9 +61,6 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({
   const updatesTitle = t('pages.community.updates.title', { count: messages.length });
   return (
     <>
-      <Box paddingBottom={2} display="flex" justifyContent="center">
-        {t('pages.community.description')}
-      </Box>
       <Typography variant={'subtitle2'}>
         {loading ? <Skeleton width="50%" /> : t('pages.community.subtitle')}
       </Typography>

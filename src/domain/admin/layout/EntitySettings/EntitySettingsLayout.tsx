@@ -4,8 +4,7 @@ import PageTabs, { TabDefinition } from '../../../../components/core/PageTabs/Pa
 import AdminLayoutEntityTitle from '../AdminLayoutEntityTitle';
 import { useTranslation } from 'react-i18next';
 import { EntityLinkComponentProps } from '../../../../components/Admin/EntityLinkComponent';
-import TabExplanationHeader from '../../../shared/layout/TabExplanationHeader/TabExplanationHeader';
-import { SectionSpacer } from '../../../../components/core/Section/Section';
+import PageLayout from '../../../shared/layout/PageLayout';
 
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization';
 
@@ -28,15 +27,6 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
 
   const getTabLabel = useCallback((section: SettingsSection) => t(`common.${section}` as const), [t]);
 
-  type TLabel = Parameters<typeof t>[0];
-
-  const tabExplanationHeader = t(
-    [`admin.${entityTypeName}.${currentTab}.explanation`, `admin.generic.${currentTab}.explanation`] as TLabel,
-    {
-      entity: t(`common.${entityTypeName}` as const).toLowerCase(),
-    }
-  );
-
   return (
     <>
       <AdminLayoutEntityTitle {...entityTitleProps} />
@@ -47,9 +37,9 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
         routePrefix={tabRoutePrefix}
         getTabLabel={getTabLabel}
       />
-      <TabExplanationHeader>{tabExplanationHeader}</TabExplanationHeader>
-      <SectionSpacer />
-      {children}
+      <PageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
+        {children}
+      </PageLayout>
     </>
   );
 };

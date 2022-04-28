@@ -4,6 +4,8 @@ import { useChallenge, useHub, useUpdateNavigation } from '../../../hooks';
 import { ChallengeContextView } from '../../../views/Challenge/ChallengeContextView';
 import ContextTabContainer from '../../../containers/context/ContextTabContainer';
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
+import PageLayout from '../../../domain/shared/layout/PageLayout';
+import { EntityPageSection } from '../../../domain/shared/layout/EntityPageSection';
 
 export interface ChallengeContextPageProps extends PageProps {}
 
@@ -23,36 +25,38 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <ContextTabContainer
-      hubNameId={hubNameId}
-      challengeNameId={challengeNameId}
-      loadReferences={loadAspectsAndReferences}
-    >
-      {(entities, state) => (
-        <ChallengeContextView
-          entities={{
-            hubId: hubId,
-            hubNameId: hubNameId,
-            hubDisplayName: hubDisplayName,
-            challengeId,
-            challengeNameId,
-            challengeDisplayName,
-            challengeTagset: entities.tagset,
-            challengeLifecycle: entities.lifecycle,
-            context: entities.context,
-            references: entities?.references,
-          }}
-          state={{
-            loading: state.loading,
-            error: state.error,
-          }}
-          options={{
-            canCreateCommunityContextReview: entities.permissions.canCreateCommunityContextReview,
-          }}
-          actions={{}}
-        />
-      )}
-    </ContextTabContainer>
+    <PageLayout currentSection={EntityPageSection.Context} entityTypeName="challenge">
+      <ContextTabContainer
+        hubNameId={hubNameId}
+        challengeNameId={challengeNameId}
+        loadReferences={loadAspectsAndReferences}
+      >
+        {(entities, state) => (
+          <ChallengeContextView
+            entities={{
+              hubId: hubId,
+              hubNameId: hubNameId,
+              hubDisplayName: hubDisplayName,
+              challengeId,
+              challengeNameId,
+              challengeDisplayName,
+              challengeTagset: entities.tagset,
+              challengeLifecycle: entities.lifecycle,
+              context: entities.context,
+              references: entities?.references,
+            }}
+            state={{
+              loading: state.loading,
+              error: state.error,
+            }}
+            options={{
+              canCreateCommunityContextReview: entities.permissions.canCreateCommunityContextReview,
+            }}
+            actions={{}}
+          />
+        )}
+      </ContextTabContainer>
+    </PageLayout>
   );
 };
 export default ChallengeContextPage;
