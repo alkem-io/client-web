@@ -1,4 +1,4 @@
-import { Box, Container, Hidden } from '@mui/material';
+import { Box, Container, Theme } from '@mui/material';
 import { useSelector } from '@xstate/react';
 import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
@@ -11,6 +11,13 @@ import LanguageSelect from '../../../LanguageSelect/LanguageSelect';
 import { Link } from 'react-router-dom';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SignInSegment from '../../../../domain/session/SignInSegment';
+
+const USER_SEGMENT_MAX_WIDTH = (theme: Theme) => theme.spacing(33); // approx. 25 characters
+const USER_SEGMENT_USER_NAME_PROPS = {
+  sx: {
+    display: { xs: 'none', md: 'flex' },
+  },
+};
 
 const SearchBar = () => {
   const { user, verified, isAuthenticated, loading } = useUserContext();
@@ -26,35 +33,48 @@ const SearchBar = () => {
 
   const renderUserProfileSegment = () => {
     if (loading) {
-      return <Skeleton />;
+      return <Skeleton sx={{ flexBasis: theme => theme.spacing(19), flexShrink: 1 }} />;
     }
     if (!isAuthenticated) {
       return <SignInSegment />;
     }
-    return isUserSegmentVisible && user && <UserSegment userMetadata={user} emailVerified={verified} />;
+    return (
+      isUserSegmentVisible &&
+      user && (
+        <UserSegment
+          flexShrink={1}
+          minWidth={0}
+          maxWidth={USER_SEGMENT_MAX_WIDTH}
+          userMetadata={user}
+          emailVerified={verified}
+          userNameProps={USER_SEGMENT_USER_NAME_PROPS}
+        />
+      )
+    );
   };
 
   return (
     <Container maxWidth={breakpoint}>
       <Box paddingY={2} display="flex" gap={2} alignItems="center" justifyContent="space-between">
         <LogoComponent />
-        <Hidden mdDown>
-          <Box
-            flexGrow={1}
-            justifyContent="center"
-            sx={{
-              minWidth: 256,
-              maxWidth: 512,
-            }}
-          >
-            <TopSearchComponent />
-          </Box>
-        </Hidden>
-        <LanguageSelect />
+        <Box
+          flexGrow={1}
+          justifyContent="center"
+          sx={{
+            maxWidth: theme => theme.spacing(64),
+            display: {
+              xs: 'none',
+              md: 'block',
+            },
+          }}
+        >
+          <TopSearchComponent />
+        </Box>
+        <LanguageSelect sx={{ flexShrink: 0 }} />
         <Link to="/help">
           <HelpOutlineIcon color="primary" />
         </Link>
-        <Box width={155}>{renderUserProfileSegment()}</Box>
+        {renderUserProfileSegment()}
       </Box>
     </Container>
   );
