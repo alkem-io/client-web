@@ -1033,6 +1033,11 @@ export type PageInfoFieldPolicy = {
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedOrganizationKeySpecifier = ('organization' | 'pageInfo' | PaginatedOrganizationKeySpecifier)[];
+export type PaginatedOrganizationFieldPolicy = {
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PaginatedUsersKeySpecifier = ('pageInfo' | 'users' | PaginatedUsersKeySpecifier)[];
 export type PaginatedUsersFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1143,6 +1148,7 @@ export type QueryKeySpecifier = (
   | 'metadata'
   | 'organization'
   | 'organizations'
+  | 'organizationsPaginated'
   | 'search'
   | 'user'
   | 'userAuthorizationPrivileges'
@@ -1167,6 +1173,7 @@ export type QueryFieldPolicy = {
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   search?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   userAuthorizationPrivileges?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1364,45 +1371,6 @@ export type UserKeySpecifier = (
   | UserKeySpecifier
 )[];
 export type UserFieldPolicy = {
-  accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
-  agent?: FieldPolicy<any> | FieldReadFunction<any>;
-  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  city?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  country?: FieldPolicy<any> | FieldReadFunction<any>;
-  directRooms?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  email?: FieldPolicy<any> | FieldReadFunction<any>;
-  firstName?: FieldPolicy<any> | FieldReadFunction<any>;
-  gender?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  lastName?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  phone?: FieldPolicy<any> | FieldReadFunction<any>;
-  preferences?: FieldPolicy<any> | FieldReadFunction<any>;
-  profile?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type User1KeySpecifier = (
-  | 'accountUpn'
-  | 'agent'
-  | 'authorization'
-  | 'city'
-  | 'communityRooms'
-  | 'country'
-  | 'directRooms'
-  | 'displayName'
-  | 'email'
-  | 'firstName'
-  | 'gender'
-  | 'id'
-  | 'lastName'
-  | 'nameID'
-  | 'phone'
-  | 'preferences'
-  | 'profile'
-  | User1KeySpecifier
-)[];
-export type User1FieldPolicy = {
   accountUpn?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1808,6 +1776,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier);
     fields?: PageInfoFieldPolicy;
   };
+  PaginatedOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedOrganizationKeySpecifier | (() => undefined | PaginatedOrganizationKeySpecifier);
+    fields?: PaginatedOrganizationFieldPolicy;
+  };
   PaginatedUsers?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PaginatedUsersKeySpecifier | (() => undefined | PaginatedUsersKeySpecifier);
     fields?: PaginatedUsersFieldPolicy;
@@ -1917,10 +1889,6 @@ export type StrictTypedTypePolicies = {
   User?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier);
     fields?: UserFieldPolicy;
-  };
-  User1?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | User1KeySpecifier | (() => undefined | User1KeySpecifier);
-    fields?: User1FieldPolicy;
   };
   UserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserGroupKeySpecifier | (() => undefined | UserGroupKeySpecifier);

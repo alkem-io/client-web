@@ -2014,10 +2014,16 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']>;
 };
 
+export type PaginatedOrganization = {
+  __typename?: 'PaginatedOrganization';
+  organization: Array<Organization>;
+  pageInfo: PageInfo;
+};
+
 export type PaginatedUsers = {
   __typename?: 'PaginatedUsers';
   pageInfo: PageInfo;
-  users: Array<User1>;
+  users: Array<User>;
 };
 
 export type Platform = {
@@ -2188,6 +2194,8 @@ export type Query = {
   organization: Organization;
   /** The Organizations on this platform */
   organizations: Array<Organization>;
+  /** The Organizations on this platform in paginated format */
+  organizationsPaginated: PaginatedOrganization;
   /** Search the hub for terms supplied */
   search: Array<SearchResultEntry>;
   /** A particular user, identified by the ID or by email */
@@ -2227,6 +2235,13 @@ export type QueryOrganizationArgs = {
 export type QueryOrganizationsArgs = {
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type QueryOrganizationsPaginatedArgs = {
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type QuerySearchArgs = {
@@ -2761,38 +2776,6 @@ export type UpdatesSendMessageInput = {
 
 export type User = Searchable & {
   __typename?: 'User';
-  /** The unique personal identifier (upn) for the account associated with this user profile */
-  accountUpn: Scalars['String'];
-  /** The Agent representing this User. */
-  agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
-  authorization?: Maybe<Authorization>;
-  city: Scalars['String'];
-  /** The Community rooms this user is a member of */
-  communityRooms?: Maybe<Array<CommunicationRoom>>;
-  country: Scalars['String'];
-  /** The direct rooms this user is a member of */
-  directRooms?: Maybe<Array<DirectRoom>>;
-  /** The display name. */
-  displayName: Scalars['String'];
-  /** The email address for this User. */
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  gender: Scalars['String'];
-  id: Scalars['UUID'];
-  lastName: Scalars['String'];
-  /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
-  /** The phone number for this User. */
-  phone: Scalars['String'];
-  /** The preferences for this user */
-  preferences: Array<Preference>;
-  /** The Profile for this User. */
-  profile?: Maybe<Profile>;
-};
-
-export type User1 = Searchable & {
-  __typename?: 'User1';
   /** The unique personal identifier (upn) for the account associated with this user profile */
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
@@ -6797,7 +6780,6 @@ export type SearchQuery = {
         }
       | { __typename?: 'RelayPaginatedUser' }
       | { __typename?: 'User'; displayName: string; id: string }
-      | { __typename?: 'User1' }
       | { __typename?: 'UserGroup'; name: string; id: string }
       | undefined;
   }>;
@@ -7676,7 +7658,6 @@ export type ContributorsSearchQuery = {
               }
             | undefined;
         }
-      | { __typename?: 'User1' }
       | { __typename?: 'UserGroup' }
       | undefined;
   }>;
@@ -8790,7 +8771,6 @@ export type ChallengeExplorerSearchQuery = {
       | { __typename?: 'Organization' }
       | { __typename?: 'RelayPaginatedUser' }
       | { __typename?: 'User' }
-      | { __typename?: 'User1' }
       | { __typename?: 'UserGroup' }
       | undefined;
   }>;
@@ -10965,7 +10945,7 @@ export type ContributingUsersQuery = {
   usersPaginated: {
     __typename?: 'PaginatedUsers';
     users: Array<{
-      __typename?: 'User1';
+      __typename?: 'User';
       id: string;
       displayName: string;
       nameID: string;
