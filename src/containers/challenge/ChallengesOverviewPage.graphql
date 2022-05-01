@@ -10,7 +10,7 @@ query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
   }
 }
 
-fragment SimpleHubResultEntry on MembershipUserResultEntryHub {
+fragment SimpleHubResultEntry on MembershipResultContributorToHub {
   hubID
   nameID
   displayName

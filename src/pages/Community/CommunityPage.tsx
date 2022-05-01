@@ -108,8 +108,8 @@ const toUserCardProps = (data: UserCardFragment[], resourceId = '', t: TFunction
         tags: x?.profile?.tagsets?.flatMap(x => x.tags),
         displayName: x.displayName,
         avatarSrc: x?.profile?.avatar?.uri,
-        city: x.city,
-        country: x.country,
+        city: x.profile?.location?.city,
+        country: x.profile?.location?.country,
         url: buildUserProfileUrl(x.nameID),
       } as SearchableUserCardProps)
   );

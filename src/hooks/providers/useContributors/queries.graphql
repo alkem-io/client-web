@@ -3,10 +3,12 @@ query contributingUsers($limit: Float, $shuffle: Boolean) {
     id
     displayName
     nameID
-    city
-    country
     profile {
       id
+      location {
+        city
+        country
+      }
       avatar {
         id
         uri

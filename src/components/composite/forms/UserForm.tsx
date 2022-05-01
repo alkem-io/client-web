@@ -4,7 +4,6 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
-import { COUNTRIES } from '../../../models/constants';
 import { EditMode } from '../../../models/editMode';
 import { SocialNetworkEnum } from '../../../models/enums/SocialNetworks';
 import { TagsetTemplate, Visual } from '../../../models/graphql-schema';
@@ -77,10 +76,8 @@ export const UserForm: FC<UserProps> = ({
     firstName,
     lastName,
     email,
-    city,
     gender,
     phone,
-    country,
     profile: { id: profileId, description: bio, references },
   } = currentUser;
 
@@ -121,8 +118,8 @@ export const UserForm: FC<UserProps> = ({
     twitter: twitterRef?.uri || '',
     github: githubRef?.uri || '',
     gender: gender || '',
-    city: city || '',
-    country: COUNTRIES.find(x => x.code === country) || null,
+    city: '',
+    country: null, //COUNTRIES.find(x => x.code === country) || null,
     phone: phone || '',
     tagsets: tagsets,
     references: references.filter(x => !socialNames.includes(x.name.toLowerCase())) || [],
@@ -177,11 +174,14 @@ export const UserForm: FC<UserProps> = ({
       const user: UserModel = {
         ...currentUser,
         ...otherData,
-        country: country?.code || '',
         profile: {
           id: profileId,
           description: bio,
           references: finalReferences,
+          location: {
+            country: country?.code || '',
+            city: '', // todo
+          },
           tagsets,
         },
       };
