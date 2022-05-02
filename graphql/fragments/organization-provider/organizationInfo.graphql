@@ -28,10 +28,9 @@ fragment OrganizationInfo on Organization {
   }
   members {
     id
+
     nameID
     displayName
-    city
-    country
     agent {
       id
       credentials {
@@ -42,6 +41,10 @@ fragment OrganizationInfo on Organization {
     }
     profile {
       id
+      location {
+        country
+        city
+      }
       avatar {
         ...VisualUri
       }

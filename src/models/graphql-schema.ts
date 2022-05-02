@@ -711,6 +711,7 @@ export type CreateChallengeOnHubInput = {
 export type CreateContextInput = {
   background?: InputMaybe<Scalars['Markdown']>;
   impact?: InputMaybe<Scalars['Markdown']>;
+  location?: InputMaybe<CreateLocationInput>;
   /** Set of References for the new Context. */
   references?: InputMaybe<Array<CreateReferenceInput>>;
   tagline?: InputMaybe<Scalars['String']>;
@@ -2581,6 +2582,7 @@ export type UpdateChallengePreferenceInput = {
 export type UpdateContextInput = {
   background?: InputMaybe<Scalars['Markdown']>;
   impact?: InputMaybe<Scalars['Markdown']>;
+  location?: InputMaybe<UpdateLocationInput>;
   /** Update the set of References for the Context. */
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   tagline?: InputMaybe<Scalars['String']>;
