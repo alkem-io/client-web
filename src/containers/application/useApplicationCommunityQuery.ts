@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { useUrlParams } from '../../hooks';
 import {
   useChallengeApplicationQuery,
-  useChallengeApplicationsTemplateQuery,
+  useChallengeApplicationTemplateQuery,
   useHubApplicationQuery,
-  useHubApplicationsTemplateQuery,
+  useHubApplicationTemplateQuery,
 } from '../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { buildChallengeUrl, buildHubUrl } from '../../utils/urlBuilders';
@@ -30,7 +30,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     data: challengeTemplateData,
     loading: isChallengeTemplateLoading,
     error: challengeTemplateError,
-  } = useChallengeApplicationsTemplateQuery({
+  } = useChallengeApplicationTemplateQuery({
     skip: type !== ApplicationTypeEnum.challenge,
   });
 
@@ -50,7 +50,7 @@ export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
     data: hubTemplateData,
     loading: isHubTemplateLoading,
     error: hubTemplateError,
-  } = useHubApplicationsTemplateQuery({
+  } = useHubApplicationTemplateQuery({
     skip: type !== ApplicationTypeEnum.hub,
   });
 
