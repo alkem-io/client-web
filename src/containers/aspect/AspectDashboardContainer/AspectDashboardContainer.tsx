@@ -2,7 +2,6 @@ import { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
 import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
-  AspectMessageFragmentDoc,
   useAspectCreatorQuery,
   useChallengeAspectQuery,
   useHubAspectQuery,
@@ -18,6 +17,7 @@ import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../utils/containers/ComponentOrChildrenFn';
+import useComments from '../../../domain/comments/useComments';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -63,6 +63,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     data: hubData,
     loading: hubLoading,
     error: hubError,
+    subscribeToMore: subscribeToHub,
   } = useHubAspectQuery({
     variables: { hubNameId, aspectNameId },
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
@@ -74,6 +75,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     data: challengeData,
     loading: challengeLoading,
     error: challengeError,
+    subscribeToMore: subscribeToChallenge,
   } = useChallengeAspectQuery({
     variables: { hubNameId, challengeNameId, aspectNameId },
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
@@ -85,6 +87,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     data: opportunityData,
     loading: opportunityLoading,
     error: opportunityError,
+    subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectQuery({
     variables: { hubNameId, opportunityNameId, aspectNameId },
     skip: !isAspectDefined || !opportunityNameId,
@@ -95,6 +98,18 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
+
+  useComments(hubData, hubData => hubData?.hub?.context?.aspects?.[0].comments, subscribeToHub);
+  useComments(
+    challengeData,
+    challengeData => challengeData?.hub?.challenge?.context?.aspects?.[0].comments,
+    subscribeToChallenge
+  );
+  useComments(
+    opportunityData,
+    opportunityData => opportunityData?.hub?.opportunity?.context?.aspects?.[0].comments,
+    subscribeToOpportunity
+  );
 
   const { data: creatorData, loading: loadingCreator } = useAspectCreatorQuery({
     variables: { userId: aspect?.createdBy ?? '' },
@@ -148,35 +163,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
 
   const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
     onError: handleError,
-    update: (cache, { data }) => {
-      const cacheMessageId = cache.identify({
-        id: commentId,
-        __typename: 'Comments',
-      });
-
-      if (!cacheMessageId) {
-        return;
-      }
-
-      cache.modify({
-        id: cacheMessageId,
-        fields: {
-          messages(existingMessages = []) {
-            if (!data) {
-              return existingMessages;
-            }
-
-            const newMessage = cache.writeFragment({
-              data: data?.sendComment,
-              fragment: AspectMessageFragmentDoc,
-              fragmentName: 'AspectMessage',
-            });
-            return [...existingMessages, newMessage];
-          },
-        },
-      });
-    },
   });
+
   const handlePostComment = async (commentId: string, message: string) => {
     await postComment({
       variables: {
@@ -207,4 +195,5 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     postingComment,
   });
 };
+
 export default AspectDashboardContainer;

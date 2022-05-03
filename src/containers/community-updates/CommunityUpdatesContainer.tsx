@@ -121,12 +121,14 @@ const useCommunityUpdatesData = (hubNameId?: string, communityId?: string) => {
     onError: handleError,
   });
 
+  const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
+
   useEffect(() => {
-    if (!hubNameId || !communityId || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
+    if (!hubNameId || !communityId || !areSubscriptionsEnabled) {
       return;
     }
 
-    const unSubscribe = subscribeToMore<CommunicationUpdateMessageReceivedSubscription>({
+    return subscribeToMore<CommunicationUpdateMessageReceivedSubscription>({
       document: CommunicationUpdateMessageReceivedDocument,
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       updateQuery: (prev, { subscriptionData }) => {
@@ -161,8 +163,7 @@ const useCommunityUpdatesData = (hubNameId?: string, communityId?: string) => {
         });
       },
     });
-    return () => unSubscribe && unSubscribe();
-  }, [isFeatureEnabled, subscribeToMore, hubNameId, communityId]);
+  }, [areSubscriptionsEnabled, subscribeToMore, hubNameId, communityId]);
 
   return { data, loading };
 };

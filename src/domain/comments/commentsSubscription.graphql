@@ -1,0 +1,11 @@
+subscription Comments($commentsId: UUID!) {
+  communicationCommentsMessageReceived(commentsID: $commentsId) {
+    commentsID
+    message {
+      id
+      message
+      sender
+      timestamp
+    }
+  }
+}

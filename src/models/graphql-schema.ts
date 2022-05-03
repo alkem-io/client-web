@@ -2113,11 +2113,17 @@ export enum PreferenceType {
   MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
   NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
+  NotificationAspectCommentAdmin = 'NOTIFICATION_ASPECT_COMMENT_ADMIN',
+  NotificationAspectCommentCreatedBy = 'NOTIFICATION_ASPECT_COMMENT_CREATED_BY',
+  NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
+  NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
+  NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
@@ -2430,6 +2436,8 @@ export type Subscription = {
   __typename?: 'Subscription';
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
+  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  communicationCommentsMessageReceived: CommentsMessageReceived;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
   /** Receive updates on Discussions */
@@ -2442,6 +2450,10 @@ export type Subscription = {
 
 export type SubscriptionCanvasContentUpdatedArgs = {
   canvasIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionCommunicationCommentsMessageReceivedArgs = {
+  commentsID: Scalars['UUID'];
 };
 
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
@@ -2808,11 +2820,17 @@ export type UserMembership = {
 export enum UserPreferenceType {
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
   NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
+  NotificationAspectCommentAdmin = 'NOTIFICATION_ASPECT_COMMENT_ADMIN',
+  NotificationAspectCommentCreatedBy = 'NOTIFICATION_ASPECT_COMMENT_CREATED_BY',
+  NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
+  NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
+  NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
   NotificationCommunityReviewSubmittedAdmin = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED_ADMIN',
   NotificationUserSignUp = 'NOTIFICATION_USER_SIGN_UP',
@@ -4668,57 +4686,6 @@ export type ChallengeApplicationQuery = {
   };
 };
 
-export type ChallengeApplicationsQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeApplicationsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            applications?:
-              | Array<{
-                  __typename?: 'Application';
-                  id: string;
-                  createdDate: Date;
-                  updatedDate: Date;
-                  lifecycle: {
-                    __typename?: 'Lifecycle';
-                    id: string;
-                    state?: string | undefined;
-                    nextEvents?: Array<string> | undefined;
-                  };
-                  user: {
-                    __typename?: 'User';
-                    id: string;
-                    displayName: string;
-                    email: string;
-                    profile?:
-                      | {
-                          __typename?: 'Profile';
-                          id: string;
-                          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        }
-                      | undefined;
-                  };
-                  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
 export type HubApplicationQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -4737,52 +4704,6 @@ export type HubApplicationQuery = {
         }
       | undefined;
     community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
-  };
-};
-
-export type HubApplicationsQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubApplicationsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          applications?:
-            | Array<{
-                __typename?: 'Application';
-                id: string;
-                createdDate: Date;
-                updatedDate: Date;
-                lifecycle: {
-                  __typename?: 'Lifecycle';
-                  id: string;
-                  state?: string | undefined;
-                  nextEvents?: Array<string> | undefined;
-                };
-                user: {
-                  __typename?: 'User';
-                  id: string;
-                  displayName: string;
-                  email: string;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      }
-                    | undefined;
-                };
-                questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
-              }>
-            | undefined;
-        }
-      | undefined;
   };
 };
 
@@ -10421,41 +10342,6 @@ export type UpdatePreferenceOnChallengeMutation = {
   updatePreferenceOnChallenge: { __typename?: 'Preference'; id: string; value: string };
 };
 
-export type HubPreferencesQueryVariables = Exact<{
-  hubNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubPreferencesQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    preferences: Array<{
-      __typename?: 'Preference';
-      id: string;
-      value: string;
-      definition: {
-        __typename?: 'PreferenceDefinition';
-        id: string;
-        description: string;
-        displayName: string;
-        group: string;
-        type: PreferenceType;
-        valueType: PreferenceValueType;
-      };
-    }>;
-  };
-};
-
-export type UpdatePreferenceOnHubMutationVariables = Exact<{
-  preferenceData: UpdateHubPreferenceInput;
-}>;
-
-export type UpdatePreferenceOnHubMutation = {
-  __typename?: 'Mutation';
-  updatePreferenceOnHub: { __typename?: 'Preference'; id: string; value: string };
-};
-
 export type OrganizationPreferencesQueryVariables = Exact<{
   orgId: Scalars['UUID_NAMEID'];
 }>;
@@ -10903,6 +10789,151 @@ export type RemoveCommentFromAspectMutationVariables = Exact<{
 }>;
 
 export type RemoveCommentFromAspectMutation = { __typename?: 'Mutation'; removeComment: string };
+
+export type ChallengeApplicationsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeApplicationsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            applications?:
+              | Array<{
+                  __typename?: 'Application';
+                  id: string;
+                  createdDate: Date;
+                  updatedDate: Date;
+                  lifecycle: {
+                    __typename?: 'Lifecycle';
+                    id: string;
+                    state?: string | undefined;
+                    nextEvents?: Array<string> | undefined;
+                  };
+                  user: {
+                    __typename?: 'User';
+                    id: string;
+                    displayName: string;
+                    email: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        }
+                      | undefined;
+                  };
+                  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type HubApplicationsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubApplicationsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          applications?:
+            | Array<{
+                __typename?: 'Application';
+                id: string;
+                createdDate: Date;
+                updatedDate: Date;
+                lifecycle: {
+                  __typename?: 'Lifecycle';
+                  id: string;
+                  state?: string | undefined;
+                  nextEvents?: Array<string> | undefined;
+                };
+                user: {
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  email: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      }
+                    | undefined;
+                };
+                questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CommentsSubscriptionVariables = Exact<{
+  commentsId: Scalars['UUID'];
+}>;
+
+export type CommentsSubscription = {
+  __typename?: 'Subscription';
+  communicationCommentsMessageReceived: {
+    __typename?: 'CommentsMessageReceived';
+    commentsID: string;
+    message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  };
+};
+
+export type HubPreferencesQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubPreferencesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    preferences: Array<{
+      __typename?: 'Preference';
+      id: string;
+      value: string;
+      definition: {
+        __typename?: 'PreferenceDefinition';
+        id: string;
+        description: string;
+        displayName: string;
+        group: string;
+        type: PreferenceType;
+        valueType: PreferenceValueType;
+      };
+    }>;
+  };
+};
+
+export type UpdatePreferenceOnHubMutationVariables = Exact<{
+  preferenceData: UpdateHubPreferenceInput;
+}>;
+
+export type UpdatePreferenceOnHubMutation = {
+  __typename?: 'Mutation';
+  updatePreferenceOnHub: { __typename?: 'Preference'; id: string; value: string };
+};
 
 export type AvailableUsersQueryVariables = Exact<{ [key: string]: never }>;
 
