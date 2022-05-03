@@ -27,48 +27,33 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
 
   if (loadingChallengeContext || state.loading) return <Loading />;
 
-  const description = (
-    <Box paddingBottom={2} display="flex" justifyContent="center">
-      {t('pages.challenge.sections.opportunities.description')}
-    </Box>
-  );
-
   if (state.error) {
     return (
-      <>
-        {description}
-        <Box display="flex" justifyContent="center">
-          <ErrorBlock blockName={t('common.opportunities')} />
-        </Box>
-      </>
+      <Box display="flex" justifyContent="center">
+        <ErrorBlock blockName={t('common.opportunities')} />
+      </Box>
     );
   }
 
   if (opportunities.length <= 0) {
     return (
-      <>
-        {description}
-        <Box paddingBottom={2} display="flex" justifyContent="center">
-          <Typography>{t('pages.challenge.sections.opportunities.body-missing')}</Typography>
-        </Box>
-      </>
+      <Box paddingBottom={2} display="flex" justifyContent="center">
+        <Typography>{t('pages.challenge.sections.opportunities.body-missing')}</Typography>
+      </Box>
     );
   }
 
   return (
-    <>
-      {description}
-      <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
-        {filteredData => (
-          <CardLayoutContainer>
-            {filteredData.map((opp, i) => (
-              <CardLayoutItem key={i}>
-                <OpportunityCard opportunity={opp} hubNameId={hubNameId} challengeNameId={challengeNameId} />
-              </CardLayoutItem>
-            ))}
-          </CardLayoutContainer>
-        )}
-      </CardFilter>
-    </>
+    <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
+      {filteredData => (
+        <CardLayoutContainer>
+          {filteredData.map(opp => (
+            <CardLayoutItem key={opp.id}>
+              <OpportunityCard opportunity={opp} hubNameId={hubNameId} challengeNameId={challengeNameId} />
+            </CardLayoutItem>
+          ))}
+        </CardLayoutContainer>
+      )}
+    </CardFilter>
   );
 };
