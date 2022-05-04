@@ -54,8 +54,8 @@ const useContextAspectCreatedSubscription = <QueryData>(
       updateQuery: (prev, { subscriptionData }) => {
         const { aspect } = subscriptionData.data.contextAspectCreated;
         return produce(prev, next => {
-          const comments = getContext(next as QueryData);
-          comments?.aspects?.push(aspect);
+          const context = getContext(next as QueryData);
+          context?.aspects?.push(aspect);
         });
       },
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
