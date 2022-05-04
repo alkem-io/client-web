@@ -10,12 +10,12 @@ const useContextAspectCreatedSubscription = createUseSubscriptionToSubEntity<
   AspectsOnContextFragment,
   ContextAspectCreatedSubscriptionVariables,
   ContextAspectCreatedSubscription
->(
-  ContextAspectCreatedDocument,
-  context => ({ contextID: context.id }),
-  (context, subscriptionData) => {
+>({
+  subscriptionDocument: ContextAspectCreatedDocument,
+  getSubscriptionVariables: context => ({ contextID: context.id }),
+  updateSubEntity: (context, subscriptionData) => {
     context?.aspects?.push(subscriptionData.contextAspectCreated.aspect);
-  }
-);
+  },
+});
 
 export default useContextAspectCreatedSubscription;

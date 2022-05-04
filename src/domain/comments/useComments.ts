@@ -6,12 +6,12 @@ const useComments = createUseSubscriptionToSubEntity<
   Omit<Comments, 'authorization'>,
   CommentsSubscriptionVariables,
   CommentsSubscription
->(
-  CommentsDocument,
-  comments => ({ commentsId: comments.id }),
-  (comments, subscriptionData) => {
+>({
+  subscriptionDocument: CommentsDocument,
+  getSubscriptionVariables: comments => ({ commentsId: comments.id }),
+  updateSubEntity: (comments, subscriptionData) => {
     comments?.messages?.push(subscriptionData.communicationCommentsMessageReceived.message);
-  }
-);
+  },
+});
 
 export default useComments;

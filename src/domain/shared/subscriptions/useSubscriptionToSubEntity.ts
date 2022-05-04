@@ -8,42 +8,20 @@ interface SubscribeToMore<TData, TSubscriptionVariables, TSubscriptionData> {
   (options: SubscribeToMoreOptions<TData, TSubscriptionVariables, TSubscriptionData>): () => void;
 }
 
-interface UseSubscriptionToSubEntityOptions<
-  QueryData,
-  SubEntity extends { id: string },
-  SubEntitySubscriptionVariables,
-  SubEntitySubscription
-> {
-  parentEntity: QueryData | undefined;
-  getSubEntity: (data: QueryData | undefined) => SubEntity | undefined;
-  subscribeToMore: SubscribeToMore<QueryData, SubEntitySubscriptionVariables, SubEntitySubscription>;
+interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
+  subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
+  getSubscriptionVariables: (subEntity: SubEntity) => SubEntitySubscriptionVariables;
+  updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void;
 }
 
 const createUseSubscriptionToSubEntity =
-  <SubEntity extends { id: string }, SubEntitySubscriptionVariables, SubEntitySubscription>(
-    subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>,
-    getSubscriptionQueryVariables: (subEntity: SubEntity) => SubEntitySubscriptionVariables,
-    updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void
+  <SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>(
+    options: CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>
   ) =>
   <QueryData>(
-    parentEntity: UseSubscriptionToSubEntityOptions<
-      QueryData,
-      SubEntity,
-      SubEntitySubscriptionVariables,
-      SubEntitySubscription
-    >['parentEntity'],
-    getSubEntity: UseSubscriptionToSubEntityOptions<
-      QueryData,
-      SubEntity,
-      SubEntitySubscriptionVariables,
-      SubEntitySubscription
-    >['getSubEntity'],
-    subscribeToMore: UseSubscriptionToSubEntityOptions<
-      QueryData,
-      SubEntity,
-      SubEntitySubscriptionVariables,
-      SubEntitySubscription
-    >['subscribeToMore']
+    parentEntity: QueryData | undefined,
+    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined,
+    subscribeToMore: SubscribeToMore<QueryData, SubEntitySubscriptionVariables, SubEntitySubscription>
   ) => {
     const handleError = useApolloErrorHandler();
     const { isFeatureEnabled } = useConfig();
@@ -62,12 +40,12 @@ const createUseSubscriptionToSubEntity =
       }
 
       return subscribeToMore({
-        document: subscriptionDocument,
-        variables: getSubscriptionQueryVariables(subEntity),
+        document: options.subscriptionDocument,
+        variables: options.getSubscriptionVariables(subEntity),
         updateQuery: (prev, { subscriptionData }) => {
           return produce(prev, next => {
             const nextSubEntity = getSubEntity(next as QueryData);
-            updateSubEntity(nextSubEntity, subscriptionData.data);
+            options.updateSubEntity(nextSubEntity, subscriptionData.data);
           });
         },
         onError: err => handleError(new ApolloError({ errorMessage: err.message })),
