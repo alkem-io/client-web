@@ -52,6 +52,10 @@ const useComments = <QueryData>(
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
     });
   }, [commentsId, areSubscriptionsEnabled]);
+
+  return {
+    enabled: Boolean(areSubscriptionsEnabled && commentsId),
+  };
 };
 
 export default useComments;

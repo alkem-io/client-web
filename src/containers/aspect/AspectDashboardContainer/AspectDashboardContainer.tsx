@@ -2,6 +2,7 @@ import { FC, useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
 import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
+  AspectMessageFragmentDoc,
   useAspectCreatorQuery,
   useChallengeAspectQuery,
   useHubAspectQuery,
@@ -99,17 +100,27 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
-  useComments(hubData, hubData => hubData?.hub?.context?.aspects?.[0].comments, subscribeToHub);
-  useComments(
+  const hubCommentsSubscription = useComments(
+    hubData,
+    hubData => hubData?.hub?.context?.aspects?.[0].comments,
+    subscribeToHub
+  );
+  const challengeCommentsSubscription = useComments(
     challengeData,
     challengeData => challengeData?.hub?.challenge?.context?.aspects?.[0].comments,
     subscribeToChallenge
   );
-  useComments(
+  const opportunityCommentsSubscription = useComments(
     opportunityData,
     opportunityData => opportunityData?.hub?.opportunity?.context?.aspects?.[0].comments,
     subscribeToOpportunity
   );
+
+  const isSubscribedToComments = [
+    hubCommentsSubscription,
+    challengeCommentsSubscription,
+    opportunityCommentsSubscription,
+  ].some(subscription => subscription.enabled);
 
   const { data: creatorData, loading: loadingCreator } = useAspectCreatorQuery({
     variables: { userId: aspect?.createdBy ?? '' },
@@ -163,6 +174,38 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
 
   const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
     onError: handleError,
+    update: (cache, { data }) => {
+      if (isSubscribedToComments) {
+        return;
+      }
+
+      const cacheMessageId = cache.identify({
+        id: commentId,
+        __typename: 'Comments',
+      });
+
+      if (!cacheMessageId) {
+        return;
+      }
+
+      cache.modify({
+        id: cacheMessageId,
+        fields: {
+          messages(existingMessages = []) {
+            if (!data) {
+              return existingMessages;
+            }
+
+            const newMessage = cache.writeFragment({
+              data: data?.sendComment,
+              fragment: AspectMessageFragmentDoc,
+              fragmentName: 'AspectMessage',
+            });
+            return [...existingMessages, newMessage];
+          },
+        },
+      });
+    },
   });
 
   const handlePostComment = async (commentId: string, message: string) => {
@@ -195,5 +238,4 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     postingComment,
   });
 };
-
 export default AspectDashboardContainer;
