@@ -8,6 +8,15 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
   const communityId = challenge?.community?.id;
   const challengeId = challenge?.id;
 
-  return <CommunityPage paths={paths} hubId={hubId} communityId={communityId} challengeId={challengeId} />;
+  return (
+    <CommunityPage
+      entityTypeName="challenge"
+      paths={paths}
+      hubId={hubId}
+      communityId={communityId}
+      challengeId={challengeId}
+    />
+  );
 };
+
 export default ChallengeCommunityPage;

@@ -49,54 +49,49 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
   const { canReadChallenges } = permissions;
 
   return (
-    <>
-      <Box paddingBottom={2} display="flex" justifyContent="center">
-        {t('pages.hub.sections.challenges.description')}
-      </Box>
-      <MembershipBackdrop show={!canReadChallenges} blockName={t('pages.hub.sections.challenges.header')}>
-        {state.error && (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />
-            </Grid>
+    <MembershipBackdrop show={!canReadChallenges} blockName={t('pages.hub.sections.challenges.header')}>
+      {state.error && (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />
           </Grid>
-        )}
-        {state.loading ? (
-          <CardLayoutContainer>
-            <CardLayoutItem>
-              <ChallengeCard loading={true} />
-            </CardLayoutItem>
-            <CardLayoutItem>
-              <ChallengeCard loading={true} />
-            </CardLayoutItem>
-          </CardLayoutContainer>
-        ) : (
-          <>
-            {challenges && !challenges.length ? (
-              <Box paddingBottom={2} display="flex" justifyContent="center">
-                <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
-              </Box>
-            ) : (
-              <CardFilter
-                data={challenges as Challenge[]}
-                tagsValueGetter={entityTagsValueGetter}
-                valueGetter={entityValueGetter}
-              >
-                {filteredData => (
-                  <CardLayoutContainer>
-                    {filteredData.map((challenge, i) => (
-                      <CardLayoutItem key={i}>
-                        <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
-                      </CardLayoutItem>
-                    ))}
-                  </CardLayoutContainer>
-                )}
-              </CardFilter>
-            )}
-          </>
-        )}
-      </MembershipBackdrop>
-    </>
+        </Grid>
+      )}
+      {state.loading ? (
+        <CardLayoutContainer>
+          <CardLayoutItem>
+            <ChallengeCard loading={true} />
+          </CardLayoutItem>
+          <CardLayoutItem>
+            <ChallengeCard loading={true} />
+          </CardLayoutItem>
+        </CardLayoutContainer>
+      ) : (
+        <>
+          {challenges && !challenges.length ? (
+            <Box paddingBottom={2} display="flex" justifyContent="center">
+              <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
+            </Box>
+          ) : (
+            <CardFilter
+              data={challenges as Challenge[]}
+              tagsValueGetter={entityTagsValueGetter}
+              valueGetter={entityValueGetter}
+            >
+              {filteredData => (
+                <CardLayoutContainer>
+                  {filteredData.map((challenge, i) => (
+                    <CardLayoutItem key={i}>
+                      <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
+                    </CardLayoutItem>
+                  ))}
+                </CardLayoutContainer>
+              )}
+            </CardFilter>
+          )}
+        </>
+      )}
+    </MembershipBackdrop>
   );
 };
 export default HubChallengesView;
