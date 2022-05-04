@@ -1,4 +1,4 @@
-subscription Comments($commentsId: UUID!) {
+subscription CommentsMessageReceived($commentsId: UUID!) {
   communicationCommentsMessageReceived(commentsID: $commentsId) {
     commentsID
     message {

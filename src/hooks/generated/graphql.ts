@@ -14967,8 +14967,8 @@ export type HubApplicationsQueryResult = Apollo.QueryResult<
 export function refetchHubApplicationsQuery(variables: SchemaTypes.HubApplicationsQueryVariables) {
   return { query: HubApplicationsDocument, variables: variables };
 }
-export const CommentsDocument = gql`
-  subscription Comments($commentsId: UUID!) {
+export const CommentsMessageReceivedDocument = gql`
+  subscription CommentsMessageReceived($commentsId: UUID!) {
     communicationCommentsMessageReceived(commentsID: $commentsId) {
       commentsID
       message {
@@ -14982,35 +14982,36 @@ export const CommentsDocument = gql`
 `;
 
 /**
- * __useCommentsSubscription__
+ * __useCommentsMessageReceivedSubscription__
  *
- * To run a query within a React component, call `useCommentsSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCommentsSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCommentsMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCommentsMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCommentsSubscription({
+ * const { data, loading, error } = useCommentsMessageReceivedSubscription({
  *   variables: {
  *      commentsId: // value for 'commentsId'
  *   },
  * });
  */
-export function useCommentsSubscription(
+export function useCommentsMessageReceivedSubscription(
   baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CommentsSubscription,
-    SchemaTypes.CommentsSubscriptionVariables
+    SchemaTypes.CommentsMessageReceivedSubscription,
+    SchemaTypes.CommentsMessageReceivedSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<SchemaTypes.CommentsSubscription, SchemaTypes.CommentsSubscriptionVariables>(
-    CommentsDocument,
-    options
-  );
+  return Apollo.useSubscription<
+    SchemaTypes.CommentsMessageReceivedSubscription,
+    SchemaTypes.CommentsMessageReceivedSubscriptionVariables
+  >(CommentsMessageReceivedDocument, options);
 }
-export type CommentsSubscriptionHookResult = ReturnType<typeof useCommentsSubscription>;
-export type CommentsSubscriptionResult = Apollo.SubscriptionResult<SchemaTypes.CommentsSubscription>;
+export type CommentsMessageReceivedSubscriptionHookResult = ReturnType<typeof useCommentsMessageReceivedSubscription>;
+export type CommentsMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CommentsMessageReceivedSubscription>;
 export const ContextAspectCreatedDocument = gql`
   subscription ContextAspectCreated($contextID: UUID!) {
     contextAspectCreated(contextID: $contextID) {

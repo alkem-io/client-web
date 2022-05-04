@@ -10880,11 +10880,11 @@ export type HubApplicationsQuery = {
   };
 };
 
-export type CommentsSubscriptionVariables = Exact<{
+export type CommentsMessageReceivedSubscriptionVariables = Exact<{
   commentsId: Scalars['UUID'];
 }>;
 
-export type CommentsSubscription = {
+export type CommentsMessageReceivedSubscription = {
   __typename?: 'Subscription';
   communicationCommentsMessageReceived: {
     __typename?: 'CommentsMessageReceived';
