@@ -9276,70 +9276,6 @@ export type UserProfileQueryResult = Apollo.QueryResult<
 export function refetchUserProfileQuery(variables: SchemaTypes.UserProfileQueryVariables) {
   return { query: UserProfileDocument, variables: variables };
 }
-export const UsersDisplayNameDocument = gql`
-  query usersDisplayName($first: Int, $after: UUID) {
-    usersPaginated(first: $first, after: $after) {
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-      edges {
-        node {
-          id
-          displayName
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useUsersDisplayNameQuery__
- *
- * To run a query within a React component, call `useUsersDisplayNameQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersDisplayNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersDisplayNameQuery({
- *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *   },
- * });
- */
-export function useUsersDisplayNameQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.UsersDisplayNameQuery, SchemaTypes.UsersDisplayNameQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UsersDisplayNameQuery, SchemaTypes.UsersDisplayNameQueryVariables>(
-    UsersDisplayNameDocument,
-    options
-  );
-}
-export function useUsersDisplayNameLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.UsersDisplayNameQuery,
-    SchemaTypes.UsersDisplayNameQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UsersDisplayNameQuery, SchemaTypes.UsersDisplayNameQueryVariables>(
-    UsersDisplayNameDocument,
-    options
-  );
-}
-export type UsersDisplayNameQueryHookResult = ReturnType<typeof useUsersDisplayNameQuery>;
-export type UsersDisplayNameLazyQueryHookResult = ReturnType<typeof useUsersDisplayNameLazyQuery>;
-export type UsersDisplayNameQueryResult = Apollo.QueryResult<
-  SchemaTypes.UsersDisplayNameQuery,
-  SchemaTypes.UsersDisplayNameQueryVariables
->;
-export function refetchUsersDisplayNameQuery(variables?: SchemaTypes.UsersDisplayNameQueryVariables) {
-  return { query: UsersDisplayNameDocument, variables: variables };
-}
 export const UsersWithCredentialsDocument = gql`
   query usersWithCredentials($input: UsersWithAuthorizationCredentialInput!) {
     usersWithAuthorizationCredential(credentialsCriteriaData: $input) {
@@ -15217,23 +15153,29 @@ export function refetchAvailableUsersQuery(variables?: SchemaTypes.AvailableUser
   return { query: AvailableUsersDocument, variables: variables };
 }
 export const ContributingUsersDocument = gql`
-  query contributingUsers($limit: Float, $shuffle: Boolean) {
-    users(limit: $limit, shuffle: $shuffle) {
-      id
-      displayName
-      nameID
-      city
-      country
-      profile {
+  query contributingUsers {
+    usersPaginated(first: 25) {
+      users {
         id
-        avatar {
+        displayName
+        nameID
+        city
+        country
+        profile {
           id
-          uri
+          avatar {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
         }
-        tagsets {
-          id
-          tags
-        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
       }
     }
   }
@@ -15251,8 +15193,6 @@ export const ContributingUsersDocument = gql`
  * @example
  * const { data, loading, error } = useContributingUsersQuery({
  *   variables: {
- *      limit: // value for 'limit'
- *      shuffle: // value for 'shuffle'
  *   },
  * });
  */

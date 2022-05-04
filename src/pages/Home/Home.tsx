@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import { useUpdateNavigation } from '../../hooks';
 import AlkemioActivitySection from './AlkemioActivitySection';
@@ -16,8 +16,9 @@ const useStyles = makeStyles(_ => ({
   },
 }));
 
+const currentPaths = [];
+
 export const HomePage = () => {
-  const currentPaths = useMemo(() => [], []);
   useUpdateNavigation({ currentPaths });
 
   const styles = useStyles();
