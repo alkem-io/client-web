@@ -883,8 +883,12 @@
             "help-text": "Projects related to this opportunity"
           }
         },
+        "community": {
+          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
+        },
         "apply": "Interested in collaboration?",
         "projects": {
+          "description": "Here you can manage your projects and suggest new ones to your stakeholders.",
           "header": {
             "text": "Projects",
             "tag": "Coming soon"
