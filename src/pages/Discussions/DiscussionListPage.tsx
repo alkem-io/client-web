@@ -15,10 +15,15 @@ import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProv
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
+import PageLayout from '../../domain/shared/layout/PageLayout';
+import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import { EntityTypeName } from '../../domain/shared/layout/PageLayout/PageLayout';
 
-interface DiscussionsPageProps extends PageProps {}
+interface DiscussionsPageProps extends PageProps {
+  entityTypeName: EntityTypeName;
+}
 
-export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
+export const DiscussionListPage: FC<DiscussionsPageProps> = ({ entityTypeName, paths }) => {
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
@@ -49,30 +54,32 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <DiscussionsLayout
-      title={t('components.discussions-list.name', { community: communityName })}
-      newUrl={'new'}
-      canCreateDiscussion={permissions.canCreateDiscussion}
-      categorySelector={
-        <CategorySelector
-          categories={categoryConfig}
-          onSelect={setCategory}
-          value={category}
-          showLabels={!mediumScreen}
+    <PageLayout currentSection={EntityPageSection.Discussions} entityTypeName={entityTypeName}>
+      <DiscussionsLayout
+        title={t('components.discussions-list.name', { community: communityName })}
+        newUrl={'new'}
+        canCreateDiscussion={permissions.canCreateDiscussion}
+        categorySelector={
+          <CategorySelector
+            categories={categoryConfig}
+            onSelect={setCategory}
+            value={category}
+            showLabels={!mediumScreen}
+          />
+        }
+      >
+        <DiscussionListView
+          entities={{
+            discussions: filtered,
+          }}
+          state={{
+            loading: loading,
+          }}
+          actions={{}}
+          options={{}}
         />
-      }
-    >
-      <DiscussionListView
-        entities={{
-          discussions: filtered,
-        }}
-        state={{
-          loading: loading,
-        }}
-        actions={{}}
-        options={{}}
-      />
-    </DiscussionsLayout>
+      </DiscussionsLayout>
+    </PageLayout>
   );
 };
 export default DiscussionListPage;

@@ -64,14 +64,14 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
       >
         <Route index element={<Navigate replace to={'dashboard'} />} />
         <Route path={'dashboard'} element={<ChallengeDashboardPage paths={currentPaths} />} />
-        <Route path={'contribute'} element={<ContributePage paths={currentPaths} />} />
+        <Route path={'contribute'} element={<ContributePage entityTypeName="challenge" paths={currentPaths} />} />
         <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} />} />
         <Route path={'community'} element={<ChallengeCommunityPage paths={currentPaths} />} />
         <Route
           path={'discussions/*'}
           element={
             <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
-              <DiscussionsRoute paths={currentPaths} />
+              <DiscussionsRoute entityTypeName="challenge" paths={currentPaths} />
             </RestrictedRoute>
           }
         />

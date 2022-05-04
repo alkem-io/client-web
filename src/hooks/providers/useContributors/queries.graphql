@@ -1,22 +1,28 @@
-query contributingUsers($limit: Float, $shuffle: Boolean) {
-  users(limit: $limit, shuffle: $shuffle) {
-    id
-    displayName
-    nameID
-    profile {
+query contributingUsers {
+  usersPaginated(first: 25) {
+    users {
       id
-      location {
-        city
-        country
-      }
-      avatar {
+      displayName
+      nameID
+      profile {
         id
-        uri
+        location {
+          city
+          country
+        }
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
       }
-      tagsets {
-        id
-        tags
-      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
     }
   }
 }

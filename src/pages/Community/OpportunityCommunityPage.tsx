@@ -8,6 +8,14 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
   const communityId = opportunity?.community?.id;
   const opportunityId = opportunity?.id;
 
-  return <CommunityPage paths={paths} hubId={hubId} communityId={communityId} opportunityId={opportunityId} />;
+  return (
+    <CommunityPage
+      entityTypeName="opportunity"
+      paths={paths}
+      hubId={hubId}
+      communityId={communityId}
+      opportunityId={opportunityId}
+    />
+  );
 };
 export default OpportunityCommunityPage;
