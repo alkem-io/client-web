@@ -1,0 +1,7 @@
+fragment ContributeTabAspect on Aspect {
+  ...AspectCard
+  authorization {
+    id
+    myPrivileges
+  }
+}

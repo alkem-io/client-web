@@ -651,6 +651,14 @@ export type ContextCanvasesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
 };
 
+export type ContextAspectCreated = {
+  __typename?: 'ContextAspectCreated';
+  /** The aspect that has been created. */
+  aspect: Aspect;
+  /** The identifier for the Context on which the aspect was created. */
+  contextID: Scalars['String'];
+};
+
 export type CreateActorGroupInput = {
   description?: InputMaybe<Scalars['String']>;
   ecosystemModelID: Scalars['UUID'];
@@ -2444,6 +2452,8 @@ export type Subscription = {
   communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
+  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  contextAspectCreated: ContextAspectCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
 };
@@ -2466,6 +2476,10 @@ export type SubscriptionCommunicationDiscussionUpdatedArgs = {
 
 export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
   updatesIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionContextAspectCreatedArgs = {
+  contextID: Scalars['UUID'];
 };
 
 export type Tagset = {
@@ -7467,27 +7481,6 @@ export type OpportunityAspectsQuery = {
   };
 };
 
-export type AspectsOnContextFragment = {
-  __typename?: 'Context';
-  id: string;
-  aspects?:
-    | Array<{
-        __typename?: 'Aspect';
-        id: string;
-        nameID: string;
-        displayName: string;
-        type: string;
-        description: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      }>
-    | undefined;
-};
-
 export type PrivilegesOnContextFragment = {
   __typename?: 'Context';
   id: string;
@@ -10898,6 +10891,67 @@ export type CommentsSubscription = {
     commentsID: string;
     message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
   };
+};
+
+export type AspectsOnContextFragment = {
+  __typename?: 'Context';
+  id: string;
+  aspects?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        nameID: string;
+        displayName: string;
+        type: string;
+        description: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+};
+
+export type ContextAspectCreatedSubscriptionVariables = Exact<{
+  contextID: Scalars['UUID'];
+}>;
+
+export type ContextAspectCreatedSubscription = {
+  __typename?: 'Subscription';
+  contextAspectCreated: {
+    __typename?: 'ContextAspectCreated';
+    aspect: {
+      __typename?: 'Aspect';
+      id: string;
+      nameID: string;
+      displayName: string;
+      type: string;
+      description: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    };
+  };
+};
+
+export type ContributeTabAspectFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  nameID: string;
+  displayName: string;
+  type: string;
+  description: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
 };
 
 export type HubPreferencesQueryVariables = Exact<{
