@@ -605,10 +605,10 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "description": "Here you can see the summary for this {{entity}}."
+          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
         },
         "context": {
-          "description": "Here you can explore the context of this {{entity}}."
+          "description": "Here you can explore the context of this {{entity}}. This information is provided by the organization managing this {{entity}}."
         },
         "community": {
           "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared."
@@ -620,7 +620,7 @@
           "description": "Here you can read and participate in discussions around this {{entity}}."
         },
         "canvases": {
-          "description": "Here you can create a canvas for this {{entity}} as well as find ones created by the others."
+          "description": "Canvases can be seen as digital whiteboards. Here you can create a canvas for this {{entity}} as well as find ones created by the others."
         }
       }
     },
@@ -631,16 +631,16 @@
       "generic": {
         "sections": {
           "profile": {
-            "description": "Here you can edit profile for this {{entity}}."
+            "description": "Here you can edit the profile for this {{entity}}."
           },
           "context": {
-            "description": "Here you can edit context for this {{entity}}."
+            "description": "Here you can edit the context for this {{entity}}."
           },
           "community": {
-            "description": "Here you can edit community settings for this {{entity}}."
+            "description": "Here you can edit the community settings for this {{entity}}."
           },
           "communications": {
-            "description": "Here you can post updates about this {{entity}}."
+            "description": "Here you can post updates that will be visible to all members of this {{entity}}."
           },
           "authorization": {
             "description": "Here you can tweak authorization settings for this {{entity}}."
@@ -883,8 +883,12 @@
             "help-text": "Projects related to this opportunity"
           }
         },
+        "community": {
+          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
+        },
         "apply": "Interested in collaboration?",
         "projects": {
+          "description": "Here you can manage your projects and suggest new ones to your stakeholders.",
           "header": {
             "text": "Projects",
             "tag": "Coming soon"
