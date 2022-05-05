@@ -2,7 +2,7 @@ import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
-import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
+import EditMemberCredentials2 from '../../components/Admin/Authorization/EditMemberCredentials2';
 import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
@@ -71,7 +71,7 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
 
   return (
     <Container maxWidth="xl">
-      <EditMemberCredentials
+      <EditMemberCredentials2
         onAdd={handleAdd}
         onRemove={handleRemove}
         credential={credential}

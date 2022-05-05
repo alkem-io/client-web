@@ -22,7 +22,7 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false) => {
       }
 
       const [dataFieldName] = dataKey;
-      const [incomingData] = incoming[dataFieldName];
+      const incomingData = incoming[dataFieldName];
 
       const existingData = existing[dataFieldName];
 
