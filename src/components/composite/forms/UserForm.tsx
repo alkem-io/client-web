@@ -20,6 +20,7 @@ import CountrySelect from './CountrySelect';
 import { FormikInputField } from './FormikInputField';
 // import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import { COUNTRIES } from '../../../models/constants';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -78,7 +79,12 @@ export const UserForm: FC<UserProps> = ({
     email,
     gender,
     phone,
-    profile: { id: profileId, description: bio, references },
+    profile: {
+      id: profileId,
+      description: bio,
+      references,
+      location: { city, country },
+    },
   } = currentUser;
 
   const tagsets = useMemo(() => {
@@ -118,8 +124,8 @@ export const UserForm: FC<UserProps> = ({
     twitter: twitterRef?.uri || '',
     github: githubRef?.uri || '',
     gender: gender || '',
-    city: '',
-    country: null, //COUNTRIES.find(x => x.code === country) || null,
+    city: city || '',
+    country: COUNTRIES.find(x => x.code === country) || null,
     phone: phone || '',
     tagsets: tagsets,
     references: references.filter(x => !socialNames.includes(x.name.toLowerCase())) || [],
@@ -159,6 +165,7 @@ export const UserForm: FC<UserProps> = ({
         references: newReferences,
         bio,
         profileId,
+        city,
         country,
         linkedin,
         twitter,
@@ -180,7 +187,7 @@ export const UserForm: FC<UserProps> = ({
           references: finalReferences,
           location: {
             country: country?.code || '',
-            city: '', // todo
+            city: city ?? '',
           },
           tagsets,
         },

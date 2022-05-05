@@ -629,6 +629,8 @@ export type Context = {
   id: Scalars['UUID'];
   /** What is the potential impact? */
   impact?: Maybe<Scalars['Markdown']>;
+  /** Location of this entity */
+  location?: Maybe<Location>;
   /** The References for this Context. */
   references?: Maybe<Array<Reference>>;
   /** A one line description */
@@ -649,6 +651,14 @@ export type ContextAspectsArgs = {
 
 export type ContextCanvasesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type ContextAspectCreated = {
+  __typename?: 'ContextAspectCreated';
+  /** The aspect that has been created. */
+  aspect: Aspect;
+  /** The identifier for the Context on which the aspect was created. */
+  contextID: Scalars['String'];
 };
 
 export type CreateActorGroupInput = {
@@ -2499,18 +2509,26 @@ export type Subscription = {
   __typename?: 'Subscription';
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
+  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  communicationCommentsMessageReceived: CommentsMessageReceived;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
   /** Receive updates on Discussions */
   communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
+  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  contextAspectCreated: ContextAspectCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
   canvasIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionCommunicationCommentsMessageReceivedArgs = {
+  commentsID: Scalars['UUID'];
 };
 
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
@@ -2523,6 +2541,10 @@ export type SubscriptionCommunicationDiscussionUpdatedArgs = {
 
 export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
   updatesIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionContextAspectCreatedArgs = {
+  contextID: Scalars['UUID'];
 };
 
 export type Tagset = {
@@ -2758,8 +2780,6 @@ export type UpdateUserGroupInput = {
 export type UpdateUserInput = {
   ID: Scalars['UUID_NAMEID_EMAIL'];
   accountUpn?: InputMaybe<Scalars['String']>;
-  city?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
   /** The display name for this entity. */
   displayName?: InputMaybe<Scalars['String']>;
   firstName?: InputMaybe<Scalars['String']>;

@@ -432,6 +432,7 @@ export type ContextKeySpecifier = (
   | 'ecosystemModel'
   | 'id'
   | 'impact'
+  | 'location'
   | 'references'
   | 'tagline'
   | 'vision'
@@ -447,11 +448,17 @@ export type ContextFieldPolicy = {
   ecosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
   references?: FieldPolicy<any> | FieldReadFunction<any>;
   tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   vision?: FieldPolicy<any> | FieldReadFunction<any>;
   visuals?: FieldPolicy<any> | FieldReadFunction<any>;
   who?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ContextAspectCreatedKeySpecifier = ('aspect' | 'contextID' | ContextAspectCreatedKeySpecifier)[];
+export type ContextAspectCreatedFieldPolicy = {
+  aspect?: FieldPolicy<any> | FieldReadFunction<any>;
+  contextID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CredentialKeySpecifier = ('id' | 'resourceID' | 'type' | CredentialKeySpecifier)[];
 export type CredentialFieldPolicy = {
@@ -1304,17 +1311,21 @@ export type ServiceMetadataFieldPolicy = {
 };
 export type SubscriptionKeySpecifier = (
   | 'canvasContentUpdated'
+  | 'communicationCommentsMessageReceived'
   | 'communicationDiscussionMessageReceived'
   | 'communicationDiscussionUpdated'
   | 'communicationUpdateMessageReceived'
+  | 'contextAspectCreated'
   | 'profileVerifiedCredential'
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
+  communicationCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdateMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
+  contextAspectCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   profileVerifiedCredential?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TagsetKeySpecifier = ('authorization' | 'id' | 'name' | 'tags' | TagsetKeySpecifier)[];
@@ -1647,6 +1658,10 @@ export type StrictTypedTypePolicies = {
   Context?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ContextKeySpecifier | (() => undefined | ContextKeySpecifier);
     fields?: ContextFieldPolicy;
+  };
+  ContextAspectCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ContextAspectCreatedKeySpecifier | (() => undefined | ContextAspectCreatedKeySpecifier);
+    fields?: ContextAspectCreatedFieldPolicy;
   };
   Credential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialKeySpecifier | (() => undefined | CredentialKeySpecifier);
