@@ -4,12 +4,15 @@
   },
   "buttons": {
     "learn-more": "Meer leren",
+    "load-more": "Laad meer",
+    "load-count-more": "Laad {{count}} meer",
     "apply": "Schrijf in",
     "explore": "Verken",
     "ok": "Ok",
     "create": "Maak aan",
     "save": "Opslaan",
     "back": "Terug",
+    "next": "Volgende",
     "edit": "Pas aan",
     "see-more": "Lees verder",
     "see-all": "Zie alles",
@@ -65,7 +68,7 @@
     "state": "Staat",
     "aspect": "Aspect",
     "aspects": "Aspecten",
-    "Hub": "Hub",
+    "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
@@ -73,6 +76,8 @@
     "opportunities": "Opportunities",
     "organization": "Organisatie",
     "organizations": "Organisaties",
+    "communications": "Communicatie",
+    "applications": "Aanmeldingen",
     "interest": "Interesse",
     "interests": "Interesses",
     "project": "Project",
@@ -106,12 +111,19 @@
     "reference": "Referentie",
     "references": "Referenties",
     "notifications": "Notificaties",
+    "credentials": "Credentials",
     "my-profile": "Mijn profiel",
     "my-memberships": "My lidmaatschappen",
+    "profile": "Profiel",
     "social": "Sociaal",
     "lifecycle": "Levenscyclus",
     "home": "Startpagina",
     "visuals": "Beeldmateriaal",
+    "authorization": "Authorisatie",
+    "question": "Vraag",
+    "questions": "Vragen",
+    "show-all": "Toon alles",
+    "title": "Titel",
     "genders": {
       "notSpecified": "niet gespecificeerd",
       "male": "man",
@@ -234,7 +246,8 @@
   },
   "components": {
     "context-section": {
-      "create-aspect": "Aspect succesvol aangemaakt"
+      "create-aspect": "Aspect succesvol aangemaakt",
+      "give-feedback": "Geef feedback"
     },
     "aspect-creation": {
       "title": "Maak nieuw Aspect aan",
@@ -242,6 +255,7 @@
         "title": "Het soort additionele context om toe te voegen.",
         "error": "Fout opgetreden tijdens het laden van de types",
         "label": "Soort Aspect",
+        "type-help-text-short": "Kies het aspect type dat het best overeenkomt met de context die je wilt delen.",
         "type-help-text": "Aspecten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke actoren. De set Aspect-types dat hier beschikbaar is staat vast. Kies het aspect-type dat het best overeenkomt met de context die je wilt delen."
       },
       "info-step": {
@@ -254,13 +268,19 @@
         "name-id-help-text": "Naam-ID help tekst",
         "unique-name-validation-text": "${path} is al in gebruik voor een ander Aspect."
       },
-      "final-step": {
+      "create-step": {
         "title": "Laatste controle",
         "type": "Soort",
         "name": "Naam",
         "description": "Omschrijving",
         "links": "Relevante links",
         "explanation": "Door het voltooien van deze stap zal het Aspect aangemaakt worden. In de volgende stap kan het Aspect verder worden bewerkt via het instellingen blad. Daar kunen bijvoorbeeld referenties en afbeeldingen voor de omslagfoto geselecteerd worden."
+      },
+      "visuals-step": {
+        "title": "Afbeeldingen",
+        "headline": "Gefeliciteerd, je hebt succesvol een Aspect aangemaakt!",
+        "explanation": "Om je Aspect verder te personaliseren kan je afbeeldingen toevoegen, zoals een omslagfoto.",
+        "bottom-note": "Je kan ook achteraf de afbeeldingen wijzigen of referenties toevoegen in de instellingen van het Aspect."
       }
     },
     "visual-upload": {
@@ -281,13 +301,30 @@
       "created": "Aangemaakt op {{date}}",
       "updated": "Laatst geupdate op {{date}}"
     },
+    "credential-share-request-dialog": {
+      "title": "Deel je contoleerbare identiteitsverificatie",
+      "content": "Selecteer de contoleerbare identiteitsverificatie die je in je Alkemio wallet wilt bewaren."
+    },
+    "alkemio-user-credential-offer-dialog": {
+      "title": "Alkemio Gebruiker",
+      "content": "Deze identiteitsverificatie staat de houder toe om te bewijzen dat hij/zij een geverifieerde gebruiker van Alkemio is."
+    },
+    "alkemio-community-member-credential-offer-dialog": {
+      "title": "Alkemio Community Lid",
+      "content": "Deze identiteitsverificatie staat de houder toe om te bewijzen dat hij/zij een geverifieerd lid van de betreffende community binnen Alkemio is."
+    },
     "edit-members": {
       "no-available-members": "Geen gebruikers beschikbaar om toe te voegen; controleer leden van de betreffende community.",
       "user-not-found": "Gebruiker niet gevonden!"
     },
     "application-button": {
+      "apply-parent": "Schrijf in voor de bovenliggende groep",
+      "apply-disabled": "Inschrijven niet toegelaten",
       "apply-not-signed": "Log in om in te schrijven",
       "apply-pending": "Uw inschrijving loopt",
+      "join": "Word lid",
+      "join-parent": "Word lid van de bovenliggende groep",
+      "parent-pending": "Inschrijving van bovenliggende groep loopt",
       "dialog-apply-parent": {
         "title": "Wil je lid worden van de bovenliggende Hub?",
         "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Voeg de Challenge waarvan je lid wilt worden toe in het aanmeldingsformulier van de Hub."
@@ -295,6 +332,15 @@
       "dialog-parent-app-pending": {
         "title": "Bovenliggende aanmelding loopt!",
         "body": "Om lid te worden van <strong title='Challenge name'>'{{challengeName}}'</strong> moet je eerst lid worden van de <strong title='Hub name'>'{{hubName}}'</strong> Hub. Er loopt al een aanmelding voor die <strong title='Hub name'>'{{hubName}}'</strong>, dus je kan ook een aanmelding indienen voor <strong title='Challenge name'>'{{challengeName}}'</strong>."
+      },
+      "dialog-join": {
+        "title": "Word lid van de community",
+        "body": "Je kan lid worden van deze community zonder in te schrijven omdat je de juiste rechten hebt.",
+        "accept-terms": "Ik begrijp en accepteer de voorwaarden en condities voor community leden"
+      },
+      "dialog-join-parent": {
+        "title": "Word lid van de bovenliggende groep",
+        "body": "Je kan lid worden van deze community zonder in te schrijven omdat je de juiste rechten hebt, maar eerst moet je lid worden van de bovenliggende groep."
       }
     },
     "organization-verified": {
@@ -533,13 +579,6 @@
     "members-view": {
       "title": "Actieve leden community"
     },
-    "discussion-category-selector": {
-      "ALL": "TOON ALLES",
-      "GENERAL": "ALGEMEEN",
-      "IDEAS": "IDEEËN",
-      "QUESTIONS": "VRAGEN",
-      "SHARING": "DELEN"
-    },
     "community-section": {
       "discussions": {
         "no-data-create": "Geen discussies. Maak een nieuwe discussie aan",
@@ -564,6 +603,96 @@
     "copyright": "© 2022 Stichting Alkemio"
   },
   "pages": {
+    "generic": {
+      "sections": {
+        "dashboard": {
+          "description": "Hier kan je een samenvatting zien van deze {{entity}}. Navigeer door de andere tabbladen om meer gedetailleerde informatie te zien!"
+        },
+        "context": {
+          "description": "Hier kan je de context verkennen van deze {{entity}}. Deze informatie is gegeven door de organisatie(s) die deze {{entity}} beheren."
+        },
+        "community": {
+          "description": "Hier kan je de community verkennen. Je kan de gebruikers en organisaties zien die bijdragen, maar ook de updates die zijn gedeeld."
+        },
+        "contribute": {
+          "description": "Hier kan je jouw inzichten geven die bijdragen aan een beter begrip van de context. Deze bijdragen worden Aspecten genoemd. Het gaat erom dat de 'wisdom of the community' wordt gebruikt. \n Voeg extra Aspecten toe of reageer en discusieer rond bestaande Aspecten die door anderen zijn toegevoegd!"
+        },
+        "discussions": {
+          "description": "Hier kan je met andere leden uit de community discussieren rond deze {{entity}}."
+        },
+        "canvases": {
+          "description": "Canvassen kunnen worden gezien als digitale whiteboards. In deze sectie kan je een canvas aanmaken voor deze {{entity}}, of bestaande canvassen bekijken en bewerken."
+        }
+      }
+    },
+    "contribute": {
+      "no-aspects": "Geen Aspecten gevonden"
+    },
+    "admin": {
+      "generic": {
+        "sections": {
+          "profile": {
+            "description": "Hier kan je het profiel aanpassen voor deze {{entity}}."
+          },
+          "context": {
+            "description": "Hier kan je de context aanpassen voor deze {{entity}}."
+          },
+          "community": {
+            "description": "Hier kan je de community instellingen aanpassen voor deze {{entity}}."
+          },
+          "communications": {
+            "description": "Hier kan je updates plaatsen die zichtbaar zullen zijn voor alle leden van deze {{entity}}."
+          },
+          "authorization": {
+            "description": "Hier kan je de authorisatie-instellingen aanpassen voor deze {{entity}}."
+          }
+        }
+      },
+      "organization": {
+        "authorization": {
+          "preferences": {
+            "title": "Authorisatie",
+            "subtitle": "In deze sectie kan je de autorisatie van de organisaties aanpassen"
+          }
+        }
+      },
+      "challenge": {
+        "community": {
+          "preferences": {
+            "title": "Lidmaatschap",
+            "subtitle": "In deze sectie kan je de $t(common.challenge) lidmaatschap-voorkeuren aanpassen"
+          }
+        },
+        "sections": {
+          "opportunities": {
+            "description": "Hier kan je de Opportunities voor deze Hub aanpassen."
+          }
+        }
+      },
+      "hub": {
+        "sections": {
+          "challenges": {
+            "description": "Hier kan je de Challenges voor deze Hub aanpassen."
+          }
+        },
+        "authorization": {
+          "preferences": {
+            "subtitle": "Hier kan je de $t(common.hub) authorisatie voorkeuren aanpassen"
+          }
+        },
+        "community": {
+          "preferences": {
+            "title": "Lidmaatschap",
+            "subtitle": "In deze sectie kan je de $t(common.hub) lidmaatschap-voorkeuren aanpassen"
+          }
+        }
+      },
+      "opportunity": {}
+    },
+    "feedback": {
+      "title": "Geef feedback op de context van deze community",
+      "success": "Feedback verstuurd"
+    },
     "aspect": {
       "dashboard": {
         "comment": {
@@ -667,7 +796,7 @@
           "joining-a-challenge": "Gemotiveerd om deel te nemen aan een Challenge? Verken alle <a href='./challenges' >Challenges</a>.",
           "your-profile": "Belangstelling om gevonden te worden door andere bijdragers? Vul uw <a href='./profile' >profiel in</a>.</br>"
         },
-        "Hub": {
+        "hub": {
           "header": "Verken de Challenge Hubs!",
           "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een community voor de Challenges die er worden beheerd. <br> Een omgeving om te coördineren en samen te werken. Om te verbinden.",
           "body": "Een Hub kan Openbaar of Besloten zijn en heeft een faciliterende Organisatie."
@@ -686,7 +815,7 @@
         "help": "Verificatie status: is de identiteit en informatie over de Organisatie formeel geverifieerd"
       }
     },
-    "Hub": {
+    "hub": {
       "title": "Hub",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
@@ -712,10 +841,6 @@
           "body": "",
           "no-data": "Er zijn geen Challenges beschikbaar voor deze Hub",
           "description": "Hier kan je Challenges verkennen die door deze Hub worden ondergebracht. Filter op kernwoorden om uitsluitend de onderwerpen van uw interesse zichtbaar te maken. "
-        },
-        "contribute": {
-          "description": "Hier kan je een bijdrage leveren met inzichten die de context verduidelijken. Het draait om het openbaren van de kennis van de community. ",
-          "description2": "Voeg extra aspecten toe die relevant zijn en reageer op aspecten die door anderen zijn toegevoegd. "
         }
       }
     },
@@ -784,7 +909,7 @@
         "help-text": "Laat verschillende organisaties zien, inclusief de rol die je hebt",
         "no-data": "Er is op dit moment geen leidende organisatie"
       },
-      "Hub-host": {
+      "hub-host": {
         "title": "Beherende organisatie",
         "help-text": "Laat verschillende organisaties zien, inclusief de rol die je hebt"
       },
@@ -794,6 +919,7 @@
         "no-data": "Geen leden beschikbaar"
       },
       "updates": {
+        "title": "Updates ({{count}})",
         "no-data": "Geen updates beschikbaar"
       }
     },
@@ -832,7 +958,7 @@
         "no-templates": "Er zijn hier nog geen templates gedefinieerd. Wees de eerste die er een toevoegt.",
         "how-to": "Om een template te creeëren moet je een nieuw Canvas aanmaken of een bestaande selecteren en die als template opslaan."
       },
-      "Hub": {
+      "hub": {
         "templatesHeader": "Templates gedefinieerd in deze Hub",
         "templatesSubheader": "De templates gedefinieerd in deze Hub kunnen in elke Challenge en Opportunity die binnen deze Hub vallen gebruikt worden."
       },
@@ -878,13 +1004,7 @@
     },
     "registration-success": {
       "header": "Bedankt voor uw inschrijving",
-      "subheader": "Bijna klaar! Een laatste stap is de validate van jou emailadres.",
-      "message": "Voorgestelde volgende stappen:"
-    },
-    "verification-required": {
-      "header": "Email validate is nog open.",
-      "message": "Kijk in je inbox voor een email met instructies.",
-      "link": "(Als je geen email hebt ontvangen, click op deze link om nog een te laten sturen)"
+      "subheader": "Bijna klaar! Een laatste stap is de validate van jou emailadres."
     },
     "verification-success": {
       "header": "Bedankt voor het verifiëren van uw email!",
@@ -898,6 +1018,11 @@
     "verification": {
       "header": "Email verificatie",
       "message": "Gebruikers van Alkemio zijn verplicht hun email adres te verifiëren.<br/><br/>Vul hieronder uw email adres in om een nieuwe verificatielink te ontvangen."
+    },
+    "verification-required": {
+      "header": "Email validatie is nog open.",
+      "message": "Kijk in je inbox voor een email met instructies.",
+      "link": "(Als je geen email hebt ontvangen, klik op deze link om nog een te laten sturen)"
     },
     "settings": {
       "header": "Instellingen gebruiker"
@@ -921,7 +1046,20 @@
       "associated-organizations": {
         "title": "Gerelateerde Organisaties",
         "help": "Organisaties waar de gebruiker aan gerelateerd is"
+      },
+      "verifiable-credentials": {
+        "title": "Controleerbare Identiteitsverificatie",
+        "help": "Identiteitsverificatie die de gebruiker houdt, uitgegeven door vetrouwde partijen"
       }
+    },
+    "user-credentials": {
+      "your-credentials": {
+        "title": "Mijn Controleerbare Identiteitsverificatie",
+        "description": "Alkemio cachet je controleerbare identiteitsverificatie in jouw cloud-hosted wallet. De identiteitsverificaties die je deelt kunnen je privileges in communities op het platform geven.",
+        "add-credential": "Voeg Identiteitsverificatie toe"
+      },
+      "issue": "Uitgifte",
+      "added-successfully": "Identiteitsverificatie succesvol toegevoegd"
     },
     "authentication-required": {
       "header": "Je moet ingelogd zijn voor de pagina die je probeert te bereiken.",
@@ -956,7 +1094,11 @@
       }
     },
     "loading-flow": "Loading flow",
-    "loading-error": "Loading error"
+    "loading-error": "Loading error",
+    "messages": {
+      "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
+      "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven."
+    }
   },
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",
@@ -982,6 +1124,9 @@
   },
   "contributions-view": {
     "no-data": "Geen {{name, lowercase}} beschikbaar"
+  },
+  "credentials-view": {
+    "no-data": "Er zijn geen identiteitsverificaties gegeven"
   },
   "associated-organizations-view": {
     "no-data": "Geen {{name, lowercase}} beschikbaar"
