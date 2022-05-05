@@ -5,20 +5,7 @@ query availableUsers {
   }
 }
 
-query availableUsers2($first: Int!, $after: UUID) {
-  usersPaginated(first: $first, after: $after) {
-    users {
-      id
-      displayName
-    }
-    pageInfo {
-      endCursor
-      hasNextPage
-    }
-  }
-}
-
-query availableUsersFiltered($first: Int!, $after: UUID, $filter: UserFilterInput) {
+query availableUsers2($first: Int!, $after: UUID, $filter: UserFilterInput) {
   usersPaginated(first: $first, after: $after, filter: $filter) {
     users {
       id

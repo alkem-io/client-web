@@ -70,7 +70,7 @@ export interface EditMembersProps {
   lastMembersPage?: boolean;
   title?: string;
 }
-
+// todo: merge with EditMembers when pagination and filtering is stable
 export const EditMembers2: FC<EditMembersProps> = ({
   members,
   availableMembers,

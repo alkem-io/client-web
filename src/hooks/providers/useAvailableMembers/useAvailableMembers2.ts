@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { AuthorizationCredential, UserDisplayNameFragment, UserFilterInput } from '../../../models/graphql-schema';
 import {
   useAvailableUsers2Query,
-  useAvailableUsersFilteredQuery,
   useCommunityMembersQuery,
   useUsersWithCredentialsSimpleListQuery,
 } from '../../generated/graphql';
@@ -18,8 +17,7 @@ export interface AvailableMembersResults {
   error: boolean;
 }
 
-const DEFAULT_FIRST = 9999;
-const noop = () => {};
+const DEFAULT_FIRST = 25;
 
 /***
  * Hook to fetch available users in a curtain context, defined by the parent members (if applicable),
@@ -31,6 +29,7 @@ const noop = () => {};
  * @param parentMembers
  * @param filter
  */
+// todo: merge with useAvailableMembers when pagination and filtering is stable
 export const useAvailableMembers2 = (
   credential: AuthorizationCredential,
   resourceId?: string,
@@ -43,25 +42,12 @@ export const useAvailableMembers2 = (
     data: usersQueryData,
     loading: loadingUsers,
     error: userError,
+    fetchMore,
   } = useAvailableUsers2Query({
-    variables: { first: DEFAULT_FIRST },
-    fetchPolicy: 'network-only', // Used for first execution
+    variables: { first: DEFAULT_FIRST, filter },
+    fetchPolicy: 'cache-first', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
     skip: Boolean(parentCommunityId || parentMembers),
-  });
-
-  const {
-    data: usersFilteredQueryData,
-    loading: loadingFilteredUsers,
-    error: userFilteredError,
-  } = useAvailableUsersFilteredQuery({
-    variables: {
-      first: DEFAULT_FIRST,
-      filter,
-    },
-    fetchPolicy: 'network-only', // Used for first execution
-    nextFetchPolicy: 'cache-first', // Used for subsequent executions
-    skip: Boolean(parentCommunityId || parentMembers || !filter),
   });
 
   const {
@@ -95,12 +81,10 @@ export const useAvailableMembers2 = (
 
   const current = _current?.usersWithAuthorizationCredential || [];
 
-  const isLoading =
-    loadingUsers || loadingFilteredUsers || loadingMembers || loadingParentCommunityMembers || loadingHub;
-  const hasError = !!(membersError || userFilteredError || userError || parentCommunityMembersError);
+  const isLoading = loadingUsers || loadingMembers || loadingParentCommunityMembers || loadingHub;
+  const hasError = !!(membersError || userError || parentCommunityMembersError);
   const entityMembers = (parentMembers ||
     _parentCommunityMembers?.hub.community?.members ||
-    (filter && usersFilteredQueryData?.usersPaginated?.users) ||
     usersQueryData?.usersPaginated.users ||
     []) as UserDisplayNameFragment[];
 
@@ -109,7 +93,7 @@ export const useAvailableMembers2 = (
     [entityMembers, current]
   );
 
-  /*const onLoadMore = (amount = DEFAULT_FIRST) => {
+  const onLoadMore = (amount = DEFAULT_FIRST) => {
     if (!usersQueryData) {
       return;
     }
@@ -117,14 +101,13 @@ export const useAvailableMembers2 = (
     fetchMore({
       variables: {
         first: amount,
-        after: usersQueryData.usersPaginated.pageInfo.endCursor
-      }
-    })
-  };*/
-  const onLoadMore = noop;
+        after: usersQueryData.usersPaginated.pageInfo.endCursor,
+      },
+    });
+  };
+  //const onLoadMore = noop;
 
-  //const isLastAvailableUserPage = !usersQueryData?.usersPaginated.pageInfo.hasNextPage ?? true;
-  const isLastAvailableUserPage = true;
+  const isLastAvailableUserPage = !usersQueryData?.usersPaginated.pageInfo.hasNextPage ?? true;
 
   return {
     available: availableMembers,

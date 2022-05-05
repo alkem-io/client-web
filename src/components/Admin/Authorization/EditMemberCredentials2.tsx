@@ -12,7 +12,7 @@ interface EditAdminCredentialsProps
   parentCommunityId?: string;
   title?: string;
 }
-
+// todo: merge with EditMemberCredentials when pagination and filtering is stable
 export const EditMemberCredentials2: FC<EditAdminCredentialsProps> = ({
   onAdd,
   onRemove,

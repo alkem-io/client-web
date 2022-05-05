@@ -15060,8 +15060,8 @@ export function refetchAvailableUsersQuery(variables?: SchemaTypes.AvailableUser
   return { query: AvailableUsersDocument, variables: variables };
 }
 export const AvailableUsers2Document = gql`
-  query availableUsers2($first: Int!, $after: UUID) {
-    usersPaginated(first: $first, after: $after) {
+  query availableUsers2($first: Int!, $after: UUID, $filter: UserFilterInput) {
+    usersPaginated(first: $first, after: $after, filter: $filter) {
       users {
         id
         displayName
@@ -15088,6 +15088,7 @@ export const AvailableUsers2Document = gql`
  *   variables: {
  *      first: // value for 'first'
  *      after: // value for 'after'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -15117,72 +15118,6 @@ export type AvailableUsers2QueryResult = Apollo.QueryResult<
 >;
 export function refetchAvailableUsers2Query(variables: SchemaTypes.AvailableUsers2QueryVariables) {
   return { query: AvailableUsers2Document, variables: variables };
-}
-export const AvailableUsersFilteredDocument = gql`
-  query availableUsersFiltered($first: Int!, $after: UUID, $filter: UserFilterInput) {
-    usersPaginated(first: $first, after: $after, filter: $filter) {
-      users {
-        id
-        displayName
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-    }
-  }
-`;
-
-/**
- * __useAvailableUsersFilteredQuery__
- *
- * To run a query within a React component, call `useAvailableUsersFilteredQuery` and pass it any options that fit your needs.
- * When your component renders, `useAvailableUsersFilteredQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAvailableUsersFilteredQuery({
- *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useAvailableUsersFilteredQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AvailableUsersFilteredQuery,
-    SchemaTypes.AvailableUsersFilteredQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AvailableUsersFilteredQuery, SchemaTypes.AvailableUsersFilteredQueryVariables>(
-    AvailableUsersFilteredDocument,
-    options
-  );
-}
-export function useAvailableUsersFilteredLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AvailableUsersFilteredQuery,
-    SchemaTypes.AvailableUsersFilteredQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AvailableUsersFilteredQuery, SchemaTypes.AvailableUsersFilteredQueryVariables>(
-    AvailableUsersFilteredDocument,
-    options
-  );
-}
-export type AvailableUsersFilteredQueryHookResult = ReturnType<typeof useAvailableUsersFilteredQuery>;
-export type AvailableUsersFilteredLazyQueryHookResult = ReturnType<typeof useAvailableUsersFilteredLazyQuery>;
-export type AvailableUsersFilteredQueryResult = Apollo.QueryResult<
-  SchemaTypes.AvailableUsersFilteredQuery,
-  SchemaTypes.AvailableUsersFilteredQueryVariables
->;
-export function refetchAvailableUsersFilteredQuery(variables: SchemaTypes.AvailableUsersFilteredQueryVariables) {
-  return { query: AvailableUsersFilteredDocument, variables: variables };
 }
 export const ContributingUsersDocument = gql`
   query contributingUsers {

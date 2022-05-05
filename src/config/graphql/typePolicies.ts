@@ -43,7 +43,7 @@ export const typePolicies: TypedTypePolicies = {
   },
   Query: {
     fields: {
-      usersPaginated: paginationFieldPolicy(),
+      usersPaginated: paginationFieldPolicy(['filter']),
       organizationsPaginated: paginationFieldPolicy(),
     },
   },

@@ -10977,24 +10977,10 @@ export type AvailableUsersQuery = {
 export type AvailableUsers2QueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
-}>;
-
-export type AvailableUsers2Query = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-  };
-};
-
-export type AvailableUsersFilteredQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
-export type AvailableUsersFilteredQuery = {
+export type AvailableUsers2Query = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
