@@ -651,6 +651,14 @@ export type ContextCanvasesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
 };
 
+export type ContextAspectCreated = {
+  __typename?: 'ContextAspectCreated';
+  /** The aspect that has been created. */
+  aspect: Aspect;
+  /** The identifier for the Context on which the aspect was created. */
+  contextID: Scalars['String'];
+};
+
 export type CreateActorGroupInput = {
   description?: InputMaybe<Scalars['String']>;
   ecosystemModelID: Scalars['UUID'];
@@ -1952,6 +1960,14 @@ export type OrganizationAuthorizationResetInput = {
   organizationID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type OrganizationFilterInput = {
+  contactEmail?: InputMaybe<Scalars['String']>;
+  displayName?: InputMaybe<Scalars['String']>;
+  domain?: InputMaybe<Scalars['String']>;
+  nameID?: InputMaybe<Scalars['String']>;
+  website?: InputMaybe<Scalars['String']>;
+};
+
 export type OrganizationMembership = {
   __typename?: 'OrganizationMembership';
   /** Details of the Challenges the Organization is leading. */
@@ -2006,9 +2022,9 @@ export type PageInfo = {
   __typename?: 'PageInfo';
   /** The last cursor of the page result */
   endCursor?: Maybe<Scalars['String']>;
-  /** Indicate whether more items exist after the returned once */
+  /** Indicate whether more items exist after the returned ones */
   hasNextPage: Scalars['Boolean'];
-  /** Indicate whether more items exist before the returned once */
+  /** Indicate whether more items exist before the returned ones */
   hasPreviousPage: Scalars['Boolean'];
   /** The first cursor of the page result */
   startCursor?: Maybe<Scalars['String']>;
@@ -2240,6 +2256,7 @@ export type QueryOrganizationsArgs = {
 export type QueryOrganizationsPaginatedArgs = {
   after?: InputMaybe<Scalars['UUID']>;
   before?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 };
@@ -2268,6 +2285,7 @@ export type QueryUsersByIdArgs = {
 export type QueryUsersPaginatedArgs = {
   after?: InputMaybe<Scalars['UUID']>;
   before?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 };
@@ -2359,9 +2377,9 @@ export type RelayPaginatedUserPageInfo = {
   __typename?: 'RelayPaginatedUserPageInfo';
   /** The last cursor of the page result */
   endCursor?: Maybe<Scalars['String']>;
-  /** Indicate whether more items exist after the returned once */
+  /** Indicate whether more items exist after the returned ones */
   hasNextPage: Scalars['Boolean'];
-  /** Indicate whether more items exist before the returned once */
+  /** Indicate whether more items exist before the returned ones */
   hasPreviousPage: Scalars['Boolean'];
   /** The first cursor of the page result */
   startCursor?: Maybe<Scalars['String']>;
@@ -2470,18 +2488,26 @@ export type Subscription = {
   __typename?: 'Subscription';
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
+  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  communicationCommentsMessageReceived: CommentsMessageReceived;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
   /** Receive updates on Discussions */
   communicationDiscussionUpdated: Discussion;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   communicationUpdateMessageReceived: CommunicationUpdateMessageReceived;
+  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
+  contextAspectCreated: ContextAspectCreated;
   /** Received on verified credentials change */
   profileVerifiedCredential: ProfileCredentialVerified;
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
   canvasIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionCommunicationCommentsMessageReceivedArgs = {
+  commentsID: Scalars['UUID'];
 };
 
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
@@ -2494,6 +2520,10 @@ export type SubscriptionCommunicationDiscussionUpdatedArgs = {
 
 export type SubscriptionCommunicationUpdateMessageReceivedArgs = {
   updatesIDs?: InputMaybe<Array<Scalars['UUID']>>;
+};
+
+export type SubscriptionContextAspectCreatedArgs = {
+  contextID: Scalars['UUID'];
 };
 
 export type Tagset = {
@@ -2816,6 +2846,12 @@ export type UserAuthorizationPrivilegesInput = {
 export type UserAuthorizationResetInput = {
   /** The identifier of the User whose Authorization Policy should be reset. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type UserFilterInput = {
+  email?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
 };
 
 export type UserGroup = Searchable & {
@@ -7476,27 +7512,6 @@ export type OpportunityAspectsQuery = {
   };
 };
 
-export type AspectsOnContextFragment = {
-  __typename?: 'Context';
-  id: string;
-  aspects?:
-    | Array<{
-        __typename?: 'Aspect';
-        id: string;
-        nameID: string;
-        displayName: string;
-        type: string;
-        description: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      }>
-    | undefined;
-};
-
 export type PrivilegesOnContextFragment = {
   __typename?: 'Context';
   id: string;
@@ -10894,6 +10909,80 @@ export type HubApplicationsQuery = {
         }
       | undefined;
   };
+};
+
+export type CommentsMessageReceivedSubscriptionVariables = Exact<{
+  commentsId: Scalars['UUID'];
+}>;
+
+export type CommentsMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  communicationCommentsMessageReceived: {
+    __typename?: 'CommentsMessageReceived';
+    commentsID: string;
+    message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  };
+};
+
+export type AspectsOnContextFragment = {
+  __typename?: 'Context';
+  id: string;
+  aspects?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        nameID: string;
+        displayName: string;
+        type: string;
+        description: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+};
+
+export type ContextAspectCreatedSubscriptionVariables = Exact<{
+  contextID: Scalars['UUID'];
+}>;
+
+export type ContextAspectCreatedSubscription = {
+  __typename?: 'Subscription';
+  contextAspectCreated: {
+    __typename?: 'ContextAspectCreated';
+    aspect: {
+      __typename?: 'Aspect';
+      id: string;
+      nameID: string;
+      displayName: string;
+      type: string;
+      description: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    };
+  };
+};
+
+export type ContributeTabAspectFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  nameID: string;
+  displayName: string;
+  type: string;
+  description: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
 };
 
 export type HubPreferencesQueryVariables = Exact<{
