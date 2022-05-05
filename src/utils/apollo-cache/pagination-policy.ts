@@ -9,7 +9,7 @@ type TRelayPageInfo = {
   startCursor: string;
   endCursor: string;
 };
-
+// https://github.com/apollographql/apollo-client/blob/main/src/utilities/policies/pagination.ts#L91
 export const paginationFieldPolicy = (keyArgs: KeyArgs = false) => {
   return {
     keyArgs,
