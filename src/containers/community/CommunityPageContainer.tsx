@@ -104,7 +104,7 @@ const CommunityPageContainer: FC<CommunityContainerProps> = ({
   const communityName = (communityData || communityWithHostData)?.hub?.community?.displayName;
   const hostOrganization = communityWithHostData?.hub?.host;
   const leadingOrganizations = leadingOrganizationData?.hub?.challenge?.leadOrganizations ?? [];
-  const members = (communityData || communityWithHostData)?.hub?.community?.members ?? [];
+  const members = (communityData || communityWithHostData)?.hub?.community?.memberUsers ?? [];
 
   return (
     <>

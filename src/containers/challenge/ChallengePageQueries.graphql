@@ -48,7 +48,7 @@ fragment ChallengeProfile on Challenge {
       id
       myPrivileges
     }
-    members {
+    memberUsers {
       id
       displayName
     }
