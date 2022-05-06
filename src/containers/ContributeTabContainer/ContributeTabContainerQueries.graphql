@@ -61,17 +61,6 @@ query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
   }
 }
 
-fragment AspectsOnContext on Context {
-  id
-  aspects {
-    ...AspectCard
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-}
-
 fragment PrivilegesOnContext on Context {
   id
   authorization {
