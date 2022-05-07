@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import {
   refetchUsersWithCredentialsSimpleListQuery,
   useAssignUserAsCommunityMemberMutation,
-  useRemoveCommunityMemberUserMutation,
+  useRemoveUserAsCommunityMemberMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
 import { Member } from '../../../models/User';
@@ -34,7 +34,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
     onError: handleError,
   });
 
-  const [revoke, { loading: removingMember }] = useRemoveCommunityMemberUserMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsCommunityMemberMutation({
     onError: handleError,
   });
 

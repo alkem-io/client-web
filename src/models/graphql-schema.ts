@@ -184,6 +184,11 @@ export type AssignChallengeAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignCommunityLeadOrganizationInput = {
+  communityID: Scalars['UUID'];
+  organizationID: Scalars['UUID_NAMEID'];
+};
+
 export type AssignCommunityMemberOrganizationInput = {
   communityID: Scalars['UUID'];
   organizationID: Scalars['UUID_NAMEID'];
@@ -1293,6 +1298,8 @@ export type Mutation = {
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
   /** Assigns an Organization as a member of the specified Community. */
+  assignOrganizationAsCommunityLead: Community;
+  /** Assigns an Organization as a member of the specified Community. */
   assignOrganizationAsCommunityMember: Community;
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
@@ -1418,16 +1425,20 @@ export type Mutation = {
   messageUser: Scalars['String'];
   /** Removes a comment message. */
   removeComment: Scalars['MessageID'];
-  /** Removes an Organization as a member of the specified Community. */
-  removeCommunityMemberOrganization: Community;
-  /** Removes a User as a member of the specified Community. */
-  removeCommunityMemberUser: Community;
   /** Removes a message from the specified Discussion. */
   removeMessageFromDiscussion: Scalars['MessageID'];
+  /** Removes an Organization as a member of the specified Community. */
+  removeOrganizationAsCommunityLead: Community;
+  /** Removes an Organization as a member of the specified Community. */
+  removeOrganizationAsCommunityMember: Community;
   /** Removes an update message. */
   removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
+  /** Removes a User as a member of the specified Community. */
+  removeUserAsCommunityLead: Community;
+  /** Removes a User as a member of the specified Community. */
+  removeUserAsCommunityMember: Community;
   /** Removes a User from being a Global Admin. */
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
@@ -1506,6 +1517,10 @@ export type MutationAdminCommunicationUpdateRoomsJoinRuleArgs = {
 
 export type MutationApplyForCommunityMembershipArgs = {
   applicationData: CommunityApplyInput;
+};
+
+export type MutationAssignOrganizationAsCommunityLeadArgs = {
+  membershipData: AssignCommunityLeadOrganizationInput;
 };
 
 export type MutationAssignOrganizationAsCommunityMemberArgs = {
@@ -1752,16 +1767,16 @@ export type MutationRemoveCommentArgs = {
   messageData: CommentsRemoveMessageInput;
 };
 
-export type MutationRemoveCommunityMemberOrganizationArgs = {
-  membershipData: RemoveCommunityMemberOrganizationInput;
-};
-
-export type MutationRemoveCommunityMemberUserArgs = {
-  membershipData: RemoveCommunityMemberUserInput;
-};
-
 export type MutationRemoveMessageFromDiscussionArgs = {
   messageData: DiscussionRemoveMessageInput;
+};
+
+export type MutationRemoveOrganizationAsCommunityLeadArgs = {
+  leadershipData: RemoveCommunityLeadOrganizationInput;
+};
+
+export type MutationRemoveOrganizationAsCommunityMemberArgs = {
+  membershipData: RemoveCommunityMemberOrganizationInput;
 };
 
 export type MutationRemoveUpdateArgs = {
@@ -1770,6 +1785,14 @@ export type MutationRemoveUpdateArgs = {
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
   membershipData: RemoveChallengeAdminInput;
+};
+
+export type MutationRemoveUserAsCommunityLeadArgs = {
+  leadershipData: RemoveCommunityLeadUserInput;
+};
+
+export type MutationRemoveUserAsCommunityMemberArgs = {
+  membershipData: RemoveCommunityMemberUserInput;
 };
 
 export type MutationRemoveUserAsGlobalAdminArgs = {
@@ -2428,6 +2451,16 @@ export type RelayPaginatedUserPageInfo = {
 
 export type RemoveChallengeAdminInput = {
   challengeID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveCommunityLeadOrganizationInput = {
+  communityID: Scalars['UUID'];
+  organizationID: Scalars['UUID_NAMEID'];
+};
+
+export type RemoveCommunityLeadUserInput = {
+  communityID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -4415,13 +4448,13 @@ export type RemoveMessageFromDiscussionMutationVariables = Exact<{
 
 export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
 
-export type RemoveCommunityMemberUserMutationVariables = Exact<{
+export type RemoveUserAsCommunityMemberMutationVariables = Exact<{
   input: RemoveCommunityMemberUserInput;
 }>;
 
-export type RemoveCommunityMemberUserMutation = {
+export type RemoveUserAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  removeCommunityMemberUser: {
+  removeUserAsCommunityMember: {
     __typename?: 'Community';
     id: string;
     memberUsers?:

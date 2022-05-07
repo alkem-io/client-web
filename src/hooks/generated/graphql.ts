@@ -3769,9 +3769,9 @@ export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.RemoveMessageFromDiscussionMutation,
   SchemaTypes.RemoveMessageFromDiscussionMutationVariables
 >;
-export const RemoveCommunityMemberUserDocument = gql`
-  mutation removeCommunityMemberUser($input: RemoveCommunityMemberUserInput!) {
-    removeCommunityMemberUser(membershipData: $input) {
+export const RemoveUserAsCommunityMemberDocument = gql`
+  mutation removeUserAsCommunityMember($input: RemoveCommunityMemberUserInput!) {
+    removeUserAsCommunityMember(membershipData: $input) {
       id
       memberUsers {
         ...GroupMembers
@@ -3780,46 +3780,46 @@ export const RemoveCommunityMemberUserDocument = gql`
   }
   ${GroupMembersFragmentDoc}
 `;
-export type RemoveCommunityMemberUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveCommunityMemberUserMutation,
-  SchemaTypes.RemoveCommunityMemberUserMutationVariables
+export type RemoveUserAsCommunityMemberMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsCommunityMemberMutation,
+  SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
 >;
 
 /**
- * __useRemoveCommunityMemberUserMutation__
+ * __useRemoveUserAsCommunityMemberMutation__
  *
- * To run a mutation, you first call `useRemoveCommunityMemberUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveCommunityMemberUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemoveUserAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsCommunityMemberMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [removeCommunityMemberUserMutation, { data, loading, error }] = useRemoveCommunityMemberUserMutation({
+ * const [removeUserAsCommunityMemberMutation, { data, loading, error }] = useRemoveUserAsCommunityMemberMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useRemoveCommunityMemberUserMutation(
+export function useRemoveUserAsCommunityMemberMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveCommunityMemberUserMutation,
-    SchemaTypes.RemoveCommunityMemberUserMutationVariables
+    SchemaTypes.RemoveUserAsCommunityMemberMutation,
+    SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.RemoveCommunityMemberUserMutation,
-    SchemaTypes.RemoveCommunityMemberUserMutationVariables
-  >(RemoveCommunityMemberUserDocument, options);
+    SchemaTypes.RemoveUserAsCommunityMemberMutation,
+    SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
+  >(RemoveUserAsCommunityMemberDocument, options);
 }
-export type RemoveCommunityMemberUserMutationHookResult = ReturnType<typeof useRemoveCommunityMemberUserMutation>;
-export type RemoveCommunityMemberUserMutationResult =
-  Apollo.MutationResult<SchemaTypes.RemoveCommunityMemberUserMutation>;
-export type RemoveCommunityMemberUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveCommunityMemberUserMutation,
-  SchemaTypes.RemoveCommunityMemberUserMutationVariables
+export type RemoveUserAsCommunityMemberMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityMemberMutation>;
+export type RemoveUserAsCommunityMemberMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityMemberMutation>;
+export type RemoveUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsCommunityMemberMutation,
+  SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
 >;
 export const RemoveUserFromGroupDocument = gql`
   mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {

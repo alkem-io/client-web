@@ -706,6 +706,7 @@ export type MutationKeySpecifier = (
   | 'adminCommunicationRemoveOrphanedRoom'
   | 'adminCommunicationUpdateRoomsJoinRule'
   | 'applyForCommunityMembership'
+  | 'assignOrganizationAsCommunityLead'
   | 'assignOrganizationAsCommunityMember'
   | 'assignUserAsChallengeAdmin'
   | 'assignUserAsCommunityMember'
@@ -769,11 +770,13 @@ export type MutationKeySpecifier = (
   | 'joinCommunity'
   | 'messageUser'
   | 'removeComment'
-  | 'removeCommunityMemberOrganization'
-  | 'removeCommunityMemberUser'
   | 'removeMessageFromDiscussion'
+  | 'removeOrganizationAsCommunityLead'
+  | 'removeOrganizationAsCommunityMember'
   | 'removeUpdate'
   | 'removeUserAsChallengeAdmin'
+  | 'removeUserAsCommunityLead'
+  | 'removeUserAsCommunityMember'
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
   | 'removeUserAsHubAdmin'
@@ -812,6 +815,7 @@ export type MutationFieldPolicy = {
   adminCommunicationRemoveOrphanedRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationUpdateRoomsJoinRule?: FieldPolicy<any> | FieldReadFunction<any>;
   applyForCommunityMembership?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -875,11 +879,13 @@ export type MutationFieldPolicy = {
   joinCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   messageUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeComment?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeCommunityMemberOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  removeCommunityMemberUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageFromDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
