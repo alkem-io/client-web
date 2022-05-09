@@ -1,6 +1,6 @@
 import React, { cloneElement, FC, ReactElement } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import compareDeps from '../../utils/compareDeps';
+import areDepsEqual from '../../utils/areDepsEqual';
 
 interface CardsLayoutProps<Item extends { id: string }> {
   items: Item[];
@@ -27,7 +27,7 @@ const CardsLayout = React.memo(
     );
   },
   (prevProps, nextProps) => {
-    return prevProps.items === nextProps.items && compareDeps(prevProps.deps, nextProps.deps);
+    return prevProps.items === nextProps.items && areDepsEqual(prevProps.deps, nextProps.deps);
   }
 ) as <Item extends { id: string }>(props: CardsLayoutProps<Item>) => ReactElement;
 
