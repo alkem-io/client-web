@@ -21,7 +21,7 @@ const CardsLayout = React.memo(
       <CardLayoutContainer>
         {items.map(item => {
           const card = children(item);
-          return cloneElement<unknown>(card, { key: item.id });
+          return cloneElement(card, { key: item.id });
         })}
       </CardLayoutContainer>
     );
