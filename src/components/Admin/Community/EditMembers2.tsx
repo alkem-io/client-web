@@ -20,34 +20,22 @@ import { Skeleton } from '@mui/material';
 
 const LOAD_MORE_DEFAULT = 25;
 
-const PREFIX = 'EditMembers';
+const StyledTableHead = styled(TableHead)(({ theme }) => ({
+  background: theme.palette.divider,
+}));
 
-const classes = {
-  thead: `${PREFIX}-thead`,
-  trow: `${PREFIX}-trow`,
-  iconButtonSuccess: `${PREFIX}-iconButtonSuccess`,
-  iconButtonNegative: `${PREFIX}-iconButtonNegative`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.thead}`]: {
-    background: theme.palette.divider,
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
   },
+}));
 
-  [`& .${classes.trow}`]: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
+const StyledButtonAdd = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.success.main,
+}));
 
-  [`& .${classes.iconButtonSuccess}`]: {
-    color: theme.palette.success.main,
-  },
-
-  [`& .${classes.iconButtonNegative}`]: {
-    color: theme.palette.negative.main,
-  },
+const StyledButtonRemove = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.negative.main,
 }));
 
 const TABLE_HEIGHT = 600;
@@ -112,11 +100,11 @@ export const EditMembers2: FC<EditMembersProps> = ({
           Group members:
           <Filter data={membersData}>
             {filteredMembers => (
-              <Root>
+              <>
                 <hr />
                 <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
                   <Table size="small">
-                    <TableHead className={classes.thead}>
+                    <StyledTableHead>
                       <TableRow>
                         <TableCell>Full Name</TableCell>
                         <TableCell>First Name</TableCell>
@@ -124,12 +112,12 @@ export const EditMembers2: FC<EditMembersProps> = ({
                         <TableCell>Email</TableCell>
                         {onRemove && <TableCell />}
                       </TableRow>
-                    </TableHead>
+                    </StyledTableHead>
                     <TableBody>
-                      {filteredMembers.map((m, i) => {
+                      {filteredMembers.map(m => {
                         const disableExecutor = m.id === executor?.id && !deleteExecutor;
                         return (
-                          <TableRow key={i} className={classes.trow}>
+                          <StyledTableRow>
                             <TableCell>
                               <Cell>{m.displayName}</Cell>
                             </TableCell>
@@ -145,25 +133,24 @@ export const EditMembers2: FC<EditMembersProps> = ({
                             {onRemove && (
                               <TableCell align={'right'}>
                                 <Cell>
-                                  <IconButton
+                                  <StyledButtonRemove
                                     aria-label="Remove"
                                     size="small"
                                     disabled={disableExecutor || addingMember || removingMember}
-                                    className={classes.iconButtonNegative}
                                     onClick={() => onRemove(m)}
                                   >
                                     <RemoveIcon />
-                                  </IconButton>
+                                  </StyledButtonRemove>
                                 </Cell>
                               </TableCell>
                             )}
-                          </TableRow>
+                          </StyledTableRow>
                         );
                       })}
                     </TableBody>
                   </Table>
                 </Box>
-              </Root>
+              </>
             )}
           </Filter>
         </Grid>
@@ -177,17 +164,17 @@ export const EditMembers2: FC<EditMembersProps> = ({
             InputLabelProps={{ shrink: true }}
             sx={{ background: theme => theme.palette.primary.contrastText }}
           />
-          <Root>
+          <>
             <hr />
             <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
               <TableContainer>
                 <Table size="small" style={{ position: 'relative' }}>
-                  <TableHead className={classes.thead}>
+                  <StyledTableHead>
                     <TableRow>
                       <TableCell />
                       <TableCell>Full Name</TableCell>
                     </TableRow>
-                  </TableHead>
+                  </StyledTableHead>
                   <TableBody>
                     <AvailableMembersFragment
                       availableMembers={availableMembers}
@@ -206,7 +193,7 @@ export const EditMembers2: FC<EditMembersProps> = ({
                 {t('buttons.load-count-more', { count: loadMore })}
               </Button>
             )}
-          </Root>
+          </>
         </Grid>
       </Grid>
     </>
@@ -237,47 +224,46 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
 
   if (availableMembers.length === 0) {
     return (
-      <TableRow className={classes.trow}>
+      <StyledTableRow>
         <TableCell colSpan={2}>
           <Typography>{t('components.edit-members.no-available-members')}</Typography>
         </TableCell>
-      </TableRow>
+      </StyledTableRow>
     );
   }
 
   if (membersData.length === 0) {
     return (
-      <TableRow className={classes.trow}>
+      <StyledTableRow>
         <TableCell colSpan={2}>
           <Typography>{t('components.edit-members.user-not-found')}</Typography>
         </TableCell>
-      </TableRow>
+      </StyledTableRow>
     );
   }
 
   return (
     <>
-      {membersData.map((m, i) => (
-        <TableRow key={i} className={classes.trow}>
+      {membersData.map(m => (
+        <StyledTableRow key={m.id}>
           {onAdd && (
             <TableCell>
               <Cell>
-                <IconButton
+                <StyledButtonAdd
                   aria-label="Add"
                   size="small"
                   onClick={() => onAdd(m)}
-                  className={classes.iconButtonSuccess}
                   disabled={addingMember || removingMember}
                 >
                   <AddIcon />
-                </IconButton>
+                </StyledButtonAdd>
               </Cell>
             </TableCell>
           )}
           <TableCell>
             <Cell>{m.displayName}</Cell>
           </TableCell>
-        </TableRow>
+        </StyledTableRow>
       ))}
     </>
   );

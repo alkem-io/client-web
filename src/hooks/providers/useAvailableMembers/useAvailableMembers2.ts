@@ -35,7 +35,7 @@ export const useAvailableMembers2 = (
   resourceId?: string,
   parentCommunityId?: string,
   parentMembers?: Member[], // Just because the organizations doesn't have community.
-  filter?: UserFilterInput
+  filter: UserFilterInput = { firstName: '', lastName: '', email: '' }
 ): AvailableMembersResults => {
   const { hubId, loading: loadingHub } = useHub();
   const {
@@ -105,7 +105,6 @@ export const useAvailableMembers2 = (
       },
     });
   };
-  //const onLoadMore = noop;
 
   const isLastAvailableUserPage = !usersQueryData?.usersPaginated.pageInfo.hasNextPage ?? true;
 

@@ -26,7 +26,7 @@ export const EditMemberCredentials2: FC<EditAdminCredentialsProps> = ({
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const [filterTerm, setFilterTerm] = useState<string>();
+  const [filterTerm, setFilterTerm] = useState<string>('');
 
   const onFilter = (term: string) => setFilterTerm(term);
 
