@@ -1,9 +1,9 @@
 import React, { FC, useCallback } from 'react';
 
-import { ListPage } from '../../../../components/Admin/ListPage';
+import { ListPage } from '../../components/ListPage';
 import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../hooks';
 import { useDeleteGroupMutation, useOrganizationGroupsQuery } from '../../../../hooks/generated/graphql';
-import { SearchableListItem } from '../../../../components/Admin/SearchableList';
+import { SearchableListItem } from '../../components/SearchableList';
 import removeFromCache from '../../../shared/utils/apollo-cache/removeFromCache';
 import { useResolvedPath } from 'react-router-dom';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';

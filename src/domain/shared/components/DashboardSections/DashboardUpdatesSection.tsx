@@ -5,7 +5,7 @@ import {
   CommunityUpdatesContainerProps,
 } from '../../../../containers/community-updates/CommunityUpdatesContainer';
 import { AvatarsProvider } from '../../../../context/AvatarsProvider';
-import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import SingleUpdateView from '../../../../views/Updates/SingleUpdateView';
 import DashboardGenericSection from './DashboardGenericSection';
 

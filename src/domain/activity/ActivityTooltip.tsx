@@ -1,7 +1,7 @@
 import { alpha, Paper, Tooltip } from '@mui/material';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import React, { forwardRef } from 'react';
-import { Activities, ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import { Activities, ActivityItem } from '../../common/components/composite/common/ActivityPanel/Activities';
 import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
 import SectionSpacer from '../shared/components/Section/SectionSpacer';

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import { SearchableListItem } from '../../../components/Admin/SearchableList';
+import { SearchableListItem } from '../../admin/components/SearchableList';
 import { useDeleteUserMutation, useUserListQuery } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useNotification } from '../../../hooks';
 import usePaginatedQuery from '../../shared/pagination/usePaginatedQuery';

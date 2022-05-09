@@ -1,5 +1,5 @@
 import React from 'react';
-import { buildAdminOrganizationUrl, buildOrganizationUrl } from '../../../utils/urlBuilders';
+import { buildAdminOrganizationUrl, buildOrganizationUrl } from '../../../common/utils/urlBuilders';
 import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
 import { useTranslation } from 'react-i18next';
 import { useOrganization } from '../../../hooks';

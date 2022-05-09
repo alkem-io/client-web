@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { UserCard } from '../../../components/composite/common/cards';
+import { UserCard } from '../../../common/components/composite/common/cards';
 
 const LoadingUserCard = () => (
   <Grid item xs={3}>

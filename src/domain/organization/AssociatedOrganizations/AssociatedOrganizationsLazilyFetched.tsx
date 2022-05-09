@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import AssociatedOrganizationsDashboardSection, {
   AssociatedOrganizationsDashboardSectionProps,
 } from './AssociatedOrganizationsDashboardSection';
-import OrganizationCard from '../../../components/composite/common/cards/Organization/OrganizationCard';
+import OrganizationCard from '../../../common/components/composite/common/cards/Organization/OrganizationCard';
 import AssociatedOrganizationContainer from './AssociatedOrganizationContainer';
 
 interface AssociatedOrganizationsFetchingViewProps

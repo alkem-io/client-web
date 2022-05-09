@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Typography from '../../components/core/Typography';
+import Typography from '../../common/components/core/Typography';
 import { useTranslation } from 'react-i18next';
 import { Location } from './Location';
 

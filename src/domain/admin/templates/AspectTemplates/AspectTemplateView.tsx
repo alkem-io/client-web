@@ -5,7 +5,7 @@ import { AdminAspectTemplateFragment } from '../../../../models/graphql-schema';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
-import Markdown from '../../../../components/core/Markdown';
+import Markdown from '../../../../common/components/core/Markdown';
 import DialogWhiteBg from '../../../shared/components/DialogWhiteBg';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({

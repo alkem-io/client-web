@@ -1,4 +1,4 @@
-import Avatar from '../../../components/core/Avatar';
+import Avatar from '../../../common/components/core/Avatar';
 import { Box, Typography } from '@mui/material';
 import TagsComponent from '../../../domain/shared/components/TagsComponent/TagsComponent';
 import LinkNoUnderline from '../../shared/components/LinkNoUnderline';

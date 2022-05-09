@@ -5,7 +5,7 @@ import { useAssociatedOrganizationQuery } from '../../../hooks/generated/graphql
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
-} from '../../../utils/containers/ComponentOrChildrenFn';
+} from '../../../common/utils/containers/ComponentOrChildrenFn';
 import { AssociatedOrganization, mapToAssociatedOrganization } from './AssociatedOrganization';
 
 export type OrganizationDetailsContainerProps = ContainerPropsWithProvided<

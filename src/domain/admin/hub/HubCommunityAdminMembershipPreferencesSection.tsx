@@ -10,7 +10,7 @@ import { useHub } from '../../../hooks';
 import { PreferenceTypes } from '../../../models/preference-types';
 import { usePreferences } from '../../../hooks/providers/preference';
 import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../hooks/generated/graphql';
-import PreferenceSection from '../../../components/composite/common/PreferenceSection/PreferenceSection';
+import PreferenceSection from '../../../common/components/composite/common/PreferenceSection/PreferenceSection';
 
 const querySelector = (query: HubPreferencesQuery) => query.hub.preferences;
 

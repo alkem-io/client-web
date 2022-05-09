@@ -1,16 +1,16 @@
 import Box from '@mui/material/Box';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserCardProps } from '../../components/composite/common/cards';
-import { OrganizationCardProps } from '../../components/composite/common/cards/Organization/OrganizationCard';
+import { UserCardProps } from '../../common/components/composite/common/cards';
+import { OrganizationCardProps } from '../../common/components/composite/common/cards/Organization/OrganizationCard';
 import SearchTagsInput from '../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import ContributorsSearchContainer from '../../containers/ContributorsSearch/ContributorsSearchContainer';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
 import { OrganizationVerificationEnum, UserContributorFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
-import getUserRoleTranslationKey from '../../utils/user-role-name/get-user-role-translation-key';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../common/utils/urlBuilders';
+import getUserRoleTranslationKey from '../../common/utils/user-role-name/get-user-role-translation-key';
 import ContributorsView from '../../views/Contributors/ContributorsView';
 
 export interface ContributorsPageProps {}

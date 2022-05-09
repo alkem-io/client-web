@@ -1,0 +1,17 @@
+query userProfile($input: UUID_NAMEID_EMAIL!) {
+  user(ID: $input) {
+    ...UserDetails
+    ...UserAgent
+  }
+  rolesUser(rolesData: { userID: $input }) {
+    id
+    ...UserRolesDetails
+  }
+  authorization {
+    ...MyPrivileges
+  }
+}
+
+fragment MyPrivileges on Authorization {
+    myPrivileges
+}

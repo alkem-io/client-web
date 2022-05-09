@@ -5,19 +5,19 @@ import {
   notificationMachine,
   NotificationsContext,
   NotificationsEvent,
-} from '../state/global/notifications/notificationMachine';
+} from '../core/state/global/notifications/notificationMachine';
 import {
   LoginNavigationContext,
   LoginNavigationEvent,
   loginNavigationMachine,
   LoginNavigationState,
-} from '../state/global/ui/loginNavigationMachine';
+} from '../core/state/global/ui/loginNavigationMachine';
 import {
   UserSegmentContext,
   UserSegmentEvent,
   userSegmentMachine,
   UserSegmentState,
-} from '../state/global/ui/userSegmentMachine';
+} from '../core/state/global/ui/userSegmentMachine';
 
 interface GlobalStateContextProps {
   ui: {

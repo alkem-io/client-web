@@ -2,24 +2,20 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import AlkemioApolloProvider from './context/ApolloProvider';
-import { AuthenticationProvider } from './context/AuthenticationProvider';
-import { ConfigProvider } from './context/ConfigProvider';
+import AlkemioApolloProvider from './core/apollo/context/ApolloProvider';
 import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import ServerMetadataProvider from './context/ServerMetadataProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './domain/user/providers/UserProvider/UserProvider';
-import './i18n/config';
+import './core/i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
-import { env } from './types/env';
 import { CookiesProvider } from 'react-cookie';
-
-const domain = (env && env.REACT_APP_ALKEMIO_DOMAIN) ?? '';
-export const publicGraphQLEndpoint = domain + '/api/public/graphql';
-export const privateGraphQLEndpoint = domain + '/api/private/graphql';
+import { publicGraphQLEndpoint, privateGraphQLEndpoint } from './common/constants/endpoints';
+import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
+import { ConfigProvider } from './config/context/ConfigProvider';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {

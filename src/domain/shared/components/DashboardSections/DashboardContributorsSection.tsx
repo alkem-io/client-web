@@ -1,16 +1,16 @@
 import { Box, Grid, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserMetadata } from '../../../../hooks';
 import { SectionSpacer } from '../Section/Section';
 import SectionHeader from '../Section/SectionHeader';
 import ContributorCard, {
   ContributorCardProps,
   ContributorCardSkeleton,
-} from '../../../../components/composite/common/cards/ContributorCard/ContributorCard';
+} from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';
+import { UserMetadata } from '../../../user/hooks/useUserMetadataWrapper';
 
 const MAX_USERS_TO_SHOW = 12;
 const MAX_ORGANIZATIONS_TO_SHOW = 12;

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../models/container';
 import { useChallengeCardQuery } from '../../hooks/generated/graphql';
-import { ChallengeCardProps } from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import { ChallengeCardProps } from '../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
 
 export interface ChallengeCardContainerEntities {
   challenge?: ChallengeCardProps['challenge'];

@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid';
 import LoadingOrganizationCard from '../../shared/components/LoadingOrganizationCard';
 import OrganizationCard, {
   OrganizationCardProps,
-} from '../../../components/composite/common/cards/Organization/OrganizationCard';
+} from '../../../common/components/composite/common/cards/Organization/OrganizationCard';
 import React, { FC, ReactElement } from 'react';
 import { Identifiable } from '../../shared/types/Identifiable';
 

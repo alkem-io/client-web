@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import OrganizationCard from '../../../components/composite/common/cards/Organization/OrganizationCard';
+import OrganizationCard from '../../../common/components/composite/common/cards/Organization/OrganizationCard';
 
 const LoadingOrganizationCard = () => (
   <Grid item xs={4}>

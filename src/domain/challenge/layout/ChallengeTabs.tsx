@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
 import { useChallenge } from '../../../hooks';
-import { buildAdminChallengeUrl, buildChallengeUrl } from '../../../utils/urlBuilders';
+import { buildAdminChallengeUrl, buildChallengeUrl } from '../../../common/utils/urlBuilders';
 import { EntityTabsProps } from '../../shared/layout/PageLayout/EntityPageLayout';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import EntityPageTabs from '../../shared/layout/EntityPageTabs';

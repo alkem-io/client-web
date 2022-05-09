@@ -17,7 +17,7 @@ import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/remove
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
-} from '../../../utils/containers/ComponentOrChildrenFn';
+} from '../../../common/utils/containers/ComponentOrChildrenFn';
 import useAspectCommentsMessageReceivedSubscription from '../../../domain/aspect/comments/useAspectCommentsMessageReceivedSubscription';
 import { getCardCallout } from '../getAspectCallout';
 

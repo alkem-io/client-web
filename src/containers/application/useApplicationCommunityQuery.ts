@@ -7,8 +7,8 @@ import {
   useHubApplicationTemplateQuery,
 } from '../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { buildChallengeUrl, buildHubUrl } from '../../utils/urlBuilders';
-import { getVisualAvatar } from '../../utils/visuals.utils';
+import { buildChallengeUrl, buildHubUrl } from '../../common/utils/urlBuilders';
+import { getVisualAvatar } from '../../common/utils/visuals.utils';
 
 export const useApplicationCommunityQuery = (type: ApplicationTypeEnum) => {
   const { hubNameId = '', challengeNameId = '' } = useUrlParams();

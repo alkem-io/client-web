@@ -2,7 +2,7 @@ import React, { ComponentType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
-import { DialogContent, DialogTitle } from '../../../components/core/dialog';
+import { DialogContent, DialogTitle } from '../../../common/components/core/dialog';
 
 export interface ContributorsDialogContentProps {
   dialogOpen: boolean;

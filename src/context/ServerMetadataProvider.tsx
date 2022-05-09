@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { Metadata, ServerMetadataQuery } from '../models/graphql-schema';
 import { ServerMetadataDocument } from '../hooks/generated/graphql';
 import { logger } from '../services/logging/winston/logger';
-import queryRequest from '../utils/query-request/query-request';
+import queryRequest from '../common/utils/query-request/query-request';
 
 interface ServerMetadataContextProps {
   metadata?: Metadata;

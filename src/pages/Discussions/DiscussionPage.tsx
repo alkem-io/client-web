@@ -1,9 +1,9 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import DiscussionIcon from '../../components/composite/entities/Communication/DiscussionIcon';
-import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
-import { Loading } from '../../components/core';
-import RemoveModal from '../../components/core/RemoveModal';
+import DiscussionIcon from '../../common/components/composite/entities/Communication/DiscussionIcon';
+import DiscussionsLayout from '../../common/components/composite/layout/Discussions/DiscussionsLayout';
+import { Loading } from '../../common/components/core';
+import RemoveModal from '../../common/components/core/RemoveModal';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { useDiscussionContext } from '../../context/Discussions/DiscussionProvider';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';

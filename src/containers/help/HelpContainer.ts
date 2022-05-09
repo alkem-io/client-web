@@ -1,6 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 import { HelpApi } from '../../api/HelpApi';
-import { ComponentOrChildrenFn, renderComponentOrChildrenFn } from '../../utils/containers/ComponentOrChildrenFn';
+import {
+  ComponentOrChildrenFn,
+  renderComponentOrChildrenFn,
+} from '../../common/utils/containers/ComponentOrChildrenFn';
 
 export interface HelpContainerProvided {
   helpTextMd: string | undefined;

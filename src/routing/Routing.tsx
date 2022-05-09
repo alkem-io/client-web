@@ -1,25 +1,25 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
-import App from '../components/composite/layout/App/App';
+import App from '../common/components/composite/layout/App/App';
 import { CommunityContextProvider } from '../domain/community/CommunityContext';
 import { HubContextProvider } from '../domain/hub/HubContext/HubContext';
-import { OrganizationProvider } from '../context/OrganizationProvider';
+import { OrganizationProvider } from '../domain/organization/context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
-import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
 import ContributorsPage from '../pages/Contributors/ContributorsPage';
-import { AdminRoute } from './admin/AdminRoute';
-import { IdentityRoute } from './identity';
+import { AdminRoute } from '../domain/admin/routing/AdminRoute';
 import { MessagesRoute } from './messages/MessagesRoute';
-import OrganizationRoute from './organization/OrganizationRoute';
+import OrganizationRoute from '../domain/organization/routing/OrganizationRoute';
 import ProfileRoute from './profile/ProfileRoute';
 import { Restricted } from './Restricted';
 import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
-import UserRoute from './user/UserRoute';
-import { HubRoute } from './hub/HubRoute';
+import UserRoute from '../domain/user/routing/UserRoute';
+import { HubRoute } from '../domain/hub/routing/HubRoute';
 import HelpPage from '../pages/Help/HelpPage';
+import { ChallengeExplorerPage } from '../domain/challenge/pages/ChallengeExplorerPage';
+import { IdentityRoute } from '../core/auth/authentication/routing';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();

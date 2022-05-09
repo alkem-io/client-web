@@ -1,6 +1,6 @@
 import { Box, Breadcrumbs, styled, Typography } from '@mui/material';
 import React, { FC } from 'react';
-import { RouterLink } from '../../../../components/core/RouterLink';
+import { RouterLink } from '../../../../common/components/core/RouterLink';
 import { useBreadcrumbs } from '../../../../hooks';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 

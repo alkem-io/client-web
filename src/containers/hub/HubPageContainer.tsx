@@ -10,7 +10,7 @@ import { Discussion } from '../../models/discussion/discussion';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
-import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardProps } from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
 import {

@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import UserAvatar from '../../components/composite/common/UserAvatar/UserAvatar';
-import { Loading } from '../../components/core';
-import AvatarContainer from '../../components/core/AvatarContainer';
-import Typography from '../../components/core/Typography';
+import UserAvatar from '../../common/components/composite/common/UserAvatar/UserAvatar';
+import { Loading } from '../../common/components/core';
+import AvatarContainer from '../../common/components/core/AvatarContainer';
+import Typography from '../../common/components/core/Typography';
 import UserCardsContainer from '../../containers/user/UserCardsContainer';
 import { User } from '../../models/graphql-schema';
-import shuffleCollection from '../../utils/shuffleCollection';
+import shuffleCollection from '../../common/utils/shuffleCollection';
 
 interface MembersProps {
   shuffle?: boolean;

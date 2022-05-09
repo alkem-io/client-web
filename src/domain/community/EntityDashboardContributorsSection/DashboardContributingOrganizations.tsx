@@ -4,7 +4,7 @@ import { WithId } from '../../../types/WithId';
 import {
   ContributorCard,
   ContributorCardProps,
-} from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
+} from '../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import SectionHeader from '../../shared/components/Section/SectionHeader';
 import withOptionalCount from '../../shared/utils/withOptionalCount';
 import { SectionSpacer } from '../../shared/components/Section/Section';

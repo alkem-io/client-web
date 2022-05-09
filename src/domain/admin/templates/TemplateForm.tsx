@@ -1,16 +1,16 @@
 import React, { forwardRef, ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { displayNameValidator } from '../../../utils/validator';
+import { displayNameValidator } from '../../../common/utils/validator';
 import { Form, Formik, FormikProps } from 'formik';
 import { DialogActions, DialogContent, InputLabel, InputLabelProps, Typography } from '@mui/material';
-import FormikInputField from '../../../components/composite/forms/FormikInputField';
-import { TagsetField } from '../../../components/Admin/Common/TagsetSegment';
+import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
+import { TagsetField } from '../components/Common/TagsetSegment';
 import { CreateTemplateInfoInput, Visual } from '../../../models/graphql-schema';
-import VisualUpload from '../../../components/composite/common/VisualUpload/VisualUpload';
+import VisualUpload from '../../../common/components/composite/common/VisualUpload/VisualUpload';
 import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../shared/components/FormCols';
-import FormikMarkdownField from '../../../components/composite/forms/FormikMarkdownField';
+import FormikMarkdownField from '../../../common/components/composite/forms/FormikMarkdownField';
 import { LONG_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
 
 const InputLabelSmall = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => (

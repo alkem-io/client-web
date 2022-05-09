@@ -4,7 +4,7 @@ import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { SectionSpacer } from '../../shared/components/Section/Section';
-import { Loading } from '../../../components/core';
+import { Loading } from '../../../common/components/core';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
 import { useHub } from '../../../hooks';
@@ -22,7 +22,7 @@ import {
 import useMemberOrganizationAssignment from '../../community/useCommunityAssignment/useMemberOrganizationAssignment';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
-import EditMemberUsersWithPopup from '../../../components/Admin/Community/EditMemberUsersWithPopup';
+import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 
 const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'community' });

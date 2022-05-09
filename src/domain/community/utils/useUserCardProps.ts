@@ -1,7 +1,7 @@
 import { UserCardFragment } from '../../../models/graphql-schema';
 import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
 import { addUserCardRoleNameKey } from '../../../hooks';
-import { buildUserProfileUrl } from '../../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 

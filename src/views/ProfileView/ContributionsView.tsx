@@ -1,8 +1,8 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ContributionCardV2 } from '../../components/composite/common/cards';
-import ProfileCard, { ProfileCardProps } from '../../components/composite/common/cards/ProfileCard/ProfileCard';
+import { ContributionCardV2 } from '../../common/components/composite/common/cards';
+import ProfileCard, { ProfileCardProps } from '../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 import ContributionDetailsContainer from '../../containers/ContributionDetails/ContributionDetailsContainer';
 import { ContributionItem } from '../../models/entities/contribution';
 

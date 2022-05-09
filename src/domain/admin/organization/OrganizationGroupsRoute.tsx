@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { CreateOrganizationGroupPage } from '../../../components/Admin/Organization/CreateOrganizationGroup';
+import { CreateOrganizationGroupPage } from '../components/Organization/CreateOrganizationGroup';
 import { Error404, PageProps } from '../../../pages';
 import { nameOfUrl } from '../../../routing/url-params';
 import { OrganizationGroupRoute } from './OrganizationGroupRoute';

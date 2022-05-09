@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import PageBanner from '../../shared/components/PageHeader/PageBanner';
 import { useChallenge } from '../../../hooks';
-import { getVisualBanner } from '../../../utils/visuals.utils';
+import { getVisualBanner } from '../../../common/utils/visuals.utils';
 
 const ChallengePageBanner: FC = () => {
   const { challenge, loading } = useChallenge();

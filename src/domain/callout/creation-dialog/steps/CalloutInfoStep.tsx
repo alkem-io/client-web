@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import CalloutForm, {
   CalloutFormOutput,
-} from '../../../../components/composite/aspect/AspectCreationDialog/form/CalloutForm';
+} from '../../../../common/components/composite/aspect/AspectCreationDialog/form/CalloutForm';
 import { StepComponentProps } from '../../../shared/components/Steps/step/Step';
 import { StepLayout } from '../step-layout/StepLayout';
 import { CalloutStepProps } from './CalloutStepProps';

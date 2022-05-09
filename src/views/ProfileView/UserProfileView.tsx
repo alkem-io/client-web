@@ -3,17 +3,17 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SettingsButton } from '../../components/composite';
-import ProfileDetail from '../../components/composite/common/ProfileDetail/ProfileDetail';
-import SocialLinks, { isSocialLink } from '../../components/composite/common/SocialLinks/SocialLinks';
+import { SettingsButton } from '../../common/components/composite';
+import ProfileDetail from '../../common/components/composite/common/ProfileDetail/ProfileDetail';
+import SocialLinks, { isSocialLink } from '../../common/components/composite/common/SocialLinks/SocialLinks';
 import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
-import Typography from '../../components/core/Typography';
-import { UserMetadata } from '../../hooks';
+import Typography from '../../common/components/core/Typography';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
-import References from '../../components/composite/common/References/References';
+import References from '../../common/components/composite/common/References/References';
 import LocationView from '../../domain/location/LocationView';
 import { formatLocation } from '../../domain/location/LocationUtils';
 import { styled } from '@mui/styles';
+import { UserMetadata } from '../../domain/user/hooks/useUserMetadataWrapper';
 
 export interface UserProfileViewProps {
   entities: {

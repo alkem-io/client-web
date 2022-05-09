@@ -1,16 +1,8 @@
-export * from './user/useUserContext';
-export * from './user/useUserMetadata';
-export * from './user/useUserMetadataWrapper';
+export * from '../domain/user/hooks/useUserContext';
 
-export * from './kratos/useKratosClient';
-export * from './kratos/useWhoami';
-export * from './kratos/useLogoutUrl';
+export * from '../core/apollo/hooks/useApolloErrorHandler';
 
-export * from './graphql/useApolloErrorHandler';
-export * from './graphql/useGraphQLClient';
-
-export * from './authentication/useAuthenticate';
-export * from './authentication/useAuthenticationContext';
+export * from '../core/auth/authentication/hooks/useAuthenticate';
 export * from './useConfig';
 export * from './useCredentialsResolver';
 export * from './operations/useDeleteUserGroup';
@@ -19,9 +11,9 @@ export * from './cards/useUserCardRoleName';
 export { default as useUserCardRoleName } from './cards/useUserCardRoleName';
 
 export * from '../domain/hub/HubContext/useHub';
-export * from './useOrganization';
-export * from './useChallenge';
-export * from './useOpportunity';
+export * from '../domain/organization/hooks/useOrganization';
+export * from '../domain/challenge/hooks/useChallenge';
+export * from '../domain/opportunity/hooks/useOpportunity';
 export * from './useAspectCreatedOnCalloutSubscription';
 
 export * from './useUrlParams';

@@ -7,7 +7,7 @@ import CommunityContributorsSection from '../CommunityContributors/CommunityCont
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
 import ContributingUsers from '../CommunityContributors/ContributingUsers';
 import useSearchAcrossMultipleLists from '../../shared/utils/useSearchAcrossMultipleLists';
-import { userCardValueGetter } from '../../../components/core/card-filter/value-getters/cards/user-card-value-getter';
+import { userCardValueGetter } from '../../../common/components/core/card-filter/value-getters/cards/user-card-value-getter';
 import { organizationCardValueGetter } from './ChallengeCommunityView';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import CommunityContributorsSearch from '../CommunityContributors/CommunityContributorsSearch';

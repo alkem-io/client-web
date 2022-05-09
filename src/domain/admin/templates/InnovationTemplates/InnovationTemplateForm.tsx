@@ -2,14 +2,14 @@ import React, { ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
-import FormikInputField from '../../../../components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { CreateTemplateInfoInput, LifecycleType, Visual } from '../../../../models/graphql-schema';
 import FormRows from '../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
-import FormikSelect, { FormikSelectValue } from '../../../../components/composite/forms/FormikSelect';
-import { validateLifecycleDefinition } from '../../../../components/core/LifecycleVisualizer';
+import FormikSelect, { FormikSelectValue } from '../../../../common/components/composite/forms/FormikSelect';
+import { validateLifecycleDefinition } from '../../../../common/components/core/LifecycleVisualizer';
 import { SafeLifecycleVisualizer } from './SafeLifecycleVisualizer';
 
 export interface InnovationTemplateFormValues {

@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { WithCommunity } from '../../../../components/Admin/Community/CommunityTypes';
-import { CreateCommunityGroup } from '../../../../components/Admin/Community/CreateCommunityGroup';
+import { WithCommunity } from '../../components/Community/CommunityTypes';
+import { CreateCommunityGroup } from '../../components/Community/CreateCommunityGroup';
 import { Error404, PageProps } from '../../../../pages';
 import { nameOfUrl } from '../../../../routing/url-params';
-import { HubGroupRoute } from '../../../../routing/admin/hub/HubGroupRoute';
 import { useAppendPaths } from '../../../../hooks/usePathUtils';
+import { HubGroupRoute } from '../../hub/routing/HubGroupRoute';
 
 interface CommunityGroupsAdminRoutesProps extends PageProps, WithCommunity {}
 

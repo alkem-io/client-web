@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import CardsLayout from '../../layout/CardsLayout/CardsLayout';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
-import HubCard, { HubCardProps } from '../../../../components/composite/common/cards/HubCard/HubCard';
-import { EntityContributionCardLabel } from '../../../../components/composite/common/cards/ContributionCard/EntityContributionCard';
+import HubCard, { HubCardProps } from '../../../../common/components/composite/common/cards/HubCard/HubCard';
+import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 
 export interface DashboardHubSectionProps extends DashboardGenericSectionProps {
   hubs: HubCardProps['hub'][];

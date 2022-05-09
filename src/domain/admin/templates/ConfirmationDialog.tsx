@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Loading } from '../../../components/core';
+import { Loading } from '../../../common/components/core';
 import DeleteButton from '../../shared/components/DeleteButton';
 
 interface ConfirmationDialogProps {

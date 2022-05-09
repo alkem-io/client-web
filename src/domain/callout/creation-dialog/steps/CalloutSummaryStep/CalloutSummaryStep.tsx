@@ -5,7 +5,7 @@ import { StepSummaryLayout } from '../../step-layout/StepLayout';
 import { CalloutDialogCreationType } from '../../CalloutCreationDialog';
 import { CalloutStepProps } from '../CalloutStepProps';
 import { StepComponentProps } from '../../../../shared/components/Steps/step/Step';
-import Markdown from '../../../../../components/core/Markdown';
+import Markdown from '../../../../../common/components/core/Markdown';
 
 interface CalloutSummaryStepProps extends CalloutStepProps {
   onPublish: () => Promise<void>;

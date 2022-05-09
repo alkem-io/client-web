@@ -3,7 +3,7 @@ import { Grid, Button } from '@mui/material';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
-import { RouterLink } from '../../components/core/RouterLink';
+import { RouterLink } from '../../common/components/core/RouterLink';
 
 const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
   const { t } = useTranslation();

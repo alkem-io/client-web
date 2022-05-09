@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Agent } from '../../models/graphql-schema';
-import getUserRoleTranslationKey from '../../utils/user-role-name/get-user-role-translation-key';
+import getUserRoleTranslationKey from '../../common/utils/user-role-name/get-user-role-translation-key';
 import {
   ADMIN_TRANSLATION_KEY,
   MEMBER_TRANSLATION_KEY,

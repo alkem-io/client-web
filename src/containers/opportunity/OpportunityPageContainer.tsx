@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
+import { useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
@@ -15,8 +15,8 @@ import {
   Project,
   Reference,
 } from '../../models/graphql-schema';
-import { replaceAll } from '../../utils/replaceAll';
-import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
+import { replaceAll } from '../../common/utils/replaceAll';
+import { buildAdminOpportunityUrl } from '../../common/utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
@@ -26,6 +26,7 @@ import {
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
+import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;

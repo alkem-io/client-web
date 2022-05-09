@@ -1,6 +1,6 @@
 import { Identifiable } from '../types/Identifiable';
 import { Dispatch, useMemo, useState } from 'react';
-import filterFn, { ValueGetter } from '../../../components/core/card-filter/filterFn';
+import filterFn, { ValueGetter } from '../../../common/components/core/card-filter/filterFn';
 import { mapValues, sortBy } from 'lodash';
 import { PossiblyUndefinedProps } from '../types/PossiblyUndefinedProps';
 

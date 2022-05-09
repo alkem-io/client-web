@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Step, StepLabel, Stepper, Button } from '@mui/material';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../components/core/dialog';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import createLayoutHolder from '../../../shared/layout/LayoutHolder';
 import { StepDefinition } from '../../../shared/components/Steps/step/Step';
 import { LoadingButton } from '@mui/lab';

@@ -3,9 +3,9 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { PageProps } from '..';
-import { Loading } from '../../components/core';
-import Button from '../../components/core/Button';
-import Card from '../../components/core/Card';
+import { Loading } from '../../common/components/core';
+import Button from '../../common/components/core/Button';
+import Card from '../../common/components/core/Card';
 import { useUpdateNavigation } from '../../hooks';
 
 interface Props extends PageProps {

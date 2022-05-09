@@ -8,8 +8,10 @@ import {
   ShareOutlined,
   AllInclusive,
 } from '@mui/icons-material';
-import CategorySelector, { CategoryConfig } from '../../components/composite/common/CategorySelector/CategorySelector';
-import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
+import CategorySelector, {
+  CategoryConfig,
+} from '../../common/components/composite/common/CategorySelector/CategorySelector';
+import DiscussionsLayout from '../../common/components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
