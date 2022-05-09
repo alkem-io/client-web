@@ -5,8 +5,6 @@ import { User } from '../../../../models/graphql-schema';
 export const userWithRoleValueGetter = ({
   id,
   displayName,
-  country,
-  city,
   roleName,
   email,
   profile,
@@ -14,8 +12,6 @@ export const userWithRoleValueGetter = ({
   id,
   values: [
     displayName,
-    country,
-    city,
     email,
     roleName,
     profile?.description || '',

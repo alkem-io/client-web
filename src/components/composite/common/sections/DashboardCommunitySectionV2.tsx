@@ -33,8 +33,8 @@ const DashboardCommunitySectionV2: FC<DashboardCommunitySectionV2Props> = ({ mem
                   displayName={x.displayName}
                   tooltip={{
                     tags: x.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
-                    city: x.city,
-                    country: COUNTRIES_BY_CODE[x.country],
+                    city: x.profile?.location?.city,
+                    country: COUNTRIES_BY_CODE[x.profile?.location?.country || ''],
                   }}
                   url={buildUserProfileUrl(x.nameID)}
                 />

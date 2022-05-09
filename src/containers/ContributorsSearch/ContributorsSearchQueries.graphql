@@ -33,8 +33,6 @@ fragment UserContributor on User {
   id
   nameID
   displayName
-  country
-  city
   agent {
     id
     credentials {
@@ -45,6 +43,10 @@ fragment UserContributor on User {
   }
   userProfile: profile {
     id
+    location {
+      city
+      country
+    }
     avatar {
       ...VisualUri
     }

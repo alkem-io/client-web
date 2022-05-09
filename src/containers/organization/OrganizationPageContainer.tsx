@@ -105,8 +105,8 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
         roleName: x.roleName,
         avatar: x.profile?.avatar?.uri || '',
         tooltip: {
-          city: x.city,
-          country: COUNTRIES_BY_CODE[x.country],
+          city: x.profile?.location?.city || '',
+          country: x.profile?.location?.country && COUNTRIES_BY_CODE[x.profile?.location?.country],
           tags: x.profile?.tagsets?.flatMap(x => x.tags) || [],
         },
         url: buildUserProfileUrl(x.nameID),

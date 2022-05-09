@@ -1,10 +1,10 @@
-import { ApplicationResultEntry } from '../../models/graphql-schema';
+import { ApplicationResult } from '../../models/graphql-schema';
 import getApplicationWithType, { ApplicationWithType } from './getApplicationWithType';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 
 type TestData = {
   name: string;
-  data: Partial<ApplicationResultEntry>;
+  data: Partial<ApplicationResult>;
   result?: Partial<ApplicationWithType>;
   exceptionMsg?: string;
 };
@@ -48,11 +48,11 @@ const exceptionData = (): TestData[] =>
 
 describe('getApplicationWithType', () => {
   test.concurrent.each(data())('%s', async ({ data, result }) => {
-    const appWithType = getApplicationWithType(data as ApplicationResultEntry);
+    const appWithType = getApplicationWithType(data as ApplicationResult);
     expect(appWithType).toEqual(result);
   });
 
   test.concurrent.each(exceptionData())('%s', async ({ data, exceptionMsg }) => {
-    expect(() => getApplicationWithType(data as ApplicationResultEntry)).toThrowError(exceptionMsg);
+    expect(() => getApplicationWithType(data as ApplicationResult)).toThrowError(exceptionMsg);
   });
 });
