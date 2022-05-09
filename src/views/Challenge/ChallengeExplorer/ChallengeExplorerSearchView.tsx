@@ -5,9 +5,7 @@ import ChallengeExplorerSearchContainer from '../../../containers/challenge/Chal
 import ChallengeExplorerSearchEnricherContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
 import HubNameResolver from '../../../containers/hub/HubNameResolver';
 import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
-import ChallengeCard, {
-  ChallengeCardProps,
-} from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import ChallengeCard from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../../components/core/CardLayoutContainer/CardLayoutContainer';
 
 export type ChallengeExplorerGroupByType = 'hub';
@@ -39,10 +37,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
                           <ChallengeExplorerSearchEnricherContainer key={i} challenge={value}>
                             {({ challenge }) => (
                               <CardLayoutItem>
-                                <ChallengeCard
-                                  challenge={challenge as ChallengeCardProps['challenge']}
-                                  hubNameId={challenge.hubID}
-                                />
+                                <ChallengeCard challenge={challenge} hubNameId={challenge.hubID} />
                               </CardLayoutItem>
                             )}
                           </ChallengeExplorerSearchEnricherContainer>
