@@ -59,8 +59,8 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
       )}
       {state.loading ? (
         <CardLayoutContainer>
-          <ChallengeCard loading={true} />
-          <ChallengeCard loading={true} />
+          <ChallengeCard loading />
+          <ChallengeCard loading />
         </CardLayoutContainer>
       ) : (
         <>
