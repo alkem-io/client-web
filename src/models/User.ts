@@ -9,13 +9,15 @@ export interface UserModel {
   lastName: string;
   email: string;
   phone: string;
-  city: string;
-  country: string;
   gender: string;
   agent?: {};
   profile: {
     id?: string;
     description: string;
+    location: {
+      city: string;
+      country: string;
+    };
     tagsets: Tagset[];
     references: Reference[];
   };
@@ -42,12 +44,14 @@ export const defaultUser: UserModel = {
   lastName: '',
   email: '',
   phone: '',
-  city: '',
-  country: '',
   gender: '',
   profile: {
     id: '',
     description: '',
+    location: {
+      city: '',
+      country: '',
+    },
     tagsets: [],
     references: [],
   },

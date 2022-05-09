@@ -79,8 +79,6 @@ export const UserCardFragmentDoc = gql`
     id
     nameID
     displayName
-    country
-    city
     agent {
       id
       credentials {
@@ -91,6 +89,10 @@ export const UserCardFragmentDoc = gql`
     }
     profile {
       id
+      location {
+        country
+        city
+      }
       avatar {
         ...VisualUri
       }
@@ -215,8 +217,6 @@ export const CommunityPageMembersFragmentDoc = gql`
     id
     nameID
     displayName
-    country
-    city
     email
     agent {
       id
@@ -228,6 +228,10 @@ export const CommunityPageMembersFragmentDoc = gql`
     }
     profile {
       id
+      location {
+        country
+        city
+      }
       avatar {
         ...VisualUri
       }
@@ -501,8 +505,6 @@ export const OrganizationInfoFragmentDoc = gql`
       id
       nameID
       displayName
-      city
-      country
       agent {
         id
         credentials {
@@ -513,6 +515,10 @@ export const OrganizationInfoFragmentDoc = gql`
       }
       profile {
         id
+        location {
+          country
+          city
+        }
         avatar {
           ...VisualUri
         }
@@ -683,8 +689,6 @@ export const UserDetailsFragmentDoc = gql`
     lastName
     email
     gender
-    country
-    city
     phone
     accountUpn
     agent {
@@ -695,6 +699,10 @@ export const UserDetailsFragmentDoc = gql`
     }
     profile {
       id
+      location {
+        country
+        city
+      }
       description
       avatar {
         ...VisualFull
@@ -822,8 +830,6 @@ export const UserContributorFragmentDoc = gql`
     id
     nameID
     displayName
-    country
-    city
     agent {
       id
       credentials {
@@ -834,6 +840,10 @@ export const UserContributorFragmentDoc = gql`
     }
     userProfile: profile {
       id
+      location {
+        city
+        country
+      }
       avatar {
         ...VisualUri
       }
@@ -1140,7 +1150,7 @@ export const ChallengeProfileFragmentDoc = gql`
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
-  fragment SimpleHubResultEntry on MembershipUserResultEntryHub {
+  fragment SimpleHubResultEntry on MembershipResultContributorToHub {
     hubID
     nameID
     displayName
@@ -9152,10 +9162,12 @@ export const UserAvatarsDocument = gql`
       id
       nameID
       displayName
-      city
-      country
       profile {
         id
+        location {
+          country
+          city
+        }
         avatar {
           ...VisualUri
         }
@@ -14306,10 +14318,12 @@ export const UserCardsContainerDocument = gql`
       id
       nameID
       displayName
-      city
-      country
       profile {
         id
+        location {
+          city
+          country
+        }
         avatar {
           ...VisualUri
         }
@@ -15159,10 +15173,12 @@ export const ContributingUsersDocument = gql`
         id
         displayName
         nameID
-        city
-        country
         profile {
           id
+          location {
+            city
+            country
+          }
           avatar {
             id
             uri
