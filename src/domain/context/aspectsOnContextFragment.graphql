@@ -1,0 +1,6 @@
+fragment AspectsOnContext on Context {
+  id
+  aspects {
+    ...ContributeTabAspect
+  }
+}

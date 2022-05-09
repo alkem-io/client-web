@@ -784,40 +784,6 @@ export const AspectVisualsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const AspectCardFragmentDoc = gql`
-  fragment AspectCard on Aspect {
-    id
-    nameID
-    displayName
-    type
-    description
-    banner {
-      ...VisualUri
-    }
-    bannerNarrow {
-      ...VisualUri
-    }
-    tagset {
-      id
-      name
-      tags
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const AspectsOnContextFragmentDoc = gql`
-  fragment AspectsOnContext on Context {
-    id
-    aspects {
-      ...AspectCard
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-  }
-  ${AspectCardFragmentDoc}
-`;
 export const PrivilegesOnContextFragmentDoc = gql`
   fragment PrivilegesOnContext on Context {
     id
@@ -1058,6 +1024,27 @@ export const OrganizationDetailsFragmentDoc = gql`
         id
         tags
       }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const AspectCardFragmentDoc = gql`
+  fragment AspectCard on Aspect {
+    id
+    nameID
+    displayName
+    type
+    description
+    banner {
+      ...VisualUri
+    }
+    bannerNarrow {
+      ...VisualUri
+    }
+    tagset {
+      id
+      name
+      tags
     }
   }
   ${VisualUriFragmentDoc}
@@ -1478,6 +1465,25 @@ export const AspectProviderDataFragmentDoc = gql`
     }
   }
   ${AspectProvidedFragmentDoc}
+`;
+export const ContributeTabAspectFragmentDoc = gql`
+  fragment ContributeTabAspect on Aspect {
+    ...AspectCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${AspectCardFragmentDoc}
+`;
+export const AspectsOnContextFragmentDoc = gql`
+  fragment AspectsOnContext on Context {
+    id
+    aspects {
+      ...ContributeTabAspect
+    }
+  }
+  ${ContributeTabAspectFragmentDoc}
 `;
 export const UpdatePreferenceOnUserDocument = gql`
   mutation updatePreferenceOnUser($input: UpdateUserPreferenceInput!) {
@@ -14897,6 +14903,93 @@ export type HubApplicationsQueryResult = Apollo.QueryResult<
 export function refetchHubApplicationsQuery(variables: SchemaTypes.HubApplicationsQueryVariables) {
   return { query: HubApplicationsDocument, variables: variables };
 }
+export const CommentsMessageReceivedDocument = gql`
+  subscription CommentsMessageReceived($commentsId: UUID!) {
+    communicationCommentsMessageReceived(commentsID: $commentsId) {
+      commentsID
+      message {
+        id
+        message
+        sender
+        timestamp
+      }
+    }
+  }
+`;
+
+/**
+ * __useCommentsMessageReceivedSubscription__
+ *
+ * To run a query within a React component, call `useCommentsMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCommentsMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCommentsMessageReceivedSubscription({
+ *   variables: {
+ *      commentsId: // value for 'commentsId'
+ *   },
+ * });
+ */
+export function useCommentsMessageReceivedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CommentsMessageReceivedSubscription,
+    SchemaTypes.CommentsMessageReceivedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CommentsMessageReceivedSubscription,
+    SchemaTypes.CommentsMessageReceivedSubscriptionVariables
+  >(CommentsMessageReceivedDocument, options);
+}
+export type CommentsMessageReceivedSubscriptionHookResult = ReturnType<typeof useCommentsMessageReceivedSubscription>;
+export type CommentsMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CommentsMessageReceivedSubscription>;
+export const ContextAspectCreatedDocument = gql`
+  subscription ContextAspectCreated($contextID: UUID!) {
+    contextAspectCreated(contextID: $contextID) {
+      aspect {
+        ...ContributeTabAspect
+      }
+    }
+  }
+  ${ContributeTabAspectFragmentDoc}
+`;
+
+/**
+ * __useContextAspectCreatedSubscription__
+ *
+ * To run a query within a React component, call `useContextAspectCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useContextAspectCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContextAspectCreatedSubscription({
+ *   variables: {
+ *      contextID: // value for 'contextID'
+ *   },
+ * });
+ */
+export function useContextAspectCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.ContextAspectCreatedSubscription,
+    SchemaTypes.ContextAspectCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.ContextAspectCreatedSubscription,
+    SchemaTypes.ContextAspectCreatedSubscriptionVariables
+  >(ContextAspectCreatedDocument, options);
+}
+export type ContextAspectCreatedSubscriptionHookResult = ReturnType<typeof useContextAspectCreatedSubscription>;
+export type ContextAspectCreatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.ContextAspectCreatedSubscription>;
 export const HubPreferencesDocument = gql`
   query hubPreferences($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
