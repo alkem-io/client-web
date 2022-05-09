@@ -12,7 +12,7 @@ import {
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../components/core/ErrorBlock';
-import { CardLayoutItem, CardLayoutContainer } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout, { CardLayoutContainer } from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { ViewProps } from '../../models/view';
 import { Challenge, ChallengeCardFragment } from '../../models/graphql-schema';
 
@@ -59,12 +59,8 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
       )}
       {state.loading ? (
         <CardLayoutContainer>
-          <CardLayoutItem>
-            <ChallengeCard loading={true} />
-          </CardLayoutItem>
-          <CardLayoutItem>
-            <ChallengeCard loading={true} />
-          </CardLayoutItem>
+          <ChallengeCard loading={true} />
+          <ChallengeCard loading={true} />
         </CardLayoutContainer>
       ) : (
         <>
@@ -74,18 +70,14 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
             </Box>
           ) : (
             <CardFilter
-              data={challenges as Challenge[]}
+              data={challenges as Challenge[] /* TODO remove type casting */}
               tagsValueGetter={entityTagsValueGetter}
               valueGetter={entityValueGetter}
             >
               {filteredData => (
-                <CardLayoutContainer>
-                  {filteredData.map((challenge, i) => (
-                    <CardLayoutItem key={i}>
-                      <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
-                    </CardLayoutItem>
-                  ))}
-                </CardLayoutContainer>
+                <CardsLayout items={filteredData} deps={[hubNameId]}>
+                  {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
+                </CardsLayout>
               )}
             </CardFilter>
           )}

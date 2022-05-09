@@ -15,7 +15,7 @@ import { ChallengeCardFragment, User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { useConfig } from '../../hooks';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
@@ -118,13 +118,9 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
               navText={t('buttons.see-all')}
               navLink={'challenges'}
             >
-              <CardLayoutContainer>
-                {challenges.map(challenge => (
-                  <CardLayoutItem key={challenge.id}>
-                    <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
-                  </CardLayoutItem>
-                ))}
-              </CardLayoutContainer>
+              <CardsLayout items={challenges} deps={[hubNameId]}>
+                {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
+              </CardsLayout>
             </DashboardGenericSection>
           )}
           <DashboardSectionAspects aspects={aspects} aspectsCount={aspectsCount} hubNameId={hubNameId} />

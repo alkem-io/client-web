@@ -2,7 +2,10 @@ import React, { FC, useState } from 'react';
 import MembershipBackdrop from '../../../components/composite/common/Backdrops/MembershipBackdrop';
 import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
 import Button from '@mui/material/Button';
-import { CardLayoutContainer, CardLayoutItem } from '../../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout, {
+  CardLayoutContainer,
+  CardLayoutItem,
+} from '../../../domain/shared/layout/CardsLayout/CardsLayout';
 import AspectCard from '../../../components/composite/common/cards/AspectCard/AspectCard';
 import CardFilter from '../../../components/core/card-filter/CardFilter';
 import {
@@ -70,18 +73,16 @@ const AspectsView: FC<AspectsViewProps> = ({
                 !filteredAspects.length ? (
                   t('pages.contribute.no-aspects')
                 ) : (
-                  <CardLayoutContainer>
-                    {filteredAspects.map(x => (
-                      <CardLayoutItem key={x.id}>
-                        <AspectCard
-                          aspect={x}
-                          hubNameId={hubNameId}
-                          challengeNameId={challengeNameId}
-                          opportunityNameId={opportunityNameId}
-                        />
-                      </CardLayoutItem>
-                    ))}
-                  </CardLayoutContainer>
+                  <CardsLayout items={filteredAspects} deps={[hubNameId, challengeNameId, opportunityNameId]}>
+                    {aspect => (
+                      <AspectCard
+                        aspect={aspect}
+                        hubNameId={hubNameId}
+                        challengeNameId={challengeNameId}
+                        opportunityNameId={opportunityNameId}
+                      />
+                    )}
+                  </CardsLayout>
                 )
               }
             </CardFilter>

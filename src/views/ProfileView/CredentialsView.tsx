@@ -7,7 +7,7 @@ import {
   CredentialCard,
 } from '../../components/composite/common/cards';
 import ProfileCard, { ProfileCardProps } from '../../components/composite/common/cards/ProfileCard/ProfileCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import { CardLayoutContainer, CardLayoutItem } from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import UserCredentialsContainer from '../../containers/user/UserCredentialsContainer';
 
 export interface CredentialsViewProps extends ProfileCardProps {
