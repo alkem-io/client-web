@@ -17,6 +17,10 @@ export const getUpdateProfileInput = (profile?: Partial<UserModel['profile']>): 
       description: profile.description,
       references: profile.references?.filter(doesHaveId).map(convertIdAttrToUppercase),
       tagsets: profile.tagsets?.filter(doesHaveId).map(convertIdAttrToUppercase),
+      location: {
+        city: profile.location?.city,
+        country: profile.location?.country,
+      },
     }
   );
 };

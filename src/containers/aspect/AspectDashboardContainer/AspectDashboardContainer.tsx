@@ -18,6 +18,7 @@ import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../utils/containers/ComponentOrChildrenFn';
+import useCommentsMessageReceivedSubscription from '../../../domain/comments/useCommentsMessageReceivedSubscription';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -63,6 +64,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     data: hubData,
     loading: hubLoading,
     error: hubError,
+    subscribeToMore: subscribeToHub,
   } = useHubAspectQuery({
     variables: { hubNameId, aspectNameId },
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
@@ -74,6 +76,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     data: challengeData,
     loading: challengeLoading,
     error: challengeError,
+    subscribeToMore: subscribeToChallenge,
   } = useChallengeAspectQuery({
     variables: { hubNameId, challengeNameId, aspectNameId },
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
@@ -85,6 +88,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     data: opportunityData,
     loading: opportunityLoading,
     error: opportunityError,
+    subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectQuery({
     variables: { hubNameId, opportunityNameId, aspectNameId },
     skip: !isAspectDefined || !opportunityNameId,
@@ -95,6 +99,28 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
+
+  const hubCommentsSubscription = useCommentsMessageReceivedSubscription(
+    hubData,
+    hubData => hubData?.hub?.context?.aspects?.[0].comments,
+    subscribeToHub
+  );
+  const challengeCommentsSubscription = useCommentsMessageReceivedSubscription(
+    challengeData,
+    challengeData => challengeData?.hub?.challenge?.context?.aspects?.[0].comments,
+    subscribeToChallenge
+  );
+  const opportunityCommentsSubscription = useCommentsMessageReceivedSubscription(
+    opportunityData,
+    opportunityData => opportunityData?.hub?.opportunity?.context?.aspects?.[0].comments,
+    subscribeToOpportunity
+  );
+
+  const isSubscribedToComments = [
+    hubCommentsSubscription,
+    challengeCommentsSubscription,
+    opportunityCommentsSubscription,
+  ].some(subscription => subscription.enabled);
 
   const { data: creatorData, loading: loadingCreator } = useAspectCreatorQuery({
     variables: { userId: aspect?.createdBy ?? '' },
@@ -149,6 +175,10 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
     onError: handleError,
     update: (cache, { data }) => {
+      if (isSubscribedToComments) {
+        return;
+      }
+
       const cacheMessageId = cache.identify({
         id: commentId,
         __typename: 'Comments',
@@ -177,6 +207,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       });
     },
   });
+
   const handlePostComment = async (commentId: string, message: string) => {
     await postComment({
       variables: {

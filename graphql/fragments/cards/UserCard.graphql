@@ -2,8 +2,6 @@ fragment UserCard on User {
   id
   nameID
   displayName
-  country
-  city
   agent {
     id
     credentials {
@@ -14,6 +12,10 @@ fragment UserCard on User {
   }
   profile {
     id
+    location {
+      country
+      city
+    }
     avatar {
       ...VisualUri
     }

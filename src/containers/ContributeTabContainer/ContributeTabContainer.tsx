@@ -20,6 +20,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '../../utils/containers/ComponentOrChildrenFn';
 import removeFromCache from '../../utils/apollo-cache/removeFromCache';
+import useContextAspectCreatedSubscription from '../../domain/context/useContextAspectCreatedSubscription';
 
 export interface EntityIds {
   hubNameId: Scalars['UUID_NAMEID'];
@@ -58,6 +59,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     data: hubContextData,
     loading: hubContextLoading,
     error: hubContextError,
+    subscribeToMore: subscribeToHub,
   } = usePrivilegesOnHubContextQuery({
     variables: { hubNameId },
     skip: !!(challengeNameId || opportunityNameId),
@@ -96,6 +98,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     data: challengeAspectData,
     loading: challengeAspectLoading,
     error: challengeAspectError,
+    subscribeToMore: subscribeToChallenges,
   } = useChallengeAspectsQuery({
     variables: { hubNameId, challengeNameId },
     skip: !canReadChallengeContext || !challengeNameId || !!opportunityNameId,
@@ -121,6 +124,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     data: opportunityAspectData,
     loading: opportunityAspectLoading,
     error: opportunityAspectError,
+    subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectsQuery({
     variables: { hubNameId, opportunityNameId },
     skip: !canReadOpportunityContext || !opportunityNameId,
@@ -129,6 +133,18 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     nextFetchPolicy: 'cache-first',
   });
   const opportunityAspects = opportunityAspectData?.hub?.opportunity?.context?.aspects;
+
+  useContextAspectCreatedSubscription(hubAspectData, hubData => hubData?.hub?.context, subscribeToHub);
+  useContextAspectCreatedSubscription(
+    challengeAspectData,
+    challengeData => challengeData?.hub?.challenge?.context,
+    subscribeToChallenges
+  );
+  useContextAspectCreatedSubscription(
+    opportunityAspectData,
+    opportunityData => opportunityData?.hub?.opportunity?.context,
+    subscribeToOpportunity
+  );
 
   const aspects: AspectWithPermissions[] | undefined = useMemo(
     () =>

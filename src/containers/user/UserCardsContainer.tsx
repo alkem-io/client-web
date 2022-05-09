@@ -32,8 +32,8 @@ export const UserCardsContainer: FC<UserCardsContainerProps> = ({ children, user
           displayName: u.displayName,
           avatarSrc: u.profile?.avatar?.uri,
           url: buildUserProfileUrl(u.nameID),
-          city: u.city,
-          country: COUNTRIES_BY_CODE[u.country],
+          city: u.profile?.location?.city || '',
+          country: COUNTRIES_BY_CODE[u.profile?.location?.country || ''],
           roleName: usersWithRoles.find(x => x.id === u.id)?.roleName,
         } as UserCardProps)
     ) || [];

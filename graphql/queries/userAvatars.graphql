@@ -3,10 +3,12 @@ query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
     id
     nameID
     displayName
-    city
-    country
     profile {
       id
+      location {
+        country
+        city
+      }
       avatar {
         ...VisualUri
       }
