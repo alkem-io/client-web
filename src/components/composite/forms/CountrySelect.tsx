@@ -2,7 +2,7 @@ import { TextField } from '@mui/material';
 import { Autocomplete } from '@mui/material';
 import { useField } from 'formik';
 import React, { FC } from 'react';
-import { COUNTRIES } from '../../../models/constants';
+import { COUNTRIES, CountryType } from '../../../models/constants';
 
 interface CountrySelectProps {
   title?: string;
@@ -21,11 +21,19 @@ export const CountrySelect: FC<CountrySelectProps> = ({
 }) => {
   const [field, meta, helper] = useField(name);
 
+  // Countries are objects of the type { name: string, code: string }
+  const getCountryName = (option: CountryType) => option.name;
+  const compareCountries = (option: CountryType, value: CountryType): boolean => {
+    if (option?.code === value?.code) return true;
+    return false;
+  };
+
   return (
     <Autocomplete
       autoHighlight
       options={COUNTRIES}
-      getOptionLabel={option => option.name}
+      getOptionLabel={getCountryName}
+      isOptionEqualToValue={compareCountries}
       value={field.value}
       onChange={(event, newValue) => {
         helper.setValue(newValue);

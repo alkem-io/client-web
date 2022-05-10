@@ -2,7 +2,8 @@ import i18next from 'i18next';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import InputField from './InputField';
+import FormRow from '../../../domain/shared/layout/FormLayout';
+import FormikInputFieldField from '../../composite/forms/FormikInputField';
 
 export const nameValidator = yup
   .string()
@@ -35,22 +36,26 @@ export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelp
 
   return (
     <>
-      <InputField
-        name="name"
-        label={t('components.nameSegment.name')}
-        required
-        helpText={nameHelpText}
-        loading={loading}
-      />
-      <InputField
-        name="nameID"
-        label={t('components.nameSegment.nameID.title')}
-        placeholder={t('components.nameSegment.nameID.placeholder')}
-        disabled={disabled}
-        required={required}
-        helpText={nameIDHelpText}
-        loading={loading}
-      />
+      <FormRow columns={2}>
+        <FormikInputFieldField
+          name="name"
+          title={t('components.nameSegment.name')}
+          required
+          helpText={nameHelpText}
+          loading={loading}
+        />
+      </FormRow>
+      <FormRow columns={2}>
+        <FormikInputFieldField
+          name="nameID"
+          title={t('components.nameSegment.nameID.title')}
+          placeholder={t('components.nameSegment.nameID.placeholder')}
+          disabled={disabled}
+          required={required}
+          helpText={nameIDHelpText}
+          loading={loading}
+        />
+      </FormRow>
     </>
   );
 };

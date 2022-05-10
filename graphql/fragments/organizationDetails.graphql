@@ -12,5 +12,9 @@ fragment OrganizationDetails on Organization {
       id
       tags
     }
+    location {
+      country
+      city
+    }
   }
 }
