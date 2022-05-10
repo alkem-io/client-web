@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { shuffle } from 'lodash';
 import { useUserContext } from '../../index';
 import { useContributingUsersQuery, useOrganizationsListQuery } from '../../generated/graphql';
 import useServerMetadata from '../../useServerMetadata';
@@ -17,10 +18,6 @@ const useContributors = () => {
 
   const { data: usersData, loading } = useContributingUsersQuery({
     fetchPolicy: 'cache-and-network',
-    variables: {
-      limit: MAX_USERS_TO_SHOW,
-      shuffle: true,
-    },
     skip: !isAuthenticated,
   });
 
@@ -32,7 +29,10 @@ const useContributors = () => {
     },
   });
 
-  const users = useMemo(() => usersData?.users || [], [usersData]);
+  const users = useMemo(() => {
+    const array = usersData?.usersPaginated.users ?? [];
+    return shuffle(array).slice(0, MAX_USERS_TO_SHOW);
+  }, [usersData]);
   const organizations = useMemo(() => organizationsData?.organizations || [], [organizationsData]);
 
   const contributors: WithId<ContributorCardProps>[] = useMemo(
@@ -44,8 +44,8 @@ const useContributors = () => {
         url: buildUserProfileUrl(user.nameID),
         tooltip: {
           tags: user.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
-          city: user.city,
-          country: COUNTRIES_BY_CODE[user.country],
+          city: user.profile?.location?.city,
+          country: COUNTRIES_BY_CODE[user.profile?.location?.country || ''],
         },
       })),
     [users]

@@ -3,10 +3,12 @@ query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
     id
     nameID
     displayName
-    city
-    country
     profile {
       id
+      location {
+        city
+        country
+      }
       avatar {
         ...VisualUri
       }

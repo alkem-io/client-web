@@ -9,14 +9,6 @@ interface HelpViewProps {
   isLoading: boolean;
 }
 
-const Image: FC<{ node: any }> = ({ node, ...props }) => {
-  return <Box component="img" maxWidth="100%" {...props} />;
-};
-
-const components = {
-  img: Image,
-};
-
 const HelpView: FC<HelpViewProps> = ({ helpTextMd, isLoading }) => {
   if (isLoading) {
     return <Loading />;
@@ -24,9 +16,7 @@ const HelpView: FC<HelpViewProps> = ({ helpTextMd, isLoading }) => {
 
   return (
     <Box marginTop={2}>
-      <Markdown components={components} rehypePlugins={[rehypeRaw] as MarkdownProps['rehypePlugins']}>
-        {helpTextMd!}
-      </Markdown>
+      <Markdown rehypePlugins={[rehypeRaw] as MarkdownProps['rehypePlugins']}>{helpTextMd!}</Markdown>
     </Box>
   );
 };

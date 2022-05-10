@@ -5,7 +5,8 @@ documents: [
   "src/containers/**/*.graphql",
   "src/context/**/*.graphql",
   "src/components/composite/**/*.graphql",
-  "src/hooks/**/*.graphql",
+  "src/hooks/**/*.graphql", # TODO move to src/domain
+  "src/domain/**/*.graphql",
 ]
 hooks:
   afterAllFileWrite:
