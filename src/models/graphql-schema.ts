@@ -7531,27 +7531,6 @@ export type OpportunityAspectsQuery = {
   };
 };
 
-export type AspectsOnContextFragment = {
-  __typename?: 'Context';
-  id: string;
-  aspects?:
-    | Array<{
-        __typename?: 'Aspect';
-        id: string;
-        nameID: string;
-        displayName: string;
-        type: string;
-        description: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      }>
-    | undefined;
-};
-
 export type PrivilegesOnContextFragment = {
   __typename?: 'Context';
   id: string;
@@ -10948,6 +10927,80 @@ export type HubApplicationsQuery = {
   };
 };
 
+export type CommentsMessageReceivedSubscriptionVariables = Exact<{
+  commentsId: Scalars['UUID'];
+}>;
+
+export type CommentsMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  communicationCommentsMessageReceived: {
+    __typename?: 'CommentsMessageReceived';
+    commentsID: string;
+    message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  };
+};
+
+export type AspectsOnContextFragment = {
+  __typename?: 'Context';
+  id: string;
+  aspects?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        nameID: string;
+        displayName: string;
+        type: string;
+        description: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+};
+
+export type ContextAspectCreatedSubscriptionVariables = Exact<{
+  contextID: Scalars['UUID'];
+}>;
+
+export type ContextAspectCreatedSubscription = {
+  __typename?: 'Subscription';
+  contextAspectCreated: {
+    __typename?: 'ContextAspectCreated';
+    aspect: {
+      __typename?: 'Aspect';
+      id: string;
+      nameID: string;
+      displayName: string;
+      type: string;
+      description: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    };
+  };
+};
+
+export type ContributeTabAspectFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  nameID: string;
+  displayName: string;
+  type: string;
+  description: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+};
+
 export type HubPreferencesQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
 }>;
@@ -10988,6 +11041,21 @@ export type AvailableUsersQueryVariables = Exact<{ [key: string]: never }>;
 export type AvailableUsersQuery = {
   __typename?: 'Query';
   users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+};
+
+export type AvailableUsers2QueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableUsers2Query = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
 };
 
 export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
