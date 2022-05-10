@@ -1,16 +1,16 @@
-import { ApplicationResultEntry } from '../../models/graphql-schema';
+import { ApplicationResult } from '../../models/graphql-schema';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 
 type WithType = { type: ApplicationTypeEnum };
-export type ApplicationWithType = ApplicationResultEntry & WithType;
+export type ApplicationWithType = ApplicationResult & WithType;
 
-const getApplicationWithType = (application: ApplicationResultEntry): ApplicationWithType | never => ({
+const getApplicationWithType = (application: ApplicationResult): ApplicationWithType | never => ({
   ...application,
   type: getType(application),
 });
 export default getApplicationWithType;
 
-const getType = ({ hubID, challengeID, opportunityID }: ApplicationResultEntry): ApplicationTypeEnum | never => {
+const getType = ({ hubID, challengeID, opportunityID }: ApplicationResult): ApplicationTypeEnum | never => {
   if (hubID && challengeID && opportunityID) {
     return ApplicationTypeEnum.opportunity;
   }

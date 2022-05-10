@@ -76,8 +76,8 @@ const toUserCardViewmodel = (users: UserContributorFragment[], loading: boolean)
     displayName: x.displayName,
     tags: (x.userProfile?.tagsets || []).flatMap(y => y.tags),
     url: buildUserProfileUrl(x.nameID),
-    city: x.city,
-    country: x.country,
+    city: x.userProfile?.location?.city || '',
+    country: x.userProfile?.location?.country || '',
     loading,
   }));
 };

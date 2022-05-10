@@ -4,7 +4,6 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
-import { COUNTRIES } from '../../../models/constants';
 import { EditMode } from '../../../models/editMode';
 import { SocialNetworkEnum } from '../../../models/enums/SocialNetworks';
 import { TagsetTemplate, Visual } from '../../../models/graphql-schema';
@@ -21,6 +20,7 @@ import CountrySelect from './CountrySelect';
 import { FormikInputField } from './FormikInputField';
 // import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import { COUNTRIES } from '../../../models/constants';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -77,11 +77,14 @@ export const UserForm: FC<UserProps> = ({
     firstName,
     lastName,
     email,
-    city,
     gender,
     phone,
-    country,
-    profile: { id: profileId, description: bio, references },
+    profile: {
+      id: profileId,
+      description: bio,
+      references,
+      location: { city, country },
+    },
   } = currentUser;
 
   const tagsets = useMemo(() => {
@@ -162,6 +165,7 @@ export const UserForm: FC<UserProps> = ({
         references: newReferences,
         bio,
         profileId,
+        city,
         country,
         linkedin,
         twitter,
@@ -177,11 +181,14 @@ export const UserForm: FC<UserProps> = ({
       const user: UserModel = {
         ...currentUser,
         ...otherData,
-        country: country?.code || '',
         profile: {
           id: profileId,
           description: bio,
           references: finalReferences,
+          location: {
+            country: country?.code || '',
+            city: city ?? '',
+          },
           tagsets,
         },
       };

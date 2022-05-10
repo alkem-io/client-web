@@ -2,8 +2,7 @@ fragment CommunityPageMembers on User {
   id
   nameID
   displayName
-  country
-  city
+
   email
   agent {
     id
@@ -15,6 +14,10 @@ fragment CommunityPageMembers on User {
   }
   profile {
     id
+    location {
+      country
+      city
+    }
     avatar {
       ...VisualUri
     }

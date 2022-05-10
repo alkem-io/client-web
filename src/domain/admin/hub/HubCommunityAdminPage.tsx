@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import HubSettingsLayout from '../../../components/composite/layout/HubSettingsLayout/HubSettingsLayout';
-import { SettingsSection } from '../../../components/composite/layout/EntitySettingsLayout/constants';
+import HubSettingsLayout from './HubSettingsLayout';
+import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../../../components/composite/layout/EntitySettingsLayout/types';
+import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { SectionSpacer } from '../../../components/core/Section/Section';
 import CommunityAdminView from '../community/views/CommunityAdminView';
 import { AuthorizationCredential } from '../../../models/graphql-schema';

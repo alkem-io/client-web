@@ -602,10 +602,51 @@
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {
+    "generic": {
+      "sections": {
+        "dashboard": {
+          "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
+        },
+        "context": {
+          "description": "Here you can explore the context of this {{entity}}. This information is provided by the organization managing this {{entity}}."
+        },
+        "community": {
+          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared."
+        },
+        "contribute": {
+          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community.\nAdd additional aspects that are relevant, as well as comment on aspects added by others."
+        },
+        "discussions": {
+          "description": "Here you can read and participate in discussions around this {{entity}}."
+        },
+        "canvases": {
+          "description": "Canvases can be seen as digital whiteboards. Here you can create a canvas for this {{entity}} as well as find ones created by the others."
+        }
+      }
+    },
     "contribute": {
       "no-aspects": "No aspects found"
     },
     "admin": {
+      "generic": {
+        "sections": {
+          "profile": {
+            "description": "Here you can edit the profile for this {{entity}}."
+          },
+          "context": {
+            "description": "Here you can edit the context for this {{entity}}."
+          },
+          "community": {
+            "description": "Here you can edit the community settings for this {{entity}}."
+          },
+          "communications": {
+            "description": "Here you can post updates that will be visible to all members of this {{entity}}."
+          },
+          "authorization": {
+            "description": "Here you can tweak authorization settings for this {{entity}}."
+          }
+        }
+      },
       "organization": {
         "authorization": {
           "preferences": {
@@ -620,9 +661,19 @@
             "title": "Membership",
             "subtitle": "This section allows you to modify the $t(common.challenge) membership preferences"
           }
+        },
+        "sections": {
+          "opportunities": {
+            "description": "Here you can edit opportunities for this hub."
+          }
         }
       },
       "hub": {
+        "sections": {
+          "challenges": {
+            "description": "Here you can edit challenges for this hub."
+          }
+        },
         "authorization": {
           "preferences": {
             "subtitle": "This section allows you to modify the $t(common.hub) authorization preferences"
@@ -634,7 +685,8 @@
             "subtitle": "This section allows you to modify the $t(common.hub) membership preferences"
           }
         }
-      }
+      },
+      "opportunity": {}
     },
     "feedback": {
       "title": "Give feedback on this community context",
@@ -788,10 +840,6 @@
           "body": "",
           "no-data": "No challenges available for this hub",
           "description": "Here you can explore the Challenges hosted in this Hub. Filter by key words to show just the topics you care about. "
-        },
-        "contribute": {
-          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community. ",
-          "description2": "Add additional aspects that are relevant, as well as comment on aspects added by others. "
         }
       }
     },
@@ -835,8 +883,12 @@
             "help-text": "Projects related to this opportunity"
           }
         },
+        "community": {
+          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
+        },
         "apply": "Interested in collaboration?",
         "projects": {
+          "description": "Here you can manage your projects and suggest new ones to your stakeholders.",
           "header": {
             "text": "Projects",
             "tag": "Coming soon"
@@ -855,7 +907,6 @@
     "community": {
       "title": "{{name}} community page",
       "subtitle": "",
-      "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
       "leading-organizations": {
         "title": "Leading organizations ({{count}})",
         "help-text": "Shows different organizations, including the role you have",

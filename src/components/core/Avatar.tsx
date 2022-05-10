@@ -7,27 +7,32 @@ import Image from './Image';
 import Typography from './Typography';
 import { Theme, Tooltip } from '@mui/material';
 
+type AvatarSizeName = 'md' | 'sm' | 'lg' | 'xl';
+
+const AvatarSizes: Record<AvatarSizeName, number> = {
+  md: 40,
+  sm: 15,
+  lg: 80,
+  xl: 160,
+};
+
+const avatarSizeCSSRules = ['md', 'sm', 'lg', 'xl'].reduce(
+  (rules, size) => ({
+    ...rules,
+    [`&.${size}`]: {
+      width: AvatarSizes[size],
+      height: AvatarSizes[size],
+    },
+  }),
+  {} as Record<string, { width: number; height: number }>
+);
+
 export const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
   avatarWrapper: {
     display: 'flex',
     alignItems: 'center',
     placeContent: 'center',
-    '&.md': {
-      width: 40,
-      height: 40,
-    },
-    '&.sm': {
-      width: 15,
-      hight: 15,
-    },
-    '&.lg': {
-      width: 80,
-      height: 80,
-    },
-    '&.xl': {
-      width: 160,
-      height: 160,
-    },
+    ...avatarSizeCSSRules,
   },
   clickable: {
     '&:hover': {
@@ -37,44 +42,12 @@ export const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
   avatar: {
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
-
-    '&.md': {
-      maxWidth: 40,
-      maxHeight: 40,
-    },
-    '&.sm': {
-      maxWidth: 15,
-      maxHeight: 15,
-    },
-    '&.lg': {
-      maxWidth: 80,
-      maxHeight: 80,
-    },
-    '&.xl': {
-      maxWidth: 160,
-      maxHeight: 160,
-    },
+    ...avatarSizeCSSRules,
   },
   noAvatar: {
     display: 'flex',
     borderRadius: theme.shape.borderRadius,
-
-    '&.md': {
-      width: 40,
-      height: 40,
-    },
-    '&.sm': {
-      width: 15,
-      height: 15,
-    },
-    '&.lg': {
-      width: 80,
-      height: 80,
-    },
-    '&.xl': {
-      width: 160,
-      height: 160,
-    },
+    ...avatarSizeCSSRules,
   },
   dark: {
     background: props => agnosticFunctor(props?.background)(theme, {}) || theme.palette.neutralMedium.main,
@@ -98,7 +71,7 @@ export interface AvatarProps {
   src?: string;
   className?: string;
   classes?: ClassProps;
-  size?: 'md' | 'sm' | 'lg' | 'xl';
+  size?: AvatarSizeName;
   theme?: 'light' | 'dark';
   name?: string;
   userId?: string;

@@ -46,10 +46,7 @@ const useContactDetailsStyles = makeStyles(theme => ({
   },
 }));
 
-const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
-  user: { country, city, email, phone, profile },
-  onEdit,
-}) => {
+const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { email, phone, profile }, onEdit }) => {
   const styles = useContactDetailsStyles();
   return (
     <>
@@ -70,8 +67,8 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({
             <Detail title="Email" value={email} />
             <Detail title="Bio" value={profile?.description || ''} />
             <Detail title="Phone" value={phone} />
-            <Detail title="Country" value={COUNTRIES.find(x => x.code === country)?.name} />
-            <Detail title="City" value={city} />
+            <Detail title="Country" value={COUNTRIES.find(x => x.code === profile?.location?.country)?.name} />
+            <Detail title="City" value={profile?.location?.city} />
           </div>
         </div>
       </Card>

@@ -1,21 +1,25 @@
-import { Box, Button, Container, Hidden } from '@mui/material';
+import { Box, Container, Theme } from '@mui/material';
 import { useSelector } from '@xstate/react';
-import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import { useGlobalState, useUserContext } from '../../../../hooks';
 import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
-import { RouterLink } from '../../../core/RouterLink';
 import UserSegment from '../../entities/User/UserSegment';
 import LogoComponent from './LogoComponent';
 import TopSearchComponent from './TopSearchComponent';
 import LanguageSelect from '../../../LanguageSelect/LanguageSelect';
 import { Link } from 'react-router-dom';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import SignInSegment from '../../../../domain/session/SignInSegment';
+
+const USER_SEGMENT_MAX_WIDTH = (theme: Theme) => theme.spacing(33); // approx. 25 characters
+const USER_SEGMENT_USER_NAME_PROPS = {
+  sx: {
+    display: { xs: 'none', md: 'flex' },
+  },
+};
 
 const SearchBar = () => {
-  const { t } = useTranslation();
   const { user, verified, isAuthenticated, loading } = useUserContext();
   const breakpoint = useCurrentBreakpoint();
 
@@ -27,64 +31,50 @@ const SearchBar = () => {
     return state.matches('visible');
   });
 
-  const userProfileComponent = useMemo(
-    () => (
-      <>
-        {!isAuthenticated && (
-          <Box>
-            <Button
-              aria-label="Sign up"
-              component={RouterLink}
-              to={AUTH_REGISTER_PATH}
-              sx={{
-                padding: theme => theme.spacing(0.5, 1),
-              }}
-              variant="text"
-              size="small"
-            >
-              {t('authentication.sign-up')}
-            </Button>
-            <Button
-              aria-label="Sign in"
-              component={RouterLink}
-              to={AUTH_LOGIN_PATH}
-              sx={{
-                padding: theme => theme.spacing(0.5, 1),
-              }}
-              variant="text"
-              size="small"
-            >
-              {t('authentication.sign-in')}
-            </Button>
-          </Box>
-        )}
-        {isUserSegmentVisible && user && <UserSegment userMetadata={user} emailVerified={verified} />}
-      </>
-    ),
-    [isAuthenticated, isUserSegmentVisible, user, verified]
-  );
+  const renderUserProfileSegment = () => {
+    if (loading) {
+      return <Skeleton sx={{ flexBasis: theme => theme.spacing(19), flexShrink: 1 }} />;
+    }
+    if (!isAuthenticated) {
+      return <SignInSegment />;
+    }
+    return (
+      isUserSegmentVisible &&
+      user && (
+        <UserSegment
+          flexShrink={1}
+          minWidth={0}
+          maxWidth={USER_SEGMENT_MAX_WIDTH}
+          userMetadata={user}
+          emailVerified={verified}
+          userNameProps={USER_SEGMENT_USER_NAME_PROPS}
+        />
+      )
+    );
+  };
 
   return (
     <Container maxWidth={breakpoint}>
       <Box paddingY={2} display="flex" gap={2} alignItems="center" justifyContent="space-between">
         <LogoComponent />
-        <Hidden mdDown>
-          <Box
-            flexGrow={1}
-            justifyContent="center"
-            sx={{
-              minWidth: 256,
-              maxWidth: 512,
-            }}
-          >
-            <TopSearchComponent />
-          </Box>
-        </Hidden>
-        <LanguageSelect />
+        <Box
+          flexGrow={1}
+          justifyContent="center"
+          sx={{
+            maxWidth: theme => theme.spacing(64),
+            display: {
+              xs: 'none',
+              md: 'block',
+            },
+          }}
+        >
+          <TopSearchComponent />
+        </Box>
+        <LanguageSelect sx={{ flexShrink: 0 }} />
         <Link to="/help">
           <HelpOutlineIcon color="primary" />
         </Link>
-        <Box width={155}>{loading ? <Skeleton /> : <>{userProfileComponent}</>}</Box>
+        {renderUserProfileSegment()}
       </Box>
     </Container>
   );

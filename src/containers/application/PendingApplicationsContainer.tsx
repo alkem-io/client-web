@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import { ApplicationResultEntry, User } from '../../models/graphql-schema';
+import { ApplicationResult, User } from '../../models/graphql-schema';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED } from '../../models/constants';
 import { useApolloErrorHandler } from '../../hooks';
 import {
@@ -44,7 +44,7 @@ const PendingApplicationsContainer: FC<PendingApplicationsProps> = ({ children, 
       },
     },
   });
-  const applications = (memberShip?.membershipUser?.applications || []) as ApplicationResultEntry[];
+  const applications = (memberShip?.membershipUser?.applications || []) as ApplicationResult[];
   const appsWithType = applications
     .filter(x => x.state === APPLICATION_STATE_NEW || x.state === APPLICATION_STATE_REJECTED)
     .map(getApplicationWithType)

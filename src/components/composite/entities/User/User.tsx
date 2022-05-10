@@ -1,4 +1,4 @@
-import { Box, styled } from '@mui/material';
+import { Box, BoxProps, styled } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import clsx from 'clsx';
@@ -13,7 +13,7 @@ const classes = {
   textStyle: `${PREFIX}-textStyle`,
 };
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled(Box)(({ theme }) => ({
   cursor: 'pointer',
   [`& .${classes.cursorPointer}`]: {
     cursor: 'pointer',
@@ -32,37 +32,36 @@ const Root = styled('div')(({ theme }) => ({
   },
 }));
 
-interface UserProps {
+export interface UserProps extends BoxProps {
   name: string;
   title: string;
   src: string | undefined;
   onClick?: () => void;
+  userNameProps?: BoxProps;
 }
 
-const User = forwardRef<HTMLDivElement, UserProps>(({ name, title, src, onClick }, ref) => {
+const User = forwardRef<HTMLDivElement, UserProps>(({ name, title, src, userNameProps, ...boxProps }, ref) => {
   return (
-    <Root ref={ref}>
-      <Box display="flex" onClick={onClick}>
-        <Box display="flex" flexDirection="column" flexWrap="nowrap">
-          <Typography
-            variant="caption"
-            color="neutral.main"
-            noWrap
-            className={clsx(classes.nameStyle, classes.textStyle)}
-          >
-            {name}
-          </Typography>
-          <Typography
-            variant="caption"
-            color="neutralMedium.main"
-            noWrap
-            className={clsx(classes.titleStyle, classes.textStyle)}
-          >
-            {title}
-          </Typography>
-        </Box>
-        <Avatar src={src} />
+    <Root ref={ref} display="flex" {...boxProps}>
+      <Box flexDirection="column" flexWrap="nowrap" flexShrink={1} minWidth={0} {...userNameProps}>
+        <Typography
+          variant="caption"
+          color="neutral.main"
+          noWrap
+          className={clsx(classes.nameStyle, classes.textStyle)}
+        >
+          {name}
+        </Typography>
+        <Typography
+          variant="caption"
+          color="neutralMedium.main"
+          noWrap
+          className={clsx(classes.titleStyle, classes.textStyle)}
+        >
+          {title}
+        </Typography>
       </Box>
+      <Avatar src={src} />
     </Root>
   );
 });
