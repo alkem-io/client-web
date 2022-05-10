@@ -11033,6 +11033,21 @@ export type AvailableUsersQuery = {
   users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
 };
 
+export type AvailableUsers2QueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableUsers2Query = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
+};
+
 export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ContributingUsersQuery = {
