@@ -12,16 +12,14 @@ import { COUNTRIES } from '../../models/constants';
  * @param data Location from a GraphQL query
  * @returns A Location from ../../domain/location/Location that contains the full CountryType object,
  */
-const getLocationModel = function (data: Maybe<GraphQLLocation>): LocationModel {
+const getLocationModel = function (data: Maybe<GraphQLLocation>): LocationModel | null {
+  if (!data) return null;
+
   const location: LocationModel = {
     city: data?.city || '',
-    country: { code: '', name: '' },
+    country: COUNTRIES.find(x => x.code === data?.country) || { name: '', code: '' },
   };
 
-  const c = COUNTRIES.find(x => x.code === data?.country);
-  if (c) {
-    location.country = { code: data?.country || '', name: c?.name || '' };
-  }
   return location;
 };
 
