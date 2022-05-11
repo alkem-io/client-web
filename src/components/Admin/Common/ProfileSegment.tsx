@@ -21,7 +21,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
 
   return (
     <>
-      <FormRow columns={1}>
+      <FormRow cols={1}>
         <FormikInputField
           name="description"
           title={t('components.profileSegment.description.name')}
@@ -30,7 +30,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
           required={required}
         />
       </FormRow>
-      <FormRow columns={2}>
+      <FormRow cols={2}>
         <FormikInputField
           name="location.city"
           title={t('components.profileSegment.location.city.name')}
@@ -38,7 +38,7 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
           disabled={disabled}
         />
       </FormRow>
-      <FormRow columns={2}>
+      <FormRow cols={2}>
         <CountrySelect
           name="location.country"
           title={t('components.profileSegment.location.country.name')}

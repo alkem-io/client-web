@@ -20,33 +20,26 @@ type ColumnProps = {
 
 type FormRowProps = ColumnProps | GridProps;
 
-const useColumnMode = (props: PropsWithChildren<FormRowProps>): boolean => {
+const useColumnMode = (props: PropsWithChildren<FormRowProps>) => {
   // If any of the MUI size properties are set, use normal mode.
-  const sizeProperties = ['xs', 'sm', 'md', 'lg', 'xl'];
-  for (let sizeProp in sizeProperties) {
-    if (sizeProp in props) return false;
-  }
-  return true;
+  const sizeProperties: (keyof GridProps)[] = ['xs', 'sm', 'md', 'lg', 'xl'];
+  return !sizeProperties.some(prop => prop in props);
 };
 
 const FormRow = (props: PropsWithChildren<FormRowProps>) => {
+  console.log(props);
   if (useColumnMode(props)) {
+    console.log('columns mode', props.children);
     const columns: number = 'cols' in props && typeof props.cols === 'number' && props.cols >= 1 ? props!.cols : 1;
     let md = Math.floor(12 / columns);
 
-    return (
-      <Grid item xs={12} md={md} {...props}>
-        {props.children}
-      </Grid>
-    );
+    return <Grid item xs={12} md={md} {...props} />;
   } else {
+    console.log('normal mode', props.children);
     // use MUI props
-    return (
-      <Grid item {...props}>
-        {props.children}
-      </Grid>
-    );
+    return <Grid item {...props} />;
   }
+  console.log('--');
 };
 
 export default FormRow;
