@@ -17,7 +17,7 @@ import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { organizationegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
-import { OrganizationModel } from './OrganizationModel';
+import { OrganizationInput } from '../../../domain/organization/OrganizationInput';
 import { getLocationModel } from '../../../domain/location/LocationUtils';
 
 const emptyOrganization = {
@@ -93,7 +93,7 @@ export const OrganizationForm: FC<Props> = ({
     );
   }, [currentOrganization, tagsetsTemplate]);
 
-  const initialValues: OrganizationModel = {
+  const initialValues: OrganizationInput = {
     name: displayName || emptyOrganization.displayName,
     nameID: nameID || emptyOrganization.nameID,
     description: description || emptyOrganization.profile.description,

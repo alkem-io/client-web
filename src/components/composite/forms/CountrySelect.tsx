@@ -12,6 +12,14 @@ interface CountrySelectProps {
   disabled?: boolean;
 }
 
+// Countries are objects of the type { name: string, code: string }
+const getCountryName = (option: CountryType) => option.name;
+
+const compareCountries = (option: CountryType, value: CountryType): boolean => {
+  if (option?.code === value?.code) return true;
+  return false;
+};
+
 export const CountrySelect: FC<CountrySelectProps> = ({
   title = 'Country',
   name = 'country',
@@ -20,13 +28,6 @@ export const CountrySelect: FC<CountrySelectProps> = ({
   disabled,
 }) => {
   const [field, meta, helper] = useField(name);
-
-  // Countries are objects of the type { name: string, code: string }
-  const getCountryName = (option: CountryType) => option.name;
-  const compareCountries = (option: CountryType, value: CountryType): boolean => {
-    if (option?.code === value?.code) return true;
-    return false;
-  };
 
   return (
     <Autocomplete
