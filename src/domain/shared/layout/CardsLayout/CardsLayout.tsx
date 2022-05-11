@@ -19,7 +19,7 @@ interface CardsLayoutComponent {
 /**
  * CardsLayout
  * @param items
- * @param children - a callback that renders a *single* item, pass null for an item that's loading
+ * @param children - a callback that renders a *single* item, pass null or undefined for an item that's loading
  * @param deps - deps to consider the render callback refreshed, as in useCallback(callback, deps)
  * @constructor
  */
