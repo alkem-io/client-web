@@ -1,4 +1,4 @@
-FROM node:14.17.3-alpine as builder
+FROM node:16.15.0-alpine as builder
 
 # Create app directory
 WORKDIR /app
@@ -22,7 +22,7 @@ ENV REACT_APP_BUILD_REVISION=${ARG_BUILD_REVISION}
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm i -g npm@7.5.6
+RUN npm i -g npm@8.5.5
 RUN npm install
 
 # Everything for now
