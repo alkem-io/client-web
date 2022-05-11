@@ -2,26 +2,35 @@ import React, { cloneElement, FC, ReactElement } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import areDepsEqual from '../../utils/areDepsEqual';
 
-interface CardsLayoutProps<Item extends { id: string }> {
+interface Identifiable {
+  id: string;
+}
+
+interface CardsLayoutProps<Item extends Identifiable | null> {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
 }
 
+interface CardsLayoutComponent {
+  <Item extends Identifiable | null>(props: CardsLayoutProps<Item>): ReactElement;
+}
+
 /**
  * CardsLayout
  * @param items
- * @param children - a callback that renders a *single* item
+ * @param children - a callback that renders a *single* item, pass null for an item that's loading
  * @param deps - deps to consider the render callback refreshed, as in useCallback(callback, deps)
  * @constructor
  */
 const CardsLayout = React.memo(
-  <Item extends { id: string }>({ items, children }: CardsLayoutProps<Item>) => {
+  <Item extends Identifiable | null>({ items, children }: CardsLayoutProps<Item>) => {
     return (
       <CardLayoutContainer>
-        {items.map(item => {
+        {items.map((item, index) => {
           const card = children(item);
-          return cloneElement(card, { key: item.id });
+          const key = item ? item.id : `__loading_${index}`;
+          return cloneElement(card, { key });
         })}
       </CardLayoutContainer>
     );
@@ -29,7 +38,7 @@ const CardsLayout = React.memo(
   (prevProps, nextProps) => {
     return prevProps.items === nextProps.items && areDepsEqual(prevProps.deps, nextProps.deps);
   }
-) as <Item extends { id: string }>(props: CardsLayoutProps<Item>) => ReactElement;
+) as CardsLayoutComponent;
 
 export default CardsLayout;
 
