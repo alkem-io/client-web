@@ -55,7 +55,7 @@ interface CardLayoutItemProps extends Pick<BoxProps, 'maxWidth' | 'flexGrow'> {
 }
 
 /**
- * @deprecated
+ * @deprecated - just render cards directly inside CardsLayout.
  */
 export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = '25%', flexGrow, maxWidth }) => {
   return (
