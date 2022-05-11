@@ -12,7 +12,7 @@ import {
   entityValueGetter,
 } from '../../components/core/card-filter/value-getters/entity-value-getter';
 import ErrorBlock from '../../components/core/ErrorBlock';
-import CardsLayout, { CardLayoutContainer } from '../../domain/shared/layout/CardsLayout/CardsLayout';
+import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { ViewProps } from '../../models/view';
 import { Challenge, ChallengeCardFragment } from '../../models/graphql-schema';
 
@@ -57,31 +57,22 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
           </Grid>
         </Grid>
       )}
-      {state.loading ? (
-        <CardLayoutContainer>
-          <ChallengeCard loading />
-          <ChallengeCard loading />
-        </CardLayoutContainer>
+      {!state.loading && !challenges.length ? (
+        <Box paddingBottom={2} display="flex" justifyContent="center">
+          <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
+        </Box>
       ) : (
-        <>
-          {challenges && !challenges.length ? (
-            <Box paddingBottom={2} display="flex" justifyContent="center">
-              <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
-            </Box>
-          ) : (
-            <CardFilter
-              data={challenges as Challenge[] /* TODO remove type casting */}
-              tagsValueGetter={entityTagsValueGetter}
-              valueGetter={entityValueGetter}
-            >
-              {filteredData => (
-                <CardsLayout items={filteredData} deps={[hubNameId]}>
-                  {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
-                </CardsLayout>
-              )}
-            </CardFilter>
+        <CardFilter
+          data={challenges as Challenge[] /* TODO remove type casting */}
+          tagsValueGetter={entityTagsValueGetter}
+          valueGetter={entityValueGetter}
+        >
+          {filteredData => (
+            <CardsLayout items={state.loading ? [undefined, undefined] : filteredData} deps={[hubNameId]}>
+              {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} loading={!challenge} />}
+            </CardsLayout>
           )}
-        </>
+        </CardFilter>
       )}
     </MembershipBackdrop>
   );

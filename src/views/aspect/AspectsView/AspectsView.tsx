@@ -61,21 +61,18 @@ const AspectsView: FC<AspectsViewProps> = ({
                 t('pages.contribute.no-aspects')
               ) : (
                 <CardsLayout
-                  items={aspectsLoading ? [null, null] : filteredAspects}
+                  items={aspectsLoading ? [undefined, undefined] : filteredAspects}
                   deps={[hubNameId, challengeNameId, opportunityNameId]}
                 >
-                  {aspect =>
-                    aspect ? (
-                      <AspectCard
-                        aspect={aspect}
-                        hubNameId={hubNameId}
-                        challengeNameId={challengeNameId}
-                        opportunityNameId={opportunityNameId}
-                      />
-                    ) : (
-                      <AspectCard loading />
-                    )
-                  }
+                  {aspect => (
+                    <AspectCard
+                      aspect={aspect}
+                      hubNameId={hubNameId}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                      loading={!aspect}
+                    />
+                  )}
                 </CardsLayout>
               )
             }

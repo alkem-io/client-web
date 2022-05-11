@@ -6,14 +6,14 @@ interface Identifiable {
   id: string;
 }
 
-interface CardsLayoutProps<Item extends Identifiable | null> {
+interface CardsLayoutProps<Item extends Identifiable | null | undefined> {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
 }
 
 interface CardsLayoutComponent {
-  <Item extends Identifiable | null>(props: CardsLayoutProps<Item>): ReactElement;
+  <Item extends Identifiable | null | undefined>(props: CardsLayoutProps<Item>): ReactElement;
 }
 
 /**
@@ -24,7 +24,7 @@ interface CardsLayoutComponent {
  * @constructor
  */
 const CardsLayout = React.memo(
-  <Item extends Identifiable | null>({ items, children }: CardsLayoutProps<Item>) => {
+  <Item extends Identifiable | null | undefined>({ items, children }: CardsLayoutProps<Item>) => {
     return (
       <CardLayoutContainer>
         {items.map((item, index) => {

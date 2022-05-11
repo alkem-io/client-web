@@ -8,10 +8,13 @@ import { useUserContext } from '../../../../../hooks';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
+
+type ChallengeAttributes = Pick<Challenge, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
+  context?: { tagline?: string; visuals?: VisualUriFragment[] };
+};
+
 export interface ChallengeCardProps {
-  challenge?: Pick<Challenge, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
-    context?: { tagline?: string; visuals?: VisualUriFragment[] };
-  };
+  challenge: ChallengeAttributes | undefined;
   hubNameId?: string;
   loading?: boolean;
 }
