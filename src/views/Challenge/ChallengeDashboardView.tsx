@@ -16,7 +16,7 @@ import { User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
@@ -100,13 +100,15 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navText={t('buttons.see-all')}
             navLink={'opportunities'}
           >
-            <CardLayoutContainer>
-              {opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => (
-                <CardLayoutItem key={i} flexBasis={'50%'}>
-                  <OpportunityCard opportunity={x} hubNameId={hubNameId} challengeNameId={challengeNameId} />
-                </CardLayoutItem>
-              ))}
-            </CardLayoutContainer>
+            {/* TODO check if flexBasis: '50%' was ever needed */}
+            <CardsLayout
+              items={opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION) || []}
+              deps={[hubNameId, challengeNameId]}
+            >
+              {opportunity => (
+                <OpportunityCard opportunity={opportunity} hubNameId={hubNameId} challengeNameId={challengeNameId} />
+              )}
+            </CardsLayout>
           </DashboardGenericSection>
           <DashboardSectionAspects
             aspects={aspects}

@@ -11,7 +11,7 @@ import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 
 // const groupByOptions = [
 //   {
@@ -55,19 +55,15 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
               helpText={t('pages.challenge-explorer.my.help-text')}
               ariaKey="my-challenges"
             >
-              <CardLayoutContainer>
-                {myChallenges.map(({ hubNameId, id: challengeId }, i) => (
-                  <ChallengeCardContainer key={i} hubNameId={hubNameId} challengeNameId={challengeId}>
-                    {({ challenge }) =>
-                      challenge && (
-                        <CardLayoutItem>
-                          <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
-                        </CardLayoutItem>
-                      )
-                    }
+              <CardsLayout items={myChallenges}>
+                {({ hubNameId, id: challengeId }) => (
+                  // TODO move data enrichment to an enhanced version of BetterCardLayoutContainer
+                  // then, within this function, just render a normal ChallengeCard
+                  <ChallengeCardContainer hubNameId={hubNameId} challengeNameId={challengeId}>
+                    {({ challenge }) => challenge && <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
                   </ChallengeCardContainer>
-                ))}
-              </CardLayoutContainer>
+                )}
+              </CardsLayout>
             </Accordion>
           </Grid>
         )}
@@ -128,13 +124,9 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({ myChalle
                     helpText={t('pages.challenge-explorer.hubs.help-text')}
                     ariaKey={hubName}
                   >
-                    <CardLayoutContainer>
-                      {cEntities.challenges.map((challenge, i) => (
-                        <CardLayoutItem key={i}>
-                          <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
-                        </CardLayoutItem>
-                      ))}
-                    </CardLayoutContainer>
+                    <CardsLayout items={cEntities.challenges} deps={[hubNameId]}>
+                      {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
+                    </CardsLayout>
                   </Accordion>
                 </Grid>
               )}

@@ -10,7 +10,7 @@ const PREFIX = 'EntityContributionCard';
 const cssClasses = {
   member: `${PREFIX}-member`,
 };
-const Root = styled('div')(({ theme }) => ({
+const Card = styled(ContributionCardV2)(({ theme }) => ({
   [`& .${cssClasses.member}`]: {
     background: theme.palette.augmentColor({ color: theme.palette.positive }).dark,
   },
@@ -53,18 +53,16 @@ const EntityContributionCard: FC<EntityContributionCardProps> = ({
   }
 
   return (
-    <Root>
-      <ContributionCardV2 details={details} classes={classes} loading={loading}>
-        <SectionSpacer double />
-        {activities && (
-          <>
-            <ActivitiesV2 activity={activities} />
-            <SectionSpacer />
-          </>
-        )}
-        {children}
-      </ContributionCardV2>
-    </Root>
+    <Card details={details} classes={classes} loading={loading}>
+      <SectionSpacer double />
+      {activities && (
+        <>
+          <ActivitiesV2 activity={activities} />
+          <SectionSpacer />
+        </>
+      )}
+      {children}
+    </Card>
   );
 };
 
