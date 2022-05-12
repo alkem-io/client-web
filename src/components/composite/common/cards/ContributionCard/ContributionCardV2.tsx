@@ -7,6 +7,7 @@ import TagsComponent from '../../TagsComponent/TagsComponent';
 import TagLabel from '../../TagLabel/TagLabel';
 import Typography from '@mui/material/Typography';
 import { fontWeight } from '../../../../core/Typography';
+import clsx from 'clsx';
 
 type mediaSize = 'small' | 'medium' | 'large';
 
@@ -30,6 +31,7 @@ export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
 
 export interface ContributionCardV2Props {
   details?: ContributionCardV2Details;
+  className?: string;
   classes?: {
     label?: string;
   };
@@ -76,7 +78,14 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
 
 const EMPTY = [];
 
-const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = false, classes, options, children }) => {
+const ContributionCardV2: FC<ContributionCardV2Props> = ({
+  details,
+  loading = false,
+  className,
+  classes,
+  options,
+  children,
+}) => {
   const {
     headerText = '',
     labelText,
@@ -92,7 +101,7 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({ details, loading = fa
   const styles = useStyles({ mediaSize });
 
   return (
-    <LinkCard to={url} className={styles.card} aria-label="contribution-card">
+    <LinkCard to={url} className={clsx(styles.card, className)} aria-label="contribution-card">
       {!noMedia && (
         <>
           {loading ? (

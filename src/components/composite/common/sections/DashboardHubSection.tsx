@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { UserMetadata } from '../../../../hooks';
 import { HubsQuery } from '../../../../models/graphql-schema';
-import { CardLayoutItem, CardLayoutContainer } from '../../../core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../../../domain/shared/layout/CardsLayout/CardsLayout';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import HubCard from '../cards/HubCard/HubCard';
 
@@ -23,13 +23,7 @@ const DashboardHubSection: FC<DashboardHubSectionProps> = ({ entities, loading, 
   return (
     <Section {...props}>
       {children}
-      <CardLayoutContainer>
-        {hubs.map((hub, i) => (
-          <CardLayoutItem key={i}>
-            <HubCard hub={hub} />
-          </CardLayoutItem>
-        ))}
-      </CardLayoutContainer>
+      <CardsLayout items={hubs}>{hub => <HubCard hub={hub} />}</CardsLayout>
     </Section>
   );
 };

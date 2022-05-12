@@ -11,7 +11,7 @@ import OfferAlkemioCommunityCredentialDialog from '../../components/composite/di
 import RequestCredentialDialog from '../../components/composite/dialogs/CredentialDialog.tsx/RequestCredentialDialog';
 import QRCodeDialog from '../../components/composite/dialogs/QRCodeDialog/QRCodeDialog';
 import { Loading } from '../../components/core';
-import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import { CardLayoutContainer, CardLayoutItem } from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import UserCredentialsContainer from '../../containers/user/UserCredentialsContainer';
 import { useNotification, useUpdateNavigation, useUserContext } from '../../hooks';
 import { PageProps } from '../common';
