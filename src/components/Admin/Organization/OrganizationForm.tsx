@@ -18,7 +18,7 @@ import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { organizationegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationInput } from '../../../domain/organization/OrganizationInput';
-import { getLocationModel } from '../../../domain/location/LocationUtils';
+import { formatLocation } from '../../../domain/location/LocationUtils';
 
 const emptyOrganization = {
   nameID: '',
@@ -97,7 +97,10 @@ export const OrganizationForm: FC<Props> = ({
     name: displayName || emptyOrganization.displayName,
     nameID: nameID || emptyOrganization.nameID,
     description: description || emptyOrganization.profile.description,
-    location: getLocationModel(location) || emptyOrganization.profile.location,
+    location: {
+      ...formatLocation(location),
+      ...emptyOrganization.profile.location,
+    },
     tagsets: tagsets || emptyOrganization.profile.tagsets,
     contactEmail: contactEmail || emptyOrganization.contactEmail,
     domain: domain || emptyOrganization.domain,
