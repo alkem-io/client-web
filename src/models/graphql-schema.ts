@@ -3537,6 +3537,7 @@ export type OrganizationInfoFragment = {
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
   };
   members?:
     | Array<{
@@ -3577,6 +3578,7 @@ export type OrganizationDetailsFragment = {
     description?: string | undefined;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
   };
 };
 
@@ -3608,6 +3610,7 @@ export type OrganizationProfileInfoFragment = {
           minWidth: number;
         }
       | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
       | undefined;
@@ -4592,6 +4595,7 @@ export type UpdateOrganizationMutation = {
             minWidth: number;
           }
         | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         | undefined;
@@ -5100,6 +5104,7 @@ export type ChallengeLeadOrganizationsQuery = {
           description?: string | undefined;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          location?: { __typename?: 'Location'; country: string; city: string } | undefined;
         };
       }>;
     };
@@ -5115,6 +5120,7 @@ export type ChallengeLeadOrganizationsQuery = {
       description?: string | undefined;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     };
   }>;
 };
@@ -6531,6 +6537,7 @@ export type OrganizationInfoQuery = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     };
     members?:
       | Array<{
@@ -6647,6 +6654,7 @@ export type OrganizationProfileInfoQuery = {
             minWidth: number;
           }
         | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         | undefined;
@@ -8864,6 +8872,7 @@ export type ChallengePageQuery = {
           description?: string | undefined;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          location?: { __typename?: 'Location'; country: string; city: string } | undefined;
         };
       }>;
       lifecycle?:
@@ -9008,6 +9017,7 @@ export type ChallengeProfileFragment = {
       description?: string | undefined;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     };
   }>;
   lifecycle?:

@@ -16,6 +16,10 @@ fragment OrganizationProfileInfo on Organization {
       ...VisualFull
     }
     description
+    location {
+      country
+      city
+    }
     references {
       id
       name

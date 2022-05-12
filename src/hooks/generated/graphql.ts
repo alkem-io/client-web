@@ -500,6 +500,10 @@ export const OrganizationInfoFragmentDoc = gql`
         name
         uri
       }
+      location {
+        country
+        city
+      }
     }
     members {
       id
@@ -550,6 +554,10 @@ export const OrganizationProfileInfoFragmentDoc = gql`
         ...VisualFull
       }
       description
+      location {
+        country
+        city
+      }
       references {
         id
         name
@@ -1033,6 +1041,10 @@ export const OrganizationDetailsFragmentDoc = gql`
       tagsets {
         id
         tags
+      }
+      location {
+        country
+        city
       }
     }
   }

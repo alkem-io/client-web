@@ -121,7 +121,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
           },
         });
       }
-
       const organizationInput: UpdateOrganizationInput = {
         ID: orgID,
         nameID,
@@ -133,6 +132,10 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         profileData: {
           ID: profileId || '',
           description: profile.description || '',
+          location: {
+            city: profile.location?.city || '',
+            country: profile.location?.country || '',
+          },
           references: references.map(x => ({
             ID: x.id,
             description: x.description,
