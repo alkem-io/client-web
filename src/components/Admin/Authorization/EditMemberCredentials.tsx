@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useAvailableMembers, useUserContext } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import AuthorizationPageProps from '../../../pages/Admin/AuthorizationPageProps';
-import { EditMembers, EditMembersProps } from '../Community/EditMembers';
+import EditMembers, { EditMembersProps } from '../Community/EditMembers';
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,
@@ -26,11 +26,11 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const { available, current, loading, onLoadMore, isLastAvailableUserPage } = useAvailableMembers(
+  const { available, current, loading, fetchMore, hasMore } = useAvailableMembers({
     credential,
     resourceId,
-    parentCommunityId
-  );
+    parentCommunityId,
+  });
 
   return (
     <EditMembers
@@ -43,8 +43,8 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
       removingMember={removingMember}
       loadingMembers={loading}
       loadingAvailableMembers={loading}
-      onLoadMore={onLoadMore}
-      lastMembersPage={isLastAvailableUserPage}
+      onLoadMore={fetchMore}
+      hasMore={hasMore}
       title={title}
     />
   );

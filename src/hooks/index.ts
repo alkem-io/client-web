@@ -32,6 +32,6 @@ export * from './useNotification';
 export * from './useQueryParams';
 export * from './useSentry';
 export * from './useGlobalState';
-export * from './providers/useAvailableMembers';
+export * from '../domain/community/useAvailableMembers';
 
 export * from './routing/useRouteMatch';

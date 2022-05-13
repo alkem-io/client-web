@@ -42,7 +42,7 @@ export const OrganizationAdminAuthorizationView: FC = () => {
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
             onLoadMore={actions.handleLoadMore}
-            lastMembersPage={state.isLastAvailableUserPage}
+            hasMore={state.hasMoreUsers}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
           />

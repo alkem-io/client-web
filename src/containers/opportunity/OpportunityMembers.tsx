@@ -37,7 +37,7 @@ export interface OpportunityMembersState {
   addingAdmin: boolean;
   removingAdmin: boolean;
   loading: boolean;
-  isLastAvailableUserPage: boolean;
+  hasMoreUsers: boolean | undefined;
 }
 
 export interface OpportunityMembersEntities {
@@ -103,11 +103,15 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
     available: availableMembers,
     current: allMembers,
     loading,
-    onLoadMore,
-    isLastAvailableUserPage,
-  } = useAvailableMembers(entities.credential, entities.opportunityId, communityId);
+    fetchMore,
+    hasMore,
+  } = useAvailableMembers({
+    credential: entities.credential,
+    resourceId: entities.opportunityId,
+    parentCommunityId: communityId,
+  });
 
-  const handleLoadMore = onLoadMore;
+  const handleLoadMore = fetchMore;
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -132,8 +136,8 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
         {
           addingAdmin,
           removingAdmin,
-          loading: loading,
-          isLastAvailableUserPage,
+          loading,
+          hasMoreUsers: hasMore,
         }
       )}
     </>

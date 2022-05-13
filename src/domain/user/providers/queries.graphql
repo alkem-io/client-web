@@ -1,0 +1,13 @@
+query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  usersPaginated(first: $first, after: $after, filter: $filter) {
+    users {
+      id
+      displayName
+      email
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}

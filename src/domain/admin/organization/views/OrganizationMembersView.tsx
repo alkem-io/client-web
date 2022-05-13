@@ -28,7 +28,7 @@ export const OrganizationMembersView: FC = () => {
             onAdd={actions.handleAssignMember}
             onRemove={actions.handleRemoveMember}
             onLoadMore={actions.handleLoadMore}
-            lastMembersPage={state.isLastAvailableUserPage}
+            hasMore={state.hasMoreUsers}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
           />

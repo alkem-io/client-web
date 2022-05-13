@@ -405,6 +405,8 @@ export type CommunityKeySpecifier = (
   | 'displayName'
   | 'groups'
   | 'id'
+  | 'leadOrganizations'
+  | 'leadUsers'
   | 'memberOrganizations'
   | 'memberUsers'
   | CommunityKeySpecifier
@@ -416,6 +418,8 @@ export type CommunityFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   memberOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
 };

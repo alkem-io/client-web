@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { shuffle } from 'lodash';
-import { useUserContext } from '../../index';
-import { useContributingUsersQuery, useOrganizationsListQuery } from '../../generated/graphql';
-import useServerMetadata from '../../useServerMetadata';
+import { useUserContext } from '../../../hooks';
+import { useContributingUsersQuery, useOrganizationsListQuery } from '../../../hooks/generated/graphql';
+import useServerMetadata from '../../../hooks/useServerMetadata';
 import { COUNTRIES_BY_CODE } from '../../../models/constants';
 import getActivityCount from '../../../utils/get-activity-count';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../utils/urlBuilders';

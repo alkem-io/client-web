@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useUserContext } from '../../hooks';
+import { useAvailableMembers, useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOrganizationAdminMutation,
@@ -9,7 +9,7 @@ import {
   useRemoveUserAsOrganizationOwnerMutation,
   useRemoveUserFromOrganizationMutation,
 } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAvailableMembers } from '../../hooks';
+import { useApolloErrorHandler } from '../../hooks';
 import { AuthorizationCredential, Organization, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
 
@@ -53,7 +53,7 @@ export interface OrganizationMembersState {
   addingOwner: boolean;
   removingOwner: boolean;
   loading: boolean;
-  isLastAvailableUserPage: boolean;
+  hasMoreUsers: boolean | undefined;
 }
 
 export interface OrganizationMembersEntities {
@@ -214,11 +214,15 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     available: availableMembers,
     current: allMembers,
     loading,
-    onLoadMore,
-    isLastAvailableUserPage,
-  } = useAvailableMembers(entities.credential, entities.organizationId, undefined, entities.parentMembers);
+    fetchMore,
+    hasMore,
+  } = useAvailableMembers({
+    credential: entities.credential,
+    resourceId: entities.organizationId,
+    parentMembers: entities.parentMembers,
+  });
 
-  const handleLoadMore = onLoadMore;
+  const handleLoadMore = fetchMore;
 
   const currentMember = useMemo<Member | undefined>(() => {
     if (user)
@@ -251,8 +255,8 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
           removingAdmin,
           addingOwner,
           removingOwner,
-          loading: loading,
-          isLastAvailableUserPage,
+          loading,
+          hasMoreUsers: hasMore,
         }
       )}
     </>
