@@ -3,7 +3,7 @@ query communityMembers($hubId: UUID_NAMEID!, $communityId: UUID!) {
     id
     community(ID: $communityId) {
       id
-      members {
+      memberUsers {
         ...UserDisplayName
       }
     }

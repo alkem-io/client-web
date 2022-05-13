@@ -81,7 +81,7 @@ export const useAvailableMembers = (
   const isLoading = loadingUsers || loadingMembers || loadingParentCommunityMembers || loadingHub;
   const hasError = !!(membersError || userError || parentCommunityMembersError);
   const entityMembers = (parentMembers ||
-    _parentCommunityMembers?.hub.community?.members ||
+    _parentCommunityMembers?.hub.community?.memberUsers ||
     usersQueryData?.users ||
     []) as UserDisplayNameFragment[];
 

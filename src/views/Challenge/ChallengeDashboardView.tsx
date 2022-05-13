@@ -46,7 +46,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const { displayName, context, leadOrganizations = [] } = challenge || {};
   const communityId = challenge?.community?.id || '';
-  const members = (challenge?.community?.members || []) as User[];
+  const members = (challenge?.community?.memberUsers || []) as User[];
 
   const { tagline = '', visuals, vision = '' } = context || {};
   const bannerUrl = getVisualBanner(visuals);

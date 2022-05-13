@@ -184,7 +184,17 @@ export type AssignChallengeAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type AssignCommunityMemberInput = {
+export type AssignCommunityLeadOrganizationInput = {
+  communityID: Scalars['UUID'];
+  organizationID: Scalars['UUID_NAMEID'];
+};
+
+export type AssignCommunityMemberOrganizationInput = {
+  communityID: Scalars['UUID'];
+  organizationID: Scalars['UUID_NAMEID'];
+};
+
+export type AssignCommunityMemberUserInput = {
   communityID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -275,6 +285,7 @@ export enum AuthorizationCredential {
   HubHost = 'HUB_HOST',
   HubMember = 'HUB_MEMBER',
   OpportunityAdmin = 'OPPORTUNITY_ADMIN',
+  OpportunityLead = 'OPPORTUNITY_LEAD',
   OpportunityMember = 'OPPORTUNITY_MEMBER',
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationMember = 'ORGANIZATION_MEMBER',
@@ -588,8 +599,10 @@ export type Community = Groupable & {
   groups?: Maybe<Array<UserGroup>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** All Organizations that are contributing to this Community. */
+  memberOrganizations?: Maybe<Array<Organization>>;
   /** All users that are contributing to this Community. */
-  members?: Maybe<Array<User>>;
+  memberUsers?: Maybe<Array<User>>;
 };
 
 export type CommunityApplyInput = {
@@ -1284,8 +1297,14 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
+  /** Assigns an Organization as a member of the specified Community. */
+  assignOrganizationAsCommunityLead: Community;
+  /** Assigns an Organization as a member of the specified Community. */
+  assignOrganizationAsCommunityMember: Community;
   /** Assigns a User as an Challenge Admin. */
   assignUserAsChallengeAdmin: User;
+  /** Assigns a User as a member of the specified Community. */
+  assignUserAsCommunityMember: Community;
   /** Assigns a User as a Global Admin. */
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
@@ -1298,8 +1317,6 @@ export type Mutation = {
   assignUserAsOrganizationAdmin: User;
   /** Assigns a User as an Organization Owner. */
   assignUserAsOrganizationOwner: User;
-  /** Assigns a User as a member of the specified Community. */
-  assignUserToCommunity: Community;
   /** Assigns a User as a member of the specified User Group. */
   assignUserToGroup: UserGroup;
   /** Assigns a User as a member of the specified Organization. */
@@ -1410,10 +1427,18 @@ export type Mutation = {
   removeComment: Scalars['MessageID'];
   /** Removes a message from the specified Discussion. */
   removeMessageFromDiscussion: Scalars['MessageID'];
+  /** Removes an Organization as a member of the specified Community. */
+  removeOrganizationAsCommunityLead: Community;
+  /** Removes an Organization as a member of the specified Community. */
+  removeOrganizationAsCommunityMember: Community;
   /** Removes an update message. */
   removeUpdate: Scalars['MessageID'];
   /** Removes a User from being an Challenge Admin. */
   removeUserAsChallengeAdmin: User;
+  /** Removes a User as a member of the specified Community. */
+  removeUserAsCommunityLead: Community;
+  /** Removes a User as a member of the specified Community. */
+  removeUserAsCommunityMember: Community;
   /** Removes a User from being a Global Admin. */
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
@@ -1426,8 +1451,6 @@ export type Mutation = {
   removeUserAsOrganizationAdmin: User;
   /** Removes a User from being an Organization Owner. */
   removeUserAsOrganizationOwner: User;
-  /** Removes a User as a member of the specified Community. */
-  removeUserFromCommunity: Community;
   /** Removes the specified User from specified user group */
   removeUserFromGroup: UserGroup;
   /** Removes a User as a member of the specified Organization. */
@@ -1496,8 +1519,20 @@ export type MutationApplyForCommunityMembershipArgs = {
   applicationData: CommunityApplyInput;
 };
 
+export type MutationAssignOrganizationAsCommunityLeadArgs = {
+  membershipData: AssignCommunityLeadOrganizationInput;
+};
+
+export type MutationAssignOrganizationAsCommunityMemberArgs = {
+  membershipData: AssignCommunityMemberOrganizationInput;
+};
+
 export type MutationAssignUserAsChallengeAdminArgs = {
   membershipData: AssignChallengeAdminInput;
+};
+
+export type MutationAssignUserAsCommunityMemberArgs = {
+  membershipData: AssignCommunityMemberUserInput;
 };
 
 export type MutationAssignUserAsGlobalAdminArgs = {
@@ -1522,10 +1557,6 @@ export type MutationAssignUserAsOrganizationAdminArgs = {
 
 export type MutationAssignUserAsOrganizationOwnerArgs = {
   membershipData: AssignOrganizationOwnerInput;
-};
-
-export type MutationAssignUserToCommunityArgs = {
-  membershipData: AssignCommunityMemberInput;
 };
 
 export type MutationAssignUserToGroupArgs = {
@@ -1740,12 +1771,28 @@ export type MutationRemoveMessageFromDiscussionArgs = {
   messageData: DiscussionRemoveMessageInput;
 };
 
+export type MutationRemoveOrganizationAsCommunityLeadArgs = {
+  leadershipData: RemoveCommunityLeadOrganizationInput;
+};
+
+export type MutationRemoveOrganizationAsCommunityMemberArgs = {
+  membershipData: RemoveCommunityMemberOrganizationInput;
+};
+
 export type MutationRemoveUpdateArgs = {
   messageData: UpdatesRemoveMessageInput;
 };
 
 export type MutationRemoveUserAsChallengeAdminArgs = {
   membershipData: RemoveChallengeAdminInput;
+};
+
+export type MutationRemoveUserAsCommunityLeadArgs = {
+  leadershipData: RemoveCommunityLeadUserInput;
+};
+
+export type MutationRemoveUserAsCommunityMemberArgs = {
+  membershipData: RemoveCommunityMemberUserInput;
 };
 
 export type MutationRemoveUserAsGlobalAdminArgs = {
@@ -1770,10 +1817,6 @@ export type MutationRemoveUserAsOrganizationAdminArgs = {
 
 export type MutationRemoveUserAsOrganizationOwnerArgs = {
   membershipData: RemoveOrganizationOwnerInput;
-};
-
-export type MutationRemoveUserFromCommunityArgs = {
-  membershipData: RemoveCommunityMemberInput;
 };
 
 export type MutationRemoveUserFromGroupArgs = {
@@ -2411,7 +2454,22 @@ export type RemoveChallengeAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
-export type RemoveCommunityMemberInput = {
+export type RemoveCommunityLeadOrganizationInput = {
+  communityID: Scalars['UUID'];
+  organizationID: Scalars['UUID_NAMEID'];
+};
+
+export type RemoveCommunityLeadUserInput = {
+  communityID: Scalars['UUID'];
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveCommunityMemberOrganizationInput = {
+  communityID: Scalars['UUID'];
+  organizationID: Scalars['UUID_NAMEID'];
+};
+
+export type RemoveCommunityMemberUserInput = {
   communityID: Scalars['UUID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
@@ -3161,7 +3219,7 @@ export type CommunityDetailsFragment = {
           | undefined;
       }
     | undefined;
-  members?:
+  memberUsers?:
     | Array<{
         __typename?: 'User';
         id: string;
@@ -3375,7 +3433,7 @@ export type HubInfoFragment = {
         __typename?: 'Community';
         id: string;
         displayName: string;
-        members?: Array<{ __typename?: 'User'; id: string }> | undefined;
+        memberUsers?: Array<{ __typename?: 'User'; id: string }> | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -3816,13 +3874,13 @@ export type ApplyForCommunityMembershipMutation = {
   applyForCommunityMembership: { __typename?: 'Application'; id: string };
 };
 
-export type AssignUserToCommunityMutationVariables = Exact<{
-  input: AssignCommunityMemberInput;
+export type AssignUserAsCommunityMemberMutationVariables = Exact<{
+  input: AssignCommunityMemberUserInput;
 }>;
 
-export type AssignUserToCommunityMutation = {
+export type AssignUserAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  assignUserToCommunity: { __typename?: 'Community'; id: string; displayName: string };
+  assignUserAsCommunityMember: { __typename?: 'Community'; id: string; displayName: string };
 };
 
 export type AssignUserToGroupMutationVariables = Exact<{
@@ -4393,16 +4451,16 @@ export type RemoveMessageFromDiscussionMutationVariables = Exact<{
 
 export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
 
-export type RemoveUserFromCommunityMutationVariables = Exact<{
-  input: RemoveCommunityMemberInput;
+export type RemoveUserAsCommunityMemberMutationVariables = Exact<{
+  input: RemoveCommunityMemberUserInput;
 }>;
 
-export type RemoveUserFromCommunityMutation = {
+export type RemoveUserAsCommunityMemberMutation = {
   __typename?: 'Mutation';
-  removeUserFromCommunity: {
+  removeUserAsCommunityMember: {
     __typename?: 'Community';
     id: string;
-    members?:
+    memberUsers?:
       | Array<{
           __typename?: 'User';
           id: string;
@@ -5167,7 +5225,7 @@ export type ChallengeMembersQuery = {
       community?:
         | {
             __typename?: 'Community';
-            members?:
+            memberUsers?:
               | Array<{
                   __typename?: 'User';
                   id: string;
@@ -5272,7 +5330,7 @@ export type ChallengeUserIdsQuery = {
     challenge: {
       __typename?: 'Challenge';
       community?:
-        | { __typename?: 'Community'; members?: Array<{ __typename?: 'User'; id: string }> | undefined }
+        | { __typename?: 'Community'; memberUsers?: Array<{ __typename?: 'User'; id: string }> | undefined }
         | undefined;
     };
   };
@@ -5364,7 +5422,7 @@ export type ChallengeCommunityQuery = {
                     | undefined;
                 }
               | undefined;
-            members?:
+            memberUsers?:
               | Array<{
                   __typename?: 'User';
                   id: string;
@@ -5446,7 +5504,7 @@ export type HubCommunityQuery = {
                   | undefined;
               }
             | undefined;
-          members?:
+          memberUsers?:
             | Array<{
                 __typename?: 'User';
                 id: string;
@@ -5551,7 +5609,7 @@ export type OpportunityCommunityQuery = {
                     | undefined;
                 }
               | undefined;
-            members?:
+            memberUsers?:
               | Array<{
                   __typename?: 'User';
                   id: string;
@@ -5619,7 +5677,7 @@ export type CommunityMembersQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
+          memberUsers?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
         }
       | undefined;
   };
@@ -5729,7 +5787,7 @@ export type HubProviderQuery = {
           __typename?: 'Community';
           id: string;
           displayName: string;
-          members?: Array<{ __typename?: 'User'; id: string }> | undefined;
+          memberUsers?: Array<{ __typename?: 'User'; id: string }> | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -5913,7 +5971,7 @@ export type HubMembersQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          members?:
+          memberUsers?:
             | Array<{
                 __typename?: 'User';
                 id: string;
@@ -5947,7 +6005,7 @@ export type HubUserIdsQuery = {
     __typename?: 'Hub';
     id: string;
     community?:
-      | { __typename?: 'Community'; id: string; members?: Array<{ __typename?: 'User'; id: string }> | undefined }
+      | { __typename?: 'Community'; id: string; memberUsers?: Array<{ __typename?: 'User'; id: string }> | undefined }
       | undefined;
   };
 };
@@ -6427,7 +6485,7 @@ export type OpportunityUserIdsQuery = {
     opportunity: {
       __typename?: 'Opportunity';
       community?:
-        | { __typename?: 'Community'; members?: Array<{ __typename?: 'User'; id: string }> | undefined }
+        | { __typename?: 'Community'; memberUsers?: Array<{ __typename?: 'User'; id: string }> | undefined }
         | undefined;
     };
   };
@@ -8935,7 +8993,7 @@ export type ChallengePageQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
+            memberUsers?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
           }
         | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -9080,7 +9138,7 @@ export type ChallengeProfileFragment = {
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
-        members?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
+        memberUsers?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
       }
     | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -9251,7 +9309,7 @@ export type CommunityPageQuery = {
           __typename?: 'Community';
           id: string;
           displayName: string;
-          members?:
+          memberUsers?:
             | Array<{
                 __typename?: 'User';
                 id: string;
@@ -9320,7 +9378,7 @@ export type CommunityPageWithHostQuery = {
           __typename?: 'Community';
           id: string;
           displayName: string;
-          members?:
+          memberUsers?:
             | Array<{
                 __typename?: 'User';
                 id: string;
@@ -9954,7 +10012,7 @@ export type HubPageQuery = {
       | {
           __typename?: 'Community';
           id: string;
-          members?: Array<{ __typename?: 'User'; id: string }> | undefined;
+          memberUsers?: Array<{ __typename?: 'User'; id: string }> | undefined;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -10031,7 +10089,7 @@ export type HubPageFragment = {
     | {
         __typename?: 'Community';
         id: string;
-        members?: Array<{ __typename?: 'User'; id: string }> | undefined;
+        memberUsers?: Array<{ __typename?: 'User'; id: string }> | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -10161,7 +10219,7 @@ export type OpportunityPageQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
-            members?: Array<{ __typename?: 'User'; id: string; nameID: string }> | undefined;
+            memberUsers?: Array<{ __typename?: 'User'; id: string; nameID: string }> | undefined;
           }
         | undefined;
     };
@@ -10243,7 +10301,7 @@ export type OpportunityPageFragment = {
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
-        members?: Array<{ __typename?: 'User'; id: string; nameID: string }> | undefined;
+        memberUsers?: Array<{ __typename?: 'User'; id: string; nameID: string }> | undefined;
       }
     | undefined;
 };
