@@ -179,10 +179,6 @@ const useSectionStyles = makeStyles<Theme, SectionClassProps>(theme => ({
     overflow: 'hidden',
     justifyContent: 'center',
 
-    '& > *': {
-      display: 'flex',
-    },
-
     '&.mini': {
       width: 100,
     },

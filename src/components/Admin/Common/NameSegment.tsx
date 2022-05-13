@@ -36,7 +36,7 @@ export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelp
 
   return (
     <>
-      <FormRow cols={2}>
+      <FormRow>
         <FormikInputFieldField
           name="name"
           title={t('components.nameSegment.name')}
@@ -45,7 +45,7 @@ export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelp
           loading={loading}
         />
       </FormRow>
-      <FormRow cols={2}>
+      <FormRow>
         <FormikInputFieldField
           name="nameID"
           title={t('components.nameSegment.nameID.title')}

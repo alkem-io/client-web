@@ -98,8 +98,8 @@ export const OrganizationForm: FC<Props> = ({
     nameID: nameID || emptyOrganization.nameID,
     description: description || emptyOrganization.profile.description,
     location: {
-      ...formatLocation(location),
       ...emptyOrganization.profile.location,
+      ...formatLocation(location),
     },
     tagsets: tagsets || emptyOrganization.profile.tagsets,
     contactEmail: contactEmail || emptyOrganization.contactEmail,
