@@ -3595,6 +3595,7 @@ export type OrganizationInfoFragment = {
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
   };
   members?:
     | Array<{
@@ -3635,6 +3636,7 @@ export type OrganizationDetailsFragment = {
     description?: string | undefined;
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
   };
 };
 
@@ -3666,6 +3668,7 @@ export type OrganizationProfileInfoFragment = {
           minWidth: number;
         }
       | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
       | undefined;
@@ -4650,6 +4653,7 @@ export type UpdateOrganizationMutation = {
             minWidth: number;
           }
         | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         | undefined;
@@ -5158,6 +5162,7 @@ export type ChallengeLeadOrganizationsQuery = {
           description?: string | undefined;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          location?: { __typename?: 'Location'; country: string; city: string } | undefined;
         };
       }>;
     };
@@ -5173,6 +5178,7 @@ export type ChallengeLeadOrganizationsQuery = {
       description?: string | undefined;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     };
   }>;
 };
@@ -6589,6 +6595,7 @@ export type OrganizationInfoQuery = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     };
     members?:
       | Array<{
@@ -6705,6 +6712,7 @@ export type OrganizationProfileInfoQuery = {
             minWidth: number;
           }
         | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
       references?:
         | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
         | undefined;
@@ -8922,6 +8930,7 @@ export type ChallengePageQuery = {
           description?: string | undefined;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          location?: { __typename?: 'Location'; country: string; city: string } | undefined;
         };
       }>;
       lifecycle?:
@@ -9066,6 +9075,7 @@ export type ChallengeProfileFragment = {
       description?: string | undefined;
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
     };
   }>;
   lifecycle?:
@@ -11089,6 +11099,21 @@ export type AvailableUsersQueryVariables = Exact<{ [key: string]: never }>;
 export type AvailableUsersQuery = {
   __typename?: 'Query';
   users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+};
+
+export type AvailableUsers2QueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableUsers2Query = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
 };
 
 export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;

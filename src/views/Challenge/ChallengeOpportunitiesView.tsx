@@ -12,7 +12,7 @@ import ErrorBlock from '../../components/core/ErrorBlock';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { useChallenge } from '../../hooks';
 import { Opportunity } from '../../models/graphql-schema';
-import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 
 interface ChallengeOpportunitiesViewProps {
   entities: ChallengeContainerEntities;
@@ -46,13 +46,9 @@ export const ChallengeOpportunitiesView: FC<ChallengeOpportunitiesViewProps> = (
   return (
     <CardFilter data={opportunities} tagsValueGetter={entityTagsValueGetter} valueGetter={entityValueGetter}>
       {filteredData => (
-        <CardLayoutContainer>
-          {filteredData.map(opp => (
-            <CardLayoutItem key={opp.id}>
-              <OpportunityCard opportunity={opp} hubNameId={hubNameId} challengeNameId={challengeNameId} />
-            </CardLayoutItem>
-          ))}
-        </CardLayoutContainer>
+        <CardsLayout items={filteredData} deps={[hubNameId, challengeNameId]}>
+          {opp => <OpportunityCard opportunity={opp} hubNameId={hubNameId} challengeNameId={challengeNameId} />}
+        </CardsLayout>
       )}
     </CardFilter>
   );

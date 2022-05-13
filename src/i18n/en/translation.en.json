@@ -417,6 +417,16 @@
       "description": {
         "name": "Description",
         "placeholder": "Enter a description"
+      },
+      "location": {
+        "country": {
+          "name": "Country",
+          "placeholder": "Select a country"
+        },
+        "city": {
+          "name": "City",
+          "placeholder": "City name"
+        }
       }
     },
     "organizationSegment": {

@@ -29,6 +29,10 @@ export interface EntityDetailsContainerProps
   entities: ContributionItem;
 }
 
+const buildDomainObject = (communityID: string | undefined) => {
+  return typeof communityID === 'undefined' ? undefined : { communityID };
+};
+
 const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entities, children }) => {
   const { hubId, challengeId, opportunityId } = entities;
   const { data: hubData, loading: hubLoading } = useHubContributionDetailsQuery({
@@ -54,32 +58,30 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
     skip: !opportunityId,
   });
 
-  const details = useMemo(() => {
-    if (hubData)
+  const details = useMemo<ContributionCardV2Details | undefined>(() => {
+    if (hubData) {
       return {
         headerText: hubData.hub.displayName,
         type: 'hub',
         mediaUrl: getVisualBanner(hubData.hub.context?.visuals),
         tags: hubData.hub.tagset?.tags || [],
         url: buildHubUrl(hubData.hub.nameID),
-        domain: {
-          communityID: hubData.hub.community?.id,
-        },
-      } as ContributionCardV2Details;
+        domain: buildDomainObject(hubData.hub.community?.id),
+      };
+    }
 
-    if (challengeData)
+    if (challengeData) {
       return {
         headerText: challengeData.hub.challenge.displayName,
         type: 'challenge',
         mediaUrl: getVisualBanner(challengeData.hub.challenge.context?.visuals),
         tags: challengeData.hub.challenge.tagset?.tags || [],
         url: buildChallengeUrl(challengeData.hub.nameID, challengeData.hub.challenge.nameID),
-        domain: {
-          communityID: challengeData.hub.challenge.community?.id,
-        },
-      } as ContributionCardV2Details;
+        domain: buildDomainObject(challengeData.hub.challenge.community?.id),
+      };
+    }
 
-    if (opportunityData)
+    if (opportunityData) {
       return {
         headerText: opportunityData.hub.opportunity.displayName,
         type: 'opportunity',
@@ -90,10 +92,9 @@ const ContributionDetailsContainer: FC<EntityDetailsContainerProps> = ({ entitie
           opportunityData.hub.opportunity.parentNameID || '',
           opportunityData.hub.opportunity.nameID
         ),
-        metadata: {
-          communityID: opportunityData.hub.opportunity.community?.id,
-        },
-      } as ContributionCardV2Details;
+        domain: buildDomainObject(opportunityData.hub.opportunity.community?.id),
+      };
+    }
   }, [hubData, challengeData, opportunityData]);
 
   return (

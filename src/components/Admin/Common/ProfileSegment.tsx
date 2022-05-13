@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import InputField from './InputField';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
+import FormikInputField from '../../composite/forms/FormikInputField';
+import CountrySelect from '../../composite/forms/CountrySelect';
+import FormRow from '../../../domain/shared/layout/FormLayout';
 
 export const profileSegmentSchema = yup.object().shape({
   avatar: yup.string().max(MID_TEXT_LENGTH),
@@ -19,20 +21,31 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
 
   return (
     <>
-      <InputField
-        name="avatar"
-        label={t('components.profileSegment.avatar.name')}
-        placeholder={t('components.profileSegment.avatar.placeholder')}
-        disabled={disabled}
-        required={required}
-      />
-      <InputField
-        name="description"
-        label={t('components.profileSegment.description.name')}
-        placeholder={t('components.profileSegment.description.placeholder')}
-        disabled={disabled}
-        required={required}
-      />
+      <FormRow cols={1}>
+        <FormikInputField
+          name="description"
+          title={t('components.profileSegment.description.name')}
+          placeholder={t('components.profileSegment.description.placeholder')}
+          disabled={disabled}
+          required={required}
+        />
+      </FormRow>
+      <FormRow>
+        <CountrySelect
+          name="location.country"
+          title={t('components.profileSegment.location.country.name')}
+          key="name"
+          disabled={disabled}
+        />
+      </FormRow>
+      <FormRow>
+        <FormikInputField
+          name="location.city"
+          title={t('components.profileSegment.location.city.name')}
+          placeholder={t('components.profileSegment.location.city.placeholder')}
+          disabled={disabled}
+        />
+      </FormRow>
     </>
   );
 };
