@@ -72,8 +72,8 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   const references = user.profile?.references;
   const bio = user.profile?.description;
   const { displayName, profile, phone } = user;
-  const city = profile?.location?.city || '';
-  const country = profile?.location?.country || '';
+  const city = profile?.location?.city;
+  const country = profile?.location?.country;
 
   const { isCurrentUser } = options;
 
