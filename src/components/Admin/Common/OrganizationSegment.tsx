@@ -23,7 +23,7 @@ export const OrganizationSegment: FC<OrganizationSegmentProps> = ({ disabled = f
 
   return (
     <>
-      <FormRow cols={2}>
+      <FormRow>
         <FormikInputField
           name="contactEmail"
           title={t('components.organizationSegment.contactEmail.name')}
@@ -32,7 +32,7 @@ export const OrganizationSegment: FC<OrganizationSegmentProps> = ({ disabled = f
           required={required}
         />
       </FormRow>
-      <FormRow cols={2}>
+      <FormRow>
         <FormikInputField
           name="website"
           title={t('components.organizationSegment.website.name')}
