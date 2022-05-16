@@ -16,11 +16,12 @@ import SocialSegment from '../../Admin/Common/SocialSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import { Loading } from '../../core';
 import VisualUpload from '../common/VisualUpload/VisualUpload';
-import CountrySelect from './CountrySelect';
 import { FormikInputField } from './FormikInputField';
 // import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../models/constants';
+import FormRow from '../../../domain/shared/layout/FormLayout';
+import { LocationSegment } from '../../../domain/location/LocationSegment';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
@@ -223,7 +224,7 @@ export const UserForm: FC<UserProps> = ({
                   </Grid>
                   <Grid item xs>
                     <Grid container spacing={4}>
-                      <Grid item xs={12} md={6}>
+                      <FormRow cols={2}>
                         <FormikInputField
                           name={'firstName'}
                           title={'First Name'}
@@ -232,8 +233,8 @@ export const UserForm: FC<UserProps> = ({
                           placeholder={'First Name'}
                           disabled={isSubmitting}
                         />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
+                      </FormRow>
+                      <FormRow cols={2}>
                         <FormikInputField
                           name={'lastName'}
                           title={'Last name'}
@@ -242,9 +243,8 @@ export const UserForm: FC<UserProps> = ({
                           placeholder={'Last name'}
                           disabled={isSubmitting}
                         />
-                      </Grid>
-
-                      <Grid item xs={12} md={6}>
+                      </FormRow>
+                      <FormRow cols={2}>
                         <FormikInputField
                           name={'displayName'}
                           title={'Full Name'}
@@ -253,9 +253,9 @@ export const UserForm: FC<UserProps> = ({
                           placeholder={'Full Name'}
                           disabled={isSubmitting}
                         />
-                      </Grid>
+                      </FormRow>
 
-                      <Grid item xs={12} md={6}>
+                      <FormRow cols={2}>
                         <FormikInputField
                           name={'phone'}
                           title={'Phone'}
@@ -263,82 +263,78 @@ export const UserForm: FC<UserProps> = ({
                           placeholder={'Phone'}
                           disabled={isSubmitting}
                         />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <CountrySelect readOnly={isReadOnlyMode} disabled={isSubmitting} />
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <Box display="flex" alignItems="center">
-                          <FormikInputField
-                            name={'city'}
-                            title={'City'}
-                            readOnly={isReadOnlyMode}
-                            placeholder={'City'}
-                            disabled={isSubmitting}
-                          />
-                          {onVerify && (
-                            <>
-                              <Box marginLeft={1} />
-                              <IconButton sx={{ flexShrink: 0 }} onClick={() => onVerify('ProofOfNameCredential')}>
-                                <HealthAndSafetyIcon />
-                              </IconButton>
-                            </>
-                          )}
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid container item spacing={4}>
-                <Grid item xs={12}>
-                  <FormikInputField
-                    name={'bio'}
-                    title={'Bio'}
-                    readOnly={isReadOnlyMode}
-                    placeholder={'Bio'}
-                    multiline
-                    rows={5}
-                    disabled={isSubmitting}
-                  />
-                </Grid>
-                <TagsetSegment
-                  tagsets={tagsets}
-                  template={tagsetsTemplate}
-                  readOnly={isReadOnlyMode}
-                  disabled={isSubmitting}
-                />
-                <SocialSegment isNew={editMode === EditMode.new} readOnly={isReadOnlyMode} disabled={isSubmitting} />
-                {isEditMode && (
-                  <ProfileReferenceSegment
-                    references={references}
-                    readOnly={isReadOnlyMode}
-                    disabled={isSubmitting}
-                    profileId={profileId}
-                  />
-                )}
+                      </FormRow>
 
-                {isEditMode && (
-                  <Grid container item justifyContent={'flex-end'} spacing={2}>
-                    {onDelete && (
-                      <Grid item>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          onClick={() => onDelete(currentUser.id)}
+                      <LocationSegment readonly={isReadOnlyMode} disabled={isSubmitting} cols={2}>
+                        {onVerify && (
+                          <>
+                            <Box marginLeft={1} />
+                            <IconButton sx={{ flexShrink: 0 }} onClick={() => onVerify('ProofOfNameCredential')}>
+                              <HealthAndSafetyIcon />
+                            </IconButton>
+                          </>
+                        )}
+                      </LocationSegment>
+                    </Grid>
+                    <Grid container spacing={4}>
+                      <FormRow>
+                        <FormikInputField
+                          name={'bio'}
+                          title={'Bio'}
+                          readOnly={isReadOnlyMode}
+                          placeholder={'Bio'}
+                          multiline
+                          rows={5}
                           disabled={isSubmitting}
-                        >
-                          {t('buttons.delete')}
-                        </Button>
-                      </Grid>
-                    )}
-                    <Grid item>
-                      <Button variant="contained" type="submit" disabled={isSubmitting}>
-                        {t('buttons.save')}
-                      </Button>
+                        />
+                      </FormRow>
+
+                      <TagsetSegment
+                        tagsets={tagsets}
+                        template={tagsetsTemplate}
+                        readOnly={isReadOnlyMode}
+                        disabled={isSubmitting}
+                      />
+
+                      <SocialSegment
+                        isNew={editMode === EditMode.new}
+                        readOnly={isReadOnlyMode}
+                        disabled={isSubmitting}
+                      />
+
+                      {isEditMode && (
+                        <ProfileReferenceSegment
+                          references={references}
+                          readOnly={isReadOnlyMode}
+                          disabled={isSubmitting}
+                          profileId={profileId}
+                        />
+                      )}
+
+                      {isEditMode && (
+                        <Grid container item justifyContent={'flex-end'} spacing={2}>
+                          {onDelete && (
+                            <Grid item>
+                              <Button
+                                variant="outlined"
+                                color="error"
+                                onClick={() => onDelete(currentUser.id)}
+                                disabled={isSubmitting}
+                              >
+                                {t('buttons.delete')}
+                              </Button>
+                            </Grid>
+                          )}
+                          <Grid item>
+                            <Button variant="contained" type="submit" disabled={isSubmitting}>
+                              {t('buttons.save')}
+                            </Button>
+                          </Grid>
+                        </Grid>
+                      )}
                     </Grid>
                   </Grid>
-                )}
+                </Grid>
               </Grid>
             </Grid>
           </form>
