@@ -11,6 +11,8 @@ import Typography from '../../components/core/Typography';
 import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
 import References from '../../components/composite/common/References/References';
+import LocationView from '../../domain/location/LocationView';
+import { formatLocation } from '../../domain/location/LocationUtils';
 
 export interface UserProfileViewProps {
   entities: {
@@ -72,12 +74,8 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   const references = user.profile?.references;
   const bio = user.profile?.description;
   const { displayName, profile, phone } = user;
-  const city = profile?.location?.city || '';
-  const country = profile?.location?.country || '';
 
   const { isCurrentUser } = options;
-
-  const location = [city, country].filter(x => !!x).join(', ');
 
   const socialLinks = useMemo(() => {
     return references
@@ -126,11 +124,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
               <MUITypography variant="h2">{displayName}</MUITypography>
             </Grid>
             <Grid item>
-              <ProfileDetail
-                title={t('components.profile.fields.location.title')}
-                value={location}
-                aria-label="location"
-              />
+              <LocationView location={formatLocation(profile?.location)} />
             </Grid>
             <Grid item>
               <ProfileDetail title={t('components.profile.fields.work.title')} value={''} aria-label="work" />
