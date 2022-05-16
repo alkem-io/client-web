@@ -11,13 +11,15 @@ import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import Typography from '../../core/Typography';
 import InputField from '../../Admin/Common/InputField';
-
+import { Location } from '../../../domain/location/Location';
+import { formatLocation } from '../../../domain/location/LocationUtils';
 export interface ProfileFormValuesType {
   name: string;
   nameID: string;
   background: string;
   impact: string;
   tagline: string;
+  location: Partial<Location> | undefined;
   vision: string;
   who: string;
   references: Reference[];
@@ -64,6 +66,7 @@ const ProfileFormWithContext: FC<Props> = ({
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
+    location: formatLocation(context?.location),
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],

@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset } from '../../../models/graphql-schema';
+import { Context, Reference, Location, Tagset } from '../../../models/graphql-schema';
 import ContextReferenceSegment from '../../Admin/Common/ContextReferenceSegment';
 import { contextSegmentSchema } from '../../Admin/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../Admin/Common/NameSegment';
@@ -11,11 +11,13 @@ import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import Typography from '../../core/Typography';
 import InputField from '../../Admin/Common/InputField';
+import { LocationSegment } from '../../../domain/location/LocationSegment';
 
 export interface ProfileFormValues {
   name: string;
   nameID: string;
   tagline: string;
+  location: Location | undefined;
   who: string;
   references: Reference[];
   tagsets: Tagset[];
@@ -58,6 +60,7 @@ const ProfileForm: FC<Props> = ({
     name: name || '',
     nameID: nameID || '',
     tagline: context?.tagline || '',
+    location: context?.location || undefined,
     who: context?.who || '',
     references: context?.references || [],
     tagsets,
@@ -92,6 +95,7 @@ const ProfileForm: FC<Props> = ({
         return (
           <>
             <NameSegment disabled={isEdit} required={!isEdit} />
+            <LocationSegment disabled={!isEdit} cols={2} />
             <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
