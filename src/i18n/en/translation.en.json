@@ -414,6 +414,7 @@
         "placeholder": "Enter a description"
       },
       "location": {
+        "title": "Location",
         "country": {
           "name": "Country",
           "placeholder": "Select a country"
