@@ -11,7 +11,6 @@ const LocationView: FC<LocationViewProps> = ({ location, ...rest }) => {
   const { t } = useTranslation();
 
   if (!location) {
-    console.log('NULL LOCATION!'); //C!!
     return null;
   }
 
@@ -31,7 +30,7 @@ const LocationView: FC<LocationViewProps> = ({ location, ...rest }) => {
   return (
     <>
       <Typography color="primary" weight="boldLight" aria-label="Location" {...rest}>
-        {t('components.profile.fields.location.title')} //C!!
+        {t('components.profile.fields.location.title')}
       </Typography>
       <Typography>{locationString}</Typography>
     </>
