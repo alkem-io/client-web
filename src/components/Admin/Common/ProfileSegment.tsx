@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
 import FormikInputField from '../../composite/forms/FormikInputField';
-import CountrySelect from '../../composite/forms/CountrySelect';
 import FormRow from '../../../domain/shared/layout/FormLayout';
 
 export const profileSegmentSchema = yup.object().shape({
@@ -28,22 +27,6 @@ export const ProfileSegment: FC<ProfileSegmentProps> = ({ disabled = false, requ
           placeholder={t('components.profileSegment.description.placeholder')}
           disabled={disabled}
           required={required}
-        />
-      </FormRow>
-      <FormRow>
-        <CountrySelect
-          name="location.country"
-          title={t('components.profileSegment.location.country.name')}
-          key="name"
-          disabled={disabled}
-        />
-      </FormRow>
-      <FormRow>
-        <FormikInputField
-          name="location.city"
-          title={t('components.profileSegment.location.city.name')}
-          placeholder={t('components.profileSegment.location.city.placeholder')}
-          disabled={disabled}
         />
       </FormRow>
     </>

@@ -11,7 +11,7 @@ import {
   useUpdateChallengeMutation,
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../../utils/buildContext';
+import { createContextInput, mapProfileTypeToContext, updateContextInput } from '../../../utils/buildContext';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
 import ProfileFormWithContext, {
@@ -77,7 +77,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
               nameID: nameID,
               displayName: name,
               hubID: hubNameId,
-              context: createContextInput(values),
+              context: createContextInput(mapProfileTypeToContext(values)),
               tags: tagsets.flatMap(x => x.tags),
             },
           },
@@ -90,7 +90,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
               ID: challengeId,
               nameID: nameID,
               displayName: name,
-              context: updateContextInput(values),
+              context: updateContextInput(mapProfileTypeToContext(values)),
               tags: tagsets.flatMap(x => x.tags),
             },
           },

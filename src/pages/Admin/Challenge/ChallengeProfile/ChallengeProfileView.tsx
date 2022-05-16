@@ -10,7 +10,7 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../../../utils/buildContext';
+import { createContextInput, mapProfileToContext, updateContextInput } from '../../../../utils/buildContext';
 import Button from '../../../../components/core/Button';
 import Typography from '../../../../components/core/Typography';
 import FormMode from '../../../../components/Admin/FormMode';
@@ -67,7 +67,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               nameID: nameID,
               displayName: name,
               hubID: hubNameId,
-              context: createContextInput(values),
+              context: createContextInput(mapProfileToContext(values)),
               tags: tagsets.flatMap(x => x.tags),
             },
           },
@@ -80,7 +80,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               ID: challengeId,
               nameID: nameID,
               displayName: name,
-              context: updateContextInput(values),
+              context: updateContextInput(mapProfileToContext(values)),
               tags: tagsets.flatMap(x => x.tags),
             },
           },
