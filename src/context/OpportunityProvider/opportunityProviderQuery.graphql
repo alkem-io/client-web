@@ -26,6 +26,10 @@ fragment OpportunityProvider on Opportunity {
     visuals {
       ...VisualFull
     }
+    location {
+      country
+      city
+    }
   }
   community {
     id

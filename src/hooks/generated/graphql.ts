@@ -146,6 +146,10 @@ export const ChallengeInfoFragmentDoc = gql`
         name
         uri
       }
+      location {
+        country
+        city
+      }
       visuals {
         ...VisualFull
       }
@@ -325,6 +329,11 @@ export const ContextDetailsFragmentDoc = gql`
     id
     tagline
     background
+    location {
+      id
+      country
+      city
+    }
     vision
     impact
     who
@@ -1173,6 +1182,10 @@ export const ContextTabFragmentDoc = gql`
     id
     tagline
     background
+    location {
+      city
+      country
+    }
     vision
     impact
     who
@@ -1456,6 +1469,10 @@ export const OpportunityProviderFragmentDoc = gql`
       }
       visuals {
         ...VisualFull
+      }
+      location {
+        country
+        city
       }
     }
     community {
@@ -4143,8 +4160,12 @@ export const UpdateOpportunityDocument = gql`
     updateOpportunity(opportunityData: $input) {
       id
       displayName
+      context {
+        ...ContextDetails
+      }
     }
   }
+  ${ContextDetailsFragmentDoc}
 `;
 export type UpdateOpportunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateOpportunityMutation,

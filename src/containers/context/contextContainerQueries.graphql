@@ -130,6 +130,10 @@ fragment ContextTab on Context {
   id
   tagline
   background
+  location{
+    city
+    country
+  }
   vision
   impact
   who
