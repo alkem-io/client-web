@@ -41,7 +41,7 @@ fragment HubPage on Hub {
   }
   community {
     id
-    members {
+    memberUsers {
       id
     }
     authorization {

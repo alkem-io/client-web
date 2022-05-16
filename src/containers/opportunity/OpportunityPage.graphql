@@ -70,7 +70,7 @@ fragment OpportunityPage on Opportunity {
       id
       myPrivileges
     }
-    members {
+    memberUsers {
       id
       nameID
     }
