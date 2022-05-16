@@ -11,7 +11,7 @@ import {
   useUpdateOpportunityMutation,
 } from '../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../hooks/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../utils/buildContext';
+import { createContextInput, mapProfileTypeToContext, updateContextInput } from '../../utils/buildContext';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
 import ProfileFormWithContext, { ProfileFormValuesType } from '../composite/forms/ProfileFormWithContext';
@@ -76,7 +76,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContextInput(values),
+              context: createContextInput(mapProfileTypeToContext(values)),
               displayName: name,
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
@@ -89,7 +89,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContextInput(values),
+              context: updateContextInput(mapProfileTypeToContext(values)),
               displayName: name,
               ID: opportunityId,
               tags: tagsets.flatMap(x => x.tags),

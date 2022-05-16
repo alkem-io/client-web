@@ -10,7 +10,7 @@ import {
   useUpdateOpportunityMutation,
 } from '../../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../../../utils/buildContext';
+import { createContextInput, mapProfileToContext, updateContextInput } from '../../../../utils/buildContext';
 import Button from '../../../../components/core/Button';
 import Typography from '../../../../components/core/Typography';
 import FormMode from '../../../../components/Admin/FormMode';
@@ -68,7 +68,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContextInput(values),
+              context: createContextInput(mapProfileToContext(values)),
               displayName: name,
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
@@ -81,7 +81,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContextInput(values),
+              context: updateContextInput(mapProfileToContext(values)),
               displayName: name,
               ID: opportunityId,
               tags: tagsets.flatMap(x => x.tags),
