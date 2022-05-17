@@ -18,8 +18,8 @@ const LocationView: FC<LocationViewProps> = ({ location }) => {
   if (typeof location === 'string') {
     locationString = location;
   } else {
-    const city = location?.city || '';
-    const country = location?.country?.code || '';
+    const city = location.city || '';
+    const country = location.country?.code || '';
 
     locationString = [city, country].filter(x => !!x).join(', ');
   }
