@@ -62,7 +62,7 @@ const ProfileForm: FC<Props> = ({
     name: name || '',
     nameID: nameID || '',
     tagline: context?.tagline || '',
-    location: formatLocation(context?.location) || undefined,
+    location: formatLocation(context?.location) || { city: '', country: { code: '', name: '' } },
     who: context?.who || '',
     references: context?.references || [],
     tagsets,
