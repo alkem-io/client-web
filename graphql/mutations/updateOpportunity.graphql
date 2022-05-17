@@ -2,8 +2,5 @@ mutation updateOpportunity($input: UpdateOpportunityInput!) {
   updateOpportunity(opportunityData: $input) {
     id
     displayName
-    context {
-      ...ContextDetails
-    }
   }
 }

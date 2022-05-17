@@ -2792,7 +2792,6 @@ export type UpdateOrganizationInput = {
 };
 
 export type UpdateOrganizationPreferenceInput = {
-  location?: InputMaybe<UpdateLocationInput>;
   /** ID of the Organization */
   organizationID: Scalars['UUID_NAMEID'];
   /** Type of the organization preference */
@@ -3188,7 +3187,6 @@ export type ChallengeInfoFragment = {
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
         references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-        location?: { __typename?: 'Location'; country: string; city: string } | undefined;
         visuals?:
           | Array<{
               __typename?: 'Visual';
@@ -4623,48 +4621,7 @@ export type UpdateOpportunityMutationVariables = Exact<{
 
 export type UpdateOpportunityMutation = {
   __typename?: 'Mutation';
-  updateOpportunity: {
-    __typename?: 'Opportunity';
-    id: string;
-    displayName: string;
-    context?:
-      | {
-          __typename?: 'Context';
-          id: string;
-          tagline?: string | undefined;
-          background?: string | undefined;
-          vision?: string | undefined;
-          impact?: string | undefined;
-          who?: string | undefined;
-          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-          references?:
-            | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-            | undefined;
-          visuals?:
-            | Array<{
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-              }>
-            | undefined;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
+  updateOpportunity: { __typename?: 'Opportunity'; id: string; displayName: string };
 };
 
 export type UpdateOrganizationMutationVariables = Exact<{
@@ -5099,7 +5056,6 @@ export type ChallengeInfoQuery = {
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-            location?: { __typename?: 'Location'; country: string; city: string } | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';

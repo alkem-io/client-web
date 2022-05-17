@@ -4158,12 +4158,8 @@ export const UpdateOpportunityDocument = gql`
     updateOpportunity(opportunityData: $input) {
       id
       displayName
-      context {
-        ...ContextDetails
-      }
     }
   }
-  ${ContextDetailsFragmentDoc}
 `;
 export type UpdateOpportunityMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateOpportunityMutation,
