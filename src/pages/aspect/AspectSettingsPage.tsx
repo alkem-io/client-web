@@ -65,6 +65,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
           actions.handleUpdate({
             id: entities.aspect.id,
             displayName: aspect.displayName,
+            type: aspect.type,
             description: aspect.description,
             tags: aspect.tags,
             references: aspect.references,

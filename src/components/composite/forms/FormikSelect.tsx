@@ -35,6 +35,7 @@ interface FormikSelectProps extends SelectProps {
   disabled?: boolean;
   values: { id: string; name: string; icon?: React.ReactElement }[];
   placeholder?: string;
+  endAdornment?: React.ReactNode;
 }
 
 export const FormikSelect: FC<FormikSelectProps> = ({
@@ -44,6 +45,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
   disabled = false,
   values,
   placeholder,
+  endAdornment,
 }) => {
   const [field, meta] = useField(name);
   const styles = useStyles();
@@ -62,6 +64,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
         inputProps={{
           className: styles.input,
         }}
+        endAdornment={endAdornment}
       >
         {values.map(el => (
           <MenuItem key={el.id} value={el.id}>

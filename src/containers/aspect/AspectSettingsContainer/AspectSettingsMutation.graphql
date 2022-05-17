@@ -3,6 +3,7 @@ mutation updateAspect($input: UpdateAspectInput!) {
     id
     description
     displayName
+    type
     tagset {
       id
       name

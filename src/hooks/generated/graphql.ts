@@ -10802,6 +10802,7 @@ export const UpdateAspectDocument = gql`
       id
       description
       displayName
+      type
       tagset {
         id
         name

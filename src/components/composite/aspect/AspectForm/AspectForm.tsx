@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Box } from '@mui/material';
-import InputField from '../../../Admin/Common/InputField';
+import { Grid } from '@mui/material';
+import FormikInputField from '../../forms/FormikInputField';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
 import { SectionSpacer } from '../../../core/Section/Section';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
@@ -14,6 +14,8 @@ import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
 import { nameValidator } from '../../../Admin/Common/NameSegment';
 import MarkdownInput from '../../../Admin/Common/MarkdownInput';
+import FormRow from '../../../../domain/shared/layout/FormLayout';
+import AspectTypeFormField from '../../../../domain/aspect/AspectTypeFormField';
 
 type FormValueType = {
   name: string;
@@ -117,14 +119,19 @@ const AspectForm: FC<AspectFormProps> = ({
       onSubmit={() => {}}
     >
       {({ values: { references } }) => (
-        <Box>
+        <Grid container spacing={2}>
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          <InputField
-            name="name"
-            label={t('common.title')}
-            required
-            helpText={t('components.aspect-creation.info-step.name-help-text')}
-          />
+          <FormRow cols={2}>
+            <FormikInputField
+              name={'name'}
+              title={t('common.title')}
+              required
+              placeholder={t('components.aspect-creation.info-step.name-help-text')}
+            />
+          </FormRow>
+          <FormRow cols={2}>
+            <AspectTypeFormField name="type" value={aspect?.type} />
+          </FormRow>
           <SectionSpacer />
           <MarkdownInput
             name="description"
@@ -148,7 +155,7 @@ const AspectForm: FC<AspectFormProps> = ({
               <ReferenceSegment references={references} onAdd={onAddReference} onRemove={onRemoveReference} />
             </>
           )}
-        </Box>
+        </Grid>
       )}
     </Formik>
   );
