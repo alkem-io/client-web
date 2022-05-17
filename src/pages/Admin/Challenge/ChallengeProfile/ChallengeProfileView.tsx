@@ -10,12 +10,13 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
-import { createContextInput, mapProfileToContext, updateContextInput } from '../../../../utils/buildContext';
+import { createContextInput, updateContextInput } from '../../../../utils/buildContext';
 import Button from '../../../../components/core/Button';
 import Typography from '../../../../components/core/Typography';
 import FormMode from '../../../../components/Admin/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../views/Visuals/EditVisualsView';
+import { formatDatabaseLocation } from '../../../../domain/location/LocationUtils';
 
 interface Props {
   mode: FormMode;
@@ -67,7 +68,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               nameID: nameID,
               displayName: name,
               hubID: hubNameId,
-              context: createContextInput(mapProfileToContext(values)),
+              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
             },
           },
@@ -80,7 +81,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               ID: challengeId,
               nameID: nameID,
               displayName: name,
-              context: updateContextInput(mapProfileToContext(values)),
+              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
             },
           },

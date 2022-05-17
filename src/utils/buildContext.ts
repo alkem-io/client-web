@@ -16,51 +16,10 @@ export interface ContextObject {
   impact?: string;
   references?: Reference[];
   tagline?: string;
-  location?: Location;
+  location?: Pick<Location, 'city' | 'country'>;
   vision?: string;
   who?: string;
 }
-
-export const mapProfileToContext = (values: ProfileFormValues) => {
-  return {
-    name: values.name,
-    nameID: values.nameID,
-    references: values.references,
-    tagline: values.tagline,
-    location: formatDatabaseLocation(values.location),
-    // vision: values.vision, //C!!??
-    who: values.who,
-    tagsets: values.tagsets,
-  } as ContextObject;
-};
-
-export const mapProfileTypeToContext = (values: ProfileFormValuesType) => {
-  return {
-    background: values.background,
-    impact: values.impact,
-    references: values.references,
-    tagline: values.tagline,
-    location: formatDatabaseLocation(values.location),
-    vision: values.vision,
-    who: values.who,
-  } as ContextObject;
-};
-
-export const mapHubFormToContext = (values: HubEditFormValuesType) => {
-  return {
-    name: values.name,
-    nameID: values.nameID,
-    host: values.host,
-    background: values.background,
-    impact: values.impact,
-    tagline: values.tagline,
-    location: formatDatabaseLocation(values.location),
-    vision: values.vision,
-    who: values.who,
-    references: values.references,
-    tagsets: values.tagsets,
-  } as ContextObject;
-};
 
 export const createContextInput = (obj: ContextObject): CreateContextInput => {
   const { background, impact, tagline, vision, who, references = [], location } = obj;

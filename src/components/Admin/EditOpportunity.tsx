@@ -11,12 +11,13 @@ import {
   useUpdateOpportunityMutation,
 } from '../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../hooks/useNavigateToEdit';
-import { createContextInput, mapProfileTypeToContext, updateContextInput } from '../../utils/buildContext';
+import { createContextInput, updateContextInput } from '../../utils/buildContext';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
 import ProfileFormWithContext, { ProfileFormValuesType } from '../composite/forms/ProfileFormWithContext';
 import FormMode from './FormMode';
 import { Context } from '../../models/graphql-schema';
+import { formatDatabaseLocation } from '../../domain/location/LocationUtils';
 
 interface Props {
   mode: FormMode;
@@ -76,7 +77,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContextInput(mapProfileTypeToContext(values)),
+              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               displayName: name,
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
@@ -89,7 +90,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContextInput(mapProfileTypeToContext(values)),
+              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               displayName: name,
               ID: opportunityId,
               tags: tagsets.flatMap(x => x.tags),

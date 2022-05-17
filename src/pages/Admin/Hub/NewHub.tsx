@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import HubEditForm, { HubEditFormValuesType } from '../../../components/Admin/HubEditForm';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
+import { formatDatabaseLocation } from '../../../domain/location/LocationUtils';
 import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../../hooks';
 import {
   HubDetailsFragmentDoc,
@@ -11,7 +12,7 @@ import {
   useOrganizationsListQuery,
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
-import { createContextInput, mapHubFormToContext } from '../../../utils/buildContext';
+import { createContextInput } from '../../../utils/buildContext';
 import { PageProps } from '../../common';
 
 interface NewHubProps extends PageProps {}
@@ -71,7 +72,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
         input: {
           nameID,
           hostID: host,
-          context: createContextInput(mapHubFormToContext(values)),
+          context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
           displayName: name,
           tags: tagsets.flatMap(x => x.tags),
         },
