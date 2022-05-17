@@ -11,11 +11,15 @@ import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import Typography from '../../core/Typography';
 import InputField from '../../Admin/Common/InputField';
+import { LocationSegment } from '../../../domain/location/LocationSegment';
+import { EmptyLocation, Location } from '../../../domain/location/Location';
+import { formatLocation } from '../../../domain/location/LocationUtils';
 
 export interface ProfileFormValues {
   name: string;
   nameID: string;
   tagline: string;
+  location: Partial<Location>;
   who: string;
   references: Reference[];
   tagsets: Tagset[];
@@ -58,6 +62,7 @@ const ProfileForm: FC<Props> = ({
     name: name || '',
     nameID: nameID || '',
     tagline: context?.tagline || '',
+    location: formatLocation(context?.location) || EmptyLocation,
     who: context?.who || '',
     references: context?.references || [],
     tagsets,
@@ -92,6 +97,12 @@ const ProfileForm: FC<Props> = ({
         return (
           <>
             <NameSegment disabled={isEdit} required={!isEdit} />
+            <LocationSegment
+              disabled={!isEdit}
+              cols={2}
+              cityFieldName="location.city"
+              countryFieldName="location.country"
+            />
             <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>

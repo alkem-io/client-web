@@ -2,6 +2,8 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
+import { Location, EmptyLocation } from '../../domain/location/Location';
+import { formatLocation } from '../../domain/location/LocationUtils';
 import { Context, Reference, Tagset } from '../../models/graphql-schema';
 import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
 import { nameSegmentSchema } from './Common/NameSegment';
@@ -29,6 +31,7 @@ export interface HubEditFormValuesType {
   background: string;
   impact: string;
   tagline: string;
+  location: Partial<Location>;
   vision: string;
   who: string;
   references: Reference[];
@@ -57,6 +60,7 @@ const HubEditForm: FC<Props> = ({ context, name, nameID, hostID, tagset, onSubmi
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
+    location: formatLocation(context?.location) || EmptyLocation,
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],

@@ -19,6 +19,8 @@ import { organizationegmentSchema, OrganizationSegment } from '../Common/Organiz
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationInput } from '../../../domain/organization/OrganizationInput';
 import { formatLocation } from '../../../domain/location/LocationUtils';
+import { LocationSegment } from '../../../domain/location/LocationSegment';
+import { EmptyLocation } from '../../../domain/location/Location';
 
 const emptyOrganization = {
   nameID: '',
@@ -34,7 +36,7 @@ const emptyOrganization = {
     description: '',
     tagsets: [],
     references: [],
-    location: { city: '', country: { code: '', name: '' } },
+    location: EmptyLocation,
   },
 };
 
@@ -191,6 +193,12 @@ export const OrganizationForm: FC<Props> = ({
                         <ProfileSegment disabled={isReadOnlyMode} />
 
                         <OrganizationSegment disabled={isReadOnlyMode} />
+
+                        <LocationSegment
+                          disabled={isReadOnlyMode}
+                          cityFieldName="location.city"
+                          countryFieldName="location.country"
+                        />
 
                         <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
                         {isEditMode && (
