@@ -12,7 +12,7 @@ import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSeg
 import Typography from '../../core/Typography';
 import InputField from '../../Admin/Common/InputField';
 import { LocationSegment } from '../../../domain/location/LocationSegment';
-import { Location } from '../../../domain/location/Location';
+import { EmptyLocation, Location } from '../../../domain/location/Location';
 import { formatLocation } from '../../../domain/location/LocationUtils';
 
 export interface ProfileFormValues {
@@ -62,7 +62,7 @@ const ProfileForm: FC<Props> = ({
     name: name || '',
     nameID: nameID || '',
     tagline: context?.tagline || '',
-    location: formatLocation(context?.location) || { city: '', country: { code: '', name: '' } },
+    location: formatLocation(context?.location) || EmptyLocation,
     who: context?.who || '',
     references: context?.references || [],
     tagsets,

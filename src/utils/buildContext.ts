@@ -1,3 +1,4 @@
+import { HubEditFormValuesType } from '../components/Admin/HubEditForm';
 import { ProfileFormValues } from '../components/composite/forms/ProfileForm';
 import { ProfileFormValuesType } from '../components/composite/forms/ProfileFormWithContext';
 import { formatDatabaseLocation } from '../domain/location/LocationUtils';
@@ -42,6 +43,22 @@ export const mapProfileTypeToContext = (values: ProfileFormValuesType) => {
     location: formatDatabaseLocation(values.location),
     vision: values.vision,
     who: values.who,
+  } as ContextObject;
+};
+
+export const mapHubFormToContext = (values: HubEditFormValuesType) => {
+  return {
+    name: values.name,
+    nameID: values.nameID,
+    host: values.host,
+    background: values.background,
+    impact: values.impact,
+    tagline: values.tagline,
+    location: formatDatabaseLocation(values.location),
+    vision: values.vision,
+    who: values.who,
+    references: values.references,
+    tagsets: values.tagsets,
   } as ContextObject;
 };
 

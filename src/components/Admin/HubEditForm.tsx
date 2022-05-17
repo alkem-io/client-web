@@ -13,6 +13,8 @@ import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
 import { visualSegmentSchema } from './Common/VisualSegment';
 import InputField from './Common/InputField';
+import { EmptyLocation, Location } from '../../domain/location/Location';
+import { formatLocation } from '../../domain/location/LocationUtils';
 
 interface Props {
   context?: Context;
@@ -34,6 +36,7 @@ export interface HubEditFormValuesType {
   background: string;
   impact: string;
   tagline: string;
+  location: Partial<Location>;
   vision: string;
   who: string;
   references: Reference[];
@@ -74,6 +77,7 @@ const HubEditForm: FC<Props> = ({
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
+    location: formatLocation(context?.location) || EmptyLocation,
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],

@@ -11,7 +11,7 @@ import {
   useOrganizationsListQuery,
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
-import { createContextInput } from '../../../utils/buildContext';
+import { createContextInput, mapHubFormToContext } from '../../../utils/buildContext';
 import { PageProps } from '../../common';
 
 interface NewHubProps extends PageProps {}
@@ -71,7 +71,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
         input: {
           nameID,
           hostID: host,
-          context: createContextInput(values),
+          context: createContextInput(mapHubFormToContext(values)),
           displayName: name,
           tags: tagsets.flatMap(x => x.tags),
         },

@@ -6,7 +6,7 @@ import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../hoo
 import { useApolloErrorHandler } from '../../../../hooks';
 import { useHub } from '../../../../hooks';
 import { useNotification } from '../../../../hooks';
-import { updateContextInput } from '../../../../utils/buildContext';
+import { mapHubFormToContext, updateContextInput } from '../../../../utils/buildContext';
 import { Box, Container, Grid } from '@mui/material';
 import HubContextForm from '../../../../components/Admin/HubContextForm';
 
@@ -39,7 +39,7 @@ export const HubContext: FC = () => {
     updateHub({
       variables: {
         input: {
-          context: updateContextInput(values),
+          context: updateContextInput(mapHubFormToContext(values)),
           displayName: name,
           ID: hubNameId,
           hostID: host,
