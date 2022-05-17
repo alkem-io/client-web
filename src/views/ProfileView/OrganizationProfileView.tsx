@@ -96,7 +96,7 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
             )
           }
           title={
-            <Box padding={1}>
+            <Box padding={1} sx={{ position: 'relative', top: '48px' }}>
               {entity.verified !== undefined && (
                 <VerifiedStatus verified={entity.verified} helpText={t('pages.organization.verified-status.help')} />
               )}
