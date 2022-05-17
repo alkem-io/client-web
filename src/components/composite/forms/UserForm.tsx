@@ -276,7 +276,7 @@ export const UserForm: FC<UserProps> = ({
                         )}
                       </LocationSegment>
                     </Grid>
-                    <Grid container spacing={4}>
+                    <Grid container spacing={4} marginTop={2}>
                       <FormRow>
                         <FormikInputField
                           name={'bio'}
