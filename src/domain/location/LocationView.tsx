@@ -7,7 +7,7 @@ interface LocationViewProps {
   location: Partial<Location> | string | undefined;
 }
 
-const LocationView: FC<LocationViewProps> = ({ location, ...rest }) => {
+const LocationView: FC<LocationViewProps> = ({ location }) => {
   const { t } = useTranslation();
 
   if (!location) {
@@ -29,7 +29,7 @@ const LocationView: FC<LocationViewProps> = ({ location, ...rest }) => {
 
   return (
     <>
-      <Typography color="primary" weight="boldLight" aria-label="Location" {...rest}>
+      <Typography color="primary" weight="boldLight" aria-label="Location">
         {t('components.profile.fields.location.title')}
       </Typography>
       <Typography>{locationString}</Typography>
