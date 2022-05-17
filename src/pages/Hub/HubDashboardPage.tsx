@@ -32,7 +32,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
               activity={entities.activity}
               challenges={entities.challenges}
               discussions={entities.discussionList}
-              members={entities?.hub?.community?.members as User[]}
+              members={entities?.hub?.community?.memberUsers as User[]}
               aspects={entities.aspects}
               aspectsCount={entities.aspectsCount}
               loading={state.loading}

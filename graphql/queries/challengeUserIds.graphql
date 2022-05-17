@@ -3,7 +3,7 @@ query challengeUserIds($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     id
     challenge(ID: $challengeId) {
       community {
-        members {
+        memberUsers{
           id
         }
       }

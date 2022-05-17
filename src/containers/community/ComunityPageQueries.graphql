@@ -4,7 +4,7 @@ query CommunityPage($hubId: UUID_NAMEID!, $communityId: UUID!) {
     community(ID: $communityId) {
       id
       displayName
-      members {
+      memberUsers {
         ...UserCard
       }
     }
@@ -20,7 +20,7 @@ query CommunityPageWithHost($hubId: UUID_NAMEID!, $communityId: UUID!) {
     community(ID: $communityId) {
       id
       displayName
-      members {
+      memberUsers {
         ...UserCard
       }
     }

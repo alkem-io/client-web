@@ -180,7 +180,7 @@ export const CommunityDetailsFragmentDoc = gql`
         myPrivileges
       }
     }
-    members {
+    memberUsers {
       ...GroupMembers
     }
     groups {
@@ -389,7 +389,7 @@ export const HubInfoFragmentDoc = gql`
     community {
       id
       displayName
-      members {
+      memberUsers {
         id
       }
       authorization {
@@ -1122,7 +1122,7 @@ export const ChallengeProfileFragmentDoc = gql`
         id
         myPrivileges
       }
-      members {
+      memberUsers {
         id
         displayName
       }
@@ -1307,7 +1307,7 @@ export const HubPageFragmentDoc = gql`
     }
     community {
       id
-      members {
+      memberUsers {
         id
       }
       authorization {
@@ -1391,7 +1391,7 @@ export const OpportunityPageFragmentDoc = gql`
         id
         myPrivileges
       }
-      members {
+      memberUsers {
         id
         nameID
       }
@@ -1620,53 +1620,54 @@ export type ApplyForCommunityMembershipMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.ApplyForCommunityMembershipMutation,
   SchemaTypes.ApplyForCommunityMembershipMutationVariables
 >;
-export const AssignUserToCommunityDocument = gql`
-  mutation assignUserToCommunity($input: AssignCommunityMemberInput!) {
-    assignUserToCommunity(membershipData: $input) {
+export const AssignUserAsCommunityMemberDocument = gql`
+  mutation assignUserAsCommunityMember($input: AssignCommunityMemberUserInput!) {
+    assignUserAsCommunityMember(membershipData: $input) {
       id
       displayName
     }
   }
 `;
-export type AssignUserToCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.AssignUserToCommunityMutation,
-  SchemaTypes.AssignUserToCommunityMutationVariables
+export type AssignUserAsCommunityMemberMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignUserAsCommunityMemberMutation,
+  SchemaTypes.AssignUserAsCommunityMemberMutationVariables
 >;
 
 /**
- * __useAssignUserToCommunityMutation__
+ * __useAssignUserAsCommunityMemberMutation__
  *
- * To run a mutation, you first call `useAssignUserToCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAssignUserToCommunityMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAssignUserAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignUserAsCommunityMemberMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [assignUserToCommunityMutation, { data, loading, error }] = useAssignUserToCommunityMutation({
+ * const [assignUserAsCommunityMemberMutation, { data, loading, error }] = useAssignUserAsCommunityMemberMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useAssignUserToCommunityMutation(
+export function useAssignUserAsCommunityMemberMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.AssignUserToCommunityMutation,
-    SchemaTypes.AssignUserToCommunityMutationVariables
+    SchemaTypes.AssignUserAsCommunityMemberMutation,
+    SchemaTypes.AssignUserAsCommunityMemberMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.AssignUserToCommunityMutation,
-    SchemaTypes.AssignUserToCommunityMutationVariables
-  >(AssignUserToCommunityDocument, options);
+    SchemaTypes.AssignUserAsCommunityMemberMutation,
+    SchemaTypes.AssignUserAsCommunityMemberMutationVariables
+  >(AssignUserAsCommunityMemberDocument, options);
 }
-export type AssignUserToCommunityMutationHookResult = ReturnType<typeof useAssignUserToCommunityMutation>;
-export type AssignUserToCommunityMutationResult = Apollo.MutationResult<SchemaTypes.AssignUserToCommunityMutation>;
-export type AssignUserToCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.AssignUserToCommunityMutation,
-  SchemaTypes.AssignUserToCommunityMutationVariables
+export type AssignUserAsCommunityMemberMutationHookResult = ReturnType<typeof useAssignUserAsCommunityMemberMutation>;
+export type AssignUserAsCommunityMemberMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignUserAsCommunityMemberMutation>;
+export type AssignUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignUserAsCommunityMemberMutation,
+  SchemaTypes.AssignUserAsCommunityMemberMutationVariables
 >;
 export const AssignUserToGroupDocument = gql`
   mutation assignUserToGroup($input: AssignUserGroupMemberInput!) {
@@ -3797,56 +3798,57 @@ export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.RemoveMessageFromDiscussionMutation,
   SchemaTypes.RemoveMessageFromDiscussionMutationVariables
 >;
-export const RemoveUserFromCommunityDocument = gql`
-  mutation removeUserFromCommunity($input: RemoveCommunityMemberInput!) {
-    removeUserFromCommunity(membershipData: $input) {
+export const RemoveUserAsCommunityMemberDocument = gql`
+  mutation removeUserAsCommunityMember($input: RemoveCommunityMemberUserInput!) {
+    removeUserAsCommunityMember(membershipData: $input) {
       id
-      members {
+      memberUsers {
         ...GroupMembers
       }
     }
   }
   ${GroupMembersFragmentDoc}
 `;
-export type RemoveUserFromCommunityMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveUserFromCommunityMutation,
-  SchemaTypes.RemoveUserFromCommunityMutationVariables
+export type RemoveUserAsCommunityMemberMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveUserAsCommunityMemberMutation,
+  SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
 >;
 
 /**
- * __useRemoveUserFromCommunityMutation__
+ * __useRemoveUserAsCommunityMemberMutation__
  *
- * To run a mutation, you first call `useRemoveUserFromCommunityMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveUserFromCommunityMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemoveUserAsCommunityMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserAsCommunityMemberMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [removeUserFromCommunityMutation, { data, loading, error }] = useRemoveUserFromCommunityMutation({
+ * const [removeUserAsCommunityMemberMutation, { data, loading, error }] = useRemoveUserAsCommunityMemberMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useRemoveUserFromCommunityMutation(
+export function useRemoveUserAsCommunityMemberMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveUserFromCommunityMutation,
-    SchemaTypes.RemoveUserFromCommunityMutationVariables
+    SchemaTypes.RemoveUserAsCommunityMemberMutation,
+    SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.RemoveUserFromCommunityMutation,
-    SchemaTypes.RemoveUserFromCommunityMutationVariables
-  >(RemoveUserFromCommunityDocument, options);
+    SchemaTypes.RemoveUserAsCommunityMemberMutation,
+    SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
+  >(RemoveUserAsCommunityMemberDocument, options);
 }
-export type RemoveUserFromCommunityMutationHookResult = ReturnType<typeof useRemoveUserFromCommunityMutation>;
-export type RemoveUserFromCommunityMutationResult = Apollo.MutationResult<SchemaTypes.RemoveUserFromCommunityMutation>;
-export type RemoveUserFromCommunityMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveUserFromCommunityMutation,
-  SchemaTypes.RemoveUserFromCommunityMutationVariables
+export type RemoveUserAsCommunityMemberMutationHookResult = ReturnType<typeof useRemoveUserAsCommunityMemberMutation>;
+export type RemoveUserAsCommunityMemberMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveUserAsCommunityMemberMutation>;
+export type RemoveUserAsCommunityMemberMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveUserAsCommunityMemberMutation,
+  SchemaTypes.RemoveUserAsCommunityMemberMutationVariables
 >;
 export const RemoveUserFromGroupDocument = gql`
   mutation removeUserFromGroup($input: RemoveUserGroupMemberInput!) {
@@ -5412,7 +5414,7 @@ export const ChallengeMembersDocument = gql`
       id
       challenge(ID: $challengeID) {
         community {
-          members {
+          memberUsers {
             id
             displayName
             firstName
@@ -5617,7 +5619,7 @@ export const ChallengeUserIdsDocument = gql`
       id
       challenge(ID: $challengeId) {
         community {
-          members {
+          memberUsers {
             id
           }
         }
@@ -6183,7 +6185,7 @@ export const CommunityMembersDocument = gql`
       id
       community(ID: $communityId) {
         id
-        members {
+        memberUsers {
           ...UserDisplayName
         }
       }
@@ -6749,7 +6751,7 @@ export const HubMembersDocument = gql`
       id
       community {
         id
-        members {
+        memberUsers {
           id
           displayName
           firstName
@@ -6853,7 +6855,7 @@ export const HubUserIdsDocument = gql`
       id
       community {
         id
-        members {
+        memberUsers {
           id
         }
       }
@@ -7896,7 +7898,7 @@ export const OpportunityUserIdsDocument = gql`
       id
       opportunity(ID: $opportunityId) {
         community {
-          members {
+          memberUsers {
             id
           }
         }
@@ -12188,7 +12190,7 @@ export const CommunityPageDocument = gql`
       community(ID: $communityId) {
         id
         displayName
-        members {
+        memberUsers {
           ...UserCard
         }
       }
@@ -12251,7 +12253,7 @@ export const CommunityPageWithHostDocument = gql`
       community(ID: $communityId) {
         id
         displayName
-        members {
+        memberUsers {
           ...UserCard
         }
       }

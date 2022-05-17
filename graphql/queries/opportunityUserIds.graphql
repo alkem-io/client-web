@@ -3,7 +3,7 @@ query opportunityUserIds($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     id
     opportunity(ID: $opportunityId) {
       community {
-        members {
+        memberUsers {
           id
         }
       }

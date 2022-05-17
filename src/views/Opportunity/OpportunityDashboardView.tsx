@@ -83,7 +83,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
   const communityId = opportunity?.community?.id || '';
-  const members = (opportunity?.community?.members || []) as User[]; // TODO [ATS]:
+  const members = (opportunity?.community?.memberUsers || []) as User[]; // TODO [ATS]:
   const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
