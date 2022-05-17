@@ -19,7 +19,7 @@ export interface ProfileFormValues {
   name: string;
   nameID: string;
   tagline: string;
-  location: Partial<Location> | undefined;
+  location: Partial<Location>;
   who: string;
   references: Reference[];
   tagsets: Tagset[];

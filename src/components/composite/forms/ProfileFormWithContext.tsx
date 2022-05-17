@@ -66,7 +66,7 @@ const ProfileFormWithContext: FC<Props> = ({
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
-    location: formatLocation(context?.location),
+    location: formatLocation(context?.location) || { city: '', country: { code: '', name: '' } },
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
