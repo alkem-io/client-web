@@ -33,6 +33,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => 
     tagline = '',
     impact = '',
     background = '',
+    location = undefined,
     vision = '',
     who = '',
     visuals = [],
@@ -56,6 +57,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => 
       keywords={hubTagSet?.tags}
       impact={impact}
       tagline={tagline}
+      location={location}
       vision={vision}
       who={who}
       contextId={id}

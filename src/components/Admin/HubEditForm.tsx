@@ -15,6 +15,7 @@ import { visualSegmentSchema } from './Common/VisualSegment';
 import InputField from './Common/InputField';
 import { EmptyLocation, Location } from '../../domain/location/Location';
 import { formatLocation } from '../../domain/location/LocationUtils';
+import { LocationSegment } from '../../domain/location/LocationSegment';
 
 interface Props {
   context?: Context;
@@ -134,6 +135,7 @@ const HubEditForm: FC<Props> = ({
                 placeholder={t('components.editHubForm.host.title')}
               />
             </Grid>
+            <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
             <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
