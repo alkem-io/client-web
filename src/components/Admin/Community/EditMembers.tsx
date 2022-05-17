@@ -38,7 +38,7 @@ const StyledButtonRemove = styled(IconButton)(({ theme }) => ({
   color: theme.palette.negative.main,
 }));
 
-const TABLE_HEIGHT = 300;
+const TABLE_HEIGHT = 600;
 const FILTER_DEBOUNCE = 500;
 
 export interface EditMembersProps {
