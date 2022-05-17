@@ -13,6 +13,7 @@ import Typography from '../../core/Typography';
 import InputField from '../../Admin/Common/InputField';
 import { Location } from '../../../domain/location/Location';
 import { formatLocation } from '../../../domain/location/LocationUtils';
+import { LocationSegment } from '../../../domain/location/LocationSegment';
 export interface ProfileFormValuesType {
   name: string;
   nameID: string;
@@ -112,6 +113,7 @@ const ProfileFormWithContext: FC<Props> = ({
                 <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
               </>
             )}
+            <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
             <ContextSegment />
 
             {!contextOnly && (
