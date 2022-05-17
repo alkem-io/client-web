@@ -31,7 +31,7 @@ export const formatDatabaseLocation = (
   }
 
   return {
-    city: data?.city || '',
-    country: data?.country?.code || '',
+    city: data.city!,
+    country: data.country?.code || '',
   };
 };
