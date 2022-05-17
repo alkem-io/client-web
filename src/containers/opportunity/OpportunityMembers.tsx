@@ -30,7 +30,7 @@ export interface OpportunityMembersProps {
 export interface OpportunityMembersActions {
   handleAssignAdmin: (member: UserDisplayNameFragment) => void;
   handleRemoveAdmin: (member: Member) => void;
-  handleLoadMore: () => void;
+  handleLoadMore: () => Promise<void>;
 }
 
 export interface OpportunityMembersState {

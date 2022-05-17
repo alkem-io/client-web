@@ -42,7 +42,7 @@ export interface OrganizationMembersActions {
   handleRemoveAdmin: (member: Member) => void;
   handleAssignOwner: (member: UserDisplayNameFragment) => void;
   handleRemoveOwner: (member: Member) => void;
-  handleLoadMore: () => void;
+  handleLoadMore: () => Promise<void>;
 }
 
 export interface OrganizationMembersState {

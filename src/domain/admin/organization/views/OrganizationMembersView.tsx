@@ -27,7 +27,7 @@ export const OrganizationMembersView: FC = () => {
             executor={entities.currentMember}
             onAdd={actions.handleAssignMember}
             onRemove={actions.handleRemoveMember}
-            onLoadMore={actions.handleLoadMore}
+            fetchMore={actions.handleLoadMore}
             hasMore={state.hasMoreUsers}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}

@@ -12,10 +12,12 @@ import usePaginatedQuery from '../../shared/pagination/usePaginatedQuery';
 export interface AvailableMembersResults {
   available: UserDisplayNameFragment[];
   current: Member[];
-  fetchMore: (amount?: number) => void;
+  fetchMore: (amount?: number) => Promise<void>;
   hasMore: boolean | undefined;
   loading: boolean;
   error: boolean;
+  pageSize: number;
+  firstPageSize: number;
 }
 
 const PAGE_SIZE = 10;
@@ -64,6 +66,8 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
     error: userError,
     fetchMore,
     hasMore,
+    pageSize,
+    firstPageSize,
   } = usePaginatedQuery({
     useQuery: useAvailableUsersQuery,
     options: {
@@ -129,5 +133,7 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
     loading: isLoading,
     fetchMore,
     hasMore,
+    pageSize,
+    firstPageSize,
   };
 };

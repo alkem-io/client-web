@@ -88,8 +88,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
       removingMember={removingMember}
       loadingMembers={loading}
       loadingAvailableMembers={loading}
-      onLoadMore={fetchMore}
-      loadMore={2}
+      fetchMore={fetchMore}
       hasMore={hasMore}
     />
   );

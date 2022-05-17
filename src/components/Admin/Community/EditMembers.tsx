@@ -52,9 +52,8 @@ export interface EditMembersProps {
   loadingMembers?: boolean;
   onAdd?: (member: UserDisplayNameFragment) => void;
   onRemove?: (member: Member) => void;
-  onLoadMore?: (amount?: number) => void;
+  fetchMore?: (amount?: number) => Promise<void>;
   onFilter?: (term: string) => any;
-  loadMore?: number;
   hasMore?: boolean;
   title?: string;
 }
@@ -70,9 +69,8 @@ export const EditMembers: FC<EditMembersProps> = ({
   loadingMembers = false,
   onAdd,
   onRemove,
-  onLoadMore,
+  fetchMore = () => Promise.resolve(),
   onFilter,
-  loadMore,
   hasMore = false,
   title,
 }) => {
@@ -89,7 +87,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   );
 
   const lazyLoading = useLazyLoading({
-    fetchMore: async () => await onLoadMore?.(loadMore),
+    fetchMore,
     loading: loadingAvailableMembers,
   });
 

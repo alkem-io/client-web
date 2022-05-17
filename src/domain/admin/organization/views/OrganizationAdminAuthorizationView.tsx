@@ -41,7 +41,7 @@ export const OrganizationAdminAuthorizationView: FC = () => {
             executor={entities.currentMember}
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
-            onLoadMore={actions.handleLoadMore}
+            fetchMore={actions.handleLoadMore}
             hasMore={state.hasMoreUsers}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
