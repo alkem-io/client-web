@@ -11,7 +11,7 @@ import {
   UpdateReferenceInput,
 } from '../models/graphql-schema';
 
-export interface ContextObject {
+interface ContextObject {
   background?: string;
   impact?: string;
   references?: Reference[];
