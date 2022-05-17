@@ -146,10 +146,6 @@ export const ChallengeInfoFragmentDoc = gql`
         name
         uri
       }
-      location {
-        country
-        city
-      }
       visuals {
         ...VisualFull
       }
