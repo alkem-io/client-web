@@ -19,7 +19,7 @@ export interface ProfileFormValuesType {
   background: string;
   impact: string;
   tagline: string;
-  location: Partial<Location> | undefined;
+  location: Partial<Location>;
   vision: string;
   who: string;
   references: Reference[];
