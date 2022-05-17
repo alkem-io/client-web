@@ -27,6 +27,7 @@ fragment OpportunityProvider on Opportunity {
       ...VisualFull
     }
     location {
+      id
       country
       city
     }

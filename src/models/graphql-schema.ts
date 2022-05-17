@@ -9479,7 +9479,7 @@ export type HubContextQuery = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
-          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           visuals?:
             | Array<{
                 __typename?: 'Visual';
@@ -9554,7 +9554,7 @@ export type ChallengeContextQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -9634,7 +9634,7 @@ export type OpportunityContextQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
-            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -9694,7 +9694,7 @@ export type ContextTabFragment = {
   vision?: string | undefined;
   impact?: string | undefined;
   who?: string | undefined;
-  location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   visuals?:
     | Array<{
         __typename?: 'Visual';
@@ -10688,7 +10688,7 @@ export type OpportunityProviderQuery = {
                   minWidth: number;
                 }>
               | undefined;
-            location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           }
         | undefined;
       community?:
@@ -10738,7 +10738,7 @@ export type OpportunityProviderFragment = {
               minWidth: number;
             }>
           | undefined;
-        location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
       }
     | undefined;
   community?:

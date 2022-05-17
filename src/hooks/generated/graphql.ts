@@ -1179,6 +1179,7 @@ export const ContextTabFragmentDoc = gql`
     tagline
     background
     location {
+      id
       city
       country
     }
@@ -1467,6 +1468,7 @@ export const OpportunityProviderFragmentDoc = gql`
         ...VisualFull
       }
       location {
+        id
         country
         city
       }

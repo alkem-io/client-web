@@ -131,6 +131,7 @@ fragment ContextTab on Context {
   tagline
   background
   location{
+    id
     city
     country
   }
