@@ -64,6 +64,9 @@ const useStyles = makeStyles(theme =>
       flexDirection: 'column',
     },
     headerAction: {},
+    tagsOffset: {
+      marginTop: '5px',
+    },
   })
 );
 
@@ -146,14 +149,14 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
             <Typography color="primary" weight="boldLight" aria-label="keywords">
               {t('components.profile.fields.keywords.title')}
             </Typography>
-            <TagsComponent tags={keywords} />
+            <TagsComponent className={styles.tagsOffset} tags={keywords} />
           </Grid>
 
           <Grid item>
             <Typography color="primary" weight="boldLight" aria-label="skills">
               {t('components.profile.fields.skills.title')}
             </Typography>
-            <TagsComponent tags={skills} />
+            <TagsComponent className={styles.tagsOffset} tags={skills} />
           </Grid>
 
           <Grid item container direction="column">

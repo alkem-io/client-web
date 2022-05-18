@@ -115,7 +115,18 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
     }
 
     if (isMember) {
-      return <Button disabled>{t('buttons.member')}</Button>;
+      return (
+        <Button
+          disabled
+          sx={{
+            '&.Mui-disabled': {
+              color: '#00A88F',
+            },
+          }}
+        >
+          {t('buttons.member')}
+        </Button>
+      );
     }
 
     if (isApplicationPending(applicationState)) {

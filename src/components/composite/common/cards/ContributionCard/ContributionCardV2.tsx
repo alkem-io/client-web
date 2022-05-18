@@ -57,6 +57,7 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
     },
     cardContent: {
       padding: theme.spacing(1.5),
+      marginRight: '-5px',
       flexGrow: 1,
       background: theme.palette.background.default,
     },
