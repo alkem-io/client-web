@@ -599,6 +599,10 @@ export type Community = Groupable & {
   groups?: Maybe<Array<UserGroup>>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** All Organizations that are leads in this Community. */
+  leadOrganizations?: Maybe<Array<Organization>>;
+  /** All users that are leads in this Community. */
+  leadUsers?: Maybe<Array<User>>;
   /** All Organizations that are contributing to this Community. */
   memberOrganizations?: Maybe<Array<Organization>>;
   /** All users that are contributing to this Community. */
@@ -1297,7 +1301,7 @@ export type Mutation = {
   adminCommunicationUpdateRoomsJoinRule: Scalars['Boolean'];
   /** Apply to join the specified Community as a member. */
   applyForCommunityMembership: Application;
-  /** Assigns an Organization as a member of the specified Community. */
+  /** Assigns an Organization as a Lead of the specified Community. */
   assignOrganizationAsCommunityLead: Community;
   /** Assigns an Organization as a member of the specified Community. */
   assignOrganizationAsCommunityMember: Community;
@@ -1427,7 +1431,7 @@ export type Mutation = {
   removeComment: Scalars['MessageID'];
   /** Removes a message from the specified Discussion. */
   removeMessageFromDiscussion: Scalars['MessageID'];
-  /** Removes an Organization as a member of the specified Community. */
+  /** Removes an Organization as a Lead of the specified Community. */
   removeOrganizationAsCommunityLead: Community;
   /** Removes an Organization as a member of the specified Community. */
   removeOrganizationAsCommunityMember: Community;
@@ -1520,7 +1524,7 @@ export type MutationApplyForCommunityMembershipArgs = {
 };
 
 export type MutationAssignOrganizationAsCommunityLeadArgs = {
-  membershipData: AssignCommunityLeadOrganizationInput;
+  leadershipData: AssignCommunityLeadOrganizationInput;
 };
 
 export type MutationAssignOrganizationAsCommunityMemberArgs = {
@@ -10638,11 +10642,19 @@ export type UserCardsContainerQuery = {
   }>;
 };
 
-export type UserListQueryVariables = Exact<{ [key: string]: never }>;
+export type UserListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
 
 export type UserListQuery = {
   __typename?: 'Query';
-  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
 };
 
 export type OpportunityProviderQueryVariables = Exact<{
@@ -11017,6 +11029,46 @@ export type CommentsMessageReceivedSubscription = {
   };
 };
 
+export type AvailableUsersQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
+};
+
+export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContributingUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      displayName: string;
+      nameID: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
+};
+
 export type AspectsOnContextFragment = {
   __typename?: 'Context';
   id: string;
@@ -11111,51 +11163,4 @@ export type UpdatePreferenceOnHubMutationVariables = Exact<{
 export type UpdatePreferenceOnHubMutation = {
   __typename?: 'Mutation';
   updatePreferenceOnHub: { __typename?: 'Preference'; id: string; value: string };
-};
-
-export type AvailableUsersQueryVariables = Exact<{ [key: string]: never }>;
-
-export type AvailableUsersQuery = {
-  __typename?: 'Query';
-  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
-};
-
-export type AvailableUsers2QueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<UserFilterInput>;
-}>;
-
-export type AvailableUsers2Query = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-  };
-};
-
-export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
-
-export type ContributingUsersQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      displayName: string;
-      nameID: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
-            id: string;
-            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-          }
-        | undefined;
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-  };
 };

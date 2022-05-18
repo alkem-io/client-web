@@ -7,7 +7,7 @@ import {
 import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
-import { EditMembers } from '../Community/EditMembers';
+import EditMembers from '../Community/EditMembers';
 
 interface EditCredentialsProps {
   credential: GroupCredentials;
@@ -68,12 +68,12 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
     });
   };
 
-  const { available, current, loading, onLoadMore, isLastAvailableUserPage } = useAvailableMembers(
+  const { available, current, loading, fetchMore, hasMore } = useAvailableMembers({
     credential,
     resourceId,
     parentCommunityId,
-    parentMembers
-  );
+    parentMembers,
+  });
 
   return (
     <EditMembers
@@ -85,8 +85,8 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
       removingMember={removingMember}
       loadingMembers={loading}
       loadingAvailableMembers={loading}
-      onLoadMore={onLoadMore}
-      lastMembersPage={isLastAvailableUserPage}
+      fetchMore={fetchMore}
+      hasMore={hasMore}
     />
   );
 };

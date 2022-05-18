@@ -1,4 +1,5 @@
-import { Box, Button, Typography } from '@mui/material';
+import debounce from 'lodash/debounce';
+import { Box, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -16,40 +17,29 @@ import { Member } from '../../../models/User';
 import { Filter } from '../Common/Filter';
 import { UserDisplayNameFragment } from '../../../models/graphql-schema';
 import { Skeleton } from '@mui/material';
+import TableRowLoading from '../../../domain/shared/pagination/TableRowLoading';
+import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
 
-const LOAD_MORE_DEFAULT = 25;
+const StyledTableHead = styled(TableHead)(({ theme }) => ({
+  background: theme.palette.divider,
+}));
 
-const PREFIX = 'EditMembers';
-
-const classes = {
-  thead: `${PREFIX}-thead`,
-  trow: `${PREFIX}-trow`,
-  iconButtonSuccess: `${PREFIX}-iconButtonSuccess`,
-  iconButtonNegative: `${PREFIX}-iconButtonNegative`,
-};
-
-// TODO jss-to-styled codemod: The Fragment root was replaced by div. Change the tag if needed.
-const Root = styled('div')(({ theme }) => ({
-  [`& .${classes.thead}`]: {
-    background: theme.palette.divider,
-  },
-
-  [`& .${classes.trow}`]: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-
-  [`& .${classes.iconButtonSuccess}`]: {
-    color: theme.palette.success.main,
-  },
-
-  [`& .${classes.iconButtonNegative}`]: {
-    color: theme.palette.negative.main,
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
   },
 }));
 
+const StyledButtonAdd = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.success.main,
+}));
+
+const StyledButtonRemove = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.negative.main,
+}));
+
 const TABLE_HEIGHT = 600;
+const FILTER_DEBOUNCE = 500;
 
 export interface EditMembersProps {
   deleteExecutor?: boolean;
@@ -62,9 +52,9 @@ export interface EditMembersProps {
   loadingMembers?: boolean;
   onAdd?: (member: UserDisplayNameFragment) => void;
   onRemove?: (member: Member) => void;
-  onLoadMore?: (amount?: number) => void;
-  loadMore?: number;
-  lastMembersPage?: boolean;
+  fetchMore?: (amount?: number) => Promise<void>;
+  onFilter?: (term: string) => any;
+  hasMore?: boolean;
   title?: string;
 }
 
@@ -79,9 +69,9 @@ export const EditMembers: FC<EditMembersProps> = ({
   loadingMembers = false,
   onAdd,
   onRemove,
-  onLoadMore,
-  loadMore = LOAD_MORE_DEFAULT,
-  lastMembersPage = true,
+  fetchMore = () => Promise.resolve(),
+  onFilter,
+  hasMore = false,
   title,
 }) => {
   const { t } = useTranslation();
@@ -90,6 +80,16 @@ export const EditMembers: FC<EditMembersProps> = ({
     [loadingMembers, members]
   );
   const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
+
+  const handleFilter = useMemo(
+    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onFilter?.(e.target.value), FILTER_DEBOUNCE),
+    [onFilter, FILTER_DEBOUNCE]
+  );
+
+  const lazyLoading = useLazyLoading({
+    fetchMore,
+    loading: loadingAvailableMembers,
+  });
 
   return (
     <>
@@ -103,11 +103,11 @@ export const EditMembers: FC<EditMembersProps> = ({
           Group members:
           <Filter data={membersData}>
             {filteredMembers => (
-              <Root>
+              <>
                 <hr />
                 <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
                   <Table size="small">
-                    <TableHead className={classes.thead}>
+                    <StyledTableHead>
                       <TableRow>
                         <TableCell>Full Name</TableCell>
                         <TableCell>First Name</TableCell>
@@ -115,12 +115,12 @@ export const EditMembers: FC<EditMembersProps> = ({
                         <TableCell>Email</TableCell>
                         {onRemove && <TableCell />}
                       </TableRow>
-                    </TableHead>
+                    </StyledTableHead>
                     <TableBody>
-                      {filteredMembers.map((m, i) => {
+                      {filteredMembers.map(m => {
                         const disableExecutor = m.id === executor?.id && !deleteExecutor;
                         return (
-                          <TableRow key={i} className={classes.trow}>
+                          <StyledTableRow>
                             <TableCell>
                               <Cell>{m.displayName}</Cell>
                             </TableCell>
@@ -136,66 +136,63 @@ export const EditMembers: FC<EditMembersProps> = ({
                             {onRemove && (
                               <TableCell align={'right'}>
                                 <Cell>
-                                  <IconButton
+                                  <StyledButtonRemove
                                     aria-label="Remove"
                                     size="small"
                                     disabled={disableExecutor || addingMember || removingMember}
-                                    className={classes.iconButtonNegative}
                                     onClick={() => onRemove(m)}
                                   >
                                     <RemoveIcon />
-                                  </IconButton>
+                                  </StyledButtonRemove>
                                 </Cell>
                               </TableCell>
                             )}
-                          </TableRow>
+                          </StyledTableRow>
                         );
                       })}
                     </TableBody>
                   </Table>
                 </Box>
-              </Root>
+              </>
             )}
           </Filter>
         </Grid>
         <Grid item sm={4}>
           Available users:
-          <Filter data={availableMembers} limitKeys={['displayName']}>
-            {filteredData => {
-              return (
-                <Root>
-                  <hr />
-                  <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
-                    <TableContainer>
-                      <Table size="small" style={{ position: 'relative' }}>
-                        <TableHead className={classes.thead}>
-                          <TableRow>
-                            <TableCell />
-                            <TableCell>Full Name</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          <AvailableMembersFragment
-                            availableMembers={availableMembers}
-                            filteredMembers={filteredData}
-                            loading={loadingAvailableMembers}
-                            onAdd={onAdd}
-                            addingMember={addingMember}
-                            removingMember={removingMember}
-                          />
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                  {onLoadMore && (
-                    <Button onClick={() => onLoadMore(loadMore)} disabled={lastMembersPage}>
-                      {t('buttons.load-count-more', { count: loadMore })}
-                    </Button>
-                  )}
-                </Root>
-              );
-            }}
-          </Filter>
+          <TextField
+            placeholder={t('components.filter.placeholder')}
+            onChange={handleFilter}
+            size="small"
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+            sx={{ background: theme => theme.palette.primary.contrastText }}
+          />
+          <>
+            <hr />
+            <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
+              <TableContainer>
+                <Table size="small" style={{ position: 'relative' }}>
+                  <StyledTableHead>
+                    <TableRow>
+                      <TableCell />
+                      <TableCell>Full Name</TableCell>
+                    </TableRow>
+                  </StyledTableHead>
+                  <TableBody>
+                    <AvailableMembersFragment
+                      availableMembers={availableMembers}
+                      filteredMembers={availableMembers}
+                      loading={loadingAvailableMembers}
+                      onAdd={onAdd}
+                      addingMember={addingMember}
+                      removingMember={removingMember}
+                    />
+                    {hasMore && <TableRowLoading ref={lazyLoading.ref} colSpan={2} />}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          </>
         </Grid>
       </Grid>
     </>
@@ -226,47 +223,46 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
 
   if (availableMembers.length === 0) {
     return (
-      <TableRow className={classes.trow}>
+      <StyledTableRow>
         <TableCell colSpan={2}>
           <Typography>{t('components.edit-members.no-available-members')}</Typography>
         </TableCell>
-      </TableRow>
+      </StyledTableRow>
     );
   }
 
   if (membersData.length === 0) {
     return (
-      <TableRow className={classes.trow}>
+      <StyledTableRow>
         <TableCell colSpan={2}>
           <Typography>{t('components.edit-members.user-not-found')}</Typography>
         </TableCell>
-      </TableRow>
+      </StyledTableRow>
     );
   }
 
   return (
     <>
-      {membersData.map((m, i) => (
-        <TableRow key={i} className={classes.trow}>
+      {membersData.map(m => (
+        <StyledTableRow key={m.id}>
           {onAdd && (
             <TableCell>
               <Cell>
-                <IconButton
+                <StyledButtonAdd
                   aria-label="Add"
                   size="small"
                   onClick={() => onAdd(m)}
-                  className={classes.iconButtonSuccess}
                   disabled={addingMember || removingMember}
                 >
                   <AddIcon />
-                </IconButton>
+                </StyledButtonAdd>
               </Cell>
             </TableCell>
           )}
           <TableCell>
             <Cell>{m.displayName}</Cell>
           </TableCell>
-        </TableRow>
+        </StyledTableRow>
       ))}
     </>
   );
