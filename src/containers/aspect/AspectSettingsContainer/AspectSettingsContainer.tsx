@@ -14,7 +14,7 @@ import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import removeFromCache from '../../../utils/apollo-cache/removeFromCache';
 
-type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description'> & {
+type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];
   references?: Reference[];
 };
@@ -112,6 +112,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
           ID: aspect.id,
           displayName: aspect.displayName,
           description: aspect.description,
+          type: aspect.type,
           tags: aspect.tags,
           references: aspect.references?.map(x => ({
             ID: x.id ?? '',

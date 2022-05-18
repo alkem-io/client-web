@@ -2660,6 +2660,7 @@ export type UpdateAspectInput = {
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   /** Update the tags on the Aspect. */
   tags?: InputMaybe<Array<Scalars['String']>>;
+  type?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateAspectTemplateInput = {
@@ -8131,6 +8132,7 @@ export type UpdateAspectMutation = {
     id: string;
     description: string;
     displayName: string;
+    type: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; description: string; uri: string }>
