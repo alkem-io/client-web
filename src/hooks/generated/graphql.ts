@@ -1032,6 +1032,27 @@ export const SimpleHubFragmentDoc = gql`
     displayName
   }
 `;
+export const AspectCardFragmentDoc = gql`
+  fragment AspectCard on Aspect {
+    id
+    nameID
+    displayName
+    type
+    description
+    banner {
+      ...VisualUri
+    }
+    bannerNarrow {
+      ...VisualUri
+    }
+    tagset {
+      id
+      name
+      tags
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const OrganizationDetailsFragmentDoc = gql`
   fragment OrganizationDetails on Organization {
     id
@@ -1055,27 +1076,6 @@ export const OrganizationDetailsFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const AspectCardFragmentDoc = gql`
-  fragment AspectCard on Aspect {
-    id
-    nameID
-    displayName
-    type
-    description
-    banner {
-      ...VisualUri
-    }
-    bannerNarrow {
-      ...VisualUri
-    }
-    tagset {
-      id
-      name
-      tags
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const ChallengeProfileFragmentDoc = gql`
   fragment ChallengeProfile on Challenge {
     id
@@ -1085,9 +1085,6 @@ export const ChallengeProfileFragmentDoc = gql`
       id
       name
       value
-    }
-    leadOrganizations {
-      ...OrganizationDetails
     }
     lifecycle {
       id
@@ -1121,6 +1118,9 @@ export const ChallengeProfileFragmentDoc = gql`
       memberUsers {
         id
         displayName
+      }
+      leadOrganizations {
+        ...OrganizationDetails
       }
     }
     tagset {
@@ -1161,9 +1161,9 @@ export const ChallengeProfileFragmentDoc = gql`
       }
     }
   }
-  ${OrganizationDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${OrganizationDetailsFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
@@ -5270,8 +5270,10 @@ export const ChallengeLeadOrganizationsDocument = gql`
       id
       challenge(ID: $challengeID) {
         id
-        leadOrganizations {
-          ...OrganizationDetails
+        community {
+          leadOrganizations {
+            ...OrganizationDetails
+          }
         }
       }
     }
@@ -12314,8 +12316,10 @@ export const ChallengeLeadingOrganizationsDocument = gql`
       id
       challenge(ID: $challengeId) {
         id
-        leadOrganizations {
-          ...OrganizationCard
+        community {
+          leadOrganizations {
+            ...OrganizationCard
+          }
         }
       }
     }

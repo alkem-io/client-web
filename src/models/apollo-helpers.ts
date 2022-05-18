@@ -269,7 +269,6 @@ export type ChallengeKeySpecifier = (
   | 'displayName'
   | 'hubID'
   | 'id'
-  | 'leadOrganizations'
   | 'lifecycle'
   | 'nameID'
   | 'opportunities'
@@ -287,7 +286,6 @@ export type ChallengeFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -405,6 +403,8 @@ export type CommunityKeySpecifier = (
   | 'displayName'
   | 'groups'
   | 'id'
+  | 'leadOrganizations'
+  | 'leadUsers'
   | 'memberOrganizations'
   | 'memberUsers'
   | CommunityKeySpecifier
@@ -416,6 +416,8 @@ export type CommunityFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   memberOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -709,6 +711,7 @@ export type MutationKeySpecifier = (
   | 'assignOrganizationAsCommunityLead'
   | 'assignOrganizationAsCommunityMember'
   | 'assignUserAsChallengeAdmin'
+  | 'assignUserAsCommunityLead'
   | 'assignUserAsCommunityMember'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
@@ -818,6 +821,7 @@ export type MutationFieldPolicy = {
   assignOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;

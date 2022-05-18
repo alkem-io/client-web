@@ -47,7 +47,7 @@ const LeadingOrganizationView: FC = () => {
   const { data: _leadingOrganizations } = useChallengeLeadOrganizationsQuery({
     variables: { hubId: hubNameId, challengeID: challengeNameId },
   });
-  const leadingOrganizations = (_leadingOrganizations?.hub.challenge.leadOrganizations ||
+  const leadingOrganizations = (_leadingOrganizations?.hub.challenge?.community?.leadOrganizations ||
     []) as OrganizationDetailsFragment[];
   const organizations = (_leadingOrganizations?.organizations || []) as OrganizationDetailsFragment[];
 

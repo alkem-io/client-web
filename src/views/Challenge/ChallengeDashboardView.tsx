@@ -44,7 +44,8 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const { loading } = state;
 
-  const { displayName, context, leadOrganizations = [] } = challenge || {};
+  const { displayName, context } = challenge || {};
+  const { leadOrganizations = [] } = challenge?.community || {};
   const communityId = challenge?.community?.id || '';
   const members = (challenge?.community?.memberUsers || []) as User[];
 
