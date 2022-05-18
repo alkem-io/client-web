@@ -2,6 +2,11 @@ fragment ContextDetails on Context {
   id
   tagline
   background
+  location {
+    id
+    country
+    city
+  }
   vision
   impact
   who

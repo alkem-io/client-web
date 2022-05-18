@@ -2664,6 +2664,7 @@ export type UpdateAspectInput = {
   references?: InputMaybe<Array<UpdateReferenceInput>>;
   /** Update the tags on the Aspect. */
   tags?: InputMaybe<Array<Scalars['String']>>;
+  type?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateAspectTemplateInput = {
@@ -3350,6 +3351,7 @@ export type ContextDetailsFragment = {
   vision?: string | undefined;
   impact?: string | undefined;
   who?: string | undefined;
+  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   references?:
     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
     | undefined;
@@ -3460,6 +3462,7 @@ export type HubInfoFragment = {
               anonymousReadAccess: boolean;
             }
           | undefined;
+        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
           | undefined;
@@ -3509,6 +3512,7 @@ export type HubDetailsFragment = {
         vision?: string | undefined;
         impact?: string | undefined;
         who?: string | undefined;
+        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
         references?:
           | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
           | undefined;
@@ -3996,6 +4000,7 @@ export type CreateHubMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
+          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
@@ -4584,6 +4589,7 @@ export type UpdateHubMutation = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
+          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
@@ -4801,6 +4807,7 @@ export type ChallengeApplicationQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
@@ -5304,6 +5311,7 @@ export type ChallengeProfileInfoQuery = {
                   minWidth: number;
                 }>
               | undefined;
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
@@ -5814,6 +5822,7 @@ export type HubProviderQuery = {
                 anonymousReadAccess: boolean;
               }
             | undefined;
+          location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           references?:
             | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
             | undefined;
@@ -6419,6 +6428,7 @@ export type OpportunityProfileInfoQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
             references?:
               | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
               | undefined;
@@ -8126,6 +8136,7 @@ export type UpdateAspectMutation = {
     id: string;
     description: string;
     displayName: string;
+    type: string;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     references?:
       | Array<{ __typename?: 'Reference'; id: string; name: string; description: string; uri: string }>
@@ -9018,6 +9029,7 @@ export type ChallengePageQuery = {
                   vision?: string | undefined;
                   impact?: string | undefined;
                   who?: string | undefined;
+                  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
                   references?:
                     | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
                     | undefined;
@@ -9163,6 +9175,7 @@ export type ChallengeProfileFragment = {
               vision?: string | undefined;
               impact?: string | undefined;
               who?: string | undefined;
+              location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
               references?:
                 | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
                 | undefined;
@@ -9472,6 +9485,7 @@ export type HubContextQuery = {
           vision?: string | undefined;
           impact?: string | undefined;
           who?: string | undefined;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
           visuals?:
             | Array<{
                 __typename?: 'Visual';
@@ -9546,6 +9560,7 @@ export type ChallengeContextQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -9625,6 +9640,7 @@ export type OpportunityContextQuery = {
             vision?: string | undefined;
             impact?: string | undefined;
             who?: string | undefined;
+            location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
             visuals?:
               | Array<{
                   __typename?: 'Visual';
@@ -9684,6 +9700,7 @@ export type ContextTabFragment = {
   vision?: string | undefined;
   impact?: string | undefined;
   who?: string | undefined;
+  location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
   visuals?:
     | Array<{
         __typename?: 'Visual';
@@ -10685,6 +10702,7 @@ export type OpportunityProviderQuery = {
                   minWidth: number;
                 }>
               | undefined;
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
           }
         | undefined;
       community?:
@@ -10734,6 +10752,7 @@ export type OpportunityProviderFragment = {
               minWidth: number;
             }>
           | undefined;
+        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
       }
     | undefined;
   community?:

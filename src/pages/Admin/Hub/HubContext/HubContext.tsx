@@ -9,6 +9,7 @@ import { useNotification } from '../../../../hooks';
 import { updateContextInput } from '../../../../utils/buildContext';
 import { Box, Container, Grid } from '@mui/material';
 import HubContextForm from '../../../../components/Admin/HubContextForm';
+import { formatDatabaseLocation } from '../../../../domain/location/LocationUtils';
 
 export const HubContext: FC = () => {
   const { t } = useTranslation();
@@ -39,7 +40,7 @@ export const HubContext: FC = () => {
     updateHub({
       variables: {
         input: {
-          context: updateContextInput(values),
+          context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
           displayName: name,
           ID: hubNameId,
           hostID: host,

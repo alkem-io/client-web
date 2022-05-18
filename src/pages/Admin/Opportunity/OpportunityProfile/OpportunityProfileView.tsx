@@ -17,6 +17,7 @@ import FormMode from '../../../../components/Admin/FormMode';
 import { Context } from '../../../../models/graphql-schema';
 import ProfileForm, { ProfileFormValues } from '../../../../components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../views/Visuals/EditVisualsView';
+import { formatDatabaseLocation } from '../../../../domain/location/LocationUtils';
 
 interface Props {
   mode: FormMode;
@@ -68,7 +69,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: createContextInput(values),
+              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               displayName: name,
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
@@ -81,7 +82,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
           variables: {
             input: {
               nameID: nameID,
-              context: updateContextInput(values),
+              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               displayName: name,
               ID: opportunityId,
               tags: tagsets.flatMap(x => x.tags),

@@ -5,7 +5,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import { Grid, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Reference } from '../../../models/graphql-schema';
+import { Reference, Location } from '../../../models/graphql-schema';
 import Markdown from '../../core/Markdown';
 import { SectionSpacer } from '../../core/Section/Section';
 import SectionHeader from '../../core/Section/SectionHeader';
@@ -14,7 +14,8 @@ import References from '../common/References/References';
 import DashboardSection from './DashboardSection/DashboardSection';
 import ContextSectionIcon from './ContextSectionIcon';
 import DashboardColumn from './DashboardSection/DashboardColumn';
-
+import LocationView from '../../../domain/location/LocationView';
+import { formatLocation } from '../../../domain/location/LocationUtils';
 export interface ContextSectionProps {
   contextId?: string;
   primaryAction?: ReactNode;
@@ -22,6 +23,7 @@ export interface ContextSectionProps {
   displayName?: string;
   tagline?: string;
   keywords?: string[];
+  location?: Location | { __typename?: 'Location' | undefined; city: string; country: string } | undefined;
   vision?: string;
   background?: string;
   impact?: string;
@@ -37,6 +39,7 @@ const ContextSection: FC<ContextSectionProps> = ({
   displayName,
   tagline,
   keywords = [],
+  location = undefined,
   vision,
   impact,
   who,
@@ -57,6 +60,8 @@ const ContextSection: FC<ContextSectionProps> = ({
             collapsible
           >
             <TagsComponent tags={keywords} count={10} />
+            <SectionSpacer />
+            <LocationView location={formatLocation(location)} />
             <SectionSpacer />
             <SectionHeader text={t('components.contextSegment.vision.title')} />
             <Typography component={Markdown} variant="body1" children={vision} />

@@ -10,7 +10,9 @@ import { COUNTRIES } from '../../models/constants';
  * @param data Location from a GraphQL query
  * @returns A Location that contains the full CountryType object
  */
-const formatLocation = (data: Maybe<GraphQLLocation>): Partial<LocationModel> | undefined => {
+export const formatLocation = (
+  data: Maybe<GraphQLLocation> | { __typename?: 'Location'; city: string; country: string } | undefined
+): Partial<LocationModel> | undefined => {
   if (!data) {
     return undefined;
   }
@@ -21,4 +23,15 @@ const formatLocation = (data: Maybe<GraphQLLocation>): Partial<LocationModel> | 
   };
 };
 
-export { formatLocation };
+export const formatDatabaseLocation = (
+  data: Partial<LocationModel> | undefined
+): { __typename?: 'Location'; city: string; country: string } | undefined => {
+  if (!data) {
+    return undefined;
+  }
+
+  return {
+    city: data.city!,
+    country: data.country?.code || '',
+  };
+};

@@ -13,6 +13,9 @@ import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
 import { visualSegmentSchema } from './Common/VisualSegment';
 import InputField from './Common/InputField';
+import { EmptyLocation, Location } from '../../domain/location/Location';
+import { formatLocation } from '../../domain/location/LocationUtils';
+import { LocationSegment } from '../../domain/location/LocationSegment';
 
 interface Props {
   context?: Context;
@@ -34,6 +37,7 @@ export interface HubEditFormValuesType {
   background: string;
   impact: string;
   tagline: string;
+  location: Partial<Location>;
   vision: string;
   who: string;
   references: Reference[];
@@ -74,6 +78,7 @@ const HubEditForm: FC<Props> = ({
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
+    location: formatLocation(context?.location) || EmptyLocation,
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
@@ -131,6 +136,7 @@ const HubEditForm: FC<Props> = ({
               />
             </Grid>
             <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
+            <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}

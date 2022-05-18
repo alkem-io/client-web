@@ -325,6 +325,11 @@ export const ContextDetailsFragmentDoc = gql`
     id
     tagline
     background
+    location {
+      id
+      country
+      city
+    }
     vision
     impact
     who
@@ -1173,6 +1178,11 @@ export const ContextTabFragmentDoc = gql`
     id
     tagline
     background
+    location {
+      id
+      city
+      country
+    }
     vision
     impact
     who
@@ -1456,6 +1466,11 @@ export const OpportunityProviderFragmentDoc = gql`
       }
       visuals {
         ...VisualFull
+      }
+      location {
+        id
+        country
+        city
       }
     }
     community {
@@ -10787,6 +10802,7 @@ export const UpdateAspectDocument = gql`
       id
       description
       displayName
+      type
       tagset {
         id
         name

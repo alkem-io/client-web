@@ -419,6 +419,7 @@
         "placeholder": "Enter a description"
       },
       "location": {
+        "title": "Location",
         "country": {
           "name": "Country",
           "placeholder": "Select a country"
@@ -1132,7 +1133,11 @@
   },
   "aspect-edit": {
     "new": "New Aspect",
-    "edit": "Edit Aspect"
+    "edit": "Edit Aspect",
+    "type": {
+      "title": "Aspect Type",
+      "help-text": "Type of Aspect"
+    }
   },
   "contributors-section": {
     "title": "Contributors",

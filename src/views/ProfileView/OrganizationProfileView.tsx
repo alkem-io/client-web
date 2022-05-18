@@ -9,12 +9,15 @@ import SocialLinks, { SocialLinkItem } from '../../components/composite/common/S
 import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
 import VerifiedStatus from '../../components/composite/common/VerifiedStatus/VerifiedStatus';
 import Typography from '../../components/core/Typography';
+import { formatLocation } from '../../domain/location/LocationUtils';
+import LocationView from '../../domain/location/LocationView';
+import { Location } from '../../models/graphql-schema';
 
 export interface OrganizationProfileViewEntity {
   displayName: string;
   settingsUrl: string;
   settingsTooltip: string;
-  location?: string;
+  location?: Location;
   telephone?: string;
   avatar?: string;
   banner?: string;
@@ -93,10 +96,15 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
             )
           }
           title={
-            <Box padding={1}>
+            <Box padding={1} sx={{ position: 'relative', top: '48px' }}>
               {entity.verified !== undefined && (
                 <VerifiedStatus verified={entity.verified} helpText={t('pages.organization.verified-status.help')} />
               )}
+            </Box>
+          }
+          subheader={
+            <Box>
+              <LocationView location={formatLocation(entity.location)} />
             </Box>
           }
         />
@@ -110,9 +118,6 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
                 {entity.displayName}
               </Typography>
             </Grid>
-          </Grid>
-          <Grid item>
-            <ProfileDetail title={t('components.profile.fields.location.title')} value={entity.location} />
           </Grid>
           <Grid item container spacing={2} alignItems="flex-start">
             <Grid item xs={6}>
