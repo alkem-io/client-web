@@ -118,7 +118,7 @@ const AspectForm: FC<AspectFormProps> = ({
       validateOnMount
       onSubmit={() => {}}
     >
-      {({ values: { references } }) => (
+      {({ values: { type, references } }) => (
         <Grid container spacing={2}>
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
           <FormRow cols={2}>
@@ -130,7 +130,7 @@ const AspectForm: FC<AspectFormProps> = ({
             />
           </FormRow>
           <FormRow cols={2}>
-            <AspectTypeFormField name="type" value={aspect?.type} />
+            <AspectTypeFormField name="type" value={type} />
           </FormRow>
           <SectionSpacer />
           <MarkdownInput
