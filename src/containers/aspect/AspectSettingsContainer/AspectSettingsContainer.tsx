@@ -1,7 +1,14 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../models/container';
-import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
+import {
+  PushFunc,
+  RemoveFunc,
+  useApolloErrorHandler,
+  useAspects,
+  useEditReference,
+  useNotification,
+} from '../../../hooks';
 import {
   useChallengeAspectSettingsQuery,
   useDeleteAspectMutation,
@@ -13,6 +20,7 @@ import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import removeFromCache from '../../../utils/apollo-cache/removeFromCache';
+import { AspectWithPermissions } from '../../ContributeTabContainer/ContributeTabContainer';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];
@@ -21,6 +29,7 @@ type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'typ
 
 export interface AspectSettingsContainerEntities {
   aspect?: AspectSettingsFragment;
+  aspects?: AspectWithPermissions[] | undefined;
 }
 
 export interface AspectSettingsContainerActions {
@@ -60,6 +69,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
+  const { aspects } = useAspects({ hubNameId, challengeNameId, opportunityNameId });
 
   const isAspectDefined = aspectNameId && hubNameId;
 
@@ -160,7 +170,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   return (
     <>
       {children(
-        { aspect },
+        { aspect, aspects },
         { loading, error, updating, deleting, updateError },
         { handleUpdate, handleAddReference, handleRemoveReference, handleDelete }
       )}
