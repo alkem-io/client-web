@@ -1114,13 +1114,42 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     community {
       id
-      authorization {
-        id
-        myPrivileges
-      }
       memberUsers {
         id
         displayName
+        nameID
+        profile {
+          id
+          location {
+            city
+            country
+          }
+          avatar {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
+        }
+      }
+      memberOrganizations {
+        id
+        displayName
+        nameID
+        profile {
+          id
+          avatar {
+            id
+            uri
+            name
+          }
+        }
+      }
+      authorization {
+        id
+        myPrivileges
       }
     }
     tagset {
@@ -1306,6 +1335,36 @@ export const HubPageFragmentDoc = gql`
       id
       memberUsers {
         id
+        displayName
+        nameID
+        profile {
+          id
+          location {
+            city
+            country
+          }
+          avatar {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
+        }
+      }
+      memberOrganizations {
+        id
+        displayName
+        nameID
+        profile {
+          id
+          avatar {
+            id
+            uri
+            name
+          }
+        }
       }
       authorization {
         id
@@ -1384,13 +1443,42 @@ export const OpportunityPageFragmentDoc = gql`
     }
     community {
       id
+      memberUsers {
+        id
+        displayName
+        nameID
+        profile {
+          id
+          location {
+            city
+            country
+          }
+          avatar {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
+        }
+      }
+      memberOrganizations {
+        id
+        displayName
+        nameID
+        profile {
+          id
+          avatar {
+            id
+            uri
+            name
+          }
+        }
+      }
       authorization {
         id
         myPrivileges
-      }
-      memberUsers {
-        id
-        nameID
       }
     }
   }
@@ -14425,58 +14513,6 @@ export type UserCardsContainerQueryResult = Apollo.QueryResult<
 export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsContainerQueryVariables) {
   return { query: UserCardsContainerDocument, variables: variables };
 }
-export const UserListDocument = gql`
-  query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
-    usersPaginated(first: $first, after: $after, filter: $filter) {
-      users {
-        id
-        displayName
-        email
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-    }
-  }
-`;
-
-/**
- * __useUserListQuery__
- *
- * To run a query within a React component, call `useUserListQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserListQuery({
- *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useUserListQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
-}
-export function useUserListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
-}
-export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
-export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
-export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
-export function refetchUserListQuery(variables: SchemaTypes.UserListQueryVariables) {
-  return { query: UserListDocument, variables: variables };
-}
 export const OpportunityProviderDocument = gql`
   query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -15179,6 +15215,58 @@ export function useContextAspectCreatedSubscription(
 export type ContextAspectCreatedSubscriptionHookResult = ReturnType<typeof useContextAspectCreatedSubscription>;
 export type ContextAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ContextAspectCreatedSubscription>;
+export const UserListDocument = gql`
+  query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
+    usersPaginated(first: $first, after: $after, filter: $filter) {
+      users {
+        id
+        displayName
+        email
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserListQuery__
+ *
+ * To run a query within a React component, call `useUserListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserListQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useUserListQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
+}
+export function useUserListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
+}
+export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
+export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
+export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
+export function refetchUserListQuery(variables: SchemaTypes.UserListQueryVariables) {
+  return { query: UserListDocument, variables: variables };
+}
 export const HubPreferencesDocument = gql`
   query hubPreferences($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {

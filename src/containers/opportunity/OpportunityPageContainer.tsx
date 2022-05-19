@@ -19,8 +19,10 @@ import getActivityCount from '../../utils/get-activity-count';
 import { replaceAll } from '../../utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
+import useMembersAsContributors from '../../domain/community/utils/useMembersAsContributors';
+import { EntityDashboardContributorsSectionProps } from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 
-export interface OpportunityContainerEntities {
+export interface OpportunityContainerEntities extends EntityDashboardContributorsSectionProps {
   opportunity: OpportunityPageFragment;
   permissions: {
     canEdit: boolean;
@@ -180,6 +182,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const aspectsCount = useAspectsCount(_activity);
 
+  const contributors = useMembersAsContributors(opportunity?.community);
+
   return (
     <>
       {children(
@@ -208,6 +212,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           discussions: [], //discussionList,
           aspects,
           aspectsCount,
+          ...contributors,
         },
         {
           loading: loadingOpportunity, // || loadingDiscussions,

@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import HubPageContainer from '../../containers/hub/HubPageContainer';
 import { useUpdateNavigation } from '../../hooks';
-import { User } from '../../models/graphql-schema';
 import HubDashboardView2 from '../../views/Hub/HubDashboardView2';
 import { PageProps } from '../common';
 import { getVisualBanner } from '../../utils/visuals.utils';
@@ -32,13 +31,16 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
               activity={entities.activity}
               challenges={entities.challenges}
               discussions={entities.discussionList}
-              members={entities?.hub?.community?.memberUsers as User[]}
               aspects={entities.aspects}
               aspectsCount={entities.aspectsCount}
               loading={state.loading}
               isMember={entities.isMember}
               communityReadAccess={entities.permissions.communityReadAccess}
               challengesReadAccess={entities.permissions.challengesReadAccess}
+              memberUsers={entities.memberUsers}
+              memberUsersCount={entities.memberUsersCount}
+              memberOrganizations={entities.memberOrganizations}
+              memberOrganizationsCount={entities.memberOrganizationsCount}
             />
           )}
         </HubPageContainer>

@@ -1,10 +1,7 @@
 import React, { cloneElement, FC, ReactElement } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import areDepsEqual from '../../utils/areDepsEqual';
-
-interface Identifiable {
-  id: string;
-}
+import { Identifiable } from '../../types/Identifiable';
 
 interface CardsLayoutProps<Item extends Identifiable | null | undefined> {
   items: Item[];
