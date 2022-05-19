@@ -1111,13 +1111,42 @@ export const ChallengeProfileFragmentDoc = gql`
     }
     community {
       id
-      authorization {
-        id
-        myPrivileges
-      }
       memberUsers {
         id
         displayName
+        nameID
+        profile {
+          id
+          location {
+            city
+            country
+          }
+          avatar {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
+        }
+      }
+      memberOrganizations {
+        id
+        displayName
+        nameID
+        profile {
+          id
+          avatar {
+            id
+            uri
+            name
+          }
+        }
+      }
+      authorization {
+        id
+        myPrivileges
       }
       leadOrganizations {
         ...OrganizationDetails
@@ -1306,6 +1335,36 @@ export const HubPageFragmentDoc = gql`
       id
       memberUsers {
         id
+        displayName
+        nameID
+        profile {
+          id
+          location {
+            city
+            country
+          }
+          avatar {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
+        }
+      }
+      memberOrganizations {
+        id
+        displayName
+        nameID
+        profile {
+          id
+          avatar {
+            id
+            uri
+            name
+          }
+        }
       }
       authorization {
         id
@@ -1384,13 +1443,42 @@ export const OpportunityPageFragmentDoc = gql`
     }
     community {
       id
+      memberUsers {
+        id
+        displayName
+        nameID
+        profile {
+          id
+          location {
+            city
+            country
+          }
+          avatar {
+            id
+            uri
+          }
+          tagsets {
+            id
+            tags
+          }
+        }
+      }
+      memberOrganizations {
+        id
+        displayName
+        nameID
+        profile {
+          id
+          avatar {
+            id
+            uri
+            name
+          }
+        }
+      }
       authorization {
         id
         myPrivileges
-      }
-      memberUsers {
-        id
-        nameID
       }
     }
   }

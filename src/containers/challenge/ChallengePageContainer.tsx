@@ -11,8 +11,10 @@ import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } 
 import getActivityCount from '../../utils/get-activity-count';
 import { ActivityType } from '../../models/constants';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
+import { EntityDashboardContributorsSectionProps } from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import useMembersAsContributors from '../../domain/community/utils/useMembersAsContributors';
 
-export interface ChallengeContainerEntities {
+export interface ChallengeContainerEntities extends EntityDashboardContributorsSectionProps {
   hubId: string;
   hubNameId: string;
   hubDisplayName: string;
@@ -89,6 +91,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
+  const contributors = useMembersAsContributors(_challenge?.hub.challenge.community);
+
   return (
     <>
       {children(
@@ -104,6 +108,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,
           discussions: discussionList,
+          ...contributors,
         },
         { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions },
         {}

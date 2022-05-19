@@ -10,9 +10,10 @@ import ContributorCard, {
 } from '../cards/ContributorCard/ContributorCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
+import { times } from 'lodash';
 
-const MAX_USERS_TO_SHOWN = 12;
-const MAX_ORGANIZATIONS_TO_SHOWN = 12;
+const MAX_USERS_TO_SHOW = 12;
+const MAX_ORGANIZATIONS_TO_SHOW = 12;
 
 export interface DashboardContributorsSectionSectionProps extends DashboardGenericSectionProps {
   userTitle: string;
@@ -52,8 +53,8 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
           <SectionSpacer />
           <Grid container spacing={1} alignItems="center">
             {loading.users &&
-              Array.apply(null, { length: MAX_USERS_TO_SHOWN } as any).map((_, i) => (
-                <Grid item flexBasis={'16.6%'} key={i}>
+              times(MAX_USERS_TO_SHOW, i => (
+                <Grid item flexBasis={'16.6%'} key={`__loading_${i}`}>
                   <ContributorCardSkeleton />
                 </Grid>
               ))}
@@ -83,8 +84,8 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
           <SectionSpacer />
           <Grid container spacing={1} alignItems="center">
             {loading.organizations &&
-              Array.apply(null, { length: MAX_ORGANIZATIONS_TO_SHOWN } as any).map((_, i) => (
-                <Grid item flexBasis={'16.6%'} key={i}>
+              times(MAX_ORGANIZATIONS_TO_SHOW, i => (
+                <Grid item flexBasis={'16.6%'} key={`__loading_${i}`}>
                   <ContributorCardSkeleton />
                 </Grid>
               ))}
