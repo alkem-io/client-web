@@ -713,6 +713,7 @@ export type MutationKeySpecifier = (
   | 'assignOrganizationAsCommunityLead'
   | 'assignOrganizationAsCommunityMember'
   | 'assignUserAsChallengeAdmin'
+  | 'assignUserAsCommunityLead'
   | 'assignUserAsCommunityMember'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
@@ -822,6 +823,7 @@ export type MutationFieldPolicy = {
   assignOrganizationAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
   assignOrganizationAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsChallengeAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsCommunityLead?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -16,6 +16,9 @@ import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProv
 import { Discussion } from '../../models/discussion/discussion';
 import { ActivityType } from '../../models/constants';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
+import { WithId } from '../../types/WithId';
+import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
+import useMembersAsContributors from '../../domain/community/utils/useMembersAsContributors';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -33,6 +36,10 @@ export interface HubContainerEntities {
   challenges: ChallengeCardFragment[];
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
+  memberUsers: WithId<ContributorCardProps>[] | undefined;
+  memberUsersCount: number | undefined;
+  memberOrganizations: WithId<ContributorCardProps>[] | undefined;
+  memberOrganizationsCount: number | undefined;
 }
 
 export interface HubContainerActions {}
@@ -100,6 +107,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const aspects = _hub?.hub.context?.aspects ?? EMPTY;
   const aspectsCount = useAspectsCount(_hub?.hub.activity);
 
+  const contributors = useMembersAsContributors(_hub?.hub.community);
+
   return (
     <>
       {children(
@@ -115,6 +124,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           challenges,
           aspects,
           aspectsCount,
+          ...contributors,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,
