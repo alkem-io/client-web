@@ -2,12 +2,10 @@ import React, { FC } from 'react';
 import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import LinkCard from '../../../../core/LinkCard/LinkCard';
-import TagsComponent from '../../TagsComponent/TagsComponent';
-import TagLabel from '../../TagLabel/TagLabel';
-import Typography from '@mui/material/Typography';
-import { fontWeight } from '../../../../core/Typography';
+import LinkCard from '../../../../components/core/LinkCard/LinkCard';
+import TagsComponent from '../../../../components/composite/common/TagsComponent/TagsComponent';
 import clsx from 'clsx';
+import LabelAndTitle, { LabelAndTitleComponentProps } from './LabelAndTitle';
 
 type mediaSize = 'small' | 'medium' | 'large';
 
@@ -32,9 +30,7 @@ export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
 export interface ContributionCardV2Props {
   details?: ContributionCardV2Details;
   className?: string;
-  classes?: {
-    label?: string;
-  };
+  classes?: LabelAndTitleComponentProps['classes'];
   options?: {
     noMedia?: boolean;
   };
@@ -57,7 +53,6 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
     },
     cardContent: {
       padding: theme.spacing(1.5),
-      marginRight: '-5px',
       flexGrow: 1,
       background: theme.palette.background.default,
     },
@@ -125,7 +120,6 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({
             headerText={headerText}
             labelText={labelText}
             labelAboveTitle={labelAboveTitle}
-            mediaSize={mediaSize}
             classes={classes}
           />
         )}
@@ -141,43 +135,5 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({
     </LinkCard>
   );
 };
+
 export default ContributionCardV2;
-
-interface LabelAndTitleComponentProps {
-  headerText: string;
-  labelText?: string;
-  labelAboveTitle?: boolean;
-  mediaSize: mediaSize;
-  classes?: ContributionCardV2Props['classes'];
-}
-
-const LabelAndTitle: FC<LabelAndTitleComponentProps> = ({
-  headerText,
-  labelText,
-  labelAboveTitle,
-  classes,
-  mediaSize,
-}) => {
-  const styles = useStyles({ mediaSize });
-  const title = (
-    <Typography color="primary" className={styles.textClamp} noWrap sx={{ fontWeight: fontWeight.boldLight }}>
-      {headerText}
-    </Typography>
-  );
-
-  return labelAboveTitle ? (
-    <Box display="flex" sx={{ flexDirection: 'column' }}>
-      {labelText && (
-        <TagLabel className={classes?.label} sx={{ alignSelf: 'end' }}>
-          {labelText}
-        </TagLabel>
-      )}
-      {title}
-    </Box>
-  ) : (
-    <Box display="flex" alignItems="center" justifyContent="space-between">
-      {title}
-      {labelText && <TagLabel className={classes?.label}>{labelText}</TagLabel>}
-    </Box>
-  );
-};

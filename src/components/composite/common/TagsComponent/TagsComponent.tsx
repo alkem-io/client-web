@@ -75,7 +75,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInR
           label={item}
           variant="outlined"
           color="primary"
-          sx={{ borderColor: '#068293' }}
+          sx={{ borderColor: 'primary.main' }}
           size="small"
           icon={<FiberManualRecordIcon fontSize="small" />}
           className={clsx(styles.tagMargin, {
@@ -98,7 +98,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInR
           label={getMoreTagsText(remainingTags.length)}
           variant="outlined"
           color="primary"
-          sx={{ borderColor: '#068293' }}
+          sx={{ borderColor: 'primary.main' }}
           size="small"
           icon={<FiberManualRecordIcon />}
           className={styles.tagMargin}
@@ -144,7 +144,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInR
                 <Chip
                   variant="outlined"
                   color="primary"
-                  sx={{ borderColor: '#068293' }}
+                  sx={{ borderColor: 'primary.main' }}
                   size="small"
                   icon={<FiberManualRecordIcon fontSize="small" />}
                 />

@@ -120,7 +120,7 @@ export const ApplicationButton: FC<ApplicationButtonProps> = ({
           disabled
           sx={{
             '&.Mui-disabled': {
-              color: '#00A88F',
+              color: 'secondary.main',
             },
           }}
         >

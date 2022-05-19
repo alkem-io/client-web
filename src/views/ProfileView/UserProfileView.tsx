@@ -13,6 +13,7 @@ import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enum
 import References from '../../components/composite/common/References/References';
 import LocationView from '../../domain/location/LocationView';
 import { formatLocation } from '../../domain/location/LocationUtils';
+import { styled } from '@mui/styles';
 
 export interface UserProfileViewProps {
   entities: {
@@ -64,11 +65,12 @@ const useStyles = makeStyles(theme =>
       flexDirection: 'column',
     },
     headerAction: {},
-    tagsOffset: {
-      marginTop: '5px',
-    },
   })
 );
+
+const TagsWithOffset = styled(TagsComponent)({
+  marginTop: 5,
+});
 
 export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMetadata }, options }) => {
   const { t } = useTranslation();
@@ -149,14 +151,14 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
             <Typography color="primary" weight="boldLight" aria-label="keywords">
               {t('components.profile.fields.keywords.title')}
             </Typography>
-            <TagsComponent className={styles.tagsOffset} tags={keywords} />
+            <TagsWithOffset tags={keywords} />
           </Grid>
 
           <Grid item>
             <Typography color="primary" weight="boldLight" aria-label="skills">
               {t('components.profile.fields.skills.title')}
             </Typography>
-            <TagsComponent className={styles.tagsOffset} tags={skills} />
+            <TagsWithOffset tags={skills} />
           </Grid>
 
           <Grid item container direction="column">
