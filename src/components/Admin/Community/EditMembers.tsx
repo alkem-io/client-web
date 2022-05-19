@@ -19,6 +19,8 @@ import { UserDisplayNameFragment } from '../../../models/graphql-schema';
 import { Skeleton } from '@mui/material';
 import TableRowLoading from '../../../domain/shared/pagination/TableRowLoading';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
+import { times } from 'lodash';
+import { Identifiable } from '../../../domain/shared/types/Identifiable';
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
   background: theme.palette.divider,
@@ -37,6 +39,8 @@ const StyledButtonAdd = styled(IconButton)(({ theme }) => ({
 const StyledButtonRemove = styled(IconButton)(({ theme }) => ({
   color: theme.palette.negative.main,
 }));
+
+const initEmptyMembers = <T extends Identifiable>() => times(3, i => ({ id: `__loading_${i}` } as T));
 
 const TABLE_HEIGHT = 600;
 const FILTER_DEBOUNCE = 500;
@@ -76,7 +80,7 @@ export const EditMembers: FC<EditMembersProps> = ({
 }) => {
   const { t } = useTranslation();
   const membersData = useMemo<Member[]>(
-    () => (loadingMembers ? new Array(3).fill({}) : members),
+    () => (loadingMembers ? initEmptyMembers() : members),
     [loadingMembers, members]
   );
   const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
@@ -120,7 +124,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                       {filteredMembers.map(m => {
                         const disableExecutor = m.id === executor?.id && !deleteExecutor;
                         return (
-                          <StyledTableRow>
+                          <StyledTableRow key={m.id}>
                             <TableCell>
                               <Cell>{m.displayName}</Cell>
                             </TableCell>
@@ -215,8 +219,8 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const membersData = useMemo<Member[]>(
-    () => (loading ? new Array(3).fill({}) : filteredMembers),
+  const membersData = useMemo<UserDisplayNameFragment[]>(
+    () => (loading ? initEmptyMembers() : filteredMembers),
     [loading, filteredMembers]
   );
   const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);

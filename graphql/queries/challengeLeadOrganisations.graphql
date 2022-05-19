@@ -3,8 +3,10 @@ query challengeLeadOrganizations($hubId: UUID_NAMEID!, $challengeID: UUID_NAMEID
     id
     challenge(ID: $challengeID) {
       id
-      leadOrganizations {
-        ...OrganizationDetails
+      community {
+        leadOrganizations {
+          ...OrganizationDetails
+        }
       }
     }
   }

@@ -403,8 +403,6 @@ export type Challenge = Searchable & {
   displayName: Scalars['String'];
   hubID: Scalars['String'];
   id: Scalars['UUID'];
-  /** The Organizations that are leading this Challenge. */
-  leadOrganizations: Array<Organization>;
   /** The lifeycle for the Challenge. */
   lifecycle?: Maybe<Lifecycle>;
   /** A name identifier of the entity, unique within a given scope. */
@@ -2703,8 +2701,6 @@ export type UpdateChallengeInput = {
   context?: InputMaybe<UpdateContextInput>;
   /** The display name for this entity. */
   displayName?: InputMaybe<Scalars['String']>;
-  /** Update the lead Organizations for the Challenge. */
-  leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
@@ -3893,6 +3889,15 @@ export type ApplyForCommunityMembershipMutation = {
   applyForCommunityMembership: { __typename?: 'Application'; id: string };
 };
 
+export type AssignOrganizationAsCommunityLeadMutationVariables = Exact<{
+  leadershipData: AssignCommunityLeadOrganizationInput;
+}>;
+
+export type AssignOrganizationAsCommunityLeadMutation = {
+  __typename?: 'Mutation';
+  assignOrganizationAsCommunityLead: { __typename?: 'Community'; id: string };
+};
+
 export type AssignUserAsCommunityMemberMutationVariables = Exact<{
   input: AssignCommunityMemberUserInput;
 }>;
@@ -4470,6 +4475,15 @@ export type RemoveMessageFromDiscussionMutationVariables = Exact<{
 }>;
 
 export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
+
+export type RemoveOrganizationAsCommunityLeadMutationVariables = Exact<{
+  leadershipData: RemoveCommunityLeadOrganizationInput;
+}>;
+
+export type RemoveOrganizationAsCommunityLeadMutation = {
+  __typename?: 'Mutation';
+  removeOrganizationAsCommunityLead: { __typename?: 'Community'; id: string };
+};
 
 export type RemoveUserAsCommunityMemberMutationVariables = Exact<{
   input: RemoveCommunityMemberUserInput;
@@ -5173,20 +5187,27 @@ export type ChallengeLeadOrganizationsQuery = {
     challenge: {
       __typename?: 'Challenge';
       id: string;
-      leadOrganizations: Array<{
-        __typename?: 'Organization';
-        id: string;
-        displayName: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-          location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-        };
-      }>;
+      community?:
+        | {
+            __typename?: 'Community';
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                  };
+                }>
+              | undefined;
+          }
+        | undefined;
     };
   };
   organizations: Array<{
@@ -8945,20 +8966,6 @@ export type ChallengePageQuery = {
       nameID: string;
       displayName: string;
       activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-      leadOrganizations: Array<{
-        __typename?: 'Organization';
-        id: string;
-        displayName: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-          location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-        };
-      }>;
       lifecycle?:
         | {
             __typename?: 'Lifecycle';
@@ -9049,6 +9056,22 @@ export type ChallengePageQuery = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                  };
+                }>
+              | undefined;
           }
         | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -9120,20 +9143,6 @@ export type ChallengeProfileFragment = {
   nameID: string;
   displayName: string;
   activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  leadOrganizations: Array<{
-    __typename?: 'Organization';
-    id: string;
-    displayName: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
-      id: string;
-      description?: string | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-    };
-  }>;
   lifecycle?:
     | {
         __typename?: 'Lifecycle';
@@ -9223,6 +9232,22 @@ export type ChallengeProfileFragment = {
           | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        leadOrganizations?:
+          | Array<{
+              __typename?: 'Organization';
+              id: string;
+              displayName: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                description?: string | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+              };
+            }>
           | undefined;
       }
     | undefined;
@@ -9515,20 +9540,31 @@ export type ChallengeLeadingOrganizationsQuery = {
     challenge: {
       __typename?: 'Challenge';
       id: string;
-      leadOrganizations: Array<{
-        __typename?: 'Organization';
-        id: string;
-        nameID: string;
-        displayName: string;
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-      }>;
+      community?:
+        | {
+            __typename?: 'Community';
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                }>
+              | undefined;
+          }
+        | undefined;
     };
   };
 };
