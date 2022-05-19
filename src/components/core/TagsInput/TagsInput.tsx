@@ -67,7 +67,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
               variant="outlined"
               label={option}
               {...getTagProps({ index })}
-              sx={{ borderColor: '#068293' }}
+              sx={{ borderColor: 'primary.main' }}
               size="small"
               icon={<FiberManualRecord />}
             />
