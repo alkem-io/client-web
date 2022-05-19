@@ -2701,8 +2701,6 @@ export type UpdateChallengeInput = {
   context?: InputMaybe<UpdateContextInput>;
   /** The display name for this entity. */
   displayName?: InputMaybe<Scalars['String']>;
-  /** Update the lead Organizations for the Challenge. */
-  leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
@@ -3891,6 +3889,15 @@ export type ApplyForCommunityMembershipMutation = {
   applyForCommunityMembership: { __typename?: 'Application'; id: string };
 };
 
+export type AssignOrganizationAsCommunityLeadMutationVariables = Exact<{
+  leadershipData: AssignCommunityLeadOrganizationInput;
+}>;
+
+export type AssignOrganizationAsCommunityLeadMutation = {
+  __typename?: 'Mutation';
+  assignOrganizationAsCommunityLead: { __typename?: 'Community'; id: string };
+};
+
 export type AssignUserAsCommunityMemberMutationVariables = Exact<{
   input: AssignCommunityMemberUserInput;
 }>;
@@ -4468,6 +4475,15 @@ export type RemoveMessageFromDiscussionMutationVariables = Exact<{
 }>;
 
 export type RemoveMessageFromDiscussionMutation = { __typename?: 'Mutation'; removeMessageFromDiscussion: string };
+
+export type RemoveOrganizationAsCommunityLeadMutationVariables = Exact<{
+  leadershipData: RemoveCommunityLeadOrganizationInput;
+}>;
+
+export type RemoveOrganizationAsCommunityLeadMutation = {
+  __typename?: 'Mutation';
+  removeOrganizationAsCommunityLead: { __typename?: 'Community'; id: string };
+};
 
 export type RemoveUserAsCommunityMemberMutationVariables = Exact<{
   input: RemoveCommunityMemberUserInput;
@@ -10673,21 +10689,6 @@ export type UserCardsContainerQuery = {
   }>;
 };
 
-export type UserListQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['UUID']>;
-  filter?: InputMaybe<UserFilterInput>;
-}>;
-
-export type UserListQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-  };
-};
-
 export type OpportunityProviderQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
@@ -11159,6 +11160,21 @@ export type ContributeTabAspectFragment = {
   banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+};
+
+export type UserListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type UserListQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
 };
 
 export type HubPreferencesQueryVariables = Exact<{

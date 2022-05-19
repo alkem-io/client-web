@@ -1618,6 +1618,56 @@ export type ApplyForCommunityMembershipMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.ApplyForCommunityMembershipMutation,
   SchemaTypes.ApplyForCommunityMembershipMutationVariables
 >;
+export const AssignOrganizationAsCommunityLeadDocument = gql`
+  mutation assignOrganizationAsCommunityLead($leadershipData: AssignCommunityLeadOrganizationInput!) {
+    assignOrganizationAsCommunityLead(leadershipData: $leadershipData) {
+      id
+    }
+  }
+`;
+export type AssignOrganizationAsCommunityLeadMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
+  SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
+>;
+
+/**
+ * __useAssignOrganizationAsCommunityLeadMutation__
+ *
+ * To run a mutation, you first call `useAssignOrganizationAsCommunityLeadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignOrganizationAsCommunityLeadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignOrganizationAsCommunityLeadMutation, { data, loading, error }] = useAssignOrganizationAsCommunityLeadMutation({
+ *   variables: {
+ *      leadershipData: // value for 'leadershipData'
+ *   },
+ * });
+ */
+export function useAssignOrganizationAsCommunityLeadMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
+    SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
+    SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
+  >(AssignOrganizationAsCommunityLeadDocument, options);
+}
+export type AssignOrganizationAsCommunityLeadMutationHookResult = ReturnType<
+  typeof useAssignOrganizationAsCommunityLeadMutation
+>;
+export type AssignOrganizationAsCommunityLeadMutationResult =
+  Apollo.MutationResult<SchemaTypes.AssignOrganizationAsCommunityLeadMutation>;
+export type AssignOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AssignOrganizationAsCommunityLeadMutation,
+  SchemaTypes.AssignOrganizationAsCommunityLeadMutationVariables
+>;
 export const AssignUserAsCommunityMemberDocument = gql`
   mutation assignUserAsCommunityMember($input: AssignCommunityMemberUserInput!) {
     assignUserAsCommunityMember(membershipData: $input) {
@@ -3795,6 +3845,56 @@ export type RemoveMessageFromDiscussionMutationResult =
 export type RemoveMessageFromDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveMessageFromDiscussionMutation,
   SchemaTypes.RemoveMessageFromDiscussionMutationVariables
+>;
+export const RemoveOrganizationAsCommunityLeadDocument = gql`
+  mutation removeOrganizationAsCommunityLead($leadershipData: RemoveCommunityLeadOrganizationInput!) {
+    removeOrganizationAsCommunityLead(leadershipData: $leadershipData) {
+      id
+    }
+  }
+`;
+export type RemoveOrganizationAsCommunityLeadMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
+  SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
+>;
+
+/**
+ * __useRemoveOrganizationAsCommunityLeadMutation__
+ *
+ * To run a mutation, you first call `useRemoveOrganizationAsCommunityLeadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveOrganizationAsCommunityLeadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeOrganizationAsCommunityLeadMutation, { data, loading, error }] = useRemoveOrganizationAsCommunityLeadMutation({
+ *   variables: {
+ *      leadershipData: // value for 'leadershipData'
+ *   },
+ * });
+ */
+export function useRemoveOrganizationAsCommunityLeadMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
+    SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
+    SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
+  >(RemoveOrganizationAsCommunityLeadDocument, options);
+}
+export type RemoveOrganizationAsCommunityLeadMutationHookResult = ReturnType<
+  typeof useRemoveOrganizationAsCommunityLeadMutation
+>;
+export type RemoveOrganizationAsCommunityLeadMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveOrganizationAsCommunityLeadMutation>;
+export type RemoveOrganizationAsCommunityLeadMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveOrganizationAsCommunityLeadMutation,
+  SchemaTypes.RemoveOrganizationAsCommunityLeadMutationVariables
 >;
 export const RemoveUserAsCommunityMemberDocument = gql`
   mutation removeUserAsCommunityMember($input: RemoveCommunityMemberUserInput!) {
@@ -14429,58 +14529,6 @@ export type UserCardsContainerQueryResult = Apollo.QueryResult<
 export function refetchUserCardsContainerQuery(variables: SchemaTypes.UserCardsContainerQueryVariables) {
   return { query: UserCardsContainerDocument, variables: variables };
 }
-export const UserListDocument = gql`
-  query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
-    usersPaginated(first: $first, after: $after, filter: $filter) {
-      users {
-        id
-        displayName
-        email
-      }
-      pageInfo {
-        endCursor
-        hasNextPage
-      }
-    }
-  }
-`;
-
-/**
- * __useUserListQuery__
- *
- * To run a query within a React component, call `useUserListQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUserListQuery({
- *   variables: {
- *      first: // value for 'first'
- *      after: // value for 'after'
- *      filter: // value for 'filter'
- *   },
- * });
- */
-export function useUserListQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
-}
-export function useUserListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
-}
-export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
-export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
-export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
-export function refetchUserListQuery(variables: SchemaTypes.UserListQueryVariables) {
-  return { query: UserListDocument, variables: variables };
-}
 export const OpportunityProviderDocument = gql`
   query opportunityProvider($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -15183,6 +15231,58 @@ export function useContextAspectCreatedSubscription(
 export type ContextAspectCreatedSubscriptionHookResult = ReturnType<typeof useContextAspectCreatedSubscription>;
 export type ContextAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ContextAspectCreatedSubscription>;
+export const UserListDocument = gql`
+  query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
+    usersPaginated(first: $first, after: $after, filter: $filter) {
+      users {
+        id
+        displayName
+        email
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserListQuery__
+ *
+ * To run a query within a React component, call `useUserListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserListQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useUserListQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
+}
+export function useUserListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>(UserListDocument, options);
+}
+export type UserListQueryHookResult = ReturnType<typeof useUserListQuery>;
+export type UserListLazyQueryHookResult = ReturnType<typeof useUserListLazyQuery>;
+export type UserListQueryResult = Apollo.QueryResult<SchemaTypes.UserListQuery, SchemaTypes.UserListQueryVariables>;
+export function refetchUserListQuery(variables: SchemaTypes.UserListQueryVariables) {
+  return { query: UserListDocument, variables: variables };
+}
 export const HubPreferencesDocument = gql`
   query hubPreferences($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
