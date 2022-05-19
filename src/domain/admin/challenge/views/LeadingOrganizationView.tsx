@@ -45,7 +45,7 @@ const LeadingOrganizationView: FC = () => {
   });
 
   const challengeId = _challenge?.hub?.challenge.id || '';
-  const communityId = _challenge?.hub?.challenge.community?.id || '';
+  const communityId = _challenge?.hub?.challenge.community?.id;
 
   const { data: _leadingOrganizations } = useChallengeLeadOrganizationsQuery({
     variables: { hubId: hubNameId, challengeID: challengeNameId },
@@ -76,22 +76,28 @@ const LeadingOrganizationView: FC = () => {
   const isUpdating = isUpdatingChallenge || isRemovingOrganization;
 
   const handleAdd = (organizationID: string) => {
+    if (!communityId) {
+      throw new TypeError("Community isn't yet loaded.");
+    }
     assignOrganizationAsCommunityLead({
       variables: {
         leadershipData: {
           communityID: communityId,
-          organizationID: organizationID,
+          organizationID,
         },
       },
     });
   };
 
   const handleRemove = (organizationID: string) => {
+    if (!communityId) {
+      throw new TypeError("Community isn't yet loaded.");
+    }
     removeOrganizationAsCommunityLead({
       variables: {
         leadershipData: {
           communityID: communityId,
-          organizationID: organizationID,
+          organizationID,
         },
       },
     });
