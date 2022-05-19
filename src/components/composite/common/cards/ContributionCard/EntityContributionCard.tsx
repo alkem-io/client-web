@@ -4,7 +4,9 @@ import { styled } from '@mui/material';
 import { SectionSpacer } from '../../../../core/Section/Section';
 import ActivitiesV2 from '../../Activities/ActivitiesV2';
 import { ActivityItem } from '../../ActivityPanel/Activities';
-import ContributionCardV2, { ContributionCardV2Props } from './ContributionCardV2';
+import ContributionCardV2, {
+  ContributionCardV2Props,
+} from '../../../../../domain/shared/components/ContributuionCard/ContributionCardV2';
 
 const PREFIX = 'EntityContributionCard';
 const cssClasses = {
