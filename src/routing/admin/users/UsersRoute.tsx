@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { EditMode } from '../../../models/editMode';
 import { Error404, PageProps } from '../../../pages';
-import AdminUsersPage from '../../../pages/Admin/AdminUsers/AdminUsersPage';
+import AdminUsersPage from '../../../domain/admin/user/AdminUsers/AdminUsersPage';
 import { UserPage } from '../../../pages/Admin/User/UserPage';
 import { nameOfUrl } from '../../url-params';
 

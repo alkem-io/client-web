@@ -1,21 +1,12 @@
-import {
-  FormControl,
-  InputLabel,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  OutlinedInput,
-  Skeleton,
-  Box,
-} from '@mui/material';
+import { FormControl, InputLabel, List, OutlinedInput } from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
-import React, { FC, ReactElement, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom';
 import Button from '../core/Button';
 import IconButton from '../core/IconButton';
 import RemoveModal from '../core/RemoveModal';
+import LoadingListItem from '../../domain/shared/components/SearchableList/LoadingListItem';
+import ListItemLink from '../../domain/shared/components/SearchableList/ListItemLink';
 
 interface SearchableListProps {
   data: SearchableListItem[];
@@ -33,39 +24,6 @@ export const searchableListItemMapper =
     url: `${item.nameID ?? item.id}${editSuffix ?? ''}`,
   });
 
-const LoadingListItem = () => (
-  <Box height="50px" display="flex" justifyContent="space-between">
-    <Skeleton width="50%" />
-    <Skeleton width="5%" />
-  </Box>
-);
-
-interface ListItemLinkProps {
-  icon?: ReactElement;
-  primary: string;
-  to: string;
-}
-
-const ListItemLink = (props: ListItemLinkProps) => {
-  const { icon, primary, to } = props;
-
-  const Link = React.useMemo(
-    () =>
-      React.forwardRef<any, Omit<RouterLinkProps, 'to'>>((itemProps, ref) => (
-        <RouterLink to={to} ref={ref} {...itemProps} />
-      )),
-    [to]
-  );
-
-  return (
-    <li>
-      <ListItem button component={Link}>
-        <ListItemText primary={primary} />
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-      </ListItem>
-    </li>
-  );
-};
 export interface SearchableListItem {
   id: string;
   value: string;

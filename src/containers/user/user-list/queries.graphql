@@ -1,7 +1,0 @@
-query userList {
-  users {
-    id
-    displayName
-    email
-  }
-}

@@ -1,11 +1,4 @@
-query availableUsers {
-  users {
-    id
-    displayName
-  }
-}
-
-query availableUsers2($first: Int!, $after: UUID, $filter: UserFilterInput) {
+query availableUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
   usersPaginated(first: $first, after: $after, filter: $filter) {
     users {
       id
