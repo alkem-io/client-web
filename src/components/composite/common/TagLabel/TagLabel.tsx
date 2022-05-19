@@ -17,7 +17,6 @@ const Root = styled('div')(({ theme }) => ({
     borderRadius: '15px 0px 0px 15px',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
-    marginRight: theme.spacing(-1),
     flexShrink: 0,
   },
   [`& .${classes.entityType}`]: {
