@@ -4,7 +4,6 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
-import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardOpportunityStatistics from '../../components/composite/common/sections/DashboardOpportunityStatistics';
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
@@ -12,12 +11,15 @@ import InterestModal from '../../components/composite/entities/Hub/InterestModal
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
-import { OpportunityPageFragment, Reference, User } from '../../models/graphql-schema';
+import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
+import EntityDashboardContributorsSection, {
+  EntityDashboardContributorsSectionProps,
+} from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -67,7 +69,7 @@ export interface OpportunityDashboardViewOptions {
 
 export interface OpportunityDashboardViewProps
   extends ViewProps<
-    OpportunityDashboardViewEntities,
+    OpportunityDashboardViewEntities & EntityDashboardContributorsSectionProps,
     OpportunityDashboardViewActions,
     OpportunityDashboardViewState,
     OpportunityDashboardViewOptions
@@ -83,7 +85,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
   const communityId = opportunity?.community?.id || '';
-  const members = (opportunity?.community?.memberUsers || []) as User[]; // TODO [ATS]:
   const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
@@ -122,6 +123,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
             </>
           )}
+          {communityReadAccess && (
+            <EntityDashboardContributorsSection
+              memberUsers={entities.memberUsers}
+              memberUsersCount={entities.memberUsersCount}
+              memberOrganizations={entities.memberOrganizations}
+              memberOrganizationsCount={entities.memberOrganizationsCount}
+            />
+          )}
         </DashboardColumn>
         <DashboardColumn>
           <DashboardGenericSection
@@ -155,7 +164,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             challengeNameId={challengeNameId}
             opportunityNameId={opportunity.nameID}
           />
-          {communityReadAccess && <DashboardCommunitySectionV2 members={members} />}
         </DashboardColumn>
       </Grid>
       <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />

@@ -32,8 +32,10 @@ query ChallengeLeadingOrganizations($hubId: UUID_NAMEID!, $challengeId: UUID_NAM
     id
     challenge(ID: $challengeId) {
       id
-      leadOrganizations {
-        ...OrganizationCard
+      community {
+        leadOrganizations {
+          ...OrganizationCard
+        }
       }
     }
   }
