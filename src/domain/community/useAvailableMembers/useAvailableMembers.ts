@@ -58,7 +58,7 @@ const EMPTY = [];
 export const useAvailableMembers = (options: UseAvailableMembersOptions): AvailableMembersResults => {
   const { filter = { firstName: '', lastName: '', email: '' }, credential, resourceId } = options;
 
-  const shouldFetchEntityUsers = 'parentMembers' in options || typeof options.parentCommunityId !== 'undefined';
+  // const shouldFetchEntityUsers = 'parentMembers' in options || typeof options.parentCommunityId !== 'undefined';
 
   const {
     data: usersQueryData,
@@ -73,7 +73,7 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
     options: {
       fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-first',
-      skip: !shouldFetchEntityUsers,
+      skip: false,
     },
     pageSize: PAGE_SIZE,
     variables: { filter },
