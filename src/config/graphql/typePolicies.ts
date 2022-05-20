@@ -17,19 +17,15 @@ export const typePolicies: TypedTypePolicies = {
       },
     },
   },
-  Challenge: {
-    fields: {
-      leadOrganizations: {
-        merge: false,
-      },
-    },
-  },
   Metadata: {
     merge: true,
   },
   Community: {
     fields: {
       members: {
+        merge: false,
+      },
+      leadOrganizations: {
         merge: false,
       },
     },

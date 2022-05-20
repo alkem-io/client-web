@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardSection from '../../sections/DashboardSection/DashboardSection';
 import AspectCard, { AspectCardAspect } from '../../common/cards/AspectCard/AspectCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../../core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../../../domain/shared/layout/CardsLayout/CardsLayout';
 
 interface DashboardSectionAspectsProps {
   aspects: AspectCardAspect[];
@@ -20,13 +20,12 @@ const DashboardSectionAspects: FC<DashboardSectionAspectsProps> = ({ aspects, as
 
   return (
     <DashboardSection headerText={headerText} navText={t('buttons.see-all')} navLink="contribute">
-      <CardLayoutContainer>
-        {aspects.map(aspect => (
-          <CardLayoutItem key={aspect.id}>
-            <AspectCard aspect={aspect} {...parentEntityIds} />
-          </CardLayoutItem>
-        ))}
-      </CardLayoutContainer>
+      <CardsLayout
+        items={aspects}
+        deps={[parentEntityIds.hubNameId, parentEntityIds.challengeNameId, parentEntityIds.opportunityNameId]}
+      >
+        {aspect => <AspectCard aspect={aspect} {...parentEntityIds} />}
+      </CardsLayout>
     </DashboardSection>
   );
 };

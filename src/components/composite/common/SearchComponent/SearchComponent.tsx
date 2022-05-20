@@ -51,6 +51,7 @@ const SearchComponent: FC<SearchComponentProps> = ({
       options={[]}
       size={size}
       onChange={handleChange}
+      sx={{ backgroundColor: 'white' }}
       renderTags={(value, getTagProps) =>
         value.map((option, index) => (
           <Chip color="primary" variant="outlined" label={option} {...getTagProps({ index })} />

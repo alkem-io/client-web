@@ -13,10 +13,11 @@ import {
   refetchChallengeLeadOrganizationsQuery,
   useChallengeLeadOrganizationsQuery,
   useChallengeNameQuery,
-  useUpdateChallengeMutation,
+  useAssignOrganizationAsCommunityLeadMutation,
+  useRemoveOrganizationAsCommunityLeadMutation,
 } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../hooks';
-import { OrganizationDetailsFragment, UpdateChallengeInput } from '../../../../models/graphql-schema';
+import { OrganizationDetailsFragment } from '../../../../models/graphql-schema';
 import Avatar from '../../../../components/core/Avatar';
 import { Filter } from '../../../../components/Admin/Common/Filter';
 import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
@@ -42,12 +43,14 @@ const LeadingOrganizationView: FC = () => {
   const { data: _challenge } = useChallengeNameQuery({
     variables: { hubId: hubNameId, challengeId: challengeNameId },
   });
+
   const challengeId = _challenge?.hub?.challenge.id || '';
+  const communityId = _challenge?.hub?.challenge.community?.id;
 
   const { data: _leadingOrganizations } = useChallengeLeadOrganizationsQuery({
     variables: { hubId: hubNameId, challengeID: challengeNameId },
   });
-  const leadingOrganizations = (_leadingOrganizations?.hub.challenge.leadOrganizations ||
+  const leadingOrganizations = (_leadingOrganizations?.hub.challenge?.community?.leadOrganizations ||
     []) as OrganizationDetailsFragment[];
   const organizations = (_leadingOrganizations?.organizations || []) as OrganizationDetailsFragment[];
 
@@ -56,40 +59,45 @@ const LeadingOrganizationView: FC = () => {
     [organizations, leadingOrganizations]
   );
 
-  const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
-    onError: handleError,
-    refetchQueries: [refetchChallengeLeadOrganizationsQuery({ hubId: hubNameId, challengeID: challengeId })],
-    awaitRefetchQueries: true,
-  });
+  const [assignOrganizationAsCommunityLead, { loading: isUpdatingChallenge }] =
+    useAssignOrganizationAsCommunityLeadMutation({
+      onError: handleError,
+      refetchQueries: [refetchChallengeLeadOrganizationsQuery({ hubId: hubNameId, challengeID: challengeId })],
+      awaitRefetchQueries: true,
+    });
 
-  const handleAdd = (orgId: string) => {
-    const newLeading = [...leadingOrganizations.map(x => x.id), orgId];
-    _updateChallenge({
-      ID: challengeId,
-      leadOrganizations: newLeading,
+  const [removeOrganizationAsCommunityLead, { loading: isRemovingOrganization }] =
+    useRemoveOrganizationAsCommunityLeadMutation({
+      onError: handleError,
+      refetchQueries: [refetchChallengeLeadOrganizationsQuery({ hubId: hubNameId, challengeID: challengeId })],
+      awaitRefetchQueries: true,
+    });
+
+  const isUpdating = isUpdatingChallenge || isRemovingOrganization;
+
+  const handleAdd = (organizationID: string) => {
+    if (!communityId) {
+      throw new TypeError("Community isn't yet loaded.");
+    }
+    assignOrganizationAsCommunityLead({
+      variables: {
+        leadershipData: {
+          communityID: communityId,
+          organizationID,
+        },
+      },
     });
   };
 
-  const handleRemove = (orgId: string) => {
-    const orgToRemoveIndex = leadingOrganizations.findIndex(x => x.id === orgId);
-
-    if (orgToRemoveIndex > -1) {
-      const newLeading = [...leadingOrganizations].map(x => x.id);
-      newLeading.splice(orgToRemoveIndex, 1);
-
-      _updateChallenge({
-        ID: challengeId,
-        leadOrganizations: newLeading,
-      });
+  const handleRemove = (organizationID: string) => {
+    if (!communityId) {
+      throw new TypeError("Community isn't yet loaded.");
     }
-  };
-
-  const _updateChallenge = (input: UpdateChallengeInput) => {
-    updateChallenge({
+    removeOrganizationAsCommunityLead({
       variables: {
-        input: {
-          ID: input.ID,
-          leadOrganizations: input.leadOrganizations,
+        leadershipData: {
+          communityID: communityId,
+          organizationID,
         },
       },
     });

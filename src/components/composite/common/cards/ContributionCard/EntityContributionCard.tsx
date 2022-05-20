@@ -4,13 +4,15 @@ import { styled } from '@mui/material';
 import { SectionSpacer } from '../../../../core/Section/Section';
 import ActivitiesV2 from '../../Activities/ActivitiesV2';
 import { ActivityItem } from '../../ActivityPanel/Activities';
-import ContributionCardV2, { ContributionCardV2Props } from './ContributionCardV2';
+import ContributionCardV2, {
+  ContributionCardV2Props,
+} from '../../../../../domain/shared/components/ContributuionCard/ContributionCardV2';
 
 const PREFIX = 'EntityContributionCard';
 const cssClasses = {
   member: `${PREFIX}-member`,
 };
-const Root = styled('div')(({ theme }) => ({
+const Card = styled(ContributionCardV2)(({ theme }) => ({
   [`& .${cssClasses.member}`]: {
     background: theme.palette.augmentColor({ color: theme.palette.positive }).dark,
   },
@@ -53,18 +55,16 @@ const EntityContributionCard: FC<EntityContributionCardProps> = ({
   }
 
   return (
-    <Root>
-      <ContributionCardV2 details={details} classes={classes} loading={loading}>
-        <SectionSpacer double />
-        {activities && (
-          <>
-            <ActivitiesV2 activity={activities} />
-            <SectionSpacer />
-          </>
-        )}
-        {children}
-      </ContributionCardV2>
-    </Root>
+    <Card details={details} classes={classes} loading={loading}>
+      <SectionSpacer double />
+      {activities && (
+        <>
+          <ActivitiesV2 activity={activities} />
+          <SectionSpacer />
+        </>
+      )}
+      {children}
+    </Card>
   );
 };
 

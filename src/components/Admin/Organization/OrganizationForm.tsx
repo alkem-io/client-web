@@ -17,6 +17,10 @@ import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { organizationegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
+import { OrganizationInput } from '../../../domain/organization/OrganizationInput';
+import { formatLocation } from '../../../domain/location/LocationUtils';
+import { LocationSegment } from '../../../domain/location/LocationSegment';
+import { EmptyLocation } from '../../../domain/location/Location';
 
 const emptyOrganization = {
   nameID: '',
@@ -32,6 +36,7 @@ const emptyOrganization = {
     description: '',
     tagsets: [],
     references: [],
+    location: EmptyLocation,
   },
 };
 
@@ -67,7 +72,7 @@ export const OrganizationForm: FC<Props> = ({
     legalEntityName,
     website,
     verification: { status: verificationStatus },
-    profile: { id: profileId, description, references, avatar },
+    profile: { id: profileId, description, references, avatar, location },
   } = currentOrganization as Organization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
@@ -90,10 +95,14 @@ export const OrganizationForm: FC<Props> = ({
     );
   }, [currentOrganization, tagsetsTemplate]);
 
-  const initialValues = {
+  const initialValues: OrganizationInput = {
     name: displayName || emptyOrganization.displayName,
     nameID: nameID || emptyOrganization.nameID,
     description: description || emptyOrganization.profile.description,
+    location: {
+      ...emptyOrganization.profile.location,
+      ...formatLocation(location),
+    },
     tagsets: tagsets || emptyOrganization.profile.tagsets,
     contactEmail: contactEmail || emptyOrganization.contactEmail,
     domain: domain || emptyOrganization.domain,
@@ -123,7 +132,7 @@ export const OrganizationForm: FC<Props> = ({
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
   const handleSubmit = async (orgData: typeof initialValues) => {
-    const { tagsets, references, description, ...otherData } = orgData;
+    const { tagsets, references, description, location, ...otherData } = orgData;
 
     const organization: Organization = {
       ...currentOrganization,
@@ -133,6 +142,10 @@ export const OrganizationForm: FC<Props> = ({
         description,
         references,
         tagsets,
+        location: {
+          city: location.city,
+          country: location.country?.code,
+        },
       },
     };
 
@@ -180,6 +193,12 @@ export const OrganizationForm: FC<Props> = ({
                         <ProfileSegment disabled={isReadOnlyMode} />
 
                         <OrganizationSegment disabled={isReadOnlyMode} />
+
+                        <LocationSegment
+                          disabled={isReadOnlyMode}
+                          cityFieldName="location.city"
+                          countryFieldName="location.country"
+                        />
 
                         <TagsetSegment tagsets={tagsets} readOnly={isReadOnlyMode} />
                         {isEditMode && (

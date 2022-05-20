@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import MembershipBackdrop from '../../../components/composite/common/Backdrops/MembershipBackdrop';
 import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
 import Button from '@mui/material/Button';
-import { CardLayoutContainer, CardLayoutItem } from '../../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../../domain/shared/layout/CardsLayout/CardsLayout';
 import AspectCard from '../../../components/composite/common/cards/AspectCard/AspectCard';
 import CardFilter from '../../../components/core/card-filter/CardFilter';
 import {
@@ -25,7 +25,7 @@ export interface AspectsViewProps {
   onCreate: AspectCreationDialogProps['onCreate'];
 }
 
-const EMPTY_ASPECTS = []; // re-rendering prevention
+const EMPTY_ASPECTS: AspectWithPermissions[] = []; // re-rendering prevention
 
 const AspectsView: FC<AspectsViewProps> = ({
   aspects = EMPTY_ASPECTS,
@@ -55,37 +55,28 @@ const AspectsView: FC<AspectsViewProps> = ({
             )
           }
         >
-          {aspectsLoading ? (
-            <CardLayoutContainer>
-              <CardLayoutItem>
-                <AspectCard loading={true} />
-              </CardLayoutItem>
-              <CardLayoutItem>
-                <AspectCard loading={true} />
-              </CardLayoutItem>
-            </CardLayoutContainer>
-          ) : (
-            <CardFilter data={aspects} tagsValueGetter={aspectTagsValueGetter} valueGetter={aspectValueGetter}>
-              {filteredAspects =>
-                !filteredAspects.length ? (
-                  t('pages.contribute.no-aspects')
-                ) : (
-                  <CardLayoutContainer>
-                    {filteredAspects.map(x => (
-                      <CardLayoutItem key={x.id}>
-                        <AspectCard
-                          aspect={x}
-                          hubNameId={hubNameId}
-                          challengeNameId={challengeNameId}
-                          opportunityNameId={opportunityNameId}
-                        />
-                      </CardLayoutItem>
-                    ))}
-                  </CardLayoutContainer>
-                )
-              }
-            </CardFilter>
-          )}
+          <CardFilter data={aspects} tagsValueGetter={aspectTagsValueGetter} valueGetter={aspectValueGetter}>
+            {filteredAspects =>
+              !aspectsLoading && !filteredAspects.length ? (
+                t('pages.contribute.no-aspects')
+              ) : (
+                <CardsLayout
+                  items={aspectsLoading ? [undefined, undefined] : filteredAspects}
+                  deps={[hubNameId, challengeNameId, opportunityNameId]}
+                >
+                  {aspect => (
+                    <AspectCard
+                      aspect={aspect}
+                      hubNameId={hubNameId}
+                      challengeNameId={challengeNameId}
+                      opportunityNameId={opportunityNameId}
+                      loading={!aspect}
+                    />
+                  )}
+                </CardsLayout>
+              )
+            }
+          </CardFilter>
         </DashboardGenericSection>
       </MembershipBackdrop>
       <AspectCreationDialog

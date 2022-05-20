@@ -11,13 +11,16 @@ import { referenceSegmentSchema } from '../../Admin/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../Admin/Common/TagsetSegment';
 import Typography from '../../core/Typography';
 import InputField from '../../Admin/Common/InputField';
-
+import { EmptyLocation, Location } from '../../../domain/location/Location';
+import { formatLocation } from '../../../domain/location/LocationUtils';
+import { LocationSegment } from '../../../domain/location/LocationSegment';
 export interface ProfileFormValuesType {
   name: string;
   nameID: string;
   background: string;
   impact: string;
   tagline: string;
+  location: Partial<Location>;
   vision: string;
   who: string;
   references: Reference[];
@@ -64,6 +67,7 @@ const ProfileFormWithContext: FC<Props> = ({
     background: context?.background || '',
     impact: context?.impact || '',
     tagline: context?.tagline || '',
+    location: formatLocation(context?.location) || EmptyLocation,
     vision: context?.vision || '',
     who: context?.who || '',
     references: context?.references || [],
@@ -109,6 +113,7 @@ const ProfileFormWithContext: FC<Props> = ({
                 <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
               </>
             )}
+            <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
             <ContextSegment />
 
             {!contextOnly && (

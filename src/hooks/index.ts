@@ -22,6 +22,7 @@ export * from './useHub';
 export * from './useOrganization';
 export * from './useChallenge';
 export * from './useOpportunity';
+export * from './useAspectsData';
 
 export * from './useUrlParams';
 export * from './useCurrentBreakpoint';
@@ -32,6 +33,6 @@ export * from './useNotification';
 export * from './useQueryParams';
 export * from './useSentry';
 export * from './useGlobalState';
-export * from './providers/useAvailableMembers';
+export * from '../domain/community/useAvailableMembers';
 
 export * from './routing/useRouteMatch';

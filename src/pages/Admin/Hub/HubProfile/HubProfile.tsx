@@ -9,6 +9,7 @@ import { useNotification } from '../../../../hooks';
 import { updateContextInput } from '../../../../utils/buildContext';
 import { Box, Container } from '@mui/material';
 import EditVisualsView from '../../../../views/Visuals/EditVisualsView';
+import { formatDatabaseLocation } from '../../../../domain/location/LocationUtils';
 
 export const HubProfile: FC = () => {
   const { t } = useTranslation();
@@ -38,7 +39,7 @@ export const HubProfile: FC = () => {
     updateHub({
       variables: {
         input: {
-          context: updateContextInput(values),
+          context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
           displayName: name,
           ID: hubNameId,
           hostID: host,

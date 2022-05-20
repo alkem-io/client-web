@@ -2,7 +2,6 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
 import DashboardDiscussionsSection from '../../components/composite/common/sections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
@@ -12,21 +11,23 @@ import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { useChallenge, useConfig } from '../../hooks';
-import { User } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
+import EntityDashboardContributorsSection, {
+  EntityDashboardContributorsSectionProps,
+} from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
 
 interface ChallengeDashboardViewProps {
-  entities: ChallengeContainerEntities;
+  entities: ChallengeContainerEntities & EntityDashboardContributorsSectionProps;
   state: ChallengeContainerState;
 }
 
@@ -44,9 +45,9 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const { loading } = state;
 
-  const { displayName, context, leadOrganizations = [] } = challenge || {};
+  const { displayName, context } = challenge || {};
+  const { leadOrganizations = [] } = challenge?.community || {};
   const communityId = challenge?.community?.id || '';
-  const members = (challenge?.community?.members || []) as User[];
 
   const { tagline = '', visuals, vision = '' } = context || {};
   const bannerUrl = getVisualBanner(visuals);
@@ -88,6 +89,14 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               )}
             </>
           )}
+          {communityReadAccess && (
+            <EntityDashboardContributorsSection
+              memberUsers={entities.memberUsers}
+              memberUsersCount={entities.memberUsersCount}
+              memberOrganizations={entities.memberOrganizations}
+              memberOrganizationsCount={entities.memberOrganizationsCount}
+            />
+          )}
         </DashboardColumn>
         <DashboardColumn>
           <AssociatedOrganizationsView
@@ -100,13 +109,15 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navText={t('buttons.see-all')}
             navLink={'opportunities'}
           >
-            <CardLayoutContainer>
-              {opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION).map((x, i) => (
-                <CardLayoutItem key={i} flexBasis={'50%'}>
-                  <OpportunityCard opportunity={x} hubNameId={hubNameId} challengeNameId={challengeNameId} />
-                </CardLayoutItem>
-              ))}
-            </CardLayoutContainer>
+            {/* TODO check if flexBasis: '50%' was ever needed */}
+            <CardsLayout
+              items={opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION) || []}
+              deps={[hubNameId, challengeNameId]}
+            >
+              {opportunity => (
+                <OpportunityCard opportunity={opportunity} hubNameId={hubNameId} challengeNameId={challengeNameId} />
+              )}
+            </CardsLayout>
           </DashboardGenericSection>
           <DashboardSectionAspects
             aspects={aspects}
@@ -114,7 +125,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             hubNameId={hubNameId}
             challengeNameId={challengeNameId}
           />
-          {communityReadAccess && <DashboardCommunitySectionV2 members={members} />}
         </DashboardColumn>
       </Grid>
     </>

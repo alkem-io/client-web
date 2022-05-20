@@ -195,6 +195,11 @@
           "order": 10,
           "hidden": true
         },
+        "OPPORTUNITY_LEAD": {
+          "name": "Opportunity Lead",
+          "order": 11,
+          "hidden": true
+        },
         "ORGANIZATION_OWNER": {
           "name": "Organization Owner",
           "order": 11,
@@ -412,6 +417,17 @@
       "description": {
         "name": "Description",
         "placeholder": "Enter a description"
+      },
+      "location": {
+        "title": "Location",
+        "country": {
+          "name": "Country",
+          "placeholder": "Select a country"
+        },
+        "city": {
+          "name": "City",
+          "placeholder": "City name"
+        }
       }
     },
     "organizationSegment": {
@@ -1117,7 +1133,11 @@
   },
   "aspect-edit": {
     "new": "New Aspect",
-    "edit": "Edit Aspect"
+    "edit": "Edit Aspect",
+    "type": {
+      "title": "Aspect Type",
+      "help-text": "Type of Aspect"
+    }
   },
   "contributors-section": {
     "title": "Contributors",

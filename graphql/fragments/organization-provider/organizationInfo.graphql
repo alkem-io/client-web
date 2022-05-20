@@ -25,6 +25,10 @@ fragment OrganizationInfo on Organization {
       name
       uri
     }
+    location {
+      country
+      city
+    }
   }
   members {
     id

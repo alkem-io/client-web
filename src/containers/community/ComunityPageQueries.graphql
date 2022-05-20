@@ -4,7 +4,7 @@ query CommunityPage($hubId: UUID_NAMEID!, $communityId: UUID!) {
     community(ID: $communityId) {
       id
       displayName
-      members {
+      memberUsers {
         ...UserCard
       }
     }
@@ -20,7 +20,7 @@ query CommunityPageWithHost($hubId: UUID_NAMEID!, $communityId: UUID!) {
     community(ID: $communityId) {
       id
       displayName
-      members {
+      memberUsers {
         ...UserCard
       }
     }
@@ -32,8 +32,10 @@ query ChallengeLeadingOrganizations($hubId: UUID_NAMEID!, $challengeId: UUID_NAM
     id
     challenge(ID: $challengeId) {
       id
-      leadOrganizations {
-        ...OrganizationCard
+      community {
+        leadOrganizations {
+          ...OrganizationCard
+        }
       }
     }
   }

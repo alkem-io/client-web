@@ -49,7 +49,7 @@ const Root = styled('div')(({ theme }) => ({
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'description' | 'type' | 'tagset';
 export type AspectCardAspect = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment };
 export interface AspectCardProps {
-  aspect?: AspectCardAspect;
+  aspect: AspectCardAspect | undefined;
   hubNameId?: string;
   challengeNameId?: string;
   opportunityNameId?: string;

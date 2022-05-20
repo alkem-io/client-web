@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import {
   refetchUsersWithCredentialsSimpleListQuery,
-  useAssignUserToCommunityMutation,
-  useRemoveUserFromCommunityMutation,
+  useAssignUserAsCommunityMemberMutation,
+  useRemoveUserAsCommunityMemberMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
-import { EditMembers } from '../Community/EditMembers';
+import EditMembers from '../Community/EditMembers';
 import { WithCommunity } from '../Community/CommunityTypes';
 
 interface EditCredentialsProps extends WithCommunity {
@@ -30,11 +30,11 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
 }) => {
   const handleError = useApolloErrorHandler();
 
-  const [grant, { loading: addingMember }] = useAssignUserToCommunityMutation({
+  const [grant, { loading: addingMember }] = useAssignUserAsCommunityMemberMutation({
     onError: handleError,
   });
 
-  const [revoke, { loading: removingMember }] = useRemoveUserFromCommunityMutation({
+  const [revoke, { loading: removingMember }] = useRemoveUserAsCommunityMemberMutation({
     onError: handleError,
   });
 
@@ -72,11 +72,11 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
     });
   };
 
-  const { available, current, loading, onLoadMore, isLastAvailableUserPage } = useAvailableMembers(
+  const { available, current, loading, fetchMore, hasMore } = useAvailableMembers({
     credential,
     resourceId,
-    parentCommunityId
-  );
+    parentCommunityId,
+  });
 
   return (
     <EditMembers
@@ -88,9 +88,8 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
       removingMember={removingMember}
       loadingMembers={loading}
       loadingAvailableMembers={loading}
-      onLoadMore={onLoadMore}
-      loadMore={25}
-      lastMembersPage={isLastAvailableUserPage}
+      fetchMore={fetchMore}
+      hasMore={hasMore}
     />
   );
 };

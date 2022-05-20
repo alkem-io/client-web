@@ -3,7 +3,6 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import DashboardCommunitySectionV2 from '../../components/composite/common/sections/DashboardCommunitySectionV2';
 import DashboardDiscussionsSection from '../../components/composite/common/sections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
@@ -11,18 +10,21 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { Discussion } from '../../models/discussion/discussion';
-import { ChallengeCardFragment, User } from '../../models/graphql-schema';
+import { ChallengeCardFragment } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../components/core/CardLayoutContainer/CardLayoutContainer';
+import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { useConfig } from '../../hooks';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
+import EntityDashboardContributorsSection, {
+  EntityDashboardContributorsSectionProps,
+} from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 
-export interface HubDashboardView2Props {
+export interface HubDashboardView2Props extends EntityDashboardContributorsSectionProps {
   title?: string;
   bannerUrl?: string;
   tagline?: string;
@@ -35,7 +37,6 @@ export interface HubDashboardView2Props {
   discussions: Discussion[];
   organization?: any;
   challenges: ChallengeCardFragment[];
-  members?: User[];
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
   community?: any;
@@ -53,7 +54,6 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   tagline = '',
   vision = '',
   challenges,
-  members = [],
   hubNameId = '',
   communityId = '',
   organizationNameId,
@@ -65,6 +65,10 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   isMember = false,
   communityReadAccess = false,
   challengesReadAccess = true,
+  memberUsers,
+  memberUsersCount,
+  memberOrganizations,
+  memberOrganizationsCount,
 }) => {
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
@@ -105,6 +109,14 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
               )}
             </>
           )}
+          {communityReadAccess && (
+            <EntityDashboardContributorsSection
+              memberUsers={memberUsers}
+              memberUsersCount={memberUsersCount}
+              memberOrganizations={memberOrganizations}
+              memberOrganizationsCount={memberOrganizationsCount}
+            />
+          )}
         </DashboardColumn>
         <DashboardColumn>
           <AssociatedOrganizationsView
@@ -118,17 +130,12 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
               navText={t('buttons.see-all')}
               navLink={'challenges'}
             >
-              <CardLayoutContainer>
-                {challenges.map(challenge => (
-                  <CardLayoutItem key={challenge.id}>
-                    <ChallengeCard challenge={challenge} hubNameId={hubNameId} />
-                  </CardLayoutItem>
-                ))}
-              </CardLayoutContainer>
+              <CardsLayout items={challenges} deps={[hubNameId]}>
+                {challenge => <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
+              </CardsLayout>
             </DashboardGenericSection>
           )}
           <DashboardSectionAspects aspects={aspects} aspectsCount={aspectsCount} hubNameId={hubNameId} />
-          {communityReadAccess && <DashboardCommunitySectionV2 members={members} />}
         </DashboardColumn>
       </Grid>
     </>

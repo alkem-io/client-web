@@ -18,6 +18,7 @@ import ProfileFormWithContext, {
   ProfileFormValuesType,
 } from '../../../components/composite/forms/ProfileFormWithContext';
 import FormMode from '../../../components/Admin/FormMode';
+import { formatDatabaseLocation } from '../../../domain/location/LocationUtils';
 
 interface Props {
   mode: FormMode;
@@ -77,7 +78,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
               nameID: nameID,
               displayName: name,
               hubID: hubNameId,
-              context: createContextInput(values),
+              context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
             },
           },
@@ -90,7 +91,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
               ID: challengeId,
               nameID: nameID,
               displayName: name,
-              context: updateContextInput(values),
+              context: updateContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
             },
           },

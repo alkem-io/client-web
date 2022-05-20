@@ -5,10 +5,8 @@ import ChallengeExplorerSearchContainer from '../../../containers/challenge/Chal
 import ChallengeExplorerSearchEnricherContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
 import HubNameResolver from '../../../containers/hub/HubNameResolver';
 import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
-import ChallengeCard, {
-  ChallengeCardProps,
-} from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import { CardLayoutContainer, CardLayoutItem } from '../../../components/core/CardLayoutContainer/CardLayoutContainer';
+import ChallengeCard from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import CardsLayout from '../../../domain/shared/layout/CardsLayout/CardsLayout';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -34,20 +32,16 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
                 <HubNameResolver key={keyValue} hubId={keyValue}>
                   {({ displayName }) => (
                     <Accordion title={displayName} ariaKey={keyValue}>
-                      <CardLayoutContainer>
-                        {values.map((value, i) => (
-                          <ChallengeExplorerSearchEnricherContainer key={i} challenge={value}>
-                            {({ challenge }) => (
-                              <CardLayoutItem>
-                                <ChallengeCard
-                                  challenge={challenge as ChallengeCardProps['challenge']}
-                                  hubNameId={challenge.hubID}
-                                />
-                              </CardLayoutItem>
+                      <CardsLayout items={values}>
+                        {challenge => (
+                          // TODO enrich at the level of the LayoutContainer
+                          <ChallengeExplorerSearchEnricherContainer challenge={challenge}>
+                            {({ challenge: enrichedChallenge }) => (
+                              <ChallengeCard challenge={enrichedChallenge} hubNameId={challenge.hubID} />
                             )}
                           </ChallengeExplorerSearchEnricherContainer>
-                        ))}
-                      </CardLayoutContainer>
+                        )}
+                      </CardsLayout>
                     </Accordion>
                   )}
                 </HubNameResolver>

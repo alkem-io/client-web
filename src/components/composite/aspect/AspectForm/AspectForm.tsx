@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { Box } from '@mui/material';
-import InputField from '../../../Admin/Common/InputField';
+import { Grid } from '@mui/material';
+import FormikInputField from '../../forms/FormikInputField';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
 import { SectionSpacer } from '../../../core/Section/Section';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
@@ -14,6 +14,8 @@ import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
 import { nameValidator } from '../../../Admin/Common/NameSegment';
 import MarkdownInput from '../../../Admin/Common/MarkdownInput';
+import FormRow from '../../../../domain/shared/layout/FormLayout';
+import AspectTypeFormField from '../../../../domain/aspect/AspectTypeFormField';
 
 type FormValueType = {
   name: string;
@@ -85,12 +87,13 @@ const AspectForm: FC<AspectFormProps> = ({
 
   const uniqueNameValidator = yup
     .string()
+    .required('name is required')
     .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value =>
-      Boolean(value && aspectNames && !aspectNames.includes(value))
+      Boolean(value && (!aspectNames?.includes(value) || value === aspect?.displayName))
     );
 
   const validationSchema = yup.object().shape({
-    name: uniqueNameValidator.concat(nameValidator),
+    name: nameValidator.concat(uniqueNameValidator),
     description: yup.string().required(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
@@ -116,15 +119,20 @@ const AspectForm: FC<AspectFormProps> = ({
       validateOnMount
       onSubmit={() => {}}
     >
-      {({ values: { references } }) => (
-        <Box>
+      {({ values: { type, references } }) => (
+        <Grid container spacing={2}>
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          <InputField
-            name="name"
-            label={t('common.title')}
-            required
-            helpText={t('components.aspect-creation.info-step.name-help-text')}
-          />
+          <FormRow cols={2}>
+            <FormikInputField
+              name={'name'}
+              title={t('common.title')}
+              required
+              placeholder={t('components.aspect-creation.info-step.name-help-text')}
+            />
+          </FormRow>
+          <FormRow cols={2}>
+            <AspectTypeFormField name="type" value={type} />
+          </FormRow>
           <SectionSpacer />
           <MarkdownInput
             name="description"
@@ -148,7 +156,7 @@ const AspectForm: FC<AspectFormProps> = ({
               <ReferenceSegment references={references} onAdd={onAddReference} onRemove={onRemoveReference} />
             </>
           )}
-        </Box>
+        </Grid>
       )}
     </Formik>
   );

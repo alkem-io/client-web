@@ -57,6 +57,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
     tagline = '',
     impact = '',
     background = '',
+    location = undefined,
     vision = '',
     who = '',
     visuals = [],
@@ -64,7 +65,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
   } = context || ({} as Context);
   const banner = getVisualBanner(visuals);
   const references = entities?.references;
-
   return (
     <>
       <ContextSection
@@ -88,6 +88,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         displayName={challengeDisplayName}
         impact={impact}
         tagline={tagline}
+        location={location}
         vision={vision}
         who={who}
         contextId={id}

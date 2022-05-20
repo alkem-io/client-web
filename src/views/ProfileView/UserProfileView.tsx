@@ -11,6 +11,9 @@ import Typography from '../../components/core/Typography';
 import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
 import References from '../../components/composite/common/References/References';
+import LocationView from '../../domain/location/LocationView';
+import { formatLocation } from '../../domain/location/LocationUtils';
+import { styled } from '@mui/styles';
 
 export interface UserProfileViewProps {
   entities: {
@@ -65,6 +68,10 @@ const useStyles = makeStyles(theme =>
   })
 );
 
+const TagsWithOffset = styled(TagsComponent)({
+  marginTop: 5,
+});
+
 export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMetadata }, options }) => {
   const { t } = useTranslation();
   const { user, keywords, skills } = userMetadata;
@@ -72,12 +79,8 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   const references = user.profile?.references;
   const bio = user.profile?.description;
   const { displayName, profile, phone } = user;
-  const city = profile?.location?.city || '';
-  const country = profile?.location?.country || '';
 
   const { isCurrentUser } = options;
-
-  const location = [city, country].filter(x => !!x).join(', ');
 
   const socialLinks = useMemo(() => {
     return references
@@ -126,11 +129,7 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
               <MUITypography variant="h2">{displayName}</MUITypography>
             </Grid>
             <Grid item>
-              <ProfileDetail
-                title={t('components.profile.fields.location.title')}
-                value={location}
-                aria-label="location"
-              />
+              <LocationView location={formatLocation(profile?.location)} />
             </Grid>
             <Grid item>
               <ProfileDetail title={t('components.profile.fields.work.title')} value={''} aria-label="work" />
@@ -152,14 +151,14 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
             <Typography color="primary" weight="boldLight" aria-label="keywords">
               {t('components.profile.fields.keywords.title')}
             </Typography>
-            <TagsComponent tags={keywords} />
+            <TagsWithOffset tags={keywords} />
           </Grid>
 
           <Grid item>
             <Typography color="primary" weight="boldLight" aria-label="skills">
               {t('components.profile.fields.skills.title')}
             </Typography>
-            <TagsComponent tags={skills} />
+            <TagsWithOffset tags={skills} />
           </Grid>
 
           <Grid item container direction="column">
