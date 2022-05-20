@@ -25,7 +25,7 @@ export interface AspectsViewProps {
   onCreate: AspectCreationDialogProps['onCreate'];
 }
 
-const EMPTY_ASPECTS = []; // re-rendering prevention
+const EMPTY_ASPECTS: AspectWithPermissions[] = []; // re-rendering prevention
 
 const AspectsView: FC<AspectsViewProps> = ({
   aspects = EMPTY_ASPECTS,
