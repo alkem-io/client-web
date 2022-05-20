@@ -73,7 +73,7 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
     options: {
       fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-first',
-      skip: shouldFetchEntityUsers,
+      skip: !shouldFetchEntityUsers,
     },
     pageSize: PAGE_SIZE,
     variables: { filter },
