@@ -23,6 +23,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
   useUpdateNavigation({ currentPaths });
 
   const [aspect, setAspect] = useState<AspectFormOutput>();
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const toAspectFormInput = (aspect?: AspectSettingsFragment): AspectFormInput | undefined =>
     aspect && {
@@ -47,6 +48,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
       {(entities, state, actions) => {
         const visuals = (entities.aspect ? [entities.aspect.banner, entities.aspect.bannerNarrow] : []) as Visual[];
         const btnDisabled = !aspect || !entities.aspect || state.updating || state.deleting;
+        const saveDisabled = btnDisabled || !isFormValid;
 
         const handleDelete = async () => {
           if (!entities.aspect || !aspect) {
@@ -71,6 +73,8 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
             references: aspect.references,
           });
         };
+
+        const handleFormStatusChange = (isValid: boolean) => setIsFormValid(isValid);
         return (
           <>
             <AspectForm
@@ -81,6 +85,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
               onChange={setAspect}
               onAddReference={actions.handleAddReference}
               onRemoveReference={actions.handleRemoveReference}
+              onStatusChanged={handleFormStatusChange}
             />
             <SectionSpacer double />
             <Box>
@@ -98,7 +103,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
               >
                 {t('buttons.delete')}
               </Button>
-              <Button aria-label="save-aspect" variant="contained" disabled={btnDisabled} onClick={handleUpdate}>
+              <Button aria-label="save-aspect" variant="contained" disabled={saveDisabled} onClick={handleUpdate}>
                 {t('buttons.save')}
               </Button>
             </Box>
