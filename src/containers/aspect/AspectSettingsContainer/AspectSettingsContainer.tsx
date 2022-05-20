@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../models/container';
 import {
   PushFunc,
   RemoveFunc,
   useApolloErrorHandler,
-  useAspects,
+  useAspectsData,
   useEditReference,
   useNotification,
 } from '../../../hooks';
@@ -20,7 +20,6 @@ import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import removeFromCache from '../../../utils/apollo-cache/removeFromCache';
-import { AspectWithPermissions } from '../../ContributeTabContainer/ContributeTabContainer';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];
@@ -29,7 +28,7 @@ type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'typ
 
 export interface AspectSettingsContainerEntities {
   aspect?: AspectSettingsFragment;
-  aspects?: AspectWithPermissions[] | undefined;
+  aspectsNames?: string[] | undefined;
 }
 
 export interface AspectSettingsContainerActions {
@@ -63,13 +62,14 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   children,
   hubNameId,
   aspectNameId,
-  challengeNameId = '',
-  opportunityNameId = '',
+  challengeNameId,
+  opportunityNameId,
 }) => {
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
-  const { aspects } = useAspects({ hubNameId, challengeNameId, opportunityNameId });
+  const { aspects } = useAspectsData({ hubNameId, challengeNameId, opportunityNameId });
+  const aspectsNames = useMemo(() => aspects?.map(x => x.displayName), [aspects]);
 
   const isAspectDefined = aspectNameId && hubNameId;
 
@@ -89,7 +89,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     loading: challengeLoading,
     error: challengeError,
   } = useChallengeAspectSettingsQuery({
-    variables: { hubNameId, challengeNameId, aspectNameId },
+    variables: { hubNameId, challengeNameId: challengeNameId ?? '', aspectNameId },
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
@@ -100,7 +100,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     loading: opportunityLoading,
     error: opportunityError,
   } = useOpportunityAspectSettingsQuery({
-    variables: { hubNameId, opportunityNameId, aspectNameId },
+    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '', aspectNameId },
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
@@ -170,7 +170,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   return (
     <>
       {children(
-        { aspect, aspects },
+        { aspect, aspectsNames },
         { loading, error, updating, deleting, updateError },
         { handleUpdate, handleAddReference, handleRemoveReference, handleDelete }
       )}

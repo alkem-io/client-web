@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { AspectCardFragment, CreateAspectOnContextInput, Scalars } from '../../models/graphql-schema';
-import { useApolloErrorHandler, useHub, useAspects } from '../../hooks';
+import { useApolloErrorHandler, useHub, useAspectsData } from '../../hooks';
 import {
   AspectCardFragmentDoc,
   useCreateAspectFromContributeTabMutation,
@@ -36,14 +36,14 @@ export type ContributeContainerProps = ContainerPropsWithProvided<EntityIds, Pro
 
 const ContributeTabContainer: FC<ContributeContainerProps> = ({
   hubNameId,
-  challengeNameId = '',
-  opportunityNameId = '',
+  challengeNameId,
+  opportunityNameId,
   ...rendered
 }) => {
   const handleError = useApolloErrorHandler();
   const { template } = useHub();
 
-  const { aspects, loading, error, canReadAspects, canCreateAspects, contextId } = useAspects({
+  const { aspects, loading, error, canReadAspects, canCreateAspects, contextId } = useAspectsData({
     hubNameId,
     challengeNameId,
     opportunityNameId,

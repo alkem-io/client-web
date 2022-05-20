@@ -22,7 +22,7 @@ export * from './useHub';
 export * from './useOrganization';
 export * from './useChallenge';
 export * from './useOpportunity';
-export * from './useAspects';
+export * from './useAspectsData';
 
 export * from './useUrlParams';
 export * from './useCurrentBreakpoint';

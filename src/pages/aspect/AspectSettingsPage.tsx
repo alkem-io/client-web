@@ -77,7 +77,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
               edit
               loading={state.loading || state.updating}
               aspect={toAspectFormInput(entities.aspect)}
-              aspectNames={entities.aspects?.map(x => x.displayName)}
+              aspectNames={entities.aspectsNames}
               onChange={setAspect}
               onAddReference={actions.handleAddReference}
               onRemoveReference={actions.handleRemoveReference}

@@ -1,4 +1,3 @@
-// export {};
 import { useMemo } from 'react';
 import { useApolloErrorHandler, useHub } from './index';
 import {
@@ -22,7 +21,11 @@ export interface AspectsData {
   canCreateAspects: boolean;
   contextId: string | undefined;
 }
-export const useAspects = ({ hubNameId, challengeNameId = '', opportunityNameId = '' }: EntityIds): AspectsData => {
+export const useAspectsData = ({
+  hubNameId,
+  challengeNameId = undefined,
+  opportunityNameId = undefined,
+}: EntityIds): AspectsData => {
   const handleError = useApolloErrorHandler();
   const { loading: hubLoading } = useHub();
 
@@ -56,7 +59,7 @@ export const useAspects = ({ hubNameId, challengeNameId = '', opportunityNameId 
     loading: challengeContextLoading,
     error: challengeContextError,
   } = usePrivilegesOnChallengeContextQuery({
-    variables: { hubNameId, challengeNameId },
+    variables: { hubNameId, challengeNameId: challengeNameId ?? '' },
     skip: !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
@@ -71,7 +74,7 @@ export const useAspects = ({ hubNameId, challengeNameId = '', opportunityNameId 
     error: challengeAspectError,
     subscribeToMore: subscribeToChallenges,
   } = useChallengeAspectsQuery({
-    variables: { hubNameId, challengeNameId },
+    variables: { hubNameId, challengeNameId: challengeNameId ?? '' },
     skip: !canReadChallengeContext || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
@@ -82,7 +85,7 @@ export const useAspects = ({ hubNameId, challengeNameId = '', opportunityNameId 
     loading: opportunityContextLoading,
     error: opportunityContextError,
   } = usePrivilegesOnOpportunityContextQuery({
-    variables: { hubNameId, opportunityNameId },
+    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '' },
     skip: !opportunityNameId,
     onError: handleError,
   });
@@ -97,7 +100,7 @@ export const useAspects = ({ hubNameId, challengeNameId = '', opportunityNameId 
     error: opportunityAspectError,
     subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectsQuery({
-    variables: { hubNameId, opportunityNameId },
+    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '' },
     skip: !canReadOpportunityContext || !opportunityNameId,
     onError: handleError,
     fetchPolicy: 'network-only',
