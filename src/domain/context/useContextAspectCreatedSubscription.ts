@@ -20,6 +20,13 @@ const useContextAspectCreatedSubscription = createUseSubscriptionToSubEntity<
       context?.aspects?.push(aspect);
     }
   },
+  isDuplicated: (arg1, arg2, arg3) => {
+    //console.log('IsDuplicated ', arg1, arg2, arg3);
+    void arg1;
+    void arg2;
+    void arg3;
+    return false;
+  },
 });
 
 export default useContextAspectCreatedSubscription;

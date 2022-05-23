@@ -16,6 +16,13 @@ const useCommentsMessageReceivedSubscription = createUseSubscriptionToSubEntity<
   updateSubEntity: (comments, subscriptionData) => {
     comments?.messages?.push(subscriptionData.communicationCommentsMessageReceived.message);
   },
+  isDuplicated: (arg1, arg2, arg3) => {
+    //console.log('useCommentsMessageReceivedSubscription', 'isDuplicated', arg1, arg2, arg3);
+    void arg1;
+    void arg2;
+    void arg3;
+    return false;
+  },
 });
 
 export default useCommentsMessageReceivedSubscription;
