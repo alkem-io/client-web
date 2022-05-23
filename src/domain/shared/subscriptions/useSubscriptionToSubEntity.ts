@@ -12,7 +12,6 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
   getSubscriptionVariables: (subEntity: SubEntity) => SubEntitySubscriptionVariables;
   updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void;
-  isDuplicated: (arg1: any, arg2: any, arg3: any) => boolean;
 }
 
 const createUseSubscriptionToSubEntity =
@@ -44,7 +43,6 @@ const createUseSubscriptionToSubEntity =
         document: options.subscriptionDocument,
         variables: options.getSubscriptionVariables(subEntity),
         updateQuery: (prev, { subscriptionData }) => {
-          options.isDuplicated(prev, subscriptionData, subEntity);
           return produce(prev, next => {
             const nextSubEntity = getSubEntity(next as QueryData);
             options.updateSubEntity(nextSubEntity, subscriptionData.data);
