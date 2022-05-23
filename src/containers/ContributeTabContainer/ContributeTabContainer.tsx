@@ -77,7 +77,10 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
               fragment: AspectCardFragmentDoc,
               fragmentName: 'AspectCard',
             });
-            return [...existingAspects, newAspectRef];
+            // Return new cache array but removing duplicated items
+            return [...existingAspects, newAspectRef].filter(
+              (value, index, self) => index === self.findIndex(t => t.__ref === value.__ref)
+            );
           },
         },
       });
