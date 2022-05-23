@@ -4,7 +4,7 @@ import { useConfig, useUrlParams, useUserContext } from '../hooks';
 import { useHubProviderQuery } from '../hooks/generated/graphql';
 import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
 
-interface HubPermissions {
+export interface HubPermissions {
   viewerCanUpdate: boolean;
   canReadAspects: boolean;
   canReadChallenges: boolean;
@@ -24,6 +24,7 @@ interface HubContextProps {
   loading: boolean;
   permissions: HubPermissions;
   error?: ApolloError;
+  updateHubContext: () => void;
 }
 
 const HubContext = React.createContext<HubContextProps>({
@@ -42,6 +43,7 @@ const HubContext = React.createContext<HubContextProps>({
     communityReadAccess: false,
     contextPrivileges: [],
   },
+  updateHubContext: () => {},
 });
 
 interface HubProviderProps {}
@@ -56,11 +58,13 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
     error: hubError,
     data,
     loading,
+    refetch,
   } = useHubProviderQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
     skip: !hubNameId,
   });
+  const updateHubContext = () => refetch({ hubId: hubNameId });
   const hub = data?.hub;
   const hubId = hub?.id || '';
   const displayName = hub?.displayName || '';
@@ -80,18 +84,17 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
   const canReadChallenges = isPrivate ? isMember || isGlobalAdmin : true;
 
-  const communityReadAccess = (hub?.community?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
+  const communityPrivileges = hub?.community?.authorization?.myPrivileges ?? [];
 
-  const permissions = useMemo<HubPermissions>(
-    () => ({
+  const permissions = useMemo<HubPermissions>(() => {
+    return {
       viewerCanUpdate: hubPrivileges.includes(AuthorizationPrivilege.Update),
       canReadChallenges,
-      communityReadAccess,
+      communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadAspects: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
-    }),
-    [hubPrivileges, contextPrivileges, canReadChallenges]
-  );
+    };
+  }, [hubPrivileges, contextPrivileges, canReadChallenges, communityPrivileges]);
 
   return (
     <HubContext.Provider
@@ -107,6 +110,7 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
         isPrivate,
         loading,
         error,
+        updateHubContext,
       }}
     >
       {children}

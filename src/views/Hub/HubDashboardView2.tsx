@@ -64,7 +64,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   loading,
   isMember = false,
   communityReadAccess = false,
-  challengesReadAccess = true,
+  challengesReadAccess = false,
   memberUsers,
   memberUsersCount,
   memberOrganizations,
