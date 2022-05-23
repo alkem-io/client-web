@@ -2186,8 +2186,7 @@ export enum PreferenceType {
   MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
   NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
-  NotificationAspectCommentAdmin = 'NOTIFICATION_ASPECT_COMMENT_ADMIN',
-  NotificationAspectCommentCreatedBy = 'NOTIFICATION_ASPECT_COMMENT_CREATED_BY',
+  NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
@@ -2978,8 +2977,7 @@ export type UserMembership = {
 export enum UserPreferenceType {
   NotificationApplicationReceived = 'NOTIFICATION_APPLICATION_RECEIVED',
   NotificationApplicationSubmitted = 'NOTIFICATION_APPLICATION_SUBMITTED',
-  NotificationAspectCommentAdmin = 'NOTIFICATION_ASPECT_COMMENT_ADMIN',
-  NotificationAspectCommentCreatedBy = 'NOTIFICATION_ASPECT_COMMENT_CREATED_BY',
+  NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
@@ -11306,6 +11304,7 @@ export type ContextAspectCreatedSubscription = {
     __typename?: 'ContextAspectCreated';
     aspect: {
       __typename?: 'Aspect';
+      createdBy: string;
       id: string;
       nameID: string;
       displayName: string;

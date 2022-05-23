@@ -2,6 +2,7 @@ subscription ContextAspectCreated($contextID: UUID!) {
   contextAspectCreated(contextID: $contextID) {
     aspect {
       ...ContributeTabAspect
+      createdBy
     }
   }
 }

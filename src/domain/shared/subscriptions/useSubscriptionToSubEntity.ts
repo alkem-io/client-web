@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { ApolloError, SubscribeToMoreOptions, TypedDocumentNode } from '@apollo/client';
 import produce from 'immer';
-import { useApolloErrorHandler, useConfig } from '../../../hooks';
+import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
 
 interface SubscribeToMore<TData, TSubscriptionVariables, TSubscriptionData> {
@@ -11,7 +11,11 @@ interface SubscribeToMore<TData, TSubscriptionVariables, TSubscriptionData> {
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
   getSubscriptionVariables: (subEntity: SubEntity) => SubEntitySubscriptionVariables;
-  updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void;
+  updateSubEntity: (
+    subEntity: SubEntity | undefined,
+    subscriptionData: SubEntitySubscription,
+    currentUserId: string | undefined
+  ) => void;
 }
 
 const createUseSubscriptionToSubEntity =
@@ -25,6 +29,7 @@ const createUseSubscriptionToSubEntity =
   ) => {
     const handleError = useApolloErrorHandler();
     const { isFeatureEnabled } = useConfig();
+    const { user } = useUserContext();
 
     const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
 
@@ -45,12 +50,12 @@ const createUseSubscriptionToSubEntity =
         updateQuery: (prev, { subscriptionData }) => {
           return produce(prev, next => {
             const nextSubEntity = getSubEntity(next as QueryData);
-            options.updateSubEntity(nextSubEntity, subscriptionData.data);
+            options.updateSubEntity(nextSubEntity, subscriptionData.data, user?.user?.id);
           });
         },
         onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       });
-    }, [subEntity, areSubscriptionsEnabled]);
+    }, [subEntity, areSubscriptionsEnabled, user]);
 
     return {
       enabled: Boolean(areSubscriptionsEnabled && subEntity),

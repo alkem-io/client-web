@@ -13,8 +13,11 @@ const useContextAspectCreatedSubscription = createUseSubscriptionToSubEntity<
 >({
   subscriptionDocument: ContextAspectCreatedDocument,
   getSubscriptionVariables: context => ({ contextID: context.id }),
-  updateSubEntity: (context, subscriptionData) => {
-    context?.aspects?.push(subscriptionData.contextAspectCreated.aspect);
+  updateSubEntity: (context, subscriptionData, currentUserId) => {
+    const aspect = subscriptionData.contextAspectCreated.aspect;
+    if (aspect.createdBy !== currentUserId) {
+      context?.aspects?.push(aspect);
+    }
   },
 });
 
