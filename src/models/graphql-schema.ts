@@ -11304,7 +11304,6 @@ export type ContextAspectCreatedSubscription = {
     __typename?: 'ContextAspectCreated';
     aspect: {
       __typename?: 'Aspect';
-      createdBy: string;
       id: string;
       nameID: string;
       displayName: string;

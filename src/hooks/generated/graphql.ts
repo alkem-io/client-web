@@ -15282,7 +15282,6 @@ export const ContextAspectCreatedDocument = gql`
     contextAspectCreated(contextID: $contextID) {
       aspect {
         ...ContributeTabAspect
-        createdBy
       }
     }
   }
