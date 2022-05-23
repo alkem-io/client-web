@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { AuthorizationCredential, UserDisplayNameFragment, UserFilterInput } from '../../../models/graphql-schema';
+import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
 import {
   useAvailableUsersQuery,
   useCommunityMembersQuery,
@@ -8,6 +8,8 @@ import {
 import { Member } from '../../../models/User';
 import { useHub } from '../../../hooks/useHub';
 import usePaginatedQuery from '../../shared/pagination/usePaginatedQuery';
+import useUsersSearch, { UseUsersSearchResult } from './useUsersSearch';
+import useLocalSearch from '../../shared/utils/useLocalSearch';
 
 export interface AvailableMembersResults {
   available: UserDisplayNameFragment[];
@@ -18,6 +20,7 @@ export interface AvailableMembersResults {
   error: boolean;
   pageSize: number;
   firstPageSize: number;
+  setSearchTerm: UseUsersSearchResult['setSearchTerm'];
 }
 
 const PAGE_SIZE = 10;
@@ -31,19 +34,9 @@ interface CommunityMembersAttrs {
   parentCommunityId?: string;
 }
 
-interface OrganizationMembersAttrs {
-  parentMembers: Member[];
-}
+export type UseAvailableMembersOptions = CurrentUserAttrs & CommunityMembersAttrs;
 
-export interface FilterOptions {
-  filter?: UserFilterInput;
-}
-
-export type UseAvailableMembersOptions = CurrentUserAttrs &
-  FilterOptions &
-  (CommunityMembersAttrs | OrganizationMembersAttrs);
-
-const EMPTY = [];
+const EMPTY: UserDisplayNameFragment[] = [];
 
 /***
  * Hook to fetch available users in a curtain context, defined by the parent members (if applicable),
@@ -51,14 +44,13 @@ const EMPTY = [];
  * @param options.credential The credential type of the authorization group
  * @param options.resourceId The resource
  * @param options.parentCommunityId The parent entity community id (if applicable)
- * @param options.parentMembers
  * @param options.filter
  */
 // todo: merge with useAvailableMembers when pagination and filtering is stable
 export const useAvailableMembers = (options: UseAvailableMembersOptions): AvailableMembersResults => {
-  const { filter = { firstName: '', lastName: '', email: '' }, credential, resourceId } = options;
+  const { credential, resourceId } = options;
 
-  // const shouldFetchEntityUsers = 'parentMembers' in options || typeof options.parentCommunityId !== 'undefined';
+  const { filter, setSearchTerm: setPaginatedUsersSearchTerm } = useUsersSearch();
 
   const {
     data: usersQueryData,
@@ -73,7 +65,7 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
     options: {
       fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-first',
-      skip: false,
+      skip: Boolean(options.parentCommunityId),
     },
     pageSize: PAGE_SIZE,
     variables: { filter },
@@ -97,6 +89,8 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
 
   const { hubId, loading: loadingHub } = useHub();
 
+  const shouldFetchParentCommunityMembers = Boolean(hubId && options.parentCommunityId);
+
   const {
     data: _parentCommunityMembers,
     loading: loadingParentCommunityMembers,
@@ -107,24 +101,30 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
     variables: {
       hubId,
       // Because hooks aren't to be called conditionally, we can't rely on type guards
-      communityId: 'parentMembers' in options ? (null as never) : options.parentCommunityId!,
+      communityId: options.parentCommunityId!,
     },
-    skip: Boolean('parentMembers' in options || !hubId || !options.parentCommunityId),
+    skip: !shouldFetchParentCommunityMembers,
+  });
+
+  const { data: filteredParentCommunityMembers, setSearchTerm: setParentCommunityMembersSearchTerm } = useLocalSearch({
+    data: _parentCommunityMembers?.hub.community?.memberUsers,
+    isMatch: (user, searchTerm) => user.displayName.toLowerCase().includes(searchTerm.toLowerCase()),
   });
 
   const current = _current?.usersWithAuthorizationCredential || [];
 
   const isLoading = loadingUsers || loadingMembers || loadingHub || loadingParentCommunityMembers;
   const hasError = !!(membersError || userError || parentCommunityMembersError);
-  const entityMembers = (('parentMembers' in options ? options.parentMembers : undefined) ||
-    _parentCommunityMembers?.hub.community?.memberUsers ||
-    usersQueryData?.usersPaginated.users ||
-    EMPTY) as UserDisplayNameFragment[]; // having inline [] makes useMemo() below useless
+  const entityMembers = filteredParentCommunityMembers || usersQueryData?.usersPaginated.users || EMPTY; // having inline [] makes useMemo() below useless
 
   const availableMembers = useMemo<UserDisplayNameFragment[]>(
     () => entityMembers.filter(member => !current.some(user => user.id === member.id)),
     [entityMembers, current]
   );
+
+  const setSearchTerm = shouldFetchParentCommunityMembers
+    ? setParentCommunityMembersSearchTerm
+    : setPaginatedUsersSearchTerm;
 
   return {
     available: availableMembers,
@@ -135,5 +135,6 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
     hasMore,
     pageSize,
     firstPageSize,
+    setSearchTerm,
   };
 };

@@ -4,11 +4,12 @@ import {
   useAssignUserAsCommunityMemberMutation,
   useRemoveUserAsCommunityMemberMutation,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
+import { useApolloErrorHandler } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
 import EditMembers from '../Community/EditMembers';
 import { WithCommunity } from '../Community/CommunityTypes';
+import { useAvailableMembers } from '../../../domain/community/useAvailableMembers';
 
 interface EditCredentialsProps extends WithCommunity {
   resourceId: string;
@@ -72,7 +73,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
     });
   };
 
-  const { available, current, loading, fetchMore, hasMore } = useAvailableMembers({
+  const { available, current, loading, fetchMore, hasMore, setSearchTerm } = useAvailableMembers({
     credential,
     resourceId,
     parentCommunityId,
@@ -90,7 +91,9 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
       loadingAvailableMembers={loading}
       fetchMore={fetchMore}
       hasMore={hasMore}
+      onFilter={setSearchTerm}
     />
   );
 };
+
 export default EditCommunityMembers;

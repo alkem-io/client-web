@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useApolloErrorHandler, useAvailableMembers, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOpportunityAdminMutation,
@@ -7,6 +7,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { AuthorizationCredential, Community, Opportunity, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
+import { useAvailableMembers } from '../../domain/community/useAvailableMembers';
 
 const opportunityAdminCredential = AuthorizationCredential.OpportunityAdmin;
 
