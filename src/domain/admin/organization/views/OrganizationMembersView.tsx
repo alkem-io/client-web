@@ -31,7 +31,7 @@ export const OrganizationMembersView: FC = () => {
             hasMore={state.hasMoreUsers}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
-            onFilter={actions.setSearchTerm}
+            onSearchTermChange={actions.setSearchTerm}
           />
         )}
       </OrganizationMembers>

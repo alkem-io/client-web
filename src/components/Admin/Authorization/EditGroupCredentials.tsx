@@ -63,7 +63,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentCo
     });
   };
 
-  const { available, current, loading, fetchMore, hasMore } = useAvailableMembers({
+  const { available, current, loading, fetchMore, hasMore, setSearchTerm } = useAvailableMembers({
     credential,
     resourceId,
     parentCommunityId,
@@ -81,6 +81,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentCo
       loadingAvailableMembers={loading}
       fetchMore={fetchMore}
       hasMore={hasMore}
+      onSearchTermChange={setSearchTerm}
     />
   );
 };

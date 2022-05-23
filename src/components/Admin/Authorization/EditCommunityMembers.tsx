@@ -91,7 +91,7 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
       loadingAvailableMembers={loading}
       fetchMore={fetchMore}
       hasMore={hasMore}
-      onFilter={setSearchTerm}
+      onSearchTermChange={setSearchTerm}
     />
   );
 };

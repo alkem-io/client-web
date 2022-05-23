@@ -44,7 +44,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
       loadingMembers={loading}
       loadingAvailableMembers={loading}
       fetchMore={fetchMore}
-      onFilter={setSearchTerm}
+      onSearchTermChange={setSearchTerm}
       hasMore={hasMore}
       title={title}
     />
