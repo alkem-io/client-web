@@ -45,6 +45,7 @@ export const OrganizationAdminAuthorizationView: FC = () => {
             hasMore={state.hasMoreUsers}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
+            onSearchTermChange={actions.setSearchTerm}
           />
         )}
       </OrganizationMembers>

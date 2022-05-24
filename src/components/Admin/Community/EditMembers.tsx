@@ -57,7 +57,7 @@ export interface EditMembersProps {
   onAdd?: (member: UserDisplayNameFragment) => void;
   onRemove?: (member: Member) => void;
   fetchMore?: (amount?: number) => Promise<void>;
-  onFilter?: (term: string) => any;
+  onSearchTermChange?: (term: string) => any;
   hasMore?: boolean;
   title?: string;
 }
@@ -74,7 +74,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   onAdd,
   onRemove,
   fetchMore = () => Promise.resolve(),
-  onFilter,
+  onSearchTermChange,
   hasMore = false,
   title,
 }) => {
@@ -86,8 +86,8 @@ export const EditMembers: FC<EditMembersProps> = ({
   const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
 
   const handleFilter = useMemo(
-    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onFilter?.(e.target.value), FILTER_DEBOUNCE),
-    [onFilter, FILTER_DEBOUNCE]
+    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onSearchTermChange?.(e.target.value), FILTER_DEBOUNCE),
+    [onSearchTermChange, FILTER_DEBOUNCE]
   );
 
   const lazyLoading = useLazyLoading({
