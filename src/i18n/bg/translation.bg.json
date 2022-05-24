@@ -573,6 +573,13 @@
     }
   },
   "pages": {
+    "generic": {
+      "sections": {
+        "dashboard": {
+          "leading-organizations": "Водещи организации"
+        }
+      }
+    },
     "aspect": {
       "dashboard": {
         "comment": {
@@ -731,7 +738,6 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Водещи организации",
           "statistics": {
             "title": "Статистика на Предизвикателството",
             "help-text": "Статистика на Предизвикателството"
