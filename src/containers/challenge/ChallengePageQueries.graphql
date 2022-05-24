@@ -74,12 +74,12 @@ fragment ChallengeProfile on Challenge {
         }
       }
     }
+    leadOrganizations {
+      ...OrganizationDetails
+    }
     authorization {
       id
       myPrivileges
-    }
-    leadOrganizations {
-      ...OrganizationDetails
     }
   }
   tagset {

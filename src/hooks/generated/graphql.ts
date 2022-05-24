@@ -1144,12 +1144,12 @@ export const ChallengeProfileFragmentDoc = gql`
           }
         }
       }
+      leadOrganizations {
+        ...OrganizationDetails
+      }
       authorization {
         id
         myPrivileges
-      }
-      leadOrganizations {
-        ...OrganizationDetails
       }
     }
     tagset {
@@ -1476,6 +1476,9 @@ export const OpportunityPageFragmentDoc = gql`
           }
         }
       }
+      leadOrganizations {
+        ...OrganizationDetails
+      }
       authorization {
         id
         myPrivileges
@@ -1484,6 +1487,7 @@ export const OpportunityPageFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${OrganizationDetailsFragmentDoc}
 `;
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {

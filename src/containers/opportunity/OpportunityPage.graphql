@@ -99,6 +99,9 @@ fragment OpportunityPage on Opportunity {
         }
       }
     }
+    leadOrganizations {
+      ...OrganizationDetails
+    }
     authorization {
       id
       myPrivileges
