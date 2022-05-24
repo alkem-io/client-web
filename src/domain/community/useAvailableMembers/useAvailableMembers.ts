@@ -36,7 +36,7 @@ interface CommunityMembersAttrs {
 
 export type UseAvailableMembersOptions = CurrentUserAttrs & CommunityMembersAttrs;
 
-const EMPTY: UserDisplayNameFragment[] = [];
+const EMPTY_MEMBERS_LIST: UserDisplayNameFragment[] = [];
 
 /***
  * Hook to fetch available users in a curtain context, defined by the parent members (if applicable),
@@ -89,8 +89,6 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
 
   const { hubId, loading: loadingHub } = useHub();
 
-  const shouldFetchParentCommunityMembers = Boolean(hubId && options.parentCommunityId);
-
   const {
     data: _parentCommunityMembers,
     loading: loadingParentCommunityMembers,
@@ -98,12 +96,11 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
   } = useCommunityMembersQuery({
     fetchPolicy: 'network-only', // Used for first execution
     nextFetchPolicy: 'cache-first', // Used for subsequent executions
+    skip: !hubId || !options.parentCommunityId,
     variables: {
       hubId,
-      // Because hooks aren't to be called conditionally, we can't rely on type guards
-      communityId: options.parentCommunityId!,
+      communityId: options.parentCommunityId!, // presence checked by skip condition
     },
-    skip: !shouldFetchParentCommunityMembers,
   });
 
   const { data: filteredParentCommunityMembers, setSearchTerm: setParentCommunityMembersSearchTerm } = useLocalSearch({
@@ -115,16 +112,14 @@ export const useAvailableMembers = (options: UseAvailableMembersOptions): Availa
 
   const isLoading = loadingUsers || loadingMembers || loadingHub || loadingParentCommunityMembers;
   const hasError = !!(membersError || userError || parentCommunityMembersError);
-  const entityMembers = filteredParentCommunityMembers || usersQueryData?.usersPaginated.users || EMPTY; // having inline [] makes useMemo() below useless
+  const entityMembers = filteredParentCommunityMembers || usersQueryData?.usersPaginated.users || EMPTY_MEMBERS_LIST;
 
   const availableMembers = useMemo<UserDisplayNameFragment[]>(
     () => entityMembers.filter(member => !current.some(user => user.id === member.id)),
     [entityMembers, current]
   );
 
-  const setSearchTerm = shouldFetchParentCommunityMembers
-    ? setParentCommunityMembersSearchTerm
-    : setPaginatedUsersSearchTerm;
+  const setSearchTerm = options.parentCommunityId ? setParentCommunityMembersSearchTerm : setPaginatedUsersSearchTerm;
 
   return {
     available: availableMembers,
