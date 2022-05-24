@@ -75,7 +75,8 @@ fragment ChallengeProfile on Challenge {
       }
     }
     leadOrganizations {
-      ...OrganizationDetails
+      id
+      nameID
     }
     authorization {
       id

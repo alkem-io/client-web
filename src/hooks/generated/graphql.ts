@@ -540,6 +540,29 @@ export const OrganizationInfoFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const OrganizationDetailsFragmentDoc = gql`
+  fragment OrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        id
+        tags
+      }
+      location {
+        country
+        city
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
     id
@@ -1053,29 +1076,6 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const OrganizationDetailsFragmentDoc = gql`
-  fragment OrganizationDetails on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      avatar {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        id
-        tags
-      }
-      location {
-        country
-        city
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const ChallengeProfileFragmentDoc = gql`
   fragment ChallengeProfile on Challenge {
     id
@@ -1145,7 +1145,8 @@ export const ChallengeProfileFragmentDoc = gql`
         }
       }
       leadOrganizations {
-        ...OrganizationDetails
+        id
+        nameID
       }
       authorization {
         id
@@ -1192,7 +1193,6 @@ export const ChallengeProfileFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
-  ${OrganizationDetailsFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
@@ -1477,7 +1477,8 @@ export const OpportunityPageFragmentDoc = gql`
         }
       }
       leadOrganizations {
-        ...OrganizationDetails
+        id
+        nameID
       }
       authorization {
         id
@@ -1487,7 +1488,6 @@ export const OpportunityPageFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
-  ${OrganizationDetailsFragmentDoc}
 `;
 export const AssociatedOrganizationDetailsFragmentDoc = gql`
   fragment AssociatedOrganizationDetails on Organization {

@@ -9051,22 +9051,7 @@ export type ChallengePageQuery = {
                   };
                 }>
               | undefined;
-            leadOrganizations?:
-              | Array<{
-                  __typename?: 'Organization';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    description?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-                  };
-                }>
-              | undefined;
+            leadOrganizations?: Array<{ __typename?: 'Organization'; id: string; nameID: string }> | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -9228,22 +9213,7 @@ export type ChallengeProfileFragment = {
               };
             }>
           | undefined;
-        leadOrganizations?:
-          | Array<{
-              __typename?: 'Organization';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                description?: string | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-              };
-            }>
-          | undefined;
+        leadOrganizations?: Array<{ __typename?: 'Organization'; id: string; nameID: string }> | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -10428,22 +10398,7 @@ export type OpportunityPageQuery = {
                   };
                 }>
               | undefined;
-            leadOrganizations?:
-              | Array<{
-                  __typename?: 'Organization';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    description?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-                  };
-                }>
-              | undefined;
+            leadOrganizations?: Array<{ __typename?: 'Organization'; id: string; nameID: string }> | undefined;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -10555,22 +10510,7 @@ export type OpportunityPageFragment = {
               };
             }>
           | undefined;
-        leadOrganizations?:
-          | Array<{
-              __typename?: 'Organization';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                description?: string | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-              };
-            }>
-          | undefined;
+        leadOrganizations?: Array<{ __typename?: 'Organization'; id: string; nameID: string }> | undefined;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
