@@ -20,7 +20,9 @@ export interface AspectsData {
   canReadAspects: boolean;
   canCreateAspects: boolean;
   contextId: string | undefined;
+  subscriptionEnabled: boolean;
 }
+
 export const useAspectsData = ({
   hubNameId,
   challengeNameId = undefined,
@@ -108,17 +110,24 @@ export const useAspectsData = ({
   });
   const opportunityAspects = opportunityAspectData?.hub?.opportunity?.context?.aspects;
 
-  useContextAspectCreatedSubscription(hubAspectData, hubData => hubData?.hub?.context, subscribeToHub);
-  useContextAspectCreatedSubscription(
+  const hubAspectSubscription = useContextAspectCreatedSubscription(
+    hubAspectData,
+    hubData => hubData?.hub?.context,
+    subscribeToHub
+  );
+  const challengeAspectSubscription = useContextAspectCreatedSubscription(
     challengeAspectData,
     challengeData => challengeData?.hub?.challenge?.context,
     subscribeToChallenges
   );
-  useContextAspectCreatedSubscription(
+  const opportunityAspectSubscription = useContextAspectCreatedSubscription(
     opportunityAspectData,
     opportunityData => opportunityData?.hub?.opportunity?.context,
     subscribeToOpportunity
   );
+
+  const isSubscriptionEnabled =
+    hubAspectSubscription.enabled || challengeAspectSubscription.enabled || opportunityAspectSubscription.enabled;
 
   const aspects: AspectWithPermissions[] | undefined = useMemo(
     () =>
@@ -151,5 +160,13 @@ export const useAspectsData = ({
 
   const contextId = hubContext?.id ?? challengeContext?.id ?? opportunityContext?.id;
 
-  return { aspects, loading, error, canReadAspects, canCreateAspects, contextId };
+  return {
+    aspects,
+    loading,
+    error,
+    canReadAspects,
+    canCreateAspects,
+    contextId,
+    subscriptionEnabled: isSubscriptionEnabled,
+  };
 };
