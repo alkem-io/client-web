@@ -1,10 +1,10 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useConfig, useUrlParams, useUserContext } from '../hooks';
 import { useHubProviderQuery } from '../hooks/generated/graphql';
 import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
 
-interface HubPermissions {
+export interface HubPermissions {
   viewerCanUpdate: boolean;
   canReadAspects: boolean;
   canReadChallenges: boolean;
@@ -24,6 +24,7 @@ interface HubContextProps {
   loading: boolean;
   permissions: HubPermissions;
   error?: ApolloError;
+  refetchHub: () => void;
 }
 
 const HubContext = React.createContext<HubContextProps>({
@@ -42,9 +43,12 @@ const HubContext = React.createContext<HubContextProps>({
     communityReadAccess: false,
     contextPrivileges: [],
   },
+  refetchHub: () => {},
 });
 
 interface HubProviderProps {}
+
+const NO_PRIVILEGES = [];
 
 const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const { hubNameId = '' } = useUrlParams();
@@ -56,11 +60,13 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
     error: hubError,
     data,
     loading,
+    refetch,
   } = useHubProviderQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
     skip: !hubNameId,
   });
+  const refetchHub = useCallback(() => refetch({ hubId: hubNameId }), [refetch, hubNameId]);
   const hub = data?.hub;
   const hubId = hub?.id || '';
   const displayName = hub?.displayName || '';
@@ -73,25 +79,24 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const isPrivate = !Boolean(hub?.authorization?.anonymousReadAccess ?? true);
   const error = configError || hubError;
 
-  const contextPrivileges = hub?.context?.authorization?.myPrivileges ?? [];
-  const hubPrivileges = hub?.authorization?.myPrivileges ?? [];
+  const contextPrivileges = hub?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
+  const hubPrivileges = hub?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const isMember = user?.ofHub(hubId) ?? false;
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
   const canReadChallenges = isPrivate ? isMember || isGlobalAdmin : true;
 
-  const communityReadAccess = (hub?.community?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.Read);
+  const communityPrivileges = hub?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const permissions = useMemo<HubPermissions>(
-    () => ({
+  const permissions = useMemo<HubPermissions>(() => {
+    return {
       viewerCanUpdate: hubPrivileges.includes(AuthorizationPrivilege.Update),
       canReadChallenges,
-      communityReadAccess,
+      communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadAspects: contextPrivileges.includes(AuthorizationPrivilege.Read),
       contextPrivileges,
-    }),
-    [hubPrivileges, contextPrivileges, canReadChallenges]
-  );
+    };
+  }, [hubPrivileges, contextPrivileges, canReadChallenges, communityPrivileges]);
 
   return (
     <HubContext.Provider
@@ -107,6 +112,7 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
         isPrivate,
         loading,
         error,
+        refetchHub,
       }}
     >
       {children}

@@ -606,6 +606,7 @@
     "generic": {
       "sections": {
         "dashboard": {
+          "leading-organizations": "Leidende organisaties",
           "description": "Hier kan je een samenvatting zien van deze {{entity}}. Navigeer door de andere tabbladen om meer gedetailleerde informatie te zien!"
         },
         "context": {
@@ -851,7 +852,6 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Leidende organisaties",
           "statistics": {
             "title": "Statistieken van Challenge",
             "help-text": "Statistieken van Challenge"

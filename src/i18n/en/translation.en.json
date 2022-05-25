@@ -621,6 +621,7 @@
     "generic": {
       "sections": {
         "dashboard": {
+          "leading-organizations": "Leading Organizations",
           "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
         },
         "context": {
@@ -866,7 +867,6 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Leading organizations",
           "statistics": {
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"

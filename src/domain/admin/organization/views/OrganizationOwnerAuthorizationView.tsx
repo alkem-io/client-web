@@ -43,6 +43,7 @@ export const OrganizationOwnerAuthorizationView: FC = () => {
             onRemove={actions.handleRemoveOwner}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
+            onSearchTermChange={actions.setSearchTerm}
           />
         )}
       </OrganizationMembers>
