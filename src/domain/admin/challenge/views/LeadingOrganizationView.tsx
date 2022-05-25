@@ -106,7 +106,7 @@ const LeadingOrganizationView: FC = () => {
   const { t } = useTranslation();
 
   return (
-    <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.organization')}>
+    <DashboardGenericSection headerText={t('pages.generic.sections.dashboard.leading-organizations')}>
       <EditLeadingOrganization
         available={toOrganizationDetailsVm(available)}
         leading={toOrganizationDetailsVm(leadingOrganizations)}
