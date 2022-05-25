@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useAvailableMembers, useUserContext } from '../../hooks';
+import { useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOrganizationAdminMutation,
@@ -12,6 +12,8 @@ import {
 import { useApolloErrorHandler } from '../../hooks';
 import { AuthorizationCredential, Organization, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
+import { useAvailableMembers } from '../../domain/community/useAvailableMembers';
+import { AvailableMembersResults } from '../../domain/community/useAvailableMembers/useAvailableMembers';
 
 const organizationMemberCredential = AuthorizationCredential.OrganizationMember;
 const organizationAdminCredential = AuthorizationCredential.OrganizationAdmin;
@@ -43,6 +45,7 @@ export interface OrganizationMembersActions {
   handleAssignOwner: (member: UserDisplayNameFragment) => void;
   handleRemoveOwner: (member: Member) => void;
   handleLoadMore: () => Promise<void>;
+  setSearchTerm: AvailableMembersResults['setSearchTerm'];
 }
 
 export interface OrganizationMembersState {
@@ -216,10 +219,10 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     loading,
     fetchMore,
     hasMore,
+    setSearchTerm,
   } = useAvailableMembers({
     credential: entities.credential,
     resourceId: entities.organizationId,
-    parentMembers: entities.parentMembers,
   });
 
   const handleLoadMore = fetchMore;
@@ -247,6 +250,7 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
           handleAssignOwner,
           handleRemoveOwner,
           handleLoadMore,
+          setSearchTerm,
         },
         {
           addingUser,

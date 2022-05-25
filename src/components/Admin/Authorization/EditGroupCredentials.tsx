@@ -4,26 +4,21 @@ import {
   useAssignUserToGroupMutation,
   useRemoveUserFromGroupMutation,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
+import { useApolloErrorHandler } from '../../../hooks';
 import { Member } from '../../../models/User';
 import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
 import EditMembers from '../Community/EditMembers';
+import { useAvailableMembers } from '../../../domain/community/useAvailableMembers';
 
 interface EditCredentialsProps {
   credential: GroupCredentials;
   resourceId: string;
-  parentMembers?: Member[];
   parentCommunityId?: string;
 }
 
 export type GroupCredentials = AuthorizationCredential.UserGroupMember;
 
-export const EditCredentials: FC<EditCredentialsProps> = ({
-  credential,
-  parentCommunityId,
-  resourceId,
-  parentMembers,
-}) => {
+export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentCommunityId, resourceId }) => {
   const handleError = useApolloErrorHandler();
 
   const [grant, { loading: addingMember }] = useAssignUserToGroupMutation({
@@ -68,11 +63,10 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
     });
   };
 
-  const { available, current, loading, fetchMore, hasMore } = useAvailableMembers({
+  const { available, current, loading, fetchMore, hasMore, setSearchTerm } = useAvailableMembers({
     credential,
     resourceId,
     parentCommunityId,
-    parentMembers,
   });
 
   return (
@@ -87,6 +81,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
       loadingAvailableMembers={loading}
       fetchMore={fetchMore}
       hasMore={hasMore}
+      onSearchTermChange={setSearchTerm}
     />
   );
 };

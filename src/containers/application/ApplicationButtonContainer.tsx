@@ -31,7 +31,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
 
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
 
-  const { hubId, hubNameId, displayName: hubName } = useHub();
+  const { hubId, hubNameId, displayName: hubName, refetchHub } = useHub();
   const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
 
   const { communityId } = useCommunityContext();
@@ -78,10 +78,12 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
 
   const loading = membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
 
-  const onJoin = () => {
-    joinCommunity({
+  const onJoin = async () => {
+    await joinCommunity({
       variables: { joiningData: { communityID: communityId } },
-    }).then(() => /* refresh user's membership */ getUserProfile());
+    });
+    getUserProfile();
+    refetchHub();
   };
 
   const applicationButtonProps: ApplicationButtonProps = {

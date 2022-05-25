@@ -19,6 +19,7 @@ export const OpportunityAdminAuthorizationView: FC = () => {
       >
         {(entities, actions, state) => (
           <EditMembers
+            title="Opportunity Admins"
             members={entities.allMembers}
             availableMembers={entities.availableMembers}
             addingMember={state.addingAdmin}
@@ -30,7 +31,7 @@ export const OpportunityAdminAuthorizationView: FC = () => {
             hasMore={state.hasMoreUsers}
             loadingMembers={state.loading}
             loadingAvailableMembers={state.loading}
-            title="Opportunity Admins"
+            onSearchTermChange={actions.setSearchTerm}
           />
         )}
       </OpportunityMembers>
