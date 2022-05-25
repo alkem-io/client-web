@@ -20,6 +20,7 @@ import { AspectCardAspect } from '../../components/composite/common/cards/Aspect
 import EntityDashboardContributorsSection, {
   EntityDashboardContributorsSectionProps,
 } from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -92,6 +93,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { visuals, tagline = '', vision = '' } = context ?? {};
   const banner = getVisualBanner(visuals);
 
+  const leadOrganizationsNameIDs = opportunity?.community?.leadOrganizations?.map(x => x.nameID) || [];
+
   const { loading } = state;
   return (
     <>
@@ -133,6 +136,10 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
+          <AssociatedOrganizationsView
+            title={t('pages.generic.sections.dashboard.leading-organizations')}
+            organizationNameIDs={leadOrganizationsNameIDs}
+          />
           <DashboardGenericSection
             headerText={t('pages.opportunity.sections.dashboard.projects.title')}
             helpText={t('pages.opportunity.sections.dashboard.projects.help-text')}

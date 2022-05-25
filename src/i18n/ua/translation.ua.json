@@ -591,6 +591,13 @@
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {
+    "generic": {
+      "sections": {
+        "dashboard": {
+          "leading-organizations": "Головні Організації"
+        }
+      }
+    },
     "aspect": {
       "dashboard": {
         "comment": {
@@ -753,7 +760,6 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Головні Організації",
           "statistics": {
             "title": "Статистика Випробування",
             "help-text": "Статистика Випробування"
