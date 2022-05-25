@@ -14,7 +14,7 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
   updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void;
 }
 
-const createUseSubscriptionToSubEntity =
+const createUseSubscriptionToSubEntityHook =
   <SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>(
     options: CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>
   ) =>
@@ -57,4 +57,4 @@ const createUseSubscriptionToSubEntity =
     };
   };
 
-export default createUseSubscriptionToSubEntity;
+export default createUseSubscriptionToSubEntityHook;

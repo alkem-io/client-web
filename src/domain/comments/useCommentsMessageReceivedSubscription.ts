@@ -4,9 +4,9 @@ import {
   CommentsMessageReceivedSubscription,
   CommentsMessageReceivedSubscriptionVariables,
 } from '../../models/graphql-schema';
-import createUseSubscriptionToSubEntity from '../shared/subscriptions/useSubscriptionToSubEntity';
+import createUseSubscriptionToSubEntityHook from '../shared/subscriptions/useSubscriptionToSubEntity';
 
-const useCommentsMessageReceivedSubscription = createUseSubscriptionToSubEntity<
+const useCommentsMessageReceivedSubscription = createUseSubscriptionToSubEntityHook<
   Omit<Comments, 'authorization'>,
   CommentsMessageReceivedSubscriptionVariables,
   CommentsMessageReceivedSubscription
