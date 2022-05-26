@@ -2,10 +2,10 @@ import { Avatar, Box, Typography, useTheme } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
-import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import FlagIcon from '@mui/icons-material/Flag';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import PersonIcon from '@mui/icons-material/Person';
+import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 
 const GettingStartedSection = () => {
   const { t } = useTranslation();
@@ -31,13 +31,13 @@ const GettingStartedSection = () => {
       <SectionSpacer />
       <Box display="flex" alignItems="center">
         <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
-          <ConnectWithoutContactIcon sx={{ color: theme.palette.background.default }} />
+          <OndemandVideoIcon sx={{ color: theme.palette.background.default }} />
         </Avatar>
         <SectionSpacer />
         <Typography
           variant="body1"
           dangerouslySetInnerHTML={{
-            __html: t('pages.home.sections.getting-started.connecting-with-people'),
+            __html: t('pages.home.sections.getting-started.introduction-video'),
           }}
         />
       </Box>
