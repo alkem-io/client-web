@@ -126,11 +126,8 @@ export const useUserMetadataWrapper = () => {
         .sort((a, b) => a.order - b.order) || [];
 
     const hasCredentials = (credential: AuthorizationCredential, resourceId?: string) =>
-      Boolean(
-        user?.agent?.credentials?.findIndex(
-          c => c.type === credential && (!resourceId || c.resourceID === resourceId)
-        ) !== -1
-      );
+      user?.agent?.credentials?.some(c => c.type === credential && (!resourceId || c.resourceID === resourceId)) ??
+      false;
 
     const isHubAdmin = (id: string) =>
       hasCredentials(AuthorizationCredential.GlobalAdmin) || hasCredentials(AuthorizationCredential.HubAdmin, id);
