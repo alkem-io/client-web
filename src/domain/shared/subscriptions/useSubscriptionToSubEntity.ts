@@ -25,7 +25,7 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
  * to this entity from multiple parent queries.
  * Example: by calling this factory you can create a hook that subscribes to Comments; the resulting hook you can use to
  * subscribe for Comments on Hub Aspects, Challenge Aspects and Opportunity Aspects. To the resulting hook you'll have to
- * pass different paths to Comments from different parent entities as well as subscribeToMore() from different the parent queries.
+ * pass different paths to Comments from different parent entities as well as subscribeToMore() from different parent queries.
  * @param options.subscriptionDocument - the subscription document to fetch.
  * @param options.getSubscriptionVariables - the function that constructs subscription variables by reading the entity.
  * @param options.updateSubEntity - the callback that updates cache based on the received subscription message; it should
