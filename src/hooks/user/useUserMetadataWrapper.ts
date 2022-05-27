@@ -9,7 +9,7 @@ import {
 } from '../../models/graphql-schema';
 import { Role } from '../../models/Role';
 import { useCredentialsResolver } from '../useCredentialsResolver';
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 
 export interface UserPermissions {
   canCreate: boolean;
@@ -91,102 +91,100 @@ const getPendingApplications = (membershipData?: UserMembershipDetailsFragment) 
 export const useUserMetadataWrapper = () => {
   const resolver = useCredentialsResolver();
 
-  const toUserMetadata = useMemo(
-    () =>
-      (
-        user: User | undefined,
-        membershipData?: UserMembershipDetailsFragment,
-        authorization?: MyPrivilegesFragment
-      ): UserMetadata | undefined => {
-        if (!user) {
-          return;
-        }
+  const toUserMetadata = useCallback(
+    (
+      user: User | undefined,
+      membershipData?: UserMembershipDetailsFragment,
+      authorization?: MyPrivilegesFragment
+    ): UserMetadata | undefined => {
+      if (!user) {
+        return;
+      }
 
-        const hubs = membershipData?.hubs.map(getDisplayName) || [];
-        const challenges = membershipData?.hubs.flatMap(e => e.challenges.map(getDisplayName)) || [];
-        const opportunities = membershipData?.hubs.flatMap(e => e.opportunities.map(getDisplayName)) || [];
-        const organizations = membershipData?.organizations.map(getDisplayName) || [];
-        const organizationNameIDs: UserMetadata['organizationNameIDs'] =
-          membershipData?.organizations.map(o => o.nameID) || [];
-        const groups = membershipData?.hubs.flatMap(e => e.userGroups.map(getDisplayName)) || [];
-        const communities =
-          membershipData?.communities.reduce((aggr, value) => {
-            aggr[value.id] = value.displayName;
-            return aggr;
-          }, {}) || {};
+      const hubs = membershipData?.hubs.map(getDisplayName) || [];
+      const challenges = membershipData?.hubs.flatMap(e => e.challenges.map(getDisplayName)) || [];
+      const opportunities = membershipData?.hubs.flatMap(e => e.opportunities.map(getDisplayName)) || [];
+      const organizations = membershipData?.organizations.map(getDisplayName) || [];
+      const organizationNameIDs: UserMetadata['organizationNameIDs'] =
+        membershipData?.organizations.map(o => o.nameID) || [];
+      const groups = membershipData?.hubs.flatMap(e => e.userGroups.map(getDisplayName)) || [];
+      const communities =
+        membershipData?.communities.reduce((aggr, value) => {
+          aggr[value.id] = value.displayName;
+          return aggr;
+        }, {}) || {};
 
-        const roles =
-          user?.agent?.credentials
-            ?.map(c => {
-              return {
-                type: c.type,
-                name: resolver.toRoleName(c.type),
-                order: resolver.toRoleOrder(c.type),
-                hidden: resolver.isHidden(c.type),
-                resourceId: c.resourceID,
-              } as Role;
-            })
-            .sort((a, b) => a.order - b.order) || [];
+      const roles =
+        user?.agent?.credentials
+          ?.map(c => {
+            return {
+              type: c.type,
+              name: resolver.toRoleName(c.type),
+              order: resolver.toRoleOrder(c.type),
+              hidden: resolver.isHidden(c.type),
+              resourceId: c.resourceID,
+            } as Role;
+          })
+          .sort((a, b) => a.order - b.order) || [];
 
-        const hasCredentials = (credential: AuthorizationCredential, resourceId?: string) =>
-          user?.agent?.credentials?.some(c => c.type === credential && (!resourceId || c.resourceID === resourceId)) ??
-          false;
+      const hasCredentials = (credential: AuthorizationCredential, resourceId?: string) =>
+        user?.agent?.credentials?.some(c => c.type === credential && (!resourceId || c.resourceID === resourceId)) ??
+        false;
 
-        const isHubAdmin = (id: string) =>
-          hasCredentials(AuthorizationCredential.GlobalAdmin) || hasCredentials(AuthorizationCredential.HubAdmin, id);
+      const isHubAdmin = (id: string) =>
+        hasCredentials(AuthorizationCredential.GlobalAdmin) || hasCredentials(AuthorizationCredential.HubAdmin, id);
 
-        const isChallengeAdmin = (hubId: string, challengeId: string) =>
-          isHubAdmin(hubId) || hasCredentials(AuthorizationCredential.ChallengeAdmin, challengeId);
+      const isChallengeAdmin = (hubId: string, challengeId: string) =>
+        isHubAdmin(hubId) || hasCredentials(AuthorizationCredential.ChallengeAdmin, challengeId);
 
-        const isOpportunityAdmin = (hubId: string, challengeId: string, opportunityId) =>
-          isChallengeAdmin(hubId, challengeId) ||
-          hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
+      const isOpportunityAdmin = (hubId: string, challengeId: string, opportunityId) =>
+        isChallengeAdmin(hubId, challengeId) || hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
 
-        const myPrivileges = authorization?.myPrivileges ?? [];
-        const permissions: UserPermissions = {
-          canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
-          canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
-          canGrant: myPrivileges.includes(AuthorizationPrivilege.Grant),
-          canDelete: myPrivileges.includes(AuthorizationPrivilege.Delete),
-          canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
-          canCreateHub: myPrivileges.includes(AuthorizationPrivilege.CreateHub),
-          canCreateOrganization: myPrivileges.includes(AuthorizationPrivilege.CreateOrganization),
-          canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
-        };
+      const myPrivileges = authorization?.myPrivileges ?? [];
+      const permissions: UserPermissions = {
+        canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
+        canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
+        canGrant: myPrivileges.includes(AuthorizationPrivilege.Grant),
+        canDelete: myPrivileges.includes(AuthorizationPrivilege.Delete),
+        canUpdate: myPrivileges.includes(AuthorizationPrivilege.Update),
+        canCreateHub: myPrivileges.includes(AuthorizationPrivilege.CreateHub),
+        canCreateOrganization: myPrivileges.includes(AuthorizationPrivilege.CreateOrganization),
+        canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+      };
 
-        const metadata: UserMetadata = {
-          user,
-          hasCredentials,
-          ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
-          ofHub: (id: string) => hasCredentials(AuthorizationCredential.HubMember, id),
-          ofOpportunity: (id: string) => hasCredentials(AuthorizationCredential.OpportunityMember, id),
-          isHubAdmin,
-          isChallengeAdmin,
-          isOpportunityAdmin,
-          isAdmin: false,
-          isCommunityAdmin: false,
-          isGlobalAdmin: hasCredentials(AuthorizationCredential.GlobalAdmin),
-          isGlobalAdminCommunity: hasCredentials(AuthorizationCredential.GlobalAdminCommunity),
-          roles,
-          groups,
-          challenges,
-          opportunities,
-          organizations,
-          hubs,
-          communities,
-          keywords: user.profile?.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
-          skills: user.profile?.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
-          contributions: getContributions(membershipData),
-          pendingApplications: getPendingApplications(membershipData),
-          organizationNameIDs: organizationNameIDs,
-          permissions: permissions,
-        };
+      const metadata: UserMetadata = {
+        user,
+        hasCredentials,
+        ofChallenge: (id: string) => hasCredentials(AuthorizationCredential.ChallengeMember, id),
+        ofHub: (id: string) => hasCredentials(AuthorizationCredential.HubMember, id),
+        ofOpportunity: (id: string) => hasCredentials(AuthorizationCredential.OpportunityMember, id),
+        isHubAdmin,
+        isChallengeAdmin,
+        isOpportunityAdmin,
+        isAdmin: false,
+        isCommunityAdmin: false,
+        isGlobalAdmin: hasCredentials(AuthorizationCredential.GlobalAdmin),
+        isGlobalAdminCommunity: hasCredentials(AuthorizationCredential.GlobalAdminCommunity),
+        roles,
+        groups,
+        challenges,
+        opportunities,
+        organizations,
+        hubs,
+        communities,
+        keywords: user.profile?.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
+        skills: user.profile?.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
+        contributions: getContributions(membershipData),
+        pendingApplications: getPendingApplications(membershipData),
+        organizationNameIDs: organizationNameIDs,
+        permissions: permissions,
+      };
 
-        metadata.isAdmin = hasAdminRole(metadata.roles);
-        metadata.isCommunityAdmin = hasCommunityAdminRole(metadata.roles);
+      metadata.isAdmin = hasAdminRole(metadata.roles);
+      metadata.isCommunityAdmin = hasCommunityAdminRole(metadata.roles);
 
-        return metadata;
-      },
+      return metadata;
+    },
     [resolver]
   );
 
