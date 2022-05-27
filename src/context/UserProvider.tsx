@@ -62,7 +62,7 @@ const UserProvider: FC<{}> = ({ children }) => {
 
   const wrappedMe = useMemo(
     () => (meData?.me ? wrapper(meData.me as User, membershipData?.membershipUser) : undefined),
-    [meData, membershipData]
+    [meData, membershipData, wrapper]
   );
 
   const providedValue = useMemo(
