@@ -34,6 +34,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
   const { data, loading } = useOrganizationProfileInfoQuery({
     variables: { id: organizationNameId },
     fetchPolicy: 'cache-and-network',
+    skip: !organizationNameId,
   });
 
   const organization = data?.organization;
