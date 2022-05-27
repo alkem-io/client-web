@@ -48,14 +48,14 @@ const FILTER_DEBOUNCE = 500;
 export interface EditMembersProps {
   deleteExecutor?: boolean;
   executor?: Member;
-  members: Member[];
-  availableMembers: UserDisplayNameFragment[];
+  existingUsers: Member[];
+  availableUsers: UserDisplayNameFragment[];
   addingMember?: boolean;
   removingMember?: boolean;
   loadingAvailableMembers?: boolean;
   loadingMembers?: boolean;
-  onAdd?: (member: UserDisplayNameFragment) => void;
-  onRemove?: (member: Member) => void;
+  onAdd?: (memberId: string) => void;
+  onRemove?: (memberId: string) => void;
   fetchMore?: (amount?: number) => Promise<void>;
   onSearchTermChange?: (term: string) => any;
   hasMore?: boolean;
@@ -63,8 +63,8 @@ export interface EditMembersProps {
 }
 
 export const EditMembers: FC<EditMembersProps> = ({
-  members,
-  availableMembers,
+  existingUsers,
+  availableUsers,
   deleteExecutor = false,
   executor,
   addingMember = false,
@@ -80,8 +80,8 @@ export const EditMembers: FC<EditMembersProps> = ({
 }) => {
   const { t } = useTranslation();
   const membersData = useMemo<Member[]>(
-    () => (loadingMembers ? initEmptyMembers() : members),
-    [loadingMembers, members]
+    () => (loadingMembers ? initEmptyMembers() : existingUsers),
+    [loadingMembers, existingUsers]
   );
   const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
 
@@ -144,7 +144,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                                     aria-label="Remove"
                                     size="small"
                                     disabled={disableExecutor || addingMember || removingMember}
-                                    onClick={() => onRemove(m)}
+                                    onClick={() => onRemove(m.id)}
                                   >
                                     <RemoveIcon />
                                   </StyledButtonRemove>
@@ -184,8 +184,8 @@ export const EditMembers: FC<EditMembersProps> = ({
                   </StyledTableHead>
                   <TableBody>
                     <AvailableMembersFragment
-                      availableMembers={availableMembers}
-                      filteredMembers={availableMembers}
+                      availableMembers={availableUsers}
+                      filteredMembers={availableUsers}
                       loading={loadingAvailableMembers}
                       onAdd={onAdd}
                       addingMember={addingMember}
@@ -255,7 +255,7 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
                 <StyledButtonAdd
                   aria-label="Add"
                   size="small"
-                  onClick={() => onAdd(m)}
+                  onClick={() => onAdd(m.id)}
                   disabled={addingMember || removingMember}
                 >
                   <AddIcon />

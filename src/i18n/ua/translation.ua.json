@@ -230,6 +230,11 @@
       }
     }
   },
+  "community": {
+    "leading-users": "Користувачі-учасники",
+    "leading-organizations": "Головні Організації",
+    "member-organizations": "Організації-учасники"
+  },
   "forms": {
     "validations": {
       "required": "Необхідне поле!"
@@ -591,13 +596,6 @@
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {
-    "generic": {
-      "sections": {
-        "dashboard": {
-          "leading-organizations": "Головні Організації"
-        }
-      }
-    },
     "aspect": {
       "dashboard": {
         "comment": {

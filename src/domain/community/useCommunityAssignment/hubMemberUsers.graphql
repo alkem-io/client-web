@@ -1,0 +1,11 @@
+query hubMemberUsers($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    community {
+      id
+      memberUsers {
+        ...CommunityMemberUser
+      }
+    }
+  }
+}

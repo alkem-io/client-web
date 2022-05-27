@@ -5,11 +5,10 @@ import {
   useRemoveUserAsCommunityMemberMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
-import { Member } from '../../../models/User';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
 import EditMembers from '../Community/EditMembers';
 import { WithCommunity } from '../Community/CommunityTypes';
-import { useAvailableMembers } from '../../../domain/community/useAvailableMembers';
+import { useAvailableMembersWithCredential } from '../../../domain/community/useAvailableMembersWithCredential';
 
 interface EditCredentialsProps extends WithCommunity {
   resourceId: string;
@@ -31,21 +30,19 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
 }) => {
   const handleError = useApolloErrorHandler();
 
-  const [grant, { loading: addingMember }] = useAssignUserAsCommunityMemberMutation({
+  const [add, { loading: addingMember }] = useAssignUserAsCommunityMemberMutation({
     onError: handleError,
   });
 
-  const [revoke, { loading: removingMember }] = useRemoveUserAsCommunityMemberMutation({
+  const [remove, { loading: removingMember }] = useRemoveUserAsCommunityMemberMutation({
     onError: handleError,
   });
 
-  const handleAdd = (_member: UserDisplayNameFragment) => {
-    grant({
+  const onAdd = (memberId: string) =>
+    add({
       variables: {
-        input: {
-          communityID: communityId,
-          userID: _member.id,
-        },
+        communityId,
+        memberId,
       },
       refetchQueries: [
         refetchUsersWithCredentialsSimpleListQuery({
@@ -54,15 +51,12 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
       ],
       awaitRefetchQueries: true,
     });
-  };
 
-  const handleRemove = (_member: Member) => {
-    revoke({
+  const onRemove = (memberId: string) =>
+    remove({
       variables: {
-        input: {
-          userID: _member.id,
-          communityID: communityId,
-        },
+        memberId,
+        communityId,
       },
       refetchQueries: [
         refetchUsersWithCredentialsSimpleListQuery({
@@ -71,21 +65,21 @@ export const EditCommunityMembers: FC<EditCredentialsProps> = ({
       ],
       awaitRefetchQueries: true,
     });
-  };
 
-  const { available, current, loading, fetchMore, hasMore, setSearchTerm } = useAvailableMembers({
-    credential,
-    resourceId,
-    parentCommunityId,
-  });
+  const { availableMembers, currentMembers, loading, fetchMore, hasMore, setSearchTerm } =
+    useAvailableMembersWithCredential({
+      credential,
+      resourceId,
+      parentCommunityId,
+    });
 
   return (
     <EditMembers
-      members={current}
-      availableMembers={available}
-      onAdd={handleAdd}
+      existingUsers={currentMembers}
+      availableUsers={availableMembers}
+      onAdd={onAdd}
       addingMember={addingMember}
-      onRemove={handleRemove}
+      onRemove={onRemove}
       removingMember={removingMember}
       loadingMembers={loading}
       loadingAvailableMembers={loading}

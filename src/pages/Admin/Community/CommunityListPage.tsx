@@ -22,7 +22,9 @@ export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ commun
       hubId,
       communityId,
     },
+    skip: !hubId,
   });
+
   const { handleDelete } = useDeleteUserGroup();
 
   const community = data?.hub.community;

@@ -9,8 +9,7 @@ import {
   useAssignUserAsGlobalAdminMutation,
   useRemoveUserAsGlobalAdminMutation,
 } from '../../hooks/generated/graphql';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../models/graphql-schema';
-import { Member } from '../../models/User';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 import AuthorizationPageProps from './AuthorizationPageProps';
 
 const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
@@ -37,11 +36,11 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
     onError: handleError,
   });
 
-  const handleAdd = (member: UserDisplayNameFragment) => {
+  const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
-          userID: member.id,
+          userID: memberId,
         },
       },
       refetchQueries: [
@@ -53,11 +52,11 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
     });
   };
 
-  const handleRemove = (member: Member) => {
+  const handleRemove = (memberId: string) => {
     revoke({
       variables: {
         input: {
-          userID: member.id,
+          userID: memberId,
         },
       },
       refetchQueries: [

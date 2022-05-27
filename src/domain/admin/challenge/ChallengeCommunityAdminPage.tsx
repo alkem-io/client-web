@@ -1,21 +1,31 @@
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import ChallengeSettingsLayout from './ChallengeSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
-import LeadingOrganizationView from './views/LeadingOrganizationView';
+import AdminCommunityOrganizationsView from './views/AdminCommunityOrganizationsView';
 import CommunityAdminView from '../community/views/CommunityAdminView';
 import { useChallenge, useHub } from '../../../hooks';
-import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { SectionSpacer } from '../../../components/core/Section/Section';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import useChallengeApplications from './providers/useChallengeApplications';
 import { Loading } from '../../../components/core';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
 import ChallengeCommunityAdminMembershipPreferencesSection from './ChallengeCommunityAdminMembershipPreferencesSection';
+import useChallengeLeadOrganizationAssignment from '../../community/useCommunityAssignment/useChallengeLeadOrganizationAssignment';
+import useChallengeMemberOrganizationAssignment from '../../community/useCommunityAssignment/useChallengeMemberOrganizationAssignment';
+import useMemberUserAssignment from '../../community/useCommunityAssignment/useMemberUserAssignment';
+import {
+  refetchChallengeCommunityMembersQuery,
+  useChallengeCommunityMembersQuery,
+} from '../../../hooks/generated/graphql';
+import useLeadUserAssignment from '../../community/useCommunityAssignment/useLeadUserAssignment';
 
 const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'community' });
+
+  const { t } = useTranslation();
 
   const { hubId, communityId: hubCommunityId } = useHub();
   const { challenge, challengeId } = useChallenge();
@@ -23,16 +33,65 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
 
   const { applications, loading: isLoadingApplications } = useChallengeApplications();
 
+  const leadingOrganizationsProps = useChallengeLeadOrganizationAssignment({
+    hubId,
+    challengeId,
+  });
+
+  const memberOrganizationsProps = useChallengeMemberOrganizationAssignment({
+    hubId,
+    challengeId,
+  });
+
+  const memberUsersProps = useMemberUserAssignment({
+    parentCommunityId: hubCommunityId,
+    variables: {
+      hubId: hubId,
+      challengeId,
+    },
+    useExistingMembersQuery: options => {
+      const { data } = useChallengeCommunityMembersQuery(options);
+
+      return {
+        communityId: data?.hub.challenge.community?.id,
+        existingMembers: data?.hub.challenge.community?.memberUsers,
+      };
+    },
+    refetchMembersQuery: refetchChallengeCommunityMembersQuery,
+  });
+
+  const leadUsersProps = useLeadUserAssignment({
+    parentCommunityId: hubCommunityId,
+    variables: {
+      hubId: hubId,
+      challengeId,
+    },
+    useExistingMembersQuery: options => {
+      const { data } = useChallengeCommunityMembersQuery(options);
+
+      return {
+        communityId: data?.hub.challenge.community?.id,
+        existingMembers: data?.hub.challenge.community?.leadUsers,
+      };
+    },
+    refetchMembersQuery: refetchChallengeCommunityMembersQuery,
+  });
+
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
-      <LeadingOrganizationView />
-      <SectionSpacer />
-      <CommunityAdminView
-        credential={AuthorizationCredential.ChallengeMember}
-        resourceId={challengeId}
-        communityId={communityId}
-        parentCommunityId={hubCommunityId}
+      <AdminCommunityOrganizationsView
+        headerText={t('pages.generic.sections.dashboard.leading-organizations')}
+        {...leadingOrganizationsProps}
       />
+      <SectionSpacer />
+      <AdminCommunityOrganizationsView
+        headerText={t('pages.generic.sections.dashboard.member-organizations')}
+        {...memberOrganizationsProps}
+      />
+      <SectionSpacer />
+      <CommunityAdminView headerText={t('common.users')} {...memberUsersProps} />
+      <SectionSpacer />
+      <CommunityAdminView headerText={t('pages.admin.generic.sections.community.leading-users')} {...leadUsersProps} />
       <SectionSpacer />
       {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
       <SectionSpacer />

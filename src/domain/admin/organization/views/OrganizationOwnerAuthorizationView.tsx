@@ -34,8 +34,8 @@ export const OrganizationOwnerAuthorizationView: FC = () => {
       >
         {(entities, actions, state) => (
           <EditMembers
-            members={entities.allMembers}
-            availableMembers={entities.availableMembers}
+            existingUsers={entities.allMembers}
+            availableUsers={entities.availableMembers}
             addingMember={state.addingOwner}
             removingMember={state.removingOwner}
             executor={entities.currentMember}
