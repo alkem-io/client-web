@@ -46,13 +46,12 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const { loading } = state;
 
   const { displayName, context } = challenge || {};
-  const { leadOrganizations = [] } = challenge?.community || {};
   const communityId = challenge?.community?.id || '';
 
   const { tagline = '', visuals, vision = '' } = context || {};
   const bannerUrl = getVisualBanner(visuals);
 
-  const orgNameIds = leadOrganizations.map(x => x.nameID);
+  const leadOrganizationsNameIDs = challenge?.community?.leadOrganizations?.map(x => x.nameID) || [];
 
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
@@ -100,8 +99,8 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
         </DashboardColumn>
         <DashboardColumn>
           <AssociatedOrganizationsView
-            title={t('pages.challenge.sections.dashboard.organization')}
-            organizationNameIDs={orgNameIds}
+            title={t('pages.generic.sections.dashboard.leading-organizations')}
+            organizationNameIDs={leadOrganizationsNameIDs}
           />
           <DashboardGenericSection
             headerText={`${t('pages.challenge.sections.dashboard.opportunities.title')} (${opportunitiesCount})`}

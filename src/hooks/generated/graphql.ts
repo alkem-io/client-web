@@ -540,6 +540,29 @@ export const OrganizationInfoFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const OrganizationDetailsFragmentDoc = gql`
+  fragment OrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar {
+        ...VisualUri
+      }
+      description
+      tagsets {
+        id
+        tags
+      }
+      location {
+        country
+        city
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const OrganizationProfileInfoFragmentDoc = gql`
   fragment OrganizationProfileInfo on Organization {
     id
@@ -1053,29 +1076,6 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const OrganizationDetailsFragmentDoc = gql`
-  fragment OrganizationDetails on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      avatar {
-        ...VisualUri
-      }
-      description
-      tagsets {
-        id
-        tags
-      }
-      location {
-        country
-        city
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const ChallengeProfileFragmentDoc = gql`
   fragment ChallengeProfile on Challenge {
     id
@@ -1144,12 +1144,13 @@ export const ChallengeProfileFragmentDoc = gql`
           }
         }
       }
+      leadOrganizations {
+        id
+        nameID
+      }
       authorization {
         id
         myPrivileges
-      }
-      leadOrganizations {
-        ...OrganizationDetails
       }
     }
     tagset {
@@ -1192,7 +1193,6 @@ export const ChallengeProfileFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
-  ${OrganizationDetailsFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
@@ -1475,6 +1475,10 @@ export const OpportunityPageFragmentDoc = gql`
             name
           }
         }
+      }
+      leadOrganizations {
+        id
+        nameID
       }
       authorization {
         id

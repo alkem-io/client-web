@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useApolloErrorHandler, useAvailableMembers, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOpportunityAdminMutation,
@@ -7,6 +7,8 @@ import {
 } from '../../hooks/generated/graphql';
 import { AuthorizationCredential, Community, Opportunity, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
+import { useAvailableMembers } from '../../domain/community/useAvailableMembers';
+import { AvailableMembersResults } from '../../domain/community/useAvailableMembers/useAvailableMembers';
 
 const opportunityAdminCredential = AuthorizationCredential.OpportunityAdmin;
 
@@ -31,6 +33,7 @@ export interface OpportunityMembersActions {
   handleAssignAdmin: (member: UserDisplayNameFragment) => void;
   handleRemoveAdmin: (member: Member) => void;
   handleLoadMore: () => Promise<void>;
+  setSearchTerm: AvailableMembersResults['setSearchTerm'];
 }
 
 export interface OpportunityMembersState {
@@ -105,6 +108,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
     loading,
     fetchMore,
     hasMore,
+    setSearchTerm,
   } = useAvailableMembers({
     credential: entities.credential,
     resourceId: entities.opportunityId,
@@ -132,6 +136,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
           handleAssignAdmin,
           handleRemoveAdmin,
           handleLoadMore,
+          setSearchTerm,
         },
         {
           addingAdmin,
