@@ -31,13 +31,4 @@ fragment Configuration on Config {
     endpoint
     submitPII
   }
-  template {
-    hubs {
-       aspects {
-          type
-          defaultDescription
-          typeDescription
-       }
-    }
-  }
 }

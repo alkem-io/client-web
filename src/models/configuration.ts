@@ -16,11 +16,6 @@ export interface Configuration {
     endpoint: string;
     submitPII: boolean;
   };
-  template: {
-    hubs: {
-      aspects?: AspectTemplate[];
-    }[];
-  };
 }
 
 export interface AspectTemplate {

@@ -171,12 +171,20 @@ export type Aspect = {
 
 export type AspectTemplate = {
   __typename?: 'AspectTemplate';
-  /** Default description of an aspect of this type */
+  /** The default description to show to users filling our a new instance. */
   defaultDescription: Scalars['String'];
-  /** The type of the templated aspect */
+  /** The description for this Template. */
+  description?: Maybe<Scalars['String']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The tags set on this Template. */
+  tagset?: Maybe<Tagset>;
+  /** The title for this Template. */
+  title?: Maybe<Scalars['String']>;
+  /** The type for this Aspect. */
   type: Scalars['String'];
-  /** Default description of this type of aspect */
-  typeDescription: Scalars['String'];
+  /** The image associated with this Template`. */
+  visual?: Maybe<Visual>;
 };
 
 export type AssignChallengeAdminInput = {
@@ -706,6 +714,17 @@ export type CreateAspectOnContextInput = {
   type: Scalars['String'];
 };
 
+export type CreateAspectTemplateOnTemplatesSetInput = {
+  /** The default description to be pre-filled when users create Aspects based on this template. */
+  defaultDescription: Scalars['String'];
+  description: Scalars['String'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  templatesSetID: Scalars['UUID'];
+  title: Scalars['String'];
+  /** The type of Aspects created from this Template. */
+  type: Scalars['String'];
+};
+
 export type CreateCanvasOnContextInput = {
   contextID: Scalars['UUID'];
   name: Scalars['String'];
@@ -926,6 +945,11 @@ export type DeleteAspectInput = {
   ID: Scalars['UUID'];
 };
 
+export type DeleteAspectTemplateInput = {
+  aspectTemplateID: Scalars['UUID'];
+  templatesSetID: Scalars['UUID'];
+};
+
 export type DeleteCanvasOnContextInput = {
   canvasID: Scalars['UUID'];
   contextID: Scalars['UUID'];
@@ -1113,8 +1137,8 @@ export type Hub = {
   projects: Array<Project>;
   /** The set of tags for the  hub. */
   tagset?: Maybe<Tagset>;
-  /** The template for this Hub. */
-  template: HubTemplate;
+  /** The templates in use by this Hub */
+  templates: TemplatesSet;
 };
 
 export type HubApplicationArgs = {
@@ -1171,11 +1195,6 @@ export enum HubPreferenceType {
   MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
   MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
 }
-
-export type HubTemplate = {
-  __typename?: 'HubTemplate';
-  aspectTemplates: Array<AspectTemplate>;
-};
 
 export type Lifecycle = {
   __typename?: 'Lifecycle';
@@ -1348,6 +1367,8 @@ export type Mutation = {
   createActorGroup: ActorGroup;
   /** Create a new Aspect on the Context. */
   createAspectOnContext: Aspect;
+  /** Creates a new AspectTemplate on the specified TemplatesSet. */
+  createAspectTemplate: AspectTemplate;
   /** Create a new Canvas on the Context. */
   createCanvasOnContext: Canvas;
   /** Creates a new Challenge within the specified Hub. */
@@ -1390,6 +1411,8 @@ export type Mutation = {
   deleteActorGroup: ActorGroup;
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
+  /** Deletes the specified AspectTemplate in the specified TemplatesSet. */
+  deleteAspectTemplate: AspectTemplate;
   /** Deletes the specified Canvas. */
   deleteCanvasOnContext: Canvas;
   /** Deletes the specified Challenge. */
@@ -1612,6 +1635,10 @@ export type MutationCreateAspectOnContextArgs = {
   aspectData: CreateAspectOnContextInput;
 };
 
+export type MutationCreateAspectTemplateArgs = {
+  aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput;
+};
+
 export type MutationCreateCanvasOnContextArgs = {
   canvasData: CreateCanvasOnContextInput;
 };
@@ -1690,6 +1717,10 @@ export type MutationDeleteActorGroupArgs = {
 
 export type MutationDeleteAspectArgs = {
   deleteData: DeleteAspectInput;
+};
+
+export type MutationDeleteAspectTemplateArgs = {
+  deleteData: DeleteAspectTemplateInput;
 };
 
 export type MutationDeleteCanvasOnContextArgs = {
@@ -2653,6 +2684,16 @@ export type Template = {
   users: Array<UserTemplate>;
 };
 
+export type TemplatesSet = {
+  __typename?: 'TemplatesSet';
+  /** The AspectTemplates in this TemplatesSet. */
+  aspectTemplates: Array<AspectTemplate>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
 export type UpdateActorInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
@@ -2673,12 +2714,6 @@ export type UpdateAspectInput = {
   /** Update the tags on the Aspect. */
   tags?: InputMaybe<Array<Scalars['String']>>;
   type?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateAspectTemplateInput = {
-  defaultDescription?: InputMaybe<Scalars['String']>;
-  type: Scalars['String'];
-  typeDescription: Scalars['String'];
 };
 
 export type UpdateCanvasDirectInput = {
@@ -2754,8 +2789,6 @@ export type UpdateHubInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
   tags?: InputMaybe<Array<Scalars['String']>>;
-  /** Update the template for this Hub. */
-  template?: InputMaybe<UpdateHubTemplateInput>;
 };
 
 export type UpdateHubPreferenceInput = {
@@ -2764,11 +2797,6 @@ export type UpdateHubPreferenceInput = {
   /** Type of the user preference */
   type: HubPreferenceType;
   value: Scalars['String'];
-};
-
-export type UpdateHubTemplateInput = {
-  /** The set of aspect type definitions to be supported by the Hub. */
-  aspectTemplates: Array<UpdateAspectTemplateInput>;
 };
 
 export type UpdateLocationInput = {
@@ -3337,15 +3365,6 @@ export type ConfigurationFragment = {
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
-  template: {
-    __typename?: 'Template';
-    hubs: Array<{
-      __typename?: 'PlatformHubTemplate';
-      aspects?:
-        | Array<{ __typename?: 'HubAspectTemplate'; type: string; defaultDescription: string; typeDescription: string }>
-        | undefined;
-    }>;
-  };
 };
 
 export type ContextDetailsFragment = {
@@ -3487,12 +3506,14 @@ export type HubInfoFragment = {
           | undefined;
       }
     | undefined;
-  template: {
-    __typename?: 'HubTemplate';
+  templates: {
+    __typename?: 'TemplatesSet';
+    id: string;
     aspectTemplates: Array<{
       __typename?: 'AspectTemplate';
+      id: string;
       defaultDescription: string;
-      typeDescription: string;
+      description?: string | undefined;
       type: string;
     }>;
   };
@@ -5753,20 +5774,6 @@ export type ConfigurationQuery = {
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
-    template: {
-      __typename?: 'Template';
-      hubs: Array<{
-        __typename?: 'PlatformHubTemplate';
-        aspects?:
-          | Array<{
-              __typename?: 'HubAspectTemplate';
-              type: string;
-              defaultDescription: string;
-              typeDescription: string;
-            }>
-          | undefined;
-      }>;
-    };
   };
 };
 
@@ -5872,12 +5879,14 @@ export type HubProviderQuery = {
             | undefined;
         }
       | undefined;
-    template: {
-      __typename?: 'HubTemplate';
+    templates: {
+      __typename?: 'TemplatesSet';
+      id: string;
       aspectTemplates: Array<{
         __typename?: 'AspectTemplate';
+        id: string;
         defaultDescription: string;
-        typeDescription: string;
+        description?: string | undefined;
         type: string;
       }>;
     };

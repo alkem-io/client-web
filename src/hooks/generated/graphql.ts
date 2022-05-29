@@ -278,15 +278,6 @@ export const ConfigurationFragmentDoc = gql`
       endpoint
       submitPII
     }
-    template {
-      hubs {
-        aspects {
-          type
-          defaultDescription
-          typeDescription
-        }
-      }
-    }
   }
 `;
 export const GroupDetailsFragmentDoc = gql`
@@ -400,10 +391,12 @@ export const HubInfoFragmentDoc = gql`
         myPrivileges
       }
     }
-    template {
+    templates {
+      id
       aspectTemplates {
+        id
         defaultDescription
-        typeDescription
+        description
         type
       }
     }

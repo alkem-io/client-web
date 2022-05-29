@@ -41,7 +41,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
   ...rendered
 }) => {
   const handleError = useApolloErrorHandler();
-  const { template } = useHub();
+  const { templates } = useHub();
 
   const { aspects, loading, error, canReadAspects, canCreateAspects, contextId, subscriptionEnabled } = useAspectsData({
     hubNameId,
@@ -49,7 +49,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     opportunityNameId,
   });
 
-  const aspectTypes = template.aspectTemplates.map(x => x.type);
+  const aspectTypes = templates.aspectTemplates.map(x => x.type);
 
   const [createAspect, { loading: creating }] = useCreateAspectFromContributeTabMutation({
     onError: handleError,

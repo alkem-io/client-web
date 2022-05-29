@@ -17,13 +17,13 @@ export interface AspectTypeStepProps {
 
 const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
   const { t } = useTranslation();
-  const { error, loading, template } = useHub();
+  const { error, loading, templates } = useHub();
 
   if (error) {
     return <Typography>{t('components.aspect-creation.type-step.error')}</Typography>;
   }
 
-  const aspectTypes = template.aspectTemplates.map(x => x.type);
+  const aspectTypes = templates.aspectTemplates.map(x => x.type);
 
   return (
     <FormControl fullWidth>
@@ -49,7 +49,7 @@ const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
               <InputAdornment position="start">
                 <HelpButton
                   helpText={
-                    template.aspectTemplates.find(x => x.type === type)?.typeDescription ??
+                    templates.aspectTemplates.find(x => x.type === type)?.description ??
                     t('components.aspect-creation.type-step.type-help-text-short')
                   }
                 />

@@ -22,10 +22,12 @@ fragment HubInfo on Hub {
       myPrivileges
     }
   }
-  template {
+  templates {
+    id
     aspectTemplates {
+      id
       defaultDescription
-      typeDescription
+      description
       type
     }
   }

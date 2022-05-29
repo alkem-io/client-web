@@ -144,14 +144,22 @@ export type AspectFieldPolicy = {
 };
 export type AspectTemplateKeySpecifier = (
   | 'defaultDescription'
+  | 'description'
+  | 'id'
+  | 'tagset'
+  | 'title'
   | 'type'
-  | 'typeDescription'
+  | 'visual'
   | AspectTemplateKeySpecifier
 )[];
 export type AspectTemplateFieldPolicy = {
   defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  tagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  title?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-  typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
+  visual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
 export type AuthenticationConfigFieldPolicy = {
@@ -568,7 +576,7 @@ export type HubKeySpecifier = (
   | 'project'
   | 'projects'
   | 'tagset'
-  | 'template'
+  | 'templates'
   | HubKeySpecifier
 )[];
 export type HubFieldPolicy = {
@@ -593,7 +601,7 @@ export type HubFieldPolicy = {
   project?: FieldPolicy<any> | FieldReadFunction<any>;
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
-  template?: FieldPolicy<any> | FieldReadFunction<any>;
+  templates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type HubAspectTemplateKeySpecifier = (
   | 'defaultDescription'
@@ -605,10 +613,6 @@ export type HubAspectTemplateFieldPolicy = {
   defaultDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   typeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type HubTemplateKeySpecifier = ('aspectTemplates' | HubTemplateKeySpecifier)[];
-export type HubTemplateFieldPolicy = {
-  aspectTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LifecycleKeySpecifier = (
   | 'id'
@@ -730,6 +734,7 @@ export type MutationKeySpecifier = (
   | 'createActor'
   | 'createActorGroup'
   | 'createAspectOnContext'
+  | 'createAspectTemplate'
   | 'createCanvasOnContext'
   | 'createChallenge'
   | 'createChildChallenge'
@@ -751,6 +756,7 @@ export type MutationKeySpecifier = (
   | 'deleteActor'
   | 'deleteActorGroup'
   | 'deleteAspect'
+  | 'deleteAspectTemplate'
   | 'deleteCanvasOnContext'
   | 'deleteChallenge'
   | 'deleteDiscussion'
@@ -840,6 +846,7 @@ export type MutationFieldPolicy = {
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createAspectOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
+  createAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   createChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createChildChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -861,6 +868,7 @@ export type MutationFieldPolicy = {
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteAspect?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCanvasOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1375,6 +1383,12 @@ export type TemplateFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type TemplatesSetKeySpecifier = ('aspectTemplates' | 'authorization' | 'id' | TemplatesSetKeySpecifier)[];
+export type TemplatesSetFieldPolicy = {
+  aspectTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UpdatesKeySpecifier = ('authorization' | 'id' | 'messages' | UpdatesKeySpecifier)[];
 export type UpdatesFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1719,10 +1733,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | HubAspectTemplateKeySpecifier | (() => undefined | HubAspectTemplateKeySpecifier);
     fields?: HubAspectTemplateFieldPolicy;
   };
-  HubTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | HubTemplateKeySpecifier | (() => undefined | HubTemplateKeySpecifier);
-    fields?: HubTemplateFieldPolicy;
-  };
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
     fields?: LifecycleFieldPolicy;
@@ -1916,6 +1926,10 @@ export type StrictTypedTypePolicies = {
   Template?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplateKeySpecifier | (() => undefined | TemplateKeySpecifier);
     fields?: TemplateFieldPolicy;
+  };
+  TemplatesSet?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TemplatesSetKeySpecifier | (() => undefined | TemplatesSetKeySpecifier);
+    fields?: TemplatesSetFieldPolicy;
   };
   Updates?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UpdatesKeySpecifier | (() => undefined | UpdatesKeySpecifier);

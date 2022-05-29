@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useConfig, useUrlParams, useUserContext } from '../hooks';
 import { useHubProviderQuery } from '../hooks/generated/graphql';
-import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
+import { AuthorizationPrivilege, HubInfoFragment, TemplatesSet, Visual } from '../models/graphql-schema';
 
 export interface HubPermissions {
   viewerCanUpdate: boolean;
@@ -19,7 +19,7 @@ interface HubContextProps {
   displayName: string;
   communityId: string;
   visuals: Visual[];
-  template: HubTemplate;
+  templates: TemplatesSet;
   isPrivate: boolean;
   loading: boolean;
   permissions: HubPermissions;
@@ -35,7 +35,10 @@ const HubContext = React.createContext<HubContextProps>({
   displayName: '',
   communityId: '',
   visuals: [],
-  template: { aspectTemplates: [] },
+  templates: {
+    id: '',
+    aspectTemplates: [],
+  },
   permissions: {
     viewerCanUpdate: false,
     canReadAspects: false,
@@ -52,9 +55,9 @@ const NO_PRIVILEGES = [];
 
 const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const { hubNameId = '' } = useUrlParams();
-  const { template: platformTemplate, error: configError } = useConfig();
+  // todo: still needed?
+  const { error: configError } = useConfig();
   const { user } = useUserContext();
-  const globalAspectTemplates = platformTemplate?.hubs[0].aspects;
 
   const {
     error: hubError,
@@ -72,10 +75,10 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const displayName = hub?.displayName || '';
   const communityId = hub?.community?.id ?? '';
   const visuals = hub?.context?.visuals ?? [];
-  const template: HubTemplate =
-    hub && hub.template.aspectTemplates.length > 0
-      ? { aspectTemplates: hub?.template.aspectTemplates }
-      : { aspectTemplates: globalAspectTemplates || [] };
+  const templates = hub?.templates || {
+    id: '',
+    aspectTemplates: [],
+  };
   const isPrivate = !Boolean(hub?.authorization?.anonymousReadAccess ?? true);
   const error = configError || hubError;
 
@@ -106,7 +109,7 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
         hubNameId,
         communityId,
         visuals,
-        template,
+        templates,
         permissions,
         displayName,
         isPrivate,
