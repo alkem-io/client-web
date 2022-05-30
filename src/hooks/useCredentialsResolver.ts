@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
@@ -11,16 +12,16 @@ export const useCredentialsResolver = (): CredentialResolver => {
   const { t } = useTranslation();
 
   const toRoleName = (value: AuthorizationCredential) => {
-    // In case of an typescript error:
-    // Most common case is inconsistency between the backend and the forntened.
+    // In case of a typescript error:
+    // Most common case is inconsistency between the backend and the frontend.
     // check if the `AuthorizationCredential` was updated and add/remove missing items
     // in the translation file.
     return t(`common.enums.authorization-credentials.${value}.name` as const);
   };
 
   const toRoleOrder = (value: AuthorizationCredential) => {
-    // In case of an typescript error:
-    // Most common case is inconsistency between the backend and the forntened.
+    // In case of a typescript error:
+    // Most common case is inconsistency between the backend and the frontend.
     // check if the `AuthorizationCredential` was updated and add/remove missing items
     // in the translation file.
     return Number(t(`common.enums.authorization-credentials.${value}.order` as const));
@@ -30,5 +31,5 @@ export const useCredentialsResolver = (): CredentialResolver => {
     return Boolean(t(`common.enums.authorization-credentials.${value}.hidden` as const));
   };
 
-  return { toRoleName, toRoleOrder, isHidden };
+  return useMemo(() => ({ toRoleName, toRoleOrder, isHidden }), [t]);
 };

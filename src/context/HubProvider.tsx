@@ -1,5 +1,5 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useConfig, useUrlParams, useUserContext } from '../hooks';
 import { useHubProviderQuery } from '../hooks/generated/graphql';
 import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
@@ -60,13 +60,13 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
     error: hubError,
     data,
     loading,
-    refetch,
+    refetch: refetchHub,
   } = useHubProviderQuery({
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
     skip: !hubNameId,
   });
-  const refetchHub = useCallback(() => refetch({ hubId: hubNameId }), [refetch, hubNameId]);
+
   const hub = data?.hub;
   const hubId = hub?.id || '';
   const displayName = hub?.displayName || '';

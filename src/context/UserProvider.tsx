@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import {
   refetchMeHasProfileQuery,
   useCreateUserNewRegistrationMutation,
@@ -60,22 +60,24 @@ const UserProvider: FC<{}> = ({ children }) => {
     loadingMembershipData ||
     (isAuthenticated && !meHasProfileData?.meHasProfile);
 
+  const wrappedMe = useMemo(
+    () => (meData?.me ? wrapper(meData.me as User, membershipData?.membershipUser) : undefined),
+    [meData, membershipData, wrapper]
+  );
+
+  const providedValue = useMemo(
+    () => ({
+      user: wrappedMe,
+      loading,
+      verified,
+      isAuthenticated,
+    }),
+    [wrappedMe, loading, verified, isAuthenticated]
+  );
+
   if (error) return <ErrorPage error={error} />;
 
-  const wrappedMe = meData?.me ? wrapper(meData.me as User, membershipData?.membershipUser) : undefined;
-
-  return (
-    <UserContext.Provider
-      value={{
-        user: wrappedMe,
-        loading,
-        verified,
-        isAuthenticated,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={providedValue}>{children}</UserContext.Provider>;
 };
 
 export { UserProvider, UserContext };

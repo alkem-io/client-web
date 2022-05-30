@@ -14,6 +14,7 @@ export const useUserMetadata = (id: string) => {
       // because reset store can crash - error needs to be consumed
     },
   });
+
   return {
     user: wrapper(data?.user as User, data?.membershipUser, data?.authorization),
     loading,
