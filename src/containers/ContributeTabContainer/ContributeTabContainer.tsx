@@ -90,6 +90,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
       variables: {
         aspectData: {
           contextID: contextId!,
+          nameID: aspect.displayName,
           displayName: aspect.displayName,
           description: aspect.description,
           type: aspect.type,
