@@ -48,8 +48,8 @@ const FILTER_DEBOUNCE = 500;
 export interface EditMembersProps {
   deleteExecutor?: boolean;
   executor?: Member;
-  existingUsers: Member[];
-  availableUsers: UserDisplayNameFragment[];
+  members: Member[];
+  availableMembers: UserDisplayNameFragment[];
   addingMember?: boolean;
   removingMember?: boolean;
   loadingAvailableMembers?: boolean;
@@ -63,8 +63,8 @@ export interface EditMembersProps {
 }
 
 export const EditMembers: FC<EditMembersProps> = ({
-  existingUsers,
-  availableUsers,
+  members,
+  availableMembers,
   deleteExecutor = false,
   executor,
   addingMember = false,
@@ -80,8 +80,8 @@ export const EditMembers: FC<EditMembersProps> = ({
 }) => {
   const { t } = useTranslation();
   const membersData = useMemo<Member[]>(
-    () => (loadingMembers ? initEmptyMembers() : existingUsers),
-    [loadingMembers, existingUsers]
+    () => (loadingMembers ? initEmptyMembers() : members),
+    [loadingMembers, members]
   );
   const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
 
@@ -184,8 +184,8 @@ export const EditMembers: FC<EditMembersProps> = ({
                   </StyledTableHead>
                   <TableBody>
                     <AvailableMembersFragment
-                      availableMembers={availableUsers}
-                      filteredMembers={availableUsers}
+                      availableMembers={availableMembers}
+                      filteredMembers={availableMembers}
                       loading={loadingAvailableMembers}
                       onAdd={onAdd}
                       addingMember={addingMember}

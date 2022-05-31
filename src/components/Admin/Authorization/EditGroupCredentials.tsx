@@ -71,8 +71,8 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentCo
 
   return (
     <EditMembers
-      existingUsers={currentMembers}
-      availableUsers={availableMembers}
+      members={currentMembers}
+      availableMembers={availableMembers}
       onAdd={handleAdd}
       addingMember={addingMember}
       onRemove={handleRemove}

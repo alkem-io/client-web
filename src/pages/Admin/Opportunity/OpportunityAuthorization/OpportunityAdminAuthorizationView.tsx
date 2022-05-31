@@ -20,8 +20,8 @@ export const OpportunityAdminAuthorizationView: FC = () => {
         {(entities, actions, state) => (
           <EditMembers
             title="Opportunity Admins"
-            existingUsers={entities.allMembers}
-            availableUsers={entities.availableMembers}
+            members={entities.allMembers}
+            availableMembers={entities.availableMembers}
             addingMember={state.addingAdmin}
             removingMember={state.removingAdmin}
             executor={entities.currentMember}

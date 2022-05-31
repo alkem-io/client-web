@@ -35,8 +35,8 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
 
   return (
     <EditMembers
-      existingUsers={currentMembers}
-      availableUsers={availableMembers}
+      members={currentMembers}
+      availableMembers={availableMembers}
       executor={user}
       onAdd={onAdd}
       onRemove={onRemove}

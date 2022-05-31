@@ -35,8 +35,8 @@ const useMemberUserAssignment = <OrganizationsQueryVariables extends {}>(
   });
 
   return {
-    existingUsers: existingMembers,
-    availableUsers: availableMembers,
+    members: existingMembers,
+    availableMembers,
     ...communityAssignmentProvided,
     ...allPossibleProvided,
   };

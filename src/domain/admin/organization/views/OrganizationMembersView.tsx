@@ -20,8 +20,8 @@ export const OrganizationMembersView: FC = () => {
       >
         {(entities, actions, state) => (
           <EditMembers
-            existingUsers={entities.allMembers}
-            availableUsers={entities.availableMembers}
+            members={entities.allMembers}
+            availableMembers={entities.availableMembers}
             addingMember={state.addingUser}
             removingMember={state.removingUser}
             executor={entities.currentMember}
