@@ -46,7 +46,7 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
   const memberUsersProps = useMemberUserAssignment({
     parentCommunityId: hubCommunityId,
     variables: {
-      hubId: hubId,
+      hubId,
       challengeId,
     },
     useExistingMembersQuery: options => {
@@ -63,7 +63,7 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
   const leadUsersProps = useLeadUserAssignment({
     parentCommunityId: hubCommunityId,
     variables: {
-      hubId: hubId,
+      hubId,
       challengeId,
     },
     useExistingMembersQuery: options => {
