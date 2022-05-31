@@ -80,18 +80,15 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <AdminCommunityOrganizationsView
-        headerText={t('pages.generic.sections.dashboard.leading-organizations')}
+        headerText={t('community.leading-organizations')}
         {...leadingOrganizationsProps}
       />
       <SectionSpacer />
-      <AdminCommunityOrganizationsView
-        headerText={t('pages.generic.sections.dashboard.member-organizations')}
-        {...memberOrganizationsProps}
-      />
+      <AdminCommunityOrganizationsView headerText={t('community.member-organizations')} {...memberOrganizationsProps} />
       <SectionSpacer />
       <CommunityAdminView headerText={t('common.users')} {...memberUsersProps} />
       <SectionSpacer />
-      <CommunityAdminView headerText={t('pages.admin.generic.sections.community.leading-users')} {...leadUsersProps} />
+      <CommunityAdminView headerText={t('community.leading-users')} {...leadUsersProps} />
       <SectionSpacer />
       {isLoadingApplications ? <Loading /> : <ApplicationsAdminView applications={applications} />}
       <SectionSpacer />

@@ -137,7 +137,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
         </DashboardColumn>
         <DashboardColumn>
           <AssociatedOrganizationsView
-            title={t('pages.generic.sections.dashboard.leading-organizations')}
+            title={t('community.leading-organizations')}
             organizationNameIDs={leadOrganizationsNameIDs}
           />
           <DashboardGenericSection

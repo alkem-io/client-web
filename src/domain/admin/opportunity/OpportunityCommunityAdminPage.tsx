@@ -79,17 +79,14 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
     <OpportunitySettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <CommunityAdminView headerText={t('common.users')} {...memberUsersProps} />
       <SectionSpacer />
-      <CommunityAdminView headerText={t('pages.admin.generic.sections.community.leading-users')} {...leadUsersProps} />
+      <CommunityAdminView headerText={t('community.leading-users')} {...leadUsersProps} />
       <SectionSpacer />
       <AdminCommunityOrganizationsView
-        headerText={t('pages.generic.sections.dashboard.leading-organizations')}
+        headerText={t('community.leading-organizations')}
         {...leadingOrganizationsProps}
       />
       <SectionSpacer />
-      <AdminCommunityOrganizationsView
-        headerText={t('pages.generic.sections.dashboard.member-organizations')}
-        {...memberOrganizationsProps}
-      />
+      <AdminCommunityOrganizationsView headerText={t('community.member-organizations')} {...memberOrganizationsProps} />
       <SectionSpacer />
       {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
     </OpportunitySettingsLayout>
