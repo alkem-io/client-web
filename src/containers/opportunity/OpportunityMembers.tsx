@@ -7,8 +7,10 @@ import {
 } from '../../hooks/generated/graphql';
 import { AuthorizationCredential, Community, Opportunity, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
-import { useAvailableMembersWithCredential } from '../../domain/community/useAvailableMembersWithCredential';
-import { AvailableMembersResults } from '../../domain/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
+import {
+  useAvailableMembersWithCredential,
+  AvailableMembersResults,
+} from '../../domain/community/useAvailableMembersWithCredential';
 
 const opportunityAdminCredential = AuthorizationCredential.OpportunityAdmin;
 

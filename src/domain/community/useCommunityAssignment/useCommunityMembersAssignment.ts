@@ -5,14 +5,11 @@ import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
 import { useApolloErrorHandler } from '../../../hooks';
 import { Identifiable } from '../../shared/types/Identifiable';
+import { PossiblyUndefinedProps } from '../../shared/types/PossiblyUndefinedProps';
 
-interface QueryResult<MemberEntity> extends PossiblyUndefinedMembers<CommunityIdHolder> {
+interface QueryResult<MemberEntity> extends PossiblyUndefinedProps<CommunityIdHolder> {
   existingMembers: MemberEntity[] | undefined;
 }
-
-type PossiblyUndefinedMembers<T> = {
-  [Key in keyof T]: T[Key] | undefined;
-};
 
 interface CommunityIdHolder {
   communityId: string;
@@ -29,7 +26,7 @@ export interface UseOrganizationAssignmentOptions<
   AssignMemberMutation,
   RemoveMemberMutation
 > {
-  variables: PossiblyUndefinedMembers<ExistingMembersQueryVariables>;
+  variables: PossiblyUndefinedProps<ExistingMembersQueryVariables>;
   useExistingMembersQuery: (options: {
     variables: ExistingMembersQueryVariables;
     skip: boolean;
@@ -58,7 +55,7 @@ interface Provided<MemberEntity> {
 const someVariablesNotDefined = <Variables extends {}>(variables: Variables): variables is Required<Variables> =>
   Object.keys(variables).some(variableName => !variables[variableName]);
 
-const readCommunityIdOrFail = (variables: PossiblyUndefinedMembers<CommunityIdHolder>): string | never => {
+const readCommunityIdOrFail = (variables: PossiblyUndefinedProps<CommunityIdHolder>): string | never => {
   if (!variables.communityId) {
     throw new TypeError("Community isn't yet loaded.");
   }
