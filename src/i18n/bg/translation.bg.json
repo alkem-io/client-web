@@ -227,6 +227,9 @@
       }
     }
   },
+  "community": {
+    "leading-organizations": "Водещи организации"
+  },
   "forms": {
     "validations": {
       "required": "Това поле е задължително!"
@@ -573,13 +576,6 @@
     }
   },
   "pages": {
-    "generic": {
-      "sections": {
-        "dashboard": {
-          "leading-organizations": "Водещи организации"
-        }
-      }
-    },
     "aspect": {
       "dashboard": {
         "comment": {

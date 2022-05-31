@@ -244,6 +244,11 @@
       }
     }
   },
+  "community": {
+    "leading-users": "Leading Users",
+    "leading-organizations": "Leading Organizations",
+    "member-organizations": "Member Organizations"
+  },
   "forms": {
     "validations": {
       "required": "This field is required!"
@@ -621,7 +626,6 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "leading-organizations": "Leading Organizations",
           "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
         },
         "context": {

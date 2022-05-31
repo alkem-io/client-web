@@ -9,8 +9,7 @@ import {
   useAssignUserAsChallengeAdminMutation,
   useRemoveUserAsChallengeAdminMutation,
 } from '../../../../hooks/generated/graphql';
-import { Member } from '../../../../models/User';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../../../models/graphql-schema';
+import { AuthorizationCredential } from '../../../../models/graphql-schema';
 
 interface ChallengeAuthorizationViewProps {
   credential: AuthorizationCredential;
@@ -28,11 +27,11 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
     onError: handleError,
   });
 
-  const handleAdd = (member: UserDisplayNameFragment) => {
+  const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
-          userID: member.id,
+          userID: memberId,
           challengeID: resourceId,
         },
       },
@@ -45,11 +44,11 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
     });
   };
 
-  const handleRemove = (member: Member) => {
+  const handleRemove = (memberId: string) => {
     revoke({
       variables: {
         input: {
-          userID: member.id,
+          userID: memberId,
           challengeID: resourceId,
         },
       },

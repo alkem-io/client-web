@@ -8,9 +8,8 @@ import {
   useAssignUserAsGlobalCommunityAdminMutation,
   useRemoveUserAsGlobalCommunityAdminMutation,
 } from '../../hooks/generated/graphql';
-import { Member } from '../../models/User';
 import AuthorizationPageProps from './AuthorizationPageProps';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../models/graphql-schema';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 
 const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
@@ -37,11 +36,11 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths })
     onError: handleError,
   });
 
-  const handleAdd = (member: UserDisplayNameFragment) => {
+  const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
-          userID: member.id,
+          userID: memberId,
         },
       },
       refetchQueries: [
@@ -53,11 +52,11 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths })
     });
   };
 
-  const handleRemove = (member: Member) => {
+  const handleRemove = (memberId: string) => {
     revoke({
       variables: {
         input: {
-          userID: member.id,
+          userID: memberId,
         },
       },
       refetchQueries: [

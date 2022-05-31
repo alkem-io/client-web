@@ -99,7 +99,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
         </DashboardColumn>
         <DashboardColumn>
           <AssociatedOrganizationsView
-            title={t('pages.generic.sections.dashboard.leading-organizations')}
+            title={t('community.leading-organizations')}
             organizationNameIDs={leadOrganizationsNameIDs}
           />
           <DashboardGenericSection
