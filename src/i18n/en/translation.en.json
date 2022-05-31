@@ -813,7 +813,7 @@
           "header": "Getting Started",
           "subheader": "Here are some suggestions to help get you up to speed.",
           "joining-a-challenge": "Eager to join a Challenge? Explore all <a href='./challenges' >Challenges</a>.",
-          "introduction-video": "Want to start using the platform? Watch this <a href='https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO' >demonstration video</a>.",
+          "introduction-video": "Want to start using the platform? Watch this <a href='https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO' target='_blank'>demonstration video</a>.",
           "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' >contributors</a>.",
           "your-profile": "Keen to be found by other contributors? Fill out your <a href='./profile' >profile</a>.</br>"
         },
