@@ -244,6 +244,11 @@
       }
     }
   },
+  "community": {
+    "leading-users": "Leading Users",
+    "leading-organizations": "Leading Organizations",
+    "member-organizations": "Member Organizations"
+  },
   "forms": {
     "validations": {
       "required": "This field is required!",
@@ -625,14 +630,15 @@
     "generic": {
       "sections": {
         "dashboard": {
-          "leading-organizations": "Leading Organizations",
           "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
         },
         "context": {
           "description": "Here you can explore the context of this {{entity}}. This information is provided by the organization managing this {{entity}}."
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared."
+          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
+          "leading-contributors": "Leading Contributors",
+          "contributors": "Contributors"
         },
         "contribute": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community.\nAdd additional aspects that are relevant, as well as comment on aspects added by others."
@@ -927,7 +933,6 @@
     },
     "community": {
       "title": "{{name}} community page",
-      "subtitle": "",
       "leading-organizations": {
         "title": "Leading organizations ({{count}})",
         "help-text": "Shows different organizations, including the role you have",

@@ -269,6 +269,7 @@ export type ChallengeKeySpecifier = (
   | 'displayName'
   | 'hubID'
   | 'id'
+  | 'leadOrganizations'
   | 'lifecycle'
   | 'nameID'
   | 'opportunities'
@@ -286,6 +287,7 @@ export type ChallengeFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  leadOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;

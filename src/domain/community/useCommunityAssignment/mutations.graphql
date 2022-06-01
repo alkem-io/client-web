@@ -1,0 +1,72 @@
+mutation assignUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
+  assignUserAsCommunityMember(membershipData: {
+    communityID: $communityId
+    userID: $memberId
+  }) {
+    id
+    displayName
+  }
+}
+
+mutation assignUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
+  assignUserAsCommunityLead(leadershipData: {
+    communityID: $communityId
+    userID: $memberId
+  }) {
+    id
+  }
+}
+
+mutation removeUserAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
+  removeUserAsCommunityMember(membershipData: {
+    communityID: $communityId
+    userID: $memberId
+  }) {
+    id
+  }
+}
+
+mutation removeUserAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID_EMAIL!) {
+  removeUserAsCommunityLead(leadershipData: {
+    communityID: $communityId
+    userID: $memberId
+  }) {
+    id
+  }
+}
+
+mutation assignOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
+  assignOrganizationAsCommunityMember(membershipData: {
+    communityID: $communityId
+    organizationID: $memberId
+  }) {
+    id
+  }
+}
+
+mutation assignOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
+  assignOrganizationAsCommunityLead(leadershipData: {
+    communityID: $communityId
+    organizationID: $memberId
+  }) {
+    id
+  }
+}
+
+mutation removeOrganizationAsCommunityMember($communityId: UUID!, $memberId: UUID_NAMEID!) {
+  removeOrganizationAsCommunityMember(membershipData: {
+    communityID: $communityId
+    organizationID: $memberId
+  }) {
+    id
+  }
+}
+
+mutation removeOrganizationAsCommunityLead($communityId: UUID!, $memberId: UUID_NAMEID!) {
+  removeOrganizationAsCommunityLead(leadershipData: {
+    communityID: $communityId
+    organizationID: $memberId
+  }) {
+    id
+  }
+}

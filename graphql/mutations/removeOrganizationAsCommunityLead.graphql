@@ -1,5 +1,0 @@
-mutation removeOrganizationAsCommunityLead($leadershipData: RemoveCommunityLeadOrganizationInput!) {
-  removeOrganizationAsCommunityLead(leadershipData: $leadershipData) {
-    id,
-  }
-}
