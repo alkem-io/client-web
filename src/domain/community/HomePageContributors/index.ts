@@ -1,3 +1,3 @@
 import useHomePageContributors from './useHomePageContributors';
 
-export default useHomePageContributors;
+export { useHomePageContributors };

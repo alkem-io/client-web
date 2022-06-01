@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardContributorsSection from '../../components/composite/common/sections/DashboardContributorsSection';
-import useHomePageContributors from '../../domain/community/HomePageContributors';
+import { useHomePageContributors } from '../../domain/community/HomePageContributors';
 
 const ContributorsSection = () => {
   const { t } = useTranslation();
