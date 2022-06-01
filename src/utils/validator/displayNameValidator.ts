@@ -1,9 +1,9 @@
 import * as yup from 'yup';
-import i18next from 'i18next';
+import { MessageWithPayload } from '../../domain/shared/i18n/ValidationMessageTranslation';
 
 export const displayNameValidator = yup
   .string()
-  .test('is-not-spaces', 'Name must contain characters.', value => !/^[\s]*$/.test(value || ''))
-  .required(i18next.t('forms.validations.required'))
-  .min(3, 'Name should be at least 3 symbols long')
-  .max(128, 'Exceeded the limit of 128 characters');
+  .test('is-not-spaces', 'forms.validations.nonBlank', value => !value || !/^[\s]*$/.test(value))
+  .required(MessageWithPayload('forms.validations.required'))
+  .min(3, MessageWithPayload('forms.validations.minLength'))
+  .max(128, MessageWithPayload('forms.validations.maxLength'));
