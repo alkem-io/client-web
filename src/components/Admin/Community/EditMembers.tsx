@@ -57,7 +57,7 @@ export interface EditMembersProps {
   onAdd?: (memberId: string) => void;
   onRemove?: (memberId: string) => void;
   fetchMore?: (amount?: number) => Promise<void>;
-  onSearchTermChange: (term: string) => any;
+  onSearchTermChange: (term: string) => void;
   hasMore?: boolean;
   title?: string;
 }
