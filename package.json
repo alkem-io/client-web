@@ -81,7 +81,6 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development gulp buildConfiguration && react-scripts start",
-    "start:services": "docker-compose -f quickstart-services.yml --env-file .env.docker up --build --force-recreate",
     "build": "cross-env NODE_ENV=production gulp buildConfiguration && react-scripts build",
     "test": "cross-env NODE_ENV=test gulp buildConfiguration && react-scripts test",
     "test:cov": "npm run test -- --coverage --watchAll=false",
