@@ -12,25 +12,34 @@ import useCommunityContributors from '../../domain/community/CommunityContributo
 const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   const { hubId, communityId } = useHub();
 
-  const { contributors, loading } = useCommunityContributors(
+  const {
+    contributors: { host, ...contributors },
+    loading,
+  } = useCommunityContributors(
     useHubCommunityContributorsQuery,
-    data => data?.hub.community,
+    data => {
+      const { leadUsers, memberUsers, memberOrganizations } = data?.hub.community ?? {};
+      return {
+        leadUsers,
+        memberUsers,
+        memberOrganizations,
+        host: data?.hub.host,
+      };
+    },
     { hubId }
   );
-
-  const { leadUsers, memberUsers, memberOrganizations, host } = contributors;
 
   const { t } = useTranslation();
 
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const hostOrganization = useMemo(() => host && user && toOrganizationCardProps(host, user, t), [host]);
+  const hostOrganization = useMemo(() => host && user && toOrganizationCardProps(host, user, t), [host, user]);
 
   return (
     <CommunityPage entityTypeName="hub" paths={paths} hubId={hubId} communityId={communityId}>
       <HostOrganization organization={hostOrganization} loading={loading} />
-      <CommunityContributorsSection resourceId={hubId} isHub {...{ leadUsers, memberUsers, memberOrganizations }} />
+      <CommunityContributorsSection resourceId={hubId} isHub {...contributors} />
     </CommunityPage>
   );
 };

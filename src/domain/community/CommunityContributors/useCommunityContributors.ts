@@ -8,15 +8,15 @@ import { useMemo } from 'react';
 type EntityIds = { hubId: string } & ({} | { challengeId: string } | { opportunityId: string });
 
 interface Contributors {
-  leadOrganizations: OrganizationCardFragment[] | undefined;
-  leadUsers: UserCardFragment[] | undefined;
-  memberOrganizations: OrganizationCardFragment[] | undefined;
-  memberUsers: UserCardFragment[] | undefined;
-  host: OrganizationCardFragment | undefined;
+  leadOrganizations: OrganizationCardFragment[];
+  leadUsers: UserCardFragment[];
+  memberOrganizations: OrganizationCardFragment[];
+  memberUsers: UserCardFragment[];
+  host: OrganizationCardFragment;
 }
 
-interface Provided {
-  contributors: Contributors;
+interface Provided<ProvidedContributors> {
+  contributors: ProvidedContributors;
   loading: boolean;
 }
 
@@ -24,21 +24,21 @@ interface Query<Data, Variables extends EntityIds> {
   (options: Apollo.QueryHookOptions<Data, Variables>): QueryResult<Data, Variables>;
 }
 
-const useCommunityContributors = <Data, Variables extends EntityIds, Community extends Contributors>(
+const useCommunityContributors = <
+  Data,
+  Variables extends EntityIds,
+  ProvidedContributors extends Partial<Contributors>
+>(
   query: Query<Data, Variables>,
-  communitySelector: (data: Data | undefined) => Partial<Community> | undefined,
+  selector: (data: Data | undefined) => ProvidedContributors,
   variables: PossiblyUndefinedProps<Variables>
-): Provided => {
+): Provided<ProvidedContributors> => {
   const { data, loading } = query({
     variables: variables as Variables,
     skip: somePropsNotDefined(variables),
   });
 
-  const contributors = useMemo(() => {
-    const { leadUsers, memberUsers, leadOrganizations, memberOrganizations, host } =
-      communitySelector(data) ?? ({} as Community);
-    return { leadUsers, memberUsers, leadOrganizations, memberOrganizations, host };
-  }, [data]);
+  const contributors = useMemo(() => selector(data), [data]);
 
   return {
     contributors,

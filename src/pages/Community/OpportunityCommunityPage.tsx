@@ -13,7 +13,10 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
 
   const { contributors, loading } = useCommunityContributors(
     useOpportunityCommunityContributorsQuery,
-    data => data?.hub.opportunity.community,
+    data => {
+      const { leadUsers, memberUsers, leadOrganizations, memberOrganizations } = data?.hub.opportunity.community || {};
+      return { leadUsers, memberUsers, leadOrganizations, memberOrganizations };
+    },
     {
       hubId,
       opportunityId,

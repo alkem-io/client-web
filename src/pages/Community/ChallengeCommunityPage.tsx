@@ -14,7 +14,10 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
 
   const { contributors, loading } = useCommunityContributors(
     useChallengeCommunityContributorsQuery,
-    data => data?.hub.challenge.community,
+    data => {
+      const { leadUsers, memberUsers, leadOrganizations, memberOrganizations } = data?.hub.challenge.community || {};
+      return { leadUsers, memberUsers, leadOrganizations, memberOrganizations };
+    },
     {
       hubId,
       challengeId,
