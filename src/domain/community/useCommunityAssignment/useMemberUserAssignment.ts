@@ -24,7 +24,7 @@ type Options<ExistingUsersQueryVariables extends {}> = Omit<
 const useMemberUserAssignment = <OrganizationsQueryVariables extends {}>(
   options: Options<OrganizationsQueryVariables>
 ) => {
-  const { allPossibleMemberUsers, ...allPossibleProvided } = useAllPossibleMemberUsers(options);
+  const { allPossibleMemberUsers, setSearchTerm, ...allPossibleProvided } = useAllPossibleMemberUsers(options);
 
   const { existingMembers, availableMembers, ...communityAssignmentProvided } = useCommunityMembersAssignment({
     // TODO possibility to use different types for allPossibleMembers/availableMembers and existingMembers
@@ -37,6 +37,7 @@ const useMemberUserAssignment = <OrganizationsQueryVariables extends {}>(
   return {
     members: existingMembers,
     availableMembers,
+    onSearchTermChange: setSearchTerm,
     ...communityAssignmentProvided,
     ...allPossibleProvided,
   };

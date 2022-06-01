@@ -57,7 +57,7 @@ export interface EditMembersProps {
   onAdd?: (memberId: string) => void;
   onRemove?: (memberId: string) => void;
   fetchMore?: (amount?: number) => Promise<void>;
-  onSearchTermChange?: (term: string) => any;
+  onSearchTermChange: (term: string) => any;
   hasMore?: boolean;
   title?: string;
 }
@@ -86,7 +86,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
 
   const handleFilter = useMemo(
-    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onSearchTermChange?.(e.target.value), FILTER_DEBOUNCE),
+    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onSearchTermChange(e.target.value), FILTER_DEBOUNCE),
     [onSearchTermChange, FILTER_DEBOUNCE]
   );
 

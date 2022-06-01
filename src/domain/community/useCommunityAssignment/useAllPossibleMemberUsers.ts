@@ -6,7 +6,7 @@ import { useHub } from '../../../hooks';
 import useLocalSearch from '../../shared/utils/useLocalSearch';
 
 export interface UseAllPossibleMemberUsersProvided {
-  allPossibleUsers: UserDisplayNameFragment[];
+  allPossibleMemberUsers: UserDisplayNameFragment[] | undefined;
   fetchMore: (amount?: number) => Promise<void>;
   hasMore: boolean | undefined;
   loading: boolean;
@@ -22,7 +22,9 @@ export interface UseAllPossibleMemberUsersOptions {
 
 const PAGE_SIZE = 10;
 
-const useAllPossibleMemberUsers = (options: UseAllPossibleMemberUsersOptions = {}) => {
+const useAllPossibleMemberUsers = (
+  options: UseAllPossibleMemberUsersOptions = {}
+): UseAllPossibleMemberUsersProvided => {
   const { parentCommunityId } = options;
 
   const { filter, setSearchTerm: setPaginatedUsersSearchTerm } = useUsersSearch();
