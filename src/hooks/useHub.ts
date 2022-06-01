@@ -1,12 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { HubContext } from '../context/HubProvider';
 
-export const useHub = () => {
-  const context = useContext(HubContext);
-  return useMemo(
-    () => ({
-      ...context,
-    }),
-    [context]
-  );
-};
+export const useHub = () => useContext(HubContext);
