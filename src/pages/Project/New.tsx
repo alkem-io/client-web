@@ -12,6 +12,7 @@ import { useUpdateNavigation } from '../../hooks';
 import { makeStyles } from '@mui/styles';
 import { Project as ProjectType, User } from '../../models/graphql-schema';
 import { PageProps } from '../common';
+import { nameIdValidator, displayNameValidator } from '../../utils/validator';
 
 const useStyles = makeStyles(theme => ({
   tag: {
@@ -32,13 +33,6 @@ interface ProjectPageProps extends PageProps {
   onCreate: (project: Pick<ProjectType, 'displayName' | 'description' | 'nameID'>) => void;
 }
 
-const createTextId = (value: string) => {
-  return value
-    .split(' ')
-    .flatMap(x => x.split('-'))
-    .join('-');
-};
-
 const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.ReactElement => {
   useUpdateNavigation({ currentPaths: paths });
 
@@ -52,8 +46,8 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
     description: '',
   };
   const validationSchema = yup.object().shape({
-    name: yup.string().required(t('forms.validations.required')),
-    shortName: yup.string().required(t('forms.validations.required')).min(3),
+    name: displayNameValidator,
+    shortName: nameIdValidator,
     description: yup.string().required(t('forms.validations.required')),
   });
 
@@ -68,7 +62,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={({ name, description, shortName }) =>
-              onCreate({ displayName: name, description, nameID: createTextId(shortName) })
+              onCreate({ displayName: name, description, nameID: shortName })
             }
           >
             {({ isValid, handleSubmit, handleChange, handleBlur, errors }) => (
@@ -90,7 +84,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
                 <div className={styles.spacer}></div>
                 <TextField
                   name={'shortName'}
-                  label={'Short name (max 2 words)'}
+                  label={'Short name'}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   variant={'outlined'}
