@@ -9278,170 +9278,6 @@ export type CommunicationUpdateMessageReceivedSubscription = {
   };
 };
 
-export type CommunityPageQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityPageQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          displayName: string;
-          memberUsers?:
-            | Array<{
-                __typename?: 'User';
-                id: string;
-                nameID: string;
-                displayName: string;
-                agent?:
-                  | {
-                      __typename?: 'Agent';
-                      id: string;
-                      credentials?:
-                        | Array<{
-                            __typename?: 'Credential';
-                            id: string;
-                            type: AuthorizationCredential;
-                            resourceID: string;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
-                profile?:
-                  | {
-                      __typename?: 'Profile';
-                      id: string;
-                      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
-                    }
-                  | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CommunityPageWithHostQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityPageWithHostQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          nameID: string;
-          displayName: string;
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            description?: string | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        }
-      | undefined;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          displayName: string;
-          memberUsers?:
-            | Array<{
-                __typename?: 'User';
-                id: string;
-                nameID: string;
-                displayName: string;
-                agent?:
-                  | {
-                      __typename?: 'Agent';
-                      id: string;
-                      credentials?:
-                        | Array<{
-                            __typename?: 'Credential';
-                            id: string;
-                            type: AuthorizationCredential;
-                            resourceID: string;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
-                profile?:
-                  | {
-                      __typename?: 'Profile';
-                      id: string;
-                      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      tagsets?:
-                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
-                        | undefined;
-                    }
-                  | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type ChallengeLeadingOrganizationsQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeLeadingOrganizationsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      community?:
-        | {
-            __typename?: 'Community';
-            leadOrganizations?:
-              | Array<{
-                  __typename?: 'Organization';
-                  id: string;
-                  nameID: string;
-                  displayName: string;
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    description?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                  verification: {
-                    __typename?: 'OrganizationVerification';
-                    id: string;
-                    status: OrganizationVerificationEnum;
-                  };
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
 export type HubContextQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
 }>;
@@ -11110,6 +10946,497 @@ export type CommentsMessageReceivedSubscription = {
   };
 };
 
+export type HubCommunityContributorsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCommunityContributorsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          displayName: string;
+          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            description?: string | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        }
+      | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          leadUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                displayName: string;
+                agent?:
+                  | {
+                      __typename?: 'Agent';
+                      id: string;
+                      credentials?:
+                        | Array<{
+                            __typename?: 'Credential';
+                            id: string;
+                            type: AuthorizationCredential;
+                            resourceID: string;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      tagsets?:
+                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                        | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+          memberUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                nameID: string;
+                displayName: string;
+                agent?:
+                  | {
+                      __typename?: 'Agent';
+                      id: string;
+                      credentials?:
+                        | Array<{
+                            __typename?: 'Credential';
+                            id: string;
+                            type: AuthorizationCredential;
+                            resourceID: string;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      tagsets?:
+                        | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                        | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+          memberOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                nameID: string;
+                displayName: string;
+                activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  description?: string | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+                verification: {
+                  __typename?: 'OrganizationVerification';
+                  id: string;
+                  status: OrganizationVerificationEnum;
+                };
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeCommunityContributorsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCommunityContributorsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            leadUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  agent?:
+                    | {
+                        __typename?: 'Agent';
+                        id: string;
+                        credentials?:
+                          | Array<{
+                              __typename?: 'Credential';
+                              id: string;
+                              type: AuthorizationCredential;
+                              resourceID: string;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            memberUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  agent?:
+                    | {
+                        __typename?: 'Agent';
+                        id: string;
+                        credentials?:
+                          | Array<{
+                              __typename?: 'Credential';
+                              id: string;
+                              type: AuthorizationCredential;
+                              resourceID: string;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                }>
+              | undefined;
+            memberOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityCommunityContributorsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCommunityContributorsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            leadUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  agent?:
+                    | {
+                        __typename?: 'Agent';
+                        id: string;
+                        credentials?:
+                          | Array<{
+                              __typename?: 'Credential';
+                              id: string;
+                              type: AuthorizationCredential;
+                              resourceID: string;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            memberUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  agent?:
+                    | {
+                        __typename?: 'Agent';
+                        id: string;
+                        credentials?:
+                          | Array<{
+                              __typename?: 'Credential';
+                              id: string;
+                              type: AuthorizationCredential;
+                              resourceID: string;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        tagsets?:
+                          | Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }>
+                          | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                }>
+              | undefined;
+            memberOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CommunityMembersFragment = {
+  __typename?: 'Community';
+  leadUsers?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        displayName: string;
+        agent?:
+          | {
+              __typename?: 'Agent';
+              id: string;
+              credentials?:
+                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+                | undefined;
+            }
+          | undefined;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+  memberUsers?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        displayName: string;
+        agent?:
+          | {
+              __typename?: 'Agent';
+              id: string;
+              credentials?:
+                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+                | undefined;
+            }
+          | undefined;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+  leadOrganizations?:
+    | Array<{
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        displayName: string;
+        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          description?: string | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+      }>
+    | undefined;
+  memberOrganizations?:
+    | Array<{
+        __typename?: 'Organization';
+        id: string;
+        nameID: string;
+        displayName: string;
+        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          description?: string | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+      }>
+    | undefined;
+};
+
+export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContributingUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      displayName: string;
+      nameID: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
+};
+
 export type AvailableUsersQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -11229,45 +11556,11 @@ export type ChallengeCommunityMembersQuery = {
   };
 };
 
-export type HubMemberOrganizationsQueryVariables = Exact<{
+export type HubCommunityMembersQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubMemberOrganizationsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          memberOrganizations?:
-            | Array<{
-                __typename?: 'Organization';
-                id: string;
-                displayName: string;
-                nameID: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  description?: string | undefined;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-                };
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type HubMemberUsersQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubMemberUsersQuery = {
+export type HubCommunityMembersQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11284,6 +11577,32 @@ export type HubMemberUsersQuery = {
                 firstName: string;
                 lastName: string;
                 email: string;
+              }>
+            | undefined;
+          leadUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                displayName: string;
+                firstName: string;
+                lastName: string;
+                email: string;
+              }>
+            | undefined;
+          memberOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  description?: string | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                  location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+                };
               }>
             | undefined;
         }
@@ -11443,31 +11762,6 @@ export type OpportunityCommunityMembersQuery = {
           }
         | undefined;
     };
-  };
-};
-
-export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
-
-export type ContributingUsersQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      displayName: string;
-      nameID: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
-            id: string;
-            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-          }
-        | undefined;
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
 
