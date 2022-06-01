@@ -1,6 +1,4 @@
-import TranslatedValidationMessageWithPayload from './TranslatedValidationMessageWithPayload';
+import translatedValidationMessageWithPayloadFactory from './TranslatedValidationMessageWithPayloadFactory';
 import useValidationMessageTranslation from './useValidationMessageTranslation';
 
-export { TranslatedValidationMessageWithPayload, useValidationMessageTranslation };
-
-export { TranslatedValidationMessageWithPayload as TranslatedValidation };
+export { useValidationMessageTranslation, translatedValidationMessageWithPayloadFactory as TranslatedValidation };

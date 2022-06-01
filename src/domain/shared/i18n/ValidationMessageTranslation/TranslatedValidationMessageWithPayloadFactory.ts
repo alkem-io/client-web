@@ -1,11 +1,11 @@
 import TranslationKey from '../../../../types/TranslationKey';
 import { ValidationMessageWithPayload } from './ValidationMessageWithPayload';
 
-const TranslatedValidationMessageWithPayload =
+const translatedValidationMessageWithPayloadFactory =
   (translationKey: TranslationKey) =>
   (payload: Partial<Record<string, string | number>>): ValidationMessageWithPayload => ({
     message: translationKey,
     ...payload,
   });
 
-export default TranslatedValidationMessageWithPayload;
+export default translatedValidationMessageWithPayloadFactory;
