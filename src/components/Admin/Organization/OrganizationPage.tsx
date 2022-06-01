@@ -72,6 +72,11 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
     },
   });
 
+  const undefinedIfEmpty = (value: string | undefined) => {
+    if (!value) return;
+    return value === '' ? undefined : value;
+  };
+
   const handleSubmit = async (editedOrganization: Organization) => {
     const {
       id: orgID,
@@ -87,13 +92,13 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
     if (mode === EditMode.new) {
       const input: CreateOrganizationInput = {
         nameID,
-        contactEmail: contactEmail,
+        contactEmail: undefinedIfEmpty(contactEmail),
         displayName: displayName,
         domain: domain,
         legalEntityName: legalEntityName,
         website: website,
         profileData: {
-          description: profile.description || '',
+          description: profile.description,
           referencesData: [...(profile.references as Reference[])],
           tagsetsData: [...(profile.tagsets as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
         },
@@ -125,14 +130,14 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
       const organizationInput: UpdateOrganizationInput = {
         ID: orgID,
         nameID,
-        contactEmail: contactEmail,
+        contactEmail: undefinedIfEmpty(contactEmail),
         displayName: displayName,
         domain: domain,
         legalEntityName: legalEntityName,
         website: website,
         profileData: {
           ID: profileId || '',
-          description: profile.description || '',
+          description: profile.description,
           location: {
             city: profile.location?.city || '',
             country: profile.location?.country || '',
