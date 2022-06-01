@@ -1,3 +1,9 @@
+query hubProvider($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    ...HubInfo
+  }
+}
+
 fragment HubInfo on Hub {
   ...HubDetails
   authorization {

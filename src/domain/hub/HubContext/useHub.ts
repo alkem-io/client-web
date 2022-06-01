@@ -1,4 +1,4 @@
 import { useContext } from 'react';
-import { HubContext } from '../context/HubProvider';
+import { HubContext } from './HubContextProvider';
 
 export const useHub = () => useContext(HubContext);

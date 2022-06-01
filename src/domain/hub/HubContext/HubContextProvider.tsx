@@ -1,8 +1,8 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useConfig, useUrlParams, useUserContext } from '../hooks';
-import { useHubProviderQuery } from '../hooks/generated/graphql';
-import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
+import { useConfig, useUrlParams, useUserContext } from '../../../hooks';
+import { useHubProviderQuery } from '../../../hooks/generated/graphql';
+import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../../../models/graphql-schema';
 
 export interface HubPermissions {
   viewerCanUpdate: boolean;
@@ -50,7 +50,7 @@ interface HubProviderProps {}
 
 const NO_PRIVILEGES = [];
 
-const HubProvider: FC<HubProviderProps> = ({ children }) => {
+const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const { hubNameId = '' } = useUrlParams();
   const { template: platformTemplate, error: configError } = useConfig();
   const { user } = useUserContext();
@@ -120,4 +120,4 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   );
 };
 
-export { HubProvider, HubContext };
+export { HubContextProvider, HubContext };
