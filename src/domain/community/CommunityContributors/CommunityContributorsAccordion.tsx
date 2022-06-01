@@ -8,7 +8,7 @@ import withOptionalCount from '../../shared/utils/withOptionalCount';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';
 import ContributingUsers, { ContributingUsersProps } from './ContributingUsers';
 
-interface CommunityContributorsProps extends ContributingOrganizationsProps, ContributingUsersProps {
+interface CommunityContributorsAccordionProps extends ContributingOrganizationsProps, ContributingUsersProps {
   title: string;
   helpText?: string;
   ariaKey: string;
@@ -23,7 +23,7 @@ const SubSectionHeading = styled(props => <Typography variant="h3" {...props} />
   paddingBottom: theme.spacing(2),
 }));
 
-const CommunityContributors = ({
+const CommunityContributorsAccordion = ({
   title,
   helpText,
   organizations = [],
@@ -34,7 +34,7 @@ const CommunityContributors = ({
   loading = false,
   hideOrganizations = false,
   hideUsers = false,
-}: CommunityContributorsProps) => {
+}: CommunityContributorsAccordionProps) => {
   const { t } = useTranslation();
 
   return (
@@ -56,4 +56,4 @@ const CommunityContributors = ({
   );
 };
 
-export default CommunityContributors;
+export default CommunityContributorsAccordion;

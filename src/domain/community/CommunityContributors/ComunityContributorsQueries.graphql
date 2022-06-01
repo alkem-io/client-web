@@ -1,4 +1,4 @@
-query HubCommunityPageCommunityMembers($hubId: UUID_NAMEID!) {
+query HubCommunityContributors($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     host {
@@ -19,7 +19,7 @@ query HubCommunityPageCommunityMembers($hubId: UUID_NAMEID!) {
   }
 }
 
-query ChallengeCommunityPageCommunityMembers($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+query ChallengeCommunityContributors($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     challenge(ID: $challengeId) {
@@ -32,7 +32,7 @@ query ChallengeCommunityPageCommunityMembers($hubId: UUID_NAMEID!, $challengeId:
   }
 }
 
-query OpportunityCommunityPageCommunityMembers($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+query OpportunityCommunityContributors($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     opportunity(ID: $opportunityId) {

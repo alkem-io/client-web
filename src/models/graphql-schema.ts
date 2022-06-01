@@ -10946,11 +10946,11 @@ export type CommentsMessageReceivedSubscription = {
   };
 };
 
-export type HubCommunityPageCommunityMembersQueryVariables = Exact<{
+export type HubCommunityContributorsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
 
-export type HubCommunityPageCommunityMembersQuery = {
+export type HubCommunityContributorsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11066,12 +11066,12 @@ export type HubCommunityPageCommunityMembersQuery = {
   };
 };
 
-export type ChallengeCommunityPageCommunityMembersQueryVariables = Exact<{
+export type ChallengeCommunityContributorsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
 }>;
 
-export type ChallengeCommunityPageCommunityMembersQuery = {
+export type ChallengeCommunityContributorsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11195,12 +11195,12 @@ export type ChallengeCommunityPageCommunityMembersQuery = {
   };
 };
 
-export type OpportunityCommunityPageCommunityMembersQueryVariables = Exact<{
+export type OpportunityCommunityContributorsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
 }>;
 
-export type OpportunityCommunityPageCommunityMembersQuery = {
+export type OpportunityCommunityContributorsQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11410,6 +11410,31 @@ export type CommunityMembersFragment = {
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
       }>
     | undefined;
+};
+
+export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ContributingUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      displayName: string;
+      nameID: string;
+      profile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+    }>;
+    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
 };
 
 export type AvailableUsersQueryVariables = Exact<{
@@ -11745,31 +11770,6 @@ export type OpportunityCommunityMembersQuery = {
           }
         | undefined;
     };
-  };
-};
-
-export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
-
-export type ContributingUsersQuery = {
-  __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
-      id: string;
-      displayName: string;
-      nameID: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
-            id: string;
-            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-          }
-        | undefined;
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
 

@@ -13,7 +13,7 @@ import { WithId } from '../../../types/WithId';
 const MAX_USERS_TO_SHOW = 12;
 const MAX_ORGANIZATIONS_TO_SHOW = 12;
 
-const useContributors = () => {
+const useHomePageContributors = () => {
   const { user, isAuthenticated } = useUserContext();
 
   const { data: usersData, loading } = useContributingUsersQuery({
@@ -80,4 +80,4 @@ const useContributors = () => {
   };
 };
 
-export default useContributors;
+export default useHomePageContributors;

@@ -6,6 +6,7 @@ import { MutationTuple } from '@apollo/client/react/types/types';
 import { useApolloErrorHandler } from '../../../hooks';
 import { Identifiable } from '../../shared/types/Identifiable';
 import { PossiblyUndefinedProps } from '../../shared/types/PossiblyUndefinedProps';
+import somePropsNotDefined from '../../shared/utils/somePropsNotDefined';
 
 interface QueryResult<MemberEntity> extends PossiblyUndefinedProps<CommunityIdHolder> {
   existingMembers: MemberEntity[] | undefined;
@@ -52,9 +53,6 @@ interface Provided<MemberEntity> {
   onAdd: (organizationID: string) => void;
 }
 
-const someVariablesNotDefined = <Variables extends {}>(variables: Variables): variables is Required<Variables> =>
-  Object.keys(variables).some(variableName => !variables[variableName]);
-
 const readCommunityIdOrFail = (variables: PossiblyUndefinedProps<CommunityIdHolder>): string | never => {
   if (!variables.communityId) {
     throw new TypeError("Community isn't yet loaded.");
@@ -90,7 +88,7 @@ const useCommunityMembersAssignment = <
 
   const queryResult = useExistingMembersQuery({
     variables: variables as ExistingMembersQueryVariables,
-    skip: someVariablesNotDefined(variables),
+    skip: somePropsNotDefined(variables),
   });
 
   const existingMembers = queryResult.existingMembers ?? EMPTY_LIST;
