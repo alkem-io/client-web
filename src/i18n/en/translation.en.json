@@ -246,7 +246,10 @@
   },
   "forms": {
     "validations": {
-      "required": "This field is required!"
+      "required": "This field is required!",
+      "minLength": "{{field}} should be at least {{min}} symbols long",
+      "maxLength": "Exceeded the limit of {{max}} characters",
+      "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens"
     }
   },
   "components": {

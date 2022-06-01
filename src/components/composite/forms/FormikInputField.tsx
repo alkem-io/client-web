@@ -4,6 +4,9 @@ import { useField } from 'formik';
 import React, { FC } from 'react';
 import HelpButton from '../../core/HelpButton';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
+import TranslationKey from '../../../types/TranslationKey';
+import { useValidationMessageTranslation } from '../../../domain/shared/i18n/ValidationMessageTranslation';
+
 type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
   name: string;
@@ -30,6 +33,8 @@ export const FormikInputField: FC<InputFieldProps> = ({
   loading,
   ...rest
 }) => {
+  const tErr = useValidationMessageTranslation();
+
   const [field, meta] = useField(name);
 
   return (
@@ -43,7 +48,12 @@ export const FormikInputField: FC<InputFieldProps> = ({
       variant={'outlined'}
       InputLabelProps={{ shrink: true }}
       error={meta.touched && Boolean(meta.error)}
-      helperText={meta.touched && meta.error}
+      helperText={
+        meta.touched &&
+        tErr(meta.error as TranslationKey, {
+          field: title,
+        })
+      }
       required={required}
       disabled={loading || disabled}
       autoComplete={autoComplete}
