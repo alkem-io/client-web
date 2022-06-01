@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 import App from '../components/composite/layout/App/App';
 import { CommunityProvider } from '../context/CommunityProvider';
-import { HubContextProvider } from '../domain/hub/HubContext/HubContextProvider';
+import { HubContextProvider } from '../domain/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
 import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';

@@ -13,7 +13,6 @@ export interface HubPermissions {
 }
 
 interface HubContextProps {
-  hub?: HubInfoFragment;
   hubId: string;
   hubNameId: string;
   displayName: string;
@@ -25,6 +24,11 @@ interface HubContextProps {
   permissions: HubPermissions;
   error?: ApolloError;
   refetchHub: () => void;
+  // TODO Some components just randomly access HubContext instead of just querying the data the usual way.
+  // TODO This Context should provide as little data as possible or just be removed.
+  hostId?: string;
+  tagset?: HubInfoFragment['tagset'];
+  context?: HubInfoFragment['context'];
 }
 
 const HubContext = React.createContext<HubContextProps>({
@@ -101,7 +105,6 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   return (
     <HubContext.Provider
       value={{
-        hub,
         hubId,
         hubNameId,
         communityId,
@@ -113,6 +116,9 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
         loading,
         error,
         refetchHub,
+        tagset: hub?.tagset,
+        hostId: hub?.host?.id,
+        context: hub?.context,
       }}
     >
       {children}

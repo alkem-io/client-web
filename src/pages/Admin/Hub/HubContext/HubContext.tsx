@@ -14,7 +14,7 @@ import { formatDatabaseLocation } from '../../../../domain/location/LocationUtil
 export const HubContext: FC = () => {
   const { t } = useTranslation();
 
-  const { hubNameId, hub } = useHub();
+  const { hubNameId, ...hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
@@ -56,11 +56,11 @@ export const HubContext: FC = () => {
       <Grid container spacing={2}>
         <HubContextForm
           isEdit
-          name={hub?.displayName}
-          nameID={hub?.nameID}
-          hostID={hub?.host?.id}
-          tagset={hub?.tagset}
-          context={hub?.context}
+          name={hub.displayName}
+          nameID={hubNameId}
+          hostID={hub.hostId}
+          tagset={hub.tagset}
+          context={hub.context}
           organizations={organizations}
           onSubmit={onSubmit}
           wireSubmit={submit => (submitWired = submit)}

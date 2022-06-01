@@ -12,10 +12,6 @@ fragment HubInfo on Hub {
   }
   community {
     id
-    displayName
-    memberUsers {
-      id
-    }
     authorization {
       id
       myPrivileges

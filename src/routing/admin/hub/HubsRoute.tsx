@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { HubContextProvider } from '../../../domain/hub/HubContext/HubContextProvider';
+import { HubContextProvider } from '../../../domain/hub/HubContext/HubContext';
 import { useTransactionScope } from '../../../hooks';
 import { Error404, PageProps } from '../../../pages';
 import AdminHubsPage from '../../../pages/Admin/AdminHubs/AdminHubsPage';

@@ -265,96 +265,6 @@ export const GroupInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const ContextDetailsFragmentDoc = gql`
-  fragment ContextDetails on Context {
-    id
-    tagline
-    background
-    location {
-      id
-      country
-      city
-    }
-    vision
-    impact
-    who
-    references {
-      id
-      name
-      uri
-      description
-    }
-    visuals {
-      ...VisualFull
-    }
-    authorization {
-      id
-      myPrivileges
-      anonymousReadAccess
-    }
-  }
-  ${VisualFullFragmentDoc}
-`;
-export const HubDetailsFragmentDoc = gql`
-  fragment HubDetails on Hub {
-    id
-    nameID
-    displayName
-    tagset {
-      id
-      name
-      tags
-    }
-    authorization {
-      id
-      anonymousReadAccess
-    }
-    host {
-      id
-      displayName
-      nameID
-    }
-    context {
-      ...ContextDetails
-    }
-  }
-  ${ContextDetailsFragmentDoc}
-`;
-export const HubInfoFragmentDoc = gql`
-  fragment HubInfo on Hub {
-    ...HubDetails
-    authorization {
-      id
-      myPrivileges
-    }
-    community {
-      id
-      displayName
-      memberUsers {
-        id
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-    context {
-      id
-      authorization {
-        id
-        myPrivileges
-      }
-    }
-    template {
-      aspectTemplates {
-        defaultDescription
-        typeDescription
-        type
-      }
-    }
-  }
-  ${HubDetailsFragmentDoc}
-`;
 export const HubNameFragmentDoc = gql`
   fragment HubName on Hub {
     id
@@ -1021,6 +931,36 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const ContextDetailsFragmentDoc = gql`
+  fragment ContextDetails on Context {
+    id
+    tagline
+    background
+    location {
+      id
+      country
+      city
+    }
+    vision
+    impact
+    who
+    references {
+      id
+      name
+      uri
+      description
+    }
+    visuals {
+      ...VisualFull
+    }
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
 export const ChallengeProfileFragmentDoc = gql`
   fragment ChallengeProfile on Challenge {
     id
@@ -1640,6 +1580,62 @@ export const AspectsOnContextFragmentDoc = gql`
     }
   }
   ${ContributeTabAspectFragmentDoc}
+`;
+export const HubDetailsFragmentDoc = gql`
+  fragment HubDetails on Hub {
+    id
+    nameID
+    displayName
+    tagset {
+      id
+      name
+      tags
+    }
+    authorization {
+      id
+      anonymousReadAccess
+    }
+    host {
+      id
+      displayName
+      nameID
+    }
+    context {
+      ...ContextDetails
+    }
+  }
+  ${ContextDetailsFragmentDoc}
+`;
+export const HubInfoFragmentDoc = gql`
+  fragment HubInfo on Hub {
+    ...HubDetails
+    authorization {
+      id
+      myPrivileges
+    }
+    community {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    context {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+    }
+    template {
+      aspectTemplates {
+        defaultDescription
+        typeDescription
+        type
+      }
+    }
+  }
+  ${HubDetailsFragmentDoc}
 `;
 export const UpdatePreferenceOnUserDocument = gql`
   mutation updatePreferenceOnUser($input: UpdateUserPreferenceInput!) {
@@ -6346,58 +6342,6 @@ export type GroupMembersQueryResult = Apollo.QueryResult<
 >;
 export function refetchGroupMembersQuery(variables: SchemaTypes.GroupMembersQueryVariables) {
   return { query: GroupMembersDocument, variables: variables };
-}
-export const HubProviderDocument = gql`
-  query hubProvider($hubId: UUID_NAMEID!) {
-    hub(ID: $hubId) {
-      ...HubInfo
-    }
-  }
-  ${HubInfoFragmentDoc}
-`;
-
-/**
- * __useHubProviderQuery__
- *
- * To run a query within a React component, call `useHubProviderQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubProviderQuery({
- *   variables: {
- *      hubId: // value for 'hubId'
- *   },
- * });
- */
-export function useHubProviderQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>(
-    HubProviderDocument,
-    options
-  );
-}
-export function useHubProviderLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>(
-    HubProviderDocument,
-    options
-  );
-}
-export type HubProviderQueryHookResult = ReturnType<typeof useHubProviderQuery>;
-export type HubProviderLazyQueryHookResult = ReturnType<typeof useHubProviderLazyQuery>;
-export type HubProviderQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubProviderQuery,
-  SchemaTypes.HubProviderQueryVariables
->;
-export function refetchHubProviderQuery(variables: SchemaTypes.HubProviderQueryVariables) {
-  return { query: HubProviderDocument, variables: variables };
 }
 export const HubActivityDocument = gql`
   query hubActivity($hubId: UUID_NAMEID!) {
@@ -15776,6 +15720,58 @@ export function useContextAspectCreatedSubscription(
 export type ContextAspectCreatedSubscriptionHookResult = ReturnType<typeof useContextAspectCreatedSubscription>;
 export type ContextAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.ContextAspectCreatedSubscription>;
+export const HubProviderDocument = gql`
+  query hubProvider($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      ...HubInfo
+    }
+  }
+  ${HubInfoFragmentDoc}
+`;
+
+/**
+ * __useHubProviderQuery__
+ *
+ * To run a query within a React component, call `useHubProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubProviderQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubProviderQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>(
+    HubProviderDocument,
+    options
+  );
+}
+export function useHubProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubProviderQuery, SchemaTypes.HubProviderQueryVariables>(
+    HubProviderDocument,
+    options
+  );
+}
+export type HubProviderQueryHookResult = ReturnType<typeof useHubProviderQuery>;
+export type HubProviderLazyQueryHookResult = ReturnType<typeof useHubProviderLazyQuery>;
+export type HubProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubProviderQuery,
+  SchemaTypes.HubProviderQueryVariables
+>;
+export function refetchHubProviderQuery(variables: SchemaTypes.HubProviderQueryVariables) {
+  return { query: HubProviderDocument, variables: variables };
+}
 export const UserListDocument = gql`
   query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
