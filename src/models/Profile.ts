@@ -3,6 +3,11 @@ export interface Tagset {
   name: string;
   tags: Array<string>;
 }
+export interface UpdateTagset {
+  id: string;
+  name: string;
+  tags: Array<string>;
+}
 
 export interface Reference {
   id?: string;

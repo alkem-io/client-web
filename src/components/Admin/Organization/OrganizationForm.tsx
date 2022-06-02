@@ -5,8 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Grid } from '@mui/material';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
-import { Tagset } from '../../../models/Profile';
-import { Organization, OrganizationVerificationEnum, TagsetTemplate } from '../../../models/graphql-schema';
+import { Tagset, UpdateTagset } from '../../../models/Profile';
+import {
+  Organization,
+  OrganizationVerificationEnum,
+  TagsetTemplate,
+  UpdateOrganizationInput,
+  CreateOrganizationInput,
+} from '../../../models/graphql-schema';
 import { EditMode } from '../../../models/editMode';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
@@ -22,34 +28,46 @@ import { formatLocation } from '../../../domain/location/LocationUtils';
 import { LocationSegment } from '../../../domain/location/LocationSegment';
 import { EmptyLocation } from '../../../domain/location/Location';
 
-const emptyOrganization = {
+const EmptyOrganization: Organization = {
+  id: '',
   nameID: '',
   displayName: '',
-  contactEmail: '',
+  contactEmail: undefined,
   domain: '',
   legalEntityName: '',
   website: '',
   verification: {
+    id: '',
     status: OrganizationVerificationEnum.NotVerified,
+    lifecycle: {
+      id: '',
+      stateIsFinal: false,
+      machineDef: '',
+    },
   },
   profile: {
+    id: '',
     description: '',
     tagsets: [],
     references: [],
-    location: EmptyLocation,
+    location: {
+      id: '',
+      city: '',
+      country: '',
+    },
   },
+  preferences: [],
 };
 
 interface Props {
-  organization?: any;
+  organization?: Organization;
   editMode?: EditMode;
-  onSave?: (organization) => void;
-  onAvatarChange?;
+  onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => void;
   title?: string;
 }
 
 export const OrganizationForm: FC<Props> = ({
-  organization: currentOrganization = emptyOrganization,
+  organization: currentOrganization = EmptyOrganization,
   editMode = EditMode.readOnly,
   onSave,
   title = 'Organization',
@@ -73,14 +91,14 @@ export const OrganizationForm: FC<Props> = ({
     website,
     verification: { status: verificationStatus },
     profile: { id: profileId, description, references, avatar, location },
-  } = currentOrganization as Organization;
+  } = currentOrganization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
     if (config) return config.configuration.template.organizations[0].tagsets || [];
     return [];
   }, [config]);
 
-  const tagsets = useMemo(() => {
+  const defaultEmptyTagsets = useMemo(() => {
     let {
       profile: { tagsets },
     } = currentOrganization;
@@ -91,25 +109,38 @@ export const OrganizationForm: FC<Props> = ({
         }
         return acc;
       },
-      [...(tagsets as Tagset[])]
+      [...((tagsets as Tagset[]) || [])]
     );
   }, [currentOrganization, tagsetsTemplate]);
 
+  const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
+    let {
+      profile: { tagsets },
+    } = currentOrganization;
+    const result: UpdateTagset[] = [];
+    updatedTagsets.forEach(updatedTagset => {
+      const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
+      if (originalTagset) result.push({ id: originalTagset.id, name: originalTagset.name, tags: updatedTagset.tags });
+    });
+
+    return result;
+  };
+
   const initialValues: OrganizationInput = {
-    name: displayName || emptyOrganization.displayName,
-    nameID: nameID || emptyOrganization.nameID,
-    description: description || emptyOrganization.profile.description,
+    name: displayName || EmptyOrganization.displayName,
+    nameID: nameID || EmptyOrganization.nameID,
+    description: description || EmptyOrganization.profile.description || '',
     location: {
-      ...emptyOrganization.profile.location,
+      ...EmptyLocation,
       ...formatLocation(location),
     },
-    tagsets: tagsets || emptyOrganization.profile.tagsets,
-    contactEmail: contactEmail || emptyOrganization.contactEmail,
-    domain: domain || emptyOrganization.domain,
-    legalEntityName: legalEntityName || emptyOrganization.legalEntityName,
-    website: website || emptyOrganization.website,
-    verified: verificationStatus || emptyOrganization.verification.status,
-    references: references || emptyOrganization.profile.references,
+    tagsets: defaultEmptyTagsets || EmptyOrganization.profile.tagsets,
+    contactEmail: contactEmail || EmptyOrganization.contactEmail,
+    domain: domain || EmptyOrganization.domain || '',
+    legalEntityName: legalEntityName || EmptyOrganization.legalEntityName || '',
+    website: website || EmptyOrganization.website || '',
+    verified: verificationStatus || EmptyOrganization.verification.status,
+    references: references || EmptyOrganization.profile.references || [],
   };
 
   const validationSchema = yup.object().shape({
@@ -134,22 +165,44 @@ export const OrganizationForm: FC<Props> = ({
   const handleSubmit = async (orgData: typeof initialValues) => {
     const { tagsets, references, description, location, ...otherData } = orgData;
 
-    const organization: Organization = {
-      ...currentOrganization,
-      ...otherData,
-      displayName: otherData.name,
-      profile: {
-        description,
-        references,
-        tagsets,
-        location: {
-          city: location.city,
-          country: location.country?.code,
+    if (isCreateMode) {
+      const organization: CreateOrganizationInput = {
+        ...otherData,
+        displayName: otherData.name,
+        profileData: {
+          description,
+          referencesData: references,
+          tagsetsData: tagsets,
+          location: {
+            city: location.city,
+            country: location.country?.code,
+          },
         },
-      },
-    };
+      };
 
-    onSave && onSave(organization);
+      onSave && onSave(organization);
+    }
+
+    if (isEditMode) {
+      const updatedTagsets = getUpdatedTagsets(tagsets) || [];
+      const organization: UpdateOrganizationInput = {
+        ID: currentOrganization.id,
+        ...otherData,
+        displayName: otherData.name,
+        profileData: {
+          ID: currentOrganization.profile.id,
+          description,
+          references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
+          tagsets: updatedTagsets.map(r => ({ ...r, ID: r.id, id: undefined })),
+          location: {
+            city: location.city,
+            country: location.country?.code,
+          },
+        },
+      };
+
+      onSave && onSave(organization);
+    }
   };
 
   const handleBack = () => navigate(-1);
