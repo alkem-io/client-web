@@ -13,7 +13,7 @@ import { formatDatabaseLocation } from '../../../../domain/location/LocationUtil
 
 export const HubProfile: FC = () => {
   const { t } = useTranslation();
-  const { hubNameId, hub, visuals } = useHub();
+  const { hubNameId, visuals, ...hub } = useHub();
   const { data: organizationList, loading: loadingOrganizations } = useOrganizationsListQuery();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
@@ -54,11 +54,11 @@ export const HubProfile: FC = () => {
     <Container maxWidth="xl">
       <HubEditForm
         isEdit
-        name={hub?.displayName}
-        nameID={hub?.nameID}
-        hostID={hub?.host?.id}
-        tagset={hub?.tagset}
-        context={hub?.context}
+        name={hub.displayName}
+        nameID={hubNameId}
+        hostID={hub.hostId}
+        tagset={hub.tagset}
+        context={hub.context}
         organizations={organizations}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
