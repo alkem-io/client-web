@@ -785,16 +785,16 @@
         },
         "interested-in-collaboration": {
           "header": "Wat kun jij met Alkemio?",
-          "innovation-facilitator": "Ben je een drijfveer voor Innovatie binnen uw community of organisatie?<br/>Neem <a href='https://alkem.io/feedback' target='_blank'> contact op </a> zodat we een een-op-een sessie kunnen plannen!",
-          "suggestions": "Heb je suggesties voor Challenges waar Alkemio aan kan bijdragen?<br/>Deel het op onze <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussies</a> en neem deel aan de community!",
-          "contributor": "Wil je een bijdrage of ondersteuning leveren aan Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Gedragen door een <a href='https://alkem.io' target='_blank'>non-profit stichting</a>."
+          "innovation-facilitator": "Ben je een drijfveer voor Innovatie binnen uw community of organisatie?<br/>Neem <a href='https://alkem.io/feedback' style='color:#068293' target='_blank'> contact op </a> zodat we een een-op-een sessie kunnen plannen!",
+          "suggestions": "Heb je suggesties voor Challenges waar Alkemio aan kan bijdragen?<br/>Deel het op onze <a href='https://github.com/alkem-io/alkemio/discussions' style='color:#068293' target='_blank'>discussies</a> en neem deel aan de community!",
+          "contributor": "Wil je een bijdrage of ondersteuning leveren aan Alkemio? <br/>100% <a href='https://github.com/alkem-io' style='color:#068293' target='_blank'>open source</a>. Gedragen door een <a href='https://alkem.io' style='color:#068293' target='_blank'>non-profit stichting</a>."
         },
         "getting-started": {
           "header": "Aan de slag",
           "subheader": "Hier zijn wat suggesties om je op gang te krijgen.",
-          "connecting-with-people": "Wil je zien wie bijdraagt? Verken alle <a href='./contributors' >bijdragers</a>.",
-          "joining-a-challenge": "Gemotiveerd om deel te nemen aan een Challenge? Verken alle <a href='./challenges' >Challenges</a>.",
-          "your-profile": "Belangstelling om gevonden te worden door andere bijdragers? Vul uw <a href='./profile' >profiel in</a>.</br>"
+          "connecting-with-people": "Wil je zien wie bijdraagt? Verken alle <a href='./contributors' style='color:#068293' >bijdragers</a>.",
+          "joining-a-challenge": "Gemotiveerd om deel te nemen aan een Challenge? Verken alle <a href='./challenges' style='color:#068293' >Challenges</a>.",
+          "your-profile": "Belangstelling om gevonden te worden door andere bijdragers? Vul uw <a href='./profile' style='color:#068293' >profiel in</a>.</br>"
         },
         "hub": {
           "header": "Verken de Challenge Hubs!",
