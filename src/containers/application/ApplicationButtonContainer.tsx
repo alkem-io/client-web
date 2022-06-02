@@ -53,13 +53,13 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
   });
 
   // todo: refactor logic or use entity privileges
-  const userApplication = memberShip?.membershipUser.applications?.find(
+  const userApplication = memberShip?.rolesUser.applications?.find(
     x => x.hubID === hubId && (challengeId ? x.challengeID === challengeId : true) && !x.opportunityID
   );
 
   // find an application which does not have a challengeID, meaning it's on hub level,
   // but you are at least at challenge level to have a parent application
-  const parentApplication = memberShip?.membershipUser.applications?.find(
+  const parentApplication = memberShip?.rolesUser.applications?.find(
     x => x.hubID === hubId && !x.challengeID && !x.opportunityID && challengeId
   );
 

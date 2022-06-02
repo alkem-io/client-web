@@ -68,7 +68,7 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
             input: {
               opportunityID: opportunityId,
               displayName,
-              description,
+              description: description || '',
               nameID,
             },
           },

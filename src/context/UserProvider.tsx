@@ -3,8 +3,8 @@ import {
   refetchMeHasProfileQuery,
   useCreateUserNewRegistrationMutation,
   useMeHasProfileQuery,
-  useMembershipUserQuery,
   useMeQuery,
+  useRolesUserQuery,
 } from '../hooks/generated/graphql';
 import { useAuthenticationContext } from '../hooks';
 import { UserMetadata, useUserMetadataWrapper } from '../hooks';
@@ -31,7 +31,7 @@ const UserProvider: FC<{}> = ({ children }) => {
     skip: !meHasProfileData?.meHasProfile,
   });
 
-  const { data: membershipData, loading: loadingMembershipData } = useMembershipUserQuery({
+  const { data: membershipData, loading: loadingMembershipData } = useRolesUserQuery({
     skip: !meData?.me.id,
     variables: {
       input: {
@@ -61,7 +61,7 @@ const UserProvider: FC<{}> = ({ children }) => {
     (isAuthenticated && !meHasProfileData?.meHasProfile);
 
   const wrappedMe = useMemo(
-    () => (meData?.me ? wrapper(meData.me as User, membershipData?.membershipUser) : undefined),
+    () => (meData?.me ? wrapper(meData.me as User, membershipData?.rolesUser) : undefined),
     [meData, membershipData, wrapper]
   );
 

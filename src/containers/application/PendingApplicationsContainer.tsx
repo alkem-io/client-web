@@ -44,7 +44,7 @@ const PendingApplicationsContainer: FC<PendingApplicationsProps> = ({ children, 
       },
     },
   });
-  const applications = (memberShip?.membershipUser?.applications || []) as ApplicationResult[];
+  const applications = (memberShip?.rolesUser?.applications || []) as ApplicationResult[];
   const appsWithType = applications
     .filter(x => x.state === APPLICATION_STATE_NEW || x.state === APPLICATION_STATE_REJECTED)
     .map(getApplicationWithType)

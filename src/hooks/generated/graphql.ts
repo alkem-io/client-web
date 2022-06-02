@@ -667,6 +667,58 @@ export const UserMembershipDetailsFragmentDoc = gql`
     }
   }
 `;
+export const UserRolesDetailsFragmentDoc = gql`
+  fragment UserRolesDetails on ContributorRoles {
+    hubs {
+      id
+      nameID
+      hubID
+      displayName
+      roles
+      challenges {
+        id
+        nameID
+        displayName
+        roles
+      }
+      opportunities {
+        id
+        nameID
+        displayName
+        roles
+      }
+      userGroups {
+        id
+        nameID
+        displayName
+      }
+    }
+    organizations {
+      id
+      nameID
+      displayName
+      userGroups {
+        id
+        nameID
+        displayName
+      }
+      roles
+    }
+    communities {
+      id
+      displayName
+    }
+    applications {
+      id
+      communityID
+      displayName
+      state
+      hubID
+      challengeID
+      opportunityID
+    }
+  }
+`;
 export const AllCommunityDetailsFragmentDoc = gql`
   fragment AllCommunityDetails on Community {
     id
@@ -8590,6 +8642,53 @@ export type RelationsQueryResult = Apollo.QueryResult<SchemaTypes.RelationsQuery
 export function refetchRelationsQuery(variables: SchemaTypes.RelationsQueryVariables) {
   return { query: RelationsDocument, variables: variables };
 }
+export const RolesUserDocument = gql`
+  query rolesUser($input: RolesUserInput!) {
+    rolesUser(rolesData: $input) {
+      id
+      ...UserRolesDetails
+    }
+  }
+  ${UserRolesDetailsFragmentDoc}
+`;
+
+/**
+ * __useRolesUserQuery__
+ *
+ * To run a query within a React component, call `useRolesUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRolesUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRolesUserQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRolesUserQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>(RolesUserDocument, options);
+}
+export function useRolesUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>(
+    RolesUserDocument,
+    options
+  );
+}
+export type RolesUserQueryHookResult = ReturnType<typeof useRolesUserQuery>;
+export type RolesUserLazyQueryHookResult = ReturnType<typeof useRolesUserLazyQuery>;
+export type RolesUserQueryResult = Apollo.QueryResult<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>;
+export function refetchRolesUserQuery(variables: SchemaTypes.RolesUserQueryVariables) {
+  return { query: RolesUserDocument, variables: variables };
+}
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -8769,8 +8868,8 @@ export function refetchTagsetsTemplateQuery(variables?: SchemaTypes.TagsetsTempl
   return { query: TagsetsTemplateDocument, variables: variables };
 }
 export const UserApplicationDetailsDocument = gql`
-  query userApplicationDetails($input: MembershipUserInput!) {
-    membershipUser(membershipData: $input) {
+  query userApplicationDetails($input: RolesUserInput!) {
+    rolesUser(rolesData: $input) {
       applications {
         id
         state
@@ -8833,8 +8932,8 @@ export function refetchUserApplicationDetailsQuery(variables: SchemaTypes.UserAp
   return { query: UserApplicationDetailsDocument, variables: variables };
 }
 export const UserProfileApplicationsDocument = gql`
-  query userProfileApplications($input: MembershipUserInput!) {
-    membershipUser(membershipData: $input) {
+  query userProfileApplications($input: RolesUserInput!) {
+    rolesUser(rolesData: $input) {
       applications {
         id
         state
@@ -9015,8 +9114,8 @@ export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
 }
 export const UserApplicationsDocument = gql`
-  query userApplications($input: MembershipUserInput!) {
-    membershipUser(membershipData: $input) {
+  query userApplications($input: RolesUserInput!) {
+    rolesUser(rolesData: $input) {
       applications {
         id
         state
@@ -9152,9 +9251,9 @@ export const UserProfileDocument = gql`
       ...UserDetails
       ...UserAgent
     }
-    membershipUser(membershipData: { userID: $input }) {
+    rolesUser(rolesData: { userID: $input }) {
       id
-      ...UserMembershipDetails
+      ...UserRolesDetails
     }
     authorization {
       ...MyPrivileges
@@ -9162,7 +9261,7 @@ export const UserProfileDocument = gql`
   }
   ${UserDetailsFragmentDoc}
   ${UserAgentFragmentDoc}
-  ${UserMembershipDetailsFragmentDoc}
+  ${UserRolesDetailsFragmentDoc}
   ${MyPrivilegesFragmentDoc}
 `;
 

@@ -5,7 +5,7 @@ import {
   AuthorizationPrivilege,
   MyPrivilegesFragment,
   User,
-  UserMembershipDetailsFragment,
+  UserRolesDetailsFragment,
 } from '../../models/graphql-schema';
 import { Role } from '../../models/Role';
 import { useCredentialsResolver } from '../useCredentialsResolver';
@@ -53,7 +53,7 @@ export interface UserMetadata {
 
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
 
-const getContributions = (membershipData?: UserMembershipDetailsFragment) => {
+const getContributions = (membershipData?: UserRolesDetailsFragment) => {
   if (!membershipData) return [];
 
   const hubs = membershipData.hubs.map<ContributionItem>(e => ({
@@ -76,7 +76,7 @@ const getContributions = (membershipData?: UserMembershipDetailsFragment) => {
   return [...hubs, ...challenges, ...opportunities];
 };
 
-const getPendingApplications = (membershipData?: UserMembershipDetailsFragment) => {
+const getPendingApplications = (membershipData?: UserRolesDetailsFragment) => {
   if (!membershipData) return [];
 
   return (
@@ -94,7 +94,7 @@ export const useUserMetadataWrapper = () => {
   const toUserMetadata = useCallback(
     (
       user: User | undefined,
-      membershipData?: UserMembershipDetailsFragment,
+      membershipData?: UserRolesDetailsFragment,
       authorization?: MyPrivilegesFragment
     ): UserMetadata | undefined => {
       if (!user) {
