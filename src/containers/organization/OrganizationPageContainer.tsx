@@ -122,16 +122,16 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       hubId: x.id,
     }));
 
+    // Loop over hubs, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
     const challengeContributions =
-      membershipData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h => {
-        // Loop over hubs, filter the challenges which I have the role 'lead' and map those challenges to ContributionItems
-        return h.challenges
+      membershipData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
+        h.challenges
           .filter(c => c.roles?.includes('lead'))
           .map<ContributionItem>(c => ({
             hubId: h.id,
             challengeId: c.id,
-          }));
-      }) || [];
+          }))
+      ) || [];
 
     return [...hubContributions, ...challengeContributions];
   }, [membershipData]);
