@@ -10,7 +10,7 @@ import {
 import { ContainerChildProps } from '../../models/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../utils/urlBuilders';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
-import { useCommunityContext } from '../../context/CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
 import clearCacheForType from '../../domain/shared/utils/clearCacheForType';
 
 interface ApplicationContainerEntities {
@@ -119,4 +119,5 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
     </>
   );
 };
+
 export default ApplicationButtonContainer;

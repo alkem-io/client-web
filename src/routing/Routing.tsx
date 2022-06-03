@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 import App from '../components/composite/layout/App/App';
-import { CommunityProvider } from '../context/CommunityProvider';
+import { CommunityContextProvider } from '../domain/community/CommunityContext';
 import { HubContextProvider } from '../domain/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
@@ -34,9 +34,9 @@ export const Routing: FC = () => {
           path={`:${nameOfUrl.hubNameId}/*`}
           element={
             <HubContextProvider>
-              <CommunityProvider>
+              <CommunityContextProvider>
                 <HubRoute paths={paths} />
-              </CommunityProvider>
+              </CommunityContextProvider>
             </HubContextProvider>
           }
         />

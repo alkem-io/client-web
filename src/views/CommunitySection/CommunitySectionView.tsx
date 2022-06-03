@@ -10,7 +10,7 @@ import Button from '../../components/core/Button';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
 import { AvatarsProvider } from '../../context/AvatarsProvider';
-import { useCommunityContext } from '../../context/CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
 import { Discussion } from '../../models/discussion/discussion';
