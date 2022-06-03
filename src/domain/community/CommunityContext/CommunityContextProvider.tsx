@@ -14,7 +14,7 @@ import { CommunityContext, CommunityContextValue } from './CommunityContext';
  * @param children
  * @constructor
  */
-const CommunityContextProviderGlobal: FC = ({ children }) => {
+const CommunityContextProvider: FC = ({ children }) => {
   const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
 
   const { data: hubData, loading: loadingHub } = useHubCommunityQuery({
@@ -53,4 +53,4 @@ const CommunityContextProviderGlobal: FC = ({ children }) => {
   return <CommunityContext.Provider value={providedValue}>{children}</CommunityContext.Provider>;
 };
 
-export default CommunityContextProviderGlobal;
+export default CommunityContextProvider;

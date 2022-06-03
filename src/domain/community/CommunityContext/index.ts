@@ -1,4 +1,4 @@
-import CommunityContextProviderGlobal from './CommunityContextProviderGlobal';
+import CommunityContextProvider from './CommunityContextProvider';
 import { useCommunityContext } from './CommunityContext';
 
-export { CommunityContextProviderGlobal, useCommunityContext };
+export { CommunityContextProvider, useCommunityContext };

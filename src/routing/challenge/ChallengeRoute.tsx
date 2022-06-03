@@ -13,7 +13,7 @@ import DiscussionsRoute from '../discussions/DiscussionsRoute';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { nameOfUrl } from '../url-params';
 import { OpportunityProvider } from '../../context/OpportunityProvider/OpportunityProvider';
-import { CommunityContextProviderGlobal } from '../../domain/community/CommunityContext';
+import { CommunityContextProvider } from '../../domain/community/CommunityContext';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
 import ChallengeDashboardPage from '../../pages/Admin/Challenge/ChallengeDashboardPage';
 import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPage';
@@ -84,9 +84,9 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         path={`opportunities/:${nameOfUrl.opportunityNameId}/*`}
         element={
           <OpportunityProvider>
-            <CommunityContextProviderGlobal>
+            <CommunityContextProvider>
               <OpportunityRoute paths={currentPaths} />
-            </CommunityContextProviderGlobal>
+            </CommunityContextProvider>
           </OpportunityProvider>
         }
       />
