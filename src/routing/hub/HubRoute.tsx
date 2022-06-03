@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
-import { CommunityProvider } from '../../context/CommunityProvider';
+import { CommunityContextProviderGlobal } from '../../domain/community/CommunityContext';
 import { useHub } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import ApplyRoute from '../application/apply.route';
@@ -55,9 +55,9 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         path={`challenges/:${nameOfUrl.challengeNameId}/*`}
         element={
           <ChallengeProvider>
-            <CommunityProvider>
+            <CommunityContextProviderGlobal>
               <ChallengeRoute paths={currentPaths} />
-            </CommunityProvider>
+            </CommunityContextProviderGlobal>
           </ChallengeProvider>
         }
       />

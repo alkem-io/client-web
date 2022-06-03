@@ -21,7 +21,7 @@ import {
   SubscriptionCommunicationDiscussionMessageReceivedArgs,
 } from '../../models/graphql-schema';
 import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
-import { useCommunityContext } from '../CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 
 interface DiscussionContextProps {

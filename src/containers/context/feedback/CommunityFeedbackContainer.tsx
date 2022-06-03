@@ -7,7 +7,7 @@ import {
   useCreateFeedbackOnCommunityContextMutation,
 } from '../../../hooks/generated/graphql';
 import { CreateNvpInput, FeedbackTemplate } from '../../../models/graphql-schema';
-import { useCommunityContext } from '../../../context/CommunityProvider';
+import { useCommunityContext } from '../../../domain/community/CommunityContext';
 import { useApolloErrorHandler, useNotification } from '../../../hooks';
 import { useTranslation } from 'react-i18next';
 
