@@ -843,7 +843,7 @@ export type CreateProfileInput = {
 };
 
 export type CreateProjectInput = {
-  description: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
   /** The display name for the entity. */
   displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
