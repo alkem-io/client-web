@@ -73,7 +73,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
   });
 
   const undefinedIfEmpty = (value: string | undefined) => {
-    if (!value) return;
     return value === '' ? undefined : value;
   };
 
