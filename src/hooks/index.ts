@@ -18,7 +18,7 @@ export * from './operations/useDeleteUserGroup';
 export * from './cards/useUserCardRoleName';
 export { default as useUserCardRoleName } from './cards/useUserCardRoleName';
 
-export * from './useHub';
+export * from '../domain/hub/HubContext/useHub';
 export * from './useOrganization';
 export * from './useChallenge';
 export * from './useOpportunity';
