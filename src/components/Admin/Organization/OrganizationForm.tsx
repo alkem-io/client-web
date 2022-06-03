@@ -15,7 +15,7 @@ import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
-import { organizationegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
+import { organizationSegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationInput } from '../../../domain/organization/OrganizationInput';
 import { formatLocation } from '../../../domain/location/LocationUtils';
@@ -116,11 +116,11 @@ export const OrganizationForm: FC<Props> = ({
     name: nameSegmentSchema.fields?.name || yup.string(),
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     description: profileSegmentSchema.fields?.description || yup.string(),
-    contactEmail: organizationegmentSchema.fields?.contactEmail || yup.string(),
-    domain: organizationegmentSchema.fields?.domain || yup.string(),
-    legalEntityName: organizationegmentSchema.fields?.legalEntityName || yup.string(),
-    website: organizationegmentSchema.fields?.website || yup.string(),
-    verified: organizationegmentSchema.fields?.verified || yup.string(),
+    contactEmail: organizationSegmentSchema.fields?.contactEmail || yup.string(),
+    domain: organizationSegmentSchema.fields?.domain || yup.string(),
+    legalEntityName: organizationSegmentSchema.fields?.legalEntityName || yup.string(),
+    website: organizationSegmentSchema.fields?.website || yup.string(),
+    verified: organizationSegmentSchema.fields?.verified || yup.string(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
   });
