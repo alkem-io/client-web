@@ -6785,6 +6785,40 @@ export type RelationsQuery = {
   };
 };
 
+export type RolesOrganizationQueryVariables = Exact<{
+  input: RolesOrganizationInput;
+}>;
+
+export type RolesOrganizationQuery = {
+  __typename?: 'Query';
+  rolesOrganization: {
+    __typename?: 'ContributorRoles';
+    hubs: Array<{
+      __typename?: 'RolesResultHub';
+      nameID: string;
+      id: string;
+      roles: Array<string>;
+      displayName: string;
+      challenges: Array<{
+        __typename?: 'RolesResult';
+        nameID: string;
+        id: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+      opportunities: Array<{
+        __typename?: 'RolesResult';
+        nameID: string;
+        id: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
+    }>;
+    organizations: Array<{ __typename?: 'RolesResultOrganization'; nameID: string; id: string; roles: Array<string> }>;
+  };
+};
+
 export type RolesUserQueryVariables = Exact<{
   input: RolesUserInput;
 }>;

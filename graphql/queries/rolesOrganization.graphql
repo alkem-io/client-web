@@ -1,0 +1,32 @@
+query rolesOrganization($input: RolesOrganizationInput!) {
+  rolesOrganization(rolesData: $input) {
+    hubs {
+      nameID
+      id
+      roles
+      displayName
+      challenges {
+        nameID
+        id
+        displayName
+        roles
+      }
+      opportunities {
+        nameID
+        id
+        displayName
+        roles
+      }
+      userGroups {
+        id
+        nameID
+        displayName
+      }
+    }
+    organizations {
+      nameID
+      id
+      roles
+    }
+  }
+}
