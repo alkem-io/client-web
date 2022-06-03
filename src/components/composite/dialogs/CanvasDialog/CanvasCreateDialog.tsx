@@ -10,11 +10,11 @@ import {
   StepLabelProps,
   Stepper,
   StepProps,
-  TextField,
   Typography,
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
+import { Formik } from 'formik';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ITemplateQueryResult, TemplateQuery } from '../../../../containers/canvas/CanvasProvider';
@@ -26,6 +26,8 @@ import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import CanvasList from '../../lists/Canvas/CanvasList';
 import CanvasListItem from '../../lists/Canvas/CanvasListItem';
+import canvasSchema from '../../../../domain/canvas/validation/canvasSchema';
+import FormikInputField from '../../forms/FormikInputField';
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -51,6 +53,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 type StepDefinition = { index: number; title: string; optional: boolean };
+
 const steps: Record<'name' | 'template' | 'completion', StepDefinition> = {
   name: {
     index: 0,
@@ -67,16 +70,7 @@ const steps: Record<'name' | 'template' | 'completion', StepDefinition> = {
 
 const stepsArray = Object.values(steps).sort((s1, s2) => s1.index - s2.index);
 
-interface INamingStepProps {
-  actions: {
-    onNameChange: (name: string) => void;
-  };
-  entities: {
-    name: string;
-  };
-}
-
-const NamingStep: FC<INamingStepProps> = ({ actions, entities }) => {
+const NamingStep = () => {
   const { t } = useTranslation();
 
   return (
@@ -84,14 +78,7 @@ const NamingStep: FC<INamingStepProps> = ({ actions, entities }) => {
       <Box p={1} />
       <Typography variant="body1">{t('pages.canvas.create-dialog.steps.naming')}</Typography>
       <Box p={1} />
-      <TextField
-        value={entities.name}
-        onChange={e => actions.onNameChange(e.target.value)}
-        title="Name"
-        label="Name"
-        aria-label="canvas-name"
-        required
-      />
+      <FormikInputField name="name" title={t('common.name')} aria-label="canvas-name" required />
     </Box>
   );
 };
@@ -207,23 +194,21 @@ const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
 interface CreateCanvasStepsProps {
   entities: {
     templates: Record<string, ITemplateQueryResult>;
-    contextID: string;
     template?: Canvas;
     name: string;
   };
   actions: {
-    onConfirm: (input: CreateCanvasOnContextInput) => void;
-    onNameChange: (name: string) => void;
+    onSubmit: () => void;
     onTemplateSelected: (canvas?: CanvasWithoutValue, query?: TemplateQuery) => void;
   };
   state: ITemplateStepProps['state'];
+  isValid: boolean;
 }
 
-const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, state }) => {
-  const { templates, contextID, name, template } = entities;
-  const { onConfirm } = actions;
+const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, state, isValid }) => {
+  const { templates, name, template } = entities;
+  const { onSubmit } = actions;
 
-  // form
   const styles = useStyles();
 
   const [activeStep, setActiveStep] = React.useState<StepDefinition>(steps.name);
@@ -240,23 +225,12 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
   const findStepByIndex = (index: number) => Object.values(steps).find(s => s.index === index);
 
   const handleNext = () => {
-    if (activeStep === steps.completion && name) {
-      let value: string | undefined = undefined;
-
-      if (template) {
-        value = (template as Canvas)?.value;
-      }
-
-      onConfirm({
-        contextID,
-        name,
-        value: value,
-      });
-
-      return;
+    if (activeStep === steps.completion) {
+      return onSubmit();
     }
 
     let newSkipped = skipped;
+
     if (isStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values());
       newSkipped.delete(activeStep);
@@ -271,6 +245,10 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
   };
 
   const handleSkip = () => {
+    if (!isValid) {
+      throw new Error("You can't proceed if the form isn't valid.");
+    }
+
     if (!isStepOptional(activeStep)) {
       // You probably want to guard against something like this,
       // it should never occur unless someone's actively trying to break something.
@@ -311,9 +289,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
         </Stepper>
       </Paper>
       <DialogContent classes={{ root: styles.dialogContent }}>
-        {activeStep === steps.name && (
-          <NamingStep entities={{ name }} actions={{ onNameChange: actions.onNameChange }} />
-        )}
+        {activeStep === steps.name && <NamingStep />}
         {activeStep === steps.template && (
           <TemplateStep
             entities={{ templates, selectedCanvas: template }}
@@ -337,7 +313,9 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
           </Button>
         )}
 
-        <Button onClick={handleNext}>{activeStep === stepsArray[stepsArray.length - 1] ? 'Finish' : 'Next'}</Button>
+        <Button onClick={handleNext} disabled={!isValid}>
+          {activeStep === stepsArray[stepsArray.length - 1] ? 'Finish' : 'Next'}
+        </Button>
       </DialogActions>
     </>
   );
@@ -362,8 +340,19 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const [name, setName] = useState<string>('New Canvas');
   const [selectedCanvasParams, setSelectedCanvasParams] = useState<CanvasValueParams>();
+
+  const initialValues = {
+    name: 'New Canvas', // TODO Localize?
+    value: undefined,
+  };
+
+  const handleSubmit = (canvasInput: Omit<CreateCanvasOnContextInput, 'contextID'>) => {
+    actions.onConfirm({
+      contextID: entities.contextID,
+      ...canvasInput,
+    });
+  };
 
   return (
     <Dialog
@@ -385,24 +374,35 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
         {t('pages.canvas.create-dialog.header')}
       </DialogTitle>
       <CanvasValueContainer canvasId={selectedCanvasParams?.canvasId} params={selectedCanvasParams?.params}>
-        {(valueEntities1, state) => (
-          <CreateCanvasSteps
-            entities={{
-              ...entities,
-              name,
-              template: valueEntities1.canvas,
-            }}
-            actions={{
-              ...actions,
-              onNameChange: setName,
-              onTemplateSelected: (canvas, query) =>
-                setSelectedCanvasParams({
-                  canvasId: canvas?.id,
-                  params: query,
-                }),
-            }}
-            state={{ canvasLoading: state.loadingCanvasValue }}
-          />
+        {(canvasTemplate, state) => (
+          <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={canvasSchema}>
+            {({ values: { name }, handleSubmit, setFieldValue, isValid }) => (
+              <CreateCanvasSteps
+                isValid={isValid}
+                entities={{
+                  ...entities,
+                  name,
+                  template: canvasTemplate.canvas,
+                }}
+                actions={{
+                  ...actions,
+                  onSubmit: () => {
+                    if (canvasTemplate.canvas?.value) {
+                      setFieldValue('value', canvasTemplate.canvas.value);
+                    }
+                    handleSubmit();
+                  },
+                  onTemplateSelected: (canvas, query) => {
+                    setSelectedCanvasParams({
+                      canvasId: canvas?.id,
+                      params: query,
+                    });
+                  },
+                }}
+                state={{ canvasLoading: state.loadingCanvasValue }}
+              />
+            )}
+          </Formik>
         )}
       </CanvasValueContainer>
     </Dialog>

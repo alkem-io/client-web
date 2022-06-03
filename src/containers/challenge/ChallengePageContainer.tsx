@@ -46,7 +46,7 @@ export interface ChallengePageContainerProps
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
   const { t } = useTranslation();
   const { user, isAuthenticated } = useUserContext();
-  const { hub, loading: loadingHubContext } = useHub();
+  const { loading: loadingHubContext, ...hub } = useHub();
   const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
 
   const { data: _challenge, loading: loadingProfile } = useChallengePageQuery({
@@ -99,7 +99,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
         {
           hubId,
           hubNameId,
-          hubDisplayName: hub?.displayName || '',
+          hubDisplayName: hub.displayName,
           challenge: _challenge?.hub.challenge,
           activity,
           aspects,

@@ -12,7 +12,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import { HubPermissions } from '../../context/HubProvider';
+import { HubPermissions } from '../../domain/hub/HubContext/HubContext';
 import { useConfig } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
