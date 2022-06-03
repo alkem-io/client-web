@@ -12,10 +12,10 @@ import { Aspect, Tagset } from '../../../../models/graphql-schema';
 import ReferenceSegment, { referenceSegmentSchema } from '../../../Admin/Common/ReferenceSegment';
 import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
-import { nameValidator } from '../../../Admin/Common/NameSegment';
 import MarkdownInput from '../../../Admin/Common/MarkdownInput';
 import FormRow from '../../../../domain/shared/layout/FormLayout';
 import AspectTypeFormField from '../../../../domain/aspect/AspectTypeFormField';
+import { displayNameValidator } from '../../../../utils/validator';
 
 type FormValueType = {
   name: string;
@@ -95,7 +95,7 @@ const AspectForm: FC<AspectFormProps> = ({
     );
 
   const validationSchema = yup.object().shape({
-    name: nameValidator.concat(uniqueNameValidator),
+    name: displayNameValidator.concat(uniqueNameValidator),
     description: yup.string().required(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,

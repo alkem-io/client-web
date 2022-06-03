@@ -1,4 +1,4 @@
-import { Box, TextField } from '@mui/material';
+import { Box } from '@mui/material';
 import FilePresent from '@mui/icons-material/FilePresent';
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
@@ -12,6 +12,8 @@ import { useUpdateNavigation } from '../../hooks';
 import { makeStyles } from '@mui/styles';
 import { Project as ProjectType, User } from '../../models/graphql-schema';
 import { PageProps } from '../common';
+import { nameIdValidator, displayNameValidator } from '../../utils/validator';
+import FormikInputField from '../../components/composite/forms/FormikInputField';
 
 const useStyles = makeStyles(theme => ({
   tag: {
@@ -32,13 +34,6 @@ interface ProjectPageProps extends PageProps {
   onCreate: (project: Pick<ProjectType, 'displayName' | 'description' | 'nameID'>) => void;
 }
 
-const createTextId = (value: string) => {
-  return value
-    .split(' ')
-    .flatMap(x => x.split('-'))
-    .join('-');
-};
-
 const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.ReactElement => {
   useUpdateNavigation({ currentPaths: paths });
 
@@ -52,8 +47,8 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
     description: '',
   };
   const validationSchema = yup.object().shape({
-    name: yup.string().required(t('forms.validations.required')),
-    shortName: yup.string().required(t('forms.validations.required')).min(3),
+    name: displayNameValidator,
+    shortName: nameIdValidator,
     description: yup.string().required(t('forms.validations.required')),
   });
 
@@ -68,50 +63,39 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={({ name, description, shortName }) =>
-              onCreate({ displayName: name, description, nameID: createTextId(shortName) })
+              onCreate({ displayName: name, description, nameID: shortName })
             }
           >
-            {({ isValid, handleSubmit, handleChange, handleBlur, errors }) => (
+            {({ isValid, handleSubmit, handleChange, handleBlur }) => (
               <Form noValidate onSubmit={handleSubmit}>
-                <div>
-                  <TextField
-                    name={'name'}
-                    label={'Name'}
-                    defaultValue={'New Project'}
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    variant={'outlined'}
-                    InputLabelProps={{ shrink: true }}
-                    error={!!errors.name}
-                    helperText={errors.name}
-                    fullWidth
-                  />
-                </div>
-                <div className={styles.spacer}></div>
-                <TextField
-                  name={'shortName'}
-                  label={'Short name (max 2 words)'}
+                <FormikInputField
+                  name={'name'}
+                  title={'Name'}
+                  defaultValue={'New Project'}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  variant={'outlined'}
-                  InputLabelProps={{ shrink: true }}
-                  error={!!errors.shortName}
-                  helperText={errors.shortName}
-                  fullWidth
+                  required
+                  loading={loading}
                 />
                 <div className={styles.spacer}></div>
-                <TextField
-                  name={'description'}
-                  label={'Description'}
-                  multiline
-                  rows={3}
+                <FormikInputField
+                  name={'shortName'}
+                  title={'Short name'}
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  variant={'outlined'}
-                  InputLabelProps={{ shrink: true }}
-                  error={!!errors.description}
-                  helperText={errors.description}
-                  fullWidth
+                  required
+                  loading={loading}
+                />
+                <div className={styles.spacer}></div>
+                <FormikInputField
+                  name={'description'}
+                  title={'Description'}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  required
+                  loading={loading}
+                  multiline
+                  rows={3}
                 />
                 <div className={styles.spacer}></div>
                 <Box display={'flex'}>

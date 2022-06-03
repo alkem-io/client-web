@@ -10,7 +10,7 @@ import {
 } from '@mui/icons-material';
 import CategorySelector, { CategoryConfig } from '../../components/composite/common/CategorySelector/CategorySelector';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
-import { useCommunityContext } from '../../context/CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
 import { PageProps } from '../common';

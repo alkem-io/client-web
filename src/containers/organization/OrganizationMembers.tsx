@@ -12,8 +12,8 @@ import {
 import { useApolloErrorHandler } from '../../hooks';
 import { AuthorizationCredential, Organization, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
-import { useAvailableMembers } from '../../domain/community/useAvailableMembers';
-import { AvailableMembersResults } from '../../domain/community/useAvailableMembers/useAvailableMembers';
+import { useAvailableMembersWithCredential } from '../../domain/community/useAvailableMembersWithCredential';
+import { AvailableMembersResults } from '../../domain/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 
 const organizationMemberCredential = AuthorizationCredential.OrganizationMember;
 const organizationAdminCredential = AuthorizationCredential.OrganizationAdmin;
@@ -38,12 +38,12 @@ export interface OrganizationMembersProps {
 }
 
 export interface OrganizationMembersActions {
-  handleAssignMember: (member: UserDisplayNameFragment) => void;
-  handleRemoveMember: (member: Member) => void;
-  handleAssignAdmin: (member: UserDisplayNameFragment) => void;
-  handleRemoveAdmin: (member: Member) => void;
-  handleAssignOwner: (member: UserDisplayNameFragment) => void;
-  handleRemoveOwner: (member: Member) => void;
+  handleAssignMember: (memberId: string) => void;
+  handleRemoveMember: (memberId: string) => void;
+  handleAssignAdmin: (memberId: string) => void;
+  handleRemoveAdmin: (memberId: string) => void;
+  handleAssignOwner: (memberId: string) => void;
+  handleRemoveOwner: (memberId: string) => void;
   handleLoadMore: () => Promise<void>;
   setSearchTerm: AvailableMembersResults['setSearchTerm'];
 }
@@ -94,12 +94,12 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   });
 
   const handleAssignMember = useCallback(
-    (_member: UserDisplayNameFragment) => {
+    (memberId: string) => {
       grantMember({
         variables: {
           input: {
             organizationID: entities.organizationId,
-            userID: _member.id,
+            userID: memberId,
           },
         },
         refetchQueries: [
@@ -114,11 +114,11 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const handleRemoveMember = useCallback(
-    (_member: Member) => {
+    (memberId: string) => {
       revokeMember({
         variables: {
           input: {
-            userID: _member.id,
+            userID: memberId,
             organizationID: entities.organizationId,
           },
         },
@@ -134,12 +134,12 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const handleAssignAdmin = useCallback(
-    (_member: UserDisplayNameFragment) => {
+    (memberId: string) => {
       grantAdmin({
         variables: {
           input: {
             organizationID: entities.organizationId,
-            userID: _member.id,
+            userID: memberId,
           },
         },
         refetchQueries: [
@@ -154,11 +154,11 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const handleRemoveAdmin = useCallback(
-    (_member: Member) => {
+    (memberId: string) => {
       revokeAdmin({
         variables: {
           input: {
-            userID: _member.id,
+            userID: memberId,
             organizationID: entities.organizationId,
           },
         },
@@ -174,12 +174,12 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const handleAssignOwner = useCallback(
-    (_member: UserDisplayNameFragment) => {
+    (memberId: string) => {
       grantOwner({
         variables: {
           input: {
             organizationID: entities.organizationId,
-            userID: _member.id,
+            userID: memberId,
           },
         },
         refetchQueries: [
@@ -194,11 +194,11 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const handleRemoveOwner = useCallback(
-    (_member: Member) => {
+    (memberId: string) => {
       revokeOwner({
         variables: {
           input: {
-            userID: _member.id,
+            userID: memberId,
             organizationID: entities.organizationId,
           },
         },
@@ -214,13 +214,13 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
   );
 
   const {
-    available: availableMembers,
-    current: allMembers,
+    availableMembers,
+    currentMembers: allMembers,
     loading,
     fetchMore,
     hasMore,
     setSearchTerm,
-  } = useAvailableMembers({
+  } = useAvailableMembersWithCredential({
     credential: entities.credential,
     resourceId: entities.organizationId,
   });
@@ -266,4 +266,5 @@ export const OrganizationMembers: FC<OrganizationMembersProps> = ({ children, en
     </>
   );
 };
+
 export default OrganizationMembers;

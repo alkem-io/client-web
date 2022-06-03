@@ -10,7 +10,8 @@ import {
 import { ContainerChildProps } from '../../models/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../utils/urlBuilders';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
-import { useCommunityContext } from '../../context/CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
+import clearCacheForType from '../../domain/shared/utils/clearCacheForType';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: ApplicationButtonProps;
@@ -48,6 +49,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
     onError: handleError,
+    update: cache => clearCacheForType(cache, 'Authorization'),
   });
 
   // todo: refactor logic or use entity privileges
@@ -117,4 +119,5 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
     </>
   );
 };
+
 export default ApplicationButtonContainer;
