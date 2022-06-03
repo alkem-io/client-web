@@ -1,24 +1,11 @@
 fragment CommunityDetails on Community {
   id
   displayName
-  applications {
-    id
-  }
   communication {
     id
     authorization {
       id
       myPrivileges
-    }
-  }
-  memberUsers {
-    ...GroupMembers
-  }
-  groups {
-    id
-    name
-    members {
-      ...GroupMembers
     }
   }
 }
