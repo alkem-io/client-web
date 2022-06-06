@@ -17,9 +17,3 @@ fragment SimpleHubResultEntry on RolesResultHub
   nameID
   displayName
 }
-#//!!fragment SimpleHubResultEntry on MembershipResultContributorToHub {
-#  hubID
-#  nameID
-#  displayName
-#}
-
