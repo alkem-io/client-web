@@ -15,12 +15,14 @@ interface CommunityContributorsSectionProps {
   contributorType: ContributorType;
 }
 
+const headingBackgroundColor = '#D3D3D3';
+
 const accordionSummaryStyle = {
-  backgroundColor: '#D3D3D3',
+  backgroundColor: headingBackgroundColor,
 } as const;
 
 const accordionStyle = {
-  border: '1px solid #D3D3D3',
+  border: `1px solid ${headingBackgroundColor}`,
 } as const;
 
 const ContributorTypeLabel: Record<ContributorType, 'leading-contributors' | 'contributors'> = {
