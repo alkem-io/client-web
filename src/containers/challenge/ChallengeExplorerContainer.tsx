@@ -38,13 +38,13 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ ch
   const { data, loading, error } = useChallengesOverviewPageQuery({
     onError: handleError,
     variables: {
-      membershipData: {
+      rolesData: {
         userID: user?.id || '',
       },
     },
     skip: !user,
   });
-  const hubs = data?.membershipUser.hubs;
+  const hubs = data?.rolesUser.hubs;
   const userChallenges: SimpleChallenge[] | undefined =
     hubs &&
     hubs.flatMap(x =>

@@ -1,18 +1,25 @@
-query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
-  membershipUser(membershipData: $membershipData) {
+query ChallengesOverviewPage($rolesData: RolesUserInput!) {
+  rolesUser(rolesData: $rolesData) {
     hubs {
       id
       ...SimpleHubResultEntry
       challenges {
         id
+        roles
       }
+      roles
     }
   }
 }
-
-fragment SimpleHubResultEntry on MembershipResultContributorToHub {
+fragment SimpleHubResultEntry on RolesResultHub
+{
   hubID
   nameID
   displayName
 }
+#//!!fragment SimpleHubResultEntry on MembershipResultContributorToHub {
+#  hubID
+#  nameID
+#  displayName
+#}
 

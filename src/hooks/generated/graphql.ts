@@ -1085,7 +1085,7 @@ export const ChallengeProfileFragmentDoc = gql`
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
-  fragment SimpleHubResultEntry on MembershipResultContributorToHub {
+  fragment SimpleHubResultEntry on RolesResultHub {
     hubID
     nameID
     displayName
@@ -11815,14 +11815,16 @@ export function refetchChallengePageQuery(variables: SchemaTypes.ChallengePageQu
   return { query: ChallengePageDocument, variables: variables };
 }
 export const ChallengesOverviewPageDocument = gql`
-  query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
-    membershipUser(membershipData: $membershipData) {
+  query ChallengesOverviewPage($rolesData: RolesUserInput!) {
+    rolesUser(rolesData: $rolesData) {
       hubs {
         id
         ...SimpleHubResultEntry
         challenges {
           id
+          roles
         }
+        roles
       }
     }
   }
@@ -11841,7 +11843,7 @@ export const ChallengesOverviewPageDocument = gql`
  * @example
  * const { data, loading, error } = useChallengesOverviewPageQuery({
  *   variables: {
- *      membershipData: // value for 'membershipData'
+ *      rolesData: // value for 'rolesData'
  *   },
  * });
  */
