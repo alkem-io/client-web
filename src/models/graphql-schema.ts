@@ -6578,16 +6578,7 @@ export type RolesOrganizationQuery = {
         displayName: string;
         roles: Array<string>;
       }>;
-      opportunities: Array<{
-        __typename?: 'RolesResult';
-        nameID: string;
-        id: string;
-        displayName: string;
-        roles: Array<string>;
-      }>;
-      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
-    organizations: Array<{ __typename?: 'RolesResultOrganization'; nameID: string; id: string; roles: Array<string> }>;
   };
 };
 

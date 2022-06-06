@@ -8487,22 +8487,6 @@ export const RolesOrganizationDocument = gql`
           displayName
           roles
         }
-        opportunities {
-          nameID
-          id
-          displayName
-          roles
-        }
-        userGroups {
-          id
-          nameID
-          displayName
-        }
-      }
-      organizations {
-        nameID
-        id
-        roles
       }
     }
   }
