@@ -116,7 +116,6 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
   const contributions = useMemo(() => {
     const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes('host')) || [];
-    // const challengesLeading = membershipData?.rolesOrganization?.hubs?.flatMap(h => h.challenges).filter(c => c.roles?.includes('lead')) || [];
 
     const hubContributions = hubsHosting.map<ContributionItem>(x => ({
       hubId: x.id,
