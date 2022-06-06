@@ -11,11 +11,20 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
   const communityId = opportunity?.community?.id;
   const opportunityId = opportunity?.id;
 
-  const { contributors, loading } = useCommunityContributors(
+  const { leadingContributors, memberContributors, loading } = useCommunityContributors(
     useOpportunityCommunityContributorsQuery,
     data => {
       const { leadUsers, memberUsers, leadOrganizations, memberOrganizations } = data?.hub.opportunity.community || {};
-      return { leadUsers, memberUsers, leadOrganizations, memberOrganizations };
+      return {
+        leadingContributors: {
+          users: leadUsers,
+          organizations: leadOrganizations,
+        },
+        memberContributors: {
+          users: memberUsers,
+          organizations: memberOrganizations,
+        },
+      };
     },
     {
       hubId,
@@ -25,7 +34,18 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
 
   return (
     <CommunityPage entityTypeName="opportunity" paths={paths} hubId={hubId} communityId={communityId}>
-      <CommunityContributorsSection resourceId={opportunityId} {...contributors} loading={loading} />
+      <CommunityContributorsSection
+        resourceId={opportunityId}
+        {...leadingContributors}
+        loading={loading}
+        contributorType="leading"
+      />
+      <CommunityContributorsSection
+        resourceId={opportunityId}
+        {...memberContributors}
+        loading={loading}
+        contributorType="member"
+      />
     </CommunityPage>
   );
 };

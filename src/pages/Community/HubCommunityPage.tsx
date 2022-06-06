@@ -8,22 +8,23 @@ import { useTranslation } from 'react-i18next';
 import HostOrganization from '../../domain/community/CommunityContributors/HostOrganization';
 import CommunityContributorsSection from '../../domain/community/CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
+import { Accordion } from '../../components/composite/common/Accordion/Accordion';
+import ContributingUsers from '../../domain/community/CommunityContributors/ContributingUsers';
 
 const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   const { hubId, communityId } = useHub();
 
-  const {
-    contributors: { host, ...contributors },
-    loading,
-  } = useCommunityContributors(
+  const { host, leadUsers, memberContributors, loading } = useCommunityContributors(
     useHubCommunityContributorsQuery,
     data => {
       const { leadUsers, memberUsers, memberOrganizations } = data?.hub.community ?? {};
       return {
         leadUsers,
-        memberUsers,
-        memberOrganizations,
         host: data?.hub.host,
+        memberContributors: {
+          users: memberUsers,
+          organizations: memberOrganizations,
+        },
       };
     },
     { hubId }
@@ -39,7 +40,15 @@ const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   return (
     <CommunityPage entityTypeName="hub" paths={paths} hubId={hubId} communityId={communityId}>
       <HostOrganization organization={hostOrganization} loading={loading} />
-      <CommunityContributorsSection resourceId={hubId} isHub {...contributors} />
+      <Accordion title={t('community.leading-users')} ariaKey="lead-users" loading={loading}>
+        <ContributingUsers users={leadUsers} loading={loading} />
+      </Accordion>
+      <CommunityContributorsSection
+        resourceId={hubId}
+        {...memberContributors}
+        loading={loading}
+        contributorType="member"
+      />
     </CommunityPage>
   );
 };

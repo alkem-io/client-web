@@ -12,11 +12,20 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
   const communityId = challenge?.community?.id;
   const challengeId = challenge?.id;
 
-  const { contributors, loading } = useCommunityContributors(
+  const { leadingContributors, memberContributors, loading } = useCommunityContributors(
     useChallengeCommunityContributorsQuery,
     data => {
       const { leadUsers, memberUsers, leadOrganizations, memberOrganizations } = data?.hub.challenge.community || {};
-      return { leadUsers, memberUsers, leadOrganizations, memberOrganizations };
+      return {
+        leadingContributors: {
+          users: leadUsers,
+          organizations: leadOrganizations,
+        },
+        memberContributors: {
+          users: memberUsers,
+          organizations: memberOrganizations,
+        },
+      };
     },
     {
       hubId,
@@ -27,7 +36,18 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
   return (
     <CommunityPage entityTypeName="challenge" paths={paths} hubId={hubId} communityId={communityId}>
       <SectionSpacer />
-      <CommunityContributorsSection resourceId={challengeId} {...contributors} loading={loading} />
+      <CommunityContributorsSection
+        resourceId={challengeId}
+        {...leadingContributors}
+        loading={loading}
+        contributorType="leading"
+      />
+      <CommunityContributorsSection
+        resourceId={challengeId}
+        {...memberContributors}
+        loading={loading}
+        contributorType="member"
+      />
     </CommunityPage>
   );
 };
