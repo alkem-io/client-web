@@ -3,13 +3,11 @@ import CommunityContributorsAccordion from './CommunityContributorsAccordion';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import { useTranslation } from 'react-i18next';
-import { OrganizationCardFragment, UserCardFragment } from '../../../models/graphql-schema';
 import NoOrganizations from './NoOrganizations';
-import { ContributorType } from './types';
+import { Contributors, ContributorType } from './types';
+import { PossiblyUndefinedProps } from '../../shared/types/PossiblyUndefinedProps';
 
-interface CommunityContributorsSectionProps {
-  organizations: OrganizationCardFragment[] | undefined;
-  users: UserCardFragment[] | undefined;
+interface CommunityContributorsSectionProps extends PossiblyUndefinedProps<Contributors> {
   resourceId: string | undefined;
   loading?: boolean;
   contributorType: ContributorType;

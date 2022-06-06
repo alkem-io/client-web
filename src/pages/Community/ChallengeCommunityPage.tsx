@@ -6,26 +6,31 @@ import { useChallengeCommunityContributorsQuery } from '../../hooks/generated/gr
 import { SectionSpacer } from '../../components/core/Section/Section';
 import CommunityContributorsSection from '../../domain/community/CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
+import CommunityContributorsSearch from '../../domain/community/CommunityContributors/CommunityContributorsSearch';
+import { ValueType } from '../../components/core/card-filter/filterFn';
+import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
+import { Identifiable } from '../../domain/shared/types/Identifiable';
+import { OrganizationCardFragment } from '../../models/graphql-schema';
+import useContributorsSearch from '../../domain/community/CommunityContributors/useContributorsSearch';
+
+export const organizationCardValueGetter = ({
+  id,
+  displayName,
+}: OrganizationCardFragment & Identifiable): ValueType => ({
+  id: id,
+  values: [displayName],
+});
 
 const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
   const { challenge, hubId } = useChallenge();
   const communityId = challenge?.community?.id;
   const challengeId = challenge?.id;
 
-  const { leadingContributors, memberContributors, loading } = useCommunityContributors(
+  const { loading, ...contributors } = useCommunityContributors(
     useChallengeCommunityContributorsQuery,
     data => {
       const { leadUsers, memberUsers, leadOrganizations, memberOrganizations } = data?.hub.challenge.community || {};
-      return {
-        leadingContributors: {
-          users: leadUsers,
-          organizations: leadOrganizations,
-        },
-        memberContributors: {
-          users: memberUsers,
-          organizations: memberOrganizations,
-        },
-      };
+      return { leadUsers, memberUsers, leadOrganizations, memberOrganizations };
     },
     {
       hubId,
@@ -33,18 +38,30 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
     }
   );
 
+  const { leadUsers, memberUsers, leadOrganizations, memberOrganizations, searchTerms, onSearchTermsChange } =
+    useContributorsSearch(contributors, {
+      leadUsers: userCardValueGetter,
+      memberUsers: userCardValueGetter,
+      leadOrganizations: organizationCardValueGetter,
+      memberOrganizations: organizationCardValueGetter,
+    });
+
   return (
     <CommunityPage entityTypeName="challenge" paths={paths} hubId={hubId} communityId={communityId}>
       <SectionSpacer />
+      <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
+      <SectionSpacer />
       <CommunityContributorsSection
         resourceId={challengeId}
-        {...leadingContributors}
+        organizations={leadOrganizations}
+        users={leadUsers}
         loading={loading}
         contributorType="leading"
       />
       <CommunityContributorsSection
         resourceId={challengeId}
-        {...memberContributors}
+        organizations={memberOrganizations}
+        users={memberUsers}
         loading={loading}
         contributorType="member"
       />

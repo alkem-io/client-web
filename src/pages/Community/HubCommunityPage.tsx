@@ -10,24 +10,36 @@ import CommunityContributorsSection from '../../domain/community/CommunityContri
 import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
 import { Accordion } from '../../components/composite/common/Accordion/Accordion';
 import ContributingUsers from '../../domain/community/CommunityContributors/ContributingUsers';
+import useContributorsSearch from '../../domain/community/CommunityContributors/useContributorsSearch';
+import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
+import { organizationCardValueGetter } from './ChallengeCommunityPage';
+import { SectionSpacer } from '../../components/core/Section/Section';
+import CommunityContributorsSearch from '../../domain/community/CommunityContributors/CommunityContributorsSearch';
 
 const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   const { hubId, communityId } = useHub();
 
-  const { host, leadUsers, memberContributors, loading } = useCommunityContributors(
+  const { host, loading, ...contributors } = useCommunityContributors(
     useHubCommunityContributorsQuery,
     data => {
       const { leadUsers, memberUsers, memberOrganizations } = data?.hub.community ?? {};
       return {
         leadUsers,
+        memberUsers,
+        memberOrganizations,
         host: data?.hub.host,
-        memberContributors: {
-          users: memberUsers,
-          organizations: memberOrganizations,
-        },
       };
     },
     { hubId }
+  );
+
+  const { leadUsers, memberUsers, memberOrganizations, searchTerms, onSearchTermsChange } = useContributorsSearch(
+    contributors,
+    {
+      leadUsers: userCardValueGetter,
+      memberUsers: userCardValueGetter,
+      memberOrganizations: organizationCardValueGetter,
+    }
   );
 
   const { t } = useTranslation();
@@ -40,12 +52,16 @@ const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   return (
     <CommunityPage entityTypeName="hub" paths={paths} hubId={hubId} communityId={communityId}>
       <HostOrganization organization={hostOrganization} loading={loading} />
+      <SectionSpacer />
+      <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
+      <SectionSpacer />
       <Accordion title={t('community.leading-users')} ariaKey="lead-users" loading={loading}>
         <ContributingUsers users={leadUsers} loading={loading} />
       </Accordion>
       <CommunityContributorsSection
         resourceId={hubId}
-        {...memberContributors}
+        organizations={memberOrganizations}
+        users={memberUsers}
         loading={loading}
         contributorType="member"
       />

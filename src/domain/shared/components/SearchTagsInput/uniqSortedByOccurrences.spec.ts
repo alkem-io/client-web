@@ -1,15 +1,14 @@
-import mostCommonTags from './most-common-tags';
-import { Tagset } from '../../../models/graphql-schema';
+import uniqSortedByOccurrences from './uniqSortedByOccurrences';
 
-type SimpleType = Partial<Tagset>;
+type SimpleType = {
+  tags: string[];
+};
 
 type TestData = {
   name: string;
-  data: SimpleType; //for easier testing
+  data: SimpleType[]; // for easier testing
   result: string[];
 };
-
-const getter = (val: SimpleType) => val?.tags || [];
 
 const data = (): TestData[] =>
   (
@@ -36,7 +35,7 @@ const data = (): TestData[] =>
 
 describe('mostCommonTags', () => {
   test.concurrent.each(data())('%s', async ({ data, result }) => {
-    const tags = mostCommonTags(data as any[], getter);
+    const tags = uniqSortedByOccurrences(data.flatMap(item => item.tags));
     expect(tags).toEqual(result);
   });
 });
