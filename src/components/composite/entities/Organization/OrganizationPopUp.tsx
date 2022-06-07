@@ -18,6 +18,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog'
 import Button from '../../../core/Button';
 import { Link } from 'react-router-dom';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
+import { RoleType } from '../../../../models/constants/common.constants';
 
 const groupPopUpStyles = makeStyles(theme => ({
   header: {
@@ -114,9 +115,11 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
     },
   });
 
-  const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes('host')) || [];
+  const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
   const challengesLeading =
-    membershipData?.rolesOrganization?.hubs?.flatMap(h => h.challenges).filter(c => c?.roles?.includes('lead')) || [];
+    membershipData?.rolesOrganization?.hubs
+      ?.flatMap(h => h.challenges)
+      .filter(c => c?.roles?.includes(RoleType.Lead)) || [];
 
   return (
     <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="org-dialog-title">

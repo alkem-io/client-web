@@ -4,7 +4,7 @@ import { ContributorCardProps } from '../../components/composite/common/cards/Co
 import { isSocialLink, SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
 import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
 import { useRolesOrganizationQuery } from '../../hooks/generated/graphql';
-import { COUNTRIES_BY_CODE } from '../../models/constants';
+import { COUNTRIES_BY_CODE, RoleType } from '../../models/constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../models/constants/tagset.constants';
 import { ContainerChildProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
@@ -115,7 +115,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   }, [usersWithRoles]);
 
   const contributions = useMemo(() => {
-    const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes('host')) || [];
+    const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
 
     const hubContributions = hubsHosting.map<ContributionItem>(x => ({
       hubId: x.id,
@@ -125,7 +125,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
     const challengeContributions =
       membershipData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
         h.challenges
-          .filter(c => c.roles?.includes('lead'))
+          .filter(c => c.roles?.includes(RoleType.Lead))
           .map<ContributionItem>(c => ({
             hubId: h.id,
             challengeId: c.id,

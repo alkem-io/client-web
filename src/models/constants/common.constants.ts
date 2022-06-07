@@ -22,6 +22,12 @@ export enum ActivityType {
   Aspect = 'aspects',
 }
 
+export enum RoleType {
+  Lead = 'lead',
+  Member = 'member',
+  Host = 'host',
+}
+
 export const APPLICATION_STATE_NEW = 'new';
 export const APPLICATION_STATE_APPROVED = 'approved';
 export const APPLICATION_STATE_REJECTED = 'rejected';
