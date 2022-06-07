@@ -5,7 +5,7 @@ import CommunityPage from './CommunityPage';
 import { useOpportunityCommunityContributorsQuery } from '../../hooks/generated/graphql';
 import CommunityContributorsSection from '../../domain/community/CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
-import useContributorsSearch from '../../domain/community/CommunityContributors/useContributorsSearch';
+import useSearchAcrossMultipleLists from '../../domain/shared/utils/useSearchAcrossMultipleLists';
 import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
 import { organizationCardValueGetter } from './ChallengeCommunityPage';
 import { SectionSpacer } from '../../components/core/Section/Section';
@@ -29,7 +29,7 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
   );
 
   const { leadUsers, memberUsers, leadOrganizations, memberOrganizations, searchTerms, onSearchTermsChange } =
-    useContributorsSearch(contributors, {
+    useSearchAcrossMultipleLists(contributors, {
       leadUsers: userCardValueGetter,
       memberUsers: userCardValueGetter,
       leadOrganizations: organizationCardValueGetter,

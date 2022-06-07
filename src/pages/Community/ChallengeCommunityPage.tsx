@@ -11,7 +11,7 @@ import { ValueType } from '../../components/core/card-filter/filterFn';
 import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
 import { Identifiable } from '../../domain/shared/types/Identifiable';
 import { OrganizationCardFragment } from '../../models/graphql-schema';
-import useContributorsSearch from '../../domain/community/CommunityContributors/useContributorsSearch';
+import useSearchAcrossMultipleLists from '../../domain/shared/utils/useSearchAcrossMultipleLists';
 
 export const organizationCardValueGetter = ({
   id,
@@ -39,7 +39,7 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
   );
 
   const { leadUsers, memberUsers, leadOrganizations, memberOrganizations, searchTerms, onSearchTermsChange } =
-    useContributorsSearch(contributors, {
+    useSearchAcrossMultipleLists(contributors, {
       leadUsers: userCardValueGetter,
       memberUsers: userCardValueGetter,
       leadOrganizations: organizationCardValueGetter,

@@ -10,7 +10,7 @@ import CommunityContributorsSection from '../../domain/community/CommunityContri
 import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
 import { Accordion } from '../../components/composite/common/Accordion/Accordion';
 import ContributingUsers from '../../domain/community/CommunityContributors/ContributingUsers';
-import useContributorsSearch from '../../domain/community/CommunityContributors/useContributorsSearch';
+import useSearchAcrossMultipleLists from '../../domain/shared/utils/useSearchAcrossMultipleLists';
 import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
 import { organizationCardValueGetter } from './ChallengeCommunityPage';
 import { SectionSpacer } from '../../components/core/Section/Section';
@@ -33,14 +33,12 @@ const HubCommunityPage: FC<PageProps> = ({ paths }) => {
     { hubId }
   );
 
-  const { leadUsers, memberUsers, memberOrganizations, searchTerms, onSearchTermsChange } = useContributorsSearch(
-    contributors,
-    {
+  const { leadUsers, memberUsers, memberOrganizations, searchTerms, onSearchTermsChange } =
+    useSearchAcrossMultipleLists(contributors, {
       leadUsers: userCardValueGetter,
       memberUsers: userCardValueGetter,
       memberOrganizations: organizationCardValueGetter,
-    }
-  );
+    });
 
   const { t } = useTranslation();
 

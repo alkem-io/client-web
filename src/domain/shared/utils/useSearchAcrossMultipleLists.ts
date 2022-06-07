@@ -1,8 +1,8 @@
-import { Identifiable } from '../../shared/types/Identifiable';
+import { Identifiable } from '../types/Identifiable';
 import { Dispatch, useMemo, useState } from 'react';
 import filterFn, { ValueGetter } from '../../../components/core/card-filter/filterFn';
 import { mapValues, sortBy } from 'lodash';
-import { PossiblyUndefinedProps } from '../../shared/types/PossiblyUndefinedProps';
+import { PossiblyUndefinedProps } from '../types/PossiblyUndefinedProps';
 
 type UseContributorsSearchProvided<Items extends {}> = Lists<Items> & {
   searchTerms: string[];
@@ -17,7 +17,7 @@ type Lists<Items extends {}> = {
   [ListName in keyof Items]: Items[ListName] extends Identifiable ? Items[ListName][] : never;
 };
 
-const useContributorsSearch = <Items extends {}>(
+const useSearchAcrossMultipleLists = <Items extends {}>(
   bundle: PossiblyUndefinedProps<Lists<Items>>,
   valueGetters: ValueGetters<Items>
 ): UseContributorsSearchProvided<Items> => {
@@ -37,4 +37,4 @@ const useContributorsSearch = <Items extends {}>(
   } as UseContributorsSearchProvided<Items>;
 };
 
-export default useContributorsSearch;
+export default useSearchAcrossMultipleLists;
