@@ -639,13 +639,7 @@
         "community": {
           "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
           "leading-contributors": "Leading Contributors",
-          "contributors": "Contributors",
-          "leading-organizations": {
-            "no-data": "No organization is leading at this time"
-          },
-          "member-organizations": {
-            "no-data": "No organization is contributing at this time"
-          }
+          "contributors": "Contributors"
         },
         "contribute": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community.\nAdd additional aspects that are relevant, as well as comment on aspects added by others."
@@ -942,7 +936,11 @@
       "title": "{{name}} community page",
       "leading-organizations": {
         "title": "Leading organizations ({{count}})",
-        "help-text": "Shows different organizations, including the role you have"
+        "help-text": "Shows different organizations, including the role you have",
+        "no-data": "No organization is leading at this time"
+      },
+      "member-organizations": {
+        "no-data": "No organization is contributing at this time"
       },
       "hub-host": {
         "title": "Facilitating organization",

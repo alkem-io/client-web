@@ -13,7 +13,7 @@ const NoOrganizations = ({ type }: NoOrganizationsProps) => {
 
   return (
     <Box component={Typography} display="flex" justifyContent="center">
-      {t(`pages.generic.sections.community.${type}-organizations.no-data` as const)}
+      {t(`pages.community.${type}-organizations.no-data` as const)}
     </Box>
   );
 };
