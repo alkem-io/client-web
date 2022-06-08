@@ -3196,49 +3196,6 @@ export type ChallengeInfoFragment = {
     | undefined;
 };
 
-export type CommunityDetailsFragment = {
-  __typename?: 'Community';
-  id: string;
-  displayName: string;
-  applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
-  communication?:
-    | {
-        __typename?: 'Communication';
-        id: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      }
-    | undefined;
-  memberUsers?:
-    | Array<{
-        __typename?: 'User';
-        id: string;
-        displayName: string;
-        firstName: string;
-        lastName: string;
-        email: string;
-      }>
-    | undefined;
-  groups?:
-    | Array<{
-        __typename?: 'UserGroup';
-        id: string;
-        name: string;
-        members?:
-          | Array<{
-              __typename?: 'User';
-              id: string;
-              displayName: string;
-              firstName: string;
-              lastName: string;
-              email: string;
-            }>
-          | undefined;
-      }>
-    | undefined;
-};
-
 export type CommunityMessagesFragment = {
   __typename?: 'Community';
   id: string;
@@ -5251,72 +5208,6 @@ export type AllCommunitiesQuery = {
 
 export type AllCommunityDetailsFragment = { __typename?: 'Community'; id: string; displayName: string };
 
-export type ChallengeCommunityQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeCommunityQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      displayName: string;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            displayName: string;
-            applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
-            communication?:
-              | {
-                  __typename?: 'Communication';
-                  id: string;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
-            memberUsers?:
-              | Array<{
-                  __typename?: 'User';
-                  id: string;
-                  displayName: string;
-                  firstName: string;
-                  lastName: string;
-                  email: string;
-                }>
-              | undefined;
-            groups?:
-              | Array<{
-                  __typename?: 'UserGroup';
-                  id: string;
-                  name: string;
-                  members?:
-                    | Array<{
-                        __typename?: 'User';
-                        id: string;
-                        displayName: string;
-                        firstName: string;
-                        lastName: string;
-                        email: string;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
 export type ChallengesWithCommunityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -5352,7 +5243,6 @@ export type HubCommunityQuery = {
           __typename?: 'Community';
           id: string;
           displayName: string;
-          applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
           communication?:
             | {
                 __typename?: 'Communication';
@@ -5365,33 +5255,6 @@ export type HubCommunityQuery = {
                     }
                   | undefined;
               }
-            | undefined;
-          memberUsers?:
-            | Array<{
-                __typename?: 'User';
-                id: string;
-                displayName: string;
-                firstName: string;
-                lastName: string;
-                email: string;
-              }>
-            | undefined;
-          groups?:
-            | Array<{
-                __typename?: 'UserGroup';
-                id: string;
-                name: string;
-                members?:
-                  | Array<{
-                      __typename?: 'User';
-                      id: string;
-                      displayName: string;
-                      firstName: string;
-                      lastName: string;
-                      email: string;
-                    }>
-                  | undefined;
-              }>
             | undefined;
         }
       | undefined;
@@ -5435,72 +5298,6 @@ export type CommunityMessagesQuery = {
             | undefined;
         }
       | undefined;
-  };
-};
-
-export type OpportunityCommunityQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityCommunityQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      displayName: string;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            displayName: string;
-            applications?: Array<{ __typename?: 'Application'; id: string }> | undefined;
-            communication?:
-              | {
-                  __typename?: 'Communication';
-                  id: string;
-                  authorization?:
-                    | {
-                        __typename?: 'Authorization';
-                        id: string;
-                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                      }
-                    | undefined;
-                }
-              | undefined;
-            memberUsers?:
-              | Array<{
-                  __typename?: 'User';
-                  id: string;
-                  displayName: string;
-                  firstName: string;
-                  lastName: string;
-                  email: string;
-                }>
-              | undefined;
-            groups?:
-              | Array<{
-                  __typename?: 'UserGroup';
-                  id: string;
-                  name: string;
-                  members?:
-                    | Array<{
-                        __typename?: 'User';
-                        id: string;
-                        displayName: string;
-                        firstName: string;
-                        lastName: string;
-                        email: string;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
   };
 };
 
@@ -10811,6 +10608,95 @@ export type CommentsMessageReceivedSubscription = {
     __typename?: 'CommentsMessageReceived';
     commentsID: string;
     message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  };
+};
+
+export type ChallengeCommunityQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCommunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            displayName: string;
+            communication?:
+              | {
+                  __typename?: 'Communication';
+                  id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CommunityDetailsFragment = {
+  __typename?: 'Community';
+  id: string;
+  displayName: string;
+  communication?:
+    | {
+        __typename?: 'Communication';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }
+    | undefined;
+};
+
+export type OpportunityCommunityQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCommunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            displayName: string;
+            communication?:
+              | {
+                  __typename?: 'Communication';
+                  id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 

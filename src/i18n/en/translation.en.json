@@ -246,6 +246,7 @@
   },
   "community": {
     "leading-users": "Leading Users",
+    "member-users": "Member Users",
     "leading-organizations": "Leading Organizations",
     "member-organizations": "Member Organizations"
   },
@@ -937,6 +938,9 @@
         "title": "Leading organizations ({{count}})",
         "help-text": "Shows different organizations, including the role you have",
         "no-data": "No organization is leading at this time"
+      },
+      "member-organizations": {
+        "no-data": "No organization is contributing at this time"
       },
       "hub-host": {
         "title": "Facilitating organization",
