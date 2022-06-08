@@ -105,11 +105,11 @@ export const OrganizationForm: FC<Props> = ({
     return tagsetsTemplate.reduce(
       (acc, cur) => {
         if (acc.every(x => x.name.toLowerCase() !== cur.name.toLowerCase())) {
-          acc.push({ name: cur.name, tags: [] });
+          acc.push({ id: '', name: cur.name, tags: [] });
         }
         return acc;
       },
-      [...((tagsets as Tagset[]) || [])]
+      [...(tagsets || [])]
     );
   }, [currentOrganization, tagsetsTemplate]);
 
@@ -162,7 +162,7 @@ export const OrganizationForm: FC<Props> = ({
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (orgData: typeof initialValues) => {
+  const handleSubmit = async (orgData: OrganizationInput) => {
     const { tagsets, references, description, location, ...otherData } = orgData;
 
     if (isCreateMode) {

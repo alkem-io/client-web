@@ -1,12 +1,12 @@
 export interface Tagset {
   id?: string;
   name: string;
-  tags: Array<string>;
+  tags: string[];
 }
 export interface UpdateTagset {
   id: string;
   name: string;
-  tags: Array<string>;
+  tags: string[];
 }
 
 export interface Reference {

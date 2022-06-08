@@ -10,13 +10,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import { EditMode } from '../../../models/editMode';
-import {
-  CreateOrganizationInput,
-  Reference,
-  Tagset,
-  UpdateOrganizationInput,
-  Organization,
-} from '../../../models/graphql-schema';
+import { CreateOrganizationInput, UpdateOrganizationInput, Organization } from '../../../models/graphql-schema';
 import { PageProps } from '../../../pages';
 import { logger } from '../../../services/logging/winston/logger';
 import { Loading } from '../../core';
@@ -86,8 +80,8 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         website: website,
         profileData: {
           description: profileData?.description,
-          referencesData: [...(profileData?.referencesData as Reference[])],
-          tagsetsData: [...(profileData?.tagsetsData as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
+          referencesData: [...(profileData?.referencesData || [])],
+          tagsetsData: [...(profileData?.tagsetsData || [])].map(t => ({ name: t.name, tags: t.tags })),
         },
       };
 
