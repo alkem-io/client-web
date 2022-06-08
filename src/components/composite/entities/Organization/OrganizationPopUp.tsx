@@ -18,7 +18,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog'
 import Button from '../../../core/Button';
 import { Link } from 'react-router-dom';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
-import { RoleType } from '../../../../models/constants/common.constants';
+import { RoleType } from '../../../../domain/user/constants/RoleType';
 
 const groupPopUpStyles = makeStyles(theme => ({
   header: {
