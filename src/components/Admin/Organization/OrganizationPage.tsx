@@ -61,7 +61,6 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
       }
     },
     onError: handleError,
-    awaitRefetchQueries: true,
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
 

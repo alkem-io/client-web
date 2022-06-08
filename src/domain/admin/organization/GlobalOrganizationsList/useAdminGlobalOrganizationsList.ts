@@ -26,8 +26,6 @@ export const useAdminGlobalOrganizationsList = () => {
   const handleError = useApolloErrorHandler();
 
   const [deleteOrganization] = useDeleteOrganizationMutation({
-    // refetchQueries: ['adminGlobalOrganizationsList'],
-    awaitRefetchQueries: true,
     onError: handleError,
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
