@@ -3,59 +3,53 @@ import CommunityContributorsAccordion from './CommunityContributorsAccordion';
 import useOrganizationCardProps from '../utils/useOrganizationCardProps';
 import useUserCardProps from '../utils/useUserCardProps';
 import { useTranslation } from 'react-i18next';
-import { OrganizationCardFragment, UserCardFragment } from '../../../models/graphql-schema';
+import NoOrganizations from './NoOrganizations';
+import { Contributors, ContributorType } from './types';
+import { PossiblyUndefinedProps } from '../../shared/types/PossiblyUndefinedProps';
 
-type OptionalLeadOrganizations =
-  | {
-      leadOrganizations: OrganizationCardFragment[] | undefined;
-      isHub?: false;
-    }
-  | {
-      isHub: true;
-    };
-
-type CommunityContributorsSectionProps = OptionalLeadOrganizations & {
-  leadUsers: UserCardFragment[] | undefined;
-  memberOrganizations: OrganizationCardFragment[] | undefined;
-  memberUsers: UserCardFragment[] | undefined;
+interface CommunityContributorsSectionProps extends PossiblyUndefinedProps<Contributors> {
   resourceId: string | undefined;
   loading?: boolean;
+  contributorType: ContributorType;
+}
+
+const headingBackgroundColor = '#D3D3D3';
+
+const accordionSummaryStyle = {
+  backgroundColor: headingBackgroundColor,
+} as const;
+
+const accordionStyle = {
+  border: `1px solid ${headingBackgroundColor}`,
+} as const;
+
+const ContributorTypeLabel: Record<ContributorType, 'leading-contributors' | 'contributors'> = {
+  leading: 'leading-contributors',
+  member: 'contributors',
 };
 
 const CommunityContributorsSection = ({
-  leadUsers,
-  memberOrganizations,
-  memberUsers,
+  organizations,
+  users,
   resourceId,
+  contributorType,
   loading = false,
-  ...optionalProps
 }: CommunityContributorsSectionProps) => {
   const { t } = useTranslation();
 
-  const leadOrganizations = optionalProps.isHub ? undefined : optionalProps.leadOrganizations;
-
   return (
-    <>
-      <CommunityContributorsAccordion
-        title={t('pages.generic.sections.community.leading-contributors')}
-        ariaKey="leading-contributors"
-        organizations={useOrganizationCardProps(leadOrganizations)}
-        users={useUserCardProps(leadUsers, resourceId)}
-        organizationsCount={leadOrganizations?.length}
-        usersCount={leadUsers?.length}
-        loading={loading}
-        hideOrganizations={optionalProps.isHub}
-      />
-      <CommunityContributorsAccordion
-        title={t('pages.generic.sections.community.contributors')}
-        ariaKey="contributors"
-        organizations={useOrganizationCardProps(memberOrganizations)}
-        users={useUserCardProps(memberUsers, resourceId)}
-        organizationsCount={memberOrganizations?.length}
-        usersCount={memberUsers?.length}
-        loading={loading}
-      />
-    </>
+    <CommunityContributorsAccordion
+      title={t(`pages.generic.sections.community.${ContributorTypeLabel[contributorType]}` as const)}
+      ariaKey={ContributorTypeLabel[contributorType]}
+      organizations={useOrganizationCardProps(organizations)}
+      users={useUserCardProps(users, resourceId)}
+      organizationsCount={organizations?.length}
+      usersCount={users?.length}
+      loading={loading}
+      noOrganizationsView={<NoOrganizations type={contributorType} />}
+      sx={accordionStyle}
+      summarySx={accordionSummaryStyle}
+    />
   );
 };
 

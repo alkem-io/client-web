@@ -1,22 +1,20 @@
-import { RequiredFields } from './CardFilter';
+import { Identifiable } from '../../../domain/shared/types/Identifiable';
 
 export type ValueType = {
   id: string;
   values: string[];
 };
 
+export type ValueGetter<T extends Identifiable> = (data: T) => ValueType;
+
 type FlatValueType = {
   id: string;
   value: string;
 };
 
-export default function filterFn<T extends RequiredFields>(
-  data: T[],
-  terms: string[],
-  valueGetter: (data: T) => ValueType
-): T[] {
+export default function filterFn<T extends Identifiable>(data: T[], terms: string[], valueGetter: ValueGetter<T>): T[] {
   if (!data.length) {
-    return [];
+    return data;
   }
 
   if (!terms.length) {
@@ -30,7 +28,7 @@ export default function filterFn<T extends RequiredFields>(
   const valueTypes = data.map(valueGetter);
   const flatValueType = valueTypes.map(toFlatValueType);
 
-  const result = flatValueType.filter(({ value }) => termsRegex.some(term => value.search(term) !== -1));
+  const result = flatValueType.filter(({ value }) => termsRegex.some(term => value.match(term)));
 
   return data.filter(({ id: dataId }) => result.some(({ id: resultId }) => resultId === dataId));
 }

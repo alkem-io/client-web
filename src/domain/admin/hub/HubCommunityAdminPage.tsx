@@ -72,7 +72,7 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '..
     <HubSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <CommunityAdminView headerText={t('community.leading-users')} {...leadUsersProps} />
       <SectionSpacer />
-      <CommunityAdminView headerText={t('common.users')} {...editMembersProps} />
+      <CommunityAdminView headerText={t('community.member-users')} {...editMembersProps} />
       <SectionSpacer />
       <AdminCommunityOrganizationsView headerText={t('community.member-organizations')} {...memberOrganizationsProps} />
       <SectionSpacer />
