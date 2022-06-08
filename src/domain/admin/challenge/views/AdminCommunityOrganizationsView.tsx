@@ -13,8 +13,8 @@ import Avatar from '../../../../components/core/Avatar';
 import { Filter } from '../../../../components/Admin/Common/Filter';
 import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
 import useLazyLoading from '../../../shared/pagination/useLazyLoading';
-import { Skeleton } from '@mui/material';
 import { v4 as uuid } from 'uuid';
+import FullWidthSkeleton from '../../../shared/components/FullWidthLoader';
 
 const useStyles = makeStyles(theme => ({
   iconButtonSuccess: {
@@ -85,7 +85,7 @@ export interface EditOrganizationsProps {
 
 const LoadingCellMarker = `__loading_${uuid()}`;
 
-const optionallyAddLoaderRow = <Item,>(items: Item[], hasMore: boolean, ref: Ref<any>) => {
+const optionallyAddLoaderRow = <Item,>(items: Item[], hasMore: boolean, ref: Ref<HTMLElement>) => {
   if (!hasMore) {
     return items;
   }
@@ -203,7 +203,7 @@ const availableColumns = (t: TFunction, styles: ClassNameMap, onAdd: (orgId: str
     headerName: t('common.add'),
     renderCell: params =>
       params.value === LoadingCellMarker ? (
-        <Skeleton ref={params.row.ref} width="100%" />
+        <FullWidthSkeleton ref={params.row.ref} />
       ) : (
         <IconButton
           aria-label="Add"
@@ -220,12 +220,12 @@ const availableColumns = (t: TFunction, styles: ClassNameMap, onAdd: (orgId: str
     headerName: t('common.avatar'),
     width: 130,
     renderCell: params =>
-      params.value === LoadingCellMarker ? <Skeleton width="100%" /> : <Avatar src={params.value as string} />,
+      params.value === LoadingCellMarker ? <FullWidthSkeleton /> : <Avatar src={params.value as string} />,
   },
   {
     field: 'name',
     headerName: t('common.name'),
     flex: 1,
-    renderCell: params => params.value ?? <Skeleton width="100%" />,
+    renderCell: params => params.value ?? <FullWidthSkeleton />,
   },
 ];
