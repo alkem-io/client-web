@@ -1,5 +1,5 @@
 import { TypedTypePolicies } from '../../models/apollo-helpers';
-import { paginationFieldPolicy } from '../../utils/apollo-cache/pagination-policy';
+import { paginationFieldPolicy } from '../../domain/shared/utils/apollo-cache/pagination-policy';
 
 export const typePolicies: TypedTypePolicies = {
   UserGroup: {
@@ -40,7 +40,7 @@ export const typePolicies: TypedTypePolicies = {
   Query: {
     fields: {
       usersPaginated: paginationFieldPolicy(['filter']),
-      organizationsPaginated: paginationFieldPolicy(),
+      organizationsPaginated: paginationFieldPolicy(['filter']),
     },
   },
 };

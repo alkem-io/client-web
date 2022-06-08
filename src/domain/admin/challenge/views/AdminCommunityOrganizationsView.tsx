@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import Grid from '@mui/material/Grid';
@@ -12,6 +12,9 @@ import { OrganizationDetailsFragment } from '../../../../models/graphql-schema';
 import Avatar from '../../../../components/core/Avatar';
 import { Filter } from '../../../../components/Admin/Common/Filter';
 import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import useLazyLoading from '../../../shared/pagination/useLazyLoading';
+import { Skeleton } from '@mui/material';
+import { v4 as uuid } from 'uuid';
 
 const useStyles = makeStyles(theme => ({
   iconButtonSuccess: {
@@ -26,31 +29,24 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface AdminCommunityOrganizationsViewProps {
+interface AdminCommunityOrganizationsViewProps extends Omit<EditOrganizationsProps, 'available' | 'existing'> {
   headerText: string;
   existingOrganizations: OrganizationDetailsFragment[];
   availableOrganizations: OrganizationDetailsFragment[];
-  updating: boolean;
-  onRemove: (organizationID: string) => void;
-  onAdd: (organizationID: string) => void;
 }
 
 const AdminCommunityOrganizationsView = ({
   headerText,
   existingOrganizations,
   availableOrganizations,
-  updating,
-  onRemove,
-  onAdd,
+  ...editViewProps
 }: AdminCommunityOrganizationsViewProps) => {
   return (
     <DashboardGenericSection headerText={headerText}>
-      <EditLeadingOrganization
+      <EditOrganizations
         available={toOrganizationDetailsVm(availableOrganizations)}
-        leading={toOrganizationDetailsVm(existingOrganizations)}
-        onAdd={onAdd}
-        onRemove={onRemove}
-        updating={updating}
+        existing={toOrganizationDetailsVm(existingOrganizations)}
+        {...editViewProps}
       />
     </DashboardGenericSection>
   );
@@ -75,28 +71,57 @@ const toOrganizationDetailsVm = (prop: OrganizationDetailsFragment[]) => {
   );
 };
 
-interface EditLeadingOrganizationProps {
-  leading: OrganizationDetailsVm[];
+export interface EditOrganizationsProps {
+  existing: OrganizationDetailsVm[];
   available: OrganizationDetailsVm[];
   onAdd: (orgId: string) => void;
   onRemove: (orgId: string) => void;
   updating: boolean;
+  fetchMore: (amount?: number) => Promise<void>;
+  onSearchTermChange: (term: string) => void;
+  hasMore: boolean | undefined;
+  loading: boolean;
 }
 
-const EditLeadingOrganization: FC<EditLeadingOrganizationProps> = ({
-  leading,
+const LoadingCellMarker = `__loading_${uuid()}`;
+
+const optionallyAddLoaderRow = <Item,>(items: Item[], hasMore: boolean, ref: Ref<any>) => {
+  if (!hasMore) {
+    return items;
+  }
+  return [
+    ...items,
+    {
+      id: LoadingCellMarker,
+      ref,
+      avatarSrc: LoadingCellMarker,
+    },
+  ];
+};
+
+const EditOrganizations: FC<EditOrganizationsProps> = ({
+  existing,
   available,
   onAdd,
   onRemove,
   updating = false,
+  fetchMore,
+  hasMore = false,
+  loading,
 }) => {
   const styles = useStyles();
   const { t } = useTranslation();
+
+  const lazyLoading = useLazyLoading({
+    fetchMore,
+    loading,
+  });
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={6}>
         <Filter
-          data={leading}
+          data={existing}
           placeholder={t('pages.lead-organization.search.leading-placeholder')}
           limitKeys={['name', 'tags']}
         >
@@ -104,7 +129,7 @@ const EditLeadingOrganization: FC<EditLeadingOrganizationProps> = ({
             <div className={styles.gridContainer}>
               <DataGrid
                 rows={filteredData}
-                columns={leadingColumns(t, styles, onRemove)}
+                columns={existingColumns(t, styles, onRemove)}
                 density="compact"
                 hideFooter={true}
                 loading={updating}
@@ -123,7 +148,7 @@ const EditLeadingOrganization: FC<EditLeadingOrganizationProps> = ({
           {filteredData => (
             <div className={styles.gridContainer}>
               <DataGrid
-                rows={filteredData}
+                rows={optionallyAddLoaderRow(filteredData, hasMore, lazyLoading.ref)}
                 columns={availableColumns(t, styles, onAdd)}
                 density="compact"
                 hideFooter={true}
@@ -140,7 +165,7 @@ const EditLeadingOrganization: FC<EditLeadingOrganizationProps> = ({
 
 export default AdminCommunityOrganizationsView;
 
-const leadingColumns = (t: TFunction, styles: ClassNameMap, onRemove: (orgId: string) => void): GridColDef[] => [
+const existingColumns = (t: TFunction, styles: ClassNameMap, onRemove: (orgId: string) => void): GridColDef[] => [
   {
     field: 'avatarSrc',
     headerName: t('common.avatar'),
@@ -176,22 +201,31 @@ const availableColumns = (t: TFunction, styles: ClassNameMap, onAdd: (orgId: str
     field: 'id',
     width: 110,
     headerName: t('common.add'),
-    renderCell: params => (
-      <IconButton
-        aria-label="Add"
-        className={styles.iconButtonSuccess}
-        size="small"
-        onClick={() => onAdd(params.value as string)}
-      >
-        <AddIcon />
-      </IconButton>
-    ),
+    renderCell: params =>
+      params.value === LoadingCellMarker ? (
+        <Skeleton ref={params.row.ref} width="100%" />
+      ) : (
+        <IconButton
+          aria-label="Add"
+          className={styles.iconButtonSuccess}
+          size="small"
+          onClick={() => onAdd(params.value as string)}
+        >
+          <AddIcon />
+        </IconButton>
+      ),
   },
   {
     field: 'avatarSrc',
     headerName: t('common.avatar'),
     width: 130,
-    renderCell: params => <Avatar src={params.value as string} />,
+    renderCell: params =>
+      params.value === LoadingCellMarker ? <Skeleton width="100%" /> : <Avatar src={params.value as string} />,
   },
-  { field: 'name', headerName: t('common.name'), flex: 1 },
+  {
+    field: 'name',
+    headerName: t('common.name'),
+    flex: 1,
+    renderCell: params => params.value ?? <Skeleton width="100%" />,
+  },
 ];
