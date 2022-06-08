@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserCardProps } from '../../components/composite/common/cards';
 import { OrganizationCardProps } from '../../components/composite/common/cards/Organization/OrganizationCard';
-import SearchComponent from '../../components/composite/common/SearchComponent/SearchComponent';
+import SearchTagsInput from '../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import ContributorsSearchContainer from '../../containers/ContributorsSearch/ContributorsSearchContainer';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
@@ -25,7 +25,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
   const { isAuthenticated, user: userMetadata } = useUserContext();
   const userAgent = userMetadata?.user.agent;
 
-  const onSearchHandler = (terms: string[]) => setSearchTerms(terms);
+  const onSearchHandler = (_e: unknown, terms: string[]) => setSearchTerms(terms);
 
   return (
     <Box paddingY={2}>
@@ -33,9 +33,11 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
         headerText={t('pages.contributors.search.title')}
         subHeaderText={t('pages.contributors.search.subtitle')}
       >
-        <SearchComponent placeholder={t('pages.contributors.search.placeholder')} onChange={onSearchHandler}>
-          {() => null}
-        </SearchComponent>
+        <SearchTagsInput
+          value={searchTerms}
+          placeholder={t('pages.contributors.search.placeholder')}
+          onChange={onSearchHandler}
+        />
       </DashboardGenericSection>
       <ContributorsSearchContainer terms={searchTerms}>
         {({ users, organizations }, state) => {

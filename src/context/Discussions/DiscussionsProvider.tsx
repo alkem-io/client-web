@@ -20,7 +20,7 @@ import {
   CommunicationDiscussionUpdatedSubscription,
   SubscriptionCommunicationDiscussionUpdatedArgs,
 } from '../../models/graphql-schema';
-import { useCommunityContext } from '../CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { buildDiscussionsUrl, buildDiscussionUrl } from '../../utils/urlBuilders';
 
 interface Permissions {

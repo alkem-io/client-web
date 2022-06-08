@@ -2,8 +2,8 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 import App from '../components/composite/layout/App/App';
-import { CommunityProvider } from '../context/CommunityProvider';
-import { HubProvider } from '../context/HubProvider';
+import { CommunityContextProvider } from '../domain/community/CommunityContext';
+import { HubContextProvider } from '../domain/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
 import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
@@ -33,11 +33,11 @@ export const Routing: FC = () => {
         <Route
           path={`:${nameOfUrl.hubNameId}/*`}
           element={
-            <HubProvider>
-              <CommunityProvider>
+            <HubContextProvider>
+              <CommunityContextProvider>
                 <HubRoute paths={paths} />
-              </CommunityProvider>
-            </HubProvider>
+              </CommunityContextProvider>
+            </HubContextProvider>
           }
         />
         <Route path="/admin/*" element={<AdminRoute />} />

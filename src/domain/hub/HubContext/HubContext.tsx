@@ -1,8 +1,8 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useConfig, useUrlParams, useUserContext } from '../hooks';
-import { useHubProviderQuery } from '../hooks/generated/graphql';
-import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../models/graphql-schema';
+import { useConfig, useUrlParams, useUserContext } from '../../../hooks';
+import { useHubProviderQuery } from '../../../hooks/generated/graphql';
+import { AuthorizationPrivilege, HubInfoFragment, HubTemplate, Visual } from '../../../models/graphql-schema';
 
 export interface HubPermissions {
   viewerCanUpdate: boolean;
@@ -13,7 +13,6 @@ export interface HubPermissions {
 }
 
 interface HubContextProps {
-  hub?: HubInfoFragment;
   hubId: string;
   hubNameId: string;
   displayName: string;
@@ -25,6 +24,11 @@ interface HubContextProps {
   permissions: HubPermissions;
   error?: ApolloError;
   refetchHub: () => void;
+  // TODO Some components just randomly access HubContext instead of just querying the data the usual way.
+  // TODO This Context should provide as little data as possible or just be removed.
+  hostId?: string;
+  tagset?: HubInfoFragment['tagset'];
+  context?: HubInfoFragment['context'];
 }
 
 const HubContext = React.createContext<HubContextProps>({
@@ -50,7 +54,7 @@ interface HubProviderProps {}
 
 const NO_PRIVILEGES = [];
 
-const HubProvider: FC<HubProviderProps> = ({ children }) => {
+const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const { hubNameId = '' } = useUrlParams();
   const { template: platformTemplate, error: configError } = useConfig();
   const { user } = useUserContext();
@@ -101,7 +105,6 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   return (
     <HubContext.Provider
       value={{
-        hub,
         hubId,
         hubNameId,
         communityId,
@@ -113,6 +116,9 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
         loading,
         error,
         refetchHub,
+        tagset: hub?.tagset,
+        hostId: hub?.host?.id,
+        context: hub?.context,
       }}
     >
       {children}
@@ -120,4 +126,4 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   );
 };
 
-export { HubProvider, HubContext };
+export { HubContextProvider, HubContext };

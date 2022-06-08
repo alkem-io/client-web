@@ -3,7 +3,6 @@ query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     id
     challenge(ID: $challengeId) {
       id
-      displayName
       community {
         ...CommunityDetails
       }
