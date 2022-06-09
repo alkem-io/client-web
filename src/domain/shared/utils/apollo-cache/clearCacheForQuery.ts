@@ -8,10 +8,14 @@ interface CacheWithAccessibleRootQuery<T> extends ApolloCache<T> {
   };
 }
 
+export const getRegExpForQueryName = (queryName: string) => new RegExp(`^${queryName}\\b`);
+
 const clearCacheForQuery = (cache: ApolloCache<unknown>, queryName: string) => {
   const rootQuery = (cache as CacheWithAccessibleRootQuery<unknown>).data.data.ROOT_QUERY;
 
-  const cacheKeys = Object.keys(rootQuery).filter(key => key.startsWith(`${queryName}:`));
+  const regExp = getRegExpForQueryName(queryName);
+
+  const cacheKeys = Object.keys(rootQuery).filter(key => regExp.test(key));
 
   console.log(rootQuery);
 
