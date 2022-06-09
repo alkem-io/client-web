@@ -105,11 +105,11 @@ export const OrganizationForm: FC<Props> = ({
     return tagsetsTemplate.reduce(
       (acc, cur) => {
         if (acc.every(x => x.name.toLowerCase() !== cur.name.toLowerCase())) {
-          acc.push({ id: '', name: cur.name, tags: [] });
+          acc.push({ name: cur.name, tags: [] });
         }
         return acc;
       },
-      [...(tagsets || [])]
+      [...((tagsets as Tagset[]) || [])]
     );
   }, [currentOrganization, tagsetsTemplate]);
 
@@ -120,7 +120,7 @@ export const OrganizationForm: FC<Props> = ({
     const result: UpdateTagset[] = [];
     updatedTagsets.forEach(updatedTagset => {
       const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
-      if (originalTagset) result.push({ id: originalTagset.id, name: originalTagset.name, tags: updatedTagset.tags });
+      if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
     });
 
     return result;
@@ -134,7 +134,7 @@ export const OrganizationForm: FC<Props> = ({
       ...EmptyLocation,
       ...formatLocation(location),
     },
-    tagsets: defaultEmptyTagsets || EmptyOrganization.profile.tagsets,
+    tagsets: defaultEmptyTagsets,
     contactEmail: contactEmail || EmptyOrganization.contactEmail,
     domain: domain || EmptyOrganization.domain || '',
     legalEntityName: legalEntityName || EmptyOrganization.legalEntityName || '',
@@ -184,7 +184,7 @@ export const OrganizationForm: FC<Props> = ({
     }
 
     if (isEditMode) {
-      const updatedTagsets = getUpdatedTagsets(tagsets) || [];
+      const updatedTagsets = getUpdatedTagsets(tagsets);
       const organization: UpdateOrganizationInput = {
         ID: currentOrganization.id,
         ...otherData,

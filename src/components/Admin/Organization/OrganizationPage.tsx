@@ -80,14 +80,14 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         website: website,
         profileData: {
           description: profileData?.description,
-          referencesData: [...(profileData?.referencesData || [])],
-          tagsetsData: [...(profileData?.tagsetsData || [])].map(t => ({ name: t.name, tags: t.tags })),
+          referencesData: profileData?.referencesData,
+          tagsetsData: profileData?.tagsetsData,
         },
       };
 
       createOrganization({
         variables: {
-          input: input,
+          input,
         },
       });
     }
@@ -104,7 +104,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         website,
       } = editedOrganization as UpdateOrganizationInput;
       const profileId = organization?.profile?.id;
-      const references = profileData?.references || [];
+      const references = profileData?.references;
       const tagsetsToAdd = profileData?.tagsets?.filter(x => !x.ID) || [];
 
       for (const tagset of tagsetsToAdd) {
@@ -113,14 +113,14 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
             variables: {
               input: {
                 name: tagset.name,
-                tags: [...tagset.tags],
+                tags: tagset.tags,
                 profileID: profileId,
               },
             },
           });
         }
       }
-      const organizationInput: UpdateOrganizationInput = {
+      const input: UpdateOrganizationInput = {
         ID: orgID,
         nameID,
         contactEmail: contactEmail,
@@ -132,27 +132,17 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
           ID: profileId || '',
           description: profileData?.description,
           location: {
-            city: profileData?.location?.city || '',
-            country: profileData?.location?.country || '',
+            city: profileData?.location?.city,
+            country: profileData?.location?.country,
           },
-          references: references.map(x => ({
-            ID: x.ID,
-            description: x.description,
-            name: x.name,
-            uri: x.uri,
-          })),
-          tagsets:
-            profileData?.tagsets
-              ?.filter(t => t.ID)
-              .map(t => ({ ID: t.ID, name: t.name, tags: t.tags ? [...t.tags] : [] })) || [],
+          references: references,
+          tagsets: profileData?.tagsets?.filter(t => t.ID),
         },
       };
 
       updateOrganization({
         variables: {
-          input: {
-            ...organizationInput,
-          },
+          input,
         },
       });
     }
