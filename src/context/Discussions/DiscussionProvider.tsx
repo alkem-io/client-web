@@ -2,7 +2,7 @@ import { sortBy, uniq, merge } from 'lodash';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import { useApolloErrorHandler, useConfig, useHub, useUrlParams } from '../../hooks';
-import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionMessageReceivedDocument,
   MessageDetailsFragmentDoc,

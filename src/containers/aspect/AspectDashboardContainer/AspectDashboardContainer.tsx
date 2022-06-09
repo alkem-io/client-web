@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
@@ -12,7 +12,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Comment } from '../../../models/discussion/comment';
-import { useAuthorsDetails } from '../../../hooks/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../../domain/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
@@ -135,14 +135,16 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const _messages = aspect?.comments?.messages ?? [];
   const senders = _messages.map(x => x.sender);
   const { getAuthor } = useAuthorsDetails(senders);
-  const messages: Comment[] =
-    _messages &&
-    _messages.map(x => ({
-      id: x.id,
-      body: x.message,
-      author: getAuthor(x.sender),
-      createdAt: new Date(x.timestamp),
-    }));
+  const messages = useMemo<Comment[]>(
+    () =>
+      _messages?.map(x => ({
+        id: x.id,
+        body: x.message,
+        author: getAuthor(x.sender),
+        createdAt: new Date(x.timestamp),
+      })),
+    [_messages]
+  );
 
   const isAuthor = (msgId: string, userId?: string) =>
     messages.find(x => x.id === msgId)?.author?.id === userId ?? false;

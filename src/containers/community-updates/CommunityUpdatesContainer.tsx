@@ -1,5 +1,5 @@
 import { merge } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import { ApolloError } from '@apollo/client';
 import { useApolloErrorHandler, useConfig } from '../../hooks';
 import {
@@ -9,15 +9,11 @@ import {
   useRemoveUpdateCommunityMutation,
   useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
-import {
-  Message,
-  Community,
-  User,
-  Hub,
-  CommunicationUpdateMessageReceivedSubscription,
-} from '../../models/graphql-schema';
+import { Message, Community, Hub, CommunicationUpdateMessageReceivedSubscription } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { logger } from '../../services/logging/winston/logger';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
+import { Author } from '../../models/discussion/author';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -45,8 +41,10 @@ export interface CommunityUpdatesState {
 
 export interface CommunityUpdatesEntities {
   messages: Message[];
-  senders: Pick<User, 'id'>[];
+  authors: Author[];
 }
+
+const EMPTY = [];
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
@@ -91,13 +89,14 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     throw new Error('Not implemented');
   };
 
-  const messages = data?.hub.community?.communication?.updates?.messages || [];
-  const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
+  const messages = data?.hub.community?.communication?.updates?.messages || EMPTY;
+
+  const { authors = EMPTY } = useAuthorsDetails(messages.map(m => m.sender));
 
   return (
     <>
       {children(
-        { messages, senders },
+        { messages, authors },
         { onLoadMore, onSubmit, onRemove },
         {
           retrievingUpdateMessages: loading,

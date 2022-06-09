@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { Author } from '../../models/discussion/author';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
-import { useAuthorDetailsQuery } from '../generated/graphql';
+import { useAuthorDetailsQuery } from '../../hooks/generated/graphql';
 import { uniq } from 'lodash';
 
 export const useAuthorsDetails = (authorIds: string[]) => {

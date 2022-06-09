@@ -36,12 +36,13 @@ import Button from '../../components/core/Button';
 import { FontDownloadIcon } from '../../components/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../components/icons/FontDownloadOffIcon';
 import { useNotification } from '../../hooks';
-import { Message, User } from '../../models/graphql-schema';
+import { Message } from '../../models/graphql-schema';
+import { Author } from '../../models/discussion/author';
 
 export interface CommunityUpdatesViewProps {
   entities: {
     messages: Message[];
-    members: User[];
+    authors: Author[];
   };
   state: {
     loadingMessages: boolean;
@@ -92,7 +93,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   const notify = useNotification();
   const { t } = useTranslation();
   // entities
-  const { messages, members } = entities;
+  const { messages, authors } = entities;
   const { loadingMessages, removingMessage } = state;
   const { canEdit, itemsPerRow, hideHeaders, canCopy, canRemove, disableCollapse, disableElevation } = options || {};
   const orderedMessages = useMemo(() => orderBy(messages, x => x.timestamp, ['desc']), [messages]);
@@ -107,7 +108,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
   const [stubMessageId, setStubMessageId] = useState<string | null>(null);
   const [removedMessageId, setRemovedMessageId] = useState<string | null>(null);
   const [reviewedMessageSourceIds, setReviewedMessageSourceIds] = useState<string[]>([]);
-  const memberMap = useMemo(() => keyBy(members, m => m.id), [members]);
+  const memberMap = useMemo(() => keyBy(authors, m => m.id), [authors]);
 
   const displayCardActions = canCopy || canRemove || !disableCollapse;
   const lastItemIndex = orderedMessages.length - 1;
@@ -211,12 +212,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                 <CardHeader
                   avatar={
                     member && (
-                      <Avatar
-                        key={member?.id}
-                        src={member.profile?.avatar?.uri}
-                        userId={member?.id}
-                        name={member?.displayName}
-                      />
+                      <Avatar key={member.id} src={member.avatarUrl} userId={member.id} name={member.displayName} />
                     )
                   }
                   title={member?.displayName || m.sender}
