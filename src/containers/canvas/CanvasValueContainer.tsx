@@ -1,25 +1,22 @@
-import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
-import { cloneDeep } from 'lodash';
-import { FC, useEffect, useMemo } from 'react';
-import { useApolloErrorHandler, useConfig, useNotification, useUrlParams, useUserContext } from '../../hooks';
+import { FC, useMemo } from 'react';
+import { useUrlParams, useUserContext } from '../../hooks';
 import {
   CanvasContentUpdatedDocument,
   useChallengeCanvasValuesQuery,
   useHubCanvasValuesQuery,
   useOpportunityCanvasValuesQuery,
 } from '../../hooks/generated/graphql';
-import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { ContainerChildProps } from '../../models/container';
 import {
   Canvas,
   CanvasContentUpdatedSubscription,
+  CanvasDetailsFragment,
   CanvasValueFragment,
-  ChallengeCanvasValuesQuery,
-  HubCanvasValuesQuery,
-  OpportunityCanvasValuesQuery,
   SubscriptionCanvasContentUpdatedArgs,
 } from '../../models/graphql-schema';
 import { TemplateQuery } from './CanvasProvider';
+import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
+import findById from '../../domain/shared/utils/findById';
 
 export interface ICanvasValueEntities {
   canvas?: Canvas;
@@ -30,7 +27,7 @@ export interface CanvasValueContainerState {
 }
 
 export interface CanvasValueParams {
-  canvasId?: string;
+  canvasId: string | undefined;
   params?: TemplateQuery;
 }
 
@@ -38,10 +35,21 @@ export interface CanvasValueContainerProps
   extends ContainerChildProps<ICanvasValueEntities, {}, CanvasValueContainerState>,
     CanvasValueParams {}
 
+const useSubscribeToCanvas = UseSubscriptionToSubEntity<
+  CanvasValueFragment & CanvasDetailsFragment,
+  SubscriptionCanvasContentUpdatedArgs,
+  CanvasContentUpdatedSubscription
+>({
+  subscriptionDocument: CanvasContentUpdatedDocument,
+  getSubscriptionVariables: canvas => ({ canvasIDs: [canvas.id] }),
+  updateSubEntity: (canvas, subscriptionData) => {
+    if (canvas) {
+      canvas.value = subscriptionData.canvasContentUpdated.value;
+    }
+  },
+});
+
 const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasId, params }) => {
-  const { isFeatureEnabled } = useConfig();
-  const handleError = useApolloErrorHandler();
-  const notify = useNotification();
   const {
     hubNameId: hubId = '',
     challengeNameId: challengeId = '',
@@ -118,81 +126,25 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
     return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
   }, [hubData, challengeData, opportunityData, canvasId]);
 
-  useEffect(() => {
-    if (!isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
-      return;
-    }
+  const skipCanvasSubscription = !canvasId || canvas?.checkout?.lockedBy === userId;
 
-    // do not subscribe if the current user has checked out the canvas
-    // unsubscribe was performed on the previous render
-    if (canvas?.checkout?.lockedBy === userId) {
-      return;
-    }
+  useSubscribeToCanvas(hubData, data => findById(data?.hub.context?.canvases, canvasId!), subHub, {
+    skip: skipCanvasSubscription,
+  });
 
-    // 'prev' variable (TData) in updateQuery type is not useful, but also not used
-    type TypedSubscribeToMore<TQueryData> = (
-      options: SubscribeToMoreOptions<
-        TQueryData,
-        SubscriptionCanvasContentUpdatedArgs,
-        CanvasContentUpdatedSubscription
-      >
-    ) => () => void;
-    type HubSubscribeToMore = TypedSubscribeToMore<HubCanvasValuesQuery>;
-    type ChallengeSubscribeToMore = TypedSubscribeToMore<ChallengeCanvasValuesQuery>;
-    type OpportunitySubscribeToMore = TypedSubscribeToMore<OpportunityCanvasValuesQuery>;
-    let subscribeToMore: HubSubscribeToMore | ChallengeSubscribeToMore | OpportunitySubscribeToMore;
+  useSubscribeToCanvas(
+    challengeData,
+    data => findById(data?.hub.challenge.context?.canvases, canvasId!),
+    subChallenge,
+    { skip: skipCanvasSubscription }
+  );
 
-    // todo: better type
-    let getCanvasesFn: (
-      state: HubCanvasValuesQuery | ChallengeCanvasValuesQuery | OpportunityCanvasValuesQuery
-    ) => CanvasValueFragment[];
-
-    if (!skipHub) {
-      subscribeToMore = subHub;
-      getCanvasesFn = state => (state as HubCanvasValuesQuery).hub.context?.canvases ?? [];
-    } else if (!skipChallenge) {
-      subscribeToMore = subChallenge;
-      getCanvasesFn = state => (state as ChallengeCanvasValuesQuery).hub.challenge?.context?.canvases ?? [];
-    } else if (!skipOpportunity) {
-      subscribeToMore = subOpportunity;
-      getCanvasesFn = state => (state as OpportunityCanvasValuesQuery).hub.opportunity?.context?.canvases ?? [];
-    } else {
-      // do not subscribe if data is not fetched
-      return;
-    }
-
-    const unSubscribe = subscribeToMore({
-      document: CanvasContentUpdatedDocument,
-      variables: { canvasIDs: canvasId ? [canvasId] : undefined },
-      onError: err => handleError(new ApolloError({ errorMessage: err.message })),
-      updateQuery: (prev, { subscriptionData }) => {
-        const canvases = getCanvasesFn(prev);
-
-        if (!canvases) {
-          return prev;
-        }
-
-        const { canvasID, value } = subscriptionData.data.canvasContentUpdated;
-        const canvasIndex = canvases.findIndex(x => x.id === canvasID);
-
-        if (canvasIndex === -1) {
-          notify('Canvas content update received but the canvas was not found.', 'error');
-          return prev;
-        }
-
-        const newState = cloneDeep(prev);
-        const newStateCanvases = getCanvasesFn(newState);
-        const canvas = newStateCanvases[canvasIndex];
-        newStateCanvases[canvasIndex] = {
-          ...canvas,
-          value,
-        };
-        // todo: works only on hubs
-        return newState;
-      },
-    });
-    return () => unSubscribe && unSubscribe();
-  }, [subHub, subChallenge, subOpportunity, canvasId, skipHub, skipChallenge, canvas, userId]);
+  useSubscribeToCanvas(
+    opportunityData,
+    data => findById(data?.hub.opportunity.context?.canvases, canvasId!),
+    subOpportunity,
+    { skip: skipCanvasSubscription }
+  );
 
   return (
     <>
