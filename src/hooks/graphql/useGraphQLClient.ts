@@ -14,6 +14,7 @@ export const useGraphQLClient = (
 ): ApolloClient<NormalizedCacheObject> => {
   // useMemo() is a performance optimization and is not really guaranteed to be run ONLY when deps change.
   // It's guaranteed to be re-run WHEN the deps change, but it can re-run at random time as well.
+  // See https://reactjs.org/docs/hooks-reference.html#usememo
   // If that happens, we don't want to lose the cache.
   const cache = useRef(once(() => new InMemoryCache({ addTypename: true, typePolicies }))).current();
 
