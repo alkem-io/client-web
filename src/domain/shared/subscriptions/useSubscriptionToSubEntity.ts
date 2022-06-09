@@ -3,6 +3,7 @@ import { ApolloError, SubscribeToMoreOptions, TypedDocumentNode } from '@apollo/
 import produce from 'immer';
 import { useApolloErrorHandler, useConfig } from '../../../hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
+import getEntriesSortedFlat from '../utils/getEntriesSortedFlat';
 
 interface SubscribeToMore<TData, TSubscriptionVariables, TSubscriptionData> {
   (options: SubscribeToMoreOptions<TData, TSubscriptionVariables, TSubscriptionData>): () => void;
@@ -10,7 +11,7 @@ interface SubscribeToMore<TData, TSubscriptionVariables, TSubscriptionData> {
 
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
-  getSubscriptionVariables: (subEntity: SubEntity) => SubEntitySubscriptionVariables;
+  getSubscriptionVariables?: (subEntity: SubEntity) => SubEntitySubscriptionVariables | undefined;
   updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void;
 }
 
@@ -48,18 +49,22 @@ const createUseSubscriptionToSubEntityHook =
 
     const subEntity = getSubEntity(parentEntity);
 
+    const variables = subEntity && options.getSubscriptionVariables?.(subEntity);
+
+    const hasInitiallyFetchedSubEntity = typeof subEntity !== 'undefined';
+
     useEffect(() => {
       if (!areSubscriptionsEnabled) {
         return;
       }
 
-      if (!subEntity) {
+      if (!hasInitiallyFetchedSubEntity) {
         return;
       }
 
       return subscribeToMore({
         document: options.subscriptionDocument,
-        variables: options.getSubscriptionVariables(subEntity),
+        variables,
         updateQuery: (prev, { subscriptionData }) => {
           return produce(prev, next => {
             const nextSubEntity = getSubEntity(next as QueryData);
@@ -68,7 +73,7 @@ const createUseSubscriptionToSubEntityHook =
         },
         onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       });
-    }, [subEntity, areSubscriptionsEnabled]);
+    }, [areSubscriptionsEnabled, hasInitiallyFetchedSubEntity, ...getEntriesSortedFlat(variables || {})]);
 
     return {
       enabled: Boolean(areSubscriptionsEnabled && subEntity),
