@@ -14451,9 +14451,9 @@ export type HubApplicationsQueryResult = Apollo.QueryResult<
 export function refetchHubApplicationsQuery(variables: SchemaTypes.HubApplicationsQueryVariables) {
   return { query: HubApplicationsDocument, variables: variables };
 }
-export const CommentsMessageReceivedDocument = gql`
-  subscription CommentsMessageReceived($commentsId: UUID!) {
-    communicationCommentsMessageReceived(commentsID: $commentsId) {
+export const AspectCommentsMessageReceivedDocument = gql`
+  subscription AspectCommentsMessageReceived($aspectID: UUID!) {
+    aspectCommentsMessageReceived(aspectID: $aspectID) {
       commentsID
       message {
         id
@@ -14466,36 +14466,38 @@ export const CommentsMessageReceivedDocument = gql`
 `;
 
 /**
- * __useCommentsMessageReceivedSubscription__
+ * __useAspectCommentsMessageReceivedSubscription__
  *
- * To run a query within a React component, call `useCommentsMessageReceivedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCommentsMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useAspectCommentsMessageReceivedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useAspectCommentsMessageReceivedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useCommentsMessageReceivedSubscription({
+ * const { data, loading, error } = useAspectCommentsMessageReceivedSubscription({
  *   variables: {
- *      commentsId: // value for 'commentsId'
+ *      aspectID: // value for 'aspectID'
  *   },
  * });
  */
-export function useCommentsMessageReceivedSubscription(
+export function useAspectCommentsMessageReceivedSubscription(
   baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CommentsMessageReceivedSubscription,
-    SchemaTypes.CommentsMessageReceivedSubscriptionVariables
+    SchemaTypes.AspectCommentsMessageReceivedSubscription,
+    SchemaTypes.AspectCommentsMessageReceivedSubscriptionVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useSubscription<
-    SchemaTypes.CommentsMessageReceivedSubscription,
-    SchemaTypes.CommentsMessageReceivedSubscriptionVariables
-  >(CommentsMessageReceivedDocument, options);
+    SchemaTypes.AspectCommentsMessageReceivedSubscription,
+    SchemaTypes.AspectCommentsMessageReceivedSubscriptionVariables
+  >(AspectCommentsMessageReceivedDocument, options);
 }
-export type CommentsMessageReceivedSubscriptionHookResult = ReturnType<typeof useCommentsMessageReceivedSubscription>;
-export type CommentsMessageReceivedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CommentsMessageReceivedSubscription>;
+export type AspectCommentsMessageReceivedSubscriptionHookResult = ReturnType<
+  typeof useAspectCommentsMessageReceivedSubscription
+>;
+export type AspectCommentsMessageReceivedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.AspectCommentsMessageReceivedSubscription>;
 export const ChallengeCommunityDocument = gql`
   query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {

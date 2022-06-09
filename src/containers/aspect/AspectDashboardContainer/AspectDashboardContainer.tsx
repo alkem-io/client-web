@@ -18,7 +18,7 @@ import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../utils/containers/ComponentOrChildrenFn';
-import useCommentsMessageReceivedSubscription from '../../../domain/comments/useCommentsMessageReceivedSubscription';
+import useAspectCommentsMessageReceivedSubscription from '../../../domain/aspect/comments/useAspectCommentsMessageReceivedSubscription';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -100,19 +100,19 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
-  const hubCommentsSubscription = useCommentsMessageReceivedSubscription(
+  const hubCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     hubData,
-    hubData => hubData?.hub?.context?.aspects?.[0].comments,
+    hubData => hubData?.hub?.context?.aspects?.[0],
     subscribeToHub
   );
-  const challengeCommentsSubscription = useCommentsMessageReceivedSubscription(
+  const challengeCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     challengeData,
-    challengeData => challengeData?.hub?.challenge?.context?.aspects?.[0].comments,
+    challengeData => challengeData?.hub?.challenge?.context?.aspects?.[0],
     subscribeToChallenge
   );
-  const opportunityCommentsSubscription = useCommentsMessageReceivedSubscription(
+  const opportunityCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     opportunityData,
-    opportunityData => opportunityData?.hub?.opportunity?.context?.aspects?.[0].comments,
+    opportunityData => opportunityData?.hub?.opportunity?.context?.aspects?.[0],
     subscribeToOpportunity
   );
 
