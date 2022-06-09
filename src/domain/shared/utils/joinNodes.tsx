@@ -5,7 +5,7 @@ const joinNodes = (nodes: ReactNode[], Separator: ComponentType) => {
     return nodes;
   }
 
-  return nodes.reduce<ReactNode[]>(
+  return nodes.slice(1).reduce<ReactNode[]>(
     (joined, node, i) => {
       joined.push(<Separator key={`__separator_${i}`} />, node);
       return joined;
