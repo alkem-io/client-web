@@ -48,7 +48,7 @@ const EmptyOrganization: Organization = {
   profile: {
     id: '',
     description: '',
-    tagsets: [],
+    tagsets: undefined,
     references: [],
     location: {
       id: '',
@@ -90,7 +90,7 @@ export const OrganizationForm: FC<Props> = ({
     legalEntityName,
     website,
     verification: { status: verificationStatus },
-    profile: { id: profileId, description, references, avatar, location },
+    profile: { id: profileId, description, references, tagsets, avatar, location },
   } = currentOrganization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
@@ -99,24 +99,10 @@ export const OrganizationForm: FC<Props> = ({
   }, [config]);
 
   const defaultEmptyTagsets = useMemo(() => {
-    let {
-      profile: { tagsets },
-    } = currentOrganization;
-    return tagsetsTemplate.reduce(
-      (acc, cur) => {
-        if (acc.every(x => x.name.toLowerCase() !== cur.name.toLowerCase())) {
-          acc.push({ name: cur.name, tags: [] });
-        }
-        return acc;
-      },
-      [...((tagsets as Tagset[]) || [])]
-    );
-  }, [currentOrganization, tagsetsTemplate]);
+    return tagsetsTemplate.map(cur => ({ name: cur.name, tags: [] }));
+  }, [tagsetsTemplate]);
 
   const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
-    let {
-      profile: { tagsets },
-    } = currentOrganization;
     const result: UpdateTagset[] = [];
     updatedTagsets.forEach(updatedTagset => {
       const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
@@ -134,7 +120,7 @@ export const OrganizationForm: FC<Props> = ({
       ...EmptyLocation,
       ...formatLocation(location),
     },
-    tagsets: defaultEmptyTagsets,
+    tagsets: tagsets || defaultEmptyTagsets,
     contactEmail: contactEmail || EmptyOrganization.contactEmail,
     domain: domain || EmptyOrganization.domain || '',
     legalEntityName: legalEntityName || EmptyOrganization.legalEntityName || '',
