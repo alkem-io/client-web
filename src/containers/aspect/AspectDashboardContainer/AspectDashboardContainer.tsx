@@ -30,7 +30,7 @@ interface EntityIds {
 interface Provided {
   canReadComments: boolean;
   canPostComments: boolean;
-  canDeleteMessage: (msgId: string) => boolean;
+  canDeleteComment: (messageId: string) => boolean;
   aspect?: AspectDashboardFragment;
   messages: Comment[];
   commentId?: string;
@@ -149,7 +149,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
 
   const commentsPrivileges = aspect?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
-  const canDeleteMessage = useCallback(
+  const canDeleteComment = useCallback(
     msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
     [messages, user, isAuthenticated]
   );
@@ -161,8 +161,9 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
-  const handleDeleteComment = async (commentId: string, messageId: string) => {
-    await deleteComment({
+
+  const handleDeleteComment = (commentId: string, messageId: string) =>
+    deleteComment({
       variables: {
         messageData: {
           commentsID: commentId,
@@ -170,7 +171,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         },
       },
     });
-  };
 
   const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
     onError: handleError,
@@ -208,8 +208,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     },
   });
 
-  const handlePostComment = async (commentId: string, message: string) => {
-    await postComment({
+  const handlePostComment = async (commentId: string, message: string) =>
+    postComment({
       variables: {
         messageData: {
           commentsID: commentId,
@@ -217,12 +217,11 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         },
       },
     });
-  };
 
   return renderComponentOrChildrenFn(rendered, {
     canReadComments,
     canPostComments,
-    canDeleteMessage,
+    canDeleteComment,
     aspect,
     messages,
     commentId,

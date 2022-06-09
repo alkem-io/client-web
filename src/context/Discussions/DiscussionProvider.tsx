@@ -106,6 +106,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
     if (!discussionData) return [];
     return uniq([...(discussionData.messages?.map(m => m.sender) || []), discussionData.createdBy]);
   }, [discussionData]);
+
   const { getAuthor, authors, loading: loadingAuthors } = useAuthorsDetails(senders);
 
   const sortedMessages = sortMessages(discussionData?.messages || []);

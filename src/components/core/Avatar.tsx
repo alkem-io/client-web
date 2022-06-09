@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { agnosticFunctor } from '../../utils/functor';
 import UserPopUp from '../composite/dialogs/UserPopUp';
@@ -77,50 +77,53 @@ export interface AvatarProps {
   userId?: string;
 }
 
-const Avatar = forwardRef<unknown, AvatarProps>(
+const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
   ({ size = 'md', classes = {}, className, src, theme = 'dark', name, userId }, ref) => {
     const [isPopUpShown, setIsPopUpShown] = useState<boolean>(false);
 
     const styles = useAvatarStyles(classes);
-    const [fallback, setFallback] = useState(false);
+    const [hasFailedToLoad, setHasFailedToLoad] = useState(false);
+
     useEffect(() => {
-      // reset fallback when image source changes.
-      setFallback(false);
+      setHasFailedToLoad(false);
     }, [src]);
+
+    const isEmpty = !src || hasFailedToLoad;
+
+    const optionallyWrapInTooltip = (image: ReactNode) => {
+      if (!name) {
+        return image;
+      }
+
+      return (
+        <Tooltip placement={'bottom'} id={'membersTooltip'} title={name}>
+          <span>{image}</span>
+        </Tooltip>
+      );
+    };
 
     return (
       <div
-        ref={ref as any}
+        ref={ref}
         className={clsx(styles.avatarWrapper, userId && styles.clickable, size, className)}
         onClick={() => userId && !isPopUpShown && setIsPopUpShown(true)}
       >
-        {(!src || fallback) && (
+        {isEmpty && (
           <div className={clsx(styles.noAvatar, styles[theme], size, className)}>
             <Typography variant="button" color="inherit">
               ?
             </Typography>
           </div>
         )}
-        {src && !fallback && name && (
-          <Tooltip placement={'bottom'} id={'membersTooltip'} title={name}>
-            <span>
-              <Image
-                className={clsx(styles.avatar, size, className)}
-                src={src}
-                alt="avatar"
-                onError={() => setFallback(true)}
-              />
-            </span>
-          </Tooltip>
-        )}
-        {src && !fallback && !name && (
-          <Image
-            className={clsx(styles.avatar, size, className)}
-            src={src}
-            alt="avatar"
-            onError={() => setFallback(true)}
-          />
-        )}
+        {!isEmpty &&
+          optionallyWrapInTooltip(
+            <Image
+              className={clsx(styles.avatar, size, className)}
+              src={src}
+              alt="avatar"
+              onError={() => setHasFailedToLoad(true)}
+            />
+          )}
         {userId && isPopUpShown && <UserPopUp id={userId} onHide={() => setIsPopUpShown(false)} />}
       </div>
     );
