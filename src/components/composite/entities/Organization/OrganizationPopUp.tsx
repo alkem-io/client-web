@@ -19,6 +19,7 @@ import Button from '../../../core/Button';
 import { Link } from 'react-router-dom';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
 import { RoleType } from '../../../../domain/user/constants/RoleType';
+import { handleHubId } from '../../../../domain/hub/utils/HubUtils';
 
 const groupPopUpStyles = makeStyles(theme => ({
   header: {
@@ -115,7 +116,14 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
     },
   });
 
-  const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
+  const hubsHosting =
+    membershipData?.rolesOrganization?.hubs
+      ?.filter(h => h.roles?.includes(RoleType.Host))
+      .map(h => ({
+        ...h,
+        id: handleHubId(h.id),
+      })) || [];
+
   const challengesLeading =
     membershipData?.rolesOrganization?.hubs
       ?.flatMap(h => h.challenges)

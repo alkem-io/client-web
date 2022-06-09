@@ -2,6 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
 import { isSocialLink, SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
+import { handleHubId } from '../../domain/hub/utils/HubUtils';
 import { RoleType } from '../../domain/user/constants/RoleType';
 import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
 import { useRolesOrganizationQuery } from '../../hooks/generated/graphql';
@@ -116,7 +117,13 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   }, [usersWithRoles]);
 
   const contributions = useMemo(() => {
-    const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
+    const hubsHosting =
+      membershipData?.rolesOrganization?.hubs
+        ?.filter(h => h.roles?.includes(RoleType.Host))
+        .map(h => ({
+          ...h,
+          id: handleHubId(h.id),
+        })) || [];
 
     const hubContributions = hubsHosting.map<ContributionItem>(x => ({
       hubId: x.id,
@@ -128,7 +135,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
         h.challenges
           .filter(c => c.roles?.includes(RoleType.Lead))
           .map<ContributionItem>(c => ({
-            hubId: h.id,
+            hubId: handleHubId(h.id),
             challengeId: c.id,
           }))
       ) || [];
