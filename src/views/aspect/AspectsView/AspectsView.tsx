@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { AspectWithPermissions } from '../../../containers/ContributeTabContainer/ContributeTabContainer';
 
 export interface AspectsViewProps {
-  aspects?: AspectWithPermissions[];
+  aspects: AspectWithPermissions[] | undefined;
   aspectsLoading?: boolean;
   canReadAspects?: boolean;
   canCreateAspects?: boolean;
