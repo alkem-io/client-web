@@ -35,7 +35,6 @@ export const useAspectsData = ({
     data: hubContextData,
     loading: hubContextLoading,
     error: hubContextError,
-    subscribeToMore: subscribeToHub,
   } = usePrivilegesOnHubContextQuery({
     variables: { hubNameId },
     skip: !!(challengeNameId || opportunityNameId),
@@ -49,6 +48,7 @@ export const useAspectsData = ({
     data: hubAspectData,
     loading: hubAspectLoading,
     error: hubAspectError,
+    subscribeToMore: subscribeToHub,
   } = useHubAspectsQuery({
     variables: { hubNameId },
     skip: !canReadHubContext || !!(challengeNameId || opportunityNameId),
