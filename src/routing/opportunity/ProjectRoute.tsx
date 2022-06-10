@@ -62,7 +62,7 @@ export const ProjectNewRoute: FC<ProjectRootProps> = ({ paths }) => {
       paths={currentPaths}
       users={[]}
       loading={projectCreationLoading}
-      onCreate={({ displayName, nameID, description = '' }) =>
+      onCreate={({ displayName, nameID, description }) =>
         createProject({
           variables: {
             input: {
