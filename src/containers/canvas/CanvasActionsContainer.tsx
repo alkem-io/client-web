@@ -15,7 +15,7 @@ import {
   CreateCanvasOnContextInput,
   DeleteCanvasOnContextInput,
 } from '../../models/graphql-schema';
-import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
 
 export interface ICanvasActions {
   onCreate: (canvas: CreateCanvasOnContextInput) => Promise<void>;

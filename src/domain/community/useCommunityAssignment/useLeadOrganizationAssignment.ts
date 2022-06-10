@@ -1,30 +1,18 @@
 import {
-  useAllOrganizationsQuery,
   useAssignOrganizationAsCommunityLeadMutation,
   useRemoveOrganizationAsCommunityLeadMutation,
 } from '../../../hooks/generated/graphql';
-import useCommunityMembersAssignment, { UseOrganizationAssignmentOptions } from './useCommunityMembersAssignment';
-import {
-  AssignOrganizationAsCommunityLeadMutation,
-  OrganizationDetailsFragment,
-  RemoveOrganizationAsCommunityLeadMutation,
-} from '../../../models/graphql-schema';
-
-type Options<OrganizationsQueryVariables extends {}> = Omit<
-  UseOrganizationAssignmentOptions<
-    OrganizationsQueryVariables,
-    OrganizationDetailsFragment,
-    AssignOrganizationAsCommunityLeadMutation,
-    RemoveOrganizationAsCommunityLeadMutation
-  >,
-  'allPossibleMembers' | 'useAssignMemberMutation' | 'useRemoveMemberMutation'
->;
+import useCommunityMembersAssignment from './useCommunityMembersAssignment';
+import useAllPossibleOrganizations from './useAllPossibleOrganizations';
+import { UseOrganizationAssignmentOptions, UseOrganizationAssignmentProvided } from './OrganizationAssignmentTypes';
 
 const useLeadOrganizationAssignment = <OrganizationsQueryVariables extends {}>(
-  options: Options<OrganizationsQueryVariables>
-) => {
+  options: UseOrganizationAssignmentOptions<OrganizationsQueryVariables>
+): UseOrganizationAssignmentProvided => {
+  const { allPossibleOrganizations, ...availableOrganizationsQueryProps } = useAllPossibleOrganizations();
+
   const { existingMembers, availableMembers, ...rest } = useCommunityMembersAssignment({
-    allPossibleMembers: useAllOrganizationsQuery().data?.organizations,
+    allPossibleMembers: allPossibleOrganizations,
     useAssignMemberMutation: useAssignOrganizationAsCommunityLeadMutation,
     useRemoveMemberMutation: useRemoveOrganizationAsCommunityLeadMutation,
     ...options,
@@ -34,6 +22,7 @@ const useLeadOrganizationAssignment = <OrganizationsQueryVariables extends {}>(
     existingOrganizations: existingMembers,
     availableOrganizations: availableMembers,
     ...rest,
+    ...availableOrganizationsQueryProps,
   };
 };
 

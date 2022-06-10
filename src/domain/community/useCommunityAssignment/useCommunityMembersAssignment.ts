@@ -21,7 +21,7 @@ interface MutationVariables {
   communityId: string;
 }
 
-export interface UseOrganizationAssignmentOptions<
+export interface UseCommunityMembersAssignmentOptions<
   ExistingMembersQueryVariables extends {},
   MemberEntity extends Identifiable,
   AssignMemberMutation,
@@ -45,7 +45,7 @@ export interface UseOrganizationAssignmentOptions<
   ) => MutationTuple<RemoveMemberMutation, MutationVariables>;
 }
 
-interface Provided<MemberEntity> {
+export interface Provided<MemberEntity> {
   existingMembers: MemberEntity[];
   availableMembers: MemberEntity[];
   updating: boolean;
@@ -68,7 +68,7 @@ const useCommunityMembersAssignment = <
   AssignMemberMutation,
   RemoveMemberMutation
 >(
-  options: UseOrganizationAssignmentOptions<
+  options: UseCommunityMembersAssignmentOptions<
     ExistingMembersQueryVariables,
     MemberEntity,
     AssignMemberMutation,

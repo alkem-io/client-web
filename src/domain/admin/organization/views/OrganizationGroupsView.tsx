@@ -4,7 +4,7 @@ import { ListPage } from '../../../../components/Admin/ListPage';
 import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../hooks';
 import { useDeleteGroupMutation, useOrganizationGroupsQuery } from '../../../../hooks/generated/graphql';
 import { SearchableListItem } from '../../../../components/Admin/SearchableList';
-import removeFromCache from '../../../../utils/apollo-cache/removeFromCache';
+import removeFromCache from '../../../shared/utils/apollo-cache/removeFromCache';
 import { useResolvedPath } from 'react-router-dom';
 import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';

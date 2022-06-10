@@ -10682,6 +10682,26 @@ export type HubApplicationsQuery = {
   };
 };
 
+export type AdminGlobalOrganizationsListQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
+
+export type AdminGlobalOrganizationsListQuery = {
+  __typename?: 'Query';
+  organizationsPaginated: {
+    __typename?: 'PaginatedOrganization';
+    organization: Array<{ __typename?: 'Organization'; id: string; nameID: string; displayName: string }>;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
+    };
+  };
+};
+
 export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
   aspectID: Scalars['UUID'];
 }>;
@@ -11290,6 +11310,18 @@ export type AvailableUsersQuery = {
   };
 };
 
+export type BasicOrganizationDetailsFragment = {
+  __typename?: 'Organization';
+  id: string;
+  displayName: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
 export type CommunityMemberUserFragment = {
   __typename?: 'User';
   id: string;
@@ -11299,24 +11331,34 @@ export type CommunityMemberUserFragment = {
   email: string;
 };
 
-export type AllOrganizationsQueryVariables = Exact<{ [key: string]: never }>;
+export type AllOrganizationsQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
 
 export type AllOrganizationsQuery = {
   __typename?: 'Query';
-  organizations: Array<{
-    __typename?: 'Organization';
-    id: string;
-    displayName: string;
-    nameID: string;
-    profile: {
-      __typename?: 'Profile';
+  organizationsPaginated: {
+    __typename?: 'PaginatedOrganization';
+    organization: Array<{
+      __typename?: 'Organization';
       id: string;
-      description?: string | undefined;
-      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+      displayName: string;
+      nameID: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+    }>;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
     };
-  }>;
+  };
 };
 
 export type ChallengeCommunityMembersQueryVariables = Exact<{
@@ -11813,6 +11855,13 @@ export type HubInfoFragment = {
   };
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
+};
+
+export type PageInfoFragment = {
+  __typename?: 'PageInfo';
+  startCursor?: string | undefined;
+  endCursor?: string | undefined;
+  hasNextPage: boolean;
 };
 
 export type UserListQueryVariables = Exact<{

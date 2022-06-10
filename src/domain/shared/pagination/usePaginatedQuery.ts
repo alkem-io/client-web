@@ -1,6 +1,7 @@
 import { QueryHookOptions, QueryResult } from '@apollo/client/react/types/types';
 import { PageInfo } from '../../../models/graphql-schema';
 import { useCallback } from 'react';
+import { ApolloError } from '@apollo/client';
 
 interface PaginationVariables {
   first: number;
@@ -18,9 +19,19 @@ interface PaginationOptions<Data, Variables extends PaginationVariables> {
   firstPageSize?: number;
 }
 
+export interface Provided<Data> {
+  data: Data | undefined;
+  loading: boolean;
+  error: ApolloError | undefined;
+  fetchMore: (itemsNumber?: number) => Promise<void>;
+  hasMore: undefined | boolean;
+  pageSize: number;
+  firstPageSize: number;
+}
+
 const usePaginatedQuery = <Data, Variables extends PaginationVariables>(
   options: PaginationOptions<Data, Variables>
-) => {
+): Provided<Data> => {
   const { useQuery, options: queryOptions, variables, getPageInfo, pageSize, firstPageSize = pageSize } = options;
 
   const {
