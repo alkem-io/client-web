@@ -1,0 +1,11 @@
+fragment BasicOrganizationDetails on Organization {
+  id
+  displayName
+  nameID
+  profile {
+    id
+    avatar {
+      ...VisualUri
+    }
+  }
+}

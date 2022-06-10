@@ -21,7 +21,7 @@ export interface SearchableListProps<Item extends SearchableListItem> {
   searchTerm: string;
   onSearchTermChange: (searchTerm: string) => void;
   totalCount?: number;
-  hasMoreItems?: boolean;
+  hasMore: boolean | undefined;
 }
 
 export const searchableListItemMapper =
@@ -49,7 +49,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   searchTerm,
   onSearchTermChange,
   totalCount,
-  hasMoreItems = false,
+  hasMore = false,
 }: SearchableListProps<Item>) => {
   const { t } = useTranslation();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
@@ -100,7 +100,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
       )}
       <hr />
       <List>
-        {loading
+        {loading && !data
           ? times(firstPageSize, i => <LoadingListItem key={`__loading_${i}`} />)
           : data.map(item => (
               <ListItemLink
@@ -116,7 +116,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
                 }
               />
             ))}
-        {hasMoreItems && (
+        {hasMore && (
           <>
             <LoadingListItem ref={lazyLoading.ref} />
             {times(pageSize - 1, i => (

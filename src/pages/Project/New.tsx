@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import FilePresent from '@mui/icons-material/FilePresent';
 import { Form, Formik } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 interface ProjectPageProps extends PageProps {
   users: User[] | undefined;
   loading?: boolean;
-  onCreate: (project: Pick<ProjectType, 'displayName' | 'description' | 'nameID'>) => void;
+  onCreate: (project: Required<Pick<ProjectType, 'displayName' | 'description' | 'nameID'>>) => void;
 }
 
 const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.ReactElement => {
@@ -46,11 +46,18 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
     shortName: '',
     description: '',
   };
+
   const validationSchema = yup.object().shape({
     name: displayNameValidator,
     shortName: nameIdValidator,
     description: yup.string().required(t('forms.validations.required')),
   });
+
+  const handleSubmit = useCallback(
+    ({ name, description, shortName }: typeof initialValues) =>
+      onCreate({ displayName: name, description, nameID: shortName }),
+    [onCreate]
+  );
 
   return (
     <>
@@ -59,13 +66,7 @@ const ProjectNew: FC<ProjectPageProps> = ({ paths, onCreate, loading }): React.R
         <SubHeader text={t('pages.opportunity.sections.projects.new-project.subheader')} />
         <Body text={t('pages.opportunity.sections.projects.new-project.body')}></Body>
         <ContentCard title="Project name & description">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={({ name, description, shortName }) =>
-              onCreate({ displayName: name, description, nameID: shortName })
-            }
-          >
+          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
             {({ isValid, handleSubmit, handleChange, handleBlur }) => (
               <Form noValidate onSubmit={handleSubmit}>
                 <FormikInputField

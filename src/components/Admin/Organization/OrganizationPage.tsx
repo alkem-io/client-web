@@ -2,7 +2,6 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApolloErrorHandler, useNotification, useOrganization, useUpdateNavigation } from '../../../hooks';
 import {
-  refetchOrganizationsListQuery,
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
@@ -15,6 +14,7 @@ import { PageProps } from '../../../pages';
 import { logger } from '../../../services/logging/winston/logger';
 import { Loading } from '../../core';
 import OrganizationForm from './OrganizationForm';
+import clearCacheForQuery from '../../../domain/shared/utils/apollo-cache/clearCacheForQuery';
 interface Props extends PageProps {
   title?: string;
   mode: EditMode;
@@ -55,8 +55,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
       }
     },
     onError: handleError,
-    awaitRefetchQueries: true,
-    refetchQueries: [refetchOrganizationsListQuery()],
+    update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
 
   const [updateOrganization] = useUpdateOrganizationMutation({
