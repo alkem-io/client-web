@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
@@ -12,7 +12,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Comment } from '../../../models/discussion/comment';
-import { useAuthorsDetails } from '../../../hooks/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../../domain/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
@@ -30,7 +30,7 @@ interface EntityIds {
 interface Provided {
   canReadComments: boolean;
   canPostComments: boolean;
-  canDeleteMessage: (msgId: string) => boolean;
+  canDeleteComment: (messageId: string) => boolean;
   aspect?: AspectDashboardFragment;
   messages: Comment[];
   commentId?: string;
@@ -135,21 +135,23 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const _messages = aspect?.comments?.messages ?? [];
   const senders = _messages.map(x => x.sender);
   const { getAuthor } = useAuthorsDetails(senders);
-  const messages: Comment[] =
-    _messages &&
-    _messages.map(x => ({
-      id: x.id,
-      body: x.message,
-      author: getAuthor(x.sender),
-      createdAt: new Date(x.timestamp),
-    }));
+  const messages = useMemo<Comment[]>(
+    () =>
+      _messages?.map(x => ({
+        id: x.id,
+        body: x.message,
+        author: getAuthor(x.sender),
+        createdAt: new Date(x.timestamp),
+      })),
+    [_messages, getAuthor]
+  );
 
   const isAuthor = (msgId: string, userId?: string) =>
     messages.find(x => x.id === msgId)?.author?.id === userId ?? false;
 
   const commentsPrivileges = aspect?.comments?.authorization?.myPrivileges ?? [];
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
-  const canDeleteMessage = useCallback(
+  const canDeleteComment = useCallback(
     msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
     [messages, user, isAuthenticated]
   );
@@ -161,8 +163,9 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
-  const handleDeleteComment = async (commentId: string, messageId: string) => {
-    await deleteComment({
+
+  const handleDeleteComment = (commentId: string, messageId: string) =>
+    deleteComment({
       variables: {
         messageData: {
           commentsID: commentId,
@@ -170,7 +173,6 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         },
       },
     });
-  };
 
   const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
     onError: handleError,
@@ -208,8 +210,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     },
   });
 
-  const handlePostComment = async (commentId: string, message: string) => {
-    await postComment({
+  const handlePostComment = async (commentId: string, message: string) =>
+    postComment({
       variables: {
         messageData: {
           commentsID: commentId,
@@ -217,12 +219,11 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         },
       },
     });
-  };
 
   return renderComponentOrChildrenFn(rendered, {
     canReadComments,
     canPostComments,
-    canDeleteMessage,
+    canDeleteComment,
     aspect,
     messages,
     commentId,

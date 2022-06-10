@@ -1,13 +1,15 @@
 import { useCallback, useMemo } from 'react';
 import { Author } from '../../models/discussion/author';
 import { buildUserProfileUrl } from '../../utils/urlBuilders';
-import { useAuthorDetailsQuery } from '../generated/graphql';
+import { useAuthorDetailsQuery } from '../../hooks/generated/graphql';
+import { uniq } from 'lodash';
 
-export const useAuthorsDetails = (authorIDs: string[]) => {
-  const authorIds = authorIDs.filter(x => x);
+export const useAuthorsDetails = (authorIds: string[]) => {
+  const uniqIds = uniq(authorIds).sort();
+
   const { data: authorData, loading } = useAuthorDetailsQuery({
-    variables: { ids: authorIds },
-    skip: authorIds.length === 0,
+    variables: { ids: uniqIds },
+    skip: uniqIds.length === 0,
   });
 
   const authors = useMemo(
@@ -23,11 +25,9 @@ export const useAuthorsDetails = (authorIDs: string[]) => {
     [authorData]
   );
 
-  const getAuthor = useCallback((senderId: string) => authors?.find(a => a.id === senderId), [authors]);
-  const getAuthors = useCallback(
-    (senderIds: string[]) => authors?.filter(a => senderIds.includes(a.id)) || [],
-    [authors]
-  );
+  const getAuthor = useCallback((id: string) => authors?.find(a => a.id === id), [authors]);
+
+  const getAuthors = useCallback((ids: string[]) => authors?.filter(a => ids.includes(a.id)), [authors]);
 
   return {
     authors,
