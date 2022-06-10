@@ -2,7 +2,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Filter from '../../components/Admin/Common/Filter';
-import DiscussionComment from '../../components/composite/common/Discussion/Comment';
+import DiscussionComment from '../../components/composite/common/Discussion/DiscussionComment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';

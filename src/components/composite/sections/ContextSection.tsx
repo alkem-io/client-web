@@ -23,7 +23,7 @@ export interface ContextSectionProps {
   displayName?: string;
   tagline?: string;
   keywords?: string[];
-  location?: Location | { __typename?: 'Location' | undefined; city: string; country: string } | undefined;
+  location?: Location;
   vision?: string;
   background?: string;
   impact?: string;

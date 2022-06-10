@@ -5,9 +5,10 @@ import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../components/core/Section/Section';
-import { Message, Searchable, User } from '../../models/graphql-schema';
+import { Message, Searchable } from '../../models/graphql-schema';
 import { Box } from '@mui/material';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
+import { Author } from '../../models/discussion/author';
 
 const UPDATES_CONTAINER_HEIGHT = 300;
 
@@ -16,7 +17,7 @@ export type SearchableUserCardProps = UserCardProps & Searchable;
 export interface CommunityPageViewProps {
   messages?: Message[];
   messagesLoading: boolean;
-  authors?: User[];
+  authors?: Author[];
 }
 
 const CommunityPageView: FC<CommunityPageViewProps> = ({ messages = [], messagesLoading, authors = [], children }) => {
@@ -36,7 +37,7 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({ messages = [], messages
         ) : (
           <Box sx={{ height: `${UPDATES_CONTAINER_HEIGHT}px`, overflowY: 'auto' }}>
             <CommunityUpdatesView
-              entities={{ messages, members: authors }}
+              entities={{ messages, authors }}
               state={{
                 loadingMessages: messagesLoading,
                 submittingMessage: false,

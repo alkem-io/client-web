@@ -2,13 +2,13 @@ import {
   useAssignUserAsCommunityLeadMutation,
   useRemoveUserAsCommunityLeadMutation,
 } from '../../../hooks/generated/graphql';
-import useCommunityMembersAssignment, { UseOrganizationAssignmentOptions } from './useCommunityMembersAssignment';
+import useCommunityMembersAssignment, { UseCommunityMembersAssignmentOptions } from './useCommunityMembersAssignment';
 import { AssignUserAsCommunityLeadMutation, RemoveUserAsCommunityLeadMutation } from '../../../models/graphql-schema';
 import useAllPossibleMemberUsers, { UseAllPossibleMemberUsersOptions } from './useAllPossibleMemberUsers';
 import { Member } from '../../../models/User';
 
 type Options<ExistingUsersQueryVariables extends {}> = Omit<
-  UseOrganizationAssignmentOptions<
+  UseCommunityMembersAssignmentOptions<
     ExistingUsersQueryVariables,
     Member,
     AssignUserAsCommunityLeadMutation,

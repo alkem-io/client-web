@@ -11,7 +11,7 @@ import { ContainerChildProps } from '../../models/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../utils/urlBuilders';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
-import clearCacheForType from '../../domain/shared/utils/clearCacheForType';
+import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: ApplicationButtonProps;

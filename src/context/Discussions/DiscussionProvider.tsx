@@ -2,7 +2,7 @@ import { sortBy, uniq, merge } from 'lodash';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import { useApolloErrorHandler, useConfig, useHub, useUrlParams } from '../../hooks';
-import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionMessageReceivedDocument,
   MessageDetailsFragmentDoc,
@@ -20,7 +20,7 @@ import {
   CommunicationDiscussionMessageReceivedSubscription,
   SubscriptionCommunicationDiscussionMessageReceivedArgs,
 } from '../../models/graphql-schema';
-import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 
@@ -106,6 +106,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
     if (!discussionData) return [];
     return uniq([...(discussionData.messages?.map(m => m.sender) || []), discussionData.createdBy]);
   }, [discussionData]);
+
   const { getAuthor, authors, loading: loadingAuthors } = useAuthorsDetails(senders);
 
   const sortedMessages = sortMessages(discussionData?.messages || []);

@@ -1,30 +1,18 @@
 import {
-  useAllOrganizationsQuery,
   useAssignOrganizationAsCommunityMemberMutation,
   useRemoveOrganizationAsCommunityMemberMutation,
 } from '../../../hooks/generated/graphql';
-import useCommunityMembersAssignment, { UseOrganizationAssignmentOptions } from './useCommunityMembersAssignment';
-import {
-  AssignOrganizationAsCommunityMemberMutation,
-  OrganizationDetailsFragment,
-  RemoveOrganizationAsCommunityMemberMutation,
-} from '../../../models/graphql-schema';
-
-type Options<OrganizationsQueryVariables extends {}> = Omit<
-  UseOrganizationAssignmentOptions<
-    OrganizationsQueryVariables,
-    OrganizationDetailsFragment,
-    AssignOrganizationAsCommunityMemberMutation,
-    RemoveOrganizationAsCommunityMemberMutation
-  >,
-  'allPossibleMembers' | 'useAssignMemberMutation' | 'useRemoveMemberMutation'
->;
+import useCommunityMembersAssignment from './useCommunityMembersAssignment';
+import useAllPossibleOrganizations from './useAllPossibleOrganizations';
+import { UseOrganizationAssignmentOptions, UseOrganizationAssignmentProvided } from './OrganizationAssignmentTypes';
 
 const useMemberOrganizationAssignment = <OrganizationsQueryVariables extends {}>(
-  options: Options<OrganizationsQueryVariables>
-) => {
+  options: UseOrganizationAssignmentOptions<OrganizationsQueryVariables>
+): UseOrganizationAssignmentProvided => {
+  const { allPossibleOrganizations, ...availableOrganizationsQueryProps } = useAllPossibleOrganizations();
+
   const { availableMembers, existingMembers, ...rest } = useCommunityMembersAssignment({
-    allPossibleMembers: useAllOrganizationsQuery().data?.organizations,
+    allPossibleMembers: allPossibleOrganizations,
     useAssignMemberMutation: useAssignOrganizationAsCommunityMemberMutation,
     useRemoveMemberMutation: useRemoveOrganizationAsCommunityMemberMutation,
     ...options,
@@ -34,6 +22,7 @@ const useMemberOrganizationAssignment = <OrganizationsQueryVariables extends {}>
     availableOrganizations: availableMembers,
     existingOrganizations: existingMembers,
     ...rest,
+    ...availableOrganizationsQueryProps,
   };
 };
 
