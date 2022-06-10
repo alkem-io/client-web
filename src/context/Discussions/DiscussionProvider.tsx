@@ -20,7 +20,7 @@ import {
   CommunicationDiscussionMessageReceivedSubscription,
   SubscriptionCommunicationDiscussionMessageReceivedArgs,
 } from '../../models/graphql-schema';
-import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 

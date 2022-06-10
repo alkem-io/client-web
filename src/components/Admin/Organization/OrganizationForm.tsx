@@ -1,5 +1,5 @@
 import { Form, Formik } from 'formik';
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
@@ -148,48 +148,51 @@ export const OrganizationForm: FC<Props> = ({
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (orgData: OrganizationInput) => {
-    const { tagsets, references, description, location, ...otherData } = orgData;
+  const handleSubmit = useCallback(
+    (orgData: OrganizationInput) => {
+      const { tagsets, references, description, location, ...otherData } = orgData;
 
-    if (isCreateMode) {
-      const organization: CreateOrganizationInput = {
-        ...otherData,
-        displayName: otherData.name,
-        profileData: {
-          description,
-          referencesData: references,
-          tagsetsData: tagsets,
-          location: {
-            city: location.city,
-            country: location.country?.code,
+      if (isCreateMode) {
+        const organization: CreateOrganizationInput = {
+          ...otherData,
+          displayName: otherData.name!, // ensured by yup
+          profileData: {
+            description,
+            referencesData: references,
+            tagsetsData: tagsets,
+            location: {
+              city: location.city,
+              country: location.country?.code,
+            },
           },
-        },
-      };
+        };
 
-      onSave && onSave(organization);
-    }
+        onSave?.(organization);
+      }
 
-    if (isEditMode) {
-      const updatedTagsets = getUpdatedTagsets(tagsets);
-      const organization: UpdateOrganizationInput = {
-        ID: currentOrganization.id,
-        ...otherData,
-        displayName: otherData.name,
-        profileData: {
-          ID: currentOrganization.profile.id,
-          description,
-          references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
-          tagsets: updatedTagsets.map(r => ({ ...r, ID: r.id, id: undefined })),
-          location: {
-            city: location.city,
-            country: location.country?.code,
+      if (isEditMode) {
+        const updatedTagsets = getUpdatedTagsets(tagsets);
+        const organization: UpdateOrganizationInput = {
+          ID: currentOrganization.id,
+          ...otherData,
+          displayName: otherData.name,
+          profileData: {
+            ID: currentOrganization.profile.id,
+            description,
+            references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
+            tagsets: updatedTagsets.map(r => ({ ...r, ID: r.id, id: undefined })),
+            location: {
+              city: location.city,
+              country: location.country?.code,
+            },
           },
-        },
-      };
+        };
 
-      onSave && onSave(organization);
-    }
-  };
+        onSave?.(organization);
+      }
+    },
+    [isCreateMode, isEditMode, onSave]
+  );
 
   const handleBack = () => navigate(-1);
 
@@ -217,7 +220,7 @@ export const OrganizationForm: FC<Props> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={values => handleSubmit(values)}
+          onSubmit={handleSubmit}
         >
           {({ values: { references, tagsets }, handleSubmit }) => {
             return (

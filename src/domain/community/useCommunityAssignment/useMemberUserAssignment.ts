@@ -2,7 +2,7 @@ import {
   useAssignUserAsCommunityMemberMutation,
   useRemoveUserAsCommunityMemberMutation,
 } from '../../../hooks/generated/graphql';
-import useCommunityMembersAssignment, { UseOrganizationAssignmentOptions } from './useCommunityMembersAssignment';
+import useCommunityMembersAssignment, { UseCommunityMembersAssignmentOptions } from './useCommunityMembersAssignment';
 import {
   AssignUserAsCommunityMemberMutation,
   RemoveUserAsCommunityMemberMutation,
@@ -11,7 +11,7 @@ import useAllPossibleMemberUsers, { UseAllPossibleMemberUsersOptions } from './u
 import { Member } from '../../../models/User';
 
 type Options<ExistingUsersQueryVariables extends {}> = Omit<
-  UseOrganizationAssignmentOptions<
+  UseCommunityMembersAssignmentOptions<
     ExistingUsersQueryVariables,
     Member,
     AssignUserAsCommunityMemberMutation,

@@ -13,7 +13,7 @@ import {
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Comment } from '../../../models/discussion/comment';
 import { useAuthorsDetails } from '../../../domain/communication/useAuthorsDetails';
-import { evictFromCache } from '../../../utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
