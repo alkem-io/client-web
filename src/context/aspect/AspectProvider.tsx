@@ -1,4 +1,4 @@
-import React, { FC, useContext, useMemo } from 'react';
+import React, { FC, useContext } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../hooks';
 import {
   useChallengeAspectProviderQuery,
@@ -93,7 +93,4 @@ const AspectProvider: FC = ({ children }) => {
 };
 export default AspectProvider;
 
-export const useAspect = () => {
-  const context = useContext(AspectContext);
-  return useMemo(() => ({ ...context }), [context]);
-};
+export const useAspect = () => useContext(AspectContext);

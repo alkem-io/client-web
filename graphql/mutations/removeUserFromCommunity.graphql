@@ -1,8 +1,0 @@
-mutation removeUserAsCommunityMember($input: RemoveCommunityMemberUserInput!) {
-    removeUserAsCommunityMember(membershipData: $input) {
-      id
-      memberUsers {
-        ...GroupMembers
-      }
-    }
-  }

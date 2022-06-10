@@ -8,7 +8,7 @@ import {
   useDeleteAspectMutation,
 } from '../../hooks/generated/graphql';
 import { ContainerPropsWithProvided, renderComponentOrChildrenFn } from '../../utils/containers/ComponentOrChildrenFn';
-import removeFromCache from '../../utils/apollo-cache/removeFromCache';
+import removeFromCache from '../../domain/shared/utils/apollo-cache/removeFromCache';
 
 export interface EntityIds {
   hubNameId: Scalars['UUID_NAMEID'];

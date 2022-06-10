@@ -3,7 +3,7 @@ import { merge, uniq } from 'lodash';
 import React, { FC, useContext, useEffect, useMemo } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useApolloErrorHandler, useConfig, useHub } from '../../hooks';
-import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionUpdatedDocument,
   refetchCommunityDiscussionListQuery,
@@ -20,7 +20,7 @@ import {
   CommunicationDiscussionUpdatedSubscription,
   SubscriptionCommunicationDiscussionUpdatedArgs,
 } from '../../models/graphql-schema';
-import { useCommunityContext } from '../CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { buildDiscussionsUrl, buildDiscussionUrl } from '../../utils/urlBuilders';
 
 interface Permissions {

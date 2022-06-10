@@ -1,0 +1,49 @@
+query hubProvider($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    ...HubInfo
+  }
+}
+
+fragment HubInfo on Hub {
+  ...HubDetails
+  authorization {
+    id
+    myPrivileges
+  }
+  community {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  context {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  templates {
+    id
+    aspectTemplates {
+      id
+      defaultDescription
+      type
+      info {
+        id
+        title
+        description
+      }
+    }
+    canvasTemplates {
+      id
+      info {
+        id
+        title
+        description
+      }
+      value
+    }
+  }
+}

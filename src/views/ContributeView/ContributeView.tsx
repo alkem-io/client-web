@@ -40,6 +40,7 @@ const ContributeView: FC<ContributeViewProps> = ({
     () => (shouldSkipFiltering ? aspects : aspects?.filter(({ type }) => type === category)),
     [shouldSkipFiltering, aspects, category]
   );
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={3}>

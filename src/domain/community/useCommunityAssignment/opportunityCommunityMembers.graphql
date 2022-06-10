@@ -1,0 +1,23 @@
+query opportunityCommunityMembers($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      community {
+        id
+        memberUsers {
+          ...CommunityMemberUser
+        }
+        leadUsers {
+          ...CommunityMemberUser
+        }
+        memberOrganizations {
+          ...OrganizationDetails
+        }
+        leadOrganizations {
+          ...OrganizationDetails
+        }
+      }
+    }
+  }
+}

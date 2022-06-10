@@ -1,0 +1,7 @@
+fragment CommunityMemberUser on User {
+  id
+  displayName
+  firstName
+  lastName
+  email
+}

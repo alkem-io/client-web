@@ -1,12 +1,18 @@
 import { Form, Formik } from 'formik';
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Grid } from '@mui/material';
 import { useTagsetsTemplateQuery } from '../../../hooks/generated/graphql';
-import { Tagset } from '../../../models/Profile';
-import { Organization, OrganizationVerificationEnum, TagsetTemplate } from '../../../models/graphql-schema';
+import { Tagset, UpdateTagset } from '../../../models/Profile';
+import {
+  Organization,
+  OrganizationVerificationEnum,
+  TagsetTemplate,
+  UpdateOrganizationInput,
+  CreateOrganizationInput,
+} from '../../../models/graphql-schema';
 import { EditMode } from '../../../models/editMode';
 import Button from '../../core/Button';
 import Section, { Header } from '../../core/Section';
@@ -15,41 +21,53 @@ import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
 import { referenceSegmentSchema } from '../Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
-import { organizationegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
+import { organizationSegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationInput } from '../../../domain/organization/OrganizationInput';
 import { formatLocation } from '../../../domain/location/LocationUtils';
 import { LocationSegment } from '../../../domain/location/LocationSegment';
 import { EmptyLocation } from '../../../domain/location/Location';
 
-const emptyOrganization = {
+const EmptyOrganization: Organization = {
+  id: '',
   nameID: '',
   displayName: '',
-  contactEmail: '',
+  contactEmail: undefined,
   domain: '',
   legalEntityName: '',
   website: '',
   verification: {
+    id: '',
     status: OrganizationVerificationEnum.NotVerified,
+    lifecycle: {
+      id: '',
+      stateIsFinal: false,
+      machineDef: '',
+    },
   },
   profile: {
+    id: '',
     description: '',
-    tagsets: [],
+    tagsets: undefined,
     references: [],
-    location: EmptyLocation,
+    location: {
+      id: '',
+      city: '',
+      country: '',
+    },
   },
+  preferences: [],
 };
 
 interface Props {
-  organization?: any;
+  organization?: Organization;
   editMode?: EditMode;
-  onSave?: (organization) => void;
-  onAvatarChange?;
+  onSave?: (organization: CreateOrganizationInput | UpdateOrganizationInput) => void;
   title?: string;
 }
 
 export const OrganizationForm: FC<Props> = ({
-  organization: currentOrganization = emptyOrganization,
+  organization: currentOrganization = EmptyOrganization,
   editMode = EditMode.readOnly,
   onSave,
   title = 'Organization',
@@ -72,55 +90,54 @@ export const OrganizationForm: FC<Props> = ({
     legalEntityName,
     website,
     verification: { status: verificationStatus },
-    profile: { id: profileId, description, references, avatar, location },
-  } = currentOrganization as Organization;
+    profile: { id: profileId, description, references, tagsets, avatar, location },
+  } = currentOrganization;
 
   const tagsetsTemplate: TagsetTemplate[] = useMemo(() => {
     if (config) return config.configuration.template.organizations[0].tagsets || [];
     return [];
   }, [config]);
 
-  const tagsets = useMemo(() => {
-    let {
-      profile: { tagsets },
-    } = currentOrganization;
-    return tagsetsTemplate.reduce(
-      (acc, cur) => {
-        if (acc.every(x => x.name.toLowerCase() !== cur.name.toLowerCase())) {
-          acc.push({ name: cur.name, tags: [] });
-        }
-        return acc;
-      },
-      [...(tagsets as Tagset[])]
-    );
-  }, [currentOrganization, tagsetsTemplate]);
+  const defaultEmptyTagsets = useMemo(() => {
+    return tagsetsTemplate.map(cur => ({ name: cur.name, tags: [] }));
+  }, [tagsetsTemplate]);
+
+  const getUpdatedTagsets = (updatedTagsets: Tagset[]) => {
+    const result: UpdateTagset[] = [];
+    updatedTagsets.forEach(updatedTagset => {
+      const originalTagset = tagsets?.find(value => value.name === updatedTagset.name);
+      if (originalTagset) result.push({ ...originalTagset, tags: updatedTagset.tags });
+    });
+
+    return result;
+  };
 
   const initialValues: OrganizationInput = {
-    name: displayName || emptyOrganization.displayName,
-    nameID: nameID || emptyOrganization.nameID,
-    description: description || emptyOrganization.profile.description,
+    name: displayName || EmptyOrganization.displayName,
+    nameID: nameID || EmptyOrganization.nameID,
+    description: description || EmptyOrganization.profile.description || '',
     location: {
-      ...emptyOrganization.profile.location,
+      ...EmptyLocation,
       ...formatLocation(location),
     },
-    tagsets: tagsets || emptyOrganization.profile.tagsets,
-    contactEmail: contactEmail || emptyOrganization.contactEmail,
-    domain: domain || emptyOrganization.domain,
-    legalEntityName: legalEntityName || emptyOrganization.legalEntityName,
-    website: website || emptyOrganization.website,
-    verified: verificationStatus || emptyOrganization.verification.status,
-    references: references || emptyOrganization.profile.references,
+    tagsets: tagsets || defaultEmptyTagsets,
+    contactEmail: contactEmail || EmptyOrganization.contactEmail,
+    domain: domain || EmptyOrganization.domain || '',
+    legalEntityName: legalEntityName || EmptyOrganization.legalEntityName || '',
+    website: website || EmptyOrganization.website || '',
+    verified: verificationStatus || EmptyOrganization.verification.status,
+    references: references || EmptyOrganization.profile.references || [],
   };
 
   const validationSchema = yup.object().shape({
     name: nameSegmentSchema.fields?.name || yup.string(),
     nameID: nameSegmentSchema.fields?.nameID || yup.string(),
     description: profileSegmentSchema.fields?.description || yup.string(),
-    contactEmail: organizationegmentSchema.fields?.contactEmail || yup.string(),
-    domain: organizationegmentSchema.fields?.domain || yup.string(),
-    legalEntityName: organizationegmentSchema.fields?.legalEntityName || yup.string(),
-    website: organizationegmentSchema.fields?.website || yup.string(),
-    verified: organizationegmentSchema.fields?.verified || yup.string(),
+    contactEmail: organizationSegmentSchema.fields?.contactEmail || yup.string(),
+    domain: organizationSegmentSchema.fields?.domain || yup.string(),
+    legalEntityName: organizationSegmentSchema.fields?.legalEntityName || yup.string(),
+    website: organizationSegmentSchema.fields?.website || yup.string(),
+    verified: organizationSegmentSchema.fields?.verified || yup.string(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
   });
@@ -131,26 +148,51 @@ export const OrganizationForm: FC<Props> = ({
    * @return void
    * @summary if edits current organization data or creates a new one depending on the edit mode
    */
-  const handleSubmit = async (orgData: typeof initialValues) => {
-    const { tagsets, references, description, location, ...otherData } = orgData;
+  const handleSubmit = useCallback(
+    (orgData: OrganizationInput) => {
+      const { tagsets, references, description, location, ...otherData } = orgData;
 
-    const organization: Organization = {
-      ...currentOrganization,
-      ...otherData,
-      displayName: otherData.name,
-      profile: {
-        description,
-        references,
-        tagsets,
-        location: {
-          city: location.city,
-          country: location.country?.code,
-        },
-      },
-    };
+      if (isCreateMode) {
+        const organization: CreateOrganizationInput = {
+          ...otherData,
+          displayName: otherData.name!, // ensured by yup
+          profileData: {
+            description,
+            referencesData: references,
+            tagsetsData: tagsets,
+            location: {
+              city: location.city,
+              country: location.country?.code,
+            },
+          },
+        };
 
-    onSave && onSave(organization);
-  };
+        onSave?.(organization);
+      }
+
+      if (isEditMode) {
+        const updatedTagsets = getUpdatedTagsets(tagsets);
+        const organization: UpdateOrganizationInput = {
+          ID: currentOrganization.id,
+          ...otherData,
+          displayName: otherData.name,
+          profileData: {
+            ID: currentOrganization.profile.id,
+            description,
+            references: references.map(r => ({ ...r, ID: r.id, id: undefined })),
+            tagsets: updatedTagsets.map(r => ({ ...r, ID: r.id, id: undefined })),
+            location: {
+              city: location.city,
+              country: location.country?.code,
+            },
+          },
+        };
+
+        onSave?.(organization);
+      }
+    },
+    [isCreateMode, isEditMode, onSave]
+  );
 
   const handleBack = () => navigate(-1);
 
@@ -178,7 +220,7 @@ export const OrganizationForm: FC<Props> = ({
           initialValues={initialValues}
           validationSchema={validationSchema}
           enableReinitialize
-          onSubmit={values => handleSubmit(values)}
+          onSubmit={handleSubmit}
         >
           {({ values: { references, tagsets }, handleSubmit }) => {
             return (

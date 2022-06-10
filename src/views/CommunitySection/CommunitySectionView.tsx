@@ -9,8 +9,7 @@ import { Link as RouterLink, useResolvedPath } from 'react-router-dom';
 import Button from '../../components/core/Button';
 import Markdown from '../../components/core/Markdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import { AvatarsProvider } from '../../context/AvatarsProvider';
-import { useCommunityContext } from '../../context/CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
 import { Discussion } from '../../models/discussion/discussion';
@@ -18,6 +17,7 @@ import { AuthorizationPrivilege, Message, User } from '../../models/graphql-sche
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 
 export interface CommunitySectionPropsExt
   extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users' | 'parentEntityId'> {}
@@ -49,6 +49,8 @@ type TabConfig = {
   enabled: boolean;
   showOnly?: boolean;
 };
+
+const EMPTY = [];
 
 export const CommunitySection: FC<CommunitySectionProps> = ({
   title,
@@ -89,6 +91,8 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
     },
   ].filter(x => x.enabled);
 
+  const { authors = EMPTY } = useAuthorsDetails(updateSenders?.map(sender => sender.id) ?? EMPTY);
+
   return (
     <Section avatar={<PeopleOutline color="primary" sx={{ fontSize: 120 }} />} hideDetails>
       <SectionHeader text={title} />
@@ -110,27 +114,23 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
               <TabPanel classes={{ root: styles.tabPanel }} value={'updates'}>
                 <Box>
                   {updates && (
-                    <AvatarsProvider users={updateSenders}>
-                      {detailedUsers => (
-                        <CommunityUpdatesView
-                          entities={{
-                            members: detailedUsers,
-                            messages: updates,
-                          }}
-                          options={{
-                            hideHeaders: true,
-                            itemsPerRow: 1,
-                            disableElevation: true,
-                            disableCollapse: true,
-                          }}
-                          state={{
-                            loadingMessages: false,
-                            submittingMessage: false,
-                            removingMessage: false,
-                          }}
-                        />
-                      )}
-                    </AvatarsProvider>
+                    <CommunityUpdatesView
+                      entities={{
+                        authors,
+                        messages: updates,
+                      }}
+                      options={{
+                        hideHeaders: true,
+                        itemsPerRow: 1,
+                        disableElevation: true,
+                        disableCollapse: true,
+                      }}
+                      state={{
+                        loadingMessages: false,
+                        submittingMessage: false,
+                        removingMessage: false,
+                      }}
+                    />
                   )}
                 </Box>
               </TabPanel>

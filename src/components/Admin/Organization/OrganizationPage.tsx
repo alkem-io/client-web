@@ -2,7 +2,6 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApolloErrorHandler, useNotification, useOrganization, useUpdateNavigation } from '../../../hooks';
 import {
-  refetchOrganizationsListQuery,
   useCreateOrganizationMutation,
   useCreateTagsetOnProfileMutation,
   useOrganizationProfileInfoQuery,
@@ -10,17 +9,12 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import { EditMode } from '../../../models/editMode';
-import {
-  CreateOrganizationInput,
-  Organization,
-  Reference,
-  Tagset,
-  UpdateOrganizationInput,
-} from '../../../models/graphql-schema';
+import { CreateOrganizationInput, UpdateOrganizationInput, Organization } from '../../../models/graphql-schema';
 import { PageProps } from '../../../pages';
 import { logger } from '../../../services/logging/winston/logger';
 import { Loading } from '../../core';
 import OrganizationForm from './OrganizationForm';
+import clearCacheForQuery from '../../../domain/shared/utils/apollo-cache/clearCacheForQuery';
 interface Props extends PageProps {
   title?: string;
   mode: EditMode;
@@ -34,6 +28,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
   const { data, loading } = useOrganizationProfileInfoQuery({
     variables: { id: organizationNameId },
     fetchPolicy: 'cache-and-network',
+    skip: !organizationNameId,
   });
 
   const organization = data?.organization;
@@ -60,8 +55,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
       }
     },
     onError: handleError,
-    awaitRefetchQueries: true,
-    refetchQueries: [refetchOrganizationsListQuery()],
+    update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
   });
 
   const [updateOrganization] = useUpdateOrganizationMutation({
@@ -71,19 +65,11 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
     },
   });
 
-  const handleSubmit = async (editedOrganization: Organization) => {
-    const {
-      id: orgID,
-      nameID,
-      profile,
-      contactEmail,
-      displayName,
-      domain,
-      legalEntityName,
-      website,
-    } = editedOrganization;
-
+  const handleSubmit = async (editedOrganization: CreateOrganizationInput | UpdateOrganizationInput) => {
     if (mode === EditMode.new) {
+      const { nameID, profileData, contactEmail, displayName, domain, legalEntityName, website } =
+        editedOrganization as CreateOrganizationInput;
+
       const input: CreateOrganizationInput = {
         nameID,
         contactEmail: contactEmail,
@@ -92,36 +78,48 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         legalEntityName: legalEntityName,
         website: website,
         profileData: {
-          description: profile.description || '',
-          referencesData: [...(profile.references as Reference[])],
-          tagsetsData: [...(profile.tagsets as Tagset[])].map(t => ({ name: t.name, tags: t.tags })),
+          description: profileData?.description,
+          referencesData: profileData?.referencesData,
+          tagsetsData: profileData?.tagsetsData,
         },
       };
 
       createOrganization({
         variables: {
-          input: input,
+          input,
         },
       });
     }
 
     if (mode === EditMode.edit) {
+      const {
+        ID: orgID,
+        nameID,
+        profileData,
+        contactEmail,
+        displayName,
+        domain,
+        legalEntityName,
+        website,
+      } = editedOrganization as UpdateOrganizationInput;
       const profileId = organization?.profile?.id;
-      const references = editedOrganization.profile.references || [];
-      const tagsetsToAdd = editedOrganization.profile.tagsets?.filter(x => !x.id) || [];
+      const references = profileData?.references;
+      const tagsetsToAdd = profileData?.tagsets?.filter(x => !x.ID) || [];
 
       for (const tagset of tagsetsToAdd) {
-        await createTagset({
-          variables: {
-            input: {
-              name: tagset.name,
-              tags: [...tagset.tags],
-              profileID: profileId,
+        if (tagset.name && tagset.tags) {
+          await createTagset({
+            variables: {
+              input: {
+                name: tagset.name,
+                tags: tagset.tags,
+                profileID: profileId,
+              },
             },
-          },
-        });
+          });
+        }
       }
-      const organizationInput: UpdateOrganizationInput = {
+      const input: UpdateOrganizationInput = {
         ID: orgID,
         nameID,
         contactEmail: contactEmail,
@@ -131,26 +129,19 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
         website: website,
         profileData: {
           ID: profileId || '',
-          description: profile.description || '',
+          description: profileData?.description,
           location: {
-            city: profile.location?.city || '',
-            country: profile.location?.country || '',
+            city: profileData?.location?.city,
+            country: profileData?.location?.country,
           },
-          references: references.map(x => ({
-            ID: x.id,
-            description: x.description,
-            name: x.name,
-            uri: x.uri,
-          })),
-          tagsets: profile?.tagsets?.filter(t => t.id).map(t => ({ ID: t.id, name: t.name, tags: [...t.tags] })) || [],
+          references: references,
+          tagsets: profileData?.tagsets?.filter(t => t.ID),
         },
       };
 
       updateOrganization({
         variables: {
-          input: {
-            ...organizationInput,
-          },
+          input,
         },
       });
     }
@@ -158,7 +149,9 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
 
   if (loading) return <Loading text={t('components.loading.message', { blockName: t('common.organization') })} />;
 
-  return <OrganizationForm organization={organization} onSave={handleSubmit} editMode={mode} title={title} />;
+  return (
+    <OrganizationForm organization={organization as Organization} onSave={handleSubmit} editMode={mode} title={title} />
+  );
 };
 
 export default OrganizationPage;

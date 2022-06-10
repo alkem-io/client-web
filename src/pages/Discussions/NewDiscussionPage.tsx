@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import DiscussionsLayout from '../../components/composite/layout/Discussions/DiscussionsLayout';
-import { useCommunityContext } from '../../context/CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import NewDiscussionView from '../../views/Discussions/NewDiscussionView';
 import { PageProps } from '../common';
