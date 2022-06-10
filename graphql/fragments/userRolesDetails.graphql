@@ -34,10 +34,6 @@ fragment UserRolesDetails on ContributorRoles {
     }
     roles
   }
-  communities {
-    id
-    displayName
-  }
   applications {
     id
     communityID

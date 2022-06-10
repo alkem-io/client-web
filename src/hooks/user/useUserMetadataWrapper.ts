@@ -44,7 +44,6 @@ export interface UserMetadata {
   hubs: string[];
   keywords: string[];
   skills: string[];
-  communities: Record<string, string>;
   contributions: ContributionItem[];
   pendingApplications: ContributionItem[];
   organizationNameIDs: string[];
@@ -108,11 +107,6 @@ export const useUserMetadataWrapper = () => {
       const organizationNameIDs: UserMetadata['organizationNameIDs'] =
         membershipData?.organizations.map(o => o.nameID) || [];
       const groups = membershipData?.hubs.flatMap(e => e.userGroups.map(getDisplayName)) || [];
-      const communities =
-        membershipData?.communities.reduce((aggr, value) => {
-          aggr[value.id] = value.displayName;
-          return aggr;
-        }, {}) || {};
 
       const roles =
         user?.agent?.credentials
@@ -171,7 +165,6 @@ export const useUserMetadataWrapper = () => {
         opportunities,
         organizations,
         hubs,
-        communities,
         keywords: user.profile?.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
         skills: user.profile?.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
         contributions: getContributions(membershipData),

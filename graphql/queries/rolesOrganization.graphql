@@ -1,5 +1,6 @@
 query rolesOrganization($input: RolesOrganizationInput!) {
   rolesOrganization(rolesData: $input) {
+    id
     hubs {
       nameID
       id

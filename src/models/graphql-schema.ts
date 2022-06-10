@@ -3717,7 +3717,6 @@ export type UserRolesDetailsFragment = {
     roles: Array<string>;
     userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
   }>;
-  communities: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
   applications?:
     | Array<{
         __typename?: 'ApplicationForRoleResult';
@@ -6362,6 +6361,7 @@ export type RolesOrganizationQuery = {
   __typename?: 'Query';
   rolesOrganization: {
     __typename?: 'ContributorRoles';
+    id: string;
     hubs: Array<{
       __typename?: 'RolesResultHub';
       nameID: string;
@@ -6419,7 +6419,6 @@ export type RolesUserQuery = {
       roles: Array<string>;
       userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
-    communities: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
     applications?:
       | Array<{
           __typename?: 'ApplicationForRoleResult';
@@ -6792,7 +6791,6 @@ export type UserProfileQuery = {
       roles: Array<string>;
       userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
-    communities: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string }>;
     applications?:
       | Array<{
           __typename?: 'ApplicationForRoleResult';

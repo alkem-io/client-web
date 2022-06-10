@@ -629,10 +629,6 @@ export const UserRolesDetailsFragmentDoc = gql`
       }
       roles
     }
-    communities {
-      id
-      displayName
-    }
     applications {
       id
       communityID
@@ -8330,6 +8326,7 @@ export function refetchRelationsQuery(variables: SchemaTypes.RelationsQueryVaria
 export const RolesOrganizationDocument = gql`
   query rolesOrganization($input: RolesOrganizationInput!) {
     rolesOrganization(rolesData: $input) {
+      id
       hubs {
         nameID
         id
