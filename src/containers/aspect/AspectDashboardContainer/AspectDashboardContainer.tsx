@@ -143,7 +143,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         author: getAuthor(x.sender),
         createdAt: new Date(x.timestamp),
       })),
-    [_messages]
+    [_messages, getAuthor]
   );
 
   const isAuthor = (msgId: string, userId?: string) =>
