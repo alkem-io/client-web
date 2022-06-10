@@ -1,5 +1,5 @@
 import { merge } from 'lodash';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useApolloErrorHandler, useConfig } from '../../hooks';
 import {
   CommunicationUpdateMessageReceivedDocument,
@@ -11,13 +11,14 @@ import {
 import {
   Message,
   Community,
-  User,
   Hub,
   CommunicationUpdateMessageReceivedSubscription,
   CommunityUpdatesQuery,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { logger } from '../../services/logging/winston/logger';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
+import { Author } from '../../models/discussion/author';
 import useSubscribeToMore from '../../domain/shared/subscriptions/useSubscribeToMore';
 
 export interface CommunityUpdatesContainerProps {
@@ -46,8 +47,10 @@ export interface CommunityUpdatesState {
 
 export interface CommunityUpdatesEntities {
   messages: Message[];
-  senders: Pick<User, 'id'>[];
+  authors: Author[];
 }
+
+const EMPTY = [];
 
 export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ entities, children }) => {
   const handleError = useApolloErrorHandler();
@@ -92,13 +95,14 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
     throw new Error('Not implemented');
   };
 
-  const messages = data?.hub.community?.communication?.updates?.messages || [];
-  const senders = useMemo(() => messages.map(m => ({ id: m.sender })), [messages]);
+  const messages = data?.hub.community?.communication?.updates?.messages || EMPTY;
+
+  const { authors = EMPTY } = useAuthorsDetails(messages.map(m => m.sender));
 
   return (
     <>
       {children(
-        { messages, senders },
+        { messages, authors },
         { onLoadMore, onSubmit, onRemove },
         {
           retrievingUpdateMessages: loading,

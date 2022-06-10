@@ -8,20 +8,21 @@ import DashboardGenericSection from '../../components/composite/common/sections/
 import { Reference } from '../../models/graphql-schema';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
-import DiscussionComment from '../../components/composite/common/Discussion/Comment';
+import DiscussionComment from '../../components/composite/common/Discussion/DiscussionComment';
 import { Comment } from '../../models/discussion/comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
 import Markdown from '../../components/core/Markdown';
 import References from '../../components/composite/common/References/References';
 import TagLabel from '../../components/composite/common/TagLabel/TagLabel';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
+import { mapWithSeparator } from '../../domain/shared/utils/joinNodes';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
 export interface AspectDashboardViewProps {
   canReadComments: boolean;
   canPostComments: boolean;
-  canDeleteMessage: (msgId: string) => boolean;
+  canDeleteComment: (messageId: string) => boolean;
   banner?: string;
   displayName?: string;
   description?: string;
@@ -46,7 +47,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
 
   const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = props;
   const { creatorName, creatorAvatar, createdDate } = props;
-  const { canReadComments, canDeleteMessage, canPostComments } = props;
+  const { canReadComments, canDeleteComment, canPostComments } = props;
   const { handlePostComment, handleDeleteComment } = props;
 
   const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
@@ -99,11 +100,13 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
         <DashboardColumn>
           <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
             <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}>
-              {messages.map((x, i) => (
-                <Box key={i}>
-                  <DiscussionComment comment={x} canDelete={canDeleteMessage(x.id)} onDelete={onDeleteComment} />
-                  {i < messages.length - 1 && <SectionSpacer />}
-                </Box>
+              {mapWithSeparator(messages, SectionSpacer, comment => (
+                <DiscussionComment
+                  key={comment.id}
+                  comment={comment}
+                  canDelete={canDeleteComment(comment.id)}
+                  onDelete={onDeleteComment}
+                />
               ))}
             </Box>
             <SectionSpacer double />

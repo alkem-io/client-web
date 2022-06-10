@@ -3,15 +3,29 @@ import { OrganizationVerificationEnum, Reference } from '../../models/graphql-sc
 import { Location } from '../location/Location';
 
 export interface OrganizationInput {
-  name: string;
+  name: string | undefined;
   nameID: string;
-  description: string;
+  description: string | undefined;
   location: Location;
   tagsets: Tagset[];
-  contactEmail: string;
-  domain: string;
-  legalEntityName: string;
-  website: string;
+  contactEmail: string | undefined;
+  domain: string | undefined;
+  legalEntityName: string | undefined;
+  website: string | undefined;
+  verified: OrganizationVerificationEnum;
+  references: Reference[];
+}
+
+export interface CreateOrganizationInput {
+  name: string | undefined;
+  nameID: string;
+  description: string | undefined;
+  location: Location;
+  tagsets: Tagset[];
+  contactEmail: string | undefined;
+  domain: string | undefined;
+  legalEntityName: string | undefined;
+  website: string | undefined;
   verified: OrganizationVerificationEnum;
   references: Reference[];
 }

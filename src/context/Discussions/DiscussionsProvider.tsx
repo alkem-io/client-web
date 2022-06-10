@@ -2,7 +2,7 @@ import { uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useApolloErrorHandler, useHub } from '../../hooks';
-import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionUpdatedDocument,
   refetchCommunityDiscussionListQuery,
