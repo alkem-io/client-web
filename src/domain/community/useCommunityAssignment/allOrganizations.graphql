@@ -1,7 +1,7 @@
 query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
   organizationsPaginated(first: $first, after: $after, filter: $filter) {
     organization {
-      ...OrganizationDetails
+      ...BasicOrganizationDetails
     }
     pageInfo {
       ...PageInfo

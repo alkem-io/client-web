@@ -1539,6 +1539,20 @@ export const CommunityMembersFragmentDoc = gql`
   ${UserCardFragmentDoc}
   ${OrganizationCardFragmentDoc}
 `;
+export const BasicOrganizationDetailsFragmentDoc = gql`
+  fragment BasicOrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar {
+        ...VisualUri
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const CommunityMemberUserFragmentDoc = gql`
   fragment CommunityMemberUser on User {
     id
@@ -15060,14 +15074,14 @@ export const AllOrganizationsDocument = gql`
   query AllOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
       organization {
-        ...OrganizationDetails
+        ...BasicOrganizationDetails
       }
       pageInfo {
         ...PageInfo
       }
     }
   }
-  ${OrganizationDetailsFragmentDoc}
+  ${BasicOrganizationDetailsFragmentDoc}
   ${PageInfoFragmentDoc}
 `;
 
