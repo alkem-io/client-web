@@ -110,6 +110,28 @@ export type ApplicationEventInput = {
   eventName: Scalars['String'];
 };
 
+export type ApplicationForRoleResult = {
+  __typename?: 'ApplicationForRoleResult';
+  /** ID for the Challenge being applied to, if any. Or the Challenge containing the Opportunity being applied to. */
+  challengeID?: Maybe<Scalars['UUID']>;
+  /** ID for the community */
+  communityID: Scalars['UUID'];
+  /** Date of creation */
+  createdDate: Scalars['DateTime'];
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** ID for the ultimate containing Hub */
+  hubID: Scalars['UUID'];
+  /** ID for the application */
+  id: Scalars['UUID'];
+  /** ID for the Opportunity being applied to, if any. */
+  opportunityID?: Maybe<Scalars['UUID']>;
+  /** The current state of the application. */
+  state: Scalars['String'];
+  /** Date of last update */
+  updatedDate: Scalars['DateTime'];
+};
+
 export type ApplicationResult = {
   __typename?: 'ApplicationResult';
   /** ID for the Challenge being applied to, if any. Or the Challenge containing the Opportunity being applied to. */
@@ -160,7 +182,7 @@ export type Aspect = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
-  nameID: Scalars['NameID'];
+  nameID?: Maybe<Scalars['NameID']>;
   /** The References for this Aspect. */
   references?: Maybe<Array<Reference>>;
   /** The set of tags for the Aspect */
@@ -171,20 +193,16 @@ export type Aspect = {
 
 export type AspectTemplate = {
   __typename?: 'AspectTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
   /** The default description to show to users filling our a new instance. */
   defaultDescription: Scalars['String'];
-  /** The description for this Template. */
-  description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** The tags set on this Template. */
-  tagset?: Maybe<Tagset>;
-  /** The title for this Template. */
-  title?: Maybe<Scalars['String']>;
+  /** The meta information for this Template */
+  info: TemplateInfo;
   /** The type for this Aspect. */
   type: Scalars['String'];
-  /** The image associated with this Template`. */
-  visual?: Maybe<Visual>;
 };
 
 export type AssignChallengeAdminInput = {
@@ -391,6 +409,18 @@ export type CanvasContentUpdated = {
   canvasID: Scalars['String'];
   /** The updated content. */
   value: Scalars['String'];
+};
+
+export type CanvasTemplate = {
+  __typename?: 'CanvasTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The meta information for this Template */
+  info: TemplateInfo;
+  /** The JSON representation of the Canvas. */
+  value: Scalars['JSON'];
 };
 
 export type Challenge = Searchable & {
@@ -689,6 +719,19 @@ export type ContextAspectCreated = {
   contextID: Scalars['String'];
 };
 
+export type ContributorRoles = {
+  __typename?: 'ContributorRoles';
+  /** Open applications for this contributor. */
+  applications?: Maybe<Array<ApplicationForRoleResult>>;
+  /** All the communitites the user is a part of. */
+  communities: Array<RolesResultCommunity>;
+  /** Details of Hubs the User or Organization is a member of, with child memberships */
+  hubs: Array<RolesResultHub>;
+  id: Scalars['UUID'];
+  /** Details of the Organizations the User is a member of, with child memberships. */
+  organizations: Array<RolesResultOrganization>;
+};
+
 export type CreateActorGroupInput = {
   description?: InputMaybe<Scalars['String']>;
   ecosystemModelID: Scalars['UUID'];
@@ -708,7 +751,7 @@ export type CreateAspectOnContextInput = {
   description: Scalars['String'];
   /** The display name for the entity. */
   displayName: Scalars['String'];
-  /** A readable identifier, unique within the containing scope. If not provided generate based on the displayName */
+  /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
   type: Scalars['String'];
@@ -717,10 +760,9 @@ export type CreateAspectOnContextInput = {
 export type CreateAspectTemplateOnTemplatesSetInput = {
   /** The default description to be pre-filled when users create Aspects based on this template. */
   defaultDescription: Scalars['String'];
-  description: Scalars['String'];
-  tags?: InputMaybe<Array<Scalars['String']>>;
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
   templatesSetID: Scalars['UUID'];
-  title: Scalars['String'];
   /** The type of Aspects created from this Template. */
   type: Scalars['String'];
 };
@@ -731,11 +773,18 @@ export type CreateCanvasOnContextInput = {
   value?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateCanvasTemplateOnTemplatesSetInput = {
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
+  templatesSetID: Scalars['UUID'];
+  value?: InputMaybe<Scalars['JSON']>;
+};
+
 export type CreateChallengeOnChallengeInput = {
   challengeID: Scalars['UUID'];
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']>;
+  displayName: Scalars['String'];
   /** Set lead Organizations for the Challenge. */
   leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   lifecycleTemplate?: InputMaybe<Scalars['String']>;
@@ -747,7 +796,7 @@ export type CreateChallengeOnChallengeInput = {
 export type CreateChallengeOnHubInput = {
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']>;
+  displayName: Scalars['String'];
   hubID: Scalars['UUID_NAMEID'];
   /** Set lead Organizations for the Challenge. */
   leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
@@ -776,7 +825,7 @@ export type CreateFeedbackOnCommunityContextInput = {
 export type CreateHubInput = {
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']>;
+  displayName: Scalars['String'];
   /** The host Organization for the hub */
   hostID: Scalars['UUID_NAMEID'];
   lifecycleTemplate?: InputMaybe<Scalars['String']>;
@@ -800,7 +849,7 @@ export type CreateOpportunityInput = {
   challengeID: Scalars['UUID'];
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']>;
+  displayName: Scalars['String'];
   lifecycleTemplate?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
@@ -810,7 +859,7 @@ export type CreateOpportunityInput = {
 export type CreateOrganizationInput = {
   contactEmail?: InputMaybe<Scalars['String']>;
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']>;
+  displayName: Scalars['String'];
   domain?: InputMaybe<Scalars['String']>;
   legalEntityName?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
@@ -827,9 +876,9 @@ export type CreateProfileInput = {
 };
 
 export type CreateProjectInput = {
-  description?: InputMaybe<Scalars['String']>;
+  description: Scalars['String'];
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']>;
+  displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   opportunityID: Scalars['UUID_NAMEID'];
@@ -882,6 +931,12 @@ export type CreateTagsetOnProfileInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateTemplateInfoInput = {
+  description: Scalars['String'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  title: Scalars['String'];
+};
+
 export type CreateUserGroupInput = {
   /** The name of the UserGroup. Minimum length 2. */
   name: Scalars['String'];
@@ -891,10 +946,8 @@ export type CreateUserGroupInput = {
 
 export type CreateUserInput = {
   accountUpn?: InputMaybe<Scalars['String']>;
-  city?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
   /** The display name for the entity. */
-  displayName?: InputMaybe<Scalars['String']>;
+  displayName: Scalars['String'];
   email: Scalars['String'];
   firstName?: InputMaybe<Scalars['String']>;
   gender?: InputMaybe<Scalars['String']>;
@@ -946,13 +999,16 @@ export type DeleteAspectInput = {
 };
 
 export type DeleteAspectTemplateInput = {
-  aspectTemplateID: Scalars['UUID'];
-  templatesSetID: Scalars['UUID'];
+  ID: Scalars['UUID'];
 };
 
 export type DeleteCanvasOnContextInput = {
   canvasID: Scalars['UUID'];
   contextID: Scalars['UUID'];
+};
+
+export type DeleteCanvasTemplateInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteChallengeInput = {
@@ -1371,6 +1427,8 @@ export type Mutation = {
   createAspectTemplate: AspectTemplate;
   /** Create a new Canvas on the Context. */
   createCanvasOnContext: Canvas;
+  /** Creates a new CanvasTemplate on the specified TemplatesSet. */
+  createCanvasTemplate: CanvasTemplate;
   /** Creates a new Challenge within the specified Hub. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
@@ -1411,10 +1469,12 @@ export type Mutation = {
   deleteActorGroup: ActorGroup;
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
-  /** Deletes the specified AspectTemplate in the specified TemplatesSet. */
+  /** Deletes the specified AspectTemplate. */
   deleteAspectTemplate: AspectTemplate;
   /** Deletes the specified Canvas. */
   deleteCanvasOnContext: Canvas;
+  /** Deletes the specified CanvasTemplate. */
+  deleteCanvasTemplate: CanvasTemplate;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Deletes the specified Discussion. */
@@ -1499,8 +1559,12 @@ export type Mutation = {
   updateActor: Actor;
   /** Updates the specified Aspect. */
   updateAspect: Aspect;
+  /** Updates the specified AspectTemplate. */
+  updateAspectTemplate: AspectTemplate;
   /** Updates the specified Canvas. */
   updateCanvas: Canvas;
+  /** Updates the specified CanvasTemplate. */
+  updateCanvasTemplate: CanvasTemplate;
   /** Updates the specified Challenge. */
   updateChallenge: Challenge;
   /** Updates the specified Discussion. */
@@ -1643,6 +1707,10 @@ export type MutationCreateCanvasOnContextArgs = {
   canvasData: CreateCanvasOnContextInput;
 };
 
+export type MutationCreateCanvasTemplateArgs = {
+  canvasTemplateInput: CreateCanvasTemplateOnTemplatesSetInput;
+};
+
 export type MutationCreateChallengeArgs = {
   challengeData: CreateChallengeOnHubInput;
 };
@@ -1725,6 +1793,10 @@ export type MutationDeleteAspectTemplateArgs = {
 
 export type MutationDeleteCanvasOnContextArgs = {
   deleteData: DeleteCanvasOnContextInput;
+};
+
+export type MutationDeleteCanvasTemplateArgs = {
+  deleteData: DeleteCanvasTemplateInput;
 };
 
 export type MutationDeleteChallengeArgs = {
@@ -1895,8 +1967,16 @@ export type MutationUpdateAspectArgs = {
   aspectData: UpdateAspectInput;
 };
 
+export type MutationUpdateAspectTemplateArgs = {
+  aspectTemplateInput: UpdateAspectTemplateInput;
+};
+
 export type MutationUpdateCanvasArgs = {
   canvasData: UpdateCanvasDirectInput;
+};
+
+export type MutationUpdateCanvasTemplateArgs = {
+  canvasTemplateInput: UpdateCanvasTemplateInput;
 };
 
 export type MutationUpdateChallengeArgs = {
@@ -2321,6 +2401,10 @@ export type Query = {
   organizations: Array<Organization>;
   /** The Organizations on this platform in paginated format */
   organizationsPaginated: PaginatedOrganization;
+  /** The roles that the specified Organization has. */
+  rolesOrganization: ContributorRoles;
+  /** The roles that that the specified User has. */
+  rolesUser: ContributorRoles;
   /** Search the hub for terms supplied */
   search: Array<SearchResultEntry>;
   /** A particular user, identified by the ID or by email */
@@ -2368,6 +2452,14 @@ export type QueryOrganizationsPaginatedArgs = {
   filter?: InputMaybe<OrganizationFilterInput>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryRolesOrganizationArgs = {
+  rolesData: RolesOrganizationInput;
+};
+
+export type QueryRolesUserArgs = {
+  rolesData: RolesUserInput;
 };
 
 export type QuerySearchArgs = {
@@ -2557,9 +2649,77 @@ export type RemoveUserGroupMemberInput = {
 
 export type RevokeAuthorizationCredentialInput = {
   /** The resource to which access is being removed. */
-  resourceID?: InputMaybe<Scalars['String']>;
+  resourceID: Scalars['String'];
   type: AuthorizationCredential;
   /** The user from whom the credential is being removed. */
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RolesOrganizationInput = {
+  /** The ID of the organization to retrieve the roles of. */
+  organizationID: Scalars['UUID_NAMEID'];
+};
+
+export type RolesResult = {
+  __typename?: 'RolesResult';
+  /** Display name of the entity */
+  displayName: Scalars['String'];
+  /** A unique identifier for this membership result. */
+  id: Scalars['String'];
+  /** Name Identifier of the entity */
+  nameID: Scalars['NameID'];
+  /** The roles held by the contributor */
+  roles: Array<Scalars['String']>;
+  /** Details of the Groups in the Organizations the user is a member of */
+  userGroups: Array<RolesResult>;
+};
+
+export type RolesResultCommunity = {
+  __typename?: 'RolesResultCommunity';
+  /** Display name of the community */
+  displayName: Scalars['String'];
+  /** The ID of the community the user is a member of. */
+  id: Scalars['UUID'];
+};
+
+export type RolesResultHub = {
+  __typename?: 'RolesResultHub';
+  /** Details of the Challenges the user is a member of */
+  challenges: Array<RolesResult>;
+  /** Display name of the entity */
+  displayName: Scalars['String'];
+  /** The Hub ID */
+  hubID: Scalars['String'];
+  /** A unique identifier for this membership result. */
+  id: Scalars['String'];
+  /** Name Identifier of the entity */
+  nameID: Scalars['NameID'];
+  /** Details of the Opportunities the Contributor is a member of */
+  opportunities: Array<RolesResult>;
+  /** The roles held by the contributor */
+  roles: Array<Scalars['String']>;
+  /** Details of the Groups in the Organizations the user is a member of */
+  userGroups: Array<RolesResult>;
+};
+
+export type RolesResultOrganization = {
+  __typename?: 'RolesResultOrganization';
+  /** Display name of the entity */
+  displayName: Scalars['String'];
+  /** A unique identifier for this membership result. */
+  id: Scalars['String'];
+  /** Name Identifier of the entity */
+  nameID: Scalars['NameID'];
+  /** The Organization ID. */
+  organizationID: Scalars['String'];
+  /** The roles held by the contributor */
+  roles: Array<Scalars['String']>;
+  /** Details of the Groups in the Organizations the user is a member of */
+  userGroups: Array<RolesResult>;
+};
+
+export type RolesUserInput = {
+  /** The ID of the user to retrieve the roles of. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -2684,12 +2844,28 @@ export type Template = {
   users: Array<UserTemplate>;
 };
 
+export type TemplateInfo = {
+  __typename?: 'TemplateInfo';
+  /** The description for this Template. */
+  description?: Maybe<Scalars['String']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The tags set on this Template. */
+  tagset?: Maybe<Tagset>;
+  /** The title for this Template. */
+  title?: Maybe<Scalars['String']>;
+  /** The image associated with this Template`. */
+  visual?: Maybe<Visual>;
+};
+
 export type TemplatesSet = {
   __typename?: 'TemplatesSet';
   /** The AspectTemplates in this TemplatesSet. */
   aspectTemplates: Array<AspectTemplate>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The CanvasTemplates in this TemplatesSet. */
+  canvasTemplates: Array<CanvasTemplate>;
   /** The ID of the entity */
   id: Scalars['UUID'];
 };
@@ -2716,6 +2892,16 @@ export type UpdateAspectInput = {
   type?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateAspectTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The default description to be pre-filled when users create Aspects based on this template. */
+  defaultDescription?: InputMaybe<Scalars['String']>;
+  /** The meta information for this Template. */
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The type of Aspects created from this Template. */
+  type?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdateCanvasDirectInput = {
   ID: Scalars['UUID'];
   isTemplate?: InputMaybe<Scalars['Boolean']>;
@@ -2727,6 +2913,13 @@ export type UpdateCanvasInput = {
   isTemplate?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateCanvasTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The meta information for this Template. */
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateChallengeInput = {
@@ -2866,6 +3059,12 @@ export type UpdateTagsetInput = {
   ID: Scalars['UUID'];
   name?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateTemplateInfoInput = {
+  description?: InputMaybe<Scalars['String']>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  title?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateUserGroupInput = {
@@ -3173,7 +3372,7 @@ export type UserCardFragment = {
 export type AspectCardFragment = {
   __typename?: 'Aspect';
   id: string;
-  nameID: string;
+  nameID?: string | undefined;
   displayName: string;
   type: string;
   description: string;
@@ -3513,8 +3712,14 @@ export type HubInfoFragment = {
       __typename?: 'AspectTemplate';
       id: string;
       defaultDescription: string;
-      description?: string | undefined;
       type: string;
+      info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
+    }>;
+    canvasTemplates: Array<{
+      __typename?: 'CanvasTemplate';
+      id: string;
+      value: string;
+      info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
     }>;
   };
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -3975,7 +4180,7 @@ export type CreateAspectMutation = {
   createAspectOnContext: {
     __typename?: 'Aspect';
     id: string;
-    nameID: string;
+    nameID?: string | undefined;
     displayName: string;
     description: string;
     type: string;
@@ -5886,8 +6091,14 @@ export type HubProviderQuery = {
         __typename?: 'AspectTemplate';
         id: string;
         defaultDescription: string;
-        description?: string | undefined;
         type: string;
+        info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
+      }>;
+      canvasTemplates: Array<{
+        __typename?: 'CanvasTemplate';
+        id: string;
+        value: string;
+        info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
       }>;
     };
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -7313,7 +7524,7 @@ export type HubAspectVisualsQuery = {
             | Array<{
                 __typename?: 'Aspect';
                 id: string;
-                nameID: string;
+                nameID?: string | undefined;
                 bannerNarrow?:
                   | {
                       __typename?: 'Visual';
@@ -7357,7 +7568,7 @@ export type ChallengeAspectVisualsQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   bannerNarrow?:
                     | {
                         __typename?: 'Visual';
@@ -7402,7 +7613,7 @@ export type OpportunityAspectVisualsQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   bannerNarrow?:
                     | {
                         __typename?: 'Visual';
@@ -7428,7 +7639,7 @@ export type OpportunityAspectVisualsQuery = {
 export type AspectVisualsFragment = {
   __typename?: 'Aspect';
   id: string;
-  nameID: string;
+  nameID?: string | undefined;
   bannerNarrow?:
     | {
         __typename?: 'Visual';
@@ -7483,7 +7694,7 @@ export type HubAspectsQuery = {
             | Array<{
                 __typename?: 'Aspect';
                 id: string;
-                nameID: string;
+                nameID?: string | undefined;
                 displayName: string;
                 type: string;
                 description: string;
@@ -7551,7 +7762,7 @@ export type ChallengeAspectsQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   displayName: string;
                   type: string;
                   description: string;
@@ -7620,7 +7831,7 @@ export type OpportunityAspectsQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   displayName: string;
                   type: string;
                   description: string;
@@ -7659,7 +7870,7 @@ export type CreateAspectFromContributeTabMutation = {
   createAspectOnContext: {
     __typename?: 'Aspect';
     id: string;
-    nameID: string;
+    nameID?: string | undefined;
     displayName: string;
     description: string;
     type: string;
@@ -8201,7 +8412,7 @@ export type HubAspectSettingsQuery = {
             | Array<{
                 __typename?: 'Aspect';
                 id: string;
-                nameID: string;
+                nameID?: string | undefined;
                 displayName: string;
                 description: string;
                 type: string;
@@ -8273,7 +8484,7 @@ export type ChallengeAspectSettingsQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   displayName: string;
                   description: string;
                   type: string;
@@ -8346,7 +8557,7 @@ export type OpportunityAspectSettingsQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   displayName: string;
                   description: string;
                   type: string;
@@ -8400,7 +8611,7 @@ export type OpportunityAspectSettingsQuery = {
 export type AspectSettingsFragment = {
   __typename?: 'Aspect';
   id: string;
-  nameID: string;
+  nameID?: string | undefined;
   displayName: string;
   description: string;
   type: string;
@@ -9015,7 +9226,7 @@ export type ChallengePageQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   displayName: string;
                   type: string;
                   description: string;
@@ -9177,7 +9388,7 @@ export type ChallengeProfileFragment = {
           | Array<{
               __typename?: 'Aspect';
               id: string;
-              nameID: string;
+              nameID?: string | undefined;
               displayName: string;
               type: string;
               description: string;
@@ -10100,7 +10311,7 @@ export type HubPageQuery = {
             | Array<{
                 __typename?: 'Aspect';
                 id: string;
-                nameID: string;
+                nameID?: string | undefined;
                 displayName: string;
                 type: string;
                 description: string;
@@ -10206,7 +10417,7 @@ export type HubPageFragment = {
           | Array<{
               __typename?: 'Aspect';
               id: string;
-              nameID: string;
+              nameID?: string | undefined;
               displayName: string;
               type: string;
               description: string;
@@ -10353,7 +10564,7 @@ export type OpportunityPageQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   displayName: string;
                   type: string;
                   description: string;
@@ -10465,7 +10676,7 @@ export type OpportunityPageFragment = {
           | Array<{
               __typename?: 'Aspect';
               id: string;
-              nameID: string;
+              nameID?: string | undefined;
               displayName: string;
               type: string;
               description: string;
@@ -10969,7 +11180,7 @@ export type HubAspectProviderQuery = {
             | Array<{
                 __typename?: 'Aspect';
                 id: string;
-                nameID: string;
+                nameID?: string | undefined;
                 displayName: string;
                 authorization?:
                   | {
@@ -11007,7 +11218,7 @@ export type ChallengeAspectProviderQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   displayName: string;
                   authorization?:
                     | {
@@ -11046,7 +11257,7 @@ export type OpportunityAspectProviderQuery = {
               | Array<{
                   __typename?: 'Aspect';
                   id: string;
-                  nameID: string;
+                  nameID?: string | undefined;
                   displayName: string;
                   authorization?:
                     | {
@@ -11070,7 +11281,7 @@ export type AspectProviderDataFragment = {
     | Array<{
         __typename?: 'Aspect';
         id: string;
-        nameID: string;
+        nameID?: string | undefined;
         displayName: string;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -11082,7 +11293,7 @@ export type AspectProviderDataFragment = {
 export type AspectProvidedFragment = {
   __typename?: 'Aspect';
   id: string;
-  nameID: string;
+  nameID?: string | undefined;
   displayName: string;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -11261,7 +11472,7 @@ export type AspectsOnContextFragment = {
     | Array<{
         __typename?: 'Aspect';
         id: string;
-        nameID: string;
+        nameID?: string | undefined;
         displayName: string;
         type: string;
         description: string;
@@ -11286,7 +11497,7 @@ export type ContextAspectCreatedSubscription = {
     aspect: {
       __typename?: 'Aspect';
       id: string;
-      nameID: string;
+      nameID?: string | undefined;
       displayName: string;
       type: string;
       description: string;
@@ -11303,7 +11514,7 @@ export type ContextAspectCreatedSubscription = {
 export type ContributeTabAspectFragment = {
   __typename?: 'Aspect';
   id: string;
-  nameID: string;
+  nameID?: string | undefined;
   displayName: string;
   type: string;
   description: string;

@@ -45,7 +45,7 @@ const AspectTypeFormField: FC<AspectTypeFormFieldProps> = ({ name, value }) => {
             <InputAdornment position="start">
               <HelpButton
                 helpText={
-                  templates.aspectTemplates.find(x => x.type === value)?.description ??
+                  templates.aspectTemplates.find(x => x.type === value)?.info?.description ??
                   t('components.aspect-creation.type-step.type-help-text-short')
                 }
               />

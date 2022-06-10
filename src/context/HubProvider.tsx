@@ -38,6 +38,7 @@ const HubContext = React.createContext<HubContextProps>({
   templates: {
     id: '',
     aspectTemplates: [],
+    canvasTemplates: [],
   },
   permissions: {
     viewerCanUpdate: false,
@@ -78,6 +79,7 @@ const HubProvider: FC<HubProviderProps> = ({ children }) => {
   const templates = hub?.templates || {
     id: '',
     aspectTemplates: [],
+    canvasTemplates: [],
   };
   const isPrivate = !Boolean(hub?.authorization?.anonymousReadAccess ?? true);
   const error = configError || hubError;

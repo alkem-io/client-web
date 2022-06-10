@@ -49,7 +49,7 @@ const AspectTypeStep: FC<AspectTypeStepProps> = ({ type, onChange }) => {
               <InputAdornment position="start">
                 <HelpButton
                   helpText={
-                    templates.aspectTemplates.find(x => x.type === type)?.description ??
+                    templates.aspectTemplates.find(x => x.type === type)?.info?.description ??
                     t('components.aspect-creation.type-step.type-help-text-short')
                   }
                 />

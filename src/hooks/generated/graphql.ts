@@ -396,8 +396,21 @@ export const HubInfoFragmentDoc = gql`
       aspectTemplates {
         id
         defaultDescription
-        description
         type
+        info {
+          id
+          title
+          description
+        }
+      }
+      canvasTemplates {
+        id
+        info {
+          id
+          title
+          description
+        }
+        value
       }
     }
   }
