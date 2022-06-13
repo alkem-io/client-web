@@ -10591,7 +10591,6 @@ export type AspectCommentsMessageReceivedSubscription = {
   __typename?: 'Subscription';
   aspectCommentsMessageReceived: {
     __typename?: 'AspectCommentsMessageReceived';
-    aspectID: string;
     message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
   };
 };
