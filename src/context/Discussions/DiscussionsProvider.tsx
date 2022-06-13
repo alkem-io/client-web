@@ -53,8 +53,8 @@ interface DiscussionProviderProps {}
 
 const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
   Pick<Communication, 'id' | 'discussions'>,
-  CommunicationDiscussionUpdatedSubscriptionVariables,
-  CommunicationDiscussionUpdatedSubscription
+  CommunicationDiscussionUpdatedSubscription,
+  CommunicationDiscussionUpdatedSubscriptionVariables
 >({
   subscriptionDocument: CommunicationDiscussionUpdatedDocument,
   getSubscriptionVariables: communication => ({ communicationID: communication.id }),

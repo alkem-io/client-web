@@ -51,8 +51,8 @@ const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
   DiscussionDetailsFragment & {
     messages?: MessageDetailsFragment[];
   },
-  CommunicationDiscussionMessageReceivedSubscriptionVariables,
-  CommunicationDiscussionMessageReceivedSubscription
+  CommunicationDiscussionMessageReceivedSubscription,
+  CommunicationDiscussionMessageReceivedSubscriptionVariables
 >({
   subscriptionDocument: CommunicationDiscussionMessageReceivedDocument,
   getSubscriptionVariables: discussion => ({ discussionID: discussion.id }),

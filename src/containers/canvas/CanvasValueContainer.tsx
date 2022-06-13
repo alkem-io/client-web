@@ -37,8 +37,8 @@ export interface CanvasValueContainerProps
 
 const useSubscribeToCanvas = UseSubscriptionToSubEntity<
   CanvasValueFragment & CanvasDetailsFragment,
-  SubscriptionCanvasContentUpdatedArgs,
-  CanvasContentUpdatedSubscription
+  CanvasContentUpdatedSubscription,
+  SubscriptionCanvasContentUpdatedArgs
 >({
   subscriptionDocument: CanvasContentUpdatedDocument,
   getSubscriptionVariables: canvas => ({ canvasIDs: [canvas.id] }),

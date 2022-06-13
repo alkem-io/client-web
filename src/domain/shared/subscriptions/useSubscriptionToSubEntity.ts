@@ -27,7 +27,7 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
  * structures is ensured/handled by 'immer'.
  */
 const createUseSubscriptionToSubEntityHook =
-  <SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>(
+  <SubEntity, SubEntitySubscription, SubEntitySubscriptionVariables = undefined>(
     options: CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>
   ) =>
   <QueryData>(

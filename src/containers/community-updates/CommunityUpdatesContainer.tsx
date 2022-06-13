@@ -1,4 +1,3 @@
-import { merge } from 'lodash';
 import React, { FC, useCallback } from 'react';
 import { useApolloErrorHandler, useConfig } from '../../hooks';
 import {
@@ -13,13 +12,12 @@ import {
   Community,
   Hub,
   CommunicationUpdateMessageReceivedSubscription,
-  CommunityUpdatesQuery,
+  Updates,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
-import { logger } from '../../services/logging/winston/logger';
 import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 import { Author } from '../../models/discussion/author';
-import useSubscribeToMore from '../../domain/shared/subscriptions/useSubscribeToMore';
+import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -114,52 +112,32 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   );
 };
 
+const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEntity<
+  Updates,
+  CommunicationUpdateMessageReceivedSubscription
+>({
+  subscriptionDocument: CommunicationUpdateMessageReceivedDocument,
+  updateSubEntity: (updates, subscriptionData) => {
+    updates?.messages?.push(subscriptionData.communicationUpdateMessageReceived.message);
+  },
+});
+
 const useCommunityUpdatesData = (hubNameId?: string, communityId?: string) => {
   const handleError = useApolloErrorHandler();
   const { data, loading, subscribeToMore } = useCommunityUpdatesQuery({
     variables: {
-      hubId: hubNameId ?? '',
-      communityId: communityId ?? '',
+      hubId: hubNameId!,
+      communityId: communityId!,
     },
     skip: !hubNameId || !communityId,
     onError: handleError,
   });
 
-  useSubscribeToMore<CommunityUpdatesQuery, CommunicationUpdateMessageReceivedSubscription>(subscribeToMore, {
-    document: CommunicationUpdateMessageReceivedDocument,
-    skip: !hubNameId || !communityId,
-    updateQuery: (prev, { subscriptionData }) => {
-      const oldUpdates = prev?.hub?.community?.communication?.updates;
-
-      if (!oldUpdates) {
-        return prev;
-      }
-
-      const newUpdate = subscriptionData.data.communicationUpdateMessageReceived;
-
-      if (oldUpdates.id !== newUpdate.updatesID) {
-        logger.error(
-          `Current updateId (${oldUpdates.id}) is not matching the incoming updateId (${newUpdate.updatesID})`
-        );
-        return prev;
-      }
-
-      const oldMessages = oldUpdates.messages ?? [];
-      const newMessage = newUpdate.message;
-
-      return merge({}, prev, {
-        hub: {
-          community: {
-            communication: {
-              updates: {
-                messages: [...oldMessages, newMessage],
-              },
-            },
-          },
-        },
-      });
-    },
-  });
+  useCommunicationUpdateMessageReceivedSubscription(
+    data,
+    parent => parent?.hub?.community?.communication?.updates,
+    subscribeToMore
+  );
 
   return { data, loading };
 };
