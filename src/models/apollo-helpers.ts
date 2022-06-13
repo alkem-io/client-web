@@ -1426,8 +1426,8 @@ export type ServiceMetadataFieldPolicy = {
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
+  | 'aspectCommentsMessageReceived'
   | 'canvasContentUpdated'
-  | 'communicationCommentsMessageReceived'
   | 'communicationDiscussionMessageReceived'
   | 'communicationDiscussionUpdated'
   | 'communicationUpdateMessageReceived'
@@ -1436,8 +1436,8 @@ export type SubscriptionKeySpecifier = (
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
+  aspectCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdateMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;

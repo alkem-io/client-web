@@ -2690,10 +2690,10 @@ export type ServiceMetadata = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  /** Receive new comment on Aspect */
+  aspectCommentsMessageReceived: CommentsMessageReceived;
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
-  /** Receive new Update messages on Communities the currently authenticated User is a member of. */
-  communicationCommentsMessageReceived: CommentsMessageReceived;
   /** Receive new Discussion messages */
   communicationDiscussionMessageReceived: CommunicationDiscussionMessageReceived;
   /** Receive updates on Discussions */
@@ -2706,12 +2706,12 @@ export type Subscription = {
   profileVerifiedCredential: ProfileCredentialVerified;
 };
 
-export type SubscriptionCanvasContentUpdatedArgs = {
-  canvasIDs?: InputMaybe<Array<Scalars['UUID']>>;
+export type SubscriptionAspectCommentsMessageReceivedArgs = {
+  aspectID: Scalars['UUID'];
 };
 
-export type SubscriptionCommunicationCommentsMessageReceivedArgs = {
-  commentsID: Scalars['UUID'];
+export type SubscriptionCanvasContentUpdatedArgs = {
+  canvasIDs?: InputMaybe<Array<Scalars['UUID']>>;
 };
 
 export type SubscriptionCommunicationDiscussionMessageReceivedArgs = {
@@ -10702,13 +10702,13 @@ export type AdminGlobalOrganizationsListQuery = {
   };
 };
 
-export type CommentsMessageReceivedSubscriptionVariables = Exact<{
-  commentsId: Scalars['UUID'];
+export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
+  aspectID: Scalars['UUID'];
 }>;
 
-export type CommentsMessageReceivedSubscription = {
+export type AspectCommentsMessageReceivedSubscription = {
   __typename?: 'Subscription';
-  communicationCommentsMessageReceived: {
+  aspectCommentsMessageReceived: {
     __typename?: 'CommentsMessageReceived';
     commentsID: string;
     message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
