@@ -1,6 +1,0 @@
-query membershipUser($input: MembershipUserInput!) {
-  membershipUser(membershipData: $input) {
-    id
-    ...UserMembershipDetails
-  }
-}

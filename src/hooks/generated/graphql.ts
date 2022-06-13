@@ -592,22 +592,25 @@ export const UserDisplayNameFragmentDoc = gql`
     displayName
   }
 `;
-export const UserMembershipDetailsFragmentDoc = gql`
-  fragment UserMembershipDetails on UserMembership {
+export const UserRolesDetailsFragmentDoc = gql`
+  fragment UserRolesDetails on ContributorRoles {
     hubs {
       id
       nameID
       hubID
       displayName
+      roles
       challenges {
         id
         nameID
         displayName
+        roles
       }
       opportunities {
         id
         nameID
         displayName
+        roles
       }
       userGroups {
         id
@@ -624,10 +627,7 @@ export const UserMembershipDetailsFragmentDoc = gql`
         nameID
         displayName
       }
-    }
-    communities {
-      id
-      displayName
+      roles
     }
     applications {
       id
@@ -1078,7 +1078,7 @@ export const ChallengeProfileFragmentDoc = gql`
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
-  fragment SimpleHubResultEntry on MembershipResultContributorToHub {
+  fragment SimpleHubResultEntry on RolesResultHub {
     hubID
     nameID
     displayName
@@ -6850,127 +6850,6 @@ export type MeHasProfileQueryResult = Apollo.QueryResult<
 export function refetchMeHasProfileQuery(variables?: SchemaTypes.MeHasProfileQueryVariables) {
   return { query: MeHasProfileDocument, variables: variables };
 }
-export const MembershipOrganizationDocument = gql`
-  query membershipOrganization($input: MembershipOrganizationInput!) {
-    membershipOrganization(membershipData: $input) {
-      id
-      hubsHosting {
-        id
-        nameID
-        displayName
-      }
-      challengesLeading {
-        id
-        nameID
-        displayName
-        hubID
-      }
-    }
-  }
-`;
-
-/**
- * __useMembershipOrganizationQuery__
- *
- * To run a query within a React component, call `useMembershipOrganizationQuery` and pass it any options that fit your needs.
- * When your component renders, `useMembershipOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMembershipOrganizationQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useMembershipOrganizationQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.MembershipOrganizationQuery,
-    SchemaTypes.MembershipOrganizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.MembershipOrganizationQuery, SchemaTypes.MembershipOrganizationQueryVariables>(
-    MembershipOrganizationDocument,
-    options
-  );
-}
-export function useMembershipOrganizationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.MembershipOrganizationQuery,
-    SchemaTypes.MembershipOrganizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.MembershipOrganizationQuery, SchemaTypes.MembershipOrganizationQueryVariables>(
-    MembershipOrganizationDocument,
-    options
-  );
-}
-export type MembershipOrganizationQueryHookResult = ReturnType<typeof useMembershipOrganizationQuery>;
-export type MembershipOrganizationLazyQueryHookResult = ReturnType<typeof useMembershipOrganizationLazyQuery>;
-export type MembershipOrganizationQueryResult = Apollo.QueryResult<
-  SchemaTypes.MembershipOrganizationQuery,
-  SchemaTypes.MembershipOrganizationQueryVariables
->;
-export function refetchMembershipOrganizationQuery(variables: SchemaTypes.MembershipOrganizationQueryVariables) {
-  return { query: MembershipOrganizationDocument, variables: variables };
-}
-export const MembershipUserDocument = gql`
-  query membershipUser($input: MembershipUserInput!) {
-    membershipUser(membershipData: $input) {
-      id
-      ...UserMembershipDetails
-    }
-  }
-  ${UserMembershipDetailsFragmentDoc}
-`;
-
-/**
- * __useMembershipUserQuery__
- *
- * To run a query within a React component, call `useMembershipUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useMembershipUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMembershipUserQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useMembershipUserQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.MembershipUserQuery, SchemaTypes.MembershipUserQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.MembershipUserQuery, SchemaTypes.MembershipUserQueryVariables>(
-    MembershipUserDocument,
-    options
-  );
-}
-export function useMembershipUserLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MembershipUserQuery, SchemaTypes.MembershipUserQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.MembershipUserQuery, SchemaTypes.MembershipUserQueryVariables>(
-    MembershipUserDocument,
-    options
-  );
-}
-export type MembershipUserQueryHookResult = ReturnType<typeof useMembershipUserQuery>;
-export type MembershipUserLazyQueryHookResult = ReturnType<typeof useMembershipUserLazyQuery>;
-export type MembershipUserQueryResult = Apollo.QueryResult<
-  SchemaTypes.MembershipUserQuery,
-  SchemaTypes.MembershipUserQueryVariables
->;
-export function refetchMembershipUserQuery(variables: SchemaTypes.MembershipUserQueryVariables) {
-  return { query: MembershipUserDocument, variables: variables };
-}
 export const OpportunitiesDocument = gql`
   query opportunities($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -8465,6 +8344,119 @@ export type RelationsQueryResult = Apollo.QueryResult<SchemaTypes.RelationsQuery
 export function refetchRelationsQuery(variables: SchemaTypes.RelationsQueryVariables) {
   return { query: RelationsDocument, variables: variables };
 }
+export const RolesOrganizationDocument = gql`
+  query rolesOrganization($input: RolesOrganizationInput!) {
+    rolesOrganization(rolesData: $input) {
+      id
+      hubs {
+        nameID
+        id
+        roles
+        displayName
+        challenges {
+          nameID
+          id
+          displayName
+          roles
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useRolesOrganizationQuery__
+ *
+ * To run a query within a React component, call `useRolesOrganizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRolesOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRolesOrganizationQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRolesOrganizationQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>(
+    RolesOrganizationDocument,
+    options
+  );
+}
+export function useRolesOrganizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.RolesOrganizationQuery,
+    SchemaTypes.RolesOrganizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RolesOrganizationQuery, SchemaTypes.RolesOrganizationQueryVariables>(
+    RolesOrganizationDocument,
+    options
+  );
+}
+export type RolesOrganizationQueryHookResult = ReturnType<typeof useRolesOrganizationQuery>;
+export type RolesOrganizationLazyQueryHookResult = ReturnType<typeof useRolesOrganizationLazyQuery>;
+export type RolesOrganizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.RolesOrganizationQuery,
+  SchemaTypes.RolesOrganizationQueryVariables
+>;
+export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
+  return { query: RolesOrganizationDocument, variables: variables };
+}
+export const RolesUserDocument = gql`
+  query rolesUser($input: RolesUserInput!) {
+    rolesUser(rolesData: $input) {
+      id
+      ...UserRolesDetails
+    }
+  }
+  ${UserRolesDetailsFragmentDoc}
+`;
+
+/**
+ * __useRolesUserQuery__
+ *
+ * To run a query within a React component, call `useRolesUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRolesUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRolesUserQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRolesUserQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>(RolesUserDocument, options);
+}
+export function useRolesUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>(
+    RolesUserDocument,
+    options
+  );
+}
+export type RolesUserQueryHookResult = ReturnType<typeof useRolesUserQuery>;
+export type RolesUserLazyQueryHookResult = ReturnType<typeof useRolesUserLazyQuery>;
+export type RolesUserQueryResult = Apollo.QueryResult<SchemaTypes.RolesUserQuery, SchemaTypes.RolesUserQueryVariables>;
+export function refetchRolesUserQuery(variables: SchemaTypes.RolesUserQueryVariables) {
+  return { query: RolesUserDocument, variables: variables };
+}
 export const SearchDocument = gql`
   query search($searchData: SearchInput!) {
     search(searchData: $searchData) {
@@ -8644,8 +8636,8 @@ export function refetchTagsetsTemplateQuery(variables?: SchemaTypes.TagsetsTempl
   return { query: TagsetsTemplateDocument, variables: variables };
 }
 export const UserApplicationDetailsDocument = gql`
-  query userApplicationDetails($input: MembershipUserInput!) {
-    membershipUser(membershipData: $input) {
+  query userApplicationDetails($input: RolesUserInput!) {
+    rolesUser(rolesData: $input) {
       applications {
         id
         state
@@ -8708,8 +8700,8 @@ export function refetchUserApplicationDetailsQuery(variables: SchemaTypes.UserAp
   return { query: UserApplicationDetailsDocument, variables: variables };
 }
 export const UserProfileApplicationsDocument = gql`
-  query userProfileApplications($input: MembershipUserInput!) {
-    membershipUser(membershipData: $input) {
+  query userProfileApplications($input: RolesUserInput!) {
+    rolesUser(rolesData: $input) {
       applications {
         id
         state
@@ -8890,8 +8882,8 @@ export function refetchUserQuery(variables: SchemaTypes.UserQueryVariables) {
   return { query: UserDocument, variables: variables };
 }
 export const UserApplicationsDocument = gql`
-  query userApplications($input: MembershipUserInput!) {
-    membershipUser(membershipData: $input) {
+  query userApplications($input: RolesUserInput!) {
+    rolesUser(rolesData: $input) {
       applications {
         id
         state
@@ -9027,9 +9019,9 @@ export const UserProfileDocument = gql`
       ...UserDetails
       ...UserAgent
     }
-    membershipUser(membershipData: { userID: $input }) {
+    rolesUser(rolesData: { userID: $input }) {
       id
-      ...UserMembershipDetails
+      ...UserRolesDetails
     }
     authorization {
       ...MyPrivileges
@@ -9037,7 +9029,7 @@ export const UserProfileDocument = gql`
   }
   ${UserDetailsFragmentDoc}
   ${UserAgentFragmentDoc}
-  ${UserMembershipDetailsFragmentDoc}
+  ${UserRolesDetailsFragmentDoc}
   ${MyPrivilegesFragmentDoc}
 `;
 
@@ -11679,14 +11671,16 @@ export function refetchChallengePageQuery(variables: SchemaTypes.ChallengePageQu
   return { query: ChallengePageDocument, variables: variables };
 }
 export const ChallengesOverviewPageDocument = gql`
-  query ChallengesOverviewPage($membershipData: MembershipUserInput!) {
-    membershipUser(membershipData: $membershipData) {
+  query ChallengesOverviewPage($rolesData: RolesUserInput!) {
+    rolesUser(rolesData: $rolesData) {
       hubs {
         id
         ...SimpleHubResultEntry
         challenges {
           id
+          roles
         }
+        roles
       }
     }
   }
@@ -11705,7 +11699,7 @@ export const ChallengesOverviewPageDocument = gql`
  * @example
  * const { data, loading, error } = useChallengesOverviewPageQuery({
  *   variables: {
- *      membershipData: // value for 'membershipData'
+ *      rolesData: // value for 'rolesData'
  *   },
  * });
  */

@@ -1,18 +1,21 @@
-fragment UserMembershipDetails on UserMembership {
+fragment UserRolesDetails on ContributorRoles {
   hubs {
     id
     nameID
     hubID
     displayName
+    roles
     challenges {
       id
       nameID
       displayName
+      roles
     }
     opportunities {
       id
       nameID
       displayName
+      roles
     }
     userGroups {
       id
@@ -29,10 +32,7 @@ fragment UserMembershipDetails on UserMembership {
       nameID
       displayName
     }
-  }
-  communities {
-    id
-    displayName
+    roles
   }
   applications {
     id

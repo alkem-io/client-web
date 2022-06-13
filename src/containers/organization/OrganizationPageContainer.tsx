@@ -2,8 +2,9 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
 import { isSocialLink, SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
+import { RoleType } from '../../domain/user/constants/RoleType';
 import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
-import { useMembershipOrganizationQuery } from '../../hooks/generated/graphql';
+import { useRolesOrganizationQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { CAPABILITIES_TAGSET, KEYWORDS_TAGSET } from '../../models/constants/tagset.constants';
 import { ContainerChildProps } from '../../models/container';
@@ -45,7 +46,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
 
   const usersWithRoles = useUserCardRoleName((organization?.members || []) as User[], organizationId);
 
-  const { data: membershipData, loading: orgMembershipLoading } = useMembershipOrganizationQuery({
+  const { data: membershipData, loading: orgMembershipLoading } = useRolesOrganizationQuery({
     variables: {
       input: {
         organizationID: organizationNameId,
@@ -115,15 +116,22 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   }, [usersWithRoles]);
 
   const contributions = useMemo(() => {
-    const { hubsHosting = [], challengesLeading = [] } = membershipData?.membershipOrganization || {};
+    const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
+
     const hubContributions = hubsHosting.map<ContributionItem>(x => ({
       hubId: x.id,
     }));
 
-    const challengeContributions = challengesLeading.map<ContributionItem>(x => ({
-      hubId: x.hubID,
-      challengeId: x.id,
-    }));
+    // Loop over hubs, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
+    const challengeContributions =
+      membershipData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
+        h.challenges
+          .filter(c => c.roles?.includes(RoleType.Lead))
+          .map<ContributionItem>(c => ({
+            hubId: h.id,
+            challengeId: c.id,
+          }))
+      ) || [];
 
     return [...hubContributions, ...challengeContributions];
   }, [membershipData]);

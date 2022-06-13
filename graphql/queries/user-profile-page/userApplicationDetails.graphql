@@ -1,5 +1,5 @@
-query userApplicationDetails($input: MembershipUserInput!) {
-  membershipUser(membershipData: $input) {
+query userApplicationDetails($input: RolesUserInput!) {
+  rolesUser(rolesData: $input) {
     applications {
       id
       state
