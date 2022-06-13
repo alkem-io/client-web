@@ -1,0 +1,11 @@
+subscription AspectCommentsMessageReceived($aspectID: UUID!) {
+  aspectCommentsMessageReceived(aspectID: $aspectID) {
+    commentsID
+    message {
+      id
+      message
+      sender
+      timestamp
+    }
+  }
+}
