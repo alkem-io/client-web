@@ -142,6 +142,15 @@ export type AspectFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AspectCommentsMessageReceivedKeySpecifier = (
+  | 'aspectID'
+  | 'message'
+  | AspectCommentsMessageReceivedKeySpecifier
+)[];
+export type AspectCommentsMessageReceivedFieldPolicy = {
+  aspectID?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AspectTemplateKeySpecifier = (
   | 'defaultDescription'
   | 'type'
@@ -303,11 +312,6 @@ export type CommentsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   messages?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CommentsMessageReceivedKeySpecifier = ('commentsID' | 'message' | CommentsMessageReceivedKeySpecifier)[];
-export type CommentsMessageReceivedFieldPolicy = {
-  commentsID?: FieldPolicy<any> | FieldReadFunction<any>;
-  message?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
@@ -1319,8 +1323,8 @@ export type ServiceMetadataFieldPolicy = {
   version?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SubscriptionKeySpecifier = (
+  | 'aspectCommentsMessageReceived'
   | 'canvasContentUpdated'
-  | 'communicationCommentsMessageReceived'
   | 'communicationDiscussionMessageReceived'
   | 'communicationDiscussionUpdated'
   | 'communicationUpdateMessageReceived'
@@ -1329,8 +1333,8 @@ export type SubscriptionKeySpecifier = (
   | SubscriptionKeySpecifier
 )[];
 export type SubscriptionFieldPolicy = {
+  aspectCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
-  communicationCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationUpdateMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1523,6 +1527,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AspectKeySpecifier | (() => undefined | AspectKeySpecifier);
     fields?: AspectFieldPolicy;
   };
+  AspectCommentsMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AspectCommentsMessageReceivedKeySpecifier
+      | (() => undefined | AspectCommentsMessageReceivedKeySpecifier);
+    fields?: AspectCommentsMessageReceivedFieldPolicy;
+  };
   AspectTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AspectTemplateKeySpecifier | (() => undefined | AspectTemplateKeySpecifier);
     fields?: AspectTemplateFieldPolicy;
@@ -1586,10 +1597,6 @@ export type StrictTypedTypePolicies = {
   Comments?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommentsKeySpecifier | (() => undefined | CommentsKeySpecifier);
     fields?: CommentsFieldPolicy;
-  };
-  CommentsMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CommentsMessageReceivedKeySpecifier | (() => undefined | CommentsMessageReceivedKeySpecifier);
-    fields?: CommentsMessageReceivedFieldPolicy;
   };
   Communication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunicationKeySpecifier | (() => undefined | CommunicationKeySpecifier);
