@@ -41,15 +41,7 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
           flexBasis="100%"
           maxWidth={{ xs: 'auto', sm: 'auto', md: 'auto', lg: '50%', xl: '50%' }}
         >
-          <OrganizationCard
-            url={org.url}
-            members={org.members}
-            avatar={org.avatar}
-            name={org.name}
-            role={org.role}
-            information={org.information}
-            verified={org.verified}
-          />
+          <OrganizationCard {...org} />
         </Grid>
       ))}
     </Grid>

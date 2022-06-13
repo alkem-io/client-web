@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../hooks';
 import { FEATURE_SSI } from '../../models/constants';
 import { ContributionsView, CredentialsView } from '../ProfileView';
-import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
+import AssociatedOrganizationsLazilyFetched from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import UserProfileView, { UserProfileViewProps } from '../ProfileView/UserProfileView';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {}
@@ -23,7 +23,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, op
           <UserProfileView entities={entities} options={options} />
         </Grid>
         <Grid item>
-          <AssociatedOrganizationsView
+          <AssociatedOrganizationsLazilyFetched
             organizationNameIDs={organizationNameIDs}
             title={t('pages.user-profile.associated-organizations.title')}
             helpText={t('pages.user-profile.associated-organizations.help')}

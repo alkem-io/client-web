@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
 import { useUpdateNavigation, useUrlParams, useUserMetadata } from '../../hooks';
-import AssociatedOrganizationsView from '../../views/ProfileView/AssociatedOrganizationsView';
+import AssociatedOrganizationsLazilyFetched from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { PageProps } from '../common';
 
 export interface UserOrganizationsPageProps extends PageProps {}
@@ -20,7 +20,7 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
   return (
     <Grid container rowSpacing={4}>
       <Grid item xs={12}>
-        <AssociatedOrganizationsView
+        <AssociatedOrganizationsLazilyFetched
           canCreateOrganization={userMetadata?.permissions?.canCreateOrganization}
           organizationNameIDs={userMetadata?.organizationNameIDs || []}
           title={t('pages.user-profile.associated-organizations.title')}

@@ -37,17 +37,9 @@ const ContributorsView: FC<ContributorsViewProps> = ({ users = [], showUsers, or
               <OrganizationLoadingCard />
             </>
           )}
-          {organizations.map((x, i) => (
-            <Grid key={i} item md={6} xs={12}>
-              <OrganizationCard
-                name={x.name}
-                avatar={x.avatar}
-                information={x.information}
-                role={x.role}
-                members={x.members}
-                verified={x.verified}
-                url={x.url}
-              />
+          {organizations.map(org => (
+            <Grid key={org.url} item md={6} xs={12}>
+              <OrganizationCard {...org} />
             </Grid>
           ))}
         </Grid>

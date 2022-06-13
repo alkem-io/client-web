@@ -1,7 +1,7 @@
 import { OrganizationCardFragment, OrganizationVerificationEnum } from '../../../models/graphql-schema';
 import { OrganizationCardProps } from '../../../components/composite/common/cards/Organization/OrganizationCard';
 import getActivityCount from '../../../utils/get-activity-count';
-import { getUserCardRoleNameKey, UserMetadata, useUserContext } from '../../../hooks';
+import { addUserCardRoleNameKey, UserMetadata, useUserContext } from '../../../hooks';
 import { buildOrganizationUrl } from '../../../utils/urlBuilders';
 import { Identifiable } from '../../shared/types/Identifiable';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,7 @@ export const toOrganizationCardProps = (org: OrganizationCardFragment, user: Use
   name: org.displayName,
   avatar: org.profile.avatar?.uri,
   members: getActivityCount(org.activity ?? [], 'members') ?? 0,
-  role: t(getUserCardRoleNameKey([user], org.id)[0].roleNameKey),
+  role: t(addUserCardRoleNameKey([user], org.id)[0].roleNameKey),
   url: buildOrganizationUrl(org.nameID),
   id: org.id,
 });

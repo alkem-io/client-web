@@ -3,7 +3,7 @@ import { ApolloError, SubscribeToMoreOptions, TypedDocumentNode } from '@apollo/
 import produce from 'immer';
 import { useApolloErrorHandler, useConfig } from '../../../hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
-import getEntriesSortedFlat from '../utils/getEntriesSortedFlat';
+import getDepsValueFromObject from '../utils/getDepsValueFromObject';
 
 interface SubscribeToMore<TData, TSubscriptionVariables, TSubscriptionData> {
   (options: SubscribeToMoreOptions<TData, TSubscriptionVariables, TSubscriptionData>): () => void;
@@ -73,7 +73,7 @@ const createUseSubscriptionToSubEntityHook =
         },
         onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       });
-    }, [areSubscriptionsEnabled, hasInitiallyFetchedSubEntity, ...getEntriesSortedFlat(variables || {})]);
+    }, [areSubscriptionsEnabled, hasInitiallyFetchedSubEntity, getDepsValueFromObject(variables)]);
 
     return {
       enabled: Boolean(areSubscriptionsEnabled && subEntity),
