@@ -12739,68 +12739,6 @@ export type CreateDiscussionMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateDiscussionMutation,
   SchemaTypes.CreateDiscussionMutationVariables
 >;
-export const AuthorDetailsDocument = gql`
-  query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
-    usersById(IDs: $ids) {
-      id
-      nameID
-      displayName
-      firstName
-      lastName
-      profile {
-        id
-        avatar {
-          ...VisualUri
-        }
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-
-/**
- * __useAuthorDetailsQuery__
- *
- * To run a query within a React component, call `useAuthorDetailsQuery` and pass it any options that fit your needs.
- * When your component renders, `useAuthorDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAuthorDetailsQuery({
- *   variables: {
- *      ids: // value for 'ids'
- *   },
- * });
- */
-export function useAuthorDetailsQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>(
-    AuthorDetailsDocument,
-    options
-  );
-}
-export function useAuthorDetailsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>(
-    AuthorDetailsDocument,
-    options
-  );
-}
-export type AuthorDetailsQueryHookResult = ReturnType<typeof useAuthorDetailsQuery>;
-export type AuthorDetailsLazyQueryHookResult = ReturnType<typeof useAuthorDetailsLazyQuery>;
-export type AuthorDetailsQueryResult = Apollo.QueryResult<
-  SchemaTypes.AuthorDetailsQuery,
-  SchemaTypes.AuthorDetailsQueryVariables
->;
-export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQueryVariables) {
-  return { query: AuthorDetailsDocument, variables: variables };
-}
 export const CommunicationDiscussionMessageReceivedDocument = gql`
   subscription communicationDiscussionMessageReceived($discussionID: UUID!) {
     communicationDiscussionMessageReceived(discussionID: $discussionID) {
@@ -14546,7 +14484,6 @@ export function refetchAdminGlobalOrganizationsListQuery(
 export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
-      commentsID
       message {
         id
         message
@@ -14590,6 +14527,68 @@ export type AspectCommentsMessageReceivedSubscriptionHookResult = ReturnType<
 >;
 export type AspectCommentsMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.AspectCommentsMessageReceivedSubscription>;
+export const AuthorDetailsDocument = gql`
+  query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
+    usersById(IDs: $ids) {
+      id
+      nameID
+      displayName
+      firstName
+      lastName
+      profile {
+        id
+        avatar {
+          ...VisualUri
+        }
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useAuthorDetailsQuery__
+ *
+ * To run a query within a React component, call `useAuthorDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAuthorDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAuthorDetailsQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useAuthorDetailsQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>(
+    AuthorDetailsDocument,
+    options
+  );
+}
+export function useAuthorDetailsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AuthorDetailsQuery, SchemaTypes.AuthorDetailsQueryVariables>(
+    AuthorDetailsDocument,
+    options
+  );
+}
+export type AuthorDetailsQueryHookResult = ReturnType<typeof useAuthorDetailsQuery>;
+export type AuthorDetailsLazyQueryHookResult = ReturnType<typeof useAuthorDetailsLazyQuery>;
+export type AuthorDetailsQueryResult = Apollo.QueryResult<
+  SchemaTypes.AuthorDetailsQuery,
+  SchemaTypes.AuthorDetailsQueryVariables
+>;
+export function refetchAuthorDetailsQuery(variables: SchemaTypes.AuthorDetailsQueryVariables) {
+  return { query: AuthorDetailsDocument, variables: variables };
+}
 export const ChallengeCommunityDocument = gql`
   query challengeCommunity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {

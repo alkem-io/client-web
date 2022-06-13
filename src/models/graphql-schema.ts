@@ -191,6 +191,14 @@ export type Aspect = {
   type: Scalars['String'];
 };
 
+export type AspectCommentsMessageReceived = {
+  __typename?: 'AspectCommentsMessageReceived';
+  /** The identifier for the Aspect. */
+  aspectID: Scalars['String'];
+  /** The message that has been sent. */
+  message: Message;
+};
+
 export type AspectTemplate = {
   __typename?: 'AspectTemplate';
   /** Default description of an aspect of this type */
@@ -471,14 +479,6 @@ export type Comments = {
   id: Scalars['UUID'];
   /** Messages in this Comments. */
   messages?: Maybe<Array<Message>>;
-};
-
-export type CommentsMessageReceived = {
-  __typename?: 'CommentsMessageReceived';
-  /** The identifier for the Comments on which the message was sent. */
-  commentsID: Scalars['String'];
-  /** The message that has been sent. */
-  message: Message;
 };
 
 export type CommentsRemoveMessageInput = {
@@ -2691,7 +2691,7 @@ export type ServiceMetadata = {
 export type Subscription = {
   __typename?: 'Subscription';
   /** Receive new comment on Aspect */
-  aspectCommentsMessageReceived: CommentsMessageReceived;
+  aspectCommentsMessageReceived: AspectCommentsMessageReceived;
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Discussion messages */
@@ -9487,29 +9487,6 @@ export type CreateDiscussionMutation = {
   };
 };
 
-export type AuthorDetailsQueryVariables = Exact<{
-  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
-}>;
-
-export type AuthorDetailsQuery = {
-  __typename?: 'Query';
-  usersById: Array<{
-    __typename?: 'User';
-    id: string;
-    nameID: string;
-    displayName: string;
-    firstName: string;
-    lastName: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        }
-      | undefined;
-  }>;
-};
-
 export type CommunicationDiscussionMessageReceivedSubscriptionVariables = Exact<{
   discussionID: Scalars['UUID'];
 }>;
@@ -10709,10 +10686,32 @@ export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
 export type AspectCommentsMessageReceivedSubscription = {
   __typename?: 'Subscription';
   aspectCommentsMessageReceived: {
-    __typename?: 'CommentsMessageReceived';
-    commentsID: string;
+    __typename?: 'AspectCommentsMessageReceived';
     message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
   };
+};
+
+export type AuthorDetailsQueryVariables = Exact<{
+  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
+}>;
+
+export type AuthorDetailsQuery = {
+  __typename?: 'Query';
+  usersById: Array<{
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        }
+      | undefined;
+  }>;
 };
 
 export type ChallengeCommunityQueryVariables = Exact<{
