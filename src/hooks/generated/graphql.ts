@@ -14478,7 +14478,6 @@ export function refetchAdminGlobalOrganizationsListQuery(
 export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {
-      aspectID
       message {
         id
         message

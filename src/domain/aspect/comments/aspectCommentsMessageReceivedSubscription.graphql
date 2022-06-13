@@ -1,6 +1,5 @@
 subscription AspectCommentsMessageReceived($aspectID: UUID!) {
   aspectCommentsMessageReceived(aspectID: $aspectID) {
-    aspectID
     message {
       id
       message
