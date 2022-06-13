@@ -132,28 +132,6 @@ export type ApplicationForRoleResult = {
   updatedDate: Scalars['DateTime'];
 };
 
-export type ApplicationResult = {
-  __typename?: 'ApplicationResult';
-  /** ID for the Challenge being applied to, if any. Or the Challenge containing the Opportunity being applied to. */
-  challengeID?: Maybe<Scalars['UUID']>;
-  /** ID for the community */
-  communityID: Scalars['UUID'];
-  /** Date of creation */
-  createdDate: Scalars['DateTime'];
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** ID for the ultimate containing Hub */
-  hubID: Scalars['UUID'];
-  /** ID for the application */
-  id: Scalars['UUID'];
-  /** ID for the Opportunity being applied to, if any. */
-  opportunityID?: Maybe<Scalars['UUID']>;
-  /** The current state of the application. */
-  state: Scalars['String'];
-  /** Date of last update */
-  updatedDate: Scalars['DateTime'];
-};
-
 export type ApplicationTemplate = {
   __typename?: 'ApplicationTemplate';
   /** Application template name. */
@@ -707,8 +685,6 @@ export type ContributorRoles = {
   __typename?: 'ContributorRoles';
   /** Open applications for this contributor. */
   applications?: Maybe<Array<ApplicationForRoleResult>>;
-  /** All the communitites the user is a part of. */
-  communities: Array<RolesResultCommunity>;
   /** Details of Hubs the User or Organization is a member of, with child memberships */
   hubs: Array<RolesResultHub>;
   id: Scalars['UUID'];
@@ -843,7 +819,7 @@ export type CreateProfileInput = {
 };
 
 export type CreateProjectInput = {
-  description: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
   /** The display name for the entity. */
   displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
@@ -1232,78 +1208,6 @@ export type Location = {
   country: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-};
-
-export type MembershipOrganizationInput = {
-  /** The ID of the organization to retrieve the membership of. */
-  organizationID: Scalars['UUID_NAMEID'];
-};
-
-export type MembershipResult = {
-  __typename?: 'MembershipResult';
-  /** Display name of the entity */
-  displayName: Scalars['String'];
-  /** A unique identifier for this membership result. */
-  id: Scalars['String'];
-  /** Name Identifier of the entity */
-  nameID: Scalars['NameID'];
-};
-
-export type MembershipResultChallengeLeading = {
-  __typename?: 'MembershipResultChallengeLeading';
-  /** Display name of the entity */
-  displayName: Scalars['String'];
-  /** The ID of the Hub hosting this Challenge. */
-  hubID: Scalars['String'];
-  /** A unique identifier for this membership result. */
-  id: Scalars['String'];
-  /** Name Identifier of the entity */
-  nameID: Scalars['NameID'];
-};
-
-export type MembershipResultCommunity = {
-  __typename?: 'MembershipResultCommunity';
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** The ID of the community the user is a member of. */
-  id: Scalars['UUID'];
-};
-
-export type MembershipResultContributorToHub = {
-  __typename?: 'MembershipResultContributorToHub';
-  /** Details of the Challenges the user is a member of */
-  challenges: Array<MembershipResult>;
-  /** Display name of the entity */
-  displayName: Scalars['String'];
-  /** The Hub ID */
-  hubID: Scalars['String'];
-  /** A unique identifier for this membership result. */
-  id: Scalars['String'];
-  /** Name Identifier of the entity */
-  nameID: Scalars['NameID'];
-  /** Details of the Opportunities the Contributor is a member of */
-  opportunities: Array<MembershipResult>;
-  /** Details of the UserGroups the User is a member of */
-  userGroups: Array<MembershipResult>;
-};
-
-export type MembershipResultUserinOrganization = {
-  __typename?: 'MembershipResultUserinOrganization';
-  /** Display name of the entity */
-  displayName: Scalars['String'];
-  /** A unique identifier for this membership result. */
-  id: Scalars['String'];
-  /** Name Identifier of the entity */
-  nameID: Scalars['NameID'];
-  /** The Organization ID. */
-  organizationID: Scalars['String'];
-  /** Details of the Groups in the Organizations the user is a member of */
-  userGroups: Array<MembershipResult>;
-};
-
-export type MembershipUserInput = {
-  /** The ID of the user to retrieve the membership of. */
-  userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
 /** A message that was sent either as an Update or as part of a Discussion. */
@@ -2074,19 +1978,6 @@ export type OrganizationFilterInput = {
   website?: InputMaybe<Scalars['String']>;
 };
 
-export type OrganizationMembership = {
-  __typename?: 'OrganizationMembership';
-  /** Details of the Challenges the Organization is leading. */
-  challengesLeading: Array<MembershipResultChallengeLeading>;
-  /** All the communitites the user is a part of. */
-  communities: Array<MembershipResultCommunity>;
-  /** Details of Hubs the user is a member of, with child memberships */
-  hubs: Array<MembershipResultContributorToHub>;
-  /** Details of Hubs the Organization is hosting. */
-  hubsHosting: Array<MembershipResult>;
-  id: Scalars['UUID'];
-};
-
 export enum OrganizationPreferenceType {
   AuthorizationOrganizationMatchDomain = 'AUTHORIZATION_ORGANIZATION_MATCH_DOMAIN',
 }
@@ -2311,10 +2202,6 @@ export type Query = {
   me: User;
   /** Check if the currently logged in user has a User profile */
   meHasProfile: Scalars['Boolean'];
-  /** The memberships for this Organization */
-  membershipOrganization: OrganizationMembership;
-  /** Search the hub for terms supplied */
-  membershipUser: UserMembership;
   /** Alkemio Services Metadata */
   metadata: Metadata;
   /** A particular Organization */
@@ -2349,14 +2236,6 @@ export type QueryAdminCommunicationMembershipArgs = {
 
 export type QueryHubArgs = {
   ID: Scalars['UUID_NAMEID'];
-};
-
-export type QueryMembershipOrganizationArgs = {
-  membershipData: MembershipOrganizationInput;
-};
-
-export type QueryMembershipUserArgs = {
-  membershipData: MembershipUserInput;
 };
 
 export type QueryOrganizationArgs = {
@@ -2594,14 +2473,6 @@ export type RolesResult = {
   roles: Array<Scalars['String']>;
   /** Details of the Groups in the Organizations the user is a member of */
   userGroups: Array<RolesResult>;
-};
-
-export type RolesResultCommunity = {
-  __typename?: 'RolesResultCommunity';
-  /** Display name of the community */
-  displayName: Scalars['String'];
-  /** The ID of the community the user is a member of. */
-  id: Scalars['UUID'];
 };
 
 export type RolesResultHub = {
@@ -3072,19 +2943,6 @@ export type UserGroup = Searchable & {
   parent?: Maybe<Groupable>;
   /** The profile for the user group */
   profile?: Maybe<Profile>;
-};
-
-export type UserMembership = {
-  __typename?: 'UserMembership';
-  /** Open applications for this user. */
-  applications?: Maybe<Array<ApplicationResult>>;
-  /** All the communitites the user is a part of. */
-  communities: Array<MembershipResultCommunity>;
-  /** Details of Hubs the user is a member of, with child memberships */
-  hubs: Array<MembershipResultContributorToHub>;
-  id: Scalars['UUID'];
-  /** Details of the Organizations the user is a member of, with child memberships. */
-  organizations: Array<MembershipResultUserinOrganization>;
 };
 
 export enum UserPreferenceType {
@@ -3816,29 +3674,42 @@ export type UserDetailsFragment = {
 
 export type UserDisplayNameFragment = { __typename?: 'User'; id: string; displayName: string };
 
-export type UserMembershipDetailsFragment = {
-  __typename?: 'UserMembership';
+export type UserRolesDetailsFragment = {
+  __typename?: 'ContributorRoles';
   hubs: Array<{
-    __typename?: 'MembershipResultContributorToHub';
+    __typename?: 'RolesResultHub';
     id: string;
     nameID: string;
     hubID: string;
     displayName: string;
-    challenges: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-    opportunities: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-    userGroups: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
+    roles: Array<string>;
+    challenges: Array<{
+      __typename?: 'RolesResult';
+      id: string;
+      nameID: string;
+      displayName: string;
+      roles: Array<string>;
+    }>;
+    opportunities: Array<{
+      __typename?: 'RolesResult';
+      id: string;
+      nameID: string;
+      displayName: string;
+      roles: Array<string>;
+    }>;
+    userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
   }>;
   organizations: Array<{
-    __typename?: 'MembershipResultUserinOrganization';
+    __typename?: 'RolesResultOrganization';
     id: string;
     nameID: string;
     displayName: string;
-    userGroups: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
+    roles: Array<string>;
+    userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
   }>;
-  communities: Array<{ __typename?: 'MembershipResultCommunity'; id: string; displayName: string }>;
   applications?:
     | Array<{
-        __typename?: 'ApplicationResult';
+        __typename?: 'ApplicationForRoleResult';
         id: string;
         communityID: string;
         displayName: string;
@@ -5811,68 +5682,6 @@ export type MeHasProfileQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeHasProfileQuery = { __typename?: 'Query'; meHasProfile: boolean };
 
-export type MembershipOrganizationQueryVariables = Exact<{
-  input: MembershipOrganizationInput;
-}>;
-
-export type MembershipOrganizationQuery = {
-  __typename?: 'Query';
-  membershipOrganization: {
-    __typename?: 'OrganizationMembership';
-    id: string;
-    hubsHosting: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-    challengesLeading: Array<{
-      __typename?: 'MembershipResultChallengeLeading';
-      id: string;
-      nameID: string;
-      displayName: string;
-      hubID: string;
-    }>;
-  };
-};
-
-export type MembershipUserQueryVariables = Exact<{
-  input: MembershipUserInput;
-}>;
-
-export type MembershipUserQuery = {
-  __typename?: 'Query';
-  membershipUser: {
-    __typename?: 'UserMembership';
-    id: string;
-    hubs: Array<{
-      __typename?: 'MembershipResultContributorToHub';
-      id: string;
-      nameID: string;
-      hubID: string;
-      displayName: string;
-      challenges: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-      opportunities: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-      userGroups: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-    }>;
-    organizations: Array<{
-      __typename?: 'MembershipResultUserinOrganization';
-      id: string;
-      nameID: string;
-      displayName: string;
-      userGroups: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-    }>;
-    communities: Array<{ __typename?: 'MembershipResultCommunity'; id: string; displayName: string }>;
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationResult';
-          id: string;
-          communityID: string;
-          displayName: string;
-          state: string;
-          hubID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
-  };
-};
-
 export type OpportunitiesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -6534,6 +6343,87 @@ export type RelationsQuery = {
   };
 };
 
+export type RolesOrganizationQueryVariables = Exact<{
+  input: RolesOrganizationInput;
+}>;
+
+export type RolesOrganizationQuery = {
+  __typename?: 'Query';
+  rolesOrganization: {
+    __typename?: 'ContributorRoles';
+    id: string;
+    hubs: Array<{
+      __typename?: 'RolesResultHub';
+      nameID: string;
+      id: string;
+      roles: Array<string>;
+      displayName: string;
+      challenges: Array<{
+        __typename?: 'RolesResult';
+        nameID: string;
+        id: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+    }>;
+  };
+};
+
+export type RolesUserQueryVariables = Exact<{
+  input: RolesUserInput;
+}>;
+
+export type RolesUserQuery = {
+  __typename?: 'Query';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
+    id: string;
+    hubs: Array<{
+      __typename?: 'RolesResultHub';
+      id: string;
+      nameID: string;
+      hubID: string;
+      displayName: string;
+      roles: Array<string>;
+      challenges: Array<{
+        __typename?: 'RolesResult';
+        id: string;
+        nameID: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+      opportunities: Array<{
+        __typename?: 'RolesResult';
+        id: string;
+        nameID: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
+    }>;
+    organizations: Array<{
+      __typename?: 'RolesResultOrganization';
+      id: string;
+      nameID: string;
+      displayName: string;
+      roles: Array<string>;
+      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
+    }>;
+    applications?:
+      | Array<{
+          __typename?: 'ApplicationForRoleResult';
+          id: string;
+          communityID: string;
+          displayName: string;
+          state: string;
+          hubID: string;
+          challengeID?: string | undefined;
+          opportunityID?: string | undefined;
+        }>
+      | undefined;
+  };
+};
+
 export type SearchQueryVariables = Exact<{
   searchData: SearchInput;
 }>;
@@ -6631,16 +6521,16 @@ export type TagsetsTemplateQuery = {
 };
 
 export type UserApplicationDetailsQueryVariables = Exact<{
-  input: MembershipUserInput;
+  input: RolesUserInput;
 }>;
 
 export type UserApplicationDetailsQuery = {
   __typename?: 'Query';
-  membershipUser: {
-    __typename?: 'UserMembership';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
     applications?:
       | Array<{
-          __typename?: 'ApplicationResult';
+          __typename?: 'ApplicationForRoleResult';
           id: string;
           state: string;
           displayName: string;
@@ -6653,16 +6543,16 @@ export type UserApplicationDetailsQuery = {
 };
 
 export type UserProfileApplicationsQueryVariables = Exact<{
-  input: MembershipUserInput;
+  input: RolesUserInput;
 }>;
 
 export type UserProfileApplicationsQuery = {
   __typename?: 'Query';
-  membershipUser: {
-    __typename?: 'UserMembership';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
     applications?:
       | Array<{
-          __typename?: 'ApplicationResult';
+          __typename?: 'ApplicationForRoleResult';
           id: string;
           state: string;
           displayName: string;
@@ -6757,16 +6647,16 @@ export type UserQuery = {
 };
 
 export type UserApplicationsQueryVariables = Exact<{
-  input: MembershipUserInput;
+  input: RolesUserInput;
 }>;
 
 export type UserApplicationsQuery = {
   __typename?: 'Query';
-  membershipUser: {
-    __typename?: 'UserMembership';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
     applications?:
       | Array<{
-          __typename?: 'ApplicationResult';
+          __typename?: 'ApplicationForRoleResult';
           id: string;
           state: string;
           communityID: string;
@@ -6857,30 +6747,43 @@ export type UserProfileQuery = {
         }
       | undefined;
   };
-  membershipUser: {
-    __typename?: 'UserMembership';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
     id: string;
     hubs: Array<{
-      __typename?: 'MembershipResultContributorToHub';
+      __typename?: 'RolesResultHub';
       id: string;
       nameID: string;
       hubID: string;
       displayName: string;
-      challenges: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-      opportunities: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
-      userGroups: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
+      roles: Array<string>;
+      challenges: Array<{
+        __typename?: 'RolesResult';
+        id: string;
+        nameID: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+      opportunities: Array<{
+        __typename?: 'RolesResult';
+        id: string;
+        nameID: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
     organizations: Array<{
-      __typename?: 'MembershipResultUserinOrganization';
+      __typename?: 'RolesResultOrganization';
       id: string;
       nameID: string;
       displayName: string;
-      userGroups: Array<{ __typename?: 'MembershipResult'; id: string; nameID: string; displayName: string }>;
+      roles: Array<string>;
+      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
     }>;
-    communities: Array<{ __typename?: 'MembershipResultCommunity'; id: string; displayName: string }>;
     applications?:
       | Array<{
-          __typename?: 'ApplicationResult';
+          __typename?: 'ApplicationForRoleResult';
           id: string;
           communityID: string;
           displayName: string;
@@ -8935,26 +8838,27 @@ export type ChallengeProfileFragment = {
 };
 
 export type ChallengesOverviewPageQueryVariables = Exact<{
-  membershipData: MembershipUserInput;
+  rolesData: RolesUserInput;
 }>;
 
 export type ChallengesOverviewPageQuery = {
   __typename?: 'Query';
-  membershipUser: {
-    __typename?: 'UserMembership';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
     hubs: Array<{
-      __typename?: 'MembershipResultContributorToHub';
+      __typename?: 'RolesResultHub';
       id: string;
+      roles: Array<string>;
       hubID: string;
       nameID: string;
       displayName: string;
-      challenges: Array<{ __typename?: 'MembershipResult'; id: string }>;
+      challenges: Array<{ __typename?: 'RolesResult'; id: string; roles: Array<string> }>;
     }>;
   };
 };
 
 export type SimpleHubResultEntryFragment = {
-  __typename?: 'MembershipResultContributorToHub';
+  __typename?: 'RolesResultHub';
   hubID: string;
   nameID: string;
   displayName: string;
