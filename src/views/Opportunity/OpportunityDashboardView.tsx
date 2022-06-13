@@ -9,7 +9,7 @@ import DashboardOpportunityStatistics from '../../components/composite/common/se
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
-import { useChallenge, useHub, useOpportunity } from '../../hooks';
+import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
@@ -83,6 +83,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { challengeNameId } = useChallenge();
   const { hubId } = useOpportunity();
 
+  const { user: userMetadata } = useUserContext();
+  const isNotMember = !userMetadata?.ofOpportunity(userMetadata?.user.id ?? 'tempId') ?? true;
+
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
   const communityId = opportunity?.community?.id || '';
@@ -104,9 +107,11 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             bannerUrl={banner}
             headerText={displayName}
             primaryAction={
-              <Button onClick={actions.onInterestOpen} variant="contained">
-                {t('pages.opportunity.sections.apply')}
-              </Button>
+              isNotMember && (
+                <Button onClick={actions.onInterestOpen} variant="contained">
+                  {t('pages.opportunity.sections.apply')}
+                </Button>
+              )
             }
           >
             <Markdown children={tagline} />
