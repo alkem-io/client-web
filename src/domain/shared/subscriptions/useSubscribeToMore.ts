@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks';
 import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
 import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
-import getEntriesSortedFlat from '../utils/getEntriesSortedFlat';
+import getDepsValueFromObject from '../utils/getDepsValueFromObject';
+// import getEntriesSortedFlat from '../utils/getEntriesSortedFlat';
 
 export interface SubscribeToMore<QueryData> {
   <SubscriptionData, SubscriptionVariables>(
@@ -38,7 +39,7 @@ const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables =
       onError: err => handleError(new ApolloError({ errorMessage: err.message })),
       ...subscribeToMoreOptions,
     });
-  }, [isEnabled, ...getEntriesSortedFlat((subscribeToMoreOptions.variables as {} | undefined) || {})]);
+  }, [isEnabled, getDepsValueFromObject(subscribeToMoreOptions.variables)]);
 
   return {
     enabled: isEnabled,

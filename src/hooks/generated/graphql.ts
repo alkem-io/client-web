@@ -904,6 +904,30 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const AssociatedOrganizationDetailsFragmentDoc = gql`
+  fragment AssociatedOrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      description
+      avatar {
+        ...VisualUri
+      }
+    }
+    verification {
+      id
+      status
+    }
+    activity {
+      id
+      name
+      value
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -1003,8 +1027,7 @@ export const ChallengeProfileFragmentDoc = gql`
         }
       }
       leadOrganizations {
-        id
-        nameID
+        ...AssociatedOrganizationDetails
       }
       authorization {
         id
@@ -1051,6 +1074,7 @@ export const ChallengeProfileFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
@@ -1335,8 +1359,7 @@ export const OpportunityPageFragmentDoc = gql`
         }
       }
       leadOrganizations {
-        id
-        nameID
+        ...AssociatedOrganizationDetails
       }
       authorization {
         id
@@ -1346,30 +1369,7 @@ export const OpportunityPageFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
-`;
-export const AssociatedOrganizationDetailsFragmentDoc = gql`
-  fragment AssociatedOrganizationDetails on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      description
-      avatar {
-        ...VisualUri
-      }
-    }
-    verification {
-      id
-      status
-    }
-    activity {
-      id
-      name
-      value
-    }
-  }
-  ${VisualUriFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
 `;
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
@@ -13022,64 +13022,6 @@ export type OpportunityPageQueryResult = Apollo.QueryResult<
 export function refetchOpportunityPageQuery(variables: SchemaTypes.OpportunityPageQueryVariables) {
   return { query: OpportunityPageDocument, variables: variables };
 }
-export const AssociatedOrganizationDocument = gql`
-  query associatedOrganization($organizationId: UUID_NAMEID!) {
-    organization(ID: $organizationId) {
-      ...AssociatedOrganizationDetails
-    }
-  }
-  ${AssociatedOrganizationDetailsFragmentDoc}
-`;
-
-/**
- * __useAssociatedOrganizationQuery__
- *
- * To run a query within a React component, call `useAssociatedOrganizationQuery` and pass it any options that fit your needs.
- * When your component renders, `useAssociatedOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useAssociatedOrganizationQuery({
- *   variables: {
- *      organizationId: // value for 'organizationId'
- *   },
- * });
- */
-export function useAssociatedOrganizationQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.AssociatedOrganizationQuery,
-    SchemaTypes.AssociatedOrganizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.AssociatedOrganizationQuery, SchemaTypes.AssociatedOrganizationQueryVariables>(
-    AssociatedOrganizationDocument,
-    options
-  );
-}
-export function useAssociatedOrganizationLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.AssociatedOrganizationQuery,
-    SchemaTypes.AssociatedOrganizationQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.AssociatedOrganizationQuery, SchemaTypes.AssociatedOrganizationQueryVariables>(
-    AssociatedOrganizationDocument,
-    options
-  );
-}
-export type AssociatedOrganizationQueryHookResult = ReturnType<typeof useAssociatedOrganizationQuery>;
-export type AssociatedOrganizationLazyQueryHookResult = ReturnType<typeof useAssociatedOrganizationLazyQuery>;
-export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
-  SchemaTypes.AssociatedOrganizationQuery,
-  SchemaTypes.AssociatedOrganizationQueryVariables
->;
-export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.AssociatedOrganizationQueryVariables) {
-  return { query: AssociatedOrganizationDocument, variables: variables };
-}
 export const AssignUserToOrganizationDocument = gql`
   mutation assignUserToOrganization($input: AssignOrganizationMemberInput!) {
     assignUserToOrganization(membershipData: $input) {
@@ -15851,6 +15793,64 @@ export type HubProviderQueryResult = Apollo.QueryResult<
 >;
 export function refetchHubProviderQuery(variables: SchemaTypes.HubProviderQueryVariables) {
   return { query: HubProviderDocument, variables: variables };
+}
+export const AssociatedOrganizationDocument = gql`
+  query associatedOrganization($organizationId: UUID_NAMEID!) {
+    organization(ID: $organizationId) {
+      ...AssociatedOrganizationDetails
+    }
+  }
+  ${AssociatedOrganizationDetailsFragmentDoc}
+`;
+
+/**
+ * __useAssociatedOrganizationQuery__
+ *
+ * To run a query within a React component, call `useAssociatedOrganizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAssociatedOrganizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAssociatedOrganizationQuery({
+ *   variables: {
+ *      organizationId: // value for 'organizationId'
+ *   },
+ * });
+ */
+export function useAssociatedOrganizationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.AssociatedOrganizationQuery,
+    SchemaTypes.AssociatedOrganizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AssociatedOrganizationQuery, SchemaTypes.AssociatedOrganizationQueryVariables>(
+    AssociatedOrganizationDocument,
+    options
+  );
+}
+export function useAssociatedOrganizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AssociatedOrganizationQuery,
+    SchemaTypes.AssociatedOrganizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.AssociatedOrganizationQuery, SchemaTypes.AssociatedOrganizationQueryVariables>(
+    AssociatedOrganizationDocument,
+    options
+  );
+}
+export type AssociatedOrganizationQueryHookResult = ReturnType<typeof useAssociatedOrganizationQuery>;
+export type AssociatedOrganizationLazyQueryHookResult = ReturnType<typeof useAssociatedOrganizationLazyQuery>;
+export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.AssociatedOrganizationQuery,
+  SchemaTypes.AssociatedOrganizationQueryVariables
+>;
+export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.AssociatedOrganizationQueryVariables) {
+  return { query: AssociatedOrganizationDocument, variables: variables };
 }
 export const UserListDocument = gql`
   query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {

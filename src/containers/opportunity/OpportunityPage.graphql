@@ -100,8 +100,7 @@ fragment OpportunityPage on Opportunity {
       }
     }
     leadOrganizations {
-      id
-      nameID
+      ...AssociatedOrganizationDetails
     }
     authorization {
       id

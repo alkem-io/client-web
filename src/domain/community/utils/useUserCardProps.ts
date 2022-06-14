@@ -1,6 +1,6 @@
 import { UserCardFragment } from '../../../models/graphql-schema';
 import { SearchableUserCardProps } from '../../../views/community/CommunityPageView';
-import { getUserCardRoleNameKey } from '../../../hooks';
+import { addUserCardRoleNameKey } from '../../../hooks';
 import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
@@ -16,7 +16,7 @@ const useUserCardProps = (
       return;
     }
 
-    const users = getUserCardRoleNameKey(data, resourceId);
+    const users = addUserCardRoleNameKey(data, resourceId);
 
     return users.map(({ roleNameKey, ...user }) => ({
       id: user.id,
