@@ -5,8 +5,8 @@ import { sortBy } from 'lodash';
  * Use like that: useEffect(() => {}, [dep1, dep2, getDepsValueFromObject(object)]);
  * @param object
  */
-const getDepsValueFromObject = <Object extends {}>(object: Object | undefined): string => {
-  if (typeof object === 'undefined') {
+const getDepsValueFromObject = <Object extends {}>(object: Object | undefined | null): string => {
+  if (typeof object === 'undefined' || object === null) {
     return '';
   }
   const entries = Object.entries(object) as [keyof Object, Object[keyof Object]][];
