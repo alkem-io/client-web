@@ -8,8 +8,8 @@ import createUseSubscriptionToSubEntityHook from '../shared/subscriptions/useSub
 
 const useContextAspectCreatedSubscription = createUseSubscriptionToSubEntityHook<
   AspectsOnContextFragment,
-  ContextAspectCreatedSubscriptionVariables,
-  ContextAspectCreatedSubscription
+  ContextAspectCreatedSubscription,
+  ContextAspectCreatedSubscriptionVariables
 >({
   subscriptionDocument: ContextAspectCreatedDocument,
   getSubscriptionVariables: context => ({ contextID: context.id }),

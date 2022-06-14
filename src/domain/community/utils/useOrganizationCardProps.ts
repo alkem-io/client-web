@@ -8,16 +8,20 @@ import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { TFunction } from 'i18next';
 
-export const toOrganizationCardProps = (org: OrganizationCardFragment, user: UserMetadata['user'], t: TFunction) => ({
-  verified: org.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
-  information: org.profile.description,
-  name: org.displayName,
-  avatar: org.profile.avatar?.uri,
-  members: getActivityCount(org.activity ?? [], 'members') ?? 0,
-  role: t(getUserCardRoleNameKey([user], org.id)[0].roleNameKey),
-  url: buildOrganizationUrl(org.nameID),
-  id: org.id,
-});
+export const toOrganizationCardProps = (org: OrganizationCardFragment, user: UserMetadata['user'], t: TFunction) => {
+  const roleName = getUserCardRoleNameKey(user, org.id);
+
+  return {
+    verified: org.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
+    information: org.profile.description,
+    name: org.displayName,
+    avatar: org.profile.avatar?.uri,
+    members: getActivityCount(org.activity ?? [], 'members') ?? 0,
+    role: roleName && t(roleName),
+    url: buildOrganizationUrl(org.nameID),
+    id: org.id,
+  };
+};
 
 const useOrganizationCardProps = (
   organizations: OrganizationCardFragment[] | undefined

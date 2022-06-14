@@ -1,13 +1,6 @@
-import { useEffect } from 'react';
-import { ApolloError, SubscribeToMoreOptions, TypedDocumentNode } from '@apollo/client';
+import { TypedDocumentNode } from '@apollo/client';
 import produce from 'immer';
-import { useApolloErrorHandler, useConfig } from '../../../hooks';
-import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
-import getEntriesSortedFlat from '../utils/getEntriesSortedFlat';
-
-interface SubscribeToMore<TData, TSubscriptionVariables, TSubscriptionData> {
-  (options: SubscribeToMoreOptions<TData, TSubscriptionVariables, TSubscriptionData>): () => void;
-}
+import useSubscribeToMore, { Options, SubscribeToMore } from './useSubscribeToMore';
 
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
@@ -34,50 +27,33 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
  * structures is ensured/handled by 'immer'.
  */
 const createUseSubscriptionToSubEntityHook =
-  <SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>(
+  <SubEntity, SubEntitySubscription, SubEntitySubscriptionVariables = undefined>(
     options: CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>
   ) =>
   <QueryData>(
     parentEntity: QueryData | undefined,
     getSubEntity: (data: QueryData | undefined) => SubEntity | undefined,
-    subscribeToMore: SubscribeToMore<QueryData, SubEntitySubscriptionVariables, SubEntitySubscription>
+    subscribeToMore: SubscribeToMore<QueryData>,
+    subscriptionOptions: Options = { skip: false }
   ) => {
-    const handleError = useApolloErrorHandler();
-    const { isFeatureEnabled } = useConfig();
-
-    const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
-
     const subEntity = getSubEntity(parentEntity);
 
     const variables = subEntity && options.getSubscriptionVariables?.(subEntity);
 
-    const hasInitiallyFetchedSubEntity = typeof subEntity !== 'undefined';
+    const skip = subscriptionOptions.skip || typeof subEntity === 'undefined';
 
-    useEffect(() => {
-      if (!areSubscriptionsEnabled) {
-        return;
-      }
-
-      if (!hasInitiallyFetchedSubEntity) {
-        return;
-      }
-
-      return subscribeToMore({
-        document: options.subscriptionDocument,
-        variables,
-        updateQuery: (prev, { subscriptionData }) => {
-          return produce(prev, next => {
-            const nextSubEntity = getSubEntity(next as QueryData);
-            options.updateSubEntity(nextSubEntity, subscriptionData.data);
-          });
-        },
-        onError: err => handleError(new ApolloError({ errorMessage: err.message })),
-      });
-    }, [areSubscriptionsEnabled, hasInitiallyFetchedSubEntity, ...getEntriesSortedFlat(variables || {})]);
-
-    return {
-      enabled: Boolean(areSubscriptionsEnabled && subEntity),
-    };
+    return useSubscribeToMore<QueryData, SubEntitySubscription, SubEntitySubscriptionVariables>(subscribeToMore, {
+      document: options.subscriptionDocument,
+      variables,
+      updateQuery: (prev, { subscriptionData }) => {
+        return produce(prev, next => {
+          const nextSubEntity = getSubEntity(next as QueryData);
+          options.updateSubEntity(nextSubEntity, subscriptionData.data);
+        });
+      },
+      ...subscriptionOptions,
+      skip,
+    });
   };
 
 export default createUseSubscriptionToSubEntityHook;
