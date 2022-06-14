@@ -84,7 +84,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { hubId } = useOpportunity();
 
   const { user: userMetadata } = useUserContext();
-  const isNotMember = !userMetadata?.ofOpportunity(userMetadata?.user.id ?? 'tempId') ?? true;
+  const userId = userMetadata?.user.id;
+
+  const isNotMember = userId && userMetadata ? !userMetadata.ofOpportunity(userId) : true;
 
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
