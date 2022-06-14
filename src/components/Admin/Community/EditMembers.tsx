@@ -54,10 +54,10 @@ export interface EditMembersProps {
   removingMember?: boolean;
   loadingAvailableMembers?: boolean;
   loadingMembers?: boolean;
-  onAdd?: (member: UserDisplayNameFragment) => void;
-  onRemove?: (member: Member) => void;
+  onAdd?: (memberId: string) => void;
+  onRemove?: (memberId: string) => void;
   fetchMore?: (amount?: number) => Promise<void>;
-  onFilter?: (term: string) => any;
+  onSearchTermChange: (term: string) => void;
   hasMore?: boolean;
   title?: string;
 }
@@ -74,7 +74,7 @@ export const EditMembers: FC<EditMembersProps> = ({
   onAdd,
   onRemove,
   fetchMore = () => Promise.resolve(),
-  onFilter,
+  onSearchTermChange,
   hasMore = false,
   title,
 }) => {
@@ -86,8 +86,8 @@ export const EditMembers: FC<EditMembersProps> = ({
   const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
 
   const handleFilter = useMemo(
-    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onFilter?.(e.target.value), FILTER_DEBOUNCE),
-    [onFilter, FILTER_DEBOUNCE]
+    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onSearchTermChange(e.target.value), FILTER_DEBOUNCE),
+    [onSearchTermChange, FILTER_DEBOUNCE]
   );
 
   const lazyLoading = useLazyLoading({
@@ -144,7 +144,7 @@ export const EditMembers: FC<EditMembersProps> = ({
                                     aria-label="Remove"
                                     size="small"
                                     disabled={disableExecutor || addingMember || removingMember}
-                                    onClick={() => onRemove(m)}
+                                    onClick={() => onRemove(m.id)}
                                   >
                                     <RemoveIcon />
                                   </StyledButtonRemove>
@@ -255,7 +255,7 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
                 <StyledButtonAdd
                   aria-label="Add"
                   size="small"
-                  onClick={() => onAdd(m)}
+                  onClick={() => onAdd(m.id)}
                   disabled={addingMember || removingMember}
                 >
                   <AddIcon />

@@ -4,12 +4,12 @@ import {
   ContextAspectCreatedSubscription,
   ContextAspectCreatedSubscriptionVariables,
 } from '../../models/graphql-schema';
-import createUseSubscriptionToSubEntity from '../shared/subscriptions/useSubscriptionToSubEntity';
+import createUseSubscriptionToSubEntityHook from '../shared/subscriptions/useSubscriptionToSubEntity';
 
-const useContextAspectCreatedSubscription = createUseSubscriptionToSubEntity<
+const useContextAspectCreatedSubscription = createUseSubscriptionToSubEntityHook<
   AspectsOnContextFragment,
-  ContextAspectCreatedSubscriptionVariables,
-  ContextAspectCreatedSubscription
+  ContextAspectCreatedSubscription,
+  ContextAspectCreatedSubscriptionVariables
 >({
   subscriptionDocument: ContextAspectCreatedDocument,
   getSubscriptionVariables: context => ({ contextID: context.id }),

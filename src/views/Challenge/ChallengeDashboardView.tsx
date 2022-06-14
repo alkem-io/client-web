@@ -10,9 +10,9 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge, useConfig } from '../../hooks';
+import { useChallenge, useConfig, useUserContext } from '../../hooks';
 import ActivityView from '../Activity/ActivityView';
-import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
+import AssociatedOrganizationsView from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { getVisualBanner } from '../../utils/visuals.utils';
@@ -22,6 +22,8 @@ import DashboardSectionAspects from '../../components/composite/aspect/Dashboard
 import EntityDashboardContributorsSection, {
   EntityDashboardContributorsSectionProps,
 } from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import { mapToAssociatedOrganization } from '../../domain/organization/AssociatedOrganizations/AssociatedOrganization';
+import OrganizationCard from '../../components/composite/common/cards/Organization/OrganizationCard';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -46,16 +48,20 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const { loading } = state;
 
   const { displayName, context } = challenge || {};
-  const { leadOrganizations = [] } = challenge?.community || {};
   const communityId = challenge?.community?.id || '';
 
   const { tagline = '', visuals, vision = '' } = context || {};
   const bannerUrl = getVisualBanner(visuals);
 
-  const orgNameIds = leadOrganizations.map(x => x.nameID);
-
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
+
+  const { user } = useUserContext();
+
+  const leadOrganizations = useMemo(
+    () => challenge?.community?.leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id, user?.user, t)),
+    [challenge]
+  );
 
   if (loading || loadingChallengeContext) return <Loading />;
 
@@ -100,8 +106,9 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
         </DashboardColumn>
         <DashboardColumn>
           <AssociatedOrganizationsView
-            title={t('pages.challenge.sections.dashboard.organization')}
-            organizationNameIDs={orgNameIds}
+            title={t('community.leading-organizations')}
+            organizations={leadOrganizations}
+            organizationCardComponent={OrganizationCard}
           />
           <DashboardGenericSection
             headerText={`${t('pages.challenge.sections.dashboard.opportunities.title')} (${opportunitiesCount})`}

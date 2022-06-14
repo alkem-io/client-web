@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { ChallengeProvider } from '../../context/ChallengeProvider';
-import { CommunityProvider } from '../../context/CommunityProvider';
+import { CommunityContextProvider } from '../../domain/community/CommunityContext';
 import { useHub } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import ApplyRoute from '../application/apply.route';
@@ -22,12 +22,7 @@ import AspectRoute from '../aspect/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
-  const {
-    displayName,
-    isPrivate,
-    hubId,
-    permissions: { communityReadAccess, canReadChallenges },
-  } = useHub();
+  const { displayName, isPrivate, hubId, hubNameId, permissions } = useHub();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
@@ -38,10 +33,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
 
   return (
     <Routes>
-      <Route
-        path={'/'}
-        element={<HubTabs challengesReadAccess={canReadChallenges} communityReadAccess={communityReadAccess} />}
-      >
+      <Route path={'/'} element={<HubTabs hubNameId={hubNameId} permissions={permissions} />}>
         <Route index element={<Navigate replace to={'dashboard'} />} />
         <Route path={'dashboard'} element={<HubDashboardPage paths={currentPaths} />} />
         <Route path={'contribute'} element={<ContributePage entityTypeName="hub" paths={currentPaths} />} />
@@ -63,9 +55,9 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         path={`challenges/:${nameOfUrl.challengeNameId}/*`}
         element={
           <ChallengeProvider>
-            <CommunityProvider>
+            <CommunityContextProvider>
               <ChallengeRoute paths={currentPaths} />
-            </CommunityProvider>
+            </CommunityContextProvider>
           </ChallengeProvider>
         }
       />

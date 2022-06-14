@@ -1,7 +1,7 @@
 import filterFn, { ValueType } from './filterFn';
-import { RequiredFields } from './CardFilter';
+import { Identifiable } from '../../../domain/shared/types/Identifiable';
 
-type TestDataType = RequiredFields & {
+type TestDataType = Identifiable & {
   displayName?: string;
   tags?: string[];
   context?: {

@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../models/constants/tagset.constants';
 import { ContributionItem } from '../../models/entities/contribution';
 import {
@@ -6,10 +5,11 @@ import {
   AuthorizationPrivilege,
   MyPrivilegesFragment,
   User,
-  UserMembershipDetailsFragment,
+  UserRolesDetailsFragment,
 } from '../../models/graphql-schema';
 import { Role } from '../../models/Role';
 import { useCredentialsResolver } from '../useCredentialsResolver';
+import { useCallback } from 'react';
 
 export interface UserPermissions {
   canCreate: boolean;
@@ -44,7 +44,6 @@ export interface UserMetadata {
   hubs: string[];
   keywords: string[];
   skills: string[];
-  communities: Record<string, string>;
   contributions: ContributionItem[];
   pendingApplications: ContributionItem[];
   organizationNameIDs: string[];
@@ -53,7 +52,7 @@ export interface UserMetadata {
 
 const getDisplayName = (i: { displayName?: string }) => i.displayName || ';';
 
-const getContributions = (membershipData?: UserMembershipDetailsFragment) => {
+const getContributions = (membershipData?: UserRolesDetailsFragment) => {
   if (!membershipData) return [];
 
   const hubs = membershipData.hubs.map<ContributionItem>(e => ({
@@ -76,7 +75,7 @@ const getContributions = (membershipData?: UserMembershipDetailsFragment) => {
   return [...hubs, ...challenges, ...opportunities];
 };
 
-const getPendingApplications = (membershipData?: UserMembershipDetailsFragment) => {
+const getPendingApplications = (membershipData?: UserRolesDetailsFragment) => {
   if (!membershipData) return [];
 
   return (
@@ -94,7 +93,7 @@ export const useUserMetadataWrapper = () => {
   const toUserMetadata = useCallback(
     (
       user: User | undefined,
-      membershipData?: UserMembershipDetailsFragment,
+      membershipData?: UserRolesDetailsFragment,
       authorization?: MyPrivilegesFragment
     ): UserMetadata | undefined => {
       if (!user) {
@@ -108,11 +107,6 @@ export const useUserMetadataWrapper = () => {
       const organizationNameIDs: UserMetadata['organizationNameIDs'] =
         membershipData?.organizations.map(o => o.nameID) || [];
       const groups = membershipData?.hubs.flatMap(e => e.userGroups.map(getDisplayName)) || [];
-      const communities =
-        membershipData?.communities.reduce((aggr, value) => {
-          aggr[value.id] = value.displayName;
-          return aggr;
-        }, {}) || {};
 
       const roles =
         user?.agent?.credentials
@@ -128,11 +122,8 @@ export const useUserMetadataWrapper = () => {
           .sort((a, b) => a.order - b.order) || [];
 
       const hasCredentials = (credential: AuthorizationCredential, resourceId?: string) =>
-        Boolean(
-          user?.agent?.credentials?.findIndex(
-            c => c.type === credential && (!resourceId || c.resourceID === resourceId)
-          ) !== -1
-        );
+        user?.agent?.credentials?.some(c => c.type === credential && (!resourceId || c.resourceID === resourceId)) ??
+        false;
 
       const isHubAdmin = (id: string) =>
         hasCredentials(AuthorizationCredential.GlobalAdmin) || hasCredentials(AuthorizationCredential.HubAdmin, id);
@@ -174,7 +165,6 @@ export const useUserMetadataWrapper = () => {
         opportunities,
         organizations,
         hubs,
-        communities,
         keywords: user.profile?.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
         skills: user.profile?.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
         contributions: getContributions(membershipData),
@@ -190,6 +180,7 @@ export const useUserMetadataWrapper = () => {
     },
     [resolver]
   );
+
   return toUserMetadata;
 };
 

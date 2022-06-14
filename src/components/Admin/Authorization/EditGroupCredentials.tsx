@@ -4,26 +4,20 @@ import {
   useAssignUserToGroupMutation,
   useRemoveUserFromGroupMutation,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAvailableMembers } from '../../../hooks';
-import { Member } from '../../../models/User';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../../models/graphql-schema';
+import { useApolloErrorHandler } from '../../../hooks';
+import { AuthorizationCredential } from '../../../models/graphql-schema';
 import EditMembers from '../Community/EditMembers';
+import { useAvailableMembersWithCredential } from '../../../domain/community/useAvailableMembersWithCredential';
 
 interface EditCredentialsProps {
   credential: GroupCredentials;
   resourceId: string;
-  parentMembers?: Member[];
   parentCommunityId?: string;
 }
 
 export type GroupCredentials = AuthorizationCredential.UserGroupMember;
 
-export const EditCredentials: FC<EditCredentialsProps> = ({
-  credential,
-  parentCommunityId,
-  resourceId,
-  parentMembers,
-}) => {
+export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentCommunityId, resourceId }) => {
   const handleError = useApolloErrorHandler();
 
   const [grant, { loading: addingMember }] = useAssignUserToGroupMutation({
@@ -34,11 +28,11 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
     onError: handleError,
   });
 
-  const handleAdd = (_member: UserDisplayNameFragment) => {
+  const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
-          userID: _member.id,
+          userID: memberId,
           groupID: resourceId,
         },
       },
@@ -51,11 +45,11 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
     });
   };
 
-  const handleRemove = (_member: Member) => {
+  const handleRemove = (memberId: string) => {
     revoke({
       variables: {
         input: {
-          userID: _member.id,
+          userID: memberId,
           groupID: resourceId,
         },
       },
@@ -68,17 +62,17 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
     });
   };
 
-  const { available, current, loading, fetchMore, hasMore } = useAvailableMembers({
-    credential,
-    resourceId,
-    parentCommunityId,
-    parentMembers,
-  });
+  const { availableMembers, currentMembers, loading, fetchMore, hasMore, setSearchTerm } =
+    useAvailableMembersWithCredential({
+      credential,
+      resourceId,
+      parentCommunityId,
+    });
 
   return (
     <EditMembers
-      members={current}
-      availableMembers={available}
+      members={currentMembers}
+      availableMembers={availableMembers}
       onAdd={handleAdd}
       addingMember={addingMember}
       onRemove={handleRemove}
@@ -87,7 +81,9 @@ export const EditCredentials: FC<EditCredentialsProps> = ({
       loadingAvailableMembers={loading}
       fetchMore={fetchMore}
       hasMore={hasMore}
+      onSearchTermChange={setSearchTerm}
     />
   );
 };
+
 export default EditCredentials;

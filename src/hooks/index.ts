@@ -18,7 +18,7 @@ export * from './operations/useDeleteUserGroup';
 export * from './cards/useUserCardRoleName';
 export { default as useUserCardRoleName } from './cards/useUserCardRoleName';
 
-export * from './useHub';
+export * from '../domain/hub/HubContext/useHub';
 export * from './useOrganization';
 export * from './useChallenge';
 export * from './useOpportunity';
@@ -33,6 +33,5 @@ export * from './useNotification';
 export * from './useQueryParams';
 export * from './useSentry';
 export * from './useGlobalState';
-export * from '../domain/community/useAvailableMembers';
 
 export * from './routing/useRouteMatch';

@@ -1,18 +1,18 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { WithCommunity, WithOptionalMembersProps } from '../../components/Admin/Community/CommunityTypes';
+import { WithCommunity } from '../../components/Admin/Community/CommunityTypes';
 import EditMembersPage from '../../components/Admin/Group/EditMembersPage';
 import GroupPage from '../../components/Admin/Group/GroupPage';
 import Loading from '../../components/core/Loading/Loading';
 import { UserGroup } from '../../models/graphql-schema';
-import { Error404 } from '../../pages';
+import { Error404, PageProps } from '../../pages';
 
-interface Props extends WithOptionalMembersProps, WithCommunity {
+interface Props extends PageProps, WithCommunity {
   group?: UserGroup;
   loading?: boolean;
 }
 
-export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCommunityId, parentMembers }) => {
+export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCommunityId }) => {
   const { pathname: url } = useResolvedPath('.');
   const groupName = group?.name || '';
 
@@ -27,12 +27,7 @@ export const GroupRoute: FC<Props> = ({ paths, group, loading = false, parentCom
         <Route
           path={'members'}
           element={
-            <EditMembersPage
-              paths={currentPaths}
-              parentCommunityId={parentCommunityId}
-              groupId={group?.id || ''}
-              parentMembers={parentMembers}
-            />
+            <EditMembersPage paths={currentPaths} parentCommunityId={parentCommunityId} groupId={group?.id || ''} />
           }
         ></Route>
         <Route path="*" element={<Error404 />}></Route>

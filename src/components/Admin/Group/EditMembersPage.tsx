@@ -4,13 +4,13 @@ import { useUpdateNavigation } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { PageProps } from '../../../pages';
 import EditGroupCredentials from '../Authorization/EditGroupCredentials';
-import { WithCommunity, WithOptionalMembersProps } from '../Community/CommunityTypes';
+import { WithCommunity } from '../Community/CommunityTypes';
 
-interface EditMembersPageProps extends WithOptionalMembersProps, PageProps, WithCommunity {
+interface EditMembersPageProps extends PageProps, WithCommunity {
   groupId: string;
 }
 
-export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentCommunityId, groupId, parentMembers }) => {
+export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentCommunityId, groupId }) => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'members', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
@@ -20,7 +20,6 @@ export const EditMembersPage: FC<EditMembersPageProps> = ({ paths, parentCommuni
         credential={AuthorizationCredential.UserGroupMember}
         resourceId={groupId || ''}
         parentCommunityId={parentCommunityId}
-        parentMembers={parentMembers}
       />
     </Container>
   );

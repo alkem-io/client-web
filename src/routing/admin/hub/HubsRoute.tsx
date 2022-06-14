@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { HubProvider } from '../../../context/HubProvider';
+import { HubContextProvider } from '../../../domain/hub/HubContext/HubContext';
 import { useTransactionScope } from '../../../hooks';
 import { Error404, PageProps } from '../../../pages';
 import AdminHubsPage from '../../../pages/Admin/AdminHubs/AdminHubsPage';
@@ -32,9 +32,9 @@ export const HubsRoute: FC<PageProps> = ({ paths }) => {
       <Route
         path={`:${nameOfUrl.hubNameId}/*`}
         element={
-          <HubProvider>
+          <HubContextProvider>
             <HubRoute paths={currentPaths} />
-          </HubProvider>
+          </HubContextProvider>
         }
       />
       <Route path="*" element={<Error404 />} />

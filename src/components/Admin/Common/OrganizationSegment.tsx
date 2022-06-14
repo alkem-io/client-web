@@ -5,7 +5,7 @@ import { SMALL_TEXT_LENGTH } from '../../../models/constants/field-length.consta
 import FormikInputField from '../../composite/forms/FormikInputField';
 import FormRow from '../../../domain/shared/layout/FormLayout';
 
-export const organizationegmentSchema = yup.object().shape({
+export const organizationSegmentSchema = yup.object().shape({
   contactEmail: yup.string().email('Not a valid email').max(SMALL_TEXT_LENGTH),
   domain: yup.string().max(SMALL_TEXT_LENGTH),
   legalEntityName: yup.string().max(SMALL_TEXT_LENGTH),

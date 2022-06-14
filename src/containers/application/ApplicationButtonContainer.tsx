@@ -10,7 +10,8 @@ import {
 import { ContainerChildProps } from '../../models/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../utils/urlBuilders';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
-import { useCommunityContext } from '../../context/CommunityProvider';
+import { useCommunityContext } from '../../domain/community/CommunityContext';
+import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: ApplicationButtonProps;
@@ -31,7 +32,7 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
 
   const [getUserProfile, { loading: gettingUserProfile }] = useUserProfileLazyQuery({ variables: { input: userId } });
 
-  const { hubId, hubNameId, displayName: hubName } = useHub();
+  const { hubId, hubNameId, displayName: hubName, refetchHub } = useHub();
   const { challengeId, challengeNameId, displayName: challengeName } = useChallenge();
 
   const { communityId } = useCommunityContext();
@@ -48,16 +49,17 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
 
   const [joinCommunity, { loading: joiningCommunity }] = useJoinCommunityMutation({
     onError: handleError,
+    update: cache => clearCacheForType(cache, 'Authorization'),
   });
 
   // todo: refactor logic or use entity privileges
-  const userApplication = memberShip?.membershipUser.applications?.find(
+  const userApplication = memberShip?.rolesUser.applications?.find(
     x => x.hubID === hubId && (challengeId ? x.challengeID === challengeId : true) && !x.opportunityID
   );
 
   // find an application which does not have a challengeID, meaning it's on hub level,
   // but you are at least at challenge level to have a parent application
-  const parentApplication = memberShip?.membershipUser.applications?.find(
+  const parentApplication = memberShip?.rolesUser.applications?.find(
     x => x.hubID === hubId && !x.challengeID && !x.opportunityID && challengeId
   );
 
@@ -78,10 +80,12 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
 
   const loading = membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
 
-  const onJoin = () => {
-    joinCommunity({
+  const onJoin = async () => {
+    await joinCommunity({
       variables: { joiningData: { communityID: communityId } },
-    }).then(() => /* refresh user's membership */ getUserProfile());
+    });
+    getUserProfile();
+    refetchHub();
   };
 
   const applicationButtonProps: ApplicationButtonProps = {
@@ -115,4 +119,5 @@ export const ApplicationButtonContainer: FC<ApplicationContainerProps> = ({ chil
     </>
   );
 };
+
 export default ApplicationButtonContainer;

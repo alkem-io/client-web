@@ -1,8 +1,9 @@
-import React, { FC, useState } from 'react';
-import { useAvailableMembers, useUserContext } from '../../../hooks';
+import React, { FC } from 'react';
+import { useUserContext } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import AuthorizationPageProps from '../../../pages/Admin/AuthorizationPageProps';
 import { EditMembers, EditMembersProps } from '../Community/EditMembers';
+import { useAvailableMembersWithCredential } from '../../../domain/community/useAvailableMembersWithCredential';
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,
@@ -25,19 +26,17 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const [filterTerm, setFilterTerm] = useState('');
-
-  const { available, current, loading, fetchMore, hasMore } = useAvailableMembers({
-    credential,
-    resourceId,
-    parentCommunityId,
-    filter: { firstName: filterTerm, lastName: filterTerm, email: filterTerm },
-  });
+  const { availableMembers, currentMembers, loading, fetchMore, hasMore, setSearchTerm } =
+    useAvailableMembersWithCredential({
+      credential,
+      resourceId,
+      parentCommunityId,
+    });
 
   return (
     <EditMembers
-      members={current}
-      availableMembers={available}
+      members={currentMembers}
+      availableMembers={availableMembers}
       executor={user}
       onAdd={onAdd}
       onRemove={onRemove}
@@ -46,7 +45,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
       loadingMembers={loading}
       loadingAvailableMembers={loading}
       fetchMore={fetchMore}
-      onFilter={setFilterTerm}
+      onSearchTermChange={setSearchTerm}
       hasMore={hasMore}
       title={title}
     />

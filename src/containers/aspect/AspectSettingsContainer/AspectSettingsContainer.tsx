@@ -19,7 +19,7 @@ import {
 import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
-import removeFromCache from '../../../utils/apollo-cache/removeFromCache';
+import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];

@@ -71,38 +71,45 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
             references: aspect.references,
           });
         };
+
         return (
-          <>
-            <AspectForm
-              edit
-              loading={state.loading || state.updating}
-              aspect={toAspectFormInput(entities.aspect)}
-              aspectNames={entities.aspectsNames}
-              onChange={setAspect}
-              onAddReference={actions.handleAddReference}
-              onRemoveReference={actions.handleRemoveReference}
-            />
-            <SectionSpacer double />
-            <Box>
-              <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-              <SectionSpacer />
-              <EditVisualsView visuals={visuals} />
-            </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
-              <Button
-                aria-label="delete-aspect"
-                variant="outlined"
-                color="error"
-                disabled={btnDisabled}
-                onClick={handleDelete}
-              >
-                {t('buttons.delete')}
-              </Button>
-              <Button aria-label="save-aspect" variant="contained" disabled={btnDisabled} onClick={handleUpdate}>
-                {t('buttons.save')}
-              </Button>
-            </Box>
-          </>
+          <AspectForm
+            edit
+            loading={state.loading || state.updating}
+            aspect={toAspectFormInput(entities.aspect)}
+            aspectNames={entities.aspectsNames}
+            onChange={setAspect}
+            onAddReference={actions.handleAddReference}
+            onRemoveReference={actions.handleRemoveReference}
+          >
+            {({ isValid }) => {
+              const saveDisabled = btnDisabled || !isValid;
+              return (
+                <>
+                  <SectionSpacer double />
+                  <Box>
+                    <Typography variant={'h4'}>{t('common.visuals')}</Typography>
+                    <SectionSpacer />
+                    <EditVisualsView visuals={visuals} />
+                  </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
+                    <Button
+                      aria-label="delete-aspect"
+                      variant="outlined"
+                      color="error"
+                      disabled={btnDisabled}
+                      onClick={handleDelete}
+                    >
+                      {t('buttons.delete')}
+                    </Button>
+                    <Button aria-label="save-aspect" variant="contained" disabled={saveDisabled} onClick={handleUpdate}>
+                      {t('buttons.save')}
+                    </Button>
+                  </Box>
+                </>
+              );
+            }}
+          </AspectForm>
         );
       }}
     </AspectSettingsContainer>

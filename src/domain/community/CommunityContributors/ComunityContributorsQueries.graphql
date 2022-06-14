@@ -1,0 +1,61 @@
+query HubCommunityContributors($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    host {
+      ...OrganizationCard
+    }
+    community {
+      id
+      leadUsers {
+        ...UserCard
+      }
+      memberUsers {
+        ...UserCard
+      }
+      memberOrganizations {
+        ...OrganizationCard
+      }
+    }
+  }
+}
+
+query ChallengeCommunityContributors($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      community {
+        id
+        ...CommunityMembers
+      }
+    }
+  }
+}
+
+query OpportunityCommunityContributors($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      community {
+        id
+        ...CommunityMembers
+      }
+    }
+  }
+}
+
+fragment CommunityMembers on Community {
+  leadUsers {
+    ...UserCard
+  }
+  memberUsers {
+    ...UserCard
+  }
+  leadOrganizations {
+    ...OrganizationCard
+  }
+  memberOrganizations {
+    ...OrganizationCard
+  }
+}

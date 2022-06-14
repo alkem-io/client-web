@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useMemo } from 'react';
-import { useApolloErrorHandler, useAvailableMembers, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useUserContext } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
   useAssignUserAsOpportunityAdminMutation,
@@ -7,6 +7,10 @@ import {
 } from '../../hooks/generated/graphql';
 import { AuthorizationCredential, Community, Opportunity, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
+import {
+  useAvailableMembersWithCredential,
+  AvailableMembersResults,
+} from '../../domain/community/useAvailableMembersWithCredential';
 
 const opportunityAdminCredential = AuthorizationCredential.OpportunityAdmin;
 
@@ -28,9 +32,10 @@ export interface OpportunityMembersProps {
 }
 
 export interface OpportunityMembersActions {
-  handleAssignAdmin: (member: UserDisplayNameFragment) => void;
-  handleRemoveAdmin: (member: Member) => void;
+  handleAssignAdmin: (memberId: string) => void;
+  handleRemoveAdmin: (memberId: string) => void;
   handleLoadMore: () => Promise<void>;
+  setSearchTerm: AvailableMembersResults['setSearchTerm'];
 }
 
 export interface OpportunityMembersState {
@@ -60,12 +65,12 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
   });
 
   const handleAssignAdmin = useCallback(
-    (_member: UserDisplayNameFragment) => {
+    (memberId: string) => {
       grantAdmin({
         variables: {
           input: {
             opportunityID: entities.opportunityId,
-            userID: _member.id,
+            userID: memberId,
           },
         },
         refetchQueries: [
@@ -80,11 +85,11 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
   );
 
   const handleRemoveAdmin = useCallback(
-    (_member: Member) => {
+    (memberId: string) => {
       revokeAdmin({
         variables: {
           input: {
-            userID: _member.id,
+            userID: memberId,
             opportunityID: entities.opportunityId,
           },
         },
@@ -100,12 +105,13 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
   );
 
   const {
-    available: availableMembers,
-    current: allMembers,
+    availableMembers,
+    currentMembers: allMembers,
     loading,
     fetchMore,
     hasMore,
-  } = useAvailableMembers({
+    setSearchTerm,
+  } = useAvailableMembersWithCredential({
     credential: entities.credential,
     resourceId: entities.opportunityId,
     parentCommunityId: communityId,
@@ -132,6 +138,7 @@ export const OpportunityMembers: FC<OpportunityMembersProps> = ({ children, enti
           handleAssignAdmin,
           handleRemoveAdmin,
           handleLoadMore,
+          setSearchTerm,
         },
         {
           addingAdmin,

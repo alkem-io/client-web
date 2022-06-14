@@ -230,9 +230,18 @@
       }
     }
   },
+  "community": {
+    "leading-organizations": "Головні Організації",
+    "member-users": "Користувачі-учасники",
+    "member-organizations": "Організації-учасники"
+  },
   "forms": {
     "validations": {
-      "required": "Необхідне поле!"
+      "required": "Необхідне поле!",
+      "minLength": "{{field}} має містити щонайменше {{min}} символи",
+      "maxLength": "{{field}} має містити не більше {{max}} символів",
+      "alphaNumeric": "{{field}} може містити лише латинські символи нижнього регістру, цифри та дефіси",
+      "nonBlank": "Значення не повинно складатися лише з пробілів"
     }
   },
   "components": {
@@ -683,16 +692,17 @@
         },
         "interested-in-collaboration": {
           "header": "Alkemio і Ви",
-          "innovation-facilitator": "Чи ви є керівником Інновацій у своїй Спільноті або Організації?<br/>Будь ласка, <a href='https://alkem.io/feedback' style='color:#068293' target='_blank'>зверніться</a> і ми зможемо назначити зустріч тет-а-тет!",
-          "suggestions": "Чи маєте ви пропозиції для Випробувань, де Alkemio може допомогти?<br/>Будь ласка, повідомте про це на нашому <a href='https://github.com/alkem-io/alkemio/discussions' style='color:#068293' target='_blank'>Обговоренні</a> і приєднуйтесь до Спільноти!",
-          "contributor": "Чи бажаєте ви вкласти внесок, або підтрмати Alkemio? <br/>100% <a href='https://github.com/alkem-io' style='color:#068293' target='_blank'>відкритість</a>. Основана на <a href='https://alkem.io' style='color:#068293' target='_blank'>некоменційній Організації</a>."
+          "innovation-facilitator": "Чи ви є керівником Інновацій у своїй Спільноті або Організації?<br/>Будь ласка, <a href='https://alkem.io/feedback' target='_blank'>зверніться</a> і ми зможемо назначити зустріч тет-а-тет!",
+          "suggestions": "Чи маєте ви пропозиції для Випробувань, де Alkemio може допомогти?<br/>Будь ласка, повідомте про це на нашому <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>Обговоренні</a> і приєднуйтесь до Спільноти!",
+          "contributor": "Чи бажаєте ви вкласти внесок, або підтрмати Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>відкритість</a>. Основана на <a href='https://alkem.io' target='_blank'>некоменційній Організації</a>."
         },
         "getting-started": {
           "header": "Для початку",
           "subheader": "Тут є декілька настанов, щоб розпочати активності.",
-          "connecting-with-people": "Хочете побачити, хто вже вклав внесок? Дізнайдесь про всіх <a href='./contributors' style='color:#068293' >причетних</a>.",
-          "joining-a-challenge": "Бажаєте приєднатись до Випробування? Дізнайдесь про всі <a href='./challenges' style='color:#068293' >Випробування</a>.",
-          "your-profile": "Зацікавлені, щоб вас знайшли інші? Заповніть <a href='./profile' style='color:#068293' >профіль</a>.</br>"
+          "connecting-with-people": "Хочете побачити, хто вже вклав внесок? Дізнайдесь про всіх <a href='./contributors' >причетних</a>.",
+          "introduction-video": "Хочете почати використовувати платформу? Перегляньте це <a href='https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO' target='_blank'>демонстраційне відео</a>.",
+          "joining-a-challenge": "Бажаєте приєднатись до Випробування? Дізнайдесь про всі <a href='./challenges' >Випробування</a>.",
+          "your-profile": "Зацікавлені, щоб вас знайшли інші? Заповніть <a href='./profile' >профіль</a>.</br>"
         },
         "hub": {
           "header": "Дізнайтесть про Центри Випробувань!",
@@ -753,7 +763,6 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Головні Організації",
           "statistics": {
             "title": "Статистика Випробування",
             "help-text": "Статистика Випробування"

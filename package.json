@@ -1,6 +1,6 @@
 {
   "name": "@alkemio/client-web",
-  "version": "0.22.0",
+  "version": "0.22.2",
   "description": "Alkemio client, enabling users to interact with Challenges hosted on the Alkemio platform.",
   "author": "Alkemio Foundation",
   "repository": {
@@ -52,7 +52,6 @@
     "logform": "^2.2.0",
     "loglevel": "^1.8.0",
     "nanoid": "^3.1.30",
-    "node-sass": "^6.0.1",
     "qrcode": "^1.5.0",
     "react": "^17.0.2",
     "react-cookie-consent": "^6.2.4",
@@ -63,7 +62,7 @@
     "react-image-file-resizer": "^0.4.7",
     "react-intersection-observer": "^9.1.0",
     "react-jss": "^10.5.0",
-    "react-markdown": "^8.0.1",
+    "react-markdown": "^8.0.3",
     "react-resize-detector": "^7.0.0",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
@@ -82,7 +81,6 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=development gulp buildConfiguration && react-scripts start",
-    "start:services": "docker-compose -f quickstart-services.yml --env-file .env.docker up --build --force-recreate",
     "build": "cross-env NODE_ENV=production gulp buildConfiguration && react-scripts build",
     "test": "cross-env NODE_ENV=test gulp buildConfiguration && react-scripts test",
     "test:cov": "npm run test -- --coverage --watchAll=false",
@@ -139,6 +137,7 @@
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
     "prettier": "^2.5.1",
+    "sass": "^1.52.1",
     "storybook-react-i18next": "^1.0.13",
     "webpack": "^5.66.0"
   },

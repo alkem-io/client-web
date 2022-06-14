@@ -1,0 +1,12 @@
+query adminGlobalOrganizationsList($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  organizationsPaginated(first: $first, after: $after, filter: $filter) {
+    organization {
+      id
+      nameID
+      displayName
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

@@ -9,8 +9,7 @@ import {
   useAssignUserAsHubAdminMutation,
   useRemoveUserAsHubAdminMutation,
 } from '../../../../hooks/generated/graphql';
-import { Member } from '../../../../models/User';
-import { AuthorizationCredential, UserDisplayNameFragment } from '../../../../models/graphql-schema';
+import { AuthorizationCredential } from '../../../../models/graphql-schema';
 
 interface HubAuthorizationViewProps {
   credential: AuthorizationCredential;
@@ -28,11 +27,11 @@ const HubAuthorizationView: FC<HubAuthorizationViewProps> = ({ credential, resou
     onError: handleError,
   });
 
-  const handleAdd = (member: UserDisplayNameFragment) => {
+  const handleAdd = (memberId: string) => {
     grant({
       variables: {
         input: {
-          userID: member.id,
+          userID: memberId,
           hubID: resourceId,
         },
       },
@@ -45,11 +44,11 @@ const HubAuthorizationView: FC<HubAuthorizationViewProps> = ({ credential, resou
     });
   };
 
-  const handleRemove = (member: Member) => {
+  const handleRemove = (memberId: string) => {
     revoke({
       variables: {
         input: {
-          userID: member.id,
+          userID: memberId,
           hubID: resourceId,
         },
       },

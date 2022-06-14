@@ -1,0 +1,11 @@
+fragment CommunityDetails on Community {
+  id
+  displayName
+  communication {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+}

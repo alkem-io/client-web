@@ -244,9 +244,19 @@
       }
     }
   },
+  "community": {
+    "leading-users": "Leading Users",
+    "member-users": "Member Users",
+    "leading-organizations": "Leading Organizations",
+    "member-organizations": "Member Organizations"
+  },
   "forms": {
     "validations": {
-      "required": "This field is required!"
+      "required": "This field is required!",
+      "minLength": "{{field}} should be at least {{min}} symbols long",
+      "maxLength": "Exceeded the limit of {{max}} characters",
+      "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
+      "nonBlank": "{{field}} must not consist of just spaces"
     }
   },
   "components": {
@@ -627,7 +637,9 @@
           "description": "Here you can explore the context of this {{entity}}. This information is provided by the organization managing this {{entity}}."
         },
         "community": {
-          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared."
+          "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
+          "leading-contributors": "Leading Contributors",
+          "contributors": "Contributors"
         },
         "contribute": {
           "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community.\nAdd additional aspects that are relevant, as well as comment on aspects added by others."
@@ -800,16 +812,17 @@
         },
         "interested-in-collaboration": {
           "header": "Alkemio and You",
-          "innovation-facilitator": "Driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' style='color:#068293' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
-          "suggestions": "Have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' style='color:#068293' target='_blank'>discussions</a> and join the community!",
-          "contributor": "Want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io' style='color:#068293' target='_blank'>open source</a>. Backed by a <a href='https://alkem.io' style='color:#068293' target='_blank'>non-profit foundation</a>."
+          "innovation-facilitator": "Driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
+          "suggestions": "Have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!",
+          "contributor": "Want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Backed by a <a href='https://alkem.io' target='_blank'>non-profit foundation</a>."
         },
         "getting-started": {
           "header": "Getting Started",
           "subheader": "Here are some suggestions to help get you up to speed.",
-          "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' style='color:#068293' >contributors</a>.",
-          "joining-a-challenge": "Eager to join a Challenge? Explore all <a href='./challenges' style='color:#068293' >Challenges</a>.",
-          "your-profile": "Keen to be found by other contributors? Fill out your <a href='./profile' style='color:#068293' >profile</a>.</br>"
+          "joining-a-challenge": "Eager to join a Challenge? Explore all <a href='./challenges' >Challenges</a>.",
+          "introduction-video": "Want to start using the platform? Watch this <a href='https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO' target='_blank'>demonstration video</a>.",
+          "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' >contributors</a>.",
+          "your-profile": "Keen to be found by other contributors? Fill out your <a href='./profile' >profile</a>.</br>"
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
@@ -866,7 +879,6 @@
       },
       "sections": {
         "dashboard": {
-          "organization": "Leading organizations",
           "statistics": {
             "title": "Challenge statistics",
             "help-text": "Challenge statistics"
@@ -922,11 +934,13 @@
     },
     "community": {
       "title": "{{name}} community page",
-      "subtitle": "",
       "leading-organizations": {
         "title": "Leading organizations ({{count}})",
         "help-text": "Shows different organizations, including the role you have",
         "no-data": "No organization is leading at this time"
+      },
+      "member-organizations": {
+        "no-data": "No organization is contributing at this time"
       },
       "hub-host": {
         "title": "Facilitating organization",

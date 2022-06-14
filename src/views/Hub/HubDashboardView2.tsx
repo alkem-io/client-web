@@ -12,7 +12,7 @@ import ApplicationButtonContainer from '../../containers/application/Application
 import { Discussion } from '../../models/discussion/discussion';
 import { ChallengeCardFragment } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
-import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
+import AssociatedOrganizationsLazilyFetched from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
@@ -64,7 +64,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   loading,
   isMember = false,
   communityReadAccess = false,
-  challengesReadAccess = true,
+  challengesReadAccess = false,
   memberUsers,
   memberUsersCount,
   memberOrganizations,
@@ -119,7 +119,7 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <AssociatedOrganizationsView
+          <AssociatedOrganizationsLazilyFetched
             title={t('pages.hub.sections.dashboard.organization')}
             organizationNameIDs={orgNameIds}
           />

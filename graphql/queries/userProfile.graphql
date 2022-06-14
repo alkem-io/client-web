@@ -3,9 +3,9 @@ query userProfile($input: UUID_NAMEID_EMAIL!) {
     ...UserDetails
     ...UserAgent
   }
-  membershipUser(membershipData: { userID: $input }) {
+  rolesUser(rolesData: { userID: $input }) {
     id
-    ...UserMembershipDetails
+    ...UserRolesDetails
   }
   authorization {
     ...MyPrivileges

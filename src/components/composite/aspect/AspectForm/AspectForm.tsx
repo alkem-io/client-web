@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Formik } from 'formik';
+import { Formik, FormikConfig } from 'formik';
 import { Grid } from '@mui/material';
 import FormikInputField from '../../forms/FormikInputField';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
@@ -12,10 +12,10 @@ import { Aspect, Tagset } from '../../../../models/graphql-schema';
 import ReferenceSegment, { referenceSegmentSchema } from '../../../Admin/Common/ReferenceSegment';
 import { PushFunc, RemoveFunc } from '../../../../hooks';
 import { Reference } from '../../../../models/Profile';
-import { nameValidator } from '../../../Admin/Common/NameSegment';
 import MarkdownInput from '../../../Admin/Common/MarkdownInput';
 import FormRow from '../../../../domain/shared/layout/FormLayout';
 import AspectTypeFormField from '../../../../domain/aspect/AspectTypeFormField';
+import { displayNameValidator } from '../../../../utils/validator';
 
 type FormValueType = {
   name: string;
@@ -46,6 +46,7 @@ export interface AspectFormProps {
   onStatusChanged?: (isValid: boolean) => void;
   onAddReference?: (push: PushFunc) => void;
   onRemoveReference?: (ref: Reference, remove: RemoveFunc) => void;
+  children?: FormikConfig<FormValueType>['children'];
 }
 
 const AspectForm: FC<AspectFormProps> = ({
@@ -58,6 +59,7 @@ const AspectForm: FC<AspectFormProps> = ({
   onStatusChanged,
   onAddReference,
   onRemoveReference,
+  children,
 }) => {
   const { t } = useTranslation();
 
@@ -93,7 +95,7 @@ const AspectForm: FC<AspectFormProps> = ({
     );
 
   const validationSchema = yup.object().shape({
-    name: nameValidator.concat(uniqueNameValidator),
+    name: displayNameValidator.concat(uniqueNameValidator),
     description: yup.string().required(),
     tagsets: tagsetSegmentSchema,
     references: referenceSegmentSchema,
@@ -119,44 +121,51 @@ const AspectForm: FC<AspectFormProps> = ({
       validateOnMount
       onSubmit={() => {}}
     >
-      {({ values: { type, references } }) => (
-        <Grid container spacing={2}>
-          <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          <FormRow cols={2}>
-            <FormikInputField
-              name={'name'}
-              title={t('common.title')}
+      {formikState => (
+        <>
+          <Grid container spacing={2}>
+            <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
+            <FormRow cols={2}>
+              <FormikInputField
+                name={'name'}
+                title={t('common.title')}
+                required
+                placeholder={t('components.aspect-creation.info-step.name-help-text')}
+              />
+            </FormRow>
+            <FormRow cols={2}>
+              <AspectTypeFormField name="type" value={formikState.values.type} />
+            </FormRow>
+            <SectionSpacer />
+            <MarkdownInput
+              name="description"
+              label={t('components.aspect-creation.info-step.description')}
+              placeholder={t('components.aspect-creation.info-step.description-placeholder')}
+              tooltipLabel={t('components.aspect-creation.info-step.description-help-text')}
               required
-              placeholder={t('components.aspect-creation.info-step.name-help-text')}
+              loading={loading}
+              rows={7}
             />
-          </FormRow>
-          <FormRow cols={2}>
-            <AspectTypeFormField name="type" value={type} />
-          </FormRow>
-          <SectionSpacer />
-          <MarkdownInput
-            name="description"
-            label={t('components.aspect-creation.info-step.description')}
-            placeholder={t('components.aspect-creation.info-step.description-placeholder')}
-            tooltipLabel={t('components.aspect-creation.info-step.description-help-text')}
-            required
-            loading={loading}
-            rows={7}
-          />
-          <SectionSpacer />
-          <TagsetSegment
-            tagsets={tagsets}
-            title={t('common.tags')}
-            helpText={t('components.aspect-creation.info-step.tags-help-text')}
-            loading={loading}
-          />
-          {edit && (
-            <>
-              <SectionSpacer />
-              <ReferenceSegment references={references} onAdd={onAddReference} onRemove={onRemoveReference} />
-            </>
-          )}
-        </Grid>
+            <SectionSpacer />
+            <TagsetSegment
+              tagsets={tagsets}
+              title={t('common.tags')}
+              helpText={t('components.aspect-creation.info-step.tags-help-text')}
+              loading={loading}
+            />
+            {edit && (
+              <>
+                <SectionSpacer />
+                <ReferenceSegment
+                  references={formikState.values.references}
+                  onAdd={onAddReference}
+                  onRemove={onRemoveReference}
+                />
+              </>
+            )}
+          </Grid>
+          {typeof children === 'function' ? (children as Function)(formikState) : children}
+        </>
       )}
     </Formik>
   );

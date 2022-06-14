@@ -32,10 +32,12 @@ const excludedPreferences = [PreferenceType.MembershipFeedbackOnChallengeContext
 
 const ChallengePreferenceContainer: FC<ChallengePreferenceContainerProps> = ({ children, hubId, challengeId }) => {
   const handleError = useApolloErrorHandler();
+
   const { data, loading, error } = useChallengePreferencesQuery({
     variables: { hubId, challengeId },
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
+    skip: !hubId,
   });
 
   const [updatePreference] = useUpdatePreferenceOnChallengeMutation({
