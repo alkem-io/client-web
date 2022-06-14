@@ -8,8 +8,8 @@ import { AspectCommentsMessageReceivedDocument } from '../../../hooks/generated/
 
 const useAspectCommentsMessageReceivedSubscription = createUseSubscriptionToSubEntityHook<
   AspectDashboardFragment,
-  AspectCommentsMessageReceivedSubscriptionVariables,
-  AspectCommentsMessageReceivedSubscription
+  AspectCommentsMessageReceivedSubscription,
+  AspectCommentsMessageReceivedSubscriptionVariables
 >({
   subscriptionDocument: AspectCommentsMessageReceivedDocument,
   getSubscriptionVariables: aspect => ({ aspectID: aspect.id }),
