@@ -85,6 +85,11 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { challengeNameId } = useChallenge();
   const { hubId } = useOpportunity();
 
+  const { user: userMetadata } = useUserContext();
+  const userId = userMetadata?.user.id;
+
+  const isNotMember = userId && userMetadata ? !userMetadata.ofOpportunity(userId) : true;
+
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
   const communityId = opportunity?.community?.id || '';
@@ -113,9 +118,11 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             bannerUrl={banner}
             headerText={displayName}
             primaryAction={
-              <Button onClick={actions.onInterestOpen} variant="contained">
-                {t('pages.opportunity.sections.apply')}
-              </Button>
+              isNotMember && (
+                <Button onClick={actions.onInterestOpen} variant="contained">
+                  {t('pages.opportunity.sections.apply')}
+                </Button>
+              )
             }
           >
             <Markdown children={tagline} />
