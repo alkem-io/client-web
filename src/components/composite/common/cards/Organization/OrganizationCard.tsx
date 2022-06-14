@@ -7,12 +7,13 @@ import LinkCard from '../../../../core/LinkCard/LinkCard';
 import VerifiedStatus from '../../VerifiedStatus/VerifiedStatus';
 
 const LINES_TO_SHOW = 4;
+
 export interface OrganizationCardProps {
   name?: string;
   avatar?: string;
   information?: string;
   role?: string;
-  members?: number;
+  membersCount?: number;
   verified?: boolean;
   loading?: boolean;
   url?: string;
@@ -46,7 +47,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
   avatar,
   information,
   role,
-  members,
+  membersCount,
   verified,
   loading,
   url,
@@ -98,10 +99,10 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
               <Typography sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : 'Members'}</Typography>
               {loading ? (
                 <Skeleton variant="circular">
-                  <CircleTag text={`${members}`} color="primary" size="small" />
+                  <CircleTag text={`${membersCount}`} color="primary" size="small" />
                 </Skeleton>
               ) : (
-                <CircleTag text={`${members}`} color="primary" size="small" />
+                <CircleTag text={`${membersCount}`} color="primary" size="small" />
               )}
             </Box>
             {loading ? (

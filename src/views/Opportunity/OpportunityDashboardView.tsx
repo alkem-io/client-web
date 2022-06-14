@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
@@ -20,7 +20,9 @@ import { AspectCardAspect } from '../../components/composite/common/cards/Aspect
 import EntityDashboardContributorsSection, {
   EntityDashboardContributorsSectionProps,
 } from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
+import AssociatedOrganizationsView from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsView';
+import OrganizationCard from '../../components/composite/common/cards/Organization/OrganizationCard';
+import { mapToAssociatedOrganization } from '../../domain/organization/AssociatedOrganizations/AssociatedOrganization';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -96,9 +98,16 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { visuals, tagline = '', vision = '' } = context ?? {};
   const banner = getVisualBanner(visuals);
 
-  const leadOrganizationsNameIDs = opportunity?.community?.leadOrganizations?.map(x => x.nameID) || [];
-
   const { loading } = state;
+
+  const { user } = useUserContext();
+
+  const leadOrganizations = useMemo(
+    () =>
+      opportunity?.community?.leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id, user?.user, t)),
+    [opportunity]
+  );
+
   return (
     <>
       <Grid container spacing={2}>
@@ -143,7 +152,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
         <DashboardColumn>
           <AssociatedOrganizationsView
             title={t('community.leading-organizations')}
-            organizationNameIDs={leadOrganizationsNameIDs}
+            organizations={leadOrganizations}
+            organizationCardComponent={OrganizationCard}
           />
           <DashboardGenericSection
             headerText={t('pages.opportunity.sections.dashboard.projects.title')}

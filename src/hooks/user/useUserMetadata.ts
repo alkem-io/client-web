@@ -16,7 +16,7 @@ export const useUserMetadata = (id: string) => {
   });
 
   return {
-    user: wrapper(data?.user as User, data?.membershipUser, data?.authorization),
+    user: wrapper(data?.user as User, data?.rolesUser, data?.authorization),
     loading,
   };
 };
