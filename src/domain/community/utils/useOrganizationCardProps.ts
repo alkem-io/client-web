@@ -19,7 +19,7 @@ export const toOrganizationCardProps = (
     id: org.id,
     name: org.displayName,
     avatar: org.profile.avatar?.uri,
-    information: org.profile.description,
+    description: org.profile.description,
     role: roleName && t(roleName),
     membersCount: getActivityCount(org.activity ?? [], 'members') ?? 0,
     verified: org.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
