@@ -118,7 +118,9 @@ const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEn
 >({
   subscriptionDocument: CommunicationUpdateMessageReceivedDocument,
   updateSubEntity: (updates, subscriptionData) => {
-    updates?.messages?.push(subscriptionData.communicationUpdateMessageReceived.message);
+    if (updates?.id === subscriptionData.communicationUpdateMessageReceived.updatesID) {
+      updates?.messages?.push(subscriptionData.communicationUpdateMessageReceived.message);
+    }
   },
 });
 
