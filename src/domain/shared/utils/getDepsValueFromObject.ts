@@ -6,7 +6,7 @@ import { sortBy } from 'lodash';
  * @param object
  */
 const getDepsValueFromObject = <Object extends {}>(object: Object | undefined | null): string => {
-  if (typeof object === 'undefined' || object === null) {
+  if (!object) {
     return '';
   }
   const entries = Object.entries(object) as [keyof Object, Object[keyof Object]][];
