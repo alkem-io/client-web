@@ -40,7 +40,7 @@ const createUseSubscriptionToSubEntityHook =
 
     const variables = subEntity && options.getSubscriptionVariables?.(subEntity);
 
-    const skip = subscriptionOptions.skip || !subEntity;
+    const skip = subscriptionOptions.skip || typeof subEntity === 'undefined';
 
     return useSubscribeToMore<QueryData, SubEntitySubscription, SubEntitySubscriptionVariables>(subscribeToMore, {
       document: options.subscriptionDocument,
