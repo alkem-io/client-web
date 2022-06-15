@@ -32,7 +32,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
     onCompleted: data => {
       const hubId = data.createHub.nameID;
       if (hubId) {
-        notify('Hub created successfuly!', 'success');
+        notify(t('pages.admin.hub.notifications.hub-created'), 'success');
         navigateToEdit(hubId);
       }
     },
