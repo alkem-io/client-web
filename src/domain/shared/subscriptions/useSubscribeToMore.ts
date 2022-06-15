@@ -3,7 +3,6 @@ import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks
 import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
 import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
 import getDepsValueFromObject from '../utils/getDepsValueFromObject';
-// import getEntriesSortedFlat from '../utils/getEntriesSortedFlat';
 
 export interface SubscribeToMore<QueryData> {
   <SubscriptionData, SubscriptionVariables>(
