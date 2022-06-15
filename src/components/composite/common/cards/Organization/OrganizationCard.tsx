@@ -11,7 +11,7 @@ const LINES_TO_SHOW = 4;
 export interface OrganizationCardProps {
   name?: string;
   avatar?: string;
-  information?: string;
+  description?: string;
   role?: string;
   membersCount?: number;
   verified?: boolean;
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme =>
 const OrganizationCard: FC<OrganizationCardProps> = ({
   name,
   avatar,
-  information,
+  description,
   role,
   membersCount,
   verified,
@@ -75,7 +75,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
         subheader={
           <>
             <Typography variant="body2" className={styles.multiLineEllipsis}>
-              {loading ? <Skeleton width="80%" /> : information}
+              {loading ? <Skeleton width="80%" /> : description}
             </Typography>
             <Typography variant="body2" color="primary">
               {loading ? <Skeleton width="30%" /> : role}

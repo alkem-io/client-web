@@ -47,7 +47,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
             return {
               name: x.displayName,
               avatar: x.orgProfile.avatar?.uri,
-              information: x.orgProfile.description,
+              description: x.orgProfile.description,
               role: roleName as string,
               membersCount: getActivityCount(x.activity ?? [], 'members') ?? 0,
               verified: x.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
