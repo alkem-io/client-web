@@ -5,7 +5,7 @@ import useSubscribeToMore, { Options, SubscribeToMore } from './useSubscribeToMo
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
   getSubscriptionVariables?: (subEntity: SubEntity) => SubEntitySubscriptionVariables | undefined;
-  updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void;
+  updateSubEntity: (subEntity: SubEntity | undefined | null, subscriptionData: SubEntitySubscription) => void;
 }
 
 /**
@@ -32,7 +32,7 @@ const createUseSubscriptionToSubEntityHook =
   ) =>
   <QueryData>(
     parentEntity: QueryData | undefined,
-    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined,
+    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined | null,
     subscribeToMore: SubscribeToMore<QueryData>,
     subscriptionOptions: Options = { skip: false }
   ) => {
@@ -40,7 +40,7 @@ const createUseSubscriptionToSubEntityHook =
 
     const variables = subEntity && options.getSubscriptionVariables?.(subEntity);
 
-    const skip = subscriptionOptions.skip || typeof subEntity === 'undefined';
+    const skip = subscriptionOptions.skip || !subEntity;
 
     return useSubscribeToMore<QueryData, SubEntitySubscription, SubEntitySubscriptionVariables>(subscribeToMore, {
       document: options.subscriptionDocument,

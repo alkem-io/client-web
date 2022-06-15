@@ -17,7 +17,7 @@ export interface Options {
 
 const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables = undefined>(
   subscribeToMore: SubscribeToMore<QueryData>,
-  options: SubscribeToMoreOptions<QueryData, SubscriptionVariables, SubscriptionData> & Options
+  options: SubscribeToMoreOptions<QueryData, SubscriptionVariables | null, SubscriptionData> & Options
 ) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
