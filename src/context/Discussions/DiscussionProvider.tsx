@@ -1,8 +1,7 @@
-import { sortBy, uniq, merge } from 'lodash';
-import React, { FC, useContext, useEffect, useMemo } from 'react';
-import { ApolloError } from '@apollo/client';
+import { sortBy, uniq } from 'lodash';
+import React, { FC, useContext, useMemo } from 'react';
 import { useApolloErrorHandler, useConfig, useHub, useUrlParams } from '../../hooks';
-import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionMessageReceivedDocument,
   MessageDetailsFragmentDoc,
@@ -14,15 +13,17 @@ import {
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
 import {
+  CommunicationDiscussionMessageReceivedSubscription,
+  CommunicationDiscussionMessageReceivedSubscriptionVariables,
   Discussion as DiscussionGraphql,
+  DiscussionDetailsFragment,
   Message,
   MessageDetailsFragment,
-  CommunicationDiscussionMessageReceivedSubscription,
-  SubscriptionCommunicationDiscussionMessageReceivedArgs,
 } from '../../models/graphql-schema';
-import { evictFromCache } from '../../utils/apollo-cache/removeFromCache';
+import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
+import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 
 interface DiscussionContextProps {
   discussion?: Discussion;
@@ -46,6 +47,20 @@ interface DiscussionProviderProps {}
 
 const sortMessages = (messages: MessageDetailsFragment[] = []) => sortBy(messages, item => item.timestamp);
 
+const useDiscussionMessagesSubscription = UseSubscriptionToSubEntity<
+  DiscussionDetailsFragment & {
+    messages?: MessageDetailsFragment[];
+  },
+  CommunicationDiscussionMessageReceivedSubscription,
+  CommunicationDiscussionMessageReceivedSubscriptionVariables
+>({
+  subscriptionDocument: CommunicationDiscussionMessageReceivedDocument,
+  getSubscriptionVariables: discussion => ({ discussionID: discussion.id }),
+  updateSubEntity: (discussion, subscriptionData) => {
+    discussion?.messages?.push(subscriptionData.communicationDiscussionMessageReceived.message);
+  },
+});
+
 const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();
@@ -62,43 +77,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
     onError: handleError,
   });
 
-  useEffect(() => {
-    if (!isFeatureEnabled(FEATURE_SUBSCRIPTIONS) || !discussionId) {
-      return;
-    }
-
-    const unSubscribe = subscribeToMore<
-      CommunicationDiscussionMessageReceivedSubscription,
-      SubscriptionCommunicationDiscussionMessageReceivedArgs
-    >({
-      document: CommunicationDiscussionMessageReceivedDocument,
-      variables: { discussionID: discussionId },
-      onError: err => handleError(new ApolloError({ errorMessage: err.message })),
-      updateQuery: (prev, { subscriptionData }) => {
-        const discussion = prev?.hub?.community?.communication?.discussion;
-
-        if (!discussion) {
-          return prev;
-        }
-
-        const currentMessages = discussion.messages ?? [];
-        const newMessage = subscriptionData.data.communicationDiscussionMessageReceived.message;
-
-        return merge({}, prev, {
-          hub: {
-            community: {
-              communication: {
-                discussion: {
-                  messages: [...currentMessages, newMessage],
-                },
-              },
-            },
-          },
-        });
-      },
-    });
-    return () => unSubscribe && unSubscribe();
-  }, [isFeatureEnabled, subscribeToMore, discussionId]);
+  useDiscussionMessagesSubscription(data, data1 => data1?.hub.community?.communication?.discussion, subscribeToMore);
 
   const discussionData = data?.hub.community?.communication?.discussion;
 
@@ -106,6 +85,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
     if (!discussionData) return [];
     return uniq([...(discussionData.messages?.map(m => m.sender) || []), discussionData.createdBy]);
   }, [discussionData]);
+
   const { getAuthor, authors, loading: loadingAuthors } = useAuthorsDetails(senders);
 
   const sortedMessages = sortMessages(discussionData?.messages || []);

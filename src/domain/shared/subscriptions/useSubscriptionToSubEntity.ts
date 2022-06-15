@@ -1,16 +1,10 @@
-import { useEffect } from 'react';
-import { ApolloError, SubscribeToMoreOptions, TypedDocumentNode } from '@apollo/client';
+import { TypedDocumentNode } from '@apollo/client';
 import produce from 'immer';
-import { useApolloErrorHandler, useConfig } from '../../../hooks';
-import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
-
-interface SubscribeToMore<TData, TSubscriptionVariables, TSubscriptionData> {
-  (options: SubscribeToMoreOptions<TData, TSubscriptionVariables, TSubscriptionData>): () => void;
-}
+import useSubscribeToMore, { Options, SubscribeToMore } from './useSubscribeToMore';
 
 interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription> {
   subscriptionDocument: TypedDocumentNode<SubEntitySubscription, SubEntitySubscriptionVariables>;
-  getSubscriptionVariables: (subEntity: SubEntity) => SubEntitySubscriptionVariables;
+  getSubscriptionVariables?: (subEntity: SubEntity) => SubEntitySubscriptionVariables | undefined;
   updateSubEntity: (subEntity: SubEntity | undefined, subscriptionData: SubEntitySubscription) => void;
 }
 
@@ -33,46 +27,33 @@ interface CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscripti
  * structures is ensured/handled by 'immer'.
  */
 const createUseSubscriptionToSubEntityHook =
-  <SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>(
+  <SubEntity, SubEntitySubscription, SubEntitySubscriptionVariables = undefined>(
     options: CreateUseSubscriptionToSubEntityOptions<SubEntity, SubEntitySubscriptionVariables, SubEntitySubscription>
   ) =>
   <QueryData>(
     parentEntity: QueryData | undefined,
-    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined,
-    subscribeToMore: SubscribeToMore<QueryData, SubEntitySubscriptionVariables, SubEntitySubscription>
+    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined | null, // Some queries give nulls when the type actually says undefined.
+    subscribeToMore: SubscribeToMore<QueryData>,
+    subscriptionOptions: Options = { skip: false }
   ) => {
-    const handleError = useApolloErrorHandler();
-    const { isFeatureEnabled } = useConfig();
+    const subEntity = getSubEntity(parentEntity) ?? undefined;
 
-    const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
+    const variables = subEntity && options.getSubscriptionVariables?.(subEntity);
 
-    const subEntity = getSubEntity(parentEntity);
+    const skip = subscriptionOptions.skip || typeof subEntity === 'undefined';
 
-    useEffect(() => {
-      if (!areSubscriptionsEnabled) {
-        return;
-      }
-
-      if (!subEntity) {
-        return;
-      }
-
-      return subscribeToMore({
-        document: options.subscriptionDocument,
-        variables: options.getSubscriptionVariables(subEntity),
-        updateQuery: (prev, { subscriptionData }) => {
-          return produce(prev, next => {
-            const nextSubEntity = getSubEntity(next as QueryData);
-            options.updateSubEntity(nextSubEntity, subscriptionData.data);
-          });
-        },
-        onError: err => handleError(new ApolloError({ errorMessage: err.message })),
-      });
-    }, [subEntity, areSubscriptionsEnabled]);
-
-    return {
-      enabled: Boolean(areSubscriptionsEnabled && subEntity),
-    };
+    return useSubscribeToMore<QueryData, SubEntitySubscription, SubEntitySubscriptionVariables>(subscribeToMore, {
+      document: options.subscriptionDocument,
+      variables,
+      updateQuery: (prev, { subscriptionData }) => {
+        return produce(prev, next => {
+          const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
+          options.updateSubEntity(nextSubEntity, subscriptionData.data);
+        });
+      },
+      ...subscriptionOptions,
+      skip,
+    });
   };
 
 export default createUseSubscriptionToSubEntityHook;

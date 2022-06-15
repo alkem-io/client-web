@@ -7,7 +7,7 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Dialog from '@mui/material/Dialog';
-import { useMembershipOrganizationQuery, useOrganizationDetailsQuery } from '../../../../hooks/generated/graphql';
+import { useRolesOrganizationQuery, useOrganizationDetailsQuery } from '../../../../hooks/generated/graphql';
 import { makeStyles } from '@mui/styles';
 import Avatar from '../../../core/Avatar';
 import { Loading } from '../../../core';
@@ -18,6 +18,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog'
 import Button from '../../../core/Button';
 import { Link } from 'react-router-dom';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
+import { RoleType } from '../../../../domain/user/constants/RoleType';
 
 const groupPopUpStyles = makeStyles(theme => ({
   header: {
@@ -106,7 +107,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
   const nameID = data?.organization?.nameID;
   const tags = profile?.tagsets?.reduce((acc, curr) => acc.concat(curr.tags), [] as string[]) || [];
 
-  const { data: membership, loading: loadingMembership } = useMembershipOrganizationQuery({
+  const { data: membershipData, loading: loadingMembership } = useRolesOrganizationQuery({
     variables: {
       input: {
         organizationID: id,
@@ -114,8 +115,11 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
     },
   });
 
-  const hubsHosting = membership?.membershipOrganization?.hubsHosting || [];
-  const challengesLeading = membership?.membershipOrganization?.challengesLeading || [];
+  const hubsHosting = membershipData?.rolesOrganization?.hubs?.filter(h => h.roles?.includes(RoleType.Host)) || [];
+  const challengesLeading =
+    membershipData?.rolesOrganization?.hubs
+      ?.flatMap(h => h.challenges)
+      .filter(c => c?.roles?.includes(RoleType.Lead)) || [];
 
   return (
     <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="org-dialog-title">

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationsListQuery } from '../../hooks/generated/graphql';
-import AssociatedOrganizationsView from '../../views/ProfileView/AssociatedOrganizationsView';
+import AssociatedOrganizationsLazilyFetched from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 
 const OrganizationSection = () => {
   const { t } = useTranslation();
@@ -10,7 +10,7 @@ const OrganizationSection = () => {
   const organizations = useMemo(() => organizationsData?.organizations.map(o => o.nameID) || [], [organizationsData]);
 
   return (
-    <AssociatedOrganizationsView
+    <AssociatedOrganizationsLazilyFetched
       organizationNameIDs={organizations}
       title={t('pages.home.sections.organizations.header')}
     />

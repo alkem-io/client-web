@@ -1,9 +1,8 @@
-import { ApolloError } from '@apollo/client';
-import { merge, uniq } from 'lodash';
-import React, { FC, useContext, useEffect, useMemo } from 'react';
+import { uniq } from 'lodash';
+import React, { FC, useContext, useMemo } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { useApolloErrorHandler, useConfig, useHub } from '../../hooks';
-import { useAuthorsDetails } from '../../hooks/communication/useAuthorsDetails';
+import { useApolloErrorHandler, useHub } from '../../hooks';
+import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionUpdatedDocument,
   refetchCommunityDiscussionListQuery,
@@ -11,17 +10,18 @@ import {
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
 } from '../../hooks/generated/graphql';
-import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { Discussion } from '../../models/discussion/discussion';
 import {
   AuthorizationPrivilege,
+  Communication,
+  CommunicationDiscussionUpdatedSubscription,
+  CommunicationDiscussionUpdatedSubscriptionVariables,
   Discussion as DiscussionGraphql,
   DiscussionCategory,
-  CommunicationDiscussionUpdatedSubscription,
-  SubscriptionCommunicationDiscussionUpdatedArgs,
 } from '../../models/graphql-schema';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { buildDiscussionsUrl, buildDiscussionUrl } from '../../utils/urlBuilders';
+import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 
 interface Permissions {
   canCreateDiscussion: boolean;
@@ -51,10 +51,30 @@ const DiscussionsContext = React.createContext<DiscussionsContextProps>({
 
 interface DiscussionProviderProps {}
 
+const useSubscriptionToCommunication = UseSubscriptionToSubEntity<
+  Pick<Communication, 'id' | 'discussions'>,
+  CommunicationDiscussionUpdatedSubscription,
+  CommunicationDiscussionUpdatedSubscriptionVariables
+>({
+  subscriptionDocument: CommunicationDiscussionUpdatedDocument,
+  getSubscriptionVariables: communication => ({ communicationID: communication.id }),
+  updateSubEntity: (communication, subscriptionData) => {
+    if (!communication?.discussions) {
+      return;
+    }
+    const discussionIndex = communication.discussions.findIndex(
+      d => d.id === subscriptionData.communicationDiscussionUpdated.id
+    );
+    if (discussionIndex === -1) {
+      return;
+    }
+    communication.discussions[discussionIndex] = subscriptionData.communicationDiscussionUpdated;
+  },
+});
+
 const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
   const navigate = useNavigate();
   const { pathname } = useResolvedPath('.');
-  const { isFeatureEnabled } = useConfig();
   const handleError = useApolloErrorHandler();
   const { hubNameId, loading: loadingHub } = useHub();
   const { communityId, communicationId, loading: loadingCommunity } = useCommunityContext();
@@ -73,49 +93,7 @@ const DiscussionsProvider: FC<DiscussionProviderProps> = ({ children }) => {
     onError: handleError,
   });
 
-  useEffect(() => {
-    if (!communicationId || !isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
-      return;
-    }
-
-    const unSubscribe = subscribeToMore<
-      CommunicationDiscussionUpdatedSubscription,
-      SubscriptionCommunicationDiscussionUpdatedArgs
-    >({
-      document: CommunicationDiscussionUpdatedDocument,
-      variables: { communicationID: communicationId },
-      onError: err => handleError(new ApolloError({ errorMessage: err.message })),
-      updateQuery: (prev, { subscriptionData }) => {
-        const discussions = prev?.hub?.community?.communication?.discussions;
-
-        if (!discussions) {
-          return prev;
-        }
-
-        const updatedDiscussion = subscriptionData.data.communicationDiscussionUpdated;
-        const discussionIndex = discussions.findIndex(x => x.id === updatedDiscussion.id);
-
-        const updatedDiscussions = [...discussions];
-
-        if (discussionIndex === -1) {
-          updatedDiscussions.push(updatedDiscussion);
-        } else {
-          updatedDiscussions[discussionIndex] = { ...updatedDiscussion };
-        }
-
-        return merge({}, prev, {
-          hub: {
-            community: {
-              communication: {
-                discussions: updatedDiscussions,
-              },
-            },
-          },
-        });
-      },
-    });
-    return () => unSubscribe && unSubscribe();
-  }, [isFeatureEnabled, subscribeToMore, communicationId]);
+  useSubscriptionToCommunication(data, data1 => data1?.hub.community?.communication, subscribeToMore);
 
   const discussions = data?.hub.community?.communication?.discussions || [];
 

@@ -246,6 +246,7 @@
   },
   "community": {
     "leading-users": "Leading Users",
+    "member-users": "Member Users",
     "leading-organizations": "Leading Organizations",
     "member-organizations": "Member Organizations"
   },
@@ -811,17 +812,17 @@
         },
         "interested-in-collaboration": {
           "header": "Alkemio and You",
-          "innovation-facilitator": "Driving Innovation in your community or organization?<br/>Please <a href='https://alkem.io/feedback' target='_blank'>reach out</a> and we can schedule a one-on-one session!",
-          "suggestions": "Have suggestions for Challenges where Alkemio can help?<br/>Please share on our <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> and join the community!",
-          "contributor": "Want to contribute to or support Alkemio? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Backed by a <a href='https://alkem.io' target='_blank'>non-profit foundation</a>."
+          "innovation-facilitator": "Driving Innovation in your community or organization?<br/>Please <feedback>reach out</feedback> and we can schedule a one-on-one session!",
+          "suggestions": "Have suggestions for Challenges where Alkemio can help?<br/>Please share on our <discussions>discussions</discussions> and join the community!",
+          "contributor": "Want to contribute to or support Alkemio? <br/>100% <github>open source</github>. Backed by a <website>non-profit foundation</website>."
         },
         "getting-started": {
           "header": "Getting Started",
           "subheader": "Here are some suggestions to help get you up to speed.",
-          "joining-a-challenge": "Eager to join a Challenge? Explore all <a href='./challenges' >Challenges</a>.",
-          "introduction-video": "Want to start using the platform? Watch this <a href='https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO' target='_blank'>demonstration video</a>.",
+          "joining-a-challenge": "Eager to join a Challenge? Explore all <challenges>Challenges</challenges>.",
+          "introduction-video": "Want to start using the platform? Watch this <video>demonstration video</video>.",
           "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' >contributors</a>.",
-          "your-profile": "Keen to be found by other contributors? Fill out your <a href='./profile' >profile</a>.</br>"
+          "your-profile": "Keen to be found by other contributors? Fill out your <profile>profile</profile>."
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
@@ -937,6 +938,9 @@
         "title": "Leading organizations ({{count}})",
         "help-text": "Shows different organizations, including the role you have",
         "no-data": "No organization is leading at this time"
+      },
+      "member-organizations": {
+        "no-data": "No organization is contributing at this time"
       },
       "hub-host": {
         "title": "Facilitating organization",
@@ -1127,6 +1131,12 @@
     "messages": {
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
+    }
+  },
+  "apollo": {
+    "errors": {
+      "bad-user-input": "Invalid value in the submitted form.",
+      "bad-user-input-withfield": "The value of '{{field}}' is not valid."
     }
   },
   "dashboard-updates-section": {

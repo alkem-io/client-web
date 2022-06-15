@@ -7,12 +7,13 @@ import LinkCard from '../../../../core/LinkCard/LinkCard';
 import VerifiedStatus from '../../VerifiedStatus/VerifiedStatus';
 
 const LINES_TO_SHOW = 4;
+
 export interface OrganizationCardProps {
   name?: string;
   avatar?: string;
-  information?: string;
+  description?: string;
   role?: string;
-  members?: number;
+  membersCount?: number;
   verified?: boolean;
   loading?: boolean;
   url?: string;
@@ -44,9 +45,9 @@ const useStyles = makeStyles(theme =>
 const OrganizationCard: FC<OrganizationCardProps> = ({
   name,
   avatar,
-  information,
+  description,
   role,
-  members,
+  membersCount,
   verified,
   loading,
   url,
@@ -74,7 +75,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
         subheader={
           <>
             <Typography variant="body2" className={styles.multiLineEllipsis}>
-              {loading ? <Skeleton width="80%" /> : information}
+              {loading ? <Skeleton width="80%" /> : description}
             </Typography>
             <Typography variant="body2" color="primary">
               {loading ? <Skeleton width="30%" /> : role}
@@ -98,10 +99,10 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
               <Typography sx={{ marginRight: 1, flexGrow: 1 }}>{loading ? <Skeleton /> : 'Members'}</Typography>
               {loading ? (
                 <Skeleton variant="circular">
-                  <CircleTag text={`${members}`} color="primary" size="small" />
+                  <CircleTag text={`${membersCount}`} color="primary" size="small" />
                 </Skeleton>
               ) : (
-                <CircleTag text={`${members}`} color="primary" size="small" />
+                <CircleTag text={`${membersCount}`} color="primary" size="small" />
               )}
             </Box>
             {loading ? (

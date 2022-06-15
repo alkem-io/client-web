@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
@@ -9,7 +9,7 @@ import DashboardOpportunityStatistics from '../../components/composite/common/se
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
-import { useChallenge, useHub, useOpportunity } from '../../hooks';
+import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
@@ -20,7 +20,9 @@ import { AspectCardAspect } from '../../components/composite/common/cards/Aspect
 import EntityDashboardContributorsSection, {
   EntityDashboardContributorsSectionProps,
 } from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import AssociatedOrganizationsView from '../ProfileView/AssociatedOrganizationsView';
+import AssociatedOrganizationsView from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsView';
+import OrganizationCard from '../../components/composite/common/cards/Organization/OrganizationCard';
+import { mapToAssociatedOrganization } from '../../domain/organization/AssociatedOrganizations/AssociatedOrganization';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -81,7 +83,11 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
 
   const { hubNameId } = useHub();
   const { challengeNameId } = useChallenge();
-  const { hubId } = useOpportunity();
+  const { hubId, opportunityId } = useOpportunity();
+
+  const { user: userMetadata } = useUserContext();
+
+  const isNotMember = opportunityId && userMetadata ? !userMetadata.ofOpportunity(opportunityId) : true;
 
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
@@ -93,9 +99,16 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { visuals, tagline = '', vision = '' } = context ?? {};
   const banner = getVisualBanner(visuals);
 
-  const leadOrganizationsNameIDs = opportunity?.community?.leadOrganizations?.map(x => x.nameID) || [];
-
   const { loading } = state;
+
+  const { user } = useUserContext();
+
+  const leadOrganizations = useMemo(
+    () =>
+      opportunity?.community?.leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id, user?.user, t)),
+    [opportunity]
+  );
+
   return (
     <>
       <Grid container spacing={2}>
@@ -104,9 +117,11 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             bannerUrl={banner}
             headerText={displayName}
             primaryAction={
-              <Button onClick={actions.onInterestOpen} variant="contained">
-                {t('pages.opportunity.sections.apply')}
-              </Button>
+              isNotMember && (
+                <Button onClick={actions.onInterestOpen} variant="contained">
+                  {t('pages.opportunity.sections.apply')}
+                </Button>
+              )
             }
           >
             <Markdown children={tagline} />
@@ -138,7 +153,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
         <DashboardColumn>
           <AssociatedOrganizationsView
             title={t('community.leading-organizations')}
-            organizationNameIDs={leadOrganizationsNameIDs}
+            organizations={leadOrganizations}
+            organizationCardComponent={OrganizationCard}
           />
           <DashboardGenericSection
             headerText={t('pages.opportunity.sections.dashboard.projects.title')}

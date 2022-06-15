@@ -1,16 +1,21 @@
-import React, { ComponentType, ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 
-export type ComponentOrChildrenFn<Provided> =
+type Rendered<Consumed extends {}> = (props: Consumed) => ReactElement | null;
+
+export type ComponentOrChildrenFn<Provided extends {}> =
   | {
-      component: ComponentType<Provided>;
+      component: Rendered<Provided>;
     }
   | {
-      children: (props: Provided) => ReactElement | null;
+      children: Rendered<Provided>;
     };
 
 export type ContainerPropsWithProvided<TProps, TProvidedProps> = TProps & ComponentOrChildrenFn<TProvidedProps>;
 
-export const renderComponentOrChildrenFn = <Provided,>(props: ComponentOrChildrenFn<Provided>, provided: Provided) => {
+export const renderComponentOrChildrenFn = <Consumed extends {}, Provided extends Consumed>(
+  props: ComponentOrChildrenFn<Consumed>,
+  provided: Provided
+) => {
   if ('component' in props) {
     const Component = props.component;
     return <Component {...provided} />;

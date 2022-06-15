@@ -1,20 +1,19 @@
 import React, { cloneElement, FC, ReactElement } from 'react';
 import { SectionSpacer } from '../../../core/Section/Section';
 import { Grid, GridProps } from '@mui/material';
+import { mapWithSeparator } from '../../../../domain/shared/utils/joinNodes';
 
-// TODO use ReactNode
 type Child = ReactElement | false;
 type ChildrenType = Child | Child[];
 
 const insertSpacers = (children: ChildrenType) => {
-  const [firstChild, ...childrenTail] = React.Children.toArray(children) as ReactElement[];
+  if (!Array.isArray(children)) {
+    return children;
+  }
 
-  return childrenTail.reduce(
-    (spacedChildren, child, i) => {
-      return [...spacedChildren, <SectionSpacer key={`spacer_${i}`} />, cloneElement(child, { key: `item_${i + 1}` })];
-    },
-    [cloneElement(firstChild, { key: 'item_0' })]
-  );
+  return mapWithSeparator(children, SectionSpacer, (element, i) => {
+    return element && cloneElement(element, { key: `dashboard_section_${i}` });
+  });
 };
 
 interface ContextSectionColumnProps extends Omit<GridProps, 'children'> {
