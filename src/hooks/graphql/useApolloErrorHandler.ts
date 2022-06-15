@@ -10,10 +10,8 @@ enum GraphQLErrorsExtensionCodes {
 }
 
 const tryGetField = (errorMessage: string): string | undefined => {
-  let matches = errorMessage?.match(/property ([A-Za-z0-9_-]+) has failed/);
-  if (matches && matches.length === 2) {
-    return matches[1];
-  }
+  let matches = errorMessage?.match(/property ([\w-]+) has failed/);
+  return matches ? matches[1] : undefined;
 };
 
 export const useApolloErrorHandler = (severity: Severity = 'error') => {
@@ -25,19 +23,16 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
     if (networkError && networkError.result && networkError.result.errors) {
       const error = networkError.result.errors[0] as GraphQLError;
       notify(error.message, severity);
-      return true;
     }
-    return false;
   };
 
   const handleGraphQLErrors = (error: ApolloError) => {
     const graphqlErrors = error.graphQLErrors;
 
-    let allHandled = true;
     graphqlErrors.forEach((error: GraphQLError) => {
       switch (error.extensions?.code) {
         case GraphQLErrorsExtensionCodes.BAD_USER_INPUT: {
-          let field = tryGetField(error.message);
+          const field = tryGetField(error.message);
           if (field) {
             notify(t('apollo.errors.bad-user-input-withfield', { field }), severity);
           } else {
@@ -45,33 +40,21 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
           }
 
           logError(error);
-          allHandled = allHandled && true;
           break;
         }
-        default:
-          allHandled = false;
       }
     });
-    return allHandled;
   };
 
   const handleClientErrors = (error: ApolloError) => {
-    notify(error.message, severity);
-    return true;
+    if (error.clientErrors) {
+      notify(error.message, severity);
+    }
   };
 
   return (error: ApolloError) => {
-    if (error.networkError && handleNetworkErrors(error)) {
-      // On network errors do nothing but notify the user
-      return;
-    } else {
-      if (error.graphQLErrors) {
-        handleGraphQLErrors(error);
-      } else if (error.clientErrors) {
-        handleClientErrors(error);
-      } else {
-        notify(error.message, severity);
-      }
-    }
+    handleNetworkErrors(error);
+    handleGraphQLErrors(error);
+    handleClientErrors(error);
   };
 };
