@@ -1133,6 +1133,12 @@
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
     }
   },
+  "apollo": {
+    "errors": {
+      "bad-user-input": "Invalid value in the submitted form.",
+      "bad-user-input-withfield": "The value of '{{field}}' is not valid."
+    }
+  },
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",
     "no-data": "No updates available."
