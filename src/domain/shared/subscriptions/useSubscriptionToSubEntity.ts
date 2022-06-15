@@ -32,11 +32,11 @@ const createUseSubscriptionToSubEntityHook =
   ) =>
   <QueryData>(
     parentEntity: QueryData | undefined,
-    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined,
+    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined | null, // Some queries give nulls when the type actually says undefined.
     subscribeToMore: SubscribeToMore<QueryData>,
     subscriptionOptions: Options = { skip: false }
   ) => {
-    const subEntity = getSubEntity(parentEntity);
+    const subEntity = getSubEntity(parentEntity) ?? undefined;
 
     const variables = subEntity && options.getSubscriptionVariables?.(subEntity);
 
@@ -47,7 +47,7 @@ const createUseSubscriptionToSubEntityHook =
       variables,
       updateQuery: (prev, { subscriptionData }) => {
         return produce(prev, next => {
-          const nextSubEntity = getSubEntity(next as QueryData);
+          const nextSubEntity = getSubEntity(next as QueryData) ?? undefined;
           options.updateSubEntity(nextSubEntity, subscriptionData.data);
         });
       },

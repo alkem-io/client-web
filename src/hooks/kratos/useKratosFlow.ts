@@ -8,7 +8,6 @@ import {
 } from '@ory/kratos-client';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
-import { logger } from '../../services/logging/winston/logger';
 import { useKratosClient } from './useKratosClient';
 
 type FlowTypes =
@@ -65,7 +64,6 @@ const useKratosFlow = <Name extends FlowTypeName>(
       setLoading(true);
       const { status, data } = await promise;
       if (status !== 200) {
-        logger.error(data);
         setError(new Error('Error loading flow!'));
       }
       setFlow(data as ReturnFlowType[Name]);
