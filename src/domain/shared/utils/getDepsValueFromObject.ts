@@ -5,7 +5,7 @@ import { sortBy } from 'lodash';
  * Use like that: useEffect(() => {}, [dep1, dep2, getDepsValueFromObject(object)]);
  * @param object
  */
-const getDepsValueFromObject = <Object extends {}>(object: Object | undefined | null): string => {
+const getDepsValueFromObject = <Object extends {}>(object: Object | undefined): string => {
   if (!object) {
     return '';
   }

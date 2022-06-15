@@ -3,7 +3,6 @@ import { useApolloErrorHandler, useConfig, useUserContext } from '../../../hooks
 import { FEATURE_SUBSCRIPTIONS } from '../../../models/constants';
 import { ApolloError, SubscribeToMoreOptions } from '@apollo/client';
 import getDepsValueFromObject from '../utils/getDepsValueFromObject';
-// import getEntriesSortedFlat from '../utils/getEntriesSortedFlat';
 
 export interface SubscribeToMore<QueryData> {
   <SubscriptionData, SubscriptionVariables>(
@@ -17,7 +16,7 @@ export interface Options {
 
 const useSubscribeToMore = <QueryData, SubscriptionData, SubscriptionVariables = undefined>(
   subscribeToMore: SubscribeToMore<QueryData>,
-  options: SubscribeToMoreOptions<QueryData, SubscriptionVariables | null, SubscriptionData> & Options
+  options: SubscribeToMoreOptions<QueryData, SubscriptionVariables, SubscriptionData> & Options
 ) => {
   const handleError = useApolloErrorHandler();
   const { isFeatureEnabled } = useConfig();

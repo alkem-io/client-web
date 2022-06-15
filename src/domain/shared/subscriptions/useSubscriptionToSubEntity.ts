@@ -32,13 +32,13 @@ const createUseSubscriptionToSubEntityHook =
   ) =>
   <QueryData>(
     parentEntity: QueryData | undefined,
-    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined | null,
+    getSubEntity: (data: QueryData | undefined) => SubEntity | undefined,
     subscribeToMore: SubscribeToMore<QueryData>,
     subscriptionOptions: Options = { skip: false }
   ) => {
     const subEntity = getSubEntity(parentEntity);
 
-    const variables = subEntity && options.getSubscriptionVariables?.(subEntity);
+    const variables = subEntity ? options.getSubscriptionVariables?.(subEntity) : undefined;
 
     const skip = subscriptionOptions.skip || !subEntity;
 
