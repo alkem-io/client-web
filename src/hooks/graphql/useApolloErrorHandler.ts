@@ -47,7 +47,7 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
   };
 
   const handleClientErrors = (error: ApolloError) => {
-    if (error.clientErrors) {
+    if (error.clientErrors && error.clientErrors.length > 0) {
       notify(error.message, severity);
     }
   };
