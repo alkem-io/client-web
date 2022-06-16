@@ -7,7 +7,7 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import Skeleton from '@mui/material/Skeleton';
-import LinesFitter from '../../../core/LinesFitter/LinesFitter';
+import LinesFitter from '../LinesFitter/LinesFitter';
 
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -27,21 +27,6 @@ const useStyles = makeStyles(theme =>
       marginLeft: 4,
       marginRight: -6,
     },
-    'count-1': {
-      maxWidth: '48%',
-    },
-    'count-2': {
-      maxWidth: '32%',
-    },
-    'count-3': {
-      maxWidth: '24%',
-    },
-    'count-4': {
-      maxWidth: '19%',
-    },
-    'count-5': {
-      maxWidth: '15%',
-    },
     maxWidth: {
       maxWidth: '100%',
     },
@@ -53,11 +38,10 @@ interface Props {
   tagsFor?: string;
   count?: number;
   className?: any;
-  keepInRow?: boolean;
   loading?: boolean;
 }
-//  todo move in diff dir
-const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInRow = false, loading }) => {
+
+const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
@@ -78,10 +62,7 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInR
           sx={{ borderColor: 'primary.main' }}
           size="small"
           icon={<FiberManualRecordIcon fontSize="small" />}
-          className={clsx(styles.tagMargin, {
-            [styles[`count-${count}`]]: keepInRow && count && count <= 5,
-            [styles.maxWidth]: !keepInRow,
-          })}
+          className={clsx(styles.tagMargin, styles.maxWidth)}
         />
       </Tooltip>
     ),
@@ -111,18 +92,6 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, keepInR
   const renderTags = () => {
     if (tags.length === 0) {
       return;
-    }
-
-    if (keepInRow) {
-      const tagsToDisplay = count && count > 0 ? tags.slice(0, count) : tags;
-      const moreTags = count ? tags.slice(count) : [];
-
-      return wrapped(
-        <>
-          {tagsToDisplay.map(renderTag)}
-          {moreTags.length > 0 && renderMore(moreTags)}
-        </>
-      );
     }
 
     return <LinesFitter items={tags} className={styles.tagWrapper} renderItem={renderTag} renderMore={renderMore} />;

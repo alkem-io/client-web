@@ -7,7 +7,7 @@ import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { Reference } from '../../models/graphql-schema';
 import { SectionSpacer } from '../../components/core/Section/Section';
-import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
+import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
 import DiscussionComment from '../../components/composite/common/Discussion/DiscussionComment';
 import { Comment } from '../../models/discussion/comment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';

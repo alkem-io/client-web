@@ -9,7 +9,7 @@ import { Reference, Location } from '../../../models/graphql-schema';
 import Markdown from '../../core/Markdown';
 import { SectionSpacer } from '../../core/Section/Section';
 import SectionHeader from '../../core/Section/SectionHeader';
-import TagsComponent from '../common/TagsComponent/TagsComponent';
+import TagsComponent from '../../../domain/shared/components/TagsComponent/TagsComponent';
 import References from '../common/References/References';
 import DashboardSection from './DashboardSection/DashboardSection';
 import ContextSectionIcon from './ContextSectionIcon';
