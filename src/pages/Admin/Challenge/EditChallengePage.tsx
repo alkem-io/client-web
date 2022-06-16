@@ -31,13 +31,12 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
-  const onSuccess = (message: string) => notify(message, 'success');
 
   const { challengeNameId = '', hubNameId = '' } = useUrlParams();
 
   const [createChallenge, { loading: isCreating }] = useCreateChallengeMutation({
     onCompleted: data => {
-      onSuccess('Successfully created');
+      notify(t('pages.admin.challenge.notifications.challenge-created'), 'success');
       navigateToEdit(data.createChallenge.nameID);
     },
     onError: handleError,
@@ -46,7 +45,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
   });
 
   const [updateChallenge, { loading: isUpdating }] = useUpdateChallengeMutation({
-    onCompleted: () => onSuccess('Successfully updated'),
+    onCompleted: () => notify(t('pages.admin.challenge.notifications.challenge-updated'), 'success'),
     onError: handleError,
     refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,

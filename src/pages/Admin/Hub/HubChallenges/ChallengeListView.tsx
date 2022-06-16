@@ -9,14 +9,18 @@ import {
   useChallengesWithCommunityQuery,
   useDeleteChallengeMutation,
 } from '../../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../../hooks';
+import { useApolloErrorHandler, useNotification } from '../../../../hooks';
 import { useHub } from '../../../../hooks';
+import { useTranslation } from 'react-i18next';
 
 interface ChallengeListProps extends PageProps {}
 
 export const ChallengeListView: FC<ChallengeListProps> = ({ paths }) => {
   const handleError = useApolloErrorHandler();
+  const { t } = useTranslation();
+  const notify = useNotification();
   const { hubNameId } = useHub();
+
   const { data: challengesListQuery, loading } = useChallengesWithCommunityQuery({
     variables: {
       hubId: hubNameId,
@@ -38,6 +42,7 @@ export const ChallengeListView: FC<ChallengeListProps> = ({ paths }) => {
     ],
     awaitRefetchQueries: true,
     onError: handleError,
+    onCompleted: () => notify(t('pages.admin.challenge.notifications.challenge-removed'), 'success'),
   });
 
   const handleDelete = (item: SearchableListItem) => {
