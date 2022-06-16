@@ -683,6 +683,10 @@
             "title": "Authorization",
             "subtitle": "This section allows you to modify the organizations authorization"
           }
+        },
+        "notifications": {
+          "organization-created": "Organization created successfully.",
+          "organization-removed": "Organization removed successfully."
         }
       },
       "challenge": {
@@ -714,9 +718,18 @@
             "title": "Membership",
             "subtitle": "This section allows you to modify the $t(common.hub) membership preferences"
           }
+        },
+        "notifications": {
+          "hub-created": "Hub created successfuly.",
+          "hub-removed": "Hub '{{name}}' removed successfully."
         }
       },
-      "opportunity": {}
+      "opportunity": {},
+      "users": {
+        "notifications": {
+          "user-removed": "User removed successfully."
+        }
+      }
     },
     "feedback": {
       "title": "Give feedback on this community context",
