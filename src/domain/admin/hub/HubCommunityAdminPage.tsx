@@ -55,7 +55,7 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '..
     refetchMembersQuery: refetchHubCommunityMembersQuery,
   });
 
-  const editMembersProps = useMemberUserAssignment({
+  const memberUsersProps = useMemberUserAssignment({
     variables: { hubId },
     useExistingMembersQuery: ({ variables, skip }) => {
       const { data } = useHubCommunityMembersQuery({ variables, skip });
@@ -72,7 +72,7 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '..
     <HubSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <CommunityAdminView headerText={t('community.leading-users')} {...leadUsersProps} />
       <SectionSpacer />
-      <CommunityAdminView headerText={t('community.member-users')} {...editMembersProps} />
+      <CommunityAdminView headerText={t('community.member-users')} {...memberUsersProps} />
       <SectionSpacer />
       <AdminCommunityOrganizationsView headerText={t('community.member-organizations')} {...memberOrganizationsProps} />
       <SectionSpacer />

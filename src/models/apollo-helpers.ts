@@ -403,6 +403,8 @@ export type CommunicationUpdateMessageReceivedFieldPolicy = {
 export type CommunityKeySpecifier = (
   | 'applications'
   | 'authorization'
+  | 'availableLeadUsers'
+  | 'availableMemberUsers'
   | 'communication'
   | 'displayName'
   | 'groups'
@@ -416,6 +418,8 @@ export type CommunityKeySpecifier = (
 export type CommunityFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableLeadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableMemberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -594,6 +594,10 @@ export type Community = Groupable & {
   applications?: Maybe<Array<Application>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** All member users excluding the current lead users in this Community. */
+  availableLeadUsers?: Maybe<PaginatedUsers>;
+  /** All available users that are potential Community members. */
+  availableMemberUsers?: Maybe<PaginatedUsers>;
   /** The Communications for this Community. */
   communication?: Maybe<Communication>;
   /** The name of the Community */
@@ -610,6 +614,22 @@ export type Community = Groupable & {
   memberOrganizations?: Maybe<Array<Organization>>;
   /** All users that are contributing to this Community. */
   memberUsers?: Maybe<Array<User>>;
+};
+
+export type CommunityAvailableLeadUsersArgs = {
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+export type CommunityAvailableMemberUsersArgs = {
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type CommunityApplyInput = {
@@ -11249,6 +11269,58 @@ export type AvailableUsersQuery = {
     __typename?: 'PaginatedUsers';
     users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
+  };
+};
+
+export type AvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    community?:
+      | {
+          __typename?: 'Community';
+          availableLeadUsers?:
+            | {
+                __typename?: 'PaginatedUsers';
+                pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+                users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type AvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type AvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    community?:
+      | {
+          __typename?: 'Community';
+          availableMemberUsers?:
+            | {
+                __typename?: 'PaginatedUsers';
+                pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+                users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+              }
+            | undefined;
+        }
+      | undefined;
   };
 };
 

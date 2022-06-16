@@ -7,8 +7,9 @@ import {
   AssignUserAsCommunityMemberMutation,
   RemoveUserAsCommunityMemberMutation,
 } from '../../../models/graphql-schema';
-import useAllPossibleMemberUsers, { UseAllPossibleMemberUsersOptions } from './useAllPossibleMemberUsers';
+import { UseAllPossibleMemberUsersOptions } from './useAllPossibleMemberUsers';
 import { Member } from '../../../models/User';
+import useAvailableMemberUsers from '../useAvailableUsers/useAvailableMemberUsers';
 
 type Options<ExistingUsersQueryVariables extends {}> = Omit<
   UseCommunityMembersAssignmentOptions<
@@ -24,7 +25,7 @@ type Options<ExistingUsersQueryVariables extends {}> = Omit<
 const useMemberUserAssignment = <OrganizationsQueryVariables extends {}>(
   options: Options<OrganizationsQueryVariables>
 ) => {
-  const { allPossibleMemberUsers, setSearchTerm, ...allPossibleProvided } = useAllPossibleMemberUsers(options);
+  const { allPossibleMemberUsers, setSearchTerm, ...allPossibleProvided } = useAvailableMemberUsers();
 
   const { existingMembers, availableMembers, ...communityAssignmentProvided } = useCommunityMembersAssignment({
     // TODO possibility to use different types for allPossibleMembers/availableMembers and existingMembers
