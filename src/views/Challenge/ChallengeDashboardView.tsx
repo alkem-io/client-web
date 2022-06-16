@@ -10,26 +10,22 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge, useConfig, useUserContext } from '../../hooks';
+import { useChallenge, useConfig } from '../../hooks';
 import ActivityView from '../Activity/ActivityView';
-import AssociatedOrganizationsView from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
-import EntityDashboardContributorsSection, {
-  EntityDashboardContributorsSectionProps,
-} from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import { mapToAssociatedOrganization } from '../../domain/organization/AssociatedOrganizations/AssociatedOrganization';
-import OrganizationCard from '../../components/composite/common/cards/Organization/OrganizationCard';
+import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
 
 interface ChallengeDashboardViewProps {
-  entities: ChallengeContainerEntities & EntityDashboardContributorsSectionProps;
+  entities: ChallengeContainerEntities & EntityDashboardContributors;
   state: ChallengeContainerState;
 }
 
@@ -55,14 +51,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
-
-  const { user } = useUserContext();
-
-  const leadOrganizations = useMemo(
-    () => challenge?.community?.leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id, user?.user, t)),
-    [challenge]
-  );
-
   if (loading || loadingChallengeContext) return <Loading />;
 
   return (
@@ -97,6 +85,10 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           )}
           {communityReadAccess && (
             <EntityDashboardContributorsSection
+              leadUsers={entities.leadUsers}
+              leadUsersCount={entities.leadUsersCount}
+              leadOrganizations={entities.leadOrganizations}
+              leadOrganizationsCount={entities.leadOrganizationsCount}
               memberUsers={entities.memberUsers}
               memberUsersCount={entities.memberUsersCount}
               memberOrganizations={entities.memberOrganizations}
@@ -105,11 +97,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <AssociatedOrganizationsView
-            title={t('community.leading-organizations')}
-            organizations={leadOrganizations}
-            organizationCardComponent={OrganizationCard}
-          />
           <DashboardGenericSection
             headerText={`${t('pages.challenge.sections.dashboard.opportunities.title')} (${opportunitiesCount})`}
             helpText={t('pages.challenge.sections.dashboard.opportunities.help-text')}

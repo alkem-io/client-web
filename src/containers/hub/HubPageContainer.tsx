@@ -18,7 +18,7 @@ import { ActivityType } from '../../models/constants';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
-import useMembersAsContributors from '../../domain/community/utils/useMembersAsContributors';
+import useCommunityContributorsAsCardProps from '../../domain/community/utils/useCommunityContributorsAsCardProps';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -36,6 +36,8 @@ export interface HubContainerEntities {
   challenges: ChallengeCardFragment[];
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
+  leadUsers: WithId<ContributorCardProps>[] | undefined;
+  leadUsersCount: number | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
@@ -107,7 +109,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const aspects = _hub?.hub.context?.aspects ?? EMPTY;
   const aspectsCount = useAspectsCount(_hub?.hub.activity);
 
-  const contributors = useMembersAsContributors(_hub?.hub.community);
+  const contributors = useCommunityContributorsAsCardProps(_hub?.hub.community);
 
   return (
     <>

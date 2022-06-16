@@ -41,41 +41,17 @@ fragment ChallengeProfile on Challenge {
   }
   community {
     id
-    memberUsers {
-      id
-      displayName
-      nameID
-      profile {
-        id
-        location {
-          city
-          country
-        }
-        avatar {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
-      }
+    leadUsers {
+      ...DashboardContributingUser
     }
-    memberOrganizations {
-      id
-      displayName
-      nameID
-      profile {
-        id
-        avatar {
-          id
-          uri
-          name
-        }
-      }
+    memberUsers {
+      ...DashboardContributingUser
     }
     leadOrganizations {
-      ...AssociatedOrganizationDetails
+      ...DashboardContributingOrganization
+    }
+    memberOrganizations {
+      ...DashboardContributingOrganization
     }
     authorization {
       id

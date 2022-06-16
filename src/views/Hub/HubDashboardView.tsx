@@ -20,11 +20,10 @@ import { useConfig } from '../../hooks';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
-import EntityDashboardContributorsSection, {
-  EntityDashboardContributorsSectionProps,
-} from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 
-export interface HubDashboardView2Props extends EntityDashboardContributorsSectionProps {
+export interface HubDashboardView2Props extends EntityDashboardContributors {
   title?: string;
   bannerUrl?: string;
   tagline?: string;
@@ -48,7 +47,7 @@ export interface HubDashboardView2Props extends EntityDashboardContributorsSecti
 
 const SPACING = 2;
 
-const HubDashboardView2: FC<HubDashboardView2Props> = ({
+const HubDashboardView: FC<HubDashboardView2Props> = ({
   bannerUrl,
   title,
   tagline = '',
@@ -65,6 +64,8 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   isMember = false,
   communityReadAccess = false,
   challengesReadAccess = false,
+  leadUsers,
+  leadUsersCount,
   memberUsers,
   memberUsersCount,
   memberOrganizations,
@@ -111,6 +112,8 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
           )}
           {communityReadAccess && (
             <EntityDashboardContributorsSection
+              leadUsers={leadUsers}
+              leadUsersCount={leadUsersCount}
               memberUsers={memberUsers}
               memberUsersCount={memberUsersCount}
               memberOrganizations={memberOrganizations}
@@ -142,4 +145,4 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   );
 };
 
-export default HubDashboardView2;
+export default HubDashboardView;

@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import HubPageContainer from '../../containers/hub/HubPageContainer';
 import { useUpdateNavigation } from '../../hooks';
-import HubDashboardView2 from '../../views/Hub/HubDashboardView2';
+import HubDashboardView from '../../views/Hub/HubDashboardView';
 import { PageProps } from '../common';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
@@ -19,7 +19,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
       <PageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="hub">
         <HubPageContainer>
           {(entities, state) => (
-            <HubDashboardView2
+            <HubDashboardView
               title={entities?.hub?.displayName}
               bannerUrl={getVisualBanner(entities?.hub?.context?.visuals)}
               tagline={entities?.hub?.context?.tagline}
@@ -41,6 +41,8 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
               memberUsersCount={entities.memberUsersCount}
               memberOrganizations={entities.memberOrganizations}
               memberOrganizationsCount={entities.memberOrganizationsCount}
+              leadUsers={entities.leadUsers}
+              leadUsersCount={entities.leadUsersCount}
             />
           )}
         </HubPageContainer>

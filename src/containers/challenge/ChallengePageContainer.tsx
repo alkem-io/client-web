@@ -11,10 +11,10 @@ import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } 
 import getActivityCount from '../../utils/get-activity-count';
 import { ActivityType } from '../../models/constants';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
-import { EntityDashboardContributorsSectionProps } from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import useMembersAsContributors from '../../domain/community/utils/useMembersAsContributors';
+import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
+import useCommunityContributorsAsCardProps from '../../domain/community/utils/useCommunityContributorsAsCardProps';
 
-export interface ChallengeContainerEntities extends EntityDashboardContributorsSectionProps {
+export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
   hubNameId: string;
   hubDisplayName: string;
@@ -91,7 +91,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
-  const contributors = useMembersAsContributors(_challenge?.hub.challenge.community);
+  const contributors = useCommunityContributorsAsCardProps(_challenge?.hub.challenge.community);
 
   return (
     <>

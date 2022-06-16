@@ -248,7 +248,8 @@
     "leading-users": "Leading Users",
     "member-users": "Member Users",
     "leading-organizations": "Leading Organizations",
-    "member-organizations": "Member Organizations"
+    "member-organizations": "Member Organizations",
+    "leads": "Leads"
   },
   "forms": {
     "validations": {

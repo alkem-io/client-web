@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
@@ -17,12 +17,8 @@ import { getVisualBanner } from '../../utils/visuals.utils';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
-import EntityDashboardContributorsSection, {
-  EntityDashboardContributorsSectionProps,
-} from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import AssociatedOrganizationsView from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsView';
-import OrganizationCard from '../../components/composite/common/cards/Organization/OrganizationCard';
-import { mapToAssociatedOrganization } from '../../domain/organization/AssociatedOrganizations/AssociatedOrganization';
+import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -72,7 +68,7 @@ export interface OpportunityDashboardViewOptions {
 
 export interface OpportunityDashboardViewProps
   extends ViewProps<
-    OpportunityDashboardViewEntities & EntityDashboardContributorsSectionProps,
+    OpportunityDashboardViewEntities & EntityDashboardContributors,
     OpportunityDashboardViewActions,
     OpportunityDashboardViewState,
     OpportunityDashboardViewOptions
@@ -100,14 +96,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const banner = getVisualBanner(visuals);
 
   const { loading } = state;
-
-  const { user } = useUserContext();
-
-  const leadOrganizations = useMemo(
-    () =>
-      opportunity?.community?.leadOrganizations?.map(org => mapToAssociatedOrganization(org, org.id, user?.user, t)),
-    [opportunity]
-  );
 
   return (
     <>
@@ -143,6 +131,10 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
           {communityReadAccess && (
             <EntityDashboardContributorsSection
+              leadUsers={entities.leadUsers}
+              leadUsersCount={entities.leadUsersCount}
+              leadOrganizations={entities.leadOrganizations}
+              leadOrganizationsCount={entities.leadOrganizationsCount}
               memberUsers={entities.memberUsers}
               memberUsersCount={entities.memberUsersCount}
               memberOrganizations={entities.memberOrganizations}
@@ -151,11 +143,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <AssociatedOrganizationsView
-            title={t('community.leading-organizations')}
-            organizations={leadOrganizations}
-            organizationCardComponent={OrganizationCard}
-          />
           <DashboardGenericSection
             headerText={t('pages.opportunity.sections.dashboard.projects.title')}
             helpText={t('pages.opportunity.sections.dashboard.projects.help-text')}
