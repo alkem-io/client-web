@@ -668,17 +668,17 @@
         },
         "interested-in-collaboration": {
           "header": "Алкемио и Ти",
-          "innovation-facilitator": "Стимулираш ли Иновацията в твоята общност или организация? <br/>Моля, <a href='https://alkem.io/feedback' target='_blank'>свържи се с нас</a> и ние ще насрочим среща!",
-          "suggestions": "Имаш ли предложения за Предизвикателство, където Алкемио може да помогне?<br/> Моля, сподели ги <a href='https://github.com/alkem-io/alkemio/discussions' target='_blank'>discussions</a> и се присъедини към общността!",
-          "contributor": "Искаш ли да се присъединиш към Алкемио, или да ни подкрепиш? <br/>100% <a href='https://github.com/alkem-io' target='_blank'>open source</a>. Подкрепени сме от <a href='https://alkem.io' target='_blank'> неправителствена организация</a>."
+          "innovation-facilitator": "Стимулираш ли Иновацията в твоята общност или организация? <br/>Моля, <feedback>свържи се с нас</feedback> и ние ще насрочим среща!",
+          "suggestions": "Имаш ли предложения за Предизвикателство, където Алкемио може да помогне?<br/> Моля, сподели ги <discussions>discussions</discussions> и се присъедини към общността!",
+          "contributor": "Искаш ли да се присъединиш към Алкемио, или да ни подкрепиш? <br/>100% <github>open source</github>. Подкрепени сме от <website> неправителствена организация</website>."
         },
         "getting-started": {
           "header": "Да започваме",
           "subheader": "Ето някои предложения, които ще помогнат за набирането на скорост.",
-          "introduction-video": "Искате ли да започнете да използвате платформата? Гледайте това <a href='https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO' target='_blank'>демонстрационно видео</a>.",
-          "connecting-with-people": "Искаш да видиш кой допринася? Разгледай всички <a href='./contributors' >contributors</a>.",
-          "joining-a-challenge": "Нямаш търпение да се присъединиш към Предизвикателство? Разгледай всички <a href='./challenges' >Challenges</a>.",
-          "your-profile": "Искаш да бъдеш намерен от други допринасящи? Попълни своя <a href='./profile' >профил</a>.</br>"
+          "introduction-video": "Искате ли да започнете да използвате платформата? Гледайте това <video>демонстрационно видео</video>.",
+          "connecting-with-people": "Искаш да видиш кой допринася? Разгледай всички <contributors>contributors</contributors>.",
+          "joining-a-challenge": "Нямаш търпение да се присъединиш към Предизвикателство? Разгледай всички <challenges>Challenges</challenges>.",
+          "your-profile": "Искаш да бъдеш намерен от други допринасящи? Попълни своя <profile>профил</profile>."
         },
         "hub": {
           "header": "Разгледай Хъбовете с Предизвикателства!",

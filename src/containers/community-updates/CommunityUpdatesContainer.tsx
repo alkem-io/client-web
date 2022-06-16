@@ -1,6 +1,4 @@
-import { merge } from 'lodash';
-import React, { FC, useCallback, useEffect } from 'react';
-import { ApolloError } from '@apollo/client';
+import React, { FC, useCallback } from 'react';
 import { useApolloErrorHandler, useConfig } from '../../hooks';
 import {
   CommunicationUpdateMessageReceivedDocument,
@@ -9,11 +7,17 @@ import {
   useRemoveUpdateCommunityMutation,
   useSendUpdateMutation,
 } from '../../hooks/generated/graphql';
-import { Message, Community, Hub, CommunicationUpdateMessageReceivedSubscription } from '../../models/graphql-schema';
+import {
+  Message,
+  Community,
+  Hub,
+  CommunicationUpdateMessageReceivedSubscription,
+  Updates,
+} from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
-import { logger } from '../../services/logging/winston/logger';
 import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
 import { Author } from '../../models/discussion/author';
+import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 
 export interface CommunityUpdatesContainerProps {
   entities: {
@@ -108,61 +112,34 @@ export const CommunityUpdatesContainer: FC<CommunityUpdatesContainerProps> = ({ 
   );
 };
 
+const useCommunicationUpdateMessageReceivedSubscription = UseSubscriptionToSubEntity<
+  Updates,
+  CommunicationUpdateMessageReceivedSubscription
+>({
+  subscriptionDocument: CommunicationUpdateMessageReceivedDocument,
+  updateSubEntity: (updates, subscriptionData) => {
+    if (updates?.id === subscriptionData.communicationUpdateMessageReceived.updatesID) {
+      updates?.messages?.push(subscriptionData.communicationUpdateMessageReceived.message);
+    }
+  },
+});
+
 const useCommunityUpdatesData = (hubNameId?: string, communityId?: string) => {
   const handleError = useApolloErrorHandler();
-  const { isFeatureEnabled } = useConfig();
   const { data, loading, subscribeToMore } = useCommunityUpdatesQuery({
     variables: {
-      hubId: hubNameId ?? '',
-      communityId: communityId ?? '',
+      hubId: hubNameId!,
+      communityId: communityId!,
     },
     skip: !hubNameId || !communityId,
     onError: handleError,
   });
 
-  const areSubscriptionsEnabled = isFeatureEnabled(FEATURE_SUBSCRIPTIONS);
-
-  useEffect(() => {
-    if (!hubNameId || !communityId || !areSubscriptionsEnabled) {
-      return;
-    }
-
-    return subscribeToMore<CommunicationUpdateMessageReceivedSubscription>({
-      document: CommunicationUpdateMessageReceivedDocument,
-      onError: err => handleError(new ApolloError({ errorMessage: err.message })),
-      updateQuery: (prev, { subscriptionData }) => {
-        const oldUpdates = prev?.hub?.community?.communication?.updates;
-
-        if (!oldUpdates) {
-          return prev;
-        }
-
-        const newUpdate = subscriptionData.data.communicationUpdateMessageReceived;
-
-        if (oldUpdates.id !== newUpdate.updatesID) {
-          logger.error(
-            `Current updateId (${oldUpdates.id}) is not matching the incoming updateId (${newUpdate.updatesID})`
-          );
-          return prev;
-        }
-
-        const oldMessages = oldUpdates.messages ?? [];
-        const newMessage = newUpdate.message;
-
-        return merge({}, prev, {
-          hub: {
-            community: {
-              communication: {
-                updates: {
-                  messages: [...oldMessages, newMessage],
-                },
-              },
-            },
-          },
-        });
-      },
-    });
-  }, [areSubscriptionsEnabled, subscribeToMore, hubNameId, communityId]);
+  useCommunicationUpdateMessageReceivedSubscription(
+    data,
+    parent => parent?.hub?.community?.communication?.updates,
+    subscribeToMore
+  );
 
   return { data, loading };
 };

@@ -12,7 +12,7 @@ export interface DashboardGenericSectionProps {
   bannerUrl?: string;
   alwaysShowBanner?: boolean;
   bannerOverlay?: React.ReactNode;
-  headerText?: string;
+  headerText?: React.ReactNode;
   helpText?: string;
   headerSpacing?: 'double' | 'none' | 'default';
   primaryAction?: React.ReactNode;
