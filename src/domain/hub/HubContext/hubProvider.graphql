@@ -24,11 +24,26 @@ fragment HubInfo on Hub {
       myPrivileges
     }
   }
-  template {
+  templates {
+    id
     aspectTemplates {
+      id
       defaultDescription
-      typeDescription
       type
+      info {
+        id
+        title
+        description
+      }
+    }
+    canvasTemplates {
+      id
+      info {
+        id
+        title
+        description
+      }
+      value
     }
   }
 }

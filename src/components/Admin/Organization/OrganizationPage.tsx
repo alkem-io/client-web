@@ -50,7 +50,7 @@ const OrganizationPage: FC<Props> = ({ title, mode, paths }) => {
     onCompleted: data => {
       const organizationId = data.createOrganization.nameID;
       if (organizationId) {
-        notify('Organization created successfully', 'success');
+        notify(t('pages.admin.organization.notifications.organization-created'), 'success');
         navigateToEdit(organizationId);
       }
     },

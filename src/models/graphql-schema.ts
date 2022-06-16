@@ -154,7 +154,7 @@ export type Aspect = {
   createdBy: Scalars['UUID'];
   createdDate: Scalars['DateTime'];
   /** The description of this aspect */
-  description: Scalars['String'];
+  description: Scalars['Markdown'];
   /** The display name. */
   displayName: Scalars['String'];
   /** The ID of the entity */
@@ -179,12 +179,16 @@ export type AspectCommentsMessageReceived = {
 
 export type AspectTemplate = {
   __typename?: 'AspectTemplate';
-  /** Default description of an aspect of this type */
-  defaultDescription: Scalars['String'];
-  /** The type of the templated aspect */
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The default description to show to users filling our a new instance. */
+  defaultDescription: Scalars['Markdown'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The meta information for this Template */
+  info: TemplateInfo;
+  /** The type for this Aspect. */
   type: Scalars['String'];
-  /** Default description of this type of aspect */
-  typeDescription: Scalars['String'];
 };
 
 export type AssignChallengeAdminInput = {
@@ -391,6 +395,18 @@ export type CanvasContentUpdated = {
   canvasID: Scalars['String'];
   /** The updated content. */
   value: Scalars['String'];
+};
+
+export type CanvasTemplate = {
+  __typename?: 'CanvasTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The meta information for this Template */
+  info: TemplateInfo;
+  /** The JSON representation of the Canvas. */
+  value: Scalars['JSON'];
 };
 
 export type Challenge = Searchable & {
@@ -708,7 +724,7 @@ export type CreateActorInput = {
 
 export type CreateAspectOnContextInput = {
   contextID: Scalars['UUID'];
-  description: Scalars['String'];
+  description: Scalars['Markdown'];
   /** The display name for the entity. */
   displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
@@ -717,10 +733,27 @@ export type CreateAspectOnContextInput = {
   type: Scalars['String'];
 };
 
+export type CreateAspectTemplateOnTemplatesSetInput = {
+  /** The default description to be pre-filled when users create Aspects based on this template. */
+  defaultDescription: Scalars['Markdown'];
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
+  templatesSetID: Scalars['UUID'];
+  /** The type of Aspects created from this Template. */
+  type: Scalars['String'];
+};
+
 export type CreateCanvasOnContextInput = {
   contextID: Scalars['UUID'];
   name: Scalars['String'];
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateCanvasTemplateOnTemplatesSetInput = {
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
+  templatesSetID: Scalars['UUID'];
+  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type CreateChallengeOnChallengeInput = {
@@ -874,6 +907,12 @@ export type CreateTagsetOnProfileInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateTemplateInfoInput = {
+  description: Scalars['Markdown'];
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  title: Scalars['String'];
+};
+
 export type CreateUserGroupInput = {
   /** The name of the UserGroup. Minimum length 2. */
   name: Scalars['String'];
@@ -935,9 +974,17 @@ export type DeleteAspectInput = {
   ID: Scalars['UUID'];
 };
 
+export type DeleteAspectTemplateInput = {
+  ID: Scalars['UUID'];
+};
+
 export type DeleteCanvasOnContextInput = {
   canvasID: Scalars['UUID'];
   contextID: Scalars['UUID'];
+};
+
+export type DeleteCanvasTemplateInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteChallengeInput = {
@@ -1122,8 +1169,8 @@ export type Hub = {
   projects: Array<Project>;
   /** The set of tags for the  hub. */
   tagset?: Maybe<Tagset>;
-  /** The template for this Hub. */
-  template: HubTemplate;
+  /** The templates in use by this Hub */
+  templates: TemplatesSet;
 };
 
 export type HubApplicationArgs = {
@@ -1180,11 +1227,6 @@ export enum HubPreferenceType {
   MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
   MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
 }
-
-export type HubTemplate = {
-  __typename?: 'HubTemplate';
-  aspectTemplates: Array<AspectTemplate>;
-};
 
 export type Lifecycle = {
   __typename?: 'Lifecycle';
@@ -1285,8 +1327,12 @@ export type Mutation = {
   createActorGroup: ActorGroup;
   /** Create a new Aspect on the Context. */
   createAspectOnContext: Aspect;
+  /** Creates a new AspectTemplate on the specified TemplatesSet. */
+  createAspectTemplate: AspectTemplate;
   /** Create a new Canvas on the Context. */
   createCanvasOnContext: Canvas;
+  /** Creates a new CanvasTemplate on the specified TemplatesSet. */
+  createCanvasTemplate: CanvasTemplate;
   /** Creates a new Challenge within the specified Hub. */
   createChallenge: Challenge;
   /** Creates a new child challenge within the parent Challenge. */
@@ -1327,8 +1373,12 @@ export type Mutation = {
   deleteActorGroup: ActorGroup;
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
+  /** Deletes the specified AspectTemplate. */
+  deleteAspectTemplate: AspectTemplate;
   /** Deletes the specified Canvas. */
   deleteCanvasOnContext: Canvas;
+  /** Deletes the specified CanvasTemplate. */
+  deleteCanvasTemplate: CanvasTemplate;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
   /** Deletes the specified Discussion. */
@@ -1413,8 +1463,12 @@ export type Mutation = {
   updateActor: Actor;
   /** Updates the specified Aspect. */
   updateAspect: Aspect;
+  /** Updates the specified AspectTemplate. */
+  updateAspectTemplate: AspectTemplate;
   /** Updates the specified Canvas. */
   updateCanvas: Canvas;
+  /** Updates the specified CanvasTemplate. */
+  updateCanvasTemplate: CanvasTemplate;
   /** Updates the specified Challenge. */
   updateChallenge: Challenge;
   /** Updates the specified Discussion. */
@@ -1549,8 +1603,16 @@ export type MutationCreateAspectOnContextArgs = {
   aspectData: CreateAspectOnContextInput;
 };
 
+export type MutationCreateAspectTemplateArgs = {
+  aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput;
+};
+
 export type MutationCreateCanvasOnContextArgs = {
   canvasData: CreateCanvasOnContextInput;
+};
+
+export type MutationCreateCanvasTemplateArgs = {
+  canvasTemplateInput: CreateCanvasTemplateOnTemplatesSetInput;
 };
 
 export type MutationCreateChallengeArgs = {
@@ -1629,8 +1691,16 @@ export type MutationDeleteAspectArgs = {
   deleteData: DeleteAspectInput;
 };
 
+export type MutationDeleteAspectTemplateArgs = {
+  deleteData: DeleteAspectTemplateInput;
+};
+
 export type MutationDeleteCanvasOnContextArgs = {
   deleteData: DeleteCanvasOnContextInput;
+};
+
+export type MutationDeleteCanvasTemplateArgs = {
+  deleteData: DeleteCanvasTemplateInput;
 };
 
 export type MutationDeleteChallengeArgs = {
@@ -1801,8 +1871,16 @@ export type MutationUpdateAspectArgs = {
   aspectData: UpdateAspectInput;
 };
 
+export type MutationUpdateAspectTemplateArgs = {
+  aspectTemplateInput: UpdateAspectTemplateInput;
+};
+
 export type MutationUpdateCanvasArgs = {
   canvasData: UpdateCanvasDirectInput;
+};
+
+export type MutationUpdateCanvasTemplateArgs = {
+  canvasTemplateInput: UpdateCanvasTemplateInput;
 };
 
 export type MutationUpdateChallengeArgs = {
@@ -2637,6 +2715,32 @@ export type Template = {
   users: Array<UserTemplate>;
 };
 
+export type TemplateInfo = {
+  __typename?: 'TemplateInfo';
+  /** The description for this Template. */
+  description?: Maybe<Scalars['Markdown']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The tags set on this Template. */
+  tagset?: Maybe<Tagset>;
+  /** The title for this Template. */
+  title?: Maybe<Scalars['String']>;
+  /** The image associated with this Template`. */
+  visual?: Maybe<Visual>;
+};
+
+export type TemplatesSet = {
+  __typename?: 'TemplatesSet';
+  /** The AspectTemplates in this TemplatesSet. */
+  aspectTemplates: Array<AspectTemplate>;
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The CanvasTemplates in this TemplatesSet. */
+  canvasTemplates: Array<CanvasTemplate>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+};
+
 export type UpdateActorInput = {
   ID: Scalars['UUID'];
   description?: InputMaybe<Scalars['String']>;
@@ -2647,7 +2751,7 @@ export type UpdateActorInput = {
 
 export type UpdateAspectInput = {
   ID: Scalars['UUID'];
-  description?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['Markdown']>;
   /** The display name for this entity. */
   displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
@@ -2660,9 +2764,13 @@ export type UpdateAspectInput = {
 };
 
 export type UpdateAspectTemplateInput = {
-  defaultDescription?: InputMaybe<Scalars['String']>;
-  type: Scalars['String'];
-  typeDescription: Scalars['String'];
+  ID: Scalars['UUID'];
+  /** The default description to be pre-filled when users create Aspects based on this template. */
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  /** The meta information for this Template. */
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The type of Aspects created from this Template. */
+  type?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateCanvasDirectInput = {
@@ -2676,6 +2784,13 @@ export type UpdateCanvasInput = {
   isTemplate?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
   value?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateCanvasTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The meta information for this Template. */
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  value?: InputMaybe<Scalars['JSON']>;
 };
 
 export type UpdateChallengeInput = {
@@ -2738,8 +2853,6 @@ export type UpdateHubInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
   tags?: InputMaybe<Array<Scalars['String']>>;
-  /** Update the template for this Hub. */
-  template?: InputMaybe<UpdateHubTemplateInput>;
 };
 
 export type UpdateHubPreferenceInput = {
@@ -2748,11 +2861,6 @@ export type UpdateHubPreferenceInput = {
   /** Type of the user preference */
   type: HubPreferenceType;
   value: Scalars['String'];
-};
-
-export type UpdateHubTemplateInput = {
-  /** The set of aspect type definitions to be supported by the Hub. */
-  aspectTemplates: Array<UpdateAspectTemplateInput>;
 };
 
 export type UpdateLocationInput = {
@@ -2822,6 +2930,12 @@ export type UpdateTagsetInput = {
   ID: Scalars['UUID'];
   name?: InputMaybe<Scalars['String']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateTemplateInfoInput = {
+  description?: InputMaybe<Scalars['Markdown']>;
+  tags?: InputMaybe<Array<Scalars['String']>>;
+  title?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateUserGroupInput = {
@@ -3265,15 +3379,6 @@ export type ConfigurationFragment = {
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
-  template: {
-    __typename?: 'Template';
-    hubs: Array<{
-      __typename?: 'PlatformHubTemplate';
-      aspects?:
-        | Array<{ __typename?: 'HubAspectTemplate'; type: string; defaultDescription: string; typeDescription: string }>
-        | undefined;
-    }>;
-  };
 };
 
 export type ContextDetailsFragment = {
@@ -5359,20 +5464,6 @@ export type ConfigurationQuery = {
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
-    template: {
-      __typename?: 'Template';
-      hubs: Array<{
-        __typename?: 'PlatformHubTemplate';
-        aspects?:
-          | Array<{
-              __typename?: 'HubAspectTemplate';
-              type: string;
-              defaultDescription: string;
-              typeDescription: string;
-            }>
-          | undefined;
-      }>;
-    };
   };
 };
 
@@ -11713,13 +11804,21 @@ export type HubProviderQuery = {
             | undefined;
         }
       | undefined;
-    template: {
-      __typename?: 'HubTemplate';
+    templates: {
+      __typename?: 'TemplatesSet';
+      id: string;
       aspectTemplates: Array<{
         __typename?: 'AspectTemplate';
+        id: string;
         defaultDescription: string;
-        typeDescription: string;
         type: string;
+        info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
+      }>;
+      canvasTemplates: Array<{
+        __typename?: 'CanvasTemplate';
+        id: string;
+        value: string;
+        info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
       }>;
     };
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -11786,13 +11885,21 @@ export type HubInfoFragment = {
           | undefined;
       }
     | undefined;
-  template: {
-    __typename?: 'HubTemplate';
+  templates: {
+    __typename?: 'TemplatesSet';
+    id: string;
     aspectTemplates: Array<{
       __typename?: 'AspectTemplate';
+      id: string;
       defaultDescription: string;
-      typeDescription: string;
       type: string;
+      info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
+    }>;
+    canvasTemplates: Array<{
+      __typename?: 'CanvasTemplate';
+      id: string;
+      value: string;
+      info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
     }>;
   };
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;

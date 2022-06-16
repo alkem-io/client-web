@@ -16,13 +16,13 @@ export interface AspectTypeFormFieldProps {
 
 const AspectTypeFormField: FC<AspectTypeFormFieldProps> = ({ name, value }) => {
   const { t } = useTranslation();
-  const { error, loading, template } = useHub();
+  const { error, loading, templates } = useHub();
 
   if (error) {
     return <Typography>{t('components.aspect-creation.type-step.error')}</Typography>;
   }
 
-  const aspectTypes = template.aspectTemplates.map(x => {
+  const aspectTypes = templates.aspectTemplates.map(x => {
     return { id: x.type, name: x.type };
   });
 
@@ -45,7 +45,7 @@ const AspectTypeFormField: FC<AspectTypeFormFieldProps> = ({ name, value }) => {
             <InputAdornment position="start">
               <HelpButton
                 helpText={
-                  template.aspectTemplates.find(x => x.type === value)?.typeDescription ??
+                  templates.aspectTemplates.find(x => x.type === value)?.info?.description ??
                   t('components.aspect-creation.type-step.type-help-text-short')
                 }
               />
