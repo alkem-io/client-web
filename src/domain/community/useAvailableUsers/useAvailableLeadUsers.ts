@@ -1,25 +1,13 @@
-import { UserDisplayNameFragment } from '../../../models/graphql-schema';
-import useUsersSearch, { UseUsersSearchResult } from '../useAvailableMembersWithCredential/useUsersSearch';
+import useUsersSearch from '../useAvailableMembersWithCredential/useUsersSearch';
 import usePaginatedQuery from '../../shared/pagination/usePaginatedQuery';
 import { useAvailableLeadUsersQuery } from '../../../hooks/generated/graphql';
 import { useHub } from '../../../hooks';
-import { useMemo } from 'react';
-
-export interface UseAvailableLeadUsersProvided {
-  allPossibleMemberUsers: UserDisplayNameFragment[] | undefined;
-  fetchMore: (amount?: number) => Promise<void>;
-  hasMore: boolean | undefined;
-  loading: boolean;
-  error: boolean;
-  pageSize: number;
-  firstPageSize: number;
-  setSearchTerm: UseUsersSearchResult['setSearchTerm'];
-}
+import { UseAvailableUsersProvided } from './types/AvailableUsers';
 
 const PAGE_SIZE = 10;
 const EMPTY_USERS_LIST = [];
 
-const useAvailableLeadUsers = (): UseAvailableLeadUsersProvided => {
+const useAvailableLeadUsers = (): UseAvailableUsersProvided => {
   const { filter, setSearchTerm: setPaginatedUsersSearchTerm } = useUsersSearch();
   const { hubId, loading: loadingHub } = useHub();
 
@@ -45,11 +33,7 @@ const useAvailableLeadUsers = (): UseAvailableLeadUsersProvided => {
 
   const isLoading = loadingUsers || loadingHub;
   const hasError = !!userError;
-  const allPossibleMemberUsers = useMemo(
-    () => usersQueryData?.hub?.community?.availableLeadUsers?.users || EMPTY_USERS_LIST,
-    [usersQueryData?.hub?.community?.availableLeadUsers?.users]
-  );
-
+  const allPossibleMemberUsers = usersQueryData?.hub?.community?.availableLeadUsers?.users || EMPTY_USERS_LIST;
   const setSearchTerm = setPaginatedUsersSearchTerm;
 
   return {
