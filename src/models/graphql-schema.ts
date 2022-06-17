@@ -11960,7 +11960,7 @@ export type UserListQuery = {
   __typename?: 'Query';
   usersPaginated: {
     __typename?: 'PaginatedUsers';
-    users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+    users: Array<{ __typename?: 'User'; id: string; nameID: string; displayName: string; email: string }>;
     pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
   };
 };
