@@ -29,8 +29,8 @@ export const UserPage: FC<UserPageProps> = ({ mode = EditMode.readOnly, title = 
   const notify = useNotification();
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { userId = '' } = useUrlParams();
-  const { data, loading } = useUserQuery({ variables: { id: userId }, fetchPolicy: 'cache-and-network' });
+  const { userNameId = '' } = useUrlParams();
+  const { data, loading } = useUserQuery({ variables: { id: userNameId }, fetchPolicy: 'cache-and-network' });
 
   const user = data?.user as UserModel;
   const currentPaths = useMemo(

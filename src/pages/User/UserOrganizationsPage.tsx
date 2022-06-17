@@ -11,8 +11,8 @@ export interface UserOrganizationsPageProps extends PageProps {}
 const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
-  const { userId = '' } = useUrlParams();
-  const { user: userMetadata, loading } = useUserMetadata(userId);
+  const { userNameId = '' } = useUrlParams();
+  const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [url, paths]);
   useUpdateNavigation({ currentPaths });

@@ -18,8 +18,8 @@ export const UsersRoute: FC<PageProps> = ({ paths }) => {
       {/* <Route path={`new`}>
       <UserPage mode={EditMode.new} paths={currentPaths} title="New user" />
     </Route> */}
-      <Route path={`:${nameOfUrl.userId}/edit`} element={<UserPage paths={currentPaths} mode={EditMode.edit} />} />
-      <Route path={`:${nameOfUrl.userId}`} element={<UserPage paths={currentPaths} mode={EditMode.readOnly} />} />
+      <Route path={`:${nameOfUrl.userNameId}/edit`} element={<UserPage paths={currentPaths} mode={EditMode.edit} />} />
+      <Route path={`:${nameOfUrl.userNameId}`} element={<UserPage paths={currentPaths} mode={EditMode.readOnly} />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );
