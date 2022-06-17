@@ -12,7 +12,10 @@ export function isOryConfig(pet: AuthenticationProviderConfigUnion): pet is OryC
 
 const logFlowErrors = (response: AxiosResponse<{ ui: UiContainer } | {}>) => {
   if ('ui' in response.data && response.data.ui.messages) {
-    for (const { text } of response.data.ui.messages) {
+    for (const { text, type } of response.data.ui.messages) {
+      if (type !== 'error') {
+        continue;
+      }
       const errorMessage = 'Kratos Flow Error: ' + text;
       logError(new Error(errorMessage));
     }
