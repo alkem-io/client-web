@@ -17,7 +17,7 @@ interface EditUserProfilePageProps extends PageProps {}
 
 export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => {
   const navigate = useNavigate();
-  const { userId = '' } = useUrlParams();
+  const { userNameId = '' } = useUrlParams();
   const { pathname: url } = useResolvedPath('.');
 
   const { user: currentUser } = useUserContext();
@@ -26,7 +26,7 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
 
   const { data, loading } = useUserQuery({
     variables: {
-      id: userId,
+      id: userNameId,
     },
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',

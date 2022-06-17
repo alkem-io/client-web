@@ -27,12 +27,12 @@ export interface UserNotificationsContainerProps
 const excludeNotifications = [PreferenceType.NotificationCommunicationDiscussionResponse];
 
 const UserNotificationsContainer: FC<UserNotificationsContainerProps> = ({ children }) => {
-  const { userId = '' } = useUrlParams();
+  const { userNameId = '' } = useUrlParams();
 
   const handleError = useApolloErrorHandler();
   const { data, loading } = useUserNotificationsPreferencesQuery({
     variables: {
-      userId: userId,
+      userId: userNameId,
     },
   });
 

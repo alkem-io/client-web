@@ -15859,6 +15859,7 @@ export const UserListDocument = gql`
     usersPaginated(first: $first, after: $after, filter: $filter) {
       users {
         id
+        nameID
         displayName
         email
       }
