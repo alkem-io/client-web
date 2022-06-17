@@ -1,0 +1,20 @@
+fragment DashboardLeadUser on User {
+  id
+  displayName
+  nameID
+  profile {
+    id
+    avatar {
+      ...VisualUri
+    }
+    location {
+      id
+      country
+      city
+    }
+    tagsets {
+      id
+      tags
+    }
+  }
+}

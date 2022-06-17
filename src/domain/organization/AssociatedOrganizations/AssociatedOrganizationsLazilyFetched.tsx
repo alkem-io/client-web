@@ -1,11 +1,16 @@
 import React, { FC } from 'react';
-import AssociatedOrganizationsView, { AssociatedOrganizationsViewProps } from './AssociatedOrganizationsView';
+import AssociatedOrganizationsDashboardSection, {
+  AssociatedOrganizationsDashboardSectionProps,
+} from './AssociatedOrganizationsDashboardSection';
 import OrganizationCard from '../../../components/composite/common/cards/Organization/OrganizationCard';
 import AssociatedOrganizationContainer from './AssociatedOrganizationContainer';
 
 interface AssociatedOrganizationsFetchingViewProps
   extends Omit<
-    AssociatedOrganizationsViewProps<OrganizationCardLazilyFetchedProps, OrganizationCardLazilyFetchedProps>,
+    AssociatedOrganizationsDashboardSectionProps<
+      OrganizationCardLazilyFetchedProps,
+      OrganizationCardLazilyFetchedProps
+    >,
     'organizations' | 'organizationCardComponent'
   > {
   organizationNameIDs: string[];
@@ -26,7 +31,7 @@ export const AssociatedOrganizationsLazilyFetched: FC<AssociatedOrganizationsFet
   const organizations = organizationNameIDs.map(nameID => ({ nameID }), [organizationNameIDs]);
 
   return (
-    <AssociatedOrganizationsView
+    <AssociatedOrganizationsDashboardSection
       {...viewProps}
       organizations={organizations}
       organizationCardComponent={OrganizationCardLazilyFetched}
