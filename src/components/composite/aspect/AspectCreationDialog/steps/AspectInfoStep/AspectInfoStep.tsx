@@ -11,8 +11,8 @@ export interface AspectInfoStepProps {
 }
 
 const AspectInfoStep: FC<AspectInfoStepProps> = ({ aspect, aspectNames, onChange, onStatusChanged }) => {
-  const { template } = useHub();
-  const description = template.aspectTemplates.find(x => x.type === aspect?.type)?.defaultDescription;
+  const { templates } = useHub();
+  const description = templates.aspectTemplates.find(x => x.type === aspect?.type)?.defaultDescription;
 
   return (
     <AspectForm

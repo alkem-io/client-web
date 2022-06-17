@@ -12,6 +12,7 @@ import ListPage from '../../../components/Admin/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../../components/Admin/SearchableList';
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface HubListProps extends PageProps {}
 
@@ -19,7 +20,7 @@ export const HubList: FC<HubListProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
-  const onSuccess = (message: string) => notify(message, 'success');
+  const { t } = useTranslation();
 
   const { data: hubsData, loading: loadingHubs } = useAdminHubsListQuery();
   const hubList = useMemo(
@@ -34,7 +35,8 @@ export const HubList: FC<HubListProps> = ({ paths }) => {
     refetchQueries: [refetchAdminHubsListQuery()],
     awaitRefetchQueries: true,
     onError: handleError,
-    onCompleted: data => onSuccess(`Hub '${data.deleteHub.displayName}' deleted successfuly`),
+    onCompleted: data =>
+      notify(t('pages.admin.hub.notifications.hub-removed', { name: data.deleteHub.displayName }), 'success'),
   });
 
   const handleDelete = (item: SearchableListItem) => {

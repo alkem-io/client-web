@@ -4,10 +4,11 @@ import {
   useAdminGlobalOrganizationsListQuery,
   useDeleteOrganizationMutation,
 } from '../../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../../hooks';
+import { useApolloErrorHandler, useNotification } from '../../../../hooks';
 import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
 import { SearchableListItem } from '../../../shared/components/SimpleSearchableList';
 import clearCacheForQuery from '../../../shared/utils/apollo-cache/clearCacheForQuery';
+import { useTranslation } from 'react-i18next';
 
 const PAGE_SIZE = 10;
 
@@ -24,10 +25,13 @@ export const useAdminGlobalOrganizationsList = () => {
   });
 
   const handleError = useApolloErrorHandler();
+  const { t } = useTranslation();
+  const notify = useNotification();
 
   const [deleteOrganization] = useDeleteOrganizationMutation({
     onError: handleError,
     update: cache => clearCacheForQuery(cache, 'organizationsPaginated'),
+    onCompleted: () => notify(t('pages.admin.organization.notifications.organization-removed'), 'success'),
   });
 
   const handleDelete = (item: SearchableListItem) =>
