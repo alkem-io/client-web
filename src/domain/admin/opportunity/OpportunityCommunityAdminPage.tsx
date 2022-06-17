@@ -3,7 +3,7 @@ import OpportunitySettingsLayout from './OpportunitySettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
-import { useChallenge, useHub, useOpportunity } from '../../../hooks';
+import { useHub, useOpportunity } from '../../../hooks';
 import CommunityAdminView from '../community/views/CommunityAdminView';
 import { SectionSpacer } from '../../../components/core/Section/Section';
 import { Loading } from '../../../components/core';
@@ -15,6 +15,8 @@ import useOpportunityMemberOrganizationAssignment from '../../community/useCommu
 import useMemberUserAssignment from '../../community/useCommunityAssignment/useMemberUserAssignment';
 import {
   refetchOpportunityCommunityMembersQuery,
+  useOpportunityCommunityAvailableLeadUsersQuery,
+  useOpportunityCommunityAvailableMemberUsersQuery,
   useOpportunityCommunityMembersQuery,
 } from '../../../hooks/generated/graphql';
 import useLeadUserAssignment from '../../community/useCommunityAssignment/useLeadUserAssignment';
@@ -25,11 +27,9 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
   const { t } = useTranslation();
 
   const { hubNameId } = useHub();
-  const { challenge } = useChallenge();
   const { opportunity } = useOpportunity();
 
   const communityId = opportunity?.community?.id;
-  const parentCommunityId = challenge?.community?.id;
 
   const leadingOrganizationsProps = useOpportunityLeadOrganizationAssignment({
     hubId: hubNameId,
@@ -42,7 +42,6 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
   });
 
   const memberUsersProps = useMemberUserAssignment({
-    parentCommunityId,
     variables: {
       hubId: hubNameId,
       opportunityId: opportunity?.nameID,
@@ -56,10 +55,17 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
       };
     },
     refetchMembersQuery: refetchOpportunityCommunityMembersQuery,
+    useAvailableLeadUsersOptions: {
+      useQuery: useOpportunityCommunityAvailableMemberUsersQuery,
+      variables: {
+        hubId: hubNameId,
+        opportunityId: opportunity?.nameID,
+      },
+      getResult: data => data.hub.opportunity.community?.availableMemberUsers,
+    },
   });
 
   const leadUsersProps = useLeadUserAssignment({
-    parentCommunityId,
     variables: {
       hubId: hubNameId,
       opportunityId: opportunity?.nameID,
@@ -73,6 +79,14 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
       };
     },
     refetchMembersQuery: refetchOpportunityCommunityMembersQuery,
+    useAvailableLeadUsersOptions: {
+      useQuery: useOpportunityCommunityAvailableLeadUsersQuery,
+      variables: {
+        hubId: hubNameId,
+        opportunityId: opportunity?.nameID,
+      },
+      getResult: data => data.hub.opportunity.community?.availableLeadUsers,
+    },
   });
 
   return (

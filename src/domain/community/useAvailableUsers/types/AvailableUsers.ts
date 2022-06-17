@@ -1,8 +1,8 @@
 import { UserDisplayNameFragment } from '../../../../models/graphql-schema';
 import { UseUsersSearchResult } from '../../useAvailableMembersWithCredential/useUsersSearch';
 
-export type UseAvailableUsersProvided = {
-  allPossibleMemberUsers: UserDisplayNameFragment[] | undefined;
+export interface UseAvailableUsersProvided {
+  availableMembers: UserDisplayNameFragment[];
   fetchMore: (amount?: number) => Promise<void>;
   hasMore: boolean | undefined;
   loading: boolean;
@@ -10,4 +10,4 @@ export type UseAvailableUsersProvided = {
   pageSize: number;
   firstPageSize: number;
   setSearchTerm: UseUsersSearchResult['setSearchTerm'];
-};
+}

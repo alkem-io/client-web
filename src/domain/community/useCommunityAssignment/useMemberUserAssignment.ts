@@ -7,11 +7,14 @@ import {
   AssignUserAsCommunityMemberMutation,
   RemoveUserAsCommunityMemberMutation,
 } from '../../../models/graphql-schema';
-import { UseAllPossibleMemberUsersOptions } from './useAllPossibleMemberUsers';
 import { Member } from '../../../models/User';
-import useAvailableMemberUsers from '../useAvailableUsers/useAvailableMemberUsers';
+import useAvailableUsers, { UseAvailableLeadUsersOptions } from '../useAvailableUsers/useAvailableUsers';
 
-type Options<ExistingUsersQueryVariables extends {}> = Omit<
+type Options<
+  ExistingUsersQueryVariables extends {},
+  AvailableLeadUsersQuery,
+  AvailableLeadUsersQueryVariables extends {}
+> = Omit<
   UseCommunityMembersAssignmentOptions<
     ExistingUsersQueryVariables,
     Member,
@@ -19,17 +22,28 @@ type Options<ExistingUsersQueryVariables extends {}> = Omit<
     RemoveUserAsCommunityMemberMutation
   >,
   'allPossibleMembers' | 'useAssignMemberMutation' | 'useRemoveMemberMutation'
-> &
-  UseAllPossibleMemberUsersOptions;
+> & {
+  useAvailableLeadUsersOptions: UseAvailableLeadUsersOptions<AvailableLeadUsersQuery, AvailableLeadUsersQueryVariables>;
+};
 
-const useMemberUserAssignment = <OrganizationsQueryVariables extends {}>(
-  options: Options<OrganizationsQueryVariables>
+const useMemberUserAssignment = <
+  ExistingUsersQueryVariables extends {},
+  AvailableLeadUsersQuery,
+  AvailableLeadUsersQueryVariables extends {}
+>(
+  options: Options<ExistingUsersQueryVariables, AvailableLeadUsersQuery, AvailableLeadUsersQueryVariables>
 ) => {
-  const { allPossibleMemberUsers, setSearchTerm, ...allPossibleProvided } = useAvailableMemberUsers();
+  const { availableMembers, setSearchTerm, ...allPossibleProvided } = useAvailableUsers(
+    options.useAvailableLeadUsersOptions
+  );
 
-  const { existingMembers, availableMembers, ...communityAssignmentProvided } = useCommunityMembersAssignment({
+  const {
+    existingMembers,
+    availableMembers: _availableMembers,
+    ...communityAssignmentProvided
+  } = useCommunityMembersAssignment({
     // TODO possibility to use different types for allPossibleMembers/availableMembers and existingMembers
-    allPossibleMembers: allPossibleMemberUsers as Member[],
+    allPossibleMembers: availableMembers as Member[],
     useAssignMemberMutation: useAssignUserAsCommunityMemberMutation,
     useRemoveMemberMutation: useRemoveUserAsCommunityMemberMutation,
     ...options,

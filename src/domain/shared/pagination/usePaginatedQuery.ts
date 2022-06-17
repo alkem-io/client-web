@@ -3,14 +3,14 @@ import { PageInfo } from '../../../models/graphql-schema';
 import { useCallback } from 'react';
 import { ApolloError } from '@apollo/client';
 
-interface PaginationVariables {
+export interface PaginationVariables {
   first: number;
   after?: string;
 }
 
-type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, 'first'>;
+type NonPaginationVariables<Variables extends PaginationVariables> = Omit<Variables, keyof PaginationVariables>;
 
-interface PaginationOptions<Data, Variables extends PaginationVariables> {
+export interface PaginationOptions<Data, Variables extends PaginationVariables> {
   useQuery: (options: QueryHookOptions<Data, Variables>) => QueryResult<Data, Variables>;
   options?: QueryHookOptions<Data, NonPaginationVariables<Variables>>;
   variables: NonPaginationVariables<Variables>;

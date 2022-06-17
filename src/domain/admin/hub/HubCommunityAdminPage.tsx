@@ -13,7 +13,12 @@ import { useHub } from '../../../hooks';
 import useHubApplications from './providers/useHubApplications';
 import { HubCommunityAdminMembershipPreferencesSection } from './HubCommunityAdminMembershipPreferencesSection';
 import AdminCommunityOrganizationsView from '../challenge/views/AdminCommunityOrganizationsView';
-import { refetchHubCommunityMembersQuery, useHubCommunityMembersQuery } from '../../../hooks/generated/graphql';
+import {
+  refetchHubCommunityMembersQuery,
+  useHubCommunityAvailableLeadUsersQuery,
+  useHubCommunityAvailableMemberUsersQuery,
+  useHubCommunityMembersQuery,
+} from '../../../hooks/generated/graphql';
 import useMemberOrganizationAssignment from '../../community/useCommunityAssignment/useMemberOrganizationAssignment';
 import useMemberUserAssignment from '../../community/useCommunityAssignment/useMemberUserAssignment';
 import useLeadUserAssignment from '../../community/useCommunityAssignment/useLeadUserAssignment';
@@ -53,6 +58,11 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '..
       };
     },
     refetchMembersQuery: refetchHubCommunityMembersQuery,
+    useAvailableLeadUsersOptions: {
+      useQuery: useHubCommunityAvailableLeadUsersQuery,
+      variables: {},
+      getResult: data => data?.hub?.community?.availableLeadUsers,
+    },
   });
 
   const memberUsersProps = useMemberUserAssignment({
@@ -66,6 +76,11 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '..
       };
     },
     refetchMembersQuery: refetchHubCommunityMembersQuery,
+    useAvailableLeadUsersOptions: {
+      useQuery: useHubCommunityAvailableMemberUsersQuery,
+      variables: {},
+      getResult: data => data?.hub?.community?.availableMemberUsers,
+    },
   });
 
   return (

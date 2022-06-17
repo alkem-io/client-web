@@ -18,6 +18,8 @@ import useChallengeMemberOrganizationAssignment from '../../community/useCommuni
 import useMemberUserAssignment from '../../community/useCommunityAssignment/useMemberUserAssignment';
 import {
   refetchChallengeCommunityMembersQuery,
+  useChallengeCommunityAvailableLeadUsersQuery,
+  useChallengeCommunityAvailableMemberUsersQuery,
   useChallengeCommunityMembersQuery,
 } from '../../../hooks/generated/graphql';
 import useLeadUserAssignment from '../../community/useCommunityAssignment/useLeadUserAssignment';
@@ -27,7 +29,7 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
 
   const { t } = useTranslation();
 
-  const { hubId, communityId: hubCommunityId } = useHub();
+  const { hubId } = useHub();
   const { challenge, challengeId } = useChallenge();
   const communityId = challenge?.community?.id;
 
@@ -44,7 +46,6 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
   });
 
   const memberUsersProps = useMemberUserAssignment({
-    parentCommunityId: hubCommunityId,
     variables: {
       hubId,
       challengeId,
@@ -58,10 +59,17 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
       };
     },
     refetchMembersQuery: refetchChallengeCommunityMembersQuery,
+    useAvailableLeadUsersOptions: {
+      useQuery: useChallengeCommunityAvailableMemberUsersQuery,
+      variables: {
+        hubId,
+        challengeId,
+      },
+      getResult: data => data.hub.challenge.community?.availableMemberUsers,
+    },
   });
 
   const leadUsersProps = useLeadUserAssignment({
-    parentCommunityId: hubCommunityId,
     variables: {
       hubId,
       challengeId,
@@ -75,6 +83,14 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
       };
     },
     refetchMembersQuery: refetchChallengeCommunityMembersQuery,
+    useAvailableLeadUsersOptions: {
+      useQuery: useChallengeCommunityAvailableLeadUsersQuery,
+      variables: {
+        hubId,
+        challengeId,
+      },
+      getResult: data => data.hub.challenge.community?.availableLeadUsers,
+    },
   });
 
   return (

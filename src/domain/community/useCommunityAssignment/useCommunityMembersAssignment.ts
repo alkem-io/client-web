@@ -32,7 +32,7 @@ export interface UseCommunityMembersAssignmentOptions<
     variables: ExistingMembersQueryVariables;
     skip: boolean;
   }) => QueryResult<MemberEntity>;
-  allPossibleMembers: MemberEntity[] | undefined;
+  allPossibleMembers?: MemberEntity[];
   refetchMembersQuery: (variables: ExistingMembersQueryVariables) => {
     query: DocumentNode;
     variables: ExistingMembersQueryVariables;
@@ -93,10 +93,10 @@ const useCommunityMembersAssignment = <
 
   const existingMembers = queryResult.existingMembers ?? EMPTY_LIST;
 
-  const existingOrganizationsIndexed = useMemo(() => keyBy(existingMembers, member => member.id), [existingMembers]);
+  const existingMembersIndexed = useMemo(() => keyBy(existingMembers, member => member.id), [existingMembers]);
 
   const availableMembers = useMemo(
-    () => allPossibleMembers.filter(org => !has(existingOrganizationsIndexed, org.id)),
+    () => allPossibleMembers.filter(org => !has(existingMembersIndexed, org.id)),
     [allPossibleMembers, existingMembers]
   );
 
