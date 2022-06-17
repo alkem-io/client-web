@@ -17,6 +17,7 @@ export interface OrganizationCardProps {
   verified?: boolean;
   loading?: boolean;
   url?: string;
+  transparent?: boolean;
 }
 
 const useStyles = makeStyles(theme =>
@@ -51,6 +52,7 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
   verified,
   loading,
   url,
+  transparent = false,
 }) => {
   const styles = useStyles();
 
@@ -59,8 +61,9 @@ const OrganizationCard: FC<OrganizationCardProps> = ({
       to={url}
       aria-label="associated-organization-card"
       classes={{
-        root: styles.card,
+        root: transparent ? undefined : styles.card,
       }}
+      elevationDisabled={transparent}
     >
       <CardHeader
         className={styles.cardHeader}
