@@ -1,0 +1,34 @@
+fragment DashboardContributingUser on User {
+  id
+  displayName
+  nameID
+  profile {
+    id
+    location {
+      city
+      country
+    }
+    avatar {
+      id
+      uri
+    }
+    tagsets {
+      id
+      tags
+    }
+  }
+}
+
+fragment DashboardContributingOrganization on Organization {
+  id
+  displayName
+  nameID
+  profile {
+    id
+    avatar {
+      id
+      uri
+      name
+    }
+  }
+}

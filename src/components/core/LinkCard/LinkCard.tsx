@@ -5,16 +5,17 @@ import ConditionalLink from '../ConditionalLink';
 
 interface LinkCardProps extends CardProps {
   to?: string;
+  elevationDisabled?: boolean;
 }
 
-const LinkCard: FC<LinkCardProps> = ({ to, ...rest }) => {
-  const [elevation, setElevation] = useState(INITIAL_ELEVATION);
+const LinkCard: FC<LinkCardProps> = ({ to, elevationDisabled = false, ...rest }) => {
+  const [elevation, setElevation] = useState(elevationDisabled ? 0 : INITIAL_ELEVATION);
   return (
     <ConditionalLink condition={!!to} to={to}>
       <Card
         elevation={elevation}
-        onMouseOver={() => setElevation(FINAL_ELEVATION)}
-        onMouseOut={() => setElevation(INITIAL_ELEVATION)}
+        onMouseOver={() => !elevationDisabled && setElevation(FINAL_ELEVATION)}
+        onMouseOut={() => !elevationDisabled && setElevation(INITIAL_ELEVATION)}
         {...rest}
       />
     </ConditionalLink>

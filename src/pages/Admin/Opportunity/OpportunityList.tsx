@@ -9,15 +9,18 @@ import {
   useDeleteOpportunityMutation,
   useOpportunitiesQuery,
 } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
+import { useApolloErrorHandler, useUrlParams, useNotification } from '../../../hooks';
 import { useHub } from '../../../hooks';
 import { useResolvedPath } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface OpportunityListProps extends PageProps {}
 
 export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const handleError = useApolloErrorHandler();
+  const { t } = useTranslation();
+  const notify = useNotification();
   const { hubNameId } = useHub();
   const { challengeNameId = '' } = useUrlParams();
   const { data: challengesListQuery, loading } = useOpportunitiesQuery({
@@ -40,6 +43,7 @@ export const OpportunityList: FC<OpportunityListProps> = ({ paths }) => {
     ],
     awaitRefetchQueries: true,
     onError: handleError,
+    onCompleted: () => notify(t('pages.admin.opportunity.notifications.opportunity-removed'), 'success'),
   });
 
   const handleDelete = (item: SearchableListItem) => {

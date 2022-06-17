@@ -66,41 +66,17 @@ fragment OpportunityPage on Opportunity {
   }
   community {
     id
-    memberUsers {
-      id
-      displayName
-      nameID
-      profile {
-        id
-        location {
-          city
-          country
-        }
-        avatar {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
-      }
+    leadUsers {
+      ...DashboardLeadUser
     }
-    memberOrganizations {
-      id
-      displayName
-      nameID
-      profile {
-        id
-        avatar {
-          id
-          uri
-          name
-        }
-      }
+    memberUsers {
+      ...DashboardContributingUser
     }
     leadOrganizations {
       ...AssociatedOrganizationDetails
+    }
+    memberOrganizations {
+      ...DashboardContributingOrganization
     }
     authorization {
       id

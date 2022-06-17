@@ -3,7 +3,7 @@ import Typography from '../../components/core/Typography';
 import { useTranslation } from 'react-i18next';
 import { Location } from './Location';
 
-interface LocationViewProps {
+export interface LocationViewProps {
   location: Partial<Location> | string | undefined;
 }
 
