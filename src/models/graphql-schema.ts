@@ -11363,14 +11363,80 @@ export type AvailableUsersQuery = {
   };
 };
 
-export type AvailableLeadUsersQueryVariables = Exact<{
+export type ChallengeCommunityAvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type ChallengeCommunityAvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            availableLeadUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type ChallengeCommunityAvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type ChallengeCommunityAvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            availableMemberUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type HubCommunityAvailableLeadUsersQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
-export type AvailableLeadUsersQuery = {
+export type HubCommunityAvailableLeadUsersQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11389,14 +11455,14 @@ export type AvailableLeadUsersQuery = {
   };
 };
 
-export type AvailableMemberUsersQueryVariables = Exact<{
+export type HubCommunityAvailableMemberUsersQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
   filter?: InputMaybe<UserFilterInput>;
 }>;
 
-export type AvailableMemberUsersQuery = {
+export type HubCommunityAvailableMemberUsersQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -11412,6 +11478,72 @@ export type AvailableMemberUsersQuery = {
             | undefined;
         }
       | undefined;
+  };
+};
+
+export type OpportunityCommunityAvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type OpportunityCommunityAvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            availableLeadUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityCommunityAvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type OpportunityCommunityAvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            availableMemberUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  pageInfo: { __typename?: 'PageInfo'; hasNextPage: boolean; endCursor?: string | undefined };
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string }>;
+                }
+              | undefined;
+          }
+        | undefined;
+    };
   };
 };
 

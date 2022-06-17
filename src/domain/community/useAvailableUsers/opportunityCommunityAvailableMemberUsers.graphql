@@ -1,0 +1,27 @@
+query opportunityCommunityAvailableMemberUsers(
+  $hubId: UUID_NAMEID!
+  $opportunityId: UUID_NAMEID!
+  $first: Int!
+  $after: UUID
+  $filter: UserFilterInput
+) {
+  hub(ID: $hubId) {
+    id
+    opportunity(ID: $opportunityId) {
+      id
+      community {
+        id
+        availableMemberUsers(first: $first, after: $after, filter: $filter) {
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          users {
+            id
+            displayName
+          }
+        }
+      }
+    }
+  }
+}

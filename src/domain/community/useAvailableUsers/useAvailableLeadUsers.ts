@@ -1,6 +1,6 @@
 import useUsersSearch from '../useAvailableMembersWithCredential/useUsersSearch';
 import usePaginatedQuery from '../../shared/pagination/usePaginatedQuery';
-import { useAvailableLeadUsersQuery } from '../../../hooks/generated/graphql';
+import { useHubCommunityAvailableLeadUsersQuery } from '../../../hooks/generated/graphql';
 import { useHub } from '../../../hooks';
 import { UseAvailableUsersProvided } from './types/AvailableUsers';
 
@@ -20,7 +20,7 @@ const useAvailableLeadUsers = (): UseAvailableUsersProvided => {
     pageSize,
     firstPageSize,
   } = usePaginatedQuery({
-    useQuery: useAvailableLeadUsersQuery,
+    useQuery: useHubCommunityAvailableLeadUsersQuery,
     options: {
       fetchPolicy: 'cache-first',
       nextFetchPolicy: 'cache-first',
