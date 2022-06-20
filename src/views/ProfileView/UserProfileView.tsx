@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { SettingsButton } from '../../components/composite';
 import ProfileDetail from '../../components/composite/common/ProfileDetail/ProfileDetail';
 import SocialLinks, { isSocialLink } from '../../components/composite/common/SocialLinks/SocialLinks';
-import TagsComponent from '../../components/composite/common/TagsComponent/TagsComponent';
+import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
 import Typography from '../../components/core/Typography';
 import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';

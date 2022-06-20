@@ -3,7 +3,7 @@ import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import LinkCard from '../../../../components/core/LinkCard/LinkCard';
-import TagsComponent from '../../../../components/composite/common/TagsComponent/TagsComponent';
+import TagsComponent from '../TagsComponent/TagsComponent';
 import clsx from 'clsx';
 import LabelAndTitle, { LabelAndTitleComponentProps } from './LabelAndTitle';
 
@@ -128,7 +128,7 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({
           {loading ? (
             <Skeleton variant="rectangular" animation="wave" />
           ) : (
-            <TagsComponent tags={tags} tagsFor={tagsFor} count={4} />
+            <TagsComponent tags={tags} tagsFor={tagsFor} />
           )}
         </Box>
       </CardContent>
