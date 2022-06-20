@@ -18,7 +18,7 @@ import { ActivityType } from '../../models/constants';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
-import useMembersAsContributors from '../../domain/community/utils/useMembersAsContributors';
+import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -107,7 +107,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const aspects = _hub?.hub.context?.aspects ?? EMPTY;
   const aspectsCount = useAspectsCount(_hub?.hub.activity);
 
-  const contributors = useMembersAsContributors(_hub?.hub.community);
+  const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 
   return (
     <>

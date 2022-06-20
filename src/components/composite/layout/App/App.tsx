@@ -40,7 +40,7 @@ const App: FC = () => {
   }, [services]);
 
   return (
-    <div id="app">
+    <>
       <div id="main">
         <TopBar />
         <Main>
@@ -73,7 +73,7 @@ const App: FC = () => {
       </CookieConsent>
       <ScrollButton />
       <NotificationHandler />
-    </div>
+    </>
   );
 };
 

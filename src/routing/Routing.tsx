@@ -44,7 +44,7 @@ export const Routing: FC = () => {
         <Route path="/search" element={<SearchRoute />} />
         <Route path="/identity/*" element={<IdentityRoute />} />
         <Route
-          path={`/user/:${nameOfUrl.userId}/*`}
+          path={`/user/:${nameOfUrl.userNameId}/*`}
           element={
             <RestrictedRoute>
               <UserRoute />

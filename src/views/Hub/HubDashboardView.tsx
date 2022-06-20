@@ -10,9 +10,8 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../components/core/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { Discussion } from '../../models/discussion/discussion';
-import { ChallengeCardFragment } from '../../models/graphql-schema';
+import { AssociatedOrganizationDetailsFragment, ChallengeCardFragment } from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
-import AssociatedOrganizationsLazilyFetched from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
@@ -20,11 +19,14 @@ import { useConfig } from '../../hooks';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
-import EntityDashboardContributorsSection, {
-  EntityDashboardContributorsSectionProps,
-} from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import {
+  EntityDashboardContributors,
+  EntityDashboardLeads,
+} from '../../domain/community/EntityDashboardContributorsSection/Types';
+import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 
-export interface HubDashboardView2Props extends EntityDashboardContributorsSectionProps {
+export interface HubDashboardView2Props extends EntityDashboardContributors {
   title?: string;
   bannerUrl?: string;
   tagline?: string;
@@ -44,11 +46,13 @@ export interface HubDashboardView2Props extends EntityDashboardContributorsSecti
   isMember?: boolean;
   communityReadAccess?: boolean;
   challengesReadAccess?: boolean;
+  hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
+  leadUsers: EntityDashboardLeads['leadUsers'];
 }
 
 const SPACING = 2;
 
-const HubDashboardView2: FC<HubDashboardView2Props> = ({
+const HubDashboardView: FC<HubDashboardView2Props> = ({
   bannerUrl,
   title,
   tagline = '',
@@ -56,7 +60,6 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   challenges,
   hubNameId = '',
   communityId = '',
-  organizationNameId,
   activity,
   discussions,
   aspects,
@@ -69,15 +72,18 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
+
+  hostOrganization,
+  leadUsers,
 }) => {
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
 
-  const orgNameIds = useMemo(() => (organizationNameId ? [organizationNameId] : []), [organizationNameId]);
-
   const challengesCount = useMemo(() => {
     return activity.find(({ type }) => type === ActivityType.Challenge)?.count;
   }, [activity]);
+
+  const hostOrganizations = useMemo(() => hostOrganization && [hostOrganization], [hostOrganization]);
 
   return (
     <>
@@ -110,6 +116,14 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
             </>
           )}
           {communityReadAccess && (
+            <EntityDashboardLeadsSection
+              organizationsHeader={t('pages.hub.sections.dashboard.organization')}
+              usersHeader={t('community.host')}
+              leadUsers={leadUsers}
+              leadOrganizations={hostOrganizations}
+            />
+          )}
+          {communityReadAccess && (
             <EntityDashboardContributorsSection
               memberUsers={memberUsers}
               memberUsersCount={memberUsersCount}
@@ -119,10 +133,6 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <AssociatedOrganizationsLazilyFetched
-            title={t('pages.hub.sections.dashboard.organization')}
-            organizationNameIDs={orgNameIds}
-          />
           {challengesReadAccess && (
             <DashboardGenericSection
               headerText={`${t('pages.hub.sections.dashboard.challenges.title')} (${challengesCount})`}
@@ -142,4 +152,4 @@ const HubDashboardView2: FC<HubDashboardView2Props> = ({
   );
 };
 
-export default HubDashboardView2;
+export default HubDashboardView;

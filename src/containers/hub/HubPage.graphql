@@ -19,9 +19,7 @@ fragment HubPage on Hub {
     myPrivileges
   }
   host {
-    id
-    displayName
-    nameID
+    ...AssociatedOrganizationDetails
   }
   context {
     id
@@ -41,38 +39,14 @@ fragment HubPage on Hub {
   }
   community {
     id
+    leadUsers {
+      ...DashboardLeadUser
+    }
     memberUsers {
-      id
-      displayName
-      nameID
-      profile {
-        id
-        location {
-          city
-          country
-        }
-        avatar {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
-      }
+      ...DashboardContributingUser
     }
     memberOrganizations {
-      id
-      displayName
-      nameID
-      profile {
-        id
-        avatar {
-          id
-          uri
-          name
-        }
-      }
+      ...DashboardContributingOrganization
     }
     authorization {
       id

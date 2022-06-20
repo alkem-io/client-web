@@ -14,9 +14,9 @@ export const UserProfilePage: FC<UserProfileProps> = ({ paths }) => {
 
   const { user: currentUser, verified } = useUserContext();
 
-  const { userId = '' } = useUrlParams();
+  const { userNameId = '' } = useUrlParams();
 
-  const { user: userMetadata, loading } = useUserMetadata(userId);
+  const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
   if (loading) return <Loading text={'Loading User Profile ...'} />;
 
