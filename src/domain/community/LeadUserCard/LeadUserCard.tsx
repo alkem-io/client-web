@@ -1,6 +1,6 @@
 import Avatar from '../../../components/core/Avatar';
 import { Box, Typography } from '@mui/material';
-import TagsComponent from '../../../components/composite/common/TagsComponent/TagsComponent';
+import TagsComponent from '../../../domain/shared/components/TagsComponent/TagsComponent';
 import { Link } from 'react-router-dom';
 import { styled } from '@mui/styles';
 
