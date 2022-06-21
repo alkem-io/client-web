@@ -64,6 +64,11 @@
     "remove": "Remove",
     "comment": "Comment",
     "comments": "Comments",
+    "create": "Create",
+    "create-new": "Create new",
+    "create-new-entity": "Create new {{entity}}",
+    "description": "Description",
+    "edit-entity": "Edit {{entity}}",
     "email": "Email",
     "state": "State",
     "aspect": "Aspect",
@@ -82,6 +87,7 @@
     "interests": "Interests",
     "project": "Project",
     "projects": "Projects",
+    "templates": "Templates",
     "group": "Group",
     "groups": "Groups",
     "user-group": "User group",
@@ -260,6 +266,10 @@
       "alphaNumeric": "{{field}} can contain only lower case latin characters, numbers and hyphens",
       "nonBlank": "{{field}} must not consist of just spaces"
     }
+  },
+  "aspect-templates": {
+    "aspect-template": "Aspect template",
+    "default-description": "Default aspect description"
   },
   "components": {
     "context-section": {
@@ -674,6 +684,11 @@
           },
           "authorization": {
             "description": "Here you can tweak authorization settings for this {{entity}}."
+          },
+          "templates": {
+            "description": "Here you can create and edit Aspect and Canvas templates for this {{entity}}.",
+            "aspect-templates": "Aspect Templates",
+            "canvas-templates": "Canvas Templates"
           }
         }
       },

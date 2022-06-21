@@ -1,0 +1,11 @@
+mutation updateAspectTemplate($aspectTemplateInput: UpdateAspectTemplateInput!) {
+  updateAspectTemplate(aspectTemplateInput: $aspectTemplateInput) {
+    id
+  }
+}
+
+mutation createAspectTemplate($aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput!) {
+  createAspectTemplate(aspectTemplateInput: $aspectTemplateInput) {
+    id
+  }
+}

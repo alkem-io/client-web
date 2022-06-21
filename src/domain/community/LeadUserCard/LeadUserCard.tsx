@@ -1,7 +1,7 @@
 import Avatar from '../../../components/core/Avatar';
 import { Box, Typography } from '@mui/material';
 import TagsComponent from '../../../domain/shared/components/TagsComponent/TagsComponent';
-import { Link } from 'react-router-dom';
+import LinkNoUnderline from '../../shared/components/LinkNoUnderline';
 import { styled } from '@mui/styles';
 
 export interface LeadUserCardProps {
@@ -12,11 +12,6 @@ export interface LeadUserCardProps {
   country?: string;
   tags?: string[];
 }
-
-const LinkNoUnderline = styled(Link)({
-  textDecoration: 'none',
-  color: 'inherit',
-});
 
 const TagsWithSpacing = styled(TagsComponent)(({ theme }) => ({
   paddingTop: theme.spacing(1),

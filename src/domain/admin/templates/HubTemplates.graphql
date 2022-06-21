@@ -1,0 +1,29 @@
+query HubTemplates($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      aspectTemplates {
+        id
+        defaultDescription
+        type
+        info {
+          id
+          title
+          tagset {
+            id
+            name
+            tags
+          }
+        }
+      }
+      canvasTemplates {
+        id
+        info {
+          id
+          title
+        }
+      }
+    }
+  }
+}
