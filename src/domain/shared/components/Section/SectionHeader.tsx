@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
-import HelpButton from '../HelpButton';
+import HelpButton from '../../../../components/core/HelpButton';
 import { SectionSpacer } from './Section';
 
 interface SectionHeaderProps {

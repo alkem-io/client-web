@@ -1,6 +1,6 @@
 import React from 'react';
-import { SectionSpacer } from '../../../components/core/Section/Section';
-import SectionHeader from '../../../components/core/Section/SectionHeader';
+import { SectionSpacer } from '../../shared/components/Section/Section';
+import SectionHeader from '../../shared/components/Section/SectionHeader';
 import LeadUserCard, { LeadUserCardProps } from '../LeadUserCard/LeadUserCard';
 
 interface EntityDashboardLeadsSectionProps {

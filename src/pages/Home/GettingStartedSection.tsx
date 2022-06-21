@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import FlagIcon from '@mui/icons-material/Flag';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import PersonIcon from '@mui/icons-material/Person';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import { TranslateWithElements } from '../../domain/shared/i18n/TranslateWithElements';

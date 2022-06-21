@@ -2,7 +2,7 @@ import Typography from '@mui/material/Typography/Typography';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardHubSection from '../../components/composite/common/sections/DashboardHubSection';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { useUserContext } from '../../hooks';
 import { useHubsQuery } from '../../hooks/generated/graphql';
 

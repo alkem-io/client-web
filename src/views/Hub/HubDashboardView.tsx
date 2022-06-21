@@ -7,7 +7,7 @@ import DashboardDiscussionsSection from '../../components/composite/common/secti
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
 import Markdown from '../../components/core/Markdown';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { Discussion } from '../../models/discussion/discussion';
 import { AssociatedOrganizationDetailsFragment, ChallengeCardFragment } from '../../models/graphql-schema';

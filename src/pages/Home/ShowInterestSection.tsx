@@ -2,7 +2,7 @@ import { Avatar, Box, Typography, useTheme } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
-import { SectionProps, SectionSpacer } from '../../components/core/Section/Section';
+import { SectionProps, SectionSpacer } from '../../domain/shared/components/Section/Section';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';

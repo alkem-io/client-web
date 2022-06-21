@@ -4,9 +4,9 @@ import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { RouterLink } from '../../../core/RouterLink';
-import Section, { SectionProps, SectionSpacer } from '../../../core/Section/Section';
-import SectionHeader from '../../../core/Section/SectionHeader';
-import SectionSubHeader from '../../../core/Section/SectionSubheader';
+import Section, { SectionProps, SectionSpacer } from '../../../../domain/shared/components/Section/Section';
+import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
+import SectionSubHeader from '../../../../domain/shared/components/Section/SectionSubheader';
 
 export interface DashboardGenericSectionProps {
   bannerUrl?: string;
