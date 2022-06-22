@@ -4,7 +4,7 @@ export const error = (
   error: Error,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setup: (scope: Sentry.Scope) => void = () => {},
-  severity: Sentry.Severity.Critical | Sentry.Severity.Fatal | Sentry.Severity.Error = Sentry.Severity.Error
+  severity: 'fatal' | 'error' = 'error'
 ) => {
   Sentry.withScope(scope => {
     scope.setLevel(severity);
@@ -15,15 +15,12 @@ export const error = (
 
 export const warn = (warning: string) => {
   Sentry.withScope(scope => {
-    scope.setLevel(Sentry.Severity.Warning);
+    scope.setLevel('warning');
     Sentry.captureEvent({ message: warning });
   });
 };
 
-export const info = (
-  message: string,
-  severity: Sentry.Severity.Info | Sentry.Severity.Log | Sentry.Severity.Debug = Sentry.Severity.Info
-) => {
+export const info = (message: string, severity: 'info' | 'log' | 'debug' = 'info') => {
   Sentry.withScope(scope => {
     scope.setLevel(severity);
     Sentry.captureMessage(message);
