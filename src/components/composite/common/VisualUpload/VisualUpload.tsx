@@ -9,7 +9,7 @@ import { Visual } from '../../../../models/graphql-schema';
 import { CropDialog } from './CropDialog';
 import ImageComponent from '../../../../domain/shared/components/ImageComponent';
 
-export const DEFAULT_SIZE = 128;
+const DEFAULT_SIZE = 128;
 
 interface VisualUploadProps {
   visual?: Visual;
