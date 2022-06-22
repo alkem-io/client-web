@@ -82,6 +82,9 @@ const AdminAspectTemplatesSection = ({
   };
 
   const aspectTemplate = aspectTemplateId ? aspectTemplates?.find(({ id }) => id === aspectTemplateId) : undefined;
+  const deletingAspectTemplate = deletingAspectTemplateId
+    ? aspectTemplates?.find(({ id }) => id === deletingAspectTemplateId)
+    : undefined;
 
   const buildAspectTemplateEditLink = (aspectTemplate: AdminAspectTemplateFragment) => {
     const viewLink = buildAspectTemplateLink(aspectTemplate);
@@ -161,7 +164,9 @@ const AdminAspectTemplatesSection = ({
           onClose={() => setDeletingAspectTemplateId(undefined)}
           onConfirm={handleAspectTemplateDeletion}
         >
-          {t('pages.admin.generic.sections.templates.delete-confirmation')}
+          {t('pages.admin.generic.sections.templates.delete-confirmation', {
+            template: deletingAspectTemplate?.info.title,
+          })}
         </ConfirmationDialog>
       )}
     </>
