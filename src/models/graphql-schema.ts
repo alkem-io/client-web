@@ -375,7 +375,7 @@ export type CanvasCheckout = {
   lifecycle: Lifecycle;
   /** The id of the user that has checked the entity out. */
   lockedBy: Scalars['UUID'];
-  /** Checked out status of the Canvas */
+  /** The checkout out state of this Canvas. */
   status: CanvasCheckoutStateEnum;
 };
 
