@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { alpha, Avatar, Box, Grid } from '@mui/material';
@@ -16,6 +16,7 @@ import References from '../../components/composite/common/References/References'
 import TagLabel from '../../components/composite/common/TagLabel/TagLabel';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import { mapWithSeparator } from '../../domain/shared/utils/joinNodes';
+import { animateScroll as scroller } from 'react-scroll';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
@@ -44,6 +45,7 @@ export interface AspectDashboardViewProps {
 const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const { t } = useTranslation();
   const { loading, loadingCreator } = props;
+  const commentsContainer = useRef<HTMLElement>(null);
 
   const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = props;
   const { creatorName, creatorAvatar, createdDate } = props;
@@ -52,6 +54,12 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
 
   const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
   const onDeleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
+
+  useEffect(() => {
+    if (commentsContainer && commentsContainer.current) {
+      scroller.scrollToBottom({ container: commentsContainer.current });
+    }
+  }, [messages]);
 
   return (
     <Grid container spacing={2}>
@@ -99,7 +107,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
       {canReadComments && (
         <DashboardColumn>
           <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
-            <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}>
+            <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }} ref={commentsContainer}>
               {mapWithSeparator(messages, SectionSpacer, comment => (
                 <DiscussionComment
                   key={comment.id}
