@@ -1,7 +1,6 @@
 import { serializeAsJSON } from '@excalidraw/excalidraw';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { ArrowDropDown, Save } from '@mui/icons-material';
-import GradeIcon from '@mui/icons-material/Grade';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
@@ -42,7 +41,6 @@ interface CanvasDialogProps {
     onCancel: () => void;
     onCheckin: (canvas: CanvasWithoutValue) => void;
     onCheckout: (canvas: CanvasWithoutValue) => void;
-    onMarkAsTemplate: (canvas: Canvas) => void;
     onUpdate: (canvas: Canvas) => void;
   };
   options: {
@@ -197,8 +195,6 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     setOptionPopperOpen(false);
   };
 
-  const loading = state?.changingCanvasLockState || state?.loadingCanvasValue || state?.updatingCanvas;
-
   return (
     <Dialog
       open={options.show}
@@ -224,23 +220,6 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             </ListItemIcon>
             <ListItemText primary={canvas?.name} secondary={canvas?.checkout?.status.toUpperCase()} />
             <ListItemSecondaryAction sx={{ display: 'flex' }}>
-              {(options.canCheckout || options.canEdit) && !canvas?.isTemplate && (
-                <LoadingButton
-                  startIcon={<GradeIcon />}
-                  loadingPosition="start"
-                  loading={state?.changingCanvasLockState || state?.updatingCanvas}
-                  onClick={() => {
-                    if (!canvas?.value) {
-                      return;
-                    }
-                    const canvasValue = canvas.value || '';
-                    actions.onMarkAsTemplate({ value: canvasValue, ...canvas });
-                  }}
-                  disabled={loading || options.canEdit}
-                >
-                  {t('pages.canvas.state-actions.save-as-template')}
-                </LoadingButton>
-              )}
               <Box p={0.5} display="inline-flex" />
               {(options.canCheckout || options.canEdit) && (
                 <>

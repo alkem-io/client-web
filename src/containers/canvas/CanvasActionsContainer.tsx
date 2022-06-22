@@ -23,7 +23,6 @@ export interface ICanvasActions {
   onCheckout: (canvas: CanvasWithoutValue) => void;
   onCheckin: (canvas: CanvasWithoutValue) => void;
   onUpdate: (canvas: Canvas) => void;
-  onPromoteToTemplate: (canvas: Canvas) => void;
 }
 
 export interface CanvasActionsContainerState {
@@ -152,23 +151,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
         input: {
           ID: canvas.id,
           name: canvas.name,
-          isTemplate: canvas.isTemplate,
           value: canvas.value,
-        },
-      },
-    });
-  };
-
-  const handlePromotionToTemplate = async (canvas: Canvas) => {
-    if (!canvas.id) {
-      throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
-    }
-
-    await updateCanvas({
-      variables: {
-        input: {
-          ID: canvas.id,
-          isTemplate: true,
         },
       },
     });
@@ -181,7 +164,6 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
       onCheckin: handleCheckoutCanvas,
       onCheckout: handleCheckoutCanvas,
       onUpdate: handleUpdateCanvas,
-      onPromoteToTemplate: handlePromotionToTemplate,
     }),
     [handleCreateCanvas, handleDeleteCanvas, handleCheckoutCanvas, handleUpdateCanvas]
   );

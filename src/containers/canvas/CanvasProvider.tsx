@@ -70,15 +70,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     return {
       hub: {
         query: { hubId: hubId },
-        result: hubData?.hub.context?.canvases?.filter(c => c.isTemplate) || [],
-      },
-      challenge: {
-        query: { hubId: hubId, challengeId: challengeId },
-        result: challengeData?.hub.challenge.context?.canvases?.filter(c => c.isTemplate) || [],
-      },
-      opportunity: {
-        query: { hubId: hubId, opportunityId: opportunityId },
-        result: opportunityData?.hub.opportunity.context?.canvases?.filter(c => c.isTemplate) || [],
+        result: hubData?.hub.templates?.canvasTemplates || [],
       },
     };
   }, [hubData, challengeData, opportunityData]);

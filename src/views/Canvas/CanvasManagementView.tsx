@@ -133,10 +133,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
               onCancel: () => setActiveCanvasId(undefined),
               onCheckin: actions.onCheckin,
               onCheckout: actions.onCheckout,
-              onMarkAsTemplate: canvas => {
-                actions.onPromoteToTemplate(canvas);
-                setActiveCanvasId(undefined);
-              },
               onUpdate: actions.onUpdate,
             }}
             options={{

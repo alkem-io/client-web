@@ -6,14 +6,14 @@ fragment CanvasDetails on Canvas {
     anonymousReadAccess
   }
   checkout {
-    ...ChechkoutDetails
+    ...CheckoutDetails
   }
 }
 
 fragment CanvasSummary on Canvas {
   id
   name
-  isTemplate
+
 }
 
 fragment CanvasValue on Canvas {
@@ -21,7 +21,7 @@ fragment CanvasValue on Canvas {
   value
 }
 
-fragment ChechkoutDetails on CanvasCheckout {
+fragment CheckoutDetails on CanvasCheckout {
   id
   lockedBy
   status
@@ -42,6 +42,15 @@ query hubCanvases($hubId: UUID_NAMEID!) {
       id
       canvases {
         ...CanvasDetails
+      }
+    }
+    templates {
+      canvasTemplates {
+        info {
+          title
+          description
+        }
+        value
       }
     }
   }
@@ -139,13 +148,12 @@ mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
     id
     value
     name
-    isTemplate
   }
 }
 
 mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
   eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
-    ...ChechkoutDetails
+    ...CheckoutDetails
   }
 }
 

@@ -803,11 +803,10 @@ export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
     name
-    isTemplate
   }
 `;
-export const ChechkoutDetailsFragmentDoc = gql`
-  fragment ChechkoutDetails on CanvasCheckout {
+export const CheckoutDetailsFragmentDoc = gql`
+  fragment CheckoutDetails on CanvasCheckout {
     id
     lockedBy
     status
@@ -830,11 +829,11 @@ export const CanvasDetailsFragmentDoc = gql`
       anonymousReadAccess
     }
     checkout {
-      ...ChechkoutDetails
+      ...CheckoutDetails
     }
   }
   ${CanvasSummaryFragmentDoc}
-  ${ChechkoutDetailsFragmentDoc}
+  ${CheckoutDetailsFragmentDoc}
 `;
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {
@@ -10830,6 +10829,15 @@ export const HubCanvasesDocument = gql`
           ...CanvasDetails
         }
       }
+      templates {
+        canvasTemplates {
+          info {
+            title
+            description
+          }
+          value
+        }
+      }
     }
   }
   ${CanvasDetailsFragmentDoc}
@@ -11316,7 +11324,6 @@ export const UpdateCanvasOnContextDocument = gql`
       id
       value
       name
-      isTemplate
     }
   }
 `;
@@ -11363,10 +11370,10 @@ export type UpdateCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
 export const CheckoutCanvasOnContextDocument = gql`
   mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
     eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
-      ...ChechkoutDetails
+      ...CheckoutDetails
     }
   }
-  ${ChechkoutDetailsFragmentDoc}
+  ${CheckoutDetailsFragmentDoc}
 `;
 export type CheckoutCanvasOnContextMutationFn = Apollo.MutationFunction<
   SchemaTypes.CheckoutCanvasOnContextMutation,
