@@ -1,6 +1,7 @@
 import { Box, Paper, PaperProps, Skeleton } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React, { FC, useState } from 'react';
+import SectionSpacer from './SectionSpacer';
 
 const useStyles = makeStyles(theme => ({
   bannerSize: {
@@ -69,6 +70,6 @@ const Section: FC<SectionProps> = ({ bannerUrl, alwaysShowBanner, bannerOverlay,
   );
 };
 
-export const SectionSpacer: FC<{ double?: boolean }> = ({ double }) => <Box padding={double ? 2 : 1} />;
+export { SectionSpacer };
 
 export default Section;

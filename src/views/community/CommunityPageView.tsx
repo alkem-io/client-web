@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { Message, Searchable } from '../../models/graphql-schema';
 import { Box } from '@mui/material';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';

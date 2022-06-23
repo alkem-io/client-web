@@ -7,7 +7,7 @@ import { SettingsPageProps } from '../layout/EntitySettings/types';
 import AdminCommunityOrganizationsView from './views/AdminCommunityOrganizationsView';
 import CommunityAdminView from '../community/views/CommunityAdminView';
 import { useChallenge, useHub } from '../../../hooks';
-import { SectionSpacer } from '../../../components/core/Section/Section';
+import { SectionSpacer } from '../../shared/components/Section/Section';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import useChallengeApplications from './providers/useChallengeApplications';
 import { Loading } from '../../../components/core';

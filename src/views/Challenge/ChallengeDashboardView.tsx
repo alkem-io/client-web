@@ -7,7 +7,7 @@ import DashboardGenericSection from '../../components/composite/common/sections/
 import DashboardUpdatesSection from '../../components/composite/common/sections/DashboardUpdatesSection';
 import { Loading } from '../../components/core';
 import Markdown from '../../components/core/Markdown';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { useChallenge, useConfig } from '../../hooks';

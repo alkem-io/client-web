@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Preference, UserPreferenceType } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { useUserContext } from '../../hooks';
 import PreferenceSection from '../../components/composite/common/PreferenceSection/PreferenceSection';
 

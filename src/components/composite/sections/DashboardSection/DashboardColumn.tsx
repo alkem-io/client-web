@@ -1,5 +1,5 @@
 import React, { cloneElement, FC, ReactElement } from 'react';
-import { SectionSpacer } from '../../../core/Section/Section';
+import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
 import { Grid, GridProps } from '@mui/material';
 import { mapWithSeparator } from '../../../../domain/shared/utils/joinNodes';
 

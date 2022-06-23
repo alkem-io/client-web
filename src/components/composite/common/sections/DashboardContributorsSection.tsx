@@ -2,8 +2,8 @@ import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserMetadata } from '../../../../hooks';
-import { SectionSpacer } from '../../../core/Section/Section';
-import SectionHeader from '../../../core/Section/SectionHeader';
+import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
+import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
 import ContributorCard, {
   ContributorCardProps,
   ContributorCardSkeleton,

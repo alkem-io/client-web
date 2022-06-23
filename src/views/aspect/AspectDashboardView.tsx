@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
 import { Reference } from '../../models/graphql-schema';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
 import DiscussionComment from '../../components/composite/common/Discussion/DiscussionComment';
 import { Comment } from '../../models/discussion/comment';

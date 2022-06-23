@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import TabDescriptionHeader from '../TabDescriptionHeader/TabDescriptionHeader';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../../../components/core/Section/Section';
+import { SectionSpacer } from '../../components/Section/Section';
 
 /**
  * The purpose of this component is to contain all UI elements that are common to a page,

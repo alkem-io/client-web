@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material';
-import { SectionSpacer } from '../../../../core/Section/Section';
+import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';
 import ActivitiesV2 from '../../Activities/ActivitiesV2';
 import { ActivityItem } from '../../ActivityPanel/Activities';
 import ContributionCardV2, {

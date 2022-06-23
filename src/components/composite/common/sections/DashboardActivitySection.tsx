@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import React, { FC } from 'react';
-import Section, { SectionProps, SectionSpacer } from '../../../core/Section/Section';
-import SectionHeader from '../../../core/Section/SectionHeader';
+import Section, { SectionProps, SectionSpacer } from '../../../../domain/shared/components/Section/Section';
+import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
 import { Activities, ActivityItem } from '../../common/ActivityPanel/Activities';
 
 interface DashboardActivitySectionProps {

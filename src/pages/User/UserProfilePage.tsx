@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Error404, PageProps } from '../';
 import { Loading } from '../../components/core';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
 

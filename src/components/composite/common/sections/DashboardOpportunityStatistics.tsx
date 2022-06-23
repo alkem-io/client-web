@@ -2,8 +2,8 @@ import { Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { Lifecycle as LifecycleModel } from '../../../../models/graphql-schema';
 import ActivityView from '../../../../views/Activity/ActivityView';
-import Section, { SectionSpacer } from '../../../core/Section/Section';
-import SectionHeader from '../../../core/Section/SectionHeader';
+import Section, { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
+import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
 import { ActivityItem } from '../ActivityPanel/Activities';
 
 export interface DashboardOpportunityStatisticsProps {

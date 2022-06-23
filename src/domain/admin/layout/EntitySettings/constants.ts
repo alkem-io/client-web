@@ -12,6 +12,7 @@ export enum SettingsSection {
   Authorization = 'authorization',
   Challenges = 'challenges',
   Opportunities = 'opportunities',
+  Templates = 'templates',
 }
 
 export const CommonTabs: TabDefinition<SettingsSection>[] = [

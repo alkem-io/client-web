@@ -375,7 +375,7 @@ export type CanvasCheckout = {
   lifecycle: Lifecycle;
   /** The id of the user that has checked the entity out. */
   lockedBy: Scalars['UUID'];
-  /** The checkout out state of this Canvas. */
+  /** Checked out status of the Canvas */
   status: CanvasCheckoutStateEnum;
 };
 
@@ -10885,6 +10885,126 @@ export type AdminGlobalOrganizationsListQuery = {
       hasNextPage: boolean;
     };
   };
+};
+
+export type UpdateAspectTemplateMutationVariables = Exact<{
+  aspectTemplateInput: UpdateAspectTemplateInput;
+}>;
+
+export type UpdateAspectTemplateMutation = {
+  __typename?: 'Mutation';
+  updateAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
+};
+
+export type CreateAspectTemplateMutationVariables = Exact<{
+  aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput;
+}>;
+
+export type CreateAspectTemplateMutation = {
+  __typename?: 'Mutation';
+  createAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
+};
+
+export type DeleteAspectTemplateMutationVariables = Exact<{
+  deleteData: DeleteAspectTemplateInput;
+}>;
+
+export type DeleteAspectTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
+};
+
+export type HubTemplatesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubTemplatesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates: {
+      __typename?: 'TemplatesSet';
+      id: string;
+      aspectTemplates: Array<{
+        __typename?: 'AspectTemplate';
+        id: string;
+        defaultDescription: string;
+        type: string;
+        info: {
+          __typename?: 'TemplateInfo';
+          id: string;
+          title?: string | undefined;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          visual?:
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: string;
+                allowedTypes: Array<string>;
+                aspectRatio: number;
+                maxHeight: number;
+                maxWidth: number;
+                minHeight: number;
+                minWidth: number;
+              }
+            | undefined;
+        };
+      }>;
+    };
+  };
+};
+
+export type AdminAspectTemplateFragment = {
+  __typename?: 'AspectTemplate';
+  id: string;
+  defaultDescription: string;
+  type: string;
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title?: string | undefined;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }
+      | undefined;
+  };
+};
+
+export type TemplateInfoFragment = {
+  __typename?: 'TemplateInfo';
+  id: string;
+  title?: string | undefined;
+  description?: string | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  visual?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }
+    | undefined;
 };
 
 export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
