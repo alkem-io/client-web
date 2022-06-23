@@ -6,13 +6,6 @@ query HubTemplates($hubId: UUID_NAMEID!) {
       aspectTemplates {
         ...AdminAspectTemplate
       }
-      canvasTemplates {
-        id
-        info {
-          id
-          title
-        }
-      }
     }
   }
 }

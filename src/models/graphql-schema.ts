@@ -375,7 +375,7 @@ export type CanvasCheckout = {
   lifecycle: Lifecycle;
   /** The id of the user that has checked the entity out. */
   lockedBy: Scalars['UUID'];
-  /** The checkout out state of this Canvas. */
+  /** Checked out status of the Canvas */
   status: CanvasCheckoutStateEnum;
 };
 
@@ -10952,11 +10952,6 @@ export type HubTemplatesQuery = {
               }
             | undefined;
         };
-      }>;
-      canvasTemplates: Array<{
-        __typename?: 'CanvasTemplate';
-        id: string;
-        info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined };
       }>;
     };
   };

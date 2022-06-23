@@ -14595,13 +14595,6 @@ export const HubTemplatesDocument = gql`
         aspectTemplates {
           ...AdminAspectTemplate
         }
-        canvasTemplates {
-          id
-          info {
-            id
-            title
-          }
-        }
       }
     }
   }
