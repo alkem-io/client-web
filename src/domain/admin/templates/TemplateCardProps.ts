@@ -1,8 +1,10 @@
-import { ReactNode } from 'react';
+import { ComponentType, ReactNode } from 'react';
+import { SvgIconProps } from '@mui/material';
 
 export interface TemplateCardProps {
   url: string;
   linkState?: Record<string, unknown>;
   title: ReactNode;
-  hasImage?: boolean;
+  imageUrl: string | undefined;
+  iconComponent: ComponentType<SvgIconProps>;
 }

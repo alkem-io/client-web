@@ -126,6 +126,7 @@ const AdminAspectTemplatesSection = ({
             <AspectTemplateCard
               key={aspectTemplate.id}
               title={aspectTemplate.info.title}
+              imageUrl={aspectTemplate.info.visual?.uri}
               {...buildAspectTemplateLink(aspectTemplate)}
             />
           ))}
