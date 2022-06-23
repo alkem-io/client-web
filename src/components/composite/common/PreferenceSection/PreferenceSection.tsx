@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import DashboardGenericSection from '../sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { FormControl, FormControlLabel, FormGroup, Skeleton, Switch } from '@mui/material';
 import { Preference } from '../../../../models/graphql-schema';
 import { PreferenceTypes } from '../../../../models/preference-types';

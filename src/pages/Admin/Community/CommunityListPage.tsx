@@ -3,7 +3,7 @@ import React, { FC, useCallback, useMemo } from 'react';
 import { Loading } from '../../../components/core';
 import { useDeleteUserGroup, useHub } from '../../../hooks';
 import { useCommunityGroupsQuery } from '../../../hooks/generated/graphql';
-import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import SearchableList, { SearchableListItem } from '../../../components/Admin/SearchableList';
 import { Link } from 'react-router-dom';

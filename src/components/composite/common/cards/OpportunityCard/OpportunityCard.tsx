@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { Nvp, Opportunity, VisualUriFragment } from '../../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import EntityContributionCard from '../ContributionCard/EntityContributionCard';
+import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { buildOpportunityUrl } from '../../../../../utils/urlBuilders';
 import getActivityCount from '../../../../../utils/get-activity-count';
 import { useUserContext } from '../../../../../hooks';
@@ -41,7 +41,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
         tagsFor: 'opportunity',
         url: buildOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
       }}
-      isMember={isMember(opportunity.id)}
+      label={isMember(opportunity.id) ? EntityContributionCardLabel.Member : undefined}
       loading={loading}
       activities={[
         { name: t('common.projects'), count: getActivityCount(activity, 'projects') ?? 0 },

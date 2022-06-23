@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accordion } from '../../components/composite/common/Accordion/Accordion';
 import SearchTagsInput from '../../domain/shared/components/SearchTagsInput/SearchTagsInput';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { ChallengeCardContainer } from '../../containers/challenge/ChallengeCardContainer';
 import HubChallengesContainer from '../../containers/hub/HubChallengesContainer';
 import ChallengeExplorerSearchView, {

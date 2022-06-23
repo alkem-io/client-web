@@ -478,7 +478,8 @@
     },
     "card": {
       "member": "Member",
-      "private": "Private"
+      "private": "Private",
+      "lead": "Lead"
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
@@ -872,6 +873,10 @@
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
           "body": "A Hub can be Public or Private, and has a facilitating Organization."
+        },
+        "my-hubs": {
+          "header": "My Hubs",
+          "subheader": "This section show you the Hubs that you are a member of."
         },
         "organizations": {
           "header": "Organizations",

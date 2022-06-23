@@ -41,7 +41,6 @@ export interface UserMetadata {
   organizations: string[];
   opportunities: string[];
   challenges: string[];
-  hubs: string[];
   keywords: string[];
   skills: string[];
   contributions: ContributionItem[];
@@ -100,7 +99,6 @@ export const useUserMetadataWrapper = () => {
         return;
       }
 
-      const hubs = membershipData?.hubs.map(getDisplayName) || [];
       const challenges = membershipData?.hubs.flatMap(e => e.challenges.map(getDisplayName)) || [];
       const opportunities = membershipData?.hubs.flatMap(e => e.opportunities.map(getDisplayName)) || [];
       const organizations = membershipData?.organizations.map(getDisplayName) || [];
@@ -164,7 +162,6 @@ export const useUserMetadataWrapper = () => {
         challenges,
         opportunities,
         organizations,
-        hubs,
         keywords: user.profile?.tagsets?.find(t => t.name.toLowerCase() === KEYWORDS_TAGSET)?.tags || [],
         skills: user.profile?.tagsets?.find(t => t.name.toLowerCase() === SKILLS_TAGSET)?.tags || [],
         contributions: getContributions(membershipData),

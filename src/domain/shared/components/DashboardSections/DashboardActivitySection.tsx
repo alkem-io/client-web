@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import React, { FC } from 'react';
-import Section, { SectionProps, SectionSpacer } from '../../../../domain/shared/components/Section/Section';
-import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
-import { Activities, ActivityItem } from '../../common/ActivityPanel/Activities';
+import Section, { SectionProps, SectionSpacer } from '../Section/Section';
+import SectionHeader from '../Section/SectionHeader';
+import { Activities, ActivityItem } from '../../../../components/composite/common/ActivityPanel/Activities';
 
 interface DashboardActivitySectionProps {
   headerText: string;

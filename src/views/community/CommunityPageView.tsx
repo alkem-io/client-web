@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { UserCardProps } from '../../components/composite/common/cards';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { Message, Searchable } from '../../models/graphql-schema';
