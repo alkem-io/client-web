@@ -5,7 +5,7 @@ import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { refetchHubTemplatesQuery, useHubTemplatesQuery } from '../../../hooks/generated/graphql';
 import { useParams } from 'react-router-dom';
-import useBackToParentPage from '../../shared/utils/useBackToParentPage';
+import useBackToParentPage, { LOCATION_STATE_PARAM_PARENT_PAGE } from '../../shared/utils/useBackToParentPage';
 import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspectTemplatesSection';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
@@ -15,7 +15,6 @@ interface HubTemplatesAdminPageProps extends SettingsPageProps {
   edit?: boolean;
 }
 
-const LOCATION_STATE_PARAM_PREV_PAGE = 'prevPage';
 const PAGE_KEY_TEMPLATES = 'HubTemplatesAdminPage';
 
 const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
@@ -48,7 +47,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
         buildAspectTemplateLink={({ id }) => ({
           url: `${routePrefix}/${aspectTemplatesRoutePath}/${id}`,
-          linkState: { [LOCATION_STATE_PARAM_PREV_PAGE]: PAGE_KEY_TEMPLATES },
+          linkState: { [LOCATION_STATE_PARAM_PARENT_PAGE]: PAGE_KEY_TEMPLATES },
         })}
         edit={edit}
       />

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCallback } from 'react';
 
-const LOCATION_STATE_PARAM_PARENT_PAGE = 'parentPage';
+export const LOCATION_STATE_PARAM_PARENT_PAGE = 'parentPage';
 
 /**
  * Returns a callback that takes a user to the previous page only if the user got to the current page from that parent.
