@@ -33,7 +33,7 @@ const TemplateCardLayout = ({ url, linkState, title, imageUrl, iconComponent }: 
         }}
       >
         {imageUrl ? <ImagePreview src={imageUrl} /> : <Icon iconComponent={iconComponent} />}
-        <Typography variant="body1" color="primary" fontWeight="bold" sx={{ paddingX: 2, paddingY: 1 }}>
+        <Typography variant="body1" color="primary" fontWeight="bold" sx={{ paddingX: 2, paddingY: 1 }} noWrap>
           {title}
         </Typography>
       </ElevatedPaper>
