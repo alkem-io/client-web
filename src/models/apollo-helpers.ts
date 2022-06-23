@@ -106,29 +106,6 @@ export type ApplicationForRoleResultFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type ApplicationResultKeySpecifier = (
-  | 'challengeID'
-  | 'communityID'
-  | 'createdDate'
-  | 'displayName'
-  | 'hubID'
-  | 'id'
-  | 'opportunityID'
-  | 'state'
-  | 'updatedDate'
-  | ApplicationResultKeySpecifier
-)[];
-export type ApplicationResultFieldPolicy = {
-  challengeID?: FieldPolicy<any> | FieldReadFunction<any>;
-  communityID?: FieldPolicy<any> | FieldReadFunction<any>;
-  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunityID?: FieldPolicy<any> | FieldReadFunction<any>;
-  state?: FieldPolicy<any> | FieldReadFunction<any>;
-  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type ApplicationTemplateKeySpecifier = ('name' | 'questions' | ApplicationTemplateKeySpecifier)[];
 export type ApplicationTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -445,6 +422,7 @@ export type CommunityKeySpecifier = (
   | 'leadUsers'
   | 'memberOrganizations'
   | 'memberUsers'
+  | 'policy'
   | CommunityKeySpecifier
 )[];
 export type CommunityFieldPolicy = {
@@ -458,6 +436,27 @@ export type CommunityFieldPolicy = {
   leadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   memberOrganizations?: FieldPolicy<any> | FieldReadFunction<any>;
   memberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  policy?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunityPolicyKeySpecifier = ('lead' | 'member' | CommunityPolicyKeySpecifier)[];
+export type CommunityPolicyFieldPolicy = {
+  lead?: FieldPolicy<any> | FieldReadFunction<any>;
+  member?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CommunityPolicyRoleKeySpecifier = (
+  | 'credential'
+  | 'maxOrg'
+  | 'maxUser'
+  | 'minOrg'
+  | 'minUser'
+  | CommunityPolicyRoleKeySpecifier
+)[];
+export type CommunityPolicyRoleFieldPolicy = {
+  credential?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxOrg?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  minOrg?: FieldPolicy<any> | FieldReadFunction<any>;
+  minUser?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConfigKeySpecifier = ('authentication' | 'platform' | 'sentry' | 'template' | ConfigKeySpecifier)[];
 export type ConfigFieldPolicy = {
@@ -504,7 +503,6 @@ export type ContextAspectCreatedFieldPolicy = {
 };
 export type ContributorRolesKeySpecifier = (
   | 'applications'
-  | 'communities'
   | 'hubs'
   | 'id'
   | 'organizations'
@@ -512,7 +510,6 @@ export type ContributorRolesKeySpecifier = (
 )[];
 export type ContributorRolesFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  communities?: FieldPolicy<any> | FieldReadFunction<any>;
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -520,6 +517,11 @@ export type ContributorRolesFieldPolicy = {
 export type CredentialKeySpecifier = ('id' | 'resourceID' | 'type' | CredentialKeySpecifier)[];
 export type CredentialFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CredentialDefinitionKeySpecifier = ('resourceID' | 'type' | CredentialDefinitionKeySpecifier)[];
+export type CredentialDefinitionFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -681,64 +683,6 @@ export type LocationFieldPolicy = {
   city?: FieldPolicy<any> | FieldReadFunction<any>;
   country?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MembershipResultKeySpecifier = ('displayName' | 'id' | 'nameID' | MembershipResultKeySpecifier)[];
-export type MembershipResultFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MembershipResultChallengeLeadingKeySpecifier = (
-  | 'displayName'
-  | 'hubID'
-  | 'id'
-  | 'nameID'
-  | MembershipResultChallengeLeadingKeySpecifier
-)[];
-export type MembershipResultChallengeLeadingFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MembershipResultCommunityKeySpecifier = ('displayName' | 'id' | MembershipResultCommunityKeySpecifier)[];
-export type MembershipResultCommunityFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MembershipResultContributorToHubKeySpecifier = (
-  | 'challenges'
-  | 'displayName'
-  | 'hubID'
-  | 'id'
-  | 'nameID'
-  | 'opportunities'
-  | 'userGroups'
-  | MembershipResultContributorToHubKeySpecifier
-)[];
-export type MembershipResultContributorToHubFieldPolicy = {
-  challenges?: FieldPolicy<any> | FieldReadFunction<any>;
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  hubID?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type MembershipResultUserinOrganizationKeySpecifier = (
-  | 'displayName'
-  | 'id'
-  | 'nameID'
-  | 'organizationID'
-  | 'userGroups'
-  | MembershipResultUserinOrganizationKeySpecifier
-)[];
-export type MembershipResultUserinOrganizationFieldPolicy = {
-  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
-  organizationID?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MessageKeySpecifier = ('id' | 'message' | 'sender' | 'timestamp' | MessageKeySpecifier)[];
 export type MessageFieldPolicy = {
@@ -1072,21 +1016,6 @@ export type OrganizationFieldPolicy = {
   verification?: FieldPolicy<any> | FieldReadFunction<any>;
   website?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type OrganizationMembershipKeySpecifier = (
-  | 'challengesLeading'
-  | 'communities'
-  | 'hubs'
-  | 'hubsHosting'
-  | 'id'
-  | OrganizationMembershipKeySpecifier
-)[];
-export type OrganizationMembershipFieldPolicy = {
-  challengesLeading?: FieldPolicy<any> | FieldReadFunction<any>;
-  communities?: FieldPolicy<any> | FieldReadFunction<any>;
-  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
-  hubsHosting?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type OrganizationTemplateKeySpecifier = ('name' | 'tagsets' | OrganizationTemplateKeySpecifier)[];
 export type OrganizationTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1235,8 +1164,6 @@ export type QueryKeySpecifier = (
   | 'hubs'
   | 'me'
   | 'meHasProfile'
-  | 'membershipOrganization'
-  | 'membershipUser'
   | 'metadata'
   | 'organization'
   | 'organizations'
@@ -1262,8 +1189,6 @@ export type QueryFieldPolicy = {
   hubs?: FieldPolicy<any> | FieldReadFunction<any>;
   me?: FieldPolicy<any> | FieldReadFunction<any>;
   meHasProfile?: FieldPolicy<any> | FieldReadFunction<any>;
-  membershipOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
-  membershipUser?: FieldPolicy<any> | FieldReadFunction<any>;
   metadata?: FieldPolicy<any> | FieldReadFunction<any>;
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1369,25 +1294,27 @@ export type RelayPaginatedUserPageInfoFieldPolicy = {
   hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
   startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type RolesResultKeySpecifier = (
-  | 'displayName'
-  | 'id'
-  | 'nameID'
-  | 'roles'
-  | 'userGroups'
-  | RolesResultKeySpecifier
-)[];
+export type RolesResultKeySpecifier = ('displayName' | 'id' | 'nameID' | 'roles' | RolesResultKeySpecifier)[];
 export type RolesResultFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
-  userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type RolesResultCommunityKeySpecifier = ('displayName' | 'id' | RolesResultCommunityKeySpecifier)[];
+export type RolesResultCommunityKeySpecifier = (
+  | 'displayName'
+  | 'id'
+  | 'nameID'
+  | 'roles'
+  | 'userGroups'
+  | RolesResultCommunityKeySpecifier
+)[];
 export type RolesResultCommunityFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  roles?: FieldPolicy<any> | FieldReadFunction<any>;
+  userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultHubKeySpecifier = (
   | 'challenges'
@@ -1584,21 +1511,6 @@ export type UserGroupFieldPolicy = {
   parent?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type UserMembershipKeySpecifier = (
-  | 'applications'
-  | 'communities'
-  | 'hubs'
-  | 'id'
-  | 'organizations'
-  | UserMembershipKeySpecifier
-)[];
-export type UserMembershipFieldPolicy = {
-  applications?: FieldPolicy<any> | FieldReadFunction<any>;
-  communities?: FieldPolicy<any> | FieldReadFunction<any>;
-  hubs?: FieldPolicy<any> | FieldReadFunction<any>;
-  id?: FieldPolicy<any> | FieldReadFunction<any>;
-  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
-};
 export type UserTemplateKeySpecifier = ('name' | 'tagsets' | UserTemplateKeySpecifier)[];
 export type UserTemplateFieldPolicy = {
   name?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1687,10 +1599,6 @@ export type StrictTypedTypePolicies = {
   ApplicationForRoleResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationForRoleResultKeySpecifier | (() => undefined | ApplicationForRoleResultKeySpecifier);
     fields?: ApplicationForRoleResultFieldPolicy;
-  };
-  ApplicationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | ApplicationResultKeySpecifier | (() => undefined | ApplicationResultKeySpecifier);
-    fields?: ApplicationResultFieldPolicy;
   };
   ApplicationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationTemplateKeySpecifier | (() => undefined | ApplicationTemplateKeySpecifier);
@@ -1829,6 +1737,14 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CommunityKeySpecifier | (() => undefined | CommunityKeySpecifier);
     fields?: CommunityFieldPolicy;
   };
+  CommunityPolicy?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommunityPolicyKeySpecifier | (() => undefined | CommunityPolicyKeySpecifier);
+    fields?: CommunityPolicyFieldPolicy;
+  };
+  CommunityPolicyRole?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CommunityPolicyRoleKeySpecifier | (() => undefined | CommunityPolicyRoleKeySpecifier);
+    fields?: CommunityPolicyRoleFieldPolicy;
+  };
   Config?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConfigKeySpecifier | (() => undefined | ConfigKeySpecifier);
     fields?: ConfigFieldPolicy;
@@ -1848,6 +1764,10 @@ export type StrictTypedTypePolicies = {
   Credential?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialKeySpecifier | (() => undefined | CredentialKeySpecifier);
     fields?: CredentialFieldPolicy;
+  };
+  CredentialDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CredentialDefinitionKeySpecifier | (() => undefined | CredentialDefinitionKeySpecifier);
+    fields?: CredentialDefinitionFieldPolicy;
   };
   CredentialMetadataOutput?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialMetadataOutputKeySpecifier | (() => undefined | CredentialMetadataOutputKeySpecifier);
@@ -1893,38 +1813,6 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | LocationKeySpecifier | (() => undefined | LocationKeySpecifier);
     fields?: LocationFieldPolicy;
   };
-  MembershipResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | MembershipResultKeySpecifier | (() => undefined | MembershipResultKeySpecifier);
-    fields?: MembershipResultFieldPolicy;
-  };
-  MembershipResultChallengeLeading?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | MembershipResultChallengeLeadingKeySpecifier
-      | (() => undefined | MembershipResultChallengeLeadingKeySpecifier);
-    fields?: MembershipResultChallengeLeadingFieldPolicy;
-  };
-  MembershipResultCommunity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | MembershipResultCommunityKeySpecifier
-      | (() => undefined | MembershipResultCommunityKeySpecifier);
-    fields?: MembershipResultCommunityFieldPolicy;
-  };
-  MembershipResultContributorToHub?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | MembershipResultContributorToHubKeySpecifier
-      | (() => undefined | MembershipResultContributorToHubKeySpecifier);
-    fields?: MembershipResultContributorToHubFieldPolicy;
-  };
-  MembershipResultUserinOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?:
-      | false
-      | MembershipResultUserinOrganizationKeySpecifier
-      | (() => undefined | MembershipResultUserinOrganizationKeySpecifier);
-    fields?: MembershipResultUserinOrganizationFieldPolicy;
-  };
   Message?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MessageKeySpecifier | (() => undefined | MessageKeySpecifier);
     fields?: MessageFieldPolicy;
@@ -1952,10 +1840,6 @@ export type StrictTypedTypePolicies = {
   Organization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationKeySpecifier | (() => undefined | OrganizationKeySpecifier);
     fields?: OrganizationFieldPolicy;
-  };
-  OrganizationMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | OrganizationMembershipKeySpecifier | (() => undefined | OrganizationMembershipKeySpecifier);
-    fields?: OrganizationMembershipFieldPolicy;
   };
   OrganizationTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | OrganizationTemplateKeySpecifier | (() => undefined | OrganizationTemplateKeySpecifier);
@@ -2114,10 +1998,6 @@ export type StrictTypedTypePolicies = {
   UserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserGroupKeySpecifier | (() => undefined | UserGroupKeySpecifier);
     fields?: UserGroupFieldPolicy;
-  };
-  UserMembership?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | UserMembershipKeySpecifier | (() => undefined | UserMembershipKeySpecifier);
-    fields?: UserMembershipFieldPolicy;
   };
   UserTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserTemplateKeySpecifier | (() => undefined | UserTemplateKeySpecifier);
