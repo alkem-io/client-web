@@ -28,7 +28,10 @@ export const warn = (warning: string) => {
   });
 };
 
-export const info = (message: string, severity: typeof debugLevel | typeof infoLevel | typeof logLevel = infoLevel) => {
+export const info = (
+  message: string, 
+  severity: typeof debugLevel | typeof infoLevel | typeof logLevel = infoLevel
+) => {
   Sentry.withScope(scope => {
     scope.setLevel(severity);
     Sentry.captureMessage(message);
