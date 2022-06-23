@@ -28,7 +28,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   useAppendBreadcrumb(paths, { name: 'templates' });
 
-  const closeAspectTemplateUpdateDialog = useBackToParentPage(PAGE_KEY_TEMPLATES, routePrefix);
+  const backFromAspectTemplateDialog = useBackToParentPage(PAGE_KEY_TEMPLATES, routePrefix);
 
   const { data } = useHubTemplatesQuery({
     variables: { hubId },
@@ -43,7 +43,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         aspectTemplateId={aspectTemplateId}
         templatesSetId={templatesSetID}
         aspectTemplates={aspectTemplates}
-        onCloseAspectTemplateDialog={closeAspectTemplateUpdateDialog}
+        onCloseAspectTemplateDialog={backFromAspectTemplateDialog}
         refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
         buildAspectTemplateLink={({ id }) => ({
           url: `${routePrefix}/${aspectTemplatesRoutePath}/${id}`,
