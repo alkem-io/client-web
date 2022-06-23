@@ -47,6 +47,7 @@ interface ScrollState {
   scrollTop: number;
   scrollHeight: number;
 }
+
 const isScrolledToBottom = ({
   scrollTop,
   scrollHeight,
