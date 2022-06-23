@@ -2,6 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography }
 import React, { PropsWithChildren, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Loading } from '../../../../components/core';
+import DeleteButton from '../../../shared/components/DeleteButton';
 
 interface ConfirmationDialogProps {
   open: boolean;
@@ -24,7 +25,7 @@ const ConfirmationDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle sx={{ textTransform: 'uppercase', fontWeight: 'bold' }} color="negative.main">
+      <DialogTitle sx={{ textTransform: 'uppercase', fontWeight: 'bold' }} color="error">
         {title}
       </DialogTitle>
       <DialogContent>
@@ -35,9 +36,7 @@ const ConfirmationDialog = ({
           <Button variant="contained" onClick={onClose}>
             {t('buttons.cancel')}
           </Button>
-          <Button color="error" onClick={onConfirm} disabled={loading}>
-            {t('buttons.delete')}
-          </Button>
+          <DeleteButton onClick={onConfirm} disabled={loading} />
         </DialogActions>
       </DialogContent>
     </Dialog>
