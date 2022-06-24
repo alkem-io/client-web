@@ -884,6 +884,14 @@
         "organizations": {
           "header": "Organizations",
           "subheader": "The entities that want to bring innnovation."
+        },
+        "footer": {
+          "headline": "More about Alkemio? Visit our website, contact us or take a look at our Github repository",
+          "links": {
+            "foundation": "Alkemio Foundation",
+            "contact-form": "Contact Form",
+            "github": "GitHub"
+          }
         }
       }
     },
