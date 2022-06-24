@@ -29,7 +29,7 @@ export const VerifiedStatus: FC<VerifiedStatusProps> = ({ verified, helpText }) 
   return (
     <Typography weight="bold" color={color}>
       {verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
-      {helpText && (
+      {helpText && verified && (
         <Tooltip title={helpText} arrow placement="right">
           <Help color="primary" className={styles.icon} />
         </Tooltip>
