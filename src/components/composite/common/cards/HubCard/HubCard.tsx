@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildHubUrl } from '../../../../../utils/urlBuilders';
-import getActivityCount from '../../../../../utils/get-activity-count';
+import getActivityCount from '../../../../../domain/activity/utils/getActivityCount';
 import { Hub, Nvp, VisualUriFragment } from '../../../../../models/graphql-schema';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
@@ -40,17 +40,17 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
       activities={[
         {
           name: t('common.challenges'),
-          count: getActivityCount(activity, 'challenges') ?? 0,
+          count: getActivityCount(activity, 'challenges'),
           color: 'primary',
         },
         {
           name: t('common.opportunities'),
-          count: getActivityCount(activity, 'opportunities') ?? 0,
+          count: getActivityCount(activity, 'opportunities'),
           color: 'primary',
         },
         {
           name: t('common.members'),
-          count: getActivityCount(activity, 'members') ?? 0,
+          count: getActivityCount(activity, 'members'),
           color: 'positive',
         },
       ]}

@@ -274,6 +274,9 @@
     "banner-narrow": "Banner narrow"
   },
   "components": {
+    "activity-tooltip": {
+      "headline": "Alkemio is growing! In total, the platform now hosts:"
+    },
     "context-section": {
       "create-aspect": "Successfully created the aspect",
       "give-feedback": "Give feedback"

@@ -8,7 +8,7 @@ import DashboardGenericSection from '../../domain/shared/components/DashboardSec
 import ContributorsSearchContainer from '../../containers/ContributorsSearch/ContributorsSearchContainer';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
 import { OrganizationVerificationEnum, UserContributorFragment } from '../../models/graphql-schema';
-import getActivityCount from '../../utils/get-activity-count';
+import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
 import getUserRoleTranslationKey from '../../utils/user-role-name/get-user-role-translation-key';
 import ContributorsView from '../../views/Contributors/ContributorsView';
@@ -49,7 +49,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
               avatar: x.orgProfile.avatar?.uri,
               description: x.orgProfile.description,
               role: roleName as string,
-              membersCount: getActivityCount(x.activity ?? [], 'members') ?? 0,
+              membersCount: getActivityCount(x.activity ?? [], 'members'),
               verified: x.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
               url: buildOrganizationUrl(x.nameID),
               loading: state.loading,

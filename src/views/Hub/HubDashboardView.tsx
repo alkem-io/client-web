@@ -14,7 +14,7 @@ import { AssociatedOrganizationDetailsFragment, ChallengeCardFragment } from '..
 import ActivityView from '../Activity/ActivityView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
-import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { useConfig } from '../../hooks';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
@@ -25,6 +25,7 @@ import {
   EntityDashboardLeads,
 } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import { ActivityType } from '../../domain/activity/ActivityType';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   title?: string;

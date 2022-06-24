@@ -3,7 +3,7 @@ import { Nvp, Opportunity, VisualUriFragment } from '../../../../../models/graph
 import { useTranslation } from 'react-i18next';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { buildOpportunityUrl } from '../../../../../utils/urlBuilders';
-import getActivityCount from '../../../../../utils/get-activity-count';
+import getActivityCount from '../../../../../domain/activity/utils/getActivityCount';
 import { useUserContext } from '../../../../../hooks';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 
@@ -44,8 +44,8 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
       label={isMember(opportunity.id) ? EntityContributionCardLabel.Member : undefined}
       loading={loading}
       activities={[
-        { name: t('common.projects'), count: getActivityCount(activity, 'projects') ?? 0 },
-        { name: t('common.members'), count: getActivityCount(activity, 'members') ?? 0 },
+        { name: t('common.projects'), count: getActivityCount(activity, 'projects') },
+        { name: t('common.members'), count: getActivityCount(activity, 'members') },
       ]}
     />
   );

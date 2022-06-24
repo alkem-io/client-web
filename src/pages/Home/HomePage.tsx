@@ -5,7 +5,7 @@ import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
 import AlkemioActivitySection from './AlkemioActivitySection';
 import ContributorsSection from './ContributorsSection';
-import HubsSection from './HubsSection';
+import HubsSection from '../../domain/hub/DashboardHubs/HubsSection';
 import GettingStartedSection from './GettingStartedSection';
 import ShowInterestSection from './ShowInterestSection';
 import WelcomeSection from './WelcomeSection';

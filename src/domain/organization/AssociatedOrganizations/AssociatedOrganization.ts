@@ -1,5 +1,5 @@
 import { getUserCardRoleNameKey } from '../../../hooks';
-import getActivityCount from '../../../utils/get-activity-count';
+import getActivityCount from '../../activity/utils/getActivityCount';
 import {
   AssociatedOrganizationDetailsFragment,
   OrganizationVerificationEnum,
@@ -39,7 +39,7 @@ export const mapToAssociatedOrganization = (
   return {
     nameID, // to be used as React key
     name: organization?.displayName,
-    membersCount: getActivityCount(organization?.activity || [], 'members') || 0,
+    membersCount: getActivityCount(organization?.activity || [], 'members'),
     description: organization?.profile.description,
     avatar: organization?.profile.avatar?.uri,
     verified: organization?.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
