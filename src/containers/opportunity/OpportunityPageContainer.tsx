@@ -15,7 +15,7 @@ import {
   OpportunityPageFragment,
   Reference,
 } from '../../models/graphql-schema';
-import getActivityCount from '../../utils/get-activity-count';
+import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { replaceAll } from '../../utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
@@ -141,17 +141,17 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     return [
       {
         name: t('common.projects'),
-        count: getActivityCount(_activity, 'projects') || 0,
+        count: getActivityCount(_activity, 'projects'),
         color: 'positive',
       },
       {
         name: t('common.interests'),
-        count: getActivityCount(_activity, 'relations') || 0,
+        count: getActivityCount(_activity, 'relations'),
         color: 'primary',
       },
       {
         name: t('common.members'),
-        count: getActivityCount(_activity, 'members') || 0,
+        count: getActivityCount(_activity, 'members'),
         color: 'neutralMedium',
       },
     ];

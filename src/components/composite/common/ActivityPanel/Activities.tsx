@@ -1,8 +1,8 @@
 import { Grid, Skeleton, Theme, useMediaQuery } from '@mui/material';
 import React, { FC } from 'react';
-import CircleTag from '../../../core/CircleTag';
 import Typography from '../../../core/Typography';
-import { ActivityType } from '../../../../models/constants';
+import { ActivityType } from '../../../../domain/activity/ActivityType';
+import ActivityCircleView from '../../../../domain/activity/ActivityCircleView';
 
 export interface ActivityItem {
   name: string;
@@ -25,8 +25,9 @@ export const Activities: FC<{ items: ActivityItem[]; asList?: boolean }> = ({ it
               {isLoading && <Skeleton variant="text" sx={{ minWidth: 150 }} />}
             </Grid>
             <Grid item>
-              {!isLoading && <CircleTag text={`${count}`} color={color || 'neutral'} />}
-              {isLoading && <Skeleton variant="circular" sx={{ height: 36, width: 36 }} />}
+              <ActivityCircleView color={color} loading={isLoading}>
+                {count}
+              </ActivityCircleView>
             </Grid>
           </Grid>
         </Grid>

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Challenge, Nvp, VisualUriFragment } from '../../../../../models/graphql-schema';
 import EntityContributionCard from '../ContributionCard/EntityContributionCard';
 import { buildChallengeUrl } from '../../../../../utils/urlBuilders';
-import getActivityCount from '../../../../../utils/get-activity-count';
+import getActivityCount from '../../../../../domain/activity/utils/getActivityCount';
 import { useUserContext } from '../../../../../hooks';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 
@@ -38,11 +38,11 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
     : [
         {
           name: t('common.opportunities'),
-          count: getActivityCount(activity, 'opportunities') ?? 0,
+          count: getActivityCount(activity, 'opportunities'),
         },
         {
           name: t('common.members'),
-          count: getActivityCount(activity, 'members') ?? 0,
+          count: getActivityCount(activity, 'members'),
         },
       ];
 

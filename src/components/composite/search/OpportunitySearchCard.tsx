@@ -1,7 +1,7 @@
 import React, { FC, memo } from 'react';
 import { OpportunitySearchResultFragment } from '../../../models/graphql-schema';
 import { ActivityItem } from '../common/ActivityPanel/Activities';
-import getActivityCount from '../../../utils/get-activity-count';
+import getActivityCount from '../../../domain/activity/utils/getActivityCount';
 import OpportunityPopUp from '../entities/Opportunity/OpportunityPopUp';
 import { useHubNameQuery } from '../../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
@@ -26,8 +26,8 @@ const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResu
 
   const _activity = opportunity?.activity || [];
   const activity: ActivityItem[] = [
-    { name: 'Projects', count: getActivityCount(_activity, 'projects') || 0, color: 'primary' },
-    { name: 'Members', count: getActivityCount(_activity, 'members') || 0, color: 'positive' },
+    { name: 'Projects', count: getActivityCount(_activity, 'projects'), color: 'primary' },
+    { name: 'Members', count: getActivityCount(_activity, 'members'), color: 'positive' },
   ];
 
   return (

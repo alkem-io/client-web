@@ -15,12 +15,13 @@ import ActivityView from '../Activity/ActivityView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { getVisualBanner } from '../../utils/visuals.utils';
-import { ActivityType, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import { ActivityType } from '../../domain/activity/ActivityType';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;

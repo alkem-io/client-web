@@ -10,18 +10,6 @@ export enum CommunityType {
   OPPORTUNITY = 'opportunity',
 }
 
-export enum ActivityType {
-  Opportunity = 'opportunities',
-  Project = 'projects',
-  Member = 'members',
-  User = 'users',
-  Organization = 'organizations',
-  Hub = 'hubs',
-  Challenge = 'challenges',
-  Relation = 'relations',
-  Aspect = 'aspects',
-}
-
 export const APPLICATION_STATE_NEW = 'new';
 export const APPLICATION_STATE_APPROVED = 'approved';
 export const APPLICATION_STATE_REJECTED = 'rejected';

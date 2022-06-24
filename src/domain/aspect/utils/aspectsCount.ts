@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ActivityType } from '../../../models/constants';
+import { ActivityType } from '../../activity/ActivityType';
 import { Nvp } from '../../../models/graphql-schema';
 
 const getAspectsCount = (activity: Nvp[] | undefined) => {
