@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { alpha, Avatar, Box, Grid } from '@mui/material';
@@ -16,6 +16,8 @@ import References from '../../components/composite/common/References/References'
 import TagLabel from '../../components/composite/common/TagLabel/TagLabel';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import { mapWithSeparator } from '../../domain/shared/utils/joinNodes';
+import { animateScroll as scroller } from 'react-scroll';
+import { useResizeDetector } from 'react-resize-detector';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 
@@ -41,9 +43,26 @@ export interface AspectDashboardViewProps {
   error?: ApolloError;
 }
 
+interface ScrollState {
+  scrollTop: number;
+  scrollHeight: number;
+}
+
+const isScrolledToBottom = ({
+  scrollTop,
+  scrollHeight,
+  containerHeight,
+}: ScrollState & { containerHeight: number }) => {
+  return scrollTop === scrollHeight - containerHeight;
+};
+
 const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const { t } = useTranslation();
   const { loading, loadingCreator } = props;
+
+  const commentsContainerRef = useRef<HTMLElement>(null);
+  const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
+  const wasScrolledToBottomRef = useRef(true);
 
   const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = props;
   const { creatorName, creatorAvatar, createdDate } = props;
@@ -52,6 +71,31 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
 
   const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
   const onDeleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
+
+  const { height: containerHeight = 0 } = useResizeDetector({
+    targetRef: commentsContainerRef,
+  });
+
+  useEffect(() => {
+    if (commentsContainerRef.current) {
+      wasScrolledToBottomRef.current = isScrolledToBottom({ ...prevScrollTopRef.current, containerHeight });
+
+      prevScrollTopRef.current = {
+        scrollTop: commentsContainerRef.current.scrollTop,
+        scrollHeight: commentsContainerRef.current.scrollHeight,
+      };
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (wasScrolledToBottomRef.current && commentsContainerRef.current) {
+      scroller.scrollToBottom({ container: commentsContainerRef.current });
+    }
+  }, [messages]);
+
+  const handleCommentsScroll = () => {
+    prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
+  };
 
   return (
     <Grid container spacing={2}>
@@ -99,7 +143,11 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
       {canReadComments && (
         <DashboardColumn>
           <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
-            <Box sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}>
+            <Box
+              sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}
+              ref={commentsContainerRef}
+              onScroll={handleCommentsScroll}
+            >
               {mapWithSeparator(messages, SectionSpacer, comment => (
                 <DiscussionComment
                   key={comment.id}
