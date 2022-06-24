@@ -30,7 +30,6 @@ const useCircleTagStyles = makeStyles(theme => ({
     borderRadius: '50%',
     borderStyle: 'solid',
     borderWidth: 1,
-    backgroundColor: theme.palette.background.paper,
     position: 'relative',
   },
   positive: {

@@ -19,7 +19,7 @@ export const Activities: FC<{ items: ActivityItem[]; asList?: boolean }> = ({ it
     <Grid container spacing={1} direction="column" maxHeight={t => t.spacing(6 * maxHeightSteps)}>
       {items.map(({ name, isLoading, count, color }, i) => (
         <Grid key={i} item xs={12} md={asList ? 12 : 6}>
-          <Grid container justifyContent={'space-between'} alignItems={'center'}>
+          <Grid container justifyContent="space-between" alignItems="center" gap={2}>
             <Grid item>
               {!isLoading && <Typography variant="caption">{name}</Typography>}
               {isLoading && <Skeleton variant="text" sx={{ minWidth: 150 }} />}
