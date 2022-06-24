@@ -53,6 +53,14 @@ const isScrolledToBottom = ({
   scrollHeight,
   containerHeight,
 }: ScrollState & { containerHeight: number }) => {
+  console.log('isScrolledToBottom', {
+    return: scrollTop === scrollHeight - containerHeight,
+    scrollTop,
+    scrollHeight,
+    containerHeight,
+    'scrollHeight-containerHeight': scrollHeight - containerHeight,
+  });
+
   return scrollTop === scrollHeight - containerHeight;
 };
 
@@ -94,6 +102,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   }, [messages]);
 
   const handleCommentsScroll = () => {
+    console.log('scroll changed ', commentsContainerRef.current!.scrollTop);
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
