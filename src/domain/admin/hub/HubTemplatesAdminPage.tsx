@@ -10,6 +10,7 @@ import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspec
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
+  routePrefix: string;
   aspectTemplatesRoutePath: string;
   canvasTemplatesRoutePath: string;
   edit?: boolean;
@@ -20,7 +21,7 @@ const PAGE_KEY_TEMPLATES = 'HubTemplatesAdminPage';
 const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   hubId,
   paths,
-  routePrefix = '../',
+  routePrefix,
   aspectTemplatesRoutePath,
   edit = false,
 }) => {
@@ -38,7 +39,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   const { aspectTemplates, id: templatesSetID } = data?.hub.templates ?? {};
 
   return (
-    <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={routePrefix}>
+    <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
       <AdminAspectTemplatesSection
         aspectTemplateId={aspectTemplateId}
         templatesSetId={templatesSetID}
