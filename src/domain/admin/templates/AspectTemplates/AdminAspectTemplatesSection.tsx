@@ -1,4 +1,4 @@
-import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { Button } from '@mui/material';
 import TemplatesList from '../TemplatesList';
 import AspectTemplateCard from './AspectTemplateCard';

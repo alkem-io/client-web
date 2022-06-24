@@ -2,13 +2,14 @@ import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React from 'react';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import { useUpdateNavigation } from '../../hooks';
+import { useUpdateNavigation, useUserContext } from '../../hooks';
 import AlkemioActivitySection from './AlkemioActivitySection';
 import ContributorsSection from './ContributorsSection';
 import HubsSection from '../../domain/hub/DashboardHubs/HubsSection';
 import GettingStartedSection from './GettingStartedSection';
 import ShowInterestSection from './ShowInterestSection';
 import WelcomeSection from './WelcomeSection';
+import MyHubsSection from '../../domain/hub/MyHubs/MyHubsSection';
 
 const useStyles = makeStyles(_ => ({
   grow: {
@@ -22,6 +23,8 @@ export const HomePage = () => {
   useUpdateNavigation({ currentPaths });
 
   const styles = useStyles();
+
+  const user = useUserContext();
 
   return (
     <>
@@ -49,9 +52,15 @@ export const HomePage = () => {
             }}
           />
         </Grid>
+        {user.isAuthenticated && (
+          <Grid item xs={12}>
+            <MyHubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <HubsSection />
         </Grid>
+        <SectionSpacer />
         <Grid item xs={12}>
           <ContributorsSection />
         </Grid>

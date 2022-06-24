@@ -5,7 +5,7 @@ import { useOrganization } from '../../../../hooks';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';
 import { useOrganizationMembersQuery } from '../../../../hooks/generated/graphql';
 import Loading from '../../../../components/core/Loading/Loading';
-import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 
 export const OrganizationOwnerAuthorizationView: FC = () => {

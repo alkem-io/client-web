@@ -4,7 +4,7 @@ import { ApolloError } from '@apollo/client';
 import { alpha, Avatar, Box, Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { Reference } from '../../models/graphql-schema';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';

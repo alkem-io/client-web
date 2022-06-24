@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../organization/AssociatedOrganizations/AssociatedOrganizationsView';

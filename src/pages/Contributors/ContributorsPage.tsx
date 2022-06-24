@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { UserCardProps } from '../../components/composite/common/cards';
 import { OrganizationCardProps } from '../../components/composite/common/cards/Organization/OrganizationCard';
 import SearchTagsInput from '../../domain/shared/components/SearchTagsInput/SearchTagsInput';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import ContributorsSearchContainer from '../../containers/ContributorsSearch/ContributorsSearchContainer';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
 import { OrganizationVerificationEnum, UserContributorFragment } from '../../models/graphql-schema';
