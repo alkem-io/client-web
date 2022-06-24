@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../../../../core/Section/Section';
+import { SectionSpacer } from '../../../../../../domain/shared/components/Section/Section';
 import TagsComponent from '../../../../../../domain/shared/components/TagsComponent/TagsComponent';
 import { AspectCreationType } from '../../AspectCreationDialog';
 import Markdown from '../../../../../core/Markdown';

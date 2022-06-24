@@ -1,10 +1,10 @@
 import { Avatar, Box, Paper, Skeleton, Tooltip } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC, useMemo, useState } from 'react';
-import { FINAL_ELEVATION, INITIAL_ELEVATION } from '../../../../../models/constants';
+import React, { FC, useMemo } from 'react';
 import ConditionalLink from '../../../../core/ConditionalLink';
 import UserCard from '../user-card/UserCard';
+import withElevationOnHover from '../../../../../domain/shared/components/withElevationOnHover';
 
 interface ContributorCardTooltip {
   tags: string[];
@@ -47,10 +47,11 @@ const useStyles = makeStyles(_ =>
   })
 );
 
+const ElevatedPaper = withElevationOnHover(Paper);
+
 export const ContributorCard: FC<ContributorCardProps> = props => {
   const styles = useStyles();
   const { displayName, avatar, url, tooltip } = props;
-  const [elevation, setElevation] = useState(INITIAL_ELEVATION);
 
   const TooltipElement = useMemo(
     () =>
@@ -81,11 +82,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
 
   return (
     <ConditionalLink to={url} condition={Boolean(url)} aria-label="associate-card">
-      <Paper
-        elevation={elevation}
-        onMouseOver={() => setElevation(FINAL_ELEVATION)}
-        onMouseOut={() => setElevation(INITIAL_ELEVATION)}
-      >
+      <ElevatedPaper>
         <Box className={styles.wrapper}>
           <TooltipElement>
             <Avatar variant="rounded" className={styles.avatar} src={avatar}>
@@ -93,7 +90,7 @@ export const ContributorCard: FC<ContributorCardProps> = props => {
             </Avatar>
           </TooltipElement>
         </Box>
-      </Paper>
+      </ElevatedPaper>
     </ConditionalLink>
   );
 };

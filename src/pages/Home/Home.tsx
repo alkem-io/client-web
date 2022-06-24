@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import React from 'react';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { useUpdateNavigation } from '../../hooks';
 import AlkemioActivitySection from './AlkemioActivitySection';
 import ContributorsSection from './ContributorsSection';

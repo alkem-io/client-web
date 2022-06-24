@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import { AspectSettingsFragment, Visual } from '../../models/graphql-schema';
 import EditVisualsView from '../../views/Visuals/EditVisualsView';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import Typography from '@mui/material/Typography';
 
 export interface AspectSettingsPageProps extends PageProps {}

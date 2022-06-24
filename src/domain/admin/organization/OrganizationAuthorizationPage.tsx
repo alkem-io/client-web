@@ -6,7 +6,7 @@ import OrganizationAdminAuthorizationView from './views/OrganizationAdminAuthori
 import OrganizationOwnerAuthorizationView from './views/OrganizationOwnerAuthorizationView';
 import OrganizationAuthorizationPreferencesPageView from './views/OrganizationAuthorizationPreferencesPageView';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
-import { SectionSpacer } from '../../../components/core/Section/Section';
+import { SectionSpacer } from '../../shared/components/Section/Section';
 
 const OrganizationAuthorizationPage: FC<SettingsPageProps> = ({ paths }) => {
   useAppendBreadcrumb(paths, { name: 'authorization' });

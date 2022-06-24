@@ -3,7 +3,7 @@ import { PageProps } from '../common';
 import { useChallenge } from '../../hooks';
 import CommunityPage from './CommunityPage';
 import { useChallengeCommunityContributorsQuery } from '../../hooks/generated/graphql';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import CommunityContributorsSection from '../../domain/community/CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
 import CommunityContributorsSearch from '../../domain/community/CommunityContributors/CommunityContributorsSearch';

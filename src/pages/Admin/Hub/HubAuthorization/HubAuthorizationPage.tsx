@@ -16,7 +16,7 @@ import { usePreferences } from '../../../../hooks/providers';
 import PreferenceSection from '../../../../components/composite/common/PreferenceSection/PreferenceSection';
 import { HubPreferencesDocument, UpdatePreferenceOnHubDocument } from '../../../../hooks/generated/graphql';
 import { useHub } from '../../../../hooks';
-import { SectionSpacer } from '../../../../components/core/Section/Section';
+import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
 import { PreferenceTypes } from '../../../../models/preference-types';
 
 interface HubAuthorizationPageProps extends SettingsPageProps {

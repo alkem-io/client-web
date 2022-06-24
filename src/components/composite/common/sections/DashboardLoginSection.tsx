@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useAuthenticationContext } from '../../../../hooks';
 import { AUTH_LOGIN_PATH } from '../../../../models/constants';
-import Section, { SectionSpacer } from '../../../core/Section/Section';
+import Section, { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
 
 interface LoginSectionProps {
   infomationText: string;

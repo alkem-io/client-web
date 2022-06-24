@@ -10,6 +10,7 @@ import HubContextPage from '../../../pages/Admin/Hub/HubContext/HubContextPage';
 import HubCommunicationsPage from '../../../pages/Admin/Hub/HubCommunication/HubCommunicationsPage';
 import HubCommunityAdminPage from '../../../domain/admin/hub/HubCommunityAdminPage';
 import { ApplicationsAdminRoutes } from '../../../domain/admin/community/routes/ApplicationsAdminRoutes';
+import HubTemplatesAdminRoutes from '../../../domain/admin/hub/HubTemplatesAdminRoutes';
 
 interface HubAdminRouteProps extends PageProps {}
 
@@ -27,6 +28,7 @@ export const HubRoute: FC<HubAdminRouteProps> = ({ paths }) => {
       <Route path="context" element={<HubContextPage paths={currentPaths} />} />
       <Route path="communications" element={<HubCommunicationsPage communityId={communityId} paths={currentPaths} />} />
       <Route path="community" element={<HubCommunityAdminPage paths={currentPaths} />} />
+      <Route path="templates/*" element={<HubTemplatesAdminRoutes hubId={hubId} paths={currentPaths} />} />
       <Route
         path="community/groups/*"
         element={<CommunityGroupsRoute paths={currentPaths} communityId={communityId} />}

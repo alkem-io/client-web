@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
-import { SectionSpacer } from '../../../components/core/Section/Section';
+import { SectionSpacer } from '../../shared/components/Section/Section';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
 import AssociatedOrganizationsView from '../../organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import OrganizationCard, {
   OrganizationCardProps,
 } from '../../../components/composite/common/cards/Organization/OrganizationCard';
-import SectionHeader from '../../../components/core/Section/SectionHeader';
+import SectionHeader from '../../shared/components/Section/SectionHeader';
 import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../../hooks';
