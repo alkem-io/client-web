@@ -1,8 +1,10 @@
 import React from 'react';
 import withElevationOnHover from '../../shared/components/withElevationOnHover';
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper } from '@mui/material';
 import LinkNoUnderline from '../../shared/components/LinkNoUnderline';
 import { TemplateCardProps } from './TemplateCardProps';
+import Icon, { IconProps } from '../../shared/components/Icon';
+import IconLabel from '../../shared/components/IconLabel';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
@@ -11,10 +13,10 @@ const ImagePreview = ({ src }: { src: string }) => {
   return <Box flexGrow={1} sx={{ backgroundImage, backgroundSize: 'cover', backgroundPosition: 'center' }} />;
 };
 
-const Icon = ({ iconComponent: IconComponent }: Pick<TemplateCardProps, 'iconComponent'>) => {
+const PositionedIcon = ({ iconComponent }: Pick<IconProps, 'iconComponent'>) => {
   return (
     <Box display="flex" flexGrow={1} justifyContent="center" alignItems="center">
-      <IconComponent sx={{ fontSize: theme => theme.spacing(12) }} color="primary" />
+      <Icon iconComponent={iconComponent} color="primary" size="xxl" />
     </Box>
   );
 };
@@ -32,10 +34,8 @@ const TemplateCardLayout = ({ url, linkState, title, imageUrl, iconComponent }: 
           alignItems: 'stretch',
         }}
       >
-        {imageUrl ? <ImagePreview src={imageUrl} /> : <Icon iconComponent={iconComponent} />}
-        <Typography variant="body1" color="primary" fontWeight="bold" sx={{ paddingX: 2, paddingY: 1 }} noWrap>
-          {title}
-        </Typography>
+        {imageUrl ? <ImagePreview src={imageUrl} /> : <PositionedIcon iconComponent={iconComponent} />}
+        <IconLabel>{title}</IconLabel>
       </ElevatedPaper>
     </LinkNoUnderline>
   );

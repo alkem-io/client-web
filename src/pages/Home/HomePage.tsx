@@ -10,6 +10,7 @@ import GettingStartedSection from './GettingStartedSection';
 import ShowInterestSection from './ShowInterestSection';
 import WelcomeSection from './WelcomeSection';
 import MyHubsSection from '../../domain/hub/MyHubs/MyHubsSection';
+import HomePageFooter from './HomePageFooter';
 
 const useStyles = makeStyles(_ => ({
   grow: {
@@ -63,6 +64,9 @@ export const HomePage = () => {
         <SectionSpacer />
         <Grid item xs={12}>
           <ContributorsSection />
+        </Grid>
+        <Grid item xs={12}>
+          <HomePageFooter />
         </Grid>
       </Grid>
     </>
