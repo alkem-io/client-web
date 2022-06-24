@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Challenge, Nvp, VisualUriFragment } from '../../../../../models/graphql-schema';
-import EntityContributionCard from '../ContributionCard/EntityContributionCard';
+import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { buildChallengeUrl } from '../../../../../utils/urlBuilders';
 import getActivityCount from '../../../../../utils/get-activity-count';
 import { useUserContext } from '../../../../../hooks';
@@ -56,7 +56,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
         tagsFor: 'challenge',
         url,
       }}
-      isMember={isMember(id)}
+      label={isMember(id) ? EntityContributionCardLabel.Member : undefined}
       loading={loading}
       activities={activities}
     />

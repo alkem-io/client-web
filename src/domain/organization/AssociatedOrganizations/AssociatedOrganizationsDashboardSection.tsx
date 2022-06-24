@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import { buildNewOrganizationUrl } from '../../../utils/urlBuilders';
 import AssociatedOrganizationsView2, { AssociatedOrganizationsViewProps } from './AssociatedOrganizationsView';
 

@@ -3,7 +3,7 @@ import EditMembers from '../../../../components/Admin/Community/EditMembers';
 import OrganizationMembers from '../../../../containers/organization/OrganizationMembers';
 import { useOrganization } from '../../../../hooks';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';
-import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 
 export const OrganizationMembersView: FC = () => {

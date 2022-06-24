@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import EditMembers, { EditMembersProps } from '../../../../components/Admin/Community/EditMembers';
 
 interface CommunityAdminViewProps extends EditMembersProps {

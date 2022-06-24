@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import DashboardActivitySection from '../../components/composite/common/sections/DashboardActivitySection';
+import DashboardActivitySection from '../../domain/shared/components/DashboardSections/DashboardActivitySection';
 import { SectionProps } from '../../domain/shared/components/Section/Section';
 import getActivityCount from '../../utils/get-activity-count';
 import useServerMetadata from '../../hooks/useServerMetadata';

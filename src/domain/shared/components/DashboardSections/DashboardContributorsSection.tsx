@@ -2,12 +2,12 @@ import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserMetadata } from '../../../../hooks';
-import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
-import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
+import { SectionSpacer } from '../Section/Section';
+import SectionHeader from '../Section/SectionHeader';
 import ContributorCard, {
   ContributorCardProps,
   ContributorCardSkeleton,
-} from '../cards/ContributorCard/ContributorCard';
+} from '../../../../components/composite/common/cards/ContributorCard/ContributorCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';

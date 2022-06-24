@@ -1,7 +1,7 @@
 import { Button, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useAuthenticationContext } from '../../hooks';
 import { AUTH_REGISTER_PATH } from '../../models/constants';
 

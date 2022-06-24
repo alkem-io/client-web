@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import { EntityDashboardContributors } from './Types';
 import DashboardContributingUsers from './DashboardContributingUsers';

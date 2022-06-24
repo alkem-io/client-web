@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import MembershipBackdrop from '../../../components/composite/common/Backdrops/MembershipBackdrop';
-import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import Button from '@mui/material/Button';
 import CardsLayout from '../../../domain/shared/layout/CardsLayout/CardsLayout';
 import AspectCard from '../../../components/composite/common/cards/AspectCard/AspectCard';
