@@ -119,7 +119,7 @@
     },
     "verified-status": {
       "verified": "Потвърдено",
-      "not-verified": "Непотвърдено"
+      "not-verified": ""
     },
     "enums": {
       "authorization-credentials": {
@@ -314,7 +314,7 @@
     },
     "organization-verified": {
       "verified": "Потвърдено",
-      "not-verified": "Непотвърдено"
+      "not-verified": ""
     },
     "card-filter": {
       "title": "Филтър"

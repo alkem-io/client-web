@@ -138,7 +138,7 @@
     },
     "verified-status": {
       "verified": "Verified",
-      "not-verified": "Not verified"
+      "not-verified": ""
     },
     "enums": {
       "authorization-credentials": {
@@ -377,7 +377,7 @@
     },
     "organization-verified": {
       "verified": "Verified",
-      "not-verified": "Not verified"
+      "not-verified": ""
     },
     "card-filter": {
       "title": "Filter"
