@@ -2,7 +2,7 @@ import { Accordion, AccordionProps } from '../../../components/composite/common/
 import Typography from '@mui/material/Typography';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../../components/core/Section/Section';
+import { SectionSpacer } from '../../shared/components/Section/Section';
 import { styled } from '@mui/styles';
 import withOptionalCount from '../../shared/utils/withOptionalCount';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';

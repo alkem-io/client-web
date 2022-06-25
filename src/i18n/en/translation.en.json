@@ -64,6 +64,11 @@
     "remove": "Remove",
     "comment": "Comment",
     "comments": "Comments",
+    "create": "Create",
+    "create-new": "Create new",
+    "create-new-entity": "Create new {{entity}}",
+    "description": "Description",
+    "edit-entity": "Edit {{entity}}",
     "email": "Email",
     "state": "State",
     "aspect": "Aspect",
@@ -82,6 +87,7 @@
     "interests": "Interests",
     "project": "Project",
     "projects": "Projects",
+    "templates": "Templates",
     "group": "Group",
     "groups": "Groups",
     "user-group": "User group",
@@ -124,6 +130,7 @@
     "questions": "Questions",
     "show-all": "Show all",
     "title": "Title",
+    "warning": "Warning",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -131,7 +138,7 @@
     },
     "verified-status": {
       "verified": "Verified",
-      "not-verified": "Not verified"
+      "not-verified": ""
     },
     "enums": {
       "authorization-credentials": {
@@ -261,7 +268,15 @@
       "nonBlank": "{{field}} must not consist of just spaces"
     }
   },
+  "aspect-templates": {
+    "aspect-template": "Aspect template",
+    "default-description": "Default aspect description",
+    "banner-narrow": "Banner narrow"
+  },
   "components": {
+    "activity-tooltip": {
+      "headline": "Alkemio is growing! In total, the platform now hosts:"
+    },
     "context-section": {
       "create-aspect": "Successfully created the aspect",
       "give-feedback": "Give feedback"
@@ -362,7 +377,7 @@
     },
     "organization-verified": {
       "verified": "Verified",
-      "not-verified": "Not verified"
+      "not-verified": ""
     },
     "card-filter": {
       "title": "Filter"
@@ -466,7 +481,8 @@
     },
     "card": {
       "member": "Member",
-      "private": "Private"
+      "private": "Private",
+      "lead": "Lead"
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
@@ -674,6 +690,12 @@
           },
           "authorization": {
             "description": "Here you can tweak authorization settings for this {{entity}}."
+          },
+          "templates": {
+            "description": "Here you can create and edit Aspect and Canvas templates for this {{entity}}.",
+            "aspect-templates": "Aspect Templates",
+            "canvas-templates": "Canvas Templates",
+            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template."
           }
         }
       },
@@ -855,9 +877,21 @@
           "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
           "body": "A Hub can be Public or Private, and has a facilitating Organization."
         },
+        "my-hubs": {
+          "header": "My Hubs",
+          "subheader": "This section show you the Hubs that you are a member of."
+        },
         "organizations": {
           "header": "Organizations",
           "subheader": "The entities that want to bring innnovation."
+        },
+        "footer": {
+          "headline": "More about Alkemio? Visit our website, contact us or take a look at our Github repository",
+          "links": {
+            "foundation": "Alkemio Foundation",
+            "contact-form": "Contact Form",
+            "github": "GitHub"
+          }
         }
       }
     },

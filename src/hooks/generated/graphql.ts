@@ -1439,6 +1439,32 @@ export const AspectProviderDataFragmentDoc = gql`
   }
   ${AspectProvidedFragmentDoc}
 `;
+export const TemplateInfoFragmentDoc = gql`
+  fragment TemplateInfo on TemplateInfo {
+    id
+    title
+    description
+    tagset {
+      id
+      tags
+    }
+    visual {
+      ...VisualFull
+    }
+  }
+  ${VisualFullFragmentDoc}
+`;
+export const AdminAspectTemplateFragmentDoc = gql`
+  fragment AdminAspectTemplate on AspectTemplate {
+    id
+    defaultDescription
+    type
+    info {
+      ...TemplateInfo
+    }
+  }
+  ${TemplateInfoFragmentDoc}
+`;
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
@@ -14425,6 +14451,205 @@ export function refetchAdminGlobalOrganizationsListQuery(
   variables: SchemaTypes.AdminGlobalOrganizationsListQueryVariables
 ) {
   return { query: AdminGlobalOrganizationsListDocument, variables: variables };
+}
+export const UpdateAspectTemplateDocument = gql`
+  mutation updateAspectTemplate($aspectTemplateInput: UpdateAspectTemplateInput!) {
+    updateAspectTemplate(aspectTemplateInput: $aspectTemplateInput) {
+      id
+    }
+  }
+`;
+export type UpdateAspectTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateAspectTemplateMutation,
+  SchemaTypes.UpdateAspectTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateAspectTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateAspectTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAspectTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAspectTemplateMutation, { data, loading, error }] = useUpdateAspectTemplateMutation({
+ *   variables: {
+ *      aspectTemplateInput: // value for 'aspectTemplateInput'
+ *   },
+ * });
+ */
+export function useUpdateAspectTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateAspectTemplateMutation,
+    SchemaTypes.UpdateAspectTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateAspectTemplateMutation,
+    SchemaTypes.UpdateAspectTemplateMutationVariables
+  >(UpdateAspectTemplateDocument, options);
+}
+export type UpdateAspectTemplateMutationHookResult = ReturnType<typeof useUpdateAspectTemplateMutation>;
+export type UpdateAspectTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateAspectTemplateMutation>;
+export type UpdateAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateAspectTemplateMutation,
+  SchemaTypes.UpdateAspectTemplateMutationVariables
+>;
+export const CreateAspectTemplateDocument = gql`
+  mutation createAspectTemplate($aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput!) {
+    createAspectTemplate(aspectTemplateInput: $aspectTemplateInput) {
+      id
+    }
+  }
+`;
+export type CreateAspectTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateAspectTemplateMutation,
+  SchemaTypes.CreateAspectTemplateMutationVariables
+>;
+
+/**
+ * __useCreateAspectTemplateMutation__
+ *
+ * To run a mutation, you first call `useCreateAspectTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAspectTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAspectTemplateMutation, { data, loading, error }] = useCreateAspectTemplateMutation({
+ *   variables: {
+ *      aspectTemplateInput: // value for 'aspectTemplateInput'
+ *   },
+ * });
+ */
+export function useCreateAspectTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateAspectTemplateMutation,
+    SchemaTypes.CreateAspectTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateAspectTemplateMutation,
+    SchemaTypes.CreateAspectTemplateMutationVariables
+  >(CreateAspectTemplateDocument, options);
+}
+export type CreateAspectTemplateMutationHookResult = ReturnType<typeof useCreateAspectTemplateMutation>;
+export type CreateAspectTemplateMutationResult = Apollo.MutationResult<SchemaTypes.CreateAspectTemplateMutation>;
+export type CreateAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateAspectTemplateMutation,
+  SchemaTypes.CreateAspectTemplateMutationVariables
+>;
+export const DeleteAspectTemplateDocument = gql`
+  mutation deleteAspectTemplate($deleteData: DeleteAspectTemplateInput!) {
+    deleteAspectTemplate(deleteData: $deleteData) {
+      id
+    }
+  }
+`;
+export type DeleteAspectTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteAspectTemplateMutation,
+  SchemaTypes.DeleteAspectTemplateMutationVariables
+>;
+
+/**
+ * __useDeleteAspectTemplateMutation__
+ *
+ * To run a mutation, you first call `useDeleteAspectTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAspectTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAspectTemplateMutation, { data, loading, error }] = useDeleteAspectTemplateMutation({
+ *   variables: {
+ *      deleteData: // value for 'deleteData'
+ *   },
+ * });
+ */
+export function useDeleteAspectTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteAspectTemplateMutation,
+    SchemaTypes.DeleteAspectTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteAspectTemplateMutation,
+    SchemaTypes.DeleteAspectTemplateMutationVariables
+  >(DeleteAspectTemplateDocument, options);
+}
+export type DeleteAspectTemplateMutationHookResult = ReturnType<typeof useDeleteAspectTemplateMutation>;
+export type DeleteAspectTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeleteAspectTemplateMutation>;
+export type DeleteAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteAspectTemplateMutation,
+  SchemaTypes.DeleteAspectTemplateMutationVariables
+>;
+export const HubTemplatesDocument = gql`
+  query HubTemplates($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        aspectTemplates {
+          ...AdminAspectTemplate
+        }
+      }
+    }
+  }
+  ${AdminAspectTemplateFragmentDoc}
+`;
+
+/**
+ * __useHubTemplatesQuery__
+ *
+ * To run a query within a React component, call `useHubTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubTemplatesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubTemplatesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>(
+    HubTemplatesDocument,
+    options
+  );
+}
+export function useHubTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubTemplatesQuery, SchemaTypes.HubTemplatesQueryVariables>(
+    HubTemplatesDocument,
+    options
+  );
+}
+export type HubTemplatesQueryHookResult = ReturnType<typeof useHubTemplatesQuery>;
+export type HubTemplatesLazyQueryHookResult = ReturnType<typeof useHubTemplatesLazyQuery>;
+export type HubTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubTemplatesQuery,
+  SchemaTypes.HubTemplatesQueryVariables
+>;
+export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQueryVariables) {
+  return { query: HubTemplatesDocument, variables: variables };
 }
 export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {

@@ -4,7 +4,7 @@ import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
-import { SectionSpacer } from '../../../components/core/Section/Section';
+import { SectionSpacer } from '../../shared/components/Section/Section';
 import CommunityAdminView from '../community/views/CommunityAdminView';
 import { Loading } from '../../../components/core';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';

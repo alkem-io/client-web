@@ -1,13 +1,13 @@
 import { Box, Grid, Typography } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UserMetadata } from '../../../../hooks';
-import { SectionSpacer } from '../../../core/Section/Section';
-import SectionHeader from '../../../core/Section/SectionHeader';
+import { SectionSpacer } from '../Section/Section';
+import SectionHeader from '../Section/SectionHeader';
 import ContributorCard, {
   ContributorCardProps,
   ContributorCardSkeleton,
-} from '../cards/ContributorCard/ContributorCard';
+} from '../../../../components/composite/common/cards/ContributorCard/ContributorCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';
@@ -16,8 +16,8 @@ const MAX_USERS_TO_SHOW = 12;
 const MAX_ORGANIZATIONS_TO_SHOW = 12;
 
 export interface DashboardContributorsSectionSectionProps extends DashboardGenericSectionProps {
-  userTitle: string;
-  organizationTitle: string;
+  userTitle: ReactNode;
+  organizationTitle: ReactNode;
   entities: {
     usersCount: number;
     users: WithId<ContributorCardProps>[];
@@ -50,7 +50,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
       <Grid container spacing={2}>
         <Grid item xs={12} lg={6}>
           <SectionHeader text={userTitle} />
-          <SectionSpacer />
+          <SectionSpacer half />
           <Grid container spacing={1} alignItems="center">
             {loading.users &&
               times(MAX_USERS_TO_SHOW, i => (
@@ -81,7 +81,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
         </Grid>
         <Grid item xs={12} lg={6}>
           <SectionHeader text={organizationTitle} />
-          <SectionSpacer />
+          <SectionSpacer half />
           <Grid container spacing={1} alignItems="center">
             {loading.organizations &&
               times(MAX_ORGANIZATIONS_TO_SHOW, i => (

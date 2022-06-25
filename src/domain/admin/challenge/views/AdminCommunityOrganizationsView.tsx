@@ -11,7 +11,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { OrganizationDetailsFragment } from '../../../../models/graphql-schema';
 import Avatar from '../../../../components/core/Avatar';
 import { Filter } from '../../../../components/Admin/Common/Filter';
-import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import useLazyLoading from '../../../shared/pagination/useLazyLoading';
 import { v4 as uuid } from 'uuid';
 import FullWidthSkeleton from '../../../shared/components/FullWidthLoader';

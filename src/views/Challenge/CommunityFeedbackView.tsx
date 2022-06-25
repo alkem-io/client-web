@@ -11,7 +11,7 @@ import { QuestionTemplate } from '../../models/graphql-schema';
 import FormikInputField from '../../components/composite/forms/FormikInputField';
 import { FeedbackDataEntry } from '../../containers/context/feedback/CommunityFeedbackContainer';
 import ErrorBlock from '../../components/core/ErrorBlock';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 
 export interface CommunityFeedbackViewEntities {
   questions: Omit<QuestionTemplate, '__typename'>[];

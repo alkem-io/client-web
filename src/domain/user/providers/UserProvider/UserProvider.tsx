@@ -5,14 +5,16 @@ import {
   useMeHasProfileQuery,
   useMeQuery,
   useRolesUserQuery,
-} from '../hooks/generated/graphql';
-import { useAuthenticationContext } from '../hooks';
-import { UserMetadata, useUserMetadataWrapper } from '../hooks';
-import { ErrorPage } from '../pages';
-import { User } from '../models/graphql-schema';
+} from '../../../../hooks/generated/graphql';
+import { useAuthenticationContext } from '../../../../hooks';
+import { UserMetadata, useUserMetadataWrapper } from '../../../../hooks';
+import { ErrorPage } from '../../../../pages';
+import { User } from '../../../../models/graphql-schema';
+import { UserRolesInEntity } from './UserRolesInEntity';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;
+  userHubRoles: UserRolesInEntity[] | undefined;
   loading: boolean;
   verified: boolean;
   isAuthenticated: boolean;
@@ -20,6 +22,7 @@ export interface UserContextValue {
 
 const UserContext = React.createContext<UserContextValue>({
   user: undefined,
+  userHubRoles: undefined,
   loading: true,
   verified: false,
   isAuthenticated: false,
@@ -37,7 +40,7 @@ const UserProvider: FC<{}> = ({ children }) => {
     skip: !meData?.me.id,
     variables: {
       input: {
-        userID: meData?.me.id || '',
+        userID: meData?.me.id!,
       },
     },
   });
@@ -70,11 +73,12 @@ const UserProvider: FC<{}> = ({ children }) => {
   const providedValue = useMemo<UserContextValue>(
     () => ({
       user: wrappedMe,
+      userHubRoles: rolesData?.rolesUser.hubs,
       loading,
       verified,
       isAuthenticated,
     }),
-    [wrappedMe, loading, verified, isAuthenticated]
+    [wrappedMe, rolesData, loading, verified, isAuthenticated]
   );
 
   if (error) return <ErrorPage error={error} />;

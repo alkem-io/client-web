@@ -6,7 +6,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
 import CredentialCard from '../../components/composite/common/cards/CredentialCard/CredentialCard';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import OfferAlkemioCommunityCredentialDialog from '../../components/composite/dialogs/CredentialDialog.tsx/OfferAlkemioCommunityCredentialDialog';
 import RequestCredentialDialog from '../../components/composite/dialogs/CredentialDialog.tsx/RequestCredentialDialog';
 import QRCodeDialog from '../../components/composite/dialogs/QRCodeDialog/QRCodeDialog';

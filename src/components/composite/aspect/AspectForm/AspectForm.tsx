@@ -5,7 +5,7 @@ import { Formik, FormikConfig } from 'formik';
 import { Grid } from '@mui/material';
 import FormikInputField from '../../forms/FormikInputField';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
-import { SectionSpacer } from '../../../core/Section/Section';
+import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
 import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';
 import { Aspect, Tagset } from '../../../../models/graphql-schema';

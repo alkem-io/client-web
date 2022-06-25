@@ -11,10 +11,10 @@ import {
   ChallengeCardFragment,
   HubPageFragment,
 } from '../../models/graphql-schema';
-import getActivityCount from '../../utils/get-activity-count';
+import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../models/discussion/discussion';
-import { ActivityType } from '../../models/constants';
+import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
@@ -75,17 +75,17 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
       {
         name: t('common.challenges'),
         type: ActivityType.Challenge,
-        count: getActivityCount(_activity, 'challenges') || 0,
+        count: getActivityCount(_activity, 'challenges'),
         color: 'neutral',
       },
       {
         name: t('common.opportunities'),
-        count: getActivityCount(_activity, 'opportunities') || 0,
+        count: getActivityCount(_activity, 'opportunities'),
         color: 'primary',
       },
       {
         name: t('common.members'),
-        count: getActivityCount(_activity, 'members') || 0,
+        count: getActivityCount(_activity, 'members'),
         color: 'neutralMedium',
       },
     ];

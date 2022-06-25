@@ -1,7 +1,7 @@
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material';
-import { SectionSpacer } from '../../../../core/Section/Section';
+import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';
 import ActivitiesV2 from '../../Activities/ActivitiesV2';
 import { ActivityItem } from '../../ActivityPanel/Activities';
 import ContributionCardV2, {
@@ -20,8 +20,13 @@ const Card = styled(ContributionCardV2)(({ theme }) => ({
 
 export interface EntityContributionCardProps extends ContributionCardV2Props {
   activities?: ActivityItem[];
-  isMember?: boolean;
-  isAnonymous?: boolean;
+  label?: EntityContributionCardLabel;
+}
+
+export enum EntityContributionCardLabel {
+  Member = 'member',
+  Anonymous = 'private',
+  Lead = 'lead',
 }
 
 const EntityContributionCard: FC<EntityContributionCardProps> = ({
@@ -29,26 +34,16 @@ const EntityContributionCard: FC<EntityContributionCardProps> = ({
   classes,
   loading,
   activities,
-  isMember = false,
-  isAnonymous = true,
+  label,
   children,
 }) => {
   const { t } = useTranslation();
-  const getCardLabel = useCallback((isMember: boolean, isAnonymous: boolean) => {
-    if (isMember) {
-      return t('components.card.member');
-    } else if (!isAnonymous) {
-      return t('components.card.private');
-    } else {
-      return undefined;
-    }
-  }, []);
 
-  if (details && !details.labelText) {
-    details.labelText = getCardLabel(isMember, isAnonymous);
+  if (details && !details.labelText && label) {
+    details.labelText = t(`components.card.${label}` as const);
   }
 
-  if (!classes || (!classes?.label && isMember)) {
+  if (!classes || (!classes?.label && label === EntityContributionCardLabel.Member)) {
     classes = {
       label: cssClasses.member,
     };

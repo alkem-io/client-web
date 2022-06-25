@@ -5,9 +5,9 @@ import {
   ContributorCard,
   ContributorCardProps,
 } from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
-import SectionHeader from '../../../components/core/Section/SectionHeader';
+import SectionHeader from '../../shared/components/Section/SectionHeader';
 import withOptionalCount from '../../shared/utils/withOptionalCount';
-import { SectionSpacer } from '../../../components/core/Section/Section';
+import { SectionSpacer } from '../../shared/components/Section/Section';
 
 interface DashboardContributingUsersProps {
   headerText: string;

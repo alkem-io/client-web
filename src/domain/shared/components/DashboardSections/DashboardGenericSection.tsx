@@ -3,10 +3,10 @@ import { Box, IconButton, Link, Toolbar, Tooltip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
-import { RouterLink } from '../../../core/RouterLink';
-import Section, { SectionProps, SectionSpacer } from '../../../core/Section/Section';
-import SectionHeader from '../../../core/Section/SectionHeader';
-import SectionSubHeader from '../../../core/Section/SectionSubheader';
+import { RouterLink } from '../../../../components/core/RouterLink';
+import Section, { SectionProps, SectionSpacer } from '../Section/Section';
+import SectionHeader from '../Section/SectionHeader';
+import SectionSubHeader from '../Section/SectionSubheader';
 
 export interface DashboardGenericSectionProps {
   bannerUrl?: string;

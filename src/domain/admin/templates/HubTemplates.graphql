@@ -1,0 +1,33 @@
+query HubTemplates($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      aspectTemplates {
+        ...AdminAspectTemplate
+      }
+    }
+  }
+}
+
+fragment AdminAspectTemplate on AspectTemplate {
+  id
+  defaultDescription
+  type
+  info {
+    ...TemplateInfo
+  }
+}
+
+fragment TemplateInfo on TemplateInfo {
+  id
+  title
+  description
+  tagset {
+    id
+    tags
+  }
+  visual {
+    ...VisualFull
+  }
+}

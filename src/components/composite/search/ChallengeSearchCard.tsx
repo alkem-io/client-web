@@ -3,7 +3,7 @@ import { ChallengeSearchResultFragment } from '../../../models/graphql-schema';
 import { useHubNameQuery } from '../../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
 import ChallengePopUp from '../entities/Challenge/ChallengePopUp';
-import getActivityCount from '../../../utils/get-activity-count';
+import getActivityCount from '../../../domain/activity/utils/getActivityCount';
 import { ActivityItem } from '../common/ActivityPanel/Activities';
 import EntitySearchCardProps from './EntitySearchCardProps';
 import { getVisualBannerNarrow } from '../../../utils/visuals.utils';
@@ -26,8 +26,8 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
 
   const _activity = challenge?.activity || [];
   const activity: ActivityItem[] = [
-    { name: 'Opportunities', count: getActivityCount(_activity, 'opportunities') || 0, color: 'primary' },
-    { name: 'Members', count: getActivityCount(_activity, 'members') || 0, color: 'positive' },
+    { name: 'Opportunities', count: getActivityCount(_activity, 'opportunities'), color: 'primary' },
+    { name: 'Members', count: getActivityCount(_activity, 'members'), color: 'positive' },
   ];
 
   return (
