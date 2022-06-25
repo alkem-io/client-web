@@ -73,7 +73,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
         result: hubData?.hub.templates?.canvasTemplates || [],
       },
     };
-  }, [hubData, challengeData, opportunityData]);
+  }, [hubData]);
 
   return (
     <>
