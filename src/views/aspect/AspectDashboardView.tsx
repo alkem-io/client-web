@@ -20,6 +20,7 @@ import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
+const SCROLL_BOTTOM_EPSILON = 20;
 
 export interface AspectDashboardViewProps {
   canReadComments: boolean;
@@ -53,15 +54,8 @@ const isScrolledToBottom = ({
   scrollHeight,
   containerHeight,
 }: ScrollState & { containerHeight: number }) => {
-  console.log('isScrolledToBottom', {
-    return: scrollTop === scrollHeight - containerHeight,
-    scrollTop,
-    scrollHeight,
-    containerHeight,
-    'scrollHeight-containerHeight': scrollHeight - containerHeight,
-  });
-
-  return scrollTop === scrollHeight - containerHeight;
+  // Return true if scrollTop is approximately equal to (scrollHeight - containerHeight)
+  return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_EPSILON;
 };
 
 const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
@@ -102,7 +96,6 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   }, [messages]);
 
   const handleCommentsScroll = () => {
-    console.log('scroll changed ', commentsContainerRef.current!.scrollTop);
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
