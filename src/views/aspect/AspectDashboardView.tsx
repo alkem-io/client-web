@@ -20,7 +20,7 @@ import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
-const SCROLL_BOTTOM_EPSILON = 20;
+const SCROLL_BOTTOM_EPSILON = 10;
 
 export interface AspectDashboardViewProps {
   canReadComments: boolean;
