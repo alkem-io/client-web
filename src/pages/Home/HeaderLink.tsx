@@ -1,7 +1,8 @@
 import { styled } from '@mui/styles';
 
 const HeaderLink = styled('a')(({ theme }) => ({
-  fontSize: theme.typography.h5.fontSize,
+  fontFamily: theme.typography.h1.fontFamily,
+  fontSize: theme.typography.body1.fontSize,
   textDecoration: 'none',
   color: theme.palette.primary.main,
   textTransform: 'uppercase',

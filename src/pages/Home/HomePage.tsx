@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Skeleton } from '@mui/material';
 import React from 'react';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
@@ -23,7 +23,8 @@ export const HomePage = () => {
           <WelcomeSection />
         </Grid>
         {!user.isAuthenticated && <AnonymousUserHome />}
-        {user.isAuthenticated && <AuthenticatedUserHome user={user} />}
+        {user.isAuthenticated &&
+          (!user.loading ? <AuthenticatedUserHome user={user} /> : <Skeleton height={300} width="100%" />)}
         <Grid item xs={12}>
           <HubsSection />
         </Grid>
