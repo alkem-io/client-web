@@ -16,7 +16,7 @@ const AnonymousUserHome = () => {
           bannerUrl={banner1Url}
           headerText={t('pages.home.sections.welcome.existing-user.header')}
           subHeaderText={t('pages.home.sections.welcome.existing-user.subheader')}
-          sideBanner={true}
+          sideBanner
         >
           <Button
             color="primary"
@@ -40,8 +40,8 @@ const AnonymousUserHome = () => {
           bannerUrl={banner2Url}
           headerText={t('pages.home.sections.welcome.new-to-alkemio.header')}
           subHeaderText={t('pages.home.sections.welcome.new-to-alkemio.subheader')}
-          sideBanner={true}
-          sideBannerRight={true}
+          sideBanner
+          sideBannerRight
         >
           <Button
             color="primary"
