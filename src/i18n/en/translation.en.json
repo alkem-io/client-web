@@ -875,14 +875,6 @@
             "more-info-url": "https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO"
           }
         },
-        "getting-started": {
-          "header": "Getting Started",
-          "subheader": "Here are some suggestions to help get you up to speed.",
-          "joining-a-challenge": "Eager to join a Challenge? Explore all <challenges>Challenges</challenges>.",
-          "introduction-video": "Want to start using the platform? Watch this <video>demonstration video</video>.",
-          "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' >contributors</a>.",
-          "your-profile": "Keen to be found by other contributors? Fill out your <profile>profile</profile>."
-        },
         "hub": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
