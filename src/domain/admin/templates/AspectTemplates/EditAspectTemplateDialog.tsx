@@ -36,7 +36,12 @@ const EditAspectTemplateDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} PaperProps={{ sx: { backgroundColor: 'background.default' } }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      maxWidth={false}
+    >
       <AspectTemplateForm
         title={t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}

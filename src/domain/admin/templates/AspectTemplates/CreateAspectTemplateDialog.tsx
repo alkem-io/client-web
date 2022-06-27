@@ -16,7 +16,12 @@ const CreateAspectTemplateDialog = ({ open, onClose, onSubmit }: CreateAspectTem
   const values: Partial<AspectTemplateFormValues> = {};
 
   return (
-    <Dialog open={open} onClose={onClose} PaperProps={{ sx: { backgroundColor: 'background.default' } }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      maxWidth={false}
+    >
       <AspectTemplateForm
         title={t('common.create-new-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
