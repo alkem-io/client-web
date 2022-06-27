@@ -22,12 +22,9 @@ export const HomePage = () => {
         <Grid item xs={12}>
           <WelcomeSection />
         </Grid>
-        {!user.isAuthenticated && <AnonymousUserHome />}
-        {user.isAuthenticated && (
-          <Grow appear={!user.loading}>
-            <AuthenticatedUserHome user={user} />
-          </Grow>
-        )}
+        <Grow appear={!user.loading}>
+          {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
+        </Grow>
         <Grid item xs={12}>
           <HubsSection />
         </Grid>
