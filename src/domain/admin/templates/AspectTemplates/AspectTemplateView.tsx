@@ -8,7 +8,6 @@ import ImageComponent from '../../../shared/components/ImageComponent';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { useTheme } from '@mui/styles';
 import { Link } from 'react-router-dom';
-import DeleteButton from '../../../shared/components/DeleteButton';
 
 interface AspectTemplateViewProps {
   title: string;
@@ -21,7 +20,6 @@ interface AspectTemplateViewProps {
   onClose: DialogProps['onClose'];
   editUrl: string;
   editLinkState?: Record<string, unknown>;
-  onDelete: () => void;
 }
 
 const AspectTemplateView = ({
@@ -33,7 +31,6 @@ const AspectTemplateView = ({
   visual,
   open,
   onClose,
-  onDelete,
   editUrl,
   editLinkState,
 }: AspectTemplateViewProps) => {
@@ -66,7 +63,6 @@ const AspectTemplateView = ({
               <Button component={Link} variant="contained" to={editUrl} state={editLinkState}>
                 {t('common.update')}
               </Button>
-              <DeleteButton onClick={onDelete} />
             </DialogActions>
           </Box>
           <SectionSpacer half />

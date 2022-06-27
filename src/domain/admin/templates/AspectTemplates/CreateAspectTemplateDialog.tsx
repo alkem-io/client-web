@@ -1,4 +1,4 @@
-import { DialogProps } from '@mui/material';
+import { Button, DialogProps } from '@mui/material';
 import AspectTemplateForm, { AspectTemplateFormSubmittedValues, AspectTemplateFormValues } from './AspectTemplateForm';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
@@ -21,7 +21,11 @@ const CreateAspectTemplateDialog = ({ open, onClose, onSubmit }: CreateAspectTem
         title={t('common.create-new-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
         onSubmit={onSubmit}
-        submitButtonText={t('common.create')}
+        actions={({ isValid }) => (
+          <Button variant="contained" type="submit" disabled={!isValid}>
+            {t('common.create')}
+          </Button>
+        )}
       />
     </Dialog>
   );

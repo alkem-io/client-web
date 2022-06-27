@@ -2,9 +2,9 @@ import React, { ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '../../../../utils/validator';
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikProps } from 'formik';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Button, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
+import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import FormRow from '../../../shared/layout/FormLayout';
 import FormikInputField from '../../../../components/composite/forms/FormikInputField';
 import MarkdownInput from '../../../../components/Admin/Common/MarkdownInput';
@@ -31,10 +31,10 @@ interface AspectTemplateFormProps {
   initialValues: Partial<AspectTemplateFormValues>;
   visual?: Visual;
   onSubmit: (values: AspectTemplateFormSubmittedValues) => void;
-  submitButtonText: ReactNode;
+  actions: ReactNode | ((formState: FormikProps<AspectTemplateFormValues>) => ReactNode);
 }
 
-const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, submitButtonText }: AspectTemplateFormProps) => {
+const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }: AspectTemplateFormProps) => {
   const { t } = useTranslation();
 
   const handleSubmit = useCallback((values: Partial<AspectTemplateFormValues>) => {
@@ -58,9 +58,11 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, submitButt
     tags: yup.array().of(yup.string().min(2)),
   });
 
+  const renderActions = typeof actions === 'function' ? actions : () => actions;
+
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-      {({ isValid }) => (
+      {formState => (
         <Form>
           <DialogTitle sx={{ marginTop: theme => theme.spacing(3) }}>
             <Typography variant="h3">{title}</Typography>
@@ -93,11 +95,7 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, submitButt
               )}
             </Grid>
           </DialogContent>
-          <DialogActions sx={{ p: 3 }}>
-            <Button variant="contained" type="submit" disabled={!isValid}>
-              {submitButtonText}
-            </Button>
-          </DialogActions>
+          {actions && <DialogActions sx={{ p: 3 }}>{renderActions(formState)}</DialogActions>}
         </Form>
       )}
     </Formik>
