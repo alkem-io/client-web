@@ -24,7 +24,7 @@ export const HomePage = () => {
         </Grid>
         {!user.isAuthenticated && <AnonymousUserHome />}
         {user.isAuthenticated && (
-          <Grow>
+          <Grow appear={!user.loading}>
             <AuthenticatedUserHome user={user} />
           </Grow>
         )}
