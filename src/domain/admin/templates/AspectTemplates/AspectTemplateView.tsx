@@ -8,6 +8,7 @@ import ImageComponent from '../../../shared/components/ImageComponent';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { useTheme } from '@mui/styles';
 import { Link } from 'react-router-dom';
+import Markdown from '../../../../components/core/Markdown';
 
 interface AspectTemplateViewProps {
   title: string;
@@ -67,10 +68,14 @@ const AspectTemplateView = ({
           </Box>
           <SectionSpacer half />
           <Typography variant="h6">{t('common.description')}</Typography>
-          <Typography variant="body2">{description}</Typography>
+          <Typography variant="body2">
+            <Markdown>{description}</Markdown>
+          </Typography>
           <SectionSpacer half />
           <Typography variant="h6">{t('aspect-templates.default-description')}</Typography>
-          <Typography variant="body2">{defaultDescription}</Typography>
+          <Typography variant="body2">
+            <Markdown>{defaultDescription}</Markdown>
+          </Typography>
           <SectionSpacer half />
           <Typography variant="h6">{t('common.tags')}</Typography>
           <TagsComponent tags={tags || []} />

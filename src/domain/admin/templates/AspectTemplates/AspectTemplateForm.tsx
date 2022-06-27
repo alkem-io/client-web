@@ -76,7 +76,7 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
                 <FormikInputField name="type" title={t('aspect-edit.type.title')} />
               </FormRow>
               <FormRow>
-                <FormikInputField name="description" title={t('common.description')} rows={3} multiline />
+                <MarkdownInput name="description" label={t('common.description')} />
               </FormRow>
               <FormRow>
                 <MarkdownInput name="defaultDescription" label={t('aspect-templates.default-description')} />
