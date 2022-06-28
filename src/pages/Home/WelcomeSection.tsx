@@ -23,7 +23,7 @@ const WelcomeSection = () => {
         lineHeight={theme.spacing(4)}
         sx={{
           marginTop: theme.spacing(2),
-          [`${theme.breakpoints.only('lg')}`]: {
+          [theme.breakpoints.only('lg')]: {
             marginLeft: '4em',
             marginRight: '4em',
           },
