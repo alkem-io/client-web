@@ -6,10 +6,11 @@ import SectionSpacer from './SectionSpacer';
 const useNormalStyles = makeStyles(theme => ({
   bannerContainer: {
     height: theme.spacing(12),
-    objectFit: 'cover',
     background: theme.palette.neutralMedium.light,
   },
   bannerImage: {
+    height: theme.spacing(12),
+    objectFit: 'cover',
     width: '100%',
   },
   section: {
