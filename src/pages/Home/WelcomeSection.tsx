@@ -17,11 +17,11 @@ const WelcomeSection = () => {
       <BannerImage />
       <Typography
         variant="h1"
+        textAlign="center"
+        fontSize={theme.typography.h6.fontSize}
+        fontWeight="bold"
+        lineHeight={theme.spacing(4)}
         sx={{
-          textAlign: 'center',
-          fontSize: theme.typography.h6.fontSize,
-          fontWeight: 'bold',
-          lineHeight: theme.spacing(4),
           marginTop: theme.spacing(2),
         }}
       >
