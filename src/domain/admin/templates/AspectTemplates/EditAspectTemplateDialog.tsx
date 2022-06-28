@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import AspectTemplateForm, { AspectTemplateFormSubmittedValues, AspectTemplateFormValues } from './AspectTemplateForm';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
-import { Button, DialogProps } from '@mui/material';
+import { DialogProps } from '@mui/material';
 import DeleteButton from '../../../shared/components/DeleteButton';
+import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 
 interface EditAspectTemplateDialogProps {
   open: boolean;
@@ -47,14 +48,12 @@ const EditAspectTemplateDialog = ({
         initialValues={values}
         visual={aspectTemplate.info.visual}
         onSubmit={onSubmit}
-        actions={({ isValid }) => (
+        actions={
           <>
             <DeleteButton onClick={onDelete} />
-            <Button variant="contained" type="submit" disabled={!isValid}>
-              {t('common.update')}
-            </Button>
+            <FormikSubmitButton variant="contained">{t('common.update')}</FormikSubmitButton>
           </>
-        )}
+        }
       />
     </Dialog>
   );

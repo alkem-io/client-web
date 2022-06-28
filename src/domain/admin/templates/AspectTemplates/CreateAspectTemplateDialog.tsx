@@ -1,8 +1,9 @@
-import { Button, DialogProps } from '@mui/material';
+import { DialogProps } from '@mui/material';
 import AspectTemplateForm, { AspectTemplateFormSubmittedValues, AspectTemplateFormValues } from './AspectTemplateForm';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
+import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 
 interface CreateAspectTemplateDialogProps {
   open: boolean;
@@ -26,11 +27,7 @@ const CreateAspectTemplateDialog = ({ open, onClose, onSubmit }: CreateAspectTem
         title={t('common.create-new-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
         onSubmit={onSubmit}
-        actions={({ isValid }) => (
-          <Button variant="contained" type="submit" disabled={!isValid}>
-            {t('common.create')}
-          </Button>
-        )}
+        actions={<FormikSubmitButton variant="contained">{t('common.create')}</FormikSubmitButton>}
       />
     </Dialog>
   );
