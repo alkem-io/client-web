@@ -1,8 +1,7 @@
 import { Box, styled } from '@mui/material';
 
-const BannerImageElement = styled('div')(({ theme }) => ({
+const BannerImageElement = styled(Box)(({ theme }) => ({
   background: theme.palette.neutralMedium.light,
-  display: 'block',
 }));
 
 const BannerImage = () => {
