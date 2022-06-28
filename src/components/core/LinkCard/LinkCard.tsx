@@ -1,23 +1,21 @@
 import { Card, CardProps } from '@mui/material';
-import React, { FC, useState } from 'react';
-import { FINAL_ELEVATION, INITIAL_ELEVATION } from '../../../models/constants';
+import React, { FC } from 'react';
 import ConditionalLink from '../ConditionalLink';
+import withElevationOnHover from '../../../domain/shared/components/withElevationOnHover';
 
 interface LinkCardProps extends CardProps {
   to?: string;
+  elevationDisabled?: boolean;
 }
 
-const LinkCard: FC<LinkCardProps> = ({ to, ...rest }) => {
-  const [elevation, setElevation] = useState(INITIAL_ELEVATION);
+const ElevatedCard = withElevationOnHover(Card);
+
+const LinkCard: FC<LinkCardProps> = ({ to, elevationDisabled = false, ...rest }) => {
   return (
     <ConditionalLink condition={!!to} to={to}>
-      <Card
-        elevation={elevation}
-        onMouseOver={() => setElevation(FINAL_ELEVATION)}
-        onMouseOut={() => setElevation(INITIAL_ELEVATION)}
-        {...rest}
-      />
+      <ElevatedCard {...rest} elevationDisabled={elevationDisabled} />
     </ConditionalLink>
   );
 };
+
 export default LinkCard;

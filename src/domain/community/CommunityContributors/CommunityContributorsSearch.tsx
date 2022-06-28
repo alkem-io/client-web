@@ -1,5 +1,5 @@
 import React, { FC, useCallback } from 'react';
-import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import SearchTagsInput, { CardFilterInputProps } from '../../shared/components/SearchTagsInput/SearchTagsInput';
 import { useTranslation } from 'react-i18next';
 

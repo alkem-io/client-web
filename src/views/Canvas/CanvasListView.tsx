@@ -2,7 +2,7 @@ import { Add } from '@mui/icons-material';
 import { Button, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import CanvasList from '../../components/composite/lists/Canvas/CanvasList';
 import { CanvasWithoutValue } from '../../models/entities/canvas';
 import { ViewProps } from '../../models/view';

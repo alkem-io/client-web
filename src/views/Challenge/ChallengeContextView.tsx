@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import LifecycleState from '../../components/composite/entities/Lifecycle/LifecycleState';
 import ContextSection from '../../components/composite/sections/ContextSection';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import {
   Context,

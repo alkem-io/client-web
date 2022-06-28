@@ -1,6 +1,6 @@
 import { OrganizationCardFragment, OrganizationVerificationEnum } from '../../../models/graphql-schema';
 import { OrganizationCardProps } from '../../../components/composite/common/cards/Organization/OrganizationCard';
-import getActivityCount from '../../../utils/get-activity-count';
+import getActivityCount from '../../activity/utils/getActivityCount';
 import { getUserCardRoleNameKey, UserMetadata, useUserContext } from '../../../hooks';
 import { buildOrganizationUrl } from '../../../utils/urlBuilders';
 import { Identifiable } from '../../shared/types/Identifiable';
@@ -21,7 +21,7 @@ export const toOrganizationCardProps = (
     avatar: org.profile.avatar?.uri,
     description: org.profile.description,
     role: roleName && t(roleName),
-    membersCount: getActivityCount(org.activity ?? [], 'members') ?? 0,
+    membersCount: getActivityCount(org.activity ?? [], 'members'),
     verified: org.verification.status === OrganizationVerificationEnum.VerifiedManualAttestation,
     url: buildOrganizationUrl(org.nameID),
   };

@@ -5,7 +5,7 @@ import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { useChallenge, useHub, useOpportunity } from '../../../hooks';
 import CommunityAdminView from '../community/views/CommunityAdminView';
-import { SectionSpacer } from '../../../components/core/Section/Section';
+import { SectionSpacer } from '../../shared/components/Section/Section';
 import { Loading } from '../../../components/core';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
 import AdminCommunityOrganizationsView from '../challenge/views/AdminCommunityOrganizationsView';

@@ -44,4 +44,5 @@ const EditVisualsView: FC<EditVisualsViewProps> = ({ visuals }) => {
     </>
   );
 };
+
 export default EditVisualsView;

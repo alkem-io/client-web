@@ -7,7 +7,7 @@ import { useEventOnApplicationMutation } from '../../../../hooks/generated/graph
 import { ApplicationInfoFragment } from '../../../../models/graphql-schema';
 import { ApplicationDialog } from '../../../../components/composite';
 import { Box } from '@mui/material';
-import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 
 interface ApplicationViewmodel {
   id: string;

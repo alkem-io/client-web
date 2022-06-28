@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
-import DashboardGenericSection, { DashboardGenericSectionProps } from '../../common/sections/DashboardGenericSection';
+import DashboardGenericSection, {
+  DashboardGenericSectionProps,
+} from '../../../../domain/shared/components/DashboardSections/DashboardGenericSection';
 
 type ContextSectionSectionSize = 'medium' | 'large';
 

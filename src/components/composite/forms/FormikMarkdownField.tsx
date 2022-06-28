@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import React, { FC, useMemo } from 'react';
-import { FormGroup, FormHelperText, InputLabel, InputProps } from '@mui/material';
+import React, { ComponentType, FC, useMemo } from 'react';
+import { FormGroup, FormHelperText, InputLabel, InputLabelProps, InputProps } from '@mui/material';
 import MDEditor from '@uiw/react-md-editor';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
@@ -34,6 +34,7 @@ interface MarkdownFieldProps extends InputProps {
   autoComplete?: string;
   rows?: number;
   loading?: boolean;
+  inputLabelComponent?: ComponentType<InputLabelProps>;
 }
 
 export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
@@ -47,6 +48,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   autoComplete,
   rows = 10,
   loading,
+  inputLabelComponent: InputLabelComponent = InputLabel,
 }) => {
   const styles = useStyle();
   const [field, meta, helper] = useField(name);
@@ -59,7 +61,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   return (
     <FormGroup>
       <div className={styles.withTooltipIcon}>
-        {title && <InputLabel required={required}>{title}</InputLabel>}
+        {title && <InputLabelComponent required={required}>{title}</InputLabelComponent>}
         {tooltipTitle && (
           <Tooltip title={tooltipTitle} arrow placement="top" aria-label={`tooltip-${title}`}>
             <InfoIcon fontSize="inherit" color="primary" />

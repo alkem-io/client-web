@@ -8,13 +8,13 @@ import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
-import getActivityCount from '../../utils/get-activity-count';
-import { ActivityType } from '../../models/constants';
+import getActivityCount from '../../domain/activity/utils/getActivityCount';
+import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
-import { EntityDashboardContributorsSectionProps } from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import useMembersAsContributors from '../../domain/community/utils/useMembersAsContributors';
+import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
+import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 
-export interface ChallengeContainerEntities extends EntityDashboardContributorsSectionProps {
+export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
   hubNameId: string;
   hubDisplayName: string;
@@ -72,17 +72,17 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
       {
         name: t('common.opportunities'),
         type: ActivityType.Opportunity,
-        count: getActivityCount(_activity, 'opportunities') || 0,
+        count: getActivityCount(_activity, 'opportunities'),
         color: 'primary',
       },
       {
         name: t('common.projects'),
-        count: getActivityCount(_activity, 'projects') || 0,
+        count: getActivityCount(_activity, 'projects'),
         color: 'positive',
       },
       {
         name: t('common.members'),
-        count: getActivityCount(_activity, 'members') || 0,
+        count: getActivityCount(_activity, 'members'),
         color: 'neutralMedium',
       },
     ];
@@ -91,7 +91,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
-  const contributors = useMembersAsContributors(_challenge?.hub.challenge.community);
+  const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
 
   return (
     <>

@@ -11,8 +11,8 @@ export interface UserMembershipPageProps extends PageProps {}
 const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { pathname: url } = useResolvedPath('.');
-  const { userId = '' } = useUrlParams();
-  const { user: userMetadata, loading } = useUserMetadata(userId);
+  const { userNameId = '' } = useUrlParams();
+  const { user: userMetadata, loading } = useUserMetadata(userNameId);
 
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'membership', real: true }], [url, paths]);
   useUpdateNavigation({ currentPaths });

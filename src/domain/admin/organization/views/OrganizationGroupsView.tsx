@@ -6,7 +6,7 @@ import { useDeleteGroupMutation, useOrganizationGroupsQuery } from '../../../../
 import { SearchableListItem } from '../../../../components/Admin/SearchableList';
 import removeFromCache from '../../../shared/utils/apollo-cache/removeFromCache';
 import { useResolvedPath } from 'react-router-dom';
-import DashboardGenericSection from '../../../../components/composite/common/sections/DashboardGenericSection';
+import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
 
 export const OrganizationGroupsView: FC = () => {

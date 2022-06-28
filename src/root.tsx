@@ -10,7 +10,7 @@ import { NavigationProvider } from './context/NavigationProvider';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import ServerMetadataProvider from './context/ServerMetadataProvider';
 import { ThemeProvider } from './context/ThemeProvider';
-import { UserProvider } from './context/UserProvider';
+import { UserProvider } from './domain/user/providers/UserProvider/UserProvider';
 import './i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
@@ -23,7 +23,7 @@ export const privateGraphQLEndpoint = domain + '/api/private/graphql';
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
     '*::-webkit-scrollbar': {
-      width: '0.4em',
+      width: 'max(.75vw, 0.5em)',
     },
     '*::-webkit-scrollbar-track': {
       '-webkit-box-shadow': 'inset 0 0 6px #c3c3c3',
@@ -40,12 +40,9 @@ const useGlobalStyles = makeStyles(theme => ({
       fontFamily: '"Source Sans Pro", "Montserrat"',
     },
     '#root': {
-      height: '100%',
-    },
-    '#app': {
-      height: '100%',
       minHeight: '100%',
       display: 'flex',
+      flexDirection: 'column',
     },
     '#main': {
       display: 'flex',
@@ -55,10 +52,12 @@ const useGlobalStyles = makeStyles(theme => ({
     },
   },
 }));
+
 const GlobalStyles: FC = ({ children }) => {
   useGlobalStyles();
   return <>{children}</>;
 };
+
 const Root: FC = () => {
   return (
     <StyledEngineProvider injectFirst>

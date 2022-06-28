@@ -131,7 +131,7 @@
     },
     "verified-status": {
       "verified": "Geverifieerd",
-      "not-verified": "Niet geverifieerd"
+      "not-verified": ""
     },
     "enums": {
       "authorization-credentials": {
@@ -348,7 +348,7 @@
     },
     "organization-verified": {
       "verified": "Geverifieerd",
-      "not-verified": "Niet geverifieerd"
+      "not-verified": ""
     },
     "card-filter": {
       "title": "Filter"
@@ -785,20 +785,6 @@
           "subheader": "Challenges centraal stellen. <br>Iedereen toestaan om bij te dragen. <br>Connecties mogelijk maken en capaciteiten vinden.",
           "body": "Het potentieel van de community verwezelijken. Een betere toekomst bouwen, samen.",
           "join": "Deelnemen aan de community en meer zien?"
-        },
-        "interested-in-collaboration": {
-          "header": "Wat kun jij met Alkemio?",
-          "innovation-facilitator": "Ben je een drijfveer voor Innovatie binnen uw community of organisatie?<br/>Neem <feedback> contact op </feedback> zodat we een een-op-een sessie kunnen plannen!",
-          "suggestions": "Heb je suggesties voor Challenges waar Alkemio aan kan bijdragen?<br/>Deel het op onze <discussions>discussies</discussions> en neem deel aan de community!",
-          "contributor": "Wil je een bijdrage of ondersteuning leveren aan Alkemio? <br/>100% <github>open source</github>. Gedragen door een <website>non-profit stichting</website>."
-        },
-        "getting-started": {
-          "header": "Aan de slag",
-          "subheader": "Hier zijn wat suggesties om je op gang te krijgen.",
-          "connecting-with-people": "Wil je zien wie bijdraagt? Verken alle <contributors>bijdragers</contributors>.",
-          "introduction-video": "Wil je het platform gaan gebruiken? Kijk dan eerst <video>deze demonstratie video</video>!",
-          "joining-a-challenge": "Gemotiveerd om deel te nemen aan een Challenge? Verken alle <challenges>Challenges</challenges>.",
-          "your-profile": "Belangstelling om gevonden te worden door andere bijdragers? Vul uw <profile>profiel in</profile>."
         },
         "hub": {
           "header": "Verken de Challenge Hubs!",

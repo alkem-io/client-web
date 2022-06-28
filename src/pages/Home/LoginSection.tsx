@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardLoginSection from '../../components/composite/common/sections/DashboardLoginSection';
+import DashboardLoginSection from '../../domain/shared/components/DashboardSections/DashboardLoginSection';
 
 const LoginSection = () => {
   const { t } = useTranslation();

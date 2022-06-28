@@ -1,9 +1,9 @@
 import React from 'react';
 import { styled } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { ReactComponent as LogoPreview } from './logo-preview.svg';
+import { ReactComponent as LogoImage } from './logo-preview.svg';
 
-const Logo = styled(LogoPreview)(({ theme }) => ({
+const Logo = styled(LogoImage)(({ theme }) => ({
   height: theme.spacing(5),
 }));
 

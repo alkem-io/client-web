@@ -30,7 +30,6 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   const navigateToEdit = useNavigateToEdit();
   const notify = useNotification();
   const handleError = useApolloErrorHandler();
-  const onSuccess = (message: string) => notify(message, 'success');
 
   const { challengeId } = useChallenge();
 
@@ -40,13 +39,13 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
     refetchQueries: [refetchOpportunitiesQuery({ hubId: hubNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
     onCompleted: data => {
-      onSuccess('Successfully created');
+      notify(t('pages.admin.opportunity.notifications.opportunity-created'), 'success');
       navigateToEdit(data.createOpportunity.nameID);
     },
     onError: handleError,
   });
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
-    onCompleted: () => onSuccess('Successfully updated'),
+    onCompleted: () => notify(t('pages.admin.opportunity.notifications.opportunity-updated'), 'success'),
     onError: handleError,
     refetchQueries: [refetchOpportunityProfileInfoQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,

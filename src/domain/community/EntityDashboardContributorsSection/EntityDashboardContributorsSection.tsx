@@ -1,28 +1,17 @@
-import DashboardGenericSection from '../../../components/composite/common/sections/DashboardGenericSection';
-import { useTranslation } from 'react-i18next';
-import SectionHeader from '../../../components/core/Section/SectionHeader';
 import React from 'react';
-import { Grid } from '@mui/material';
-import { WithId } from '../../../types/WithId';
-import {
-  ContributorCard,
-  ContributorCardProps,
-} from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
-import { SectionSpacer } from '../../../components/core/Section/Section';
-
-export interface EntityDashboardContributorsSectionProps {
-  memberUsers: WithId<ContributorCardProps>[] | undefined;
-  memberUsersCount: number | undefined;
-  memberOrganizations: WithId<ContributorCardProps>[] | undefined;
-  memberOrganizationsCount: number | undefined;
-}
+import { useTranslation } from 'react-i18next';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
+import { SectionSpacer } from '../../shared/components/Section/Section';
+import { EntityDashboardContributors } from './Types';
+import DashboardContributingUsers from './DashboardContributingUsers';
+import DashboardContributingOrganizations from './DashboardContributingOrganizations';
 
 const EntityDashboardContributorsSection = ({
   memberUsers,
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
-}: EntityDashboardContributorsSectionProps) => {
+}: EntityDashboardContributors) => {
   const { t } = useTranslation();
 
   return (
@@ -31,31 +20,13 @@ const EntityDashboardContributorsSection = ({
       navText={t('buttons.see-more')}
       navLink="community"
     >
-      <SectionHeader text={memberUsersCount ? `${t('common.users')} (${memberUsersCount})` : t('common.users')} />
-      <SectionSpacer />
-      <Grid container spacing={2}>
-        {memberUsers?.map(user => (
-          <Grid key={user.id} item xs={3}>
-            <ContributorCard {...user} />
-          </Grid>
-        ))}
-      </Grid>
+      <DashboardContributingUsers headerText={t('common.users')} users={memberUsers} usersCount={memberUsersCount} />
       <SectionSpacer double />
-      <SectionHeader
-        text={
-          memberOrganizationsCount
-            ? `${t('common.organizations')} (${memberOrganizationsCount})`
-            : t('common.organizations')
-        }
+      <DashboardContributingOrganizations
+        headerText={t('common.organizations')}
+        organizations={memberOrganizations}
+        organizationsCount={memberOrganizationsCount}
       />
-      <SectionSpacer />
-      <Grid container spacing={2}>
-        {memberOrganizations?.map(org => (
-          <Grid key={org.id} item xs={3}>
-            <ContributorCard key={org.id} {...org} />
-          </Grid>
-        ))}
-      </Grid>
     </DashboardGenericSection>
   );
 };

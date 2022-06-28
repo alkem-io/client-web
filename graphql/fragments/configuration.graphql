@@ -21,6 +21,9 @@ fragment Configuration on Config {
     security
     support
     terms
+    impact
+    foundation
+    opensource
     featureFlags {
       enabled
       name
@@ -30,14 +33,5 @@ fragment Configuration on Config {
     enabled
     endpoint
     submitPII
-  }
-  template {
-    hubs {
-       aspects {
-          type
-          defaultDescription
-          typeDescription
-       }
-    }
   }
 }

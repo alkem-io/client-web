@@ -13,7 +13,7 @@ import ContributingUsers from '../../domain/community/CommunityContributors/Cont
 import useSearchAcrossMultipleLists from '../../domain/shared/utils/useSearchAcrossMultipleLists';
 import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
 import { organizationCardValueGetter } from './ChallengeCommunityPage';
-import { SectionSpacer } from '../../components/core/Section/Section';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import CommunityContributorsSearch from '../../domain/community/CommunityContributors/CommunityContributorsSearch';
 
 const HubCommunityPage: FC<PageProps> = ({ paths }) => {

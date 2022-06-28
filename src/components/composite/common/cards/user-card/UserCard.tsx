@@ -6,18 +6,11 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import makeStyles from '@mui/styles/makeStyles';
-import React, { FC, useState } from 'react';
-import TagsComponent from '../../TagsComponent/TagsComponent';
+import React, { FC } from 'react';
+import TagsComponent from '../../../../../domain/shared/components/TagsComponent/TagsComponent';
 import Skeleton from '@mui/material/Skeleton';
 import ConditionalLink from '../../../../core/ConditionalLink';
-
-// todo: unify card height on a later stage
-// Per requirements in {@link https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/}
-export const USER_CARD_HEIGHT = 416;
-const TAG_CONTAINER_HEIGHT = 72;
-const TAG_DISPLAY_COUNT = 3;
-const INITIAL_ELEVATION = 1;
-const FINAL_ELEVATION = 8;
+import withElevationOnHover from '../../../../../domain/shared/components/withElevationOnHover';
 
 // css per design -> https://xd.adobe.com/view/8ecaacf7-2a23-48f4-b954-b61e4b1e0e0f-db99/specs/
 const useStyles = makeStyles(theme => ({
@@ -41,11 +34,6 @@ const useStyles = makeStyles(theme => ({
       paddingBottom: 0,
     },
   },
-  tagBoxSize: {
-    height: TAG_CONTAINER_HEIGHT,
-    display: 'flex',
-    flexDirection: 'column-reverse',
-  },
   infoRowHeight: {
     height: (theme.typography.body1.fontSize as number) * (theme.typography.body1.lineHeight as number),
   },
@@ -67,6 +55,8 @@ export interface UserCardProps {
   loading?: boolean;
 }
 
+const ElevatedCard = withElevationOnHover(Card);
+
 const UserCard: FC<UserCardProps> = ({
   avatarSrc,
   displayName = '',
@@ -79,15 +69,9 @@ const UserCard: FC<UserCardProps> = ({
 }) => {
   const styles = useStyles();
   const location = [city, country].filter(x => !!x).join(', ');
-  const [elevation, setElevation] = useState(INITIAL_ELEVATION);
   return (
     <ConditionalLink condition={!!url} to={url} aria-label="user-card">
-      <Card
-        elevation={elevation}
-        onMouseOver={() => setElevation(FINAL_ELEVATION)}
-        onMouseOut={() => setElevation(INITIAL_ELEVATION)}
-        className={styles.card}
-      >
+      <ElevatedCard className={styles.card}>
         <Box padding={0.8} paddingBottom={1.5}>
           <div className={styles.imageContainer}>
             {loading ? (
@@ -123,18 +107,12 @@ const UserCard: FC<UserCardProps> = ({
                 />
               </Grid>
               <Grid item xs={12} display="flex">
-                <TagsComponent
-                  tags={tags}
-                  count={TAG_DISPLAY_COUNT}
-                  className={styles.tagBoxSize}
-                  keepInRow
-                  loading={loading}
-                />
+                <TagsComponent tags={tags} loading={loading} />
               </Grid>
             </Grid>
           </CardContent>
         </Box>
-      </Card>
+      </ElevatedCard>
     </ConditionalLink>
   );
 };

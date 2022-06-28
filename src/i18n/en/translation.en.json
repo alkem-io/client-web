@@ -64,6 +64,11 @@
     "remove": "Remove",
     "comment": "Comment",
     "comments": "Comments",
+    "create": "Create",
+    "create-new": "Create new",
+    "create-new-entity": "Create new {{entity}}",
+    "description": "Description",
+    "edit-entity": "Edit {{entity}}",
     "email": "Email",
     "state": "State",
     "aspect": "Aspect",
@@ -82,6 +87,7 @@
     "interests": "Interests",
     "project": "Project",
     "projects": "Projects",
+    "templates": "Templates",
     "group": "Group",
     "groups": "Groups",
     "user-group": "User group",
@@ -124,6 +130,7 @@
     "questions": "Questions",
     "show-all": "Show all",
     "title": "Title",
+    "warning": "Warning",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -131,7 +138,7 @@
     },
     "verified-status": {
       "verified": "Verified",
-      "not-verified": "Not verified"
+      "not-verified": ""
     },
     "enums": {
       "authorization-credentials": {
@@ -248,7 +255,9 @@
     "leading-users": "Leading Users",
     "member-users": "Member Users",
     "leading-organizations": "Leading Organizations",
-    "member-organizations": "Member Organizations"
+    "member-organizations": "Member Organizations",
+    "leads": "Leads",
+    "host": "Host"
   },
   "forms": {
     "validations": {
@@ -259,7 +268,15 @@
       "nonBlank": "{{field}} must not consist of just spaces"
     }
   },
+  "aspect-templates": {
+    "aspect-template": "Aspect template",
+    "default-description": "Default aspect description",
+    "banner-narrow": "Banner narrow"
+  },
   "components": {
+    "activity-tooltip": {
+      "headline": "Alkemio is growing! In total, the platform now hosts:"
+    },
     "context-section": {
       "create-aspect": "Successfully created the aspect",
       "give-feedback": "Give feedback"
@@ -360,7 +377,7 @@
     },
     "organization-verified": {
       "verified": "Verified",
-      "not-verified": "Not verified"
+      "not-verified": ""
     },
     "card-filter": {
       "title": "Filter"
@@ -464,7 +481,8 @@
     },
     "card": {
       "member": "Member",
-      "private": "Private"
+      "private": "Private",
+      "lead": "Lead"
     },
     "errorblock": {
       "message": "Sorry, an error occurred while loading {{blockName}}."
@@ -672,6 +690,12 @@
           },
           "authorization": {
             "description": "Here you can tweak authorization settings for this {{entity}}."
+          },
+          "templates": {
+            "description": "Here you can create and edit Aspect and Canvas templates for this {{entity}}.",
+            "aspect-templates": "Aspect Templates",
+            "canvas-templates": "Canvas Templates",
+            "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template."
           }
         }
       },
@@ -681,6 +705,10 @@
             "title": "Authorization",
             "subtitle": "This section allows you to modify the organizations authorization"
           }
+        },
+        "notifications": {
+          "organization-created": "Organization created successfully.",
+          "organization-removed": "Organization removed successfully."
         }
       },
       "challenge": {
@@ -694,6 +722,11 @@
           "opportunities": {
             "description": "Here you can edit opportunities for this hub."
           }
+        },
+        "notifications": {
+          "challenge-created": "Challenge created successfully.",
+          "challenge-removed": "Challenge removed successfully.",
+          "challenge-updated": "Challenge updated successfully."
         }
       },
       "hub": {
@@ -712,9 +745,24 @@
             "title": "Membership",
             "subtitle": "This section allows you to modify the $t(common.hub) membership preferences"
           }
+        },
+        "notifications": {
+          "hub-created": "Hub created successfuly.",
+          "hub-removed": "Hub '{{name}}' removed successfully."
         }
       },
-      "opportunity": {}
+      "opportunity": {
+        "notifications": {
+          "opportunity-created": "Opportunity created successfully.",
+          "opportunity-removed": "Opportunity removed successfully.",
+          "opportunity-updated": "Opportunity updated successfully."
+        }
+      },
+      "users": {
+        "notifications": {
+          "user-removed": "User removed successfully."
+        }
+      }
     },
     "feedback": {
       "title": "Give feedback on this community context",
@@ -805,33 +853,45 @@
     "home": {
       "sections": {
         "welcome": {
-          "header": "Where Open Innovation Happens",
-          "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Realising society's potential. Building a better future, together.",
-          "join": "Want to join the community and see more?"
-        },
-        "interested-in-collaboration": {
-          "header": "Alkemio and You",
-          "innovation-facilitator": "Driving Innovation in your community or organization?<br/>Please <feedback>reach out</feedback> and we can schedule a one-on-one session!",
-          "suggestions": "Have suggestions for Challenges where Alkemio can help?<br/>Please share on our <discussions>discussions</discussions> and join the community!",
-          "contributor": "Want to contribute to or support Alkemio? <br/>100% <github>open source</github>. Backed by a <website>non-profit foundation</website>."
-        },
-        "getting-started": {
-          "header": "Getting Started",
-          "subheader": "Here are some suggestions to help get you up to speed.",
-          "joining-a-challenge": "Eager to join a Challenge? Explore all <challenges>Challenges</challenges>.",
-          "introduction-video": "Want to start using the platform? Watch this <video>demonstration video</video>.",
-          "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' >contributors</a>.",
-          "your-profile": "Keen to be found by other contributors? Fill out your <profile>profile</profile>."
+          "head": "A new way of working on Challenges, together. Building a community of people, companies, NGOs and public bodies.",
+          "impact": "<impact>Impact</impact>",
+          "foundation": "<foundation>Foundation</foundation>",
+          "opensource": "<opensource>Open Source</opensource>",
+          "welcome-back": "Welcome back {{username}}!",
+          "join": "Want to join the community and see more?",
+          "existing-user": {
+            "header": "Existing user? Jump back in!",
+            "subheader": "Welcome back! Continue where you left off and start exploring new challenges.",
+            "more-info": "More about alkemio",
+            "more-info-url": "/about"
+          },
+          "new-to-alkemio": {
+            "header": "New to Alkemio?",
+            "subheader": "Easy for everyone to engage in effective and meaningful ways, enabling you to manage your Challenges and have impact.",
+            "more-info": "Watch demo video",
+            "more-info-url": "https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO"
+          }
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
           "body": "A Hub can be Public or Private, and has a facilitating Organization."
         },
+        "my-hubs": {
+          "header": "My Hubs",
+          "subheader": "This section show you the Hubs that you are a member of."
+        },
         "organizations": {
           "header": "Organizations",
           "subheader": "The entities that want to bring innnovation."
+        },
+        "footer": {
+          "headline": "More about Alkemio? Visit our website, contact us or take a look at our Github repository",
+          "links": {
+            "foundation": "Alkemio Foundation",
+            "contact-form": "Contact Form",
+            "github": "GitHub"
+          }
         }
       }
     },
