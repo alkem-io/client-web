@@ -99,13 +99,11 @@ const TagsComponent: FC<Props> = ({ tags, tagsFor, count = 3, className, loading
 
   return (
     <div className={className}>
-      {tags.length === 0 &&
-        !loading &&
-        wrapped(
-          <Typography color="neutral.main" variant="subtitle2">
-            {t('components.tags-component.no-tags', { name: tagsFor || 'item' })}
-          </Typography>
-        )}
+      {tags.length === 0 && !loading && (
+        <Typography color="neutral.main" variant="subtitle2">
+          {t('components.tags-component.no-tags', { name: tagsFor || 'item' })}
+        </Typography>
+      )}
       {loading
         ? wrapped(
             new Array(count).fill('').map((x, i) => (
