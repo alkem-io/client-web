@@ -18,7 +18,7 @@ const BannerImage = () => {
   return (
     <>
       {Object.keys(sizes).map(size => (
-        <Box sx={sizes[size]}>
+        <Box sx={sizes[size]} key={`banner-image-${size}`}>
           <BannerImageElement
             style={{
               backgroundImage: `url('./alkemio-banner/alkemio-banner-${size}.png')`,
