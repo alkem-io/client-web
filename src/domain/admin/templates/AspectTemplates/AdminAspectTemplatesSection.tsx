@@ -137,12 +137,15 @@ const AdminAspectTemplatesSection = ({
         onClose={closeCreateAspectTemplateDialog}
         onSubmit={handleAspectTemplateCreation}
       />
-      <EditAspectTemplateDialog
-        open={!!aspectTemplate && edit}
-        onClose={onCloseAspectTemplateDialog}
-        aspectTemplate={aspectTemplate!}
-        onSubmit={handleAspectTemplateUpdate}
-      />
+      {aspectTemplate && (
+        <EditAspectTemplateDialog
+          open={edit}
+          onClose={onCloseAspectTemplateDialog}
+          aspectTemplate={aspectTemplate}
+          onSubmit={handleAspectTemplateUpdate}
+          onDelete={() => setDeletingAspectTemplateId(aspectTemplate.id)}
+        />
+      )}
       {aspectTemplate && (
         <AspectTemplateView
           open={!edit}
@@ -153,7 +156,6 @@ const AdminAspectTemplatesSection = ({
           defaultDescription={aspectTemplate.defaultDescription}
           tags={aspectTemplate.info.tagset?.tags}
           onClose={onCloseAspectTemplateDialog}
-          onDelete={() => setDeletingAspectTemplateId(aspectTemplate.id)}
           {...buildAspectTemplateEditLink(aspectTemplate)}
         />
       )}

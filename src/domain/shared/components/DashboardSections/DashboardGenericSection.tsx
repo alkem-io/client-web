@@ -26,6 +26,8 @@ export interface DashboardGenericSectionProps {
       maxHeight: number;
     };
   };
+  sideBanner?: boolean;
+  sideBannerRight?: boolean;
 }
 
 const relativeLinkRegex = /^\.+\//;
@@ -59,6 +61,8 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   classes,
   options,
   children,
+  sideBanner,
+  sideBannerRight,
 }) => {
   const navLinkIsRelative = navLink && navLink.search(relativeLinkRegex) > -1;
   const cleanNavLink = navLink && !navLinkIsRelative ? navLink.replace(relativeLinkRegex, '') : navLink;
@@ -68,7 +72,14 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   const styles = useStyles();
 
   return (
-    <Section bannerUrl={bannerUrl} classes={classes} alwaysShowBanner={alwaysShowBanner} bannerOverlay={bannerOverlay}>
+    <Section
+      bannerUrl={bannerUrl}
+      classes={classes}
+      alwaysShowBanner={alwaysShowBanner}
+      bannerOverlay={bannerOverlay}
+      sideBanner={sideBanner}
+      sideBannerRight={sideBannerRight}
+    >
       {headerText && (
         <SectionHeader text={headerText} helpText={helpText}>
           {primaryAction}

@@ -1,16 +1,20 @@
-import React, { ReactNode, useCallback } from 'react';
+import React, { forwardRef, ReactNode, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '../../../../utils/validator';
-import { Form, Formik } from 'formik';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Button, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
-import FormRow from '../../../shared/layout/FormLayout';
+import { Form, Formik, FormikProps } from 'formik';
+import { DialogActions, DialogContent, InputLabel, InputLabelProps, Typography } from '@mui/material';
 import FormikInputField from '../../../../components/composite/forms/FormikInputField';
-import MarkdownInput from '../../../../components/Admin/Common/MarkdownInput';
 import { TagsetField } from '../../../../components/Admin/Common/TagsetSegment';
 import { CreateTemplateInfoInput, Visual } from '../../../../models/graphql-schema';
 import VisualUpload from '../../../../components/composite/common/VisualUpload/VisualUpload';
+import FormRows from '../../../shared/components/FormRows';
+import FormCols from '../../../shared/components/FormCols';
+import FormikMarkdownField from '../../../../components/composite/forms/FormikMarkdownField';
+
+const InputLabelSmall = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => (
+  <InputLabel ref={ref} shrink {...props} sx={{ marginTop: '-0.5rem' }} />
+));
 
 export interface AspectTemplateFormValues {
   title: string;
@@ -31,10 +35,10 @@ interface AspectTemplateFormProps {
   initialValues: Partial<AspectTemplateFormValues>;
   visual?: Visual;
   onSubmit: (values: AspectTemplateFormSubmittedValues) => void;
-  submitButtonText: ReactNode;
+  actions: ReactNode | ((formState: FormikProps<AspectTemplateFormValues>) => ReactNode);
 }
 
-const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, submitButtonText }: AspectTemplateFormProps) => {
+const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }: AspectTemplateFormProps) => {
   const { t } = useTranslation();
 
   const handleSubmit = useCallback((values: Partial<AspectTemplateFormValues>) => {
@@ -58,46 +62,42 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, submitButt
     tags: yup.array().of(yup.string().min(2)),
   });
 
+  const renderActions = typeof actions === 'function' ? actions : () => actions;
+
   return (
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
-      {({ isValid }) => (
+      {formState => (
         <Form>
-          <DialogTitle sx={{ marginTop: theme => theme.spacing(3) }}>
-            <Typography variant="h3">{title}</Typography>
-          </DialogTitle>
+          <Typography variant="h3" sx={{ px: 3, pt: 5 }}>
+            {title}
+          </Typography>
           <DialogContent>
-            <Grid container spacing={2} paddingTop={1}>
-              <FormRow>
+            <FormCols>
+              <FormRows>
                 <FormikInputField name="title" title={t('common.title')} />
-              </FormRow>
-              <FormRow>
-                <FormikInputField name="type" title={t('aspect-edit.type.title')} />
-              </FormRow>
-              <FormRow>
-                <FormikInputField name="description" title={t('common.description')} rows={3} multiline />
-              </FormRow>
-              <FormRow>
-                <MarkdownInput name="defaultDescription" label={t('aspect-templates.default-description')} />
-              </FormRow>
-              <FormRow>
+                <FormikMarkdownField
+                  name="description"
+                  title={t('common.description')}
+                  inputLabelComponent={InputLabelSmall}
+                />
                 <TagsetField
                   name="tags"
                   title={t('common.tags')}
                   helpText={t('components.aspect-creation.info-step.tags-help-text')}
                 />
-              </FormRow>
-              {visual && (
-                <FormRow>
-                  <VisualUpload visual={visual} />
-                </FormRow>
-              )}
-            </Grid>
+                {visual && <VisualUpload visual={visual} />}
+              </FormRows>
+              <FormRows>
+                <FormikInputField name="type" title={t('aspect-edit.type.title')} />
+                <FormikMarkdownField
+                  name="defaultDescription"
+                  title={t('aspect-templates.default-description')}
+                  inputLabelComponent={InputLabelSmall}
+                />
+              </FormRows>
+            </FormCols>
           </DialogContent>
-          <DialogActions sx={{ p: 3 }}>
-            <Button variant="contained" type="submit" disabled={!isValid}>
-              {submitButtonText}
-            </Button>
-          </DialogActions>
+          {actions && <DialogActions sx={{ p: 3 }}>{renderActions(formState)}</DialogActions>}
         </Form>
       )}
     </Formik>
