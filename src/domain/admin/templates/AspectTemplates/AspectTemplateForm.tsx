@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { displayNameValidator } from '../../../../utils/validator';
 import { Form, Formik, FormikProps } from 'formik';
-import DialogTitle from '@mui/material/DialogTitle';
 import { DialogActions, DialogContent, InputLabel, InputLabelProps, Typography } from '@mui/material';
 import FormikInputField from '../../../../components/composite/forms/FormikInputField';
 import { TagsetField } from '../../../../components/Admin/Common/TagsetSegment';
@@ -69,9 +68,9 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
     <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationSchema}>
       {formState => (
         <Form>
-          <DialogTitle sx={{ marginTop: theme => theme.spacing(3) }}>
-            <Typography variant="h3">{title}</Typography>
-          </DialogTitle>
+          <Typography variant="h3" sx={{ px: 3, pt: 5 }}>
+            {title}
+          </Typography>
           <DialogContent>
             <FormCols>
               <FormRows>
