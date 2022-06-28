@@ -9,6 +9,9 @@ export interface Configuration {
     security: string;
     support: string;
     terms: string;
+    impact: string;
+    foundation: string;
+    opensource: string;
     featureFlags: FeatureFlag[];
   };
   sentry: {

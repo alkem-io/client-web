@@ -855,11 +855,8 @@
         "welcome": {
           "head": "A new way of working on Challenges, together. Building a community of people, companies, NGOs and public bodies.",
           "impact": "<impact>Impact</impact>",
-          "impact-url": "https://alkem.io/",
           "foundation": "<foundation>Foundation</foundation>",
-          "foundation-url": "https://alkemio.foundation/",
           "opensource": "<opensource>Open Source</opensource>",
-          "opensource-url": "https://github.com/alkem-io",
           "welcome-back": "Welcome back {{username}}!",
           "join": "Want to join the community and see more?",
           "existing-user": {

@@ -414,6 +414,8 @@ export type CommunicationUpdateMessageReceivedFieldPolicy = {
 export type CommunityKeySpecifier = (
   | 'applications'
   | 'authorization'
+  | 'availableLeadUsers'
+  | 'availableMemberUsers'
   | 'communication'
   | 'displayName'
   | 'groups'
@@ -428,6 +430,8 @@ export type CommunityKeySpecifier = (
 export type CommunityFieldPolicy = {
   applications?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableLeadUsers?: FieldPolicy<any> | FieldReadFunction<any>;
+  availableMemberUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1066,6 +1070,9 @@ export type PlatformKeySpecifier = (
   | 'about'
   | 'featureFlags'
   | 'feedback'
+  | 'foundation'
+  | 'impact'
+  | 'opensource'
   | 'privacy'
   | 'security'
   | 'support'
@@ -1076,6 +1083,9 @@ export type PlatformFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   feedback?: FieldPolicy<any> | FieldReadFunction<any>;
+  foundation?: FieldPolicy<any> | FieldReadFunction<any>;
+  impact?: FieldPolicy<any> | FieldReadFunction<any>;
+  opensource?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   security?: FieldPolicy<any> | FieldReadFunction<any>;
   support?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { TranslateWithElements } from '../../domain/shared/i18n/TranslateWithElements';
 import BannerImage from './BannerImage';
 import HeaderLink from './HeaderLink';
+import { useConfig } from '../../hooks';
 
 const WelcomeSection = () => {
   const { t } = useTranslation();
 
   const tLinks = TranslateWithElements(<HeaderLink />);
   const theme = useTheme();
+  const { platform } = useConfig();
 
   return (
     <>
@@ -40,13 +42,13 @@ const WelcomeSection = () => {
         }}
       >
         {tLinks('pages.home.sections.welcome.impact', {
-          impact: { href: t('pages.home.sections.welcome.impact-url') },
+          impact: { href: platform?.impact },
         })}
         {tLinks('pages.home.sections.welcome.foundation', {
-          foundation: { href: t('pages.home.sections.welcome.foundation-url') },
+          foundation: { href: platform?.foundation },
         })}
         {tLinks('pages.home.sections.welcome.opensource', {
-          opensource: { href: t('pages.home.sections.welcome.opensource-url') },
+          opensource: { href: platform?.opensource },
         })}
       </Box>
     </>
