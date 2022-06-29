@@ -53,20 +53,15 @@ export interface EditMembersProps<Member extends Identifiable> extends Customize
   removingMember: boolean;
   loading: boolean;
   onRemove: (memberId: string) => void; // TODO check usages
-  title?: string;
   isRemoveDisabled?: (member: Member) => boolean;
 }
 
 export const EditMembers = <Member extends Identifiable>({
   members,
-  // availableMembers,
-  // deleteExecutor = false,
-  // executor,
   addingMember,
   removingMember,
   loading,
   onRemove,
-  title,
   header,
   renderRow,
   isRemoveDisabled = () => false,
@@ -78,12 +73,6 @@ export const EditMembers = <Member extends Identifiable>({
 
   return (
     <>
-      {title && (
-        <Box component={Typography} paddingBottom={1} variant="h3">
-          {title}
-        </Box>
-      )}
-      {/*<Grid container spacing={2}>*/}
       <Grid item xs={8}>
         Group members:
         <Filter data={membersData}>
@@ -129,7 +118,6 @@ export const EditMembers = <Member extends Identifiable>({
           )}
         </Filter>
       </Grid>
-      {/*</Grid>*/}
     </>
   );
 };
@@ -183,27 +171,6 @@ export const AvailableMembers = <Member extends Identifiable>({
     loading,
   });
 
-  if (filteredMembers.length === 0) {
-    return (
-      <StyledTableRow>
-        <TableCell colSpan={2}>
-          <Typography>{t('components.edit-members.no-available-members')}</Typography>
-        </TableCell>
-      </StyledTableRow>
-    );
-  }
-
-  if (filteredMembers.length === 0) {
-    // ??????????
-    return (
-      <StyledTableRow>
-        <TableCell colSpan={2}>
-          <Typography>{t('components.edit-members.user-not-found')}</Typography>
-        </TableCell>
-      </StyledTableRow>
-    );
-  }
-
   return (
     <Grid item sm={4}>
       Available users:
@@ -228,6 +195,19 @@ export const AvailableMembers = <Member extends Identifiable>({
                 </TableRow>
               </StyledTableHead>
               <TableBody>
+                {filteredMembers.length === 0 && (
+                  <StyledTableRow>
+                    <TableCell colSpan={2}>
+                      <Typography>
+                        {t(
+                          searchTerm === ''
+                            ? 'components.edit-members.no-available-members'
+                            : 'components.edit-members.user-not-found'
+                        )}
+                      </Typography>
+                    </TableCell>
+                  </StyledTableRow>
+                )}
                 {filteredMembers.map(m => (
                   <StyledTableRow key={m.id}>
                     {onAdd && (
