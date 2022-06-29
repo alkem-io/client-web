@@ -11,7 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import React, { ComponentType, ReactNode, useMemo } from 'react';
+import React, { ComponentType, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../Common/Filter';
 import TableRowLoading from '../../../domain/shared/pagination/TableRowLoading';
@@ -162,17 +162,21 @@ export const AvailableMembers = <Member extends Identifiable>({
 
   const renderHeader = typeof header === 'function' ? header : () => header;
 
-  // const membersData = useMemo<UserDisplayNameFragment[]>(
-  //   () => (loading ? initEmptyMembers() : filteredMembers),
-  //   [loading, filteredMembers]
-  // );
+  const [searchTerm, setSearchTerm] = useState('');
 
   const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
 
-  const handleFilter = useMemo(
-    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onSearchTermChange(e.target.value), FILTER_DEBOUNCE),
+  // TODO debounce upper
+  const onSearchTermChangeDebounced = useMemo(
+    () => debounce(onSearchTermChange, FILTER_DEBOUNCE),
     [onSearchTermChange, FILTER_DEBOUNCE]
   );
+
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
+
+  useEffect(() => {
+    onSearchTermChangeDebounced(searchTerm);
+  }, [searchTerm]);
 
   const lazyLoading = useLazyLoading({
     fetchMore,
@@ -204,8 +208,9 @@ export const AvailableMembers = <Member extends Identifiable>({
     <Grid item sm={4}>
       Available users:
       <TextField
+        value={searchTerm}
         placeholder={t('components.filter.placeholder')}
-        onChange={handleFilter}
+        onChange={handleSearchTermChange}
         size="small"
         fullWidth
         InputLabelProps={{ shrink: true }}
