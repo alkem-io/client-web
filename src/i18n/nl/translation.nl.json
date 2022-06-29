@@ -37,7 +37,8 @@
     "member": "Lid",
     "profile": "Profiel",
     "view-profile": "Bekijk Profiel",
-    "edit-photo": "Pas foto aan"
+    "edit-photo": "Pas foto aan",
+    "accept-all-cookies": ""
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",

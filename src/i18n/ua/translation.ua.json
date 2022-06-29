@@ -36,7 +36,8 @@
     "member": "Учасник",
     "profile": "Профіль",
     "view-profile": "Переглянути профіль",
-    "edit-photo": "Змінити фото"
+    "edit-photo": "Змінити фото",
+    "accept-all-cookies": ""
   },
   "tooltips": {
     "click-more-info": "Нажміть, щоб дізнатись більше",
