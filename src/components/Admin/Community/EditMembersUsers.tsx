@@ -10,8 +10,8 @@ export interface EditMemberUsersProps {
   executorId?: string;
   members: Member[];
   availableMembers: UserDisplayNameFragment[];
-  addingMember?: boolean;
-  removingMember?: boolean;
+  addingMember?: boolean; // TODO make required
+  removingMember?: boolean; // TODO make required
   loadingAvailableMembers?: boolean;
   loadingMembers?: boolean;
   onAdd: (memberId: string) => void;

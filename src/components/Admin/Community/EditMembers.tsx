@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce';
-import { Box, Skeleton, TextField, Typography } from '@mui/material';
+import { Skeleton, TableProps, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -20,7 +20,7 @@ import { times } from 'lodash';
 import { Identifiable } from '../../../domain/shared/types/Identifiable';
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
-  background: theme.palette.divider,
+  '& th': { background: theme.palette.divider },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -39,8 +39,13 @@ const StyledButtonRemove = styled(IconButton)(({ theme }) => ({
 
 const initEmptyMembers = <T extends Identifiable>() => times(3, i => ({ id: `__loading_${i}` } as T));
 
-const TABLE_HEIGHT = 600;
 const FILTER_DEBOUNCE = 500;
+
+const ScrollableTable = (props: TableProps) => (
+  <TableContainer sx={{ maxHeight: theme => theme.spacing(75) }}>
+    <Table stickyHeader size="small" {...props} />
+  </TableContainer>
+);
 
 interface CustomizedTable<Item> {
   header: ReactNode | (() => ReactNode);
@@ -79,41 +84,37 @@ export const EditMembers = <Member extends Identifiable>({
           {filteredMembers => (
             <>
               <hr />
-              <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
-                {' '}
-                {/*TODO check if needed*/}
-                <Table size="small">
-                  <StyledTableHead>
-                    <TableRow>
-                      {renderHeader()}
-                      {onRemove && <TableCell />}
-                    </TableRow>
-                  </StyledTableHead>
-                  <TableBody>
-                    {filteredMembers.map(m => {
-                      return (
-                        <StyledTableRow key={m.id}>
-                          {renderRow(m, Cell)}
-                          {onRemove && (
-                            <TableCell align="right">
-                              <Cell>
-                                <StyledButtonRemove
-                                  aria-label="Remove"
-                                  size="small"
-                                  disabled={isRemoveDisabled(m) || addingMember || removingMember}
-                                  onClick={() => onRemove(m.id)}
-                                >
-                                  <RemoveIcon />
-                                </StyledButtonRemove>
-                              </Cell>
-                            </TableCell>
-                          )}
-                        </StyledTableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </Box>
+              <ScrollableTable>
+                <StyledTableHead>
+                  <TableRow>
+                    {renderHeader()}
+                    {onRemove && <TableCell />}
+                  </TableRow>
+                </StyledTableHead>
+                <TableBody>
+                  {filteredMembers.map(m => {
+                    return (
+                      <StyledTableRow key={m.id}>
+                        {renderRow(m, Cell)}
+                        {onRemove && (
+                          <TableCell align="right">
+                            <Cell>
+                              <StyledButtonRemove
+                                aria-label="Remove"
+                                size="small"
+                                disabled={isRemoveDisabled(m) || addingMember || removingMember}
+                                onClick={() => onRemove(m.id)}
+                              >
+                                <RemoveIcon />
+                              </StyledButtonRemove>
+                            </Cell>
+                          </TableCell>
+                        )}
+                      </StyledTableRow>
+                    );
+                  })}
+                </TableBody>
+              </ScrollableTable>
             </>
           )}
         </Filter>
@@ -185,53 +186,49 @@ export const AvailableMembers = <Member extends Identifiable>({
       />
       <>
         <hr />
-        <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
-          <TableContainer>
-            <Table size="small" style={{ position: 'relative' }}>
-              <StyledTableHead>
-                <TableRow>
-                  <TableCell />
-                  {renderHeader()}
-                </TableRow>
-              </StyledTableHead>
-              <TableBody>
-                {filteredMembers.length === 0 && (
-                  <StyledTableRow>
-                    <TableCell colSpan={2}>
-                      <Typography>
-                        {t(
-                          searchTerm === ''
-                            ? 'components.edit-members.no-available-members'
-                            : 'components.edit-members.user-not-found'
-                        )}
-                      </Typography>
-                    </TableCell>
-                  </StyledTableRow>
-                )}
-                {filteredMembers.map(m => (
-                  <StyledTableRow key={m.id}>
-                    {onAdd && (
-                      <TableCell>
-                        <Cell>
-                          <StyledButtonAdd
-                            aria-label="Add"
-                            size="small"
-                            onClick={() => onAdd(m.id)}
-                            disabled={addingMember || removingMember}
-                          >
-                            <AddIcon />
-                          </StyledButtonAdd>
-                        </Cell>
-                      </TableCell>
+        <ScrollableTable>
+          <StyledTableHead>
+            <TableRow>
+              <TableCell />
+              {renderHeader()}
+            </TableRow>
+          </StyledTableHead>
+          <TableBody>
+            {filteredMembers.length === 0 && (
+              <StyledTableRow>
+                <TableCell colSpan={2}>
+                  <Typography>
+                    {t(
+                      searchTerm === ''
+                        ? 'components.edit-members.no-available-members'
+                        : 'components.edit-members.user-not-found'
                     )}
-                    {renderRow(m, Cell)}
-                  </StyledTableRow>
-                ))}
-                {hasMore && <TableRowLoading ref={lazyLoading.ref} colSpan={2} />}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+                  </Typography>
+                </TableCell>
+              </StyledTableRow>
+            )}
+            {filteredMembers.map(m => (
+              <StyledTableRow key={m.id}>
+                {onAdd && (
+                  <TableCell>
+                    <Cell>
+                      <StyledButtonAdd
+                        aria-label="Add"
+                        size="small"
+                        onClick={() => onAdd(m.id)}
+                        disabled={addingMember || removingMember}
+                      >
+                        <AddIcon />
+                      </StyledButtonAdd>
+                    </Cell>
+                  </TableCell>
+                )}
+                {renderRow(m, Cell)}
+              </StyledTableRow>
+            ))}
+            {hasMore && <TableRowLoading ref={lazyLoading.ref} colSpan={2} />}
+          </TableBody>
+        </ScrollableTable>
       </>
     </Grid>
   );
