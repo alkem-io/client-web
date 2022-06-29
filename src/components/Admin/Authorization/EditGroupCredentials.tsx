@@ -6,7 +6,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
-import EditMembers from '../Community/EditMembers';
+import EditMemberUsers from '../Community/EditMembersUsers';
 import { useAvailableMembersWithCredential } from '../../../domain/community/useAvailableMembersWithCredential';
 
 interface EditCredentialsProps {
@@ -70,7 +70,7 @@ export const EditCredentials: FC<EditCredentialsProps> = ({ credential, parentCo
     });
 
   return (
-    <EditMembers
+    <EditMemberUsers
       members={currentMembers}
       availableMembers={availableMembers}
       onAdd={handleAdd}

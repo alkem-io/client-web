@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce';
-import { Box, TextField, Typography } from '@mui/material';
+import { Box, Skeleton, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
@@ -11,12 +11,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import React, { FC, useMemo } from 'react';
+import React, { ComponentType, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Member } from '../../../models/User';
 import { Filter } from '../Common/Filter';
-import { UserDisplayNameFragment } from '../../../models/graphql-schema';
-import { Skeleton } from '@mui/material';
 import TableRowLoading from '../../../domain/shared/pagination/TableRowLoading';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
 import { times } from 'lodash';
@@ -45,55 +42,39 @@ const initEmptyMembers = <T extends Identifiable>() => times(3, i => ({ id: `__l
 const TABLE_HEIGHT = 600;
 const FILTER_DEBOUNCE = 500;
 
-export interface EditMembersProps {
-  deleteExecutor?: boolean;
-  executor?: Member;
-  members: Member[];
-  availableMembers: UserDisplayNameFragment[];
-  addingMember?: boolean;
-  removingMember?: boolean;
-  loadingAvailableMembers?: boolean;
-  loadingMembers?: boolean;
-  onAdd?: (memberId: string) => void;
-  onRemove?: (memberId: string) => void;
-  fetchMore?: (amount?: number) => Promise<void>;
-  onSearchTermChange: (term: string) => void;
-  hasMore?: boolean;
-  title?: string;
+interface CustomizedTable<Item> {
+  header: ReactNode | (() => ReactNode);
+  renderRow: (member: Item, Cell: ComponentType) => ReactNode;
 }
 
-export const EditMembers: FC<EditMembersProps> = ({
+export interface EditMembersProps<Member extends Identifiable> extends CustomizedTable<Member> {
+  members: Member[];
+  addingMember: boolean;
+  removingMember: boolean;
+  loading: boolean;
+  onRemove: (memberId: string) => void; // TODO check usages
+  title?: string;
+  isRemoveDisabled?: (member: Member) => boolean;
+}
+
+export const EditMembers = <Member extends Identifiable>({
   members,
-  availableMembers,
-  deleteExecutor = false,
-  executor,
-  addingMember = false,
-  removingMember = false,
-  loadingAvailableMembers = false,
-  loadingMembers = false,
-  onAdd,
+  // availableMembers,
+  // deleteExecutor = false,
+  // executor,
+  addingMember,
+  removingMember,
+  loading,
   onRemove,
-  fetchMore = () => Promise.resolve(),
-  onSearchTermChange,
-  hasMore = false,
   title,
-}) => {
-  const { t } = useTranslation();
-  const membersData = useMemo<Member[]>(
-    () => (loadingMembers ? initEmptyMembers() : members),
-    [loadingMembers, members]
-  );
-  const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
+  header,
+  renderRow,
+  isRemoveDisabled = () => false,
+}: EditMembersProps<Member>) => {
+  const membersData = useMemo<Member[]>(() => (loading ? initEmptyMembers() : members), [loading, members]);
+  const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
 
-  const handleFilter = useMemo(
-    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onSearchTermChange(e.target.value), FILTER_DEBOUNCE),
-    [onSearchTermChange, FILTER_DEBOUNCE]
-  );
-
-  const lazyLoading = useLazyLoading({
-    fetchMore,
-    loading: loadingAvailableMembers,
-  });
+  const renderHeader = typeof header === 'function' ? header : () => header;
 
   return (
     <>
@@ -102,130 +83,103 @@ export const EditMembers: FC<EditMembersProps> = ({
           {title}
         </Box>
       )}
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
-          Group members:
-          <Filter data={membersData}>
-            {filteredMembers => (
-              <>
-                <hr />
-                <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
-                  <Table size="small">
-                    <StyledTableHead>
-                      <TableRow>
-                        <TableCell>Full Name</TableCell>
-                        <TableCell>First Name</TableCell>
-                        <TableCell>Last Name</TableCell>
-                        <TableCell>Email</TableCell>
-                        {onRemove && <TableCell />}
-                      </TableRow>
-                    </StyledTableHead>
-                    <TableBody>
-                      {filteredMembers.map(m => {
-                        const disableExecutor = m.id === executor?.id && !deleteExecutor;
-                        return (
-                          <StyledTableRow key={m.id}>
-                            <TableCell>
-                              <Cell>{m.displayName}</Cell>
-                            </TableCell>
-                            <TableCell>
-                              <Cell>{m.firstName}</Cell>
-                            </TableCell>
-                            <TableCell>
-                              <Cell>{m.lastName}</Cell>
-                            </TableCell>
-                            <TableCell>
-                              <Cell>{m.email}</Cell>
-                            </TableCell>
-                            {onRemove && (
-                              <TableCell align={'right'}>
-                                <Cell>
-                                  <StyledButtonRemove
-                                    aria-label="Remove"
-                                    size="small"
-                                    disabled={disableExecutor || addingMember || removingMember}
-                                    onClick={() => onRemove(m.id)}
-                                  >
-                                    <RemoveIcon />
-                                  </StyledButtonRemove>
-                                </Cell>
-                              </TableCell>
-                            )}
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </Box>
-              </>
-            )}
-          </Filter>
-        </Grid>
-        <Grid item sm={4}>
-          Available users:
-          <TextField
-            placeholder={t('components.filter.placeholder')}
-            onChange={handleFilter}
-            size="small"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            sx={{ background: theme => theme.palette.primary.contrastText }}
-          />
-          <>
-            <hr />
-            <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
-              <TableContainer>
-                <Table size="small" style={{ position: 'relative' }}>
+      {/*<Grid container spacing={2}>*/}
+      <Grid item xs={8}>
+        Group members:
+        <Filter data={membersData}>
+          {filteredMembers => (
+            <>
+              <hr />
+              <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
+                {' '}
+                {/*TODO check if needed*/}
+                <Table size="small">
                   <StyledTableHead>
                     <TableRow>
-                      <TableCell />
-                      <TableCell>Full Name</TableCell>
+                      {renderHeader()}
+                      {onRemove && <TableCell />}
                     </TableRow>
                   </StyledTableHead>
                   <TableBody>
-                    <AvailableMembersFragment
-                      availableMembers={availableMembers}
-                      filteredMembers={availableMembers}
-                      loading={loadingAvailableMembers}
-                      onAdd={onAdd}
-                      addingMember={addingMember}
-                      removingMember={removingMember}
-                    />
-                    {hasMore && <TableRowLoading ref={lazyLoading.ref} colSpan={2} />}
+                    {filteredMembers.map(m => {
+                      return (
+                        <StyledTableRow key={m.id}>
+                          {renderRow(m, Cell)}
+                          {onRemove && (
+                            <TableCell align="right">
+                              <Cell>
+                                <StyledButtonRemove
+                                  aria-label="Remove"
+                                  size="small"
+                                  disabled={isRemoveDisabled(m) || addingMember || removingMember}
+                                  onClick={() => onRemove(m.id)}
+                                >
+                                  <RemoveIcon />
+                                </StyledButtonRemove>
+                              </Cell>
+                            </TableCell>
+                          )}
+                        </StyledTableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
-              </TableContainer>
-            </Box>
-          </>
-        </Grid>
+              </Box>
+            </>
+          )}
+        </Filter>
       </Grid>
+      {/*</Grid>*/}
     </>
   );
 };
 
-interface AvailableMembersProps extends Pick<EditMembersProps, 'onAdd' | 'addingMember' | 'removingMember'> {
-  filteredMembers?: UserDisplayNameFragment[];
-  availableMembers?: UserDisplayNameFragment[];
+interface AvailableMembersProps<Member extends Identifiable> extends CustomizedTable<Member> {
+  onAdd: (memberId: string) => void;
+  fetchMore: (amount?: number) => Promise<void>;
+  hasMore: boolean;
+  onSearchTermChange: (term: string) => void;
+  filteredMembers: Member[];
+  // availableMembers?: UserDisplayNameFragment[];
   loading: boolean;
+  addingMember: boolean;
+  removingMember: boolean;
 }
 
-const AvailableMembersFragment: FC<AvailableMembersProps> = ({
-  filteredMembers = [],
-  availableMembers = [],
-  loading,
+export const AvailableMembers = <Member extends Identifiable>({
+  filteredMembers,
   onAdd,
+  onSearchTermChange,
+  fetchMore,
+  hasMore,
+  loading,
   addingMember,
   removingMember,
-}) => {
+  header,
+  renderRow,
+}: AvailableMembersProps<Member>) => {
   const { t } = useTranslation();
 
-  const membersData = useMemo<UserDisplayNameFragment[]>(
-    () => (loading ? initEmptyMembers() : filteredMembers),
-    [loading, filteredMembers]
-  );
+  const renderHeader = typeof header === 'function' ? header : () => header;
+
+  // const membersData = useMemo<UserDisplayNameFragment[]>(
+  //   () => (loading ? initEmptyMembers() : filteredMembers),
+  //   [loading, filteredMembers]
+  // );
+
   const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
 
-  if (availableMembers.length === 0) {
+  const handleFilter = useMemo(
+    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onSearchTermChange(e.target.value), FILTER_DEBOUNCE),
+    [onSearchTermChange, FILTER_DEBOUNCE]
+  );
+
+  const lazyLoading = useLazyLoading({
+    fetchMore,
+    loading,
+  });
+
+  if (filteredMembers.length === 0) {
     return (
       <StyledTableRow>
         <TableCell colSpan={2}>
@@ -235,7 +189,8 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
     );
   }
 
-  if (membersData.length === 0) {
+  if (filteredMembers.length === 0) {
+    // ??????????
     return (
       <StyledTableRow>
         <TableCell colSpan={2}>
@@ -246,29 +201,54 @@ const AvailableMembersFragment: FC<AvailableMembersProps> = ({
   }
 
   return (
-    <>
-      {membersData.map(m => (
-        <StyledTableRow key={m.id}>
-          {onAdd && (
-            <TableCell>
-              <Cell>
-                <StyledButtonAdd
-                  aria-label="Add"
-                  size="small"
-                  onClick={() => onAdd(m.id)}
-                  disabled={addingMember || removingMember}
-                >
-                  <AddIcon />
-                </StyledButtonAdd>
-              </Cell>
-            </TableCell>
-          )}
-          <TableCell>
-            <Cell>{m.displayName}</Cell>
-          </TableCell>
-        </StyledTableRow>
-      ))}
-    </>
+    <Grid item sm={4}>
+      Available users:
+      <TextField
+        placeholder={t('components.filter.placeholder')}
+        onChange={handleFilter}
+        size="small"
+        fullWidth
+        InputLabelProps={{ shrink: true }}
+        sx={{ background: theme => theme.palette.primary.contrastText }}
+      />
+      <>
+        <hr />
+        <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
+          <TableContainer>
+            <Table size="small" style={{ position: 'relative' }}>
+              <StyledTableHead>
+                <TableRow>
+                  <TableCell />
+                  {renderHeader()}
+                </TableRow>
+              </StyledTableHead>
+              <TableBody>
+                {filteredMembers.map(m => (
+                  <StyledTableRow key={m.id}>
+                    {onAdd && (
+                      <TableCell>
+                        <Cell>
+                          <StyledButtonAdd
+                            aria-label="Add"
+                            size="small"
+                            onClick={() => onAdd(m.id)}
+                            disabled={addingMember || removingMember}
+                          >
+                            <AddIcon />
+                          </StyledButtonAdd>
+                        </Cell>
+                      </TableCell>
+                    )}
+                    {renderRow(m, Cell)}
+                  </StyledTableRow>
+                ))}
+                {hasMore && <TableRowLoading ref={lazyLoading.ref} colSpan={2} />}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </>
+    </Grid>
   );
 };
 

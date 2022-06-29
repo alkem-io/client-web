@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import EditMembers from '../../../../components/Admin/Community/EditMembers';
+import EditMemberUsers from '../../../../components/Admin/Community/EditMembersUsers';
 import OrganizationMembers from '../../../../containers/organization/OrganizationMembers';
 import { useOrganization } from '../../../../hooks';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';
@@ -33,12 +33,12 @@ export const OrganizationOwnerAuthorizationView: FC = () => {
         }}
       >
         {(entities, actions, state) => (
-          <EditMembers
+          <EditMemberUsers
             members={entities.allMembers}
             availableMembers={entities.availableMembers}
             addingMember={state.addingOwner}
             removingMember={state.removingOwner}
-            executor={entities.currentMember}
+            executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignOwner}
             onRemove={actions.handleRemoveOwner}
             loadingMembers={state.loading}

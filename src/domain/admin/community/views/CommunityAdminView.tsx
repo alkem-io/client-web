@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import EditMembers, { EditMembersProps } from '../../../../components/Admin/Community/EditMembers';
+import EditMemberUsers, { EditMemberUsersProps } from '../../../../components/Admin/Community/EditMembersUsers';
 
-interface CommunityAdminViewProps extends EditMembersProps {
+interface CommunityAdminViewProps extends EditMemberUsersProps {
   headerText: string;
 }
 
 export const CommunityAdminView: FC<CommunityAdminViewProps> = ({ headerText, ...editMembersProps }) => {
   return (
     <DashboardGenericSection headerText={headerText}>
-      <EditMembers {...editMembersProps} />
+      <EditMemberUsers {...editMembersProps} />
     </DashboardGenericSection>
   );
 };

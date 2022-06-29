@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
-import EditMembers from '../../../../components/Admin/Community/EditMembers';
+import EditMemberUsers from '../../../../components/Admin/Community/EditMembersUsers';
 import OpportunityMembers from '../../../../containers/opportunity/OpportunityMembers';
 import { useOpportunity } from '../../../../hooks';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';
@@ -18,13 +18,13 @@ export const OpportunityAdminAuthorizationView: FC = () => {
         }}
       >
         {(entities, actions, state) => (
-          <EditMembers
+          <EditMemberUsers
             title="Opportunity Admins"
             members={entities.allMembers}
             availableMembers={entities.availableMembers}
             addingMember={state.addingAdmin}
             removingMember={state.removingAdmin}
-            executor={entities.currentMember}
+            executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
             fetchMore={actions.handleLoadMore}
