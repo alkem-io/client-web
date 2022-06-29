@@ -7,16 +7,17 @@ import Image from './Image';
 import Typography from './Typography';
 import { Theme, Tooltip } from '@mui/material';
 
-type AvatarSizeName = 'md' | 'sm' | 'lg' | 'xl';
+type AvatarSizeName = 'md' | 'sm' | 'lg' | 'xl' | 'md2';
 
 const AvatarSizes: Record<AvatarSizeName, number> = {
   md: 40,
   sm: 15,
+  md2: 64,
   lg: 80,
   xl: 160,
 };
 
-const avatarSizeCSSRules = ['md', 'sm', 'lg', 'xl'].reduce(
+const avatarSizeCSSRules = ['md', 'sm', 'lg', 'xl', 'md2'].reduce(
   (rules, size) => ({
     ...rules,
     [`&.${size}`]: {
