@@ -863,7 +863,7 @@
             "header": "Existing user? Jump back in!",
             "subheader": "Welcome back! Continue where you left off and start exploring new challenges.",
             "more-info": "More about alkemio",
-            "more-info-url": "/about"
+            "more-info-url": "https://alkemio.foundation/about"
           },
           "new-to-alkemio": {
             "header": "New to Alkemio?",
