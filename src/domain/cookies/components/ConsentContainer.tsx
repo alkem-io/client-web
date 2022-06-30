@@ -21,14 +21,7 @@ const CookieConsent: FC = ({ children }) => {
         zIndex: '1500',
       }}
     >
-      <div
-        style={{
-          flex: '1 0 300px',
-          margin: '15px',
-        }}
-      >
-        {children}
-      </div>
+      {children}
     </div>
   );
 };

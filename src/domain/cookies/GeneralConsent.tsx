@@ -14,21 +14,28 @@ const GeneralConsent: FC<GeneralConsentProps> = ({ handleOpenSettings }: General
   const { acceptAllCookies } = useAlkemioCookies();
 
   return (
-    <div>
-      {t('cookie.consent')}
-      <Button
-        style={{ float: 'right', width: '200px', color: theme.palette.primary.dark, background: '#FFFFFF' }}
-        onClick={acceptAllCookies}
+    <>
+      <div
+        style={{
+          flex: '1 0 300px',
+          margin: '15px',
+        }}
       >
-        {t('buttons.accept-all-cookies')}
-      </Button>
+        {t('cookie.consent')}
+      </div>
       <Button
-        style={{ float: 'right', width: '150px', color: '#FFFFFF', background: theme.palette.primary.dark }}
+        style={{ width: '150px', color: '#FFFFFF', background: theme.palette.primary.dark }}
         onClick={handleOpenSettings}
       >
         {t('buttons.settings')}
       </Button>
-    </div>
+      <Button
+        style={{ width: '200px', color: theme.palette.primary.dark, background: '#FFFFFF' }}
+        onClick={acceptAllCookies}
+      >
+        {t('buttons.accept-all-cookies')}
+      </Button>
+    </>
   );
 };
 

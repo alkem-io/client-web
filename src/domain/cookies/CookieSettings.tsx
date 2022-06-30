@@ -37,23 +37,30 @@ const CookieSettings: FC = () => {
 
   return (
     <>
-      <div>{t('cookie.settings')}</div>
-      <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox style={{ color: '#FFFFFF' }} checked={true} name="technical" />}
-            label={CookieLabels.technical}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox style={{ color: '#FFFFFF' }} checked={analysis} onChange={handleChange} name="analysis" />
-            }
-            label={CookieLabels.analysis}
-          />
-        </FormGroup>
-      </FormControl>
+      <div
+        style={{
+          flex: '1 0 300px',
+          margin: '15px',
+        }}
+      >
+        {t('cookie.settings')}
+        <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+          <FormGroup>
+            <FormControlLabel
+              control={<Checkbox style={{ color: '#FFFFFF' }} checked={true} name="technical" />}
+              label={CookieLabels.technical}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox style={{ color: '#FFFFFF' }} checked={analysis} onChange={handleChange} name="analysis" />
+              }
+              label={CookieLabels.analysis}
+            />
+          </FormGroup>
+        </FormControl>
+      </div>
       <Button
-        style={{ float: 'right', width: '200px', color: '#FFFFFF', background: theme.palette.primary.dark }}
+        style={{ alignSelf: 'flex-end', width: '200px', color: '#FFFFFF', background: theme.palette.primary.dark }}
         onClick={handleConfirmChoice}
       >
         {t('buttons.confirm-choice')}
