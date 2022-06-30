@@ -16,6 +16,9 @@ const useStyles = makeStyles(theme =>
       width: theme.spacing(AVATAR_SIZE),
       marginRight: theme.spacing(2),
     },
+    commentContainer: {
+      overflowWrap: 'break-word',
+    },
   })
 );
 
@@ -62,7 +65,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
           </IconButton>
         )}
       </Box>
-      <Box paddingX={1} paddingY={1}>
+      <Box paddingX={1} paddingY={1} className={styles.commentContainer} sx={{ overflowWrap: 'break-word' }}>
         <Markdown>{body}</Markdown>
       </Box>
     </Box>
