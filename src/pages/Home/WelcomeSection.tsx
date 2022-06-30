@@ -10,7 +10,7 @@ import { useConfig } from '../../hooks';
 const WelcomeSection = () => {
   const { t } = useTranslation();
 
-  const tLinks = TranslateWithElements(<HeaderLink />);
+  const tLinks = TranslateWithElements(<HeaderLink target="_blank" />);
   const theme = useTheme();
   const { platform } = useConfig();
 
