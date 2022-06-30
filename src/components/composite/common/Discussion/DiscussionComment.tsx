@@ -65,7 +65,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
           </IconButton>
         )}
       </Box>
-      <Box paddingX={1} paddingY={1} className={styles.commentContainer} sx={{ overflowWrap: 'break-word' }}>
+      <Box paddingX={1} paddingY={1} className={styles.commentContainer}>
         <Markdown>{body}</Markdown>
       </Box>
     </Box>
