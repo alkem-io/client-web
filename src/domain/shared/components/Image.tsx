@@ -1,26 +1,13 @@
 import React, { FC, useState } from 'react';
-import Spinner from '../../../components/core/Spinner';
+import { Box, BoxProps, Fade } from '@mui/material';
 
-export const Image: FC<React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>> = ({
-  src,
-  alt,
-  ...props
-}) => {
+export const Image: FC<BoxProps<'img'>> = props => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <>
-      {!isLoaded && <Spinner />}
-      <img
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setIsLoaded(true)}
-        className="image full"
-        style={{ opacity: isLoaded ? 1 : 0, maxWidth: '100%', maxHeight: '100%' }}
-        alt={alt}
-        src={src}
-        {...props}
-      />
-    </>
+    <Fade in={isLoaded}>
+      <Box component="img" onLoad={() => setIsLoaded(true)} onError={() => setIsLoaded(true)} {...props} />
+    </Fade>
   );
 };
 
