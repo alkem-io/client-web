@@ -21,7 +21,7 @@ const LeadUserCardContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1),
   // Fix issue with avatars having max-width: 100%, max-height: 100% for some reason
   // See src/components/core/Image.tsx :18
-  '& img': { maxHeight: 'none !important', maxWidth: 'none !important' },
+  // '& img': { maxHeight: 'none !important', maxWidth: 'none !important' },
 }));
 
 const LeadUserCard = ({ userUrl, fullName, city, country, avatarUrl, tags }: LeadUserCardProps) => {
