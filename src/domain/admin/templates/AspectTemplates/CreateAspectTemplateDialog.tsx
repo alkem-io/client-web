@@ -3,6 +3,7 @@ import AspectTemplateForm, { AspectTemplateFormSubmittedValues, AspectTemplateFo
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
+import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 
 interface CreateAspectTemplateDialogProps {
   open: boolean;
@@ -16,12 +17,17 @@ const CreateAspectTemplateDialog = ({ open, onClose, onSubmit }: CreateAspectTem
   const values: Partial<AspectTemplateFormValues> = {};
 
   return (
-    <Dialog open={open} onClose={onClose} PaperProps={{ sx: { backgroundColor: 'background.default' } }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      maxWidth={false}
+    >
       <AspectTemplateForm
         title={t('common.create-new-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
         onSubmit={onSubmit}
-        submitButtonText={t('common.create')}
+        actions={<FormikSubmitButton variant="contained">{t('common.create')}</FormikSubmitButton>}
       />
     </Dialog>
   );

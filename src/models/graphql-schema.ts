@@ -375,7 +375,7 @@ export type CanvasCheckout = {
   lifecycle: Lifecycle;
   /** The id of the user that has checked the entity out. */
   lockedBy: Scalars['UUID'];
-  /** Checked out status of the Canvas */
+  /** The checkout out state of this Canvas. */
   status: CanvasCheckoutStateEnum;
 };
 
@@ -610,6 +610,10 @@ export type Community = Groupable & {
   applications?: Maybe<Array<Application>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** All member users excluding the current lead users in this Community. */
+  availableLeadUsers?: Maybe<PaginatedUsers>;
+  /** All available users that are potential Community members. */
+  availableMemberUsers?: Maybe<PaginatedUsers>;
   /** The Communications for this Community. */
   communication?: Maybe<Communication>;
   /** The name of the Community */
@@ -628,6 +632,22 @@ export type Community = Groupable & {
   memberUsers?: Maybe<Array<User>>;
   /** The policy that defines the roles for this Community. */
   policy?: Maybe<CommunityPolicy>;
+};
+
+export type CommunityAvailableLeadUsersArgs = {
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+export type CommunityAvailableMemberUsersArgs = {
+  after?: InputMaybe<Scalars['UUID']>;
+  before?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 export type CommunityApplyInput = {
@@ -2159,6 +2179,12 @@ export type Platform = {
   featureFlags: Array<FeatureFlag>;
   /** URL to a form for providing feedback */
   feedback: Scalars['String'];
+  /** URL for the link Foundation in the HomePage of the application */
+  foundation: Scalars['String'];
+  /** URL for the link Impact in the HomePage of the application */
+  impact: Scalars['String'];
+  /** URL for the link Opensource in the HomePage of the application */
+  opensource: Scalars['String'];
   /** URL to the privacy policy for the platform */
   privacy: Scalars['String'];
   /** URL to the security policy for the platform */
@@ -3418,6 +3444,9 @@ export type ConfigurationFragment = {
     security: string;
     support: string;
     terms: string;
+    impact: string;
+    foundation: string;
+    opensource: string;
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
@@ -5503,6 +5532,9 @@ export type ConfigurationQuery = {
       security: string;
       support: string;
       terms: string;
+      impact: string;
+      foundation: string;
+      opensource: string;
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };

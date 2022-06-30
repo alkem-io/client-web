@@ -21,6 +21,9 @@ fragment Configuration on Config {
     security
     support
     terms
+    impact
+    foundation
+    opensource
     featureFlags {
       enabled
       name

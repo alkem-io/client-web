@@ -858,24 +858,24 @@
     "home": {
       "sections": {
         "welcome": {
-          "header": "Where Open Innovation Happens",
-          "subheader": "Putting Challenges central. <br>Allowing everyone to contribute. <br>Enabling connections and finding capability.",
-          "body": "Realising society's potential. Building a better future, together.",
-          "join": "Want to join the community and see more?"
-        },
-        "interested-in-collaboration": {
-          "header": "Alkemio and You",
-          "innovation-facilitator": "Driving Innovation in your community or organization?<br/>Please <feedback>reach out</feedback> and we can schedule a one-on-one session!",
-          "suggestions": "Have suggestions for Challenges where Alkemio can help?<br/>Please share on our <discussions>discussions</discussions> and join the community!",
-          "contributor": "Want to contribute to or support Alkemio? <br/>100% <github>open source</github>. Backed by a <website>non-profit foundation</website>."
-        },
-        "getting-started": {
-          "header": "Getting Started",
-          "subheader": "Here are some suggestions to help get you up to speed.",
-          "joining-a-challenge": "Eager to join a Challenge? Explore all <challenges>Challenges</challenges>.",
-          "introduction-video": "Want to start using the platform? Watch this <video>demonstration video</video>.",
-          "connecting-with-people": "Want to see who is contributing? Explore all <a href='./contributors' >contributors</a>.",
-          "your-profile": "Keen to be found by other contributors? Fill out your <profile>profile</profile>."
+          "head": "A new way of working on Challenges, together. Building a community of people, companies, NGOs and public bodies.",
+          "impact": "<impact>Impact</impact>",
+          "foundation": "<foundation>Foundation</foundation>",
+          "opensource": "<opensource>Open Source</opensource>",
+          "welcome-back": "Welcome back {{username}}!",
+          "join": "Want to join the community and see more?",
+          "existing-user": {
+            "header": "Existing user? Jump back in!",
+            "subheader": "Welcome back! Continue where you left off and start exploring new challenges.",
+            "more-info": "More about alkemio",
+            "more-info-url": "/about"
+          },
+          "new-to-alkemio": {
+            "header": "New to Alkemio?",
+            "subheader": "Easy for everyone to engage in effective and meaningful ways, enabling you to manage your Challenges and have impact.",
+            "more-info": "Watch demo video",
+            "more-info-url": "https://vimeo.com/708623032?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO"
+          }
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
