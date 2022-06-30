@@ -31,7 +31,7 @@ const AnonymousUserHome = forwardRef<HTMLDivElement>((_, ref) => {
           >
             {t('authentication.sign-in')}
           </Button>
-          <Button href={t('pages.home.sections.welcome.existing-user.more-info-url')}>
+          <Button href={t('pages.home.sections.welcome.existing-user.more-info-url')} target="_blank">
             {t('pages.home.sections.welcome.existing-user.more-info')}
           </Button>
         </DashboardGenericSection>
