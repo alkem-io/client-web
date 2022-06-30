@@ -2,6 +2,9 @@
   "cookie": {
     "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
   },
+  "actions": {
+    "add-entity": "Add {{entity}}"
+  },
   "buttons": {
     "learn-more": "Learn more",
     "load-more": "Load more",
@@ -257,6 +260,7 @@
     "leading-organizations": "Leading Organizations",
     "member-organizations": "Member Organizations",
     "leads": "Leads",
+    "members": "Members",
     "host": "Host"
   },
   "forms": {

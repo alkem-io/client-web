@@ -45,50 +45,55 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
         </Box>
       )}
       <Grid container spacing={2}>
-        <EditMembers
-          members={members}
-          addingMember={addingMember}
-          removingMember={removingMember}
-          loading={loadingMembers}
-          onRemove={onRemove}
-          header={
-            <>
-              <TableCell>Full Name</TableCell>
-              <TableCell>First Name</TableCell>
-              <TableCell>Last Name</TableCell>
-              <TableCell>Email</TableCell>
-            </>
-          }
-          renderRow={(m, Cell) => (
-            <>
-              <TableCell>
-                <Cell>{m.displayName}</Cell>
-              </TableCell>
-              <TableCell>
-                <Cell>{m.firstName}</Cell>
-              </TableCell>
-              <TableCell>
-                <Cell>{m.lastName}</Cell>
-              </TableCell>
-              <TableCell>
-                <Cell>{m.email}</Cell>
-              </TableCell>
-            </>
-          )}
-          isRemoveDisabled={m => m.id === executorId}
-        />
-        <AvailableMembers
-          onAdd={onAdd!}
-          fetchMore={fetchMore}
-          hasMore={hasMore}
-          onSearchTermChange={onSearchTermChange}
-          filteredMembers={availableMembers}
-          loading={loadingAvailableMembers}
-          addingMember={addingMember}
-          removingMember={removingMember}
-          header={<TableCell>Full Name</TableCell>}
-          renderRow={m => <TableCell>{m.displayName}</TableCell>}
-        />
+        <Grid item xs={8}>
+          Group members:
+          <EditMembers
+            members={members}
+            updating={addingMember || removingMember}
+            loading={loadingMembers}
+            onRemove={onRemove}
+            header={
+              <>
+                <TableCell>Full Name</TableCell>
+                <TableCell>First Name</TableCell>
+                <TableCell>Last Name</TableCell>
+                <TableCell>Email</TableCell>
+              </>
+            }
+            renderRow={(m, Cell) => (
+              <>
+                <TableCell>
+                  <Cell>{m.displayName}</Cell>
+                </TableCell>
+                <TableCell>
+                  <Cell>{m.firstName}</Cell>
+                </TableCell>
+                <TableCell>
+                  <Cell>{m.lastName}</Cell>
+                </TableCell>
+                <TableCell>
+                  <Cell>{m.email}</Cell>
+                </TableCell>
+              </>
+            )}
+            isRemoveDisabled={m => m.id === executorId}
+          />
+        </Grid>
+
+        <Grid item sm={4}>
+          Available users:
+          <AvailableMembers
+            onAdd={onAdd!}
+            fetchMore={fetchMore}
+            hasMore={hasMore}
+            onSearchTermChange={onSearchTermChange}
+            filteredMembers={availableMembers}
+            loading={loadingAvailableMembers}
+            updating={addingMember || removingMember}
+            header={<TableCell>Full Name</TableCell>}
+            renderRow={m => <TableCell>{m.displayName}</TableCell>}
+          />
+        </Grid>
       </Grid>
     </>
   );
