@@ -29,9 +29,7 @@ export const typePolicies: TypedTypePolicies = {
         merge: false,
       },
       availableLeadUsers: paginationFieldPolicy(['filter']),
-      availableLeadOrganizations: paginationFieldPolicy(['filter']),
       availableMemberUsers: paginationFieldPolicy(['filter']),
-      availableMemberOrganizations: paginationFieldPolicy(['filter']),
     },
   },
   Aspect: {
