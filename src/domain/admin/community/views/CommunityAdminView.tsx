@@ -1,15 +1,20 @@
 import React, { FC } from 'react';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import EditMemberUsers, { EditMemberUsersProps } from '../../../../components/Admin/Community/EditMembersUsers';
+import EditMemberUsersWithPopup, {
+  EditMemberUsersWithPopupProps,
+} from '../../../../components/Admin/Community/EditMemberUsersWithPopup';
+import { useTranslation } from 'react-i18next';
 
-interface CommunityAdminViewProps extends EditMemberUsersProps {
+interface CommunityAdminViewProps extends Omit<EditMemberUsersWithPopupProps, 'entityName'> {
   headerText: string;
 }
 
 export const CommunityAdminView: FC<CommunityAdminViewProps> = ({ headerText, ...editMembersProps }) => {
+  const { t } = useTranslation();
+
   return (
     <DashboardGenericSection headerText={headerText}>
-      <EditMemberUsers {...editMembersProps} />
+      <EditMemberUsersWithPopup {...editMembersProps} entityName={t('common.users')} />
     </DashboardGenericSection>
   );
 };
