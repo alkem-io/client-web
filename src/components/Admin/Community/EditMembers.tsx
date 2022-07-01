@@ -185,7 +185,7 @@ export const AvailableMembers = <Member extends Identifiable>({
         <TableBody>
           {filteredMembers.length === 0 && (
             <StyledTableRow>
-              <TableCell colSpan={2}>
+              <TableCell colSpan={3}>
                 <Typography>
                   {t(
                     searchTerm === ''
