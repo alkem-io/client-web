@@ -781,19 +781,45 @@
     "home": {
       "sections": {
         "welcome": {
-          "header": "Waar Open Innovatie Plaatsvindt",
-          "subheader": "Challenges centraal stellen. <br>Iedereen toestaan om bij te dragen. <br>Connecties mogelijk maken en capaciteiten vinden.",
-          "body": "Het potentieel van de community verwezelijken. Een betere toekomst bouwen, samen.",
-          "join": "Deelnemen aan de community en meer zien?"
+          "head": "Een nieuwe manier om te werken aan Challenges. Samen een Community bouwen van mensen, bedrijven, NGO's en overheidsinstanties.",
+          "impact": "<impact>Impact</impact>",
+          "foundation": "<foundation>Stichting</foundation>",
+          "opensource": "<opensource>Open Source</opensource>",
+          "welcome-back": "Welkom terug {{username}}!",
+          "join": "Deelnemen aan de Community en meer zien?",
+          "existing-user": {
+            "header": "Bestaande gebruiker?",
+            "subheader": "Welkom terug! Ga verder waar je gebleven was en ontdek nieuwe Challenges.",
+            "more-info": "Meer over Alkemio",
+            "more-info-url": "https://alkemio.foundation/about"
+          },
+          "new-to-alkemio": {
+            "header": "Nieuw bij Alkemio?",
+            "subheader": "Op Alkemio kan iedereen op een effectieve manier Challenges beheren, een bijdrage leveren en zo impact te maken.",
+            "more-info": "Bekijk demonstratie video",
+            "more-info-url": "https://vimeo.com/709543522?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO"
+          }
         },
         "hub": {
           "header": "Verken de Challenge Hubs!",
           "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een community voor de Challenges die er worden beheerd. <br> Een omgeving om te coördineren en samen te werken. Om te verbinden.",
           "body": "Een Hub kan Openbaar of Besloten zijn en heeft een faciliterende Organisatie."
         },
+        "my-hubs": {
+          "header": "Mijn Hubs",
+          "subheader": "Deze sectie toont u de Hubs waar u lid van bent."
+        },
         "organizations": {
           "header": "Organisaties",
           "subheader": "De instanties die innovatie tot stand willen brengen."
+        },
+        "footer": {
+          "headline": "Meer weten over Alkemio? Bezoek onze website, neem contact met ons op of neem een kijkje op onze Github repository",
+          "links": {
+            "foundation": "Stichting Alkemio",
+            "contact-form": "Contactformulier",
+            "github": "GitHub"
+          }
         }
       }
     },

@@ -177,6 +177,9 @@ export const ConfigurationFragmentDoc = gql`
       security
       support
       terms
+      impact
+      foundation
+      opensource
       featureFlags {
         enabled
         name
