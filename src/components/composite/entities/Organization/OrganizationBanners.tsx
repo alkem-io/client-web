@@ -9,7 +9,7 @@ import { makeStyles } from '@mui/styles';
 import { OrganizationDetailsFragment } from '../../../../models/graphql-schema';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
 import Typography from '../../../core/Typography';
-import Image from '../../../core/Image';
+import Image from '../../../../domain/shared/components/Image';
 import OrganizationPopUp from './OrganizationPopUp';
 
 const useOrganizationStyles = makeStyles(theme => ({
