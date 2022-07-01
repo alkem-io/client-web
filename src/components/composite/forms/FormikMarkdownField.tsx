@@ -1,6 +1,15 @@
 import clsx from 'clsx';
 import React, { ComponentType, FC, useMemo } from 'react';
-import { FormGroup, FormHelperText, InputLabel, InputLabelProps, InputProps } from '@mui/material';
+import {
+  Box,
+  FormGroup,
+  FormHelperText,
+  InputLabel,
+  InputLabelProps,
+  InputProps,
+  styled,
+  Typography,
+} from '@mui/material';
 import MDEditor from '@uiw/react-md-editor';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
@@ -23,6 +32,11 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
+const CharacterCounter = styled(Typography)(() => ({
+  position: 'absolute',
+  right: 0,
+}));
+
 interface MarkdownFieldProps extends InputProps {
   title?: string;
   tooltipTitle?: string;
@@ -33,6 +47,8 @@ interface MarkdownFieldProps extends InputProps {
   placeholder?: string;
   autoComplete?: string;
   rows?: number;
+  maxLength?: number;
+  withCounter?: boolean;
   loading?: boolean;
   inputLabelComponent?: ComponentType<InputLabelProps>;
 }
@@ -47,6 +63,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   placeholder,
   autoComplete,
   rows = 10,
+  maxLength,
+  withCounter = false,
   loading,
   inputLabelComponent: InputLabelComponent = InputLabel,
 }) => {
@@ -82,8 +100,16 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           autoComplete: autoComplete,
           onBlur: field.onBlur,
           rows,
+          maxLength: maxLength,
         }}
       />
+      {!withCounter || (
+        <Box sx={{ position: 'relative' }}>
+          <CharacterCounter variant="caption">
+            {`${field.value?.length ? field.value?.length : 0}` + (maxLength ? `/${maxLength}` : '')}
+          </CharacterCounter>
+        </Box>
+      )}
       {meta.touched && <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>}
     </FormGroup>
   );

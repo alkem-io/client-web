@@ -38,6 +38,7 @@ import { FontDownloadOffIcon } from '../../components/icons/FontDownloadOffIcon'
 import { useNotification } from '../../hooks';
 import { Message } from '../../models/graphql-schema';
 import { Author } from '../../models/discussion/author';
+import { LONG_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 
 export interface CommunityUpdatesViewProps {
   entities: {
@@ -152,7 +153,14 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
               <Form noValidate onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <MarkdownInput name="community-update" rows={30} label="" required />
+                    <MarkdownInput
+                      name="community-update"
+                      rows={30}
+                      label=""
+                      required
+                      maxLength={LONG_TEXT_LENGTH}
+                      withCounter
+                    />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
                     <Button
