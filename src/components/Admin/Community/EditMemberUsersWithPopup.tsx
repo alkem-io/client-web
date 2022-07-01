@@ -10,7 +10,6 @@ import { AvailableUserFragment } from '../../../models/graphql-schema';
 
 export interface EditMemberUsersWithPopupProps extends EditMemberUsersProps {
   availableMembers: AvailableUserFragment[];
-  entityName: string;
   loadAvailableMembers: () => Promise<void>;
 }
 
@@ -27,7 +26,6 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
   fetchMore = () => Promise.resolve(),
   onSearchTermChange,
   hasMore = false,
-  entityName,
   loadAvailableMembers,
 }) => {
   const { t } = useTranslation();
@@ -38,6 +36,8 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
       loadAvailableMembers();
     }
   }, [isAdding]);
+
+  const entityName = t('common.users');
 
   return (
     <>

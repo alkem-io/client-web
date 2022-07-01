@@ -8,7 +8,6 @@ import { SectionSpacer } from '../../shared/components/Section/Section';
 import { Loading } from '../../../components/core';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
-import { useTranslation } from 'react-i18next';
 import useOpportunityLeadOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityLeadOrganizationAssignment';
 import useOpportunityMemberOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityMemberOrganizationAssignment';
 import {
@@ -23,8 +22,6 @@ import EditMemberUsersWithPopup from '../../../components/Admin/Community/EditMe
 
 const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'community' });
-
-  const { t } = useTranslation();
 
   const { hubNameId } = useHub();
   const { opportunity } = useOpportunity();
@@ -86,12 +83,12 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
   return (
     <OpportunitySettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <EditCommunityMembersSection memberType="leads">
-        <EditMemberUsersWithPopup {...leadUsersProps} entityName={t('common.users')} />
+        <EditMemberUsersWithPopup {...leadUsersProps} />
         <EditOrganizationsWithPopup {...leadingOrganizationsProps} />
       </EditCommunityMembersSection>
       <SectionSpacer />
       <EditCommunityMembersSection memberType="members">
-        <EditMemberUsersWithPopup {...memberUsersProps} entityName={t('common.users')} />
+        <EditMemberUsersWithPopup {...memberUsersProps} />
         <EditOrganizationsWithPopup {...memberOrganizationsProps} />
       </EditCommunityMembersSection>
       <SectionSpacer />

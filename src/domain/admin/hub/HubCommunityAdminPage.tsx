@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
@@ -25,8 +24,6 @@ import EditMemberUsersWithPopup from '../../../components/Admin/Community/EditMe
 
 const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'community' });
-
-  const { t } = useTranslation();
 
   const { hubId, communityId } = useHub();
 
@@ -86,11 +83,11 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '..
   return (
     <HubSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <EditCommunityMembersSection memberType="leads">
-        <EditMemberUsersWithPopup {...leadUsersProps} entityName={t('common.users')} />
+        <EditMemberUsersWithPopup {...leadUsersProps} />
       </EditCommunityMembersSection>
       <SectionSpacer />
       <EditCommunityMembersSection memberType="members">
-        <EditMemberUsersWithPopup {...memberUsersProps} entityName={t('common.users')} />
+        <EditMemberUsersWithPopup {...memberUsersProps} />
         <EditOrganizationsWithPopup {...memberOrganizationsProps} />
       </EditCommunityMembersSection>
       <SectionSpacer />

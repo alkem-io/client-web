@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import ChallengeSettingsLayout from './ChallengeSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
@@ -26,8 +25,6 @@ import EditCommunityMembersSection from '../community/views/EditCommunityMembers
 
 const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'community' });
-
-  const { t } = useTranslation();
 
   const { hubId } = useHub();
   const { challenge, challengeId } = useChallenge();
@@ -90,12 +87,12 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
   return (
     <ChallengeSettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
       <EditCommunityMembersSection memberType="leads">
-        <EditMemberUsersWithPopup {...leadUsersProps} entityName={t('common.users')} />
+        <EditMemberUsersWithPopup {...leadUsersProps} />
         <EditOrganizationsWithPopup {...leadingOrganizationsProps} />
       </EditCommunityMembersSection>
       <SectionSpacer />
       <EditCommunityMembersSection memberType="members">
-        <EditMemberUsersWithPopup {...memberUsersProps} entityName={t('common.users')} />
+        <EditMemberUsersWithPopup {...memberUsersProps} />
         <EditOrganizationsWithPopup {...memberOrganizationsProps} />
       </EditCommunityMembersSection>
       <SectionSpacer />
