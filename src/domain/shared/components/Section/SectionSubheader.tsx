@@ -8,7 +8,7 @@ interface SectionSubHeaderProps {
 const SectionSubHeader: FC<SectionSubHeaderProps> = ({ text }) => {
   return (
     <Typography
-      variant="subtitle2"
+      variant="subtitle1"
       dangerouslySetInnerHTML={{
         __html: text,
       }}
