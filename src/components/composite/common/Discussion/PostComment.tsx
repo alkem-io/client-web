@@ -1,3 +1,4 @@
+import { FetchResult } from '@apollo/client';
 import { Grid } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import React, { FC } from 'react';
@@ -7,15 +8,16 @@ import Button from '../../../core/Button';
 import FormikMarkdownField from '../../forms/FormikMarkdownField';
 
 export interface PostCommentProps {
-  onPostComment?: (comment: string) => Promise<void> | void;
+  onPostComment?: (comment: string) => Promise<FetchResult<void>> | void;
   title?: string;
   placeholder?: string;
+  maxLength?: number;
 }
 interface formValues {
   post: string;
 }
 
-const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder }) => {
+const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, maxLength }) => {
   const { t } = useTranslation();
 
   const initialValues: formValues = {
@@ -26,10 +28,13 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder }
     post: yup.string().required(t('forms.validations.required')),
   });
 
-  const handleSubmit = async (values: formValues, _helpers: FormikHelpers<formValues>) => {
+  const handleSubmit = (values: formValues, _helpers: FormikHelpers<formValues>) => {
     if (onPostComment) {
-      await onPostComment(values.post);
-      _helpers.resetForm();
+      return (onPostComment(values.post) as Promise<FetchResult<void>>)?.then(result => {
+        if (!result.errors) {
+          _helpers.resetForm();
+        }
+      });
     }
   };
 
@@ -44,7 +49,14 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder }
         <Form noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <FormikMarkdownField name="post" title={title} placeholder={placeholder} disabled={isSubmitting} />
+              <FormikMarkdownField
+                name="post"
+                title={title}
+                placeholder={placeholder}
+                disabled={isSubmitting}
+                maxLength={maxLength}
+                withCounter
+              />
             </Grid>
             <Grid item>
               <Button

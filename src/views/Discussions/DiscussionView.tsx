@@ -1,9 +1,11 @@
+import { FetchResult } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Filter from '../../components/Admin/Common/Filter';
 import DiscussionComment from '../../components/composite/common/Discussion/DiscussionComment';
 import PostComment from '../../components/composite/common/Discussion/PostComment';
+import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
@@ -11,7 +13,7 @@ import { AuthorizationPrivilege } from '../../models/graphql-schema';
 export interface DiscussionViewProps {
   discussion: Discussion;
   currentUserId?: string;
-  onPostComment?: (discussionId: string, comment: string) => Promise<void> | void;
+  onPostComment?: (discussionId: string, comment: string) => Promise<FetchResult<void>> | void;
   onDeleteDiscussion?: (id: string) => Promise<void> | void;
   onDeleteComment?: (id: string) => Promise<void> | void;
 }
@@ -96,6 +98,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                     onPostComment={comment => onPostComment && onPostComment(id, comment)}
                     title={t('components.post-comment.fields.description.title')}
                     placeholder={t('components.post-comment.fields.description.placeholder')}
+                    maxLength={MID_TEXT_LENGTH}
                   />
                 )}
                 {!canPost && (
