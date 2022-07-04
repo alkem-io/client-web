@@ -1,6 +1,9 @@
 {
   "cookie": {
-    "consent": "Om de best mogelijke ervaring te bieden maakt deze site gebruik van noodzakelijke cookies, conform ons privacybeleid."
+    "consent": "Door op \"Accepteer Alle Cookies\" te klikken, gaat u ermee akkoord dat er cookies op uw apparaat worden opgeslagen die bijdragen aan de website navigatie en het anayleren van website gebruik.",
+    "settings": "Bij het bezoeken van een website kan informatie worden opgeslagen in uw browser in de vorm van cookies. Deze informatie kan over u, uw voorkeuren en uw apparaat gaan. Meestal wordt deze informatie gebruikt om de website zo goed mogelijk te laten werken. Sommige websites gebruiken de cookies ook voor marketingdoeleinden. Aangezien Alkemio geen advertenties toestaat op de website, maken wij slechts onderscheid tussen twee soorten cookies. Lees meer.",
+    "technical": "Technisch noodzakelijke cookies: maken het mogelijk op de website te navigeren en uw voorkeuren op te slaan.",
+    "analysis": "Analytische cookies: staan ons toe vast te stellen hoe gebruikers onze dienst gebruiken om de gebruikerservaring te verbeteren."
   },
   "buttons": {
     "learn-more": "Meer leren",
@@ -38,7 +41,8 @@
     "profile": "Profiel",
     "view-profile": "Bekijk Profiel",
     "edit-photo": "Pas foto aan",
-    "accept-all-cookies": ""
+    "accept-all-cookies": "Accepteer Alle Cookies",
+    "confirm-choice": "Bevestig keuze"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
