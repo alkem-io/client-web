@@ -30,11 +30,14 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, 
 
   const handleSubmit = (values: formValues, _helpers: FormikHelpers<formValues>) => {
     if (onPostComment) {
-      return (onPostComment(values.post) as Promise<FetchResult<void>>)?.then(result => {
-        if (!result.errors) {
-          _helpers.resetForm();
-        }
-      });
+      const result = onPostComment(values.post);
+      if (result) {
+        result.then(response => {
+          if (!response.errors) {
+            _helpers.resetForm();
+          }
+        });
+      }
     }
   };
 

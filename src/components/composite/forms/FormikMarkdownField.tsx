@@ -103,7 +103,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           maxLength: maxLength,
         }}
       />
-      {!withCounter || (
+      {withCounter && (
         <Box sx={{ position: 'relative' }}>
           <CharacterCounter variant="caption">
             {`${field.value?.length ? field.value?.length : 0}` + (maxLength ? `/${maxLength}` : '')}
