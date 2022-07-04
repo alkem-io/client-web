@@ -16,6 +16,7 @@ import InputField from './Common/InputField';
 import { EmptyLocation, Location } from '../../domain/location/Location';
 import { formatLocation } from '../../domain/location/LocationUtils';
 import { LocationSegment } from '../../domain/location/LocationSegment';
+import { SMALL_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 
 interface Props {
   context?: Context;
@@ -135,7 +136,13 @@ const HubEditForm: FC<Props> = ({
                 placeholder={t('components.editHubForm.host.title')}
               />
             </Grid>
-            <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
+            <InputField
+              name="tagline"
+              label={t('components.contextSegment.tagline')}
+              rows={3}
+              maxLength={SMALL_TEXT_LENGTH}
+              withCounter
+            />
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
             <Grid item xs={12}>
               <Typography variant={'h4'} color={'primary'}>

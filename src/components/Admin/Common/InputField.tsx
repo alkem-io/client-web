@@ -11,6 +11,8 @@ interface InputFieldProps {
   disabled?: boolean;
   required?: boolean;
   helpText?: string;
+  maxLength?: number;
+  withCounter?: boolean;
   loading?: boolean;
 }
 
@@ -22,6 +24,8 @@ const InputField: FC<InputFieldProps> = ({
   disabled = false,
   required,
   helpText,
+  maxLength,
+  withCounter,
   loading,
 }) => {
   const styles = useProfileStyles();
@@ -38,6 +42,8 @@ const InputField: FC<InputFieldProps> = ({
         multiline={!!rows && rows > 1}
         rows={rows}
         helpText={helpText}
+        maxLength={maxLength}
+        withCounter={withCounter}
         loading={loading}
       />
     </Grid>

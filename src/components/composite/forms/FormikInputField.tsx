@@ -1,4 +1,4 @@
-import { TextField, TextFieldProps } from '@mui/material';
+import { Box, styled, TextField, TextFieldProps, Typography } from '@mui/material';
 import { DistributiveOmit } from '@mui/types';
 import { useField } from 'formik';
 import React, { FC } from 'react';
@@ -16,8 +16,16 @@ type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   placeholder?: string;
   autoComplete?: string;
   helpText?: string;
+  maxLength?: number;
+  withCounter?: boolean;
   loading?: boolean;
 };
+
+const CharacterCounter = styled(Typography)(({ theme }) => ({
+  position: 'absolute',
+  right: 0,
+  top: theme.spacing(-2),
+}));
 
 export const FormikInputField: FC<InputFieldProps> = ({
   title,
@@ -30,6 +38,8 @@ export const FormikInputField: FC<InputFieldProps> = ({
   autoComplete,
   InputProps,
   helpText,
+  maxLength,
+  withCounter,
   loading,
   ...rest
 }) => {
@@ -46,38 +56,47 @@ export const FormikInputField: FC<InputFieldProps> = ({
   };
 
   return (
-    <TextField
-      name={name}
-      placeholder={placeholder}
-      label={title}
-      onBlur={field.onBlur}
-      onChange={handleOnChange}
-      value={field.value || ''}
-      variant={'outlined'}
-      InputLabelProps={{ shrink: true }}
-      error={meta.touched && Boolean(meta.error)}
-      helperText={
-        meta.touched &&
-        tErr(meta.error as TranslationKey, {
-          field: title,
-        })
-      }
-      required={required}
-      disabled={loading || disabled}
-      autoComplete={autoComplete}
-      fullWidth
-      InputProps={{
-        ...InputProps,
-        endAdornment: (
-          <>
-            {loading && <CircularProgress size={20} />}
-            {helpText && <HelpButton helpText={helpText} />}
-          </>
-        ),
-        readOnly: readOnly,
-      }}
-      {...rest}
-    />
+    <>
+      <TextField
+        name={name}
+        placeholder={placeholder}
+        label={title}
+        onBlur={field.onBlur}
+        onChange={handleOnChange}
+        value={field.value || ''}
+        variant={'outlined'}
+        InputLabelProps={{ shrink: true }}
+        error={meta.touched && Boolean(meta.error)}
+        helperText={
+          meta.touched &&
+          tErr(meta.error as TranslationKey, {
+            field: title,
+          })
+        }
+        required={required}
+        disabled={loading || disabled}
+        autoComplete={autoComplete}
+        fullWidth
+        InputProps={{
+          ...InputProps,
+          endAdornment: (
+            <>
+              {loading && <CircularProgress size={20} />}
+              {helpText && <HelpButton helpText={helpText} />}
+            </>
+          ),
+          readOnly: readOnly,
+        }}
+        {...rest}
+      />
+      {withCounter && (
+        <Box sx={{ position: 'relative' }}>
+          <CharacterCounter variant="caption">
+            {`${field.value?.length ? field.value?.length : 0}` + (maxLength ? `/${maxLength}` : '')}
+          </CharacterCounter>
+        </Box>
+      )}
+    </>
   );
 };
 export default FormikInputField;
