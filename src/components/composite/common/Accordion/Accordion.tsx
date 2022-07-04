@@ -36,10 +36,11 @@ export const Accordion: FC<AccordionProps> = ({
         id={`panel-${ariaKey}-header`}
         sx={summarySx}
       >
-        <Box display="flex" alignItems="center" paddingY={1}>
+        <Box display="flex" flexDirection="column" paddingY={1}>
           <Box
             component={Typography}
-            variant="h3"
+            variant="h4"
+            fontWeight={600}
             sx={{
               display: 'flex',
               alignItems: 'center',
