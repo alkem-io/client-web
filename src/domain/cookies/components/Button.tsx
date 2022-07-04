@@ -1,27 +1,32 @@
 import React, { FC } from 'react';
-import { Button as MUIButton, SxProps } from '@mui/material';
+import { useTheme } from '@mui/material';
 
 interface ButtonProps {
-  sx?: SxProps;
+  style?: React.CSSProperties;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const ConsentButton: FC<ButtonProps> = ({ sx: style = {}, onClick, children }) => {
-  // const theme = useTheme();
+const Button: FC<ButtonProps> = ({ style = {}, onClick, children }) => {
+  const theme = useTheme();
 
   return (
-    <MUIButton
-      sx={{
-        paddingX: 2,
-        paddingY: 0.5,
-        margin: 2,
+    <button
+      style={{
+        border: '0',
+        boxShadow: 'none',
+        cursor: 'pointer',
+        flex: '0 0 auto',
+        padding: '5px 10px',
+        margin: '15px',
+        borderRadius: theme.shape.borderRadius,
+        ...theme.typography.button,
         ...style,
       }}
       onClick={onClick}
     >
       {children}
-    </MUIButton>
+    </button>
   );
 };
 
-export default ConsentButton;
+export default Button;

@@ -24,25 +24,13 @@ const GeneralConsent: FC<GeneralConsentProps> = ({ handleOpenSettings }: General
         {t('cookie.consent')}
       </div>
       <Button
-        sx={{
-          whiteSpace: 'nowrap',
-          color: theme.palette.background.default,
-          background: theme.palette.primary.dark,
-        }}
+        style={{ width: '150px', color: '#FFFFFF', background: theme.palette.primary.dark }}
         onClick={handleOpenSettings}
       >
         {t('buttons.settings')}
       </Button>
       <Button
-        sx={{
-          whiteSpace: 'nowrap',
-          color: theme.palette.primary.dark,
-          background: theme.palette.background.default,
-          ':hover': {
-            color: theme.palette.background.default,
-            background: 'transparent',
-          },
-        }}
+        style={{ width: '200px', color: theme.palette.primary.dark, background: '#FFFFFF' }}
         onClick={acceptAllCookies}
       >
         {t('buttons.accept-all-cookies')}
