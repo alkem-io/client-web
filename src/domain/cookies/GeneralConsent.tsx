@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material';
 import Button from './components/Button';
 import { useAlkemioCookies } from './useAlkemioCookies';
+import TextContainer from './components/TextContainer';
 
 interface GeneralConsentProps {
   handleOpenSettings: () => void;
@@ -15,14 +16,7 @@ const GeneralConsent: FC<GeneralConsentProps> = ({ handleOpenSettings }: General
 
   return (
     <>
-      <div
-        style={{
-          flex: '1 0 300px',
-          margin: '15px',
-        }}
-      >
-        {t('cookie.consent')}
-      </div>
+      <TextContainer>{t('cookie.consent')}</TextContainer>
       <Button
         style={{ width: '150px', color: '#FFFFFF', background: theme.palette.primary.dark }}
         onClick={handleOpenSettings}

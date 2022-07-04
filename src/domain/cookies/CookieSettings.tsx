@@ -4,6 +4,7 @@ import { useTheme } from '@mui/material';
 import { FormControl, FormGroup, FormControlLabel, Checkbox } from '@mui/material';
 import Button from './components/Button';
 import { useAlkemioCookies } from './useAlkemioCookies';
+import TextContainer from './components/TextContainer';
 
 const CookieSettings: FC = () => {
   const { t } = useTranslation();
@@ -37,12 +38,7 @@ const CookieSettings: FC = () => {
 
   return (
     <>
-      <div
-        style={{
-          flex: '1 0 300px',
-          margin: '15px',
-        }}
-      >
+      <TextContainer>
         {t('cookie.settings')}
         <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
           <FormGroup>
@@ -58,7 +54,7 @@ const CookieSettings: FC = () => {
             />
           </FormGroup>
         </FormControl>
-      </div>
+      </TextContainer>
       <Button
         style={{ alignSelf: 'flex-end', width: '200px', color: '#FFFFFF', background: theme.palette.primary.dark }}
         onClick={handleConfirmChoice}
