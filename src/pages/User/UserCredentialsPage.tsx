@@ -69,7 +69,7 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
             >
               <CardLayoutContainer>
                 {verifiedCredentials?.map((c, i) => (
-                  <CardLayoutItem key={i} css={{ flexGrow: 1 }} maxWidth={{ xs: 'auto', sm: 'auto', md: '25%' }}>
+                  <CardLayoutItem key={i} flexGrow={1} maxWidth={{ xs: 'auto', sm: 'auto', md: '25%' }}>
                     <CredentialCard
                       entities={{
                         claims: c.claims || [],

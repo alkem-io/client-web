@@ -782,21 +782,21 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Een nieuwe manier van werken aan Uitdagingen, samen. Een gemeenschap van mensen, bedrijven, ngo's en overheidsinstanties opbouwen.",
+          "head": "Een nieuwe manier om te werken aan Challenges. Samen een Community bouwen van mensen, bedrijven, NGO's en overheidsinstanties.",
           "impact": "<impact>Impact</impact>",
           "foundation": "<foundation>Stichting</foundation>",
-          "opensource": "<opensource>Open Bron</opensource>",
+          "opensource": "<opensource>Open Source</opensource>",
           "welcome-back": "Welkom terug {{username}}!",
-          "join": "Deelnemen aan de community en meer zien?",
+          "join": "Deelnemen aan de Community en meer zien?",
           "existing-user": {
-            "header": "Bestaande gebruiker? Spring er terug in!",
-            "subheader": "Welkom terug! Ga verder waar je gebleven was en begin nieuwe uitdagingen te ontdekken.",
-            "more-info": "Meer over alkemio",
+            "header": "Bestaande gebruiker?",
+            "subheader": "Welkom terug! Ga verder waar je gebleven was en ontdek nieuwe Challenges.",
+            "more-info": "Meer over Alkemio",
             "more-info-url": "https://alkemio.foundation/about"
           },
           "new-to-alkemio": {
             "header": "Nieuw bij Alkemio?",
-            "subheader": "Het is voor iedereen gemakkelijk om zich op een effectieve en zinvolle manier in te zetten, zodat u uw Challenges kunt beheren en impact kunt hebben.",
+            "subheader": "Op Alkemio kan iedereen op een effectieve manier Challenges beheren, een bijdrage leveren en zo impact te maken.",
             "more-info": "Bekijk demonstratie video",
             "more-info-url": "https://vimeo.com/709543522?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO"
           }
