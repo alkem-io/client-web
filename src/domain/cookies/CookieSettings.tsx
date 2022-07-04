@@ -56,7 +56,16 @@ const CookieSettings: FC = () => {
         </FormControl>
       </TextContainer>
       <Button
-        style={{ alignSelf: 'flex-end', width: '200px', color: '#FFFFFF', background: theme.palette.primary.dark }}
+        sx={{
+          alignSelf: 'flex-end',
+          width: '250px',
+          color: theme.palette.background.default,
+          background: theme.palette.primary.dark,
+          ':hover': {
+            color: theme.palette.background.default,
+            background: theme.palette.primary.dark,
+          },
+        }}
         onClick={handleConfirmChoice}
       >
         {t('buttons.confirm-choice')}
