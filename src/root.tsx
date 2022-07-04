@@ -15,6 +15,7 @@ import './i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
 import { env } from './types/env';
+import { CookiesProvider } from 'react-cookie';
 
 const domain = (env && env.REACT_APP_ALKEMIO_DOMAIN) ?? '';
 export const publicGraphQLEndpoint = domain + '/api/public/graphql';
@@ -72,8 +73,10 @@ const Root: FC = () => {
                       <AlkemioApolloProvider apiUrl={privateGraphQLEndpoint}>
                         <NavigationProvider>
                           <UserProvider>
-                            <ScrollToTop />
-                            <Routing />
+                            <CookiesProvider>
+                              <ScrollToTop />
+                              <Routing />
+                            </CookiesProvider>
                           </UserProvider>
                         </NavigationProvider>
                       </AlkemioApolloProvider>
