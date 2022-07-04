@@ -1,23 +1,21 @@
-import { DeleteOutlined } from '@mui/icons-material';
-import { Avatar, Box, Paper, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
+import { DeleteOutlined } from '@mui/icons-material';
+import { Avatar, Box, Paper, Typography, styled, AvatarProps, BoxProps, IconButton } from '@mui/material';
 import { Comment } from '../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
 
 const AVATAR_SIZE = 5;
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    avatar: {
-      height: theme.spacing(AVATAR_SIZE),
-      width: theme.spacing(AVATAR_SIZE),
-      marginRight: theme.spacing(2),
-    },
-  })
-);
+const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => ({
+  overflowWrap: 'break-word',
+  padding: theme.spacing(1),
+}));
+
+const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
+  height: theme.spacing(AVATAR_SIZE),
+  width: theme.spacing(AVATAR_SIZE),
+  marginRight: theme.spacing(2),
+}));
 
 interface DiscussionCommentProps {
   comment: Comment;
@@ -27,8 +25,6 @@ interface DiscussionCommentProps {
 }
 
 export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDelete, onDelete, isRootComment }) => {
-  const styles = useStyles();
-
   const { author, body, id } = comment;
 
   return (
@@ -46,9 +42,9 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
         bgcolor={isRootComment ? 'background.paper' : 'neutralMedium.light'}
       >
         <Box display="flex" alignItems="center">
-          <Avatar className={styles.avatar} src={author?.avatarUrl} variant="rounded">
+          <UserAvatar src={author?.avatarUrl} variant="rounded">
             {author?.displayName[0]}
-          </Avatar>
+          </UserAvatar>
           <Box>
             <Typography variant="body1">{comment.author?.displayName}</Typography>
             <Typography variant="body2" color="neutralMedium.dark">{`${
@@ -62,9 +58,9 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
           </IconButton>
         )}
       </Box>
-      <Box paddingX={1} paddingY={1}>
+      <CommentBox>
         <Markdown>{body}</Markdown>
-      </Box>
+      </CommentBox>
     </Box>
   );
 };

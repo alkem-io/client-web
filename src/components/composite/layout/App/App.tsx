@@ -1,8 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import CookieConsent from 'react-cookie-consent';
 import { Outlet } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useTheme } from '@mui/material';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
 import { useNavigation, useUserContext, useUserScope } from '../../../../hooks';
 import { ScrollButton } from '../../../core';
@@ -12,12 +9,13 @@ import Footer from './Footer';
 import Main from './Main';
 import useServerMetadata from '../../../../hooks/useServerMetadata';
 import useCommunityUpdatesNotifier from '../../../../hooks/subscription/CommunityUpdatesNotifier';
+import CookieConsent from '../../../../domain/cookies/CookieConsent';
+import { useCookies } from 'react-cookie';
+import { COOKIE_NAME } from '../../../../domain/cookies/useAlkemioCookies';
 
 const App: FC = () => {
-  const { t } = useTranslation();
+  const [cookies] = useCookies([COOKIE_NAME]);
   const { paths } = useNavigation();
-  const theme = useTheme();
-
   const { user } = useUserContext();
 
   useUserScope(user);
@@ -51,26 +49,7 @@ const App: FC = () => {
         </Main>
         <Footer />
       </div>
-      <CookieConsent
-        location="bottom"
-        buttonText={t('buttons.ok')}
-        cookieName="cookie_consent"
-        style={{
-          background: theme.palette.primary.main,
-          fontFamily: theme.typography.fontFamily,
-          zIndex: 1500,
-        }}
-        buttonStyle={{
-          width: '150px',
-          color: '#FFFFFF',
-          background: theme.palette.primary.dark,
-          borderRadius: theme.shape.borderRadius,
-          ...theme.typography.button,
-        }}
-        expires={150}
-      >
-        {t('cookie.consent')}
-      </CookieConsent>
+      {!cookies.accepted_cookies && <CookieConsent />}
       <ScrollButton />
       <NotificationHandler />
     </>
