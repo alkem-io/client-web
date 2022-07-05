@@ -28,15 +28,11 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, 
     post: yup.string().required(t('forms.validations.required')),
   });
 
-  const handleSubmit = (values: formValues, _helpers: FormikHelpers<formValues>) => {
+  const handleSubmit = async (values: formValues, { resetForm }: FormikHelpers<formValues>) => {
     if (onPostComment) {
-      const result = onPostComment(values.post);
-      if (result) {
-        result.then(response => {
-          if (!response.errors) {
-            _helpers.resetForm();
-          }
-        });
+      const result = await onPostComment(values.post);
+      if (result && !result.errors) {
+        resetForm();
       }
     }
   };
