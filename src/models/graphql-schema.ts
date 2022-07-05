@@ -10,25 +10,15 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A decentralized identifier (DID) as per the W3C standard. */
   DID: string;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: Date;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: string;
-  /** A decentralized identifier (DID) as per the W3C standard. */
   Markdown: string;
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: string;
-  /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
-  /** A uuid identifier. Length 36 characters. */
   UUID: string;
-  /** A UUID or NameID identifier. */
   UUID_NAMEID: string;
-  /** A UUID or Email identifier. */
   UUID_NAMEID_EMAIL: string;
-  /** The `Upload` scalar type represents a file upload. */
   Upload: File;
 };
 
