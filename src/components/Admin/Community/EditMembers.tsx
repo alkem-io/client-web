@@ -1,7 +1,6 @@
 import debounce from 'lodash/debounce';
-import { Box, TextField, Typography } from '@mui/material';
+import { Skeleton, TableProps, TextField, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -11,19 +10,16 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import React, { FC, useMemo } from 'react';
+import React, { ComponentType, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Member } from '../../../models/User';
 import { Filter } from '../Common/Filter';
-import { UserDisplayNameFragment } from '../../../models/graphql-schema';
-import { Skeleton } from '@mui/material';
 import TableRowLoading from '../../../domain/shared/pagination/TableRowLoading';
 import useLazyLoading from '../../../domain/shared/pagination/useLazyLoading';
 import { times } from 'lodash';
 import { Identifiable } from '../../../domain/shared/types/Identifiable';
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
-  background: theme.palette.divider,
+  '& th': { background: theme.palette.divider },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -42,232 +38,181 @@ const StyledButtonRemove = styled(IconButton)(({ theme }) => ({
 
 const initEmptyMembers = <T extends Identifiable>() => times(3, i => ({ id: `__loading_${i}` } as T));
 
-const TABLE_HEIGHT = 600;
 const FILTER_DEBOUNCE = 500;
 
-export interface EditMembersProps {
-  deleteExecutor?: boolean;
-  executor?: Member;
-  members: Member[];
-  availableMembers: UserDisplayNameFragment[];
-  addingMember?: boolean;
-  removingMember?: boolean;
-  loadingAvailableMembers?: boolean;
-  loadingMembers?: boolean;
-  onAdd?: (memberId: string) => void;
-  onRemove?: (memberId: string) => void;
-  fetchMore?: (amount?: number) => Promise<void>;
-  onSearchTermChange: (term: string) => void;
-  hasMore?: boolean;
-  title?: string;
+const ScrollableTable = (props: TableProps) => (
+  <TableContainer sx={{ maxHeight: theme => theme.spacing(75) }}>
+    <Table stickyHeader size="small" {...props} />
+  </TableContainer>
+);
+
+interface CustomizedTable<Item> {
+  header: ReactNode | (() => ReactNode);
+  renderRow: (member: Item, Cell: ComponentType) => ReactNode;
 }
 
-export const EditMembers: FC<EditMembersProps> = ({
-  members,
-  availableMembers,
-  deleteExecutor = false,
-  executor,
-  addingMember = false,
-  removingMember = false,
-  loadingAvailableMembers = false,
-  loadingMembers = false,
-  onAdd,
-  onRemove,
-  fetchMore = () => Promise.resolve(),
-  onSearchTermChange,
-  hasMore = false,
-  title,
-}) => {
-  const { t } = useTranslation();
-  const membersData = useMemo<Member[]>(
-    () => (loadingMembers ? initEmptyMembers() : members),
-    [loadingMembers, members]
-  );
-  const Cell = useMemo(() => (loadingMembers ? Skeleton : React.Fragment), [loadingMembers]);
+export interface EditMembersProps<Member extends Identifiable> extends CustomizedTable<Member> {
+  members: Member[];
+  updating: boolean;
+  loading: boolean;
+  onRemove: (memberId: string) => void; // TODO check usages
+  isRemoveDisabled?: (member: Member) => boolean;
+}
 
-  const handleFilter = useMemo(
-    () => debounce((e: React.ChangeEvent<HTMLInputElement>) => onSearchTermChange(e.target.value), FILTER_DEBOUNCE),
+export const EditMembers = <Member extends Identifiable>({
+  members,
+  updating,
+  loading,
+  onRemove,
+  header,
+  renderRow,
+  isRemoveDisabled = () => false,
+}: EditMembersProps<Member>) => {
+  const membersData = useMemo<Member[]>(() => (loading ? initEmptyMembers() : members), [loading, members]);
+  const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
+
+  const renderHeader = typeof header === 'function' ? header : () => header;
+
+  return (
+    <Filter data={membersData}>
+      {filteredMembers => (
+        <>
+          <hr />
+          <ScrollableTable>
+            <StyledTableHead>
+              <TableRow>
+                {renderHeader()}
+                {onRemove && <TableCell />}
+              </TableRow>
+            </StyledTableHead>
+            <TableBody>
+              {filteredMembers.map(m => {
+                return (
+                  <StyledTableRow key={m.id}>
+                    {renderRow(m, Cell)}
+                    {onRemove && (
+                      <TableCell align="right">
+                        <Cell>
+                          <StyledButtonRemove
+                            aria-label="Remove"
+                            size="small"
+                            disabled={isRemoveDisabled(m) || updating}
+                            onClick={() => onRemove(m.id)}
+                          >
+                            <RemoveIcon />
+                          </StyledButtonRemove>
+                        </Cell>
+                      </TableCell>
+                    )}
+                  </StyledTableRow>
+                );
+              })}
+            </TableBody>
+          </ScrollableTable>
+        </>
+      )}
+    </Filter>
+  );
+};
+
+interface AvailableMembersProps<Member extends Identifiable> extends CustomizedTable<Member> {
+  onAdd: (memberId: string) => void;
+  fetchMore: (amount?: number) => Promise<void>;
+  hasMore: boolean;
+  onSearchTermChange: (term: string) => void;
+  filteredMembers: Member[];
+  loading: boolean;
+  updating: boolean;
+}
+
+export const AvailableMembers = <Member extends Identifiable>({
+  filteredMembers,
+  onAdd,
+  onSearchTermChange,
+  fetchMore,
+  hasMore,
+  loading,
+  updating,
+  header,
+  renderRow,
+}: AvailableMembersProps<Member>) => {
+  const { t } = useTranslation();
+
+  const renderHeader = typeof header === 'function' ? header : () => header;
+
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
+
+  // TODO debounce upper
+  // Rationale: search can also be local or debounced at the transport level. This view is too deep to care about it.
+  // Debouncing here also limits how high can we raise the searchTerm state.
+  const onSearchTermChangeDebounced = useMemo(
+    () => debounce(onSearchTermChange, FILTER_DEBOUNCE),
     [onSearchTermChange, FILTER_DEBOUNCE]
   );
 
+  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value);
+
+  useEffect(() => {
+    onSearchTermChangeDebounced(searchTerm);
+  }, [searchTerm]);
+
   const lazyLoading = useLazyLoading({
     fetchMore,
-    loading: loadingAvailableMembers,
+    loading,
   });
 
   return (
     <>
-      {title && (
-        <Box component={Typography} paddingBottom={1} variant="h3">
-          {title}
-        </Box>
-      )}
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
-          Group members:
-          <Filter data={membersData}>
-            {filteredMembers => (
-              <>
-                <hr />
-                <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
-                  <Table size="small">
-                    <StyledTableHead>
-                      <TableRow>
-                        <TableCell>Full Name</TableCell>
-                        <TableCell>First Name</TableCell>
-                        <TableCell>Last Name</TableCell>
-                        <TableCell>Email</TableCell>
-                        {onRemove && <TableCell />}
-                      </TableRow>
-                    </StyledTableHead>
-                    <TableBody>
-                      {filteredMembers.map(m => {
-                        const disableExecutor = m.id === executor?.id && !deleteExecutor;
-                        return (
-                          <StyledTableRow key={m.id}>
-                            <TableCell>
-                              <Cell>{m.displayName}</Cell>
-                            </TableCell>
-                            <TableCell>
-                              <Cell>{m.firstName}</Cell>
-                            </TableCell>
-                            <TableCell>
-                              <Cell>{m.lastName}</Cell>
-                            </TableCell>
-                            <TableCell>
-                              <Cell>{m.email}</Cell>
-                            </TableCell>
-                            {onRemove && (
-                              <TableCell align={'right'}>
-                                <Cell>
-                                  <StyledButtonRemove
-                                    aria-label="Remove"
-                                    size="small"
-                                    disabled={disableExecutor || addingMember || removingMember}
-                                    onClick={() => onRemove(m.id)}
-                                  >
-                                    <RemoveIcon />
-                                  </StyledButtonRemove>
-                                </Cell>
-                              </TableCell>
-                            )}
-                          </StyledTableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </Box>
-              </>
-            )}
-          </Filter>
-        </Grid>
-        <Grid item sm={4}>
-          Available users:
-          <TextField
-            placeholder={t('components.filter.placeholder')}
-            onChange={handleFilter}
-            size="small"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            sx={{ background: theme => theme.palette.primary.contrastText }}
-          />
-          <>
-            <hr />
-            <Box component={'div'} maxHeight={TABLE_HEIGHT} overflow={'auto'}>
-              <TableContainer>
-                <Table size="small" style={{ position: 'relative' }}>
-                  <StyledTableHead>
-                    <TableRow>
-                      <TableCell />
-                      <TableCell>Full Name</TableCell>
-                    </TableRow>
-                  </StyledTableHead>
-                  <TableBody>
-                    <AvailableMembersFragment
-                      availableMembers={availableMembers}
-                      filteredMembers={availableMembers}
-                      loading={loadingAvailableMembers}
-                      onAdd={onAdd}
-                      addingMember={addingMember}
-                      removingMember={removingMember}
-                    />
-                    {hasMore && <TableRowLoading ref={lazyLoading.ref} colSpan={2} />}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </>
-        </Grid>
-      </Grid>
-    </>
-  );
-};
-
-interface AvailableMembersProps extends Pick<EditMembersProps, 'onAdd' | 'addingMember' | 'removingMember'> {
-  filteredMembers?: UserDisplayNameFragment[];
-  availableMembers?: UserDisplayNameFragment[];
-  loading: boolean;
-}
-
-const AvailableMembersFragment: FC<AvailableMembersProps> = ({
-  filteredMembers = [],
-  availableMembers = [],
-  loading,
-  onAdd,
-  addingMember,
-  removingMember,
-}) => {
-  const { t } = useTranslation();
-
-  const membersData = useMemo<UserDisplayNameFragment[]>(
-    () => (loading ? initEmptyMembers() : filteredMembers),
-    [loading, filteredMembers]
-  );
-  const Cell = useMemo(() => (loading ? Skeleton : React.Fragment), [loading]);
-
-  if (availableMembers.length === 0) {
-    return (
-      <StyledTableRow>
-        <TableCell colSpan={2}>
-          <Typography>{t('components.edit-members.no-available-members')}</Typography>
-        </TableCell>
-      </StyledTableRow>
-    );
-  }
-
-  if (membersData.length === 0) {
-    return (
-      <StyledTableRow>
-        <TableCell colSpan={2}>
-          <Typography>{t('components.edit-members.user-not-found')}</Typography>
-        </TableCell>
-      </StyledTableRow>
-    );
-  }
-
-  return (
-    <>
-      {membersData.map(m => (
-        <StyledTableRow key={m.id}>
-          {onAdd && (
-            <TableCell>
-              <Cell>
-                <StyledButtonAdd
-                  aria-label="Add"
-                  size="small"
-                  onClick={() => onAdd(m.id)}
-                  disabled={addingMember || removingMember}
-                >
-                  <AddIcon />
-                </StyledButtonAdd>
-              </Cell>
-            </TableCell>
+      <TextField
+        value={searchTerm}
+        placeholder={t('components.filter.placeholder')}
+        onChange={handleSearchTermChange}
+        size="small"
+        fullWidth
+        InputLabelProps={{ shrink: true }}
+        sx={{ background: theme => theme.palette.primary.contrastText }}
+      />
+      <hr />
+      <ScrollableTable>
+        <StyledTableHead>
+          <TableRow>
+            <TableCell />
+            {renderHeader()}
+          </TableRow>
+        </StyledTableHead>
+        <TableBody>
+          {filteredMembers.length === 0 && (
+            <StyledTableRow>
+              <TableCell colSpan={3}>
+                <Typography>
+                  {t(
+                    searchTerm === ''
+                      ? 'components.edit-members.no-available-members'
+                      : 'components.edit-members.user-not-found'
+                  )}
+                </Typography>
+              </TableCell>
+            </StyledTableRow>
           )}
-          <TableCell>
-            <Cell>{m.displayName}</Cell>
-          </TableCell>
-        </StyledTableRow>
-      ))}
+          {filteredMembers.map(m => (
+            <StyledTableRow key={m.id}>
+              {onAdd && (
+                <TableCell>
+                  <Cell>
+                    <StyledButtonAdd aria-label="Add" size="small" onClick={() => onAdd(m.id)} disabled={updating}>
+                      <AddIcon />
+                    </StyledButtonAdd>
+                  </Cell>
+                </TableCell>
+              )}
+              {renderRow(m, Cell)}
+            </StyledTableRow>
+          ))}
+          {hasMore && <TableRowLoading ref={lazyLoading.ref} colSpan={2} />}
+        </TableBody>
+      </ScrollableTable>
     </>
   );
 };

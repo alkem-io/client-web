@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogProps, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogProps, styled, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Visual } from '../../../../models/graphql-schema';
@@ -6,6 +6,10 @@ import TagsComponent from '../../../shared/components/TagsComponent/TagsComponen
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
 import Markdown from '../../../../components/core/Markdown';
+
+const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
+  fontWeight: 'bold',
+}));
 
 interface AspectTemplateViewProps {
   title: string;
@@ -49,24 +53,24 @@ const AspectTemplateView = ({
           </DialogActions>
         </Box>
         <Box>
-          <Typography variant="h6">{t('common.description')}</Typography>
+          <TypographyTitle>{t('common.description')}</TypographyTitle>
           <Typography variant="body2" component="div">
             <Markdown>{description}</Markdown>
           </Typography>
         </Box>
         <Box>
-          <Typography variant="h6">{t('common.tags')}</Typography>
+          <TypographyTitle>{t('common.tags')}</TypographyTitle>
           <SectionSpacer half />
           <TagsComponent tags={tags || []} />
         </Box>
         <Box>
-          <Typography variant="h6">{t('aspect-edit.type.title')}</Typography>
+          <TypographyTitle>{t('aspect-edit.type.title')}</TypographyTitle>
           <Typography variant="h6" color="primary">
             {templateType}
           </Typography>
         </Box>
         <Box>
-          <Typography variant="h6">{t('aspect-templates.default-description')}</Typography>
+          <TypographyTitle>{t('aspect-templates.default-description')}</TypographyTitle>
           <Typography variant="body2" component="div">
             <Markdown>{defaultDescription}</Markdown>
           </Typography>

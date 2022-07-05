@@ -54,7 +54,7 @@
     "nanoid": "^3.1.30",
     "qrcode": "^1.5.0",
     "react": "^17.0.2",
-    "react-cookie-consent": "^6.2.4",
+    "react-cookie": "^4.1.1",
     "react-copy-to-clipboard": "^5.0.3",
     "react-dom": "^17.0.2",
     "react-i18next": "^11.15.1",
@@ -99,6 +99,13 @@
   "resolutions": {
     "**/@emotion/styled": "^11.0.0"
   },
+  "overrides": {
+    "glob-parent": "^5.1.2",
+    "got": "11.8.5",
+    "nth-check": "^2.0.1",
+    "uuid": "^8.3.2",
+    "chokidar": "^3.5.3"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -118,16 +125,9 @@
     "@graphql-codegen/typescript-apollo-client-helpers": "^2.1.12",
     "@graphql-codegen/typescript-operations": "^2.3.2",
     "@graphql-codegen/typescript-react-apollo": "^3.2.8",
-    "@storybook/addon-actions": "^6.4.12",
-    "@storybook/addon-essentials": "^6.4.12",
-    "@storybook/addon-links": "^6.4.12",
-    "@storybook/builder-webpack5": "^6.4.12",
-    "@storybook/manager-webpack5": "^6.4.12",
-    "@storybook/node-logger": "^6.4.12",
-    "@storybook/preset-create-react-app": "^4.0.0",
-    "@storybook/react": "^6.4.12",
     "@testing-library/react-hooks": "^5.1.0",
     "@types/apollo-upload-client": "^17.0.0",
+    "@types/js-cookie": "^3.0.2",
     "@types/qrcode": "^1.4.2",
     "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/uuid": "^8.3.1",
@@ -139,7 +139,6 @@
     "lint-staged": "^10.5.3",
     "prettier": "^2.5.1",
     "sass": "^1.52.1",
-    "storybook-react-i18next": "^1.0.13",
     "webpack": "^5.66.0"
   },
   "husky": {
