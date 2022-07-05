@@ -8,7 +8,7 @@ export const typographyOptions: TypographyOptions = {
   h2: { fontFamily: monserrat, fontSize: '1.825rem', fontWeight: 600 },
   h3: { fontFamily: monserrat, fontSize: '1.625rem', fontWeight: 600 },
   h4: { fontFamily: monserrat, fontSize: '1.375rem' },
-  h5: { fontFamily: sourceSansPro, fontSize: '1.125rem' },
+  h5: { fontFamily: sourceSansPro, fontSize: '1.2rem' },
   h6: { fontFamily: sourceSansPro, fontSize: '1rem' },
   caption: { fontFamily: monserrat },
   button: { fontFamily: monserrat },

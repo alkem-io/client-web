@@ -10843,6 +10843,210 @@ export type ChallengeApplicationsQuery = {
   };
 };
 
+export type HubAvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type HubAvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    community?:
+      | {
+          __typename?: 'Community';
+          availableLeadUsers?:
+            | {
+                __typename?: 'PaginatedUsers';
+                users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                pageInfo: {
+                  __typename?: 'PageInfo';
+                  startCursor?: string | undefined;
+                  endCursor?: string | undefined;
+                  hasNextPage: boolean;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type HubAvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type HubAvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    community?:
+      | {
+          __typename?: 'Community';
+          availableMemberUsers?:
+            | {
+                __typename?: 'PaginatedUsers';
+                users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                pageInfo: {
+                  __typename?: 'PageInfo';
+                  startCursor?: string | undefined;
+                  endCursor?: string | undefined;
+                  hasNextPage: boolean;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeAvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type ChallengeAvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    challenge: {
+      __typename?: 'Challenge';
+      community?:
+        | {
+            __typename?: 'Community';
+            availableLeadUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  pageInfo: {
+                    __typename?: 'PageInfo';
+                    startCursor?: string | undefined;
+                    endCursor?: string | undefined;
+                    hasNextPage: boolean;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type ChallengeAvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type ChallengeAvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    challenge: {
+      __typename?: 'Challenge';
+      community?:
+        | {
+            __typename?: 'Community';
+            availableMemberUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  pageInfo: {
+                    __typename?: 'PageInfo';
+                    startCursor?: string | undefined;
+                    endCursor?: string | undefined;
+                    hasNextPage: boolean;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type OpportunityAvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    opportunity: {
+      __typename?: 'Opportunity';
+      community?:
+        | {
+            __typename?: 'Community';
+            availableLeadUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  pageInfo: {
+                    __typename?: 'PageInfo';
+                    startCursor?: string | undefined;
+                    endCursor?: string | undefined;
+                    hasNextPage: boolean;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type OpportunityAvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    opportunity: {
+      __typename?: 'Opportunity';
+      community?:
+        | {
+            __typename?: 'Community';
+            availableMemberUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  pageInfo: {
+                    __typename?: 'PageInfo';
+                    startCursor?: string | undefined;
+                    endCursor?: string | undefined;
+                    hasNextPage: boolean;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type AvailableUserFragment = { __typename?: 'User'; id: string; displayName: string; email: string };
+
 export type HubApplicationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;

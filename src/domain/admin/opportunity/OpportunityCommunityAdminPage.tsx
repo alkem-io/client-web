@@ -3,33 +3,30 @@ import OpportunitySettingsLayout from './OpportunitySettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
-import { useChallenge, useHub, useOpportunity } from '../../../hooks';
-import CommunityAdminView from '../community/views/CommunityAdminView';
+import { useHub, useOpportunity } from '../../../hooks';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import { Loading } from '../../../components/core';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
-import AdminCommunityOrganizationsView from '../challenge/views/AdminCommunityOrganizationsView';
-import { useTranslation } from 'react-i18next';
+import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
 import useOpportunityLeadOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityLeadOrganizationAssignment';
 import useOpportunityMemberOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityMemberOrganizationAssignment';
-import useMemberUserAssignment from '../../community/useCommunityAssignment/useMemberUserAssignment';
 import {
   refetchOpportunityCommunityMembersQuery,
+  useOpportunityAvailableLeadUsersLazyQuery,
+  useOpportunityAvailableMemberUsersLazyQuery,
   useOpportunityCommunityMembersQuery,
 } from '../../../hooks/generated/graphql';
-import useLeadUserAssignment from '../../community/useCommunityAssignment/useLeadUserAssignment';
+import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
+import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
+import EditMemberUsersWithPopup from '../../../components/Admin/Community/EditMemberUsersWithPopup';
 
 const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'community' });
 
-  const { t } = useTranslation();
-
   const { hubNameId } = useHub();
-  const { challenge } = useChallenge();
   const { opportunity } = useOpportunity();
 
   const communityId = opportunity?.community?.id;
-  const parentCommunityId = challenge?.community?.id;
 
   const leadingOrganizationsProps = useOpportunityLeadOrganizationAssignment({
     hubId: hubNameId,
@@ -41,8 +38,8 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
     opportunityId: opportunity?.nameID,
   });
 
-  const memberUsersProps = useMemberUserAssignment({
-    parentCommunityId,
+  const memberUsersProps = useCommunityUserAssignment({
+    memberType: 'member',
     variables: {
       hubId: hubNameId,
       opportunityId: opportunity?.nameID,
@@ -56,10 +53,14 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
       };
     },
     refetchMembersQuery: refetchOpportunityCommunityMembersQuery,
+    availableUsers: {
+      useLazyQuery: useOpportunityAvailableMemberUsersLazyQuery,
+      getResult: data => data.hub.opportunity.community?.availableMemberUsers,
+    },
   });
 
-  const leadUsersProps = useLeadUserAssignment({
-    parentCommunityId,
+  const leadUsersProps = useCommunityUserAssignment({
+    memberType: 'lead',
     variables: {
       hubId: hubNameId,
       opportunityId: opportunity?.nameID,
@@ -69,24 +70,27 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
 
       return {
         communityId: data?.hub.opportunity.community?.id,
-        existingMembers: data?.hub.opportunity.community?.leadUsers,
+        existingMembers: data?.hub.opportunity.community?.memberUsers,
       };
     },
     refetchMembersQuery: refetchOpportunityCommunityMembersQuery,
+    availableUsers: {
+      useLazyQuery: useOpportunityAvailableLeadUsersLazyQuery,
+      getResult: data => data.hub.opportunity.community?.availableLeadUsers,
+    },
   });
 
   return (
     <OpportunitySettingsLayout currentTab={SettingsSection.Community} tabRoutePrefix={routePrefix}>
-      <CommunityAdminView headerText={t('community.leading-users')} {...leadUsersProps} />
+      <EditCommunityMembersSection memberType="leads">
+        <EditMemberUsersWithPopup {...leadUsersProps} />
+        <EditOrganizationsWithPopup {...leadingOrganizationsProps} />
+      </EditCommunityMembersSection>
       <SectionSpacer />
-      <CommunityAdminView headerText={t('community.member-users')} {...memberUsersProps} />
-      <SectionSpacer />
-      <AdminCommunityOrganizationsView
-        headerText={t('community.leading-organizations')}
-        {...leadingOrganizationsProps}
-      />
-      <SectionSpacer />
-      <AdminCommunityOrganizationsView headerText={t('community.member-organizations')} {...memberOrganizationsProps} />
+      <EditCommunityMembersSection memberType="members">
+        <EditMemberUsersWithPopup {...memberUsersProps} />
+        <EditOrganizationsWithPopup {...memberOrganizationsProps} />
+      </EditCommunityMembersSection>
       <SectionSpacer />
       {!communityId ? <Loading /> : <CommunityGroupListPage communityId={communityId} />}
     </OpportunitySettingsLayout>
