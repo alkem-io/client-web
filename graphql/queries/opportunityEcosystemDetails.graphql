@@ -19,7 +19,8 @@ query opportunityEcosystemDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_NAM
           }
           canvas {
             id
-            name
+            displayName
+            nameID
             value
           }
         }
