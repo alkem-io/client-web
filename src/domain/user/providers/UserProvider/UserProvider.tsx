@@ -16,6 +16,7 @@ export interface UserContextValue {
   user: UserMetadata | undefined;
   userHubRoles: UserRolesInEntity[] | undefined;
   loading: boolean;
+  essentialsLoaded: boolean; // Loaded Authentication and Profile data, enough for showing the page header, but f.e. roles information is not guaranteed.
   verified: boolean;
   isAuthenticated: boolean;
 }
@@ -24,6 +25,7 @@ const UserContext = React.createContext<UserContextValue>({
   user: undefined,
   userHubRoles: undefined,
   loading: true,
+  essentialsLoaded: false,
   verified: false,
   isAuthenticated: false,
 });
@@ -31,7 +33,7 @@ const UserContext = React.createContext<UserContextValue>({
 const UserProvider: FC<{}> = ({ children }) => {
   const wrapper = useUserMetadataWrapper();
   const { isAuthenticated, loading: loadingAuthentication, verified } = useAuthenticationContext();
-  const { data: meHasProfileData, loading: LoadingMeHasProfile } = useMeHasProfileQuery({ skip: !isAuthenticated });
+  const { data: meHasProfileData, loading: loadingMeHasProfile } = useMeHasProfileQuery({ skip: !isAuthenticated });
   const { data: meData, loading: loadingMe } = useMeQuery({
     skip: !meHasProfileData?.meHasProfile,
   });
@@ -59,11 +61,13 @@ const UserProvider: FC<{}> = ({ children }) => {
 
   const loading =
     loadingAuthentication ||
-    LoadingMeHasProfile ||
+    loadingMeHasProfile ||
     loadingCreateUser ||
     loadingMe ||
     loadingRolesData ||
     (isAuthenticated && !meHasProfileData?.meHasProfile);
+
+  const essentialsLoaded = !loadingAuthentication && !loadingMeHasProfile && !loadingMe;
 
   const wrappedMe = useMemo(
     () => (meData?.me ? wrapper(meData.me as User, rolesData?.rolesUser) : undefined),
@@ -75,10 +79,11 @@ const UserProvider: FC<{}> = ({ children }) => {
       user: wrappedMe,
       userHubRoles: rolesData?.rolesUser.hubs,
       loading,
+      essentialsLoaded,
       verified,
       isAuthenticated,
     }),
-    [wrappedMe, rolesData, loading, verified, isAuthenticated]
+    [wrappedMe, rolesData, loading, essentialsLoaded, verified, isAuthenticated]
   );
 
   if (error) return <ErrorPage error={error} />;
