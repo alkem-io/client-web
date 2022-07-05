@@ -15,6 +15,7 @@ import { userCardValueGetter } from '../../components/core/card-filter/value-get
 import { organizationCardValueGetter } from './ChallengeCommunityPage';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import CommunityContributorsSearch from '../../domain/community/CommunityContributors/CommunityContributorsSearch';
+import useUserCardProps from '../../domain/community/utils/useUserCardProps';
 
 const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   const { hubId, communityId } = useHub();
@@ -47,6 +48,8 @@ const HubCommunityPage: FC<PageProps> = ({ paths }) => {
 
   const hostOrganization = useMemo(() => host && user && toOrganizationCardProps(host, user, t), [host, user]);
 
+  const leadUserCards = useUserCardProps(leadUsers, hubId);
+
   return (
     <CommunityPage entityTypeName="hub" paths={paths} hubId={hubId} communityId={communityId}>
       <HostOrganization organization={hostOrganization} loading={loading} />
@@ -54,7 +57,7 @@ const HubCommunityPage: FC<PageProps> = ({ paths }) => {
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
       <Accordion title={t('community.leading-users')} ariaKey="lead-users" loading={loading}>
-        <ContributingUsers users={leadUsers} loading={loading} />
+        <ContributingUsers users={leadUserCards} loading={loading} />
       </Accordion>
       <CommunityContributorsSection
         resourceId={hubId}
