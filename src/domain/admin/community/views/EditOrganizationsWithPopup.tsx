@@ -1,9 +1,8 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { OrganizationDetailsFragment } from '../../../../models/graphql-schema';
-import Avatar from '../../../../components/core/Avatar';
 import EditMembers, { AvailableMembers } from '../../../../components/Admin/Community/EditMembers';
-import { Box, Button, Dialog, DialogContent, TableCell } from '@mui/material';
+import { Avatar, Box, Button, Dialog, DialogContent, TableCell } from '@mui/material';
 import Heading from '../../../shared/components/Heading';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 
