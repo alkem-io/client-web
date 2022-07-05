@@ -1,11 +1,12 @@
 import clsx from 'clsx';
 import React, { ComponentType, FC, useMemo } from 'react';
-import { Box, FormGroup, FormHelperText, InputLabel, InputLabelProps, InputProps, Typography } from '@mui/material';
+import { FormGroup, FormHelperText, InputLabel, InputLabelProps, InputProps } from '@mui/material';
 import MDEditor from '@uiw/react-md-editor';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useField } from 'formik';
 import { makeStyles } from '@mui/styles';
+import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 
 const useStyle = makeStyles(theme => ({
   padding: {
@@ -89,13 +90,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           maxLength: maxLength,
         }}
       />
-      {withCounter && (
-        <Box sx={{ position: 'relative' }}>
-          <Typography sx={{ position: 'absolute', right: 0 }} variant="caption">
-            {`${field.value?.length ? field.value?.length : 0}` + (maxLength ? `/${maxLength}` : '')}
-          </Typography>
-        </Box>
-      )}
+      {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength}></CharacterCounter>}
       {meta.touched && <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>}
     </FormGroup>
   );
