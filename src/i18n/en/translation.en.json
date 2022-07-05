@@ -1,6 +1,9 @@
 {
   "cookie": {
-    "consent": "This website uses necessary cookies for correct functioning, adhering to our privacy policy."
+    "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage.",
+    "settings": "When visiting a website, information can be stored on your browser in the form of cookies. This information can be about you, your preferences and your device. Mostly, this information is used to make the website work as good as possible. Some websites use it for marketing purposes. As Alkemio does not allow any advertisement on its website, we only distinguish two types of cookies.",
+    "technical": "Technically necessary cookies: enable you to navigate and use the basis functions and to store preferences.",
+    "analysis": "Analysis cookies: enable us to determine how visitors interact with our services in order to improve user experience."
   },
   "actions": {
     "add-entity": "Add {{entity}}"
@@ -40,7 +43,9 @@
     "member": "Member",
     "profile": "Profile",
     "view-profile": "View Profile",
-    "edit-photo": "Edit Photo"
+    "edit-photo": "Edit Photo",
+    "accept-all-cookies": "Accept All Cookies",
+    "confirm-choice": "Confirm Choice"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
