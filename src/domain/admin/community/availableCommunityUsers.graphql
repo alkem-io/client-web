@@ -1,0 +1,137 @@
+query HubAvailableLeadUsers(
+  $hubId: UUID_NAMEID!
+  $first: Int!,
+  $after: UUID,
+  $filter: UserFilterInput
+) {
+	hub(ID: $hubId) {
+    community {
+      availableLeadUsers(first: $first, after: $after, filter: $filter) {
+        users {
+          ...AvailableUser
+        }
+        pageInfo {
+          ...PageInfo
+        }
+      }
+    }
+  }
+}
+
+query HubAvailableMemberUsers(
+  $hubId: UUID_NAMEID!
+  $first: Int!,
+  $after: UUID,
+  $filter: UserFilterInput
+) {
+	hub(ID: $hubId) {
+    community {
+      availableMemberUsers(first: $first, after: $after, filter: $filter) {
+        users {
+          ...AvailableUser
+        }
+        pageInfo {
+          ...PageInfo
+        }
+      }
+    }
+  }
+}
+
+query ChallengeAvailableLeadUsers(
+  $hubId: UUID_NAMEID!
+  $challengeId: UUID_NAMEID!,
+  $first: Int!,
+  $after: UUID,
+  $filter: UserFilterInput
+) {
+	hub(ID: $hubId) {
+    challenge(ID: $challengeId) {
+      community {
+        availableLeadUsers(first: $first, after: $after, filter: $filter) {
+          users {
+            ...AvailableUser
+          }
+          pageInfo {
+            ...PageInfo
+          }
+        }
+      }
+    }
+  }
+}
+
+query ChallengeAvailableMemberUsers(
+  $hubId: UUID_NAMEID!
+  $challengeId: UUID_NAMEID!,
+  $first: Int!,
+  $after: UUID,
+  $filter: UserFilterInput
+) {
+	hub(ID: $hubId) {
+    challenge(ID: $challengeId) {
+      community {
+        availableMemberUsers(first: $first, after: $after, filter: $filter) {
+          users {
+            ...AvailableUser
+          }
+          pageInfo {
+            ...PageInfo
+          }
+        }
+      }
+    }
+  }
+}
+
+query OpportunityAvailableLeadUsers(
+  $hubId: UUID_NAMEID!
+  $opportunityId: UUID_NAMEID!,
+  $first: Int!,
+  $after: UUID,
+  $filter: UserFilterInput
+) {
+	hub(ID: $hubId) {
+    opportunity(ID: $opportunityId) {
+      community {
+        availableLeadUsers(first: $first, after: $after, filter: $filter) {
+          users {
+            ...AvailableUser
+          }
+          pageInfo {
+            ...PageInfo
+          }
+        }
+      }
+    }
+  }
+}
+
+query OpportunityAvailableMemberUsers(
+  $hubId: UUID_NAMEID!
+  $opportunityId: UUID_NAMEID!,
+  $first: Int!,
+  $after: UUID,
+  $filter: UserFilterInput
+) {
+	hub(ID: $hubId) {
+    opportunity(ID: $opportunityId) {
+      community {
+        availableMemberUsers(first: $first, after: $after, filter: $filter) {
+          users {
+            ...AvailableUser
+          }
+          pageInfo {
+            ...PageInfo
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment AvailableUser on User {
+  id
+  displayName
+  email
+}

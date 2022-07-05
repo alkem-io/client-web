@@ -5,6 +5,9 @@
     "technical": "Technically necessary cookies: enable you to navigate and use the basis functions and to store preferences.",
     "analysis": "Analysis cookies: enable us to determine how visitors interact with our services in order to improve user experience."
   },
+  "actions": {
+    "add-entity": "Add {{entity}}"
+  },
   "buttons": {
     "learn-more": "Learn more",
     "load-more": "Load more",
@@ -262,6 +265,7 @@
     "leading-organizations": "Leading Organizations",
     "member-organizations": "Member Organizations",
     "leads": "Leads",
+    "members": "Members",
     "host": "Host"
   },
   "forms": {

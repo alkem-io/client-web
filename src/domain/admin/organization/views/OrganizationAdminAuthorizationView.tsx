@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import EditMembers from '../../../../components/Admin/Community/EditMembers';
+import EditMemberUsers from '../../../../components/Admin/Community/EditMembersUsers';
 import OrganizationMembers from '../../../../containers/organization/OrganizationMembers';
 import { useOrganization } from '../../../../hooks';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';
@@ -33,12 +33,11 @@ export const OrganizationAdminAuthorizationView: FC = () => {
         }}
       >
         {(entities, actions, state) => (
-          <EditMembers
+          <EditMemberUsers
             members={entities.allMembers}
             availableMembers={entities.availableMembers}
-            addingMember={state.addingAdmin}
-            removingMember={state.removingAdmin}
-            executor={entities.currentMember}
+            updating={state.addingAdmin || state.removingAdmin}
+            executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignAdmin}
             onRemove={actions.handleRemoveAdmin}
             fetchMore={actions.handleLoadMore}
