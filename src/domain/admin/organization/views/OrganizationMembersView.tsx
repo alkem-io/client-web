@@ -22,8 +22,7 @@ export const OrganizationMembersView: FC = () => {
           <EditMemberUsers
             members={entities.allMembers}
             availableMembers={entities.availableMembers}
-            addingMember={state.addingUser}
-            removingMember={state.removingUser}
+            updating={state.addingUser || state.removingUser}
             executorId={entities.currentMember?.id}
             onAdd={actions.handleAssignMember}
             onRemove={actions.handleRemoveMember}

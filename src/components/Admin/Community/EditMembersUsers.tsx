@@ -10,8 +10,7 @@ export interface EditMemberUsersProps {
   executorId?: string;
   members: Member[];
   availableMembers: UserDisplayNameFragment[];
-  addingMember?: boolean; // TODO make required
-  removingMember?: boolean; // TODO make required
+  updating: boolean;
   loadingAvailableMembers?: boolean;
   loadingMembers?: boolean;
   onAdd: (memberId: string) => void;
@@ -26,8 +25,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
   executorId,
   members,
   availableMembers,
-  addingMember = false,
-  removingMember = false,
+  updating,
   loadingAvailableMembers = false,
   loadingMembers = false,
   onAdd = () => {},
@@ -49,7 +47,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
           Group members:
           <EditMembers
             members={members}
-            updating={addingMember || removingMember}
+            updating={updating}
             loading={loadingMembers}
             onRemove={onRemove}
             header={
@@ -89,7 +87,7 @@ export const EditMemberUsers: FC<EditMemberUsersProps> = ({
             onSearchTermChange={onSearchTermChange}
             filteredMembers={availableMembers}
             loading={loadingAvailableMembers}
-            updating={addingMember || removingMember}
+            updating={updating}
             header={<TableCell>Full Name</TableCell>}
             renderRow={m => <TableCell>{m.displayName}</TableCell>}
           />

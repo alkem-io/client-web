@@ -7,7 +7,7 @@ import { useAvailableMembersWithCredential } from '../../../domain/community/use
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,
-    Pick<EditMemberUsersProps, 'onAdd' | 'onRemove' | 'addingMember' | 'removingMember'> {
+    Pick<EditMemberUsersProps, 'onAdd' | 'onRemove' | 'updating'> {
   credential: AuthorizationCredential;
   /** Members of the edited entity */
   parentCommunityId?: string;
@@ -20,8 +20,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
   resourceId,
   title,
   parentCommunityId,
-  addingMember = false,
-  removingMember = false,
+  updating,
 }) => {
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
@@ -40,8 +39,7 @@ export const EditMemberCredentials: FC<EditAdminCredentialsProps> = ({
       executorId={user?.id}
       onAdd={onAdd}
       onRemove={onRemove}
-      addingMember={addingMember}
-      removingMember={removingMember}
+      updating={updating}
       loadingMembers={loading}
       loadingAvailableMembers={loading}
       fetchMore={fetchMore}

@@ -17,8 +17,7 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
   executorId,
   members,
   availableMembers,
-  addingMember = false,
-  removingMember = false,
+  updating,
   loadingAvailableMembers = false,
   loadingMembers = false,
   onAdd = () => {},
@@ -49,7 +48,7 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
       </Box>
       <EditMembers
         members={members}
-        updating={addingMember || removingMember}
+        updating={updating}
         loading={loadingMembers}
         onRemove={onRemove}
         header={
@@ -93,7 +92,7 @@ export const EditMemberUsersWithPopup: FC<EditMemberUsersWithPopupProps> = ({
             onSearchTermChange={onSearchTermChange}
             filteredMembers={availableMembers}
             loading={loadingAvailableMembers}
-            updating={addingMember || removingMember}
+            updating={updating}
             header={
               <>
                 <TableCell>Full Name</TableCell>
