@@ -26,7 +26,7 @@ export const HomePage = () => {
           {user.isAuthenticated ? <AuthenticatedUserHome user={user} /> : <AnonymousUserHome />}
         </Grow>
         <Grid item xs={12}>
-          <HubsSection />
+          <HubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
         </Grid>
         <SectionSpacer />
         <Grid item xs={12}>

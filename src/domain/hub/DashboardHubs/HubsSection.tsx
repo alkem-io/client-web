@@ -12,12 +12,25 @@ import useServerMetadata from '../../../hooks/useServerMetadata';
 import getActivityCount from '../../activity/utils/getActivityCount';
 import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
 import { EntityContributionCardLabel } from '../../../components/composite/common/cards/ContributionCard/EntityContributionCard';
+import { keyBy } from 'lodash';
+import { UserRolesInEntity } from '../../user/providers/UserProvider/UserRolesInEntity';
+import { Loading } from '../../../components/core';
 
-const HubSection = () => {
+interface HubsSectionProps {
+  userHubRoles: UserRolesInEntity[] | undefined;
+  loading?: boolean;
+}
+
+const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
-  const { data: hubsData, loading } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
-  const hubs = useMemo(() => hubsData?.hubs || [], [hubsData]);
+  const { data: hubsData, loading: areHubsLoading } = useHubsQuery({ fetchPolicy: 'cache-and-network' });
+
+  const hubRolesByHubId = useMemo(() => keyBy(userHubRoles, 'id'), [userHubRoles]);
+  const hubs = useMemo(
+    () => hubsData?.hubs.filter(({ id }) => !hubRolesByHubId[id]) ?? [],
+    [hubsData, hubRolesByHubId]
+  );
 
   const { activity, loading: isLoadingActivities } = useServerMetadata();
 
@@ -57,6 +70,8 @@ const HubSection = () => {
     [activity, loading]
   );
 
+  const isLoading = loading || areHubsLoading;
+
   return (
     <DashboardHubsSection
       headerText={t('pages.home.sections.hub.header')}
@@ -67,8 +82,9 @@ const HubSection = () => {
     >
       <Typography variant="body1">{t('pages.home.sections.hub.body')}</Typography>
       <SectionSpacer />
+      {isLoading && <Loading />}
     </DashboardHubsSection>
   );
 };
 
-export default HubSection;
+export default HubsSection;
