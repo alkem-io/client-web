@@ -85,14 +85,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
           {primaryAction}
         </SectionHeader>
       )}
-      {subHeaderText && typeof subHeaderText === 'string' ? (
-        <>
-          <SectionSpacer />
-          <SectionSubHeader text={subHeaderText} />
-        </>
-      ) : (
-        subHeaderText
-      )}
+      {subHeaderText && typeof subHeaderText === 'string' ? <SectionSubHeader text={subHeaderText} /> : subHeaderText}
       {(headerText || subHeaderText) && !(headerSpacing === 'none') && (
         <SectionSpacer double={headerSpacing === 'double'} />
       )}

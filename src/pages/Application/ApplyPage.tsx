@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import FormikInputField from '../../components/composite/forms/FormikInputField';
 import Button from '../../components/core/Button';
 import ErrorBlock from '../../components/core/ErrorBlock';
-import Image from '../../components/core/Image';
+import Image from '../../domain/shared/components/Image';
 import { Loading } from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
 import { useApplicationCommunityQuery } from '../../containers/application/useApplicationCommunityQuery';

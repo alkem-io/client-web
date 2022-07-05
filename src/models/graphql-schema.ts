@@ -10,25 +10,15 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A decentralized identifier (DID) as per the W3C standard. */
   DID: string;
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: Date;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: string;
-  /** A decentralized identifier (DID) as per the W3C standard. */
   Markdown: string;
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: string;
-  /** A human readable identifier, 3 <= length <= 25. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: string;
-  /** A uuid identifier. Length 36 characters. */
   UUID: string;
-  /** A UUID or NameID identifier. */
   UUID_NAMEID: string;
-  /** A UUID or Email identifier. */
   UUID_NAMEID_EMAIL: string;
-  /** The `Upload` scalar type represents a file upload. */
   Upload: File;
 };
 
@@ -1220,7 +1210,7 @@ export type Hub = {
   /** The set of tags for the  hub. */
   tagset?: Maybe<Tagset>;
   /** The templates in use by this Hub */
-  templates: TemplatesSet;
+  templates?: Maybe<TemplatesSet>;
 };
 
 export type HubApplicationArgs = {
@@ -10851,6 +10841,210 @@ export type ChallengeApplicationsQuery = {
   };
 };
 
+export type HubAvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type HubAvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    community?:
+      | {
+          __typename?: 'Community';
+          availableLeadUsers?:
+            | {
+                __typename?: 'PaginatedUsers';
+                users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                pageInfo: {
+                  __typename?: 'PageInfo';
+                  startCursor?: string | undefined;
+                  endCursor?: string | undefined;
+                  hasNextPage: boolean;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type HubAvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type HubAvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    community?:
+      | {
+          __typename?: 'Community';
+          availableMemberUsers?:
+            | {
+                __typename?: 'PaginatedUsers';
+                users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                pageInfo: {
+                  __typename?: 'PageInfo';
+                  startCursor?: string | undefined;
+                  endCursor?: string | undefined;
+                  hasNextPage: boolean;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeAvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type ChallengeAvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    challenge: {
+      __typename?: 'Challenge';
+      community?:
+        | {
+            __typename?: 'Community';
+            availableLeadUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  pageInfo: {
+                    __typename?: 'PageInfo';
+                    startCursor?: string | undefined;
+                    endCursor?: string | undefined;
+                    hasNextPage: boolean;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type ChallengeAvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type ChallengeAvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    challenge: {
+      __typename?: 'Challenge';
+      community?:
+        | {
+            __typename?: 'Community';
+            availableMemberUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  pageInfo: {
+                    __typename?: 'PageInfo';
+                    startCursor?: string | undefined;
+                    endCursor?: string | undefined;
+                    hasNextPage: boolean;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAvailableLeadUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type OpportunityAvailableLeadUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    opportunity: {
+      __typename?: 'Opportunity';
+      community?:
+        | {
+            __typename?: 'Community';
+            availableLeadUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  pageInfo: {
+                    __typename?: 'PageInfo';
+                    startCursor?: string | undefined;
+                    endCursor?: string | undefined;
+                    hasNextPage: boolean;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAvailableMemberUsersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type OpportunityAvailableMemberUsersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    opportunity: {
+      __typename?: 'Opportunity';
+      community?:
+        | {
+            __typename?: 'Community';
+            availableMemberUsers?:
+              | {
+                  __typename?: 'PaginatedUsers';
+                  users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+                  pageInfo: {
+                    __typename?: 'PageInfo';
+                    startCursor?: string | undefined;
+                    endCursor?: string | undefined;
+                    hasNextPage: boolean;
+                  };
+                }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type AvailableUserFragment = { __typename?: 'User'; id: string; displayName: string; email: string };
+
 export type HubApplicationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -10953,37 +11147,39 @@ export type HubTemplatesQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    templates: {
-      __typename?: 'TemplatesSet';
-      id: string;
-      aspectTemplates: Array<{
-        __typename?: 'AspectTemplate';
-        id: string;
-        defaultDescription: string;
-        type: string;
-        info: {
-          __typename?: 'TemplateInfo';
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
           id: string;
-          title?: string | undefined;
-          description?: string | undefined;
-          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-          visual?:
-            | {
-                __typename?: 'Visual';
-                id: string;
-                uri: string;
-                name: string;
-                allowedTypes: Array<string>;
-                aspectRatio: number;
-                maxHeight: number;
-                maxWidth: number;
-                minHeight: number;
-                minWidth: number;
-              }
-            | undefined;
-        };
-      }>;
-    };
+          aspectTemplates: Array<{
+            __typename?: 'AspectTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
+            };
+          }>;
+        }
+      | undefined;
   };
 };
 
@@ -12172,23 +12368,35 @@ export type HubProviderQuery = {
             | undefined;
         }
       | undefined;
-    templates: {
-      __typename?: 'TemplatesSet';
-      id: string;
-      aspectTemplates: Array<{
-        __typename?: 'AspectTemplate';
-        id: string;
-        defaultDescription: string;
-        type: string;
-        info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
-      }>;
-      canvasTemplates: Array<{
-        __typename?: 'CanvasTemplate';
-        id: string;
-        value: string;
-        info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
-      }>;
-    };
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          aspectTemplates: Array<{
+            __typename?: 'AspectTemplate';
+            id: string;
+            defaultDescription: string;
+            type: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+            };
+          }>;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            value: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+            };
+          }>;
+        }
+      | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
   };
@@ -12253,23 +12461,35 @@ export type HubInfoFragment = {
           | undefined;
       }
     | undefined;
-  templates: {
-    __typename?: 'TemplatesSet';
-    id: string;
-    aspectTemplates: Array<{
-      __typename?: 'AspectTemplate';
-      id: string;
-      defaultDescription: string;
-      type: string;
-      info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
-    }>;
-    canvasTemplates: Array<{
-      __typename?: 'CanvasTemplate';
-      id: string;
-      value: string;
-      info: { __typename?: 'TemplateInfo'; id: string; title?: string | undefined; description?: string | undefined };
-    }>;
-  };
+  templates?:
+    | {
+        __typename?: 'TemplatesSet';
+        id: string;
+        aspectTemplates: Array<{
+          __typename?: 'AspectTemplate';
+          id: string;
+          defaultDescription: string;
+          type: string;
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title?: string | undefined;
+            description?: string | undefined;
+          };
+        }>;
+        canvasTemplates: Array<{
+          __typename?: 'CanvasTemplate';
+          id: string;
+          value: string;
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title?: string | undefined;
+            description?: string | undefined;
+          };
+        }>;
+      }
+    | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   host?: { __typename?: 'Organization'; id: string; displayName: string; nameID: string } | undefined;
 };

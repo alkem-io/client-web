@@ -74,8 +74,7 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
         onAdd={handleAdd}
         onRemove={handleRemove}
         credential={credential}
-        addingMember={addingMember}
-        removingMember={removingMember}
+        updating={addingMember || removingMember}
       />
     </Container>
   );
