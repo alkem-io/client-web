@@ -1443,6 +1443,13 @@ export const AspectProviderDataFragmentDoc = gql`
   }
   ${AspectProvidedFragmentDoc}
 `;
+export const AvailableUserFragmentDoc = gql`
+  fragment AvailableUser on User {
+    id
+    displayName
+    email
+  }
+`;
 export const TemplateInfoFragmentDoc = gql`
   fragment TemplateInfo on TemplateInfo {
     id
@@ -14318,6 +14325,482 @@ export type ChallengeApplicationsQueryResult = Apollo.QueryResult<
 >;
 export function refetchChallengeApplicationsQuery(variables: SchemaTypes.ChallengeApplicationsQueryVariables) {
   return { query: ChallengeApplicationsDocument, variables: variables };
+}
+export const HubAvailableLeadUsersDocument = gql`
+  query HubAvailableLeadUsers($hubId: UUID_NAMEID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+    hub(ID: $hubId) {
+      community {
+        availableLeadUsers(first: $first, after: $after, filter: $filter) {
+          users {
+            ...AvailableUser
+          }
+          pageInfo {
+            ...PageInfo
+          }
+        }
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useHubAvailableLeadUsersQuery__
+ *
+ * To run a query within a React component, call `useHubAvailableLeadUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubAvailableLeadUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubAvailableLeadUsersQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useHubAvailableLeadUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubAvailableLeadUsersQuery,
+    SchemaTypes.HubAvailableLeadUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubAvailableLeadUsersQuery, SchemaTypes.HubAvailableLeadUsersQueryVariables>(
+    HubAvailableLeadUsersDocument,
+    options
+  );
+}
+export function useHubAvailableLeadUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubAvailableLeadUsersQuery,
+    SchemaTypes.HubAvailableLeadUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubAvailableLeadUsersQuery, SchemaTypes.HubAvailableLeadUsersQueryVariables>(
+    HubAvailableLeadUsersDocument,
+    options
+  );
+}
+export type HubAvailableLeadUsersQueryHookResult = ReturnType<typeof useHubAvailableLeadUsersQuery>;
+export type HubAvailableLeadUsersLazyQueryHookResult = ReturnType<typeof useHubAvailableLeadUsersLazyQuery>;
+export type HubAvailableLeadUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubAvailableLeadUsersQuery,
+  SchemaTypes.HubAvailableLeadUsersQueryVariables
+>;
+export function refetchHubAvailableLeadUsersQuery(variables: SchemaTypes.HubAvailableLeadUsersQueryVariables) {
+  return { query: HubAvailableLeadUsersDocument, variables: variables };
+}
+export const HubAvailableMemberUsersDocument = gql`
+  query HubAvailableMemberUsers($hubId: UUID_NAMEID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
+    hub(ID: $hubId) {
+      community {
+        availableMemberUsers(first: $first, after: $after, filter: $filter) {
+          users {
+            ...AvailableUser
+          }
+          pageInfo {
+            ...PageInfo
+          }
+        }
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useHubAvailableMemberUsersQuery__
+ *
+ * To run a query within a React component, call `useHubAvailableMemberUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubAvailableMemberUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubAvailableMemberUsersQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useHubAvailableMemberUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubAvailableMemberUsersQuery,
+    SchemaTypes.HubAvailableMemberUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubAvailableMemberUsersQuery, SchemaTypes.HubAvailableMemberUsersQueryVariables>(
+    HubAvailableMemberUsersDocument,
+    options
+  );
+}
+export function useHubAvailableMemberUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubAvailableMemberUsersQuery,
+    SchemaTypes.HubAvailableMemberUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.HubAvailableMemberUsersQuery,
+    SchemaTypes.HubAvailableMemberUsersQueryVariables
+  >(HubAvailableMemberUsersDocument, options);
+}
+export type HubAvailableMemberUsersQueryHookResult = ReturnType<typeof useHubAvailableMemberUsersQuery>;
+export type HubAvailableMemberUsersLazyQueryHookResult = ReturnType<typeof useHubAvailableMemberUsersLazyQuery>;
+export type HubAvailableMemberUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubAvailableMemberUsersQuery,
+  SchemaTypes.HubAvailableMemberUsersQueryVariables
+>;
+export function refetchHubAvailableMemberUsersQuery(variables: SchemaTypes.HubAvailableMemberUsersQueryVariables) {
+  return { query: HubAvailableMemberUsersDocument, variables: variables };
+}
+export const ChallengeAvailableLeadUsersDocument = gql`
+  query ChallengeAvailableLeadUsers(
+    $hubId: UUID_NAMEID!
+    $challengeId: UUID_NAMEID!
+    $first: Int!
+    $after: UUID
+    $filter: UserFilterInput
+  ) {
+    hub(ID: $hubId) {
+      challenge(ID: $challengeId) {
+        community {
+          availableLeadUsers(first: $first, after: $after, filter: $filter) {
+            users {
+              ...AvailableUser
+            }
+            pageInfo {
+              ...PageInfo
+            }
+          }
+        }
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useChallengeAvailableLeadUsersQuery__
+ *
+ * To run a query within a React component, call `useChallengeAvailableLeadUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeAvailableLeadUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeAvailableLeadUsersQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useChallengeAvailableLeadUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeAvailableLeadUsersQuery,
+    SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeAvailableLeadUsersQuery,
+    SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
+  >(ChallengeAvailableLeadUsersDocument, options);
+}
+export function useChallengeAvailableLeadUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeAvailableLeadUsersQuery,
+    SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeAvailableLeadUsersQuery,
+    SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
+  >(ChallengeAvailableLeadUsersDocument, options);
+}
+export type ChallengeAvailableLeadUsersQueryHookResult = ReturnType<typeof useChallengeAvailableLeadUsersQuery>;
+export type ChallengeAvailableLeadUsersLazyQueryHookResult = ReturnType<typeof useChallengeAvailableLeadUsersLazyQuery>;
+export type ChallengeAvailableLeadUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeAvailableLeadUsersQuery,
+  SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
+>;
+export function refetchChallengeAvailableLeadUsersQuery(
+  variables: SchemaTypes.ChallengeAvailableLeadUsersQueryVariables
+) {
+  return { query: ChallengeAvailableLeadUsersDocument, variables: variables };
+}
+export const ChallengeAvailableMemberUsersDocument = gql`
+  query ChallengeAvailableMemberUsers(
+    $hubId: UUID_NAMEID!
+    $challengeId: UUID_NAMEID!
+    $first: Int!
+    $after: UUID
+    $filter: UserFilterInput
+  ) {
+    hub(ID: $hubId) {
+      challenge(ID: $challengeId) {
+        community {
+          availableMemberUsers(first: $first, after: $after, filter: $filter) {
+            users {
+              ...AvailableUser
+            }
+            pageInfo {
+              ...PageInfo
+            }
+          }
+        }
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useChallengeAvailableMemberUsersQuery__
+ *
+ * To run a query within a React component, call `useChallengeAvailableMemberUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeAvailableMemberUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeAvailableMemberUsersQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useChallengeAvailableMemberUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeAvailableMemberUsersQuery,
+    SchemaTypes.ChallengeAvailableMemberUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeAvailableMemberUsersQuery,
+    SchemaTypes.ChallengeAvailableMemberUsersQueryVariables
+  >(ChallengeAvailableMemberUsersDocument, options);
+}
+export function useChallengeAvailableMemberUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeAvailableMemberUsersQuery,
+    SchemaTypes.ChallengeAvailableMemberUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeAvailableMemberUsersQuery,
+    SchemaTypes.ChallengeAvailableMemberUsersQueryVariables
+  >(ChallengeAvailableMemberUsersDocument, options);
+}
+export type ChallengeAvailableMemberUsersQueryHookResult = ReturnType<typeof useChallengeAvailableMemberUsersQuery>;
+export type ChallengeAvailableMemberUsersLazyQueryHookResult = ReturnType<
+  typeof useChallengeAvailableMemberUsersLazyQuery
+>;
+export type ChallengeAvailableMemberUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeAvailableMemberUsersQuery,
+  SchemaTypes.ChallengeAvailableMemberUsersQueryVariables
+>;
+export function refetchChallengeAvailableMemberUsersQuery(
+  variables: SchemaTypes.ChallengeAvailableMemberUsersQueryVariables
+) {
+  return { query: ChallengeAvailableMemberUsersDocument, variables: variables };
+}
+export const OpportunityAvailableLeadUsersDocument = gql`
+  query OpportunityAvailableLeadUsers(
+    $hubId: UUID_NAMEID!
+    $opportunityId: UUID_NAMEID!
+    $first: Int!
+    $after: UUID
+    $filter: UserFilterInput
+  ) {
+    hub(ID: $hubId) {
+      opportunity(ID: $opportunityId) {
+        community {
+          availableLeadUsers(first: $first, after: $after, filter: $filter) {
+            users {
+              ...AvailableUser
+            }
+            pageInfo {
+              ...PageInfo
+            }
+          }
+        }
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useOpportunityAvailableLeadUsersQuery__
+ *
+ * To run a query within a React component, call `useOpportunityAvailableLeadUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityAvailableLeadUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityAvailableLeadUsersQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      opportunityId: // value for 'opportunityId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useOpportunityAvailableLeadUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityAvailableLeadUsersQuery,
+    SchemaTypes.OpportunityAvailableLeadUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityAvailableLeadUsersQuery,
+    SchemaTypes.OpportunityAvailableLeadUsersQueryVariables
+  >(OpportunityAvailableLeadUsersDocument, options);
+}
+export function useOpportunityAvailableLeadUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityAvailableLeadUsersQuery,
+    SchemaTypes.OpportunityAvailableLeadUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityAvailableLeadUsersQuery,
+    SchemaTypes.OpportunityAvailableLeadUsersQueryVariables
+  >(OpportunityAvailableLeadUsersDocument, options);
+}
+export type OpportunityAvailableLeadUsersQueryHookResult = ReturnType<typeof useOpportunityAvailableLeadUsersQuery>;
+export type OpportunityAvailableLeadUsersLazyQueryHookResult = ReturnType<
+  typeof useOpportunityAvailableLeadUsersLazyQuery
+>;
+export type OpportunityAvailableLeadUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityAvailableLeadUsersQuery,
+  SchemaTypes.OpportunityAvailableLeadUsersQueryVariables
+>;
+export function refetchOpportunityAvailableLeadUsersQuery(
+  variables: SchemaTypes.OpportunityAvailableLeadUsersQueryVariables
+) {
+  return { query: OpportunityAvailableLeadUsersDocument, variables: variables };
+}
+export const OpportunityAvailableMemberUsersDocument = gql`
+  query OpportunityAvailableMemberUsers(
+    $hubId: UUID_NAMEID!
+    $opportunityId: UUID_NAMEID!
+    $first: Int!
+    $after: UUID
+    $filter: UserFilterInput
+  ) {
+    hub(ID: $hubId) {
+      opportunity(ID: $opportunityId) {
+        community {
+          availableMemberUsers(first: $first, after: $after, filter: $filter) {
+            users {
+              ...AvailableUser
+            }
+            pageInfo {
+              ...PageInfo
+            }
+          }
+        }
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+
+/**
+ * __useOpportunityAvailableMemberUsersQuery__
+ *
+ * To run a query within a React component, call `useOpportunityAvailableMemberUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityAvailableMemberUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityAvailableMemberUsersQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      opportunityId: // value for 'opportunityId'
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useOpportunityAvailableMemberUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityAvailableMemberUsersQuery,
+    SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityAvailableMemberUsersQuery,
+    SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
+  >(OpportunityAvailableMemberUsersDocument, options);
+}
+export function useOpportunityAvailableMemberUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityAvailableMemberUsersQuery,
+    SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityAvailableMemberUsersQuery,
+    SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
+  >(OpportunityAvailableMemberUsersDocument, options);
+}
+export type OpportunityAvailableMemberUsersQueryHookResult = ReturnType<typeof useOpportunityAvailableMemberUsersQuery>;
+export type OpportunityAvailableMemberUsersLazyQueryHookResult = ReturnType<
+  typeof useOpportunityAvailableMemberUsersLazyQuery
+>;
+export type OpportunityAvailableMemberUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityAvailableMemberUsersQuery,
+  SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
+>;
+export function refetchOpportunityAvailableMemberUsersQuery(
+  variables: SchemaTypes.OpportunityAvailableMemberUsersQueryVariables
+) {
+  return { query: OpportunityAvailableMemberUsersDocument, variables: variables };
 }
 export const HubApplicationsDocument = gql`
   query hubApplications($hubId: UUID_NAMEID!) {

@@ -28,6 +28,8 @@ export const typePolicies: TypedTypePolicies = {
       leadOrganizations: {
         merge: false,
       },
+      availableLeadUsers: paginationFieldPolicy(['filter']),
+      availableMemberUsers: paginationFieldPolicy(['filter']),
     },
   },
   Aspect: {

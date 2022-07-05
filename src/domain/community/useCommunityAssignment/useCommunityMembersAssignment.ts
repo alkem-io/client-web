@@ -21,6 +21,10 @@ interface MutationVariables {
   communityId: string;
 }
 
+export interface MemberMutationHook<Mutation = unknown> {
+  (options: Apollo.MutationHookOptions<Mutation, MutationVariables>): MutationTuple<Mutation, MutationVariables>;
+}
+
 export interface UseCommunityMembersAssignmentOptions<
   ExistingMembersQueryVariables extends {},
   MemberEntity extends Identifiable,
@@ -37,12 +41,8 @@ export interface UseCommunityMembersAssignmentOptions<
     query: DocumentNode;
     variables: ExistingMembersQueryVariables;
   };
-  useAssignMemberMutation: (
-    options: Apollo.MutationHookOptions<AssignMemberMutation, MutationVariables>
-  ) => MutationTuple<AssignMemberMutation, MutationVariables>;
-  useRemoveMemberMutation: (
-    options: Apollo.MutationHookOptions<RemoveMemberMutation, MutationVariables>
-  ) => MutationTuple<RemoveMemberMutation, MutationVariables>;
+  useAssignMemberMutation: MemberMutationHook<AssignMemberMutation>;
+  useRemoveMemberMutation: MemberMutationHook<RemoveMemberMutation>;
 }
 
 export interface Provided<MemberEntity> {
