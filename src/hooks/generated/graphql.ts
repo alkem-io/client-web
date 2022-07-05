@@ -805,7 +805,7 @@ export const AspectSettingsFragmentDoc = gql`
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
-    name
+    displayName
     isTemplate
   }
 `;
@@ -7182,7 +7182,8 @@ export const OpportunityEcosystemDetailsDocument = gql`
             }
             canvas {
               id
-              name
+              displayName
+              nameID
               value
             }
           }
@@ -11351,7 +11352,7 @@ export const UpdateCanvasOnContextDocument = gql`
     updateCanvas(canvasData: $input) {
       id
       value
-      name
+      displayName
       isTemplate
     }
   }

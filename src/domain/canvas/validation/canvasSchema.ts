@@ -2,7 +2,7 @@ import { object } from 'yup';
 import { displayNameValidator } from '../../../utils/validator';
 
 const canvasSchema = object({
-  name: displayNameValidator,
+  displayName: displayNameValidator,
 });
 
 export default canvasSchema;
