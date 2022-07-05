@@ -28,7 +28,7 @@ import { FetchResult } from '@apollo/client';
 
 interface DiscussionContextProps {
   discussion?: Discussion;
-  handlePostComment: (discussionId: string, comment: string) => Promise<FetchResult<void>> | void;
+  handlePostComment: (discussionId: string, comment: string) => Promise<FetchResult<unknown>> | void;
   handleDeleteComment: (ID: DiscussionGraphql['id'], msgID: Message['id']) => Promise<void> | void;
   loading: boolean;
   posting: boolean;
@@ -113,8 +113,8 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
 
   const [postComment, { loading: postingComment }] = usePostDiscussionCommentMutation();
 
-  const handlePostComment = async (discussionId: string, post: string) => {
-    return (await postComment({
+  const handlePostComment = (discussionId: string, post: string) => {
+    return postComment({
       update: (cache, { data }) => {
         if (isFeatureEnabled(FEATURE_SUBSCRIPTIONS)) {
           return;
@@ -145,7 +145,7 @@ const DiscussionProvider: FC<DiscussionProviderProps> = ({ children }) => {
         },
       },
       onError: handleError,
-    })) as Promise<FetchResult<void>>;
+    });
   };
 
   const [deleteMessage, { loading: deletingComment }] = useRemoveMessageFromDiscussionMutation({

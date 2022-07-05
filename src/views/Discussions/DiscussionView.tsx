@@ -13,7 +13,7 @@ import { AuthorizationPrivilege } from '../../models/graphql-schema';
 export interface DiscussionViewProps {
   discussion: Discussion;
   currentUserId?: string;
-  onPostComment?: (discussionId: string, comment: string) => Promise<FetchResult<void>> | void;
+  onPostComment?: (discussionId: string, comment: string) => Promise<FetchResult<unknown>> | void;
   onDeleteDiscussion?: (id: string) => Promise<void> | void;
   onDeleteComment?: (id: string) => Promise<void> | void;
 }

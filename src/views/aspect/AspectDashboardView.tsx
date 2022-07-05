@@ -38,7 +38,7 @@ export interface AspectDashboardViewProps {
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
-  handlePostComment: (commentId: string, message: string) => Promise<FetchResult<void>> | void;
+  handlePostComment: (commentId: string, message: string) => Promise<FetchResult<unknown>> | void;
   handleDeleteComment: (commentId: string, messageId: string) => void;
   loading: boolean;
   loadingCreator: boolean;

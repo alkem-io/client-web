@@ -8,7 +8,7 @@ import Button from '../../../core/Button';
 import FormikMarkdownField from '../../forms/FormikMarkdownField';
 
 export interface PostCommentProps {
-  onPostComment?: (comment: string) => Promise<FetchResult<void>> | void;
+  onPostComment?: (comment: string) => Promise<FetchResult<unknown>> | void;
   title?: string;
   placeholder?: string;
   maxLength?: number;
