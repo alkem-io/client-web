@@ -76,8 +76,7 @@ const ChallengeAuthorizationView: FC<ChallengeAuthorizationViewProps> = ({ crede
         resourceId={resourceId}
         credential={credential}
         parentCommunityId={communityId}
-        addingMember={addingMember}
-        removingMember={removingMember}
+        updating={addingMember || removingMember}
         title="Challenge Admins"
       />
     </Container>

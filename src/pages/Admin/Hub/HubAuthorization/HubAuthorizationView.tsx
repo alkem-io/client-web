@@ -75,8 +75,7 @@ const HubAuthorizationView: FC<HubAuthorizationViewProps> = ({ credential, resou
         resourceId={resourceId}
         credential={credential}
         parentCommunityId={communityId}
-        addingMember={addingMember}
-        removingMember={removingMember}
+        updating={addingMember || removingMember}
         title="Hub Admins"
       />
     </Container>
