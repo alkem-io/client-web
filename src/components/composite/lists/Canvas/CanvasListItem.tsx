@@ -96,7 +96,7 @@ export const CanvasListItem: FC<CanvasListItemProps> = ({ entities, actions, opt
       <ListItemAvatar sx={{ display: 'flex' }}>
         <CanvasItemState canvas={canvas} isSelected={isSelected} />
       </ListItemAvatar>
-      <ListItemText primary={canvas.name} />
+      <ListItemText primary={canvas.displayName} />
       <ListItemSecondaryAction>
         {canDelete && hasDeletePermissions && onDelete && (
           <IconButton

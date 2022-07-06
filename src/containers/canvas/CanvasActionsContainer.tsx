@@ -151,7 +151,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
       variables: {
         input: {
           ID: canvas.id,
-          name: canvas.name,
+          displayName: canvas.displayName,
           isTemplate: canvas.isTemplate,
           value: canvas.value,
         },
