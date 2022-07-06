@@ -1,5 +1,4 @@
 import { ApolloError } from '@apollo/client';
-import { Grid } from '@mui/material';
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import CanvasCreateDialog from '../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
@@ -9,16 +8,14 @@ import { ICanvasActions } from '../../containers/canvas/CanvasActionsContainer';
 import { ITemplateQueryResult } from '../../containers/canvas/CanvasProvider';
 import CanvasValueContainer from '../../containers/canvas/CanvasValueContainer';
 import { useUserContext } from '../../hooks';
-import { CanvasWithoutValue } from '../../models/entities/canvas';
-import { Canvas, CanvasCheckoutStateEnum } from '../../models/graphql-schema';
+import { Canvas, CanvasCheckoutStateEnum, CanvasDetailsFragment } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { CanvasListView } from './CanvasListView';
 
 export interface CanvasManagementViewEntities {
-  // opportunity: OpportunityPageFragment;
   contextID: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
-  canvases: CanvasWithoutValue[];
+  canvases: CanvasDetailsFragment[];
   templates: Record<string, ITemplateQueryResult>;
   templateListHeader?: string;
   templateListSubheader?: string;
@@ -52,7 +49,7 @@ export interface CanvasManagementViewProps
 
 const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state, options }) => {
   const [activeCanvasId, setActiveCanvasId] = useState<string | undefined>(undefined);
-  const [deletableCanvas, setDeletableCanvas] = useState<CanvasWithoutValue | undefined>(undefined);
+  const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasDetailsFragment | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
@@ -75,56 +72,28 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
     actualActiveCanvas.checkout.lockedBy === user?.user.id;
   const isCanvasAvailable = actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
 
-  const nonTemplateCanvases = useMemo(() => entities.canvases.filter(c => c.isTemplate === false), [entities.canvases]);
-  const templateCanvases = useMemo(() => entities.canvases.filter(c => c.isTemplate === true), [entities.canvases]);
-
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <CanvasListView
-            entities={{
-              canvases: nonTemplateCanvases,
-              header: t('pages.canvas.header', { blockName: entities.contextSource }),
-              subheader: t('pages.canvas.subheader'),
-              noItemsMessage: t('pages.canvas.no-canvases'),
-            }}
-            state={{
-              loading: Boolean(state.loadingCanvases),
-            }}
-            actions={{
-              onSelect: loadCanvas,
-              onCreate: () => setShowCreateCanvasDialog(true),
-              onDelete: canvas => setDeletableCanvas(canvas), //actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
-            }}
-            options={{
-              canDelete: options.canDelete,
-              canCreate: options.canCreate,
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <CanvasListView
-            entities={{
-              canvases: templateCanvases,
-              header: entities.templateListHeader || t('pages.canvas.template.header'),
-              subheader: entities.templateListSubheader,
-              noItemsMessage: t('pages.canvas.template.no-templates'),
-              howToMessage: t('pages.canvas.template.how-to'),
-            }}
-            state={{
-              loading: Boolean(state.loadingCanvases),
-            }}
-            actions={{
-              onSelect: loadCanvas,
-              onDelete: canvas => setDeletableCanvas(canvas), //canvas => actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
-            }}
-            options={{
-              canDelete: options.canDelete,
-            }}
-          />
-        </Grid>
-      </Grid>
+      <CanvasListView
+        entities={{
+          canvases: entities.canvases,
+          header: t('pages.canvas.header', { blockName: entities.contextSource }),
+          subheader: t('pages.canvas.subheader'),
+          noItemsMessage: t('pages.canvas.no-canvases'),
+        }}
+        state={{
+          loading: Boolean(state.loadingCanvases),
+        }}
+        actions={{
+          onSelect: loadCanvas,
+          onCreate: () => setShowCreateCanvasDialog(true),
+          onDelete: canvas => setCanvasBeingDeleted(canvas), //actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
+        }}
+        options={{
+          canDelete: options.canDelete,
+          canCreate: options.canCreate,
+        }}
+      />
       <CanvasValueContainer canvasId={activeCanvasId}>
         {entities => (
           <CanvasDialog
@@ -166,11 +135,11 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
       />
       <ConfirmationDialog
         actions={{
-          onCancel: () => setDeletableCanvas(undefined),
+          onCancel: () => setCanvasBeingDeleted(undefined),
           onConfirm: async () => {
-            if (deletableCanvas) {
-              await actions.onDelete({ canvasID: deletableCanvas.id, contextID: entities.contextID });
-              setDeletableCanvas(undefined);
+            if (canvasBeingDeleted) {
+              await actions.onDelete({ canvasID: canvasBeingDeleted.id, contextID: entities.contextID });
+              setCanvasBeingDeleted(undefined);
             }
           },
         }}
@@ -180,13 +149,13 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
           title: (
             <Trans
               i18nKey="pages.canvas.delete.confirmation-title"
-              values={{ blockName: deletableCanvas?.displayName }}
+              values={{ blockName: canvasBeingDeleted?.displayName }}
               components={{ b: <strong /> }}
             />
           ),
         }}
         options={{
-          show: Boolean(deletableCanvas),
+          show: Boolean(canvasBeingDeleted),
         }}
         state={{
           isLoading: Boolean(state.deletingCanvas),

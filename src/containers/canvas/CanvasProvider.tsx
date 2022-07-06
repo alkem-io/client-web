@@ -5,7 +5,7 @@ import {
   useHubCanvasesQuery,
   useOpportunityCanvasesQuery,
 } from '../../hooks/generated/graphql';
-import { CanvasWithoutValue } from '../../models/entities/canvas';
+import { CanvasDetailsFragment } from '../../models/graphql-schema';
 
 interface CanvasProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
@@ -17,11 +17,11 @@ export type TemplateQuery = {
 
 export interface ITemplateQueryResult {
   query: TemplateQuery;
-  result: CanvasWithoutValue[];
+  result: CanvasDetailsFragment[];
 }
 
 export interface IProvidedEntities {
-  canvases: CanvasWithoutValue[];
+  canvases: CanvasDetailsFragment[];
   templates: Record<string, ITemplateQueryResult>;
 }
 export interface IProvidedEntitiesState {
@@ -53,36 +53,25 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
   });
 
   const canvases = useMemo(() => {
-    if (hubId && !Boolean(challengeId) && !Boolean(opportunityId)) {
-      return hubData?.hub.context?.canvases || [];
-    }
-    if (hubId && challengeId && !Boolean(opportunityId)) {
-      return challengeData?.hub.challenge.context?.canvases || [];
-    }
-    if (hubId && opportunityId) {
-      return opportunityData?.hub.opportunity.context?.canvases || [];
-    }
-
-    return [] as CanvasWithoutValue[];
+    return (
+      hubData?.hub.context?.canvases ??
+      challengeData?.hub.challenge.context?.canvases ??
+      opportunityData?.hub.opportunity.context?.canvases ??
+      []
+    );
   }, [hubData, challengeData, opportunityData]);
 
-  const templates = useMemo(() => {
-    return {
-      hub: {
-        query: { hubId: hubId },
-        result: hubData?.hub.templates?.canvasTemplates || [],
-      },
-    };
-  }, [hubData]);
+  // const templates = useMemo(() => {
+  //   return {
+  //     hub: {
+  //       query: { hubId: hubId },
+  //       result: hubData?.hub.templates?.canvasTemplates || [],
+  //     },
+  //   };
+  // }, [hubData]);
 
   return (
-    <>
-      {children(
-        // TODO: need to fix the typings
-        { canvases: canvases as any, templates: templates as any },
-        { loading: loadingHub || loadingChallenge || loadingOpportunity }
-      )}
-    </>
+    <>{children({ canvases, templates: {} }, { loading: loadingHub || loadingChallenge || loadingOpportunity })}</>
   );
 };
 

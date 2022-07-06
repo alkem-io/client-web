@@ -31,7 +31,7 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
-import { CanvasItemState } from '../../lists/Canvas/CanvasListItem';
+import CanvasListItemState from '../../lists/Canvas/CanvasListItemState';
 
 interface CanvasDialogProps {
   entities: {
@@ -216,7 +216,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
         <List disablePadding>
           <ListItem>
             <ListItemIcon sx={{ justifyContent: 'center' }}>
-              <CanvasItemState canvas={canvas} />
+              <CanvasListItemState canvas={canvas} />
             </ListItemIcon>
             <ListItemText primary={canvas?.displayName} secondary={canvas?.checkout?.status.toUpperCase()} />
             <ListItemSecondaryAction sx={{ display: 'flex' }}>

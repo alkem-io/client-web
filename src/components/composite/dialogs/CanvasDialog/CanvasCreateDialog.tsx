@@ -19,8 +19,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ITemplateQueryResult, TemplateQuery } from '../../../../containers/canvas/CanvasProvider';
 import CanvasValueContainer, { CanvasValueParams } from '../../../../containers/canvas/CanvasValueContainer';
-import { CanvasWithoutValue } from '../../../../models/entities/canvas';
-import { Canvas, CreateCanvasOnContextInput } from '../../../../models/graphql-schema';
+import { Canvas, CanvasDetailsFragment, CreateCanvasOnContextInput } from '../../../../models/graphql-schema';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
@@ -85,7 +84,7 @@ const NamingStep = () => {
 
 interface ITemplateStepProps {
   actions: {
-    onTemplateSelected: (canvas: CanvasWithoutValue, query: TemplateQuery) => void;
+    onTemplateSelected: (canvas: CanvasDetailsFragment, query: TemplateQuery) => void;
   };
   entities: {
     selectedCanvas?: Canvas;
@@ -186,7 +185,7 @@ const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
         </Box>
       </Typography>
       {canvas && <Typography variant="subtitle1">Template:</Typography>}
-      {canvas && <CanvasListItem entities={{ canvas }} actions={{}} options={{ isSelected: false }} />}
+      {canvas && <CanvasListItem canvas={canvas} />}
     </Box>
   );
 };
@@ -199,7 +198,7 @@ interface CreateCanvasStepsProps {
   };
   actions: {
     onSubmit: () => void;
-    onTemplateSelected: (canvas?: CanvasWithoutValue, query?: TemplateQuery) => void;
+    onTemplateSelected: (canvas?: CanvasDetailsFragment, query?: TemplateQuery) => void;
   };
   state: ITemplateStepProps['state'];
   isValid: boolean;
