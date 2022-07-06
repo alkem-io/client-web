@@ -54,8 +54,8 @@ const useStyles = makeStyles(theme => ({
 
 type StepDefinition = { index: number; title: string; optional: boolean };
 
-const steps: Record<'name' | 'template' | 'completion', StepDefinition> = {
-  name: {
+const steps: Record<'displayName' | 'template' | 'completion', StepDefinition> = {
+  displayName: {
     index: 0,
     title: 'Name',
     optional: false,
@@ -78,7 +78,7 @@ const NamingStep = () => {
       <Box p={1} />
       <Typography variant="body1">{t('pages.canvas.create-dialog.steps.naming')}</Typography>
       <Box p={1} />
-      <FormikInputField name="name" title={t('common.name')} aria-label="canvas-name" required />
+      <FormikInputField name="displayName" title={t('common.name')} aria-label="canvas-name" required />
     </Box>
   );
 };
@@ -165,13 +165,13 @@ const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
 
 interface ICompletionStepProps {
   entities: {
-    name: string;
+    displayName: string;
     canvas?: Canvas;
   };
 }
 
 const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
-  const { name, canvas } = entities;
+  const { displayName, canvas } = entities;
   const { t } = useTranslation();
 
   return (
@@ -182,7 +182,7 @@ const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
       <Typography variant="subtitle1">
         Name:{' '}
         <Box component="span" sx={{ fontWeight: 600 }}>
-          {name}
+          {displayName}
         </Box>
       </Typography>
       {canvas && <Typography variant="subtitle1">Template:</Typography>}
@@ -195,7 +195,7 @@ interface CreateCanvasStepsProps {
   entities: {
     templates: Record<string, ITemplateQueryResult>;
     template?: Canvas;
-    name: string;
+    displayName: string;
   };
   actions: {
     onSubmit: () => void;
@@ -206,12 +206,12 @@ interface CreateCanvasStepsProps {
 }
 
 const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, state, isValid }) => {
-  const { templates, name, template } = entities;
+  const { templates, displayName, template } = entities;
   const { onSubmit } = actions;
 
   const styles = useStyles();
 
-  const [activeStep, setActiveStep] = React.useState<StepDefinition>(steps.name);
+  const [activeStep, setActiveStep] = React.useState<StepDefinition>(steps.displayName);
   const [skipped, setSkipped] = React.useState(new Set<StepDefinition>());
 
   const isStepOptional = (step: StepDefinition) => {
@@ -289,7 +289,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
         </Stepper>
       </Paper>
       <DialogContent classes={{ root: styles.dialogContent }}>
-        {activeStep === steps.name && <NamingStep />}
+        {activeStep === steps.displayName && <NamingStep />}
         {activeStep === steps.template && (
           <TemplateStep
             entities={{ templates, selectedCanvas: template }}
@@ -300,7 +300,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
             }}
           />
         )}
-        {activeStep === steps.completion && <CompletionStep entities={{ name, canvas: template }} />}
+        {activeStep === steps.completion && <CompletionStep entities={{ displayName, canvas: template }} />}
       </DialogContent>
       <DialogActions>
         <Button color="inherit" disabled={activeStep === stepsArray[0]} onClick={handleBack} sx={{ mr: 1 }}>
@@ -343,7 +343,7 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
   const [selectedCanvasParams, setSelectedCanvasParams] = useState<CanvasValueParams>();
 
   const initialValues = {
-    name: 'New Canvas', // TODO Localize?
+    displayName: 'New Canvas', // TODO Localize?
     value: undefined,
   };
 
@@ -376,12 +376,12 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
       <CanvasValueContainer canvasId={selectedCanvasParams?.canvasId} params={selectedCanvasParams?.params}>
         {(canvasTemplate, state) => (
           <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={canvasSchema}>
-            {({ values: { name }, handleSubmit, setFieldValue, isValid }) => (
+            {({ values: { displayName }, handleSubmit, setFieldValue, isValid }) => (
               <CreateCanvasSteps
                 isValid={isValid}
                 entities={{
                   ...entities,
-                  name,
+                  displayName,
                   template: canvasTemplate.canvas,
                 }}
                 actions={{

@@ -12,7 +12,7 @@ fragment CanvasDetails on Canvas {
 
 fragment CanvasSummary on Canvas {
   id
-  name
+  displayName
   isTemplate
 }
 
@@ -138,7 +138,7 @@ mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
   updateCanvas(canvasData: $input) {
     id
     value
-    name
+    displayName
     isTemplate
   }
 }
