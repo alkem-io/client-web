@@ -2,7 +2,7 @@ import React, { FC, useCallback } from 'react';
 import LanguageIcon from '@mui/icons-material/Language';
 import { MenuItem, TextField, TextFieldProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { supportedLngs } from '../../i18n/config';
+import { supportedLngs } from '../../../../i18n/config';
 
 interface LanguageSelectProps {
   sx?: TextFieldProps['sx'];
