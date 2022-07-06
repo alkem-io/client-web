@@ -35,7 +35,7 @@ import CanvasListItemState from '../../lists/Canvas/CanvasListItemState';
 
 interface CanvasDialogProps {
   entities: {
-    canvas?: CanvasWithoutValue & { value?: Canvas['value'] };
+    canvas?: CanvasWithoutValue & { value: Canvas['value'] };
   };
   actions: {
     onCancel: () => void;

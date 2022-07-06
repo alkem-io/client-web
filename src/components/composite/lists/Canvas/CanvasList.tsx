@@ -1,17 +1,16 @@
 import { List, ListProps } from '@mui/material';
 import React, { FC } from 'react';
-// import { CanvasWithoutValue } from '../../../../models/entities/canvas';
-import { CanvasDetailsFragment } from '../../../../models/graphql-schema';
-import CanvasListItem, { CanvasListItemSkeleton } from './CanvasListItem';
+import CanvasListItem, { CanvasListItemCanvas, CanvasListItemSkeleton } from './CanvasListItem';
+import { Identifiable } from '../../../../domain/shared/types/Identifiable';
 
 interface CanvasListProps extends ListProps {
   entities: {
-    canvases: CanvasDetailsFragment[];
+    canvases: CanvasListItemCanvas[];
     selectedCanvasId?: string;
   };
   actions: {
-    onSelect?: (canvas: CanvasDetailsFragment) => void;
-    onDelete?: (canvas: CanvasDetailsFragment) => void;
+    onSelect?: (canvas: Identifiable) => void;
+    onDelete?: (canvas: CanvasListItemCanvas) => void;
   };
   options: {
     canDelete?: boolean;
@@ -35,8 +34,8 @@ export const CanvasList: FC<CanvasListProps> = ({ entities, actions, options, st
             onClick={() => actions.onSelect && actions.onSelect(c)}
             canvas={c}
             onDelete={actions.onDelete}
+            canDelete={options.canDelete}
             isSelected={c.id === selectedCanvasId}
-            {...options}
           />
         ))}
     </List>

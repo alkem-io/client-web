@@ -8199,6 +8199,37 @@ export type CheckoutDetailsFragment = {
     | undefined;
 };
 
+export type CanvasTemplatesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasTemplatesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            value: string;
+            info: { __typename?: 'TemplateInfo'; title?: string | undefined; description?: string | undefined };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CreateCanvasCanvasTemplateFragment = {
+  __typename?: 'CanvasTemplate';
+  id: string;
+  value: string;
+  info: { __typename?: 'TemplateInfo'; title?: string | undefined; description?: string | undefined };
+};
+
 export type HubCanvasesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -8243,16 +8274,6 @@ export type HubCanvasesQuery = {
                   | undefined;
               }>
             | undefined;
-        }
-      | undefined;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
-            value: string;
-            info: { __typename?: 'TemplateInfo'; title?: string | undefined; description?: string | undefined };
-          }>;
         }
       | undefined;
   };

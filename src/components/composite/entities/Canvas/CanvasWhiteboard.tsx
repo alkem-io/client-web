@@ -8,9 +8,8 @@ import { debounce } from 'lodash';
 import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../hooks/useCombinedRefs';
-import { CanvasWithoutValue } from '../../../../models/entities/canvas';
-import { Canvas } from '../../../../models/graphql-schema';
-import { CanvasLoadedEvent, CANVAS_LOADED_EVENT_NAME } from '../../../../types/events';
+import { CANVAS_LOADED_EVENT_NAME, CanvasLoadedEvent } from '../../../../types/events';
+import { Identifiable } from '../../../../domain/shared/types/Identifiable';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -39,7 +38,7 @@ const initialExcalidrawState: ImportedDataState = {
 };
 
 export interface CanvasWhiteboardEntities {
-  canvas: CanvasWithoutValue & { value?: Canvas['value'] };
+  canvas: (Identifiable & { value: string }) | undefined;
 }
 
 export interface CanvasWhiteboardActions {
@@ -63,7 +62,7 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
     const innerRef = useRef<ExcalidrawAPIRefValue>(null);
     const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue>(excalidrawRef, innerRef);
 
-    const value = canvas.value;
+    const value = canvas?.value;
     const data = useMemo(() => (value ? JSON.parse(value) : initialExcalidrawState), [value]);
 
     const refreshOnDataChange = useCallback(
@@ -74,13 +73,15 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
           excalidraw?.updateScene(debouncedData);
 
           // don't have another way to signal that the canvas loading has finished
-          window.dispatchEvent(
-            new CustomEvent<CanvasLoadedEvent>(CANVAS_LOADED_EVENT_NAME, {
-              detail: {
-                canvasId: canvas.id,
-              },
-            })
-          );
+          if (canvas) {
+            window.dispatchEvent(
+              new CustomEvent<CanvasLoadedEvent>(CANVAS_LOADED_EVENT_NAME, {
+                detail: {
+                  canvasId: canvas.id,
+                },
+              })
+            );
+          }
         } catch (ex) {
           // Excalidraw attempts to perform state updates on an unmounted component
         }
@@ -101,10 +102,10 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
         excalidraw?.scrollToContent();
       }
 
-      if (canvas.id) {
+      if (canvas?.id) {
         scrollToContent();
       }
-    }, [canvas.id]);
+    }, [canvas?.id]);
 
     useEffect(() => {
       const onScroll = async e => {

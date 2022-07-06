@@ -34,6 +34,27 @@ fragment CheckoutDetails on CanvasCheckout {
   }
 }
 
+query canvasTemplates($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      canvasTemplates {
+        ...CreateCanvasCanvasTemplate
+      }
+    }
+  }
+}
+
+fragment CreateCanvasCanvasTemplate on CanvasTemplate {
+  id
+  info {
+    title
+    description
+  }
+  value
+}
+
 query hubCanvases($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
@@ -41,15 +62,6 @@ query hubCanvases($hubId: UUID_NAMEID!) {
       id
       canvases {
         ...CanvasDetails
-      }
-    }
-    templates {
-      canvasTemplates {
-        info {
-          title
-          description
-        }
-        value
       }
     }
   }

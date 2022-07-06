@@ -6,6 +6,8 @@ import DashboardGenericSection from '../../domain/shared/components/DashboardSec
 import CanvasList from '../../components/composite/lists/Canvas/CanvasList';
 import { ViewProps } from '../../models/view';
 import { CanvasDetailsFragment } from '../../models/graphql-schema';
+import { Identifiable } from '../../domain/shared/types/Identifiable';
+import { CanvasListItemCanvas } from '../../components/composite/lists/Canvas/CanvasListItem';
 
 interface CanvasListViewEntities {
   canvases: CanvasDetailsFragment[];
@@ -18,9 +20,9 @@ interface CanvasListViewState {
   loading: boolean;
 }
 interface CanvasListViewActions {
-  onSelect: (canvas: CanvasDetailsFragment) => void;
+  onSelect: (canvas: Identifiable) => void;
   onCreate?: () => void;
-  onDelete: (canvas: CanvasDetailsFragment) => void;
+  onDelete: (canvas: CanvasListItemCanvas) => void;
 }
 
 interface CanvasListViewOptions {

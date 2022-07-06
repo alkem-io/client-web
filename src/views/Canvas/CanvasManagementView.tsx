@@ -5,18 +5,23 @@ import CanvasCreateDialog from '../../components/composite/dialogs/CanvasDialog/
 import CanvasDialog from '../../components/composite/dialogs/CanvasDialog/CanvasDialog';
 import ConfirmationDialog from '../../components/composite/dialogs/ConfirmationDialog';
 import { ICanvasActions } from '../../containers/canvas/CanvasActionsContainer';
-import { ITemplateQueryResult } from '../../containers/canvas/CanvasProvider';
 import CanvasValueContainer from '../../containers/canvas/CanvasValueContainer';
 import { useUserContext } from '../../hooks';
-import { Canvas, CanvasCheckoutStateEnum, CanvasDetailsFragment } from '../../models/graphql-schema';
+import {
+  Canvas,
+  CanvasCheckoutStateEnum,
+  CanvasDetailsFragment,
+  CreateCanvasCanvasTemplateFragment,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { CanvasListView } from './CanvasListView';
+import { CanvasListItemCanvas } from '../../components/composite/lists/Canvas/CanvasListItem';
 
 export interface CanvasManagementViewEntities {
   contextID: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasDetailsFragment[];
-  templates: Record<string, ITemplateQueryResult>;
+  templates: CreateCanvasCanvasTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
 }
@@ -49,7 +54,7 @@ export interface CanvasManagementViewProps
 
 const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state, options }) => {
   const [activeCanvasId, setActiveCanvasId] = useState<string | undefined>(undefined);
-  const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasDetailsFragment | undefined>(undefined);
+  const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasListItemCanvas | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
