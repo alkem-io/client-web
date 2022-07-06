@@ -16,7 +16,7 @@ export interface UserContextValue {
   user: UserMetadata | undefined;
   userHubRoles: UserRolesInEntity[] | undefined;
   loading: boolean;
-  essentialsLoaded: boolean; // Loaded Authentication and Profile data, enough for showing the page header, but f.e. roles information is not guaranteed.
+  loadingMe: boolean; // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar but f.e. roles information is not guaranteed yet.
   verified: boolean;
   isAuthenticated: boolean;
 }
@@ -25,7 +25,7 @@ const UserContext = React.createContext<UserContextValue>({
   user: undefined,
   userHubRoles: undefined,
   loading: true,
-  essentialsLoaded: false,
+  loadingMe: true,
   verified: false,
   isAuthenticated: false,
 });
@@ -67,7 +67,7 @@ const UserProvider: FC<{}> = ({ children }) => {
     loadingRolesData ||
     (isAuthenticated && !meHasProfileData?.meHasProfile);
 
-  const essentialsLoaded = !loadingAuthentication && !loadingMeHasProfile && !loadingMe;
+  const loadingMeAndParentQueries = loadingAuthentication || loadingMeHasProfile || loadingMe;
 
   const wrappedMe = useMemo(
     () => (meData?.me ? wrapper(meData.me as User, rolesData?.rolesUser) : undefined),
@@ -79,11 +79,11 @@ const UserProvider: FC<{}> = ({ children }) => {
       user: wrappedMe,
       userHubRoles: rolesData?.rolesUser.hubs,
       loading,
-      essentialsLoaded,
+      loadingMe: loadingMeAndParentQueries,
       verified,
       isAuthenticated,
     }),
-    [wrappedMe, rolesData, loading, essentialsLoaded, verified, isAuthenticated]
+    [wrappedMe, rolesData, loading, loadingMeAndParentQueries, verified, isAuthenticated]
   );
 
   if (error) return <ErrorPage error={error} />;
