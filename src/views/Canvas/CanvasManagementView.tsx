@@ -180,7 +180,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
           title: (
             <Trans
               i18nKey="pages.canvas.delete.confirmation-title"
-              values={{ blockName: deletableCanvas?.name }}
+              values={{ blockName: deletableCanvas?.displayName }}
               components={{ b: <strong /> }}
             />
           ),

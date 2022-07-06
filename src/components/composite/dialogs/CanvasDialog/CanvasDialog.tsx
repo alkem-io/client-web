@@ -218,7 +218,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
             <ListItemIcon sx={{ justifyContent: 'center' }}>
               <CanvasItemState canvas={canvas} />
             </ListItemIcon>
-            <ListItemText primary={canvas?.name} secondary={canvas?.checkout?.status.toUpperCase()} />
+            <ListItemText primary={canvas?.displayName} secondary={canvas?.checkout?.status.toUpperCase()} />
             <ListItemSecondaryAction sx={{ display: 'flex' }}>
               <Box p={0.5} display="inline-flex" />
               {(options.canCheckout || options.canEdit) && (

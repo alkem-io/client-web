@@ -129,6 +129,7 @@ const ActorWhiteboard: FC<ActorWhiteboardProps> = ({ actors = [], ecosystemModel
           ecosystemModelData: {
             ID: ecosystemModel.id,
             canvas: {
+              ID: '',
               value: newecosystemModel,
             },
           },
