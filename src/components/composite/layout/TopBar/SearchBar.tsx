@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import React from 'react';
-import LogoComponent from './LogoComponent';
 import TopSearchComponent from './TopSearchComponent';
 
 const SearchBar = () => {
@@ -17,14 +16,6 @@ const SearchBar = () => {
       }}
     >
       <TopSearchComponent />
-    </Box>
-  );
-};
-
-export const SearchBarSpacer = () => {
-  return (
-    <Box paddingY={2}>
-      <LogoComponent />
     </Box>
   );
 };
