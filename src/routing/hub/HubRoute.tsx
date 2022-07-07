@@ -15,11 +15,10 @@ import HubCommunityPage from '../../pages/Community/HubCommunityPage';
 import { Error404, PageProps } from '../../pages';
 import HubDashboardPage from '../../pages/Hub/HubDashboardPage';
 import HubContextPage from '../../pages/Hub/HubContextPage';
-import HubChallengesPage from '../../pages/Hub/HubChallengesPage';
 import ContributePage from '../../pages/Contribute/ContributePage';
-import HubCanvasPage from './HubCanvasPage';
 import AspectRoute from '../aspect/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
+import CanvasesPage from '../../domain/canvas/EntityCanvasPage/CanvasesPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName, isPrivate, hubId, hubNameId, permissions } = useHub();
@@ -47,8 +46,14 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
             </RestrictedRoute>
           }
         />
-        <Route path={'canvases'} element={<HubCanvasPage paths={currentPaths} />} />
-        <Route path={'challenges'} element={<HubChallengesPage paths={currentPaths} />} />
+        <Route
+          path="canvases"
+          element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="hub" />}
+        />
+        <Route
+          path="canvases/:canvasId"
+          element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="hub" />}
+        />
       </Route>
       <Route path={'apply'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.hub} />} />
       <Route

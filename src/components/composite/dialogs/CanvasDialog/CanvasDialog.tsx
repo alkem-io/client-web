@@ -216,7 +216,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
         <List disablePadding>
           <ListItem>
             <ListItemIcon sx={{ justifyContent: 'center' }}>
-              <CanvasListItemState canvas={canvas} />
+              <CanvasListItemState checkoutStatus={canvas?.checkout?.status} />
             </ListItemIcon>
             <ListItemText primary={canvas?.displayName} secondary={canvas?.checkout?.status.toUpperCase()} />
             <ListItemSecondaryAction sx={{ display: 'flex' }}>

@@ -802,9 +802,26 @@ export const AspectSettingsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
+export const CanvasValueFragmentDoc = gql`
+  fragment CanvasValue on Canvas {
+    id
+    value
+  }
+`;
+export const CreateCanvasCanvasTemplateFragmentDoc = gql`
+  fragment CreateCanvasCanvasTemplate on CanvasTemplate {
+    id
+    info {
+      title
+      description
+    }
+    value
+  }
+`;
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
+    nameID
     displayName
   }
 `;
@@ -842,21 +859,19 @@ export const CanvasDetailsFragmentDoc = gql`
   ${CheckoutDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
 `;
-export const CanvasValueFragmentDoc = gql`
-  fragment CanvasValue on Canvas {
+export const ContextWithCanvasDetailsFragmentDoc = gql`
+  fragment ContextWithCanvasDetails on Context {
     id
-    value
-  }
-`;
-export const CreateCanvasCanvasTemplateFragmentDoc = gql`
-  fragment CreateCanvasCanvasTemplate on CanvasTemplate {
-    id
-    info {
-      title
-      description
+    canvases {
+      ...CanvasDetails
     }
-    value
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
   }
+  ${CanvasDetailsFragmentDoc}
 `;
 export const ChallengeExplorerSearchResultFragmentDoc = gql`
   fragment ChallengeExplorerSearchResult on Challenge {
@@ -10933,14 +10948,11 @@ export const HubCanvasesDocument = gql`
     hub(ID: $hubId) {
       id
       context {
-        id
-        canvases {
-          ...CanvasDetails
-        }
+        ...ContextWithCanvasDetails
       }
     }
   }
-  ${CanvasDetailsFragmentDoc}
+  ${ContextWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11054,15 +11066,12 @@ export const ChallengeCanvasesDocument = gql`
       challenge(ID: $challengeId) {
         id
         context {
-          id
-          canvases {
-            ...CanvasDetails
-          }
+          ...ContextWithCanvasDetails
         }
       }
     }
   }
-  ${CanvasDetailsFragmentDoc}
+  ${ContextWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11190,15 +11199,12 @@ export const OpportunityCanvasesDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         context {
-          id
-          canvases {
-            ...CanvasDetails
-          }
+          ...ContextWithCanvasDetails
         }
       }
     }
   }
-  ${CanvasDetailsFragmentDoc}
+  ${ContextWithCanvasDetailsFragmentDoc}
 `;
 
 /**

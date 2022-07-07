@@ -1,23 +1,27 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import CanvasCreateDialog from '../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
-import CanvasDialog from '../../components/composite/dialogs/CanvasDialog/CanvasDialog';
-import ConfirmationDialog from '../../components/composite/dialogs/ConfirmationDialog';
-import { ICanvasActions } from '../../containers/canvas/CanvasActionsContainer';
-import CanvasValueContainer from '../../containers/canvas/CanvasValueContainer';
-import { useUserContext } from '../../hooks';
+import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
+import CanvasDialog from '../../../components/composite/dialogs/CanvasDialog/CanvasDialog';
+import ConfirmationDialog from '../../../components/composite/dialogs/ConfirmationDialog';
+import { ICanvasActions } from '../../../containers/canvas/CanvasActionsContainer';
+import CanvasValueContainer from '../../../containers/canvas/CanvasValueContainer';
+import { useUserContext } from '../../../hooks';
 import {
-  Canvas,
   CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
-} from '../../models/graphql-schema';
-import { ViewProps } from '../../models/view';
-import { CanvasListView } from './CanvasListView';
-import { CanvasListItemCanvas } from '../../components/composite/lists/Canvas/CanvasListItem';
+} from '../../../models/graphql-schema';
+import { ViewProps } from '../../../models/view';
+import { CanvasListItemCanvas } from '../../../components/composite/lists/Canvas/CanvasListItem';
+import CanvasCardsView from '../CanvasCards/CanvasCardsView';
+import { LinkWithState } from '../../shared/types/LinkWithState';
 
-export interface CanvasManagementViewEntities {
+export interface ActiveCanvasIdHolder {
+  canvasId?: string;
+}
+
+export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
   contextID: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasDetailsFragment[];
@@ -44,32 +48,38 @@ export interface CanvasManagementViewOptions {
   canDelete?: boolean;
 }
 
+export interface CanvasNavigationMethods {
+  backToCanvases: () => void;
+  buildLinkToCanvas: (url: string) => LinkWithState;
+}
+
 export interface CanvasManagementViewProps
   extends ViewProps<
-    CanvasManagementViewEntities,
-    CanvasManagementViewActions,
-    ContextViewState,
-    CanvasManagementViewOptions
-  > {}
+      CanvasManagementViewEntities,
+      CanvasManagementViewActions,
+      ContextViewState,
+      CanvasManagementViewOptions
+    >,
+    CanvasNavigationMethods {}
 
-const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions, state, options }) => {
-  const [activeCanvasId, setActiveCanvasId] = useState<string | undefined>(undefined);
+const CanvasManagementView: FC<CanvasManagementViewProps> = ({
+  entities,
+  actions,
+  state,
+  options,
+  backToCanvases,
+  buildLinkToCanvas,
+}) => {
+  const { canvasId } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasListItemCanvas | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
   const { t } = useTranslation();
 
-  const loadCanvas = useCallback(
-    (canvas: Pick<Canvas, 'id'>) => {
-      setActiveCanvasId(canvas.id);
-    },
-    [setActiveCanvasId]
-  );
-
   const actualActiveCanvas = useMemo(
-    () => (activeCanvasId ? entities.canvases.find(c => c.id === activeCanvasId) : undefined),
-    [activeCanvasId, entities.canvases]
+    () => (canvasId ? entities.canvases.find(c => c.nameID === canvasId) : undefined),
+    [canvasId, entities.canvases]
   );
 
   const isCanvasCheckedoutByMe =
@@ -77,40 +87,36 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({ entities, actions
     actualActiveCanvas.checkout.lockedBy === user?.user.id;
   const isCanvasAvailable = actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
 
+  const buildCanvasUrl = useCallback(
+    (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
+    [buildLinkToCanvas]
+  );
+
   return (
     <>
-      <CanvasListView
-        entities={{
-          canvases: entities.canvases,
-          header: t('pages.canvas.header', { blockName: entities.contextSource }),
-          subheader: t('pages.canvas.subheader'),
-          noItemsMessage: t('pages.canvas.no-canvases'),
-        }}
-        state={{
-          loading: Boolean(state.loadingCanvases),
-        }}
-        actions={{
-          onSelect: loadCanvas,
-          onCreate: () => setShowCreateCanvasDialog(true),
-          onDelete: canvas => setCanvasBeingDeleted(canvas), //actions.onDelete({ canvasID: canvas.id, contextID: entities.contextID }),
-        }}
-        options={{
-          canDelete: options.canDelete,
-          canCreate: options.canCreate,
-        }}
+      <CanvasCardsView
+        canvases={entities.canvases}
+        headerText={t('pages.canvas.header', { blockName: entities.contextSource })}
+        subHeaderText={t('pages.canvas.subheader')}
+        noItemsMessage={t('pages.canvas.no-canvases')}
+        loading={state.loadingCanvases}
+        onCreate={() => setShowCreateCanvasDialog(true)}
+        onDelete={canvas => setCanvasBeingDeleted(canvas)}
+        buildCanvasUrl={buildCanvasUrl}
+        {...options}
       />
-      <CanvasValueContainer canvasId={activeCanvasId}>
+      <CanvasValueContainer canvasId={actualActiveCanvas?.id}>
         {entities => (
           <CanvasDialog
             entities={{ canvas: entities.canvas }}
             actions={{
-              onCancel: () => setActiveCanvasId(undefined),
+              onCancel: backToCanvases,
               onCheckin: actions.onCheckin,
               onCheckout: actions.onCheckout,
               onUpdate: actions.onUpdate,
             }}
             options={{
-              show: Boolean(activeCanvasId),
+              show: Boolean(canvasId),
               canCheckout: isCanvasAvailable && options.canUpdate,
               canEdit: isCanvasCheckedoutByMe && options.canUpdate,
             }}
