@@ -834,9 +834,13 @@ export const CanvasDetailsFragmentDoc = gql`
     checkout {
       ...CheckoutDetails
     }
+    bannerCard {
+      ...VisualUri
+    }
   }
   ${CanvasSummaryFragmentDoc}
   ${CheckoutDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
 `;
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {

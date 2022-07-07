@@ -344,6 +344,8 @@ export type Canvas = {
   __typename?: 'Canvas';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The preview image for the Canvas. */
+  bannerCard?: Maybe<Visual>;
   /** The checkout out state of this Canvas. */
   checkout?: Maybe<CanvasCheckout>;
   /** The display name. */
@@ -740,6 +742,16 @@ export type ContributorRoles = {
   id: Scalars['UUID'];
   /** Details of the Organizations the User is a member of, with child memberships. */
   organizations: Array<RolesResultOrganization>;
+};
+
+export type ConvertChallengeToHubInput = {
+  /** The Challenge to be promoted to be a new Hub. Note: the original Challenge will no longer exist after the conversion.  */
+  challengeID: Scalars['UUID_NAMEID'];
+};
+
+export type ConvertOpportunityToChallengeInput = {
+  /** The Opportunity to be promoted to be a new Challenge. Note: the original Opportunity will no longer exist after the conversion.  */
+  opportunityID: Scalars['UUID_NAMEID'];
 };
 
 export type CreateActorGroupInput = {
@@ -1366,6 +1378,10 @@ export type Mutation = {
   beginCommunityMemberVerifiedCredentialOfferInteraction: AgentBeginVerifiedCredentialOfferOutput;
   /** Generate verified credential share request */
   beginVerifiedCredentialRequestInteraction: AgentBeginVerifiedCredentialRequestOutput;
+  /** Creates a new Hub by converting an existing Challenge. */
+  convertChallengeToHub: Hub;
+  /** Creates a new Challenge by converting an existing Opportunity. */
+  convertOpportunityToChallenge: Challenge;
   /** Creates a new Actor in the specified ActorGroup. */
   createActor: Actor;
   /** Create a new Actor Group on the EcosystemModel. */
@@ -1634,6 +1650,14 @@ export type MutationBeginCommunityMemberVerifiedCredentialOfferInteractionArgs =
 
 export type MutationBeginVerifiedCredentialRequestInteractionArgs = {
   types: Array<Scalars['String']>;
+};
+
+export type MutationConvertChallengeToHubArgs = {
+  convertData: ConvertChallengeToHubInput;
+};
+
+export type MutationConvertOpportunityToChallengeArgs = {
+  convertData: ConvertOpportunityToChallengeInput;
 };
 
 export type MutationCreateActorArgs = {
@@ -8182,6 +8206,7 @@ export type CanvasDetailsFragment = {
           | undefined;
       }
     | undefined;
+  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
 };
 
 export type CanvasSummaryFragment = { __typename?: 'Canvas'; id: string; displayName: string };
@@ -8272,6 +8297,7 @@ export type HubCanvasesQuery = {
                         | undefined;
                     }
                   | undefined;
+                bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               }>
             | undefined;
         }
@@ -8323,6 +8349,7 @@ export type HubCanvasValuesQuery = {
                         | undefined;
                     }
                   | undefined;
+                bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               }>
             | undefined;
         }
@@ -8376,6 +8403,7 @@ export type ChallengeCanvasesQuery = {
                           | undefined;
                       }
                     | undefined;
+                  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 }>
               | undefined;
           }
@@ -8432,6 +8460,7 @@ export type ChallengeCanvasValuesQuery = {
                           | undefined;
                       }
                     | undefined;
+                  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 }>
               | undefined;
           }
@@ -8486,6 +8515,7 @@ export type OpportunityCanvasesQuery = {
                           | undefined;
                       }
                     | undefined;
+                  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 }>
               | undefined;
           }
@@ -8542,6 +8572,7 @@ export type OpportunityCanvasValuesQuery = {
                           | undefined;
                       }
                     | undefined;
+                  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
                 }>
               | undefined;
           }
@@ -8580,6 +8611,7 @@ export type CreateCanvasOnContextMutation = {
             | undefined;
         }
       | undefined;
+    bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
 };
 
