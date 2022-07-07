@@ -8,7 +8,7 @@ import { UserMetadata } from '../../../../hooks';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
 import Typography from '../../../core/Typography';
-import User, { UserProps } from './User';
+import UserAvatar from './User';
 
 const PREFIX = 'UserSegment';
 
@@ -26,19 +26,20 @@ const PopoverRoot = styled('div')(({ theme }) => ({
 type UserSegmentProps<El extends ElementType> = BoxProps<El> & {
   userMetadata: UserMetadata;
   emailVerified: boolean;
-  userNameProps?: UserProps['userNameProps'];
+  buttonClassName?: string;
 };
 
 const UserSegment = <El extends ElementType>({
   userMetadata,
   emailVerified,
+  buttonClassName,
   ...userBoxProps
 }: UserSegmentProps<El>) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const popoverAnchor = useRef<HTMLDivElement>(null);
+  const popoverAnchor = useRef<HTMLButtonElement>(null);
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
@@ -51,11 +52,11 @@ const UserSegment = <El extends ElementType>({
 
   return (
     <>
-      <User
-        name={user.displayName}
-        title={role}
+      <UserAvatar
+        name={user.firstName}
         src={user.profile?.avatar?.uri}
         ref={popoverAnchor}
+        className={buttonClassName}
         onClick={() => setDropdownOpen(true)}
         {...userBoxProps}
       />

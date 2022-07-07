@@ -1,4 +1,5 @@
 import { AppBar, Box, Container } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import { useSelector } from '@xstate/react';
 import React, { forwardRef } from 'react';
@@ -8,9 +9,8 @@ import HideOnScroll from '../HideOnScroll';
 import HelpIcon from './HelpIcon';
 import LanguageSelect from './LanguageSelect';
 import LogoComponent from './LogoComponent';
-import ProfileIcon from './ProfileIcon';
-import SearchBar, { SearchBarSpacer } from './SearchBar';
-import TopNavbar, { TopNavbarSpacer } from './TopNavbar';
+import SearchBar from './SearchBar';
+import TopNavIcons from './TopNavIcons';
 
 const PREFIX = 'TopBar';
 
@@ -21,14 +21,14 @@ const classes = {
 const Root = styled(AppBar)(({ theme }) => ({
   width: '100%',
   backgroundColor: theme.palette.common.white,
-  boxShadow: 'unset',
-  borderTop: '2px solid black',
 }));
 
 const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
   const {
     ui: { loginNavigationService },
   } = useGlobalState();
+
+  const theme = useTheme();
 
   const breakpoint = useCurrentBreakpoint();
 
@@ -44,27 +44,27 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
     <HideOnScroll>
       <Root position="fixed" className={classes.bar}>
         <Container maxWidth={breakpoint}>
-          <Box paddingY={2} display="flex" gap={2} alignItems="center" justifyContent="space-between">
+          <Box height={theme.spacing(10)} display="flex" gap={2} alignItems="center" justifyContent="space-between">
             <LogoComponent />
-            <SearchBar />
-            <LanguageSelect sx={{ flexShrink: 0 }} />
-            <HelpIcon />
-            <ProfileIcon />
+
+            <Box display="flex">
+              <SearchBar />
+              <LanguageSelect sx={{ flexShrink: 0 }} />
+              <HelpIcon />
+            </Box>
+
+            <TopNavIcons />
           </Box>
         </Container>
-        <TopNavbar />
       </Root>
     </HideOnScroll>
   );
 });
 
 export const TopBarSpacer = () => {
-  return (
-    <>
-      <SearchBarSpacer />
-      <TopNavbarSpacer />
-    </>
-  );
+  const theme = useTheme();
+
+  return <Box height={theme.spacing(10)} sx={{ visibility: 'hidden' }}></Box>;
 };
 
 export default TopBar;
