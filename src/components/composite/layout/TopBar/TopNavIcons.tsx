@@ -9,6 +9,7 @@ import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ProfileMenuItem from './ProfileMenuItem';
+import { TopBarHeight } from './TopBar';
 
 const PREFIX = 'TopNavIcons';
 
@@ -20,7 +21,7 @@ const classes = {
 
 const Root = styled(Box)(({ theme }) => ({
   [`& .${classes.button}`]: {
-    height: theme.spacing(10),
+    height: theme.spacing(TopBarHeight),
     flexDirection: 'column',
     color: theme.palette.common.black,
     borderBottomWidth: '2px',
@@ -31,6 +32,7 @@ const Root = styled(Box)(({ theme }) => ({
     paddingBottom: 0,
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
+    fontSize: theme.typography.caption.fontSize,
     '& .MuiButton-startIcon': {
       margin: 0,
     },
