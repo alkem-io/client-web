@@ -11,6 +11,7 @@ import VisualUpload from '../../../../components/composite/common/VisualUpload/V
 import FormRows from '../../../shared/components/FormRows';
 import FormCols from '../../../shared/components/FormCols';
 import FormikMarkdownField from '../../../../components/composite/forms/FormikMarkdownField';
+import { LONG_TEXT_LENGTH, VERY_LONG_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 
 const InputLabelSmall = forwardRef<HTMLLabelElement, InputLabelProps>((props, ref) => (
   <InputLabel ref={ref} shrink {...props} sx={{ marginTop: '-0.5rem' }} />
@@ -79,6 +80,8 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
                   name="description"
                   title={t('common.description')}
                   inputLabelComponent={InputLabelSmall}
+                  maxLength={LONG_TEXT_LENGTH}
+                  withCounter
                 />
                 <TagsetField
                   name="tags"
@@ -93,6 +96,8 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
                   name="defaultDescription"
                   title={t('aspect-templates.default-description')}
                   inputLabelComponent={InputLabelSmall}
+                  maxLength={VERY_LONG_TEXT_LENGTH}
+                  withCounter
                 />
               </FormRows>
             </FormCols>

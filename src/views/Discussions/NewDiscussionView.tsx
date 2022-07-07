@@ -9,6 +9,7 @@ import Button from '../../components/core/Button';
 import FormikSelect from '../../components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../models/graphql-schema';
 import DiscussionIcon from '../../components/composite/entities/Communication/DiscussionIcon';
+import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 
 const discussionCategories = [
   {
@@ -97,6 +98,8 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
                 rows={10}
                 multiline
                 disabled={isSubmitting}
+                withCounter
+                maxLength={MID_TEXT_LENGTH}
               />
             </Grid>
             <Grid item>

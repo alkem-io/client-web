@@ -6,6 +6,7 @@ import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@mui/icons-material/Info';
 import { useField } from 'formik';
 import { makeStyles } from '@mui/styles';
+import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 
 const useStyle = makeStyles(theme => ({
   padding: {
@@ -33,6 +34,8 @@ interface MarkdownFieldProps extends InputProps {
   placeholder?: string;
   autoComplete?: string;
   rows?: number;
+  maxLength?: number;
+  withCounter?: boolean;
   loading?: boolean;
   inputLabelComponent?: ComponentType<InputLabelProps>;
 }
@@ -47,6 +50,8 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   placeholder,
   autoComplete,
   rows = 10,
+  maxLength,
+  withCounter = false,
   loading,
   inputLabelComponent: InputLabelComponent = InputLabel,
 }) => {
@@ -82,8 +87,10 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
           autoComplete: autoComplete,
           onBlur: field.onBlur,
           rows,
+          maxLength: maxLength,
         }}
       />
+      {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength}></CharacterCounter>}
       {meta.touched && <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>}
     </FormGroup>
   );
