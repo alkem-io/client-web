@@ -70,7 +70,7 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
 
       return {
         communityId: data?.hub.opportunity.community?.id,
-        existingMembers: data?.hub.opportunity.community?.memberUsers,
+        existingMembers: data?.hub.opportunity.community?.leadUsers,
       };
     },
     refetchMembersQuery: refetchOpportunityCommunityMembersQuery,
