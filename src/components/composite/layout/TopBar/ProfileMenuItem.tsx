@@ -1,19 +1,17 @@
-import { Theme } from '@mui/material';
+import { Button, useTheme } from '@mui/material';
 import { useSelector } from '@xstate/react';
 import Skeleton from '@mui/material/Skeleton';
 import { useGlobalState, useUserContext } from '../../../../hooks';
 import UserSegment from '../../entities/User/UserSegment';
 import SignInSegment from '../../../../domain/session/SignInSegment';
 
-const USER_SEGMENT_MAX_WIDTH = (theme: Theme) => theme.spacing(33); // approx. 25 characters
-const USER_SEGMENT_USER_NAME_PROPS = {
-  sx: {
-    display: { xs: 'none', md: 'flex' },
-  },
-};
+interface ProfileIconProps {
+  buttonClassName: string;
+}
 
-const ProfileIcon = () => {
+const ProfileIcon = ({ buttonClassName }: ProfileIconProps) => {
   const { user, verified, isAuthenticated, loadingMe } = useUserContext();
+  const theme = useTheme();
 
   const {
     ui: { userSegmentService },
@@ -25,7 +23,17 @@ const ProfileIcon = () => {
 
   const renderUserProfileSegment = () => {
     if (loadingMe) {
-      return <Skeleton sx={{ flexBasis: theme => theme.spacing(19), flexShrink: 1 }} />;
+      return (
+        <Button key={-1} className={buttonClassName}>
+          <Skeleton
+            variant="circular"
+            width={theme.spacing(3)}
+            height={theme.spacing(3)}
+            sx={{ marginTop: theme.spacing(0.5) }}
+          />
+          <Skeleton variant="text" sx={{ width: theme => theme.spacing(6), marginTop: theme.spacing(0.5) }} />
+        </Button>
+      );
     }
     if (!isAuthenticated) {
       return <SignInSegment />;
@@ -33,14 +41,7 @@ const ProfileIcon = () => {
     return (
       <>
         {isUserSegmentVisible && user && (
-          <UserSegment
-            flexShrink={1}
-            minWidth={0}
-            maxWidth={USER_SEGMENT_MAX_WIDTH}
-            userMetadata={user}
-            emailVerified={verified}
-            userNameProps={USER_SEGMENT_USER_NAME_PROPS}
-          />
+          <UserSegment userMetadata={user} emailVerified={verified} buttonClassName={buttonClassName} />
         )}
       </>
     );
