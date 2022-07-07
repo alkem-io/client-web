@@ -8,7 +8,7 @@ import { UserMetadata } from '../../../../hooks';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
 import Typography from '../../../core/Typography';
-import UserAvatar from './User';
+import UserAvatar from './UserAvatar';
 
 const PREFIX = 'UserSegment';
 
