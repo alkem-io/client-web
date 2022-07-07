@@ -1,10 +1,10 @@
-import React from 'react';
-import withElevationOnHover from '../../shared/components/withElevationOnHover';
-import { Box, Paper } from '@mui/material';
-import LinkNoUnderline from '../../shared/components/LinkNoUnderline';
-import { TemplateCardProps } from './TemplateCardProps';
-import Icon, { IconProps } from '../../shared/components/Icon';
-import IconLabel from '../../shared/components/IconLabel';
+import React, { ComponentType, ReactNode } from 'react';
+import withElevationOnHover from './withElevationOnHover';
+import { Box, Paper, SvgIconProps } from '@mui/material';
+import LinkNoUnderline from './LinkNoUnderline';
+import Icon, { IconProps } from './Icon';
+import IconLabel from './IconLabel';
+import { LinkWithState } from '../types/LinkWithState';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 
@@ -21,7 +21,13 @@ const PositionedIcon = ({ iconComponent }: Pick<IconProps, 'iconComponent'>) => 
   );
 };
 
-const TemplateCardLayout = ({ url, linkState, title, imageUrl, iconComponent }: TemplateCardProps) => {
+export interface SimpleCardProps extends LinkWithState {
+  title: ReactNode;
+  imageUrl: string | undefined;
+  iconComponent: ComponentType<SvgIconProps>;
+}
+
+const SimpleCard = ({ url, linkState, title, imageUrl, iconComponent }: SimpleCardProps) => {
   return (
     <LinkNoUnderline to={url} state={linkState}>
       <ElevatedPaper
@@ -41,4 +47,4 @@ const TemplateCardLayout = ({ url, linkState, title, imageUrl, iconComponent }: 
   );
 };
 
-export default TemplateCardLayout;
+export default SimpleCard;

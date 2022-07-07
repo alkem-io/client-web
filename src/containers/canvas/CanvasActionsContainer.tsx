@@ -141,6 +141,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasOnContextMutation({
     onError: handleError,
   });
+
   const handleUpdateCanvas = async (canvas: Canvas) => {
     if (!canvas.id) {
       throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');

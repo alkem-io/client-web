@@ -1,6 +1,6 @@
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import { Button } from '@mui/material';
-import TemplatesList from '../TemplatesList';
+import SimpleCardsList from '../../../shared/components/SimpleCardsList';
 import AspectTemplateCard from './AspectTemplateCard';
 import CreateAspectTemplateDialog from './CreateAspectTemplateDialog';
 import EditAspectTemplateDialog from './EditAspectTemplateDialog';
@@ -13,7 +13,7 @@ import {
 } from '../../../../hooks/generated/graphql';
 import { AspectTemplateFormSubmittedValues } from './AspectTemplateForm';
 import { AdminAspectTemplateFragment } from '../../../../models/graphql-schema';
-import { TemplateCardProps } from '../TemplateCardProps';
+import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import AspectTemplateView from './AspectTemplateView';
 import ConfirmationDialog from './ConfirmationDialog';
@@ -25,10 +25,7 @@ interface AdminAspectTemplatesSectionProps {
   aspectTemplates: AdminAspectTemplateFragment[] | undefined;
   onCloseAspectTemplateDialog: () => void;
   refetchQueries: InternalRefetchQueriesInclude;
-  buildAspectTemplateLink: (aspect: AdminAspectTemplateFragment) => {
-    url: string;
-    linkState: TemplateCardProps['linkState'];
-  };
+  buildAspectTemplateLink: (aspect: AdminAspectTemplateFragment) => LinkWithState;
   edit?: boolean;
 }
 
@@ -121,7 +118,7 @@ const AdminAspectTemplatesSection = ({
           </Button>
         }
       >
-        <TemplatesList>
+        <SimpleCardsList>
           {aspectTemplates?.map(aspectTemplate => (
             <AspectTemplateCard
               key={aspectTemplate.id}
@@ -130,7 +127,7 @@ const AdminAspectTemplatesSection = ({
               {...buildAspectTemplateLink(aspectTemplate)}
             />
           ))}
-        </TemplatesList>
+        </SimpleCardsList>
       </DashboardGenericSection>
       <CreateAspectTemplateDialog
         open={isCreateTemplateDialogOpen}

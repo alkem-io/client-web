@@ -8,10 +8,14 @@ fragment CanvasDetails on Canvas {
   checkout {
     ...CheckoutDetails
   }
+  bannerCard {
+    ...VisualUri
+  }
 }
 
 fragment CanvasSummary on Canvas {
   id
+  nameID
   displayName
 }
 
@@ -55,14 +59,23 @@ fragment CreateCanvasCanvasTemplate on CanvasTemplate {
   value
 }
 
+fragment ContextWithCanvasDetails on Context {
+  id
+  canvases {
+    ...CanvasDetails
+  }
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
+  }
+}
+
 query hubCanvases($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     context {
-      id
-      canvases {
-        ...CanvasDetails
-      }
+      ...ContextWithCanvasDetails
     }
   }
 }
@@ -86,10 +99,7 @@ query challengeCanvases($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     challenge(ID: $challengeId) {
       id
       context {
-        id
-        canvases {
-          ...CanvasDetails
-        }
+        ...ContextWithCanvasDetails
       }
     }
   }
@@ -117,10 +127,7 @@ query opportunityCanvases($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     opportunity(ID: $opportunityId) {
       id
       context {
-        id
-        canvases {
-          ...CanvasDetails
-        }
+        ...ContextWithCanvasDetails
       }
     }
   }

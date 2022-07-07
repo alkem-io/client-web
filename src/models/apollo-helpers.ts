@@ -237,6 +237,7 @@ export type AuthorizationPolicyRuleVerifiedCredentialFieldPolicy = {
 };
 export type CanvasKeySpecifier = (
   | 'authorization'
+  | 'bannerCard'
   | 'checkout'
   | 'displayName'
   | 'id'
@@ -247,6 +248,7 @@ export type CanvasKeySpecifier = (
 )[];
 export type CanvasFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  bannerCard?: FieldPolicy<any> | FieldReadFunction<any>;
   checkout?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -726,6 +728,8 @@ export type MutationKeySpecifier = (
   | 'beginAlkemioUserVerifiedCredentialOfferInteraction'
   | 'beginCommunityMemberVerifiedCredentialOfferInteraction'
   | 'beginVerifiedCredentialRequestInteraction'
+  | 'convertChallengeToHub'
+  | 'convertOpportunityToChallenge'
   | 'createActor'
   | 'createActorGroup'
   | 'createAspectOnContext'
@@ -842,6 +846,8 @@ export type MutationFieldPolicy = {
   beginAlkemioUserVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginCommunityMemberVerifiedCredentialOfferInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
   beginVerifiedCredentialRequestInteraction?: FieldPolicy<any> | FieldReadFunction<any>;
+  convertChallengeToHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  convertOpportunityToChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   createActor?: FieldPolicy<any> | FieldReadFunction<any>;
   createActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   createAspectOnContext?: FieldPolicy<any> | FieldReadFunction<any>;
