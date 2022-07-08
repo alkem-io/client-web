@@ -2,6 +2,7 @@ import { Box, Button, List } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUserContext } from '../../../../hooks';
 import useRouteMatch from '../../../../hooks/routing/useRouteMatch';
 import { RouterLink } from '../../../core/RouterLink';
@@ -36,6 +37,7 @@ const Root = styled(Box)(({ theme }) => ({
     fontSize: '9px', //theme.typography.caption.fontSize,
     '& .MuiButton-startIcon': {
       margin: 0,
+      marginBottom: theme.spacing(1),
     },
     '& .MuiButton-startIcon>*:nth-of-type(1)': {
       fontSize: theme.spacing(3.7),
@@ -64,27 +66,28 @@ type MenuItem = {
 
 const TopNavIcons = () => {
   const { user } = useUserContext();
+  const { t, i18n } = useTranslation();
 
   const menuItems: MenuItem[] = useMemo(
     () => [
       {
-        title: 'challenges',
+        title: t('common.challenges'),
         icon: <AutoAwesomeOutlinedIcon />,
         url: '/challenges',
       },
       {
-        title: 'contributors',
+        title: t('common.contributors'),
         icon: <GroupOutlinedIcon />,
         url: '/contributors',
       },
       /*{
-        title: 'admin',
+        title: title: t('common.admin'),
         icon: <SettingsOutlinedIcon />,
         url: '/admin',
         hidden: !Boolean(user?.isAdmin ?? false),
       }, */
     ],
-    [user?.isAdmin]
+    [user?.isAdmin, i18n.language]
   );
 
   const match = useRouteMatch([...menuItems].reverse().map(x => x.url));
