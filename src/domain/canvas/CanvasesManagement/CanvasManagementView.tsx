@@ -14,7 +14,7 @@ import {
 } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 import { CanvasListItemCanvas } from '../../../components/composite/lists/Canvas/CanvasListItem';
-import CanvasCardsView from '../CanvasCards/CanvasCardsView';
+import CanvasesDashboardSection from '../CanvasesDashboardSection/CanvasesDashboardSection';
 import { LinkWithState } from '../../shared/types/LinkWithState';
 
 export interface ActiveCanvasIdHolder {
@@ -94,7 +94,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
 
   return (
     <>
-      <CanvasCardsView
+      <CanvasesDashboardSection
         canvases={entities.canvases}
         headerText={t('pages.canvas.header', { blockName: entities.contextSource })}
         subHeaderText={t('pages.canvas.subheader')}

@@ -11,7 +11,7 @@ import SimpleCard from '../../shared/components/SimpleCard';
 import { LinkWithState } from '../../shared/types/LinkWithState';
 import SimpleCardsList from '../../shared/components/SimpleCardsList';
 
-interface CanvasCardsViewProps extends DashboardGenericSectionProps {
+interface CanvasesDashboardSectionProps extends DashboardGenericSectionProps {
   canvases: CanvasDetailsFragment[];
   loading?: boolean;
   noItemsMessage?: string;
@@ -23,7 +23,7 @@ interface CanvasCardsViewProps extends DashboardGenericSectionProps {
   buildCanvasUrl: (canvas: CanvasDetailsFragment) => LinkWithState;
 }
 
-const CanvasCardsView = ({
+const CanvasesDashboardSection = ({
   canvases,
   onCreate,
   onDelete,
@@ -34,7 +34,7 @@ const CanvasCardsView = ({
   howToMessage,
   buildCanvasUrl,
   ...sectionProps
-}: CanvasCardsViewProps) => {
+}: CanvasesDashboardSectionProps) => {
   const { t } = useTranslation();
 
   return (
@@ -72,4 +72,4 @@ const CanvasCardsView = ({
   );
 };
 
-export default CanvasCardsView;
+export default CanvasesDashboardSection;
