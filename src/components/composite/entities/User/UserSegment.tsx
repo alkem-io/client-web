@@ -1,6 +1,7 @@
 import { Box, BoxProps, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
 import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Person from '@mui/icons-material/Person';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React, { ElementType, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -95,6 +96,17 @@ const UserSegment = <El extends ElementType>({
                   <Person />
                 </ListItemIcon>
                 <ListItemText primary={t('buttons.my-profile')} />
+              </ListItemButton>
+              <ListItemButton
+                onClick={() => {
+                  setDropdownOpen(false);
+                  navigate('/admin', { replace: true });
+                }}
+              >
+                <ListItemIcon>
+                  <SettingsOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary={t('common.admin')} />
               </ListItemButton>
               <ListItemButton
                 onClick={() => {

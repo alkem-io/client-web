@@ -27,8 +27,6 @@ const Root = styled(AppBar)(({ theme }) => ({
 
 const SearchBarGroup = styled(Box)(({ theme }) => ({
   alignSelf: 'right',
-  display: 'flex',
-  marginRight: theme.spacing(5),
   '& > div': {
     marginRight: theme.spacing(1),
   },
@@ -64,7 +62,12 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
           >
             <LogoComponent sx={{ flexGrow: 1 }} />
 
-            <SearchBarGroup>
+            <SearchBarGroup
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                marginRight: { xs: 0, lg: theme.spacing(2), xl: theme.spacing(5) },
+              }}
+            >
               <SearchBar />
               <LanguageSelect />
               <HelpIcon />

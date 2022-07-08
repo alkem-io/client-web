@@ -3,7 +3,7 @@ import { useCallback, useLayoutEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
-import { Box, InputAdornment } from '@mui/material';
+import { Box, InputAdornment, useTheme } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useMatch } from 'react-router-dom';
 import { useQueryParams } from '../../../../hooks';
@@ -14,6 +14,7 @@ const getSearchTerms = (searchInput: string) => searchInput.split(' ').join(',')
 
 const SearchBar = () => {
   const { t } = useTranslation();
+  const theme = useTheme();
   const navigate = useNavigate();
   const match = useMatch(SEARCH_ROUTE);
   const query = useQueryParams();
@@ -54,6 +55,11 @@ const SearchBar = () => {
         display: {
           xs: 'none',
           md: 'block',
+        },
+        width: {
+          md: theme.spacing(15),
+          lg: theme.spacing(35),
+          xl: theme.spacing(42),
         },
       }}
     >
