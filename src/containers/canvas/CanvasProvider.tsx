@@ -1,11 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { useUrlParams } from '../../hooks';
 import {
+  useCanvasTemplatesQuery,
   useChallengeCanvasesQuery,
   useHubCanvasesQuery,
   useOpportunityCanvasesQuery,
 } from '../../hooks/generated/graphql';
-import { CanvasWithoutValue } from '../../models/entities/canvas';
+import { CanvasDetailsFragment, CreateCanvasCanvasTemplateFragment } from '../../models/graphql-schema';
 
 interface CanvasProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
@@ -15,17 +16,14 @@ export type TemplateQuery = {
   [key in 'challengeId' | 'opportunityId']?: string;
 } & { hubId: string };
 
-export interface ITemplateQueryResult {
-  query: TemplateQuery;
-  result: CanvasWithoutValue[];
+export interface IProvidedEntities {
+  canvases: CanvasDetailsFragment[];
+  templates: CreateCanvasCanvasTemplateFragment[];
 }
 
-export interface IProvidedEntities {
-  canvases: CanvasWithoutValue[];
-  templates: Record<string, ITemplateQueryResult>;
-}
 export interface IProvidedEntitiesState {
   loading: boolean;
+  loadingTemplates: boolean;
 }
 
 const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
@@ -35,60 +33,46 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     opportunityNameId: opportunityId = '',
   } = useUrlParams();
 
+  const { data: canvasTemplates, loading: loadingTemplates } = useCanvasTemplatesQuery({
+    variables: { hubId },
+  });
+
   const { data: hubData, loading: loadingHub } = useHubCanvasesQuery({
     variables: { hubId },
+    skip: !!(challengeId || opportunityId),
     errorPolicy: 'all',
   });
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasesQuery({
     variables: { hubId: hubId, challengeId },
-    skip: !Boolean(challengeId),
+    skip: !challengeId,
     errorPolicy: 'all',
   });
 
   const { data: opportunityData, loading: loadingOpportunity } = useOpportunityCanvasesQuery({
     variables: { hubId, opportunityId: opportunityId },
-    skip: !Boolean(opportunityId),
+    skip: !opportunityId,
     errorPolicy: 'all',
   });
 
   const canvases = useMemo(() => {
-    if (hubId && !Boolean(challengeId) && !Boolean(opportunityId)) {
-      return hubData?.hub.context?.canvases || [];
-    }
-    if (hubId && challengeId && !Boolean(opportunityId)) {
-      return challengeData?.hub.challenge.context?.canvases || [];
-    }
-    if (hubId && opportunityId) {
-      return opportunityData?.hub.opportunity.context?.canvases || [];
-    }
-
-    return [] as CanvasWithoutValue[];
+    return (
+      hubData?.hub.context?.canvases ??
+      challengeData?.hub.challenge.context?.canvases ??
+      opportunityData?.hub.opportunity.context?.canvases ??
+      []
+    );
   }, [hubData, challengeData, opportunityData]);
 
   const templates = useMemo(() => {
-    return {
-      hub: {
-        query: { hubId: hubId },
-        result: hubData?.hub.context?.canvases?.filter(c => c.isTemplate) || [],
-      },
-      challenge: {
-        query: { hubId: hubId, challengeId: challengeId },
-        result: challengeData?.hub.challenge.context?.canvases?.filter(c => c.isTemplate) || [],
-      },
-      opportunity: {
-        query: { hubId: hubId, opportunityId: opportunityId },
-        result: opportunityData?.hub.opportunity.context?.canvases?.filter(c => c.isTemplate) || [],
-      },
-    };
-  }, [hubData, challengeData, opportunityData]);
+    return canvasTemplates?.hub.templates?.canvasTemplates ?? [];
+  }, [hubData]);
 
   return (
     <>
       {children(
-        // TODO: need to fix the typings
-        { canvases: canvases as any, templates: templates as any },
-        { loading: loadingHub || loadingChallenge || loadingOpportunity }
+        { canvases, templates },
+        { loading: loadingHub || loadingChallenge || loadingOpportunity, loadingTemplates }
       )}
     </>
   );
