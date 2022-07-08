@@ -18,7 +18,7 @@ const classes = {
   bar: `${PREFIX}-bar`,
 };
 
-export const TopBarHeight = 12;
+export const TopBarHeight = 9;
 
 const Root = styled(AppBar)(({ theme }) => ({
   width: '100%',
@@ -28,6 +28,7 @@ const Root = styled(AppBar)(({ theme }) => ({
 const SearchBarGroup = styled(Box)(({ theme }) => ({
   alignSelf: 'right',
   display: 'flex',
+  marginRight: theme.spacing(5),
   '& > div': {
     marginRight: theme.spacing(1),
   },

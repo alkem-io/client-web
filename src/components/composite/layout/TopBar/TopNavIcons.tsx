@@ -7,7 +7,7 @@ import useRouteMatch from '../../../../hooks/routing/useRouteMatch';
 import { RouterLink } from '../../../core/RouterLink';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+//import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ProfileMenuItem from './ProfileMenuItem';
 import { TopBarHeight } from './TopBar';
 
@@ -22,6 +22,7 @@ const classes = {
 const Root = styled(Box)(({ theme }) => ({
   [`& .${classes.button}`]: {
     height: theme.spacing(TopBarHeight),
+    marginRight: theme.spacing(1),
     flexDirection: 'column',
     color: theme.palette.common.black,
     borderBottomWidth: '2px',
@@ -32,16 +33,16 @@ const Root = styled(Box)(({ theme }) => ({
     paddingBottom: 0,
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
-    fontSize: theme.typography.caption.fontSize,
+    fontSize: '9px', //theme.typography.caption.fontSize,
     '& .MuiButton-startIcon': {
       margin: 0,
     },
     '& .MuiButton-startIcon>*:nth-of-type(1)': {
-      fontSize: theme.spacing(4),
+      fontSize: theme.spacing(3.7),
     },
     '& .MuiButton-startIcon>div': {
-      width: theme.spacing(4),
-      height: theme.spacing(4),
+      width: theme.spacing(3.7),
+      height: theme.spacing(3.7),
     },
     '&.Mui-disabled': {
       color: theme.palette.grey[400],
@@ -76,12 +77,12 @@ const TopNavIcons = () => {
         icon: <GroupOutlinedIcon />,
         url: '/contributors',
       },
-      {
+      /*{
         title: 'admin',
         icon: <SettingsOutlinedIcon />,
         url: '/admin',
         hidden: !Boolean(user?.isAdmin ?? false),
-      },
+      }, */
     ],
     [user?.isAdmin]
   );

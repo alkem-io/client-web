@@ -3,7 +3,7 @@ import { useSelector } from '@xstate/react';
 import Skeleton from '@mui/material/Skeleton';
 import { useGlobalState, useUserContext } from '../../../../hooks';
 import UserSegment from '../../entities/User/UserSegment';
-import SignInSegment from '../../../../domain/session/SignInSegment';
+import SignInIcon from './SignInIcon';
 
 interface ProfileIconProps {
   buttonClassName: string;
@@ -36,7 +36,7 @@ const ProfileIcon = ({ buttonClassName }: ProfileIconProps) => {
       );
     }
     if (!isAuthenticated) {
-      return <SignInSegment />;
+      return <SignInIcon className={buttonClassName} />;
     }
     return (
       <>

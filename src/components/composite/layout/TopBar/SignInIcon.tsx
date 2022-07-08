@@ -1,13 +1,31 @@
-import React, { FC } from 'react';
-import { Box, Button } from '@mui/material';
-import { RouterLink } from '../../components/core/RouterLink';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../models/constants';
+import React from 'react';
+import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { RouterLink } from '../../../core/RouterLink';
+import { AUTH_LOGIN_PATH } from '../../../../models/constants';
+import InputIcon from '@mui/icons-material/Input';
 
-const SignInSegment: FC = () => {
+interface SignInIconProps {
+  className: string;
+}
+
+const SignInIcon = ({ className }: SignInIconProps) => {
   const { t } = useTranslation();
 
   return (
+    <Button
+      key={-1}
+      to={AUTH_LOGIN_PATH}
+      aria-label={t('authentication.sign-in')}
+      component={RouterLink}
+      className={className}
+      startIcon={<InputIcon />}
+    >
+      {t('authentication.sign-in')}
+    </Button>
+  );
+
+  /*
     <Box>
       <Button
         aria-label="Sign up"
@@ -34,7 +52,7 @@ const SignInSegment: FC = () => {
         {t('authentication.sign-in')}
       </Button>
     </Box>
-  );
+  ); */
 };
 
-export default SignInSegment;
+export default SignInIcon;
