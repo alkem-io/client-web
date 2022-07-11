@@ -103,7 +103,6 @@
     "glob-parent": "^5.1.2",
     "got": "11.8.5",
     "nth-check": "^2.0.1",
-    "uuid": "^8.3.2",
     "chokidar": "^3.5.3"
   },
   "browserslist": {

@@ -806,11 +806,10 @@ export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
     displayName
-    isTemplate
   }
 `;
-export const ChechkoutDetailsFragmentDoc = gql`
-  fragment ChechkoutDetails on CanvasCheckout {
+export const CheckoutDetailsFragmentDoc = gql`
+  fragment CheckoutDetails on CanvasCheckout {
     id
     lockedBy
     status
@@ -833,15 +832,25 @@ export const CanvasDetailsFragmentDoc = gql`
       anonymousReadAccess
     }
     checkout {
-      ...ChechkoutDetails
+      ...CheckoutDetails
     }
   }
   ${CanvasSummaryFragmentDoc}
-  ${ChechkoutDetailsFragmentDoc}
+  ${CheckoutDetailsFragmentDoc}
 `;
 export const CanvasValueFragmentDoc = gql`
   fragment CanvasValue on Canvas {
     id
+    value
+  }
+`;
+export const CreateCanvasCanvasTemplateFragmentDoc = gql`
+  fragment CreateCanvasCanvasTemplate on CanvasTemplate {
+    id
+    info {
+      title
+      description
+    }
     value
   }
 `;
@@ -10857,6 +10866,64 @@ export type OpportunityAspectSettingsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectSettingsQuery(variables: SchemaTypes.OpportunityAspectSettingsQueryVariables) {
   return { query: OpportunityAspectSettingsDocument, variables: variables };
 }
+export const CanvasTemplatesDocument = gql`
+  query canvasTemplates($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        id
+        canvasTemplates {
+          ...CreateCanvasCanvasTemplate
+        }
+      }
+    }
+  }
+  ${CreateCanvasCanvasTemplateFragmentDoc}
+`;
+
+/**
+ * __useCanvasTemplatesQuery__
+ *
+ * To run a query within a React component, call `useCanvasTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCanvasTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCanvasTemplatesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useCanvasTemplatesQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.CanvasTemplatesQuery, SchemaTypes.CanvasTemplatesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CanvasTemplatesQuery, SchemaTypes.CanvasTemplatesQueryVariables>(
+    CanvasTemplatesDocument,
+    options
+  );
+}
+export function useCanvasTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.CanvasTemplatesQuery, SchemaTypes.CanvasTemplatesQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CanvasTemplatesQuery, SchemaTypes.CanvasTemplatesQueryVariables>(
+    CanvasTemplatesDocument,
+    options
+  );
+}
+export type CanvasTemplatesQueryHookResult = ReturnType<typeof useCanvasTemplatesQuery>;
+export type CanvasTemplatesLazyQueryHookResult = ReturnType<typeof useCanvasTemplatesLazyQuery>;
+export type CanvasTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.CanvasTemplatesQuery,
+  SchemaTypes.CanvasTemplatesQueryVariables
+>;
+export function refetchCanvasTemplatesQuery(variables: SchemaTypes.CanvasTemplatesQueryVariables) {
+  return { query: CanvasTemplatesDocument, variables: variables };
+}
 export const HubCanvasesDocument = gql`
   query hubCanvases($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -11353,7 +11420,6 @@ export const UpdateCanvasOnContextDocument = gql`
       id
       value
       displayName
-      isTemplate
     }
   }
 `;
@@ -11400,10 +11466,10 @@ export type UpdateCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
 export const CheckoutCanvasOnContextDocument = gql`
   mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
     eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
-      ...ChechkoutDetails
+      ...CheckoutDetails
     }
   }
-  ${ChechkoutDetailsFragmentDoc}
+  ${CheckoutDetailsFragmentDoc}
 `;
 export type CheckoutCanvasOnContextMutationFn = Apollo.MutationFunction<
   SchemaTypes.CheckoutCanvasOnContextMutation,

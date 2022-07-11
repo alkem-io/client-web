@@ -4,11 +4,13 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import CanvasList from '../../components/composite/lists/Canvas/CanvasList';
-import { CanvasWithoutValue } from '../../models/entities/canvas';
 import { ViewProps } from '../../models/view';
+import { CanvasDetailsFragment } from '../../models/graphql-schema';
+import { Identifiable } from '../../domain/shared/types/Identifiable';
+import { CanvasListItemCanvas } from '../../components/composite/lists/Canvas/CanvasListItem';
 
 interface CanvasListViewEntities {
-  canvases: CanvasWithoutValue[];
+  canvases: CanvasDetailsFragment[];
   header: string;
   subheader?: string;
   noItemsMessage?: string;
@@ -18,9 +20,9 @@ interface CanvasListViewState {
   loading: boolean;
 }
 interface CanvasListViewActions {
-  onSelect: (canvas: CanvasWithoutValue) => void;
+  onSelect: (canvas: Identifiable) => void;
   onCreate?: () => void;
-  onDelete: (canvas: CanvasWithoutValue) => void;
+  onDelete: (canvas: CanvasListItemCanvas) => void;
 }
 
 interface CanvasListViewOptions {
