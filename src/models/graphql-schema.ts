@@ -4562,15 +4562,6 @@ export type UpdateChallengeMutation = {
   updateChallenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 };
 
-export type UpdateEcosystemModelMutationVariables = Exact<{
-  ecosystemModelData: UpdateEcosystemModelInput;
-}>;
-
-export type UpdateEcosystemModelMutation = {
-  __typename?: 'Mutation';
-  updateEcosystemModel: { __typename?: 'EcosystemModel'; id: string };
-};
-
 export type UpdateGroupMutationVariables = Exact<{
   input: UpdateUserGroupInput;
 }>;
