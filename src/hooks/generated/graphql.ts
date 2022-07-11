@@ -852,12 +852,12 @@ export const CanvasDetailsFragmentDoc = gql`
       ...CheckoutDetails
     }
     bannerCard {
-      ...VisualUri
+      ...VisualFull
     }
   }
   ${CanvasSummaryFragmentDoc}
   ${CheckoutDetailsFragmentDoc}
-  ${VisualUriFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
 export const ContextWithCanvasDetailsFragmentDoc = gql`
   fragment ContextWithCanvasDetails on Context {

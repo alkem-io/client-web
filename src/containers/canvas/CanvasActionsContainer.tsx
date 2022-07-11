@@ -6,6 +6,7 @@ import {
   useCreateCanvasOnContextMutation,
   useDeleteCanvasOnContextMutation,
   useUpdateCanvasOnContextMutation,
+  useUploadVisualMutation,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import {
@@ -22,7 +23,7 @@ export interface ICanvasActions {
   onDelete: (canvas: DeleteCanvasOnContextInput) => Promise<void>;
   onCheckout: (canvas: CanvasDetailsFragment) => void;
   onCheckin: (canvas: CanvasDetailsFragment) => void;
-  onUpdate: (canvas: Canvas) => void;
+  onUpdate: (canvas: Canvas, bannerCardBitmap?: Blob) => void;
 }
 
 export interface CanvasActionsContainerState {
@@ -142,20 +143,36 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     onError: handleError,
   });
 
-  const handleUpdateCanvas = async (canvas: Canvas) => {
+  const [uploadVisual, { loading: uploadingVisual }] = useUploadVisualMutation({
+    onError: handleError,
+  });
+
+  const handleUpdateCanvas = async (canvas: Canvas, bannerCardBitmap?: Blob) => {
     if (!canvas.id) {
       throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
     }
 
-    await updateCanvas({
-      variables: {
-        input: {
-          ID: canvas.id,
-          displayName: canvas.displayName,
-          value: canvas.value,
+    await Promise.all([
+      updateCanvas({
+        variables: {
+          input: {
+            ID: canvas.id,
+            displayName: canvas.displayName,
+            value: canvas.value,
+          },
         },
-      },
-    });
+      }),
+      canvas.bannerCard &&
+        bannerCardBitmap &&
+        uploadVisual({
+          variables: {
+            file: new File([bannerCardBitmap], `/Canvas-${canvas.nameID}-bannerCard.png`, { type: 'image/png' }),
+            uploadData: {
+              visualID: canvas.bannerCard?.id,
+            },
+          },
+        }),
+    ]);
   };
 
   const actions = useMemo<ICanvasActions>(
@@ -168,6 +185,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     }),
     [handleCreateCanvas, handleDeleteCanvas, handleCheckoutCanvas, handleUpdateCanvas]
   );
+
   return (
     <>
       {children(
@@ -176,7 +194,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           creatingCanvas,
           deletingCanvas,
           changingCanvasLockState: checkingoutCanvas,
-          updatingCanvas,
+          updatingCanvas: updatingCanvas || uploadingVisual,
         },
         actions
       )}

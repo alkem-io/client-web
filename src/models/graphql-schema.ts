@@ -8207,7 +8207,20 @@ export type CanvasDetailsFragment = {
           | undefined;
       }
     | undefined;
-  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  bannerCard?:
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }
+    | undefined;
 };
 
 export type CanvasSummaryFragment = { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
@@ -8285,7 +8298,20 @@ export type ContextWithCanvasDetailsFragment = {
                 | undefined;
             }
           | undefined;
-        bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        bannerCard?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
+          | undefined;
       }>
     | undefined;
   authorization?:
@@ -8341,7 +8367,20 @@ export type HubCanvasesQuery = {
                         | undefined;
                     }
                   | undefined;
-                bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                bannerCard?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
               }>
             | undefined;
           authorization?:
@@ -8402,7 +8441,20 @@ export type HubCanvasValuesQuery = {
                         | undefined;
                     }
                   | undefined;
-                bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                bannerCard?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
               }>
             | undefined;
         }
@@ -8457,7 +8509,20 @@ export type ChallengeCanvasesQuery = {
                           | undefined;
                       }
                     | undefined;
-                  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  bannerCard?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
                 }>
               | undefined;
             authorization?:
@@ -8523,7 +8588,20 @@ export type ChallengeCanvasValuesQuery = {
                           | undefined;
                       }
                     | undefined;
-                  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  bannerCard?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
                 }>
               | undefined;
           }
@@ -8579,7 +8657,20 @@ export type OpportunityCanvasesQuery = {
                           | undefined;
                       }
                     | undefined;
-                  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  bannerCard?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
                 }>
               | undefined;
             authorization?:
@@ -8645,7 +8736,20 @@ export type OpportunityCanvasValuesQuery = {
                           | undefined;
                       }
                     | undefined;
-                  bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  bannerCard?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
                 }>
               | undefined;
           }
@@ -8685,7 +8789,20 @@ export type CreateCanvasOnContextMutation = {
             | undefined;
         }
       | undefined;
-    bannerCard?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    bannerCard?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }
+      | undefined;
   };
 };
 

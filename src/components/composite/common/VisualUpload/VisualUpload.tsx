@@ -28,7 +28,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) 
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
 
-  const [uploadAvatar, { loading }] = useUploadVisualMutation({
+  const [uploadVisual, { loading }] = useUploadVisualMutation({
     onError: handleError,
     onCompleted: () => notify(t('components.visual-upload.success'), 'success'),
   });
@@ -38,7 +38,7 @@ const VisualUpload: FC<VisualUploadProps> = ({ visual, height = DEFAULT_SIZE }) 
   const handleVisualUpload = useCallback(
     async (file: File) => {
       if (visual) {
-        uploadAvatar({
+        uploadVisual({
           variables: {
             file,
             uploadData: {
