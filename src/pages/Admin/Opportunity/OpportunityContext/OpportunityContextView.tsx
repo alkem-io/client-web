@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useApolloErrorHandler, useChallenge, useNotification, useUrlParams } from '../../../../hooks';
+import { useApolloErrorHandler, useNotification, useUrlParams } from '../../../../hooks';
 import {
   refetchOpportunityProfileInfoQuery,
   useOpportunityProfileInfoQuery,
@@ -21,8 +21,6 @@ const OpportunityContextView: FC = () => {
   const handleError = useApolloErrorHandler();
   const onSuccess = (message: string) => notify(message, 'success');
 
-  const { challengeId } = useChallenge();
-
   const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
 
   const [updateOpportunity, { loading: isUpdating }] = useUpdateOpportunityMutation({
@@ -38,10 +36,13 @@ const OpportunityContextView: FC = () => {
   });
 
   const opportunity = opportunityProfile?.hub?.opportunity;
-  const opportunityId = useMemo(() => opportunity?.id || '', [opportunity]);
+  const opportunityId = useMemo(() => opportunity?.id, [opportunity]);
 
   const onSubmit = async (values: ContextFormValues) => {
-    updateOpportunity({
+    if (!opportunityId) {
+      throw new TypeError('Missing Opportunity ID');
+    }
+    await updateOpportunity({
       variables: {
         input: {
           context: updateContextInput(values),
@@ -66,11 +67,11 @@ const OpportunityContextView: FC = () => {
       </Grid>
       <OpportunityLifecycleContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
         {({ loading, ...provided }) => {
-          if (loading) {
+          if (loading || !opportunityId) {
             return <Loading text="Loading" />;
           }
 
-          return <EditLifecycle id={challengeId} {...provided} />;
+          return <EditLifecycle id={opportunityId} {...provided} />;
         }}
       </OpportunityLifecycleContainer>
     </Grid>
