@@ -51,6 +51,9 @@ const Root = styled(Box)(({ theme }) => ({
       opacity: 0.8,
     },
   },
+  [`& .${classes.button}:last-child`]: {
+    marginRight: 0,
+  },
   [`& .${classes.buttonSelected}`]: {
     borderBottomColor: theme.palette.primary.main,
   },
