@@ -15,6 +15,7 @@ import HubCommunityPage from '../../pages/Community/HubCommunityPage';
 import { Error404, PageProps } from '../../pages';
 import HubDashboardPage from '../../pages/Hub/HubDashboardPage';
 import HubContextPage from '../../pages/Hub/HubContextPage';
+import HubChallengesPage from '../../pages/Hub/HubChallengesPage';
 import ContributePage from '../../pages/Contribute/ContributePage';
 import AspectRoute from '../aspect/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
@@ -54,6 +55,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
           path="canvases/:canvasId"
           element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="hub" />}
         />
+        <Route path="challenges" element={<HubChallengesPage paths={currentPaths} />} />
       </Route>
       <Route path={'apply'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.hub} />} />
       <Route
