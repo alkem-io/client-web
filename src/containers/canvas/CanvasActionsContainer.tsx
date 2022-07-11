@@ -21,9 +21,9 @@ import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFro
 export interface ICanvasActions {
   onCreate: (canvas: CreateCanvasOnContextInput) => Promise<void>;
   onDelete: (canvas: DeleteCanvasOnContextInput) => Promise<void>;
-  onCheckout: (canvas: CanvasDetailsFragment) => void;
-  onCheckin: (canvas: CanvasDetailsFragment) => void;
-  onUpdate: (canvas: Canvas, bannerCardBitmap?: Blob) => void;
+  onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
+  onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
+  onUpdate: (canvas: Canvas, bannerCardBitmap?: Blob) => Promise<void>;
 }
 
 export interface CanvasActionsContainerState {
@@ -148,10 +148,6 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   });
 
   const handleUpdateCanvas = async (canvas: Canvas, bannerCardBitmap?: Blob) => {
-    if (!canvas.id) {
-      throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
-    }
-
     await Promise.all([
       updateCanvas({
         variables: {
