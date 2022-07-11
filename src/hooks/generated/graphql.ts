@@ -851,7 +851,7 @@ export const CanvasDetailsFragmentDoc = gql`
     checkout {
       ...CheckoutDetails
     }
-    bannerCard {
+    preview {
       ...VisualFull
     }
   }

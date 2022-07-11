@@ -56,7 +56,7 @@ const CanvasesDashboardSection = ({
               key={canvas.id}
               {...buildCanvasUrl(canvas)}
               title={canvas.displayName}
-              imageUrl={canvas.bannerCard?.uri}
+              imageUrl={canvas.preview?.uri}
               iconComponent={WbIncandescentOutlined}
             />
           ))}

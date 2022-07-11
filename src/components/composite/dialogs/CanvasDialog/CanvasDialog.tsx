@@ -43,7 +43,7 @@ interface CanvasDialogProps {
     onCancel: () => void;
     onCheckin: (canvas: CanvasWithoutValue) => void;
     onCheckout: (canvas: CanvasWithoutValue) => void;
-    onUpdate: (canvas: Canvas, bannerCardBitmap?: Blob) => void;
+    onUpdate: (canvas: Canvas, previewImage?: Blob) => void;
   };
   options: {
     show: boolean;
@@ -177,11 +177,11 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
 
     const { appState, elements, files } = state;
 
-    const bannerCardBitmap = await exportToBlob({
+    const previewImage = await exportToBlob({
       appState,
       elements,
       files: files ?? null,
-      getDimensions: getCanvasBannerCardDimensions(canvas.bannerCard),
+      getDimensions: getCanvasBannerCardDimensions(canvas.preview),
       mimeType: 'image/png',
     });
 
@@ -192,7 +192,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
         ...canvas,
         value,
       },
-      bannerCardBitmap ?? undefined
+      previewImage ?? undefined
     );
   };
 

@@ -23,7 +23,7 @@ export interface ICanvasActions {
   onDelete: (canvas: DeleteCanvasOnContextInput) => Promise<void>;
   onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
   onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
-  onUpdate: (canvas: Canvas, bannerCardBitmap?: Blob) => Promise<void>;
+  onUpdate: (canvas: Canvas, previewImage?: Blob) => Promise<void>;
 }
 
 export interface CanvasActionsContainerState {
@@ -147,7 +147,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     onError: handleError,
   });
 
-  const handleUpdateCanvas = async (canvas: Canvas, bannerCardBitmap?: Blob) => {
+  const handleUpdateCanvas = async (canvas: Canvas, previewImage?: Blob) => {
     await Promise.all([
       updateCanvas({
         variables: {
@@ -158,13 +158,13 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           },
         },
       }),
-      canvas.bannerCard &&
-        bannerCardBitmap &&
+      canvas.preview &&
+        previewImage &&
         uploadVisual({
           variables: {
-            file: new File([bannerCardBitmap], `/Canvas-${canvas.nameID}-bannerCard.png`, { type: 'image/png' }),
+            file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
             uploadData: {
-              visualID: canvas.bannerCard?.id,
+              visualID: canvas.preview?.id,
             },
           },
         }),

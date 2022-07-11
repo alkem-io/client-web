@@ -237,23 +237,23 @@ export type AuthorizationPolicyRuleVerifiedCredentialFieldPolicy = {
 };
 export type CanvasKeySpecifier = (
   | 'authorization'
-  | 'bannerCard'
   | 'checkout'
   | 'displayName'
   | 'id'
   | 'isTemplate'
   | 'nameID'
+  | 'preview'
   | 'value'
   | CanvasKeySpecifier
 )[];
 export type CanvasFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  bannerCard?: FieldPolicy<any> | FieldReadFunction<any>;
   checkout?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  preview?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CanvasCheckoutKeySpecifier = (

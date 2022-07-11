@@ -8,7 +8,7 @@ fragment CanvasDetails on Canvas {
   checkout {
     ...CheckoutDetails
   }
-  bannerCard {
+  preview {
     ...VisualFull
   }
 }

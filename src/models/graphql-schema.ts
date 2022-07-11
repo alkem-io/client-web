@@ -344,8 +344,6 @@ export type Canvas = {
   __typename?: 'Canvas';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The preview image for the Canvas. */
-  bannerCard?: Maybe<Visual>;
   /** The checkout out state of this Canvas. */
   checkout?: Maybe<CanvasCheckout>;
   /** The display name. */
@@ -356,6 +354,8 @@ export type Canvas = {
   isTemplate: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The preview image for the Canvas. */
+  preview?: Maybe<Visual>;
   /** The JSON representation of the Canvas. */
   value: Scalars['JSON'];
 };
@@ -2271,6 +2271,8 @@ export enum PreferenceType {
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
+  NotificationCommunityCollaborationInterestUser = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_USER',
   NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
   NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
@@ -3164,6 +3166,8 @@ export enum UserPreferenceType {
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
   NotificationCommunicationUpdates = 'NOTIFICATION_COMMUNICATION_UPDATES',
   NotificationCommunicationUpdateSentAdmin = 'NOTIFICATION_COMMUNICATION_UPDATE_SENT_ADMIN',
+  NotificationCommunityCollaborationInterestAdmin = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_ADMIN',
+  NotificationCommunityCollaborationInterestUser = 'NOTIFICATION_COMMUNITY_COLLABORATION_INTEREST_USER',
   NotificationCommunityNewMember = 'NOTIFICATION_COMMUNITY_NEW_MEMBER',
   NotificationCommunityNewMemberAdmin = 'NOTIFICATION_COMMUNITY_NEW_MEMBER_ADMIN',
   NotificationCommunityReviewSubmitted = 'NOTIFICATION_COMMUNITY_REVIEW_SUBMITTED',
@@ -8207,7 +8211,7 @@ export type CanvasDetailsFragment = {
           | undefined;
       }
     | undefined;
-  bannerCard?:
+  preview?:
     | {
         __typename?: 'Visual';
         id: string;
@@ -8298,7 +8302,7 @@ export type ContextWithCanvasDetailsFragment = {
                 | undefined;
             }
           | undefined;
-        bannerCard?:
+        preview?:
           | {
               __typename?: 'Visual';
               id: string;
@@ -8367,7 +8371,7 @@ export type HubCanvasesQuery = {
                         | undefined;
                     }
                   | undefined;
-                bannerCard?:
+                preview?:
                   | {
                       __typename?: 'Visual';
                       id: string;
@@ -8441,7 +8445,7 @@ export type HubCanvasValuesQuery = {
                         | undefined;
                     }
                   | undefined;
-                bannerCard?:
+                preview?:
                   | {
                       __typename?: 'Visual';
                       id: string;
@@ -8509,7 +8513,7 @@ export type ChallengeCanvasesQuery = {
                           | undefined;
                       }
                     | undefined;
-                  bannerCard?:
+                  preview?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -8588,7 +8592,7 @@ export type ChallengeCanvasValuesQuery = {
                           | undefined;
                       }
                     | undefined;
-                  bannerCard?:
+                  preview?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -8657,7 +8661,7 @@ export type OpportunityCanvasesQuery = {
                           | undefined;
                       }
                     | undefined;
-                  bannerCard?:
+                  preview?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -8736,7 +8740,7 @@ export type OpportunityCanvasValuesQuery = {
                           | undefined;
                       }
                     | undefined;
-                  bannerCard?:
+                  preview?:
                     | {
                         __typename?: 'Visual';
                         id: string;
@@ -8789,7 +8793,7 @@ export type CreateCanvasOnContextMutation = {
             | undefined;
         }
       | undefined;
-    bannerCard?:
+    preview?:
       | {
           __typename?: 'Visual';
           id: string;
