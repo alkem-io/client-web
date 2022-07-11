@@ -240,7 +240,6 @@ export type CanvasKeySpecifier = (
   | 'checkout'
   | 'displayName'
   | 'id'
-  | 'isTemplate'
   | 'nameID'
   | 'preview'
   | 'value'
@@ -251,7 +250,6 @@ export type CanvasFieldPolicy = {
   checkout?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
-  isTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   preview?: FieldPolicy<any> | FieldReadFunction<any>;
   value?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -583,7 +581,6 @@ export type DiscussionFieldPolicy = {
 export type EcosystemModelKeySpecifier = (
   | 'actorGroups'
   | 'authorization'
-  | 'canvas'
   | 'description'
   | 'id'
   | EcosystemModelKeySpecifier
@@ -591,7 +588,6 @@ export type EcosystemModelKeySpecifier = (
 export type EcosystemModelFieldPolicy = {
   actorGroups?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  canvas?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };

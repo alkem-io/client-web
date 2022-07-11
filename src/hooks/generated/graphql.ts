@@ -4088,10 +4088,6 @@ export const UpdateEcosystemModelDocument = gql`
   mutation updateEcosystemModel($ecosystemModelData: UpdateEcosystemModelInput!) {
     updateEcosystemModel(ecosystemModelData: $ecosystemModelData) {
       id
-      canvas {
-        id
-        value
-      }
     }
   }
 `;
@@ -7207,12 +7203,6 @@ export const OpportunityEcosystemDetailsDocument = gql`
                 value
                 impact
               }
-            }
-            canvas {
-              id
-              displayName
-              nameID
-              value
             }
           }
         }

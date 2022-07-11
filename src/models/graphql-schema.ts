@@ -350,8 +350,6 @@ export type Canvas = {
   displayName: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
-  /** Is the Canvas a template? */
-  isTemplate: Scalars['Boolean'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The preview image for the Canvas. */
@@ -799,6 +797,8 @@ export type CreateCanvasOnContextInput = {
 };
 
 export type CreateCanvasTemplateOnTemplatesSetInput = {
+  /** Use the specified Canvas as the initial value for this CanvasTempplate */
+  canvasID?: InputMaybe<Scalars['UUID']>;
   /** The meta information for this Template. */
   info: CreateTemplateInfoInput;
   templatesSetID: Scalars['UUID'];
@@ -1145,8 +1145,6 @@ export type EcosystemModel = {
   actorGroups?: Maybe<Array<ActorGroup>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The Canvas for visualizing this Ecosystem Model. */
-  canvas?: Maybe<Canvas>;
   /** Overview of this ecosystem model. */
   description?: Maybe<Scalars['String']>;
   /** The ID of the entity */
@@ -2866,17 +2864,6 @@ export type UpdateCanvasDirectInput = {
   ID: Scalars['UUID'];
   /** The display name for this entity. */
   displayName?: InputMaybe<Scalars['String']>;
-  isTemplate?: InputMaybe<Scalars['Boolean']>;
-  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
-  nameID?: InputMaybe<Scalars['NameID']>;
-  value?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdateCanvasInput = {
-  ID: Scalars['UUID'];
-  /** The display name for this entity. */
-  displayName?: InputMaybe<Scalars['String']>;
-  isTemplate?: InputMaybe<Scalars['Boolean']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   value?: InputMaybe<Scalars['String']>;
@@ -2931,8 +2918,6 @@ export type UpdateDiscussionInput = {
 
 export type UpdateEcosystemModelInput = {
   ID: Scalars['UUID'];
-  /** Update the Canvas for this Ecosystem Model. */
-  canvas?: InputMaybe<UpdateCanvasInput>;
   description?: InputMaybe<Scalars['String']>;
 };
 
@@ -4583,11 +4568,7 @@ export type UpdateEcosystemModelMutationVariables = Exact<{
 
 export type UpdateEcosystemModelMutation = {
   __typename?: 'Mutation';
-  updateEcosystemModel: {
-    __typename?: 'EcosystemModel';
-    id: string;
-    canvas?: { __typename?: 'Canvas'; id: string; value: string } | undefined;
-  };
+  updateEcosystemModel: { __typename?: 'EcosystemModel'; id: string };
 };
 
 export type UpdateGroupMutationVariables = Exact<{
@@ -6022,9 +6003,6 @@ export type OpportunityEcosystemDetailsQuery = {
                             }>
                           | undefined;
                       }>
-                    | undefined;
-                  canvas?:
-                    | { __typename?: 'Canvas'; id: string; displayName: string; nameID: string; value: string }
                     | undefined;
                 }
               | undefined;
