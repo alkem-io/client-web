@@ -1,0 +1,13 @@
+mutation eventOnOpportunity($opportunityId: UUID!, $eventName: String!) {
+  eventOnOpportunity(opportunityEventData: {
+    ID: $opportunityId,
+    eventName: $eventName
+  }) {
+    id
+    lifecycle {
+      id
+      nextEvents
+      state
+    }
+  }
+}
