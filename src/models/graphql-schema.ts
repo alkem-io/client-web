@@ -8162,7 +8162,6 @@ export type CanvasDetailsFragment = {
   __typename?: 'Canvas';
   id: string;
   displayName: string;
-  isTemplate: boolean;
   authorization?:
     | {
         __typename?: 'Authorization';
@@ -8185,11 +8184,11 @@ export type CanvasDetailsFragment = {
     | undefined;
 };
 
-export type CanvasSummaryFragment = { __typename?: 'Canvas'; id: string; displayName: string; isTemplate: boolean };
+export type CanvasSummaryFragment = { __typename?: 'Canvas'; id: string; displayName: string };
 
 export type CanvasValueFragment = { __typename?: 'Canvas'; id: string; value: string };
 
-export type ChechkoutDetailsFragment = {
+export type CheckoutDetailsFragment = {
   __typename?: 'CanvasCheckout';
   id: string;
   lockedBy: string;
@@ -8198,6 +8197,37 @@ export type ChechkoutDetailsFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+};
+
+export type CanvasTemplatesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasTemplatesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            value: string;
+            info: { __typename?: 'TemplateInfo'; title?: string | undefined; description?: string | undefined };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CreateCanvasCanvasTemplateFragment = {
+  __typename?: 'CanvasTemplate';
+  id: string;
+  value: string;
+  info: { __typename?: 'TemplateInfo'; title?: string | undefined; description?: string | undefined };
 };
 
 export type HubCanvasesQueryVariables = Exact<{
@@ -8218,7 +8248,6 @@ export type HubCanvasesQuery = {
                 __typename?: 'Canvas';
                 id: string;
                 displayName: string;
-                isTemplate: boolean;
                 authorization?:
                   | {
                       __typename?: 'Authorization';
@@ -8270,7 +8299,6 @@ export type HubCanvasValuesQuery = {
                 id: string;
                 value: string;
                 displayName: string;
-                isTemplate: boolean;
                 authorization?:
                   | {
                       __typename?: 'Authorization';
@@ -8324,7 +8352,6 @@ export type ChallengeCanvasesQuery = {
                   __typename?: 'Canvas';
                   id: string;
                   displayName: string;
-                  isTemplate: boolean;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -8381,7 +8408,6 @@ export type ChallengeCanvasValuesQuery = {
                   id: string;
                   value: string;
                   displayName: string;
-                  isTemplate: boolean;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -8436,7 +8462,6 @@ export type OpportunityCanvasesQuery = {
                   __typename?: 'Canvas';
                   id: string;
                   displayName: string;
-                  isTemplate: boolean;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -8493,7 +8518,6 @@ export type OpportunityCanvasValuesQuery = {
                   id: string;
                   value: string;
                   displayName: string;
-                  isTemplate: boolean;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -8536,7 +8560,6 @@ export type CreateCanvasOnContextMutation = {
     __typename?: 'Canvas';
     id: string;
     displayName: string;
-    isTemplate: boolean;
     authorization?:
       | {
           __typename?: 'Authorization';
@@ -8566,7 +8589,7 @@ export type DeleteCanvasOnContextMutationVariables = Exact<{
 
 export type DeleteCanvasOnContextMutation = {
   __typename?: 'Mutation';
-  deleteCanvasOnContext: { __typename?: 'Canvas'; id: string; displayName: string; isTemplate: boolean };
+  deleteCanvasOnContext: { __typename?: 'Canvas'; id: string; displayName: string };
 };
 
 export type UpdateCanvasOnContextMutationVariables = Exact<{
@@ -8575,7 +8598,7 @@ export type UpdateCanvasOnContextMutationVariables = Exact<{
 
 export type UpdateCanvasOnContextMutation = {
   __typename?: 'Mutation';
-  updateCanvas: { __typename?: 'Canvas'; id: string; value: string; displayName: string; isTemplate: boolean };
+  updateCanvas: { __typename?: 'Canvas'; id: string; value: string; displayName: string };
 };
 
 export type CheckoutCanvasOnContextMutationVariables = Exact<{

@@ -8,10 +8,10 @@ import {
   useUpdateCanvasOnContextMutation,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { CanvasWithoutValue } from '../../models/entities/canvas';
 import {
   Canvas,
   CanvasCheckoutStateEnum,
+  CanvasDetailsFragment,
   CreateCanvasOnContextInput,
   DeleteCanvasOnContextInput,
 } from '../../models/graphql-schema';
@@ -20,10 +20,9 @@ import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFro
 export interface ICanvasActions {
   onCreate: (canvas: CreateCanvasOnContextInput) => Promise<void>;
   onDelete: (canvas: DeleteCanvasOnContextInput) => Promise<void>;
-  onCheckout: (canvas: CanvasWithoutValue) => void;
-  onCheckin: (canvas: CanvasWithoutValue) => void;
+  onCheckout: (canvas: CanvasDetailsFragment) => void;
+  onCheckin: (canvas: CanvasDetailsFragment) => void;
   onUpdate: (canvas: Canvas) => void;
-  onPromoteToTemplate: (canvas: Canvas) => void;
 }
 
 export interface CanvasActionsContainerState {
@@ -104,7 +103,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     onError: handleError,
   });
 
-  const handleCheckoutCanvas = async (canvas: CanvasWithoutValue) => {
+  const handleCheckoutCanvas = async (canvas: CanvasDetailsFragment) => {
     if (!canvas.checkout?.id) {
       throw new Error('[canvas:onCheckInOut]: Missing canvas.checkout.id');
     }
@@ -152,23 +151,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
         input: {
           ID: canvas.id,
           displayName: canvas.displayName,
-          isTemplate: canvas.isTemplate,
           value: canvas.value,
-        },
-      },
-    });
-  };
-
-  const handlePromotionToTemplate = async (canvas: Canvas) => {
-    if (!canvas.id) {
-      throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
-    }
-
-    await updateCanvas({
-      variables: {
-        input: {
-          ID: canvas.id,
-          isTemplate: true,
         },
       },
     });
@@ -181,7 +164,6 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
       onCheckin: handleCheckoutCanvas,
       onCheckout: handleCheckoutCanvas,
       onUpdate: handleUpdateCanvas,
-      onPromoteToTemplate: handlePromotionToTemplate,
     }),
     [handleCreateCanvas, handleDeleteCanvas, handleCheckoutCanvas, handleUpdateCanvas]
   );
