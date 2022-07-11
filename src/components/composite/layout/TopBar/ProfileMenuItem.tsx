@@ -5,11 +5,11 @@ import { useGlobalState, useUserContext } from '../../../../hooks';
 import UserSegment from '../../entities/User/UserSegment';
 import SignInIcon from './SignInIcon';
 
-interface ProfileIconProps {
+interface ProfileMenuItemProps {
   buttonClassName: string;
 }
 
-const ProfileIcon = ({ buttonClassName }: ProfileIconProps) => {
+const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
   const { user, verified, isAuthenticated, loadingMe } = useUserContext();
   const theme = useTheme();
 
@@ -36,12 +36,12 @@ const ProfileIcon = ({ buttonClassName }: ProfileIconProps) => {
       );
     }
     if (!isAuthenticated) {
-      return <SignInIcon className={buttonClassName} />;
+      return <SignInIcon key={-1} className={buttonClassName} />;
     }
     return (
       <>
         {isUserSegmentVisible && user && (
-          <UserSegment userMetadata={user} emailVerified={verified} buttonClassName={buttonClassName} />
+          <UserSegment key={-1} userMetadata={user} emailVerified={verified} buttonClassName={buttonClassName} />
         )}
       </>
     );
@@ -50,4 +50,4 @@ const ProfileIcon = ({ buttonClassName }: ProfileIconProps) => {
   return renderUserProfileSegment();
 };
 
-export default ProfileIcon;
+export default ProfileMenuItem;

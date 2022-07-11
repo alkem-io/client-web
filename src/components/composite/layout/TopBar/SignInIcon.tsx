@@ -14,7 +14,6 @@ const SignInIcon = ({ className }: SignInIconProps) => {
 
   return (
     <Button
-      key={-1}
       to={AUTH_LOGIN_PATH}
       aria-label={t('authentication.sign-in')}
       component={RouterLink}
@@ -24,35 +23,6 @@ const SignInIcon = ({ className }: SignInIconProps) => {
       {t('authentication.sign-in')}
     </Button>
   );
-
-  /*
-    <Box>
-      <Button
-        aria-label="Sign up"
-        component={RouterLink}
-        to={AUTH_REGISTER_PATH}
-        sx={{
-          padding: theme => theme.spacing(0.5, 1),
-        }}
-        variant="text"
-        size="small"
-      >
-        {t('authentication.sign-up')}
-      </Button>
-      <Button
-        aria-label="Sign in"
-        component={RouterLink}
-        to={AUTH_LOGIN_PATH}
-        sx={{
-          padding: theme => theme.spacing(0.5, 1),
-        }}
-        variant="text"
-        size="small"
-      >
-        {t('authentication.sign-in')}
-      </Button>
-    </Box>
-  ); */
 };
 
 export default SignInIcon;
