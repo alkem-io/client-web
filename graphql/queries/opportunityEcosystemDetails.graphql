@@ -17,12 +17,6 @@ query opportunityEcosystemDetails($hubId: UUID_NAMEID!, $opportunityId: UUID_NAM
               impact
             }
           }
-          canvas {
-            id
-            displayName
-            nameID
-            value
-          }
         }
       }
     }

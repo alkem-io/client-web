@@ -802,9 +802,26 @@ export const AspectSettingsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
+export const CanvasValueFragmentDoc = gql`
+  fragment CanvasValue on Canvas {
+    id
+    value
+  }
+`;
+export const CreateCanvasCanvasTemplateFragmentDoc = gql`
+  fragment CreateCanvasCanvasTemplate on CanvasTemplate {
+    id
+    info {
+      title
+      description
+    }
+    value
+  }
+`;
 export const CanvasSummaryFragmentDoc = gql`
   fragment CanvasSummary on Canvas {
     id
+    nameID
     displayName
   }
 `;
@@ -834,25 +851,27 @@ export const CanvasDetailsFragmentDoc = gql`
     checkout {
       ...CheckoutDetails
     }
+    preview {
+      ...VisualFull
+    }
   }
   ${CanvasSummaryFragmentDoc}
   ${CheckoutDetailsFragmentDoc}
+  ${VisualFullFragmentDoc}
 `;
-export const CanvasValueFragmentDoc = gql`
-  fragment CanvasValue on Canvas {
+export const ContextWithCanvasDetailsFragmentDoc = gql`
+  fragment ContextWithCanvasDetails on Context {
     id
-    value
-  }
-`;
-export const CreateCanvasCanvasTemplateFragmentDoc = gql`
-  fragment CreateCanvasCanvasTemplate on CanvasTemplate {
-    id
-    info {
-      title
-      description
+    canvases {
+      ...CanvasDetails
     }
-    value
+    authorization {
+      id
+      myPrivileges
+      anonymousReadAccess
+    }
   }
+  ${CanvasDetailsFragmentDoc}
 `;
 export const ChallengeExplorerSearchResultFragmentDoc = gql`
   fragment ChallengeExplorerSearchResult on Challenge {
@@ -4065,57 +4084,6 @@ export type UpdateChallengeMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateChallengeMutation,
   SchemaTypes.UpdateChallengeMutationVariables
 >;
-export const UpdateEcosystemModelDocument = gql`
-  mutation updateEcosystemModel($ecosystemModelData: UpdateEcosystemModelInput!) {
-    updateEcosystemModel(ecosystemModelData: $ecosystemModelData) {
-      id
-      canvas {
-        id
-        value
-      }
-    }
-  }
-`;
-export type UpdateEcosystemModelMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateEcosystemModelMutation,
-  SchemaTypes.UpdateEcosystemModelMutationVariables
->;
-
-/**
- * __useUpdateEcosystemModelMutation__
- *
- * To run a mutation, you first call `useUpdateEcosystemModelMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateEcosystemModelMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateEcosystemModelMutation, { data, loading, error }] = useUpdateEcosystemModelMutation({
- *   variables: {
- *      ecosystemModelData: // value for 'ecosystemModelData'
- *   },
- * });
- */
-export function useUpdateEcosystemModelMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateEcosystemModelMutation,
-    SchemaTypes.UpdateEcosystemModelMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateEcosystemModelMutation,
-    SchemaTypes.UpdateEcosystemModelMutationVariables
-  >(UpdateEcosystemModelDocument, options);
-}
-export type UpdateEcosystemModelMutationHookResult = ReturnType<typeof useUpdateEcosystemModelMutation>;
-export type UpdateEcosystemModelMutationResult = Apollo.MutationResult<SchemaTypes.UpdateEcosystemModelMutation>;
-export type UpdateEcosystemModelMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateEcosystemModelMutation,
-  SchemaTypes.UpdateEcosystemModelMutationVariables
->;
 export const UpdateGroupDocument = gql`
   mutation updateGroup($input: UpdateUserGroupInput!) {
     updateUserGroup(userGroupData: $input) {
@@ -7188,12 +7156,6 @@ export const OpportunityEcosystemDetailsDocument = gql`
                 value
                 impact
               }
-            }
-            canvas {
-              id
-              displayName
-              nameID
-              value
             }
           }
         }
@@ -10929,14 +10891,11 @@ export const HubCanvasesDocument = gql`
     hub(ID: $hubId) {
       id
       context {
-        id
-        canvases {
-          ...CanvasDetails
-        }
+        ...ContextWithCanvasDetails
       }
     }
   }
-  ${CanvasDetailsFragmentDoc}
+  ${ContextWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11050,15 +11009,12 @@ export const ChallengeCanvasesDocument = gql`
       challenge(ID: $challengeId) {
         id
         context {
-          id
-          canvases {
-            ...CanvasDetails
-          }
+          ...ContextWithCanvasDetails
         }
       }
     }
   }
-  ${CanvasDetailsFragmentDoc}
+  ${ContextWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11186,15 +11142,12 @@ export const OpportunityCanvasesDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         context {
-          id
-          canvases {
-            ...CanvasDetails
-          }
+          ...ContextWithCanvasDetails
         }
       }
     }
   }
-  ${CanvasDetailsFragmentDoc}
+  ${ContextWithCanvasDetailsFragmentDoc}
 `;
 
 /**

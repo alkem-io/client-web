@@ -10,11 +10,11 @@ import OpportunityCommunityPage from '../../pages/Community/OpportunityCommunity
 import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboardPage';
 import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
 import OpportunityProjectsPage from '../../pages/Opportunity/OpportunityProjectsPage';
-import OpportunityCanvasPage from '../../pages/Opportunity/OpportunityCanvasPage';
 import ContributePage from '../../pages/Contribute/ContributePage';
 import { nameOfUrl } from '../url-params';
 import AspectProvider from '../../context/aspect/AspectProvider';
 import AspectRoute from '../aspect/AspectRoute';
+import CanvasesPage from '../../domain/canvas/EntityCanvasPage/CanvasesPage';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -54,7 +54,14 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route path={'context'} element={<OpportunityContextPage paths={currentPaths} />} />
         <Route path={'community'} element={<OpportunityCommunityPage paths={currentPaths} />} />
         <Route path={'projects'} element={<OpportunityProjectsPage paths={currentPaths} />} />
-        <Route path={'canvases'} element={<OpportunityCanvasPage paths={currentPaths} />} />
+        <Route
+          path="canvases"
+          element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="opportunity" />}
+        />
+        <Route
+          path="canvases/:canvasId"
+          element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="opportunity" />}
+        />
       </Route>
       <Route path={'projects/*'} element={<ProjectRoute paths={currentPaths} />} />
       <Route

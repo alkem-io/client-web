@@ -6,6 +6,7 @@ import {
   useCreateCanvasOnContextMutation,
   useDeleteCanvasOnContextMutation,
   useUpdateCanvasOnContextMutation,
+  useUploadVisualMutation,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import {
@@ -20,9 +21,9 @@ import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFro
 export interface ICanvasActions {
   onCreate: (canvas: CreateCanvasOnContextInput) => Promise<void>;
   onDelete: (canvas: DeleteCanvasOnContextInput) => Promise<void>;
-  onCheckout: (canvas: CanvasDetailsFragment) => void;
-  onCheckin: (canvas: CanvasDetailsFragment) => void;
-  onUpdate: (canvas: Canvas) => void;
+  onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
+  onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
+  onUpdate: (canvas: Canvas, previewImage?: Blob) => Promise<void>;
 }
 
 export interface CanvasActionsContainerState {
@@ -141,20 +142,33 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasOnContextMutation({
     onError: handleError,
   });
-  const handleUpdateCanvas = async (canvas: Canvas) => {
-    if (!canvas.id) {
-      throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
-    }
 
-    await updateCanvas({
-      variables: {
-        input: {
-          ID: canvas.id,
-          displayName: canvas.displayName,
-          value: canvas.value,
+  const [uploadVisual, { loading: uploadingVisual }] = useUploadVisualMutation({
+    onError: handleError,
+  });
+
+  const handleUpdateCanvas = async (canvas: Canvas, previewImage?: Blob) => {
+    await Promise.all([
+      updateCanvas({
+        variables: {
+          input: {
+            ID: canvas.id,
+            displayName: canvas.displayName,
+            value: canvas.value,
+          },
         },
-      },
-    });
+      }),
+      canvas.preview &&
+        previewImage &&
+        uploadVisual({
+          variables: {
+            file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
+            uploadData: {
+              visualID: canvas.preview?.id,
+            },
+          },
+        }),
+    ]);
   };
 
   const actions = useMemo<ICanvasActions>(
@@ -167,6 +181,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     }),
     [handleCreateCanvas, handleDeleteCanvas, handleCheckoutCanvas, handleUpdateCanvas]
   );
+
   return (
     <>
       {children(
@@ -175,7 +190,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           creatingCanvas,
           deletingCanvas,
           changingCanvasLockState: checkingoutCanvas,
-          updatingCanvas,
+          updatingCanvas: updatingCanvas || uploadingVisual,
         },
         actions
       )}
