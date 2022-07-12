@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useUrlParams } from '../../hooks';
 import {
   useCanvasTemplatesQuery,
@@ -6,7 +6,11 @@ import {
   useHubCanvasesQuery,
   useOpportunityCanvasesQuery,
 } from '../../hooks/generated/graphql';
-import { CanvasDetailsFragment, CreateCanvasCanvasTemplateFragment } from '../../models/graphql-schema';
+import {
+  CanvasDetailsFragment,
+  ContextWithCanvasDetailsFragment,
+  CreateCanvasCanvasTemplateFragment,
+} from '../../models/graphql-schema';
 
 interface CanvasProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
@@ -19,10 +23,12 @@ export type TemplateQuery = {
 export interface IProvidedEntities {
   canvases: CanvasDetailsFragment[];
   templates: CreateCanvasCanvasTemplateFragment[];
+  contextId: string | undefined;
+  authorization: ContextWithCanvasDetailsFragment['authorization'];
 }
 
 export interface IProvidedEntitiesState {
-  loading: boolean;
+  loadingCanvases: boolean;
   loadingTemplates: boolean;
 }
 
@@ -45,7 +51,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
 
   const { data: challengeData, loading: loadingChallenge } = useChallengeCanvasesQuery({
     variables: { hubId: hubId, challengeId },
-    skip: !challengeId,
+    skip: !challengeId || !!opportunityId,
     errorPolicy: 'all',
   });
 
@@ -55,24 +61,21 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     errorPolicy: 'all',
   });
 
-  const canvases = useMemo(() => {
-    return (
-      hubData?.hub.context?.canvases ??
-      challengeData?.hub.challenge.context?.canvases ??
-      opportunityData?.hub.opportunity.context?.canvases ??
-      []
-    );
-  }, [hubData, challengeData, opportunityData]);
+  const context =
+    hubData?.hub.context ?? challengeData?.hub.challenge.context ?? opportunityData?.hub.opportunity.context;
 
-  const templates = useMemo(() => {
-    return canvasTemplates?.hub.templates?.canvasTemplates ?? [];
-  }, [hubData]);
+  const canvases = context?.canvases ?? [];
+
+  const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
+
+  const contextId = context?.id;
+  const authorization = context?.authorization;
 
   return (
     <>
       {children(
-        { canvases, templates },
-        { loading: loadingHub || loadingChallenge || loadingOpportunity, loadingTemplates }
+        { canvases, templates, contextId, authorization },
+        { loadingCanvases: loadingHub || loadingChallenge || loadingOpportunity, loadingTemplates }
       )}
     </>
   );

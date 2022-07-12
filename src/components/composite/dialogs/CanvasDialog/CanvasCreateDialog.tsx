@@ -16,11 +16,7 @@ import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CanvasDetailsFragment,
-  CreateCanvasCanvasTemplateFragment,
-  CreateCanvasOnContextInput,
-} from '../../../../models/graphql-schema';
+import { CreateCanvasCanvasTemplateFragment, CreateCanvasOnContextInput } from '../../../../models/graphql-schema';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
@@ -172,7 +168,7 @@ const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
   const { displayName, template } = entities;
   const { t } = useTranslation();
 
-  const canvasFromTemplate = useMemo<CanvasDetailsFragment | undefined>(() => {
+  const canvasFromTemplate = useMemo<CanvasListItemCanvas | undefined>(() => {
     if (!template) {
       return undefined;
     }
