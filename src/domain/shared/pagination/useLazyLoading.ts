@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 interface Options {
@@ -9,30 +9,14 @@ interface Options {
 const useLazyLoading = ({ loading, fetchMore }: Options) => {
   const { ref, inView } = useInView();
 
-  const [isLoading, setIsLoading] = useState(loading);
-
   useEffect(() => {
-    if (!loading) {
-      setIsLoading(false);
+    if (inView && !loading) {
+      fetchMore();
     }
-  }, [loading]);
-
-  useEffect(() => {
-    if (inView && !isLoading) {
-      setIsLoading(true);
-      (async () => {
-        try {
-          await fetchMore();
-        } finally {
-          setIsLoading(false);
-        }
-      })();
-    }
-  }, [inView, isLoading]);
+  }, [inView, loading]);
 
   return {
     ref,
-    loading: isLoading,
   };
 };
 
