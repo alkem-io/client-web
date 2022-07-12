@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import { Box } from '@mui/material';
 
-const TemplatesList = ({ children }: PropsWithChildren<{}>) => {
+const SimpleCardsList = ({ children }: PropsWithChildren<{}>) => {
   return (
     <Box display="flex" flexWrap="wrap" columnGap={8} rowGap={3} justifyContent="center">
       {children}
@@ -9,4 +9,4 @@ const TemplatesList = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-export default TemplatesList;
+export default SimpleCardsList;

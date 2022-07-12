@@ -1,12 +1,11 @@
 import React from 'react';
 import PanoramaOutlinedIcon from '@mui/icons-material/PanoramaOutlined';
-import TemplateCardLayout from '../TemplateCardLayout';
-import { TemplateCardProps } from '../TemplateCardProps';
+import SimpleCard, { SimpleCardProps } from '../../../shared/components/SimpleCard';
 
-interface AspectTemplateCardProps extends Omit<TemplateCardProps, 'iconComponent'> {}
+interface AspectTemplateCardProps extends Omit<SimpleCardProps, 'iconComponent'> {}
 
 const AspectTemplateCard = (props: AspectTemplateCardProps) => {
-  return <TemplateCardLayout {...props} iconComponent={PanoramaOutlinedIcon} />;
+  return <SimpleCard {...props} iconComponent={PanoramaOutlinedIcon} />;
 };
 
 export default AspectTemplateCard;

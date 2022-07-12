@@ -27,6 +27,7 @@ const useStyles = makeStyles(theme => ({
 export interface CanvasListItemCanvas extends Identifiable {
   displayName: string;
   authorization?: CanvasDetailsFragment['authorization'];
+  checkout?: CanvasDetailsFragment['checkout'];
 }
 
 interface CanvasListItemProps extends ListItemButtonProps {
@@ -55,7 +56,7 @@ export const CanvasListItem: FC<CanvasListItemProps> = ({ canvas, canDelete, isS
   return (
     <ListItemButton {...rest} className={clsx(isSelected && styles.active)}>
       <ListItemAvatar sx={{ display: 'flex' }}>
-        <CanvasListItemState canvas={canvas} isSelected={isSelected} />
+        <CanvasListItemState checkoutStatus={canvas.checkout?.status} isSelected={isSelected} />
       </ListItemAvatar>
       <ListItemText primary={canvas.displayName} />
       <ListItemSecondaryAction>

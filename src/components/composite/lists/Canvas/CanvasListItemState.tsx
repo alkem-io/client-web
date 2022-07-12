@@ -1,24 +1,24 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CircleIcon from '@mui/icons-material/Circle';
-import { CanvasCheckoutStateEnum, CanvasDetailsFragment } from '../../../../models/graphql-schema';
+import { CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
 import { Tooltip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DoNotDisturbOnTotalSilenceIcon from '@mui/icons-material/DoNotDisturbOnTotalSilence';
 
 interface CanvasListItemStateProps {
-  canvas?: CanvasDetailsFragment;
+  checkoutStatus?: CanvasCheckoutStateEnum;
   isSelected?: boolean;
 }
 
-export const CanvasListItemState = ({ canvas, isSelected }: CanvasListItemStateProps) => {
+export const CanvasListItemState = ({ checkoutStatus, isSelected }: CanvasListItemStateProps) => {
   const { t } = useTranslation();
 
   if (isSelected) {
     return <CircleIcon color="disabled" />;
   }
 
-  switch (canvas?.checkout?.status) {
+  switch (checkoutStatus) {
     case CanvasCheckoutStateEnum.Available:
       return (
         <Tooltip title={t('pages.canvas.state.available')}>
