@@ -142,10 +142,12 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
             if (onSubmit) {
               const message = await onSubmit(values['community-update']).finally(() => setSubmitting(false));
               setStubMessageId(message?.id || null);
+              if (message?.id) {
+                resetForm({
+                  values: initialValues,
+                });
+              }
             }
-            resetForm({
-              values: initialValues,
-            });
           }}
         >
           {({ isValid, handleSubmit, isSubmitting, dirty }) => {
