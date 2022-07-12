@@ -4403,21 +4403,6 @@ export type EventOnChallengeMutation = {
   };
 };
 
-export type EventOnOpportunityMutationVariables = Exact<{
-  input: OpportunityEventInput;
-}>;
-
-export type EventOnOpportunityMutation = {
-  __typename?: 'Mutation';
-  eventOnOpportunity: {
-    __typename?: 'Opportunity';
-    id: string;
-    lifecycle?:
-      | { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined; state?: string | undefined }
-      | undefined;
-  };
-};
-
 export type AssignUserAsChallengeAdminMutationVariables = Exact<{
   input: AssignChallengeAdminInput;
 }>;
@@ -10483,6 +10468,22 @@ export type OpportunityPageFragment = {
           | undefined;
       }
     | undefined;
+};
+
+export type EventOnOpportunityMutationVariables = Exact<{
+  opportunityId: Scalars['UUID'];
+  eventName: Scalars['String'];
+}>;
+
+export type EventOnOpportunityMutation = {
+  __typename?: 'Mutation';
+  eventOnOpportunity: {
+    __typename?: 'Opportunity';
+    id: string;
+    lifecycle?:
+      | { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined; state?: string | undefined }
+      | undefined;
+  };
 };
 
 export type AssignUserToOrganizationMutationVariables = Exact<{
