@@ -7,7 +7,7 @@ import { ComponentOrChildrenFn, renderComponentOrChildrenFn } from '../../utils/
 interface OpportunityLifecycleContainerProvided {
   lifecycle: Lifecycle | undefined;
   loading: boolean;
-  onSetNewState: (id: string, newState: string) => void;
+  onSetNewState: (opportunityId: string, nextState: string) => void;
 }
 
 type OpportunityLifecycleContainerProps = ComponentOrChildrenFn<OpportunityLifecycleContainerProvided> & {
@@ -34,13 +34,11 @@ const OpportunityLifecycleContainer: FC<OpportunityLifecycleContainerProps> = ({
     onError: handleError,
   });
 
-  const setNextState = (id: string, nextState: string) =>
+  const setNextState = (opportunityId: string, nextState: string) =>
     updateOpportunityLifecycle({
       variables: {
-        input: {
-          ID: id,
-          eventName: nextState,
-        },
+        opportunityId,
+        eventName: nextState,
       },
     });
 

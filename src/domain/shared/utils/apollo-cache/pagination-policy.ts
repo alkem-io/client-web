@@ -1,4 +1,5 @@
 import { FieldPolicy } from '@apollo/client';
+import { Identifiable } from '../../types/Identifiable';
 
 type KeyArgs = FieldPolicy<unknown>['keyArgs'];
 const pageInfoFieldName = 'pageInfo';
@@ -10,10 +11,26 @@ type TRelayPageInfo = {
   endCursor: string;
 };
 // https://github.com/apollographql/apollo-client/blob/main/src/utilities/policies/pagination.ts#L91
+
+interface PaginationParamsHolder {
+  args?: {
+    before?: string;
+    after?: string;
+  };
+}
+
+type PaginatedResponse<Item, FieldName extends string> = {
+  [pageInfoFieldName]: TRelayPageInfo;
+} & Record<FieldName, Item[]>;
+
 export const paginationFieldPolicy = (keyArgs: KeyArgs = false) => {
   return {
     keyArgs,
-    merge(existing, incoming, { args }) {
+    merge<Item extends Identifiable, FieldName extends string>(
+      existing: PaginatedResponse<Item, FieldName>,
+      incoming: PaginatedResponse<Item, FieldName>,
+      { args }: PaginationParamsHolder
+    ): PaginatedResponse<Item, FieldName> {
       if (!existing) {
         return incoming;
       }
@@ -22,27 +39,28 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false) => {
         return existing;
       }
 
-      const dataKey = Object.keys(incoming).filter(x => x !== pageInfoFieldName && x !== '__typename');
+      const dataFieldName = Object.keys(incoming).find(x => x !== pageInfoFieldName && x !== '__typename') as
+        | FieldName
+        | undefined;
       // we expect 'incoming' to be { __typename: string, pageInfo: {}, items: [] };
       // items is a placeholder field - it's calculated on the server based on what entity you have requested, e.g. 'users'
       // if after filtering out the two other fields, we still have more fields, override the old data;
       // throwing an exception or a warning maybe also be required
-      if (dataKey.length > 1) {
+      if (!dataFieldName) {
         return incoming;
       }
 
-      const [dataFieldName] = dataKey;
-      const incomingData = incoming[dataFieldName];
+      const incomingData = incoming[dataFieldName] as Item[];
 
-      let prefix = existing[dataFieldName];
-      let suffix: typeof prefix = [];
+      let prefix = existing[dataFieldName] as Item[];
+      let suffix: Item[] = [];
 
-      if (args && args.after) {
+      if (args?.after) {
         const index = prefix.findIndex(item => item.id === args.after);
         if (index >= 0) {
           prefix = prefix.slice(0, index + 1);
         }
-      } else if (args && args.before) {
+      } else if (args?.before) {
         const index = prefix.findIndex(item => item.id === args.before);
         suffix = index < 0 ? prefix : prefix.slice(index);
         prefix = [];
@@ -76,19 +94,19 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false) => {
         // coincides with the beginning or end of the existing data, as
         // determined using prefix.length and suffix.length.
         if (!prefix.length) {
-          if (void 0 !== hasPreviousPage) pageInfo.hasPreviousPage = hasPreviousPage;
-          if (void 0 !== startCursor) pageInfo.startCursor = startCursor;
+          if (hasPreviousPage !== undefined) pageInfo.hasPreviousPage = hasPreviousPage;
+          if (startCursor !== undefined) pageInfo.startCursor = startCursor;
         }
         if (!suffix.length) {
-          if (void 0 !== hasNextPage) pageInfo.hasNextPage = hasNextPage;
-          if (void 0 !== endCursor) pageInfo.endCursor = endCursor;
+          if (hasNextPage !== undefined) pageInfo.hasNextPage = hasNextPage;
+          if (endCursor !== undefined) pageInfo.endCursor = endCursor;
         }
       }
 
       return {
         [dataFieldName]: edges,
         [pageInfoFieldName]: pageInfo,
-      };
+      } as PaginatedResponse<Item, FieldName>;
     },
-  };
+  } as FieldPolicy;
 };
