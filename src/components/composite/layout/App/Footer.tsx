@@ -4,7 +4,7 @@ import { Box, Container, Link, Paper } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Toolbar from '../../../core/Toolbar';
 import Typography from '../../../core/Typography';
-import Image from '../../../core/Image';
+import Image from '../../../../domain/shared/components/Image';
 import { useConfig } from '../../../../hooks';
 import { RouterLink } from '../../../core/RouterLink';
 import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';

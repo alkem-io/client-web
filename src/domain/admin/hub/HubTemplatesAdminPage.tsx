@@ -5,7 +5,7 @@ import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { refetchHubTemplatesQuery, useHubTemplatesQuery } from '../../../hooks/generated/graphql';
 import { useParams } from 'react-router-dom';
-import useBackToParentPage, { LOCATION_STATE_PARAM_PARENT_PAGE } from '../../shared/utils/useBackToParentPage';
+import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspectTemplatesSection';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
@@ -16,7 +16,7 @@ interface HubTemplatesAdminPageProps extends SettingsPageProps {
   edit?: boolean;
 }
 
-const PAGE_KEY_TEMPLATES = 'HubTemplatesAdminPage';
+const PAGE_KEY_TEMPLATES = 'HubTemplatesAdmin';
 
 const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   hubId,
@@ -29,7 +29,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   useAppendBreadcrumb(paths, { name: 'templates' });
 
-  const backFromAspectTemplateDialog = useBackToParentPage(PAGE_KEY_TEMPLATES, routePrefix);
+  const [backFromAspectTemplateDialog, buildLink] = useBackToParentPage(PAGE_KEY_TEMPLATES, routePrefix);
 
   const { data } = useHubTemplatesQuery({
     variables: { hubId },
@@ -46,10 +46,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         aspectTemplates={aspectTemplates}
         onCloseAspectTemplateDialog={backFromAspectTemplateDialog}
         refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
-        buildAspectTemplateLink={({ id }) => ({
-          url: `${routePrefix}/${aspectTemplatesRoutePath}/${id}`,
-          linkState: { [LOCATION_STATE_PARAM_PARENT_PAGE]: PAGE_KEY_TEMPLATES },
-        })}
+        buildAspectTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
         edit={edit}
       />
     </HubSettingsLayout>

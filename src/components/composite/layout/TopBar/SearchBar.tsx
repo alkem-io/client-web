@@ -20,7 +20,7 @@ const USER_SEGMENT_USER_NAME_PROPS = {
 };
 
 const SearchBar = () => {
-  const { user, verified, isAuthenticated, loading } = useUserContext();
+  const { user, verified, isAuthenticated, loadingMe } = useUserContext();
   const breakpoint = useCurrentBreakpoint();
 
   const {
@@ -32,7 +32,7 @@ const SearchBar = () => {
   });
 
   const renderUserProfileSegment = () => {
-    if (loading) {
+    if (loadingMe) {
       return <Skeleton sx={{ flexBasis: theme => theme.spacing(19), flexShrink: 1 }} />;
     }
     if (!isAuthenticated) {

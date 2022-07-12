@@ -1,7 +1,6 @@
-import { serializeAsJSON } from '@excalidraw/excalidraw';
+import { exportToBlob, serializeAsJSON } from '@excalidraw/excalidraw';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { ArrowDropDown, Save } from '@mui/icons-material';
-import GradeIcon from '@mui/icons-material/Grade';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
@@ -32,18 +31,19 @@ import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
-import { CanvasItemState } from '../../lists/Canvas/CanvasListItem';
+import CanvasListItemState from '../../lists/Canvas/CanvasListItemState';
+import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
+import getCanvasBannerCardDimensions from '../../../../domain/canvas/utils/getCanvasBannerCardDimensions';
 
 interface CanvasDialogProps {
   entities: {
-    canvas?: CanvasWithoutValue & { value?: Canvas['value'] };
+    canvas?: CanvasWithoutValue & { value: Canvas['value'] };
   };
   actions: {
     onCancel: () => void;
     onCheckin: (canvas: CanvasWithoutValue) => void;
     onCheckout: (canvas: CanvasWithoutValue) => void;
-    onMarkAsTemplate: (canvas: Canvas) => void;
-    onUpdate: (canvas: Canvas) => void;
+    onUpdate: (canvas: Canvas, previewImage?: Blob) => void;
   };
   options: {
     show: boolean;
@@ -81,7 +81,11 @@ type Option = {
   enabledWhen: (canvas: CanvasWithoutValue, hasChanged?: boolean) => boolean;
   icon: JSX.Element;
 };
+
 type CanvasOptionTypes = 'save' | 'save-and-checkin' | 'checkout';
+
+type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
+
 const canvasOptions: Record<CanvasOptionTypes, Option> = {
   save: {
     titleId: 'pages.canvas.state-actions.save',
@@ -122,7 +126,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
   const { t } = useTranslation();
   const { canvas } = entities;
   const [isDirty, setIsDirty] = useState(true);
-  const canvasRef = useRef<ExcalidrawAPIRefValue>(null);
+  const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
 
   // ui
   const styles = useStyles();
@@ -146,31 +150,72 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     setSelectedOption(findMostSuitableOption(canvas, isDirty));
   }, [canvas, isDirty]);
 
+  const getExcalidrawStateFromApi = async (
+    excalidrawApi: ExcalidrawAPIRefValue | null
+  ): Promise<RelevantExcalidrawState | undefined> => {
+    if (!excalidrawApi) {
+      return;
+    }
+
+    const imperativeApi = await excalidrawApi.readyPromise;
+
+    if (!imperativeApi) {
+      return;
+    }
+
+    const appState = imperativeApi.getAppState();
+    const elements = imperativeApi.getSceneElements();
+    const files = imperativeApi.getFiles();
+
+    return { appState, elements, files };
+  };
+
+  const handleUpdate = async (canvas: Canvas, state: RelevantExcalidrawState | undefined) => {
+    if (!state) {
+      return;
+    }
+
+    const { appState, elements, files } = state;
+
+    const previewImage = await exportToBlob({
+      appState,
+      elements,
+      files: files ?? null,
+      getDimensions: getCanvasBannerCardDimensions(canvas.preview),
+      mimeType: 'image/png',
+    });
+
+    const value = serializeAsJSON(elements, appState, files ?? {}, 'local');
+
+    return actions.onUpdate(
+      {
+        ...canvas,
+        value,
+      },
+      previewImage ?? undefined
+    );
+  };
+
   const actionMap: { [key in keyof typeof canvasOptions]: (canvas) => void } = {
-    'save-and-checkin': c => {
-      canvasRef.current?.readyPromise?.then(async canvasApi => {
-        const appState = canvasApi.getAppState();
-        const elements = canvasApi.getSceneElements();
-        const files = canvasApi.getFiles();
-        await actions.onUpdate({ ...c, value: serializeAsJSON(elements, appState, files, 'local') });
-        await actions.onCheckin(c);
-      });
+    'save-and-checkin': async canvas => {
+      const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
+
+      await handleUpdate(canvas, state);
+
+      await actions.onCheckin(canvas);
     },
     checkout: c => actions.onCheckout(c),
-    save: c => {
-      canvasRef.current?.readyPromise?.then(canvasApi => {
-        const appState = canvasApi.getAppState();
-        const elements = canvasApi.getSceneElements();
-        const files = canvasApi.getFiles();
-        actions.onUpdate({ ...c, value: serializeAsJSON(elements, appState, files, 'local') });
-      });
+    save: async canvas => {
+      const state = await getExcalidrawStateFromApi(excalidrawApiRef.current);
+
+      await handleUpdate(canvas, state);
     },
   };
 
   const onClose = async (event: Event) => {
     setOptionPopperOpen(false);
 
-    const canvasApi = await canvasRef.current?.readyPromise;
+    const canvasApi = await excalidrawApiRef.current?.readyPromise;
     if (canvasApi && options.canEdit) {
       const elements = canvasApi.getSceneElements();
       const appState = canvasApi.getAppState();
@@ -197,8 +242,6 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
     setOptionPopperOpen(false);
   };
 
-  const loading = state?.changingCanvasLockState || state?.loadingCanvasValue || state?.updatingCanvas;
-
   return (
     <Dialog
       open={options.show}
@@ -220,27 +263,10 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
         <List disablePadding>
           <ListItem>
             <ListItemIcon sx={{ justifyContent: 'center' }}>
-              <CanvasItemState canvas={canvas} />
+              <CanvasListItemState checkoutStatus={canvas?.checkout?.status} />
             </ListItemIcon>
-            <ListItemText primary={canvas?.name} secondary={canvas?.checkout?.status.toUpperCase()} />
+            <ListItemText primary={canvas?.displayName} secondary={canvas?.checkout?.status.toUpperCase()} />
             <ListItemSecondaryAction sx={{ display: 'flex' }}>
-              {(options.canCheckout || options.canEdit) && !canvas?.isTemplate && (
-                <LoadingButton
-                  startIcon={<GradeIcon />}
-                  loadingPosition="start"
-                  loading={state?.changingCanvasLockState || state?.updatingCanvas}
-                  onClick={() => {
-                    if (!canvas?.value) {
-                      return;
-                    }
-                    const canvasValue = canvas.value || '';
-                    actions.onMarkAsTemplate({ value: canvasValue, ...canvas });
-                  }}
-                  disabled={loading || options.canEdit}
-                >
-                  {t('pages.canvas.state-actions.save-as-template')}
-                </LoadingButton>
-              )}
               <Box p={0.5} display="inline-flex" />
               {(options.canCheckout || options.canEdit) && (
                 <>
@@ -314,7 +340,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
         {!state?.loadingCanvasValue && canvas && (
           <CanvasWhiteboard
             entities={{ canvas }}
-            ref={canvasRef}
+            ref={excalidrawApiRef}
             options={{
               viewModeEnabled: !options.canEdit,
               UIOptions: options.canEdit
@@ -326,11 +352,9 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                   },
             }}
             actions={{
-              onUpdate: state =>
-                actions.onUpdate({
-                  ...canvas,
-                  value: serializeAsJSON(state.elements, state.appState, state.files ?? {}, 'local'),
-                }),
+              onUpdate: state => {
+                handleUpdate(canvas, state);
+              },
             }}
           />
         )}

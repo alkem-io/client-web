@@ -3,7 +3,6 @@ import {
   Button,
   DialogActions,
   Grid,
-  ListSubheader,
   Paper,
   Step,
   StepLabel,
@@ -15,19 +14,18 @@ import {
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ITemplateQueryResult, TemplateQuery } from '../../../../containers/canvas/CanvasProvider';
-import CanvasValueContainer, { CanvasValueParams } from '../../../../containers/canvas/CanvasValueContainer';
-import { CanvasWithoutValue } from '../../../../models/entities/canvas';
-import { Canvas, CreateCanvasOnContextInput } from '../../../../models/graphql-schema';
+import { CreateCanvasCanvasTemplateFragment, CreateCanvasOnContextInput } from '../../../../models/graphql-schema';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import CanvasList from '../../lists/Canvas/CanvasList';
-import CanvasListItem from '../../lists/Canvas/CanvasListItem';
+import CanvasListItem, { CanvasListItemCanvas } from '../../lists/Canvas/CanvasListItem';
 import canvasSchema from '../../../../domain/canvas/validation/canvasSchema';
 import FormikInputField from '../../forms/FormikInputField';
+import { Identifiable } from '../../../../domain/shared/types/Identifiable';
+import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {
@@ -54,8 +52,8 @@ const useStyles = makeStyles(theme => ({
 
 type StepDefinition = { index: number; title: string; optional: boolean };
 
-const steps: Record<'name' | 'template' | 'completion', StepDefinition> = {
-  name: {
+const steps: Record<'displayName' | 'template' | 'completion', StepDefinition> = {
+  displayName: {
     index: 0,
     title: 'Name',
     optional: false,
@@ -75,21 +73,21 @@ const NamingStep = () => {
 
   return (
     <Box display="flex" flexDirection="column">
-      <Box p={1} />
+      <SectionSpacer />
       <Typography variant="body1">{t('pages.canvas.create-dialog.steps.naming')}</Typography>
-      <Box p={1} />
-      <FormikInputField name="name" title={t('common.name')} aria-label="canvas-name" required />
+      <SectionSpacer />
+      <FormikInputField name="displayName" title={t('common.name')} aria-label="canvas-name" required />
     </Box>
   );
 };
 
 interface ITemplateStepProps {
   actions: {
-    onTemplateSelected: (canvas: CanvasWithoutValue, query: TemplateQuery) => void;
+    onTemplateSelected: (template: Identifiable) => void;
   };
   entities: {
-    selectedCanvas?: Canvas;
-    templates: Record<string, ITemplateQueryResult>;
+    selectedTemplate: CreateCanvasCanvasTemplateFragment | undefined;
+    templates: CreateCanvasCanvasTemplateFragment[];
   };
   state: {
     templatesLoading?: boolean;
@@ -98,9 +96,16 @@ interface ITemplateStepProps {
 }
 
 const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
-  const { templates, selectedCanvas } = entities;
+  const { templates, selectedTemplate } = entities;
 
   const { t } = useTranslation();
+
+  const canvasListItems = useMemo<CanvasListItemCanvas[]>(() => {
+    return templates.map(({ id, info }) => ({
+      id,
+      displayName: info.title!,
+    }));
+  }, [templates]);
 
   return (
     <Grid container spacing={2}>
@@ -109,42 +114,31 @@ const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
           <Box p={1} />
           <Typography variant="body1">{t('pages.canvas.create-dialog.steps.templating')}</Typography>
           <Box p={1} />
-          {Object.keys(templates).map(
-            key =>
-              templates[key].result.length > 0 && (
-                <Box key={key}>
-                  <ListSubheader key={`header_${key}`} sx={{ textTransform: 'capitalize' }}>
-                    {key}
-                  </ListSubheader>
-                  <CanvasList
-                    key={`list_${key}`}
-                    entities={{
-                      canvases: templates[key].result,
-                      selectedCanvasId: selectedCanvas?.id,
-                    }}
-                    actions={{
-                      onSelect: template => actions.onTemplateSelected(template, templates[key].query),
-                    }}
-                    options={{}}
-                    state={{
-                      loading: state.templatesLoading,
-                    }}
-                  />
-                </Box>
-              )
-          )}
+          <CanvasList
+            entities={{
+              canvases: canvasListItems,
+              selectedCanvasId: selectedTemplate?.id,
+            }}
+            actions={{
+              onSelect: template => actions.onTemplateSelected(template),
+            }}
+            options={{}}
+            state={{
+              loading: state.templatesLoading,
+            }}
+          />
         </Box>
       </Grid>
       <Grid item xs={6}>
         <Box display="flex" justifyContent="center" alignItems="center" height={'100%'} minHeight={600} minWidth={450}>
-          {!selectedCanvas && !state.canvasLoading && (
+          {!selectedTemplate && !state.canvasLoading && (
             <Typography variant="overline">{t('pages.canvas.create-dialog.no-template-selected')}</Typography>
           )}
           {state.canvasLoading && <Loading text="Loading canvas..." />}
-          {selectedCanvas && !state.canvasLoading && (
+          {selectedTemplate && !state.canvasLoading && (
             <CanvasWhiteboard
               entities={{
-                canvas: selectedCanvas,
+                canvas: selectedTemplate,
               }}
               actions={{}}
               options={{
@@ -165,14 +159,24 @@ const TemplateStep: FC<ITemplateStepProps> = ({ actions, entities, state }) => {
 
 interface ICompletionStepProps {
   entities: {
-    name: string;
-    canvas?: Canvas;
+    displayName: string;
+    template?: CreateCanvasCanvasTemplateFragment;
   };
 }
 
 const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
-  const { name, canvas } = entities;
+  const { displayName, template } = entities;
   const { t } = useTranslation();
+
+  const canvasFromTemplate = useMemo<CanvasListItemCanvas | undefined>(() => {
+    if (!template) {
+      return undefined;
+    }
+    return {
+      id: template.id,
+      displayName: template.info.title!,
+    };
+  }, [template]);
 
   return (
     <Box display="flex" flexDirection="column">
@@ -182,36 +186,36 @@ const CompletionStep: FC<ICompletionStepProps> = ({ entities }) => {
       <Typography variant="subtitle1">
         Name:{' '}
         <Box component="span" sx={{ fontWeight: 600 }}>
-          {name}
+          {displayName}
         </Box>
       </Typography>
-      {canvas && <Typography variant="subtitle1">Template:</Typography>}
-      {canvas && <CanvasListItem entities={{ canvas }} actions={{}} options={{ isSelected: false }} />}
+      {template && <Typography variant="subtitle1">Template:</Typography>}
+      {canvasFromTemplate && <CanvasListItem canvas={canvasFromTemplate} />}
     </Box>
   );
 };
 
 interface CreateCanvasStepsProps {
   entities: {
-    templates: Record<string, ITemplateQueryResult>;
-    template?: Canvas;
-    name: string;
+    templates: CreateCanvasCanvasTemplateFragment[];
+    template?: CreateCanvasCanvasTemplateFragment;
+    displayName: string;
   };
   actions: {
     onSubmit: () => void;
-    onTemplateSelected: (canvas?: CanvasWithoutValue, query?: TemplateQuery) => void;
+    onTemplateSelected: (template?: Identifiable) => void;
   };
   state: ITemplateStepProps['state'];
   isValid: boolean;
 }
 
 const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, state, isValid }) => {
-  const { templates, name, template } = entities;
+  const { templates, displayName, template } = entities;
   const { onSubmit } = actions;
 
   const styles = useStyles();
 
-  const [activeStep, setActiveStep] = React.useState<StepDefinition>(steps.name);
+  const [activeStep, setActiveStep] = React.useState<StepDefinition>(steps.displayName);
   const [skipped, setSkipped] = React.useState(new Set<StepDefinition>());
 
   const isStepOptional = (step: StepDefinition) => {
@@ -289,10 +293,10 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
         </Stepper>
       </Paper>
       <DialogContent classes={{ root: styles.dialogContent }}>
-        {activeStep === steps.name && <NamingStep />}
+        {activeStep === steps.displayName && <NamingStep />}
         {activeStep === steps.template && (
           <TemplateStep
-            entities={{ templates, selectedCanvas: template }}
+            entities={{ templates, selectedTemplate: template }}
             actions={{ onTemplateSelected: actions.onTemplateSelected }}
             state={{
               templatesLoading: state.templatesLoading,
@@ -300,7 +304,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
             }}
           />
         )}
-        {activeStep === steps.completion && <CompletionStep entities={{ name, canvas: template }} />}
+        {activeStep === steps.completion && <CompletionStep entities={{ displayName, template: template }} />}
       </DialogContent>
       <DialogActions>
         <Button color="inherit" disabled={activeStep === stepsArray[0]} onClick={handleBack} sx={{ mr: 1 }}>
@@ -324,7 +328,7 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
 interface CanvasCreateDialogProps {
   entities: {
     contextID: string;
-    templates: Record<string, ITemplateQueryResult>;
+    templates: CreateCanvasCanvasTemplateFragment[];
   };
   actions: {
     onCancel: () => void;
@@ -340,10 +344,10 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
   const { t } = useTranslation();
   const styles = useStyles();
 
-  const [selectedCanvasParams, setSelectedCanvasParams] = useState<CanvasValueParams>();
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>();
 
   const initialValues = {
-    name: 'New Canvas', // TODO Localize?
+    displayName: 'New Canvas', // TODO Localize?
     value: undefined,
   };
 
@@ -353,6 +357,8 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
       ...canvasInput,
     });
   };
+
+  const selectedTemplate = entities.templates.find(({ id }) => id === selectedTemplateId);
 
   return (
     <Dialog
@@ -373,38 +379,31 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
       >
         {t('pages.canvas.create-dialog.header')}
       </DialogTitle>
-      <CanvasValueContainer canvasId={selectedCanvasParams?.canvasId} params={selectedCanvasParams?.params}>
-        {(canvasTemplate, state) => (
-          <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={canvasSchema}>
-            {({ values: { name }, handleSubmit, setFieldValue, isValid }) => (
-              <CreateCanvasSteps
-                isValid={isValid}
-                entities={{
-                  ...entities,
-                  name,
-                  template: canvasTemplate.canvas,
-                }}
-                actions={{
-                  ...actions,
-                  onSubmit: () => {
-                    if (canvasTemplate.canvas?.value) {
-                      setFieldValue('value', canvasTemplate.canvas.value);
-                    }
-                    handleSubmit();
-                  },
-                  onTemplateSelected: (canvas, query) => {
-                    setSelectedCanvasParams({
-                      canvasId: canvas?.id,
-                      params: query,
-                    });
-                  },
-                }}
-                state={{ canvasLoading: state.loadingCanvasValue }}
-              />
-            )}
-          </Formik>
+      <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={canvasSchema}>
+        {({ values: { displayName }, handleSubmit, setFieldValue, isValid }) => (
+          <CreateCanvasSteps
+            isValid={isValid}
+            entities={{
+              ...entities,
+              displayName,
+              template: selectedTemplate,
+            }}
+            actions={{
+              ...actions,
+              onSubmit: () => {
+                if (selectedTemplate) {
+                  setFieldValue('value', selectedTemplate.value);
+                }
+                handleSubmit();
+              },
+              onTemplateSelected: canvas => {
+                setSelectedTemplateId(canvas?.id);
+              },
+            }}
+            state={{}}
+          />
         )}
-      </CanvasValueContainer>
+      </Formik>
     </Dialog>
   );
 };

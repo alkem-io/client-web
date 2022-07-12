@@ -6,12 +6,13 @@ import {
   useCreateCanvasOnContextMutation,
   useDeleteCanvasOnContextMutation,
   useUpdateCanvasOnContextMutation,
+  useUploadVisualMutation,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { CanvasWithoutValue } from '../../models/entities/canvas';
 import {
   Canvas,
   CanvasCheckoutStateEnum,
+  CanvasDetailsFragment,
   CreateCanvasOnContextInput,
   DeleteCanvasOnContextInput,
 } from '../../models/graphql-schema';
@@ -20,10 +21,9 @@ import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFro
 export interface ICanvasActions {
   onCreate: (canvas: CreateCanvasOnContextInput) => Promise<void>;
   onDelete: (canvas: DeleteCanvasOnContextInput) => Promise<void>;
-  onCheckout: (canvas: CanvasWithoutValue) => void;
-  onCheckin: (canvas: CanvasWithoutValue) => void;
-  onUpdate: (canvas: Canvas) => void;
-  onPromoteToTemplate: (canvas: Canvas) => void;
+  onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
+  onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
+  onUpdate: (canvas: Canvas, previewImage?: Blob) => Promise<void>;
 }
 
 export interface CanvasActionsContainerState {
@@ -104,7 +104,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     onError: handleError,
   });
 
-  const handleCheckoutCanvas = async (canvas: CanvasWithoutValue) => {
+  const handleCheckoutCanvas = async (canvas: CanvasDetailsFragment) => {
     if (!canvas.checkout?.id) {
       throw new Error('[canvas:onCheckInOut]: Missing canvas.checkout.id');
     }
@@ -142,36 +142,33 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
   const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasOnContextMutation({
     onError: handleError,
   });
-  const handleUpdateCanvas = async (canvas: Canvas) => {
-    if (!canvas.id) {
-      throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
-    }
 
-    await updateCanvas({
-      variables: {
-        input: {
-          ID: canvas.id,
-          name: canvas.name,
-          isTemplate: canvas.isTemplate,
-          value: canvas.value,
+  const [uploadVisual, { loading: uploadingVisual }] = useUploadVisualMutation({
+    onError: handleError,
+  });
+
+  const handleUpdateCanvas = async (canvas: Canvas, previewImage?: Blob) => {
+    await Promise.all([
+      updateCanvas({
+        variables: {
+          input: {
+            ID: canvas.id,
+            displayName: canvas.displayName,
+            value: canvas.value,
+          },
         },
-      },
-    });
-  };
-
-  const handlePromotionToTemplate = async (canvas: Canvas) => {
-    if (!canvas.id) {
-      throw new Error('[canvas:onUpdate]: Missing canvas.checkout.id');
-    }
-
-    await updateCanvas({
-      variables: {
-        input: {
-          ID: canvas.id,
-          isTemplate: true,
-        },
-      },
-    });
+      }),
+      canvas.preview &&
+        previewImage &&
+        uploadVisual({
+          variables: {
+            file: new File([previewImage], `/Canvas-${canvas.nameID}-preview.png`, { type: 'image/png' }),
+            uploadData: {
+              visualID: canvas.preview?.id,
+            },
+          },
+        }),
+    ]);
   };
 
   const actions = useMemo<ICanvasActions>(
@@ -181,10 +178,10 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
       onCheckin: handleCheckoutCanvas,
       onCheckout: handleCheckoutCanvas,
       onUpdate: handleUpdateCanvas,
-      onPromoteToTemplate: handlePromotionToTemplate,
     }),
     [handleCreateCanvas, handleDeleteCanvas, handleCheckoutCanvas, handleUpdateCanvas]
   );
+
   return (
     <>
       {children(
@@ -193,7 +190,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
           creatingCanvas,
           deletingCanvas,
           changingCanvasLockState: checkingoutCanvas,
-          updatingCanvas,
+          updatingCanvas: updatingCanvas || uploadingVisual,
         },
         actions
       )}

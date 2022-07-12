@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApolloError } from '@apollo/client';
+import { ApolloError, FetchResult } from '@apollo/client';
 import { alpha, Avatar, Box, Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
@@ -18,6 +18,7 @@ import DashboardColumn from '../../components/composite/sections/DashboardSectio
 import { mapWithSeparator } from '../../domain/shared/utils/joinNodes';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
+import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -37,7 +38,7 @@ export interface AspectDashboardViewProps {
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
-  handlePostComment: (commentId: string, message: string) => void;
+  handlePostComment: (commentId: string, message: string) => Promise<FetchResult<unknown>> | void;
   handleDeleteComment: (commentId: string, messageId: string) => void;
   loading: boolean;
   loadingCreator: boolean;
@@ -166,6 +167,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
                 <PostComment
                   placeholder={t('pages.aspect.dashboard.comment.placeholder')}
                   onPostComment={onPostComment}
+                  maxLength={MID_TEXT_LENGTH}
                 />
               )}
               {!canPostComments && (

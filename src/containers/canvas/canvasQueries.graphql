@@ -6,14 +6,17 @@ fragment CanvasDetails on Canvas {
     anonymousReadAccess
   }
   checkout {
-    ...ChechkoutDetails
+    ...CheckoutDetails
+  }
+  preview {
+    ...VisualFull
   }
 }
 
 fragment CanvasSummary on Canvas {
   id
-  name
-  isTemplate
+  nameID
+  displayName
 }
 
 fragment CanvasValue on Canvas {
@@ -21,7 +24,7 @@ fragment CanvasValue on Canvas {
   value
 }
 
-fragment ChechkoutDetails on CanvasCheckout {
+fragment CheckoutDetails on CanvasCheckout {
   id
   lockedBy
   status
@@ -35,14 +38,44 @@ fragment ChechkoutDetails on CanvasCheckout {
   }
 }
 
+query canvasTemplates($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      canvasTemplates {
+        ...CreateCanvasCanvasTemplate
+      }
+    }
+  }
+}
+
+fragment CreateCanvasCanvasTemplate on CanvasTemplate {
+  id
+  info {
+    title
+    description
+  }
+  value
+}
+
+fragment ContextWithCanvasDetails on Context {
+  id
+  canvases {
+    ...CanvasDetails
+  }
+  authorization {
+    id
+    myPrivileges
+    anonymousReadAccess
+  }
+}
+
 query hubCanvases($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     context {
-      id
-      canvases {
-        ...CanvasDetails
-      }
+      ...ContextWithCanvasDetails
     }
   }
 }
@@ -66,10 +99,7 @@ query challengeCanvases($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     challenge(ID: $challengeId) {
       id
       context {
-        id
-        canvases {
-          ...CanvasDetails
-        }
+        ...ContextWithCanvasDetails
       }
     }
   }
@@ -97,10 +127,7 @@ query opportunityCanvases($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     opportunity(ID: $opportunityId) {
       id
       context {
-        id
-        canvases {
-          ...CanvasDetails
-        }
+        ...ContextWithCanvasDetails
       }
     }
   }
@@ -138,14 +165,13 @@ mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
   updateCanvas(canvasData: $input) {
     id
     value
-    name
-    isTemplate
+    displayName
   }
 }
 
 mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
   eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
-    ...ChechkoutDetails
+    ...CheckoutDetails
   }
 }
 
