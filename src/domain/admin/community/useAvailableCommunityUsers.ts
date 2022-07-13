@@ -44,7 +44,7 @@ const useAvailableCommunityUsers = <Data, Variables extends UserFilterHolder & P
     useLazyQuery,
     variables: { ...variables, filter } as NonPaginationVariables<Variables>,
     getPageInfo: data => getResult(data)?.pageInfo,
-    pageSize: 10,
+    pageSize: 999,
     options: {
       fetchPolicy: 'cache-and-network',
     },
