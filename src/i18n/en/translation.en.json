@@ -1040,7 +1040,8 @@
         "check-in": "Check-in",
         "save-as-template": "Save as template",
         "save-and-check-in": "Save & stop editing",
-        "save": "Save"
+        "save": "Save",
+        "delete": "Delete"
       },
       "delete": {
         "confirmation-title": "Deleting <b>{{ blockName }}</b>",
