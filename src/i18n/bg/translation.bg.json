@@ -837,7 +837,8 @@
         "check-in": "Регистрирай",
         "save-as-template": "Съхрани като шаблон",
         "save-and-check-in": "Съхрани и прекрати редактирането",
-        "save": "Съхрани"
+        "save": "Съхрани",
+        "delete": "Изтрий"
       },
       "delete": {
         "confirmation-title": "Изтриване <b>{{ blockName }}</b>",
