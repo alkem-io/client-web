@@ -13,7 +13,7 @@ const useLazyLoading = ({ loading, fetchMore }: Options) => {
     if (inView && !loading) {
       fetchMore();
     }
-  }, [inView, loading]);
+  }, [inView, loading, fetchMore]);
 
   return {
     ref,
