@@ -13,7 +13,6 @@ import {
   CreateCanvasCanvasTemplateFragment,
 } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
-import { CanvasListItemCanvas } from '../../../components/composite/lists/Canvas/CanvasListItem';
 import CanvasesDashboardSection from '../CanvasesDashboardSection/CanvasesDashboardSection';
 import { LinkWithState } from '../../shared/types/LinkWithState';
 
@@ -53,6 +52,12 @@ export interface CanvasNavigationMethods {
   buildLinkToCanvas: (url: string) => LinkWithState;
 }
 
+export interface CanvasBeingDeleted {
+  displayName: string;
+  canvasID: string;
+  contextID: string;
+}
+
 export interface CanvasManagementViewProps
   extends ViewProps<
       CanvasManagementViewEntities,
@@ -70,8 +75,8 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   backToCanvases,
   buildLinkToCanvas,
 }) => {
-  const { canvasId } = entities;
-  const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasListItemCanvas | undefined>(undefined);
+  const { canvasId, contextID } = entities;
+  const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
   const { user } = useUserContext();
@@ -101,7 +106,6 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
         noItemsMessage={t('pages.canvas.no-canvases')}
         loading={state.loadingCanvases}
         onCreate={() => setShowCreateCanvasDialog(true)}
-        onDelete={canvas => setCanvasBeingDeleted(canvas)}
         buildCanvasUrl={buildCanvasUrl}
         {...options}
       />
@@ -114,11 +118,13 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
               onCheckin: actions.onCheckin,
               onCheckout: actions.onCheckout,
               onUpdate: actions.onUpdate,
+              onDelete: c => setCanvasBeingDeleted({ canvasID: c.id, displayName: c.displayName, contextID }),
             }}
             options={{
               show: Boolean(canvasId),
               canCheckout: isCanvasAvailable && options.canUpdate,
               canEdit: isCanvasCheckedoutByMe && options.canUpdate,
+              canDelete: isCanvasAvailable && options.canDelete,
             }}
             state={state}
           />
@@ -126,7 +132,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
       </CanvasValueContainer>
       <CanvasCreateDialog
         entities={{
-          contextID: entities.contextID,
+          contextID: contextID,
           templates: entities.templates,
         }}
         actions={{
@@ -149,8 +155,12 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
           onCancel: () => setCanvasBeingDeleted(undefined),
           onConfirm: async () => {
             if (canvasBeingDeleted) {
-              await actions.onDelete({ canvasID: canvasBeingDeleted.id, contextID: entities.contextID });
+              await actions.onDelete({
+                canvasID: canvasBeingDeleted.canvasID,
+                contextID: canvasBeingDeleted.contextID,
+              });
               setCanvasBeingDeleted(undefined);
+              backToCanvases();
             }
           },
         }}
