@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserContext } from '../../../../hooks';
 import useRouteMatch from '../../../../hooks/routing/useRouteMatch';
 import { RouterLink } from '../../../core/RouterLink';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
@@ -68,30 +67,20 @@ type MenuItem = {
 };
 
 const TopNavIcons = () => {
-  const { user } = useUserContext();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
-  const menuItems: MenuItem[] = useMemo(
-    () => [
-      {
-        title: t('common.challenges'),
-        icon: <AutoAwesomeOutlinedIcon />,
-        url: '/challenges',
-      },
-      {
-        title: t('common.contributors'),
-        icon: <GroupOutlinedIcon />,
-        url: '/contributors',
-      },
-      /*{
-        title: title: t('common.admin'),
-        icon: <SettingsOutlinedIcon />,
-        url: '/admin',
-        hidden: !Boolean(user?.isAdmin ?? false),
-      }, */
-    ],
-    [user?.isAdmin, i18n.language]
-  );
+  const menuItems: MenuItem[] = [
+    {
+      title: t('common.challenges'),
+      icon: <AutoAwesomeOutlinedIcon />,
+      url: '/challenges',
+    },
+    {
+      title: t('common.contributors'),
+      icon: <GroupOutlinedIcon />,
+      url: '/contributors',
+    },
+  ];
 
   const match = useRouteMatch([...menuItems].reverse().map(x => x.url));
   const selectedIndex = useMemo(() => menuItems.findIndex(x => x.url === match?.pathname), [menuItems, match]);
@@ -119,7 +108,7 @@ const TopNavIcons = () => {
           );
         })}
 
-        <ProfileMenuItem buttonClassName={classes.button} key={-1} />
+        <ProfileMenuItem buttonClassName={classes.button} />
       </List>
     </Root>
   );
