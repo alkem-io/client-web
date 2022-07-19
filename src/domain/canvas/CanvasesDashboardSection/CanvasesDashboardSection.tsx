@@ -4,7 +4,6 @@ import DashboardGenericSection, {
 import { Button, Typography } from '@mui/material';
 import React from 'react';
 import { CanvasDetailsFragment } from '../../../models/graphql-schema';
-import { CanvasListItemCanvas } from '../../../components/composite/lists/Canvas/CanvasListItem';
 import { Add, WbIncandescentOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import SimpleCard from '../../shared/components/SimpleCard';
@@ -17,7 +16,6 @@ interface CanvasesDashboardSectionProps extends DashboardGenericSectionProps {
   noItemsMessage?: string;
   howToMessage?: string;
   onCreate?: () => void;
-  onDelete: (canvas: CanvasListItemCanvas) => void;
   canDelete?: boolean;
   canCreate?: boolean;
   buildCanvasUrl: (canvas: CanvasDetailsFragment) => LinkWithState;
@@ -26,7 +24,6 @@ interface CanvasesDashboardSectionProps extends DashboardGenericSectionProps {
 const CanvasesDashboardSection = ({
   canvases,
   onCreate,
-  onDelete,
   canCreate,
   canDelete,
   loading,

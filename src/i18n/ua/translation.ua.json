@@ -862,7 +862,8 @@
         "check-in": "Зареєструватись",
         "save-as-template": "Зберегти як шаблон",
         "save-and-check-in": "Зберегти і завершити редагування",
-        "save": "Зберегти"
+        "save": "Зберегти",
+        "delete": "Видалити"
       },
       "delete": {
         "confirmation-title": "Видаляємо <b>{{ blockName }}</b>",

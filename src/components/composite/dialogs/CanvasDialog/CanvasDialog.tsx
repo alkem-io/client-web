@@ -2,6 +2,7 @@ import { exportToBlob, serializeAsJSON } from '@excalidraw/excalidraw';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { ArrowDropDown, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
+import DeleteIcon from '@mui/icons-material/Delete';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
   Box,
@@ -44,11 +45,13 @@ interface CanvasDialogProps {
     onCheckin: (canvas: CanvasWithoutValue) => void;
     onCheckout: (canvas: CanvasWithoutValue) => void;
     onUpdate: (canvas: Canvas, previewImage?: Blob) => void;
+    onDelete: (canvas: CanvasWithoutValue) => void;
   };
   options: {
     show: boolean;
     canCheckout?: boolean;
     canEdit?: boolean;
+    canDelete?: boolean;
   };
   state?: {
     updatingCanvas?: boolean;
@@ -82,7 +85,7 @@ type Option = {
   icon: JSX.Element;
 };
 
-type CanvasOptionTypes = 'save' | 'save-and-checkin' | 'checkout';
+type CanvasOptionTypes = 'save' | 'save-and-checkin' | 'checkout' | 'delete';
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
@@ -103,6 +106,11 @@ const canvasOptions: Record<CanvasOptionTypes, Option> = {
     titleId: 'pages.canvas.state-actions.check-out',
     enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.Available,
     icon: <LockClockIcon />,
+  },
+  delete: {
+    titleId: 'pages.canvas.state-actions.delete',
+    enabledWhen: canvas => canvas?.checkout?.status === CanvasCheckoutStateEnum.Available,
+    icon: <DeleteIcon />,
   },
 };
 
@@ -210,6 +218,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
 
       await handleUpdate(canvas, state);
     },
+    delete: c => actions.onDelete(c),
   };
 
   const onClose = async (event: Event) => {

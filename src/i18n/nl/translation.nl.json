@@ -959,7 +959,8 @@
         "check-in": "Check-in",
         "save-as-template": "Opslaan als template",
         "save-and-check-in": "Opslaan & stop bewerken",
-        "save": "Opslaan"
+        "save": "Opslaan",
+        "delete": "Verwijder"
       },
       "delete": {
         "confirmation-title": "Verwijderen van <b>{{ blockName }}</b>",
