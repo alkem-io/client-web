@@ -24,7 +24,7 @@ const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
   const renderUserProfileSegment = () => {
     if (loadingMe) {
       return (
-        <Button key={-1} className={buttonClassName}>
+        <Button className={buttonClassName}>
           <Skeleton
             variant="circular"
             width={theme.spacing(3)}
@@ -36,12 +36,12 @@ const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
       );
     }
     if (!isAuthenticated) {
-      return <SignInIcon key={-1} className={buttonClassName} />;
+      return <SignInIcon className={buttonClassName} />;
     }
     return (
       <>
         {isUserSegmentVisible && user && (
-          <UserSegment key={-1} userMetadata={user} emailVerified={verified} buttonClassName={buttonClassName} />
+          <UserSegment userMetadata={user} emailVerified={verified} buttonClassName={buttonClassName} />
         )}
       </>
     );

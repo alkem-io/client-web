@@ -11,7 +11,7 @@ export interface UserAvatarProps extends ButtonProps {
 
 const UserAvatar = forwardRef<HTMLButtonElement, UserAvatarProps>(({ name, src, className, ...buttonProps }, ref) => {
   return (
-    <Button key={-1} className={className} ref={ref} {...buttonProps} startIcon={<Avatar src={src} />}>
+    <Button className={className} ref={ref} {...buttonProps} startIcon={<Avatar src={src} />}>
       {name}
     </Button>
   );

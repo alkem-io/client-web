@@ -119,7 +119,7 @@ const TopNavIcons = () => {
           );
         })}
 
-        <ProfileMenuItem buttonClassName={classes.button} />
+        <ProfileMenuItem buttonClassName={classes.button} key={-1} />
       </List>
     </Root>
   );

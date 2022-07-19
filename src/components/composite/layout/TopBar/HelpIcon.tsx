@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 
 const HelpIcon = () => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box display={'flex'} alignItems={'center'}>
       <Link to="/help">
         <HelpOutlineIcon color="primary" />
       </Link>
