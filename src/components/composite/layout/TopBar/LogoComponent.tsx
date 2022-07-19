@@ -7,8 +7,8 @@ export interface LogoComponentProps extends BoxProps {
   url?: string;
 }
 
-const Logo = styled(LogoImage)(({ theme }) => ({
-  height: theme.spacing(5),
+const Logo = styled(LogoImage)(() => ({
+  height: '100%',
 }));
 
 const LogoComponent = ({ url = '/', ...rest }: LogoComponentProps) => {

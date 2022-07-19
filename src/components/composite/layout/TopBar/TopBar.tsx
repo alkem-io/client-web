@@ -23,6 +23,7 @@ export const TopBarHeight = 9;
 const Root = styled(AppBar)(({ theme }) => ({
   width: '100%',
   backgroundColor: theme.palette.common.white,
+  boxShadow: '0px 1px 1px -1px rgb(0 0 0 / 20%), 0px 2px 5px 0px rgb(0 0 0 / 14%), 0px 1px 6px 0px rgb(0 0 0 / 12%)',
 }));
 
 const SearchBarGroup = styled(Box)(({ theme }) => ({
@@ -60,7 +61,7 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
             alignItems="center"
             justifyContent="space-between"
           >
-            <LogoComponent sx={{ flexGrow: 1 }} />
+            <LogoComponent flexGrow={1} height={theme.spacing(5)} />
 
             <SearchBarGroup
               sx={{
