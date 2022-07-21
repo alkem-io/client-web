@@ -37,6 +37,7 @@ const EntityDashboardLeadsSection = ({
 
   const leadUsersMapped = useMemo(() => {
     return leadUsers?.map(user => ({
+      id: user.id,
       userUrl: buildUserProfileUrl(user.nameID),
       fullName: user.displayName,
       city: user.profile?.location?.city,
