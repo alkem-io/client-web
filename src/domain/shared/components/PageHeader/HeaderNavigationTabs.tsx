@@ -38,7 +38,9 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
   '& .MuiTab-root': {
     fontSize: theme.typography.button.fontSize,
     flexGrow: 1,
-    minHeight: theme.spacing(4),
+    minHeight: theme.spacing(5),
+    position: 'relative',
+    top: -2,
   },
 }));
 
