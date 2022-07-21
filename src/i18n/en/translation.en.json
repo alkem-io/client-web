@@ -915,6 +915,7 @@
     },
     "hub": {
       "title": "Hub",
+      "about-this-hub": "About this Hub",
       "application": {
         "title": "Application to join {{entity}} \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
