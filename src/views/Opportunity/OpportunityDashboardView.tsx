@@ -13,7 +13,6 @@ import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hook
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import { getVisualBanner } from '../../utils/visuals.utils';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
@@ -92,9 +91,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
-  const { id, context, displayName } = opportunity;
-  const { visuals, tagline = '', vision = '' } = context ?? {};
-  const banner = getVisualBanner(visuals);
+  const { id } = opportunity;
 
   const { loading } = state;
 
@@ -103,8 +100,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
       <Grid container spacing={2}>
         <DashboardColumn>
           <DashboardGenericSection
-            bannerUrl={banner}
-            headerText={displayName}
+            headerText={t('pages.opportunity.about-this-opportunity')}
             primaryAction={
               isNotMember && (
                 <Button onClick={actions.onInterestOpen} variant="contained">
@@ -113,8 +109,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               )
             }
           >
-            <Markdown children={tagline} />
-            <Markdown children={vision} />
+            <Markdown children={opportunity?.context?.vision || ''} />
           </DashboardGenericSection>
           <DashboardOpportunityStatistics
             headerText={t('pages.opportunity.sections.dashboard.statistics.title')}

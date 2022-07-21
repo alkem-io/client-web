@@ -945,6 +945,7 @@
     },
     "challenge": {
       "title": "Challenge",
+      "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "And more ..."
       },
@@ -971,6 +972,7 @@
     },
     "opportunity": {
       "title": "Opportunity",
+      "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
