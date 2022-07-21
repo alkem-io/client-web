@@ -1,10 +1,10 @@
-import { Breadcrumbs as MUIBreadcrumbs, Link, styled, Typography } from '@mui/material';
+import { Box, Breadcrumbs as MUIBreadcrumbs, Link, styled, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { RouterLink } from '../../../../components/core/RouterLink';
 import { Path } from '../../../../context/NavigationProvider';
 import { useNavigation } from '../../../../hooks';
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: 0,
   left: 0,
