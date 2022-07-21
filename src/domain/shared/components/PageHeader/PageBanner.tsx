@@ -38,7 +38,7 @@ const Image = styled('img')(() => ({
 }));
 
 export interface PageBannerProps {
-  title: string;
+  title?: string;
   tagline?: string;
   bannerUrl?: string;
   loading: boolean;
