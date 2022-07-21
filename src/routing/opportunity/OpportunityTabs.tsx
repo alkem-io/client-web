@@ -1,21 +1,14 @@
-import {
-  ContentPasteOutlined,
-  DashboardOutlined,
-  ForumOutlined,
-  GroupOutlined,
-  SettingsOutlined,
-  TocOutlined,
-  WbIncandescentOutlined,
-} from '@mui/icons-material';
-import { Tabs } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
-import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import { useConfig } from '../../hooks';
+import HeaderNavigationTab from '../../domain/shared/components/PageHeader/HeaderNavigationTab';
+import HeaderNavigationTabs from '../../domain/shared/components/PageHeader/HeaderNavigationTabs';
+import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
+import { useConfig, useOpportunity } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 const routes = {
   community: 'community',
@@ -52,6 +45,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
     [routes, resolved, resolvePath]
   );
   const tabValue = (route: OpportunityRoutesType) => resolvePath(route, resolved.pathname)?.pathname;
+  const { opportunity, loading } = useOpportunity();
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
@@ -60,61 +54,35 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
 
   return (
     <>
-      <Tabs
+      <PageBanner
+        title={opportunity?.displayName}
+        loading={loading}
+        bannerUrl={getVisualBanner(opportunity?.context?.visuals)}
+      />
+      <HeaderNavigationTabs
         value={currentTab}
         aria-label="Opportunity tabs"
-        variant="scrollable"
-        scrollButtons={'auto'}
-        allowScrollButtonsMobile
+        showSettings={viewerCanUpdate}
+        settingsValue={tabValue('settings')}
+        settingsUrl={buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
       >
-        <NavigationTab
-          icon={<DashboardOutlined />}
-          label={t('common.opportunity')}
-          value={tabValue('dashboard')}
-          to={routes['dashboard']}
-        />
-        <NavigationTab
-          icon={<TocOutlined />}
-          label={t('common.context')}
-          value={tabValue('context')}
-          to={routes['context']}
-        />
-        <NavigationTab
+        <HeaderNavigationTab label={t('common.opportunity')} value={tabValue('dashboard')} to={routes['dashboard']} />
+        <HeaderNavigationTab label={t('common.context')} value={tabValue('context')} to={routes['context']} />
+        <HeaderNavigationTab
           disabled={!communityReadAccess}
-          icon={<GroupOutlined />}
           label={t('common.community')}
           value={tabValue('community')}
           to={routes['community']}
         />
-        <NavigationTab
-          icon={<ForumOutlined />}
-          label={t('common.contribute')}
-          value={tabValue('contribute')}
-          to={routes.contribute}
-        />
-        <NavigationTab
-          icon={<ContentPasteOutlined />}
-          label={t('common.projects')}
-          value={tabValue('projects')}
-          to={routes['projects']}
-        />
-        <NavigationTab
+        <HeaderNavigationTab label={t('common.contribute')} value={tabValue('contribute')} to={routes.contribute} />
+        <HeaderNavigationTab label={t('common.projects')} value={tabValue('projects')} to={routes['projects']} />
+        <HeaderNavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
-          icon={<WbIncandescentOutlined />}
           label={t('common.canvases')}
           value={tabValue('canvases')}
           to={routes['canvases']}
         />
-        {viewerCanUpdate && (
-          <NavigationTab
-            icon={<SettingsOutlined />}
-            label={t('common.settings')}
-            value={tabValue('settings')}
-            /* can be provided with the tab config */
-            to={buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
-          />
-        )}
-      </Tabs>
+      </HeaderNavigationTabs>
       <Outlet />
     </>
   );
