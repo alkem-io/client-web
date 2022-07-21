@@ -20,7 +20,7 @@ export function useCombinedRefs<T>(initialValue: T, ...refs: Ref<T>[]) {
         ref.current = targetRef.current;
       }
     });
-  }, [targetRef.current]);
+  }, [targetRef.current, ...refs]);
 
   return targetRef;
 }
