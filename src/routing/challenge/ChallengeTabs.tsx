@@ -64,6 +64,8 @@ const ChallengeTabs: FC<ChallengeTabsProps> = ({
         tagline={challenge?.context?.tagline}
         loading={loading}
         bannerUrl={getVisualBanner(challenge?.context?.visuals)}
+        showBreadcrumbs
+        breadcrumbsTitle={t('pages.challenge.challenge-breadcrumbs')}
       />
       <HeaderNavigationTabs
         value={currentTab}

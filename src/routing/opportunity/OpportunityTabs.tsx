@@ -56,8 +56,11 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
     <>
       <PageBanner
         title={opportunity?.displayName}
+        tagline={'Change this tagline //!!'}
         loading={loading}
         bannerUrl={getVisualBanner(opportunity?.context?.visuals)}
+        showBreadcrumbs
+        breadcrumbsTitle={t('pages.opportunity.opportunity-breadcrumbs')}
       />
       <HeaderNavigationTabs
         value={currentTab}
