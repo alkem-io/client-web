@@ -56,7 +56,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
     <>
       <PageBanner
         title={opportunity?.displayName}
-        tagline={'Change this tagline //!!'}
+        tagline={opportunity?.context?.tagline}
         loading={loading}
         bannerUrl={getVisualBanner(opportunity?.context?.visuals)}
         showBreadcrumbs

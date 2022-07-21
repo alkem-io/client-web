@@ -1427,6 +1427,7 @@ export const OpportunityProviderFragmentDoc = gql`
     }
     context {
       id
+      tagline
       authorization {
         id
         myPrivileges
