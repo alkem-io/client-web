@@ -1,4 +1,4 @@
-import { styled, Tabs } from '@mui/material';
+import { Box, styled, Tabs } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
@@ -9,6 +9,7 @@ import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { buildAdminHubUrl } from '../../utils/urlBuilders';
 import HubBanner from './HubBanner';
+import { SettingsOutlined } from '@mui/icons-material';
 
 const routes = {
   discussions: 'discussions',
@@ -22,21 +23,28 @@ const routes = {
   contribute: 'contribute',
 } as const;
 
+const TabsContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  '.settings-button': {
+    color: theme.palette.common.white,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    minHeight: theme.spacing(4),
+  },
+}));
+
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   minHeight: 0,
   color: theme.palette.common.white,
   backgroundColor: theme.palette.primary.main,
   [theme.breakpoints.up('xs')]: {
     paddingLeft: 0,
-    paddingRight: 0,
-  },
-  [theme.breakpoints.up('md')]: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
+    paddingRight: theme.spacing(5),
   },
   [theme.breakpoints.up('lg')]: {
-    paddingLeft: theme.spacing(10),
-    paddingRight: theme.spacing(10),
+    paddingLeft: theme.spacing(8),
+    paddingRight: theme.spacing(8),
   },
   '& .MuiTabs-indicator': {
     backgroundColor: theme.palette.common.white,
@@ -89,48 +97,55 @@ const HubTabs: FC<HubTabsProps> = ({ hubNameId, permissions }) => {
   return (
     <>
       <HubBanner />
-      <StyledTabs
-        value={currentTab}
-        aria-label="Hub tabs"
-        variant="scrollable"
-        scrollButtons={'auto'}
-        allowScrollButtonsMobile
-      >
-        <NavigationTab label={t('common.dashboard')} value={tabValue('dashboard')} to={routes.dashboard} />
-        <NavigationTab label={t('common.context')} value={tabValue('context')} to={'context'} />
-        <NavigationTab
-          disabled={!permissions.communityReadAccess}
-          label={t('common.community')}
-          value={tabValue('community')}
-          to={routes.community}
-        />
-        <NavigationTab label={t('common.contribute')} value={tabValue('contribute')} to={routes.contribute} />
-        <NavigationTab
-          disabled={!permissions.canReadChallenges}
-          label={t('common.challenges')}
-          value={tabValue('challenges')}
-          to={routes.challenges}
-        />
-        {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
+      <TabsContainer>
+        <StyledTabs
+          value={currentTab}
+          aria-label="Hub tabs"
+          variant="scrollable"
+          scrollButtons={'auto'}
+          allowScrollButtonsMobile
+        >
+          <NavigationTab label={t('common.dashboard')} value={tabValue('dashboard')} to={routes.dashboard} />
+          <NavigationTab label={t('common.context')} value={tabValue('context')} to={'context'} />
           <NavigationTab
             disabled={!permissions.communityReadAccess}
-            label={t('common.discussions')}
-            value={tabValue('discussions')}
-            to={routes.discussions}
+            label={t('common.community')}
+            value={tabValue('community')}
+            to={routes.community}
           />
-        )}
-        {isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) && (
+          <NavigationTab label={t('common.contribute')} value={tabValue('contribute')} to={routes.contribute} />
           <NavigationTab
-            disabled={!permissions.communityReadAccess}
-            label={t('common.canvases')}
-            value={tabValue('canvases')}
-            to={routes.canvases}
+            disabled={!permissions.canReadChallenges}
+            label={t('common.challenges')}
+            value={tabValue('challenges')}
+            to={routes.challenges}
           />
-        )}
+          {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
+            <NavigationTab
+              disabled={!permissions.communityReadAccess}
+              label={t('common.discussions')}
+              value={tabValue('discussions')}
+              to={routes.discussions}
+            />
+          )}
+          {isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) && (
+            <NavigationTab
+              disabled={!permissions.communityReadAccess}
+              label={t('common.canvases')}
+              value={tabValue('canvases')}
+              to={routes.canvases}
+            />
+          )}
+        </StyledTabs>
         {permissions.viewerCanUpdate && (
-          <NavigationTab label={t('common.settings')} value={tabValue('settings')} to={buildAdminHubUrl(hubNameId)} />
+          <NavigationTab
+            className="settings-button"
+            icon={<SettingsOutlined />}
+            value={tabValue('settings')}
+            to={buildAdminHubUrl(hubNameId)}
+          />
         )}
-      </StyledTabs>
+      </TabsContainer>
       <Outlet />
     </>
   );
