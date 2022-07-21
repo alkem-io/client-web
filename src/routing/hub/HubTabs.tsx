@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { HubPermissions } from '../../domain/hub/HubContext/HubContext';
-import { useConfig } from '../../hooks';
+import { useConfig, useHub } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { buildAdminHubUrl } from '../../utils/urlBuilders';
-import HubBanner from './HubBanner';
+import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
 import { SettingsOutlined } from '@mui/icons-material';
+import { getVisualBanner } from '../../utils/visuals.utils';
 
 const routes = {
   discussions: 'discussions',
@@ -84,6 +85,7 @@ const HubTabs: FC<HubTabsProps> = ({ hubNameId, permissions }) => {
   );
 
   const tabValue = (route: HubRoutesType) => resolvePath(route, resolved.pathname)?.pathname;
+  const { displayName, context, loading } = useHub();
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
@@ -96,7 +98,12 @@ const HubTabs: FC<HubTabsProps> = ({ hubNameId, permissions }) => {
 
   return (
     <>
-      <HubBanner />
+      <PageBanner
+        title={displayName}
+        tagline={context?.tagline}
+        loading={loading}
+        bannerUrl={getVisualBanner(context?.visuals)}
+      />
       <TabsContainer>
         <StyledTabs
           value={currentTab}

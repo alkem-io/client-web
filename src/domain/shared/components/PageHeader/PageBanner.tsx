@@ -1,8 +1,6 @@
 import { Box, Skeleton, styled, Typography } from '@mui/material';
 import { FC } from 'react';
-import { useHub } from '../../hooks';
-import hexToRGBA from '../../utils/hexToRGBA';
-import { getVisualBanner } from '../../utils/visuals.utils';
+import hexToRGBA from '../../../../utils/hexToRGBA';
 
 export const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
 export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
@@ -39,22 +37,24 @@ const Image = styled('img')(() => ({
   height: '100%',
 }));
 
-export interface HubBannerProps {}
+export interface PageBannerProps {
+  title: string;
+  tagline?: string;
+  bannerUrl?: string;
+  loading: boolean;
+}
 
-const HubBanner: FC<HubBannerProps> = () => {
-  const { displayName, context, loading } = useHub();
-
-  const bannerUrl = getVisualBanner(context?.visuals) || DEFAULT_BANNER_URL;
-
+const PageBanner: FC<PageBannerProps> = ({ title, tagline, loading, bannerUrl }) => {
+  bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
   return (
     <Root>
       <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />
       {!loading && (
         <>
-          <Image src={bannerUrl} alt={`${displayName} - Banner image`} />
+          <Image src={bannerUrl} alt={`${title} - Banner image`} />
           <Title>
-            <Typography variant={'h1'}>{displayName}</Typography>
-            <Typography variant={'caption'}>{context?.tagline}</Typography>
+            <Typography variant={'h1'}>{title}</Typography>
+            <Typography variant={'caption'}>{tagline}</Typography>
           </Title>
         </>
       )}
@@ -62,4 +62,4 @@ const HubBanner: FC<HubBannerProps> = () => {
   );
 };
 
-export default HubBanner;
+export default PageBanner;
