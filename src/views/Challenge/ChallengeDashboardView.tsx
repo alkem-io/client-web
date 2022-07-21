@@ -14,7 +14,6 @@ import { useChallenge, useConfig } from '../../hooks';
 import ActivityView from '../Activity/ActivityView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
-import { getVisualBanner } from '../../utils/visuals.utils';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
@@ -45,11 +44,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const { loading } = state;
 
-  const { displayName, context } = challenge || {};
   const communityId = challenge?.community?.id || '';
-
-  const { tagline = '', visuals, vision = '' } = context || {};
-  const bannerUrl = getVisualBanner(visuals);
 
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
@@ -61,8 +56,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
       <Grid container spacing={SPACING}>
         <DashboardColumn>
           <DashboardGenericSection
-            bannerUrl={bannerUrl}
-            headerText={displayName}
+            headerText={t('pages.challenge.about-this-challenge')}
             primaryAction={
               <ApplicationButtonContainer>
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
@@ -71,8 +65,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navText={t('buttons.see-more')}
             navLink={'context'}
           >
-            <Markdown children={tagline} />
-            <Markdown children={vision} />
+            <Markdown children={challenge?.context?.vision || ''} />
           </DashboardGenericSection>
           <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.statistics.title')}>
             <ActivityView activity={activity} loading={loading} />
