@@ -1,7 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
-import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { HubPermissions } from '../../domain/hub/HubContext/HubContext';
 import { useConfig, useHub } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
@@ -10,6 +9,7 @@ import { buildAdminHubUrl } from '../../utils/urlBuilders';
 import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import HeaderNavigationTabs from '../../domain/shared/components/PageHeader/HeaderNavigationTabs';
+import HeaderNavigationTab from '../../domain/shared/components/PageHeader/HeaderNavigationTab';
 
 const routes = {
   discussions: 'discussions',
@@ -71,23 +71,23 @@ const HubTabs: FC<HubTabsProps> = ({ hubNameId, permissions }) => {
         settingsValue={tabValue('settings')}
         settingsUrl={buildAdminHubUrl(hubNameId)}
       >
-        <NavigationTab label={t('common.dashboard')} value={tabValue('dashboard')} to={routes.dashboard} />
-        <NavigationTab label={t('common.context')} value={tabValue('context')} to={'context'} />
-        <NavigationTab
+        <HeaderNavigationTab label={t('common.dashboard')} value={tabValue('dashboard')} to={routes.dashboard} />
+        <HeaderNavigationTab label={t('common.context')} value={tabValue('context')} to={'context'} />
+        <HeaderNavigationTab
           disabled={!permissions.communityReadAccess}
           label={t('common.community')}
           value={tabValue('community')}
           to={routes.community}
         />
-        <NavigationTab label={t('common.contribute')} value={tabValue('contribute')} to={routes.contribute} />
-        <NavigationTab
+        <HeaderNavigationTab label={t('common.contribute')} value={tabValue('contribute')} to={routes.contribute} />
+        <HeaderNavigationTab
           disabled={!permissions.canReadChallenges}
           label={t('common.challenges')}
           value={tabValue('challenges')}
           to={routes.challenges}
         />
         {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
-          <NavigationTab
+          <HeaderNavigationTab
             disabled={!permissions.communityReadAccess}
             label={t('common.discussions')}
             value={tabValue('discussions')}
@@ -95,7 +95,7 @@ const HubTabs: FC<HubTabsProps> = ({ hubNameId, permissions }) => {
           />
         )}
         {isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) && (
-          <NavigationTab
+          <HeaderNavigationTab
             disabled={!permissions.communityReadAccess}
             label={t('common.canvases')}
             value={tabValue('canvases')}
