@@ -91,7 +91,8 @@ const useCommunityUserAssignment = <
     useRemoveMemberMutation: (memberType === 'lead'
       ? useRemoveUserAsCommunityLeadMutation
       : useRemoveUserAsCommunityMemberMutation) as MemberMutationHook,
-    refetchQueries: [existingUsersOptions.refetchQuery, refetchAvailableMembersQuery],
+    refetchQueriesOnAssign: [existingUsersOptions.refetchQuery, refetchAvailableMembersQuery],
+    refetchQueriesOnRemove: [existingUsersOptions.refetchQuery],
   });
 
   return {

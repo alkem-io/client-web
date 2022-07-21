@@ -46,7 +46,9 @@ export interface UseCommunityMembersAssignmentOptions<
   allPossibleMembers: MemberEntity[] | undefined;
   useAssignMemberMutation: MemberMutationHook<AssignMemberMutation>;
   useRemoveMemberMutation: MemberMutationHook<RemoveMemberMutation>;
-  refetchQueries: RefetchQuery<ExistingMembersQueryVariables>[];
+  refetchQueries?: RefetchQuery<ExistingMembersQueryVariables>[];
+  refetchQueriesOnAssign?: RefetchQuery<ExistingMembersQueryVariables>[];
+  refetchQueriesOnRemove?: RefetchQuery<ExistingMembersQueryVariables>[];
 }
 
 export interface Provided<MemberEntity> {
@@ -86,6 +88,8 @@ const useCommunityMembersAssignment = <
     useAssignMemberMutation,
     useRemoveMemberMutation,
     refetchQueries,
+    refetchQueriesOnAssign = refetchQueries,
+    refetchQueriesOnRemove = refetchQueries,
   } = options;
 
   const handleError = useApolloErrorHandler();
@@ -106,13 +110,17 @@ const useCommunityMembersAssignment = <
 
   const [assign, { loading: isAddingMember }] = useAssignMemberMutation({
     onError: handleError,
-    refetchQueries: refetchQueries.map(refetchQuery => refetchQuery(variables as ExistingMembersQueryVariables)),
+    refetchQueries: refetchQueriesOnAssign?.map(refetchQuery =>
+      refetchQuery(variables as ExistingMembersQueryVariables)
+    ),
     awaitRefetchQueries: true,
   });
 
   const [remove, { loading: isRemovingMember }] = useRemoveMemberMutation({
     onError: handleError,
-    refetchQueries: refetchQueries.map(refetchQuery => refetchQuery(variables as ExistingMembersQueryVariables)),
+    refetchQueries: refetchQueriesOnRemove?.map(refetchQuery =>
+      refetchQuery(variables as ExistingMembersQueryVariables)
+    ),
     awaitRefetchQueries: true,
   });
 

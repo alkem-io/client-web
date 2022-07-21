@@ -1,5 +1,4 @@
-import { FieldPolicy } from '@apollo/client';
-import { uniqBy } from 'lodash';
+import { FieldFunctionOptions, FieldPolicy } from '@apollo/client';
 
 type KeyArgs = FieldPolicy<unknown>['keyArgs'];
 const pageInfoFieldName = 'pageInfo';
@@ -12,11 +11,9 @@ type TRelayPageInfo = {
 };
 // https://github.com/apollographql/apollo-client/blob/main/src/utilities/policies/pagination.ts#L91
 
-interface PaginationParamsHolder {
-  args?: {
-    before?: string;
-    after?: string;
-  };
+interface PaginationParams {
+  before?: string;
+  after?: string;
 }
 
 type PaginatedResponse<Item, FieldName extends string> = {
@@ -27,10 +24,10 @@ type PaginatedResponse<Item, FieldName extends string> = {
 export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string) => {
   return {
     keyArgs,
-    merge<Item extends { __ref: string }, FieldName extends string>(
+    merge<Item extends { __ref?: string; id?: string }, FieldName extends string>(
       existing: PaginatedResponse<Item, FieldName>,
       incoming: PaginatedResponse<Item, FieldName>,
-      { args }: PaginationParamsHolder
+      { args, isReference }: FieldFunctionOptions<PaginationParams>
     ): PaginatedResponse<Item, FieldName> {
       if (!existing || !(args?.after || args?.before)) {
         return incoming;
@@ -59,13 +56,16 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string
       let prefix = existing[dataFieldName] as Item[];
       let suffix: Item[] = [];
 
+      const recordFinder = (item: Item) =>
+        isReference(item) ? item.__ref === `${typeName}:${args.after}` : item.id === args.after;
+
       if (args?.after) {
-        const index = prefix.findIndex(item => item.__ref === `${typeName}:${args.after}`);
+        const index = prefix.findIndex(recordFinder);
         if (index >= 0) {
           prefix = prefix.slice(0, index + 1);
         }
       } else if (args?.before) {
-        const index = prefix.findIndex(item => item.__ref === `${typeName}:${args.before}`);
+        const index = prefix.findIndex(recordFinder);
         suffix = index < 0 ? prefix : prefix.slice(index);
         prefix = [];
       } else if (incomingData) {
@@ -75,7 +75,7 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string
         prefix = [];
       }
 
-      const edges = uniqBy([...prefix, ...incomingData, ...suffix], ({ __ref }) => __ref);
+      const edges = [...prefix, ...incomingData, ...suffix];
 
       const pageInfo: TRelayPageInfo = {
         // The ordering of these two ...spreads may be surprising, but it
