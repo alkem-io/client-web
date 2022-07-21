@@ -10,7 +10,7 @@ const Root = styled(Box)(({ theme }) => ({
     position: 'absolute',
     top: 0,
     right: 0,
-    minHeight: theme.spacing(4),
+    minHeight: theme.spacing(5),
   },
 }));
 
