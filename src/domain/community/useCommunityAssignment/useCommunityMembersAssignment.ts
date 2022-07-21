@@ -8,7 +8,7 @@ import { Identifiable } from '../../shared/types/Identifiable';
 import { PossiblyUndefinedProps } from '../../shared/types/PossiblyUndefinedProps';
 import somePropsNotDefined from '../../shared/utils/somePropsNotDefined';
 
-interface QueryResult<MemberEntity> extends PossiblyUndefinedProps<CommunityIdHolder> {
+interface ExistingMembersQueryResult<MemberEntity> extends PossiblyUndefinedProps<CommunityIdHolder> {
   existingMembers: MemberEntity[] | undefined;
 }
 
@@ -25,6 +25,13 @@ export interface MemberMutationHook<Mutation = unknown> {
   (options: Apollo.MutationHookOptions<Mutation, MutationVariables>): MutationTuple<Mutation, MutationVariables>;
 }
 
+export interface RefetchQuery<ExistingMembersQueryVariables extends {}> {
+  (variables: ExistingMembersQueryVariables): {
+    query: DocumentNode;
+    variables: ExistingMembersQueryVariables;
+  };
+}
+
 export interface UseCommunityMembersAssignmentOptions<
   ExistingMembersQueryVariables extends {},
   MemberEntity extends Identifiable,
@@ -35,14 +42,11 @@ export interface UseCommunityMembersAssignmentOptions<
   useExistingMembersQuery: (options: {
     variables: ExistingMembersQueryVariables;
     skip: boolean;
-  }) => QueryResult<MemberEntity>;
+  }) => ExistingMembersQueryResult<MemberEntity>;
   allPossibleMembers: MemberEntity[] | undefined;
-  refetchMembersQuery: (variables: ExistingMembersQueryVariables) => {
-    query: DocumentNode;
-    variables: ExistingMembersQueryVariables;
-  };
   useAssignMemberMutation: MemberMutationHook<AssignMemberMutation>;
   useRemoveMemberMutation: MemberMutationHook<RemoveMemberMutation>;
+  refetchQueries: RefetchQuery<ExistingMembersQueryVariables>[];
 }
 
 export interface Provided<MemberEntity> {
@@ -81,7 +85,7 @@ const useCommunityMembersAssignment = <
     allPossibleMembers = EMPTY_LIST,
     useAssignMemberMutation,
     useRemoveMemberMutation,
-    refetchMembersQuery,
+    refetchQueries,
   } = options;
 
   const handleError = useApolloErrorHandler();
@@ -102,13 +106,13 @@ const useCommunityMembersAssignment = <
 
   const [assign, { loading: isAddingMember }] = useAssignMemberMutation({
     onError: handleError,
-    refetchQueries: [refetchMembersQuery(variables as ExistingMembersQueryVariables)],
+    refetchQueries: refetchQueries.map(refetchQuery => refetchQuery(variables as ExistingMembersQueryVariables)),
     awaitRefetchQueries: true,
   });
 
   const [remove, { loading: isRemovingMember }] = useRemoveMemberMutation({
     onError: handleError,
-    refetchQueries: [refetchMembersQuery(variables as ExistingMembersQueryVariables)],
+    refetchQueries: refetchQueries.map(refetchQuery => refetchQuery(variables as ExistingMembersQueryVariables)),
     awaitRefetchQueries: true,
   });
 

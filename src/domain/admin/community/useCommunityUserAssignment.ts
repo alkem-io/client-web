@@ -6,62 +6,92 @@ import {
 } from '../../../hooks/generated/graphql';
 import useCommunityMembersAssignment, {
   MemberMutationHook,
-  UseCommunityMembersAssignmentOptions,
+  RefetchQuery,
 } from '../../community/useCommunityAssignment/useCommunityMembersAssignment';
-import {
-  AssignUserAsCommunityLeadMutation,
-  AssignUserAsCommunityMemberMutation,
-  RemoveUserAsCommunityLeadMutation,
-  RemoveUserAsCommunityMemberMutation,
-} from '../../../models/graphql-schema';
 import { Member } from '../../../models/User';
 import { PaginationVariables } from '../../shared/pagination/usePaginatedQuery';
 import useAvailableCommunityUsers, {
   AvailableCommunityUsersOptions,
   UserFilterHolder,
 } from './useAvailableCommunityUsers';
+import { QueryHookOptions, QueryResult } from '@apollo/client/react/types/types';
+import { Identifiable } from '../../shared/types/Identifiable';
+import { PossiblyUndefinedProps } from '../../shared/types/PossiblyUndefinedProps';
 
 type MemberTypes = 'member' | 'lead';
 
-interface Options<QueryVariables extends {}, AvailableUsersData, MemberType extends MemberTypes>
-  extends Omit<
-    UseCommunityMembersAssignmentOptions<
-      QueryVariables,
-      Member,
-      MemberType extends 'lead' ? AssignUserAsCommunityLeadMutation : AssignUserAsCommunityMemberMutation,
-      MemberType extends 'lead' ? RemoveUserAsCommunityLeadMutation : RemoveUserAsCommunityMemberMutation
-    >,
-    'allPossibleMembers' | 'useAssignMemberMutation' | 'useRemoveMemberMutation'
-  > {
-  availableUsers: Omit<
-    AvailableCommunityUsersOptions<AvailableUsersData, QueryVariables & UserFilterHolder & PaginationVariables>,
-    'variables'
-  >;
-  memberType: MemberType;
+interface Community extends Identifiable {
+  memberUsers?: Member[];
+  leadUsers?: Member[];
 }
 
-const useCommunityUserAssignment = <QueryVariables extends {}, AvailableUsersData, MemberType extends MemberTypes>({
+interface Options<QueryVariables extends {}, ExistingMembersData, AvailableUsersData, MemberType extends MemberTypes> {
+  variables: PossiblyUndefinedProps<QueryVariables>;
+  availableUsersOptions: Omit<
+    AvailableCommunityUsersOptions<AvailableUsersData, QueryVariables & UserFilterHolder & PaginationVariables>,
+    'variables' | 'pageSize'
+  > & {
+    refetchQuery: RefetchQuery<QueryVariables & UserFilterHolder & PaginationVariables>;
+  };
+  memberType: MemberType;
+  existingUsersOptions: {
+    useQuery: (
+      options: QueryHookOptions<ExistingMembersData, QueryVariables>
+    ) => QueryResult<ExistingMembersData, QueryVariables>;
+    readCommunity: (data: ExistingMembersData) => Community | undefined;
+    refetchQuery: RefetchQuery<QueryVariables>;
+  };
+}
+
+const AVAILABLE_USERS_PER_PAGE = 10;
+
+const useCommunityUserAssignment = <
+  QueryVariables extends {},
+  ExistingMembersData,
+  AvailableUsersData,
+  MemberType extends MemberTypes
+>({
   memberType,
-  ...options
-}: Options<QueryVariables, AvailableUsersData, MemberType>) => {
-  const { allPossibleMemberUsers, setSearchTerm, ...availableQueryProps } = useAvailableCommunityUsers({
-    ...options.availableUsers,
-    variables: options.variables as AvailableCommunityUsersOptions<
+  availableUsersOptions,
+  existingUsersOptions,
+  variables,
+}: Options<QueryVariables, ExistingMembersData, AvailableUsersData, MemberType>) => {
+  const { allPossibleMemberUsers, filter, setSearchTerm, ...availableQueryProps } = useAvailableCommunityUsers({
+    ...availableUsersOptions,
+    variables: variables as AvailableCommunityUsersOptions<
       AvailableUsersData,
       QueryVariables & UserFilterHolder & PaginationVariables
     >['variables'],
+    pageSize: AVAILABLE_USERS_PER_PAGE,
   });
 
+  const refetchAvailableMembersQuery = variables =>
+    availableUsersOptions.refetchQuery({
+      ...variables,
+      filter,
+      first: AVAILABLE_USERS_PER_PAGE,
+    });
+
   const { existingMembers, availableMembers, ...communityAssignmentProps } = useCommunityMembersAssignment({
-    // TODO possibility to use different types for allPossibleMembers/availableMembers and existingMembers
-    allPossibleMembers: allPossibleMemberUsers as Member[],
+    variables,
+    useExistingMembersQuery: queryOptions => {
+      const { data } = existingUsersOptions.useQuery(
+        queryOptions as QueryHookOptions<ExistingMembersData, QueryVariables>
+      );
+      const community = data && existingUsersOptions.readCommunity(data);
+      return {
+        communityId: community?.id,
+        existingMembers: memberType === 'lead' ? community?.leadUsers : community?.memberUsers,
+      };
+    },
+    allPossibleMembers: allPossibleMemberUsers as Member[], // TODO make possible to use different types for available and existing members
     useAssignMemberMutation: (memberType === 'lead'
       ? useAssignUserAsCommunityLeadMutation
       : useAssignUserAsCommunityMemberMutation) as MemberMutationHook,
     useRemoveMemberMutation: (memberType === 'lead'
       ? useRemoveUserAsCommunityLeadMutation
       : useRemoveUserAsCommunityMemberMutation) as MemberMutationHook,
-    ...options,
+    refetchQueries: [existingUsersOptions.refetchQuery, refetchAvailableMembersQuery],
   });
 
   return {

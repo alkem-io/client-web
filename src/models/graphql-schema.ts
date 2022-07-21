@@ -11091,6 +11091,7 @@ export type HubAvailableLeadUsersQuery = {
     community?:
       | {
           __typename?: 'Community';
+          id: string;
           availableLeadUsers?:
             | {
                 __typename?: 'PaginatedUsers';
@@ -11122,6 +11123,7 @@ export type HubAvailableMemberUsersQuery = {
     community?:
       | {
           __typename?: 'Community';
+          id: string;
           availableMemberUsers?:
             | {
                 __typename?: 'PaginatedUsers';
@@ -11156,6 +11158,7 @@ export type ChallengeAvailableLeadUsersQuery = {
       community?:
         | {
             __typename?: 'Community';
+            id: string;
             availableLeadUsers?:
               | {
                   __typename?: 'PaginatedUsers';
@@ -11191,6 +11194,7 @@ export type ChallengeAvailableMemberUsersQuery = {
       community?:
         | {
             __typename?: 'Community';
+            id: string;
             availableMemberUsers?:
               | {
                   __typename?: 'PaginatedUsers';
@@ -11226,6 +11230,7 @@ export type OpportunityAvailableLeadUsersQuery = {
       community?:
         | {
             __typename?: 'Community';
+            id: string;
             availableLeadUsers?:
               | {
                   __typename?: 'PaginatedUsers';
@@ -11261,6 +11266,7 @@ export type OpportunityAvailableMemberUsersQuery = {
       community?:
         | {
             __typename?: 'Community';
+            id: string;
             availableMemberUsers?:
               | {
                   __typename?: 'PaginatedUsers';
@@ -11277,6 +11283,40 @@ export type OpportunityAvailableMemberUsersQuery = {
         | undefined;
     };
   };
+};
+
+export type CommunityAvailableLeadUsersFragment = {
+  __typename?: 'Community';
+  id: string;
+  availableLeadUsers?:
+    | {
+        __typename?: 'PaginatedUsers';
+        users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+        };
+      }
+    | undefined;
+};
+
+export type CommunityAvailableMemberUsersFragment = {
+  __typename?: 'Community';
+  id: string;
+  availableMemberUsers?:
+    | {
+        __typename?: 'PaginatedUsers';
+        users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+        };
+      }
+    | undefined;
 };
 
 export type AvailableUserFragment = { __typename?: 'User'; id: string; displayName: string; email: string };

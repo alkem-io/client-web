@@ -1478,6 +1478,43 @@ export const AvailableUserFragmentDoc = gql`
     email
   }
 `;
+export const PageInfoFragmentDoc = gql`
+  fragment PageInfo on PageInfo {
+    startCursor
+    endCursor
+    hasNextPage
+  }
+`;
+export const CommunityAvailableLeadUsersFragmentDoc = gql`
+  fragment CommunityAvailableLeadUsers on Community {
+    id
+    availableLeadUsers(first: $first, after: $after, filter: $filter) {
+      users {
+        ...AvailableUser
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+export const CommunityAvailableMemberUsersFragmentDoc = gql`
+  fragment CommunityAvailableMemberUsers on Community {
+    id
+    availableMemberUsers(first: $first, after: $after, filter: $filter) {
+      users {
+        ...AvailableUser
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+  ${AvailableUserFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
 export const TemplateInfoFragmentDoc = gql`
   fragment TemplateInfo on TemplateInfo {
     id
@@ -1702,13 +1739,6 @@ export const HubInfoFragmentDoc = gql`
     }
   }
   ${HubDetailsFragmentDoc}
-`;
-export const PageInfoFragmentDoc = gql`
-  fragment PageInfo on PageInfo {
-    startCursor
-    endCursor
-    hasNextPage
-  }
 `;
 export const UpdatePreferenceOnUserDocument = gql`
   mutation updatePreferenceOnUser($input: UpdateUserPreferenceInput!) {
@@ -14351,19 +14381,11 @@ export const HubAvailableLeadUsersDocument = gql`
   query HubAvailableLeadUsers($hubId: UUID_NAMEID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
     hub(ID: $hubId) {
       community {
-        availableLeadUsers(first: $first, after: $after, filter: $filter) {
-          users {
-            ...AvailableUser
-          }
-          pageInfo {
-            ...PageInfo
-          }
-        }
+        ...CommunityAvailableLeadUsers
       }
     }
   }
-  ${AvailableUserFragmentDoc}
-  ${PageInfoFragmentDoc}
+  ${CommunityAvailableLeadUsersFragmentDoc}
 `;
 
 /**
@@ -14422,19 +14444,11 @@ export const HubAvailableMemberUsersDocument = gql`
   query HubAvailableMemberUsers($hubId: UUID_NAMEID!, $first: Int!, $after: UUID, $filter: UserFilterInput) {
     hub(ID: $hubId) {
       community {
-        availableMemberUsers(first: $first, after: $after, filter: $filter) {
-          users {
-            ...AvailableUser
-          }
-          pageInfo {
-            ...PageInfo
-          }
-        }
+        ...CommunityAvailableMemberUsers
       }
     }
   }
-  ${AvailableUserFragmentDoc}
-  ${PageInfoFragmentDoc}
+  ${CommunityAvailableMemberUsersFragmentDoc}
 `;
 
 /**
@@ -14500,20 +14514,12 @@ export const ChallengeAvailableLeadUsersDocument = gql`
     hub(ID: $hubId) {
       challenge(ID: $challengeId) {
         community {
-          availableLeadUsers(first: $first, after: $after, filter: $filter) {
-            users {
-              ...AvailableUser
-            }
-            pageInfo {
-              ...PageInfo
-            }
-          }
+          ...CommunityAvailableLeadUsers
         }
       }
     }
   }
-  ${AvailableUserFragmentDoc}
-  ${PageInfoFragmentDoc}
+  ${CommunityAvailableLeadUsersFragmentDoc}
 `;
 
 /**
@@ -14582,20 +14588,12 @@ export const ChallengeAvailableMemberUsersDocument = gql`
     hub(ID: $hubId) {
       challenge(ID: $challengeId) {
         community {
-          availableMemberUsers(first: $first, after: $after, filter: $filter) {
-            users {
-              ...AvailableUser
-            }
-            pageInfo {
-              ...PageInfo
-            }
-          }
+          ...CommunityAvailableMemberUsers
         }
       }
     }
   }
-  ${AvailableUserFragmentDoc}
-  ${PageInfoFragmentDoc}
+  ${CommunityAvailableMemberUsersFragmentDoc}
 `;
 
 /**
@@ -14666,20 +14664,12 @@ export const OpportunityAvailableLeadUsersDocument = gql`
     hub(ID: $hubId) {
       opportunity(ID: $opportunityId) {
         community {
-          availableLeadUsers(first: $first, after: $after, filter: $filter) {
-            users {
-              ...AvailableUser
-            }
-            pageInfo {
-              ...PageInfo
-            }
-          }
+          ...CommunityAvailableLeadUsers
         }
       }
     }
   }
-  ${AvailableUserFragmentDoc}
-  ${PageInfoFragmentDoc}
+  ${CommunityAvailableLeadUsersFragmentDoc}
 `;
 
 /**
@@ -14750,20 +14740,12 @@ export const OpportunityAvailableMemberUsersDocument = gql`
     hub(ID: $hubId) {
       opportunity(ID: $opportunityId) {
         community {
-          availableMemberUsers(first: $first, after: $after, filter: $filter) {
-            users {
-              ...AvailableUser
-            }
-            pageInfo {
-              ...PageInfo
-            }
-          }
+          ...CommunityAvailableMemberUsers
         }
       }
     }
   }
-  ${AvailableUserFragmentDoc}
-  ${PageInfoFragmentDoc}
+  ${CommunityAvailableMemberUsersFragmentDoc}
 `;
 
 /**
