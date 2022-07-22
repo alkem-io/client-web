@@ -6,14 +6,7 @@ query HubAvailableLeadUsers(
 ) {
 	hub(ID: $hubId) {
     community {
-      availableLeadUsers(first: $first, after: $after, filter: $filter) {
-        users {
-          ...AvailableUser
-        }
-        pageInfo {
-          ...PageInfo
-        }
-      }
+      ...CommunityAvailableLeadUsers
     }
   }
 }
@@ -26,14 +19,7 @@ query HubAvailableMemberUsers(
 ) {
 	hub(ID: $hubId) {
     community {
-      availableMemberUsers(first: $first, after: $after, filter: $filter) {
-        users {
-          ...AvailableUser
-        }
-        pageInfo {
-          ...PageInfo
-        }
-      }
+      ...CommunityAvailableMemberUsers
     }
   }
 }
@@ -48,14 +34,7 @@ query ChallengeAvailableLeadUsers(
 	hub(ID: $hubId) {
     challenge(ID: $challengeId) {
       community {
-        availableLeadUsers(first: $first, after: $after, filter: $filter) {
-          users {
-            ...AvailableUser
-          }
-          pageInfo {
-            ...PageInfo
-          }
-        }
+        ...CommunityAvailableLeadUsers
       }
     }
   }
@@ -71,14 +50,7 @@ query ChallengeAvailableMemberUsers(
 	hub(ID: $hubId) {
     challenge(ID: $challengeId) {
       community {
-        availableMemberUsers(first: $first, after: $after, filter: $filter) {
-          users {
-            ...AvailableUser
-          }
-          pageInfo {
-            ...PageInfo
-          }
-        }
+        ...CommunityAvailableMemberUsers
       }
     }
   }
@@ -94,14 +66,7 @@ query OpportunityAvailableLeadUsers(
 	hub(ID: $hubId) {
     opportunity(ID: $opportunityId) {
       community {
-        availableLeadUsers(first: $first, after: $after, filter: $filter) {
-          users {
-            ...AvailableUser
-          }
-          pageInfo {
-            ...PageInfo
-          }
-        }
+        ...CommunityAvailableLeadUsers
       }
     }
   }
@@ -117,15 +82,32 @@ query OpportunityAvailableMemberUsers(
 	hub(ID: $hubId) {
     opportunity(ID: $opportunityId) {
       community {
-        availableMemberUsers(first: $first, after: $after, filter: $filter) {
-          users {
-            ...AvailableUser
-          }
-          pageInfo {
-            ...PageInfo
-          }
-        }
+        ...CommunityAvailableMemberUsers
       }
+    }
+  }
+}
+
+fragment CommunityAvailableLeadUsers on Community {
+  id
+  availableLeadUsers(first: $first, after: $after, filter: $filter) {
+    users {
+      ...AvailableUser
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
+fragment CommunityAvailableMemberUsers on Community {
+  id
+  availableMemberUsers(first: $first, after: $after, filter: $filter) {
+    users {
+      ...AvailableUser
+    }
+    pageInfo {
+      ...PageInfo
     }
   }
 }

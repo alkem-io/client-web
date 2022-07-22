@@ -1,5 +1,4 @@
-import { FieldPolicy } from '@apollo/client';
-import { Identifiable } from '../../types/Identifiable';
+import { FieldFunctionOptions, FieldPolicy } from '@apollo/client';
 
 type KeyArgs = FieldPolicy<unknown>['keyArgs'];
 const pageInfoFieldName = 'pageInfo';
@@ -7,61 +6,66 @@ const pageInfoFieldName = 'pageInfo';
 type TRelayPageInfo = {
   hasPreviousPage: boolean;
   hasNextPage: boolean;
-  startCursor: string;
-  endCursor: string;
+  startCursor: string | null;
+  endCursor: string | null;
 };
 // https://github.com/apollographql/apollo-client/blob/main/src/utilities/policies/pagination.ts#L91
 
-interface PaginationParamsHolder {
-  args?: {
-    before?: string;
-    after?: string;
-  };
+interface PaginationParams {
+  before?: string;
+  after?: string;
 }
 
 type PaginatedResponse<Item, FieldName extends string> = {
   [pageInfoFieldName]: TRelayPageInfo;
+  __typename: string;
 } & Record<FieldName, Item[]>;
 
-export const paginationFieldPolicy = (keyArgs: KeyArgs = false) => {
+export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string) => {
   return {
     keyArgs,
-    merge<Item extends Identifiable, FieldName extends string>(
+    merge<Item extends { __ref?: string; id?: string }, FieldName extends string>(
       existing: PaginatedResponse<Item, FieldName>,
       incoming: PaginatedResponse<Item, FieldName>,
-      { args }: PaginationParamsHolder
+      { args, isReference }: FieldFunctionOptions<PaginationParams>
     ): PaginatedResponse<Item, FieldName> {
-      if (!existing) {
+      if (!existing || !(args?.after || args?.before)) {
         return incoming;
       }
 
       if (!incoming) {
+        // never seem to happen
         return existing;
       }
 
-      const dataFieldName = Object.keys(incoming).find(x => x !== pageInfoFieldName && x !== '__typename') as
-        | FieldName
-        | undefined;
+      const nonMetaFields = Object.keys(incoming).filter(x => x !== pageInfoFieldName && x !== '__typename');
       // we expect 'incoming' to be { __typename: string, pageInfo: {}, items: [] };
       // items is a placeholder field - it's calculated on the server based on what entity you have requested, e.g. 'users'
-      // if after filtering out the two other fields, we still have more fields, override the old data;
-      // throwing an exception or a warning maybe also be required
-      if (!dataFieldName) {
-        return incoming;
+      // if after filtering out the two other fields, we still have more fields, throw an exception.
+      if (nonMetaFields.length === 0) {
+        throw new Error('Missing data field');
       }
+      if (nonMetaFields.length > 1) {
+        throw new Error('More than 1 data field');
+      }
+
+      const [dataFieldName] = nonMetaFields;
 
       const incomingData = incoming[dataFieldName] as Item[];
 
       let prefix = existing[dataFieldName] as Item[];
       let suffix: Item[] = [];
 
+      const recordFinder = (item: Item) =>
+        isReference(item) ? item.__ref === `${typeName}:${args.after}` : item.id === args.after;
+
       if (args?.after) {
-        const index = prefix.findIndex(item => item.id === args.after);
+        const index = prefix.findIndex(recordFinder);
         if (index >= 0) {
           prefix = prefix.slice(0, index + 1);
         }
       } else if (args?.before) {
-        const index = prefix.findIndex(item => item.id === args.before);
+        const index = prefix.findIndex(recordFinder);
         suffix = index < 0 ? prefix : prefix.slice(index);
         prefix = [];
       } else if (incomingData) {
@@ -95,17 +99,18 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false) => {
         // determined using prefix.length and suffix.length.
         if (!prefix.length) {
           if (hasPreviousPage !== undefined) pageInfo.hasPreviousPage = hasPreviousPage;
-          if (startCursor !== undefined) pageInfo.startCursor = startCursor;
+          if (startCursor !== undefined && startCursor !== null) pageInfo.startCursor = startCursor;
         }
         if (!suffix.length) {
           if (hasNextPage !== undefined) pageInfo.hasNextPage = hasNextPage;
-          if (endCursor !== undefined) pageInfo.endCursor = endCursor;
+          if (endCursor !== undefined || endCursor !== null) pageInfo.endCursor = endCursor;
         }
       }
 
       return {
         [dataFieldName]: edges,
         [pageInfoFieldName]: pageInfo,
+        __typename: (incoming ?? existing).__typename,
       } as PaginatedResponse<Item, FieldName>;
     },
   } as FieldPolicy;
