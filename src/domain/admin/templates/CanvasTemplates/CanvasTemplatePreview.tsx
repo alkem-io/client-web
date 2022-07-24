@@ -1,7 +1,7 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogProps, styled, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { AdminAspectTemplateFragment } from '../../../../models/graphql-schema';
+import { AdminCanvasTemplateFragment } from '../../../../models/graphql-schema';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
@@ -11,21 +11,20 @@ const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(
   fontWeight: 'bold',
 }));
 
-interface AspectTemplateViewProps {
-  template: AdminAspectTemplateFragment;
+interface CanvasTemplateViewProps {
+  template: AdminCanvasTemplateFragment;
   open: boolean;
   onClose: DialogProps['onClose'];
   editUrl: string;
   editLinkState?: Record<string, unknown>;
 }
 
-const AspectTemplateView = ({ template, open, onClose, editUrl, editLinkState }: AspectTemplateViewProps) => {
+const CanvasTemplatePreview = ({ template, open, onClose, editUrl, editLinkState }: CanvasTemplateViewProps) => {
   const { t } = useTranslation();
 
   const {
     info: { title, visual, tagset: { tags } = {}, description = '' },
-    type: templateType,
-    defaultDescription,
+    value,
   } = template;
 
   return (
@@ -54,15 +53,9 @@ const AspectTemplateView = ({ template, open, onClose, editUrl, editLinkState }:
           <TagsComponent tags={tags || []} />
         </Box>
         <Box>
-          <TypographyTitle>{t('aspect-edit.type.title')}</TypographyTitle>
+          <TypographyTitle>Value</TypographyTitle>
           <Typography variant="h6" color="primary">
-            {templateType}
-          </Typography>
-        </Box>
-        <Box>
-          <TypographyTitle>{t('aspect-templates.default-description')}</TypographyTitle>
-          <Typography variant="body2" component="div">
-            <Markdown>{defaultDescription}</Markdown>
+            {value}
           </Typography>
         </Box>
       </DialogContent>
@@ -70,4 +63,4 @@ const AspectTemplateView = ({ template, open, onClose, editUrl, editLinkState }:
   );
 };
 
-export default AspectTemplateView;
+export default CanvasTemplatePreview;

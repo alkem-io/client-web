@@ -6,6 +6,9 @@ query HubTemplates($hubId: UUID_NAMEID!) {
       aspectTemplates {
         ...AdminAspectTemplate
       }
+      canvasTemplates {
+        ...AdminCanvasTemplate
+      }
     }
   }
 }
@@ -14,6 +17,14 @@ fragment AdminAspectTemplate on AspectTemplate {
   id
   defaultDescription
   type
+  info {
+    ...TemplateInfo
+  }
+}
+
+fragment AdminCanvasTemplate on CanvasTemplate {
+  id
+  value
   info {
     ...TemplateInfo
   }

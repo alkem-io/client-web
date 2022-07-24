@@ -282,6 +282,9 @@
     "default-description": "Default aspect description",
     "banner-narrow": "Banner narrow"
   },
+  "canvas-templates": {
+    "canvas-template": "Canvas template"
+  },
   "components": {
     "activity-tooltip": {
       "headline": "Alkemio is growing! In total, the platform now hosts:"
