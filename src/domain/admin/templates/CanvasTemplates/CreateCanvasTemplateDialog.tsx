@@ -4,14 +4,16 @@ import Dialog from '@mui/material/Dialog';
 import React from 'react';
 import { DialogProps } from '@mui/material';
 import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
+import { CanvasDetailsFragment } from '../../../../models/graphql-schema';
 
-interface CreateCanvasTemplateDialogProps {
+export interface CreateCanvasTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
+  canvases: CanvasDetailsFragment[] | undefined;
 }
 
-const CreateCanvasTemplateDialog = ({ open, onClose, onSubmit }: CreateCanvasTemplateDialogProps) => {
+const CreateCanvasTemplateDialog = ({ canvases, open, onClose, onSubmit }: CreateCanvasTemplateDialogProps) => {
   const { t } = useTranslation();
 
   const values: Partial<CanvasTemplateFormValues> = {};
@@ -20,12 +22,13 @@ const CreateCanvasTemplateDialog = ({ open, onClose, onSubmit }: CreateCanvasTem
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
       <CanvasTemplateForm
         title={t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
+        canvases={canvases}
         onSubmit={onSubmit}
         actions={<FormikSubmitButton variant="contained">{t('common.create')}</FormikSubmitButton>}
       />

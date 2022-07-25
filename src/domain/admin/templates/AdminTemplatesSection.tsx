@@ -43,7 +43,17 @@ export interface MutationHook<Variables, MutationResult> {
   (baseOptions?: Apollo.MutationHookOptions<MutationResult, Variables>): MutationTuple<MutationResult, Variables>;
 }
 
-interface AdminAspectTemplatesSectionProps<T extends Template, SubmittedValues extends {}, CreateM, UpdateM, DeleteM> {
+type AdminAspectTemplatesSectionProps<
+  T extends Template,
+  SubmittedValues extends {},
+  CreateM,
+  UpdateM,
+  DeleteM,
+  DialogProps extends {}
+> = Omit<
+  DialogProps,
+  keyof CreateTemplateDialogProps<SubmittedValues> | keyof EditTemplateDialogProps<T, SubmittedValues>
+> & {
   headerText: string;
   templateId: string | undefined;
   templatesSetId: string | undefined;
@@ -54,14 +64,21 @@ interface AdminAspectTemplatesSectionProps<T extends Template, SubmittedValues e
   edit?: boolean;
   templateCardComponent: ComponentType<Omit<SimpleCardProps, 'iconComponent'>>;
   templatePreviewComponent: ComponentType<TemplatePreviewProps<T>>;
-  createTemplateDialogComponent: ComponentType<CreateTemplateDialogProps<SubmittedValues>>;
-  editTemplateDialogComponent: ComponentType<EditTemplateDialogProps<T, SubmittedValues>>;
+  createTemplateDialogComponent: ComponentType<DialogProps & CreateTemplateDialogProps<SubmittedValues>>;
+  editTemplateDialogComponent: ComponentType<DialogProps & EditTemplateDialogProps<T, SubmittedValues>>;
   useCreateTemplateMutation: MutationHook<SubmittedValues & { templatesSetId: string }, CreateM>;
   useUpdateTemplateMutation: MutationHook<Partial<SubmittedValues> & { templateId: string }, UpdateM>;
   useDeleteTemplateMutation: MutationHook<{ templateId: string }, DeleteM>;
-}
+};
 
-const AdminTemplatesSection = <T extends Template, SubmittedValues extends {}, CreateM, UpdateM, DeleteM>({
+const AdminTemplatesSection = <
+  T extends Template,
+  SubmittedValues extends {},
+  CreateM,
+  UpdateM,
+  DeleteM,
+  DialogProps extends {}
+>({
   headerText,
   templates,
   templateId,
@@ -75,9 +92,15 @@ const AdminTemplatesSection = <T extends Template, SubmittedValues extends {}, C
   useDeleteTemplateMutation,
   templateCardComponent: TemplateCard,
   templatePreviewComponent: TemplatePreview,
-  createTemplateDialogComponent: CreateTemplateDialog,
-  editTemplateDialogComponent: EditTemplateDialog,
-}: AdminAspectTemplatesSectionProps<T, SubmittedValues, CreateM, UpdateM, DeleteM>) => {
+  createTemplateDialogComponent,
+  editTemplateDialogComponent,
+  ...dialogProps
+}: AdminAspectTemplatesSectionProps<T, SubmittedValues, CreateM, UpdateM, DeleteM, DialogProps>) => {
+  const CreateTemplateDialog = createTemplateDialogComponent as ComponentType<
+    CreateTemplateDialogProps<SubmittedValues>
+  >;
+  const EditTemplateDialog = editTemplateDialogComponent as ComponentType<EditTemplateDialogProps<T, SubmittedValues>>;
+
   const onError = useApolloErrorHandler();
   const { t } = useTranslation();
 
@@ -171,12 +194,14 @@ const AdminTemplatesSection = <T extends Template, SubmittedValues extends {}, C
         </SimpleCardsList>
       </DashboardGenericSection>
       <CreateTemplateDialog
+        {...dialogProps}
         open={isCreateTemplateDialogOpen}
         onClose={closeCreateAspectTemplateDialog}
         onSubmit={handleAspectTemplateCreation}
       />
       {selectedTemplate && (
         <EditTemplateDialog
+          {...dialogProps}
           open={edit}
           onClose={onCloseTemplateDialog}
           template={selectedTemplate}

@@ -1,11 +1,12 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogProps, styled, Typography } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminCanvasTemplateFragment } from '../../../../models/graphql-schema';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
 import Markdown from '../../../../components/core/Markdown';
+import CanvasWhiteboard from '../../../../components/composite/entities/Canvas/CanvasWhiteboard';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
@@ -26,6 +27,13 @@ const CanvasTemplatePreview = ({ template, open, onClose, editUrl, editLinkState
     info: { title, visual, tagset: { tags } = {}, description = '' },
     value,
   } = template;
+
+  const canvasFromTemplate = useMemo(() => {
+    return {
+      id: '__template',
+      value,
+    };
+  }, [value]);
 
   return (
     <Dialog open={open} onClose={onClose} PaperProps={{ sx: { backgroundColor: 'background.default' } }}>
@@ -52,11 +60,23 @@ const CanvasTemplatePreview = ({ template, open, onClose, editUrl, editLinkState
           <SectionSpacer half />
           <TagsComponent tags={tags || []} />
         </Box>
-        <Box>
-          <TypographyTitle>Value</TypographyTitle>
-          <Typography variant="h6" color="primary">
-            {value}
-          </Typography>
+        <Box height={theme => theme.spacing(40)}>
+          {value && (
+            <CanvasWhiteboard
+              entities={{
+                canvas: canvasFromTemplate,
+              }}
+              actions={{}}
+              options={{
+                viewModeEnabled: true,
+                UIOptions: {
+                  canvasActions: {
+                    export: false,
+                  },
+                },
+              }}
+            />
+          )}
         </Box>
       </DialogContent>
     </Dialog>

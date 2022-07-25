@@ -3,7 +3,11 @@ import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
-import { refetchHubTemplatesQuery, useHubTemplatesQuery } from '../../../hooks/generated/graphql';
+import {
+  refetchHubTemplatesQuery,
+  useHubCanvasesLazyQuery,
+  useHubTemplatesQuery,
+} from '../../../hooks/generated/graphql';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspectTemplatesSection';
@@ -34,12 +38,17 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   const [backFromTemplateDialog, buildLink] = useBackToParentPage(PAGE_KEY_TEMPLATES, routePrefix);
 
-  const { data } = useHubTemplatesQuery({
+  const { data: hubTemplatesData } = useHubTemplatesQuery({
     variables: { hubId },
     skip: !hubId, // hub id can be an empty string due to some `|| ''` happening above in the tree
   });
 
-  const { aspectTemplates, canvasTemplates, id: templatesSetID } = data?.hub.templates ?? {};
+  const [loadCanvases, { data: hubCanvasesData }] = useHubCanvasesLazyQuery({
+    variables: { hubId },
+  });
+
+  const { aspectTemplates, canvasTemplates, id: templatesSetID } = hubTemplatesData?.hub.templates ?? {};
+  const canvases = hubCanvasesData?.hub.context?.canvases;
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
@@ -61,6 +70,8 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
         buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${canvasTemplatesRoutePath}/${id}`)}
         edit={edit}
+        loadCanvases={loadCanvases}
+        canvases={canvases}
       />
     </HubSettingsLayout>
   );

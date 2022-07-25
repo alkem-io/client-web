@@ -1,10 +1,11 @@
 import React, { ReactNode } from 'react';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
-import FormikInputField from '../../../../components/composite/forms/FormikInputField';
 import { CreateTemplateInfoInput, Visual } from '../../../../models/graphql-schema';
 import FormRows from '../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
+import CanvasFormikSelectInput, { Canvas } from './CanvasFormikSelectInput';
+import { useTranslation } from 'react-i18next';
 
 export interface CanvasTemplateFormValues {
   title: string;
@@ -24,13 +25,16 @@ interface CanvasTemplateFormProps {
   visual?: Visual;
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<CanvasTemplateFormValues>) => ReactNode);
+  canvases: Canvas[] | undefined;
 }
 
 const validator = {
   value: yup.string().required(),
 };
 
-const CanvasTemplateForm = ({ title, initialValues, visual, onSubmit, actions }: CanvasTemplateFormProps) => {
+const CanvasTemplateForm = ({ title, initialValues, visual, onSubmit, actions, canvases }: CanvasTemplateFormProps) => {
+  const { t } = useTranslation();
+
   return (
     <TemplateForm
       title={title}
@@ -41,7 +45,7 @@ const CanvasTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
       validator={validator}
     >
       <FormRows>
-        <FormikInputField name="value" title={'value'} />
+        <CanvasFormikSelectInput title={t('common.canvas')} name="value" canvases={canvases} />
       </FormRows>
     </TemplateForm>
   );

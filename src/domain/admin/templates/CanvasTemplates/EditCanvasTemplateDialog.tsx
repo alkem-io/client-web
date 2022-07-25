@@ -1,4 +1,4 @@
-import { AdminCanvasTemplateFragment } from '../../../../models/graphql-schema';
+import { AdminCanvasTemplateFragment, CanvasDetailsFragment } from '../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import CanvasTemplateForm, { CanvasTemplateFormSubmittedValues, CanvasTemplateFormValues } from './CanvasTemplateForm';
 import Dialog from '@mui/material/Dialog';
@@ -7,15 +7,23 @@ import { DialogProps } from '@mui/material';
 import DeleteButton from '../../../shared/components/DeleteButton';
 import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 
-interface EditCanvasTemplateDialogProps {
+export interface EditCanvasTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
   onDelete: () => void;
   template: AdminCanvasTemplateFragment | undefined;
+  canvases: CanvasDetailsFragment[] | undefined;
 }
 
-const EditCanvasTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }: EditCanvasTemplateDialogProps) => {
+const EditCanvasTemplateDialog = ({
+  template,
+  canvases,
+  open,
+  onClose,
+  onSubmit,
+  onDelete,
+}: EditCanvasTemplateDialogProps) => {
   const { t } = useTranslation();
 
   if (!template) {
@@ -33,13 +41,14 @@ const EditCanvasTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
       <CanvasTemplateForm
         title={t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
         visual={template.info.visual}
+        canvases={canvases}
         onSubmit={onSubmit}
         actions={
           <>
