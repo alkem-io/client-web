@@ -70,6 +70,7 @@
     "tags": "Tags",
     "add": "Add",
     "remove": "Remove",
+    "canvas": "Canvas",
     "comment": "Comment",
     "comments": "Comments",
     "create": "Create",
@@ -281,6 +282,9 @@
     "aspect-template": "Aspect template",
     "default-description": "Default aspect description",
     "banner-narrow": "Banner narrow"
+  },
+  "canvas-templates": {
+    "canvas-template": "Canvas template"
   },
   "components": {
     "activity-tooltip": {
