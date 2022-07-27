@@ -1545,6 +1545,16 @@ export const AdminAspectTemplateFragmentDoc = gql`
   }
   ${TemplateInfoFragmentDoc}
 `;
+export const AdminCanvasTemplateFragmentDoc = gql`
+  fragment AdminCanvasTemplate on CanvasTemplate {
+    id
+    value
+    info {
+      ...TemplateInfo
+    }
+  }
+  ${TemplateInfoFragmentDoc}
+`;
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
@@ -14939,8 +14949,15 @@ export function refetchAdminGlobalOrganizationsListQuery(
   return { query: AdminGlobalOrganizationsListDocument, variables: variables };
 }
 export const UpdateAspectTemplateDocument = gql`
-  mutation updateAspectTemplate($aspectTemplateInput: UpdateAspectTemplateInput!) {
-    updateAspectTemplate(aspectTemplateInput: $aspectTemplateInput) {
+  mutation updateAspectTemplate(
+    $templateId: UUID!
+    $defaultDescription: Markdown
+    $info: UpdateTemplateInfoInput
+    $type: String
+  ) {
+    updateAspectTemplate(
+      aspectTemplateInput: { ID: $templateId, defaultDescription: $defaultDescription, info: $info, type: $type }
+    ) {
       id
     }
   }
@@ -14963,7 +14980,10 @@ export type UpdateAspectTemplateMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateAspectTemplateMutation, { data, loading, error }] = useUpdateAspectTemplateMutation({
  *   variables: {
- *      aspectTemplateInput: // value for 'aspectTemplateInput'
+ *      templateId: // value for 'templateId'
+ *      defaultDescription: // value for 'defaultDescription'
+ *      info: // value for 'info'
+ *      type: // value for 'type'
  *   },
  * });
  */
@@ -14986,8 +15006,20 @@ export type UpdateAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateAspectTemplateMutationVariables
 >;
 export const CreateAspectTemplateDocument = gql`
-  mutation createAspectTemplate($aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput!) {
-    createAspectTemplate(aspectTemplateInput: $aspectTemplateInput) {
+  mutation createAspectTemplate(
+    $templatesSetId: UUID!
+    $defaultDescription: Markdown!
+    $info: CreateTemplateInfoInput!
+    $type: String!
+  ) {
+    createAspectTemplate(
+      aspectTemplateInput: {
+        templatesSetID: $templatesSetId
+        defaultDescription: $defaultDescription
+        info: $info
+        type: $type
+      }
+    ) {
       id
     }
   }
@@ -15010,7 +15042,10 @@ export type CreateAspectTemplateMutationFn = Apollo.MutationFunction<
  * @example
  * const [createAspectTemplateMutation, { data, loading, error }] = useCreateAspectTemplateMutation({
  *   variables: {
- *      aspectTemplateInput: // value for 'aspectTemplateInput'
+ *      templatesSetId: // value for 'templatesSetId'
+ *      defaultDescription: // value for 'defaultDescription'
+ *      info: // value for 'info'
+ *      type: // value for 'type'
  *   },
  * });
  */
@@ -15033,8 +15068,8 @@ export type CreateAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateAspectTemplateMutationVariables
 >;
 export const DeleteAspectTemplateDocument = gql`
-  mutation deleteAspectTemplate($deleteData: DeleteAspectTemplateInput!) {
-    deleteAspectTemplate(deleteData: $deleteData) {
+  mutation deleteAspectTemplate($templateId: UUID!) {
+    deleteAspectTemplate(deleteData: { ID: $templateId }) {
       id
     }
   }
@@ -15057,7 +15092,7 @@ export type DeleteAspectTemplateMutationFn = Apollo.MutationFunction<
  * @example
  * const [deleteAspectTemplateMutation, { data, loading, error }] = useDeleteAspectTemplateMutation({
  *   variables: {
- *      deleteData: // value for 'deleteData'
+ *      templateId: // value for 'templateId'
  *   },
  * });
  */
@@ -15079,6 +15114,151 @@ export type DeleteAspectTemplateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteAspectTemplateMutation,
   SchemaTypes.DeleteAspectTemplateMutationVariables
 >;
+export const UpdateCanvasTemplateDocument = gql`
+  mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $info: UpdateTemplateInfoInput) {
+    updateCanvasTemplate(canvasTemplateInput: { ID: $templateId, value: $value, info: $info }) {
+      id
+    }
+  }
+`;
+export type UpdateCanvasTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCanvasTemplateMutation,
+  SchemaTypes.UpdateCanvasTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateCanvasTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateCanvasTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCanvasTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCanvasTemplateMutation, { data, loading, error }] = useUpdateCanvasTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      value: // value for 'value'
+ *      info: // value for 'info'
+ *   },
+ * });
+ */
+export function useUpdateCanvasTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCanvasTemplateMutation,
+    SchemaTypes.UpdateCanvasTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCanvasTemplateMutation,
+    SchemaTypes.UpdateCanvasTemplateMutationVariables
+  >(UpdateCanvasTemplateDocument, options);
+}
+export type UpdateCanvasTemplateMutationHookResult = ReturnType<typeof useUpdateCanvasTemplateMutation>;
+export type UpdateCanvasTemplateMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCanvasTemplateMutation>;
+export type UpdateCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCanvasTemplateMutation,
+  SchemaTypes.UpdateCanvasTemplateMutationVariables
+>;
+export const CreateCanvasTemplateDocument = gql`
+  mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $info: CreateTemplateInfoInput!) {
+    createCanvasTemplate(canvasTemplateInput: { templatesSetID: $templatesSetId, value: $value, info: $info }) {
+      id
+    }
+  }
+`;
+export type CreateCanvasTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateCanvasTemplateMutation,
+  SchemaTypes.CreateCanvasTemplateMutationVariables
+>;
+
+/**
+ * __useCreateCanvasTemplateMutation__
+ *
+ * To run a mutation, you first call `useCreateCanvasTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCanvasTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCanvasTemplateMutation, { data, loading, error }] = useCreateCanvasTemplateMutation({
+ *   variables: {
+ *      templatesSetId: // value for 'templatesSetId'
+ *      value: // value for 'value'
+ *      info: // value for 'info'
+ *   },
+ * });
+ */
+export function useCreateCanvasTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateCanvasTemplateMutation,
+    SchemaTypes.CreateCanvasTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateCanvasTemplateMutation,
+    SchemaTypes.CreateCanvasTemplateMutationVariables
+  >(CreateCanvasTemplateDocument, options);
+}
+export type CreateCanvasTemplateMutationHookResult = ReturnType<typeof useCreateCanvasTemplateMutation>;
+export type CreateCanvasTemplateMutationResult = Apollo.MutationResult<SchemaTypes.CreateCanvasTemplateMutation>;
+export type CreateCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateCanvasTemplateMutation,
+  SchemaTypes.CreateCanvasTemplateMutationVariables
+>;
+export const DeleteCanvasTemplateDocument = gql`
+  mutation deleteCanvasTemplate($templateId: UUID!) {
+    deleteCanvasTemplate(deleteData: { ID: $templateId }) {
+      id
+    }
+  }
+`;
+export type DeleteCanvasTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCanvasTemplateMutation,
+  SchemaTypes.DeleteCanvasTemplateMutationVariables
+>;
+
+/**
+ * __useDeleteCanvasTemplateMutation__
+ *
+ * To run a mutation, you first call `useDeleteCanvasTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCanvasTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCanvasTemplateMutation, { data, loading, error }] = useDeleteCanvasTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useDeleteCanvasTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCanvasTemplateMutation,
+    SchemaTypes.DeleteCanvasTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteCanvasTemplateMutation,
+    SchemaTypes.DeleteCanvasTemplateMutationVariables
+  >(DeleteCanvasTemplateDocument, options);
+}
+export type DeleteCanvasTemplateMutationHookResult = ReturnType<typeof useDeleteCanvasTemplateMutation>;
+export type DeleteCanvasTemplateMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCanvasTemplateMutation>;
+export type DeleteCanvasTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCanvasTemplateMutation,
+  SchemaTypes.DeleteCanvasTemplateMutationVariables
+>;
 export const HubTemplatesDocument = gql`
   query HubTemplates($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -15088,10 +15268,14 @@ export const HubTemplatesDocument = gql`
         aspectTemplates {
           ...AdminAspectTemplate
         }
+        canvasTemplates {
+          ...AdminCanvasTemplate
+        }
       }
     }
   }
   ${AdminAspectTemplateFragmentDoc}
+  ${AdminCanvasTemplateFragmentDoc}
 `;
 
 /**

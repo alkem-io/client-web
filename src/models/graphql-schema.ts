@@ -11486,7 +11486,10 @@ export type AdminGlobalOrganizationsListQuery = {
 };
 
 export type UpdateAspectTemplateMutationVariables = Exact<{
-  aspectTemplateInput: UpdateAspectTemplateInput;
+  templateId: Scalars['UUID'];
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  type?: InputMaybe<Scalars['String']>;
 }>;
 
 export type UpdateAspectTemplateMutation = {
@@ -11495,7 +11498,10 @@ export type UpdateAspectTemplateMutation = {
 };
 
 export type CreateAspectTemplateMutationVariables = Exact<{
-  aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput;
+  templatesSetId: Scalars['UUID'];
+  defaultDescription: Scalars['Markdown'];
+  info: CreateTemplateInfoInput;
+  type: Scalars['String'];
 }>;
 
 export type CreateAspectTemplateMutation = {
@@ -11504,12 +11510,43 @@ export type CreateAspectTemplateMutation = {
 };
 
 export type DeleteAspectTemplateMutationVariables = Exact<{
-  deleteData: DeleteAspectTemplateInput;
+  templateId: Scalars['UUID'];
 }>;
 
 export type DeleteAspectTemplateMutation = {
   __typename?: 'Mutation';
   deleteAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
+};
+
+export type UpdateCanvasTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  value?: InputMaybe<Scalars['JSON']>;
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+}>;
+
+export type UpdateCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  updateCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
+};
+
+export type CreateCanvasTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  value: Scalars['JSON'];
+  info: CreateTemplateInfoInput;
+}>;
+
+export type CreateCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  createCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
+};
+
+export type DeleteCanvasTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
 };
 
 export type HubTemplatesQueryVariables = Exact<{
@@ -11552,6 +11589,32 @@ export type HubTemplatesQuery = {
                 | undefined;
             };
           }>;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            value: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
+            };
+          }>;
         }
       | undefined;
   };
@@ -11562,6 +11625,33 @@ export type AdminAspectTemplateFragment = {
   id: string;
   defaultDescription: string;
   type: string;
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title?: string | undefined;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }
+      | undefined;
+  };
+};
+
+export type AdminCanvasTemplateFragment = {
+  __typename?: 'CanvasTemplate';
+  id: string;
+  value: string;
   info: {
     __typename?: 'TemplateInfo';
     id: string;
