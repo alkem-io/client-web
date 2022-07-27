@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { useUrlParams, useUserContext } from '../../hooks';
 import {
   CanvasContentUpdatedDocument,
@@ -33,7 +33,9 @@ export interface CanvasValueParams {
 
 export interface CanvasValueContainerProps
   extends ContainerChildProps<ICanvasValueEntities, {}, CanvasValueContainerState>,
-    CanvasValueParams {}
+    CanvasValueParams {
+  onCanvasValueLoaded?: (canvas: Canvas) => void;
+}
 
 const useSubscribeToCanvas = UseSubscriptionToSubEntity<
   CanvasValueFragment & CanvasDetailsFragment,
@@ -49,7 +51,7 @@ const useSubscribeToCanvas = UseSubscriptionToSubEntity<
   },
 });
 
-const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasId, params }) => {
+const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasId, params, onCanvasValueLoaded }) => {
   const {
     hubNameId: hubId = '',
     challengeNameId: challengeId = '',
@@ -125,6 +127,12 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
 
     return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
   }, [hubData, challengeData, opportunityData, canvasId]);
+
+  useEffect(() => {
+    if (canvas) {
+      onCanvasValueLoaded?.(canvas);
+    }
+  }, [canvas]);
 
   const skipCanvasSubscription = !canvasId || canvas?.checkout?.lockedBy === userId;
 

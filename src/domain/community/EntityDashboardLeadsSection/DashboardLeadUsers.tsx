@@ -2,10 +2,11 @@ import React from 'react';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import SectionHeader from '../../shared/components/Section/SectionHeader';
 import LeadUserCard, { LeadUserCardProps } from '../LeadUserCard/LeadUserCard';
+import { Identifiable } from '../../shared/types/Identifiable';
 
 interface EntityDashboardLeadsSectionProps {
   headerText: string;
-  users: LeadUserCardProps[] | undefined;
+  users: (LeadUserCardProps & Identifiable)[] | undefined;
 }
 
 const EntityDashboardLeadsSection = ({ headerText, users }: EntityDashboardLeadsSectionProps) => {
@@ -14,7 +15,7 @@ const EntityDashboardLeadsSection = ({ headerText, users }: EntityDashboardLeads
       <SectionHeader text={headerText} />
       <SectionSpacer />
       {users?.map(user => (
-        <LeadUserCard {...user} />
+        <LeadUserCard key={user.id} {...user} />
       ))}
     </>
   );

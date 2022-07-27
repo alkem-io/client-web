@@ -1213,11 +1213,11 @@ export type Hub = {
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** All opportunities within the hub */
-  opportunities: Array<Opportunity>;
+  opportunities?: Maybe<Array<Opportunity>>;
   /** A particular Opportunity, either by its ID or nameID */
   opportunity: Opportunity;
   /** The preferences for this Hub */
-  preferences: Array<Preference>;
+  preferences?: Maybe<Array<Preference>>;
   /** A particular Project, identified by the ID */
   project: Project;
   /** All projects within this hub */
@@ -4764,7 +4764,7 @@ export type AllOpportunitiesQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    opportunities: Array<{ __typename?: 'Opportunity'; id: string; nameID: string }>;
+    opportunities?: Array<{ __typename?: 'Opportunity'; id: string; nameID: string }> | undefined;
   };
 };
 
@@ -5351,10 +5351,12 @@ export type AllCommunitiesQuery = {
           community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
         }>
       | undefined;
-    opportunities: Array<{
-      __typename?: 'Opportunity';
-      community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
-    }>;
+    opportunities?:
+      | Array<{
+          __typename?: 'Opportunity';
+          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
   };
 };
 
@@ -6158,21 +6160,23 @@ export type OpportunityWithActivityQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    opportunities: Array<{
-      __typename?: 'Opportunity';
-      id: string;
-      displayName: string;
-      nameID: string;
-      activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            tagline?: string | undefined;
-            visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-          }
-        | undefined;
-      tagset?: { __typename?: 'Tagset'; name: string; tags: Array<string> } | undefined;
-    }>;
+    opportunities?:
+      | Array<{
+          __typename?: 'Opportunity';
+          id: string;
+          displayName: string;
+          nameID: string;
+          activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+          context?:
+            | {
+                __typename?: 'Context';
+                tagline?: string | undefined;
+                visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+              }
+            | undefined;
+          tagset?: { __typename?: 'Tagset'; name: string; tags: Array<string> } | undefined;
+        }>
+      | undefined;
   };
 };
 
@@ -11093,6 +11097,7 @@ export type HubAvailableLeadUsersQuery = {
     community?:
       | {
           __typename?: 'Community';
+          id: string;
           availableLeadUsers?:
             | {
                 __typename?: 'PaginatedUsers';
@@ -11124,6 +11129,7 @@ export type HubAvailableMemberUsersQuery = {
     community?:
       | {
           __typename?: 'Community';
+          id: string;
           availableMemberUsers?:
             | {
                 __typename?: 'PaginatedUsers';
@@ -11158,6 +11164,7 @@ export type ChallengeAvailableLeadUsersQuery = {
       community?:
         | {
             __typename?: 'Community';
+            id: string;
             availableLeadUsers?:
               | {
                   __typename?: 'PaginatedUsers';
@@ -11193,6 +11200,7 @@ export type ChallengeAvailableMemberUsersQuery = {
       community?:
         | {
             __typename?: 'Community';
+            id: string;
             availableMemberUsers?:
               | {
                   __typename?: 'PaginatedUsers';
@@ -11228,6 +11236,7 @@ export type OpportunityAvailableLeadUsersQuery = {
       community?:
         | {
             __typename?: 'Community';
+            id: string;
             availableLeadUsers?:
               | {
                   __typename?: 'PaginatedUsers';
@@ -11263,6 +11272,7 @@ export type OpportunityAvailableMemberUsersQuery = {
       community?:
         | {
             __typename?: 'Community';
+            id: string;
             availableMemberUsers?:
               | {
                   __typename?: 'PaginatedUsers';
@@ -11279,6 +11289,40 @@ export type OpportunityAvailableMemberUsersQuery = {
         | undefined;
     };
   };
+};
+
+export type CommunityAvailableLeadUsersFragment = {
+  __typename?: 'Community';
+  id: string;
+  availableLeadUsers?:
+    | {
+        __typename?: 'PaginatedUsers';
+        users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+        };
+      }
+    | undefined;
+};
+
+export type CommunityAvailableMemberUsersFragment = {
+  __typename?: 'Community';
+  id: string;
+  availableMemberUsers?:
+    | {
+        __typename?: 'PaginatedUsers';
+        users: Array<{ __typename?: 'User'; id: string; displayName: string; email: string }>;
+        pageInfo: {
+          __typename?: 'PageInfo';
+          startCursor?: string | undefined;
+          endCursor?: string | undefined;
+          hasNextPage: boolean;
+        };
+      }
+    | undefined;
 };
 
 export type AvailableUserFragment = { __typename?: 'User'; id: string; displayName: string; email: string };
@@ -11350,7 +11394,10 @@ export type AdminGlobalOrganizationsListQuery = {
 };
 
 export type UpdateAspectTemplateMutationVariables = Exact<{
-  aspectTemplateInput: UpdateAspectTemplateInput;
+  templateId: Scalars['UUID'];
+  defaultDescription?: InputMaybe<Scalars['Markdown']>;
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  type?: InputMaybe<Scalars['String']>;
 }>;
 
 export type UpdateAspectTemplateMutation = {
@@ -11359,7 +11406,10 @@ export type UpdateAspectTemplateMutation = {
 };
 
 export type CreateAspectTemplateMutationVariables = Exact<{
-  aspectTemplateInput: CreateAspectTemplateOnTemplatesSetInput;
+  templatesSetId: Scalars['UUID'];
+  defaultDescription: Scalars['Markdown'];
+  info: CreateTemplateInfoInput;
+  type: Scalars['String'];
 }>;
 
 export type CreateAspectTemplateMutation = {
@@ -11368,12 +11418,43 @@ export type CreateAspectTemplateMutation = {
 };
 
 export type DeleteAspectTemplateMutationVariables = Exact<{
-  deleteData: DeleteAspectTemplateInput;
+  templateId: Scalars['UUID'];
 }>;
 
 export type DeleteAspectTemplateMutation = {
   __typename?: 'Mutation';
   deleteAspectTemplate: { __typename?: 'AspectTemplate'; id: string };
+};
+
+export type UpdateCanvasTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  value?: InputMaybe<Scalars['JSON']>;
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+}>;
+
+export type UpdateCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  updateCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
+};
+
+export type CreateCanvasTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  value: Scalars['JSON'];
+  info: CreateTemplateInfoInput;
+}>;
+
+export type CreateCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  createCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
+};
+
+export type DeleteCanvasTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteCanvasTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteCanvasTemplate: { __typename?: 'CanvasTemplate'; id: string };
 };
 
 export type HubTemplatesQueryVariables = Exact<{
@@ -11416,6 +11497,32 @@ export type HubTemplatesQuery = {
                 | undefined;
             };
           }>;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            value: string;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
+            };
+          }>;
         }
       | undefined;
   };
@@ -11426,6 +11533,33 @@ export type AdminAspectTemplateFragment = {
   id: string;
   defaultDescription: string;
   type: string;
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title?: string | undefined;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }
+      | undefined;
+  };
+};
+
+export type AdminCanvasTemplateFragment = {
+  __typename?: 'CanvasTemplate';
+  id: string;
+  value: string;
   info: {
     __typename?: 'TemplateInfo';
     id: string;
@@ -12800,20 +12934,22 @@ export type HubPreferencesQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    preferences: Array<{
-      __typename?: 'Preference';
-      id: string;
-      value: string;
-      definition: {
-        __typename?: 'PreferenceDefinition';
-        id: string;
-        description: string;
-        displayName: string;
-        group: string;
-        type: PreferenceType;
-        valueType: PreferenceValueType;
-      };
-    }>;
+    preferences?:
+      | Array<{
+          __typename?: 'Preference';
+          id: string;
+          value: string;
+          definition: {
+            __typename?: 'PreferenceDefinition';
+            id: string;
+            description: string;
+            displayName: string;
+            group: string;
+            type: PreferenceType;
+            valueType: PreferenceValueType;
+          };
+        }>
+      | undefined;
   };
 };
 

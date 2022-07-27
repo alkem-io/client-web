@@ -1,30 +1,37 @@
-import { AdminAspectTemplateFragment } from '../../../../models/graphql-schema';
+import { AdminCanvasTemplateFragment, CanvasDetailsFragment } from '../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import AspectTemplateForm, { AspectTemplateFormSubmittedValues, AspectTemplateFormValues } from './AspectTemplateForm';
+import CanvasTemplateForm, { CanvasTemplateFormSubmittedValues, CanvasTemplateFormValues } from './CanvasTemplateForm';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
 import { DialogProps } from '@mui/material';
 import DeleteButton from '../../../shared/components/DeleteButton';
 import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 
-interface EditAspectTemplateDialogProps {
+export interface EditCanvasTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSubmit: (values: AspectTemplateFormSubmittedValues) => void;
+  onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
   onDelete: () => void;
-  template: AdminAspectTemplateFragment | undefined;
+  template: AdminCanvasTemplateFragment | undefined;
+  canvases: CanvasDetailsFragment[] | undefined;
 }
 
-const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }: EditAspectTemplateDialogProps) => {
+const EditCanvasTemplateDialog = ({
+  template,
+  canvases,
+  open,
+  onClose,
+  onSubmit,
+  onDelete,
+}: EditCanvasTemplateDialogProps) => {
   const { t } = useTranslation();
 
   if (!template) {
     return null;
   }
 
-  const values: Partial<AspectTemplateFormValues> = {
-    type: template.type,
-    defaultDescription: template.defaultDescription,
+  const values: Partial<CanvasTemplateFormValues> = {
+    value: template.value,
     title: template.info.title,
     description: template.info.description,
     tags: template.info.tagset?.tags,
@@ -34,13 +41,14 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
-      <AspectTemplateForm
-        title={t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
+      <CanvasTemplateForm
+        title={t('common.edit-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
         visual={template.info.visual}
+        canvases={canvases}
         onSubmit={onSubmit}
         actions={
           <>
@@ -53,4 +61,4 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
   );
 };
 
-export default EditAspectTemplateDialog;
+export default EditCanvasTemplateDialog;

@@ -1,8 +1,4 @@
-const CANVAS_LOADED_EVENT_NAME = 'canvas_loaded';
-export type CanvasLoadedEvent = { canvasId: string };
-interface CustomEventMap {
-  [CANVAS_LOADED_EVENT_NAME]: CustomEvent<CanvasLoadedEvent>;
-}
+interface CustomEventMap {}
 
 declare global {
   interface Window {
@@ -20,4 +16,4 @@ declare global {
 const addEventListener = window.addEventListener;
 const removeEventListener = window.removeEventListener;
 
-export { CANVAS_LOADED_EVENT_NAME, addEventListener, removeEventListener };
+export { addEventListener, removeEventListener };
