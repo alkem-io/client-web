@@ -1,7 +1,7 @@
 import { Box, Skeleton, styled, Typography } from '@mui/material';
 import { FC } from 'react';
 import hexToRGBA from '../../../../utils/hexToRGBA';
-import Breadcrumbs from './Breadcrumbs';
+import BreadcrumbsView from './BreadcrumbsView';
 
 export const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
 export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
@@ -21,6 +21,7 @@ const Title = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   paddingTop: theme.spacing(1),
   paddingBottom: theme.spacing(0.5),
+  minHeight: theme.spacing(7),
   [theme.breakpoints.only('xs')]: {
     height: '100%',
   },
@@ -64,7 +65,7 @@ const PageBanner: FC<PageBannerProps> = ({ title, tagline, bannerUrl, showBreadc
         <>
           <Image src={bannerUrl} alt={`${title} - Banner image`} />
           <Title>
-            {showBreadcrumbs && <Breadcrumbs title={breadcrumbsTitle} />}
+            {showBreadcrumbs && <BreadcrumbsView title={breadcrumbsTitle} />}
             <Typography variant={'h1'}>{title}</Typography>
             <Typography variant={'caption'}>{tagline}</Typography>
           </Title>
