@@ -8951,6 +8951,52 @@ export type ChallengePageQuery = {
                   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
                 }>
               | undefined;
+            canvases?:
+              | Array<{
+                  __typename?: 'Canvas';
+                  id: string;
+                  nameID: string;
+                  displayName: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        anonymousReadAccess: boolean;
+                      }
+                    | undefined;
+                  checkout?:
+                    | {
+                        __typename?: 'CanvasCheckout';
+                        id: string;
+                        lockedBy: string;
+                        status: CanvasCheckoutStateEnum;
+                        lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                  preview?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: string;
+                        allowedTypes: Array<string>;
+                        aspectRatio: number;
+                        maxHeight: number;
+                        maxWidth: number;
+                        minHeight: number;
+                        minWidth: number;
+                      }
+                    | undefined;
+                }>
+              | undefined;
           }
         | undefined;
       community?:
@@ -9147,6 +9193,52 @@ export type ChallengeProfileFragment = {
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+            }>
+          | undefined;
+        canvases?:
+          | Array<{
+              __typename?: 'Canvas';
+              id: string;
+              nameID: string;
+              displayName: string;
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+              checkout?:
+                | {
+                    __typename?: 'CanvasCheckout';
+                    id: string;
+                    lockedBy: string;
+                    status: CanvasCheckoutStateEnum;
+                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
             }>
           | undefined;
       }

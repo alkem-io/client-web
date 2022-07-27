@@ -1072,6 +1072,9 @@ export const ChallengeProfileFragmentDoc = gql`
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
     }
     community {
       id
@@ -1132,6 +1135,7 @@ export const ChallengeProfileFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${CanvasDetailsFragmentDoc}
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}

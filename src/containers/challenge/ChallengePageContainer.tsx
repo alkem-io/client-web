@@ -7,12 +7,18 @@ import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  AuthorizationPrivilege,
+  CanvasDetailsFragment,
+  ChallengeProfileFragment,
+} from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
+import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -22,6 +28,8 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   activity: ActivityItem[];
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -91,6 +99,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
+  const canvases = _challenge?.hub.challenge.context?.canvases || EMPTY;
+  const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
+
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
 
   return (
@@ -104,6 +115,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           activity,
           aspects,
           aspectsCount,
+          canvases,
+          canvasesCount,
           permissions,
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,

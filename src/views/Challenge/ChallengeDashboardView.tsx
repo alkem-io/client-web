@@ -22,6 +22,8 @@ import EntityDashboardContributorsSection from '../../domain/community/EntityDas
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityType } from '../../domain/activity/ActivityType';
+import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
+import { CanvasDetailsFragment } from '../../models/graphql-schema';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -41,7 +43,8 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
   }, [entities.activity]);
 
-  const { challenge, activity, isMember, discussions, permissions, aspects, aspectsCount } = entities;
+  const { challenge, activity, isMember, discussions, permissions, aspects, aspectsCount, canvases, canvasesCount } =
+    entities;
 
   const { loading } = state;
 
@@ -53,6 +56,13 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
+
+  //!! PENDING
+  // const buildCanvasUrl = useCallback(
+  //   (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
+  //   [buildLinkToCanvas]
+  // );
+  const buildCanvasUrl = (canvas: CanvasDetailsFragment) => ({ url: '../canvases/' + canvas.nameID });
 
   if (loading || loadingChallengeContext) return <Loading />;
 
@@ -125,6 +135,13 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             aspectsCount={aspectsCount}
             hubNameId={hubNameId}
             challengeNameId={challengeNameId}
+          />
+          <CanvasesDashboardPreview
+            canvases={canvases}
+            canvasesCount={canvasesCount}
+            noItemsMessage={t('pages.canvas.no-canvases')}
+            loading={loading}
+            buildCanvasUrl={buildCanvasUrl}
           />
         </DashboardColumn>
       </Grid>
