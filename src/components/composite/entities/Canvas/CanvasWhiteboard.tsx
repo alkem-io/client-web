@@ -5,10 +5,11 @@ import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce } from 'lodash';
-import React, { forwardRef, useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { forwardRef, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../hooks/useCombinedRefs';
 import { Identifiable } from '../../../../domain/shared/types/Identifiable';
+import useAsyncInterruptibleCallback from '../../../../domain/shared/utils/useAsyncInterruptibleCallback';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -65,12 +66,11 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
     const value = canvas?.value;
     const data = useMemo(() => (value ? JSON.parse(value) : initialExcalidrawState), [value]);
 
-    const refreshOnDataChange = useCallback(
+    const refreshOnDataChange = useAsyncInterruptibleCallback(check =>
       debounce(async debouncedData => {
-        const excalidraw = await combinedRef.current?.readyPromise;
+        const excalidraw = await check(combinedRef.current?.readyPromise);
         excalidraw?.updateScene(debouncedData);
-      }, CANVAS_UPDATE_DEBOUNCE_INTERVAL),
-      [canvas]
+      }, CANVAS_UPDATE_DEBOUNCE_INTERVAL)
     );
 
     useEffect(() => {
@@ -80,26 +80,23 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboa
       return refreshOnDataChange.cancel;
     }, [refreshOnDataChange, data]);
 
+    const scrollToContent = useAsyncInterruptibleCallback(check => async () => {
+      const excalidraw = await check(combinedRef.current?.readyPromise);
+      excalidraw?.scrollToContent();
+    });
+
     useEffect(() => {
-      async function scrollToContent() {
-        const excalidraw = await combinedRef.current?.readyPromise;
-
-        excalidraw?.scrollToContent();
-      }
-
       if (canvas?.id) {
         scrollToContent();
       }
     }, [canvas?.id]);
 
-    const handleScroll = useRef(
+    const handleScroll = useAsyncInterruptibleCallback(check =>
       debounce(async () => {
-        const excalidraw = await combinedRef.current?.readyPromise;
-        if (excalidraw) {
-          excalidraw.refresh();
-        }
+        const excalidraw = await check(combinedRef.current?.readyPromise);
+        excalidraw?.refresh();
       }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
-    ).current;
+    );
 
     useEffect(() => {
       window.addEventListener('scroll', handleScroll, true);
