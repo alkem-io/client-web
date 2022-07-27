@@ -721,6 +721,8 @@ export type ContextAspectsArgs = {
 
 export type ContextCanvasesArgs = {
   IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type ContextAspectCreated = {
@@ -1213,11 +1215,11 @@ export type Hub = {
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** All opportunities within the hub */
-  opportunities: Array<Opportunity>;
+  opportunities?: Maybe<Array<Opportunity>>;
   /** A particular Opportunity, either by its ID or nameID */
   opportunity: Opportunity;
   /** The preferences for this Hub */
-  preferences: Array<Preference>;
+  preferences?: Maybe<Array<Preference>>;
   /** A particular Project, identified by the ID */
   project: Project;
   /** All projects within this hub */
@@ -4764,7 +4766,7 @@ export type AllOpportunitiesQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    opportunities: Array<{ __typename?: 'Opportunity'; id: string; nameID: string }>;
+    opportunities?: Array<{ __typename?: 'Opportunity'; id: string; nameID: string }> | undefined;
   };
 };
 
@@ -5351,10 +5353,12 @@ export type AllCommunitiesQuery = {
           community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
         }>
       | undefined;
-    opportunities: Array<{
-      __typename?: 'Opportunity';
-      community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
-    }>;
+    opportunities?:
+      | Array<{
+          __typename?: 'Opportunity';
+          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
   };
 };
 
@@ -6158,21 +6162,23 @@ export type OpportunityWithActivityQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    opportunities: Array<{
-      __typename?: 'Opportunity';
-      id: string;
-      displayName: string;
-      nameID: string;
-      activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            tagline?: string | undefined;
-            visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-          }
-        | undefined;
-      tagset?: { __typename?: 'Tagset'; name: string; tags: Array<string> } | undefined;
-    }>;
+    opportunities?:
+      | Array<{
+          __typename?: 'Opportunity';
+          id: string;
+          displayName: string;
+          nameID: string;
+          activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+          context?:
+            | {
+                __typename?: 'Context';
+                tagline?: string | undefined;
+                visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+              }
+            | undefined;
+          tagset?: { __typename?: 'Tagset'; name: string; tags: Array<string> } | undefined;
+        }>
+      | undefined;
   };
 };
 
@@ -9931,6 +9937,52 @@ export type HubPageQuery = {
                 tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
               }>
             | undefined;
+          canvases?:
+            | Array<{
+                __typename?: 'Canvas';
+                id: string;
+                nameID: string;
+                displayName: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      anonymousReadAccess: boolean;
+                    }
+                  | undefined;
+                checkout?:
+                  | {
+                      __typename?: 'CanvasCheckout';
+                      id: string;
+                      lockedBy: string;
+                      status: CanvasCheckoutStateEnum;
+                      lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+                preview?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: string;
+                      allowedTypes: Array<string>;
+                      aspectRatio: number;
+                      maxHeight: number;
+                      maxWidth: number;
+                      minHeight: number;
+                      minWidth: number;
+                    }
+                  | undefined;
+              }>
+            | undefined;
         }
       | undefined;
     community?:
@@ -10067,6 +10119,52 @@ export type HubPageFragment = {
               banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+            }>
+          | undefined;
+        canvases?:
+          | Array<{
+              __typename?: 'Canvas';
+              id: string;
+              nameID: string;
+              displayName: string;
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+              checkout?:
+                | {
+                    __typename?: 'CanvasCheckout';
+                    id: string;
+                    lockedBy: string;
+                    status: CanvasCheckoutStateEnum;
+                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
             }>
           | undefined;
       }
@@ -12838,20 +12936,22 @@ export type HubPreferencesQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    preferences: Array<{
-      __typename?: 'Preference';
-      id: string;
-      value: string;
-      definition: {
-        __typename?: 'PreferenceDefinition';
-        id: string;
-        description: string;
-        displayName: string;
-        group: string;
-        type: PreferenceType;
-        valueType: PreferenceValueType;
-      };
-    }>;
+    preferences?:
+      | Array<{
+          __typename?: 'Preference';
+          id: string;
+          value: string;
+          definition: {
+            __typename?: 'PreferenceDefinition';
+            id: string;
+            description: string;
+            displayName: string;
+            group: string;
+            type: PreferenceType;
+            valueType: PreferenceValueType;
+          };
+        }>
+      | undefined;
   };
 };
 

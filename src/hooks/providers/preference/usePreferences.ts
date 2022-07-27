@@ -16,7 +16,7 @@ interface Provided {
 export const usePreferences = <TQuery, TQVariable, TMVariable>(
   queryDocument: DocumentNode,
   queryVariables: TQVariable,
-  querySelector: (query: TQuery) => Preference[],
+  querySelector: (query: TQuery) => Preference[] | undefined,
   mutationDocument: DocumentNode,
   mutationVariables: (queryVariables: TQVariable, type: PreferenceTypes, value: boolean) => TMVariable,
   selectedGroups?: string[],

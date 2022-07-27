@@ -10,7 +10,11 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { Discussion } from '../../models/discussion/discussion';
-import { AssociatedOrganizationDetailsFragment, ChallengeCardFragment } from '../../models/graphql-schema';
+import {
+  AssociatedOrganizationDetailsFragment,
+  CanvasDetailsFragment,
+  ChallengeCardFragment,
+} from '../../models/graphql-schema';
 import ActivityView from '../Activity/ActivityView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
@@ -26,6 +30,7 @@ import {
 } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityType } from '../../domain/activity/ActivityType';
+import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   title?: string;
@@ -42,6 +47,8 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   challenges: ChallengeCardFragment[];
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
   community?: any;
   loading: boolean;
   isMember?: boolean;
@@ -65,6 +72,8 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   discussions,
   aspects,
   aspectsCount,
+  canvases,
+  canvasesCount,
   loading,
   isMember = false,
   communityReadAccess = false,
@@ -85,6 +94,13 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   }, [activity]);
 
   const hostOrganizations = useMemo(() => hostOrganization && [hostOrganization], [hostOrganization]);
+
+  //!! PENDING
+  // const buildCanvasUrl = useCallback(
+  //   (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
+  //   [buildLinkToCanvas]
+  // );
+  const buildCanvasUrl = (canvas: CanvasDetailsFragment) => ({ url: '../canvases/' + canvas.nameID });
 
   return (
     <>
@@ -147,6 +163,13 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
             </DashboardGenericSection>
           )}
           <DashboardSectionAspects aspects={aspects} aspectsCount={aspectsCount} hubNameId={hubNameId} />
+          <CanvasesDashboardPreview
+            canvases={canvases}
+            canvasesCount={canvasesCount}
+            noItemsMessage={t('pages.canvas.no-canvases')}
+            loading={loading}
+            buildCanvasUrl={buildCanvasUrl}
+          />
         </DashboardColumn>
       </Grid>
     </>

@@ -1271,6 +1271,9 @@ export const HubPageFragmentDoc = gql`
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
     }
     community {
       id
@@ -1300,6 +1303,7 @@ export const HubPageFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${CanvasDetailsFragmentDoc}
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}

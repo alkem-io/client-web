@@ -8,6 +8,7 @@ import { ContainerChildProps } from '../../models/container';
 import {
   AspectCardFragment,
   AuthorizationPrivilege,
+  CanvasDetailsFragment,
   ChallengeCardFragment,
   HubPageFragment,
 } from '../../models/graphql-schema';
@@ -19,6 +20,7 @@ import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
+import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -36,6 +38,8 @@ export interface HubContainerEntities {
   challenges: ChallengeCardFragment[];
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
@@ -107,6 +111,9 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const aspects = _hub?.hub.context?.aspects ?? EMPTY;
   const aspectsCount = useAspectsCount(_hub?.hub.activity);
 
+  const canvases = _hub?.hub.context?.canvases ?? EMPTY;
+  const canvasesCount = useCanvasesCount(_hub?.hub.activity);
+
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 
   return (
@@ -124,6 +131,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           challenges,
           aspects,
           aspectsCount,
+          canvases,
+          canvasesCount,
           ...contributors,
         },
         {
