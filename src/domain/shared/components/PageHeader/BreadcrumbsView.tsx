@@ -11,11 +11,11 @@ const Root = styled(Box)(({ theme }) => ({
   textAlign: 'left',
 }));
 
-interface BreadcrumbProps {
+interface BreadcrumbsViewProps {
   title?: string;
 }
 
-const BreadcrumbsView: FC<BreadcrumbProps> = ({ title }) => {
+const BreadcrumbsView: FC<BreadcrumbsViewProps> = ({ title }) => {
   const { loading, breadcrumbs } = useBreadcrumbs();
   return (
     <>
