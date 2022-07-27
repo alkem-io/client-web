@@ -12,6 +12,7 @@ import {
   AspectCardFragment,
   AuthorizationCredential,
   AuthorizationPrivilege,
+  CanvasDetailsFragment,
   OpportunityPageFragment,
   Reference,
 } from '../../models/graphql-schema';
@@ -21,6 +22,7 @@ import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
+import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   opportunity: OpportunityPageFragment;
@@ -53,6 +55,8 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   discussions: Discussion[];
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -115,7 +119,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references = [], aspects = [] } = context ?? {};
+  const { references = [], aspects = [], canvases = [] } = context ?? {};
 
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
@@ -182,6 +186,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const aspectsCount = useAspectsCount(_activity);
 
+  const canvasesCount = useCanvasesCount(_activity);
+
   const contributors = useCommunityMembersAsCardProps(opportunity?.community);
 
   return (
@@ -212,6 +218,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           discussions: [], //discussionList,
           aspects,
           aspectsCount,
+          canvases,
+          canvasesCount,
           ...contributors,
         },
         {

@@ -1363,6 +1363,9 @@ export const OpportunityPageFragmentDoc = gql`
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
     }
     projects {
       id
@@ -1392,6 +1395,7 @@ export const OpportunityPageFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${CanvasDetailsFragmentDoc}
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}

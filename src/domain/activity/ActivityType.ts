@@ -8,4 +8,5 @@ export enum ActivityType {
   Challenge = 'challenges',
   Relation = 'relations',
   Aspect = 'aspects',
+  Canvas = 'canvases',
 }

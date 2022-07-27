@@ -3,8 +3,7 @@ import { ActivityType } from '../../activity/ActivityType';
 import { Nvp } from '../../../models/graphql-schema';
 
 const getCanvasesCount = (activity: Nvp[] | undefined) => {
-  //!! PENDING
-  const value = activity?.find(activity => activity.name === ActivityType.Aspect)?.value;
+  const value = activity?.find(activity => activity.name === ActivityType.Canvas)?.value;
   return typeof value === 'undefined' ? value : Number(value);
 };
 

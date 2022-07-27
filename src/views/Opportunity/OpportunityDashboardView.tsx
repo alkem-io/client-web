@@ -11,7 +11,7 @@ import InterestModal from '../../components/composite/entities/Hub/InterestModal
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
-import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import { CanvasDetailsFragment, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
@@ -20,6 +20,7 @@ import { AspectCardAspect } from '../../components/composite/common/cards/Aspect
 import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -40,6 +41,8 @@ export interface OpportunityDashboardViewEntities {
   };
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
 }
 
 export interface OpportunityDashboardViewActions {
@@ -95,6 +98,13 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { id, context, displayName } = opportunity;
   const { visuals, tagline = '', vision = '' } = context ?? {};
   const banner = getVisualBanner(visuals);
+
+  //!! PENDING
+  // const buildCanvasUrl = useCallback(
+  //   (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
+  //   [buildLinkToCanvas]
+  // );
+  const buildCanvasUrl = (canvas: CanvasDetailsFragment) => ({ url: '../canvases/' + canvas.nameID });
 
   const { loading } = state;
 
@@ -178,6 +188,13 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             hubNameId={hubNameId}
             challengeNameId={challengeNameId}
             opportunityNameId={opportunity.nameID}
+          />
+          <CanvasesDashboardPreview
+            canvases={entities.canvases}
+            canvasesCount={entities.canvasesCount}
+            noItemsMessage={t('pages.canvas.no-canvases')}
+            loading={loading}
+            buildCanvasUrl={buildCanvasUrl}
           />
         </DashboardColumn>
       </Grid>
