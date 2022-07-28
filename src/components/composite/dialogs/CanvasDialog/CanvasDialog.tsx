@@ -27,7 +27,6 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CanvasWithoutValue } from '../../../../models/entities/canvas';
 import { Canvas, CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
-import { CanvasLoadedEvent, CANVAS_LOADED_EVENT_NAME } from '../../../../types/events';
 import TranslationKey from '../../../../types/TranslationKey';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
@@ -133,30 +132,17 @@ const findMostSuitableOption = (canvas?: CanvasWithoutValue, hasChanged?: boolea
 const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state }) => {
   const { t } = useTranslation();
   const { canvas } = entities;
-  const [isDirty, setIsDirty] = useState(true);
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
 
   // ui
   const styles = useStyles();
-  const [selectedOption, setSelectedOption] = useState<CanvasOptionTypes>(findMostSuitableOption(canvas, isDirty));
+  const [selectedOption, setSelectedOption] = useState<CanvasOptionTypes>(findMostSuitableOption(canvas, true));
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [optionPopperOpen, setOptionPopperOpen] = useState(false);
 
   useEffect(() => {
-    const listener = (_: CustomEvent<CanvasLoadedEvent>) => {
-      // we have no reliable way to know when a canvas content has been changed,
-      // thus allowing the user to always be able to perform save even until we figure it out
-      // setIsDirty(false);
-    };
-
-    window.addEventListener(CANVAS_LOADED_EVENT_NAME, listener);
-
-    return () => window.removeEventListener(CANVAS_LOADED_EVENT_NAME, listener);
-  }, [setIsDirty]);
-
-  useEffect(() => {
-    setSelectedOption(findMostSuitableOption(canvas, isDirty));
-  }, [canvas, isDirty]);
+    setSelectedOption(findMostSuitableOption(canvas, true));
+  }, [canvas]);
 
   const getExcalidrawStateFromApi = async (
     excalidrawApi: ExcalidrawAPIRefValue | null
@@ -322,7 +308,7 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                               {Object.keys(canvasOptions).map((optionKey: string) => (
                                 <MenuItem
                                   key={canvasOptions[optionKey].titleId}
-                                  disabled={!canvasOptions[optionKey].enabledWhen(canvas, isDirty)}
+                                  disabled={!canvasOptions[optionKey].enabledWhen(canvas, true)}
                                   selected={optionKey === selectedOption}
                                   onClick={_ => {
                                     setSelectedOption(optionKey as CanvasOptionTypes);

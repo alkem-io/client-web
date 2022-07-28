@@ -6,29 +6,6 @@ import { Avatar, Box, Button, Dialog, DialogContent, TableCell } from '@mui/mate
 import Heading from '../../../shared/components/Heading';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 
-interface AdminCommunityOrganizationsViewProps
-  extends Omit<EditOrganizationsProps, 'available' | 'existing' | 'entityName'> {
-  existingOrganizations: OrganizationDetailsFragment[];
-  availableOrganizations: OrganizationDetailsFragment[];
-}
-
-const EditOrganizationsWithPopup = ({
-  existingOrganizations,
-  availableOrganizations,
-  ...editViewProps
-}: AdminCommunityOrganizationsViewProps) => {
-  const { t } = useTranslation();
-
-  return (
-    <EditOrganizationsWithPopupForVm
-      available={useMemo(() => toOrganizationDetailsVm(availableOrganizations), [availableOrganizations])}
-      existing={useMemo(() => toOrganizationDetailsVm(existingOrganizations), [existingOrganizations])}
-      {...editViewProps}
-      entityName={t('common.organizations')}
-    />
-  );
-};
-
 interface OrganizationDetailsVm {
   id: string;
   avatarSrc: string;
@@ -48,8 +25,8 @@ const toOrganizationDetailsVm = (prop: OrganizationDetailsFragment[]) => {
 };
 
 export interface EditOrganizationsProps {
-  existing: OrganizationDetailsVm[];
-  available: OrganizationDetailsVm[];
+  existingOrganizations: OrganizationDetailsFragment[];
+  availableOrganizations: OrganizationDetailsFragment[];
   onAdd: (orgId: string) => void;
   onRemove: (orgId: string) => void;
   updating: boolean;
@@ -58,12 +35,11 @@ export interface EditOrganizationsProps {
   hasMore: boolean | undefined;
   loading: boolean;
   loadAvailableMembers: () => Promise<void>;
-  entityName: string;
 }
 
-const EditOrganizationsWithPopupForVm: FC<EditOrganizationsProps> = ({
-  existing,
-  available,
+const EditOrganizationsWithPopup: FC<EditOrganizationsProps> = ({
+  existingOrganizations,
+  availableOrganizations,
   onAdd,
   onRemove,
   updating = false,
@@ -72,7 +48,6 @@ const EditOrganizationsWithPopupForVm: FC<EditOrganizationsProps> = ({
   loading,
   onSearchTermChange,
   loadAvailableMembers,
-  entityName,
 }) => {
   const { t } = useTranslation();
   const [isAdding, setIsAdding] = useState(false);
@@ -82,6 +57,11 @@ const EditOrganizationsWithPopupForVm: FC<EditOrganizationsProps> = ({
       loadAvailableMembers();
     }
   }, [isAdding]);
+
+  const available = useMemo(() => toOrganizationDetailsVm(availableOrganizations), [availableOrganizations]);
+  const existing = useMemo(() => toOrganizationDetailsVm(existingOrganizations), [existingOrganizations]);
+
+  const entityName = t('common.organizations');
 
   return (
     <>

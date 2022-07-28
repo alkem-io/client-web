@@ -13,12 +13,13 @@ export interface UserFilterHolder {
 export interface AvailableCommunityUsersOptions<Data, Variables extends UserFilterHolder & PaginationVariables> {
   useLazyQuery: PaginationOptionsLazy<Data, Variables>['useLazyQuery'];
   variables: Omit<NonPaginationVariables<Variables>, 'filter'>;
-  getResult: (data: Data) =>
+  readUsers: (data: Data) =>
     | {
         users: AvailableUserFragment[] | undefined;
         pageInfo: PageInfoFragment;
       }
     | undefined;
+  pageSize: number;
 }
 
 interface AvailableMembersProvided {
@@ -30,30 +31,33 @@ interface AvailableMembersProvided {
   error: boolean;
   pageSize: number;
   firstPageSize: number;
+  filter: UseUsersSearchResult['filter'];
   setSearchTerm: UseUsersSearchResult['setSearchTerm'];
 }
 
 const useAvailableCommunityUsers = <Data, Variables extends UserFilterHolder & PaginationVariables>({
   useLazyQuery,
   variables,
-  getResult,
+  readUsers,
+  pageSize,
 }: AvailableCommunityUsersOptions<Data, Variables>): AvailableMembersProvided => {
   const { filter, setSearchTerm } = useUsersSearch();
 
   const { data, error, loadQuery, ...queryProps } = usePaginatedQuery({
     useLazyQuery,
     variables: { ...variables, filter } as NonPaginationVariables<Variables>,
-    getPageInfo: data => getResult(data)?.pageInfo,
-    pageSize: 999,
+    getPageInfo: data => readUsers(data)?.pageInfo,
+    pageSize,
     options: {
-      fetchPolicy: 'cache-and-network',
+      fetchPolicy: 'network-only',
     },
   });
 
   return {
-    allPossibleMemberUsers: data && getResult(data)?.users,
+    allPossibleMemberUsers: data && readUsers(data)?.users,
     ...queryProps,
     error: !!error,
+    filter,
     setSearchTerm,
     loadAvailableMembers: loadQuery,
   };
