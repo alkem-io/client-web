@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
@@ -21,6 +21,7 @@ import EntityDashboardContributorsSection from '../../domain/community/EntityDas
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
+import { buildCanvasUrl } from '../../utils/urlBuilders';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -85,6 +86,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { challengeNameId } = useChallenge();
   const { hubId, opportunityId } = useOpportunity();
 
+  const buildCanvasLink = useCallback(
+    (canvasNameId: string) => {
+      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId, opportunity.nameID);
+      return { url };
+    },
+    [hubNameId, challengeNameId, entities.opportunity]
+  );
+
   const { user: userMetadata } = useUserContext();
 
   const isNotMember = opportunityId && userMetadata ? !userMetadata.ofOpportunity(opportunityId) : true;
@@ -98,13 +107,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { id, context, displayName } = opportunity;
   const { visuals, tagline = '', vision = '' } = context ?? {};
   const banner = getVisualBanner(visuals);
-
-  //!! PENDING
-  // const buildCanvasUrl = useCallback(
-  //   (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
-  //   [buildLinkToCanvas]
-  // );
-  const buildCanvasUrl = (canvas: CanvasDetailsFragment) => ({ url: '../canvases/' + canvas.nameID });
 
   const { loading } = state;
 
@@ -193,8 +195,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             canvases={entities.canvases}
             canvasesCount={entities.canvasesCount}
             noItemsMessage={t('pages.canvas.no-canvases')}
+            buildCanvasLink={buildCanvasLink}
             loading={loading}
-            buildCanvasUrl={buildCanvasUrl}
           />
         </DashboardColumn>
       </Grid>

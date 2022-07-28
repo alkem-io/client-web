@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import DashboardDiscussionsSection from '../../domain/shared/components/DashboardSections/DashboardDiscussionsSection';
@@ -23,7 +23,7 @@ import { EntityDashboardContributors } from '../../domain/community/EntityDashbo
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
-import { CanvasDetailsFragment } from '../../models/graphql-schema';
+import { buildCanvasUrl } from '../../utils/urlBuilders';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -43,6 +43,14 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
   }, [entities.activity]);
 
+  const buildCanvasLink = useCallback(
+    (canvasNameId: string) => {
+      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId);
+      return { url };
+    },
+    [hubNameId, challengeNameId]
+  );
+
   const { challenge, activity, isMember, discussions, permissions, aspects, aspectsCount, canvases, canvasesCount } =
     entities;
 
@@ -56,13 +64,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const opportunities = challenge?.opportunities;
   const { communityReadAccess } = permissions;
-
-  //!! PENDING
-  // const buildCanvasUrl = useCallback(
-  //   (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
-  //   [buildLinkToCanvas]
-  // );
-  const buildCanvasUrl = (canvas: CanvasDetailsFragment) => ({ url: '../canvases/' + canvas.nameID });
 
   if (loading || loadingChallengeContext) return <Loading />;
 
@@ -140,8 +141,8 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             canvases={canvases}
             canvasesCount={canvasesCount}
             noItemsMessage={t('pages.canvas.no-canvases')}
+            buildCanvasLink={buildCanvasLink}
             loading={loading}
-            buildCanvasUrl={buildCanvasUrl}
           />
         </DashboardColumn>
       </Grid>

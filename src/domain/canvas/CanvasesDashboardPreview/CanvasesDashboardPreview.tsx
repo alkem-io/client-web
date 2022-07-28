@@ -15,7 +15,7 @@ interface CanvasesDashboardPreviewProps extends DashboardGenericSectionProps {
   canvasesCount: number | undefined;
   loading?: boolean;
   noItemsMessage?: string;
-  buildCanvasUrl: (canvas: CanvasDetailsFragment) => LinkWithState;
+  buildCanvasLink: (canvasNameId: string) => LinkWithState;
 }
 
 const CanvasesDashboardPreview = ({
@@ -23,7 +23,7 @@ const CanvasesDashboardPreview = ({
   canvasesCount,
   loading,
   noItemsMessage,
-  buildCanvasUrl,
+  buildCanvasLink,
   ...sectionProps
 }: CanvasesDashboardPreviewProps) => {
   const { t } = useTranslation();
@@ -43,7 +43,7 @@ const CanvasesDashboardPreview = ({
           {canvases.map(canvas => (
             <SimpleCard
               key={canvas.id}
-              {...buildCanvasUrl(canvas)}
+              {...buildCanvasLink(canvas.nameID)}
               title={canvas.displayName}
               imageUrl={canvas.preview?.uri}
               iconComponent={WbIncandescentOutlined}

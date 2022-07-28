@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
@@ -31,6 +31,7 @@ import {
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
+import { buildCanvasUrl } from '../../utils/urlBuilders';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   title?: string;
@@ -95,12 +96,13 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
 
   const hostOrganizations = useMemo(() => hostOrganization && [hostOrganization], [hostOrganization]);
 
-  //!! PENDING
-  // const buildCanvasUrl = useCallback(
-  //   (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
-  //   [buildLinkToCanvas]
-  // );
-  const buildCanvasUrl = (canvas: CanvasDetailsFragment) => ({ url: '../canvases/' + canvas.nameID });
+  const buildCanvasLink = useCallback(
+    (canvasNameId: string) => {
+      const url = buildCanvasUrl(canvasNameId, hubNameId);
+      return { url };
+    },
+    [hubNameId]
+  );
 
   return (
     <>
@@ -167,8 +169,8 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
             canvases={canvases}
             canvasesCount={canvasesCount}
             noItemsMessage={t('pages.canvas.no-canvases')}
+            buildCanvasLink={buildCanvasLink}
             loading={loading}
-            buildCanvasUrl={buildCanvasUrl}
           />
         </DashboardColumn>
       </Grid>
