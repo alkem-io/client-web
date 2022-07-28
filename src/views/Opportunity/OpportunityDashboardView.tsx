@@ -87,7 +87,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { challengeNameId } = useChallenge();
   const { hubId, opportunityId } = useOpportunity();
 
-  const [_backToCanvases, buildLinkToCanvas] = useBackToParentPage('OpportunityCanvases', buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID));
+  const [, buildLinkToCanvas] = useBackToParentPage(
+    buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID)
+  );
 
   const buildCanvasLink = useCallback(
     (canvasNameId: string) => {

@@ -44,7 +44,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
   }, [entities.activity]);
 
-  const [_backToCanvases, buildLinkToCanvas] = useBackToParentPage('ChallengeCanvases', buildChallengeUrl(hubNameId, challengeNameId));
+  const [, buildLinkToCanvas] = useBackToParentPage(buildChallengeUrl(hubNameId, challengeNameId));
 
   const buildCanvasLink = useCallback(
     (canvasNameId: string) => {

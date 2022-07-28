@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { capitalize } from 'lodash';
 import { PageProps } from '../../../pages/common';
 import { useUpdateNavigation } from '../../../hooks';
 import CanvasesManagementViewWrapper from '../CanvasesManagement/CanvasesManagementViewWrapper';
@@ -21,9 +20,7 @@ const CanvasesPage: FC<CanvasesPageProps> = ({ paths, entityTypeName, parentUrl 
 
   const { canvasId } = useParams();
 
-  const pageKey = `${capitalize(entityTypeName)}Canvases`;
-
-  const [backToCanvases, buildLinkToCanvas] = useBackToParentPage(pageKey, `${parentUrl}/canvases`);
+  const [backToCanvases, buildLinkToCanvas] = useBackToParentPage(`${parentUrl}/canvases`);
 
   return (
     <PageLayout currentSection={EntityPageSection.Canvases} entityTypeName="challenge">

@@ -22,8 +22,6 @@ interface HubTemplatesAdminPageProps extends SettingsPageProps {
   edit?: boolean;
 }
 
-const PAGE_KEY_TEMPLATES = 'HubTemplatesAdmin';
-
 const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   hubId,
   paths,
@@ -36,7 +34,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
 
   useAppendBreadcrumb(paths, { name: 'templates' });
 
-  const [backFromTemplateDialog, buildLink] = useBackToParentPage(PAGE_KEY_TEMPLATES, routePrefix);
+  const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 
   const { data: hubTemplatesData } = useHubTemplatesQuery({
     variables: { hubId },

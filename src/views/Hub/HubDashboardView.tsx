@@ -97,7 +97,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
 
   const hostOrganizations = useMemo(() => hostOrganization && [hostOrganization], [hostOrganization]);
 
-  const [_backToCanvases, buildLinkToCanvas] = useBackToParentPage('HubCanvases', buildHubUrl(hubNameId));
+  const [, buildLinkToCanvas] = useBackToParentPage(buildHubUrl(hubNameId));
 
   const buildCanvasLink = useCallback(
     (canvasNameId: string) => {
