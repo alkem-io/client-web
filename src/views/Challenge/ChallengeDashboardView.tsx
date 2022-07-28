@@ -23,7 +23,8 @@ import { EntityDashboardContributors } from '../../domain/community/EntityDashbo
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
-import { buildCanvasUrl } from '../../utils/urlBuilders';
+import { buildCanvasUrl, buildChallengeUrl } from '../../utils/urlBuilders';
+import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -43,10 +44,12 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
   }, [entities.activity]);
 
+  const [_backToCanvases, buildLinkToCanvas] = useBackToParentPage('ChallengeCanvases', buildChallengeUrl(hubNameId, challengeNameId));
+
   const buildCanvasLink = useCallback(
     (canvasNameId: string) => {
       const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId);
-      return { url };
+      return buildLinkToCanvas(url);
     },
     [hubNameId, challengeNameId]
   );

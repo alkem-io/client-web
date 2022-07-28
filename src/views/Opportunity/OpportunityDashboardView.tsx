@@ -21,7 +21,8 @@ import EntityDashboardContributorsSection from '../../domain/community/EntityDas
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
-import { buildCanvasUrl } from '../../utils/urlBuilders';
+import { buildCanvasUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -86,10 +87,12 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { challengeNameId } = useChallenge();
   const { hubId, opportunityId } = useOpportunity();
 
+  const [_backToCanvases, buildLinkToCanvas] = useBackToParentPage('OpportunityCanvases', buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID));
+
   const buildCanvasLink = useCallback(
     (canvasNameId: string) => {
-      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId, opportunity.nameID);
-      return { url };
+      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId, entities.opportunity.nameID);
+      return buildLinkToCanvas(url);
     },
     [hubNameId, challengeNameId, entities.opportunity]
   );

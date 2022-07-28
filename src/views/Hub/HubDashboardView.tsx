@@ -31,7 +31,8 @@ import {
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
-import { buildCanvasUrl } from '../../utils/urlBuilders';
+import { buildCanvasUrl, buildHubUrl } from '../../utils/urlBuilders';
+import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   title?: string;
@@ -96,10 +97,12 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
 
   const hostOrganizations = useMemo(() => hostOrganization && [hostOrganization], [hostOrganization]);
 
+  const [_backToCanvases, buildLinkToCanvas] = useBackToParentPage('HubCanvases', buildHubUrl(hubNameId));
+
   const buildCanvasLink = useCallback(
     (canvasNameId: string) => {
       const url = buildCanvasUrl(canvasNameId, hubNameId);
-      return { url };
+      return buildLinkToCanvas(url);
     },
     [hubNameId]
   );
