@@ -1,19 +1,30 @@
 import { useMemo } from 'react';
 import { useUrlParams } from '.';
-import { useHub } from '../domain/hub/HubContext/useHub';
 import { buildChallengeUrl, buildHubUrl } from '../utils/urlBuilders';
-import { useChallenge } from './useChallenge';
+import { useChallengeNameQuery, useHubNameQuery } from './generated/graphql';
 
 export interface BreadcrumbsItem {
-  name: string;
+  name?: string;
   url: string;
 }
 
 export const useBreadcrumbs = () => {
   const { hubNameId = '', challengeNameId = '', opportunityNameId = '' } = useUrlParams();
 
-  const { displayName: hubDisplayName, loading: loadingHub } = useHub();
-  const { displayName: challengeDisplayName, loading: loadingChallenge } = useChallenge();
+  const { data: _hub, loading: loadingHub } = useHubNameQuery({
+    variables: {
+      hubId: hubNameId,
+    },
+    skip: !hubNameId,
+  });
+
+  const { data: _challenge, loading: loadingChallenge } = useChallengeNameQuery({
+    variables: {
+      hubId: _hub?.hub.id || '',
+      challengeId: challengeNameId,
+    },
+    skip: !hubNameId || !_hub?.hub.id || !challengeNameId,
+  });
 
   const loading = (hubNameId && loadingHub) || (challengeNameId && loadingChallenge);
 
@@ -22,13 +33,13 @@ export const useBreadcrumbs = () => {
     if (!loading) {
       if (challengeNameId) {
         items.push({
-          name: hubDisplayName,
+          name: _hub?.hub.displayName,
           url: buildHubUrl(hubNameId),
         });
       }
       if (opportunityNameId) {
         items.push({
-          name: challengeDisplayName,
+          name: _challenge?.hub.challenge.displayName,
           url: buildChallengeUrl(hubNameId, challengeNameId),
         });
       }
