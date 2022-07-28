@@ -23,7 +23,7 @@ export const useBreadcrumbs = () => {
       hubId: _hub?.hub.id || '',
       challengeId: challengeNameId,
     },
-    skip: !hubNameId || !_hub?.hub.id || !challengeNameId,
+    skip: !_hub?.hub.id || !challengeNameId,
   });
 
   const loading = (hubNameId && loadingHub) || (challengeNameId && loadingChallenge);
