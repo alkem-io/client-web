@@ -3,7 +3,6 @@ import HubPageContainer from '../../containers/hub/HubPageContainer';
 import { useUpdateNavigation } from '../../hooks';
 import HubDashboardView from '../../views/Hub/HubDashboardView';
 import { PageProps } from '../common';
-import { getVisualBanner } from '../../utils/visuals.utils';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import PageLayout from '../../domain/shared/layout/PageLayout';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
@@ -20,9 +19,6 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
         <HubPageContainer>
           {(entities, state) => (
             <HubDashboardView
-              title={entities.hub?.displayName}
-              bannerUrl={getVisualBanner(entities.hub?.context?.visuals)}
-              tagline={entities.hub?.context?.tagline}
               vision={entities.hub?.context?.vision}
               hubId={entities.hub?.id}
               hubNameId={entities.hub?.nameID}

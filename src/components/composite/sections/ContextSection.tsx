@@ -19,7 +19,6 @@ import { formatLocation } from '../../../domain/location/LocationUtils';
 export interface ContextSectionProps {
   contextId?: string;
   primaryAction?: ReactNode;
-  banner?: string;
   displayName?: string;
   tagline?: string;
   keywords?: string[];
@@ -34,7 +33,6 @@ export interface ContextSectionProps {
 
 const ContextSection: FC<ContextSectionProps> = ({
   primaryAction,
-  banner,
   background,
   displayName,
   tagline,
@@ -53,7 +51,6 @@ const ContextSection: FC<ContextSectionProps> = ({
         <DashboardColumn>
           <DashboardSection
             primaryAction={primaryAction}
-            bannerUrl={banner}
             headerText={displayName}
             subHeaderText={<Typography component={Markdown} variant="h5" children={tagline} color="primary" />}
             size="large"

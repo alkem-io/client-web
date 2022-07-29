@@ -10791,6 +10791,7 @@ export type OpportunityProviderQuery = {
         | {
             __typename?: 'Context';
             id: string;
+            tagline?: string | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -10841,6 +10842,7 @@ export type OpportunityProviderFragment = {
     | {
         __typename?: 'Context';
         id: string;
+        tagline?: string | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';

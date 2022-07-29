@@ -28,9 +28,6 @@ import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardL
 import { ActivityType } from '../../domain/activity/ActivityType';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
-  title?: string;
-  bannerUrl?: string;
-  tagline?: string;
   vision?: string;
   hubId?: string;
   hubNameId?: string;
@@ -54,9 +51,6 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
 const SPACING = 2;
 
 const HubDashboardView: FC<HubDashboardView2Props> = ({
-  bannerUrl,
-  title,
-  tagline = '',
   vision = '',
   challenges,
   hubNameId = '',
@@ -91,8 +85,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
       <Grid container spacing={SPACING}>
         <DashboardColumn>
           <DashboardGenericSection
-            bannerUrl={bannerUrl}
-            headerText={title}
+            headerText={t('pages.hub.about-this-hub')}
             primaryAction={
               <ApplicationButtonContainer>
                 {(e, s) => <ApplicationButton {...e?.applicationButtonProps} loading={s.loading} />}
@@ -101,7 +94,6 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
             navText={t('buttons.see-more')}
             navLink={'context'}
           >
-            <Markdown children={tagline} />
             <Markdown children={vision} />
           </DashboardGenericSection>
           <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>

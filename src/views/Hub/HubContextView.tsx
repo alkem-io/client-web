@@ -5,7 +5,6 @@ import ContextSection from '../../components/composite/sections/ContextSection';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { Context, ContextTabFragment, ReferenceContextTabFragment, Tagset } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import { getVisualBanner } from '../../utils/visuals.utils';
 
 interface HubContextEntities {
   context?: ContextTabFragment;
@@ -36,10 +35,8 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => 
     location = undefined,
     vision = '',
     who = '',
-    visuals = [],
     id = '',
   } = context || ({} as Context);
-  const hubBanner = getVisualBanner(visuals);
   const references = entities?.references;
 
   return (
@@ -51,7 +48,6 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => 
           </ApplicationButtonContainer>
         ) : undefined
       }
-      banner={hubBanner}
       background={background}
       displayName={hubDisplayName}
       keywords={hubTagSet?.tags}

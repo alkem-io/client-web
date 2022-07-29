@@ -12,7 +12,6 @@ import {
   Tagset,
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import { getVisualBanner } from '../../utils/visuals.utils';
 
 export interface OpportunityContextViewEntities {
   context?: ContextTabFragment;
@@ -51,10 +50,8 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, sta
     location = undefined,
     vision = '',
     who = '',
-    visuals = [],
     id = '',
   } = context || ({} as Context);
-  const banner = getVisualBanner(visuals);
   const references = entities?.references;
 
   return (
@@ -64,7 +61,6 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, sta
           <LifecycleState lifecycle={opportunityLifecycle} />
         </Box>
       }
-      banner={banner}
       background={background}
       displayName={opportunityDisplayName}
       impact={impact}

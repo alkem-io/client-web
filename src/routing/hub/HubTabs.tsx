@@ -1,22 +1,15 @@
-import {
-  ContentPasteOutlined,
-  DashboardOutlined,
-  ForumOutlined,
-  GroupOutlined,
-  SettingsOutlined,
-  TocOutlined,
-  WbIncandescentOutlined,
-} from '@mui/icons-material';
-import { Tabs } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
-import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { HubPermissions } from '../../domain/hub/HubContext/HubContext';
-import { useConfig } from '../../hooks';
+import { useConfig, useHub } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES, FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
 import { buildAdminHubUrl } from '../../utils/urlBuilders';
+import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
+import { getVisualBanner } from '../../utils/visuals.utils';
+import HeaderNavigationTabs from '../../domain/shared/components/PageHeader/HeaderNavigationTabs';
+import HeaderNavigationTab from '../../domain/shared/components/PageHeader/HeaderNavigationTab';
 
 const routes = {
   discussions: 'discussions',
@@ -52,6 +45,7 @@ const HubTabs: FC<HubTabsProps> = ({ hubNameId, permissions }) => {
   );
 
   const tabValue = (route: HubRoutesType) => resolvePath(route, resolved.pathname)?.pathname;
+  const { displayName, context, loading } = useHub();
 
   const routeMatch = useRouteMatch(matchPatterns);
   const currentTab = useMemo(() => {
@@ -64,67 +58,51 @@ const HubTabs: FC<HubTabsProps> = ({ hubNameId, permissions }) => {
 
   return (
     <>
-      <Tabs
+      <PageBanner
+        title={displayName}
+        tagline={context?.tagline}
+        loading={loading}
+        bannerUrl={getVisualBanner(context?.visuals)}
+      />
+      <HeaderNavigationTabs
         value={currentTab}
         aria-label="Hub tabs"
-        variant="scrollable"
-        scrollButtons={'auto'}
-        allowScrollButtonsMobile
+        showSettings={permissions.viewerCanUpdate}
+        settingsValue={tabValue('settings')}
+        settingsUrl={buildAdminHubUrl(hubNameId)}
       >
-        <NavigationTab
-          icon={<DashboardOutlined />}
-          label={t('common.dashboard')}
-          value={tabValue('dashboard')}
-          to={routes.dashboard}
-        />
-        <NavigationTab icon={<TocOutlined />} label={t('common.context')} value={tabValue('context')} to={'context'} />
-        <NavigationTab
+        <HeaderNavigationTab label={t('common.dashboard')} value={tabValue('dashboard')} to={routes.dashboard} />
+        <HeaderNavigationTab label={t('common.context')} value={tabValue('context')} to={'context'} />
+        <HeaderNavigationTab
           disabled={!permissions.communityReadAccess}
-          icon={<GroupOutlined />}
           label={t('common.community')}
           value={tabValue('community')}
           to={routes.community}
         />
-        <NavigationTab
-          icon={<ForumOutlined />}
-          label={t('common.contribute')}
-          value={tabValue('contribute')}
-          to={routes.contribute}
-        />
-        <NavigationTab
+        <HeaderNavigationTab label={t('common.contribute')} value={tabValue('contribute')} to={routes.contribute} />
+        <HeaderNavigationTab
           disabled={!permissions.canReadChallenges}
-          icon={<ContentPasteOutlined />}
           label={t('common.challenges')}
           value={tabValue('challenges')}
           to={routes.challenges}
         />
         {isFeatureEnabled(FEATURE_COMMUNICATIONS_DISCUSSIONS) && (
-          <NavigationTab
+          <HeaderNavigationTab
             disabled={!permissions.communityReadAccess}
-            icon={<ForumOutlined />}
             label={t('common.discussions')}
             value={tabValue('discussions')}
             to={routes.discussions}
           />
         )}
         {isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) && (
-          <NavigationTab
+          <HeaderNavigationTab
             disabled={!permissions.communityReadAccess}
-            icon={<WbIncandescentOutlined />}
             label={t('common.canvases')}
             value={tabValue('canvases')}
             to={routes.canvases}
           />
         )}
-        {permissions.viewerCanUpdate && (
-          <NavigationTab
-            icon={<SettingsOutlined />}
-            label={t('common.settings')}
-            value={tabValue('settings')}
-            to={buildAdminHubUrl(hubNameId)}
-          />
-        )}
-      </Tabs>
+      </HeaderNavigationTabs>
       <Outlet />
     </>
   );

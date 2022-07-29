@@ -16,7 +16,6 @@ import {
   Tagset,
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import { getVisualBanner } from '../../utils/visuals.utils';
 import { RouterLink } from '../../components/core/RouterLink';
 
 interface ChallengeContextEntities {
@@ -60,10 +59,8 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
     location = undefined,
     vision = '',
     who = '',
-    visuals = [],
     id = '',
   } = context || ({} as Context);
-  const banner = getVisualBanner(visuals);
   const references = entities?.references;
   return (
     <>
@@ -83,7 +80,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
             )}
           </Box>
         }
-        banner={banner}
         background={background}
         displayName={challengeDisplayName}
         impact={impact}
