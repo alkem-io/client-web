@@ -25,6 +25,7 @@ import { EntityDashboardContributors } from '../../domain/community/EntityDashbo
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
+  hubId: string;
   opportunity: OpportunityPageFragment;
   permissions: {
     canEdit: boolean;
@@ -194,6 +195,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     <>
       {children(
         {
+          hubId,
           opportunity,
           url: buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
           activity,

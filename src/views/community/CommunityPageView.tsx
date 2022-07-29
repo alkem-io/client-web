@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { Message, Searchable } from '../../models/graphql-schema';
 import { Box } from '@mui/material';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
@@ -25,7 +24,6 @@ const CommunityPageView: FC<CommunityPageViewProps> = ({ messages = [], messages
   const updatesTitle = t('pages.community.updates.title', { count: messages.length });
   return (
     <>
-      <SectionSpacer />
       <DashboardGenericSection>
         <Box component={Typography} variant="h3" paddingBottom={0.5}>
           {messagesLoading ? <Skeleton width="20%" /> : updatesTitle}

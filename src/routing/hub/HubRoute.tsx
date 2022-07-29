@@ -36,6 +36,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
       <Route path={'/'} element={<HubTabs hubNameId={hubNameId} permissions={permissions} />}>
         <Route index element={<Navigate replace to={'dashboard'} />} />
         <Route path={'dashboard'} element={<HubDashboardPage paths={currentPaths} />} />
+        <Route path={'dashboard/updates'} element={<HubDashboardPage paths={currentPaths} dialog={'updates'} />} />
         <Route path={'contribute'} element={<ContributePage entityTypeName="hub" paths={currentPaths} />} />
         <Route path={'context'} element={<HubContextPage paths={currentPaths} />} />
         <Route path={'community'} element={<HubCommunityPage paths={currentPaths} />} />

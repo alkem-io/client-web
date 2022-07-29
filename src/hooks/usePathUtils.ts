@@ -40,3 +40,9 @@ export const useAppendCurrentPath = (paths: Path[], entryName: string) => {
     value: url,
   });
 };
+
+export const useLastPathUrl = (paths: Path[]) => {
+  if (paths && paths.length > 0) {
+    return paths[paths.length - 1].value;
+  }
+};
