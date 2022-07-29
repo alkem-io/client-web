@@ -1,11 +1,15 @@
 import React, { PropsWithChildren } from 'react';
-import { Box } from '@mui/material';
+import { Box, styled } from '@mui/material';
 
 const SimpleCardsList = ({ children }: PropsWithChildren<{}>) => {
+  const Root = styled(Box)(({ theme }) => ({
+    paddingBottom: theme.spacing(2),
+  }));
+
   return (
-    <Box display="flex" flexWrap="wrap" columnGap={8} rowGap={3} justifyContent="center">
+    <Root display="flex" flexWrap="wrap" columnGap={8} rowGap={3} justifyContent="center">
       {children}
-    </Box>
+    </Root>
   );
 };
 

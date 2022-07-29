@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
@@ -11,7 +11,7 @@ import InterestModal from '../../components/composite/entities/Hub/InterestModal
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
-import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import { CanvasDetailsFragment, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
@@ -20,6 +20,9 @@ import { AspectCardAspect } from '../../components/composite/common/cards/Aspect
 import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
+import { buildCanvasUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 
 const SPACING = 2;
 const PROJECTS_NUMBER_IN_SECTION = 2;
@@ -40,6 +43,8 @@ export interface OpportunityDashboardViewEntities {
   };
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
 }
 
 export interface OpportunityDashboardViewActions {
@@ -81,6 +86,18 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { hubNameId } = useHub();
   const { challengeNameId } = useChallenge();
   const { hubId, opportunityId } = useOpportunity();
+
+  const [, buildLinkToCanvas] = useBackToParentPage(
+    buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID)
+  );
+
+  const buildCanvasLink = useCallback(
+    (canvasNameId: string) => {
+      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId, entities.opportunity.nameID);
+      return buildLinkToCanvas(url);
+    },
+    [hubNameId, challengeNameId, entities.opportunity]
+  );
 
   const { user: userMetadata } = useUserContext();
 
@@ -178,6 +195,13 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             hubNameId={hubNameId}
             challengeNameId={challengeNameId}
             opportunityNameId={opportunity.nameID}
+          />
+          <CanvasesDashboardPreview
+            canvases={entities.canvases}
+            canvasesCount={entities.canvasesCount}
+            noItemsMessage={t('pages.canvas.no-canvases')}
+            buildCanvasLink={buildCanvasLink}
+            loading={loading}
           />
         </DashboardColumn>
       </Grid>

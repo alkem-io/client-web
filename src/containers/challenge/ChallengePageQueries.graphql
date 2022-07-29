@@ -38,6 +38,9 @@ fragment ChallengeProfile on Challenge {
     aspects(limit: 2, shuffle: true) {
       ...AspectCard
     }
+    canvases(limit: 2, shuffle: true) {
+      ...CanvasDetails
+    }
   }
   community {
     id

@@ -153,7 +153,7 @@ const AdminTemplatesSection = <
     const viewLink = buildTemplateLink(template);
     return {
       editUrl: `${viewLink.url}/edit`,
-      editLinkState: viewLink.linkState,
+      editLinkState: viewLink.state,
     };
   };
 

@@ -1072,6 +1072,9 @@ export const ChallengeProfileFragmentDoc = gql`
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
     }
     community {
       id
@@ -1132,6 +1135,7 @@ export const ChallengeProfileFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${CanvasDetailsFragmentDoc}
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
@@ -1271,6 +1275,9 @@ export const HubPageFragmentDoc = gql`
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
     }
     community {
       id
@@ -1300,6 +1307,7 @@ export const HubPageFragmentDoc = gql`
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${CanvasDetailsFragmentDoc}
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
@@ -1355,6 +1363,9 @@ export const OpportunityPageFragmentDoc = gql`
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
     }
     projects {
       id
@@ -1384,6 +1395,7 @@ export const OpportunityPageFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
+  ${CanvasDetailsFragmentDoc}
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
