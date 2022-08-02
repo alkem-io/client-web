@@ -51,7 +51,7 @@ const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   const leadUserCards = useUserCardProps(leadUsers, hubId);
 
   return (
-    <CommunityPage entityTypeName="hub" paths={paths} hubId={hubId} communityId={communityId}>
+    <CommunityPage paths={paths} hubId={hubId} communityId={communityId}>
       <HostOrganization organization={hostOrganization} loading={loading} />
       <SectionSpacer />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />

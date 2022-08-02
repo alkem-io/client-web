@@ -37,7 +37,7 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
     });
 
   return (
-    <CommunityPage entityTypeName="opportunity" paths={paths} hubId={hubId} communityId={communityId}>
+    <CommunityPage paths={paths} hubId={hubId} communityId={communityId}>
       <SectionSpacer />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />

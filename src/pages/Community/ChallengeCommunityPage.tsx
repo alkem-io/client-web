@@ -47,7 +47,7 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
     });
 
   return (
-    <CommunityPage entityTypeName="challenge" paths={paths} hubId={hubId} communityId={communityId}>
+    <CommunityPage paths={paths} hubId={hubId} communityId={communityId}>
       <SectionSpacer />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />

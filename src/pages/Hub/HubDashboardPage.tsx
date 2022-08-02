@@ -26,21 +26,17 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
               organizationNameId={entities.hub?.host?.nameID}
               activity={entities.activity}
               challenges={entities.challenges}
-              discussions={entities.discussionList}
               aspects={entities.aspects}
               aspectsCount={entities.aspectsCount}
               canvases={entities.canvases}
               canvasesCount={entities.canvasesCount}
               loading={state.loading}
-              isMember={entities.isMember}
               communityReadAccess={entities.permissions.communityReadAccess}
               challengesReadAccess={entities.permissions.challengesReadAccess}
               memberUsers={entities.memberUsers}
               memberUsersCount={entities.memberUsersCount}
               memberOrganizations={entities.memberOrganizations}
               memberOrganizationsCount={entities.memberOrganizationsCount}
-              leadUsers={entities.hub?.community?.leadUsers}
-              hostOrganization={entities.hub?.host}
             />
           )}
         </HubPageContainer>
