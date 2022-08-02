@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import DashboardDiscussionsSection from '../../domain/shared/components/DashboardSections/DashboardDiscussionsSection';
@@ -21,6 +21,9 @@ import EntityDashboardContributorsSection from '../../domain/community/EntityDas
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityType } from '../../domain/activity/ActivityType';
+import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
+import { buildCanvasUrl, buildChallengeUrl } from '../../utils/urlBuilders';
+import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -40,7 +43,18 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
   }, [entities.activity]);
 
-  const { challenge, activity, isMember, discussions, permissions, aspects, aspectsCount } = entities;
+  const [, buildLinkToCanvas] = useBackToParentPage(buildChallengeUrl(hubNameId, challengeNameId));
+
+  const buildCanvasLink = useCallback(
+    (canvasNameId: string) => {
+      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId);
+      return buildLinkToCanvas(url);
+    },
+    [hubNameId, challengeNameId]
+  );
+
+  const { challenge, activity, isMember, discussions, permissions, aspects, aspectsCount, canvases, canvasesCount } =
+    entities;
 
   const { loading } = state;
 
@@ -118,6 +132,13 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             aspectsCount={aspectsCount}
             hubNameId={hubNameId}
             challengeNameId={challengeNameId}
+          />
+          <CanvasesDashboardPreview
+            canvases={canvases}
+            canvasesCount={canvasesCount}
+            noItemsMessage={t('pages.canvas.no-canvases')}
+            buildCanvasLink={buildCanvasLink}
+            loading={loading}
           />
         </DashboardColumn>
       </Grid>

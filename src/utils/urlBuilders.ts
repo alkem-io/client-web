@@ -82,3 +82,21 @@ export const buildAspectUrl = (
     return `${buildHubUrl(hubNameId)}${aspectUrl}`;
   }
 };
+
+export const buildCanvasUrl = (
+  canvasNameId: string,
+  hubNameId: string,
+  challengeNameId?: string,
+  opportunityNameId?: string
+) => {
+  const canvasUrl = `/canvases/${canvasNameId}`;
+  if (challengeNameId) {
+    if (opportunityNameId) {
+      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${canvasUrl}`;
+    } else {
+      return `${buildChallengeUrl(hubNameId, challengeNameId)}${canvasUrl}`;
+    }
+  } else {
+    return `${buildHubUrl(hubNameId)}${canvasUrl}`;
+  }
+};

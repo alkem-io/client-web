@@ -29,6 +29,8 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
               discussions={entities.discussionList}
               aspects={entities.aspects}
               aspectsCount={entities.aspectsCount}
+              canvases={entities.canvases}
+              canvasesCount={entities.canvasesCount}
               loading={state.loading}
               isMember={entities.isMember}
               communityReadAccess={entities.permissions.communityReadAccess}
