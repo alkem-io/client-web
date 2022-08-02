@@ -4,8 +4,8 @@ import { useUpdateNavigation } from '../../hooks';
 import HubDashboardView from '../../views/Hub/HubDashboardView';
 import { PageProps } from '../common';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import PageLayout from '../../domain/shared/layout/PageLayout';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
 
 export interface HubDashboardPageProps extends PageProps {}
 
@@ -15,7 +15,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
 
   return (
     <DiscussionsProvider>
-      <PageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="hub">
+      <HubPageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="hub">
         <HubPageContainer>
           {(entities, state) => (
             <HubDashboardView
@@ -44,7 +44,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
             />
           )}
         </HubPageContainer>
-      </PageLayout>
+      </HubPageLayout>
     </DiscussionsProvider>
   );
 };

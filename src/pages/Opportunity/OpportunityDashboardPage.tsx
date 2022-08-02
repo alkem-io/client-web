@@ -4,7 +4,7 @@ import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboa
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import PageLayout from '../../domain/shared/layout/PageLayout';
+import OpportunityPageLayout from '../../domain/opportunity/layout/OpportunityPageLayout';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
 export interface OpportunityDashboardPageProps extends PageProps {}
@@ -14,7 +14,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ paths }) 
   useUpdateNavigation({ currentPaths });
 
   return (
-    <PageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="opportunity">
+    <OpportunityPageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="opportunity">
       <DiscussionsProvider>
         <OpportunityPageContainer>
           {(entities, state, actions) => (
@@ -32,7 +32,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ paths }) 
           )}
         </OpportunityPageContainer>
       </DiscussionsProvider>
-    </PageLayout>
+    </OpportunityPageLayout>
   );
 };
 export default OpportunityDashboardPage;

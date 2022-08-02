@@ -6,11 +6,6 @@ import { useChallenge } from '../../hooks';
 import { ApplicationTypeEnum } from '../../models/enums/application-type';
 import { Error404, PageProps } from '../../pages';
 import ApplyRoute from '../application/apply.route';
-import ChallengeTabs from './ChallengeTabs';
-import ChallengeCommunityPage from '../../pages/Community/ChallengeCommunityPage';
-import RestrictedRoute, { CredentialForResource } from '../RestrictedRoute';
-import DiscussionsRoute from '../discussions/DiscussionsRoute';
-import { AuthorizationCredential } from '../../models/graphql-schema';
 import { nameOfUrl } from '../url-params';
 import { OpportunityProvider } from '../../context/OpportunityProvider/OpportunityProvider';
 import { CommunityContextProvider } from '../../domain/community/CommunityContext';
@@ -23,23 +18,18 @@ import ContributePage from '../../pages/Contribute/ContributePage';
 import AspectProvider from '../../context/aspect/AspectProvider';
 import AspectRoute from '../aspect/AspectRoute';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
+import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
+import { routes } from '../../domain/challenge/routes/challengeRoutes';
 
 interface ChallengeRootProps extends PageProps {}
 
 const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
-  const { hubNameId, hubId, challengeId, challengeNameId, displayName, loading, permissions } = useChallenge();
+  const { challengeId, displayName, loading } = useChallenge();
   const resolved = useResolvedPath('.');
   const currentPaths = useMemo(
     () => (displayName ? [..._paths, { value: resolved.pathname, name: displayName, real: true }] : _paths),
     [_paths, displayName, resolved]
   );
-
-  const discussionsRequiredCredentials: CredentialForResource[] = challengeId
-    ? [
-        { credential: AuthorizationCredential.ChallengeMember, resourceId: challengeId },
-        { credential: AuthorizationCredential.HubAdmin, resourceId: hubId },
-      ]
-    : [];
 
   if (loading) {
     return <Loading text={'Loading challenge'} />;
@@ -51,30 +41,11 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
 
   return (
     <Routes>
-      <Route
-        path={'/'}
-        element={
-          <ChallengeTabs
-            communityReadAccess={permissions.canReadCommunity}
-            viewerCanUpdate={permissions.canUpdate}
-            hubNameId={hubNameId}
-            challengeNameId={challengeNameId}
-          />
-        }
-      >
-        <Route index element={<Navigate replace to={'dashboard'} />} />
-        <Route path={'dashboard'} element={<ChallengeDashboardPage paths={currentPaths} />} />
-        <Route path={'contribute'} element={<ContributePage entityTypeName="challenge" paths={currentPaths} />} />
-        <Route path={'context'} element={<ChallengeContextPage paths={currentPaths} />} />
-        <Route path={'community'} element={<ChallengeCommunityPage paths={currentPaths} />} />
-        <Route
-          path={'discussions/*'}
-          element={
-            <RestrictedRoute requiredCredentials={discussionsRequiredCredentials}>
-              <DiscussionsRoute entityTypeName="challenge" paths={currentPaths} />
-            </RestrictedRoute>
-          }
-        />
+      <Route path={'/'} element={<EntityPageLayoutHolder />}>
+        <Route index element={<Navigate replace to={routes.Dashboard} />} />
+        <Route path={routes.Dashboard} element={<ChallengeDashboardPage paths={currentPaths} />} />
+        <Route path={routes.Explore} element={<ContributePage entityTypeName="challenge" paths={currentPaths} />} />
+        <Route path={routes.About} element={<ChallengeContextPage paths={currentPaths} />} />
         <Route
           path="canvases"
           element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="challenge" />}
@@ -83,12 +54,12 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
           path="canvases/:canvasId"
           element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="challenge" />}
         />
-        <Route path={'opportunities'} element={<ChallengeOpportunityPage paths={currentPaths} />} />
+        <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
       </Route>
       <Route path={'apply/*'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />} />
       <Route path={'feedback/*'} element={<CommunityFeedbackRoute paths={currentPaths} />} />
       <Route
-        path={`opportunities/:${nameOfUrl.opportunityNameId}/*`}
+        path={`${routes.Opportunities}/:${nameOfUrl.opportunityNameId}/*`}
         element={
           <OpportunityProvider>
             <CommunityContextProvider>

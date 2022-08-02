@@ -4,7 +4,7 @@ import PageTabs, { TabDefinition } from '../../../../components/core/PageTabs/Pa
 import AdminLayoutEntityTitle from '../AdminLayoutEntityTitle';
 import { useTranslation } from 'react-i18next';
 import { EntityLinkComponentProps } from '../../../../components/Admin/EntityLinkComponent';
-import PageLayout from '../../../shared/layout/PageLayout';
+import { SimplePageLayout } from '../../../shared/layout/PageLayout';
 
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization';
 
@@ -37,9 +37,9 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
         routePrefix={tabRoutePrefix}
         getTabLabel={getTabLabel}
       />
-      <PageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
+      <SimplePageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
         {children}
-      </PageLayout>
+      </SimplePageLayout>
     </>
   );
 };

@@ -77,6 +77,8 @@
     "create-new": "Create new",
     "create-new-entity": "Create new {{entity}}",
     "description": "Description",
+    "about": "About",
+    "explore": "Explore",
     "edit-entity": "Edit {{entity}}",
     "email": "Email",
     "state": "State",

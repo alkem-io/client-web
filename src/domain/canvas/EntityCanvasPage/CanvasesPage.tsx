@@ -3,10 +3,8 @@ import { useParams } from 'react-router-dom';
 import { PageProps } from '../../../pages/common';
 import { useUpdateNavigation } from '../../../hooks';
 import CanvasesManagementViewWrapper from '../CanvasesManagement/CanvasesManagementViewWrapper';
-import PageLayout from '../../shared/layout/PageLayout';
-import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../shared/utils/useBackToParentPage';
-import { EntityTypeName } from '../../shared/layout/PageLayout/PageLayout';
+import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout';
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 
 export interface CanvasesPageProps extends PageProps {
@@ -14,6 +12,7 @@ export interface CanvasesPageProps extends PageProps {
   entityTypeName: EntityTypeName;
 }
 
+// TODO use for the Canvases Dialog
 const CanvasesPage: FC<CanvasesPageProps> = ({ paths, entityTypeName, parentUrl }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/canvases', name: 'canvases', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
@@ -23,20 +22,18 @@ const CanvasesPage: FC<CanvasesPageProps> = ({ paths, entityTypeName, parentUrl 
   const [backToCanvases, buildLinkToCanvas] = useBackToParentPage(`${parentUrl}/canvases`);
 
   return (
-    <PageLayout currentSection={EntityPageSection.Canvases} entityTypeName="challenge">
-      <CanvasProvider>
-        {(entities, state) => (
-          <CanvasesManagementViewWrapper
-            canvasId={canvasId}
-            backToCanvases={backToCanvases}
-            buildLinkToCanvas={buildLinkToCanvas}
-            entityTypeName={entityTypeName}
-            {...entities}
-            {...state}
-          />
-        )}
-      </CanvasProvider>
-    </PageLayout>
+    <CanvasProvider>
+      {(entities, state) => (
+        <CanvasesManagementViewWrapper
+          canvasId={canvasId}
+          backToCanvases={backToCanvases}
+          buildLinkToCanvas={buildLinkToCanvas}
+          entityTypeName={entityTypeName}
+          {...entities}
+          {...state}
+        />
+      )}
+    </CanvasProvider>
   );
 };
 export default CanvasesPage;

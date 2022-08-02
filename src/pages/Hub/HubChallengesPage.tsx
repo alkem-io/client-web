@@ -3,8 +3,8 @@ import { useHub, useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../common';
 import HubChallengesView from '../../views/Hub/HubChallengesView';
 import ChallengesCardContainer from '../../containers/hub/ChallengesCardContainer';
-import PageLayout from '../../domain/shared/layout/PageLayout';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
 
 export interface HubChallengesPageProps extends PageProps {}
 
@@ -14,7 +14,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <PageLayout currentSection={EntityPageSection.Challenges} entityTypeName="hub">
+    <HubPageLayout currentSection={EntityPageSection.Challenges} entityTypeName="hub">
       <ChallengesCardContainer hubNameId={hubNameId}>
         {(entities, state) => (
           <HubChallengesView
@@ -31,7 +31,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
           />
         )}
       </ChallengesCardContainer>
-    </PageLayout>
+    </HubPageLayout>
   );
 };
 export default HubChallengesPage;

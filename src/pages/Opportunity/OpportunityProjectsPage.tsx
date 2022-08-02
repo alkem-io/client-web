@@ -3,7 +3,7 @@ import { OpportunityPageContainer } from '../../containers';
 import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
-import PageLayout from '../../domain/shared/layout/PageLayout';
+import OpportunityPageLayout from '../../domain/opportunity/layout/OpportunityPageLayout';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
 export interface OpportunityProjectsPageProps extends PageProps {}
@@ -13,7 +13,7 @@ const OpportunityProjectsPage: FC<OpportunityProjectsPageProps> = ({ paths }) =>
   useUpdateNavigation({ currentPaths });
 
   return (
-    <PageLayout currentSection={EntityPageSection.Projects} entityTypeName="opportunity">
+    <OpportunityPageLayout currentSection={EntityPageSection.Projects} entityTypeName="opportunity">
       <OpportunityPageContainer>
         {e => (
           <OpportunityProjectsView
@@ -24,7 +24,7 @@ const OpportunityProjectsPage: FC<OpportunityProjectsPageProps> = ({ paths }) =>
           />
         )}
       </OpportunityPageContainer>
-    </PageLayout>
+    </OpportunityPageLayout>
   );
 };
 export default OpportunityProjectsPage;
