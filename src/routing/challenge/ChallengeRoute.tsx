@@ -13,7 +13,7 @@ import OpportunityRoute from '../opportunity/OpportunityRoute';
 import ChallengeDashboardPage from '../../pages/Admin/Challenge/ChallengeDashboardPage';
 import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPage';
 import ChallengeOpportunityPage from '../../pages/Admin/Challenge/ChallengeOpportunityPage';
-import CanvasesPage from '../../domain/canvas/EntityCanvasPage/CanvasesPage';
+import CanvasesView from '../../domain/canvas/EntityCanvasPage/CanvasesView';
 import ContributePage from '../../pages/Contribute/ContributePage';
 import AspectProvider from '../../context/aspect/AspectProvider';
 import AspectRoute from '../aspect/AspectRoute';
@@ -44,15 +44,12 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
       <Route path={'/'} element={<EntityPageLayoutHolder />}>
         <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<ChallengeDashboardPage paths={currentPaths} />} />
-        <Route path={routes.Explore} element={<ContributePage entityTypeName="challenge" paths={currentPaths} />} />
+        <Route path={routes.Explore} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeContextPage paths={currentPaths} />} />
-        <Route
-          path="canvases"
-          element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="challenge" />}
-        />
+        <Route path="canvases" element={<CanvasesView parentUrl={resolved.pathname} entityTypeName="challenge" />} />
         <Route
           path="canvases/:canvasId"
-          element={<CanvasesPage paths={currentPaths} parentUrl={resolved.pathname} entityTypeName="challenge" />}
+          element={<CanvasesView parentUrl={resolved.pathname} entityTypeName="challenge" />}
         />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
       </Route>

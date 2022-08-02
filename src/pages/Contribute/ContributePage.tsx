@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { PageProps } from '../common';
-import { useUpdateNavigation, useUrlParams } from '../../hooks';
+import { useUrlParams } from '../../hooks';
 import ContributeTabContainer from '../../containers/ContributeTabContainer/ContributeTabContainer';
 import ContributeView from '../../views/ContributeView/ContributeView';
 import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
@@ -8,16 +7,18 @@ import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection'
 import { EntityTypeName } from '../../domain/shared/layout/PageLayout/SimplePageLayout';
 import ChallengePageLayout from '../../domain/challenge/layout/ChallengePageLayout';
 import OpportunityPageLayout from '../../domain/opportunity/layout/OpportunityPageLayout';
+import CanvasesView from '../../domain/canvas/EntityCanvasPage/CanvasesView';
+import { useResolvedPath } from 'react-router-dom';
+import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 
-interface ContributePageProps extends PageProps {
+interface ContributePageProps {
   entityTypeName: EntityTypeName;
 }
 
-const ContributePage: FC<ContributePageProps> = ({ entityTypeName, paths }) => {
-  const currentPaths = useMemo(() => [...paths, { value: '/contribute', name: 'contribute', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
+const ContributePage: FC<ContributePageProps> = ({ entityTypeName }) => {
+  const { hubNameId, challengeNameId, opportunityNameId, canvasId } = useUrlParams();
 
-  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
+  const currentPath = useResolvedPath('.');
 
   const PageLayout = useMemo(() => {
     switch (entityTypeName) {
@@ -37,6 +38,8 @@ const ContributePage: FC<ContributePageProps> = ({ entityTypeName, paths }) => {
 
   return (
     <PageLayout currentSection={EntityPageSection.Explore} entityTypeName={entityTypeName}>
+      <CanvasesView canvasId={canvasId} parentUrl={currentPath.pathname} entityTypeName={entityTypeName} />
+      <SectionSpacer />
       <ContributeTabContainer
         hubNameId={hubNameId}
         challengeNameId={challengeNameId}

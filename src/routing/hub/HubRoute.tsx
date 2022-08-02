@@ -29,8 +29,9 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
     <Routes>
       <Route path={'/'} element={<EntityPageLayoutHolder />}>
         <Route index element={<Navigate replace to={'dashboard'} />} />
-        <Route path={routes.Dashboard} element={<HubDashboardPage paths={currentPaths} />} />
-        <Route path={routes.Explore} element={<ContributePage entityTypeName="hub" paths={currentPaths} />} />
+        <Route path={routes.Dashboard} element={<HubDashboardPage />} />
+        <Route path={routes.Explore} element={<ContributePage entityTypeName="hub" />} />
+        <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="hub" />} />
         <Route path={routes.About} element={<HubContextPage paths={currentPaths} />} />
         <Route path={routes.Challenges} element={<HubChallengesPage paths={currentPaths} />} />
       </Route>

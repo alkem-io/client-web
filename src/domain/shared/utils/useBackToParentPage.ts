@@ -31,7 +31,7 @@ const useBackToParentPage = (parentPageUrl: string): ReturnTuple => {
 
   const buildLinkWithState = useCallback((url: string): LinkWithState => {
     return {
-      url,
+      to: url,
       state: { [LOCATION_STATE_PARAM_PARENT_PAGE]: true },
     };
   }, []);

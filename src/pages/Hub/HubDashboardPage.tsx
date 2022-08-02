@@ -1,18 +1,13 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import HubPageContainer from '../../containers/hub/HubPageContainer';
-import { useUpdateNavigation } from '../../hooks';
 import HubDashboardView from '../../views/Hub/HubDashboardView';
-import { PageProps } from '../common';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
 
-export interface HubDashboardPageProps extends PageProps {}
+export interface HubDashboardPageProps {}
 
-const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'dashboard', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
-
+const HubDashboardPage: FC<HubDashboardPageProps> = () => {
   return (
     <DiscussionsProvider>
       <HubPageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="hub">
