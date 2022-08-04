@@ -675,8 +675,8 @@
           "leading-contributors": "Leading Contributors",
           "contributors": "Contributors"
         },
-        "contribute": {
-          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community.\nAdd additional aspects that are relevant, as well as comment on aspects added by others."
+        "explore": {
+          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community."
         },
         "discussions": {
           "description": "Here you can read and participate in discussions around this {{entity}}."
