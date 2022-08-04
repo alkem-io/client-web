@@ -13,12 +13,34 @@ export interface GraphThemeOptions {
   fontSize?: number;
 }
 
-interface Props {
+export interface LifecycleVisualizerProps {
   lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>;
   options?: GraphThemeOptions;
 }
 
-const LifecycleVisualizer: FC<Props> = ({ lifecycle, options }) => {
+export const isValidLifecycleDefinition = (definition: string) => {
+  if (!definition) {
+    return false;
+  }
+
+  let jsonDef;
+
+  try {
+    jsonDef = JSON.parse(definition);
+  } catch (e) {
+    return false;
+  }
+
+  try {
+    createMachine(jsonDef)
+  } catch (e) {
+    return false;
+  }
+
+  return true;
+};
+
+const LifecycleVisualizer: FC<LifecycleVisualizerProps> = ({ lifecycle, options }) => {
   const theme = useTheme();
   const divRef = useCallback(
     svgRef => {
@@ -38,7 +60,7 @@ const buildGraph = (
   theme: Theme,
   options?: GraphThemeOptions
 ) => {
-  if (!lifecycle) {
+  if (!isValidLifecycleDefinition(lifecycle.machineDef)) {
     return undefined;
   }
 
