@@ -667,8 +667,8 @@
         "dashboard": {
           "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
         },
-        "context": {
-          "description": "Here you can explore the context of this {{entity}}. This information is provided by the organization managing this {{entity}}."
+        "about": {
+          "description": "Here you can explore the context of this {{entity}}, as well as the community."
         },
         "community": {
           "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
