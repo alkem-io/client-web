@@ -1,12 +1,13 @@
 const dotenvFlow = require('dotenv-flow');
 const dotenvExpand = require('dotenv-expand');
-fs = require('fs');
-path = require('path');
+const { createWriteStream } = require('fs');
+const { writeFile } = require('fs/promises');
+const path = require('path');
 
 const CONFIG_TEXT = 'window._env_ = ';
 const CONFIG_FILE_NAME = 'env-config.js';
 
-function buildConfiguration(cb) {
+async function buildConfiguration() {
   const initialConfig = dotenvFlow.config({
     silent: true,
   });
@@ -14,7 +15,7 @@ function buildConfiguration(cb) {
 
   const env = process.env;
 
-  let configuration = {};
+  const configuration = {};
   const nodeEnv = env.NODE_ENV ? env.NODE_ENV : 'development';
 
   console.info(`Building for : '${nodeEnv}'`);
@@ -29,7 +30,7 @@ function buildConfiguration(cb) {
   configuration['REACT_APP_GRAPHQL_ENDPOINT'] = configuration['REACT_APP_GRAPHQL_ENDPOINT'] || '/graphql';
 
   const envBasePath = path.join(__dirname, '.build', 'docker', '.env.base');
-  let envBase = fs.createWriteStream(envBasePath, { flags: 'w' });
+  const envBase = createWriteStream(envBasePath, { flags: 'w' });
 
   Object.keys(configuration).forEach(k => {
     envBase.write(`${k}=${configuration[k]}\n`);
@@ -38,11 +39,10 @@ function buildConfiguration(cb) {
   console.info(`Write in: ${envBasePath}`);
 
   const envConfigPath = path.join(__dirname, '/public', CONFIG_FILE_NAME);
-  fs.writeFile(envConfigPath, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`, () => {
-    console.info(`Write in: ${envConfigPath}`);
-    cb();
-  });
+  await writeFile(envConfigPath, `${CONFIG_TEXT}${JSON.stringify(configuration, null, 2)}`);
+  console.info(`Write in: ${envConfigPath}`);
 }
 
-exports.buildConfiguration = buildConfiguration;
-exports.default = buildConfiguration;
+(async () => {
+  await buildConfiguration();
+})();
