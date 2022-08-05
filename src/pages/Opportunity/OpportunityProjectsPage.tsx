@@ -13,7 +13,7 @@ const OpportunityProjectsPage: FC<OpportunityProjectsPageProps> = ({ paths }) =>
   useUpdateNavigation({ currentPaths });
 
   return (
-    <OpportunityPageLayout currentSection={EntityPageSection.Projects} entityTypeName="opportunity">
+    <OpportunityPageLayout currentSection={EntityPageSection.Agreements} entityTypeName="opportunity">
       <OpportunityPageContainer>
         {e => (
           <OpportunityProjectsView

@@ -22,7 +22,11 @@ const OpportunityTabs: FC<OpportunityTabsProps> = props => {
       settingsUrl={buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
       entityTypeName="opportunity"
       subEntityTab={
-        <HeaderNavigationTab label={t('common.projects')} value={EntityPageSection.Projects} to={routes.Projects} />
+        <HeaderNavigationTab
+          label={t('common.agreements')}
+          value={EntityPageSection.Agreements}
+          to={routes.Agreements}
+        />
       }
     />
   );

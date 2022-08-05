@@ -84,7 +84,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
         color: 'primary',
       },
       {
-        name: t('common.projects'),
+        name: t('common.agreements'),
         count: getActivityCount(_activity, 'projects'),
         color: 'positive',
       },

@@ -40,9 +40,9 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<OpportunityDashboardPage paths={currentPaths} />} />
         <Route path={routes.Explore} element={<ContributePage entityTypeName="opportunity" />} />
         <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
-        <Route path={routes.Projects} element={<OpportunityProjectsPage paths={currentPaths} />} />
+        <Route path={routes.Agreements} element={<OpportunityProjectsPage paths={currentPaths} />} />
       </Route>
-      <Route path={'projects/*'} element={<ProjectRoute paths={currentPaths} />} />
+      <Route path={`${routes.Agreements}/*`} element={<ProjectRoute paths={currentPaths} />} />
       <Route
         path={`contribute/aspects/:${nameOfUrl.aspectNameId}/*`}
         element={

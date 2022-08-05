@@ -144,7 +144,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const activity: ActivityItem[] = useMemo(() => {
     return [
       {
-        name: t('common.projects'),
+        name: t('common.agreements'),
         count: getActivityCount(_activity, 'projects'),
         color: 'positive',
       },
