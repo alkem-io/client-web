@@ -8,10 +8,7 @@ import {
   useUpdateInnovationTemplateMutation,
 } from '../../../../hooks/generated/graphql';
 import { InnovationTemplateFormSubmittedValues } from './InnovationTemplateForm';
-import {
-  AdminAspectTemplateFragment, AdminLifecycleTemplateFragment,
-  UpdateInnovationTemplateMutation,
-} from '../../../../models/graphql-schema';
+import { AdminLifecycleTemplateFragment, UpdateInnovationTemplateMutation } from '../../../../models/graphql-schema';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import { InternalRefetchQueriesInclude } from '@apollo/client/core/types';
 import InnovationTemplateView from './InnovationTemplateView';

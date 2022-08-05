@@ -1,17 +1,32 @@
 import React, { useMemo } from 'react';
-import LifecycleVisualizer, { LifecycleVisualizerProps } from '../../../../components/core/LifecycleVisualizer';
-import { ErrorBoundary } from '../../../../containers/ErrorBoundary';
+import LifecycleVisualizer, {
+  validateLifecycleDefinition,
+  LifecycleVisualizerProps,
+} from '../../../../components/core/LifecycleVisualizer';
+import { Box } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 
 export const SafeLifecycleVisualizer = ({ definition }: { definition: string }) => {
-  const lifecycle = useMemo<LifecycleVisualizerProps['lifecycle']>(() => ({
-    machineDef: definition,
-  }), [definition]);
+  const { t } = useTranslation();
 
-  const key = useMemo(() => Date.now(), [definition]);
+  const lifecycle = useMemo<LifecycleVisualizerProps['lifecycle']>(
+    () => ({
+      machineDef: definition,
+    }),
+    [definition]
+  );
 
-  return ( //todo better error boundry
-    <ErrorBoundary key={key}>
-      <LifecycleVisualizer lifecycle={lifecycle} />
-    </ErrorBoundary>
+  const error = useMemo(() => validateLifecycleDefinition(definition), [definition]);
+
+  if (!error) {
+    return <LifecycleVisualizer lifecycle={lifecycle} />;
+  }
+
+  return (
+    <Box justifyContent="center">
+      <Typography variant={'h4'}>{t('components.lifecycle-visualizer.error')}</Typography>
+      {error.toString()}
+    </Box>
   );
 };

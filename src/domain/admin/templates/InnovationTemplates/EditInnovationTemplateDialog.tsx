@@ -1,6 +1,9 @@
 import { AdminLifecycleTemplateFragment } from '../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import InnovationTemplateForm, { InnovationTemplateFormSubmittedValues, InnovationTemplateFormValues } from './InnovationTemplateForm';
+import InnovationTemplateForm, {
+  InnovationTemplateFormSubmittedValues,
+  InnovationTemplateFormValues,
+} from './InnovationTemplateForm';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
 import { DialogProps } from '@mui/material';
@@ -15,7 +18,13 @@ interface EditInnovationTemplateDialogProps {
   template: AdminLifecycleTemplateFragment | undefined;
 }
 
-const EditInnovationTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }: EditInnovationTemplateDialogProps) => {
+const EditInnovationTemplateDialog = ({
+  template,
+  open,
+  onClose,
+  onSubmit,
+  onDelete,
+}: EditInnovationTemplateDialogProps) => {
   const { t } = useTranslation();
 
   if (!template) {
@@ -34,7 +43,7 @@ const EditInnovationTemplateDialog = ({ template, open, onClose, onSubmit, onDel
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
       <InnovationTemplateForm

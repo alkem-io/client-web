@@ -7,10 +7,9 @@ import { CreateTemplateInfoInput, LifecycleType, Visual } from '../../../../mode
 import FormRows from '../../../shared/components/FormRows';
 import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
-import FormikSelect, {
-  FormikSelectValue,
-} from '../../../../components/composite/forms/FormikSelect';
-import { isValidLifecycleDefinition } from '../../../../components/core/LifecycleVisualizer';
+import { Box } from '@mui/material';
+import FormikSelect, { FormikSelectValue } from '../../../../components/composite/forms/FormikSelect';
+import { validateLifecycleDefinition } from '../../../../components/core/LifecycleVisualizer';
 import { SafeLifecycleVisualizer } from './SafeLifecycleVisualizer';
 
 export interface InnovationTemplateFormValues {
@@ -36,23 +35,24 @@ interface InnovationTemplateFormProps {
 }
 
 const validator = {
-  definition: yup.string()
+  definition: yup
+    .string()
     .required()
-    .test(
-      'is-renderable',
-      'Invalid definition provided',
-        value => isValidLifecycleDefinition(value ?? '')
-    ),
-  type: yup.string().oneOf(Object.values(LifecycleType))
+    .test('is-renderable', 'Invalid definition provided', value => !validateLifecycleDefinition(value ?? '')),
+  type: yup.string().oneOf(Object.values(LifecycleType)),
 };
 
 const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, actions }: InnovationTemplateFormProps) => {
   const { t } = useTranslation();
 
-  const types = useMemo(() => Object.values(LifecycleType).map<FormikSelectValue>(x => ({
-    id: x,
-    name: x,
-  })), [LifecycleType]);
+  const types = useMemo(
+    () =>
+      Object.values(LifecycleType).map<FormikSelectValue>(x => ({
+        id: x,
+        name: x,
+      })),
+    [LifecycleType]
+  );
 
   return (
     <TemplateForm
@@ -73,7 +73,9 @@ const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, action
             rows={11}
           />
           <Typography>{t('common.preview')}</Typography>
-          <SafeLifecycleVisualizer definition={values.definition} />
+          <Box sx={{ maxWidth: theme => theme.spacing(64) }}>
+            <SafeLifecycleVisualizer definition={values.definition} />
+          </Box>
         </FormRows>
       )}
     </TemplateForm>

@@ -298,6 +298,9 @@
     }
   },
   "components": {
+    "lifecycle-visualizer": {
+      "error": "The definition was not able to be visualized"
+    },
     "activity-tooltip": {
       "headline": "Alkemio is growing! In total, the platform now hosts:"
     },

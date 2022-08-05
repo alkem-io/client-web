@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import React, { FC, MutableRefObject, useCallback } from 'react';
+import React, { FC, useEffect, useMemo, useRef } from 'react';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { Theme, useTheme } from '@mui/material/styles';
@@ -18,49 +18,44 @@ export interface LifecycleVisualizerProps {
   options?: GraphThemeOptions;
 }
 
-export const isValidLifecycleDefinition = (definition: string) => {
+export const validateLifecycleDefinition = (definition: string): Error | undefined => {
   if (!definition) {
-    return false;
-  }
-
-  let jsonDef;
-
-  try {
-    jsonDef = JSON.parse(definition);
-  } catch (e) {
-    return false;
+    return new Error('Definition is not defined');
   }
 
   try {
-    createMachine(jsonDef)
+    const jsonDef = JSON.parse(definition);
+    const machine = createMachine(jsonDef);
+    toDirectedGraph(machine);
   } catch (e) {
-    return false;
+    return e;
   }
 
-  return true;
+  return undefined;
 };
 
 const LifecycleVisualizer: FC<LifecycleVisualizerProps> = ({ lifecycle, options }) => {
   const theme = useTheme();
-  const divRef = useCallback(
-    svgRef => {
-      if (lifecycle) {
-        buildGraph(svgRef, lifecycle, theme, options);
-      }
-    },
-    [lifecycle]
-  );
+  const svgRef = useRef<SVGSVGElement>(null);
 
-  return <svg id="graph-container" ref={divRef} />;
+  useEffect(() => {
+    if (lifecycle && svgRef.current) {
+      buildGraph(svgRef.current, lifecycle, theme, options);
+    }
+  }, [lifecycle, svgRef.current, theme, options]);
+
+  const key = useMemo(() => Date.now(), [lifecycle]);
+
+  return <svg id="graph-container" key={key} ref={svgRef} />;
 };
 
 const buildGraph = (
-  ref: MutableRefObject<SVGSVGElement>,
+  ref: SVGSVGElement,
   lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>,
   theme: Theme,
   options?: GraphThemeOptions
 ) => {
-  if (!isValidLifecycleDefinition(lifecycle.machineDef)) {
+  if (validateLifecycleDefinition(lifecycle.machineDef)) {
     return undefined;
   }
 
@@ -78,7 +73,7 @@ const buildGraph = (
 };
 
 const _buildGraph = (
-  ref: MutableRefObject<SVGSVGElement>,
+  ref: SVGSVGElement,
   lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>,
   options: GraphThemeOptions
 ) => {
