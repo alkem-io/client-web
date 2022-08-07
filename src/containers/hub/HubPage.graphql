@@ -18,9 +18,6 @@ fragment HubPage on Hub {
     anonymousReadAccess
     myPrivileges
   }
-  host {
-    ...AssociatedOrganizationDetails
-  }
   context {
     id
     tagline
@@ -38,22 +35,6 @@ fragment HubPage on Hub {
     }
     canvases(limit: 2, shuffle: true) {
       ...CanvasDetails
-    }
-  }
-  community {
-    id
-    leadUsers {
-      ...DashboardLeadUser
-    }
-    memberUsers {
-      ...DashboardContributingUser
-    }
-    memberOrganizations {
-      ...DashboardContributingOrganization
-    }
-    authorization {
-      id
-      myPrivileges
     }
   }
   challenges(limit: 2, shuffle: true) {

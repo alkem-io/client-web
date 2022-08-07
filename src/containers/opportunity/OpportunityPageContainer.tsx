@@ -11,7 +11,6 @@ import { OpportunityProject } from '../../models/entities/opportunity';
 import {
   AspectCardFragment,
   AuthorizationCredential,
-  AuthorizationPrivilege,
   CanvasDetailsFragment,
   OpportunityPageFragment,
   Reference,
@@ -20,11 +19,9 @@ import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { replaceAll } from '../../utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
-import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
-import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
 
-export interface OpportunityContainerEntities extends EntityDashboardContributors {
+export interface OpportunityContainerEntities {
   opportunity: OpportunityPageFragment;
   permissions: {
     canEdit: boolean;
@@ -36,7 +33,6 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     isMemberOfOpportunity: boolean;
     isNoRelations: boolean;
     isAuthenticated: boolean;
-    communityReadAccess: boolean;
   };
   hideMeme: boolean;
   showInterestModal: boolean;
@@ -110,9 +106,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
       editActorGroup: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
       editActors: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
       removeRelations: user?.hasCredentials(AuthorizationCredential.GlobalAdminCommunity) || isAdmin,
-      communityReadAccess: (opportunity?.community?.authorization?.myPrivileges ?? []).some(
-        x => x === AuthorizationPrivilege.Read
-      ),
     };
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
@@ -188,8 +181,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
 
   const canvasesCount = useCanvasesCount(_activity);
 
-  const contributors = useCommunityMembersAsCardProps(opportunity?.community);
-
   return (
     <>
       {children(
@@ -220,7 +211,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           aspectsCount,
           canvases,
           canvasesCount,
-          ...contributors,
         },
         {
           loading: loadingOpportunity, // || loadingDiscussions,

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import DashboardUpdatesSection from '../../domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import Markdown from '../../components/core/Markdown';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { CanvasDetailsFragment, ChallengeCardFragment } from '../../models/graphql-schema';
@@ -13,20 +12,16 @@ import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
-import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import { buildCanvasUrl, buildHubUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
-export interface HubDashboardView2Props extends EntityDashboardContributors {
+export interface HubDashboardView2Props {
   vision?: string;
   hubId?: string;
   hubNameId?: string;
-  communityId?: string;
-  organizationNameId?: string;
   activity: ActivityItem[];
   organization?: any;
   challenges: ChallengeCardFragment[];
@@ -36,7 +31,6 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   canvasesCount: number | undefined;
   community?: any;
   loading: boolean;
-  communityReadAccess?: boolean;
   challengesReadAccess?: boolean;
 }
 
@@ -46,19 +40,13 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   vision = '',
   challenges,
   hubNameId = '',
-  communityId = '',
   activity,
   aspects,
   aspectsCount,
   canvases,
   canvasesCount,
   loading,
-  communityReadAccess = false,
   challengesReadAccess = false,
-  memberUsers,
-  memberUsersCount,
-  memberOrganizations,
-  memberOrganizationsCount,
 }) => {
   const { t } = useTranslation();
 
@@ -92,15 +80,6 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           >
             <Markdown children={vision} />
           </DashboardGenericSection>
-          {communityReadAccess && <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />}
-          {communityReadAccess && (
-            <EntityDashboardContributorsSection
-              memberUsers={memberUsers}
-              memberUsersCount={memberUsersCount}
-              memberOrganizations={memberOrganizations}
-              memberOrganizationsCount={memberOrganizationsCount}
-            />
-          )}
         </DashboardColumn>
         <DashboardColumn>
           {challengesReadAccess && (

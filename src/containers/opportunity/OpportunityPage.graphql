@@ -67,23 +67,4 @@ fragment OpportunityPage on Opportunity {
     displayName
     description
   }
-  community {
-    id
-    leadUsers {
-      ...DashboardLeadUser
-    }
-    memberUsers {
-      ...DashboardContributingUser
-    }
-    leadOrganizations {
-      ...AssociatedOrganizationDetails
-    }
-    memberOrganizations {
-      ...DashboardContributingOrganization
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
 }

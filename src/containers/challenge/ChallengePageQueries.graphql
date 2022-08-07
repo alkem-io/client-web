@@ -42,25 +42,6 @@ fragment ChallengeProfile on Challenge {
       ...CanvasDetails
     }
   }
-  community {
-    id
-    leadUsers {
-      ...DashboardLeadUser
-    }
-    memberUsers {
-      ...DashboardContributingUser
-    }
-    leadOrganizations {
-      ...AssociatedOrganizationDetails
-    }
-    memberOrganizations {
-      ...DashboardContributingOrganization
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
   tagset {
     id
     name

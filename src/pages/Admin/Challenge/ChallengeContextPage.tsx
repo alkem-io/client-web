@@ -43,7 +43,7 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
               challengeTagset: entities.tagset,
               challengeLifecycle: entities.lifecycle,
               context: entities.context,
-              references: entities?.references,
+              references: entities.references,
             }}
             state={{
               loading: state.loading,
@@ -53,6 +53,9 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
               canCreateCommunityContextReview: entities.permissions.canCreateCommunityContextReview,
             }}
             actions={{}}
+            communityReadAccess={entities.permissions.communityReadAccess}
+            community={entities.contributors}
+            activity={entities.activity}
           />
         )}
       </ContextTabContainer>

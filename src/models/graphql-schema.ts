@@ -9090,82 +9090,6 @@ export type ChallengePageQuery = {
               | undefined;
           }
         | undefined;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            leadUsers?:
-              | Array<{
-                  __typename?: 'User';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                      }
-                    | undefined;
-                }>
-              | undefined;
-            memberUsers?:
-              | Array<{
-                  __typename?: 'User';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                      }
-                    | undefined;
-                }>
-              | undefined;
-            leadOrganizations?:
-              | Array<{
-                  __typename?: 'Organization';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    description?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                  verification: {
-                    __typename?: 'OrganizationVerification';
-                    id: string;
-                    status: OrganizationVerificationEnum;
-                  };
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-                }>
-              | undefined;
-            memberOrganizations?:
-              | Array<{
-                  __typename?: 'Organization';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                }>
-              | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
       opportunities?:
         | Array<{
@@ -9331,82 +9255,6 @@ export type ChallengeProfileFragment = {
                   }
                 | undefined;
             }>
-          | undefined;
-      }
-    | undefined;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        leadUsers?:
-          | Array<{
-              __typename?: 'User';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  }
-                | undefined;
-            }>
-          | undefined;
-        memberUsers?:
-          | Array<{
-              __typename?: 'User';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  }
-                | undefined;
-            }>
-          | undefined;
-        leadOrganizations?:
-          | Array<{
-              __typename?: 'Organization';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                description?: string | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-              verification: {
-                __typename?: 'OrganizationVerification';
-                id: string;
-                status: OrganizationVerificationEnum;
-              };
-              activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-            }>
-          | undefined;
-        memberOrganizations?:
-          | Array<{
-              __typename?: 'Organization';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }>
-          | undefined;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
       }
     | undefined;
@@ -9603,6 +9451,99 @@ export type HubContextQuery = {
             | undefined;
         }
       | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          leadUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+          memberUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+          leadOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  description?: string | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+                verification: {
+                  __typename?: 'OrganizationVerification';
+                  id: string;
+                  status: OrganizationVerificationEnum;
+                };
+                activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              }>
+            | undefined;
+          memberOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>
+            | undefined;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          displayName: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            description?: string | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        }
+      | undefined;
+    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 
@@ -9627,6 +9568,99 @@ export type HubContextExtraQuery = {
             | undefined;
         }
       | undefined;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          leadUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+          memberUsers?:
+            | Array<{
+                __typename?: 'User';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+          leadOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  description?: string | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+                verification: {
+                  __typename?: 'OrganizationVerification';
+                  id: string;
+                  status: OrganizationVerificationEnum;
+                };
+                activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              }>
+            | undefined;
+          memberOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+              }>
+            | undefined;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+    host?:
+      | {
+          __typename?: 'Organization';
+          id: string;
+          displayName: string;
+          nameID: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            description?: string | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        }
+      | undefined;
+    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 
@@ -9678,6 +9712,83 @@ export type ChallengeContextQuery = {
               | undefined;
           }
         | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            leadUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            memberUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                }>
+              | undefined;
+            memberOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }>
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -9710,6 +9821,83 @@ export type ChallengeContextExtraQuery = {
               | undefined;
           }
         | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            leadUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            memberUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                }>
+              | undefined;
+            memberOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }>
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -9758,6 +9946,83 @@ export type OpportunityContextQuery = {
               | undefined;
           }
         | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            leadUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            memberUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                }>
+              | undefined;
+            memberOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }>
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -9789,6 +10054,83 @@ export type OpportunityContextExtraQuery = {
               | undefined;
           }
         | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            leadUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            memberUsers?:
+              | Array<{
+                  __typename?: 'User';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            leadOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    description?: string | undefined;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                  verification: {
+                    __typename?: 'OrganizationVerification';
+                    id: string;
+                    status: OrganizationVerificationEnum;
+                  };
+                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                }>
+              | undefined;
+            memberOrganizations?:
+              | Array<{
+                  __typename?: 'Organization';
+                  id: string;
+                  displayName: string;
+                  nameID: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                  };
+                }>
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -9840,6 +10182,8 @@ export type ReferenceContextTabFragment = {
   uri: string;
   description: string;
 };
+
+export type ActivityItemFragment = { __typename?: 'NVP'; id: string; name: string; value: string };
 
 export type CommunityFeedbackTemplatesQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -10076,22 +10420,6 @@ export type HubPageQuery = {
           myPrivileges?: Array<AuthorizationPrivilege> | undefined;
         }
       | undefined;
-    host?:
-      | {
-          __typename?: 'Organization';
-          id: string;
-          displayName: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            description?: string | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-        }
-      | undefined;
     context?:
       | {
           __typename?: 'Context';
@@ -10168,62 +10496,6 @@ export type HubPageQuery = {
             | undefined;
         }
       | undefined;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          leadUsers?:
-            | Array<{
-                __typename?: 'User';
-                id: string;
-                displayName: string;
-                nameID: string;
-                profile?:
-                  | {
-                      __typename?: 'Profile';
-                      id: string;
-                      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                      location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                    }
-                  | undefined;
-              }>
-            | undefined;
-          memberUsers?:
-            | Array<{
-                __typename?: 'User';
-                id: string;
-                displayName: string;
-                nameID: string;
-                profile?:
-                  | {
-                      __typename?: 'Profile';
-                      id: string;
-                      location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                      tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                    }
-                  | undefined;
-              }>
-            | undefined;
-          memberOrganizations?:
-            | Array<{
-                __typename?: 'Organization';
-                id: string;
-                displayName: string;
-                nameID: string;
-                profile: {
-                  __typename?: 'Profile';
-                  id: string;
-                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                };
-              }>
-            | undefined;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
-        }
-      | undefined;
     challenges?:
       | Array<{
           __typename?: 'Challenge';
@@ -10258,22 +10530,6 @@ export type HubPageFragment = {
         id: string;
         anonymousReadAccess: boolean;
         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-      }
-    | undefined;
-  host?:
-    | {
-        __typename?: 'Organization';
-        id: string;
-        displayName: string;
-        nameID: string;
-        profile: {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        };
-        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       }
     | undefined;
   context?:
@@ -10349,62 +10605,6 @@ export type HubPageFragment = {
                   }
                 | undefined;
             }>
-          | undefined;
-      }
-    | undefined;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        leadUsers?:
-          | Array<{
-              __typename?: 'User';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  }
-                | undefined;
-            }>
-          | undefined;
-        memberUsers?:
-          | Array<{
-              __typename?: 'User';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  }
-                | undefined;
-            }>
-          | undefined;
-        memberOrganizations?:
-          | Array<{
-              __typename?: 'Organization';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }>
-          | undefined;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
       }
     | undefined;
@@ -10571,82 +10771,6 @@ export type OpportunityPageQuery = {
             description?: string | undefined;
           }>
         | undefined;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            leadUsers?:
-              | Array<{
-                  __typename?: 'User';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                      }
-                    | undefined;
-                }>
-              | undefined;
-            memberUsers?:
-              | Array<{
-                  __typename?: 'User';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile?:
-                    | {
-                        __typename?: 'Profile';
-                        id: string;
-                        location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                      }
-                    | undefined;
-                }>
-              | undefined;
-            leadOrganizations?:
-              | Array<{
-                  __typename?: 'Organization';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    description?: string | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                  verification: {
-                    __typename?: 'OrganizationVerification';
-                    id: string;
-                    status: OrganizationVerificationEnum;
-                  };
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-                }>
-              | undefined;
-            memberOrganizations?:
-              | Array<{
-                  __typename?: 'Organization';
-                  id: string;
-                  displayName: string;
-                  nameID: string;
-                  profile: {
-                    __typename?: 'Profile';
-                    id: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                  };
-                }>
-              | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
     };
   };
 };
@@ -10764,82 +10888,6 @@ export type OpportunityPageFragment = {
         displayName: string;
         description?: string | undefined;
       }>
-    | undefined;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        leadUsers?:
-          | Array<{
-              __typename?: 'User';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  }
-                | undefined;
-            }>
-          | undefined;
-        memberUsers?:
-          | Array<{
-              __typename?: 'User';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile?:
-                | {
-                    __typename?: 'Profile';
-                    id: string;
-                    location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-                    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-                  }
-                | undefined;
-            }>
-          | undefined;
-        leadOrganizations?:
-          | Array<{
-              __typename?: 'Organization';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                description?: string | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-              verification: {
-                __typename?: 'OrganizationVerification';
-                id: string;
-                status: OrganizationVerificationEnum;
-              };
-              activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-            }>
-          | undefined;
-        memberOrganizations?:
-          | Array<{
-              __typename?: 'Organization';
-              id: string;
-              displayName: string;
-              nameID: string;
-              profile: {
-                __typename?: 'Profile';
-                id: string;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              };
-            }>
-          | undefined;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      }
     | undefined;
 };
 
@@ -12561,6 +12609,77 @@ export type CommunityMembersFragment = {
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
       }>
+    | undefined;
+};
+
+export type EntityDashboardCommunityFragment = {
+  __typename?: 'Community';
+  id: string;
+  leadUsers?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+  memberUsers?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+  leadOrganizations?:
+    | Array<{
+        __typename?: 'Organization';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          description?: string | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      }>
+    | undefined;
+  memberOrganizations?:
+    | Array<{
+        __typename?: 'Organization';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>
+    | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
 };
 

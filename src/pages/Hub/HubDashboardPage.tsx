@@ -17,8 +17,6 @@ const HubDashboardPage: FC<HubDashboardPageProps> = () => {
               vision={entities.hub?.context?.vision}
               hubId={entities.hub?.id}
               hubNameId={entities.hub?.nameID}
-              communityId={entities.hub?.community?.id}
-              organizationNameId={entities.hub?.host?.nameID}
               activity={entities.activity}
               challenges={entities.challenges}
               aspects={entities.aspects}
@@ -26,12 +24,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = () => {
               canvases={entities.canvases}
               canvasesCount={entities.canvasesCount}
               loading={state.loading}
-              communityReadAccess={entities.permissions.communityReadAccess}
               challengesReadAccess={entities.permissions.challengesReadAccess}
-              memberUsers={entities.memberUsers}
-              memberUsersCount={entities.memberUsersCount}
-              memberOrganizations={entities.memberOrganizations}
-              memberOrganizationsCount={entities.memberOrganizationsCount}
             />
           )}
         </HubPageContainer>

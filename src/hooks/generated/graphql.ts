@@ -926,90 +926,6 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const DashboardLeadUserFragmentDoc = gql`
-  fragment DashboardLeadUser on User {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      avatar {
-        ...VisualUri
-      }
-      location {
-        id
-        country
-        city
-      }
-      tagsets {
-        id
-        tags
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const DashboardContributingUserFragmentDoc = gql`
-  fragment DashboardContributingUser on User {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      location {
-        city
-        country
-      }
-      avatar {
-        id
-        uri
-      }
-      tagsets {
-        id
-        tags
-      }
-    }
-  }
-`;
-export const AssociatedOrganizationDetailsFragmentDoc = gql`
-  fragment AssociatedOrganizationDetails on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      description
-      avatar {
-        ...VisualUri
-      }
-    }
-    verification {
-      id
-      status
-    }
-    activity {
-      id
-      name
-      value
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const DashboardContributingOrganizationFragmentDoc = gql`
-  fragment DashboardContributingOrganization on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      avatar {
-        id
-        uri
-        name
-      }
-    }
-  }
-`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -1076,25 +992,6 @@ export const ChallengeProfileFragmentDoc = gql`
         ...CanvasDetails
       }
     }
-    community {
-      id
-      leadUsers {
-        ...DashboardLeadUser
-      }
-      memberUsers {
-        ...DashboardContributingUser
-      }
-      leadOrganizations {
-        ...AssociatedOrganizationDetails
-      }
-      memberOrganizations {
-        ...DashboardContributingOrganization
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-    }
     tagset {
       id
       name
@@ -1136,10 +1033,6 @@ export const ChallengeProfileFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
@@ -1190,6 +1083,13 @@ export const LifecycleContextTabFragmentDoc = gql`
     id
     state
     machineDef
+  }
+`;
+export const ActivityItemFragmentDoc = gql`
+  fragment ActivityItem on NVP {
+    id
+    name
+    value
   }
 `;
 export const DiscussionDetailsFragmentDoc = gql`
@@ -1257,9 +1157,6 @@ export const HubPageFragmentDoc = gql`
       anonymousReadAccess
       myPrivileges
     }
-    host {
-      ...AssociatedOrganizationDetails
-    }
     context {
       id
       tagline
@@ -1279,22 +1176,6 @@ export const HubPageFragmentDoc = gql`
         ...CanvasDetails
       }
     }
-    community {
-      id
-      leadUsers {
-        ...DashboardLeadUser
-      }
-      memberUsers {
-        ...DashboardContributingUser
-      }
-      memberOrganizations {
-        ...DashboardContributingOrganization
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-    }
     challenges(limit: 2, shuffle: true) {
       ...ChallengeCard
     }
@@ -1304,13 +1185,9 @@ export const HubPageFragmentDoc = gql`
       tags
     }
   }
-  ${AssociatedOrganizationDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
 export const OpportunityPageFragmentDoc = gql`
@@ -1373,33 +1250,10 @@ export const OpportunityPageFragmentDoc = gql`
       displayName
       description
     }
-    community {
-      id
-      leadUsers {
-        ...DashboardLeadUser
-      }
-      memberUsers {
-        ...DashboardContributingUser
-      }
-      leadOrganizations {
-        ...AssociatedOrganizationDetails
-      }
-      memberOrganizations {
-        ...DashboardContributingOrganization
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-    }
   }
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
 `;
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
@@ -1649,6 +1503,115 @@ export const CommunityMembersFragmentDoc = gql`
   }
   ${UserCardFragmentDoc}
   ${OrganizationCardFragmentDoc}
+`;
+export const DashboardLeadUserFragmentDoc = gql`
+  fragment DashboardLeadUser on User {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar {
+        ...VisualUri
+      }
+      location {
+        id
+        country
+        city
+      }
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const DashboardContributingUserFragmentDoc = gql`
+  fragment DashboardContributingUser on User {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      location {
+        city
+        country
+      }
+      avatar {
+        id
+        uri
+      }
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
+`;
+export const AssociatedOrganizationDetailsFragmentDoc = gql`
+  fragment AssociatedOrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      description
+      avatar {
+        ...VisualUri
+      }
+    }
+    verification {
+      id
+      status
+    }
+    activity {
+      id
+      name
+      value
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const DashboardContributingOrganizationFragmentDoc = gql`
+  fragment DashboardContributingOrganization on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar {
+        id
+        uri
+        name
+      }
+    }
+  }
+`;
+export const EntityDashboardCommunityFragmentDoc = gql`
+  fragment EntityDashboardCommunity on Community {
+    id
+    leadUsers {
+      ...DashboardLeadUser
+    }
+    memberUsers {
+      ...DashboardContributingUser
+    }
+    leadOrganizations {
+      ...AssociatedOrganizationDetails
+    }
+    memberOrganizations {
+      ...DashboardContributingOrganization
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${DashboardLeadUserFragmentDoc}
+  ${DashboardContributingUserFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${DashboardContributingOrganizationFragmentDoc}
 `;
 export const BasicOrganizationDetailsFragmentDoc = gql`
   fragment BasicOrganizationDetails on Organization {
@@ -12012,9 +11975,21 @@ export const HubContextDocument = gql`
       context {
         ...ContextTab
       }
+      community {
+        ...EntityDashboardCommunity
+      }
+      host {
+        ...AssociatedOrganizationDetails
+      }
+      activity {
+        ...ActivityItem
+      }
     }
   }
   ${ContextTabFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12074,9 +12049,21 @@ export const HubContextExtraDocument = gql`
       context {
         ...ContextTabExtra
       }
+      community {
+        ...EntityDashboardCommunity
+      }
+      host {
+        ...AssociatedOrganizationDetails
+      }
+      activity {
+        ...ActivityItem
+      }
     }
   }
   ${ContextTabExtraFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12146,11 +12133,19 @@ export const ChallengeContextDocument = gql`
         context {
           ...ContextTab
         }
+        community {
+          ...EntityDashboardCommunity
+        }
+        activity {
+          ...ActivityItem
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12221,11 +12216,19 @@ export const ChallengeContextExtraDocument = gql`
         context {
           ...ContextTabExtra
         }
+        community {
+          ...EntityDashboardCommunity
+        }
+        activity {
+          ...ActivityItem
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabExtraFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12298,11 +12301,19 @@ export const OpportunityContextDocument = gql`
         context {
           ...ContextTab
         }
+        community {
+          ...EntityDashboardCommunity
+        }
+        activity {
+          ...ActivityItem
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12375,11 +12386,19 @@ export const OpportunityContextExtraDocument = gql`
         context {
           ...ContextTabExtra
         }
+        community {
+          ...EntityDashboardCommunity
+        }
+        activity {
+          ...ActivityItem
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabExtraFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**

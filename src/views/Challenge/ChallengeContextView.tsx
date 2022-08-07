@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
@@ -9,6 +9,7 @@ import ContextSection from '../../components/composite/sections/ContextSection';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import {
+  ActivityItemFragment,
   Context,
   ContextTabFragment,
   LifecycleContextTabFragment,
@@ -17,6 +18,16 @@ import {
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { RouterLink } from '../../components/core/RouterLink';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
+import ActivityView from '../Activity/ActivityView';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import EntityDashboardCommunity from '../../domain/community/EntityDashboardCommunity/EntityDashboardCommunity';
+import {
+  EntityDashboardContributors,
+  EntityDashboardLeads,
+} from '../../domain/community/EntityDashboardContributorsSection/Types';
+import { ActivityType } from '../../domain/activity/ActivityType';
+import getActivityCount from '../../domain/activity/utils/getActivityCount';
 
 interface ChallengeContextEntities {
   context?: ContextTabFragment;
@@ -40,15 +51,21 @@ interface ChallengeContextOptions {
 }
 
 interface ChallengeContextViewProps
-  extends ViewProps<
-    ChallengeContextEntities,
-    ChallengeContextActions,
-    ChallengeContextState,
-    ChallengeContextOptions
-  > {}
+  extends ViewProps<ChallengeContextEntities, ChallengeContextActions, ChallengeContextState, ChallengeContextOptions> {
+  activity: ActivityItemFragment[] | undefined;
+  communityReadAccess: boolean | undefined;
+  community: EntityDashboardLeads & EntityDashboardContributors;
+}
 
-export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, state, options }) => {
-  const { t } = useTranslation();
+export const ChallengeContextView: FC<ChallengeContextViewProps> = ({
+  activity,
+  communityReadAccess,
+  community,
+  entities,
+  state,
+  options,
+}) => {
+  const { t, i18n } = useTranslation();
   const { canCreateCommunityContextReview } = options;
   const { loading } = state;
   const { context, challengeDisplayName = '', challengeTagset, challengeLifecycle } = entities;
@@ -62,6 +79,28 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
     id = '',
   } = context || ({} as Context);
   const references = entities?.references;
+
+  const activityItems: ActivityItem[] = useMemo(() => {
+    return [
+      {
+        name: t('common.opportunities'),
+        type: ActivityType.Opportunity,
+        count: getActivityCount(activity, 'opportunities'),
+        color: 'primary',
+      },
+      {
+        name: t('common.agreements'),
+        count: getActivityCount(activity, 'projects'),
+        color: 'positive',
+      },
+      {
+        name: t('common.members'),
+        count: getActivityCount(activity, 'members'),
+        color: 'neutralMedium',
+      },
+    ];
+  }, [activity, i18n.language]);
+
   return (
     <>
       <ContextSection
@@ -91,6 +130,12 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ entities, 
         keywords={challengeTagset?.tags}
         references={references}
         loading={loading}
+        leftColumn={
+          <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.statistics.title')}>
+            <ActivityView activity={activityItems} loading={loading} />
+          </DashboardGenericSection>
+        }
+        rightColumn={<EntityDashboardCommunity communityReadAccess={communityReadAccess} {...community} />}
       />
     </>
   );
