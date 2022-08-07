@@ -39,6 +39,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<OpportunityDashboardPage paths={currentPaths} />} />
         <Route path={routes.Explore} element={<ContributePage entityTypeName="opportunity" />} />
+        <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="opportunity" />} />
         <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
         <Route path={routes.Agreements} element={<OpportunityProjectsPage paths={currentPaths} />} />
       </Route>
