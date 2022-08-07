@@ -4,10 +4,9 @@ import { Navigate, useResolvedPath } from 'react-router-dom';
 import Loading from '../../components/core/Loading/Loading';
 import { useOpportunity } from '../../hooks';
 import { Error404, PageProps } from '../../pages';
-import { ProjectRoute } from './ProjectRoute';
 import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboardPage';
 import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
-import OpportunityProjectsPage from '../../pages/Opportunity/OpportunityProjectsPage';
+import OpportunityAgreementsPage from '../../pages/Opportunity/OpportunityAgreementsPage';
 import ContributePage from '../../pages/Contribute/ContributePage';
 import { nameOfUrl } from '../url-params';
 import AspectProvider from '../../context/aspect/AspectProvider';
@@ -41,9 +40,8 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route path={routes.Explore} element={<ContributePage entityTypeName="opportunity" />} />
         <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="opportunity" />} />
         <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
-        <Route path={routes.Agreements} element={<OpportunityProjectsPage paths={currentPaths} />} />
+        <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
       </Route>
-      <Route path={`${routes.Agreements}/*`} element={<ProjectRoute paths={currentPaths} />} />
       <Route
         path={`contribute/aspects/:${nameOfUrl.aspectNameId}/*`}
         element={

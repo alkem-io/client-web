@@ -996,19 +996,13 @@
           "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
         },
         "apply": "Interested in collaboration?",
+        "agreements": {
+          "description": "Agreements are the formation of concrete next steps to be taken. This new functionality will be available soon.\n\nIdeas, suggestions? Please reach out!"
+        },
         "projects": {
-          "description": "Here you can manage your projects and suggest new ones to your stakeholders.",
-          "header": {
-            "text": "Projects",
-            "tag": "Coming soon"
-          },
-          "subheader": "Changing the world one project at a time",
-          "body": "Manage your projects and suggest new ones to your stakeholders.",
           "more-projects": "MORE PROJECTS STARTING SOON",
           "new-project": {
-            "header": "New project",
-            "subheader": "This could be the project that makes the difference",
-            "body": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
+            "header": "New project"
           }
         }
       }
