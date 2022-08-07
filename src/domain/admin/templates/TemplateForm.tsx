@@ -8,7 +8,7 @@ import FormikInputField from '../../../components/composite/forms/FormikInputFie
 import { TagsetField } from '../../../components/Admin/Common/TagsetSegment';
 import { CreateTemplateInfoInput, Visual } from '../../../models/graphql-schema';
 import VisualUpload from '../../../components/composite/common/VisualUpload/VisualUpload';
-import FormRows from '../../shared/components/FormRows';
+import TemplateFormRows from './TemplateFormRows';
 import FormCols from '../../shared/components/FormCols';
 import FormikMarkdownField from '../../../components/composite/forms/FormikMarkdownField';
 import { LONG_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
@@ -79,7 +79,7 @@ const TemplateForm = <Values extends {}>({
           </Typography>
           <DialogContent>
             <FormCols>
-              <FormRows>
+              <TemplateFormRows>
                 <FormikInputField name="title" title={t('common.title')} />
                 <FormikMarkdownField
                   name="description"
@@ -94,7 +94,7 @@ const TemplateForm = <Values extends {}>({
                   helpText={t('components.aspect-creation.info-step.tags-help-text')}
                 />
                 {visual && <VisualUpload visual={visual} />}
-              </FormRows>
+              </TemplateFormRows>
               {renderChildren(formState)}
             </FormCols>
           </DialogContent>

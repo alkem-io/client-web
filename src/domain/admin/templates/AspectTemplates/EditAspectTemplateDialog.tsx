@@ -34,7 +34,7 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
       <AspectTemplateForm
