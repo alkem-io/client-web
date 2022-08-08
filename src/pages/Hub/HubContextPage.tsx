@@ -22,7 +22,7 @@ const HubContextPage: FC<HubContextPageProps> = ({ paths }) => {
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <HubPageLayout currentSection={EntityPageSection.About} entityTypeName="hub">
+    <HubPageLayout currentSection={EntityPageSection.About}>
       <ContextTabContainer hubNameId={hubNameId} loadReferences={loadAspectsAndReferences}>
         {(entities, state) => (
           <HubContextView

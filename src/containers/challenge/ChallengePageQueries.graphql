@@ -42,6 +42,9 @@ fragment ChallengeProfile on Challenge {
       ...CanvasDetails
     }
   }
+  community {
+    ...EntityDashboardCommunity
+  }
   tagset {
     id
     name

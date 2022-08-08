@@ -926,6 +926,115 @@ export const AspectCardFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
+export const DashboardLeadUserFragmentDoc = gql`
+  fragment DashboardLeadUser on User {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar {
+        ...VisualUri
+      }
+      location {
+        id
+        country
+        city
+      }
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const DashboardContributingUserFragmentDoc = gql`
+  fragment DashboardContributingUser on User {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      location {
+        city
+        country
+      }
+      avatar {
+        id
+        uri
+      }
+      tagsets {
+        id
+        tags
+      }
+    }
+  }
+`;
+export const AssociatedOrganizationDetailsFragmentDoc = gql`
+  fragment AssociatedOrganizationDetails on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      description
+      avatar {
+        ...VisualUri
+      }
+    }
+    verification {
+      id
+      status
+    }
+    activity {
+      id
+      name
+      value
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const DashboardContributingOrganizationFragmentDoc = gql`
+  fragment DashboardContributingOrganization on Organization {
+    id
+    displayName
+    nameID
+    profile {
+      id
+      avatar {
+        id
+        uri
+        name
+      }
+    }
+  }
+`;
+export const EntityDashboardCommunityFragmentDoc = gql`
+  fragment EntityDashboardCommunity on Community {
+    id
+    leadUsers {
+      ...DashboardLeadUser
+    }
+    memberUsers {
+      ...DashboardContributingUser
+    }
+    leadOrganizations {
+      ...AssociatedOrganizationDetails
+    }
+    memberOrganizations {
+      ...DashboardContributingOrganization
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${DashboardLeadUserFragmentDoc}
+  ${DashboardContributingUserFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${DashboardContributingOrganizationFragmentDoc}
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -992,6 +1101,9 @@ export const ChallengeProfileFragmentDoc = gql`
         ...CanvasDetails
       }
     }
+    community {
+      ...EntityDashboardCommunity
+    }
     tagset {
       id
       name
@@ -1033,6 +1145,7 @@ export const ChallengeProfileFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
@@ -1157,6 +1270,9 @@ export const HubPageFragmentDoc = gql`
       anonymousReadAccess
       myPrivileges
     }
+    host {
+      ...AssociatedOrganizationDetails
+    }
     context {
       id
       tagline
@@ -1176,6 +1292,9 @@ export const HubPageFragmentDoc = gql`
         ...CanvasDetails
       }
     }
+    community {
+      ...EntityDashboardCommunity
+    }
     challenges(limit: 2, shuffle: true) {
       ...ChallengeCard
     }
@@ -1185,9 +1304,11 @@ export const HubPageFragmentDoc = gql`
       tags
     }
   }
+  ${AssociatedOrganizationDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
 export const OpportunityPageFragmentDoc = gql`
@@ -1204,13 +1325,6 @@ export const OpportunityPageFragmentDoc = gql`
       id
       name
       value
-    }
-    lifecycle {
-      id
-      machineDef
-      state
-      nextEvents
-      stateIsFinal
     }
     relations {
       id
@@ -1244,6 +1358,9 @@ export const OpportunityPageFragmentDoc = gql`
         ...CanvasDetails
       }
     }
+    community {
+      ...EntityDashboardCommunity
+    }
     projects {
       id
       nameID
@@ -1254,6 +1371,7 @@ export const OpportunityPageFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
 `;
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
@@ -1503,115 +1621,6 @@ export const CommunityMembersFragmentDoc = gql`
   }
   ${UserCardFragmentDoc}
   ${OrganizationCardFragmentDoc}
-`;
-export const DashboardLeadUserFragmentDoc = gql`
-  fragment DashboardLeadUser on User {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      avatar {
-        ...VisualUri
-      }
-      location {
-        id
-        country
-        city
-      }
-      tagsets {
-        id
-        tags
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const DashboardContributingUserFragmentDoc = gql`
-  fragment DashboardContributingUser on User {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      location {
-        city
-        country
-      }
-      avatar {
-        id
-        uri
-      }
-      tagsets {
-        id
-        tags
-      }
-    }
-  }
-`;
-export const AssociatedOrganizationDetailsFragmentDoc = gql`
-  fragment AssociatedOrganizationDetails on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      description
-      avatar {
-        ...VisualUri
-      }
-    }
-    verification {
-      id
-      status
-    }
-    activity {
-      id
-      name
-      value
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const DashboardContributingOrganizationFragmentDoc = gql`
-  fragment DashboardContributingOrganization on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      avatar {
-        id
-        uri
-        name
-      }
-    }
-  }
-`;
-export const EntityDashboardCommunityFragmentDoc = gql`
-  fragment EntityDashboardCommunity on Community {
-    id
-    leadUsers {
-      ...DashboardLeadUser
-    }
-    memberUsers {
-      ...DashboardContributingUser
-    }
-    leadOrganizations {
-      ...AssociatedOrganizationDetails
-    }
-    memberOrganizations {
-      ...DashboardContributingOrganization
-    }
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
 `;
 export const BasicOrganizationDetailsFragmentDoc = gql`
   fragment BasicOrganizationDetails on Organization {

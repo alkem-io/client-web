@@ -16,7 +16,7 @@ const ChallengeOpportunityPage: FC<ChallengeOpportunityPageProps> = ({ paths }) 
   useUpdateNavigation({ currentPaths });
 
   return (
-    <ChallengePageLayout currentSection={EntityPageSection.Opportunities} entityTypeName="challenge">
+    <ChallengePageLayout currentSection={EntityPageSection.Opportunities}>
       <ChallengePageContainer>
         {(entities, state) => <ChallengeOpportunitiesView entities={entities} state={state} />}
       </ChallengePageContainer>

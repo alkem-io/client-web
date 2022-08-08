@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import DashboardDiscussionsSection from '../../domain/shared/components/DashboardSections/DashboardDiscussionsSection';
@@ -11,7 +11,6 @@ import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
 import { useChallenge, useConfig } from '../../hooks';
-import ActivityView from '../Activity/ActivityView';
 import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
@@ -20,10 +19,10 @@ import DashboardSectionAspects from '../../components/composite/aspect/Dashboard
 import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { ActivityType } from '../../domain/activity/ActivityType';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import { buildCanvasUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
+import withOptionalCount from '../../domain/shared/utils/withOptionalCount';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -39,10 +38,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
 
   const { hubNameId, challengeNameId, loading: loadingChallengeContext } = useChallenge();
 
-  const opportunitiesCount = useMemo(() => {
-    return entities.activity.find(({ type }) => type === ActivityType.Opportunity)?.count;
-  }, [entities.activity]);
-
   const [, buildLinkToCanvas] = useBackToParentPage(buildChallengeUrl(hubNameId, challengeNameId));
 
   const buildCanvasLink = useCallback(
@@ -53,8 +48,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     [hubNameId, challengeNameId]
   );
 
-  const { challenge, activity, isMember, discussions, permissions, aspects, aspectsCount, canvases, canvasesCount } =
-    entities;
+  const { challenge, isMember, discussions, permissions, aspects, aspectsCount, canvases, canvasesCount } = entities;
 
   const { loading } = state;
 
@@ -80,9 +74,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navLink={'context'}
           >
             <Markdown children={challenge?.context?.vision || ''} />
-          </DashboardGenericSection>
-          <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.statistics.title')}>
-            <ActivityView activity={activity} loading={loading} />
           </DashboardGenericSection>
           {communityReadAccess && (
             <>
@@ -112,7 +103,10 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
         </DashboardColumn>
         <DashboardColumn>
           <DashboardGenericSection
-            headerText={`${t('pages.challenge.sections.dashboard.opportunities.title')} (${opportunitiesCount})`}
+            headerText={withOptionalCount(
+              t('pages.challenge.sections.dashboard.opportunities.title'),
+              entities.opportunitiesCount
+            )}
             helpText={t('pages.challenge.sections.dashboard.opportunities.help-text')}
             navText={t('buttons.see-all')}
             navLink={'opportunities'}

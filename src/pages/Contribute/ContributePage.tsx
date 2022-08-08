@@ -37,7 +37,7 @@ const ContributePage: FC<ContributePageProps> = ({ entityTypeName }) => {
   }
 
   return (
-    <PageLayout currentSection={EntityPageSection.Explore} entityTypeName={entityTypeName}>
+    <PageLayout currentSection={EntityPageSection.Explore}>
       <CanvasesView canvasId={canvasId} parentUrl={currentPath.pathname} entityTypeName={entityTypeName} />
       <SectionSpacer />
       <ContributeTabContainer

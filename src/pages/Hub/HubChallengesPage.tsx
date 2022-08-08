@@ -14,7 +14,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <HubPageLayout currentSection={EntityPageSection.Challenges} entityTypeName="hub">
+    <HubPageLayout currentSection={EntityPageSection.Challenges}>
       <ChallengesCardContainer hubNameId={hubNameId}>
         {(entities, state) => (
           <HubChallengesView

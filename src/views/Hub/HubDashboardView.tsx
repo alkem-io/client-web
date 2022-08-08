@@ -1,7 +1,6 @@
 import { Grid } from '@mui/material';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import DashboardDiscussionsSection from '../../domain/shared/components/DashboardSections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
@@ -15,7 +14,6 @@ import {
   CanvasDetailsFragment,
   ChallengeCardFragment,
 } from '../../models/graphql-schema';
-import ActivityView from '../Activity/ActivityView';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
@@ -29,10 +27,10 @@ import {
   EntityDashboardLeads,
 } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { ActivityType } from '../../domain/activity/ActivityType';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import { buildCanvasUrl, buildHubUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
+import withOptionalCount from '../../domain/shared/utils/withOptionalCount';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
@@ -40,7 +38,7 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   hubNameId?: string;
   communityId?: string;
   organizationNameId?: string;
-  activity: ActivityItem[];
+  challengesCount: number | undefined;
   discussions: Discussion[];
   organization?: any;
   challenges: ChallengeCardFragment[];
@@ -64,7 +62,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   challenges,
   hubNameId = '',
   communityId = '',
-  activity,
+  challengesCount,
   discussions,
   aspects,
   aspectsCount,
@@ -78,16 +76,11 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   memberUsersCount,
   memberOrganizations,
   memberOrganizationsCount,
-
   hostOrganization,
   leadUsers,
 }) => {
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
-
-  const challengesCount = useMemo(() => {
-    return activity.find(({ type }) => type === ActivityType.Challenge)?.count;
-  }, [activity]);
 
   const hostOrganizations = useMemo(() => hostOrganization && [hostOrganization], [hostOrganization]);
 
@@ -116,9 +109,6 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
             navLink={'context'}
           >
             <Markdown children={vision} />
-          </DashboardGenericSection>
-          <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>
-            <ActivityView activity={activity} loading={loading} />
           </DashboardGenericSection>
           {communityReadAccess && (
             <>
@@ -149,7 +139,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
         <DashboardColumn>
           {challengesReadAccess && (
             <DashboardGenericSection
-              headerText={`${t('pages.hub.sections.dashboard.challenges.title')} (${challengesCount})`}
+              headerText={withOptionalCount(t('pages.hub.sections.dashboard.challenges.title'), challengesCount)}
               helpText={t('pages.hub.sections.dashboard.challenges.help-text')}
               navText={t('buttons.see-all')}
               navLink={'challenges'}

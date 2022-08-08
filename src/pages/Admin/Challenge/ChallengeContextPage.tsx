@@ -25,7 +25,7 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <ChallengePageLayout currentSection={EntityPageSection.About} entityTypeName="challenge">
+    <ChallengePageLayout currentSection={EntityPageSection.About}>
       <ContextTabContainer
         hubNameId={hubNameId}
         challengeNameId={challengeNameId}

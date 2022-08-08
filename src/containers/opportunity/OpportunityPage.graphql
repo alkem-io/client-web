@@ -21,13 +21,6 @@ fragment OpportunityPage on Opportunity {
     name
     value
   }
-  lifecycle {
-    id
-    machineDef
-    state
-    nextEvents
-    stateIsFinal
-  }
   relations {
     id
     type
@@ -59,6 +52,9 @@ fragment OpportunityPage on Opportunity {
     canvases(limit: 2, shuffle: true) {
       ...CanvasDetails
     }
+  }
+  community {
+    ...EntityDashboardCommunity
   }
   #
   projects {

@@ -22,7 +22,7 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <OpportunityPageLayout currentSection={EntityPageSection.About} entityTypeName="opportunity">
+    <OpportunityPageLayout currentSection={EntityPageSection.About}>
       <ContextTabContainer
         hubNameId={hubNameId}
         opportunityNameId={opportunityNameId}

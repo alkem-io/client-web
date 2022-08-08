@@ -14,7 +14,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ paths }) 
   useUpdateNavigation({ currentPaths });
 
   return (
-    <OpportunityPageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="opportunity">
+    <OpportunityPageLayout currentSection={EntityPageSection.Dashboard}>
       <DiscussionsProvider>
         <OpportunityPageContainer>
           {(entities, state, actions) => (
