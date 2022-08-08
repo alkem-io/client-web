@@ -5,7 +5,7 @@ import { FormikProps } from 'formik';
 import { InputLabel, InputLabelProps } from '@mui/material';
 import FormikInputField from '../../../../components/composite/forms/FormikInputField';
 import { CreateTemplateInfoInput, Visual } from '../../../../models/graphql-schema';
-import FormRows from '../../../shared/components/FormRows';
+import TemplateFormRows from '../TemplateFormRows';
 import FormikMarkdownField from '../../../../components/composite/forms/FormikMarkdownField';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 import TemplateForm from '../TemplateForm';
@@ -53,7 +53,7 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
       actions={actions}
       validator={validator}
     >
-      <FormRows>
+      <TemplateFormRows>
         <FormikInputField name="type" title={t('aspect-edit.type.title')} />
         <FormikMarkdownField
           name="defaultDescription"
@@ -62,7 +62,7 @@ const AspectTemplateForm = ({ title, initialValues, visual, onSubmit, actions }:
           maxLength={VERY_LONG_TEXT_LENGTH}
           withCounter
         />
-      </FormRows>
+      </TemplateFormRows>
     </TemplateForm>
   );
 };

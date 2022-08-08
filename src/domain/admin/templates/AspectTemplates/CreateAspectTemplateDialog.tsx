@@ -20,7 +20,7 @@ const CreateAspectTemplateDialog = ({ open, onClose, onSubmit }: CreateAspectTem
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
       <AspectTemplateForm
