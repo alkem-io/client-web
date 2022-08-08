@@ -1,0 +1,27 @@
+mutation updateInnovationTemplate($templateId: UUID!, $info: UpdateTemplateInfoInput, $definition: LifecycleDefinition!, $type: LifecycleType!) {
+  updateLifecycleTemplate(lifecycleTemplateInput: {
+    ID: $templateId
+    info: $info
+    type: $type
+    definition: $definition
+  }) {
+    id
+  }
+}
+
+mutation createInnovationTemplate($templatesSetId: UUID!, $info: CreateTemplateInfoInput!, $definition: LifecycleDefinition!, $type: LifecycleType!) {
+  createLifecycleTemplate(lifecycleTemplateInput: {
+    templatesSetID: $templatesSetId
+    info: $info
+    type: $type
+    definition: $definition
+  }) {
+    id
+  }
+}
+
+mutation deleteInnovationTemplate($templateId: UUID!) {
+  deleteLifecycleTemplate(deleteData: { ID: $templateId }) {
+    id
+  }
+}

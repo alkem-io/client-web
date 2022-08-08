@@ -22,7 +22,7 @@ const CreateCanvasTemplateDialog = ({ canvases, open, onClose, onSubmit }: Creat
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
       <CanvasTemplateForm
