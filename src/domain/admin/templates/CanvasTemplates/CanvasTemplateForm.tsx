@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import { CreateTemplateInfoInput, Visual } from '../../../../models/graphql-schema';
-import FormRows from '../../../shared/components/FormRows';
+import TemplateFormRows from '../TemplateFormRows';
 import TemplateForm from '../TemplateForm';
 import CanvasFormikSelectInput, { Canvas } from './CanvasFormikSelectInput';
 import { useTranslation } from 'react-i18next';
@@ -44,9 +44,9 @@ const CanvasTemplateForm = ({ title, initialValues, visual, onSubmit, actions, c
       actions={actions}
       validator={validator}
     >
-      <FormRows>
-        <CanvasFormikSelectInput title={t('common.canvas')} name="value" canvases={canvases} />
-      </FormRows>
+      <TemplateFormRows>
+        <CanvasFormikSelectInput label={t('common.canvas')} name="value" canvases={canvases} />
+      </TemplateFormRows>
     </TemplateForm>
   );
 };

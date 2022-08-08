@@ -12289,6 +12289,61 @@ export type HubTemplatesQuery = {
                 | undefined;
             };
           }>;
+          lifecycleTemplates: Array<{
+            __typename?: 'LifecycleTemplate';
+            id: string;
+            definition?: string | undefined;
+            type: LifecycleType;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type AdminLifecycleTemplateFragment = {
+  __typename?: 'LifecycleTemplate';
+  id: string;
+  definition?: string | undefined;
+  type: LifecycleType;
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title?: string | undefined;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
         }
       | undefined;
   };
@@ -12369,6 +12424,39 @@ export type TemplateInfoFragment = {
         minWidth: number;
       }
     | undefined;
+};
+
+export type UpdateInnovationTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  definition: Scalars['LifecycleDefinition'];
+  type: LifecycleType;
+}>;
+
+export type UpdateInnovationTemplateMutation = {
+  __typename?: 'Mutation';
+  updateLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
+};
+
+export type CreateInnovationTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  info: CreateTemplateInfoInput;
+  definition: Scalars['LifecycleDefinition'];
+  type: LifecycleType;
+}>;
+
+export type CreateInnovationTemplateMutation = {
+  __typename?: 'Mutation';
+  createLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
+};
+
+export type DeleteInnovationTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteInnovationTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
 };
 
 export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
@@ -13539,6 +13627,18 @@ export type HubProviderQuery = {
               description?: string | undefined;
             };
           }>;
+          lifecycleTemplates: Array<{
+            __typename?: 'LifecycleTemplate';
+            id: string;
+            definition?: string | undefined;
+            type: LifecycleType;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+            };
+          }>;
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -13625,6 +13725,18 @@ export type HubInfoFragment = {
           __typename?: 'CanvasTemplate';
           id: string;
           value: string;
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title?: string | undefined;
+            description?: string | undefined;
+          };
+        }>;
+        lifecycleTemplates: Array<{
+          __typename?: 'LifecycleTemplate';
+          id: string;
+          definition?: string | undefined;
+          type: LifecycleType;
           info: {
             __typename?: 'TemplateInfo';
             id: string;

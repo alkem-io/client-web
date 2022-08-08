@@ -1,30 +1,39 @@
-import { AdminAspectTemplateFragment } from '../../../../models/graphql-schema';
+import { AdminLifecycleTemplateFragment } from '../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
-import AspectTemplateForm, { AspectTemplateFormSubmittedValues, AspectTemplateFormValues } from './AspectTemplateForm';
+import InnovationTemplateForm, {
+  InnovationTemplateFormSubmittedValues,
+  InnovationTemplateFormValues,
+} from './InnovationTemplateForm';
 import Dialog from '@mui/material/Dialog';
 import React from 'react';
 import { DialogProps } from '@mui/material';
 import DeleteButton from '../../../shared/components/DeleteButton';
 import FormikSubmitButton from '../../../shared/components/forms/FormikSubmitButton';
 
-interface EditAspectTemplateDialogProps {
+interface EditInnovationTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
-  onSubmit: (values: AspectTemplateFormSubmittedValues) => void;
+  onSubmit: (values: InnovationTemplateFormSubmittedValues) => void;
   onDelete: () => void;
-  template: AdminAspectTemplateFragment | undefined;
+  template: AdminLifecycleTemplateFragment | undefined;
 }
 
-const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }: EditAspectTemplateDialogProps) => {
+const EditInnovationTemplateDialog = ({
+  template,
+  open,
+  onClose,
+  onSubmit,
+  onDelete,
+}: EditInnovationTemplateDialogProps) => {
   const { t } = useTranslation();
 
   if (!template) {
     return null;
   }
 
-  const values: Partial<AspectTemplateFormValues> = {
+  const values: Partial<InnovationTemplateFormValues> = {
     type: template.type,
-    defaultDescription: template.defaultDescription,
+    definition: template.definition,
     title: template.info.title,
     description: template.info.description,
     tags: template.info.tagset?.tags,
@@ -34,11 +43,11 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', minWidth: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
-      <AspectTemplateForm
-        title={t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
+      <InnovationTemplateForm
+        title={t('common.edit-entity', { entity: t('innovation-templates.innovation-template') })}
         initialValues={values}
         visual={template.info.visual}
         onSubmit={onSubmit}
@@ -53,4 +62,4 @@ const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete 
   );
 };
 
-export default EditAspectTemplateDialog;
+export default EditInnovationTemplateDialog;

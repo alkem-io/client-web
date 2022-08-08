@@ -1569,6 +1569,17 @@ export const TemplateInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
+export const AdminLifecycleTemplateFragmentDoc = gql`
+  fragment AdminLifecycleTemplate on LifecycleTemplate {
+    id
+    definition
+    type
+    info {
+      ...TemplateInfo
+    }
+  }
+  ${TemplateInfoFragmentDoc}
+`;
 export const AdminAspectTemplateFragmentDoc = gql`
   fragment AdminAspectTemplate on AspectTemplate {
     id
@@ -1787,6 +1798,16 @@ export const HubInfoFragmentDoc = gql`
           description
         }
         value
+      }
+      lifecycleTemplates {
+        id
+        definition
+        type
+        info {
+          id
+          title
+          description
+        }
       }
     }
   }
@@ -15346,11 +15367,15 @@ export const HubTemplatesDocument = gql`
         canvasTemplates {
           ...AdminCanvasTemplate
         }
+        lifecycleTemplates {
+          ...AdminLifecycleTemplate
+        }
       }
     }
   }
   ${AdminAspectTemplateFragmentDoc}
   ${AdminCanvasTemplateFragmentDoc}
+  ${AdminLifecycleTemplateFragmentDoc}
 `;
 
 /**
@@ -15396,6 +15421,170 @@ export type HubTemplatesQueryResult = Apollo.QueryResult<
 export function refetchHubTemplatesQuery(variables: SchemaTypes.HubTemplatesQueryVariables) {
   return { query: HubTemplatesDocument, variables: variables };
 }
+export const UpdateInnovationTemplateDocument = gql`
+  mutation updateInnovationTemplate(
+    $templateId: UUID!
+    $info: UpdateTemplateInfoInput
+    $definition: LifecycleDefinition!
+    $type: LifecycleType!
+  ) {
+    updateLifecycleTemplate(
+      lifecycleTemplateInput: { ID: $templateId, info: $info, type: $type, definition: $definition }
+    ) {
+      id
+    }
+  }
+`;
+export type UpdateInnovationTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationTemplateMutation,
+  SchemaTypes.UpdateInnovationTemplateMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationTemplateMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationTemplateMutation, { data, loading, error }] = useUpdateInnovationTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *      info: // value for 'info'
+ *      definition: // value for 'definition'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useUpdateInnovationTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationTemplateMutation,
+    SchemaTypes.UpdateInnovationTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationTemplateMutation,
+    SchemaTypes.UpdateInnovationTemplateMutationVariables
+  >(UpdateInnovationTemplateDocument, options);
+}
+export type UpdateInnovationTemplateMutationHookResult = ReturnType<typeof useUpdateInnovationTemplateMutation>;
+export type UpdateInnovationTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationTemplateMutation>;
+export type UpdateInnovationTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationTemplateMutation,
+  SchemaTypes.UpdateInnovationTemplateMutationVariables
+>;
+export const CreateInnovationTemplateDocument = gql`
+  mutation createInnovationTemplate(
+    $templatesSetId: UUID!
+    $info: CreateTemplateInfoInput!
+    $definition: LifecycleDefinition!
+    $type: LifecycleType!
+  ) {
+    createLifecycleTemplate(
+      lifecycleTemplateInput: { templatesSetID: $templatesSetId, info: $info, type: $type, definition: $definition }
+    ) {
+      id
+    }
+  }
+`;
+export type CreateInnovationTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateInnovationTemplateMutation,
+  SchemaTypes.CreateInnovationTemplateMutationVariables
+>;
+
+/**
+ * __useCreateInnovationTemplateMutation__
+ *
+ * To run a mutation, you first call `useCreateInnovationTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateInnovationTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createInnovationTemplateMutation, { data, loading, error }] = useCreateInnovationTemplateMutation({
+ *   variables: {
+ *      templatesSetId: // value for 'templatesSetId'
+ *      info: // value for 'info'
+ *      definition: // value for 'definition'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useCreateInnovationTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateInnovationTemplateMutation,
+    SchemaTypes.CreateInnovationTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateInnovationTemplateMutation,
+    SchemaTypes.CreateInnovationTemplateMutationVariables
+  >(CreateInnovationTemplateDocument, options);
+}
+export type CreateInnovationTemplateMutationHookResult = ReturnType<typeof useCreateInnovationTemplateMutation>;
+export type CreateInnovationTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateInnovationTemplateMutation>;
+export type CreateInnovationTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateInnovationTemplateMutation,
+  SchemaTypes.CreateInnovationTemplateMutationVariables
+>;
+export const DeleteInnovationTemplateDocument = gql`
+  mutation deleteInnovationTemplate($templateId: UUID!) {
+    deleteLifecycleTemplate(deleteData: { ID: $templateId }) {
+      id
+    }
+  }
+`;
+export type DeleteInnovationTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteInnovationTemplateMutation,
+  SchemaTypes.DeleteInnovationTemplateMutationVariables
+>;
+
+/**
+ * __useDeleteInnovationTemplateMutation__
+ *
+ * To run a mutation, you first call `useDeleteInnovationTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteInnovationTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteInnovationTemplateMutation, { data, loading, error }] = useDeleteInnovationTemplateMutation({
+ *   variables: {
+ *      templateId: // value for 'templateId'
+ *   },
+ * });
+ */
+export function useDeleteInnovationTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteInnovationTemplateMutation,
+    SchemaTypes.DeleteInnovationTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteInnovationTemplateMutation,
+    SchemaTypes.DeleteInnovationTemplateMutationVariables
+  >(DeleteInnovationTemplateDocument, options);
+}
+export type DeleteInnovationTemplateMutationHookResult = ReturnType<typeof useDeleteInnovationTemplateMutation>;
+export type DeleteInnovationTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteInnovationTemplateMutation>;
+export type DeleteInnovationTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteInnovationTemplateMutation,
+  SchemaTypes.DeleteInnovationTemplateMutationVariables
+>;
 export const AspectCommentsMessageReceivedDocument = gql`
   subscription AspectCommentsMessageReceived($aspectID: UUID!) {
     aspectCommentsMessageReceived(aspectID: $aspectID) {

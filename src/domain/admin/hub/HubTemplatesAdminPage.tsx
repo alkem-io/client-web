@@ -13,12 +13,14 @@ import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspectTemplatesSection';
 import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
   routePrefix: string;
   aspectTemplatesRoutePath: string;
   canvasTemplatesRoutePath: string;
+  innovationTemplatesRoutePath: string;
   edit?: boolean;
 }
 
@@ -28,9 +30,10 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   routePrefix,
   aspectTemplatesRoutePath,
   canvasTemplatesRoutePath,
+  innovationTemplatesRoutePath,
   edit = false,
 }) => {
-  const { aspectTemplateId, canvasTemplateId } = useParams();
+  const { aspectTemplateId, canvasTemplateId, innovationTemplateId } = useParams();
 
   useAppendBreadcrumb(paths, { name: 'templates' });
 
@@ -45,7 +48,12 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     variables: { hubId },
   });
 
-  const { aspectTemplates, canvasTemplates, id: templatesSetID } = hubTemplatesData?.hub.templates ?? {};
+  const {
+    aspectTemplates,
+    canvasTemplates,
+    lifecycleTemplates,
+    id: templatesSetID,
+  } = hubTemplatesData?.hub.templates ?? {};
   const canvases = hubCanvasesData?.hub.context?.canvases;
 
   return (
@@ -70,6 +78,16 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         edit={edit}
         loadCanvases={loadCanvases}
         canvases={canvases}
+      />
+      <SectionSpacer />
+      <AdminInnovationTemplatesSection
+        templateId={innovationTemplateId}
+        templatesSetId={templatesSetID}
+        templates={lifecycleTemplates}
+        onCloseTemplateDialog={backFromTemplateDialog}
+        refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
+        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
+        edit={edit}
       />
     </HubSettingsLayout>
   );
