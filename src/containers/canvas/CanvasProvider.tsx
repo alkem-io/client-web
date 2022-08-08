@@ -8,7 +8,7 @@ import {
 } from '../../hooks/generated/graphql';
 import {
   CanvasDetailsFragment,
-  ContextWithCanvasDetailsFragment,
+  CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../models/graphql-schema';
 
@@ -24,7 +24,7 @@ export interface IProvidedEntities {
   canvases: CanvasDetailsFragment[];
   templates: CreateCanvasCanvasTemplateFragment[];
   contextId: string | undefined;
-  authorization: ContextWithCanvasDetailsFragment['authorization'];
+  authorization: CollaborationWithCanvasDetailsFragment['authorization'];
 }
 
 export interface IProvidedEntitiesState {
@@ -61,15 +61,17 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     errorPolicy: 'all',
   });
 
-  const context =
-    hubData?.hub.context ?? challengeData?.hub.challenge.context ?? opportunityData?.hub.opportunity.context;
+  const callout =
+    hubData?.hub.collaboration?.callouts?.[0] ??
+    challengeData?.hub.challenge.collaboration?.callouts?.[0] ??
+    opportunityData?.hub.opportunity.collaboration?.callouts?.[0];
 
-  const canvases = context?.canvases ?? [];
+  const canvases = callout?.canvases ?? [];
 
   const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
 
-  const contextId = context?.id;
-  const authorization = context?.authorization;
+  const contextId = callout?.id;
+  const authorization = callout?.authorization;
 
   return (
     <>
