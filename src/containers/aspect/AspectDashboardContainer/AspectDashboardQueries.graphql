@@ -1,7 +1,7 @@
 query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
-    context {
+    collaboration {
       ...AspectDashboardData
     }
   }
@@ -12,7 +12,7 @@ query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, 
     id
     challenge(ID: $challengeNameId) {
       id
-      context {
+      collaboration {
         ...AspectDashboardData
       }
     }
@@ -24,21 +24,24 @@ query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEI
     id
     opportunity(ID: $opportunityNameId) {
       id
-      context {
+      collaboration {
         ...AspectDashboardData
       }
     }
   }
 }
 
-fragment AspectDashboardData on Context {
+fragment AspectDashboardData on Collaboration {
   id
   authorization {
     id
     myPrivileges
   }
-  aspects(IDs: [$aspectNameId]) {
-    ...AspectDashboard
+  callouts {
+    id
+    aspects(IDs: [$aspectNameId]) {
+      ...AspectDashboard
+    }
   }
 }
 

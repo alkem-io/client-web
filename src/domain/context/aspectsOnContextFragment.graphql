@@ -1,6 +1,9 @@
-fragment AspectsOnContext on Context {
+fragment AspectsOnCollaboration on Collaboration {
   id
-  aspects {
-    ...ContributeTabAspect
+  callouts {
+    id
+    aspects {
+      ...ContributeTabAspect
+    }
   }
 }

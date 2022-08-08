@@ -1,5 +1,5 @@
-subscription ContextAspectCreated($contextID: UUID!) {
-  contextAspectCreated(contextID: $contextID) {
+subscription CalloutAspectCreated($calloutID: UUID!) {
+  calloutAspectCreated(calloutID: $calloutID) {
     aspect {
       ...ContributeTabAspect
     }

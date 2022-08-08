@@ -9,8 +9,8 @@ query PrivilegesOnHubContext($hubNameId: UUID_NAMEID!) {
 query HubAspects($hubNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
-    context {
-      ...AspectsOnContext
+    collaboration {
+      ...AspectsOnCollaboration
     }
   }
 }
@@ -31,8 +31,8 @@ query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
     id
     challenge(ID: $challengeNameId) {
       id
-      context {
-        ...AspectsOnContext
+      collaboration {
+        ...AspectsOnCollaboration
       }
     }
   }
@@ -54,8 +54,8 @@ query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
     id
     opportunity(ID: $opportunityNameId) {
       id
-      context {
-        ...AspectsOnContext
+      collaboration {
+        ...AspectsOnCollaboration
       }
     }
   }
@@ -69,8 +69,8 @@ fragment PrivilegesOnContext on Context {
   }
 }
 
-mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnContextInput!) {
-  createAspectOnContext(aspectData: $aspectData) {
+mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!) {
+  createAspectOnCallout(aspectData: $aspectData) {
     id
     nameID
     displayName

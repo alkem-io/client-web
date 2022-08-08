@@ -28,13 +28,25 @@ fragment OpportunityPage on Opportunity {
     nextEvents
     stateIsFinal
   }
-  relations {
+  collaboration {
     id
-    type
-    actorRole
-    actorName
-    actorType
-    description
+    relations {
+      id
+      type
+      actorRole
+      actorName
+      actorType
+      description
+    }
+    callouts {
+      id
+      aspects(limit: 2, shuffle: true) {
+        ...AspectCard
+      }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
+    }
   }
   context {
     id
@@ -52,12 +64,6 @@ fragment OpportunityPage on Opportunity {
     }
     visuals {
       ...VisualUri
-    }
-    aspects(limit: 2, shuffle: true) {
-      ...AspectCard
-    }
-    canvases(limit: 2, shuffle: true) {
-      ...CanvasDetails
     }
   }
   #
