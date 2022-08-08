@@ -862,19 +862,18 @@ export const CanvasDetailsFragmentDoc = gql`
   ${CheckoutDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
-export const ContextWithCanvasDetailsFragmentDoc = gql`
-  fragment ContextWithCanvasDetails on Collaboration {
+export const CollaborationWithCanvasDetailsFragmentDoc = gql`
+  fragment CollaborationWithCanvasDetails on Collaboration {
     id
     callouts {
       id
+      authorization {
+        id
+        myPrivileges
+      }
       canvases {
         ...CanvasDetails
       }
-    }
-    authorization {
-      id
-      myPrivileges
-      anonymousReadAccess
     }
   }
   ${CanvasDetailsFragmentDoc}
@@ -1424,6 +1423,16 @@ export const OpportunityPageFragmentDoc = gql`
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
+`;
+export const OpportunityPageRelationsFragmentDoc = gql`
+  fragment OpportunityPageRelations on Relation {
+    id
+    type
+    actorRole
+    actorName
+    actorType
+    description
+  }
 `;
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
@@ -10970,11 +10979,11 @@ export const HubCanvasesDocument = gql`
     hub(ID: $hubId) {
       id
       collaboration {
-        ...ContextWithCanvasDetails
+        ...CollaborationWithCanvasDetails
       }
     }
   }
-  ${ContextWithCanvasDetailsFragmentDoc}
+  ${CollaborationWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11028,6 +11037,10 @@ export const HubCanvasValuesDocument = gql`
         id
         callouts {
           id
+          authorization {
+            id
+            myPrivileges
+          }
           canvases(IDs: [$canvasId]) {
             ...CanvasDetails
             ...CanvasValue
@@ -11091,12 +11104,12 @@ export const ChallengeCanvasesDocument = gql`
       challenge(ID: $challengeId) {
         id
         collaboration {
-          ...ContextWithCanvasDetails
+          ...CollaborationWithCanvasDetails
         }
       }
     }
   }
-  ${ContextWithCanvasDetailsFragmentDoc}
+  ${CollaborationWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11156,6 +11169,10 @@ export const ChallengeCanvasValuesDocument = gql`
           id
           callouts {
             id
+            authorization {
+              id
+              myPrivileges
+            }
             canvases(IDs: [$canvasId]) {
               ...CanvasDetails
               ...CanvasValue
@@ -11227,12 +11244,12 @@ export const OpportunityCanvasesDocument = gql`
       opportunity(ID: $opportunityId) {
         id
         collaboration {
-          ...ContextWithCanvasDetails
+          ...CollaborationWithCanvasDetails
         }
       }
     }
   }
-  ${ContextWithCanvasDetailsFragmentDoc}
+  ${CollaborationWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11295,6 +11312,10 @@ export const OpportunityCanvasValuesDocument = gql`
           id
           callouts {
             id
+            authorization {
+              id
+              myPrivileges
+            }
             canvases(IDs: [$canvasId]) {
               ...CanvasDetails
               ...CanvasValue

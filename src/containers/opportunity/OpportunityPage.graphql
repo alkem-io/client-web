@@ -93,3 +93,12 @@ fragment OpportunityPage on Opportunity {
     }
   }
 }
+
+fragment OpportunityPageRelations on Relation {
+  id
+  type
+  actorRole
+  actorName
+  actorType
+  description
+}

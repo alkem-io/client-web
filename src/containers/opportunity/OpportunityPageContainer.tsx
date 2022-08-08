@@ -14,6 +14,7 @@ import {
   AuthorizationPrivilege,
   CanvasDetailsFragment,
   OpportunityPageFragment,
+  OpportunityPageRelationsFragment,
   Reference,
 } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
@@ -49,8 +50,8 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   relations: {
-    incoming: OpportunityPageFragment['relations'];
-    outgoing: OpportunityPageFragment['relations'];
+    incoming: OpportunityPageRelationsFragment[];
+    outgoing: OpportunityPageRelationsFragment[];
   };
   discussions: Discussion[];
   aspects: AspectCardFragment[];
@@ -116,10 +117,13 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
-  const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
+  const { context, projects = [], collaboration, activity: _activity = [] } = opportunity;
+  const relations = collaboration?.relations ?? [];
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references = [], aspects = [], canvases = [] } = context ?? {};
+  const { references = [] } = context ?? {};
+  const aspects = collaboration?.callouts?.[0].aspects ?? [];
+  const canvases = collaboration?.callouts?.[0].canvases ?? [];
 
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 

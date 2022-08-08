@@ -121,9 +121,9 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
 
   const canvas = useMemo(() => {
     const sourceArray =
-      hubData?.hub.context?.canvases ||
-      challengeData?.hub.challenge.context?.canvases ||
-      opportunityData?.hub.opportunity.context?.canvases;
+      hubData?.hub.collaboration?.callouts?.[0]?.canvases ||
+      challengeData?.hub.challenge.collaboration?.callouts?.[0]?.canvases ||
+      opportunityData?.hub.opportunity.collaboration?.callouts?.[0]?.canvases;
 
     return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
   }, [hubData, challengeData, opportunityData, canvasId]);
@@ -136,20 +136,20 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
 
   const skipCanvasSubscription = !canvasId || canvas?.checkout?.lockedBy === userId;
 
-  useSubscribeToCanvas(hubData, data => findById(data?.hub.context?.canvases, canvasId!), subHub, {
+  useSubscribeToCanvas(hubData, data => findById(data?.hub.collaboration?.callouts?.[0]?.canvases, canvasId!), subHub, {
     skip: skipCanvasSubscription,
   });
 
   useSubscribeToCanvas(
     challengeData,
-    data => findById(data?.hub.challenge.context?.canvases, canvasId!),
+    data => findById(data?.hub.challenge.collaboration?.callouts?.[0]?.canvases, canvasId!),
     subChallenge,
     { skip: skipCanvasSubscription }
   );
 
   useSubscribeToCanvas(
     opportunityData,
-    data => findById(data?.hub.opportunity.context?.canvases, canvasId!),
+    data => findById(data?.hub.opportunity.collaboration?.callouts?.[0]?.canvases, canvasId!),
     subOpportunity,
     { skip: skipCanvasSubscription }
   );

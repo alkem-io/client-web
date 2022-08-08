@@ -8557,13 +8557,16 @@ export type CreateCanvasCanvasTemplateFragment = {
   info: { __typename?: 'TemplateInfo'; title?: string | undefined; description?: string | undefined };
 };
 
-export type ContextWithCanvasDetailsFragment = {
+export type CollaborationWithCanvasDetailsFragment = {
   __typename?: 'Collaboration';
   id: string;
   callouts?:
     | Array<{
         __typename?: 'Callout';
         id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
         canvases?:
           | Array<{
               __typename?: 'Canvas';
@@ -8612,14 +8615,6 @@ export type ContextWithCanvasDetailsFragment = {
           | undefined;
       }>
     | undefined;
-  authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
-    | undefined;
 };
 
 export type HubCanvasesQueryVariables = Exact<{
@@ -8639,6 +8634,13 @@ export type HubCanvasesQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
@@ -8687,14 +8689,6 @@ export type HubCanvasesQuery = {
                   | undefined;
               }>
             | undefined;
-          authorization?:
-            | {
-                __typename?: 'Authorization';
-                id: string;
-                myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                anonymousReadAccess: boolean;
-              }
-            | undefined;
         }
       | undefined;
   };
@@ -8718,6 +8712,13 @@ export type HubCanvasValuesQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
                 canvases?:
                   | Array<{
                       __typename?: 'Canvas';
@@ -8793,6 +8794,13 @@ export type ChallengeCanvasesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
@@ -8845,14 +8853,6 @@ export type ChallengeCanvasesQuery = {
                     | undefined;
                 }>
               | undefined;
-            authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
-              | undefined;
           }
         | undefined;
     };
@@ -8881,6 +8881,13 @@ export type ChallengeCanvasValuesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
@@ -8961,6 +8968,13 @@ export type OpportunityCanvasesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
@@ -9013,14 +9027,6 @@ export type OpportunityCanvasesQuery = {
                     | undefined;
                 }>
               | undefined;
-            authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
-              | undefined;
           }
         | undefined;
     };
@@ -9049,6 +9055,13 @@ export type OpportunityCanvasValuesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   canvases?:
                     | Array<{
                         __typename?: 'Canvas';
@@ -11216,6 +11229,16 @@ export type OpportunityPageFragment = {
           | undefined;
       }
     | undefined;
+};
+
+export type OpportunityPageRelationsFragment = {
+  __typename?: 'Relation';
+  id: string;
+  type: string;
+  actorRole: string;
+  actorName: string;
+  actorType: string;
+  description: string;
 };
 
 export type EventOnOpportunityMutationVariables = Exact<{

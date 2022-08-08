@@ -11,7 +11,12 @@ import InterestModal from '../../components/composite/entities/Hub/InterestModal
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
-import { CanvasDetailsFragment, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import {
+  CanvasDetailsFragment,
+  OpportunityPageFragment,
+  OpportunityPageRelationsFragment,
+  Reference,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { getVisualBanner } from '../../utils/visuals.utils';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
@@ -38,8 +43,8 @@ export interface OpportunityDashboardViewEntities {
   links: Reference[];
   meme?: Reference;
   relations: {
-    incoming: OpportunityPageFragment['relations'];
-    outgoing: OpportunityPageFragment['relations'];
+    incoming: OpportunityPageRelationsFragment;
+    outgoing: OpportunityPageRelationsFragment;
   };
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;

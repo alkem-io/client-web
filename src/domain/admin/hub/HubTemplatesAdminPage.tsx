@@ -54,7 +54,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     lifecycleTemplates,
     id: templatesSetID,
   } = hubTemplatesData?.hub.templates ?? {};
-  const canvases = hubCanvasesData?.hub.context?.canvases;
+  const canvases = hubCanvasesData?.hub.collaboration?.callouts?.[0]?.canvases;
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>

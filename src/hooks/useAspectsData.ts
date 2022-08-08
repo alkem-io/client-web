@@ -54,7 +54,7 @@ export const useAspectsData = ({
     skip: !canReadHubContext || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspects = hubAspectData?.hub?.context?.aspects;
+  const hubAspects = hubAspectData?.hub?.collaboration?.callouts?.[0]?.aspects;
 
   const {
     data: challengeContextData,
@@ -80,7 +80,7 @@ export const useAspectsData = ({
     skip: !canReadChallengeContext || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspects = challengeAspectData?.hub?.challenge?.context?.aspects;
+  const challengeAspects = challengeAspectData?.hub?.challenge?.collaboration?.callouts?.[0]?.aspects;
 
   const {
     data: opportunityContextData,
@@ -108,21 +108,21 @@ export const useAspectsData = ({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
   });
-  const opportunityAspects = opportunityAspectData?.hub?.opportunity?.context?.aspects;
+  const opportunityAspects = opportunityAspectData?.hub?.opportunity?.collaboration?.callouts?.[0]?.aspects;
 
   const hubAspectSubscription = useContextAspectCreatedSubscription(
     hubAspectData,
-    hubData => hubData?.hub?.context,
+    hubData => hubData?.hub?.collaboration?.callouts?.[0],
     subscribeToHub
   );
   const challengeAspectSubscription = useContextAspectCreatedSubscription(
     challengeAspectData,
-    challengeData => challengeData?.hub?.challenge?.context,
+    challengeData => challengeData?.hub?.challenge?.collaboration?.callouts?.[0],
     subscribeToChallenges
   );
   const opportunityAspectSubscription = useContextAspectCreatedSubscription(
     opportunityAspectData,
-    opportunityData => opportunityData?.hub?.opportunity?.context,
+    opportunityData => opportunityData?.hub?.opportunity?.collaboration?.callouts?.[0],
     subscribeToOpportunity
   );
 
