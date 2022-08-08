@@ -1,5 +1,5 @@
 import { Identifiable } from '../../../shared/types/Identifiable';
-import { Box, FormHelperText, MenuItem, Select } from '@mui/material';
+import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import { SelectInputProps } from '@mui/material/Select/SelectInput';
 import { useField } from 'formik';
 import React, { MouseEventHandler, useMemo, useState } from 'react';
@@ -14,12 +14,12 @@ export interface Canvas extends Identifiable {
 }
 
 interface CanvasFormikSelectInputProps {
-  title: string;
+  label: string;
   name: string;
   canvases: Canvas[] | undefined;
 }
 
-const CanvasFormikSelectInput = ({ title, name, canvases }: CanvasFormikSelectInputProps) => {
+const CanvasFormikSelectInput = ({ label, name, canvases }: CanvasFormikSelectInputProps) => {
   const [canvasId, setCanvasId] = useState<string>();
 
   const tErr = useValidationMessageTranslation();
@@ -44,54 +44,63 @@ const CanvasFormikSelectInput = ({ title, name, canvases }: CanvasFormikSelectIn
   const preventSubmittingFormOnWhiteboardControlClick: MouseEventHandler = e => e.preventDefault();
 
   return (
-    <>
-      <CanvasValueContainer canvasId={canvasId} onCanvasValueLoaded={canvas => helpers.setValue(canvas?.value)}>
-        {({ canvas: canvasLoaded }) => {
-          return (
-            <>
-              <Select
-                title={title}
-                value={canvasId ?? ''}
-                error={hasValidationError}
-                onChange={handleChange}
-                onBlur={() => helpers.setTouched(true)}
-              >
-                {canvases?.map(canvas => (
-                  <MenuItem key={canvas.id} value={canvas.id}>
-                    {canvas.displayName}
-                  </MenuItem>
-                ))}
-              </Select>
-              {hasValidationError && (
-                <FormHelperText error={hasValidationError}>
-                  {tErr(meta.error as TranslationKey, {
-                    field: title,
-                  })}
-                </FormHelperText>
-              )}
-              <Box flex="1 1 0" onClick={preventSubmittingFormOnWhiteboardControlClick}>
-                {(canvasLoaded || field.value) && (
-                  <CanvasWhiteboard
-                    entities={{
-                      canvas: canvasFromTemplate,
-                    }}
-                    actions={{}}
-                    options={{
-                      viewModeEnabled: true,
-                      UIOptions: {
-                        canvasActions: {
-                          export: false,
-                        },
-                      },
-                    }}
-                  />
+    <CanvasValueContainer canvasId={canvasId} onCanvasValueLoaded={canvas => helpers.setValue(canvas?.value)}>
+      {({ canvas: canvasLoaded }) => {
+        const showWhiteboard = Boolean(canvasLoaded || field.value);
+
+        return (
+          <>
+            <Box>
+              <FormControl fullWidth>
+                <InputLabel>{label}</InputLabel>
+                <Select
+                  label={label}
+                  value={canvasId ?? ''}
+                  error={hasValidationError}
+                  onChange={handleChange}
+                  onBlur={() => helpers.setTouched(true)}
+                >
+                  {canvases?.map(canvas => (
+                    <MenuItem key={canvas.id} value={canvas.id}>
+                      {canvas.displayName}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {hasValidationError && (
+                  <FormHelperText error={hasValidationError}>
+                    {tErr(meta.error as TranslationKey, {
+                      field: label,
+                    })}
+                  </FormHelperText>
                 )}
+              </FormControl>
+            </Box>
+            {showWhiteboard && (
+              <Box
+                flexGrow={1}
+                flexBasis={theme => theme.spacing(60)}
+                onClick={preventSubmittingFormOnWhiteboardControlClick}
+              >
+                <CanvasWhiteboard
+                  entities={{
+                    canvas: canvasFromTemplate,
+                  }}
+                  actions={{}}
+                  options={{
+                    viewModeEnabled: true,
+                    UIOptions: {
+                      canvasActions: {
+                        export: false,
+                      },
+                    },
+                  }}
+                />
               </Box>
-            </>
-          );
-        }}
-      </CanvasValueContainer>
-    </>
+            )}
+          </>
+        );
+      }}
+    </CanvasValueContainer>
   );
 };
 

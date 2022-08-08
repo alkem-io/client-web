@@ -81,9 +81,9 @@
     "yup": "^0.31.1"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=development gulp buildConfiguration && react-scripts start",
-    "build": "cross-env NODE_ENV=production gulp buildConfiguration && react-scripts build",
-    "test": "cross-env NODE_ENV=test gulp buildConfiguration && react-scripts test",
+    "start": "cross-env NODE_ENV=development node buildConfiguration && react-scripts start",
+    "build": "cross-env NODE_ENV=production node buildConfiguration && react-scripts build",
+    "test": "cross-env NODE_ENV=test node buildConfiguration && react-scripts test",
     "test:cov": "npm run test -- --coverage --watchAll=false",
     "test:coverage": "npm run test -- --coverage && cat ./coverage/lcov.info | coveralls",
     "eject": "react-scripts eject",
@@ -133,7 +133,6 @@
     "coveralls": "^3.1.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-storybook": "^0.5.5",
-    "gulp": "^4.0.2",
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
     "prettier": "^2.5.1",
