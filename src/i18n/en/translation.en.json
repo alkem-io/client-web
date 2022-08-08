@@ -140,6 +140,7 @@
     "show-all": "Show all",
     "title": "Title",
     "warning": "Warning",
+    "preview": "Preview",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -286,7 +287,20 @@
   "canvas-templates": {
     "canvas-template": "Canvas template"
   },
+  "innovation-templates": {
+    "innovation-template": "Innovation Flow template",
+    "definition": {
+      "title": "Definition",
+      "placeholder": "Here you can paste the description from Xstate Visualizer with the various lifecycle states"
+    },
+    "type": {
+      "title": "Type"
+    }
+  },
   "components": {
+    "lifecycle-visualizer": {
+      "error": "The definition was not able to be visualized"
+    },
     "activity-tooltip": {
       "headline": "Alkemio is growing! In total, the platform now hosts:"
     },
@@ -705,9 +719,10 @@
             "description": "Here you can tweak authorization settings for this {{entity}}."
           },
           "templates": {
-            "description": "Here you can create and edit Aspect and Canvas templates for this {{entity}}.",
+            "description": "Here you can create and edit templates for this {{entity}}.",
             "aspect-templates": "Aspect Templates",
             "canvas-templates": "Canvas Templates",
+            "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template."
           }
         }
@@ -1232,6 +1247,10 @@
       "title": "Aspect Type",
       "help-text": "Type of Aspect"
     }
+  },
+  "innovation-edit": {
+    "new": "New Innovation flow",
+    "edit": "Edit Innovation flow"
   },
   "contributors-section": {
     "title": "Contributors",

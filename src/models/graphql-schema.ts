@@ -13,6 +13,7 @@ export type Scalars = {
   DID: string;
   DateTime: Date;
   JSON: string;
+  LifecycleDefinition: string;
   Markdown: string;
   MessageID: string;
   NameID: string;
@@ -338,6 +339,7 @@ export enum AuthorizationPrivilege {
   ReadUsers = 'READ_USERS',
   Update = 'UPDATE',
   UpdateCanvas = 'UPDATE_CANVAS',
+  UpdateLifecycle = 'UPDATE_LIFECYCLE',
 }
 
 export type Canvas = {
@@ -861,6 +863,16 @@ export type CreateHubInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateLifecycleTemplateOnTemplatesSetInput = {
+  /** The XState definition for this LifecycleTemplate. */
+  definition: Scalars['LifecycleDefinition'];
+  /** The meta information for this Template. */
+  info: CreateTemplateInfoInput;
+  templatesSetID: Scalars['UUID'];
+  /** The type of the Lifecycles that this Template supports. */
+  type: LifecycleType;
+};
+
 export type CreateLocationInput = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
@@ -1056,6 +1068,10 @@ export type DeleteDiscussionInput = {
 
 export type DeleteHubInput = {
   ID: Scalars['UUID_NAMEID'];
+};
+
+export type DeleteLifecycleTemplateInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteOpportunityInput = {
@@ -1290,7 +1306,7 @@ export type Lifecycle = {
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The machine definition, describing the states, transitions etc for this Lifeycle. */
-  machineDef: Scalars['JSON'];
+  machineDef: Scalars['LifecycleDefinition'];
   /** The next events of this Lifecycle. */
   nextEvents?: Maybe<Array<Scalars['String']>>;
   /** The current state of this Lifecycle. */
@@ -1300,6 +1316,25 @@ export type Lifecycle = {
   /** The Lifecycle template name. */
   templateName?: Maybe<Scalars['String']>;
 };
+
+export type LifecycleTemplate = {
+  __typename?: 'LifecycleTemplate';
+  /** The authorization rules for the entity */
+  authorization?: Maybe<Authorization>;
+  /** The XState definition for this LifecycleTemplate. */
+  definition?: Maybe<Scalars['LifecycleDefinition']>;
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The meta information for this Template */
+  info: TemplateInfo;
+  /** The type for this LifecycleTemplate. */
+  type: LifecycleType;
+};
+
+export enum LifecycleType {
+  Challenge = 'CHALLENGE',
+  Opportunity = 'OPPORTUNITY',
+}
 
 export type Location = {
   __typename?: 'Location';
@@ -1408,6 +1443,8 @@ export type Mutation = {
   createGroupOnOrganization: UserGroup;
   /** Creates a new Hub. */
   createHub: Hub;
+  /** Creates a new LifecycleTemplate on the specified TemplatesSet. */
+  createLifecycleTemplate: LifecycleTemplate;
   /** Creates a new Opportunity within the parent Challenge. */
   createOpportunity: Opportunity;
   /** Creates a new Organization on the platform. */
@@ -1446,6 +1483,8 @@ export type Mutation = {
   deleteDiscussion: Discussion;
   /** Deletes the specified Hub. */
   deleteHub: Hub;
+  /** Deletes the specified LifecycleTemplate. */
+  deleteLifecycleTemplate: LifecycleTemplate;
   /** Deletes the specified Opportunity. */
   deleteOpportunity: Opportunity;
   /** Deletes the specified Organization. */
@@ -1530,16 +1569,22 @@ export type Mutation = {
   updateCanvas: Canvas;
   /** Updates the specified CanvasTemplate. */
   updateCanvasTemplate: CanvasTemplate;
-  /** Updates the specified Challenge. */
+  /** Updates the Lifecycle on the specified Challenge. */
   updateChallenge: Challenge;
+  /** Updates the Lifecycle on the specified Challenge. */
+  updateChallengeLifecycle: Challenge;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified EcosystemModel. */
   updateEcosystemModel: EcosystemModel;
   /** Updates the Hub. */
   updateHub: Hub;
+  /** Updates the specified LifecycleTemplate. */
+  updateLifecycleTemplate: LifecycleTemplate;
   /** Updates the specified Opportunity. */
   updateOpportunity: Opportunity;
+  /** Updates the Lifecycle on the specified Opportunity. */
+  updateOpportunityLifecycle: Opportunity;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
   /** Updates one of the Preferences on a Challenge */
@@ -1712,6 +1757,10 @@ export type MutationCreateHubArgs = {
   hubData: CreateHubInput;
 };
 
+export type MutationCreateLifecycleTemplateArgs = {
+  lifecycleTemplateInput: CreateLifecycleTemplateOnTemplatesSetInput;
+};
+
 export type MutationCreateOpportunityArgs = {
   opportunityData: CreateOpportunityInput;
 };
@@ -1782,6 +1831,10 @@ export type MutationDeleteDiscussionArgs = {
 
 export type MutationDeleteHubArgs = {
   deleteData: DeleteHubInput;
+};
+
+export type MutationDeleteLifecycleTemplateArgs = {
+  deleteData: DeleteLifecycleTemplateInput;
 };
 
 export type MutationDeleteOpportunityArgs = {
@@ -1956,6 +2009,10 @@ export type MutationUpdateChallengeArgs = {
   challengeData: UpdateChallengeInput;
 };
 
+export type MutationUpdateChallengeLifecycleArgs = {
+  challengeData: UpdateChallengeLifecycleInput;
+};
+
 export type MutationUpdateDiscussionArgs = {
   updateData: UpdateDiscussionInput;
 };
@@ -1968,8 +2025,16 @@ export type MutationUpdateHubArgs = {
   hubData: UpdateHubInput;
 };
 
+export type MutationUpdateLifecycleTemplateArgs = {
+  lifecycleTemplateInput: UpdateLifecycleTemplateInput;
+};
+
 export type MutationUpdateOpportunityArgs = {
   opportunityData: UpdateOpportunityInput;
+};
+
+export type MutationUpdateOpportunityLifecycleArgs = {
+  opportunityData: UpdateOpportunityLifecycleInput;
 };
 
 export type MutationUpdateOrganizationArgs = {
@@ -2828,6 +2893,8 @@ export type TemplatesSet = {
   canvasTemplates: Array<CanvasTemplate>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The LifecycleTemplates in this TemplatesSet. */
+  lifecycleTemplates: Array<LifecycleTemplate>;
 };
 
 export type UpdateActorInput = {
@@ -2890,9 +2957,16 @@ export type UpdateChallengeInput = {
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type UpdateChallengeLifecycleInput = {
+  /** ID of the Challenge */
+  challengeID: Scalars['UUID'];
+  /** The Lifecycle Definition to use for this Challenge. */
+  lifecycleDefinition: Scalars['LifecycleDefinition'];
+};
+
 export type UpdateChallengePreferenceInput = {
   /** ID of the Challenge */
-  challengeID: Scalars['UUID_NAMEID'];
+  challengeID: Scalars['UUID'];
   /** Type of the challenge preference */
   type: ChallengePreferenceType;
   value: Scalars['String'];
@@ -2946,6 +3020,16 @@ export type UpdateHubPreferenceInput = {
   value: Scalars['String'];
 };
 
+export type UpdateLifecycleTemplateInput = {
+  ID: Scalars['UUID'];
+  /** The XState definition for this LifecycleTemplate. */
+  definition?: InputMaybe<Scalars['LifecycleDefinition']>;
+  /** The meta information for this Template. */
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  /** The type of the Lifecycles that this Template supports. */
+  type?: InputMaybe<LifecycleType>;
+};
+
 export type UpdateLocationInput = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
@@ -2961,6 +3045,13 @@ export type UpdateOpportunityInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
   tags?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type UpdateOpportunityLifecycleInput = {
+  /** The Lifecycle Definition to use for this Opportunity. */
+  lifecycleDefinition: Scalars['LifecycleDefinition'];
+  /** ID of the Opportunity */
+  opportunityID: Scalars['UUID'];
 };
 
 export type UpdateOrganizationInput = {
@@ -11799,6 +11890,61 @@ export type HubTemplatesQuery = {
                 | undefined;
             };
           }>;
+          lifecycleTemplates: Array<{
+            __typename?: 'LifecycleTemplate';
+            id: string;
+            definition?: string | undefined;
+            type: LifecycleType;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type AdminLifecycleTemplateFragment = {
+  __typename?: 'LifecycleTemplate';
+  id: string;
+  definition?: string | undefined;
+  type: LifecycleType;
+  info: {
+    __typename?: 'TemplateInfo';
+    id: string;
+    title?: string | undefined;
+    description?: string | undefined;
+    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+    visual?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
         }
       | undefined;
   };
@@ -11879,6 +12025,39 @@ export type TemplateInfoFragment = {
         minWidth: number;
       }
     | undefined;
+};
+
+export type UpdateInnovationTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+  info?: InputMaybe<UpdateTemplateInfoInput>;
+  definition: Scalars['LifecycleDefinition'];
+  type: LifecycleType;
+}>;
+
+export type UpdateInnovationTemplateMutation = {
+  __typename?: 'Mutation';
+  updateLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
+};
+
+export type CreateInnovationTemplateMutationVariables = Exact<{
+  templatesSetId: Scalars['UUID'];
+  info: CreateTemplateInfoInput;
+  definition: Scalars['LifecycleDefinition'];
+  type: LifecycleType;
+}>;
+
+export type CreateInnovationTemplateMutation = {
+  __typename?: 'Mutation';
+  createLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
+};
+
+export type DeleteInnovationTemplateMutationVariables = Exact<{
+  templateId: Scalars['UUID'];
+}>;
+
+export type DeleteInnovationTemplateMutation = {
+  __typename?: 'Mutation';
+  deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
 };
 
 export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
@@ -13043,6 +13222,18 @@ export type HubProviderQuery = {
               description?: string | undefined;
             };
           }>;
+          lifecycleTemplates: Array<{
+            __typename?: 'LifecycleTemplate';
+            id: string;
+            definition?: string | undefined;
+            type: LifecycleType;
+            info: {
+              __typename?: 'TemplateInfo';
+              id: string;
+              title?: string | undefined;
+              description?: string | undefined;
+            };
+          }>;
         }
       | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
@@ -13129,6 +13320,18 @@ export type HubInfoFragment = {
           __typename?: 'CanvasTemplate';
           id: string;
           value: string;
+          info: {
+            __typename?: 'TemplateInfo';
+            id: string;
+            title?: string | undefined;
+            description?: string | undefined;
+          };
+        }>;
+        lifecycleTemplates: Array<{
+          __typename?: 'LifecycleTemplate';
+          id: string;
+          definition?: string | undefined;
+          type: LifecycleType;
           info: {
             __typename?: 'TemplateInfo';
             id: string;
