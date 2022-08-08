@@ -53,8 +53,6 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
               canCreateCommunityContextReview: entities.permissions.canCreateCommunityContextReview,
             }}
             actions={{}}
-            communityReadAccess={entities.permissions.communityReadAccess}
-            community={entities.contributors}
             activity={entities.activity}
           />
         )}

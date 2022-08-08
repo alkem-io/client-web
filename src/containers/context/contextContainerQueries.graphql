@@ -13,12 +13,6 @@ query HubContext($hubNameId: UUID_NAMEID!) {
     context {
       ...ContextTab
     }
-    community {
-      ...EntityDashboardCommunity
-    }
-    host {
-      ...AssociatedOrganizationDetails
-    }
     activity {
       ...ActivityItem
     }
@@ -36,12 +30,6 @@ query HubContextExtra($hubNameId: UUID_NAMEID!) {
     }
     context {
       ...ContextTabExtra
-    }
-    community {
-      ...EntityDashboardCommunity
-    }
-    host {
-      ...AssociatedOrganizationDetails
     }
     activity {
       ...ActivityItem
@@ -72,9 +60,6 @@ query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
       context {
         ...ContextTab
       }
-      community {
-        ...EntityDashboardCommunity
-      }
       activity {
         ...ActivityItem
       }
@@ -101,10 +86,6 @@ query ChallengeContextExtra($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAM
       context {
         ...ContextTabExtra
       }
-      community {
-        ...EntityDashboardCommunity
-      }
-
       activity {
         ...ActivityItem
       }
@@ -131,9 +112,6 @@ query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
       context {
         ...ContextTab
       }
-      community {
-        ...EntityDashboardCommunity
-      }
       activity {
         ...ActivityItem
       }
@@ -158,9 +136,6 @@ query OpportunityContextExtra($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID
       }
       context {
         ...ContextTabExtra
-      }
-      community {
-        ...EntityDashboardCommunity
       }
       activity {
         ...ActivityItem

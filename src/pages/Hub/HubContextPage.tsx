@@ -40,10 +40,7 @@ const HubContextPage: FC<HubContextPageProps> = ({ paths }) => {
             }}
             options={{}}
             actions={{}}
-            communityReadAccess={entities.permissions.communityReadAccess}
-            community={entities.contributors}
             activity={entities.activity}
-            hostOrganization={entities.hostOrganization}
           />
         )}
       </ContextTabContainer>

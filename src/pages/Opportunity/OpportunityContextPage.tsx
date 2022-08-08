@@ -43,8 +43,6 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
             }}
             options={{}}
             actions={{}}
-            communityReadAccess={entities.permissions.communityReadAccess}
-            community={entities.contributors}
             activity={entities.activity}
           />
         )}

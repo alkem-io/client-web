@@ -23,6 +23,7 @@ import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPrevi
 import { buildCanvasUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import withOptionalCount from '../../domain/shared/utils/withOptionalCount';
+import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -71,7 +72,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               </ApplicationButtonContainer>
             }
             navText={t('buttons.see-more')}
-            navLink={'context'}
+            navLink={EntityPageSection.About}
           >
             <Markdown children={challenge?.context?.vision || ''} />
           </DashboardGenericSection>

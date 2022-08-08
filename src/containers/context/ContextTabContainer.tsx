@@ -3,7 +3,6 @@ import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../models/container';
 import {
   ActivityItemFragment,
-  AssociatedOrganizationDetailsFragment,
   AuthorizationPrivilege,
   ContextTabFragment,
   LifecycleContextTabFragment,
@@ -20,15 +19,9 @@ import {
   useOpportunityContextQuery,
 } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
-import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
-import {
-  EntityDashboardContributors,
-  EntityDashboardLeads,
-} from '../../domain/community/EntityDashboardContributorsSection/Types';
 
 interface ContextTabPermissions {
   canCreateCommunityContextReview: boolean;
-  communityReadAccess: boolean | undefined;
 }
 
 export interface ContextTabContainerEntities {
@@ -37,9 +30,7 @@ export interface ContextTabContainerEntities {
   lifecycle?: LifecycleContextTabFragment;
   references?: ReferenceContextTabFragment[];
   permissions: ContextTabPermissions;
-  contributors: EntityDashboardLeads & EntityDashboardContributors;
   activity: ActivityItemFragment[] | undefined;
-  hostOrganization?: AssociatedOrganizationDetailsFragment;
 }
 
 export interface ContextTabContainerActions {}
@@ -150,9 +141,7 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
   const error =
     hubError ?? hubExtraError ?? challengeError ?? challengeExtraError ?? opportunityError ?? opportunityExtraError;
 
-  const hostOrganization = (hubData?.hub ?? hubExtra?.hub ?? {}).host;
-
-  const { community, activity } =
+  const { activity } =
     hubData?.hub ??
     hubExtra?.hub ??
     challengeData?.hub.challenge ??
@@ -161,27 +150,10 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
     opportunityExtra?.hub.opportunity ??
     {};
 
-  const contributors = {
-    ...useCommunityMembersAsCardProps(community),
-    leadUsers: community?.leadUsers,
-    leadOrganizations: community?.leadOrganizations,
-  };
-
-  const communityReadAccess = community?.authorization?.myPrivileges?.some(x => x === AuthorizationPrivilege.Read);
-
   const permissions: ContextTabPermissions = {
     canCreateCommunityContextReview,
-    communityReadAccess,
   };
 
-  return (
-    <>
-      {children(
-        { context, tagset, lifecycle, references, permissions, contributors, activity, hostOrganization },
-        { loading, error },
-        {}
-      )}
-    </>
-  );
+  return <>{children({ context, tagset, lifecycle, references, permissions, activity }, { loading, error }, {})}</>;
 };
 export default ContextTabContainer;

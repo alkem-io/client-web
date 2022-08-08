@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import DashboardSection from '../../sections/DashboardSection/DashboardSection';
 import AspectCard, { AspectCardAspect } from '../../common/cards/AspectCard/AspectCard';
 import CardsLayout from '../../../../domain/shared/layout/CardsLayout/CardsLayout';
+import { EntityPageSection } from '../../../../domain/shared/layout/EntityPageSection';
 
 interface DashboardSectionAspectsProps {
   aspects: AspectCardAspect[];
@@ -19,7 +20,7 @@ const DashboardSectionAspects: FC<DashboardSectionAspectsProps> = ({ aspects, as
     typeof aspectsCount === 'undefined' ? t('common.aspects') : `${t('common.aspects')} (${aspectsCount})`;
 
   return (
-    <DashboardSection headerText={headerText} navText={t('buttons.see-all')} navLink="contribute">
+    <DashboardSection headerText={headerText} navText={t('buttons.see-all')} navLink={EntityPageSection.Explore}>
       <CardsLayout
         items={aspects}
         deps={[parentEntityIds.hubNameId, parentEntityIds.challengeNameId, parentEntityIds.opportunityNameId]}

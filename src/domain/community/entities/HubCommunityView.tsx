@@ -1,23 +1,22 @@
 import React, { FC, useMemo } from 'react';
-import { PageProps } from '../common';
-import { useHub, useUserContext } from '../../hooks';
-import CommunityPage from './CommunityPage';
-import { toOrganizationCardProps } from '../../domain/community/utils/useOrganizationCardProps';
-import { useHubCommunityContributorsQuery } from '../../hooks/generated/graphql';
+import { useHub, useUserContext } from '../../../hooks';
+import CommunityUpdates from '../CommunityUpdates/CommunityUpdates';
+import { toOrganizationCardProps } from '../utils/useOrganizationCardProps';
+import { useHubCommunityContributorsQuery } from '../../../hooks/generated/graphql';
 import { useTranslation } from 'react-i18next';
-import HostOrganization from '../../domain/community/CommunityContributors/HostOrganization';
-import CommunityContributorsSection from '../../domain/community/CommunityContributors/CommunityContributorsSection';
-import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
-import { Accordion } from '../../components/composite/common/Accordion/Accordion';
-import ContributingUsers from '../../domain/community/CommunityContributors/ContributingUsers';
-import useSearchAcrossMultipleLists from '../../domain/shared/utils/useSearchAcrossMultipleLists';
-import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
-import { organizationCardValueGetter } from './ChallengeCommunityPage';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import CommunityContributorsSearch from '../../domain/community/CommunityContributors/CommunityContributorsSearch';
-import useUserCardProps from '../../domain/community/utils/useUserCardProps';
+import HostOrganization from '../CommunityContributors/HostOrganization';
+import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
+import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
+import { Accordion } from '../../../components/composite/common/Accordion/Accordion';
+import ContributingUsers from '../CommunityContributors/ContributingUsers';
+import useSearchAcrossMultipleLists from '../../shared/utils/useSearchAcrossMultipleLists';
+import { userCardValueGetter } from '../../../components/core/card-filter/value-getters/cards/user-card-value-getter';
+import { organizationCardValueGetter } from './ChallengeCommunityView';
+import { SectionSpacer } from '../../shared/components/Section/Section';
+import CommunityContributorsSearch from '../CommunityContributors/CommunityContributorsSearch';
+import useUserCardProps from '../utils/useUserCardProps';
 
-const HubCommunityPage: FC<PageProps> = ({ paths }) => {
+const HubCommunityView: FC = () => {
   const { hubId, communityId } = useHub();
 
   const { host, loading, ...contributors } = useCommunityContributors(
@@ -51,7 +50,8 @@ const HubCommunityPage: FC<PageProps> = ({ paths }) => {
   const leadUserCards = useUserCardProps(leadUsers, hubId);
 
   return (
-    <CommunityPage paths={paths} hubId={hubId} communityId={communityId}>
+    <>
+      <CommunityUpdates hubId={hubId} communityId={communityId} />
       <HostOrganization organization={hostOrganization} loading={loading} />
       <SectionSpacer />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
@@ -66,7 +66,7 @@ const HubCommunityPage: FC<PageProps> = ({ paths }) => {
         loading={loading}
         contributorType="member"
       />
-    </CommunityPage>
+    </>
   );
 };
-export default HubCommunityPage;
+export default HubCommunityView;

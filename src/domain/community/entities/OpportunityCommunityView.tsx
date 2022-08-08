@@ -1,17 +1,16 @@
 import React, { FC } from 'react';
-import { PageProps } from '../common';
-import { useOpportunity } from '../../hooks';
-import CommunityPage from './CommunityPage';
-import { useOpportunityCommunityContributorsQuery } from '../../hooks/generated/graphql';
-import CommunityContributorsSection from '../../domain/community/CommunityContributors/CommunityContributorsSection';
-import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
-import useSearchAcrossMultipleLists from '../../domain/shared/utils/useSearchAcrossMultipleLists';
-import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
-import { organizationCardValueGetter } from './ChallengeCommunityPage';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import CommunityContributorsSearch from '../../domain/community/CommunityContributors/CommunityContributorsSearch';
+import { useOpportunity } from '../../../hooks';
+import CommunityUpdates from '../CommunityUpdates/CommunityUpdates';
+import { useOpportunityCommunityContributorsQuery } from '../../../hooks/generated/graphql';
+import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
+import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
+import useSearchAcrossMultipleLists from '../../shared/utils/useSearchAcrossMultipleLists';
+import { userCardValueGetter } from '../../../components/core/card-filter/value-getters/cards/user-card-value-getter';
+import { organizationCardValueGetter } from './ChallengeCommunityView';
+import { SectionSpacer } from '../../shared/components/Section/Section';
+import CommunityContributorsSearch from '../CommunityContributors/CommunityContributorsSearch';
 
-const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
+const OpportunityCommunityView: FC = () => {
   const { opportunity, hubId } = useOpportunity();
   const communityId = opportunity?.community?.id;
   const opportunityId = opportunity?.id;
@@ -37,8 +36,8 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
     });
 
   return (
-    <CommunityPage paths={paths} hubId={hubId} communityId={communityId}>
-      <SectionSpacer />
+    <>
+      <CommunityUpdates hubId={hubId} communityId={communityId} />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
       <CommunityContributorsSection
@@ -55,7 +54,7 @@ const OpportunityCommunityPage: FC<PageProps> = ({ paths }) => {
         loading={loading}
         contributorType="member"
       />
-    </CommunityPage>
+    </>
   );
 };
-export default OpportunityCommunityPage;
+export default OpportunityCommunityView;

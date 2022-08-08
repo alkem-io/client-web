@@ -3,7 +3,7 @@ import LoadingUserCard from '../../shared/components/LoadingUserCard';
 import Typography from '@mui/material/Typography';
 import { UserCard } from '../../../components/composite/common/cards';
 import React from 'react';
-import { SearchableUserCardProps } from '../../../views/community/CommunityPageView';
+import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
 import { useTranslation } from 'react-i18next';
 
 export interface ContributingUsersProps {

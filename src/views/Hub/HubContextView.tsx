@@ -5,7 +5,6 @@ import ContextSection from '../../components/composite/sections/ContextSection';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import {
   ActivityItemFragment,
-  AssociatedOrganizationDetailsFragment,
   Context,
   ContextTabFragment,
   ReferenceContextTabFragment,
@@ -16,15 +15,9 @@ import { ActivityItem } from '../../components/composite/common/ActivityPanel/Ac
 import { ActivityType } from '../../domain/activity/ActivityType';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useTranslation } from 'react-i18next';
-import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import {
-  EntityDashboardContributors,
-  EntityDashboardLeads,
-} from '../../domain/community/EntityDashboardContributorsSection/Types';
-import SectionSpacer from '../../domain/shared/components/Section/SectionSpacer';
-import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import ActivityView from '../Activity/ActivityView';
+import HubCommunityView from '../../domain/community/entities/HubCommunityView';
 
 interface HubContextEntities {
   context?: ContextTabFragment;
@@ -44,19 +37,9 @@ interface HubContextOptions {}
 interface HubContextViewProps
   extends ViewProps<HubContextEntities, HubContextActions, HubContextState, HubContextOptions> {
   activity: ActivityItemFragment[] | undefined;
-  communityReadAccess: boolean | undefined;
-  hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
-  community: EntityDashboardLeads & EntityDashboardContributors;
 }
 
-export const HubContextView: FC<HubContextViewProps> = ({
-  activity,
-  communityReadAccess,
-  hostOrganization,
-  community,
-  entities,
-  state,
-}) => {
+export const HubContextView: FC<HubContextViewProps> = ({ activity, entities, state }) => {
   const { loading } = state;
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
 
@@ -72,8 +55,6 @@ export const HubContextView: FC<HubContextViewProps> = ({
   const references = entities?.references;
 
   const { t, i18n } = useTranslation();
-
-  const hostOrganizations = useMemo(() => hostOrganization && [hostOrganization], [hostOrganization]);
 
   const activityItems: ActivityItem[] = useMemo(() => {
     return [
@@ -121,25 +102,7 @@ export const HubContextView: FC<HubContextViewProps> = ({
           <ActivityView activity={activityItems} loading={loading} />
         </DashboardGenericSection>
       }
-      rightColumn={
-        communityReadAccess && (
-          <>
-            <EntityDashboardLeadsSection
-              organizationsHeader={t('pages.hub.sections.dashboard.organization')}
-              usersHeader={t('community.host')}
-              leadUsers={community.leadUsers}
-              leadOrganizations={hostOrganizations}
-            />
-            <SectionSpacer />
-            <EntityDashboardContributorsSection
-              memberUsers={community.memberUsers}
-              memberUsersCount={community.memberUsersCount}
-              memberOrganizations={community.memberOrganizations}
-              memberOrganizationsCount={community.memberOrganizationsCount}
-            />
-          </>
-        )
-      }
+      rightColumn={<HubCommunityView />}
     />
   );
 };

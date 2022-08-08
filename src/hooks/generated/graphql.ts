@@ -11984,20 +11984,12 @@ export const HubContextDocument = gql`
       context {
         ...ContextTab
       }
-      community {
-        ...EntityDashboardCommunity
-      }
-      host {
-        ...AssociatedOrganizationDetails
-      }
       activity {
         ...ActivityItem
       }
     }
   }
   ${ContextTabFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
   ${ActivityItemFragmentDoc}
 `;
 
@@ -12058,20 +12050,12 @@ export const HubContextExtraDocument = gql`
       context {
         ...ContextTabExtra
       }
-      community {
-        ...EntityDashboardCommunity
-      }
-      host {
-        ...AssociatedOrganizationDetails
-      }
       activity {
         ...ActivityItem
       }
     }
   }
   ${ContextTabExtraFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
   ${ActivityItemFragmentDoc}
 `;
 
@@ -12142,9 +12126,6 @@ export const ChallengeContextDocument = gql`
         context {
           ...ContextTab
         }
-        community {
-          ...EntityDashboardCommunity
-        }
         activity {
           ...ActivityItem
         }
@@ -12153,7 +12134,6 @@ export const ChallengeContextDocument = gql`
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
   ${ActivityItemFragmentDoc}
 `;
 
@@ -12225,9 +12205,6 @@ export const ChallengeContextExtraDocument = gql`
         context {
           ...ContextTabExtra
         }
-        community {
-          ...EntityDashboardCommunity
-        }
         activity {
           ...ActivityItem
         }
@@ -12236,7 +12213,6 @@ export const ChallengeContextExtraDocument = gql`
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabExtraFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
   ${ActivityItemFragmentDoc}
 `;
 
@@ -12310,9 +12286,6 @@ export const OpportunityContextDocument = gql`
         context {
           ...ContextTab
         }
-        community {
-          ...EntityDashboardCommunity
-        }
         activity {
           ...ActivityItem
         }
@@ -12321,7 +12294,6 @@ export const OpportunityContextDocument = gql`
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
   ${ActivityItemFragmentDoc}
 `;
 
@@ -12395,9 +12367,6 @@ export const OpportunityContextExtraDocument = gql`
         context {
           ...ContextTabExtra
         }
-        community {
-          ...EntityDashboardCommunity
-        }
         activity {
           ...ActivityItem
         }
@@ -12406,7 +12375,6 @@ export const OpportunityContextExtraDocument = gql`
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabExtraFragmentDoc}
-  ${EntityDashboardCommunityFragmentDoc}
   ${ActivityItemFragmentDoc}
 `;
 

@@ -31,6 +31,7 @@ import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPrevi
 import { buildCanvasUrl, buildHubUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import withOptionalCount from '../../domain/shared/utils/withOptionalCount';
+import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
@@ -106,7 +107,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
               </ApplicationButtonContainer>
             }
             navText={t('buttons.see-more')}
-            navLink={'context'}
+            navLink={EntityPageSection.About}
           >
             <Markdown children={vision} />
           </DashboardGenericSection>

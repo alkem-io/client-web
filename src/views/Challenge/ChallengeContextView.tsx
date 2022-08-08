@@ -21,13 +21,9 @@ import { RouterLink } from '../../components/core/RouterLink';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import ActivityView from '../Activity/ActivityView';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import EntityDashboardCommunity from '../../domain/community/EntityDashboardCommunity/EntityDashboardCommunity';
-import {
-  EntityDashboardContributors,
-  EntityDashboardLeads,
-} from '../../domain/community/EntityDashboardContributorsSection/Types';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
+import ChallengeCommunityView from '../../domain/community/entities/ChallengeCommunityView';
 
 interface ChallengeContextEntities {
   context?: ContextTabFragment;
@@ -53,18 +49,9 @@ interface ChallengeContextOptions {
 interface ChallengeContextViewProps
   extends ViewProps<ChallengeContextEntities, ChallengeContextActions, ChallengeContextState, ChallengeContextOptions> {
   activity: ActivityItemFragment[] | undefined;
-  communityReadAccess: boolean | undefined;
-  community: EntityDashboardLeads & EntityDashboardContributors;
 }
 
-export const ChallengeContextView: FC<ChallengeContextViewProps> = ({
-  activity,
-  communityReadAccess,
-  community,
-  entities,
-  state,
-  options,
-}) => {
+export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, entities, state, options }) => {
   const { t, i18n } = useTranslation();
   const { canCreateCommunityContextReview } = options;
   const { loading } = state;
@@ -135,7 +122,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({
             <ActivityView activity={activityItems} loading={loading} />
           </DashboardGenericSection>
         }
-        rightColumn={<EntityDashboardCommunity communityReadAccess={communityReadAccess} {...community} />}
+        rightColumn={<ChallengeCommunityView />}
       />
     </>
   );

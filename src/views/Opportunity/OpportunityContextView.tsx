@@ -13,15 +13,11 @@ import {
   Tagset,
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import EntityDashboardCommunity from '../../domain/community/EntityDashboardCommunity/EntityDashboardCommunity';
 import DashboardOpportunityStatistics from '../../domain/shared/components/DashboardSections/DashboardOpportunityStatistics';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useTranslation } from 'react-i18next';
-import {
-  EntityDashboardContributors,
-  EntityDashboardLeads,
-} from '../../domain/community/EntityDashboardContributorsSection/Types';
+import OpportunityCommunityView from '../../domain/community/entities/OpportunityCommunityView';
 
 export interface OpportunityContextViewEntities {
   context?: ContextTabFragment;
@@ -49,17 +45,9 @@ export interface OpportunityContextViewProps
     OpportunityContextViewOptions
   > {
   activity: ActivityItemFragment[] | undefined;
-  communityReadAccess: boolean | undefined;
-  community: EntityDashboardLeads & EntityDashboardContributors;
 }
 
-const OpportunityContextView: FC<OpportunityContextViewProps> = ({
-  activity,
-  communityReadAccess,
-  community,
-  entities,
-  state,
-}) => {
+const OpportunityContextView: FC<OpportunityContextViewProps> = ({ activity, entities, state }) => {
   const { loading } = state;
   const { context, opportunityDisplayName, opportunityTagset, opportunityLifecycle } = entities;
 
@@ -121,7 +109,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({
           loading={loading}
         />
       }
-      rightColumn={<EntityDashboardCommunity communityReadAccess={communityReadAccess} {...community} />}
+      rightColumn={<OpportunityCommunityView />}
     />
   );
 };
