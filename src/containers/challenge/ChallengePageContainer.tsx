@@ -91,7 +91,6 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           hubNameId,
           hubDisplayName: hub.displayName,
           challenge: _challenge?.hub.challenge,
-          // activity: activityItems,
           opportunitiesCount,
           aspects,
           aspectsCount,

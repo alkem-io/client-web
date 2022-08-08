@@ -171,7 +171,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
         {
           opportunity,
           url: buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
-          // activity: activityItems,
           meme,
           links,
           permissions: {
