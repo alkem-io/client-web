@@ -7,6 +7,7 @@ import { useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import {
   AspectCardFragment,
+  AuthorizationPrivilege,
   CanvasDetailsFragment,
   ChallengeCardFragment,
   HubPageFragment,
@@ -16,6 +17,9 @@ import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProv
 import { Discussion } from '../../models/discussion/discussion';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
+import { WithId } from '../../types/WithId';
+import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
+import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
 
 export interface HubContainerEntities {
@@ -23,6 +27,7 @@ export interface HubContainerEntities {
   isPrivate: boolean;
   permissions: {
     canEdit: boolean;
+    communityReadAccess: boolean;
     challengesReadAccess: boolean;
   };
   activity: ActivityItem[];
@@ -35,6 +40,10 @@ export interface HubContainerEntities {
   aspectsCount: number | undefined;
   canvases: CanvasDetailsFragment[];
   canvasesCount: number | undefined;
+  memberUsers: WithId<ContributorCardProps>[] | undefined;
+  memberUsersCount: number | undefined;
+  memberOrganizations: WithId<ContributorCardProps>[] | undefined;
+  memberOrganizationsCount: number | undefined;
 }
 
 export interface HubContainerActions {}
@@ -59,6 +68,10 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const { user, isAuthenticated } = useUserContext();
+
+  const communityReadAccess = (_hub?.hub?.community?.authorization?.myPrivileges ?? []).some(
+    x => x === AuthorizationPrivilege.Read
+  );
 
   const activity: ActivityItem[] = useMemo(() => {
     const _activity = _hub?.hub.activity || [];
@@ -88,6 +101,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const permissions = {
     canEdit: user?.isHubAdmin(hubId) || false,
+    communityReadAccess,
     // todo: use privileges instead when authorization on challenges is public
     challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
   };
@@ -99,6 +113,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const canvases = _hub?.hub.context?.canvases ?? EMPTY;
   const canvasesCount = useCanvasesCount(_hub?.hub.activity);
+
+  const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 
   return (
     <>
@@ -117,6 +133,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           aspectsCount,
           canvases,
           canvasesCount,
+          ...contributors,
         },
         {
           loading: loadingHubQuery || loadingHub || loadingDiscussions,

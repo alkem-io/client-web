@@ -7,13 +7,20 @@ import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import { AspectCardFragment, CanvasDetailsFragment, ChallengeProfileFragment } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  AuthorizationPrivilege,
+  CanvasDetailsFragment,
+  ChallengeProfileFragment,
+} from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
+import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
+import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
 
-export interface ChallengeContainerEntities {
+export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
   hubNameId: string;
   hubDisplayName: string;
@@ -25,6 +32,7 @@ export interface ChallengeContainerEntities {
   canvasesCount: number | undefined;
   permissions: {
     canEdit: boolean;
+    communityReadAccess: boolean;
   };
   isAuthenticated: boolean;
   isMember: boolean;
@@ -59,6 +67,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
+    communityReadAccess: (_challenge?.hub?.challenge?.community?.authorization?.myPrivileges || []).some(
+      x => x === AuthorizationPrivilege.Read
+    ),
   };
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
@@ -73,7 +84,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
         color: 'primary',
       },
       {
-        name: t('common.agreements'),
+        name: t('common.projects'),
         count: getActivityCount(_activity, 'projects'),
         color: 'positive',
       },
@@ -90,6 +101,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const canvases = _challenge?.hub.challenge.context?.canvases || EMPTY;
   const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
+
+  const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
 
   return (
     <>
@@ -108,6 +121,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,
           discussions: discussionList,
+          ...contributors,
         },
         { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions },
         {}

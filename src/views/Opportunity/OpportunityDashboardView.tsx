@@ -6,6 +6,7 @@ import { ActivityItem } from '../../components/composite/common/ActivityPanel/Ac
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import DashboardOpportunityStatistics from '../../domain/shared/components/DashboardSections/DashboardOpportunityStatistics';
+import DashboardUpdatesSection from '../../domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
@@ -15,6 +16,9 @@ import { ViewProps } from '../../models/view';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
+import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
+import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import { buildCanvasUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
@@ -64,22 +68,23 @@ export interface OpportunityDashboardViewOptions {
   isMemberOfOpportunity: boolean;
   isNoRelations: boolean;
   isAuthenticated: boolean;
+  communityReadAccess: boolean;
 }
 
 export interface OpportunityDashboardViewProps
   extends ViewProps<
-    OpportunityDashboardViewEntities,
+    OpportunityDashboardViewEntities & EntityDashboardContributors,
     OpportunityDashboardViewActions,
     OpportunityDashboardViewState,
     OpportunityDashboardViewOptions
   > {}
 
-const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities, state, actions }) => {
+const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities, state, options, actions }) => {
   const { t } = useTranslation();
 
   const { hubNameId } = useHub();
   const { challengeNameId } = useChallenge();
-  const { opportunityId } = useOpportunity();
+  const { hubId, opportunityId } = useOpportunity();
 
   const [, buildLinkToCanvas] = useBackToParentPage(
     buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID)
@@ -99,7 +104,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
 
   const { opportunity } = entities;
   const lifecycle = opportunity?.lifecycle;
+  const communityId = opportunity?.community?.id || '';
   const projects = opportunity?.projects || [];
+  const { communityReadAccess } = options;
 
   const { id } = opportunity;
 
@@ -127,6 +134,30 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             lifecycle={lifecycle}
             loading={loading}
           />
+          {communityReadAccess && (
+            <>
+              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
+              {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
+              {/* <SectionSpacer />
+              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
+            </>
+          )}
+          {communityReadAccess && (
+            <EntityDashboardLeadsSection
+              usersHeader={t('community.leads')}
+              organizationsHeader={t('community.leading-organizations')}
+              leadUsers={opportunity?.community?.leadUsers}
+              leadOrganizations={opportunity?.community?.leadOrganizations}
+            />
+          )}
+          {communityReadAccess && (
+            <EntityDashboardContributorsSection
+              memberUsers={entities.memberUsers}
+              memberUsersCount={entities.memberUsersCount}
+              memberOrganizations={entities.memberOrganizations}
+              memberOrganizationsCount={entities.memberOrganizationsCount}
+            />
+          )}
         </DashboardColumn>
         <DashboardColumn>
           <DashboardGenericSection
