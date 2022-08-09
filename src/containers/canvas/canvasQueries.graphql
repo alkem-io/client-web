@@ -178,13 +178,13 @@ mutation createCanvasOnCallout($input: CreateCanvasOnCalloutInput!) {
   }
 }
 
-mutation deleteCanvasOnCallout($input: DeleteCanvasOnCalloutInput!) {
-  deleteCanvasOnCallout(deleteData: $input) {
+mutation deleteCanvas($input: DeleteCanvasInput!) {
+  deleteCanvas(canvasData: $input) {
     ...CanvasSummary
   }
 }
 
-mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
+mutation updateCanvas($input: UpdateCanvasDirectInput!) {
   updateCanvas(canvasData: $input) {
     id
     value
@@ -192,7 +192,7 @@ mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
   }
 }
 
-mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
+mutation checkoutCanvas($input: CanvasCheckoutEventInput!) {
   eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
     ...CheckoutDetails
   }

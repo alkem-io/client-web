@@ -43,8 +43,8 @@ export interface OpportunityDashboardViewEntities {
   links: Reference[];
   meme?: Reference;
   relations: {
-    incoming: OpportunityPageRelationsFragment;
-    outgoing: OpportunityPageRelationsFragment;
+    incoming: OpportunityPageRelationsFragment[];
+    outgoing: OpportunityPageRelationsFragment[];
   };
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
@@ -114,8 +114,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
-  const { id, context, displayName } = opportunity;
+  const { id, context, displayName, collaboration } = opportunity;
   const { visuals, tagline = '', vision = '' } = context ?? {};
+  const { id: collaborationId } = collaboration ?? {};
   const banner = getVisualBanner(visuals);
 
   const { loading } = state;
@@ -210,7 +211,12 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           />
         </DashboardColumn>
       </Grid>
-      <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />
+      <InterestModal
+        onHide={actions.onInterestClose}
+        show={state.showInterestModal}
+        collaborationId={collaborationId}
+        opportunityId={id}
+      />
     </>
   );
 };

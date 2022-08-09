@@ -1,21 +1,21 @@
 import { CalloutAspectCreatedDocument } from '../../hooks/generated/graphql';
 import {
-  AspectsOnCollaborationFragment,
+  AspectsOnCalloutFragment,
   CalloutAspectCreatedSubscription,
   CalloutAspectCreatedSubscriptionVariables,
 } from '../../models/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '../shared/subscriptions/useSubscriptionToSubEntity';
 
-const useContextAspectCreatedSubscription = createUseSubscriptionToSubEntityHook<
-  AspectsOnCollaborationFragment,
+const useCalloutAspectCreatedSubscription = createUseSubscriptionToSubEntityHook<
+  AspectsOnCalloutFragment,
   CalloutAspectCreatedSubscription,
   CalloutAspectCreatedSubscriptionVariables
 >({
   subscriptionDocument: CalloutAspectCreatedDocument,
-  getSubscriptionVariables: collaboration => ({ calloutID: collaboration?.callouts?.[0].id ?? '' }),
-  updateSubEntity: (collaboration, subscriptionData) => {
-    collaboration?.callouts?.[0]?.aspects?.push(subscriptionData.calloutAspectCreated.aspect);
+  getSubscriptionVariables: callout => ({ calloutID: callout.id }),
+  updateSubEntity: (callout, subscriptionData) => {
+    callout?.aspects?.push(subscriptionData.calloutAspectCreated.aspect);
   },
 });
 
-export default useContextAspectCreatedSubscription;
+export default useCalloutAspectCreatedSubscription;

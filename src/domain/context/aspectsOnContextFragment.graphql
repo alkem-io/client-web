@@ -1,9 +1,0 @@
-fragment AspectsOnCollaboration on Collaboration {
-  id
-  callouts {
-    id
-    aspects {
-      ...ContributeTabAspect
-    }
-  }
-}

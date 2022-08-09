@@ -5,7 +5,7 @@ import { FEATURE_COLLABORATION_CANVASES } from '../../../models/constants';
 import {
   AuthorizationPrivilege,
   CanvasDetailsFragment,
-  ContextWithCanvasDetailsFragment,
+  CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../../models/graphql-schema';
 import { Error404 } from '../../../pages';
@@ -21,15 +21,15 @@ export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder
   entityTypeName: EntityTypeName;
   canvases: CanvasDetailsFragment[];
   templates: CreateCanvasCanvasTemplateFragment[];
-  contextId: string | undefined;
-  authorization: ContextWithCanvasDetailsFragment['authorization'];
+  calloutId: string | undefined;
+  authorization: CollaborationWithCanvasDetailsFragment['authorization'];
   loadingCanvases: boolean;
   loadingTemplates: boolean;
 }
 
 const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
   canvasId,
-  contextId,
+  calloutId,
   canvases,
   templates,
   authorization,
@@ -40,20 +40,20 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
 }) => {
   const { isFeatureEnabled } = useConfig();
 
-  if (!contextId) {
+  if (!calloutId) {
     return <Loading />;
   }
 
-  const hasReadPriviliges =
+  const hasReadPrivileges =
     authorization?.anonymousReadAccess || authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Read);
 
-  if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPriviliges) return <Error404 />;
+  if (!isFeatureEnabled(FEATURE_COLLABORATION_CANVASES) || !hasReadPrivileges) return <Error404 />;
 
-  const hasCreatePriviliges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
-  const hasDeletePriviliges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Delete);
+  const hasCreatePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
+  const hasDeletePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.Delete);
   // Todo: need to decide who can edit what canvases, for now tie to CreateCanvas. May need to extend the information on a Canvas
   // to include who created it etc.
-  const hasUpdatePriviliges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
+  const hasUpdatePrivileges = authorization?.myPrivileges?.some(p => p === AuthorizationPrivilege.CreateCanvas);
 
   return (
     <CanvasActionsContainer>
@@ -62,7 +62,7 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
           entities={{
             canvases,
             templates,
-            contextID: contextId,
+            calloutID: calloutId,
             canvasId,
             contextSource: entityTypeName as CanvasManagementViewEntities['contextSource'],
           }}
@@ -72,9 +72,9 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
             ...actionsState,
           }}
           options={{
-            canUpdate: hasUpdatePriviliges,
-            canCreate: hasCreatePriviliges,
-            canDelete: hasDeletePriviliges,
+            canUpdate: hasUpdatePrivileges,
+            canCreate: hasCreatePrivileges,
+            canDelete: hasDeletePrivileges,
           }}
           backToCanvases={backToCanvases}
           buildLinkToCanvas={buildLinkToCanvas}

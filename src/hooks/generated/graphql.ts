@@ -1610,6 +1610,25 @@ export const AdminCanvasTemplateFragmentDoc = gql`
   }
   ${TemplateInfoFragmentDoc}
 `;
+export const ContributeTabAspectFragmentDoc = gql`
+  fragment ContributeTabAspect on Aspect {
+    ...AspectCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${AspectCardFragmentDoc}
+`;
+export const AspectsOnCalloutFragmentDoc = gql`
+  fragment AspectsOnCallout on Callout {
+    id
+    aspects {
+      ...ContributeTabAspect
+    }
+  }
+  ${ContributeTabAspectFragmentDoc}
+`;
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
     id
@@ -1718,28 +1737,6 @@ export const CommunityMemberUserFragmentDoc = gql`
     lastName
     email
   }
-`;
-export const ContributeTabAspectFragmentDoc = gql`
-  fragment ContributeTabAspect on Aspect {
-    ...AspectCard
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${AspectCardFragmentDoc}
-`;
-export const AspectsOnCollaborationFragmentDoc = gql`
-  fragment AspectsOnCollaboration on Collaboration {
-    id
-    callouts {
-      id
-      aspects {
-        ...ContributeTabAspect
-      }
-    }
-  }
-  ${ContributeTabAspectFragmentDoc}
 `;
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
@@ -9608,11 +9605,14 @@ export const HubAspectsDocument = gql`
     hub(ID: $hubNameId) {
       id
       collaboration {
-        ...AspectsOnCollaboration
+        id
+        callouts {
+          ...AspectsOnCallout
+        }
       }
     }
   }
-  ${AspectsOnCollaborationFragmentDoc}
+  ${AspectsOnCalloutFragmentDoc}
 `;
 
 /**
@@ -9734,12 +9734,15 @@ export const ChallengeAspectsDocument = gql`
       challenge(ID: $challengeNameId) {
         id
         collaboration {
-          ...AspectsOnCollaboration
+          id
+          callouts {
+            ...AspectsOnCallout
+          }
         }
       }
     }
   }
-  ${AspectsOnCollaborationFragmentDoc}
+  ${AspectsOnCalloutFragmentDoc}
 `;
 
 /**
@@ -9865,12 +9868,15 @@ export const OpportunityAspectsDocument = gql`
       opportunity(ID: $opportunityNameId) {
         id
         collaboration {
-          ...AspectsOnCollaboration
+          id
+          callouts {
+            ...AspectsOnCallout
+          }
         }
       }
     }
   }
-  ${AspectsOnCollaborationFragmentDoc}
+  ${AspectsOnCalloutFragmentDoc}
 `;
 
 /**
@@ -11428,56 +11434,53 @@ export type CreateCanvasOnCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateCanvasOnCalloutMutation,
   SchemaTypes.CreateCanvasOnCalloutMutationVariables
 >;
-export const DeleteCanvasOnCalloutDocument = gql`
-  mutation deleteCanvasOnCallout($input: DeleteCanvasOnCalloutInput!) {
-    deleteCanvasOnCallout(deleteData: $input) {
+export const DeleteCanvasDocument = gql`
+  mutation deleteCanvas($input: DeleteCanvasInput!) {
+    deleteCanvas(canvasData: $input) {
       ...CanvasSummary
     }
   }
   ${CanvasSummaryFragmentDoc}
 `;
-export type DeleteCanvasOnCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteCanvasOnCalloutMutation,
-  SchemaTypes.DeleteCanvasOnCalloutMutationVariables
+export type DeleteCanvasMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCanvasMutation,
+  SchemaTypes.DeleteCanvasMutationVariables
 >;
 
 /**
- * __useDeleteCanvasOnCalloutMutation__
+ * __useDeleteCanvasMutation__
  *
- * To run a mutation, you first call `useDeleteCanvasOnCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteCanvasOnCalloutMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteCanvasMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCanvasMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteCanvasOnCalloutMutation, { data, loading, error }] = useDeleteCanvasOnCalloutMutation({
+ * const [deleteCanvasMutation, { data, loading, error }] = useDeleteCanvasMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useDeleteCanvasOnCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteCanvasOnCalloutMutation,
-    SchemaTypes.DeleteCanvasOnCalloutMutationVariables
-  >
+export function useDeleteCanvasMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteCanvasMutation, SchemaTypes.DeleteCanvasMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.DeleteCanvasOnCalloutMutation,
-    SchemaTypes.DeleteCanvasOnCalloutMutationVariables
-  >(DeleteCanvasOnCalloutDocument, options);
+  return Apollo.useMutation<SchemaTypes.DeleteCanvasMutation, SchemaTypes.DeleteCanvasMutationVariables>(
+    DeleteCanvasDocument,
+    options
+  );
 }
-export type DeleteCanvasOnCalloutMutationHookResult = ReturnType<typeof useDeleteCanvasOnCalloutMutation>;
-export type DeleteCanvasOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCanvasOnCalloutMutation>;
-export type DeleteCanvasOnCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteCanvasOnCalloutMutation,
-  SchemaTypes.DeleteCanvasOnCalloutMutationVariables
+export type DeleteCanvasMutationHookResult = ReturnType<typeof useDeleteCanvasMutation>;
+export type DeleteCanvasMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCanvasMutation>;
+export type DeleteCanvasMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCanvasMutation,
+  SchemaTypes.DeleteCanvasMutationVariables
 >;
-export const UpdateCanvasOnContextDocument = gql`
-  mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
+export const UpdateCanvasDocument = gql`
+  mutation updateCanvas($input: UpdateCanvasDirectInput!) {
     updateCanvas(canvasData: $input) {
       id
       value
@@ -11485,93 +11488,90 @@ export const UpdateCanvasOnContextDocument = gql`
     }
   }
 `;
-export type UpdateCanvasOnContextMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCanvasOnContextMutation,
-  SchemaTypes.UpdateCanvasOnContextMutationVariables
+export type UpdateCanvasMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCanvasMutation,
+  SchemaTypes.UpdateCanvasMutationVariables
 >;
 
 /**
- * __useUpdateCanvasOnContextMutation__
+ * __useUpdateCanvasMutation__
  *
- * To run a mutation, you first call `useUpdateCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCanvasOnContextMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateCanvasMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCanvasMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateCanvasOnContextMutation, { data, loading, error }] = useUpdateCanvasOnContextMutation({
+ * const [updateCanvasMutation, { data, loading, error }] = useUpdateCanvasMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateCanvasOnContextMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCanvasOnContextMutation,
-    SchemaTypes.UpdateCanvasOnContextMutationVariables
-  >
+export function useUpdateCanvasMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateCanvasMutation, SchemaTypes.UpdateCanvasMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateCanvasOnContextMutation,
-    SchemaTypes.UpdateCanvasOnContextMutationVariables
-  >(UpdateCanvasOnContextDocument, options);
+  return Apollo.useMutation<SchemaTypes.UpdateCanvasMutation, SchemaTypes.UpdateCanvasMutationVariables>(
+    UpdateCanvasDocument,
+    options
+  );
 }
-export type UpdateCanvasOnContextMutationHookResult = ReturnType<typeof useUpdateCanvasOnContextMutation>;
-export type UpdateCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCanvasOnContextMutation>;
-export type UpdateCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCanvasOnContextMutation,
-  SchemaTypes.UpdateCanvasOnContextMutationVariables
+export type UpdateCanvasMutationHookResult = ReturnType<typeof useUpdateCanvasMutation>;
+export type UpdateCanvasMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCanvasMutation>;
+export type UpdateCanvasMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCanvasMutation,
+  SchemaTypes.UpdateCanvasMutationVariables
 >;
-export const CheckoutCanvasOnContextDocument = gql`
-  mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
+export const CheckoutCanvasDocument = gql`
+  mutation checkoutCanvas($input: CanvasCheckoutEventInput!) {
     eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
       ...CheckoutDetails
     }
   }
   ${CheckoutDetailsFragmentDoc}
 `;
-export type CheckoutCanvasOnContextMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CheckoutCanvasOnContextMutation,
-  SchemaTypes.CheckoutCanvasOnContextMutationVariables
+export type CheckoutCanvasMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CheckoutCanvasMutation,
+  SchemaTypes.CheckoutCanvasMutationVariables
 >;
 
 /**
- * __useCheckoutCanvasOnContextMutation__
+ * __useCheckoutCanvasMutation__
  *
- * To run a mutation, you first call `useCheckoutCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCheckoutCanvasOnContextMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCheckoutCanvasMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckoutCanvasMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [checkoutCanvasOnContextMutation, { data, loading, error }] = useCheckoutCanvasOnContextMutation({
+ * const [checkoutCanvasMutation, { data, loading, error }] = useCheckoutCanvasMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCheckoutCanvasOnContextMutation(
+export function useCheckoutCanvasMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CheckoutCanvasOnContextMutation,
-    SchemaTypes.CheckoutCanvasOnContextMutationVariables
+    SchemaTypes.CheckoutCanvasMutation,
+    SchemaTypes.CheckoutCanvasMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CheckoutCanvasOnContextMutation,
-    SchemaTypes.CheckoutCanvasOnContextMutationVariables
-  >(CheckoutCanvasOnContextDocument, options);
+  return Apollo.useMutation<SchemaTypes.CheckoutCanvasMutation, SchemaTypes.CheckoutCanvasMutationVariables>(
+    CheckoutCanvasDocument,
+    options
+  );
 }
-export type CheckoutCanvasOnContextMutationHookResult = ReturnType<typeof useCheckoutCanvasOnContextMutation>;
-export type CheckoutCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutCanvasOnContextMutation>;
-export type CheckoutCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CheckoutCanvasOnContextMutation,
-  SchemaTypes.CheckoutCanvasOnContextMutationVariables
+export type CheckoutCanvasMutationHookResult = ReturnType<typeof useCheckoutCanvasMutation>;
+export type CheckoutCanvasMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutCanvasMutation>;
+export type CheckoutCanvasMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CheckoutCanvasMutation,
+  SchemaTypes.CheckoutCanvasMutationVariables
 >;
 export const CanvasContentUpdatedDocument = gql`
   subscription canvasContentUpdated {
@@ -15652,6 +15652,48 @@ export type AspectCommentsMessageReceivedSubscriptionHookResult = ReturnType<
 >;
 export type AspectCommentsMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.AspectCommentsMessageReceivedSubscription>;
+export const CalloutAspectCreatedDocument = gql`
+  subscription CalloutAspectCreated($calloutID: UUID!) {
+    calloutAspectCreated(calloutID: $calloutID) {
+      aspect {
+        ...ContributeTabAspect
+      }
+    }
+  }
+  ${ContributeTabAspectFragmentDoc}
+`;
+
+/**
+ * __useCalloutAspectCreatedSubscription__
+ *
+ * To run a query within a React component, call `useCalloutAspectCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutAspectCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutAspectCreatedSubscription({
+ *   variables: {
+ *      calloutID: // value for 'calloutID'
+ *   },
+ * });
+ */
+export function useCalloutAspectCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CalloutAspectCreatedSubscription,
+    SchemaTypes.CalloutAspectCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CalloutAspectCreatedSubscription,
+    SchemaTypes.CalloutAspectCreatedSubscriptionVariables
+  >(CalloutAspectCreatedDocument, options);
+}
+export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCalloutAspectCreatedSubscription>;
+export type CalloutAspectCreatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
 export const AuthorDetailsDocument = gql`
   query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
@@ -16889,48 +16931,6 @@ export function refetchOpportunityCommunityMembersQuery(
 ) {
   return { query: OpportunityCommunityMembersDocument, variables: variables };
 }
-export const CalloutAspectCreatedDocument = gql`
-  subscription CalloutAspectCreated($calloutID: UUID!) {
-    calloutAspectCreated(calloutID: $calloutID) {
-      aspect {
-        ...ContributeTabAspect
-      }
-    }
-  }
-  ${ContributeTabAspectFragmentDoc}
-`;
-
-/**
- * __useCalloutAspectCreatedSubscription__
- *
- * To run a query within a React component, call `useCalloutAspectCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useCalloutAspectCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutAspectCreatedSubscription({
- *   variables: {
- *      calloutID: // value for 'calloutID'
- *   },
- * });
- */
-export function useCalloutAspectCreatedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.CalloutAspectCreatedSubscription,
-    SchemaTypes.CalloutAspectCreatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.CalloutAspectCreatedSubscription,
-    SchemaTypes.CalloutAspectCreatedSubscriptionVariables
-  >(CalloutAspectCreatedDocument, options);
-}
-export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCalloutAspectCreatedSubscription>;
-export type CalloutAspectCreatedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
 export const HubProviderDocument = gql`
   query hubProvider($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {

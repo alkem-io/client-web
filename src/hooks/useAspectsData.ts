@@ -10,7 +10,7 @@ import {
 } from './generated/graphql';
 import { AuthorizationPrivilege } from '../models/graphql-schema';
 import { AspectWithPermissions, EntityIds } from '../containers/ContributeTabContainer/ContributeTabContainer';
-import useContextAspectCreatedSubscription from '../domain/context/useContextAspectCreatedSubscription';
+import useCalloutAspectCreatedSubscription from '../domain/collaboration/useCalloutAspectCreatedSubscription';
 import { ApolloError } from '@apollo/client';
 
 export interface AspectsData {
@@ -110,17 +110,17 @@ export const useAspectsData = ({
   });
   const opportunityAspects = opportunityAspectData?.hub?.opportunity?.collaboration?.callouts?.[0]?.aspects;
 
-  const hubAspectSubscription = useContextAspectCreatedSubscription(
+  const hubAspectSubscription = useCalloutAspectCreatedSubscription(
     hubAspectData,
     hubData => hubData?.hub?.collaboration?.callouts?.[0],
     subscribeToHub
   );
-  const challengeAspectSubscription = useContextAspectCreatedSubscription(
+  const challengeAspectSubscription = useCalloutAspectCreatedSubscription(
     challengeAspectData,
     challengeData => challengeData?.hub?.challenge?.collaboration?.callouts?.[0],
     subscribeToChallenges
   );
-  const opportunityAspectSubscription = useContextAspectCreatedSubscription(
+  const opportunityAspectSubscription = useCalloutAspectCreatedSubscription(
     opportunityAspectData,
     opportunityData => opportunityData?.hub?.opportunity?.collaboration?.callouts?.[0],
     subscribeToOpportunity

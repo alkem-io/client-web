@@ -1116,18 +1116,16 @@ export type DeleteAspectInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteAspectOnCalloutInput = {
-  aspectID: Scalars['UUID'];
-  calloutID: Scalars['UUID'];
-};
-
 export type DeleteAspectTemplateInput = {
   ID: Scalars['UUID'];
 };
 
-export type DeleteCanvasOnCalloutInput = {
-  calloutID: Scalars['UUID'];
-  canvasID: Scalars['UUID'];
+export type DeleteCalloutInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCanvasInput = {
+  ID: Scalars['UUID'];
 };
 
 export type DeleteCanvasTemplateInput = {
@@ -1135,6 +1133,10 @@ export type DeleteCanvasTemplateInput = {
 };
 
 export type DeleteChallengeInput = {
+  ID: Scalars['UUID'];
+};
+
+export type DeleteCollaborationInput = {
   ID: Scalars['UUID'];
 };
 
@@ -1551,16 +1553,18 @@ export type Mutation = {
   deleteActorGroup: ActorGroup;
   /** Deletes the specified Aspect. */
   deleteAspect: Aspect;
-  /** Deletes the specified Aspect. */
-  deleteAspectOnCallout: Aspect;
   /** Deletes the specified AspectTemplate. */
   deleteAspectTemplate: AspectTemplate;
-  /** Deletes the specified Canvas. */
-  deleteCanvasOnCallout: Canvas;
+  /** Delete a Callout. */
+  deleteCallout: Callout;
+  /** Updates the specified Canvas. */
+  deleteCanvas: Canvas;
   /** Deletes the specified CanvasTemplate. */
   deleteCanvasTemplate: CanvasTemplate;
   /** Deletes the specified Challenge. */
   deleteChallenge: Challenge;
+  /** Delete Collaboration. */
+  deleteCollaboration: Collaboration;
   /** Deletes the specified Discussion. */
   deleteDiscussion: Discussion;
   /** Deletes the specified Hub. */
@@ -1647,6 +1651,8 @@ export type Mutation = {
   updateAspect: Aspect;
   /** Updates the specified AspectTemplate. */
   updateAspectTemplate: AspectTemplate;
+  /** Update a Callout. */
+  updateCallout: Callout;
   /** Updates the specified Canvas. */
   updateCanvas: Canvas;
   /** Updates the specified CanvasTemplate. */
@@ -1895,16 +1901,16 @@ export type MutationDeleteAspectArgs = {
   deleteData: DeleteAspectInput;
 };
 
-export type MutationDeleteAspectOnCalloutArgs = {
-  deleteData: DeleteAspectOnCalloutInput;
-};
-
 export type MutationDeleteAspectTemplateArgs = {
   deleteData: DeleteAspectTemplateInput;
 };
 
-export type MutationDeleteCanvasOnCalloutArgs = {
-  deleteData: DeleteCanvasOnCalloutInput;
+export type MutationDeleteCalloutArgs = {
+  deleteData: DeleteCalloutInput;
+};
+
+export type MutationDeleteCanvasArgs = {
+  canvasData: DeleteCanvasInput;
 };
 
 export type MutationDeleteCanvasTemplateArgs = {
@@ -1913,6 +1919,10 @@ export type MutationDeleteCanvasTemplateArgs = {
 
 export type MutationDeleteChallengeArgs = {
   deleteData: DeleteChallengeInput;
+};
+
+export type MutationDeleteCollaborationArgs = {
+  deleteData: DeleteCollaborationInput;
 };
 
 export type MutationDeleteDiscussionArgs = {
@@ -2085,6 +2095,10 @@ export type MutationUpdateAspectArgs = {
 
 export type MutationUpdateAspectTemplateArgs = {
   aspectTemplateInput: UpdateAspectTemplateInput;
+};
+
+export type MutationUpdateCalloutArgs = {
+  calloutData: UpdateCalloutInput;
 };
 
 export type MutationUpdateCanvasArgs = {
@@ -3017,6 +3031,22 @@ export type UpdateAspectTemplateInput = {
   info?: InputMaybe<UpdateTemplateInfoInput>;
   /** The type of Aspects created from this Template. */
   type?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateCalloutInput = {
+  ID: Scalars['UUID'];
+  /** Callout description. */
+  description?: InputMaybe<Scalars['Markdown']>;
+  /** The display name for this entity. */
+  displayName?: InputMaybe<Scalars['String']>;
+  /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
+  nameID?: InputMaybe<Scalars['NameID']>;
+  /** State of the callout. */
+  state: CalloutState;
+  /** Callout type. */
+  type: CalloutType;
+  /** Visibility of the Callout. */
+  visibility: CalloutVisibility;
 };
 
 export type UpdateCanvasDirectInput = {
@@ -9169,29 +9199,29 @@ export type CreateCanvasOnCalloutMutation = {
   };
 };
 
-export type DeleteCanvasOnCalloutMutationVariables = Exact<{
-  input: DeleteCanvasOnCalloutInput;
+export type DeleteCanvasMutationVariables = Exact<{
+  input: DeleteCanvasInput;
 }>;
 
-export type DeleteCanvasOnCalloutMutation = {
+export type DeleteCanvasMutation = {
   __typename?: 'Mutation';
-  deleteCanvasOnCallout: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
+  deleteCanvas: { __typename?: 'Canvas'; id: string; nameID: string; displayName: string };
 };
 
-export type UpdateCanvasOnContextMutationVariables = Exact<{
+export type UpdateCanvasMutationVariables = Exact<{
   input: UpdateCanvasDirectInput;
 }>;
 
-export type UpdateCanvasOnContextMutation = {
+export type UpdateCanvasMutation = {
   __typename?: 'Mutation';
   updateCanvas: { __typename?: 'Canvas'; id: string; value: string; displayName: string };
 };
 
-export type CheckoutCanvasOnContextMutationVariables = Exact<{
+export type CheckoutCanvasMutationVariables = Exact<{
   input: CanvasCheckoutEventInput;
 }>;
 
-export type CheckoutCanvasOnContextMutation = {
+export type CheckoutCanvasMutation = {
   __typename?: 'Mutation';
   eventOnCanvasCheckout: {
     __typename?: 'CanvasCheckout';
@@ -12494,6 +12524,52 @@ export type AspectCommentsMessageReceivedSubscription = {
   };
 };
 
+export type AspectsOnCalloutFragment = {
+  __typename?: 'Callout';
+  id: string;
+  aspects?:
+    | Array<{
+        __typename?: 'Aspect';
+        id: string;
+        nameID: string;
+        displayName: string;
+        type: string;
+        description: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+};
+
+export type CalloutAspectCreatedSubscriptionVariables = Exact<{
+  calloutID: Scalars['UUID'];
+}>;
+
+export type CalloutAspectCreatedSubscription = {
+  __typename?: 'Subscription';
+  calloutAspectCreated: {
+    __typename?: 'CalloutAspectCreated';
+    aspect: {
+      __typename?: 'Aspect';
+      id: string;
+      nameID: string;
+      displayName: string;
+      type: string;
+      description: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    };
+  };
+};
+
 export type AuthorDetailsQueryVariables = Exact<{
   ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
 }>;
@@ -13487,58 +13563,6 @@ export type OpportunityCommunityMembersQuery = {
               | undefined;
           }
         | undefined;
-    };
-  };
-};
-
-export type AspectsOnCollaborationFragment = {
-  __typename?: 'Collaboration';
-  id: string;
-  callouts?:
-    | Array<{
-        __typename?: 'Callout';
-        id: string;
-        aspects?:
-          | Array<{
-              __typename?: 'Aspect';
-              id: string;
-              nameID: string;
-              displayName: string;
-              type: string;
-              description: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-            }>
-          | undefined;
-      }>
-    | undefined;
-};
-
-export type CalloutAspectCreatedSubscriptionVariables = Exact<{
-  calloutID: Scalars['UUID'];
-}>;
-
-export type CalloutAspectCreatedSubscription = {
-  __typename?: 'Subscription';
-  calloutAspectCreated: {
-    __typename?: 'CalloutAspectCreated';
-    aspect: {
-      __typename?: 'Aspect';
-      id: string;
-      nameID: string;
-      displayName: string;
-      type: string;
-      description: string;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     };
   };
 };

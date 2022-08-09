@@ -96,10 +96,10 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ];
   }, [_challenge]);
 
-  const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
+  const aspects = _challenge?.hub.challenge.collaboration?.callouts?.[0]?.aspects || EMPTY;
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
-  const canvases = _challenge?.hub.challenge.context?.canvases || EMPTY;
+  const canvases = _challenge?.hub.challenge.collaboration?.callouts?.[0]?.canvases || EMPTY;
   const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
 
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);

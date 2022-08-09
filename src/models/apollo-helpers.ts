@@ -809,11 +809,12 @@ export type MutationKeySpecifier = (
   | 'deleteActor'
   | 'deleteActorGroup'
   | 'deleteAspect'
-  | 'deleteAspectOnCallout'
   | 'deleteAspectTemplate'
-  | 'deleteCanvasOnCallout'
+  | 'deleteCallout'
+  | 'deleteCanvas'
   | 'deleteCanvasTemplate'
   | 'deleteChallenge'
+  | 'deleteCollaboration'
   | 'deleteDiscussion'
   | 'deleteHub'
   | 'deleteLifecycleTemplate'
@@ -857,6 +858,7 @@ export type MutationKeySpecifier = (
   | 'updateActor'
   | 'updateAspect'
   | 'updateAspectTemplate'
+  | 'updateCallout'
   | 'updateCanvas'
   | 'updateCanvasTemplate'
   | 'updateChallenge'
@@ -934,11 +936,12 @@ export type MutationFieldPolicy = {
   deleteActor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteActorGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteAspect?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteAspectOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
-  deleteCanvasOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -982,6 +985,7 @@ export type MutationFieldPolicy = {
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;

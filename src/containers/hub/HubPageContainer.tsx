@@ -108,10 +108,10 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
-  const aspects = _hub?.hub.context?.aspects ?? EMPTY;
+  const aspects = _hub?.hub.collaboration?.callouts?.[0]?.aspects ?? EMPTY;
   const aspectsCount = useAspectsCount(_hub?.hub.activity);
 
-  const canvases = _hub?.hub.context?.canvases ?? EMPTY;
+  const canvases = _hub?.hub.collaboration?.callouts?.[0]?.canvases ?? EMPTY;
   const canvasesCount = useCanvasesCount(_hub?.hub.activity);
 
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);

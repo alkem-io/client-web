@@ -10,7 +10,10 @@ query HubAspects($hubNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     collaboration {
-      ...AspectsOnCollaboration
+      id
+      callouts {
+        ...AspectsOnCallout
+      }
     }
   }
 }
@@ -32,7 +35,10 @@ query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
     challenge(ID: $challengeNameId) {
       id
       collaboration {
-        ...AspectsOnCollaboration
+        id
+        callouts {
+          ...AspectsOnCallout
+        }
       }
     }
   }
@@ -55,7 +61,10 @@ query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
     opportunity(ID: $opportunityNameId) {
       id
       collaboration {
-        ...AspectsOnCollaboration
+        id
+        callouts {
+          ...AspectsOnCallout
+        }
       }
     }
   }

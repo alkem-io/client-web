@@ -23,7 +23,7 @@ export type TemplateQuery = {
 export interface IProvidedEntities {
   canvases: CanvasDetailsFragment[];
   templates: CreateCanvasCanvasTemplateFragment[];
-  contextId: string | undefined;
+  calloutId: string | undefined;
   authorization: CollaborationWithCanvasDetailsFragment['authorization'];
 }
 
@@ -70,13 +70,13 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
 
   const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
 
-  const contextId = callout?.id;
+  const calloutId = callout?.id;
   const authorization = callout?.authorization;
 
   return (
     <>
       {children(
-        { canvases, templates, contextId, authorization },
+        { canvases, templates, calloutId, authorization },
         { loadingCanvases: loadingHub || loadingChallenge || loadingOpportunity, loadingTemplates }
       )}
     </>
