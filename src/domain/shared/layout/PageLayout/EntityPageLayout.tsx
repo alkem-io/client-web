@@ -4,11 +4,13 @@ import { EntityPageSection } from '../EntityPageSection';
 
 export interface EntityTabsProps {
   currentTab: EntityPageSection;
+  rootUrl: string;
 }
 
 export interface EntityPageLayoutProps extends SimplePageLayoutProps<EntityPageSection> {
   pageBannerComponent: ComponentType;
-  tabsComponent: ComponentType<EntityTabsProps>;
+  tabsComponent?: ComponentType<EntityTabsProps>;
+  rootUrl?: string;
 }
 
 const EntityPageLayout = ({
@@ -18,11 +20,12 @@ const EntityPageLayout = ({
   children,
   pageBannerComponent: PageBanner,
   tabsComponent: Tabs,
+  rootUrl = '',
 }: PropsWithChildren<EntityPageLayoutProps>) => {
   return (
     <>
       <PageBanner />
-      <Tabs currentTab={currentSection} />
+      {Tabs && <Tabs currentTab={currentSection} rootUrl={rootUrl} />}
       <SimplePageLayout
         currentSection={currentSection}
         entityTypeName={entityTypeName}

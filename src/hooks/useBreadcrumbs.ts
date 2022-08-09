@@ -54,7 +54,7 @@ export const useBreadcrumbs = () => {
           url: buildHubUrl(hubNameId),
         });
       }
-      if (opportunityNameId || aspectNameId) {
+      if (challengeNameId && (opportunityNameId || aspectNameId)) {
         items.push({
           name: _challenge?.hub.challenge.displayName,
           url: buildChallengeUrl(hubNameId, challengeNameId),

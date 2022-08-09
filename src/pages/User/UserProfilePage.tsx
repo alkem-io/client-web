@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Error404, PageProps } from '../';
 import { Loading } from '../../components/core';
+import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
 import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
@@ -28,6 +29,7 @@ export const UserProfilePage: FC<UserProfileProps> = ({ paths }) => {
 
   return (
     <>
+      <PageBanner title={userMetadata.user.displayName} />
       <SectionSpacer />
       <UserProfilePageView entities={{ userMetadata, verified }} options={options} />
     </>

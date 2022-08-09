@@ -11,6 +11,7 @@ export interface EntityPageTabsProps {
   settingsUrl: string;
   entityTypeName: EntityTypeName;
   subEntityTab?: ReactNode;
+  rootUrl: string;
 }
 
 const EntityPageTabs: FC<EntityPageTabsProps> = ({
@@ -19,6 +20,7 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
   settingsUrl,
   entityTypeName,
   subEntityTab,
+  rootUrl,
 }) => {
   const { t } = useTranslation();
 
@@ -27,21 +29,24 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
       value={currentTab}
       aria-label={`${entityTypeName} tabs`}
       showSettings={showSettings}
-      settingsValue={currentTab}
       settingsUrl={settingsUrl}
     >
       <HeaderNavigationTab
         label={t('common.dashboard')}
         value={EntityPageSection.Dashboard}
-        to={EntityPageSection.Dashboard}
+        to={rootUrl + EntityPageSection.Dashboard}
       />
       <HeaderNavigationTab
         label={t('common.explore')}
         value={EntityPageSection.Explore}
-        to={EntityPageSection.Explore}
+        to={rootUrl + EntityPageSection.Explore}
       />
       {subEntityTab}
-      <HeaderNavigationTab label={t('common.about')} value={EntityPageSection.About} to={EntityPageSection.About} />
+      <HeaderNavigationTab
+        label={t('common.about')}
+        value={EntityPageSection.About}
+        to={rootUrl + EntityPageSection.About}
+      />
     </HeaderNavigationTabs>
   );
 };

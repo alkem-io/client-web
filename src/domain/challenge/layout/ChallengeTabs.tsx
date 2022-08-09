@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
 import { useChallenge } from '../../../hooks';
-import { buildAdminChallengeUrl } from '../../../utils/urlBuilders';
+import { buildAdminChallengeUrl, buildChallengeUrl } from '../../../utils/urlBuilders';
 import { EntityTabsProps } from '../../shared/layout/PageLayout/EntityPageLayout';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import { routes } from '../../challenge/routes/challengeRoutes';
@@ -25,7 +25,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = props => {
         <HeaderNavigationTab
           label={t('common.opportunities')}
           value={EntityPageSection.Opportunities}
-          to={routes.Opportunities}
+          to={buildChallengeUrl(hubNameId, challengeNameId) + '/' + routes.Opportunities}
         />
       }
     />

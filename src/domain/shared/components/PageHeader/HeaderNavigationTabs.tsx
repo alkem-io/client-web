@@ -50,7 +50,6 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
 
 export interface NavigationTabsProps extends TabsProps {
   showSettings?: boolean;
-  settingsValue?: string;
   settingsUrl?: string;
 }
 
@@ -58,7 +57,6 @@ const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
   value,
   'aria-label': ariaLabel,
   showSettings = false,
-  settingsValue = '',
   settingsUrl = '',
   children,
 }) => {
@@ -77,7 +75,7 @@ const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
         <HeaderNavigationTab
           className="settings-button"
           icon={<SettingsOutlined />}
-          value={settingsValue}
+          value={'settings'}
           to={settingsUrl}
         />
       )}

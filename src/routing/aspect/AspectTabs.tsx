@@ -58,21 +58,19 @@ const AspectTabs: FC<AspectTabsProps> = () => {
         )}
       </AspectDashboardContainer>
 
-      <HeaderNavigationTabs
-        value={currentTab}
-        aria-label="Aspect tabs"
-        variant="scrollable"
-        scrollButtons={'auto'}
-        allowScrollButtonsMobile
-        showSettings={permissions.canUpdate}
-        settingsValue={resolvePath('settings', resolved.pathname)?.pathname}
-        settingsUrl={'settings'}
-      >
+      <HeaderNavigationTabs value={currentTab}>
         <HeaderNavigationTab
           label={t('common.dashboard')}
           value={resolvePath('dashboard', resolved.pathname)?.pathname}
           to={'dashboard'}
         />
+        {permissions.canUpdate && (
+          <HeaderNavigationTab
+            label={t('common.settings')}
+            value={resolvePath('settings', resolved.pathname)?.pathname}
+            to={'settings'}
+          />
+        )}
       </HeaderNavigationTabs>
       <Box paddingTop={3} />
       <Outlet />
