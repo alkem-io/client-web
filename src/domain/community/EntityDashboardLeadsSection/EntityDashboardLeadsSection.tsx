@@ -12,6 +12,7 @@ import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../../hooks';
 import { mapToAssociatedOrganization } from '../../organization/AssociatedOrganizations/AssociatedOrganization';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 
 const OrganizationCardTransparent = (props: OrganizationCardProps) => <OrganizationCard {...props} transparent />;
 
@@ -48,7 +49,7 @@ const EntityDashboardLeadsSection = ({
   }, [leadUsers]);
 
   return (
-    <DashboardGenericSection navText={t('buttons.see-more')} navLink="community">
+    <DashboardGenericSection navText={t('buttons.see-more')} navLink={EntityPageSection.About}>
       <SectionHeader text={organizationsHeader} />
       <SectionSpacer />
       <AssociatedOrganizationsView

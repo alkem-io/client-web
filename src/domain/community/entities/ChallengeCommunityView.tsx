@@ -1,17 +1,16 @@
 import React, { FC } from 'react';
-import { PageProps } from '../common';
-import { useChallenge } from '../../hooks';
-import CommunityPage from './CommunityPage';
-import { useChallengeCommunityContributorsQuery } from '../../hooks/generated/graphql';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import CommunityContributorsSection from '../../domain/community/CommunityContributors/CommunityContributorsSection';
-import useCommunityContributors from '../../domain/community/CommunityContributors/useCommunityContributors';
-import CommunityContributorsSearch from '../../domain/community/CommunityContributors/CommunityContributorsSearch';
-import { ValueType } from '../../components/core/card-filter/filterFn';
-import { userCardValueGetter } from '../../components/core/card-filter/value-getters/cards/user-card-value-getter';
-import { Identifiable } from '../../domain/shared/types/Identifiable';
-import { OrganizationCardFragment } from '../../models/graphql-schema';
-import useSearchAcrossMultipleLists from '../../domain/shared/utils/useSearchAcrossMultipleLists';
+import { useChallenge } from '../../../hooks';
+import CommunityUpdates from '../CommunityUpdates/CommunityUpdates';
+import { useChallengeCommunityContributorsQuery } from '../../../hooks/generated/graphql';
+import { SectionSpacer } from '../../shared/components/Section/Section';
+import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
+import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
+import CommunityContributorsSearch from '../CommunityContributors/CommunityContributorsSearch';
+import { ValueType } from '../../../components/core/card-filter/filterFn';
+import { userCardValueGetter } from '../../../components/core/card-filter/value-getters/cards/user-card-value-getter';
+import { Identifiable } from '../../shared/types/Identifiable';
+import { OrganizationCardFragment } from '../../../models/graphql-schema';
+import useSearchAcrossMultipleLists from '../../shared/utils/useSearchAcrossMultipleLists';
 
 export const organizationCardValueGetter = ({
   id,
@@ -21,7 +20,7 @@ export const organizationCardValueGetter = ({
   values: [displayName],
 });
 
-const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
+const ChallengeCommunityView: FC = () => {
   const { challenge, hubId } = useChallenge();
   const communityId = challenge?.community?.id;
   const challengeId = challenge?.id;
@@ -47,8 +46,8 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
     });
 
   return (
-    <CommunityPage entityTypeName="challenge" paths={paths} hubId={hubId} communityId={communityId}>
-      <SectionSpacer />
+    <>
+      <CommunityUpdates hubId={hubId} communityId={communityId} />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
       <CommunityContributorsSection
@@ -65,8 +64,8 @@ const ChallengeCommunityPage: FC<PageProps> = ({ paths }) => {
         loading={loading}
         contributorType="member"
       />
-    </CommunityPage>
+    </>
   );
 };
 
-export default ChallengeCommunityPage;
+export default ChallengeCommunityView;

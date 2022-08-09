@@ -2,10 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import DashboardOpportunityStatistics from '../../domain/shared/components/DashboardSections/DashboardOpportunityStatistics';
 import DashboardUpdatesSection from '../../domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
@@ -29,7 +27,7 @@ const PROJECTS_NUMBER_IN_SECTION = 2;
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
   opportunity: OpportunityPageFragment;
-  activity: ActivityItem[];
+  // activity: ActivityItem[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   discussions: Discussion[];
@@ -103,7 +101,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const isNotMember = opportunityId && userMetadata ? !userMetadata.ofOpportunity(opportunityId) : true;
 
   const { opportunity } = entities;
-  const lifecycle = opportunity?.lifecycle;
   const communityId = opportunity?.community?.id || '';
   const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
@@ -128,12 +125,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           >
             <Markdown children={opportunity?.context?.vision || ''} />
           </DashboardGenericSection>
-          <DashboardOpportunityStatistics
-            headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
-            activities={entities.activity}
-            lifecycle={lifecycle}
-            loading={loading}
-          />
           {communityReadAccess && (
             <>
               <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />

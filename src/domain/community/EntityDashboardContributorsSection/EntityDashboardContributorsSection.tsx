@@ -5,6 +5,7 @@ import { SectionSpacer } from '../../shared/components/Section/Section';
 import { EntityDashboardContributors } from './Types';
 import DashboardContributingUsers from './DashboardContributingUsers';
 import DashboardContributingOrganizations from './DashboardContributingOrganizations';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 
 const EntityDashboardContributorsSection = ({
   memberUsers,
@@ -18,7 +19,7 @@ const EntityDashboardContributorsSection = ({
     <DashboardGenericSection
       headerText={t('contributors-section.title')}
       navText={t('buttons.see-more')}
-      navLink="community"
+      navLink={EntityPageSection.About}
     >
       <DashboardContributingUsers headerText={t('common.users')} users={memberUsers} usersCount={memberUsersCount} />
       <SectionSpacer double />

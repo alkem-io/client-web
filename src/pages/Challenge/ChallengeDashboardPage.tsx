@@ -1,11 +1,11 @@
 import React, { FC, useMemo } from 'react';
-import { PageProps } from '../../common';
-import { useUpdateNavigation } from '../../../hooks';
-import ChallengePageContainer from '../../../containers/challenge/ChallengePageContainer';
-import { ChallengeDashboardView } from '../../../views/Challenge/ChallengeDashboardView';
-import { DiscussionsProvider } from '../../../context/Discussions/DiscussionsProvider';
-import PageLayout from '../../../domain/shared/layout/PageLayout';
-import { EntityPageSection } from '../../../domain/shared/layout/EntityPageSection';
+import { PageProps } from '../common';
+import { useUpdateNavigation } from '../../hooks';
+import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
+import { ChallengeDashboardView } from '../../views/Challenge/ChallengeDashboardView';
+import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
+import ChallengePageLayout from '../../domain/challenge/layout/ChallengePageLayout';
+import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
 export interface ChallengeDashboardPageProps extends PageProps {}
 
@@ -14,13 +14,13 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <PageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="challenge">
+    <ChallengePageLayout currentSection={EntityPageSection.Dashboard}>
       <DiscussionsProvider>
         <ChallengePageContainer>
           {(entities, state) => <ChallengeDashboardView entities={entities} state={state} />}
         </ChallengePageContainer>
       </DiscussionsProvider>
-    </PageLayout>
+    </ChallengePageLayout>
   );
 };
 
