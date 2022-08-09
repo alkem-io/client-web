@@ -11,6 +11,7 @@ import { Project as ProjectType } from '../../models/graphql-schema';
 import { Error404, PageProps, ProjectIndex as ProjectIndexPage, ProjectNew as ProjectNewPage } from '../../pages';
 import RestrictedRoute from '../RestrictedRoute';
 import { nameOfUrl } from '../url-params';
+import OpportunityTabs from './OpportunityTabs';
 
 interface ProjectRootProps extends PageProps {}
 
@@ -18,12 +19,21 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
   const [lastPath] = paths.slice(-1);
   const projectsPath = `${lastPath.value}/projects`;
   const currentPaths = useMemo(() => [...paths, { value: projectsPath, name: 'projects', real: true }], [paths]);
+  const { hubNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
+
   return (
     <Routes>
       <Route
         path={'new'}
         element={
           <RestrictedRoute requiredCredentials={[]}>
+            <OpportunityTabs
+              communityReadAccess={permissions.communityReadAccess}
+              viewerCanUpdate={permissions.viewerCanUpdate}
+              hubNameId={hubNameId}
+              challengeNameId={challengeNameId}
+              opportunityNameId={opportunityNameId}
+            />
             <ProjectNewRoute paths={currentPaths} />
           </RestrictedRoute>
         }
@@ -32,6 +42,13 @@ export const ProjectRoute: FC<ProjectRootProps> = ({ paths }) => {
         path={`:${nameOfUrl.projectNameId}`}
         element={
           <RestrictedRoute>
+            <OpportunityTabs
+              communityReadAccess={permissions.communityReadAccess}
+              viewerCanUpdate={permissions.viewerCanUpdate}
+              hubNameId={hubNameId}
+              challengeNameId={challengeNameId}
+              opportunityNameId={opportunityNameId}
+            />
             <ProjectIndex paths={currentPaths} />
           </RestrictedRoute>
         }

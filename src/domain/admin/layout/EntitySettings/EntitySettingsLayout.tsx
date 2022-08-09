@@ -1,10 +1,12 @@
 import React, { FC, useCallback } from 'react';
 import { SettingsSection } from './constants';
 import PageTabs, { TabDefinition } from '../../../../components/core/PageTabs/PageTabs';
-import AdminLayoutEntityTitle from '../AdminLayoutEntityTitle';
 import { useTranslation } from 'react-i18next';
 import { EntityLinkComponentProps } from '../../../../components/Admin/EntityLinkComponent';
 import PageLayout from '../../../shared/layout/PageLayout';
+import PageBanner from '../../../shared/components/PageHeader/PageBanner';
+import HeaderNavigationTabs from '../../../shared/components/PageHeader/HeaderNavigationTabs';
+import HeaderNavigationTab from '../../../shared/components/PageHeader/HeaderNavigationTab';
 
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization';
 
@@ -26,10 +28,27 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   const { t } = useTranslation();
 
   const getTabLabel = useCallback((section: SettingsSection) => t(`common.${section}` as const), [t]);
+  const getTabRoute = (tab: TabDefinition<string | number>) => {
+    const { route } = tab;
+    return `${tabRoutePrefix}${route}`;
+  };
 
   return (
     <>
-      <AdminLayoutEntityTitle {...entityTitleProps} />
+      <PageBanner title={entityTitleProps.displayName} />
+      <HeaderNavigationTabs value={currentTab}>
+        {tabs.map(tab => {
+          return (
+            <HeaderNavigationTab
+              key={tab.route}
+              label={getTabLabel(tab.section)}
+              value={tab.section}
+              to={getTabRoute(tab)}
+            />
+          );
+        })}
+      </HeaderNavigationTabs>
+
       <PageTabs
         tabs={tabs}
         currentTab={currentTab}

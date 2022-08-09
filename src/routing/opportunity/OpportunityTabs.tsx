@@ -7,7 +7,7 @@ import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
 import { useConfig, useOpportunity } from '../../hooks';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
 import { FEATURE_COLLABORATION_CANVASES } from '../../models/constants';
-import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
+import { buildAdminOpportunityUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import { getVisualBanner } from '../../utils/visuals.utils';
 
 const routes = {
@@ -51,6 +51,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
   const currentTab = useMemo(() => {
     return routeMatch?.pattern?.path ?? tabValue('dashboard');
   }, [routeMatch, routes]);
+  const urlPrefix = buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId) + '/';
 
   return (
     <>
@@ -69,21 +70,37 @@ const OpportunityTabs: FC<OpportunityTabsProps> = ({
         settingsValue={tabValue('settings')}
         settingsUrl={buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
       >
-        <HeaderNavigationTab label={t('common.opportunity')} value={tabValue('dashboard')} to={routes['dashboard']} />
-        <HeaderNavigationTab label={t('common.context')} value={tabValue('context')} to={routes['context']} />
+        <HeaderNavigationTab
+          label={t('common.opportunity')}
+          value={tabValue('dashboard')}
+          to={urlPrefix + routes['dashboard']}
+        />
+        <HeaderNavigationTab
+          label={t('common.context')}
+          value={tabValue('context')}
+          to={urlPrefix + routes['context']}
+        />
         <HeaderNavigationTab
           disabled={!communityReadAccess}
           label={t('common.community')}
           value={tabValue('community')}
-          to={routes['community']}
+          to={urlPrefix + routes['community']}
         />
-        <HeaderNavigationTab label={t('common.contribute')} value={tabValue('contribute')} to={routes.contribute} />
-        <HeaderNavigationTab label={t('common.projects')} value={tabValue('projects')} to={routes['projects']} />
+        <HeaderNavigationTab
+          label={t('common.contribute')}
+          value={tabValue('contribute')}
+          to={urlPrefix + routes.contribute}
+        />
+        <HeaderNavigationTab
+          label={t('common.projects')}
+          value={tabValue('projects')}
+          to={urlPrefix + routes['projects']}
+        />
         <HeaderNavigationTab
           disabled={!communityReadAccess || !isFeatureEnabled(FEATURE_COLLABORATION_CANVASES)}
           label={t('common.canvases')}
           value={tabValue('canvases')}
-          to={routes['canvases']}
+          to={urlPrefix + routes['canvases']}
         />
       </HeaderNavigationTabs>
       <Outlet />
