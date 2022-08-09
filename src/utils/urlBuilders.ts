@@ -1,4 +1,5 @@
 import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH, COMMUNITY_ROUTE } from '../models/constants';
+import { EntityPageSection } from '../domain/shared/layout/EntityPageSection';
 
 export const buildHubUrl = (hubNameId: string) => `/${hubNameId}`;
 
@@ -89,7 +90,7 @@ export const buildCanvasUrl = (
   challengeNameId?: string,
   opportunityNameId?: string
 ) => {
-  const canvasUrl = `/canvases/${canvasNameId}`;
+  const canvasUrl = `/${EntityPageSection.Explore}/${canvasNameId}`;
   if (challengeNameId) {
     if (opportunityNameId) {
       return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${canvasUrl}`;

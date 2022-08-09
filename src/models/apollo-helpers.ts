@@ -682,6 +682,21 @@ export type LifecycleFieldPolicy = {
   stateIsFinal?: FieldPolicy<any> | FieldReadFunction<any>;
   templateName?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LifecycleTemplateKeySpecifier = (
+  | 'authorization'
+  | 'definition'
+  | 'id'
+  | 'info'
+  | 'type'
+  | LifecycleTemplateKeySpecifier
+)[];
+export type LifecycleTemplateFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  definition?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  info?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LocationKeySpecifier = ('city' | 'country' | 'id' | LocationKeySpecifier)[];
 export type LocationFieldPolicy = {
   city?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -739,6 +754,7 @@ export type MutationKeySpecifier = (
   | 'createGroupOnCommunity'
   | 'createGroupOnOrganization'
   | 'createHub'
+  | 'createLifecycleTemplate'
   | 'createOpportunity'
   | 'createOrganization'
   | 'createProject'
@@ -758,6 +774,7 @@ export type MutationKeySpecifier = (
   | 'deleteChallenge'
   | 'deleteDiscussion'
   | 'deleteHub'
+  | 'deleteLifecycleTemplate'
   | 'deleteOpportunity'
   | 'deleteOrganization'
   | 'deleteProject'
@@ -801,10 +818,13 @@ export type MutationKeySpecifier = (
   | 'updateCanvas'
   | 'updateCanvasTemplate'
   | 'updateChallenge'
+  | 'updateChallengeLifecycle'
   | 'updateDiscussion'
   | 'updateEcosystemModel'
   | 'updateHub'
+  | 'updateLifecycleTemplate'
   | 'updateOpportunity'
+  | 'updateOpportunityLifecycle'
   | 'updateOrganization'
   | 'updatePreferenceOnChallenge'
   | 'updatePreferenceOnHub'
@@ -857,6 +877,7 @@ export type MutationFieldPolicy = {
   createGroupOnCommunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createGroupOnOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  createLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   createOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   createProject?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -876,6 +897,7 @@ export type MutationFieldPolicy = {
   deleteChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteProject?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -919,10 +941,13 @@ export type MutationFieldPolicy = {
   updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateChallengeLifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateOpportunityLifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1459,6 +1484,7 @@ export type TemplatesSetKeySpecifier = (
   | 'authorization'
   | 'canvasTemplates'
   | 'id'
+  | 'lifecycleTemplates'
   | TemplatesSetKeySpecifier
 )[];
 export type TemplatesSetFieldPolicy = {
@@ -1466,6 +1492,7 @@ export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lifecycleTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UpdatesKeySpecifier = ('authorization' | 'id' | 'messages' | UpdatesKeySpecifier)[];
 export type UpdatesFieldPolicy = {
@@ -1822,6 +1849,10 @@ export type StrictTypedTypePolicies = {
   Lifecycle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LifecycleKeySpecifier | (() => undefined | LifecycleKeySpecifier);
     fields?: LifecycleFieldPolicy;
+  };
+  LifecycleTemplate?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LifecycleTemplateKeySpecifier | (() => undefined | LifecycleTemplateKeySpecifier);
+    fields?: LifecycleTemplateFieldPolicy;
   };
   Location?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LocationKeySpecifier | (() => undefined | LocationKeySpecifier);

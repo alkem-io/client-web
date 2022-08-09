@@ -3,7 +3,7 @@ import { SettingsSection } from './constants';
 import PageTabs, { TabDefinition } from '../../../../components/core/PageTabs/PageTabs';
 import { useTranslation } from 'react-i18next';
 import { EntityLinkComponentProps } from '../../../../components/Admin/EntityLinkComponent';
-import PageLayout from '../../../shared/layout/PageLayout';
+import { SimplePageLayout } from '../../../shared/layout/PageLayout';
 import PageBanner from '../../../shared/components/PageHeader/PageBanner';
 import HeaderNavigationTabs from '../../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../../shared/components/PageHeader/HeaderNavigationTab';
@@ -56,9 +56,9 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
         routePrefix={tabRoutePrefix}
         getTabLabel={getTabLabel}
       />
-      <PageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
+      <SimplePageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
         {children}
-      </PageLayout>
+      </SimplePageLayout>
     </>
   );
 };

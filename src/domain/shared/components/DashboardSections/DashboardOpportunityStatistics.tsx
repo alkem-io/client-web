@@ -10,7 +10,7 @@ export interface DashboardOpportunityStatisticsProps {
   headerText: string;
   helpText?: string;
   bodyText?: string;
-  lifecycle?: LifecycleModel;
+  lifecycle?: LifecycleModel; // TODO remove if there are no plans to re-add
   activities: ActivityItem[];
   loading: boolean;
 }
@@ -20,7 +20,6 @@ const DashboardOpportunityStatistics: FC<DashboardOpportunityStatisticsProps> = 
   headerText,
   bodyText,
   activities,
-  lifecycle: _lifecycle,
   loading,
 }) => {
   return (

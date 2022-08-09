@@ -4,7 +4,7 @@ import { useChallenge, useHub, useUpdateNavigation } from '../../../hooks';
 import { ChallengeContextView } from '../../../views/Challenge/ChallengeContextView';
 import ContextTabContainer from '../../../containers/context/ContextTabContainer';
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
-import PageLayout from '../../../domain/shared/layout/PageLayout';
+import ChallengePageLayout from '../../../domain/challenge/layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../domain/shared/layout/EntityPageSection';
 
 export interface ChallengeContextPageProps extends PageProps {}
@@ -25,7 +25,7 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <PageLayout currentSection={EntityPageSection.Context} entityTypeName="challenge">
+    <ChallengePageLayout currentSection={EntityPageSection.About}>
       <ContextTabContainer
         hubNameId={hubNameId}
         challengeNameId={challengeNameId}
@@ -43,7 +43,7 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
               challengeTagset: entities.tagset,
               challengeLifecycle: entities.lifecycle,
               context: entities.context,
-              references: entities?.references,
+              references: entities.references,
             }}
             state={{
               loading: state.loading,
@@ -53,10 +53,11 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
               canCreateCommunityContextReview: entities.permissions.canCreateCommunityContextReview,
             }}
             actions={{}}
+            activity={entities.activity}
           />
         )}
       </ContextTabContainer>
-    </PageLayout>
+    </ChallengePageLayout>
   );
 };
 export default ChallengeContextPage;

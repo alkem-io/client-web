@@ -1,9 +1,10 @@
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import LifecycleState from '../../components/composite/entities/Lifecycle/LifecycleState';
 import ContextSection from '../../components/composite/sections/ContextSection';
 import {
+  ActivityItemFragment,
   AspectCardFragment,
   Context,
   ContextTabFragment,
@@ -12,6 +13,11 @@ import {
   Tagset,
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
+import DashboardOpportunityStatistics from '../../domain/shared/components/DashboardSections/DashboardOpportunityStatistics';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import getActivityCount from '../../domain/activity/utils/getActivityCount';
+import { useTranslation } from 'react-i18next';
+import OpportunityCommunityView from '../../domain/community/entities/OpportunityCommunityView';
 
 export interface OpportunityContextViewEntities {
   context?: ContextTabFragment;
@@ -37,9 +43,11 @@ export interface OpportunityContextViewProps
     OpportunityContextViewActions,
     OpportunityContextViewState,
     OpportunityContextViewOptions
-  > {}
+  > {
+  activity: ActivityItemFragment[] | undefined;
+}
 
-const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, state }) => {
+const OpportunityContextView: FC<OpportunityContextViewProps> = ({ activity, entities, state }) => {
   const { loading } = state;
   const { context, opportunityDisplayName, opportunityTagset, opportunityLifecycle } = entities;
 
@@ -53,6 +61,28 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, sta
     id = '',
   } = context || ({} as Context);
   const references = entities?.references;
+
+  const { t, i18n } = useTranslation();
+
+  const activityItems: ActivityItem[] = useMemo(() => {
+    return [
+      {
+        name: t('common.agreements'),
+        count: getActivityCount(activity, 'projects'),
+        color: 'positive',
+      },
+      {
+        name: t('common.interests'),
+        count: getActivityCount(activity, 'relations'),
+        color: 'primary',
+      },
+      {
+        name: t('common.members'),
+        count: getActivityCount(activity, 'members'),
+        color: 'neutralMedium',
+      },
+    ];
+  }, [activity, i18n.language]);
 
   return (
     <ContextSection
@@ -72,6 +102,14 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ entities, sta
       keywords={opportunityTagset?.tags}
       references={references}
       loading={loading}
+      leftColumn={
+        <DashboardOpportunityStatistics
+          headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
+          activities={activityItems}
+          loading={loading}
+        />
+      }
+      rightColumn={<OpportunityCommunityView />}
     />
   );
 };

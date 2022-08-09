@@ -14,18 +14,18 @@ import { SectionSpacer } from '../../components/Section/Section';
 
 export type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization';
 
-interface PageLayoutProps<Section extends string | number> {
+export interface SimplePageLayoutProps<Section extends string | number> {
   currentSection: Section;
   entityTypeName: EntityTypeName;
   tabDescriptionNs?: string;
 }
 
-const PageLayout = <Section extends string | number>({
+const SimplePageLayout = <Section extends string | number>({
   currentSection,
   entityTypeName,
   tabDescriptionNs = 'pages',
   children,
-}: PropsWithChildren<PageLayoutProps<Section>>) => {
+}: PropsWithChildren<SimplePageLayoutProps<Section>>) => {
   const { t } = useTranslation();
 
   type TLabel = Parameters<typeof t>[0];
@@ -49,4 +49,4 @@ const PageLayout = <Section extends string | number>({
   );
 };
 
-export default PageLayout;
+export default SimplePageLayout;

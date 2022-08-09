@@ -1,7 +1,5 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
@@ -25,7 +23,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   hubNameId: string;
   hubDisplayName: string;
   challenge?: ChallengeProfileFragment;
-  activity: ActivityItem[];
+  opportunitiesCount: number | undefined;
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
   canvases: CanvasDetailsFragment[];
@@ -52,7 +50,6 @@ export interface ChallengePageContainerProps
   extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
-  const { t } = useTranslation();
   const { user, isAuthenticated } = useUserContext();
   const { loading: loadingHubContext, ...hub } = useHub();
   const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
@@ -74,27 +71,9 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
-  const activity: ActivityItem[] = useMemo(() => {
-    const _activity = _challenge?.hub.challenge.activity || [];
-    return [
-      {
-        name: t('common.opportunities'),
-        type: ActivityType.Opportunity,
-        count: getActivityCount(_activity, 'opportunities'),
-        color: 'primary',
-      },
-      {
-        name: t('common.projects'),
-        count: getActivityCount(_activity, 'projects'),
-        color: 'positive',
-      },
-      {
-        name: t('common.members'),
-        count: getActivityCount(_activity, 'members'),
-        color: 'neutralMedium',
-      },
-    ];
-  }, [_challenge]);
+  const { activity = [] } = _challenge?.hub.challenge || {};
+
+  const opportunitiesCount = useMemo(() => getActivityCount(activity, ActivityType.Opportunity), [activity]);
 
   const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
@@ -112,7 +91,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           hubNameId,
           hubDisplayName: hub.displayName,
           challenge: _challenge?.hub.challenge,
-          activity,
+          opportunitiesCount,
           aspects,
           aspectsCount,
           canvases,

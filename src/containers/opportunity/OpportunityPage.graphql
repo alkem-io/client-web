@@ -21,13 +21,6 @@ fragment OpportunityPage on Opportunity {
     name
     value
   }
-  lifecycle {
-    id
-    machineDef
-    state
-    nextEvents
-    stateIsFinal
-  }
   relations {
     id
     type
@@ -60,30 +53,14 @@ fragment OpportunityPage on Opportunity {
       ...CanvasDetails
     }
   }
+  community {
+    ...EntityDashboardCommunity
+  }
   #
   projects {
     id
     nameID
     displayName
     description
-  }
-  community {
-    id
-    leadUsers {
-      ...DashboardLeadUser
-    }
-    memberUsers {
-      ...DashboardContributingUser
-    }
-    leadOrganizations {
-      ...AssociatedOrganizationDetails
-    }
-    memberOrganizations {
-      ...DashboardContributingOrganization
-    }
-    authorization {
-      id
-      myPrivileges
-    }
   }
 }

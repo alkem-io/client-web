@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import SimpleCard from '../../shared/components/SimpleCard';
 import { LinkWithState } from '../../shared/types/LinkWithState';
 import SimpleCardsList from '../../shared/components/SimpleCardsList';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 
 interface CanvasesDashboardPreviewProps extends DashboardGenericSectionProps {
   canvases: CanvasDetailsFragment[];
@@ -37,7 +38,7 @@ const CanvasesDashboardPreview = ({
         headerText={headerText}
         {...sectionProps}
         navText={t('buttons.see-all')}
-        navLink="canvases"
+        navLink={EntityPageSection.Explore}
       >
         <SimpleCardsList>
           {canvases.map(canvas => (
