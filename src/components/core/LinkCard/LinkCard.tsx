@@ -6,13 +6,14 @@ import withElevationOnHover from '../../../domain/shared/components/withElevatio
 interface LinkCardProps extends CardProps {
   to?: string;
   elevationDisabled?: boolean;
+  keepScroll?: boolean;
 }
 
 const ElevatedCard = withElevationOnHover(Card);
 
-const LinkCard: FC<LinkCardProps> = ({ to, elevationDisabled = false, ...rest }) => {
+const LinkCard: FC<LinkCardProps> = ({ to, elevationDisabled = false, keepScroll, ...rest }) => {
   return (
-    <ConditionalLink condition={!!to} to={to}>
+    <ConditionalLink condition={!!to} to={to} keepScroll={keepScroll}>
       <ElevatedCard {...rest} elevationDisabled={elevationDisabled} />
     </ConditionalLink>
   );

@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogProps, styled, Typography } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent, DialogProps, styled, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminCanvasTemplateFragment } from '../../../../models/graphql-schema';
@@ -7,6 +7,7 @@ import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
 import Markdown from '../../../../components/core/Markdown';
 import CanvasWhiteboard from '../../../../components/composite/entities/Canvas/CanvasWhiteboard';
+import DialogWhiteBg from '../../../shared/components/DialogWhiteBg';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
@@ -36,7 +37,7 @@ const CanvasTemplatePreview = ({ template, open, onClose, editUrl, editLinkState
   }, [value]);
 
   return (
-    <Dialog open={open} onClose={onClose} PaperProps={{ sx: { backgroundColor: 'background.default' } }}>
+    <DialogWhiteBg open={open} onClose={onClose}>
       {visual?.uri && <img src={visual.uri} alt={description} />}
       <DialogContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Box display="flex" minWidth={theme => theme.spacing(46)} justifyContent="space-between" alignItems="center">
@@ -79,7 +80,7 @@ const CanvasTemplatePreview = ({ template, open, onClose, editUrl, editLinkState
           )}
         </Box>
       </DialogContent>
-    </Dialog>
+    </DialogWhiteBg>
   );
 };
 
