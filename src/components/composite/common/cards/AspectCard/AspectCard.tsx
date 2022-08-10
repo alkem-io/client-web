@@ -54,6 +54,7 @@ export interface AspectCardProps {
   challengeNameId?: string;
   opportunityNameId?: string;
   loading?: boolean;
+  keepScroll?: boolean;
 }
 
 const AspectCard: FC<AspectCardProps> = ({
@@ -62,6 +63,7 @@ const AspectCard: FC<AspectCardProps> = ({
   hubNameId,
   challengeNameId,
   opportunityNameId,
+  keepScroll,
 }) => {
   const { nameID = '', displayName = '', description = '', type = '', tagset } = (aspect || {}) as AspectCardAspect;
   const bannerNarrow = aspect?.bannerNarrow?.uri;
@@ -75,6 +77,7 @@ const AspectCard: FC<AspectCardProps> = ({
         labelAboveTitle: true,
         tags: tagset?.tags ?? [],
         url: hubNameId && nameID && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
+        keepScroll: keepScroll,
       }}
       loading={loading}
     >
