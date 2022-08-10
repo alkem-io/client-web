@@ -1219,6 +1219,7 @@
   },
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",
+    "dialog-title": "All Updates",
     "no-data": "No updates available."
   },
   "dashboard-discussions-section": {
