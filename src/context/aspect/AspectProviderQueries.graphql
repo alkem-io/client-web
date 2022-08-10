@@ -35,6 +35,7 @@ fragment AspectProviderData on Collaboration {
   id
   callouts {
     id
+    type
     aspects(IDs: [$aspectNameId]) {
       ...AspectProvided
     }

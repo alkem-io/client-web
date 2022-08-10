@@ -5,6 +5,7 @@ query HubAspectVisuals($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
       id
       callouts {
         id
+        type
         aspects(IDs: [$aspectNameId]) {
           ...AspectVisuals
         }
@@ -22,6 +23,7 @@ query ChallengeAspectVisuals($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NA
         id
         callouts {
           id
+          type
           aspects(IDs: [$aspectNameId]) {
             ...AspectVisuals
           }
@@ -40,6 +42,7 @@ query OpportunityAspectVisuals($hubNameId: UUID_NAMEID!, $opportunityNameId: UUI
         id
         callouts {
           id
+          type
           aspects(IDs: [$aspectNameId]) {
             ...AspectVisuals
           }

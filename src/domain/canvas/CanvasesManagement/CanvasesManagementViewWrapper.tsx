@@ -22,7 +22,7 @@ export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder
   canvases: CanvasDetailsFragment[];
   templates: CreateCanvasCanvasTemplateFragment[];
   calloutId: string | undefined;
-  authorization: CollaborationWithCanvasDetailsFragment['authorization'];
+  authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
   loadingCanvases: boolean;
   loadingTemplates: boolean;
 }

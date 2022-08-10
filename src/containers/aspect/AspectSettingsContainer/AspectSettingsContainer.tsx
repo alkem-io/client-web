@@ -20,6 +20,7 @@ import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
+import { getAspectCallout } from '../get-aspect-callout';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];
@@ -82,7 +83,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = hubData?.hub?.collaboration?.callouts?.[0]?.aspects?.[0];
+  const hubAspect = getAspectCallout(hubData?.hub?.collaboration?.callouts)?.aspects?.[0];
 
   const {
     data: challengeData,
@@ -93,7 +94,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = challengeData?.hub?.challenge?.collaboration?.callouts?.[0]?.aspects?.[0];
+  const challengeAspect = getAspectCallout(challengeData?.hub?.challenge?.collaboration?.callouts)?.aspects?.[0];
 
   const {
     data: opportunityData,
@@ -104,7 +105,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = opportunityData?.hub?.opportunity?.collaboration?.callouts?.[0]?.aspects?.[0];
+  const opportunityAspect = getAspectCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts)?.aspects?.[0];
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;

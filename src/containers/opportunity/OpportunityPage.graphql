@@ -40,6 +40,7 @@ fragment OpportunityPage on Opportunity {
     }
     callouts {
       id
+      type
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }

@@ -650,8 +650,8 @@ export const AspectVisualsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const PrivilegesOnContextFragmentDoc = gql`
-  fragment PrivilegesOnContext on Context {
+export const PrivilegesOnCollaborationFragmentDoc = gql`
+  fragment PrivilegesOnCollaboration on Collaboration {
     id
     authorization {
       id
@@ -767,6 +767,7 @@ export const AspectDashboardDataFragmentDoc = gql`
     }
     callouts {
       id
+      type
       aspects(IDs: [$aspectNameId]) {
         ...AspectDashboard
       }
@@ -867,8 +868,10 @@ export const CollaborationWithCanvasDetailsFragmentDoc = gql`
     id
     callouts {
       id
+      type
       authorization {
         id
+        anonymousReadAccess
         myPrivileges
       }
       canvases {
@@ -1079,6 +1082,7 @@ export const ChallengeProfileFragmentDoc = gql`
       id
       callouts {
         id
+        type
         aspects(limit: 2, shuffle: true) {
           ...AspectCard
         }
@@ -1288,6 +1292,7 @@ export const HubPageFragmentDoc = gql`
       id
       callouts {
         id
+        type
         aspects(limit: 2, shuffle: true) {
           ...AspectCard
         }
@@ -1364,6 +1369,7 @@ export const OpportunityPageFragmentDoc = gql`
       }
       callouts {
         id
+        type
         aspects(limit: 2, shuffle: true) {
           ...AspectCard
         }
@@ -1512,6 +1518,7 @@ export const AspectProviderDataFragmentDoc = gql`
     id
     callouts {
       id
+      type
       aspects(IDs: [$aspectNameId]) {
         ...AspectProvided
       }
@@ -9334,6 +9341,7 @@ export const HubAspectVisualsDocument = gql`
         id
         callouts {
           id
+          type
           aspects(IDs: [$aspectNameId]) {
             ...AspectVisuals
           }
@@ -9401,6 +9409,7 @@ export const ChallengeAspectVisualsDocument = gql`
           id
           callouts {
             id
+            type
             aspects(IDs: [$aspectNameId]) {
               ...AspectVisuals
             }
@@ -9477,6 +9486,7 @@ export const OpportunityAspectVisualsDocument = gql`
           id
           callouts {
             id
+            type
             aspects(IDs: [$aspectNameId]) {
               ...AspectVisuals
             }
@@ -9539,66 +9549,70 @@ export type OpportunityAspectVisualsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectVisualsQuery(variables: SchemaTypes.OpportunityAspectVisualsQueryVariables) {
   return { query: OpportunityAspectVisualsDocument, variables: variables };
 }
-export const PrivilegesOnHubContextDocument = gql`
-  query PrivilegesOnHubContext($hubNameId: UUID_NAMEID!) {
+export const PrivilegesOnHubCollaborationDocument = gql`
+  query PrivilegesOnHubCollaboration($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
-      context {
-        ...PrivilegesOnContext
+      collaboration {
+        ...PrivilegesOnCollaboration
       }
     }
   }
-  ${PrivilegesOnContextFragmentDoc}
+  ${PrivilegesOnCollaborationFragmentDoc}
 `;
 
 /**
- * __usePrivilegesOnHubContextQuery__
+ * __usePrivilegesOnHubCollaborationQuery__
  *
- * To run a query within a React component, call `usePrivilegesOnHubContextQuery` and pass it any options that fit your needs.
- * When your component renders, `usePrivilegesOnHubContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePrivilegesOnHubCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePrivilegesOnHubCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePrivilegesOnHubContextQuery({
+ * const { data, loading, error } = usePrivilegesOnHubCollaborationQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *   },
  * });
  */
-export function usePrivilegesOnHubContextQuery(
+export function usePrivilegesOnHubCollaborationQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PrivilegesOnHubContextQuery,
-    SchemaTypes.PrivilegesOnHubContextQueryVariables
+    SchemaTypes.PrivilegesOnHubCollaborationQuery,
+    SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PrivilegesOnHubContextQuery, SchemaTypes.PrivilegesOnHubContextQueryVariables>(
-    PrivilegesOnHubContextDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.PrivilegesOnHubCollaborationQuery,
+    SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
+  >(PrivilegesOnHubCollaborationDocument, options);
 }
-export function usePrivilegesOnHubContextLazyQuery(
+export function usePrivilegesOnHubCollaborationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PrivilegesOnHubContextQuery,
-    SchemaTypes.PrivilegesOnHubContextQueryVariables
+    SchemaTypes.PrivilegesOnHubCollaborationQuery,
+    SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.PrivilegesOnHubContextQuery, SchemaTypes.PrivilegesOnHubContextQueryVariables>(
-    PrivilegesOnHubContextDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.PrivilegesOnHubCollaborationQuery,
+    SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
+  >(PrivilegesOnHubCollaborationDocument, options);
 }
-export type PrivilegesOnHubContextQueryHookResult = ReturnType<typeof usePrivilegesOnHubContextQuery>;
-export type PrivilegesOnHubContextLazyQueryHookResult = ReturnType<typeof usePrivilegesOnHubContextLazyQuery>;
-export type PrivilegesOnHubContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.PrivilegesOnHubContextQuery,
-  SchemaTypes.PrivilegesOnHubContextQueryVariables
+export type PrivilegesOnHubCollaborationQueryHookResult = ReturnType<typeof usePrivilegesOnHubCollaborationQuery>;
+export type PrivilegesOnHubCollaborationLazyQueryHookResult = ReturnType<
+  typeof usePrivilegesOnHubCollaborationLazyQuery
 >;
-export function refetchPrivilegesOnHubContextQuery(variables: SchemaTypes.PrivilegesOnHubContextQueryVariables) {
-  return { query: PrivilegesOnHubContextDocument, variables: variables };
+export type PrivilegesOnHubCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PrivilegesOnHubCollaborationQuery,
+  SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
+>;
+export function refetchPrivilegesOnHubCollaborationQuery(
+  variables: SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
+) {
+  return { query: PrivilegesOnHubCollaborationDocument, variables: variables };
 }
 export const HubAspectsDocument = gql`
   query HubAspects($hubNameId: UUID_NAMEID!) {
@@ -9608,6 +9622,7 @@ export const HubAspectsDocument = gql`
         id
         callouts {
           ...AspectsOnCallout
+          type
         }
       }
     }
@@ -9658,74 +9673,76 @@ export type HubAspectsQueryResult = Apollo.QueryResult<
 export function refetchHubAspectsQuery(variables: SchemaTypes.HubAspectsQueryVariables) {
   return { query: HubAspectsDocument, variables: variables };
 }
-export const PrivilegesOnChallengeContextDocument = gql`
-  query PrivilegesOnChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+export const PrivilegesOnChallengeCollaborationDocument = gql`
+  query PrivilegesOnChallengeCollaboration($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
         id
-        context {
-          ...PrivilegesOnContext
+        collaboration {
+          ...PrivilegesOnCollaboration
         }
       }
     }
   }
-  ${PrivilegesOnContextFragmentDoc}
+  ${PrivilegesOnCollaborationFragmentDoc}
 `;
 
 /**
- * __usePrivilegesOnChallengeContextQuery__
+ * __usePrivilegesOnChallengeCollaborationQuery__
  *
- * To run a query within a React component, call `usePrivilegesOnChallengeContextQuery` and pass it any options that fit your needs.
- * When your component renders, `usePrivilegesOnChallengeContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePrivilegesOnChallengeCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePrivilegesOnChallengeCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePrivilegesOnChallengeContextQuery({
+ * const { data, loading, error } = usePrivilegesOnChallengeCollaborationQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *   },
  * });
  */
-export function usePrivilegesOnChallengeContextQuery(
+export function usePrivilegesOnChallengeCollaborationQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PrivilegesOnChallengeContextQuery,
-    SchemaTypes.PrivilegesOnChallengeContextQueryVariables
+    SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+    SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.PrivilegesOnChallengeContextQuery,
-    SchemaTypes.PrivilegesOnChallengeContextQueryVariables
-  >(PrivilegesOnChallengeContextDocument, options);
+    SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+    SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
+  >(PrivilegesOnChallengeCollaborationDocument, options);
 }
-export function usePrivilegesOnChallengeContextLazyQuery(
+export function usePrivilegesOnChallengeCollaborationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PrivilegesOnChallengeContextQuery,
-    SchemaTypes.PrivilegesOnChallengeContextQueryVariables
+    SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+    SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.PrivilegesOnChallengeContextQuery,
-    SchemaTypes.PrivilegesOnChallengeContextQueryVariables
-  >(PrivilegesOnChallengeContextDocument, options);
+    SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+    SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
+  >(PrivilegesOnChallengeCollaborationDocument, options);
 }
-export type PrivilegesOnChallengeContextQueryHookResult = ReturnType<typeof usePrivilegesOnChallengeContextQuery>;
-export type PrivilegesOnChallengeContextLazyQueryHookResult = ReturnType<
-  typeof usePrivilegesOnChallengeContextLazyQuery
+export type PrivilegesOnChallengeCollaborationQueryHookResult = ReturnType<
+  typeof usePrivilegesOnChallengeCollaborationQuery
 >;
-export type PrivilegesOnChallengeContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.PrivilegesOnChallengeContextQuery,
-  SchemaTypes.PrivilegesOnChallengeContextQueryVariables
+export type PrivilegesOnChallengeCollaborationLazyQueryHookResult = ReturnType<
+  typeof usePrivilegesOnChallengeCollaborationLazyQuery
 >;
-export function refetchPrivilegesOnChallengeContextQuery(
-  variables: SchemaTypes.PrivilegesOnChallengeContextQueryVariables
+export type PrivilegesOnChallengeCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+  SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
+>;
+export function refetchPrivilegesOnChallengeCollaborationQuery(
+  variables: SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
 ) {
-  return { query: PrivilegesOnChallengeContextDocument, variables: variables };
+  return { query: PrivilegesOnChallengeCollaborationDocument, variables: variables };
 }
 export const ChallengeAspectsDocument = gql`
   query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
@@ -9737,6 +9754,7 @@ export const ChallengeAspectsDocument = gql`
           id
           callouts {
             ...AspectsOnCallout
+            type
           }
         }
       }
@@ -9792,74 +9810,76 @@ export type ChallengeAspectsQueryResult = Apollo.QueryResult<
 export function refetchChallengeAspectsQuery(variables: SchemaTypes.ChallengeAspectsQueryVariables) {
   return { query: ChallengeAspectsDocument, variables: variables };
 }
-export const PrivilegesOnOpportunityContextDocument = gql`
-  query PrivilegesOnOpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+export const PrivilegesOnOpportunityCollaborationDocument = gql`
+  query PrivilegesOnOpportunityCollaboration($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
         id
-        context {
-          ...PrivilegesOnContext
+        collaboration {
+          ...PrivilegesOnCollaboration
         }
       }
     }
   }
-  ${PrivilegesOnContextFragmentDoc}
+  ${PrivilegesOnCollaborationFragmentDoc}
 `;
 
 /**
- * __usePrivilegesOnOpportunityContextQuery__
+ * __usePrivilegesOnOpportunityCollaborationQuery__
  *
- * To run a query within a React component, call `usePrivilegesOnOpportunityContextQuery` and pass it any options that fit your needs.
- * When your component renders, `usePrivilegesOnOpportunityContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePrivilegesOnOpportunityCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePrivilegesOnOpportunityCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePrivilegesOnOpportunityContextQuery({
+ * const { data, loading, error } = usePrivilegesOnOpportunityCollaborationQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *   },
  * });
  */
-export function usePrivilegesOnOpportunityContextQuery(
+export function usePrivilegesOnOpportunityCollaborationQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PrivilegesOnOpportunityContextQuery,
-    SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.PrivilegesOnOpportunityContextQuery,
-    SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
-  >(PrivilegesOnOpportunityContextDocument, options);
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
+  >(PrivilegesOnOpportunityCollaborationDocument, options);
 }
-export function usePrivilegesOnOpportunityContextLazyQuery(
+export function usePrivilegesOnOpportunityCollaborationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PrivilegesOnOpportunityContextQuery,
-    SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.PrivilegesOnOpportunityContextQuery,
-    SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
-  >(PrivilegesOnOpportunityContextDocument, options);
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
+  >(PrivilegesOnOpportunityCollaborationDocument, options);
 }
-export type PrivilegesOnOpportunityContextQueryHookResult = ReturnType<typeof usePrivilegesOnOpportunityContextQuery>;
-export type PrivilegesOnOpportunityContextLazyQueryHookResult = ReturnType<
-  typeof usePrivilegesOnOpportunityContextLazyQuery
+export type PrivilegesOnOpportunityCollaborationQueryHookResult = ReturnType<
+  typeof usePrivilegesOnOpportunityCollaborationQuery
 >;
-export type PrivilegesOnOpportunityContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.PrivilegesOnOpportunityContextQuery,
-  SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
+export type PrivilegesOnOpportunityCollaborationLazyQueryHookResult = ReturnType<
+  typeof usePrivilegesOnOpportunityCollaborationLazyQuery
 >;
-export function refetchPrivilegesOnOpportunityContextQuery(
-  variables: SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
+export type PrivilegesOnOpportunityCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+  SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
+>;
+export function refetchPrivilegesOnOpportunityCollaborationQuery(
+  variables: SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
 ) {
-  return { query: PrivilegesOnOpportunityContextDocument, variables: variables };
+  return { query: PrivilegesOnOpportunityCollaborationDocument, variables: variables };
 }
 export const OpportunityAspectsDocument = gql`
   query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
@@ -9871,6 +9891,7 @@ export const OpportunityAspectsDocument = gql`
           id
           callouts {
             ...AspectsOnCallout
+            type
           }
         }
       }
@@ -10717,6 +10738,7 @@ export const HubAspectSettingsDocument = gql`
         id
         callouts {
           id
+          type
           aspects(IDs: [$aspectNameId]) {
             ...AspectSettings
           }
@@ -10784,6 +10806,7 @@ export const ChallengeAspectSettingsDocument = gql`
           id
           callouts {
             id
+            type
             aspects(IDs: [$aspectNameId]) {
               ...AspectSettings
             }
@@ -10860,6 +10883,7 @@ export const OpportunityAspectSettingsDocument = gql`
           id
           callouts {
             id
+            type
             aspects(IDs: [$aspectNameId]) {
               ...AspectSettings
             }
@@ -11043,6 +11067,7 @@ export const HubCanvasValuesDocument = gql`
         id
         callouts {
           id
+          type
           authorization {
             id
             myPrivileges
@@ -11175,6 +11200,7 @@ export const ChallengeCanvasValuesDocument = gql`
           id
           callouts {
             id
+            type
             authorization {
               id
               myPrivileges
@@ -11318,6 +11344,7 @@ export const OpportunityCanvasValuesDocument = gql`
           id
           callouts {
             id
+            type
             authorization {
               id
               myPrivileges

@@ -38,6 +38,7 @@ fragment HubPage on Hub {
     id
     callouts {
       id
+      type
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }

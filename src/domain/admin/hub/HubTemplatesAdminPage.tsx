@@ -14,6 +14,7 @@ import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspec
 import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
+import { getCanvasCallout } from '../../../containers/canvas/get-canvas-callout';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
@@ -54,7 +55,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     lifecycleTemplates,
     id: templatesSetID,
   } = hubTemplatesData?.hub.templates ?? {};
-  const canvases = hubCanvasesData?.hub.collaboration?.callouts?.[0]?.canvases;
+  const canvases = getCanvasCallout(hubCanvasesData?.hub.collaboration?.callouts)?.canvases;
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>

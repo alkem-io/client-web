@@ -1,8 +1,8 @@
-query PrivilegesOnHubContext($hubNameId: UUID_NAMEID!) {
+query PrivilegesOnHubCollaboration($hubNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
-    context {
-      ...PrivilegesOnContext
+    collaboration {
+      ...PrivilegesOnCollaboration
     }
   }
 }
@@ -13,18 +13,19 @@ query HubAspects($hubNameId: UUID_NAMEID!) {
       id
       callouts {
         ...AspectsOnCallout
+        type
       }
     }
   }
 }
 # challenge
-query PrivilegesOnChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+query PrivilegesOnChallengeCollaboration($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
-      context {
-        ...PrivilegesOnContext
+      collaboration {
+        ...PrivilegesOnCollaboration
       }
     }
   }
@@ -38,19 +39,20 @@ query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
         id
         callouts {
           ...AspectsOnCallout
+          type
         }
       }
     }
   }
 }
 # opportunity
-query PrivilegesOnOpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+query PrivilegesOnOpportunityCollaboration($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
-      context {
-        ...PrivilegesOnContext
+      collaboration {
+        ...PrivilegesOnCollaboration
       }
     }
   }
@@ -64,13 +66,14 @@ query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
         id
         callouts {
           ...AspectsOnCallout
+          type
         }
       }
     }
   }
 }
 
-fragment PrivilegesOnContext on Context {
+fragment PrivilegesOnCollaboration on Collaboration {
   id
   authorization {
     id

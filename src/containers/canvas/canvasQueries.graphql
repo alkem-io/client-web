@@ -63,8 +63,10 @@ fragment CollaborationWithCanvasDetails on Collaboration {
   id
   callouts {
     id
+    type
     authorization {
       id
+      anonymousReadAccess
       myPrivileges
     }
     canvases {
@@ -89,6 +91,7 @@ query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
       id
       callouts {
         id
+        type
         authorization {
           id
           myPrivileges
@@ -123,6 +126,7 @@ query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $c
         id
         callouts {
           id
+          type
           authorization {
             id
             myPrivileges
@@ -158,6 +162,7 @@ query opportunityCanvasValues($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!
         id
         callouts {
           id
+          type
           authorization {
             id
             myPrivileges

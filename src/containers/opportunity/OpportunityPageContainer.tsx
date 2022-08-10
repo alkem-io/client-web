@@ -24,6 +24,8 @@ import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import { getCanvasCallout } from '../canvas/get-canvas-callout';
+import { getAspectCallout } from '../aspect/get-aspect-callout';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   opportunity: OpportunityPageFragment;
@@ -122,8 +124,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
   const { references = [] } = context ?? {};
-  const aspects = collaboration?.callouts?.[0].aspects ?? [];
-  const canvases = collaboration?.callouts?.[0].canvases ?? [];
+  const aspects = getAspectCallout(collaboration?.callouts)?.aspects ?? [];
+  const canvases = getCanvasCallout(collaboration?.callouts)?.canvases ?? [];
 
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 

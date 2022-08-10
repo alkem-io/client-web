@@ -7248,6 +7248,7 @@ export type HubAspectVisualsQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                type: CalloutType;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -7298,6 +7299,7 @@ export type ChallengeAspectVisualsQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -7349,6 +7351,7 @@ export type OpportunityAspectVisualsQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -7398,18 +7401,18 @@ export type AspectVisualsFragment = {
     | undefined;
 };
 
-export type PrivilegesOnHubContextQueryVariables = Exact<{
+export type PrivilegesOnHubCollaborationQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
 }>;
 
-export type PrivilegesOnHubContextQuery = {
+export type PrivilegesOnHubCollaborationQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
     id: string;
-    context?:
+    collaboration?:
       | {
-          __typename?: 'Context';
+          __typename?: 'Collaboration';
           id: string;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -7435,6 +7438,7 @@ export type HubAspectsQuery = {
           callouts?:
             | Array<{
                 __typename?: 'Callout';
+                type: CalloutType;
                 id: string;
                 aspects?:
                   | Array<{
@@ -7463,12 +7467,12 @@ export type HubAspectsQuery = {
   };
 };
 
-export type PrivilegesOnChallengeContextQueryVariables = Exact<{
+export type PrivilegesOnChallengeCollaborationQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
 }>;
 
-export type PrivilegesOnChallengeContextQuery = {
+export type PrivilegesOnChallengeCollaborationQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -7476,9 +7480,9 @@ export type PrivilegesOnChallengeContextQuery = {
     challenge: {
       __typename?: 'Challenge';
       id: string;
-      context?:
+      collaboration?:
         | {
-            __typename?: 'Context';
+            __typename?: 'Collaboration';
             id: string;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -7509,6 +7513,7 @@ export type ChallengeAspectsQuery = {
             callouts?:
               | Array<{
                   __typename?: 'Callout';
+                  type: CalloutType;
                   id: string;
                   aspects?:
                     | Array<{
@@ -7538,12 +7543,12 @@ export type ChallengeAspectsQuery = {
   };
 };
 
-export type PrivilegesOnOpportunityContextQueryVariables = Exact<{
+export type PrivilegesOnOpportunityCollaborationQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
 }>;
 
-export type PrivilegesOnOpportunityContextQuery = {
+export type PrivilegesOnOpportunityCollaborationQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
@@ -7551,9 +7556,9 @@ export type PrivilegesOnOpportunityContextQuery = {
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
-      context?:
+      collaboration?:
         | {
-            __typename?: 'Context';
+            __typename?: 'Collaboration';
             id: string;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -7584,6 +7589,7 @@ export type OpportunityAspectsQuery = {
             callouts?:
               | Array<{
                   __typename?: 'Callout';
+                  type: CalloutType;
                   id: string;
                   aspects?:
                     | Array<{
@@ -7613,8 +7619,8 @@ export type OpportunityAspectsQuery = {
   };
 };
 
-export type PrivilegesOnContextFragment = {
-  __typename?: 'Context';
+export type PrivilegesOnCollaborationFragment = {
+  __typename?: 'Collaboration';
   id: string;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -7879,6 +7885,7 @@ export type HubAspectQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                type: CalloutType;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -7955,6 +7962,7 @@ export type ChallengeAspectQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -8032,6 +8040,7 @@ export type OpportunityAspectQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -8094,6 +8103,7 @@ export type AspectDashboardDataFragment = {
     | Array<{
         __typename?: 'Callout';
         id: string;
+        type: CalloutType;
         aspects?:
           | Array<{
               __typename?: 'Aspect';
@@ -8224,6 +8234,7 @@ export type HubAspectSettingsQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                type: CalloutType;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -8308,6 +8319,7 @@ export type ChallengeAspectSettingsQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -8393,6 +8405,7 @@ export type OpportunityAspectSettingsQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -8594,8 +8607,14 @@ export type CollaborationWithCanvasDetailsFragment = {
     | Array<{
         __typename?: 'Callout';
         id: string;
+        type: CalloutType;
         authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              anonymousReadAccess: boolean;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+            }
           | undefined;
         canvases?:
           | Array<{
@@ -8664,10 +8683,12 @@ export type HubCanvasesQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                type: CalloutType;
                 authorization?:
                   | {
                       __typename?: 'Authorization';
                       id: string;
+                      anonymousReadAccess: boolean;
                       myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                     }
                   | undefined;
@@ -8742,6 +8763,7 @@ export type HubCanvasValuesQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                type: CalloutType;
                 authorization?:
                   | {
                       __typename?: 'Authorization';
@@ -8824,10 +8846,12 @@ export type ChallengeCanvasesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
                         id: string;
+                        anonymousReadAccess: boolean;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
@@ -8911,6 +8935,7 @@ export type ChallengeCanvasValuesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -8998,10 +9023,12 @@ export type OpportunityCanvasesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
                         id: string;
+                        anonymousReadAccess: boolean;
                         myPrivileges?: Array<AuthorizationPrivilege> | undefined;
                       }
                     | undefined;
@@ -9085,6 +9112,7 @@ export type OpportunityCanvasValuesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -9377,6 +9405,7 @@ export type ChallengePageQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -9637,6 +9666,7 @@ export type ChallengeProfileFragment = {
           | Array<{
               __typename?: 'Callout';
               id: string;
+              type: CalloutType;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -10483,6 +10513,7 @@ export type HubPageQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                type: CalloutType;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -10679,6 +10710,7 @@ export type HubPageFragment = {
           | Array<{
               __typename?: 'Callout';
               id: string;
+              type: CalloutType;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -10883,6 +10915,7 @@ export type OpportunityPageQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -11093,6 +11126,7 @@ export type OpportunityPageFragment = {
           | Array<{
               __typename?: 'Callout';
               id: string;
+              type: CalloutType;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -11692,6 +11726,7 @@ export type HubAspectProviderQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                type: CalloutType;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -11736,6 +11771,7 @@ export type ChallengeAspectProviderQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -11781,6 +11817,7 @@ export type OpportunityAspectProviderQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  type: CalloutType;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -11811,6 +11848,7 @@ export type AspectProviderDataFragment = {
     | Array<{
         __typename?: 'Callout';
         id: string;
+        type: CalloutType;
         aspects?:
           | Array<{
               __typename?: 'Aspect';

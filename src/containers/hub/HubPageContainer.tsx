@@ -21,6 +21,8 @@ import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import { getCanvasCallout } from '../canvas/get-canvas-callout';
+import { getAspectCallout } from '../aspect/get-aspect-callout';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -108,10 +110,10 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
-  const aspects = _hub?.hub.collaboration?.callouts?.[0]?.aspects ?? EMPTY;
+  const aspects = getAspectCallout(_hub?.hub.collaboration?.callouts)?.aspects ?? EMPTY;
   const aspectsCount = useAspectsCount(_hub?.hub.activity);
 
-  const canvases = _hub?.hub.collaboration?.callouts?.[0]?.canvases ?? EMPTY;
+  const canvases = getCanvasCallout(_hub?.hub.collaboration?.callouts)?.canvases ?? EMPTY;
   const canvasesCount = useCanvasesCount(_hub?.hub.activity);
 
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
