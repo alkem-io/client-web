@@ -126,20 +126,20 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             <Markdown children={opportunity?.context?.vision || ''} />
           </DashboardGenericSection>
           {communityReadAccess && (
-            <>
-              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
-              {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
-              {/* <SectionSpacer />
-              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
-            </>
-          )}
-          {communityReadAccess && (
             <EntityDashboardLeadsSection
               usersHeader={t('community.leads')}
               organizationsHeader={t('community.leading-organizations')}
               leadUsers={opportunity?.community?.leadUsers}
               leadOrganizations={opportunity?.community?.leadOrganizations}
             />
+          )}
+          {communityReadAccess && (
+            <>
+              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
+              {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
+              {/* <SectionSpacer />
+              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
+            </>
           )}
           {communityReadAccess && (
             <EntityDashboardContributorsSection
