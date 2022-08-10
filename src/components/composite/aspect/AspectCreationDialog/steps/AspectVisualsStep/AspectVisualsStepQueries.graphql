@@ -1,10 +1,14 @@
 query HubAspectVisuals($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
-    context {
+    collaboration {
       id
-      aspects(IDs: [$aspectNameId]) {
-        ...AspectVisuals
+      callouts {
+        id
+        type
+        aspects(IDs: [$aspectNameId]) {
+          ...AspectVisuals
+        }
       }
     }
   }
@@ -15,10 +19,14 @@ query ChallengeAspectVisuals($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NA
     id
     challenge(ID: $challengeNameId) {
       id
-      context {
+      collaboration {
         id
-        aspects(IDs: [$aspectNameId]) {
-          ...AspectVisuals
+        callouts {
+          id
+          type
+          aspects(IDs: [$aspectNameId]) {
+            ...AspectVisuals
+          }
         }
       }
     }
@@ -30,10 +38,14 @@ query OpportunityAspectVisuals($hubNameId: UUID_NAMEID!, $opportunityNameId: UUI
     id
     opportunity(ID: $opportunityNameId) {
       id
-      context {
+      collaboration {
         id
-        aspects(IDs: [$aspectNameId]) {
-          ...AspectVisuals
+        callouts {
+          id
+          type
+          aspects(IDs: [$aspectNameId]) {
+            ...AspectVisuals
+          }
         }
       }
     }

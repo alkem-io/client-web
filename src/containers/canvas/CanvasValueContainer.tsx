@@ -17,6 +17,7 @@ import {
 import { TemplateQuery } from './CanvasProvider';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 import findById from '../../domain/shared/utils/findById';
+import { getCanvasCallout } from './getCanvasCallout';
 
 export interface ICanvasValueEntities {
   canvas?: Canvas;
@@ -121,9 +122,9 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
 
   const canvas = useMemo(() => {
     const sourceArray =
-      hubData?.hub.context?.canvases ||
-      challengeData?.hub.challenge.context?.canvases ||
-      opportunityData?.hub.opportunity.context?.canvases;
+      getCanvasCallout(hubData?.hub.collaboration?.callouts)?.canvases ||
+      getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts)?.canvases ||
+      getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts)?.canvases;
 
     return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
   }, [hubData, challengeData, opportunityData, canvasId]);
@@ -136,20 +137,25 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
 
   const skipCanvasSubscription = !canvasId || canvas?.checkout?.lockedBy === userId;
 
-  useSubscribeToCanvas(hubData, data => findById(data?.hub.context?.canvases, canvasId!), subHub, {
-    skip: skipCanvasSubscription,
-  });
+  useSubscribeToCanvas(
+    hubData,
+    data => findById(getCanvasCallout(data?.hub.collaboration?.callouts)?.canvases, canvasId!),
+    subHub,
+    {
+      skip: skipCanvasSubscription,
+    }
+  );
 
   useSubscribeToCanvas(
     challengeData,
-    data => findById(data?.hub.challenge.context?.canvases, canvasId!),
+    data => findById(getCanvasCallout(data?.hub.challenge.collaboration?.callouts)?.canvases, canvasId!),
     subChallenge,
     { skip: skipCanvasSubscription }
   );
 
   useSubscribeToCanvas(
     opportunityData,
-    data => findById(data?.hub.opportunity.context?.canvases, canvasId!),
+    data => findById(getCanvasCallout(data?.hub.opportunity.collaboration?.callouts)?.canvases, canvasId!),
     subOpportunity,
     { skip: skipCanvasSubscription }
   );

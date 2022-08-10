@@ -35,11 +35,18 @@ fragment ChallengeProfile on Challenge {
     visuals {
       ...VisualFull
     }
-    aspects(limit: 2, shuffle: true) {
-      ...AspectCard
-    }
-    canvases(limit: 2, shuffle: true) {
-      ...CanvasDetails
+  }
+  collaboration {
+    id
+    callouts {
+      id
+      type
+      aspects(limit: 2, shuffle: true) {
+        ...AspectCard
+      }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
     }
   }
   community {

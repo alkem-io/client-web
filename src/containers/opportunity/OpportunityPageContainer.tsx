@@ -14,6 +14,7 @@ import {
   AuthorizationPrivilege,
   CanvasDetailsFragment,
   OpportunityPageFragment,
+  OpportunityPageRelationsFragment,
   Reference,
 } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
@@ -23,6 +24,8 @@ import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import { getCanvasCallout } from '../canvas/getCanvasCallout';
+import { getAspectCallout } from '../aspect/getAspectCallout';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   opportunity: OpportunityPageFragment;
@@ -49,8 +52,8 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   relations: {
-    incoming: OpportunityPageFragment['relations'];
-    outgoing: OpportunityPageFragment['relations'];
+    incoming: OpportunityPageRelationsFragment[];
+    outgoing: OpportunityPageRelationsFragment[];
   };
   discussions: Discussion[];
   aspects: AspectCardFragment[];
@@ -116,10 +119,13 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
-  const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
+  const { context, projects = [], collaboration, activity: _activity = [] } = opportunity;
+  const relations = collaboration?.relations ?? [];
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references = [], aspects = [], canvases = [] } = context ?? {};
+  const { references = [] } = context ?? {};
+  const aspects = getAspectCallout(collaboration?.callouts)?.aspects ?? [];
+  const canvases = getCanvasCallout(collaboration?.callouts)?.canvases ?? [];
 
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 

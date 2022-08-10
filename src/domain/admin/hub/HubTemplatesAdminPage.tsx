@@ -14,6 +14,7 @@ import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspec
 import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
+import { getCanvasCallout } from '../../../containers/canvas/getCanvasCallout';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
@@ -48,8 +49,13 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     variables: { hubId },
   });
 
-  const { aspectTemplates, canvasTemplates, lifecycleTemplates, id: templatesSetID } = hubTemplatesData?.hub.templates ?? {};
-  const canvases = hubCanvasesData?.hub.context?.canvases;
+  const {
+    aspectTemplates,
+    canvasTemplates,
+    lifecycleTemplates,
+    id: templatesSetID,
+  } = hubTemplatesData?.hub.templates ?? {};
+  const canvases = getCanvasCallout(hubCanvasesData?.hub.collaboration?.callouts)?.canvases;
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>

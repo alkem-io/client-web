@@ -2,13 +2,16 @@ query relations($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
     opportunity(ID: $opportunityId) {
-      relations {
+      collaboration {
         id
-        type
-        actorName
-        actorType
-        actorRole
-        description
+        relations {
+          id
+          type
+          actorName
+          actorType
+          actorRole
+          description
+        }
       }
     }
   }

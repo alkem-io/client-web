@@ -650,8 +650,8 @@ export const AspectVisualsFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const PrivilegesOnContextFragmentDoc = gql`
-  fragment PrivilegesOnContext on Context {
+export const PrivilegesOnCollaborationFragmentDoc = gql`
+  fragment PrivilegesOnCollaboration on Collaboration {
     id
     authorization {
       id
@@ -759,14 +759,18 @@ export const AspectDashboardFragmentDoc = gql`
   ${AspectMessageFragmentDoc}
 `;
 export const AspectDashboardDataFragmentDoc = gql`
-  fragment AspectDashboardData on Context {
+  fragment AspectDashboardData on Collaboration {
     id
     authorization {
       id
       myPrivileges
     }
-    aspects(IDs: [$aspectNameId]) {
-      ...AspectDashboard
+    callouts {
+      id
+      type
+      aspects(IDs: [$aspectNameId]) {
+        ...AspectDashboard
+      }
     }
   }
   ${AspectDashboardFragmentDoc}
@@ -859,16 +863,20 @@ export const CanvasDetailsFragmentDoc = gql`
   ${CheckoutDetailsFragmentDoc}
   ${VisualFullFragmentDoc}
 `;
-export const ContextWithCanvasDetailsFragmentDoc = gql`
-  fragment ContextWithCanvasDetails on Context {
+export const CollaborationWithCanvasDetailsFragmentDoc = gql`
+  fragment CollaborationWithCanvasDetails on Collaboration {
     id
-    canvases {
-      ...CanvasDetails
-    }
-    authorization {
+    callouts {
       id
-      myPrivileges
-      anonymousReadAccess
+      type
+      authorization {
+        id
+        anonymousReadAccess
+        myPrivileges
+      }
+      canvases {
+        ...CanvasDetails
+      }
     }
   }
   ${CanvasDetailsFragmentDoc}
@@ -1069,11 +1077,18 @@ export const ChallengeProfileFragmentDoc = gql`
       visuals {
         ...VisualFull
       }
-      aspects(limit: 2, shuffle: true) {
-        ...AspectCard
-      }
-      canvases(limit: 2, shuffle: true) {
-        ...CanvasDetails
+    }
+    collaboration {
+      id
+      callouts {
+        id
+        type
+        aspects(limit: 2, shuffle: true) {
+          ...AspectCard
+        }
+        canvases(limit: 2, shuffle: true) {
+          ...CanvasDetails
+        }
       }
     }
     community {
@@ -1272,11 +1287,18 @@ export const HubPageFragmentDoc = gql`
         anonymousReadAccess
         myPrivileges
       }
-      aspects(limit: 2, shuffle: true) {
-        ...AspectCard
-      }
-      canvases(limit: 2, shuffle: true) {
-        ...CanvasDetails
+    }
+    collaboration {
+      id
+      callouts {
+        id
+        type
+        aspects(limit: 2, shuffle: true) {
+          ...AspectCard
+        }
+        canvases(limit: 2, shuffle: true) {
+          ...CanvasDetails
+        }
       }
     }
     community {
@@ -1335,13 +1357,26 @@ export const OpportunityPageFragmentDoc = gql`
       nextEvents
       stateIsFinal
     }
-    relations {
+    collaboration {
       id
-      type
-      actorRole
-      actorName
-      actorType
-      description
+      relations {
+        id
+        type
+        actorRole
+        actorName
+        actorType
+        description
+      }
+      callouts {
+        id
+        type
+        aspects(limit: 2, shuffle: true) {
+          ...AspectCard
+        }
+        canvases(limit: 2, shuffle: true) {
+          ...CanvasDetails
+        }
+      }
     }
     context {
       id
@@ -1359,12 +1394,6 @@ export const OpportunityPageFragmentDoc = gql`
       }
       visuals {
         ...VisualUri
-      }
-      aspects(limit: 2, shuffle: true) {
-        ...AspectCard
-      }
-      canvases(limit: 2, shuffle: true) {
-        ...CanvasDetails
       }
     }
     projects {
@@ -1393,13 +1422,23 @@ export const OpportunityPageFragmentDoc = gql`
       }
     }
   }
-  ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
+  ${VisualUriFragmentDoc}
   ${DashboardLeadUserFragmentDoc}
   ${DashboardContributingUserFragmentDoc}
   ${AssociatedOrganizationDetailsFragmentDoc}
   ${DashboardContributingOrganizationFragmentDoc}
+`;
+export const OpportunityPageRelationsFragmentDoc = gql`
+  fragment OpportunityPageRelations on Relation {
+    id
+    type
+    actorRole
+    actorName
+    actorType
+    description
+  }
 `;
 export const UserAgentSsiFragmentDoc = gql`
   fragment UserAgentSsi on User {
@@ -1475,10 +1514,14 @@ export const AspectProvidedFragmentDoc = gql`
   }
 `;
 export const AspectProviderDataFragmentDoc = gql`
-  fragment AspectProviderData on Context {
+  fragment AspectProviderData on Collaboration {
     id
-    aspects(IDs: [$aspectNameId]) {
-      ...AspectProvided
+    callouts {
+      id
+      type
+      aspects(IDs: [$aspectNameId]) {
+        ...AspectProvided
+      }
     }
   }
   ${AspectProvidedFragmentDoc}
@@ -1573,6 +1616,25 @@ export const AdminCanvasTemplateFragmentDoc = gql`
     }
   }
   ${TemplateInfoFragmentDoc}
+`;
+export const ContributeTabAspectFragmentDoc = gql`
+  fragment ContributeTabAspect on Aspect {
+    ...AspectCard
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${AspectCardFragmentDoc}
+`;
+export const AspectsOnCalloutFragmentDoc = gql`
+  fragment AspectsOnCallout on Callout {
+    id
+    aspects {
+      ...ContributeTabAspect
+    }
+  }
+  ${ContributeTabAspectFragmentDoc}
 `;
 export const CommunityDetailsFragmentDoc = gql`
   fragment CommunityDetails on Community {
@@ -1682,25 +1744,6 @@ export const CommunityMemberUserFragmentDoc = gql`
     lastName
     email
   }
-`;
-export const ContributeTabAspectFragmentDoc = gql`
-  fragment ContributeTabAspect on Aspect {
-    ...AspectCard
-    authorization {
-      id
-      myPrivileges
-    }
-  }
-  ${AspectCardFragmentDoc}
-`;
-export const AspectsOnContextFragmentDoc = gql`
-  fragment AspectsOnContext on Context {
-    id
-    aspects {
-      ...ContributeTabAspect
-    }
-  }
-  ${ContributeTabAspectFragmentDoc}
 `;
 export const HubDetailsFragmentDoc = gql`
   fragment HubDetails on Hub {
@@ -2024,8 +2067,8 @@ export type CreateActorGroupMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateActorGroupMutationVariables
 >;
 export const CreateAspectDocument = gql`
-  mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {
-    createAspectOnContext(aspectData: $aspectData) {
+  mutation CreateAspect($aspectData: CreateAspectOnCalloutInput!) {
+    createAspectOnCallout(aspectData: $aspectData) {
       id
       nameID
       displayName
@@ -2569,8 +2612,8 @@ export type CreateReferenceOnProfileMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.CreateReferenceOnProfileMutationVariables
 >;
 export const CreateRelationDocument = gql`
-  mutation createRelation($input: CreateRelationInput!) {
-    createRelation(relationData: $input) {
+  mutation createRelation($input: CreateRelationOnCollaborationInput!) {
+    createRelationOnCollaboration(relationData: $input) {
       id
     }
   }
@@ -7096,11 +7139,14 @@ export const OpportunityAspectsOldDocument = gql`
       id
       opportunity(ID: $opportunityId) {
         id
-        context {
+        collaboration {
           id
-          aspects {
+          callouts {
             id
-            displayName
+            aspects {
+              id
+              displayName
+            }
           }
         }
       }
@@ -7501,12 +7547,16 @@ export const OpportunityRelationsDocument = gql`
     hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
-        relations {
-          actorRole
-          actorName
-          actorType
-          description
-          type
+        collaboration {
+          id
+          relations {
+            id
+            actorRole
+            actorName
+            actorType
+            description
+            type
+          }
         }
       }
     }
@@ -8324,13 +8374,16 @@ export const RelationsDocument = gql`
     hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
-        relations {
+        collaboration {
           id
-          type
-          actorName
-          actorType
-          actorRole
-          description
+          relations {
+            id
+            type
+            actorName
+            actorType
+            actorRole
+            description
+          }
         }
       }
     }
@@ -9284,10 +9337,14 @@ export const HubAspectVisualsDocument = gql`
   query HubAspectVisuals($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
-      context {
+      collaboration {
         id
-        aspects(IDs: [$aspectNameId]) {
-          ...AspectVisuals
+        callouts {
+          id
+          type
+          aspects(IDs: [$aspectNameId]) {
+            ...AspectVisuals
+          }
         }
       }
     }
@@ -9348,10 +9405,14 @@ export const ChallengeAspectVisualsDocument = gql`
       id
       challenge(ID: $challengeNameId) {
         id
-        context {
+        collaboration {
           id
-          aspects(IDs: [$aspectNameId]) {
-            ...AspectVisuals
+          callouts {
+            id
+            type
+            aspects(IDs: [$aspectNameId]) {
+              ...AspectVisuals
+            }
           }
         }
       }
@@ -9421,10 +9482,14 @@ export const OpportunityAspectVisualsDocument = gql`
       id
       opportunity(ID: $opportunityNameId) {
         id
-        context {
+        collaboration {
           id
-          aspects(IDs: [$aspectNameId]) {
-            ...AspectVisuals
+          callouts {
+            id
+            type
+            aspects(IDs: [$aspectNameId]) {
+              ...AspectVisuals
+            }
           }
         }
       }
@@ -9484,77 +9549,85 @@ export type OpportunityAspectVisualsQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectVisualsQuery(variables: SchemaTypes.OpportunityAspectVisualsQueryVariables) {
   return { query: OpportunityAspectVisualsDocument, variables: variables };
 }
-export const PrivilegesOnHubContextDocument = gql`
-  query PrivilegesOnHubContext($hubNameId: UUID_NAMEID!) {
+export const PrivilegesOnHubCollaborationDocument = gql`
+  query PrivilegesOnHubCollaboration($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
-      context {
-        ...PrivilegesOnContext
+      collaboration {
+        ...PrivilegesOnCollaboration
       }
     }
   }
-  ${PrivilegesOnContextFragmentDoc}
+  ${PrivilegesOnCollaborationFragmentDoc}
 `;
 
 /**
- * __usePrivilegesOnHubContextQuery__
+ * __usePrivilegesOnHubCollaborationQuery__
  *
- * To run a query within a React component, call `usePrivilegesOnHubContextQuery` and pass it any options that fit your needs.
- * When your component renders, `usePrivilegesOnHubContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePrivilegesOnHubCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePrivilegesOnHubCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePrivilegesOnHubContextQuery({
+ * const { data, loading, error } = usePrivilegesOnHubCollaborationQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *   },
  * });
  */
-export function usePrivilegesOnHubContextQuery(
+export function usePrivilegesOnHubCollaborationQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PrivilegesOnHubContextQuery,
-    SchemaTypes.PrivilegesOnHubContextQueryVariables
+    SchemaTypes.PrivilegesOnHubCollaborationQuery,
+    SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.PrivilegesOnHubContextQuery, SchemaTypes.PrivilegesOnHubContextQueryVariables>(
-    PrivilegesOnHubContextDocument,
-    options
-  );
+  return Apollo.useQuery<
+    SchemaTypes.PrivilegesOnHubCollaborationQuery,
+    SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
+  >(PrivilegesOnHubCollaborationDocument, options);
 }
-export function usePrivilegesOnHubContextLazyQuery(
+export function usePrivilegesOnHubCollaborationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PrivilegesOnHubContextQuery,
-    SchemaTypes.PrivilegesOnHubContextQueryVariables
+    SchemaTypes.PrivilegesOnHubCollaborationQuery,
+    SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.PrivilegesOnHubContextQuery, SchemaTypes.PrivilegesOnHubContextQueryVariables>(
-    PrivilegesOnHubContextDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    SchemaTypes.PrivilegesOnHubCollaborationQuery,
+    SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
+  >(PrivilegesOnHubCollaborationDocument, options);
 }
-export type PrivilegesOnHubContextQueryHookResult = ReturnType<typeof usePrivilegesOnHubContextQuery>;
-export type PrivilegesOnHubContextLazyQueryHookResult = ReturnType<typeof usePrivilegesOnHubContextLazyQuery>;
-export type PrivilegesOnHubContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.PrivilegesOnHubContextQuery,
-  SchemaTypes.PrivilegesOnHubContextQueryVariables
+export type PrivilegesOnHubCollaborationQueryHookResult = ReturnType<typeof usePrivilegesOnHubCollaborationQuery>;
+export type PrivilegesOnHubCollaborationLazyQueryHookResult = ReturnType<
+  typeof usePrivilegesOnHubCollaborationLazyQuery
 >;
-export function refetchPrivilegesOnHubContextQuery(variables: SchemaTypes.PrivilegesOnHubContextQueryVariables) {
-  return { query: PrivilegesOnHubContextDocument, variables: variables };
+export type PrivilegesOnHubCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PrivilegesOnHubCollaborationQuery,
+  SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
+>;
+export function refetchPrivilegesOnHubCollaborationQuery(
+  variables: SchemaTypes.PrivilegesOnHubCollaborationQueryVariables
+) {
+  return { query: PrivilegesOnHubCollaborationDocument, variables: variables };
 }
 export const HubAspectsDocument = gql`
   query HubAspects($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
-      context {
-        ...AspectsOnContext
+      collaboration {
+        id
+        callouts {
+          ...AspectsOnCallout
+          type
+        }
       }
     }
   }
-  ${AspectsOnContextFragmentDoc}
+  ${AspectsOnCalloutFragmentDoc}
 `;
 
 /**
@@ -9600,74 +9673,76 @@ export type HubAspectsQueryResult = Apollo.QueryResult<
 export function refetchHubAspectsQuery(variables: SchemaTypes.HubAspectsQueryVariables) {
   return { query: HubAspectsDocument, variables: variables };
 }
-export const PrivilegesOnChallengeContextDocument = gql`
-  query PrivilegesOnChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+export const PrivilegesOnChallengeCollaborationDocument = gql`
+  query PrivilegesOnChallengeCollaboration($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
         id
-        context {
-          ...PrivilegesOnContext
+        collaboration {
+          ...PrivilegesOnCollaboration
         }
       }
     }
   }
-  ${PrivilegesOnContextFragmentDoc}
+  ${PrivilegesOnCollaborationFragmentDoc}
 `;
 
 /**
- * __usePrivilegesOnChallengeContextQuery__
+ * __usePrivilegesOnChallengeCollaborationQuery__
  *
- * To run a query within a React component, call `usePrivilegesOnChallengeContextQuery` and pass it any options that fit your needs.
- * When your component renders, `usePrivilegesOnChallengeContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePrivilegesOnChallengeCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePrivilegesOnChallengeCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePrivilegesOnChallengeContextQuery({
+ * const { data, loading, error } = usePrivilegesOnChallengeCollaborationQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *   },
  * });
  */
-export function usePrivilegesOnChallengeContextQuery(
+export function usePrivilegesOnChallengeCollaborationQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PrivilegesOnChallengeContextQuery,
-    SchemaTypes.PrivilegesOnChallengeContextQueryVariables
+    SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+    SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.PrivilegesOnChallengeContextQuery,
-    SchemaTypes.PrivilegesOnChallengeContextQueryVariables
-  >(PrivilegesOnChallengeContextDocument, options);
+    SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+    SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
+  >(PrivilegesOnChallengeCollaborationDocument, options);
 }
-export function usePrivilegesOnChallengeContextLazyQuery(
+export function usePrivilegesOnChallengeCollaborationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PrivilegesOnChallengeContextQuery,
-    SchemaTypes.PrivilegesOnChallengeContextQueryVariables
+    SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+    SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.PrivilegesOnChallengeContextQuery,
-    SchemaTypes.PrivilegesOnChallengeContextQueryVariables
-  >(PrivilegesOnChallengeContextDocument, options);
+    SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+    SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
+  >(PrivilegesOnChallengeCollaborationDocument, options);
 }
-export type PrivilegesOnChallengeContextQueryHookResult = ReturnType<typeof usePrivilegesOnChallengeContextQuery>;
-export type PrivilegesOnChallengeContextLazyQueryHookResult = ReturnType<
-  typeof usePrivilegesOnChallengeContextLazyQuery
+export type PrivilegesOnChallengeCollaborationQueryHookResult = ReturnType<
+  typeof usePrivilegesOnChallengeCollaborationQuery
 >;
-export type PrivilegesOnChallengeContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.PrivilegesOnChallengeContextQuery,
-  SchemaTypes.PrivilegesOnChallengeContextQueryVariables
+export type PrivilegesOnChallengeCollaborationLazyQueryHookResult = ReturnType<
+  typeof usePrivilegesOnChallengeCollaborationLazyQuery
 >;
-export function refetchPrivilegesOnChallengeContextQuery(
-  variables: SchemaTypes.PrivilegesOnChallengeContextQueryVariables
+export type PrivilegesOnChallengeCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PrivilegesOnChallengeCollaborationQuery,
+  SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
+>;
+export function refetchPrivilegesOnChallengeCollaborationQuery(
+  variables: SchemaTypes.PrivilegesOnChallengeCollaborationQueryVariables
 ) {
-  return { query: PrivilegesOnChallengeContextDocument, variables: variables };
+  return { query: PrivilegesOnChallengeCollaborationDocument, variables: variables };
 }
 export const ChallengeAspectsDocument = gql`
   query ChallengeAspects($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
@@ -9675,13 +9750,17 @@ export const ChallengeAspectsDocument = gql`
       id
       challenge(ID: $challengeNameId) {
         id
-        context {
-          ...AspectsOnContext
+        collaboration {
+          id
+          callouts {
+            ...AspectsOnCallout
+            type
+          }
         }
       }
     }
   }
-  ${AspectsOnContextFragmentDoc}
+  ${AspectsOnCalloutFragmentDoc}
 `;
 
 /**
@@ -9731,74 +9810,76 @@ export type ChallengeAspectsQueryResult = Apollo.QueryResult<
 export function refetchChallengeAspectsQuery(variables: SchemaTypes.ChallengeAspectsQueryVariables) {
   return { query: ChallengeAspectsDocument, variables: variables };
 }
-export const PrivilegesOnOpportunityContextDocument = gql`
-  query PrivilegesOnOpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+export const PrivilegesOnOpportunityCollaborationDocument = gql`
+  query PrivilegesOnOpportunityCollaboration($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
         id
-        context {
-          ...PrivilegesOnContext
+        collaboration {
+          ...PrivilegesOnCollaboration
         }
       }
     }
   }
-  ${PrivilegesOnContextFragmentDoc}
+  ${PrivilegesOnCollaborationFragmentDoc}
 `;
 
 /**
- * __usePrivilegesOnOpportunityContextQuery__
+ * __usePrivilegesOnOpportunityCollaborationQuery__
  *
- * To run a query within a React component, call `usePrivilegesOnOpportunityContextQuery` and pass it any options that fit your needs.
- * When your component renders, `usePrivilegesOnOpportunityContextQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePrivilegesOnOpportunityCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePrivilegesOnOpportunityCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = usePrivilegesOnOpportunityContextQuery({
+ * const { data, loading, error } = usePrivilegesOnOpportunityCollaborationQuery({
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *   },
  * });
  */
-export function usePrivilegesOnOpportunityContextQuery(
+export function usePrivilegesOnOpportunityCollaborationQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.PrivilegesOnOpportunityContextQuery,
-    SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    SchemaTypes.PrivilegesOnOpportunityContextQuery,
-    SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
-  >(PrivilegesOnOpportunityContextDocument, options);
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
+  >(PrivilegesOnOpportunityCollaborationDocument, options);
 }
-export function usePrivilegesOnOpportunityContextLazyQuery(
+export function usePrivilegesOnOpportunityCollaborationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.PrivilegesOnOpportunityContextQuery,
-    SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    SchemaTypes.PrivilegesOnOpportunityContextQuery,
-    SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
-  >(PrivilegesOnOpportunityContextDocument, options);
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+    SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
+  >(PrivilegesOnOpportunityCollaborationDocument, options);
 }
-export type PrivilegesOnOpportunityContextQueryHookResult = ReturnType<typeof usePrivilegesOnOpportunityContextQuery>;
-export type PrivilegesOnOpportunityContextLazyQueryHookResult = ReturnType<
-  typeof usePrivilegesOnOpportunityContextLazyQuery
+export type PrivilegesOnOpportunityCollaborationQueryHookResult = ReturnType<
+  typeof usePrivilegesOnOpportunityCollaborationQuery
 >;
-export type PrivilegesOnOpportunityContextQueryResult = Apollo.QueryResult<
-  SchemaTypes.PrivilegesOnOpportunityContextQuery,
-  SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
+export type PrivilegesOnOpportunityCollaborationLazyQueryHookResult = ReturnType<
+  typeof usePrivilegesOnOpportunityCollaborationLazyQuery
 >;
-export function refetchPrivilegesOnOpportunityContextQuery(
-  variables: SchemaTypes.PrivilegesOnOpportunityContextQueryVariables
+export type PrivilegesOnOpportunityCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PrivilegesOnOpportunityCollaborationQuery,
+  SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
+>;
+export function refetchPrivilegesOnOpportunityCollaborationQuery(
+  variables: SchemaTypes.PrivilegesOnOpportunityCollaborationQueryVariables
 ) {
-  return { query: PrivilegesOnOpportunityContextDocument, variables: variables };
+  return { query: PrivilegesOnOpportunityCollaborationDocument, variables: variables };
 }
 export const OpportunityAspectsDocument = gql`
   query OpportunityAspects($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
@@ -9806,13 +9887,17 @@ export const OpportunityAspectsDocument = gql`
       id
       opportunity(ID: $opportunityNameId) {
         id
-        context {
-          ...AspectsOnContext
+        collaboration {
+          id
+          callouts {
+            ...AspectsOnCallout
+            type
+          }
         }
       }
     }
   }
-  ${AspectsOnContextFragmentDoc}
+  ${AspectsOnCalloutFragmentDoc}
 `;
 
 /**
@@ -9866,8 +9951,8 @@ export function refetchOpportunityAspectsQuery(variables: SchemaTypes.Opportunit
   return { query: OpportunityAspectsDocument, variables: variables };
 }
 export const CreateAspectFromContributeTabDocument = gql`
-  mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnContextInput!) {
-    createAspectOnContext(aspectData: $aspectData) {
+  mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!) {
+    createAspectOnCallout(aspectData: $aspectData) {
       id
       nameID
       displayName
@@ -10358,7 +10443,7 @@ export const HubAspectDocument = gql`
   query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
-      context {
+      collaboration {
         ...AspectDashboardData
       }
     }
@@ -10410,7 +10495,7 @@ export const ChallengeAspectDocument = gql`
       id
       challenge(ID: $challengeNameId) {
         id
-        context {
+        collaboration {
           ...AspectDashboardData
         }
       }
@@ -10470,7 +10555,7 @@ export const OpportunityAspectDocument = gql`
       id
       opportunity(ID: $opportunityNameId) {
         id
-        context {
+        collaboration {
           ...AspectDashboardData
         }
       }
@@ -10649,10 +10734,14 @@ export const HubAspectSettingsDocument = gql`
   query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
-      context {
+      collaboration {
         id
-        aspects(IDs: [$aspectNameId]) {
-          ...AspectSettings
+        callouts {
+          id
+          type
+          aspects(IDs: [$aspectNameId]) {
+            ...AspectSettings
+          }
         }
       }
     }
@@ -10713,10 +10802,14 @@ export const ChallengeAspectSettingsDocument = gql`
       id
       challenge(ID: $challengeNameId) {
         id
-        context {
+        collaboration {
           id
-          aspects(IDs: [$aspectNameId]) {
-            ...AspectSettings
+          callouts {
+            id
+            type
+            aspects(IDs: [$aspectNameId]) {
+              ...AspectSettings
+            }
           }
         }
       }
@@ -10786,10 +10879,14 @@ export const OpportunityAspectSettingsDocument = gql`
       id
       opportunity(ID: $opportunityNameId) {
         id
-        context {
+        collaboration {
           id
-          aspects(IDs: [$aspectNameId]) {
-            ...AspectSettings
+          callouts {
+            id
+            type
+            aspects(IDs: [$aspectNameId]) {
+              ...AspectSettings
+            }
           }
         }
       }
@@ -10911,12 +11008,12 @@ export const HubCanvasesDocument = gql`
   query hubCanvases($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
-      context {
-        ...ContextWithCanvasDetails
+      collaboration {
+        ...CollaborationWithCanvasDetails
       }
     }
   }
-  ${ContextWithCanvasDetailsFragmentDoc}
+  ${CollaborationWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -10966,11 +11063,19 @@ export const HubCanvasValuesDocument = gql`
   query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
     hub(ID: $hubId) {
       id
-      context {
+      collaboration {
         id
-        canvases(IDs: [$canvasId]) {
-          ...CanvasDetails
-          ...CanvasValue
+        callouts {
+          id
+          type
+          authorization {
+            id
+            myPrivileges
+          }
+          canvases(IDs: [$canvasId]) {
+            ...CanvasDetails
+            ...CanvasValue
+          }
         }
       }
     }
@@ -11029,13 +11134,13 @@ export const ChallengeCanvasesDocument = gql`
       id
       challenge(ID: $challengeId) {
         id
-        context {
-          ...ContextWithCanvasDetails
+        collaboration {
+          ...CollaborationWithCanvasDetails
         }
       }
     }
   }
-  ${ContextWithCanvasDetailsFragmentDoc}
+  ${CollaborationWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11091,11 +11196,19 @@ export const ChallengeCanvasValuesDocument = gql`
       id
       challenge(ID: $challengeId) {
         id
-        context {
+        collaboration {
           id
-          canvases(IDs: [$canvasId]) {
-            ...CanvasDetails
-            ...CanvasValue
+          callouts {
+            id
+            type
+            authorization {
+              id
+              myPrivileges
+            }
+            canvases(IDs: [$canvasId]) {
+              ...CanvasDetails
+              ...CanvasValue
+            }
           }
         }
       }
@@ -11162,13 +11275,13 @@ export const OpportunityCanvasesDocument = gql`
       id
       opportunity(ID: $opportunityId) {
         id
-        context {
-          ...ContextWithCanvasDetails
+        collaboration {
+          ...CollaborationWithCanvasDetails
         }
       }
     }
   }
-  ${ContextWithCanvasDetailsFragmentDoc}
+  ${CollaborationWithCanvasDetailsFragmentDoc}
 `;
 
 /**
@@ -11227,11 +11340,19 @@ export const OpportunityCanvasValuesDocument = gql`
       id
       opportunity(ID: $opportunityId) {
         id
-        context {
+        collaboration {
           id
-          canvases(IDs: [$canvasId]) {
-            ...CanvasDetails
-            ...CanvasValue
+          callouts {
+            id
+            type
+            authorization {
+              id
+              myPrivileges
+            }
+            canvases(IDs: [$canvasId]) {
+              ...CanvasDetails
+              ...CanvasValue
+            }
           }
         }
       }
@@ -11292,104 +11413,101 @@ export type OpportunityCanvasValuesQueryResult = Apollo.QueryResult<
 export function refetchOpportunityCanvasValuesQuery(variables: SchemaTypes.OpportunityCanvasValuesQueryVariables) {
   return { query: OpportunityCanvasValuesDocument, variables: variables };
 }
-export const CreateCanvasOnContextDocument = gql`
-  mutation createCanvasOnContext($input: CreateCanvasOnContextInput!) {
-    createCanvasOnContext(canvasData: $input) {
+export const CreateCanvasOnCalloutDocument = gql`
+  mutation createCanvasOnCallout($input: CreateCanvasOnCalloutInput!) {
+    createCanvasOnCallout(canvasData: $input) {
       ...CanvasDetails
     }
   }
   ${CanvasDetailsFragmentDoc}
 `;
-export type CreateCanvasOnContextMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CreateCanvasOnContextMutation,
-  SchemaTypes.CreateCanvasOnContextMutationVariables
+export type CreateCanvasOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateCanvasOnCalloutMutation,
+  SchemaTypes.CreateCanvasOnCalloutMutationVariables
 >;
 
 /**
- * __useCreateCanvasOnContextMutation__
+ * __useCreateCanvasOnCalloutMutation__
  *
- * To run a mutation, you first call `useCreateCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateCanvasOnContextMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateCanvasOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCanvasOnCalloutMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createCanvasOnContextMutation, { data, loading, error }] = useCreateCanvasOnContextMutation({
+ * const [createCanvasOnCalloutMutation, { data, loading, error }] = useCreateCanvasOnCalloutMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateCanvasOnContextMutation(
+export function useCreateCanvasOnCalloutMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CreateCanvasOnContextMutation,
-    SchemaTypes.CreateCanvasOnContextMutationVariables
+    SchemaTypes.CreateCanvasOnCalloutMutation,
+    SchemaTypes.CreateCanvasOnCalloutMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    SchemaTypes.CreateCanvasOnContextMutation,
-    SchemaTypes.CreateCanvasOnContextMutationVariables
-  >(CreateCanvasOnContextDocument, options);
+    SchemaTypes.CreateCanvasOnCalloutMutation,
+    SchemaTypes.CreateCanvasOnCalloutMutationVariables
+  >(CreateCanvasOnCalloutDocument, options);
 }
-export type CreateCanvasOnContextMutationHookResult = ReturnType<typeof useCreateCanvasOnContextMutation>;
-export type CreateCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.CreateCanvasOnContextMutation>;
-export type CreateCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CreateCanvasOnContextMutation,
-  SchemaTypes.CreateCanvasOnContextMutationVariables
+export type CreateCanvasOnCalloutMutationHookResult = ReturnType<typeof useCreateCanvasOnCalloutMutation>;
+export type CreateCanvasOnCalloutMutationResult = Apollo.MutationResult<SchemaTypes.CreateCanvasOnCalloutMutation>;
+export type CreateCanvasOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateCanvasOnCalloutMutation,
+  SchemaTypes.CreateCanvasOnCalloutMutationVariables
 >;
-export const DeleteCanvasOnContextDocument = gql`
-  mutation deleteCanvasOnContext($input: DeleteCanvasOnContextInput!) {
-    deleteCanvasOnContext(deleteData: $input) {
+export const DeleteCanvasDocument = gql`
+  mutation deleteCanvas($input: DeleteCanvasInput!) {
+    deleteCanvas(canvasData: $input) {
       ...CanvasSummary
     }
   }
   ${CanvasSummaryFragmentDoc}
 `;
-export type DeleteCanvasOnContextMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeleteCanvasOnContextMutation,
-  SchemaTypes.DeleteCanvasOnContextMutationVariables
+export type DeleteCanvasMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCanvasMutation,
+  SchemaTypes.DeleteCanvasMutationVariables
 >;
 
 /**
- * __useDeleteCanvasOnContextMutation__
+ * __useDeleteCanvasMutation__
  *
- * To run a mutation, you first call `useDeleteCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteCanvasOnContextMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteCanvasMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCanvasMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [deleteCanvasOnContextMutation, { data, loading, error }] = useDeleteCanvasOnContextMutation({
+ * const [deleteCanvasMutation, { data, loading, error }] = useDeleteCanvasMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useDeleteCanvasOnContextMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.DeleteCanvasOnContextMutation,
-    SchemaTypes.DeleteCanvasOnContextMutationVariables
-  >
+export function useDeleteCanvasMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeleteCanvasMutation, SchemaTypes.DeleteCanvasMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.DeleteCanvasOnContextMutation,
-    SchemaTypes.DeleteCanvasOnContextMutationVariables
-  >(DeleteCanvasOnContextDocument, options);
+  return Apollo.useMutation<SchemaTypes.DeleteCanvasMutation, SchemaTypes.DeleteCanvasMutationVariables>(
+    DeleteCanvasDocument,
+    options
+  );
 }
-export type DeleteCanvasOnContextMutationHookResult = ReturnType<typeof useDeleteCanvasOnContextMutation>;
-export type DeleteCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCanvasOnContextMutation>;
-export type DeleteCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeleteCanvasOnContextMutation,
-  SchemaTypes.DeleteCanvasOnContextMutationVariables
+export type DeleteCanvasMutationHookResult = ReturnType<typeof useDeleteCanvasMutation>;
+export type DeleteCanvasMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCanvasMutation>;
+export type DeleteCanvasMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCanvasMutation,
+  SchemaTypes.DeleteCanvasMutationVariables
 >;
-export const UpdateCanvasOnContextDocument = gql`
-  mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
+export const UpdateCanvasDocument = gql`
+  mutation updateCanvas($input: UpdateCanvasDirectInput!) {
     updateCanvas(canvasData: $input) {
       id
       value
@@ -11397,93 +11515,90 @@ export const UpdateCanvasOnContextDocument = gql`
     }
   }
 `;
-export type UpdateCanvasOnContextMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCanvasOnContextMutation,
-  SchemaTypes.UpdateCanvasOnContextMutationVariables
+export type UpdateCanvasMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCanvasMutation,
+  SchemaTypes.UpdateCanvasMutationVariables
 >;
 
 /**
- * __useUpdateCanvasOnContextMutation__
+ * __useUpdateCanvasMutation__
  *
- * To run a mutation, you first call `useUpdateCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCanvasOnContextMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateCanvasMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCanvasMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateCanvasOnContextMutation, { data, loading, error }] = useUpdateCanvasOnContextMutation({
+ * const [updateCanvasMutation, { data, loading, error }] = useUpdateCanvasMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateCanvasOnContextMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCanvasOnContextMutation,
-    SchemaTypes.UpdateCanvasOnContextMutationVariables
-  >
+export function useUpdateCanvasMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateCanvasMutation, SchemaTypes.UpdateCanvasMutationVariables>
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UpdateCanvasOnContextMutation,
-    SchemaTypes.UpdateCanvasOnContextMutationVariables
-  >(UpdateCanvasOnContextDocument, options);
+  return Apollo.useMutation<SchemaTypes.UpdateCanvasMutation, SchemaTypes.UpdateCanvasMutationVariables>(
+    UpdateCanvasDocument,
+    options
+  );
 }
-export type UpdateCanvasOnContextMutationHookResult = ReturnType<typeof useUpdateCanvasOnContextMutation>;
-export type UpdateCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCanvasOnContextMutation>;
-export type UpdateCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCanvasOnContextMutation,
-  SchemaTypes.UpdateCanvasOnContextMutationVariables
+export type UpdateCanvasMutationHookResult = ReturnType<typeof useUpdateCanvasMutation>;
+export type UpdateCanvasMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCanvasMutation>;
+export type UpdateCanvasMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCanvasMutation,
+  SchemaTypes.UpdateCanvasMutationVariables
 >;
-export const CheckoutCanvasOnContextDocument = gql`
-  mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
+export const CheckoutCanvasDocument = gql`
+  mutation checkoutCanvas($input: CanvasCheckoutEventInput!) {
     eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
       ...CheckoutDetails
     }
   }
   ${CheckoutDetailsFragmentDoc}
 `;
-export type CheckoutCanvasOnContextMutationFn = Apollo.MutationFunction<
-  SchemaTypes.CheckoutCanvasOnContextMutation,
-  SchemaTypes.CheckoutCanvasOnContextMutationVariables
+export type CheckoutCanvasMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CheckoutCanvasMutation,
+  SchemaTypes.CheckoutCanvasMutationVariables
 >;
 
 /**
- * __useCheckoutCanvasOnContextMutation__
+ * __useCheckoutCanvasMutation__
  *
- * To run a mutation, you first call `useCheckoutCanvasOnContextMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCheckoutCanvasOnContextMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCheckoutCanvasMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckoutCanvasMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [checkoutCanvasOnContextMutation, { data, loading, error }] = useCheckoutCanvasOnContextMutation({
+ * const [checkoutCanvasMutation, { data, loading, error }] = useCheckoutCanvasMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCheckoutCanvasOnContextMutation(
+export function useCheckoutCanvasMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.CheckoutCanvasOnContextMutation,
-    SchemaTypes.CheckoutCanvasOnContextMutationVariables
+    SchemaTypes.CheckoutCanvasMutation,
+    SchemaTypes.CheckoutCanvasMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.CheckoutCanvasOnContextMutation,
-    SchemaTypes.CheckoutCanvasOnContextMutationVariables
-  >(CheckoutCanvasOnContextDocument, options);
+  return Apollo.useMutation<SchemaTypes.CheckoutCanvasMutation, SchemaTypes.CheckoutCanvasMutationVariables>(
+    CheckoutCanvasDocument,
+    options
+  );
 }
-export type CheckoutCanvasOnContextMutationHookResult = ReturnType<typeof useCheckoutCanvasOnContextMutation>;
-export type CheckoutCanvasOnContextMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutCanvasOnContextMutation>;
-export type CheckoutCanvasOnContextMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.CheckoutCanvasOnContextMutation,
-  SchemaTypes.CheckoutCanvasOnContextMutationVariables
+export type CheckoutCanvasMutationHookResult = ReturnType<typeof useCheckoutCanvasMutation>;
+export type CheckoutCanvasMutationResult = Apollo.MutationResult<SchemaTypes.CheckoutCanvasMutation>;
+export type CheckoutCanvasMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CheckoutCanvasMutation,
+  SchemaTypes.CheckoutCanvasMutationVariables
 >;
 export const CanvasContentUpdatedDocument = gql`
   subscription canvasContentUpdated {
@@ -14066,7 +14181,7 @@ export const HubAspectProviderDocument = gql`
   query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
-      context {
+      collaboration {
         ...AspectProviderData
       }
     }
@@ -14127,7 +14242,7 @@ export const ChallengeAspectProviderDocument = gql`
       id
       challenge(ID: $challengeNameId) {
         id
-        context {
+        collaboration {
           ...AspectProviderData
         }
       }
@@ -14197,7 +14312,7 @@ export const OpportunityAspectProviderDocument = gql`
       id
       opportunity(ID: $opportunityNameId) {
         id
-        context {
+        collaboration {
           ...AspectProviderData
         }
       }
@@ -15564,6 +15679,48 @@ export type AspectCommentsMessageReceivedSubscriptionHookResult = ReturnType<
 >;
 export type AspectCommentsMessageReceivedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.AspectCommentsMessageReceivedSubscription>;
+export const CalloutAspectCreatedDocument = gql`
+  subscription CalloutAspectCreated($calloutID: UUID!) {
+    calloutAspectCreated(calloutID: $calloutID) {
+      aspect {
+        ...ContributeTabAspect
+      }
+    }
+  }
+  ${ContributeTabAspectFragmentDoc}
+`;
+
+/**
+ * __useCalloutAspectCreatedSubscription__
+ *
+ * To run a query within a React component, call `useCalloutAspectCreatedSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutAspectCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutAspectCreatedSubscription({
+ *   variables: {
+ *      calloutID: // value for 'calloutID'
+ *   },
+ * });
+ */
+export function useCalloutAspectCreatedSubscription(
+  baseOptions: Apollo.SubscriptionHookOptions<
+    SchemaTypes.CalloutAspectCreatedSubscription,
+    SchemaTypes.CalloutAspectCreatedSubscriptionVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSubscription<
+    SchemaTypes.CalloutAspectCreatedSubscription,
+    SchemaTypes.CalloutAspectCreatedSubscriptionVariables
+  >(CalloutAspectCreatedDocument, options);
+}
+export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCalloutAspectCreatedSubscription>;
+export type CalloutAspectCreatedSubscriptionResult =
+  Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
 export const AuthorDetailsDocument = gql`
   query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
@@ -16801,48 +16958,6 @@ export function refetchOpportunityCommunityMembersQuery(
 ) {
   return { query: OpportunityCommunityMembersDocument, variables: variables };
 }
-export const ContextAspectCreatedDocument = gql`
-  subscription ContextAspectCreated($contextID: UUID!) {
-    contextAspectCreated(contextID: $contextID) {
-      aspect {
-        ...ContributeTabAspect
-      }
-    }
-  }
-  ${ContributeTabAspectFragmentDoc}
-`;
-
-/**
- * __useContextAspectCreatedSubscription__
- *
- * To run a query within a React component, call `useContextAspectCreatedSubscription` and pass it any options that fit your needs.
- * When your component renders, `useContextAspectCreatedSubscription` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useContextAspectCreatedSubscription({
- *   variables: {
- *      contextID: // value for 'contextID'
- *   },
- * });
- */
-export function useContextAspectCreatedSubscription(
-  baseOptions: Apollo.SubscriptionHookOptions<
-    SchemaTypes.ContextAspectCreatedSubscription,
-    SchemaTypes.ContextAspectCreatedSubscriptionVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useSubscription<
-    SchemaTypes.ContextAspectCreatedSubscription,
-    SchemaTypes.ContextAspectCreatedSubscriptionVariables
-  >(ContextAspectCreatedDocument, options);
-}
-export type ContextAspectCreatedSubscriptionHookResult = ReturnType<typeof useContextAspectCreatedSubscription>;
-export type ContextAspectCreatedSubscriptionResult =
-  Apollo.SubscriptionResult<SchemaTypes.ContextAspectCreatedSubscription>;
 export const HubProviderDocument = gql`
   query hubProvider($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {

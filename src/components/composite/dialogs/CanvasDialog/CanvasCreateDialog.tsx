@@ -16,7 +16,7 @@ import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CreateCanvasCanvasTemplateFragment, CreateCanvasOnContextInput } from '../../../../models/graphql-schema';
+import { CreateCanvasCanvasTemplateFragment, CreateCanvasOnCalloutInput } from '../../../../models/graphql-schema';
 import { Loading } from '../../../core';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
@@ -327,12 +327,12 @@ const CreateCanvasSteps: FC<CreateCanvasStepsProps> = ({ entities, actions, stat
 
 interface CanvasCreateDialogProps {
   entities: {
-    contextID: string;
+    calloutID: string;
     templates: CreateCanvasCanvasTemplateFragment[];
   };
   actions: {
     onCancel: () => void;
-    onConfirm: (input: CreateCanvasOnContextInput) => void;
+    onConfirm: (input: CreateCanvasOnCalloutInput) => void;
   };
   options: {
     show: boolean;
@@ -351,9 +351,9 @@ const CanvasCreateDialog: FC<CanvasCreateDialogProps> = ({ entities, actions, op
     value: undefined,
   };
 
-  const handleSubmit = (canvasInput: Omit<CreateCanvasOnContextInput, 'contextID'>) => {
+  const handleSubmit = (canvasInput: Omit<CreateCanvasOnCalloutInput, 'calloutID'>) => {
     actions.onConfirm({
-      contextID: entities.contextID,
+      calloutID: entities.calloutID,
       ...canvasInput,
     });
   };
