@@ -18,7 +18,7 @@ interface ContributePageProps {
 const ContributePage: FC<ContributePageProps> = ({ entityTypeName }) => {
   const { hubNameId, challengeNameId, opportunityNameId, canvasId } = useUrlParams();
 
-  const currentPath = useResolvedPath('.');
+  const currentPath = useResolvedPath(canvasId ? '..' : '.');
 
   const PageLayout = useMemo(() => {
     switch (entityTypeName) {
