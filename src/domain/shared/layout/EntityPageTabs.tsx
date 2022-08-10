@@ -34,18 +34,18 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
       <HeaderNavigationTab
         label={t('common.dashboard')}
         value={EntityPageSection.Dashboard}
-        to={rootUrl + EntityPageSection.Dashboard}
+        to={`${rootUrl}/${EntityPageSection.Dashboard}`}
       />
       <HeaderNavigationTab
         label={t('common.explore')}
         value={EntityPageSection.Explore}
-        to={rootUrl + EntityPageSection.Explore}
+        to={`${rootUrl}/${EntityPageSection.Explore}`}
       />
       {subEntityTab}
       <HeaderNavigationTab
         label={t('common.about')}
         value={EntityPageSection.About}
-        to={rootUrl + EntityPageSection.About}
+        to={`${rootUrl}/${EntityPageSection.About}`}
       />
     </HeaderNavigationTabs>
   );

@@ -1,4 +1,4 @@
-import React, { cloneElement, FC, ReactElement } from 'react';
+import React, { Children, cloneElement, FC, ReactElement } from 'react';
 import { Box, BoxProps, styled } from '@mui/material';
 import areDepsEqual from '../../utils/areDepsEqual';
 import { Identifiable } from '../../types/Identifiable';
@@ -39,13 +39,22 @@ const CardsLayout = React.memo(
 
 export default CardsLayout;
 
+type ContainerProps = {
+  cardsCount: number;
+};
+const Root = styled(Box)<ContainerProps>(({ cardsCount }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: cardsCount > 3 ? 'space-around' : 'start', // For less than 3 cards pile them on the left
+}));
+
 export const CardLayoutContainer: FC = ({ children }) => {
-  const Root = styled(Box)(() => ({
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: (children as [])?.length > 3 ? 'space-around' : 'start',
-  }));
-  return <Root gap={2}>{children}</Root>;
+  const cardsCount = Children.count(children);
+  return (
+    <Root gap={2} cardsCount={cardsCount}>
+      {children}
+    </Root>
+  );
 };
 
 interface CardLayoutItemProps extends Pick<BoxProps, 'maxWidth' | 'flexGrow'> {

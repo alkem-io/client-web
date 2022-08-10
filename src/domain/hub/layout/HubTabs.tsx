@@ -11,19 +11,22 @@ const HubTabs = (props: EntityTabsProps) => {
   const { t } = useTranslation();
 
   const { hubNameId, permissions } = useHub();
+  const rootUrl = buildHubUrl(hubNameId);
+  const settingsUrl = buildAdminHubUrl(hubNameId);
 
   return (
     <EntityPageTabs
       {...props}
-      showSettings={permissions.viewerCanUpdate}
-      settingsUrl={buildAdminHubUrl(hubNameId)}
       entityTypeName="hub"
+      showSettings={permissions.viewerCanUpdate}
+      settingsUrl={settingsUrl}
+      rootUrl={rootUrl}
       subEntityTab={
         <HeaderNavigationTab
           disabled={!permissions.canReadChallenges}
           label={t('common.challenges')}
           value={EntityPageSection.Challenges}
-          to={buildHubUrl(hubNameId) + '/' + EntityPageSection.Challenges}
+          to={`${rootUrl}/${EntityPageSection.Challenges}`}
         />
       }
     />

@@ -4,7 +4,6 @@ import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNaviga
 import { useOpportunity } from '../../../hooks';
 import { buildAdminOpportunityUrl, buildOpportunityUrl } from '../../../utils/urlBuilders';
 import { EntityTabsProps } from '../../shared/layout/PageLayout/EntityPageLayout';
-import { routes } from '../routes/opportunityRoutes';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import EntityPageTabs from '../../shared/layout/EntityPageTabs';
 
@@ -14,18 +13,21 @@ const OpportunityTabs: FC<OpportunityTabsProps> = props => {
   const { t } = useTranslation();
 
   const { hubNameId, challengeNameId, opportunityNameId, permissions } = useOpportunity();
+  const rootUrl = buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId);
+  const settingsUrl = buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId);
 
   return (
     <EntityPageTabs
       {...props}
-      showSettings={permissions.viewerCanUpdate}
-      settingsUrl={buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}
       entityTypeName="opportunity"
+      showSettings={permissions.viewerCanUpdate}
+      settingsUrl={settingsUrl}
+      rootUrl={rootUrl}
       subEntityTab={
         <HeaderNavigationTab
           label={t('common.agreements')}
           value={EntityPageSection.Agreements}
-          to={buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId) + '/' + routes.Agreements}
+          to={`${rootUrl}/${EntityPageSection.Agreements}`}
         />
       }
     />
