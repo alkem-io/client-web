@@ -10,7 +10,7 @@ import {
   useOpportunityAspectVisualsQuery,
 } from '../../../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../../../hooks';
-import { getAspectCallout } from '../../../../../../containers/aspect/get-aspect-callout';
+import { getAspectCallout } from '../../../../../../containers/aspect/getAspectCallout';
 
 export interface EntityIds {
   hubNameId: Scalars['UUID_NAMEID'];

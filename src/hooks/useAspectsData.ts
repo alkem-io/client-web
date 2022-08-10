@@ -12,7 +12,7 @@ import { AuthorizationPrivilege } from '../models/graphql-schema';
 import { AspectWithPermissions, EntityIds } from '../containers/ContributeTabContainer/ContributeTabContainer';
 import useCalloutAspectCreatedSubscription from '../domain/collaboration/useCalloutAspectCreatedSubscription';
 import { ApolloError } from '@apollo/client';
-import { getAspectCallout } from '../containers/aspect/get-aspect-callout';
+import { getAspectCallout } from '../containers/aspect/getAspectCallout';
 
 export interface AspectsData {
   aspects: AspectWithPermissions[] | undefined;

@@ -21,8 +21,8 @@ import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
-import { getCanvasCallout } from '../canvas/get-canvas-callout';
-import { getAspectCallout } from '../aspect/get-aspect-callout';
+import { getCanvasCallout } from '../canvas/getCanvasCallout';
+import { getAspectCallout } from '../aspect/getAspectCallout';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;

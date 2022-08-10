@@ -17,7 +17,7 @@ import {
 import { TemplateQuery } from './CanvasProvider';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 import findById from '../../domain/shared/utils/findById';
-import { getCanvasCallout } from './get-canvas-callout';
+import { getCanvasCallout } from './getCanvasCallout';
 
 export interface ICanvasValueEntities {
   canvas?: Canvas;

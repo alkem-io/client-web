@@ -14,7 +14,7 @@ import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspec
 import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
-import { getCanvasCallout } from '../../../containers/canvas/get-canvas-callout';
+import { getCanvasCallout } from '../../../containers/canvas/getCanvasCallout';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;

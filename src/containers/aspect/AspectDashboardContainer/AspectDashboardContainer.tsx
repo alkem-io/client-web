@@ -19,7 +19,7 @@ import {
   renderComponentOrChildrenFn,
 } from '../../../utils/containers/ComponentOrChildrenFn';
 import useAspectCommentsMessageReceivedSubscription from '../../../domain/aspect/comments/useAspectCommentsMessageReceivedSubscription';
-import { getAspectCallout } from '../get-aspect-callout';
+import { getAspectCallout } from '../getAspectCallout';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];

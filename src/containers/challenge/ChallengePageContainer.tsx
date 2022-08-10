@@ -19,8 +19,8 @@ import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
-import { getCanvasCallout } from '../canvas/get-canvas-callout';
-import { getAspectCallout } from '../aspect/get-aspect-callout';
+import { getCanvasCallout } from '../canvas/getCanvasCallout';
+import { getAspectCallout } from '../aspect/getAspectCallout';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;

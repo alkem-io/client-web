@@ -11,7 +11,7 @@ import {
   CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../models/graphql-schema';
-import { getCanvasCallout } from './get-canvas-callout';
+import { getCanvasCallout } from './getCanvasCallout';
 
 interface CanvasProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;

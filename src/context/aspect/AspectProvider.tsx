@@ -7,7 +7,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
-import { getAspectCallout } from '../../containers/aspect/get-aspect-callout';
+import { getAspectCallout } from '../../containers/aspect/getAspectCallout';
 
 interface AspectPermissions {
   canUpdate: boolean;
