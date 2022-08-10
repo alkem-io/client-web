@@ -5,11 +5,10 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import useRouteMatch from '../../../../hooks/routing/useRouteMatch';
 import { RouterLink } from '../../../core/RouterLink';
-import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-//import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ProfileMenuItem from './ProfileMenuItem';
 import { TopBarHeight } from './TopBar';
+import { ChallengeIcon } from '../../../icons/ChallengeIcon';
 
 const PREFIX = 'TopNavIcons';
 
@@ -72,7 +71,7 @@ const TopNavIcons = () => {
   const menuItems: MenuItem[] = [
     {
       title: t('common.challenges'),
-      icon: <AutoAwesomeOutlinedIcon />,
+      icon: <ChallengeIcon />,
       url: '/challenges',
     },
     {
