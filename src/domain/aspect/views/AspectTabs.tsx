@@ -6,14 +6,12 @@ import { useAspect } from '../../../context/aspect/AspectProvider';
 import { AspectDialogSection } from './AspectDialogSection';
 import { styled } from '@mui/styles';
 
-// type AspectRoutesType = keyof typeof routes;
-
 export interface AspectTabsProps {
   currentTab: AspectDialogSection;
   onClose: () => void;
 }
 
-const StyledTabs = styled(Tabs)({
+const RightAlignedTabs = styled(Tabs)({
   '& .MuiTabs-flexContainer': { justifyContent: 'end' },
 });
 
@@ -21,7 +19,7 @@ const AspectTabs: FC<AspectTabsProps> = ({ currentTab, onClose }) => {
   const { permissions } = useAspect();
 
   return (
-    <StyledTabs
+    <RightAlignedTabs
       value={currentTab}
       aria-label="Aspect tabs"
       variant="scrollable"
@@ -45,7 +43,7 @@ const AspectTabs: FC<AspectTabsProps> = ({ currentTab, onClose }) => {
       <Button sx={{ minWidth: 4, marginLeft: -1 }} onClick={onClose}>
         <Close />
       </Button>
-    </StyledTabs>
+    </RightAlignedTabs>
   );
 };
 export default AspectTabs;
