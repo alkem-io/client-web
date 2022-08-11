@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AspectCardFragment, CreateAspectOnContextInput, Scalars } from '../../models/graphql-schema';
+import { AspectCardFragment, CreateAspectOnCalloutInput, Scalars } from '../../models/graphql-schema';
 import { useApolloErrorHandler, useHub, useAspectsData } from '../../hooks';
 import {
   AspectCardFragmentDoc,
@@ -16,7 +16,7 @@ export interface EntityIds {
   opportunityNameId?: Scalars['UUID_NAMEID'];
 }
 
-export type OnCreateInput = Omit<CreateAspectOnContextInput, 'contextID'>;
+export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 export type AspectWithPermissions = AspectCardFragment & { canDelete: boolean | undefined };
 
 export interface Provided {
@@ -43,7 +43,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
   const handleError = useApolloErrorHandler();
   const { templates } = useHub();
 
-  const { aspects, loading, error, canReadAspects, canCreateAspects, contextId, subscriptionEnabled } = useAspectsData({
+  const { aspects, loading, error, canReadAspects, canCreateAspects, calloutId, subscriptionEnabled } = useAspectsData({
     hubNameId,
     challengeNameId,
     opportunityNameId,
@@ -58,23 +58,23 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
         return;
       }
 
-      const { createAspectOnContext } = data;
+      const { createAspectOnCallout } = data;
 
-      const contextRefId = cache.identify({
-        __typename: 'Context',
-        id: contextId,
+      const calloutRefId = cache.identify({
+        __typename: 'Callout',
+        id: calloutId,
       });
 
-      if (!contextRefId) {
+      if (!calloutRefId) {
         return;
       }
 
       cache.modify({
-        id: contextRefId,
+        id: calloutRefId,
         fields: {
           aspects(existingAspects = []) {
             const newAspectRef = cache.writeFragment({
-              data: createAspectOnContext,
+              data: createAspectOnCallout,
               fragment: AspectCardFragmentDoc,
               fragmentName: 'AspectCard',
             });
@@ -89,7 +89,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
     const { data } = await createAspect({
       variables: {
         aspectData: {
-          contextID: contextId!,
+          calloutID: calloutId!,
           displayName: aspect.displayName,
           description: aspect.description,
           type: aspect.type,
@@ -97,7 +97,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
         },
       },
       optimisticResponse: {
-        createAspectOnContext: {
+        createAspectOnCallout: {
           __typename: 'Aspect',
           id: '',
           nameID: '',
@@ -123,7 +123,7 @@ const ContributeTabContainer: FC<ContributeContainerProps> = ({
       },
     });
 
-    const nameID = data?.createAspectOnContext.nameID;
+    const nameID = data?.createAspectOnCallout.nameID;
 
     return nameID ? { nameID } : undefined;
   };

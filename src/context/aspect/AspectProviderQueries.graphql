@@ -1,7 +1,7 @@
 query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
-    context {
+    collaboration {
       ...AspectProviderData
     }
   }
@@ -12,7 +12,7 @@ query ChallengeAspectProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_N
     id
     challenge(ID: $challengeNameId) {
       id
-      context {
+      collaboration {
         ...AspectProviderData
       }
     }
@@ -24,17 +24,21 @@ query OpportunityAspectProvider($hubNameId: UUID_NAMEID!, $opportunityNameId: UU
     id
     opportunity(ID: $opportunityNameId) {
       id
-      context {
+      collaboration {
         ...AspectProviderData
       }
     }
   }
 }
 
-fragment AspectProviderData on Context {
+fragment AspectProviderData on Collaboration {
   id
-  aspects(IDs: [$aspectNameId]) {
-    ...AspectProvided
+  callouts {
+    id
+    type
+    aspects(IDs: [$aspectNameId]) {
+      ...AspectProvided
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-fragment AspectsOnContext on Context {
+fragment AspectsOnCallout on Callout {
   id
   aspects {
     ...ContributeTabAspect

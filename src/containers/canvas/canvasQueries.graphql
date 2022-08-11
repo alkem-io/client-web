@@ -59,23 +59,27 @@ fragment CreateCanvasCanvasTemplate on CanvasTemplate {
   value
 }
 
-fragment ContextWithCanvasDetails on Context {
+fragment CollaborationWithCanvasDetails on Collaboration {
   id
-  canvases {
-    ...CanvasDetails
-  }
-  authorization {
+  callouts {
     id
-    myPrivileges
-    anonymousReadAccess
+    type
+    authorization {
+      id
+      anonymousReadAccess
+      myPrivileges
+    }
+    canvases {
+      ...CanvasDetails
+    }
   }
 }
 
 query hubCanvases($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
-    context {
-      ...ContextWithCanvasDetails
+    collaboration {
+      ...CollaborationWithCanvasDetails
     }
   }
 }
@@ -83,11 +87,19 @@ query hubCanvases($hubId: UUID_NAMEID!) {
 query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
   hub(ID: $hubId) {
     id
-    context {
+    collaboration {
       id
-      canvases(IDs: [$canvasId]) {
-        ...CanvasDetails
-        ...CanvasValue
+      callouts {
+        id
+        type
+        authorization {
+          id
+          myPrivileges
+        }
+        canvases(IDs: [$canvasId]) {
+          ...CanvasDetails
+          ...CanvasValue
+        }
       }
     }
   }
@@ -98,8 +110,8 @@ query challengeCanvases($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     id
     challenge(ID: $challengeId) {
       id
-      context {
-        ...ContextWithCanvasDetails
+      collaboration {
+        ...CollaborationWithCanvasDetails
       }
     }
   }
@@ -110,11 +122,19 @@ query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $c
     id
     challenge(ID: $challengeId) {
       id
-      context {
+      collaboration {
         id
-        canvases(IDs: [$canvasId]) {
-          ...CanvasDetails
-          ...CanvasValue
+        callouts {
+          id
+          type
+          authorization {
+            id
+            myPrivileges
+          }
+          canvases(IDs: [$canvasId]) {
+            ...CanvasDetails
+            ...CanvasValue
+          }
         }
       }
     }
@@ -126,8 +146,8 @@ query opportunityCanvases($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     id
     opportunity(ID: $opportunityId) {
       id
-      context {
-        ...ContextWithCanvasDetails
+      collaboration {
+        ...CollaborationWithCanvasDetails
       }
     }
   }
@@ -138,30 +158,38 @@ query opportunityCanvasValues($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!
     id
     opportunity(ID: $opportunityId) {
       id
-      context {
+      collaboration {
         id
-        canvases(IDs: [$canvasId]) {
-          ...CanvasDetails
-          ...CanvasValue
+        callouts {
+          id
+          type
+          authorization {
+            id
+            myPrivileges
+          }
+          canvases(IDs: [$canvasId]) {
+            ...CanvasDetails
+            ...CanvasValue
+          }
         }
       }
     }
   }
 }
 
-mutation createCanvasOnContext($input: CreateCanvasOnContextInput!) {
-  createCanvasOnContext(canvasData: $input) {
+mutation createCanvasOnCallout($input: CreateCanvasOnCalloutInput!) {
+  createCanvasOnCallout(canvasData: $input) {
     ...CanvasDetails
   }
 }
 
-mutation deleteCanvasOnContext($input: DeleteCanvasOnContextInput!) {
-  deleteCanvasOnContext(deleteData: $input) {
+mutation deleteCanvas($input: DeleteCanvasInput!) {
+  deleteCanvas(canvasData: $input) {
     ...CanvasSummary
   }
 }
 
-mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
+mutation updateCanvas($input: UpdateCanvasDirectInput!) {
   updateCanvas(canvasData: $input) {
     id
     value
@@ -169,7 +197,7 @@ mutation updateCanvasOnContext($input: UpdateCanvasDirectInput!) {
   }
 }
 
-mutation checkoutCanvasOnContext($input: CanvasCheckoutEventInput!) {
+mutation checkoutCanvas($input: CanvasCheckoutEventInput!) {
   eventOnCanvasCheckout(canvasCheckoutEventData: $input) {
     ...CheckoutDetails
   }

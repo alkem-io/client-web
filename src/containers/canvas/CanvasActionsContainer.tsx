@@ -2,10 +2,10 @@ import { FC, useMemo } from 'react';
 import { useApolloErrorHandler } from '../../hooks';
 import {
   CanvasDetailsFragmentDoc,
-  useCheckoutCanvasOnContextMutation,
-  useCreateCanvasOnContextMutation,
-  useDeleteCanvasOnContextMutation,
-  useUpdateCanvasOnContextMutation,
+  useCheckoutCanvasMutation,
+  useCreateCanvasOnCalloutMutation,
+  useDeleteCanvasMutation,
+  useUpdateCanvasMutation,
   useUploadVisualMutation,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
@@ -13,14 +13,14 @@ import {
   Canvas,
   CanvasCheckoutStateEnum,
   CanvasDetailsFragment,
-  CreateCanvasOnContextInput,
-  DeleteCanvasOnContextInput,
+  CreateCanvasOnCalloutInput,
+  DeleteCanvasInput,
 } from '../../models/graphql-schema';
 import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
 
 export interface ICanvasActions {
-  onCreate: (canvas: CreateCanvasOnContextInput) => Promise<void>;
-  onDelete: (canvas: DeleteCanvasOnContextInput) => Promise<void>;
+  onCreate: (canvas: CreateCanvasOnCalloutInput) => Promise<void>;
+  onDelete: (canvas: DeleteCanvasInput) => Promise<void>;
   onCheckout: (canvas: CanvasDetailsFragment) => Promise<void>;
   onCheckin: (canvas: CanvasDetailsFragment) => Promise<void>;
   onUpdate: (canvas: Canvas, previewImage?: Blob) => Promise<void>;
@@ -38,12 +38,12 @@ export interface CanvasActionsContainerProps
 
 const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) => {
   const handleError = useApolloErrorHandler();
-  const [createCanvas, { loading: creatingCanvas }] = useCreateCanvasOnContextMutation({
+  const [createCanvas, { loading: creatingCanvas }] = useCreateCanvasOnCalloutMutation({
     onError: handleError,
   });
 
-  const handleCreateCanvas = async (canvas: CreateCanvasOnContextInput) => {
-    if (!canvas.contextID) {
+  const handleCreateCanvas = async (canvas: CreateCanvasOnCalloutInput) => {
+    if (!canvas.calloutID) {
       throw new Error('[canvas:onCreate]: Missing contextID');
     }
 
@@ -51,14 +51,14 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
       update(cache, { data }) {
         cache.modify({
           id: cache.identify({
-            id: canvas.contextID,
-            __typename: 'Context',
+            id: canvas.calloutID,
+            __typename: 'Callout',
           }),
           fields: {
             canvases(existingCanvases = []) {
               if (data) {
                 const newCanvas = cache.writeFragment({
-                  data: data?.createCanvasOnContext,
+                  data: data?.createCanvasOnCallout,
                   fragment: CanvasDetailsFragmentDoc,
                   fragmentName: 'CanvasDetails',
                 });
@@ -75,21 +75,18 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  const [deleteCanvas, { loading: deletingCanvas }] = useDeleteCanvasOnContextMutation({
+  const [deleteCanvas, { loading: deletingCanvas }] = useDeleteCanvasMutation({
     onError: handleError,
   });
 
-  const handleDeleteCanvas = async (canvas: DeleteCanvasOnContextInput) => {
-    if (!canvas.contextID) {
-      throw new Error('[canvas:onDelete]: Missing contextID');
-    }
-    if (!canvas.canvasID) {
-      throw new Error('[canvas:onDelete]: Missing canvasID');
+  const handleDeleteCanvas = async (canvas: DeleteCanvasInput) => {
+    if (!canvas.ID) {
+      throw new Error('[canvas:onDelete]: Missing canvas ID');
     }
 
     await deleteCanvas({
       update: (cache, { data }) => {
-        const output = data?.deleteCanvasOnContext;
+        const output = data?.deleteCanvas;
         if (output) {
           evictFromCache(cache, String(output.id), 'Canvas');
         }
@@ -100,7 +97,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  const [checkoutCanvas, { loading: checkingoutCanvas }] = useCheckoutCanvasOnContextMutation({
+  const [checkoutCanvas, { loading: checkingoutCanvas }] = useCheckoutCanvasMutation({
     onError: handleError,
   });
 
@@ -139,7 +136,7 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
     });
   };
 
-  const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasOnContextMutation({
+  const [updateCanvas, { loading: updatingCanvas }] = useUpdateCanvasMutation({
     onError: handleError,
   });
 

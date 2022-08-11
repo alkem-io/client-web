@@ -9,7 +9,12 @@ import InterestModal from '../../components/composite/entities/Hub/InterestModal
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
-import { CanvasDetailsFragment, OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import {
+  CanvasDetailsFragment,
+  OpportunityPageFragment,
+  OpportunityPageRelationsFragment,
+  Reference,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
@@ -35,8 +40,8 @@ export interface OpportunityDashboardViewEntities {
   links: Reference[];
   meme?: Reference;
   relations: {
-    incoming: OpportunityPageFragment['relations'];
-    outgoing: OpportunityPageFragment['relations'];
+    incoming: OpportunityPageRelationsFragment[];
+    outgoing: OpportunityPageRelationsFragment[];
   };
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
@@ -105,7 +110,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
-  const { id } = opportunity;
+  const { id, collaboration } = opportunity;
+  const { id: collaborationId } = collaboration ?? {};
 
   const { loading } = state;
 
@@ -191,7 +197,12 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           />
         </DashboardColumn>
       </Grid>
-      <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />
+      <InterestModal
+        onHide={actions.onInterestClose}
+        show={state.showInterestModal}
+        collaborationId={collaborationId}
+        opportunityId={id}
+      />
     </>
   );
 };

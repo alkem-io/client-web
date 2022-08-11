@@ -19,6 +19,7 @@ import {
   renderComponentOrChildrenFn,
 } from '../../../utils/containers/ComponentOrChildrenFn';
 import useAspectCommentsMessageReceivedSubscription from '../../../domain/aspect/comments/useAspectCommentsMessageReceivedSubscription';
+import { getAspectCallout } from '../getAspectCallout';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -70,7 +71,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = hubData?.hub?.context?.aspects?.[0];
+  const hubAspect = getAspectCallout(hubData?.hub?.collaboration?.callouts)?.aspects?.[0];
 
   const {
     data: challengeData,
@@ -82,7 +83,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = challengeData?.hub?.challenge?.context?.aspects?.[0];
+  const challengeAspect = getAspectCallout(challengeData?.hub?.challenge?.collaboration?.callouts)?.aspects?.[0];
 
   const {
     data: opportunityData,
@@ -94,7 +95,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = opportunityData?.hub?.opportunity?.context?.aspects?.[0];
+  const opportunityAspect = getAspectCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts)?.aspects?.[0];
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;
@@ -102,17 +103,17 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
 
   const hubCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     hubData,
-    hubData => hubData?.hub?.context?.aspects?.[0],
+    hubData => getAspectCallout(hubData?.hub?.collaboration?.callouts)?.aspects?.[0],
     subscribeToHub
   );
   const challengeCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     challengeData,
-    challengeData => challengeData?.hub?.challenge?.context?.aspects?.[0],
+    challengeData => getAspectCallout(challengeData?.hub?.challenge?.collaboration?.callouts)?.aspects?.[0],
     subscribeToChallenge
   );
   const opportunityCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     opportunityData,
-    opportunityData => opportunityData?.hub?.opportunity?.context?.aspects?.[0],
+    opportunityData => getAspectCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts)?.aspects?.[0],
     subscribeToOpportunity
   );
 

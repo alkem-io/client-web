@@ -21,13 +21,33 @@ fragment OpportunityPage on Opportunity {
     name
     value
   }
-  relations {
+  lifecycle {
     id
-    type
-    actorRole
-    actorName
-    actorType
-    description
+    machineDef
+    state
+    nextEvents
+    stateIsFinal
+  }
+  collaboration {
+    id
+    relations {
+      id
+      type
+      actorRole
+      actorName
+      actorType
+      description
+    }
+    callouts {
+      id
+      type
+      aspects(limit: 2, shuffle: true) {
+        ...AspectCard
+      }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
+    }
   }
   context {
     id
@@ -46,12 +66,6 @@ fragment OpportunityPage on Opportunity {
     visuals {
       ...VisualUri
     }
-    aspects(limit: 2, shuffle: true) {
-      ...AspectCard
-    }
-    canvases(limit: 2, shuffle: true) {
-      ...CanvasDetails
-    }
   }
   community {
     ...EntityDashboardCommunity
@@ -63,4 +77,13 @@ fragment OpportunityPage on Opportunity {
     displayName
     description
   }
+}
+
+fragment OpportunityPageRelations on Relation {
+  id
+  type
+  actorRole
+  actorName
+  actorType
+  description
 }

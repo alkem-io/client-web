@@ -9,7 +9,19 @@ query HubTemplates($hubId: UUID_NAMEID!) {
       canvasTemplates {
         ...AdminCanvasTemplate
       }
+      lifecycleTemplates {
+        ...AdminLifecycleTemplate
+      }
     }
+  }
+}
+
+fragment AdminLifecycleTemplate on LifecycleTemplate {
+  id
+  definition
+  type
+  info {
+    ...TemplateInfo
   }
 }
 

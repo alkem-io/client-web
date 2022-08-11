@@ -7,6 +7,7 @@ import {
 } from '../../hooks/generated/graphql';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
+import { getAspectCallout } from '../../containers/aspect/getAspectCallout';
 
 interface AspectPermissions {
   canUpdate: boolean;
@@ -43,7 +44,7 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = hubData?.hub?.context?.aspects?.[0];
+  const hubAspect = getAspectCallout(hubData?.hub?.collaboration?.callouts)?.aspects?.[0];
 
   const {
     data: challengeData,
@@ -54,7 +55,7 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = challengeData?.hub?.challenge?.context?.aspects?.[0];
+  const challengeAspect = getAspectCallout(challengeData?.hub?.challenge?.collaboration?.callouts)?.aspects?.[0];
 
   const {
     data: opportunityData,
@@ -65,7 +66,7 @@ const AspectProvider: FC = ({ children }) => {
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = opportunityData?.hub?.opportunity?.context?.aspects?.[0];
+  const opportunityAspect = getAspectCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts)?.aspects?.[0];
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;
