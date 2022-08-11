@@ -11,7 +11,6 @@ type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization';
 type EntitySettingsLayoutProps = EntityLinkComponentProps & {
   pageBannerComponent: ComponentType;
   tabsComponent: ComponentType<EntityTabsProps>;
-
   entityTypeName: EntityTypeName;
   tabs: TabDefinition<SettingsSection>[];
   currentTab: SettingsSection;
