@@ -19,6 +19,7 @@ export interface ContributionCardV2Details {
   mediaUrl?: string;
   mediaSize?: mediaSize;
   url?: string;
+  keepScroll?: boolean;
   domain?: {
     communityID: string;
   };
@@ -91,13 +92,14 @@ const ContributionCardV2: FC<ContributionCardV2Props> = ({
     mediaSize = 'medium',
     url = '',
     tagsFor,
+    keepScroll,
   } = details || {};
   const { noMedia } = options || {};
 
   const styles = useStyles({ mediaSize });
 
   return (
-    <LinkCard to={url} className={clsx(styles.card, className)} aria-label="contribution-card">
+    <LinkCard to={url} keepScroll={keepScroll} className={clsx(styles.card, className)} aria-label="contribution-card">
       {!noMedia && (
         <>
           {loading ? (

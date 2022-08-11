@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogProps, styled, Typography } from '@mui/material';
+import { Box, Button, DialogActions, DialogContent, DialogProps, styled, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AdminAspectTemplateFragment } from '../../../../models/graphql-schema';
@@ -6,6 +6,7 @@ import TagsComponent from '../../../shared/components/TagsComponent/TagsComponen
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
 import Markdown from '../../../../components/core/Markdown';
+import DialogWhiteBg from '../../../shared/components/DialogWhiteBg';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
@@ -29,7 +30,7 @@ const AspectTemplateView = ({ template, open, onClose, editUrl, editLinkState }:
   } = template;
 
   return (
-    <Dialog open={open} onClose={onClose} PaperProps={{ sx: { backgroundColor: 'background.default' } }}>
+    <DialogWhiteBg open={open} onClose={onClose}>
       {visual?.uri && <img src={visual.uri} alt={description} />}
       <DialogContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Box display="flex" minWidth={theme => theme.spacing(46)} justifyContent="space-between" alignItems="center">
@@ -66,7 +67,7 @@ const AspectTemplateView = ({ template, open, onClose, editUrl, editLinkState }:
           </Typography>
         </Box>
       </DialogContent>
-    </Dialog>
+    </DialogWhiteBg>
   );
 };
 

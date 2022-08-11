@@ -5,11 +5,19 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
+type NavigationState =
+  | undefined
+  | {
+      keepScroll?: boolean;
+    };
+
 export default function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, state } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (!(state as NavigationState)?.keepScroll) {
+      window.scrollTo(0, 0);
+    }
   }, [pathname]);
 
   return null;
