@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 import { useHub, useUserContext } from '../../../hooks';
-import CommunityUpdates from '../CommunityUpdates/CommunityUpdates';
 import { toOrganizationCardProps } from '../utils/useOrganizationCardProps';
 import { useHubCommunityContributorsQuery } from '../../../hooks/generated/graphql';
 import { useTranslation } from 'react-i18next';
@@ -17,7 +16,7 @@ import CommunityContributorsSearch from '../CommunityContributors/CommunityContr
 import useUserCardProps from '../utils/useUserCardProps';
 
 const HubCommunityView: FC = () => {
-  const { hubId, communityId } = useHub();
+  const { hubId } = useHub();
 
   const { host, loading, ...contributors } = useCommunityContributors(
     useHubCommunityContributorsQuery,
@@ -51,7 +50,6 @@ const HubCommunityView: FC = () => {
 
   return (
     <>
-      <CommunityUpdates hubId={hubId} communityId={communityId} />
       <HostOrganization organization={hostOrganization} loading={loading} />
       <SectionSpacer />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
