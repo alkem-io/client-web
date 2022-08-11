@@ -1,11 +1,14 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { Outlet, resolvePath, useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Tabs } from '@mui/material';
-import { DashboardOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Box } from '@mui/material';
 import useRouteMatch from '../../hooks/routing/useRouteMatch';
-import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
 import { useAspect } from '../../context/aspect/AspectProvider';
+import HeaderNavigationTab from '../../domain/shared/components/PageHeader/HeaderNavigationTab';
+import HeaderNavigationTabs from '../../domain/shared/components/PageHeader/HeaderNavigationTabs';
+import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
+import AspectDashboardContainer from '../../containers/aspect/AspectDashboardContainer/AspectDashboardContainer';
+import { useUrlParams } from '../../hooks';
 
 const routes = {
   dashboard: 'dashboard',
@@ -18,7 +21,8 @@ export interface AspectTabsProps {}
 
 const AspectTabs: FC<AspectTabsProps> = () => {
   const { t } = useTranslation();
-  const { permissions } = useAspect();
+  const { displayName, permissions, loading } = useAspect();
+  const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
   const resolved = useResolvedPath('.');
   const matchPatterns = useMemo(
     () => Object.values(routes).map(x => resolvePath(x, resolved.pathname)?.pathname),
@@ -37,28 +41,37 @@ const AspectTabs: FC<AspectTabsProps> = () => {
 
   return (
     <>
-      <Tabs
-        value={currentTab}
-        aria-label="Aspect tabs"
-        variant="scrollable"
-        scrollButtons={'auto'}
-        allowScrollButtonsMobile
+      <AspectDashboardContainer
+        hubNameId={hubNameId}
+        aspectNameId={aspectNameId}
+        challengeNameId={challengeNameId}
+        opportunityNameId={opportunityNameId}
       >
-        <NavigationTab
-          icon={<DashboardOutlined />}
+        {({ aspect }) => (
+          <PageBanner
+            title={displayName}
+            loading={loading}
+            bannerUrl={aspect?.banner?.uri}
+            showBreadcrumbs
+            breadcrumbsTitle={t('pages.aspect.aspect-breadcrumbs')}
+          />
+        )}
+      </AspectDashboardContainer>
+
+      <HeaderNavigationTabs value={currentTab}>
+        <HeaderNavigationTab
           label={t('common.dashboard')}
           value={resolvePath('dashboard', resolved.pathname)?.pathname}
           to={'dashboard'}
         />
         {permissions.canUpdate && (
-          <NavigationTab
-            icon={<SettingsOutlined />}
+          <HeaderNavigationTab
             label={t('common.settings')}
             value={resolvePath('settings', resolved.pathname)?.pathname}
             to={'settings'}
           />
         )}
-      </Tabs>
+      </HeaderNavigationTabs>
       <Box paddingTop={3} />
       <Outlet />
     </>

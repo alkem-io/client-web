@@ -52,10 +52,17 @@ export interface PageBannerProps {
   bannerUrl?: string;
   showBreadcrumbs?: boolean;
   breadcrumbsTitle?: string;
-  loading: boolean;
+  loading?: boolean;
 }
 
-const PageBanner: FC<PageBannerProps> = ({ title, tagline, bannerUrl, showBreadcrumbs, breadcrumbsTitle, loading }) => {
+const PageBanner: FC<PageBannerProps> = ({
+  title,
+  tagline,
+  bannerUrl,
+  showBreadcrumbs,
+  breadcrumbsTitle,
+  loading = false,
+}) => {
   bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
 
   return (

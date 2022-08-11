@@ -5,7 +5,7 @@ import HeaderNavigationTab from './HeaderNavigationTab';
 
 const Root = styled(Box)(({ theme }) => ({
   position: 'relative',
-  '.settings-button': {
+  '.MuiTab-root.settings-button': {
     color: theme.palette.common.white,
     position: 'absolute',
     top: 0,
@@ -26,6 +26,10 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
     paddingLeft: theme.spacing(8),
     paddingRight: theme.spacing(8),
   },
+  '& .MuiTabs-scroller': {
+    overflowX: 'visible',
+    overflowY: 'visible',
+  },
   '& .MuiTabs-indicator': {
     backgroundColor: theme.palette.common.white,
     bottom: 2,
@@ -45,17 +49,15 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
 }));
 
 export interface NavigationTabsProps extends TabsProps {
-  showSettings: boolean;
-  settingsValue: string;
-  settingsUrl: string;
+  showSettings?: boolean;
+  settingsUrl?: string;
 }
 
 const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
   value,
   'aria-label': ariaLabel,
-  showSettings,
-  settingsValue,
-  settingsUrl,
+  showSettings = false,
+  settingsUrl = '',
   children,
 }) => {
   return (
@@ -73,7 +75,7 @@ const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
         <HeaderNavigationTab
           className="settings-button"
           icon={<SettingsOutlined />}
-          value={settingsValue}
+          value={'settings'}
           to={settingsUrl}
         />
       )}

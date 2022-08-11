@@ -8,7 +8,7 @@ export interface EntityTabsProps {
 
 export interface EntityPageLayoutProps extends SimplePageLayoutProps<EntityPageSection> {
   pageBannerComponent: ComponentType;
-  tabsComponent: ComponentType<EntityTabsProps>;
+  tabsComponent?: ComponentType<EntityTabsProps>;
 }
 
 const EntityPageLayout = ({
@@ -22,7 +22,7 @@ const EntityPageLayout = ({
   return (
     <>
       <PageBanner />
-      <Tabs currentTab={currentSection} />
+      {Tabs && <Tabs currentTab={currentSection} />}
       <SimplePageLayout
         currentSection={currentSection}
         entityTypeName={entityTypeName}

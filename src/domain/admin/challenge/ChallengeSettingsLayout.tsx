@@ -5,6 +5,8 @@ import { useChallenge } from '../../../hooks';
 import { CommonTabs } from '../layout/EntitySettings/constants';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
+import ChallengePageBanner from '../../challenge/layout/ChallengePageBanner';
+import ChallengeTabs from '../../challenge/layout/ChallengeTabs';
 
 interface ChallengeSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -23,7 +25,16 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const ChallengeSettingsLayout: FC<ChallengeSettingsLayoutProps> = props => {
   const entityAttrs = useChallenge();
 
-  return <EntitySettingsLayout entityTypeName="challenge" tabs={tabs} {...entityAttrs} {...props} />;
+  return (
+    <EntitySettingsLayout
+      entityTypeName="challenge"
+      tabs={tabs}
+      pageBannerComponent={ChallengePageBanner}
+      tabsComponent={ChallengeTabs}
+      {...entityAttrs}
+      {...props}
+    />
+  );
 };
 
 export default ChallengeSettingsLayout;

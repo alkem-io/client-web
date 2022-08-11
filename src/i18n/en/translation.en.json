@@ -68,6 +68,7 @@
     "name": "Name",
     "username": "Username",
     "tags": "Tags",
+    "administration": "Administration",
     "add": "Add",
     "remove": "Remove",
     "canvas": "Canvas",
@@ -736,7 +737,7 @@
         },
         "sections": {
           "opportunities": {
-            "description": "Here you can edit opportunities for this hub."
+            "description": "Here you can edit opportunities for this challenge."
           }
         },
         "notifications": {
@@ -785,6 +786,7 @@
       "success": "Feedback submitted"
     },
     "aspect": {
+      "aspect-breadcrumbs": "This aspect is part of:",
       "dashboard": {
         "comment": {
           "placeholder": "Type your comment here"
