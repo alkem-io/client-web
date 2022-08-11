@@ -3,11 +3,14 @@ query opportunityAspectsOld($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) 
     id
     opportunity(ID: $opportunityId) {
       id
-      context {
+      collaboration {
         id
-        aspects {
+        callouts {
           id
-          displayName
+          aspects {
+            id
+            displayName
+          }
         }
       }
     }

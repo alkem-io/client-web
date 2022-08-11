@@ -21,7 +21,7 @@ export interface ActiveCanvasIdHolder {
 }
 
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
-  contextID: string;
+  calloutID: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasDetailsFragment[];
   templates: CreateCanvasCanvasTemplateFragment[];
@@ -55,7 +55,7 @@ export interface CanvasNavigationMethods {
 export interface CanvasBeingDeleted {
   displayName: string;
   canvasID: string;
-  contextID: string;
+  calloutID: string;
 }
 
 export interface CanvasManagementViewProps
@@ -75,7 +75,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   backToCanvases,
   buildLinkToCanvas,
 }) => {
-  const { canvasId, contextID } = entities;
+  const { canvasId, calloutID } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
@@ -118,7 +118,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
               onCheckin: actions.onCheckin,
               onCheckout: actions.onCheckout,
               onUpdate: actions.onUpdate,
-              onDelete: c => setCanvasBeingDeleted({ canvasID: c.id, displayName: c.displayName, contextID }),
+              onDelete: c => setCanvasBeingDeleted({ canvasID: c.id, displayName: c.displayName, calloutID }),
             }}
             options={{
               show: Boolean(canvasId),
@@ -132,7 +132,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
       </CanvasValueContainer>
       <CanvasCreateDialog
         entities={{
-          contextID: contextID,
+          calloutID: calloutID,
           templates: entities.templates,
         }}
         actions={{
@@ -156,8 +156,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
           onConfirm: async () => {
             if (canvasBeingDeleted) {
               await actions.onDelete({
-                canvasID: canvasBeingDeleted.canvasID,
-                contextID: canvasBeingDeleted.contextID,
+                ID: canvasBeingDeleted.canvasID,
               });
               setCanvasBeingDeleted(undefined);
               backToCanvases();

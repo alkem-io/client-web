@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { useOpportunity } from '../../../hooks';
-import CommunityUpdates from '../CommunityUpdates/CommunityUpdates';
 import { useOpportunityCommunityContributorsQuery } from '../../../hooks/generated/graphql';
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
@@ -12,7 +11,6 @@ import CommunityContributorsSearch from '../CommunityContributors/CommunityContr
 
 const OpportunityCommunityView: FC = () => {
   const { opportunity, hubId } = useOpportunity();
-  const communityId = opportunity?.community?.id;
   const opportunityId = opportunity?.id;
 
   const { loading, ...contributors } = useCommunityContributors(
@@ -37,7 +35,6 @@ const OpportunityCommunityView: FC = () => {
 
   return (
     <>
-      <CommunityUpdates hubId={hubId} communityId={communityId} />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
       <CommunityContributorsSection

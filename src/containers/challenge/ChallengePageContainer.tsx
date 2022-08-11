@@ -17,6 +17,8 @@ import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import { getCanvasCallout } from '../canvas/getCanvasCallout';
+import { getAspectCallout } from '../aspect/getAspectCallout';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -75,10 +77,10 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const opportunitiesCount = useMemo(() => getActivityCount(activity, ActivityType.Opportunity), [activity]);
 
-  const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
+  const aspects = getAspectCallout(_challenge?.hub.challenge.collaboration?.callouts)?.aspects || EMPTY;
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
-  const canvases = _challenge?.hub.challenge.context?.canvases || EMPTY;
+  const canvases = getCanvasCallout(_challenge?.hub.challenge.collaboration?.callouts)?.canvases || EMPTY;
   const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
 
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);

@@ -27,13 +27,18 @@ const useStyles = makeStyles(theme => ({
     },
   },
 }));
+export interface FormikSelectValue {
+  id: string;
+  name: string;
+  icon?: React.ReactElement;
+}
 
-interface FormikSelectProps extends SelectProps {
+export interface FormikSelectProps extends SelectProps {
   title: string;
   name: string;
   required?: boolean;
   disabled?: boolean;
-  values: { id: string; name: string; icon?: React.ReactElement }[];
+  values: FormikSelectValue[];
   placeholder?: string;
   endAdornment?: React.ReactNode;
 }
