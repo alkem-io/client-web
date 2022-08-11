@@ -717,6 +717,7 @@
         }
       },
       "organization": {
+        "create-organization": "Create organization",
         "authorization": {
           "preferences": {
             "title": "Authorization",
