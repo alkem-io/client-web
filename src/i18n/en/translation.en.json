@@ -72,8 +72,11 @@
     "add": "Add",
     "remove": "Remove",
     "canvas": "Canvas",
+    "canvases": "Canvases",
     "comment": "Comment",
     "comments": "Comments",
+    "card": "Card",
+    "cards": "Cards",
     "create": "Create",
     "create-new": "Create new",
     "create-new-entity": "Create new {{entity}}",
@@ -124,7 +127,6 @@
     "contribute": "Contribute",
     "context": "Context",
     "community": "Community",
-    "canvases": "Canvases",
     "settings": "Settings",
     "search": "Search...",
     "reference": "Reference",
@@ -311,6 +313,20 @@
     "context-section": {
       "create-aspect": "Successfully created the aspect",
       "give-feedback": "Give feedback"
+    },
+    "callout-creation": {
+      "title": "Create a new Callout",
+      "info-step": {
+        "title": "Details",
+        "description": "Description",
+        "callout-label": "Callout type",
+        "type-comments": "Comments",
+        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
+        "type-cards": "Cards",
+        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format. In the next step you can choose the type of card",
+        "type-canvases": "Canvases",
+        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a whiteboard, allowing them to draw and use text. In the next step you can choose a template for the canvas"
+      }
     },
     "aspect-creation": {
       "title": "Create a new aspect",
