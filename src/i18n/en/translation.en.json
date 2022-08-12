@@ -732,6 +732,7 @@
         }
       },
       "organization": {
+        "create-organization": "Create organization",
         "authorization": {
           "preferences": {
             "title": "Authorization",
@@ -1273,6 +1274,7 @@
     "no-data": "No {{name, lowercase}} available"
   },
   "dashboard-contributors-section": {
+    "dialog-title": "Contributors",
     "more": "...plus {{count}} more"
   },
   "associates-view": {

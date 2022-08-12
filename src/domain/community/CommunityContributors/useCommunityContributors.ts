@@ -17,11 +17,12 @@ interface Query<Data, Variables extends EntityIds> {
 const useCommunityContributors = <Data, Variables extends EntityIds, ProvidedContributors extends {}>(
   query: Query<Data, Variables>,
   selector: (data: Data | undefined) => ProvidedContributors,
-  variables: PossiblyUndefinedProps<Variables>
+  variables: PossiblyUndefinedProps<Variables>,
+  skip?: boolean
 ): Provided<ProvidedContributors> => {
   const { data, loading } = query({
     variables: variables as Variables,
-    skip: somePropsNotDefined(variables),
+    skip: skip || somePropsNotDefined(variables),
   });
 
   const contributors = useMemo(() => selector(data), [data]);

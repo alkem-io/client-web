@@ -7,13 +7,15 @@ import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
 import CommunityUpdatesDialog from '../../domain/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import { useResolvedPath } from 'react-router-dom';
+import ContributorsDialog from '../../domain/community/ContributorsDialog/ContributorsDialog';
+import HubContributorsDialogContent from '../../domain/community/entities/HubContributorsDialogContent';
 
 export interface HubDashboardPageProps {
-  dialog?: 'updates'; // | ... Pending, add more dialogs here.
+  dialog?: 'updates' | 'contributors';
 }
 
 const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
-  const currentPath = useResolvedPath('.');
+  const currentPath = useResolvedPath('..');
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
@@ -52,6 +54,11 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 onClose={backToDashboard}
                 hubId={entities.hub?.id}
                 communityId={entities.hub?.community?.id}
+              />
+              <ContributorsDialog
+                open={dialog === 'contributors'}
+                onClose={backToDashboard}
+                dialogContent={HubContributorsDialogContent}
               />
             </>
           )}

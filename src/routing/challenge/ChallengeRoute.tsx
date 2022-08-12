@@ -44,6 +44,7 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
+        <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
         <Route path={routes.Explore} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeContextPage paths={currentPaths} />} />

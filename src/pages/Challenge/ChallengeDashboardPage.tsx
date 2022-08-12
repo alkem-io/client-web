@@ -7,13 +7,15 @@ import ChallengePageLayout from '../../domain/challenge/layout/ChallengePageLayo
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import CommunityUpdatesDialog from '../../domain/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import ContributorsDialog from '../../domain/community/ContributorsDialog/ContributorsDialog';
+import ChallengeContributorsDialogContent from '../../domain/community/entities/ChallengeContributorsDialogContent';
 
 export interface ChallengeDashboardPageProps {
-  dialog?: 'updates'; // | ... Pending, add more dialogs here.
+  dialog?: 'updates' | 'contributors';
 }
 
 const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => {
-  const currentPath = useResolvedPath('.');
+  const currentPath = useResolvedPath('..');
 
   const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
@@ -29,6 +31,11 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                 onClose={backToDashboard}
                 hubId={entities.hubId}
                 communityId={entities.challenge?.community?.id}
+              />
+              <ContributorsDialog
+                open={dialog === 'contributors'}
+                onClose={backToDashboard}
+                dialogContent={ChallengeContributorsDialogContent}
               />
             </>
           )}
