@@ -8,6 +8,7 @@ import { has } from 'lodash';
  */
 
 const messages = {
+  '1060001': 'successfully-recovered-password',
   '4070005': 'verification-flow-expired',
   '4060005': 'recovery-flow-expired',
 };

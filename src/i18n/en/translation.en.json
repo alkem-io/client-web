@@ -1218,6 +1218,7 @@
     "loading-flow": "Loading flow",
     "loading-error": "Loading error",
     "messages": {
+      "successfully-recovered-password": "You successfully recovered your account. Please change your password within the next 15 minutes.",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
     }
