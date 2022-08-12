@@ -87,7 +87,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
     <AdminLayout currentTab={AdminSection.Hub}>
       <Container maxWidth="xl">
         <Box marginY={3}>
-          <Typography variant={'h2'}>{'New Hub'}</Typography>
+          <Typography variant="h2">{'New Hub'}</Typography>
         </Box>
         <HubEditForm
           isEdit={false}
@@ -95,7 +95,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
           wireSubmit={submit => (submitWired = submit)}
           organizations={organizations}
         />
-        <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
+        <Box display="flex" marginY={4} justifyContent="flex-end">
           <Button
             disabled={isLoading}
             variant="primary"

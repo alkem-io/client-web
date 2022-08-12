@@ -1,11 +1,8 @@
-import React, { FC } from 'react';
+import React, { ComponentType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
 import { DialogContent, DialogTitle } from '../../../components/core/dialog';
-import HubContributorsDialogContent from '../entities/HubContributorsDialogContent';
-import ChallengeContributorsDialogContent from '../entities/ChallengeContributorsDialogContent';
-import OpportunityContributorsDialogContent from '../entities/OpportunityContributorsDialogContent';
 
 export interface ContributorsDialogContentProps {
   dialogOpen: boolean;
@@ -14,10 +11,7 @@ export interface ContributorsDialogContentProps {
 export interface ContributorsDialogProps {
   open: boolean;
   onClose: () => void;
-  dialogContent:
-    | typeof HubContributorsDialogContent
-    | typeof ChallengeContributorsDialogContent
-    | typeof OpportunityContributorsDialogContent;
+  dialogContent: ComponentType<ContributorsDialogContentProps>;
 }
 
 const ContributorsDialog: FC<ContributorsDialogProps> = ({ open, onClose, dialogContent: Content }) => {
