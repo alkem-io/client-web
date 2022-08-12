@@ -15,7 +15,7 @@ import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPa
 import ChallengeOpportunityPage from '../../pages/Admin/Challenge/ChallengeOpportunityPage';
 import ContributePage from '../../pages/Contribute/ContributePage';
 import AspectProvider from '../../context/aspect/AspectProvider';
-import AspectRoute from '../aspect/AspectRoute';
+import AspectRoute from '../../domain/aspect/views/AspectRoute';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
 import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
 import { routes } from '../../domain/challenge/routes/challengeRoutes';
@@ -49,6 +49,14 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeContextPage paths={currentPaths} />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
+        <Route
+          path={`${routes.Explore}/aspects/:${nameOfUrl.aspectNameId}/*`}
+          element={
+            <AspectProvider>
+              <AspectRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} />
+            </AspectProvider>
+          }
+        />
       </Route>
       <Route path={'apply/*'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />} />
       <Route path={'feedback/*'} element={<CommunityFeedbackRoute paths={currentPaths} />} />
@@ -60,14 +68,6 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
               <OpportunityRoute paths={currentPaths} />
             </CommunityContextProvider>
           </OpportunityProvider>
-        }
-      />
-      <Route
-        path={`contribute/aspects/:${nameOfUrl.aspectNameId}/*`}
-        element={
-          <AspectProvider>
-            <AspectRoute paths={currentPaths} />
-          </AspectProvider>
         }
       />
       <Route path="*" element={<Error404 />} />

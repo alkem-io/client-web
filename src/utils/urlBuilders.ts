@@ -72,7 +72,7 @@ export const buildAspectUrl = (
   challengeNameId?: string,
   opportunityNameId?: string
 ) => {
-  const aspectUrl = `/contribute/aspects/${aspectNameId}`;
+  const aspectUrl = `/${EntityPageSection.Explore}/aspects/${aspectNameId}`;
   if (challengeNameId) {
     if (opportunityNameId) {
       return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${aspectUrl}`;
