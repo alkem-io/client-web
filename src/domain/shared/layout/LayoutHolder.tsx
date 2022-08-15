@@ -15,13 +15,15 @@ interface LayoutState<P> {
   props: P;
 }
 
-const createLayout = <P extends {}>(Component: ComponentType<P>) => {
-  const LayoutContext = createContext<Dispatch<SetStateAction<LayoutState<P> | undefined>>>(() => {
-    throw new Error('Not within the LayoutHolder.');
-  });
+const createLayoutHolder = () => {
+  const LayoutContext = createContext<Dispatch<SetStateAction<LayoutState<Record<string, unknown>> | undefined>>>(
+    () => {
+      throw new Error('Not within the LayoutHolder.');
+    }
+  );
 
   const LayoutHolder = ({ children }: PropsWithChildren<{}>) => {
-    const [layout, setLayout] = useState<LayoutState<P>>();
+    const [layout, setLayout] = useState<LayoutState<Record<string, unknown>>>();
 
     const Component = layout?.component!;
 
@@ -33,23 +35,27 @@ const createLayout = <P extends {}>(Component: ComponentType<P>) => {
     );
   };
 
-  const Layout = React.memo<P>(props => {
-    const setLayout = useContext(LayoutContext);
+  const createLayout = <P extends {}>(Component: ComponentType<P>) => {
+    const Layout = React.memo<P>(props => {
+      const setLayout = useContext(LayoutContext);
 
-    useLayoutEffect(() => {
-      setLayout({
-        component: Component,
-        props,
-      });
-    }, [props]);
+      useLayoutEffect(() => {
+        setLayout({
+          component: Component as ComponentType<Record<string, unknown>>,
+          props,
+        });
+      }, [props]);
 
-    return null;
-  }) as FC<P>;
+      return null;
+    }) as FC<P>;
+
+    return Layout;
+  };
 
   return {
     LayoutHolder,
-    Layout,
+    createLayout,
   };
 };
 
-export default createLayout;
+export default createLayoutHolder;

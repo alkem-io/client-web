@@ -1,9 +1,8 @@
-import createLayout from './LayoutHolder';
-import { ComponentType } from 'react';
+import createLayoutHolder from './LayoutHolder';
 import { Outlet } from 'react-router-dom';
 
-const createLayoutWithOutlet = <P extends {}>(Component: ComponentType<P>) => {
-  const { LayoutHolder, Layout } = createLayout(Component);
+const createLayoutHolderWithOutlet = () => {
+  const { LayoutHolder, createLayout } = createLayoutHolder();
 
   const LayoutHolderWithOutlet = () => {
     return (
@@ -15,8 +14,8 @@ const createLayoutWithOutlet = <P extends {}>(Component: ComponentType<P>) => {
 
   return {
     LayoutHolder: LayoutHolderWithOutlet,
-    Layout,
+    createLayout,
   };
 };
 
-export default createLayoutWithOutlet;
+export default createLayoutHolderWithOutlet;

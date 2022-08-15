@@ -1,17 +1,24 @@
 import React, { FC } from 'react';
 import { StepComponentProps } from '../../../shared/components/Stepper/step/Step';
-import { StepLayout, StepLayoutImpl, StepSummaryLayout, StepSummaryLayoutImpl } from '../step-layout/StepLayout';
+import { StepLayout, StepSummaryLayout } from '../step-layout/StepLayout';
 
 interface CloseableProps {
   onClose: () => void;
 }
 
-export const CalloutStep1: FC<StepComponentProps> = ({ next, prev }) => {
+export const CalloutStep1: FC<StepComponentProps> = ({ next, prev, definitions, activeStep }) => {
   return (
-    <StepLayoutImpl title={'Create callout info'} onClose={() => {}} next={next} prev={prev}>
+    <StepLayout
+      title={'Create callout info'}
+      onClose={() => {}}
+      next={next}
+      prev={prev}
+      steps={definitions}
+      activeStep={activeStep}
+    >
       this is content step 1
-    </StepLayoutImpl>
-  )
+    </StepLayout>
+  );
 };
 CalloutStep1.displayName = 'CalloutStep1';
 
@@ -19,26 +26,36 @@ interface ChangeableProps {
   onChange: ({ value: string }) => void;
 }
 
-export const CalloutStep2: FC<StepComponentProps & ChangeableProps> = ({ next, prev, onChange }) => {
-  const handleNext = next && (() => {
-    onChange({ value: 'set by step 2' });
-    next();
-  });
+export const CalloutStep2: FC<StepComponentProps & ChangeableProps> = ({
+  next,
+  prev,
+  definitions,
+  activeStep,
+  onChange,
+}) => {
+  const handleNext =
+    next &&
+    (() => {
+      onChange({ value: 'set by step 2' });
+      next();
+    });
 
   return (
-    <StepLayoutImpl title={'Create callout template'} onClose={() => {}} next={handleNext} prev={prev}>
+    <StepLayout
+      title={'Create callout template'}
+      onClose={() => {}}
+      next={handleNext}
+      prev={prev}
+      steps={definitions}
+      activeStep={activeStep}
+    >
       this is content step 2
-    </StepLayoutImpl>
-  )
+    </StepLayout>
+  );
 };
 CalloutStep2.displayName = 'CalloutStep2';
 
-
 export const CalloutStep3: FC<CloseableProps> = ({ onClose }) => {
-  return (
-    <StepSummaryLayoutImpl onClose={onClose}>
-      this is summary step
-    </StepSummaryLayoutImpl>
-  )
+  return <StepSummaryLayout onClose={onClose}>this is summary step</StepSummaryLayout>;
 };
 CalloutStep3.displayName = 'CalloutStep3';

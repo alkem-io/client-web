@@ -10,7 +10,7 @@ export type CalloutCreationType = {
   description: string;
   displayName: string;
   type: CalloutType;
-}
+};
 
 interface CalloutCreationOutput {}
 
@@ -23,11 +23,13 @@ export interface CalloutCreationDialogProps {
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose }) => {
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
-      <Steps>
-        <Step component={CalloutStep1} title={'callout step 1'} />
-        <Step component={CalloutStep2} title={'callout step 2'} onChange={(val) => console.log(val)} />
-        <Step component={CalloutStep3} title={'callout step 3'} onClose={onClose} />
-      </Steps>
+      <StepLayoutHolder>
+        <Steps>
+          <Step component={CalloutStep1} title={'callout step 1'} />
+          <Step component={CalloutStep2} title={'callout step 2'} onChange={val => console.log(val)} />
+          <Step component={CalloutStep3} title={'callout step 3'} onClose={onClose} />
+        </Steps>
+      </StepLayoutHolder>
     </Dialog>
   );
 };

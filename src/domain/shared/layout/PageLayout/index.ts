@@ -1,10 +1,12 @@
 import SimplePageLayout from './SimplePageLayout';
 import { default as EntityPageLayoutImpl, EntityPageLayoutProps } from './EntityPageLayout';
-import createLayoutWithOutlet from '../LayoutHolderWithOutlet';
+import createLayoutHolderWithOutlet from '../LayoutHolderWithOutlet';
 
-const { LayoutHolder: EntityPageLayoutHolder, Layout: EntityPageLayout } = createLayoutWithOutlet(EntityPageLayoutImpl);
+const { LayoutHolder: EntityPageLayoutHolder, createLayout } = createLayoutHolderWithOutlet();
 
-export { EntityPageLayoutHolder, EntityPageLayout };
+export const EntityPageLayout = createLayout(EntityPageLayoutImpl);
+
+export { EntityPageLayoutHolder };
 export type { EntityPageLayoutProps };
 
 export { SimplePageLayout };
