@@ -1,26 +1,21 @@
 import React, { FC } from 'react';
-import { Box } from '@mui/material';
 import { StepComponentProps } from '../../../shared/components/Stepper/step/Step';
-import Button from '@mui/material/Button';
+import { StepLayout, StepLayoutImpl, StepSummaryLayout, StepSummaryLayoutImpl } from '../step-layout/StepLayout';
 
 export const CalloutStep1: FC<StepComponentProps> = ({ next, prev }) => {
   return (
-    <Box>
-      this is step 1
-      <Button onClick={next} disabled={!next}>next</Button>
-      <Button onClick={prev} disabled={!prev}>prev</Button>
-    </Box>
+    <StepLayoutImpl title={'Create callout info'} onClose={() => {}} next={next} prev={prev}>
+      this is content step 1
+    </StepLayoutImpl>
   )
 };
 CalloutStep1.displayName = 'CalloutStep1';
 
 export const CalloutStep2: FC<StepComponentProps> = ({ next, prev }) => {
   return (
-    <Box>
-      this is step 2
-      <Button onClick={next} disabled={!next}>next</Button>
-      <Button onClick={prev} disabled={!prev}>prev</Button>
-    </Box>
+    <StepLayoutImpl title={'Create callout template'} onClose={() => {}} next={next} prev={prev}>
+      this is content step 2
+    </StepLayoutImpl>
   )
 };
 CalloutStep2.displayName = 'CalloutStep2';
@@ -28,11 +23,9 @@ CalloutStep2.displayName = 'CalloutStep2';
 
 export const CalloutStep3: FC<StepComponentProps> = ({ next, prev }) => {
   return (
-    <Box>
-      this is step 3
-      <Button onClick={next} disabled={!next}>next</Button>
-      <Button onClick={prev} disabled={!prev}>prev</Button>
-    </Box>
+    <StepSummaryLayoutImpl onClose={() => {}}>
+      this is summary step
+    </StepSummaryLayoutImpl>
   )
 };
 CalloutStep3.displayName = 'CalloutStep3';
