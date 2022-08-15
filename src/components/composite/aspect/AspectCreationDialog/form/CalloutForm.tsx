@@ -1,12 +1,7 @@
 import React, { FC } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutType, Tagset } from '../../../../../models/graphql-schema';
-import { Reference } from '../../../../../models/Profile';
+import { CalloutType } from '../../../../../models/graphql-schema';
 import * as yup from 'yup';
-import { displayNameValidator } from '../../../../../utils/validator';
-import { tagsetSegmentSchema } from '../../../../Admin/Common/TagsetSegment';
-import { referenceSegmentSchema } from '../../../../Admin/Common/ReferenceSegment';
-import { AspectFormOutput } from '../../AspectForm/AspectForm';
 import { FormControlLabel, Grid } from '@mui/material';
 import FormikEffectFactory from '../../../../../utils/formik/formik-effect/FormikEffect';
 import FormikInputField from '../../../forms/FormikInputField';
@@ -14,7 +9,7 @@ import FormRow from '../../../../../domain/shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';
 import MarkdownInput from '../../../../Admin/Common/MarkdownInput';
-import { LONG_TEXT_LENGTH, MID_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { MID_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 import InputLabel from '@mui/material/InputLabel/InputLabel';
 import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
@@ -62,7 +57,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
 
   const handleChange = (values: FormValueType) => {
     const callout: CalloutFormOutput = {
-      displayName: values.title,
+      displayName: values.displayName,
       description: values.description,
       type: values.type,
     };
