@@ -25,10 +25,11 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose }
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
       <Steps>
         <Step component={CalloutStep1} title={'callout step 1'} />
-        <Step component={CalloutStep2} title={'callout step 2'} />
-        <Step component={CalloutStep3} title={'callout step 3'} />
+        <Step component={CalloutStep2} title={'callout step 2'} onChange={(val) => console.log(val)} />
+        <Step component={CalloutStep3} title={'callout step 3'} onClose={onClose} />
       </Steps>
     </Dialog>
   );
 };
+
 export default CalloutCreationDialog;

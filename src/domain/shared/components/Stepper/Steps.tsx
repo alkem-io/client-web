@@ -1,19 +1,19 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StepDefinition, StepProps } from './step/Step';
 
-export interface StepsProps {
+export interface StepsProps<PassedProps extends {}> {
   initialActiveStep?: string;
-  children: React.ReactElement<StepProps> | React.ReactElement<StepProps>[];
+  children: React.ReactElement<StepProps<PassedProps>> | React.ReactElement<StepProps<PassedProps>>[];
 }
 
-const Steps: FC<StepsProps> = ({ initialActiveStep, children: childrenOrChild }) => {
+const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOrChild }: StepsProps<PassedProps>) => {
   const children = Array.isArray(childrenOrChild) ? childrenOrChild : [childrenOrChild];
 
   if (children.some(x => !x.props.component.displayName)) {
-    throw new Error('Unable to compute initial step: A step does not have a displayName!');
+    throw new Error('All steps must have a displayName.');
   }
 
-  const initialStep = initialActiveStep ?? children[0].props.component.displayName;
+  const initialStep = initialActiveStep ?? children[0].props.component.displayName!;
 
   const [activeStep, setActiveStep] = useState(initialStep);
 
@@ -50,8 +50,10 @@ const Steps: FC<StepsProps> = ({ initialActiveStep, children: childrenOrChild })
     return () => setActiveStep(children[index + 1]!.props.component.displayName!);
   }, [activeStep]);
 
-  const Component = currentStep.props.component;
+  // Taking whatever props we make use of here from a <Step>, passing the rest to the step Component
+  const { component: Component, title, ...passedProps } = currentStep.props;
 
-  return <Component activeStep={activeStep} definitions={definitions} prev={prev} next={next} />;
+  return <Component activeStep={activeStep} definitions={definitions} prev={prev} next={next} {...passedProps as PassedProps} />;
 };
+
 export default Steps;

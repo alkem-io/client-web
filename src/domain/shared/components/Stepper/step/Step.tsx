@@ -1,4 +1,4 @@
-import React, { ComponentType, FC } from 'react';
+import React, { ComponentType } from 'react';
 
 export interface StepDefinition {
   title: React.ReactNode;
@@ -12,12 +12,12 @@ export interface StepComponentProps {
   prev?: () => void;
 }
 
-export interface StepProps {
+export interface StepProps<PassedProps extends {}> {
   title: React.ReactNode;
-  component: ComponentType<StepComponentProps>;
+  component: ComponentType<StepComponentProps & PassedProps>;
 }
 
-const Step: FC<StepProps> = ({}) => {
-  return null;
-};
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Step = <PassedProps extends {}>(props: StepProps<PassedProps> & PassedProps) => null;
+
 export default Step;

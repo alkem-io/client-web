@@ -42,9 +42,11 @@ const ContributeView: FC<ContributeViewProps> = ({
     [shouldSkipFiltering, aspects, category]
   );
 
+  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(true);
+
   return (
     <Grid container spacing={2}>
-      <CalloutCreationDialog open={true} onClose={() => {}} onCreate={async () => { return undefined; }} />
+      <CalloutCreationDialog open={isCalloutCreationDialogOpen} onClose={() => setIsCalloutCreationDialogOpen(false)} onCreate={async () => { return undefined; }} />
       <Grid item xs={3}>
         <Paper square variant="outlined">
           <CategorySelector categories={categoryConfig} value={category} onSelect={setCategory} />
