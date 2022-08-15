@@ -4,7 +4,7 @@ import { PageProps } from '../common';
 import { useOpportunity, useUpdateNavigation } from '../../hooks';
 import ContextTabContainer from '../../containers/context/ContextTabContainer';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
-import PageLayout from '../../domain/shared/layout/PageLayout';
+import OpportunityPageLayout from '../../domain/opportunity/layout/OpportunityPageLayout';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
 export interface OpportunityContextPageProps extends PageProps {}
@@ -22,7 +22,7 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <PageLayout currentSection={EntityPageSection.Context} entityTypeName="opportunity">
+    <OpportunityPageLayout currentSection={EntityPageSection.About}>
       <ContextTabContainer
         hubNameId={hubNameId}
         opportunityNameId={opportunityNameId}
@@ -43,10 +43,11 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
             }}
             options={{}}
             actions={{}}
+            activity={entities.activity}
           />
         )}
       </ContextTabContainer>
-    </PageLayout>
+    </OpportunityPageLayout>
   );
 };
 export default OpportunityContextPage;

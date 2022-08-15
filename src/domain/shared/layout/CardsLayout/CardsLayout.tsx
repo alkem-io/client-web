@@ -1,5 +1,5 @@
-import React, { cloneElement, FC, ReactElement } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import React, { Children, cloneElement, FC, ReactElement } from 'react';
+import { Box, BoxProps, styled } from '@mui/material';
 import areDepsEqual from '../../utils/areDepsEqual';
 import { Identifiable } from '../../types/Identifiable';
 
@@ -39,11 +39,21 @@ const CardsLayout = React.memo(
 
 export default CardsLayout;
 
+type ContainerProps = {
+  cardsCount: number;
+};
+const Root = styled(Box)<ContainerProps>(({ cardsCount }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: cardsCount > 3 ? 'space-around' : 'start', // For less than 3 cards pile them on the left
+}));
+
 export const CardLayoutContainer: FC = ({ children }) => {
+  const cardsCount = Children.count(children);
   return (
-    <Box gap={2} display="flex" flexWrap="wrap">
+    <Root gap={2} cardsCount={cardsCount}>
       {children}
-    </Box>
+    </Root>
   );
 };
 

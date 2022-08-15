@@ -1,7 +1,6 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { useUpdateNavigation, useUrlParams } from '../../hooks';
-import { PageProps } from '../common';
+import { useUrlParams } from '../../hooks';
 import AspectSettingsContainer from '../../containers/aspect/AspectSettingsContainer/AspectSettingsContainer';
 import AspectForm, { AspectFormInput, AspectFormOutput } from '../../components/composite/aspect/AspectForm/AspectForm';
 import { Button } from '@mui/material';
@@ -11,16 +10,18 @@ import { AspectSettingsFragment, Visual } from '../../models/graphql-schema';
 import EditVisualsView from '../../views/Visuals/EditVisualsView';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import Typography from '@mui/material/Typography';
+import AspectLayout from '../../domain/aspect/views/AspectLayoutWithOutlet';
+import { AspectDialogSection } from '../../domain/aspect/views/AspectDialogSection';
 
-export interface AspectSettingsPageProps extends PageProps {}
+export interface AspectSettingsPageProps {
+  onClose: () => void;
+}
 
-const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
+const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
   const { t } = useTranslation();
   const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
   const resolved = useResolvedPath('.');
   const navigate = useNavigate();
-  const currentPaths = useMemo(() => [..._paths, { value: '', name: 'Settings', real: false }], [_paths, resolved]);
-  useUpdateNavigation({ currentPaths });
 
   const [aspect, setAspect] = useState<AspectFormOutput>();
 
@@ -38,81 +39,89 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ paths: _paths }) => {
   const contributeUrl = resolved.pathname.substring(0, aspectIndex);
 
   return (
-    <AspectSettingsContainer
-      hubNameId={hubNameId}
-      aspectNameId={aspectNameId}
-      challengeNameId={challengeNameId}
-      opportunityNameId={opportunityNameId}
-    >
-      {(entities, state, actions) => {
-        const visuals = (entities.aspect ? [entities.aspect.banner, entities.aspect.bannerNarrow] : []) as Visual[];
-        const btnDisabled = !aspect || !entities.aspect || state.updating || state.deleting;
+    <AspectLayout currentSection={AspectDialogSection.Settings} onClose={onClose}>
+      <AspectSettingsContainer
+        hubNameId={hubNameId}
+        aspectNameId={aspectNameId}
+        challengeNameId={challengeNameId}
+        opportunityNameId={opportunityNameId}
+      >
+        {(entities, state, actions) => {
+          const visuals = (entities.aspect ? [entities.aspect.banner, entities.aspect.bannerNarrow] : []) as Visual[];
+          const btnDisabled = !aspect || !entities.aspect || state.updating || state.deleting;
 
-        const handleDelete = async () => {
-          if (!entities.aspect || !aspect) {
-            return;
-          }
+          const handleDelete = async () => {
+            if (!entities.aspect || !aspect) {
+              return;
+            }
 
-          actions.handleDelete(entities.aspect.id);
-          navigate(contributeUrl);
-        };
+            actions.handleDelete(entities.aspect.id);
+            navigate(contributeUrl);
+          };
 
-        const handleUpdate = () => {
-          if (!entities.aspect || !aspect) {
-            return;
-          }
+          const handleUpdate = () => {
+            if (!entities.aspect || !aspect) {
+              return;
+            }
 
-          actions.handleUpdate({
-            id: entities.aspect.id,
-            displayName: aspect.displayName,
-            type: aspect.type,
-            description: aspect.description,
-            tags: aspect.tags,
-            references: aspect.references,
-          });
-        };
+            actions.handleUpdate({
+              id: entities.aspect.id,
+              displayName: aspect.displayName,
+              type: aspect.type,
+              description: aspect.description,
+              tags: aspect.tags,
+              references: aspect.references,
+            });
+          };
 
-        return (
-          <AspectForm
-            edit
-            loading={state.loading || state.updating}
-            aspect={toAspectFormInput(entities.aspect)}
-            aspectNames={entities.aspectsNames}
-            onChange={setAspect}
-            onAddReference={actions.handleAddReference}
-            onRemoveReference={actions.handleRemoveReference}
-          >
-            {({ isValid }) => {
-              const saveDisabled = btnDisabled || !isValid;
-              return (
-                <>
-                  <SectionSpacer double />
-                  <Box>
-                    <Typography variant={'h4'}>{t('common.visuals')}</Typography>
-                    <SectionSpacer />
-                    <EditVisualsView visuals={visuals} />
-                  </Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
-                    <Button
-                      aria-label="delete-aspect"
-                      variant="outlined"
-                      color="error"
-                      disabled={btnDisabled}
-                      onClick={handleDelete}
-                    >
-                      {t('buttons.delete')}
-                    </Button>
-                    <Button aria-label="save-aspect" variant="contained" disabled={saveDisabled} onClick={handleUpdate}>
-                      {t('buttons.save')}
-                    </Button>
-                  </Box>
-                </>
-              );
-            }}
-          </AspectForm>
-        );
-      }}
-    </AspectSettingsContainer>
+          return (
+            <AspectForm
+              edit
+              loading={state.loading || state.updating}
+              aspect={toAspectFormInput(entities.aspect)}
+              aspectNames={entities.aspectsNames}
+              onChange={setAspect}
+              onAddReference={actions.handleAddReference}
+              onRemoveReference={actions.handleRemoveReference}
+            >
+              {({ isValid }) => {
+                const saveDisabled = btnDisabled || !isValid;
+                return (
+                  <>
+                    <SectionSpacer double />
+                    <Box>
+                      <Typography variant={'h4'}>{t('common.visuals')}</Typography>
+                      <SectionSpacer />
+                      <EditVisualsView visuals={visuals} />
+                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'end', marginTop: 2, gap: theme => theme.spacing(1) }}>
+                      <Button
+                        aria-label="delete-aspect"
+                        variant="outlined"
+                        color="error"
+                        disabled={btnDisabled}
+                        onClick={handleDelete}
+                      >
+                        {t('buttons.delete')}
+                      </Button>
+                      <Button
+                        aria-label="save-aspect"
+                        variant="contained"
+                        disabled={saveDisabled}
+                        onClick={handleUpdate}
+                      >
+                        {t('buttons.save')}
+                      </Button>
+                    </Box>
+                  </>
+                );
+              }}
+            </AspectForm>
+          );
+        }}
+      </AspectSettingsContainer>
+    </AspectLayout>
   );
 };
+
 export default AspectSettingsPage;

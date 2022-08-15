@@ -1,6 +1,7 @@
 import { Box, BoxProps, List, ListItemButton, ListItemIcon, ListItemText, Popover, styled } from '@mui/material';
 import MeetingRoom from '@mui/icons-material/MeetingRoom';
 import Person from '@mui/icons-material/Person';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React, { ElementType, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +9,7 @@ import { UserMetadata } from '../../../../hooks';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
 import Typography from '../../../core/Typography';
-import User, { UserProps } from './User';
+import UserAvatar from './UserAvatar';
 
 const PREFIX = 'UserSegment';
 
@@ -26,19 +27,20 @@ const PopoverRoot = styled('div')(({ theme }) => ({
 type UserSegmentProps<El extends ElementType> = BoxProps<El> & {
   userMetadata: UserMetadata;
   emailVerified: boolean;
-  userNameProps?: UserProps['userNameProps'];
+  buttonClassName?: string;
 };
 
 const UserSegment = <El extends ElementType>({
   userMetadata,
   emailVerified,
+  buttonClassName,
   ...userBoxProps
 }: UserSegmentProps<El>) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, roles } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const popoverAnchor = useRef<HTMLDivElement>(null);
+  const popoverAnchor = useRef<HTMLButtonElement>(null);
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';
@@ -51,11 +53,11 @@ const UserSegment = <El extends ElementType>({
 
   return (
     <>
-      <User
-        name={user.displayName}
-        title={role}
+      <UserAvatar
+        name={user.firstName}
         src={user.profile?.avatar?.uri}
         ref={popoverAnchor}
+        className={buttonClassName}
         onClick={() => setDropdownOpen(true)}
         {...userBoxProps}
       />
@@ -94,6 +96,17 @@ const UserSegment = <El extends ElementType>({
                   <Person />
                 </ListItemIcon>
                 <ListItemText primary={t('buttons.my-profile')} />
+              </ListItemButton>
+              <ListItemButton
+                onClick={() => {
+                  setDropdownOpen(false);
+                  navigate('/admin', { replace: true });
+                }}
+              >
+                <ListItemIcon>
+                  <SettingsOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary={t('common.admin')} />
               </ListItemButton>
               <ListItemButton
                 onClick={() => {

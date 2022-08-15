@@ -71,6 +71,7 @@ const AspectsView: FC<AspectsViewProps> = ({
                       challengeNameId={challengeNameId}
                       opportunityNameId={opportunityNameId}
                       loading={!aspect}
+                      keepScroll
                     />
                   )}
                 </CardsLayout>

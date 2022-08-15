@@ -27,9 +27,9 @@ export interface SimpleCardProps extends LinkWithState {
   iconComponent: ComponentType<SvgIconProps>;
 }
 
-const SimpleCard = ({ url, state, title, imageUrl, iconComponent }: SimpleCardProps) => {
+const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCardProps) => {
   return (
-    <LinkNoUnderline to={url} state={state}>
+    <LinkNoUnderline {...linkProps}>
       <ElevatedPaper
         sx={{
           width: theme => theme.spacing(26),

@@ -1,9 +1,8 @@
 import React, { FC, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { NotificationHandler } from '../../../../containers/NotificationHandler';
-import { useNavigation, useUserContext, useUserScope } from '../../../../hooks';
+import { useUserContext, useUserScope } from '../../../../hooks';
 import { ScrollButton } from '../../../core';
-import Breadcrumbs from '../../../core/Breadcrumbs';
 import TopBar, { TopBarSpacer } from '../TopBar/TopBar';
 import Footer from './Footer';
 import Main from './Main';
@@ -15,7 +14,6 @@ import { COOKIE_NAME } from '../../../../domain/cookies/useAlkemioCookies';
 
 const App: FC = () => {
   const [cookies] = useCookies([COOKIE_NAME]);
-  const { paths } = useNavigation();
   const { user } = useUserContext();
 
   useUserScope(user);
@@ -43,8 +41,6 @@ const App: FC = () => {
         <TopBar />
         <Main>
           <TopBarSpacer />
-          {/* no point of showing just one item of the breadcrumbs */}
-          {paths.length > 1 && <Breadcrumbs paths={paths} />}
           <Outlet />
         </Main>
         <Footer />

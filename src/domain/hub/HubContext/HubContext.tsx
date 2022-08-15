@@ -81,7 +81,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const displayName = hub?.displayName || '';
   const communityId = hub?.community?.id ?? '';
   const visuals = hub?.context?.visuals ?? [];
-  const templates = hub?.templates || {
+  const templates = (hub?.templates as TemplatesSet) || {
     id: '',
     aspectTemplates: [],
     canvasTemplates: [],

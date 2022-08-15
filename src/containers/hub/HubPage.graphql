@@ -48,20 +48,7 @@ fragment HubPage on Hub {
     }
   }
   community {
-    id
-    leadUsers {
-      ...DashboardLeadUser
-    }
-    memberUsers {
-      ...DashboardContributingUser
-    }
-    memberOrganizations {
-      ...DashboardContributingOrganization
-    }
-    authorization {
-      id
-      myPrivileges
-    }
+    ...EntityDashboardCommunity
   }
   challenges(limit: 2, shuffle: true) {
     ...ChallengeCard

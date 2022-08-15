@@ -1,14 +1,16 @@
-import React, { FC, useCallback } from 'react';
+import React, { ComponentType, FC, useCallback } from 'react';
 import { SettingsSection } from './constants';
 import PageTabs, { TabDefinition } from '../../../../components/core/PageTabs/PageTabs';
-import AdminLayoutEntityTitle from '../AdminLayoutEntityTitle';
 import { useTranslation } from 'react-i18next';
 import { EntityLinkComponentProps } from '../../../../components/Admin/EntityLinkComponent';
-import PageLayout from '../../../shared/layout/PageLayout';
-
+import { SimplePageLayout } from '../../../shared/layout/PageLayout';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
+import { EntityTabsProps } from '../../../shared/layout/PageLayout/EntityPageLayout';
 type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization';
 
 type EntitySettingsLayoutProps = EntityLinkComponentProps & {
+  pageBannerComponent: ComponentType;
+  tabsComponent: ComponentType<EntityTabsProps>;
   entityTypeName: EntityTypeName;
   tabs: TabDefinition<SettingsSection>[];
   currentTab: SettingsSection;
@@ -21,7 +23,8 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
   currentTab,
   tabRoutePrefix = '../',
   children,
-  ...entityTitleProps
+  pageBannerComponent: PageBanner,
+  tabsComponent: Tabs,
 }) => {
   const { t } = useTranslation();
 
@@ -29,7 +32,9 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
 
   return (
     <>
-      <AdminLayoutEntityTitle {...entityTitleProps} />
+      <PageBanner />
+      {Tabs && <Tabs currentTab={EntityPageSection.Settings} />}
+
       <PageTabs
         tabs={tabs}
         currentTab={currentTab}
@@ -37,9 +42,9 @@ const EntitySettingsLayout: FC<EntitySettingsLayoutProps> = ({
         routePrefix={tabRoutePrefix}
         getTabLabel={getTabLabel}
       />
-      <PageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
+      <SimplePageLayout currentSection={currentTab} entityTypeName={entityTypeName} tabDescriptionNs="pages.admin">
         {children}
-      </PageLayout>
+      </SimplePageLayout>
     </>
   );
 };

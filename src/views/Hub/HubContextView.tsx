@@ -1,11 +1,23 @@
 import { ApolloError } from '@apollo/client';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import ContextSection from '../../components/composite/sections/ContextSection';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { Context, ContextTabFragment, ReferenceContextTabFragment, Tagset } from '../../models/graphql-schema';
+import {
+  ActivityItemFragment,
+  Context,
+  ContextTabFragment,
+  ReferenceContextTabFragment,
+  Tagset,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import { getVisualBanner } from '../../utils/visuals.utils';
+import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
+import { ActivityType } from '../../domain/activity/ActivityType';
+import getActivityCount from '../../domain/activity/utils/getActivityCount';
+import { useTranslation } from 'react-i18next';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
+import ActivityView from '../Activity/ActivityView';
+import HubCommunityView from '../../domain/community/entities/HubCommunityView';
 
 interface HubContextEntities {
   context?: ContextTabFragment;
@@ -23,9 +35,11 @@ interface HubContextState {
 interface HubContextOptions {}
 
 interface HubContextViewProps
-  extends ViewProps<HubContextEntities, HubContextActions, HubContextState, HubContextOptions> {}
+  extends ViewProps<HubContextEntities, HubContextActions, HubContextState, HubContextOptions> {
+  activity: ActivityItemFragment[] | undefined;
+}
 
-export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => {
+export const HubContextView: FC<HubContextViewProps> = ({ activity, entities, state }) => {
   const { loading } = state;
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
 
@@ -36,11 +50,32 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => 
     location = undefined,
     vision = '',
     who = '',
-    visuals = [],
     id = '',
   } = context || ({} as Context);
-  const hubBanner = getVisualBanner(visuals);
   const references = entities?.references;
+
+  const { t, i18n } = useTranslation();
+
+  const activityItems: ActivityItem[] = useMemo(() => {
+    return [
+      {
+        name: t('common.challenges'),
+        type: ActivityType.Challenge,
+        count: getActivityCount(activity, 'challenges'),
+        color: 'neutral',
+      },
+      {
+        name: t('common.opportunities'),
+        count: getActivityCount(activity, 'opportunities'),
+        color: 'primary',
+      },
+      {
+        name: t('common.members'),
+        count: getActivityCount(activity, 'members'),
+        color: 'neutralMedium',
+      },
+    ];
+  }, [activity, i18n.language]);
 
   return (
     <ContextSection
@@ -51,7 +86,6 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => 
           </ApplicationButtonContainer>
         ) : undefined
       }
-      banner={hubBanner}
       background={background}
       displayName={hubDisplayName}
       keywords={hubTagSet?.tags}
@@ -63,6 +97,12 @@ export const HubContextView: FC<HubContextViewProps> = ({ entities, state }) => 
       contextId={id}
       references={references}
       loading={loading}
+      leftColumn={
+        <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>
+          <ActivityView activity={activityItems} loading={loading} />
+        </DashboardGenericSection>
+      }
+      rightColumn={<HubCommunityView />}
     />
   );
 };

@@ -6,6 +6,10 @@ const LOCATION_STATE_PARAM_PARENT_PAGE = 'parentPage';
 
 export type ReturnTuple = [() => void, (url: string) => LinkWithState];
 
+interface Options {
+  keepScroll?: boolean;
+}
+
 /**
  * Returns a tuple of 2 functions:
  * First is a callback that takes a user to the previous page only if the user got to the current page from that parent.
@@ -16,23 +20,23 @@ export type ReturnTuple = [() => void, (url: string) => LinkWithState];
  */
 
 // TODO: Temporarily simplified to just hold a flag; add some identifier instead
-const useBackToParentPage = (parentPageUrl: string): ReturnTuple => {
+const useBackToParentPage = (parentPageUrl: string, { keepScroll }: Options = {}): ReturnTuple => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const backToParentPage = useCallback(() => {
     const { parentPage } = (location.state ?? {}) as { [LOCATION_STATE_PARAM_PARENT_PAGE]?: unknown };
     if (parentPage) {
-      navigate(-1);
+      navigate(-1 as any, { state: { keepScroll } });
     } else {
-      navigate(parentPageUrl, { replace: true });
+      navigate(parentPageUrl, { replace: true, state: { keepScroll } });
     }
   }, [parentPageUrl, location]);
 
   const buildLinkWithState = useCallback((url: string): LinkWithState => {
     return {
-      url,
-      state: { [LOCATION_STATE_PARAM_PARENT_PAGE]: true },
+      to: url,
+      state: { [LOCATION_STATE_PARAM_PARENT_PAGE]: true, keepScroll },
     };
   }, []);
 

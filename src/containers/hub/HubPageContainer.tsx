@@ -1,7 +1,5 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useHub, useUserContext } from '../../hooks';
 import { useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
@@ -32,7 +30,7 @@ export interface HubContainerEntities {
     communityReadAccess: boolean;
     challengesReadAccess: boolean;
   };
-  activity: ActivityItem[];
+  challengesCount: number | undefined;
   isAuthenticated: boolean;
   isMember: boolean;
   isGlobalAdmin: boolean;
@@ -61,7 +59,6 @@ export interface HubPageContainerProps
 const EMPTY = [];
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
-  const { t } = useTranslation();
   const { hubId, hubNameId, loading: loadingHub } = useHub();
   const { data: _hub, loading: loadingHubQuery } = useHubPageQuery({
     variables: { hubId: hubNameId },
@@ -75,27 +72,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     x => x === AuthorizationPrivilege.Read
   );
 
-  const activity: ActivityItem[] = useMemo(() => {
-    const _activity = _hub?.hub.activity || [];
-    return [
-      {
-        name: t('common.challenges'),
-        type: ActivityType.Challenge,
-        count: getActivityCount(_activity, 'challenges'),
-        color: 'neutral',
-      },
-      {
-        name: t('common.opportunities'),
-        count: getActivityCount(_activity, 'opportunities'),
-        color: 'primary',
-      },
-      {
-        name: t('common.members'),
-        count: getActivityCount(_activity, 'members'),
-        color: 'neutralMedium',
-      },
-    ];
-  }, [_hub]);
+  const challengesCount = useMemo(() => getActivityCount(_hub?.hub.activity, ActivityType.Challenge), [_hub]);
 
   const isMember = user?.ofHub(hubId) ?? false;
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
@@ -126,7 +103,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           discussionList,
           isPrivate,
           permissions,
-          activity,
+          challengesCount,
           isAuthenticated,
           isMember,
           isGlobalAdmin,

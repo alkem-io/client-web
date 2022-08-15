@@ -2,10 +2,8 @@ import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import DashboardOpportunityStatistics from '../../domain/shared/components/DashboardSections/DashboardOpportunityStatistics';
 import DashboardUpdatesSection from '../../domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
@@ -18,7 +16,6 @@ import {
   Reference,
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import { getVisualBanner } from '../../utils/visuals.utils';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
@@ -35,7 +32,7 @@ const PROJECTS_NUMBER_IN_SECTION = 2;
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
   opportunity: OpportunityPageFragment;
-  activity: ActivityItem[];
+  // activity: ActivityItem[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   discussions: Discussion[];
@@ -109,15 +106,12 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const isNotMember = opportunityId && userMetadata ? !userMetadata.ofOpportunity(opportunityId) : true;
 
   const { opportunity } = entities;
-  const lifecycle = opportunity?.lifecycle;
   const communityId = opportunity?.community?.id || '';
   const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
-  const { id, context, displayName, collaboration } = opportunity;
-  const { visuals, tagline = '', vision = '' } = context ?? {};
+  const { id, collaboration } = opportunity;
   const { id: collaborationId } = collaboration ?? {};
-  const banner = getVisualBanner(visuals);
 
   const { loading } = state;
 
@@ -126,8 +120,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
       <Grid container spacing={2}>
         <DashboardColumn>
           <DashboardGenericSection
-            bannerUrl={banner}
-            headerText={displayName}
+            headerText={t('pages.opportunity.about-this-opportunity')}
             primaryAction={
               isNotMember && (
                 <Button onClick={actions.onInterestOpen} variant="contained">
@@ -136,23 +129,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               )
             }
           >
-            <Markdown children={tagline} />
-            <Markdown children={vision} />
+            <Markdown children={opportunity?.context?.vision || ''} />
           </DashboardGenericSection>
-          <DashboardOpportunityStatistics
-            headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
-            activities={entities.activity}
-            lifecycle={lifecycle}
-            loading={loading}
-          />
-          {communityReadAccess && (
-            <>
-              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
-              {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
-              {/* <SectionSpacer />
-              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
-            </>
-          )}
           {communityReadAccess && (
             <EntityDashboardLeadsSection
               usersHeader={t('community.leads')}
@@ -160,6 +138,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               leadUsers={opportunity?.community?.leadUsers}
               leadOrganizations={opportunity?.community?.leadOrganizations}
             />
+          )}
+          {communityReadAccess && (
+            <>
+              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
+              {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
+              {/* <SectionSpacer />
+              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
+            </>
           )}
           {communityReadAccess && (
             <EntityDashboardContributorsSection

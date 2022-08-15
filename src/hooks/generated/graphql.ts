@@ -1018,6 +1018,31 @@ export const DashboardContributingOrganizationFragmentDoc = gql`
     }
   }
 `;
+export const EntityDashboardCommunityFragmentDoc = gql`
+  fragment EntityDashboardCommunity on Community {
+    id
+    leadUsers {
+      ...DashboardLeadUser
+    }
+    memberUsers {
+      ...DashboardContributingUser
+    }
+    leadOrganizations {
+      ...AssociatedOrganizationDetails
+    }
+    memberOrganizations {
+      ...DashboardContributingOrganization
+    }
+    authorization {
+      id
+      myPrivileges
+    }
+  }
+  ${DashboardLeadUserFragmentDoc}
+  ${DashboardContributingUserFragmentDoc}
+  ${AssociatedOrganizationDetailsFragmentDoc}
+  ${DashboardContributingOrganizationFragmentDoc}
+`;
 export const ContextDetailsFragmentDoc = gql`
   fragment ContextDetails on Context {
     id
@@ -1092,23 +1117,7 @@ export const ChallengeProfileFragmentDoc = gql`
       }
     }
     community {
-      id
-      leadUsers {
-        ...DashboardLeadUser
-      }
-      memberUsers {
-        ...DashboardContributingUser
-      }
-      leadOrganizations {
-        ...AssociatedOrganizationDetails
-      }
-      memberOrganizations {
-        ...DashboardContributingOrganization
-      }
-      authorization {
-        id
-        myPrivileges
-      }
+      ...EntityDashboardCommunity
     }
     tagset {
       id
@@ -1151,10 +1160,7 @@ export const ChallengeProfileFragmentDoc = gql`
   ${VisualFullFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
   ${ContextDetailsFragmentDoc}
 `;
 export const SimpleHubResultEntryFragmentDoc = gql`
@@ -1205,6 +1211,13 @@ export const LifecycleContextTabFragmentDoc = gql`
     id
     state
     machineDef
+  }
+`;
+export const ActivityItemFragmentDoc = gql`
+  fragment ActivityItem on NVP {
+    id
+    name
+    value
   }
 `;
 export const DiscussionDetailsFragmentDoc = gql`
@@ -1302,20 +1315,7 @@ export const HubPageFragmentDoc = gql`
       }
     }
     community {
-      id
-      leadUsers {
-        ...DashboardLeadUser
-      }
-      memberUsers {
-        ...DashboardContributingUser
-      }
-      memberOrganizations {
-        ...DashboardContributingOrganization
-      }
-      authorization {
-        id
-        myPrivileges
-      }
+      ...EntityDashboardCommunity
     }
     challenges(limit: 2, shuffle: true) {
       ...ChallengeCard
@@ -1330,9 +1330,7 @@ export const HubPageFragmentDoc = gql`
   ${VisualUriFragmentDoc}
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
   ${ChallengeCardFragmentDoc}
 `;
 export const OpportunityPageFragmentDoc = gql`
@@ -1396,39 +1394,20 @@ export const OpportunityPageFragmentDoc = gql`
         ...VisualUri
       }
     }
+    community {
+      ...EntityDashboardCommunity
+    }
     projects {
       id
       nameID
       displayName
       description
     }
-    community {
-      id
-      leadUsers {
-        ...DashboardLeadUser
-      }
-      memberUsers {
-        ...DashboardContributingUser
-      }
-      leadOrganizations {
-        ...AssociatedOrganizationDetails
-      }
-      memberOrganizations {
-        ...DashboardContributingOrganization
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-    }
   }
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}
   ${VisualUriFragmentDoc}
-  ${DashboardLeadUserFragmentDoc}
-  ${DashboardContributingUserFragmentDoc}
-  ${AssociatedOrganizationDetailsFragmentDoc}
-  ${DashboardContributingOrganizationFragmentDoc}
+  ${EntityDashboardCommunityFragmentDoc}
 `;
 export const OpportunityPageRelationsFragmentDoc = gql`
   fragment OpportunityPageRelations on Relation {
@@ -1478,6 +1457,7 @@ export const OpportunityProviderFragmentDoc = gql`
     }
     context {
       id
+      tagline
       authorization {
         id
         myPrivileges
@@ -12147,9 +12127,13 @@ export const HubContextDocument = gql`
       context {
         ...ContextTab
       }
+      activity {
+        ...ActivityItem
+      }
     }
   }
   ${ContextTabFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12209,9 +12193,13 @@ export const HubContextExtraDocument = gql`
       context {
         ...ContextTabExtra
       }
+      activity {
+        ...ActivityItem
+      }
     }
   }
   ${ContextTabExtraFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12281,11 +12269,15 @@ export const ChallengeContextDocument = gql`
         context {
           ...ContextTab
         }
+        activity {
+          ...ActivityItem
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12356,11 +12348,15 @@ export const ChallengeContextExtraDocument = gql`
         context {
           ...ContextTabExtra
         }
+        activity {
+          ...ActivityItem
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabExtraFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12433,11 +12429,15 @@ export const OpportunityContextDocument = gql`
         context {
           ...ContextTab
         }
+        activity {
+          ...ActivityItem
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**
@@ -12510,11 +12510,15 @@ export const OpportunityContextExtraDocument = gql`
         context {
           ...ContextTabExtra
         }
+        activity {
+          ...ActivityItem
+        }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabExtraFragmentDoc}
+  ${ActivityItemFragmentDoc}
 `;
 
 /**

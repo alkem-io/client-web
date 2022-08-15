@@ -5,11 +5,12 @@ import { Link } from '@mui/material';
 export interface ConditionalLinkProps {
   to?: string;
   condition: boolean;
+  keepScroll?: boolean;
 }
 
-const ConditionalLink: FC<ConditionalLinkProps> = ({ children, to, condition }) =>
+const ConditionalLink: FC<ConditionalLinkProps> = ({ children, to, condition, keepScroll = false }) =>
   condition && to ? (
-    <Link component={RouterLink} to={to} underline={'none'}>
+    <Link component={RouterLink} to={to} underline="none" state={{ keepScroll }}>
       {children}
     </Link>
   ) : (

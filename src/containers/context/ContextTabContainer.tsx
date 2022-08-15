@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../models/container';
 import {
+  ActivityItemFragment,
   AuthorizationPrivilege,
   ContextTabFragment,
   LifecycleContextTabFragment,
@@ -29,6 +30,7 @@ export interface ContextTabContainerEntities {
   lifecycle?: LifecycleContextTabFragment;
   references?: ReferenceContextTabFragment[];
   permissions: ContextTabPermissions;
+  activity: ActivityItemFragment[] | undefined;
 }
 
 export interface ContextTabContainerActions {}
@@ -139,10 +141,19 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
   const error =
     hubError ?? hubExtraError ?? challengeError ?? challengeExtraError ?? opportunityError ?? opportunityExtraError;
 
+  const { activity } =
+    hubData?.hub ??
+    hubExtra?.hub ??
+    challengeData?.hub.challenge ??
+    challengeExtra?.hub.challenge ??
+    opportunityData?.hub.opportunity ??
+    opportunityExtra?.hub.opportunity ??
+    {};
+
   const permissions: ContextTabPermissions = {
     canCreateCommunityContextReview,
   };
 
-  return <>{children({ context, tagset, lifecycle, references, permissions }, { loading, error }, {})}</>;
+  return <>{children({ context, tagset, lifecycle, references, permissions, activity }, { loading, error }, {})}</>;
 };
 export default ContextTabContainer;

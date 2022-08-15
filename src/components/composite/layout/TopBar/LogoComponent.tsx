@@ -1,17 +1,23 @@
 import React from 'react';
-import { styled } from '@mui/material';
+import { Box, BoxProps, styled } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { ReactComponent as LogoImage } from './logo-preview.svg';
 
-const Logo = styled(LogoImage)(({ theme }) => ({
-  height: theme.spacing(5),
+export interface LogoComponentProps extends BoxProps {
+  url?: string;
+}
+
+const Logo = styled(LogoImage)(() => ({
+  height: '100%',
 }));
 
-const LogoComponent = () => {
+const LogoComponent = ({ url = '/', ...rest }: LogoComponentProps) => {
   return (
-    <Link to="/">
-      <Logo />
-    </Link>
+    <Box {...rest}>
+      <Link to={url}>
+        <Logo />
+      </Link>
+    </Box>
   );
 };
 export default LogoComponent;

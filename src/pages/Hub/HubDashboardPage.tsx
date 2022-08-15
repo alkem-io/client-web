@@ -1,54 +1,69 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import HubPageContainer from '../../containers/hub/HubPageContainer';
-import { useUpdateNavigation } from '../../hooks';
 import HubDashboardView from '../../views/Hub/HubDashboardView';
-import { PageProps } from '../common';
-import { getVisualBanner } from '../../utils/visuals.utils';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import PageLayout from '../../domain/shared/layout/PageLayout';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
+import CommunityUpdatesDialog from '../../domain/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
+import { useResolvedPath } from 'react-router-dom';
+import ContributorsDialog from '../../domain/community/ContributorsDialog/ContributorsDialog';
+import HubContributorsDialogContent from '../../domain/community/entities/HubContributorsDialogContent';
 
-export interface HubDashboardPageProps extends PageProps {}
+export interface HubDashboardPageProps {
+  dialog?: 'updates' | 'contributors';
+}
 
-const HubDashboardPage: FC<HubDashboardPageProps> = ({ paths }) => {
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'dashboard', real: false }], [paths]);
-  useUpdateNavigation({ currentPaths });
+const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
+  const currentPath = useResolvedPath('..');
+
+  const [backToDashboard] = useBackToParentPage(`${currentPath.pathname}/dashboard`);
 
   return (
     <DiscussionsProvider>
-      <PageLayout currentSection={EntityPageSection.Dashboard} entityTypeName="hub">
+      <HubPageLayout currentSection={EntityPageSection.Dashboard}>
         <HubPageContainer>
           {(entities, state) => (
-            <HubDashboardView
-              title={entities.hub?.displayName}
-              bannerUrl={getVisualBanner(entities.hub?.context?.visuals)}
-              tagline={entities.hub?.context?.tagline}
-              vision={entities.hub?.context?.vision}
-              hubId={entities.hub?.id}
-              hubNameId={entities.hub?.nameID}
-              communityId={entities.hub?.community?.id}
-              organizationNameId={entities.hub?.host?.nameID}
-              activity={entities.activity}
-              challenges={entities.challenges}
-              discussions={entities.discussionList}
-              aspects={entities.aspects}
-              aspectsCount={entities.aspectsCount}
-              canvases={entities.canvases}
-              canvasesCount={entities.canvasesCount}
-              loading={state.loading}
-              isMember={entities.isMember}
-              communityReadAccess={entities.permissions.communityReadAccess}
-              challengesReadAccess={entities.permissions.challengesReadAccess}
-              memberUsers={entities.memberUsers}
-              memberUsersCount={entities.memberUsersCount}
-              memberOrganizations={entities.memberOrganizations}
-              memberOrganizationsCount={entities.memberOrganizationsCount}
-              leadUsers={entities.hub?.community?.leadUsers}
-              hostOrganization={entities.hub?.host}
-            />
+            <>
+              <HubDashboardView
+                vision={entities.hub?.context?.vision}
+                hubId={entities.hub?.id}
+                hubNameId={entities.hub?.nameID}
+                communityId={entities.hub?.community?.id}
+                organizationNameId={entities.hub?.host?.nameID}
+                challenges={entities.challenges}
+                challengesCount={entities.challengesCount}
+                discussions={entities.discussionList}
+                aspects={entities.aspects}
+                aspectsCount={entities.aspectsCount}
+                canvases={entities.canvases}
+                canvasesCount={entities.canvasesCount}
+                loading={state.loading}
+                isMember={entities.isMember}
+                communityReadAccess={entities.permissions.communityReadAccess}
+                challengesReadAccess={entities.permissions.challengesReadAccess}
+                memberUsers={entities.memberUsers}
+                memberUsersCount={entities.memberUsersCount}
+                memberOrganizations={entities.memberOrganizations}
+                memberOrganizationsCount={entities.memberOrganizationsCount}
+                leadUsers={entities.hub?.community?.leadUsers}
+                hostOrganization={entities.hub?.host}
+              />
+              <CommunityUpdatesDialog
+                open={dialog === 'updates'}
+                onClose={backToDashboard}
+                hubId={entities.hub?.id}
+                communityId={entities.hub?.community?.id}
+              />
+              <ContributorsDialog
+                open={dialog === 'contributors'}
+                onClose={backToDashboard}
+                dialogContent={HubContributorsDialogContent}
+              />
+            </>
           )}
         </HubPageContainer>
-      </PageLayout>
+      </HubPageLayout>
     </DiscussionsProvider>
   );
 };

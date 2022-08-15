@@ -5,7 +5,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import { Grid, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Reference, Location } from '../../../models/graphql-schema';
+import { Location, Reference } from '../../../models/graphql-schema';
 import Markdown from '../../core/Markdown';
 import { SectionSpacer } from '../../../domain/shared/components/Section/Section';
 import SectionHeader from '../../../domain/shared/components/Section/SectionHeader';
@@ -13,13 +13,13 @@ import TagsComponent from '../../../domain/shared/components/TagsComponent/TagsC
 import References from '../common/References/References';
 import DashboardSection from './DashboardSection/DashboardSection';
 import ContextSectionIcon from './ContextSectionIcon';
-import DashboardColumn from './DashboardSection/DashboardColumn';
+import DashboardColumn, { ContextSectionColumnProps } from './DashboardSection/DashboardColumn';
 import LocationView from '../../../domain/location/LocationView';
 import { formatLocation } from '../../../domain/location/LocationUtils';
+
 export interface ContextSectionProps {
   contextId?: string;
   primaryAction?: ReactNode;
-  banner?: string;
   displayName?: string;
   tagline?: string;
   keywords?: string[];
@@ -30,11 +30,12 @@ export interface ContextSectionProps {
   who?: string;
   references?: Reference[];
   loading: boolean | undefined;
+  leftColumn?: ContextSectionColumnProps['children'];
+  rightColumn?: ContextSectionColumnProps['children'];
 }
 
 const ContextSection: FC<ContextSectionProps> = ({
   primaryAction,
-  banner,
   background,
   displayName,
   tagline,
@@ -44,6 +45,8 @@ const ContextSection: FC<ContextSectionProps> = ({
   impact,
   who,
   references,
+  leftColumn,
+  rightColumn,
 }) => {
   const { t } = useTranslation();
 
@@ -53,7 +56,6 @@ const ContextSection: FC<ContextSectionProps> = ({
         <DashboardColumn>
           <DashboardSection
             primaryAction={primaryAction}
-            bannerUrl={banner}
             headerText={displayName}
             subHeaderText={<Typography component={Markdown} variant="h5" children={tagline} color="primary" />}
             size="large"
@@ -73,8 +75,6 @@ const ContextSection: FC<ContextSectionProps> = ({
           >
             <Typography component={Markdown} variant="body1" children={background} />
           </DashboardSection>
-        </DashboardColumn>
-        <DashboardColumn zeroMinWidth>
           <DashboardSection
             headerText={t('components.referenceSegment.title')}
             primaryAction={<ContextSectionIcon component={SchoolIcon} />}
@@ -96,7 +96,9 @@ const ContextSection: FC<ContextSectionProps> = ({
           >
             <Typography component={Markdown} variant="body1" children={who} />
           </DashboardSection>
+          <>{leftColumn}</>
         </DashboardColumn>
+        {rightColumn && <DashboardColumn>{rightColumn}</DashboardColumn>}
       </Grid>
     </>
   );

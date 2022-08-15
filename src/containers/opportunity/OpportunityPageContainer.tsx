@@ -2,7 +2,6 @@ import { ApolloError } from '@apollo/client';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
@@ -17,7 +16,6 @@ import {
   OpportunityPageRelationsFragment,
   Reference,
 } from '../../models/graphql-schema';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { replaceAll } from '../../utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
@@ -28,6 +26,7 @@ import { getCanvasCallout } from '../canvas/getCanvasCallout';
 import { getAspectCallout } from '../aspect/getAspectCallout';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
+  hubId: string;
   opportunity: OpportunityPageFragment;
   permissions: {
     canEdit: boolean;
@@ -47,7 +46,6 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   url: string;
   meme?: Reference;
   links: Reference[];
-  activity: ActivityItem[];
   opportunityProjects: OpportunityProject[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
@@ -119,7 +117,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
-  const { context, projects = [], collaboration, activity: _activity = [] } = opportunity;
+  const { context, projects = [], collaboration, activity = [] } = opportunity;
   const relations = collaboration?.relations ?? [];
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
@@ -145,28 +143,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     navigate(project?.nameID ?? 'new');
   };
 
-  // const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
-
-  const activity: ActivityItem[] = useMemo(() => {
-    return [
-      {
-        name: t('common.projects'),
-        count: getActivityCount(_activity, 'projects'),
-        color: 'positive',
-      },
-      {
-        name: t('common.interests'),
-        count: getActivityCount(_activity, 'relations'),
-        color: 'primary',
-      },
-      {
-        name: t('common.members'),
-        count: getActivityCount(_activity, 'members'),
-        color: 'neutralMedium',
-      },
-    ];
-  }, [_activity]);
-
   const opportunityProjects = useMemo(() => {
     const projectList: OpportunityProject[] = projects.map(p => ({
       title: p.displayName,
@@ -190,9 +166,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     return projectList;
   }, [projects, onProjectTransition, permissions.projectWrite, t]);
 
-  const aspectsCount = useAspectsCount(_activity);
+  const aspectsCount = useAspectsCount(activity);
 
-  const canvasesCount = useCanvasesCount(_activity);
+  const canvasesCount = useCanvasesCount(activity);
 
   const contributors = useCommunityMembersAsCardProps(opportunity?.community);
 
@@ -200,9 +176,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     <>
       {children(
         {
+          hubId,
           opportunity,
           url: buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
-          activity,
           meme,
           links,
           permissions: {

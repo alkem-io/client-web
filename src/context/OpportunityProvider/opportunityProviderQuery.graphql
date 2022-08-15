@@ -18,6 +18,7 @@ fragment OpportunityProvider on Opportunity {
   }
   context {
     id
+    tagline
     authorization {
       id
       myPrivileges

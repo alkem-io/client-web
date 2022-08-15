@@ -9999,6 +9999,7 @@ export type HubContextQuery = {
             | undefined;
         }
       | undefined;
+    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 
@@ -10023,6 +10024,7 @@ export type HubContextExtraQuery = {
             | undefined;
         }
       | undefined;
+    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 
@@ -10074,6 +10076,7 @@ export type ChallengeContextQuery = {
               | undefined;
           }
         | undefined;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -10106,6 +10109,7 @@ export type ChallengeContextExtraQuery = {
               | undefined;
           }
         | undefined;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -10154,6 +10158,7 @@ export type OpportunityContextQuery = {
               | undefined;
           }
         | undefined;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -10185,6 +10190,7 @@ export type OpportunityContextExtraQuery = {
               | undefined;
           }
         | undefined;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -10236,6 +10242,8 @@ export type ReferenceContextTabFragment = {
   uri: string;
   description: string;
 };
+
+export type ActivityItemFragment = { __typename?: 'NVP'; id: string; name: string; value: string };
 
 export type CommunityFeedbackTemplatesQueryVariables = Exact<{ [key: string]: never }>;
 
@@ -10615,6 +10623,26 @@ export type HubPageQuery = {
                   | undefined;
               }>
             | undefined;
+          leadOrganizations?:
+            | Array<{
+                __typename?: 'Organization';
+                id: string;
+                displayName: string;
+                nameID: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  description?: string | undefined;
+                  avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                };
+                verification: {
+                  __typename?: 'OrganizationVerification';
+                  id: string;
+                  status: OrganizationVerificationEnum;
+                };
+                activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              }>
+            | undefined;
           memberOrganizations?:
             | Array<{
                 __typename?: 'Organization';
@@ -10812,6 +10840,26 @@ export type HubPageFragment = {
                 | undefined;
             }>
           | undefined;
+        leadOrganizations?:
+          | Array<{
+              __typename?: 'Organization';
+              id: string;
+              displayName: string;
+              nameID: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                description?: string | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              };
+              verification: {
+                __typename?: 'OrganizationVerification';
+                id: string;
+                status: OrganizationVerificationEnum;
+              };
+              activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+            }>
+          | undefined;
         memberOrganizations?:
           | Array<{
               __typename?: 'Organization';
@@ -11001,15 +11049,6 @@ export type OpportunityPageQuery = {
             visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
           }
         | undefined;
-      projects?:
-        | Array<{
-            __typename?: 'Project';
-            id: string;
-            nameID: string;
-            displayName: string;
-            description?: string | undefined;
-          }>
-        | undefined;
       community?:
         | {
             __typename?: 'Community';
@@ -11085,6 +11124,15 @@ export type OpportunityPageQuery = {
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           }
+        | undefined;
+      projects?:
+        | Array<{
+            __typename?: 'Project';
+            id: string;
+            nameID: string;
+            displayName: string;
+            description?: string | undefined;
+          }>
         | undefined;
     };
   };
@@ -11208,15 +11256,6 @@ export type OpportunityPageFragment = {
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
-  projects?:
-    | Array<{
-        __typename?: 'Project';
-        id: string;
-        nameID: string;
-        displayName: string;
-        description?: string | undefined;
-      }>
-    | undefined;
   community?:
     | {
         __typename?: 'Community';
@@ -11292,6 +11331,15 @@ export type OpportunityPageFragment = {
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
       }
+    | undefined;
+  projects?:
+    | Array<{
+        __typename?: 'Project';
+        id: string;
+        nameID: string;
+        displayName: string;
+        description?: string | undefined;
+      }>
     | undefined;
 };
 
@@ -11622,6 +11670,7 @@ export type OpportunityProviderQuery = {
         | {
             __typename?: 'Context';
             id: string;
+            tagline?: string | undefined;
             authorization?:
               | {
                   __typename?: 'Authorization';
@@ -11672,6 +11721,7 @@ export type OpportunityProviderFragment = {
     | {
         __typename?: 'Context';
         id: string;
+        tagline?: string | undefined;
         authorization?:
           | {
               __typename?: 'Authorization';
@@ -13183,6 +13233,77 @@ export type CommunityMembersFragment = {
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
       }>
+    | undefined;
+};
+
+export type EntityDashboardCommunityFragment = {
+  __typename?: 'Community';
+  id: string;
+  leadUsers?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+  memberUsers?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+  leadOrganizations?:
+    | Array<{
+        __typename?: 'Organization';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          description?: string | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+        verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      }>
+    | undefined;
+  memberOrganizations?:
+    | Array<{
+        __typename?: 'Organization';
+        id: string;
+        displayName: string;
+        nameID: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        };
+      }>
+    | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
 };
 
