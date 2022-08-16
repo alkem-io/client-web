@@ -46,6 +46,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
             case CalloutType.Card:
               return (
                 <AspectCallout
+                  key={callout.id}
                   callout={callout}
                   loading={loading}
                   hubNameId={hubNameId!}
@@ -54,7 +55,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                 />
               );
             case CalloutType.Canvas:
-              return <CanvasCallout callout={callout} buildCanvasUrl={buildLinkToCanvas} />;
+              return <CanvasCallout key={callout.id} callout={callout} buildCanvasUrl={buildLinkToCanvas} />;
             default:
               throw new Error('Unexpected Callout type');
           }
