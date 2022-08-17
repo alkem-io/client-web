@@ -1,52 +1,22 @@
 import React, { FC } from 'react';
 import { StepComponentProps } from '../../../shared/components/Stepper/step/Step';
-import { StepLayout, StepSummaryLayout } from '../step-layout/StepLayout';
+import { StepLayout } from '../step-layout/StepLayout';
 
-interface CloseableProps {
-  onClose: () => void;
-}
-
-export const CalloutStep1: FC<StepComponentProps> = ({ next, prev, definitions, activeStep }) => {
-  return (
-    <StepLayout
-      title={'Create callout info'}
-      onClose={() => {}}
-      next={next}
-      prev={prev}
-      steps={definitions}
-      activeStep={activeStep}
-    >
-      this is content step 1
-    </StepLayout>
-  );
-};
-CalloutStep1.displayName = 'CalloutStep1';
-
-interface ChangeableProps {
-  onChange: ({ value: string }) => void;
-}
-
-export const CalloutStep2: FC<StepComponentProps & ChangeableProps> = ({
+export const CalloutStep2: FC<StepComponentProps> = ({
   next,
   prev,
-  definitions,
+  steps,
   activeStep,
-  onChange,
 }) => {
-  const handleNext =
-    next &&
-    (() => {
-      onChange({ value: 'set by step 2' });
-      next();
-    });
+  const handleNext = next && (() =>  next());
 
   return (
     <StepLayout
-      title={'Create callout template'}
+      dialogTitle={'Create callout template'}
       onClose={() => {}}
       next={handleNext}
       prev={prev}
-      steps={definitions}
+      steps={steps}
       activeStep={activeStep}
     >
       this is content step 2
@@ -55,7 +25,23 @@ export const CalloutStep2: FC<StepComponentProps & ChangeableProps> = ({
 };
 CalloutStep2.displayName = 'CalloutStep2';
 
-export const CalloutStep3: FC<CloseableProps> = ({ onClose }) => {
-  return <StepSummaryLayout onClose={onClose}>this is summary step</StepSummaryLayout>;
+export const CalloutStep3: FC<StepComponentProps> = ({ next,
+                                                   prev,
+                                                   steps,
+                                                   activeStep, }) => {
+  const handleNext = next && (() =>  next());
+  //return <StepSummaryLayout onClose={onClose}>this is summary step</StepSummaryLayout>;
+  return (
+    <StepLayout
+      dialogTitle={'Create callout template'}
+      onClose={() => {}}
+      next={handleNext}
+      prev={prev}
+      steps={steps}
+      activeStep={activeStep}
+    >
+      this is content step 3
+    </StepLayout>
+  )
 };
 CalloutStep3.displayName = 'CalloutStep3';

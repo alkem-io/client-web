@@ -4,17 +4,20 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../component
 import Button from '@mui/material/Button';
 import createLayoutHolder from '../../../shared/layout/LayoutHolder';
 import { StepDefinition } from '../../../shared/components/Stepper/step/Step';
+import { useTranslation } from 'react-i18next';
 
 export interface StepLayoutProps {
-  title: string;
+  dialogTitle: string;
   next?: () => void;
   prev?: () => void;
+  isValid?: boolean;
   onClose: () => void;
   steps: StepDefinition[];
   activeStep: string;
 }
 
-export const StepLayoutImpl: FC<StepLayoutProps> = ({ activeStep, steps, children, title, onClose, next, prev }) => {
+export const StepLayoutImpl: FC<StepLayoutProps> = ({ activeStep, steps, children, dialogTitle, onClose, isValid = true, next, prev }) => {
+  const { t } = useTranslation();
   // For now, using just the active step position to determine whether the previous steps are completed.
   // It's possible to base the state of the Stepper on whether a step was "really" completed (e.g. the form was filled),
   // in this case StepLayoutImpl needs to receive something like completedSteps: { [stepName: string]: boolean }
@@ -23,26 +26,31 @@ export const StepLayoutImpl: FC<StepLayoutProps> = ({ activeStep, steps, childre
   return (
     <Box>
       <DialogTitle id="callout-creation-title" onClose={onClose}>
-        {title}
+        <Box display="flex" justifyContent="space-between">
+          {dialogTitle}
+          <Stepper activeStep={activeStepIndex} sx={{ width: '50%' }}>
+            {steps.map((stepDef, stepIndex) => {
+              return (
+                <Step key={stepDef.name} completed={stepIndex < activeStepIndex} last={stepIndex === steps.length - 1}>
+                  <StepLabel>{stepDef.title}</StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+        </Box>
       </DialogTitle>
-      <LinearProgress value={100 * ((activeStepIndex + 1) / steps.length)} variant="determinate" />
-      <Stepper activeStep={activeStepIndex}>
-        {steps.map((stepDef, stepIndex) => {
-          return (
-            <Step key={stepDef.name} completed={stepIndex < activeStepIndex}>
-              <StepLabel>{stepDef.title}</StepLabel>
-            </Step>
-          );
-        })}
-      </Stepper>
-      <DialogContent>{children}</DialogContent>
-      <DialogActions>
-        <Button onClick={prev} disabled={!prev}>
-          prev
-        </Button>
-        <Button onClick={next} disabled={!next}>
-          next
-        </Button>
+      <DialogContent dividers>{children}</DialogContent>
+      <DialogActions sx={{ justifyContent: 'end' }}>
+        {prev && (
+          <Button onClick={prev} variant="outlined">
+            {t('buttons.back')}
+          </Button>
+        )}
+        {next && (
+          <Button onClick={next} disabled={!isValid} variant="contained">
+            {t('buttons.next')}
+          </Button>
+        )}
       </DialogActions>
     </Box>
   );

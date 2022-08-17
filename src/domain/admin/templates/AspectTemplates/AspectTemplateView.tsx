@@ -15,7 +15,7 @@ interface AspectTemplateViewProps {
   template: AdminAspectTemplateFragment;
   open: boolean;
   onClose: DialogProps['onClose'];
-  editUrl: string;
+  editUrl?: string;
   editLinkState?: Record<string, unknown>;
 }
 
@@ -37,9 +37,11 @@ const AspectTemplateView = ({ template, open, onClose, editUrl, editLinkState }:
             {title}
           </Typography>
           <DialogActions sx={{ p: 0 }}>
-            <Button component={Link} variant="contained" to={editUrl} state={editLinkState}>
-              {t('common.update')}
-            </Button>
+            {editUrl && (
+              <Button component={Link} variant="contained" to={editUrl} state={editLinkState}>
+                {t('common.update')}
+              </Button>
+            )}
           </DialogActions>
         </Box>
         <Box>

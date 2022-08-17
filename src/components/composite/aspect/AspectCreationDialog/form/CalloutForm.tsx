@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
 import { CalloutType } from '../../../../../models/graphql-schema';
 import * as yup from 'yup';
-import { FormControlLabel, Grid } from '@mui/material';
+import { Grid, InputAdornment } from '@mui/material';
 import FormikEffectFactory from '../../../../../utils/formik/formik-effect/FormikEffect';
 import FormikInputField from '../../../forms/FormikInputField';
 import FormRow from '../../../../../domain/shared/layout/FormLayout';
@@ -11,8 +11,11 @@ import { SectionSpacer } from '../../../../../domain/shared/components/Section/S
 import MarkdownInput from '../../../../Admin/Common/MarkdownInput';
 import { MID_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 import InputLabel from '@mui/material/InputLabel/InputLabel';
-import RadioGroup from '@mui/material/RadioGroup';
-import Radio from '@mui/material/Radio';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import HelpButton from '../../../../core/HelpButton';
+import FormikSelect from '../../../forms/FormikSelect';
 
 type FormValueType = {
   displayName: string;
@@ -22,10 +25,10 @@ type FormValueType = {
 
 const FormikEffect = FormikEffectFactory<FormValueType>();
 
-export type CalloutFromInput = {
-  displayName: string;
-  description: string;
-  type: CalloutType;
+export type CalloutFormInput = {
+  displayName?: string;
+  description?: string;
+  type?: CalloutType;
 }
 
 export type CalloutFormOutput = {
@@ -35,7 +38,7 @@ export type CalloutFormOutput = {
 };
 
 export interface CalloutFormProps {
-  callout?: CalloutFromInput;
+  callout?: CalloutFormInput;
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
@@ -53,6 +56,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
   const validationSchema = yup.object().shape({
     displayName: yup.string().required().max(255),
     description: yup.string().required().max(65535), // https://mariadb.com/kb/en/text
+    type: yup.string().required(),
   });
 
   const handleChange = (values: FormValueType) => {
@@ -63,6 +67,23 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
     };
     onChange?.(callout);
   };
+
+  const helpText = useMemo(() => {
+    if (callout?.type === CalloutType.Card) {
+      return t('components.callout-creation.info-step.type-cards-help');
+    } else if (callout?.type === CalloutType.Canvas) {
+      return t('components.callout-creation.info-step.type-canvases-help');
+    } if (callout?.type === CalloutType.Discussion) {
+      return t('components.callout-creation.info-step.type-comments-help');
+    } else {
+      return '';
+    }
+  }, [callout]);
+
+  const calloutTypes = [
+    { id: CalloutType.Card, name: 'Cards' },
+    { id: CalloutType.Canvas, name: 'Canvases' },
+  ];
 
   return (
     <Formik
@@ -76,11 +97,10 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
         <>
         <Grid container spacing={2}>
           <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          <FormRow cols={2}>
+          <FormRow cols={1}>
             <FormikInputField
-              name={'displayName'}
+              name="displayName"
               title={t('common.title')}
-              required
               placeholder={t('common.title')}
             />
           </FormRow>
@@ -88,22 +108,25 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
           <MarkdownInput
             name="description"
             label={t('components.callout-creation.info-step.description')}
-            required
             rows={7}
             maxLength={MID_TEXT_LENGTH}
             withCounter
           />
           <SectionSpacer />
-          <InputLabel id="callout-type">{t('components.callout-creation.info-step.callout-label')}</InputLabel>
-          <RadioGroup
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="female"
-            name="radio-buttons-group"
-          >
-            <FormControlLabel value="comment" control={<Radio />} label={t('common.comments')} />
-            <FormControlLabel value="card" control={<Radio />} label={t('common.cards')} />
-            <FormControlLabel value="canvas" control={<Radio />} label={t('common.canvases')} />
-          </RadioGroup>
+          <FormRow>
+            <FormikSelect
+              name="type"
+              title={t('components.callout-creation.info-step.callout-label')}
+              values={calloutTypes}
+              endAdornment={
+                <InputAdornment position="start">
+                  <HelpButton
+                    helpText={helpText}
+                  />
+                </InputAdornment>
+              }
+            />
+          </FormRow>
         </Grid>
         {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>

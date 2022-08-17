@@ -13,7 +13,7 @@ import { SimpleCardProps } from '../../shared/components/SimpleCard';
 import * as Apollo from '@apollo/client';
 import { MutationTuple } from '@apollo/client/react/types/types';
 
-interface Template extends Identifiable {
+export interface Template extends Identifiable {
   info: TemplateInfoFragment;
 }
 
@@ -31,11 +31,11 @@ interface EditTemplateDialogProps<T extends Template, SubmittedValues extends {}
   template: T | undefined;
 }
 
-interface TemplatePreviewProps<T extends Template> {
+export interface TemplatePreviewProps<T extends Template> {
   template: T;
   open: boolean;
   onClose: DialogProps['onClose'];
-  editUrl: string;
+  editUrl?: string;
   editLinkState?: Record<string, unknown>;
 }
 

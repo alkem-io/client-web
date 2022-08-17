@@ -16,6 +16,8 @@
     "explore": "Explore",
     "ok": "Ok",
     "create": "Create",
+    "publish": "Publish",
+    "save-draft": "Save as draft",
     "save": "Save",
     "back": "Back",
     "next": "Next",
@@ -326,6 +328,15 @@
         "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format. In the next step you can choose the type of card",
         "type-canvases": "Canvases",
         "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a whiteboard, allowing them to draw and use text. In the next step you can choose a template for the canvas"
+      },
+      "template-step": {
+        "title": "Templates",
+        "no-templates": "No templates available",
+        "card-template-label": "Choose a a template  that you want to use for the Callout"
+      },
+      "create-step": {
+        "title": "Create",
+        "card-template-label": "Choose Card template"
       }
     },
     "aspect-creation": {

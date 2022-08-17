@@ -7,13 +7,15 @@ export interface StepDefinition {
 
 export interface StepComponentProps {
   activeStep: string;
-  definitions: StepDefinition[];
+  steps: StepDefinition[];
+  isValid?: boolean;
   next?: () => void;
   prev?: () => void;
 }
 
 export interface StepProps<PassedProps extends {}> {
   title: React.ReactNode;
+  isValid?: boolean;
   component: ComponentType<StepComponentProps & PassedProps>;
 }
 

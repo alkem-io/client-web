@@ -53,7 +53,7 @@ const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOr
   // Taking whatever props we make use of here from a <Step>, passing the rest to the step Component
   const { component: Component, title, ...passedProps } = currentStep.props;
 
-  return <Component activeStep={activeStep} definitions={definitions} prev={prev} next={next} {...passedProps as PassedProps} />;
+  return <Component activeStep={activeStep} steps={definitions} prev={prev} next={next} {...passedProps as PassedProps} />;
 };
 
 export default Steps;

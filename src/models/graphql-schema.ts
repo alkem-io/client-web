@@ -849,7 +849,7 @@ export type CreateAspectTemplateOnTemplatesSetInput = {
 export type CreateCalloutOnCollaborationInput = {
   collaborationID: Scalars['UUID'];
   /** Callout description. */
-  description?: InputMaybe<Scalars['Markdown']>;
+  description: Scalars['Markdown'];
   /** The display name for the entity. */
   displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
@@ -2976,29 +2976,47 @@ export type Template = {
 export type TemplateInfo = {
   __typename?: 'TemplateInfo';
   /** The description for this Template. */
-  description?: Maybe<Scalars['Markdown']>;
+  description: Scalars['Markdown'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The tags set on this Template. */
   tagset?: Maybe<Tagset>;
   /** The title for this Template. */
-  title?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
   /** The image associated with this Template`. */
   visual?: Maybe<Visual>;
 };
 
 export type TemplatesSet = {
   __typename?: 'TemplatesSet';
+  /** A single AspectTemplate */
+  aspectTemplate?: Maybe<AspectTemplate>;
   /** The AspectTemplates in this TemplatesSet. */
   aspectTemplates: Array<AspectTemplate>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** A single AspectTemplate */
+  canvasTemplate?: Maybe<CanvasTemplate>;
   /** The CanvasTemplates in this TemplatesSet. */
   canvasTemplates: Array<CanvasTemplate>;
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** A single AspectTemplate */
+  lifecycleTemplate?: Maybe<LifecycleTemplate>;
   /** The LifecycleTemplates in this TemplatesSet. */
   lifecycleTemplates: Array<LifecycleTemplate>;
+};
+
+export type TemplatesSetAspectTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type TemplatesSetCanvasTemplateArgs = {
+  ID: Scalars['UUID'];
+};
+
+export type TemplatesSetLifecycleTemplateArgs = {
+  ID: Scalars['UUID'];
 };
 
 export type UpdateActorInput = {
@@ -8586,7 +8604,7 @@ export type CanvasTemplatesQuery = {
             __typename?: 'CanvasTemplate';
             id: string;
             value: string;
-            info: { __typename?: 'TemplateInfo'; title?: string | undefined; description?: string | undefined };
+            info: { __typename?: 'TemplateInfo'; title: string; description: string };
           }>;
         }
       | undefined;
@@ -8597,7 +8615,7 @@ export type CreateCanvasCanvasTemplateFragment = {
   __typename?: 'CanvasTemplate';
   id: string;
   value: string;
-  info: { __typename?: 'TemplateInfo'; title?: string | undefined; description?: string | undefined };
+  info: { __typename?: 'TemplateInfo'; title: string; description: string };
 };
 
 export type CollaborationWithCanvasDetailsFragment = {
@@ -12385,8 +12403,8 @@ export type HubTemplatesQuery = {
             info: {
               __typename?: 'TemplateInfo';
               id: string;
-              title?: string | undefined;
-              description?: string | undefined;
+              title: string;
+              description: string;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?:
                 | {
@@ -12411,8 +12429,8 @@ export type HubTemplatesQuery = {
             info: {
               __typename?: 'TemplateInfo';
               id: string;
-              title?: string | undefined;
-              description?: string | undefined;
+              title: string;
+              description: string;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?:
                 | {
@@ -12438,8 +12456,8 @@ export type HubTemplatesQuery = {
             info: {
               __typename?: 'TemplateInfo';
               id: string;
-              title?: string | undefined;
-              description?: string | undefined;
+              title: string;
+              description: string;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
               visual?:
                 | {
@@ -12470,8 +12488,8 @@ export type AdminLifecycleTemplateFragment = {
   info: {
     __typename?: 'TemplateInfo';
     id: string;
-    title?: string | undefined;
-    description?: string | undefined;
+    title: string;
+    description: string;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?:
       | {
@@ -12498,8 +12516,8 @@ export type AdminAspectTemplateFragment = {
   info: {
     __typename?: 'TemplateInfo';
     id: string;
-    title?: string | undefined;
-    description?: string | undefined;
+    title: string;
+    description: string;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?:
       | {
@@ -12525,8 +12543,8 @@ export type AdminCanvasTemplateFragment = {
   info: {
     __typename?: 'TemplateInfo';
     id: string;
-    title?: string | undefined;
-    description?: string | undefined;
+    title: string;
+    description: string;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     visual?:
       | {
@@ -12548,8 +12566,8 @@ export type AdminCanvasTemplateFragment = {
 export type TemplateInfoFragment = {
   __typename?: 'TemplateInfo';
   id: string;
-  title?: string | undefined;
-  description?: string | undefined;
+  title: string;
+  description: string;
   tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
   visual?:
     | {
@@ -12609,6 +12627,99 @@ export type AspectCommentsMessageReceivedSubscription = {
   aspectCommentsMessageReceived: {
     __typename?: 'AspectCommentsMessageReceived';
     message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  };
+};
+
+export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AspectTemplatesOnCalloutCreationQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          aspectTemplates: Array<{
+            __typename?: 'AspectTemplate';
+            id: string;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CanvasTemplatesOnCalloutCreationQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasTemplatesOnCalloutCreationQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type TemplateTitleFragment = { __typename?: 'TemplateInfo'; id: string; title: string };
+
+export type AspectTemplateValueQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  id: Scalars['UUID'];
+}>;
+
+export type AspectTemplateValueQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          aspectTemplate?:
+            | {
+                __typename?: 'AspectTemplate';
+                id: string;
+                type: string;
+                defaultDescription: string;
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CanvasTemplateValueQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  id: Scalars['UUID'];
+}>;
+
+export type CanvasTemplateValueQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+        }
+      | undefined;
   };
 };
 
@@ -13815,35 +13926,20 @@ export type HubProviderQuery = {
             id: string;
             defaultDescription: string;
             type: string;
-            info: {
-              __typename?: 'TemplateInfo';
-              id: string;
-              title?: string | undefined;
-              description?: string | undefined;
-            };
+            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
           }>;
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
             value: string;
-            info: {
-              __typename?: 'TemplateInfo';
-              id: string;
-              title?: string | undefined;
-              description?: string | undefined;
-            };
+            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
           }>;
           lifecycleTemplates: Array<{
             __typename?: 'LifecycleTemplate';
             id: string;
             definition?: string | undefined;
             type: LifecycleType;
-            info: {
-              __typename?: 'TemplateInfo';
-              id: string;
-              title?: string | undefined;
-              description?: string | undefined;
-            };
+            info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
           }>;
         }
       | undefined;
@@ -13920,35 +14016,20 @@ export type HubInfoFragment = {
           id: string;
           defaultDescription: string;
           type: string;
-          info: {
-            __typename?: 'TemplateInfo';
-            id: string;
-            title?: string | undefined;
-            description?: string | undefined;
-          };
+          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
         }>;
         canvasTemplates: Array<{
           __typename?: 'CanvasTemplate';
           id: string;
           value: string;
-          info: {
-            __typename?: 'TemplateInfo';
-            id: string;
-            title?: string | undefined;
-            description?: string | undefined;
-          };
+          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
         }>;
         lifecycleTemplates: Array<{
           __typename?: 'LifecycleTemplate';
           id: string;
           definition?: string | undefined;
           type: LifecycleType;
-          info: {
-            __typename?: 'TemplateInfo';
-            id: string;
-            title?: string | undefined;
-            description?: string | undefined;
-          };
+          info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
         }>;
       }
     | undefined;

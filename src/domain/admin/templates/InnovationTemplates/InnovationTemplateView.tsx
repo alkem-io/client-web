@@ -16,7 +16,7 @@ interface AspectInnovationViewProps {
   template: AdminLifecycleTemplateFragment;
   open: boolean;
   onClose: DialogProps['onClose'];
-  editUrl: string;
+  editUrl?: string;
   editLinkState?: Record<string, unknown>;
 }
 
@@ -38,9 +38,11 @@ const InnovationTemplateView = ({ template, open, onClose, editUrl, editLinkStat
             {title}
           </Typography>
           <DialogActions sx={{ p: 0 }}>
-            <Button component={Link} variant="contained" to={editUrl} state={editLinkState}>
-              {t('common.update')}
-            </Button>
+            {editUrl && (
+              <Button component={Link} variant="contained" to={editUrl} state={editLinkState}>
+                {t('common.update')}
+              </Button>
+            )}
           </DialogActions>
         </Box>
         <Box>
