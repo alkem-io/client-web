@@ -5,7 +5,9 @@ import { SectionSpacer } from '../../shared/components/Section/Section';
 import { styled } from '@mui/styles';
 import withOptionalCount from '../../shared/utils/withOptionalCount';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';
-import ContributingUsers, { ContributingUsersProps } from './ContributingUsers';
+import { ContributingUsersProps } from './ContributingUsers';
+import DashboardContributingUsers from '../EntityDashboardContributorsSection/DashboardContributingUsers';
+import { mapUserCardFragmentToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
 
 export interface CommunityContributorsViewProps extends ContributingOrganizationsProps, ContributingUsersProps {
   loading?: boolean;
@@ -37,8 +39,11 @@ const CommunityContributorsView = ({
         noOrganizationsView={noOrganizationsView}
       />
       <SectionSpacer />
-      <SubSectionHeading>{withOptionalCount(t('common.users'), usersCount)}</SubSectionHeading>
-      <ContributingUsers users={users} loading={loading} />
+      <DashboardContributingUsers
+        headerText={t('common.users')}
+        users={users?.map(mapUserCardFragmentToContributorCardProps)}
+        usersCount={usersCount}
+      />
     </>
   );
 };
