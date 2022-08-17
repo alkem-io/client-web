@@ -1,5 +1,7 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SettingsSection } from '../../../domain/admin/layout/EntitySettings/constants';
+import OrganizationAdminLayout from '../../../domain/admin/organization/OrganizationAdminLayout';
 import { useApolloErrorHandler, useOrganization, useUpdateNavigation } from '../../../hooks';
 import { GroupDetailsFragmentDoc, useCreateGroupOnOrganizationMutation } from '../../../hooks/generated/graphql';
 import { PageProps } from '../../../pages';
@@ -53,5 +55,9 @@ export const CreateOrganizationGroupPage: FC<PageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { name: 'new', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  return <CreateGroupForm onCreate={handler} />;
+  return (
+    <OrganizationAdminLayout currentTab={SettingsSection.Community} tabRoutePrefix="../../">
+      <CreateGroupForm onCreate={handler} />
+    </OrganizationAdminLayout>
+  );
 };
