@@ -7,7 +7,7 @@ import withOptionalCount from '../../shared/utils/withOptionalCount';
 import ContributingOrganizations, { ContributingOrganizationsProps } from './ContributingOrganizations';
 import { ContributingUsersProps } from './ContributingUsers';
 import DashboardContributingUsers from '../EntityDashboardContributorsSection/DashboardContributingUsers';
-import { mapUserCardFragmentToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
+import { mapUserCardPropsToContributorCardProps } from '../utils/useCommunityMembersAsCardProps';
 
 export interface CommunityContributorsViewProps extends ContributingOrganizationsProps, ContributingUsersProps {
   loading?: boolean;
@@ -41,7 +41,7 @@ const CommunityContributorsView = ({
       <SectionSpacer />
       <DashboardContributingUsers
         headerText={t('common.users')}
-        users={users?.map(mapUserCardFragmentToContributorCardProps)}
+        users={users?.map(mapUserCardPropsToContributorCardProps)}
         usersCount={usersCount}
       />
     </>
