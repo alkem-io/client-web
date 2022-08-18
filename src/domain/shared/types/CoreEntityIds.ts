@@ -21,6 +21,6 @@ export type CoreEntityIdCombinations = HubIdHolder | ChallengeIdHolder | Opportu
 export const isHubId = (ids: OptionalCoreEntityIds): ids is HubIdHolder =>
   typeof ids.challengeNameId === 'undefined' && typeof ids.opportunityNameId === 'undefined';
 export const isChallengeId = (ids: OptionalCoreEntityIds): ids is ChallengeIdHolder =>
-  typeof ids.challengeNameId === 'string';
+  typeof ids.challengeNameId === 'string' && typeof ids.opportunityNameId === 'undefined';
 export const isOpportunityId = (ids: OptionalCoreEntityIds): ids is OpportunityIdHolder =>
   typeof ids.opportunityNameId === 'string';
