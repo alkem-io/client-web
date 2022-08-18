@@ -60,8 +60,8 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
     variables: { hubId: hubNameId },
   });
-  const lifecycleTemplates = hubLifecycleTemplates?.hub?.templates?.lifecycleTemplates;
-  const filteredLifecycleTemplates = lifecycleTemplates?.filter(
+  const innovationFlowTemplates = hubLifecycleTemplates?.hub?.templates?.lifecycleTemplates;
+  const filteredInnovationFlowTemplates = innovationFlowTemplates?.filter(
     template => template.type === LifecycleType.Opportunity
   );
   const opportunity = opportunityProfile?.hub?.opportunity;
@@ -122,7 +122,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         name={opportunity?.displayName}
         nameID={opportunity?.nameID}
         tagset={opportunity?.tagset}
-        lifecycleTemplates={filteredLifecycleTemplates}
+        innovationFlowTemplates={filteredInnovationFlowTemplates}
         context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

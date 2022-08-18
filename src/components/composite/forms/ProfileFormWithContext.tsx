@@ -47,7 +47,7 @@ interface Props {
   name?: string;
   nameID?: string;
   tagset?: Tagset;
-  lifecycleTemplates: LifecycleTemplate[] | undefined;
+  innovationFlowTemplates: LifecycleTemplate[] | undefined;
   onSubmit: (formData: ProfileFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
@@ -59,7 +59,7 @@ const ProfileFormWithContext: FC<Props> = ({
   name,
   nameID,
   tagset,
-  lifecycleTemplates,
+  innovationFlowTemplates,
   onSubmit,
   wireSubmit,
   isEdit,
@@ -77,13 +77,13 @@ const ProfileFormWithContext: FC<Props> = ({
     ] as Tagset[];
   }, [tagset]);
 
-  const lifecycleTemplateOptions = useMemo(
+  const innovationFlowTemplateOptions = useMemo(
     () =>
-      Object.values(lifecycleTemplates || []).map<FormikSelectValue>(x => ({
+      Object.values(innovationFlowTemplates || []).map<FormikSelectValue>(x => ({
         id: x.id,
         name: x.info.title || '',
       })),
-    [lifecycleTemplates]
+    [innovationFlowTemplates]
   );
 
   const initialValues: ProfileFormValuesType = {
@@ -132,7 +132,7 @@ const ProfileFormWithContext: FC<Props> = ({
           isSubmitWired = true;
         }
 
-        const selectedLifecycleTemplate = lifecycleTemplates?.find(
+        const selectedInnovationFlowTemplate = innovationFlowTemplates?.find(
           template => template.id === innovationFlowTemplateID
         );
 
@@ -161,8 +161,8 @@ const ProfileFormWithContext: FC<Props> = ({
                       <Typography variant={'h4'}>Innovation flow template</Typography>
                     </Grid>
                     <LifecycleTemplateSegment
-                      lifecycleTemplateOptions={lifecycleTemplateOptions}
-                      definition={selectedLifecycleTemplate?.definition || ''}
+                      innovationFlowTemplateOptions={innovationFlowTemplateOptions}
+                      definition={selectedInnovationFlowTemplate?.definition || ''}
                       required={true}
                     />
                   </>

@@ -5905,6 +5905,7 @@ export type HubLifecycleTemplatesQuery = {
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           lifecycleTemplates: Array<{
             __typename?: 'LifecycleTemplate';
             definition: string;

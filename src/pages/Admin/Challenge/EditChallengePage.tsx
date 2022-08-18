@@ -61,8 +61,10 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
   const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
     variables: { hubId: hubNameId },
   });
-  const lifecycleTemplates = hubLifecycleTemplates?.hub?.templates?.lifecycleTemplates;
-  const filteredLifecycleTemplates = lifecycleTemplates?.filter(template => template.type === LifecycleType.Challenge);
+  const innovationFlowTemplates = hubLifecycleTemplates?.hub?.templates?.lifecycleTemplates;
+  const filteredInnovationFlowTemplates = innovationFlowTemplates?.filter(
+    template => template.type === LifecycleType.Challenge
+  );
   const challenge = challengeProfile?.hub?.challenge;
   const challengeId = useMemo(() => challenge?.id || '', [challenge]);
 
@@ -122,7 +124,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
         nameID={challenge?.nameID}
         tagset={challenge?.tagset}
         context={challenge?.context}
-        lifecycleTemplates={filteredLifecycleTemplates}
+        innovationFlowTemplates={filteredInnovationFlowTemplates}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

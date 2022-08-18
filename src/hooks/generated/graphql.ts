@@ -6570,6 +6570,7 @@ export const HubLifecycleTemplatesDocument = gql`
     hub(ID: $hubId) {
       id
       templates {
+        id
         lifecycleTemplates {
           definition
           id

@@ -4,13 +4,13 @@ import { SafeLifecycleVisualizer } from '../../../domain/admin/templates/Innovat
 import FormikSelect, { FormikSelectValue } from '../../composite/forms/FormikSelect';
 
 interface LifecycleTemplateSegmentProps {
-  lifecycleTemplateOptions: FormikSelectValue[];
+  innovationFlowTemplateOptions: FormikSelectValue[];
   definition: string;
   required: boolean;
 }
 
 export const LifecycleTemplateSegment: FC<LifecycleTemplateSegmentProps> = ({
-  lifecycleTemplateOptions,
+  innovationFlowTemplateOptions,
   definition,
   required,
 }) => {
@@ -18,7 +18,7 @@ export const LifecycleTemplateSegment: FC<LifecycleTemplateSegmentProps> = ({
     <Grid item xs={12}>
       <FormikSelect
         name="innovationFlowTemplateID"
-        values={lifecycleTemplateOptions}
+        values={innovationFlowTemplateOptions}
         title="Select template"
         required={required}
       />
