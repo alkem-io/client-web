@@ -1,5 +1,6 @@
 import { WithId } from '../../../types/WithId';
 import { ContributorCardProps } from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
+import { UserCardProps } from '../../../components/composite/common/cards';
 import { useMemo } from 'react';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../utils/urlBuilders';
 import { COUNTRIES_BY_CODE } from '../../../models/constants';
@@ -32,6 +33,18 @@ const mapUserToContributorCardProps = (user: DashboardContributingUserFragment):
     tags: user.profile?.tagsets?.flatMap(x => x.tags.map(t => t)) || [],
     city: user.profile?.location?.city,
     country: COUNTRIES_BY_CODE[user.profile?.location?.country || ''],
+  },
+});
+
+export const mapUserCardPropsToContributorCardProps = (user: UserCardProps): WithId<ContributorCardProps> => ({
+  id: user.id || '',
+  avatar: user.avatarSrc || '',
+  displayName: user.displayName || '',
+  url: user.url || '',
+  tooltip: {
+    tags: user.tags || [],
+    city: user.city,
+    country: user.country,
   },
 });
 
