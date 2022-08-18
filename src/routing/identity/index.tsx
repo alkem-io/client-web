@@ -27,13 +27,13 @@ export const IdentityRoute: FC = () => {
 
   return (
     <Routes>
-      <Route path={'login/*'} element={<LoginRoute />}></Route>
-      <Route path={'logout'} element={<LogoutRoute />}></Route>
-      <Route path={'registration/*'} element={<RegistrationRoute />}></Route>
-      <Route path={'verify/*'} element={<VerifyRoute />}></Route>
-      <Route path={'recovery'} element={<RecoveryRoute />}></Route>
-      <Route path={'required'} element={<AuthRequiredPage />}></Route>
-      <Route path={'error'} element={<ErrorRoute />}></Route>
+      <Route path={'login/*'} element={<LoginRoute />} />
+      <Route path={'logout'} element={<LogoutRoute />} />
+      <Route path={'registration/*'} element={<RegistrationRoute />} />
+      <Route path={'verify/*'} element={<VerifyRoute />} />
+      <Route path={'recovery'} element={<RecoveryRoute />} />
+      <Route path={'required'} element={<AuthRequiredPage />} />
+      <Route path={'error'} element={<ErrorRoute />} />
       <Route
         path={'settings'}
         element={
@@ -41,8 +41,8 @@ export const IdentityRoute: FC = () => {
             <SettingsRoute />
           </RestrictedRoute>
         }
-      ></Route>
-      <Route path="*" element={<Error404 />}></Route>
+      />
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };
