@@ -4,6 +4,8 @@ import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import EditOpportunity from '../../../components/Admin/EditOpportunity';
 import FormMode from '../../../components/Admin/FormMode';
 import { OpportunityProvider } from '../../../context/OpportunityProvider/OpportunityProvider';
+import ChallengeSettingsLayout from '../../../domain/admin/challenge/ChallengeSettingsLayout';
+import { SettingsSection } from '../../../domain/admin/layout/EntitySettings/constants';
 import { Error404, PageProps } from '../../../pages';
 import ChallengeOpportunitiesPage from '../../../pages/Admin/Challenge/ChallengeOpportunities/ChallengeOpportunitiesPage';
 import { nameOfUrl } from '../../url-params';
@@ -23,11 +25,13 @@ export const OpportunitiesRoute: FC<Props> = ({ paths }) => {
       <Route
         path="new"
         element={
-          <EditOpportunity
-            title={t('navigation.admin.opportunity.create')}
-            mode={FormMode.create}
-            paths={currentPaths}
-          />
+          <ChallengeSettingsLayout currentTab={SettingsSection.Opportunities} tabRoutePrefix={'../../'}>
+            <EditOpportunity
+              title={t('navigation.admin.opportunity.create')}
+              mode={FormMode.create}
+              paths={currentPaths}
+            />
+          </ChallengeSettingsLayout>
         }
       />
       <Route

@@ -1,5 +1,6 @@
 import { Button, useTheme } from '@mui/material';
 import { useSelector } from '@xstate/react';
+import { useLocation } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import { useGlobalState, useUserContext } from '../../../../hooks';
 import UserSegment from '../../entities/User/UserSegment';
@@ -12,6 +13,7 @@ interface ProfileMenuItemProps {
 const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
   const { user, verified, isAuthenticated, loadingMe } = useUserContext();
   const theme = useTheme();
+  const { pathname } = useLocation();
 
   const {
     ui: { userSegmentService },
@@ -36,7 +38,7 @@ const ProfileMenuItem = ({ buttonClassName }: ProfileMenuItemProps) => {
       );
     }
     if (!isAuthenticated) {
-      return <SignInIcon className={buttonClassName} />;
+      return <SignInIcon className={buttonClassName} returnUrl={pathname} />;
     }
     return (
       <>

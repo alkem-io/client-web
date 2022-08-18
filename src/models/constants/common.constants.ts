@@ -2,7 +2,7 @@ export const TOKEN_KEY = 'accessToken';
 
 export const LOGO_REFERENCE_NAME = 'logo';
 
-export const LOCAL_STORAGE_RETURN_URL_KEY = 'returnUrl';
+export const STORAGE_KEY_RETURN_URL = 'returnUrl';
 
 export enum CommunityType {
   HUB = 'hub',

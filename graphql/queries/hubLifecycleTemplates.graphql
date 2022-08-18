@@ -1,0 +1,17 @@
+query hubLifecycleTemplates($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    templates {
+      id
+      lifecycleTemplates {
+        definition
+        id
+        type
+        info {
+          id
+          title
+        }
+      }
+    }
+  }
+}

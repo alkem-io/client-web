@@ -7,6 +7,7 @@ import {
   refetchOpportunitiesQuery,
   refetchOpportunityProfileInfoQuery,
   useCreateOpportunityMutation,
+  useHubLifecycleTemplatesQuery,
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
 } from '../../hooks/generated/graphql';
@@ -16,7 +17,7 @@ import Button from '../core/Button';
 import Typography from '../core/Typography';
 import ProfileFormWithContext, { ProfileFormValuesType } from '../composite/forms/ProfileFormWithContext';
 import FormMode from './FormMode';
-import { Context } from '../../models/graphql-schema';
+import { Context, LifecycleType } from '../../models/graphql-schema';
 import { formatDatabaseLocation } from '../../domain/location/LocationUtils';
 
 interface Props {
@@ -56,6 +57,13 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
     skip: mode === FormMode.create,
   });
 
+  const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
+    variables: { hubId: hubNameId },
+  });
+  const innovationFlowTemplates = hubLifecycleTemplates?.hub?.templates?.lifecycleTemplates;
+  const filteredInnovationFlowTemplates = innovationFlowTemplates?.filter(
+    template => template.type === LifecycleType.Opportunity
+  );
   const opportunity = opportunityProfile?.hub?.opportunity;
   const opportunityId = useMemo(() => opportunity?.id || '', [opportunity]);
 
@@ -68,7 +76,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, tagsets } = values;
+    const { name, nameID, tagsets, innovationFlowTemplateID } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -80,6 +88,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
               displayName: name,
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
+              innovationFlowTemplateID: innovationFlowTemplateID,
             },
           },
         });
@@ -113,6 +122,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         name={opportunity?.displayName}
         nameID={opportunity?.nameID}
         tagset={opportunity?.tagset}
+        innovationFlowTemplates={filteredInnovationFlowTemplates}
         context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
