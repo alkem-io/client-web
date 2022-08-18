@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { StepComponentProps } from '../../../shared/components/Stepper/step/Step';
+import { StepComponentProps } from '../../../shared/components/Steps/step/Step';
 import { StepLayout } from '../step-layout/StepLayout';
 
 export const CalloutStep2: FC<StepComponentProps> = ({

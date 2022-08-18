@@ -731,6 +731,9 @@
     "contribute": {
       "no-aspects": "No aspects found"
     },
+    "explore": {
+      "create-callout": "Create new Callout"
+    },
     "admin": {
       "generic": {
         "sections": {

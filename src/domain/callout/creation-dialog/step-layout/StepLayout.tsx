@@ -3,7 +3,7 @@ import { Box, LinearProgress, Step, StepLabel, Stepper } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../components/core/dialog';
 import Button from '@mui/material/Button';
 import createLayoutHolder from '../../../shared/layout/LayoutHolder';
-import { StepDefinition } from '../../../shared/components/Stepper/step/Step';
+import { StepDefinition } from '../../../shared/components/Steps/step/Step';
 import { useTranslation } from 'react-i18next';
 
 export interface StepLayoutProps {
@@ -11,7 +11,7 @@ export interface StepLayoutProps {
   next?: () => void;
   prev?: () => void;
   isValid?: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   steps: StepDefinition[];
   activeStep: string;
 }
@@ -19,7 +19,7 @@ export interface StepLayoutProps {
 export const StepLayoutImpl: FC<StepLayoutProps> = ({ activeStep, steps, children, dialogTitle, onClose, isValid = true, next, prev }) => {
   const { t } = useTranslation();
   // For now, using just the active step position to determine whether the previous steps are completed.
-  // It's possible to base the state of the Stepper on whether a step was "really" completed (e.g. the form was filled),
+  // It's possible to base the state of the Steps on whether a step was "really" completed (e.g. the form was filled),
   // in this case StepLayoutImpl needs to receive something like completedSteps: { [stepName: string]: boolean }
   const activeStepIndex = useMemo(() => steps.findIndex(stepDef => stepDef.name === activeStep), [steps, activeStep]);
 

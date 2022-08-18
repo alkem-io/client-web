@@ -5,7 +5,6 @@ import { Grid, Paper } from '@mui/material';
 import AspectsView, { AspectsViewProps } from '../aspect/AspectsView/AspectsView';
 import { AspectWithPermissions } from '../../containers/ContributeTabContainer/ContributeTabContainer';
 import CategorySelector, { CategoryConfig } from '../../components/composite/common/CategorySelector/CategorySelector';
-import CalloutCreationDialog from '../../domain/callout/creation-dialog/CalloutCreationDialog';
 
 export interface ContributeViewProps {
   aspects?: AspectWithPermissions[];
@@ -42,11 +41,8 @@ const ContributeView: FC<ContributeViewProps> = ({
     [shouldSkipFiltering, aspects, category]
   );
 
-  const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(true);
-
   return (
     <Grid container spacing={2}>
-      <CalloutCreationDialog open={isCalloutCreationDialogOpen} onClose={() => setIsCalloutCreationDialogOpen(false)} onCreate={async () => { return undefined; }} />
       <Grid item xs={3}>
         <Paper square variant="outlined">
           <CategorySelector categories={categoryConfig} value={category} onSelect={setCategory} />

@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useState } from 'react';
 import { CalloutType } from '../../../models/graphql-schema';
 import Dialog from '@mui/material/Dialog/Dialog';
-import Steps from '../../shared/components/Stepper/Steps';
-import Step from '../../shared/components/Stepper/step/Step';
-import { CalloutStep2, CalloutStep3 } from './steps/CalloutStep1';
+import Steps from '../../shared/components/Steps/Steps';
+import Step from '../../shared/components/Steps/step/Step';
+import { CalloutStep3 } from './steps/CalloutStep1';
 import { StepLayoutHolder } from './step-layout/StepLayout';
 import CalloutInfoStep from './steps/CalloutInfoStep';
 import { useTranslation } from 'react-i18next';
@@ -50,12 +50,14 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose }
             callout={callout}
             onChange={handleInfoStepValueChange}
             onStatusChanged={handleInfoStepStatusChange}
+            onClose={onClose}
           />
           <Step
             component={CalloutTemplateStep}
             title={t('components.callout-creation.template-step.title')}
             callout={callout}
             onChange={handleTemplateStepValueChange}
+            onClose={onClose}
           />
           <Step
             component={CalloutStep3}

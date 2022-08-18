@@ -15,8 +15,9 @@ export interface StepComponentProps {
 
 export interface StepProps<PassedProps extends {}> {
   title: React.ReactNode;
-  isValid?: boolean;
   component: ComponentType<StepComponentProps & PassedProps>;
+  isValid?: boolean;
+  onClose?: () => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
