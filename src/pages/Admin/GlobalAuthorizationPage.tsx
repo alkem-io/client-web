@@ -3,6 +3,8 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
 import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
+import AdminLayout from '../../domain/admin/toplevel/AdminLayout';
+import { AdminSection } from '../../domain/admin/toplevel/constants';
 import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
@@ -69,14 +71,16 @@ const GlobalAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <EditMemberCredentials
-        onAdd={handleAdd}
-        onRemove={handleRemove}
-        credential={credential}
-        updating={addingMember || removingMember}
-      />
-    </Container>
+    <AdminLayout currentTab={AdminSection.Authorization}>
+      <Container maxWidth="xl">
+        <EditMemberCredentials
+          onAdd={handleAdd}
+          onRemove={handleRemove}
+          credential={credential}
+          updating={addingMember || removingMember}
+        />
+      </Container>
+    </AdminLayout>
   );
 };
 export default GlobalAuthorizationPage;
