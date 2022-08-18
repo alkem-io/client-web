@@ -862,13 +862,13 @@ export type MutationKeySpecifier = (
   | 'updateCanvas'
   | 'updateCanvasTemplate'
   | 'updateChallenge'
-  | 'updateChallengeLifecycle'
+  | 'updateChallengeInnovationFlow'
   | 'updateDiscussion'
   | 'updateEcosystemModel'
   | 'updateHub'
   | 'updateLifecycleTemplate'
   | 'updateOpportunity'
-  | 'updateOpportunityLifecycle'
+  | 'updateOpportunityInnovationFlow'
   | 'updateOrganization'
   | 'updatePreferenceOnChallenge'
   | 'updatePreferenceOnHub'
@@ -989,13 +989,13 @@ export type MutationFieldPolicy = {
   updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateChallengeLifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateChallengeInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
-  updateOpportunityLifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateOpportunityInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
   updatePreferenceOnHub?: FieldPolicy<any> | FieldReadFunction<any>;
