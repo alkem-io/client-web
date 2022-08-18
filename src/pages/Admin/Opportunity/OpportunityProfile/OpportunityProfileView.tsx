@@ -73,6 +73,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
               displayName: name,
               challengeID: challengeId,
               tags: tagsets.flatMap(x => x.tags),
+              innovationFlowTemplateID: '',
             },
           },
         });

@@ -6565,6 +6565,74 @@ export type HubHostReferencesQueryResult = Apollo.QueryResult<
 export function refetchHubHostReferencesQuery(variables: SchemaTypes.HubHostReferencesQueryVariables) {
   return { query: HubHostReferencesDocument, variables: variables };
 }
+export const HubLifecycleTemplatesDocument = gql`
+  query hubLifecycleTemplates($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      templates {
+        lifecycleTemplates {
+          definition
+          id
+          type
+          info {
+            id
+            title
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHubLifecycleTemplatesQuery__
+ *
+ * To run a query within a React component, call `useHubLifecycleTemplatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubLifecycleTemplatesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubLifecycleTemplatesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubLifecycleTemplatesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubLifecycleTemplatesQuery,
+    SchemaTypes.HubLifecycleTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubLifecycleTemplatesQuery, SchemaTypes.HubLifecycleTemplatesQueryVariables>(
+    HubLifecycleTemplatesDocument,
+    options
+  );
+}
+export function useHubLifecycleTemplatesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubLifecycleTemplatesQuery,
+    SchemaTypes.HubLifecycleTemplatesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubLifecycleTemplatesQuery, SchemaTypes.HubLifecycleTemplatesQueryVariables>(
+    HubLifecycleTemplatesDocument,
+    options
+  );
+}
+export type HubLifecycleTemplatesQueryHookResult = ReturnType<typeof useHubLifecycleTemplatesQuery>;
+export type HubLifecycleTemplatesLazyQueryHookResult = ReturnType<typeof useHubLifecycleTemplatesLazyQuery>;
+export type HubLifecycleTemplatesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubLifecycleTemplatesQuery,
+  SchemaTypes.HubLifecycleTemplatesQueryVariables
+>;
+export function refetchHubLifecycleTemplatesQuery(variables: SchemaTypes.HubLifecycleTemplatesQueryVariables) {
+  return { query: HubLifecycleTemplatesDocument, variables: variables };
+}
 export const HubMembersDocument = gql`
   query hubMembers($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -15478,11 +15546,8 @@ export const UpdateInnovationTemplateDocument = gql`
     $templateId: UUID!
     $info: UpdateTemplateInfoInput
     $definition: LifecycleDefinition!
-    $type: LifecycleType!
   ) {
-    updateLifecycleTemplate(
-      lifecycleTemplateInput: { ID: $templateId, info: $info, type: $type, definition: $definition }
-    ) {
+    updateLifecycleTemplate(lifecycleTemplateInput: { ID: $templateId, info: $info, definition: $definition }) {
       id
     }
   }
@@ -15508,7 +15573,6 @@ export type UpdateInnovationTemplateMutationFn = Apollo.MutationFunction<
  *      templateId: // value for 'templateId'
  *      info: // value for 'info'
  *      definition: // value for 'definition'
- *      type: // value for 'type'
  *   },
  * });
  */

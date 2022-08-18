@@ -8,6 +8,7 @@ import {
   refetchChallengesWithCommunityQuery,
   useChallengeProfileInfoQuery,
   useCreateChallengeMutation,
+  useHubLifecycleTemplatesQuery,
   useUpdateChallengeMutation,
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
@@ -19,6 +20,7 @@ import ProfileFormWithContext, {
 } from '../../../components/composite/forms/ProfileFormWithContext';
 import FormMode from '../../../components/Admin/FormMode';
 import { formatDatabaseLocation } from '../../../domain/location/LocationUtils';
+import { LifecycleType } from '../../../models/graphql-schema';
 
 interface Props {
   mode: FormMode;
@@ -55,6 +57,12 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
     variables: { hubId: hubNameId, challengeId: challengeNameId },
     skip: mode === FormMode.create,
   });
+
+  const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
+    variables: { hubId: hubNameId },
+  });
+  const lifecycleTemplates = hubLifecycleTemplates?.hub?.templates?.lifecycleTemplates;
+  const filteredLifecycleTemplates = lifecycleTemplates?.filter(template => template.type === LifecycleType.Challenge);
   const challenge = challengeProfile?.hub?.challenge;
   const challengeId = useMemo(() => challenge?.id || '', [challenge]);
 
@@ -67,7 +75,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
   useUpdateNavigation({ currentPaths });
 
   const onSubmit = async (values: ProfileFormValuesType) => {
-    const { name, nameID, tagsets } = values;
+    const { name, nameID, tagsets, innovationFlowTemplateID } = values;
 
     switch (mode) {
       case FormMode.create:
@@ -79,6 +87,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
               hubID: hubNameId,
               context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
+              innovationFlowTemplateID: innovationFlowTemplateID,
             },
           },
         });
@@ -113,6 +122,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
         nameID={challenge?.nameID}
         tagset={challenge?.tagset}
         context={challenge?.context}
+        lifecycleTemplates={filteredLifecycleTemplates}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
       />

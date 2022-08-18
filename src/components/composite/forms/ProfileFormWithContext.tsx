@@ -3,7 +3,7 @@ import { Formik } from 'formik';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import { Context, Reference, Tagset } from '../../../models/graphql-schema';
+import { Context, LifecycleType, Reference, Tagset } from '../../../models/graphql-schema';
 import ContextReferenceSegment from '../../Admin/Common/ContextReferenceSegment';
 import { ContextSegment, contextSegmentSchema } from '../../Admin/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../Admin/Common/NameSegment';
@@ -14,6 +14,8 @@ import InputField from '../../Admin/Common/InputField';
 import { EmptyLocation, Location } from '../../../domain/location/Location';
 import { formatLocation } from '../../../domain/location/LocationUtils';
 import { LocationSegment } from '../../../domain/location/LocationSegment';
+import { LifecycleTemplateSegment } from '../../Admin/Common/LifecycleTemplateSegment';
+import { FormikSelectValue } from './FormikSelect';
 export interface ProfileFormValuesType {
   name: string;
   nameID: string;
@@ -26,6 +28,18 @@ export interface ProfileFormValuesType {
   references: Reference[];
   // visuals: Visual2[]; todo: enable when it's time
   tagsets: Tagset[];
+  innovationFlowTemplateID: string;
+}
+
+interface LifecycleTemplateInfo {
+  id: string;
+  title?: string;
+}
+interface LifecycleTemplate {
+  definition: string;
+  id: string;
+  type: LifecycleType;
+  info: LifecycleTemplateInfo;
 }
 
 interface Props {
@@ -33,6 +47,7 @@ interface Props {
   name?: string;
   nameID?: string;
   tagset?: Tagset;
+  lifecycleTemplates: LifecycleTemplate[] | undefined;
   onSubmit: (formData: ProfileFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
@@ -44,6 +59,7 @@ const ProfileFormWithContext: FC<Props> = ({
   name,
   nameID,
   tagset,
+  lifecycleTemplates,
   onSubmit,
   wireSubmit,
   isEdit,
@@ -61,6 +77,15 @@ const ProfileFormWithContext: FC<Props> = ({
     ] as Tagset[];
   }, [tagset]);
 
+  const lifecycleTemplateOptions = useMemo(
+    () =>
+      Object.values(lifecycleTemplates || []).map<FormikSelectValue>(x => ({
+        id: x.id,
+        name: x.info.title || '',
+      })),
+    [lifecycleTemplates]
+  );
+
   const initialValues: ProfileFormValuesType = {
     name: name || '',
     nameID: nameID || '',
@@ -72,6 +97,7 @@ const ProfileFormWithContext: FC<Props> = ({
     who: context?.who || '',
     references: context?.references || [],
     tagsets: tagsets,
+    innovationFlowTemplateID: '',
   };
 
   const validationSchema = yup.object().shape({
@@ -85,6 +111,7 @@ const ProfileFormWithContext: FC<Props> = ({
     references: referenceSegmentSchema,
     // visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
+    innovationFlowTemplateID: yup.string().required(t('forms.validations.required')),
   });
 
   let isSubmitWired = false;
@@ -98,12 +125,16 @@ const ProfileFormWithContext: FC<Props> = ({
         onSubmit(values);
       }}
     >
-      {({ values: { references }, handleSubmit }) => {
+      {({ values: { references, innovationFlowTemplateID }, handleSubmit }) => {
         // TODO [ATS]: Research useImperativeHandle and useRef to achieve this.
         if (!isSubmitWired) {
           wireSubmit(handleSubmit);
           isSubmitWired = true;
         }
+
+        const selectedLifecycleTemplate = lifecycleTemplates?.find(
+          template => template.id === innovationFlowTemplateID
+        );
 
         return (
           <>
@@ -124,6 +155,18 @@ const ProfileFormWithContext: FC<Props> = ({
                   </Typography>
                 </Grid>
                 <TagsetSegment tagsets={tagsets} />
+                {!isEdit && (
+                  <>
+                    <Grid item xs={12}>
+                      <Typography variant={'h4'}>Innovation flow template</Typography>
+                    </Grid>
+                    <LifecycleTemplateSegment
+                      lifecycleTemplateOptions={lifecycleTemplateOptions}
+                      definition={selectedLifecycleTemplate?.definition || ''}
+                      required={true}
+                    />
+                  </>
+                )}
               </>
             )}
             {/*<Grid item xs={12}>
