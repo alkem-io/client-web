@@ -12,6 +12,8 @@ import { PageProps } from '../../../pages';
 import { logger } from '../../../services/logging/winston/logger';
 import GroupForm from './GroupForm';
 import { getUpdateProfileInput } from '../../../utils/getUpdateUserInput';
+import OrganizationAdminLayout from '../../../domain/admin/organization/OrganizationAdminLayout';
+import { SettingsSection } from '../../../domain/admin/layout/EntitySettings/constants';
 interface GroupPageProps extends PageProps {
   group?: UserGroup;
 }
@@ -84,14 +86,16 @@ export const GroupPage: FC<GroupPageProps> = ({ paths, group }) => {
   };
 
   return (
-    <GroupForm
-      title={t('components.groupForm.title')}
-      group={group || { id: '-1', name: '' }}
-      members={members}
-      onSave={handleSave}
-      onDelete={handleDelete}
-      onCancel={handleCancel}
-    />
+    <OrganizationAdminLayout currentTab={SettingsSection.Community} tabRoutePrefix="../../../../">
+      <GroupForm
+        title={t('components.groupForm.title')}
+        group={group || { id: '-1', name: '' }}
+        members={members}
+        onSave={handleSave}
+        onDelete={handleDelete}
+        onCancel={handleCancel}
+      />
+    </OrganizationAdminLayout>
   );
 };
 

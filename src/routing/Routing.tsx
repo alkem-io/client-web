@@ -9,7 +9,7 @@ import { AboutPage, Error404, HomePage } from '../pages';
 import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
 import ContributorsPage from '../pages/Contributors/ContributorsPage';
 import { AdminRoute } from './admin/AdminRoute';
-import { IdentityRoute } from './identity/identity';
+import { IdentityRoute } from './identity';
 import { MessagesRoute } from './messages/MessagesRoute';
 import OrganizationRoute from './organization/OrganizationRoute';
 import ProfileRoute from './profile/ProfileRoute';

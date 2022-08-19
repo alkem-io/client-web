@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { useChallenge } from '../../../hooks';
-import CommunityUpdates from '../CommunityUpdates/CommunityUpdates';
 import { useChallengeCommunityContributorsQuery } from '../../../hooks/generated/graphql';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
@@ -22,7 +21,6 @@ export const organizationCardValueGetter = ({
 
 const ChallengeCommunityView: FC = () => {
   const { challenge, hubId } = useChallenge();
-  const communityId = challenge?.community?.id;
   const challengeId = challenge?.id;
 
   const { loading, ...contributors } = useCommunityContributors(
@@ -47,7 +45,6 @@ const ChallengeCommunityView: FC = () => {
 
   return (
     <>
-      <CommunityUpdates hubId={hubId} communityId={communityId} />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
       <CommunityContributorsSection

@@ -73,6 +73,7 @@
     "administration": "Administration",
     "add": "Add",
     "remove": "Remove",
+    "callout": "Callout",
     "canvas": "Canvas",
     "canvases": "Canvases",
     "comment": "Comment",
@@ -280,6 +281,9 @@
     "leads": "Leads",
     "members": "Members",
     "host": "Host"
+  },
+  "callout": {
+    "draftNotice": "DRAFT - This Callout is only visible for admins."
   },
   "forms": {
     "validations": {
@@ -765,6 +769,7 @@
         }
       },
       "organization": {
+        "create-organization": "Create organization",
         "authorization": {
           "preferences": {
             "title": "Authorization",
@@ -1255,6 +1260,7 @@
     "loading-flow": "Loading flow",
     "loading-error": "Loading error",
     "messages": {
+      "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
     }
@@ -1306,6 +1312,7 @@
     "no-data": "No {{name, lowercase}} available"
   },
   "dashboard-contributors-section": {
+    "dialog-title": "Contributors",
     "more": "...plus {{count}} more"
   },
   "associates-view": {

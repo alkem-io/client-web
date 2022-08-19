@@ -77,6 +77,14 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             <Markdown children={challenge?.context?.vision || ''} />
           </DashboardGenericSection>
           {communityReadAccess && (
+            <EntityDashboardLeadsSection
+              usersHeader={t('community.leads')}
+              organizationsHeader={t('community.leading-organizations')}
+              leadUsers={challenge?.community?.leadUsers}
+              leadOrganizations={challenge?.community?.leadOrganizations}
+            />
+          )}
+          {communityReadAccess && (
             <>
               <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
@@ -84,14 +92,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
                 <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
               )}
             </>
-          )}
-          {communityReadAccess && (
-            <EntityDashboardLeadsSection
-              usersHeader={t('community.leads')}
-              organizationsHeader={t('community.leading-organizations')}
-              leadUsers={challenge?.community?.leadUsers}
-              leadOrganizations={challenge?.community?.leadOrganizations}
-            />
           )}
           {communityReadAccess && (
             <EntityDashboardContributorsSection

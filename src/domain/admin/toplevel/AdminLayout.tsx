@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import PageBanner from '../../shared/components/PageHeader/PageBanner';
 import HeaderNavigationTabs from '../../shared/components/PageHeader/HeaderNavigationTabs';
 import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
+import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 
 interface AdminLayoutProps {
   currentTab: AdminSection;
@@ -23,6 +24,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ currentTab, children }) => {
           );
         })}
       </HeaderNavigationTabs>
+      <SectionSpacer />
 
       {children}
     </>

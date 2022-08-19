@@ -70,6 +70,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
               hubID: hubNameId,
               context: createContextInput({ ...values, location: formatDatabaseLocation(values.location) }),
               tags: tagsets.flatMap(x => x.tags),
+              innovationFlowTemplateID: '',
             },
           },
         });

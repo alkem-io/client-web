@@ -8,6 +8,8 @@ import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage'
 import { nameOfUrl } from '../../url-params';
 import { ChallengeRoute } from './ChallengeRoute';
 import ChallengeListPage from '../../../pages/Admin/Hub/HubChallenges/ChallengeListPage';
+import HubSettingsLayout from '../../../domain/admin/hub/HubSettingsLayout';
+import { SettingsSection } from '../../../domain/admin/layout/EntitySettings/constants';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -21,11 +23,13 @@ export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
       <Route
         path="new"
         element={
-          <EditChallengePage
-            mode={FormMode.create}
-            paths={currentPaths}
-            title={t('navigation.admin.challenge.create')}
-          />
+          <HubSettingsLayout currentTab={SettingsSection.Challenges} tabRoutePrefix={'../../'}>
+            <EditChallengePage
+              mode={FormMode.create}
+              paths={currentPaths}
+              title={t('navigation.admin.challenge.create')}
+            />
+          </HubSettingsLayout>
         }
       />
       <Route

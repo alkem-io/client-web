@@ -341,7 +341,7 @@ export enum AuthorizationPrivilege {
   ReadUsers = 'READ_USERS',
   Update = 'UPDATE',
   UpdateCanvas = 'UPDATE_CANVAS',
-  UpdateLifecycle = 'UPDATE_LIFECYCLE',
+  UpdateInnovationFlow = 'UPDATE_INNOVATION_FLOW',
 }
 
 export type Callout = {
@@ -885,9 +885,10 @@ export type CreateChallengeOnChallengeInput = {
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName: Scalars['String'];
+  /** The Innovation Flow template to use for the Challenge. */
+  innovationFlowTemplateID: Scalars['UUID'];
   /** Set lead Organizations for the Challenge. */
   leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
-  lifecycleTemplate?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -898,9 +899,10 @@ export type CreateChallengeOnHubInput = {
   /** The display name for the entity. */
   displayName: Scalars['String'];
   hubID: Scalars['UUID_NAMEID'];
+  /** The Innovation Flow template to use for the Challenge. */
+  innovationFlowTemplateID: Scalars['UUID'];
   /** Set lead Organizations for the Challenge. */
   leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
-  lifecycleTemplate?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -928,7 +930,6 @@ export type CreateHubInput = {
   displayName: Scalars['String'];
   /** The host Organization for the hub */
   hostID: Scalars['UUID_NAMEID'];
-  lifecycleTemplate?: InputMaybe<Scalars['String']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -960,7 +961,8 @@ export type CreateOpportunityInput = {
   context?: InputMaybe<CreateContextInput>;
   /** The display name for the entity. */
   displayName: Scalars['String'];
-  lifecycleTemplate?: InputMaybe<Scalars['String']>;
+  /** The Innovation Flow template to use for the Opportunity. */
+  innovationFlowTemplateID: Scalars['UUID'];
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
@@ -1402,7 +1404,7 @@ export type LifecycleTemplate = {
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The XState definition for this LifecycleTemplate. */
-  definition?: Maybe<Scalars['LifecycleDefinition']>;
+  definition: Scalars['LifecycleDefinition'];
   /** The ID of the entity */
   id: Scalars['UUID'];
   /** The meta information for this Template */
@@ -1657,10 +1659,10 @@ export type Mutation = {
   updateCanvas: Canvas;
   /** Updates the specified CanvasTemplate. */
   updateCanvasTemplate: CanvasTemplate;
-  /** Updates the Lifecycle on the specified Challenge. */
+  /** Updates the specified Challenge. */
   updateChallenge: Challenge;
-  /** Updates the Lifecycle on the specified Challenge. */
-  updateChallengeLifecycle: Challenge;
+  /** Updates the Innovation Flow on the specified Challenge. */
+  updateChallengeInnovationFlow: Challenge;
   /** Updates the specified Discussion. */
   updateDiscussion: Discussion;
   /** Updates the specified EcosystemModel. */
@@ -1671,8 +1673,8 @@ export type Mutation = {
   updateLifecycleTemplate: LifecycleTemplate;
   /** Updates the specified Opportunity. */
   updateOpportunity: Opportunity;
-  /** Updates the Lifecycle on the specified Opportunity. */
-  updateOpportunityLifecycle: Opportunity;
+  /** Updates the Innovation Flow on the specified Opportunity. */
+  updateOpportunityInnovationFlow: Opportunity;
   /** Updates the specified Organization. */
   updateOrganization: Organization;
   /** Updates one of the Preferences on a Challenge */
@@ -2113,8 +2115,8 @@ export type MutationUpdateChallengeArgs = {
   challengeData: UpdateChallengeInput;
 };
 
-export type MutationUpdateChallengeLifecycleArgs = {
-  challengeData: UpdateChallengeLifecycleInput;
+export type MutationUpdateChallengeInnovationFlowArgs = {
+  challengeData: UpdateChallengeInnovationFlowInput;
 };
 
 export type MutationUpdateDiscussionArgs = {
@@ -2137,8 +2139,8 @@ export type MutationUpdateOpportunityArgs = {
   opportunityData: UpdateOpportunityInput;
 };
 
-export type MutationUpdateOpportunityLifecycleArgs = {
-  opportunityData: UpdateOpportunityLifecycleInput;
+export type MutationUpdateOpportunityInnovationFlowArgs = {
+  opportunityData: UpdateOpportunityInnovationFlowInput;
 };
 
 export type MutationUpdateOrganizationArgs = {
@@ -3083,6 +3085,13 @@ export type UpdateCanvasTemplateInput = {
   value?: InputMaybe<Scalars['JSON']>;
 };
 
+export type UpdateChallengeInnovationFlowInput = {
+  /** ID of the Challenge */
+  challengeID: Scalars['UUID'];
+  /** The Innovation Flow template to use for the Challenge. */
+  innovationFlowTemplateID: Scalars['UUID'];
+};
+
 export type UpdateChallengeInput = {
   ID: Scalars['UUID'];
   /** Update the contained Context entity. */
@@ -3093,13 +3102,6 @@ export type UpdateChallengeInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
   tags?: InputMaybe<Array<Scalars['String']>>;
-};
-
-export type UpdateChallengeLifecycleInput = {
-  /** ID of the Challenge */
-  challengeID: Scalars['UUID'];
-  /** The Lifecycle Definition to use for this Challenge. */
-  lifecycleDefinition: Scalars['LifecycleDefinition'];
 };
 
 export type UpdateChallengePreferenceInput = {
@@ -3164,13 +3166,18 @@ export type UpdateLifecycleTemplateInput = {
   definition?: InputMaybe<Scalars['LifecycleDefinition']>;
   /** The meta information for this Template. */
   info?: InputMaybe<UpdateTemplateInfoInput>;
-  /** The type of the Lifecycles that this Template supports. */
-  type?: InputMaybe<LifecycleType>;
 };
 
 export type UpdateLocationInput = {
   city?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateOpportunityInnovationFlowInput = {
+  /** The Innovation Flow template to use for the Opportunity. */
+  innovationFlowTemplateID: Scalars['UUID'];
+  /** ID of the Opportunity */
+  opportunityID: Scalars['UUID'];
 };
 
 export type UpdateOpportunityInput = {
@@ -3183,13 +3190,6 @@ export type UpdateOpportunityInput = {
   nameID?: InputMaybe<Scalars['NameID']>;
   /** Update the tags on the Tagset. */
   tags?: InputMaybe<Array<Scalars['String']>>;
-};
-
-export type UpdateOpportunityLifecycleInput = {
-  /** The Lifecycle Definition to use for this Opportunity. */
-  lifecycleDefinition: Scalars['LifecycleDefinition'];
-  /** ID of the Opportunity */
-  opportunityID: Scalars['UUID'];
 };
 
 export type UpdateOrganizationInput = {
@@ -5906,6 +5906,31 @@ export type HubHostReferencesQuery = {
             id: string;
             references?: Array<{ __typename?: 'Reference'; name: string; uri: string }> | undefined;
           };
+        }
+      | undefined;
+  };
+};
+
+export type HubLifecycleTemplatesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubLifecycleTemplatesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          lifecycleTemplates: Array<{
+            __typename?: 'LifecycleTemplate';
+            definition: string;
+            id: string;
+            type: LifecycleType;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+          }>;
         }
       | undefined;
   };
@@ -12451,7 +12476,7 @@ export type HubTemplatesQuery = {
           lifecycleTemplates: Array<{
             __typename?: 'LifecycleTemplate';
             id: string;
-            definition?: string | undefined;
+            definition: string;
             type: LifecycleType;
             info: {
               __typename?: 'TemplateInfo';
@@ -12483,7 +12508,7 @@ export type HubTemplatesQuery = {
 export type AdminLifecycleTemplateFragment = {
   __typename?: 'LifecycleTemplate';
   id: string;
-  definition?: string | undefined;
+  definition: string;
   type: LifecycleType;
   info: {
     __typename?: 'TemplateInfo';
@@ -12589,7 +12614,6 @@ export type UpdateInnovationTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID'];
   info?: InputMaybe<UpdateTemplateInfoInput>;
   definition: Scalars['LifecycleDefinition'];
-  type: LifecycleType;
 }>;
 
 export type UpdateInnovationTemplateMutation = {
@@ -12628,6 +12652,423 @@ export type AspectCommentsMessageReceivedSubscription = {
     __typename?: 'AspectCommentsMessageReceived';
     message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
   };
+};
+
+export type HubCalloutsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCalloutsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                nameID: string;
+                type: CalloutType;
+                displayName: string;
+                description?: string | undefined;
+                state: CalloutState;
+                aspects?:
+                  | Array<{
+                      __typename?: 'Aspect';
+                      id: string;
+                      nameID: string;
+                      displayName: string;
+                      type: string;
+                      description: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                      banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                      tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                    }>
+                  | undefined;
+                canvases?:
+                  | Array<{
+                      __typename?: 'Canvas';
+                      id: string;
+                      nameID: string;
+                      displayName: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            anonymousReadAccess: boolean;
+                          }
+                        | undefined;
+                      checkout?:
+                        | {
+                            __typename?: 'CanvasCheckout';
+                            id: string;
+                            lockedBy: string;
+                            status: CanvasCheckoutStateEnum;
+                            lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                            authorization?:
+                              | {
+                                  __typename?: 'Authorization';
+                                  id: string;
+                                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                }
+                              | undefined;
+                          }
+                        | undefined;
+                      preview?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: string;
+                            allowedTypes: Array<string>;
+                            aspectRatio: number;
+                            maxHeight: number;
+                            maxWidth: number;
+                            minHeight: number;
+                            minWidth: number;
+                          }
+                        | undefined;
+                    }>
+                  | undefined;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeCalloutsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCalloutsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  type: CalloutType;
+                  displayName: string;
+                  description?: string | undefined;
+                  state: CalloutState;
+                  aspects?:
+                    | Array<{
+                        __typename?: 'Aspect';
+                        id: string;
+                        nameID: string;
+                        displayName: string;
+                        type: string;
+                        description: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                      }>
+                    | undefined;
+                  canvases?:
+                    | Array<{
+                        __typename?: 'Canvas';
+                        id: string;
+                        nameID: string;
+                        displayName: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        checkout?:
+                          | {
+                              __typename?: 'CanvasCheckout';
+                              id: string;
+                              lockedBy: string;
+                              status: CanvasCheckoutStateEnum;
+                              lifecycle: {
+                                __typename?: 'Lifecycle';
+                                id: string;
+                                nextEvents?: Array<string> | undefined;
+                              };
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                            }
+                          | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                            }
+                          | undefined;
+                      }>
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityCalloutsQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCalloutsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  type: CalloutType;
+                  displayName: string;
+                  description?: string | undefined;
+                  state: CalloutState;
+                  aspects?:
+                    | Array<{
+                        __typename?: 'Aspect';
+                        id: string;
+                        nameID: string;
+                        displayName: string;
+                        type: string;
+                        description: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+                      }>
+                    | undefined;
+                  canvases?:
+                    | Array<{
+                        __typename?: 'Canvas';
+                        id: string;
+                        nameID: string;
+                        displayName: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                              anonymousReadAccess: boolean;
+                            }
+                          | undefined;
+                        checkout?:
+                          | {
+                              __typename?: 'CanvasCheckout';
+                              id: string;
+                              lockedBy: string;
+                              status: CanvasCheckoutStateEnum;
+                              lifecycle: {
+                                __typename?: 'Lifecycle';
+                                id: string;
+                                nextEvents?: Array<string> | undefined;
+                              };
+                              authorization?:
+                                | {
+                                    __typename?: 'Authorization';
+                                    id: string;
+                                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                                  }
+                                | undefined;
+                            }
+                          | undefined;
+                        preview?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: string;
+                              allowedTypes: Array<string>;
+                              aspectRatio: number;
+                              maxHeight: number;
+                              maxWidth: number;
+                              minHeight: number;
+                              minWidth: number;
+                            }
+                          | undefined;
+                      }>
+                    | undefined;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
+                }>
+              | undefined;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CalloutsFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  callouts?:
+    | Array<{
+        __typename?: 'Callout';
+        id: string;
+        nameID: string;
+        type: CalloutType;
+        displayName: string;
+        description?: string | undefined;
+        state: CalloutState;
+        aspects?:
+          | Array<{
+              __typename?: 'Aspect';
+              id: string;
+              nameID: string;
+              displayName: string;
+              type: string;
+              description: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+            }>
+          | undefined;
+        canvases?:
+          | Array<{
+              __typename?: 'Canvas';
+              id: string;
+              nameID: string;
+              displayName: string;
+              authorization?:
+                | {
+                    __typename?: 'Authorization';
+                    id: string;
+                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    anonymousReadAccess: boolean;
+                  }
+                | undefined;
+              checkout?:
+                | {
+                    __typename?: 'CanvasCheckout';
+                    id: string;
+                    lockedBy: string;
+                    status: CanvasCheckoutStateEnum;
+                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
+                    authorization?:
+                      | {
+                          __typename?: 'Authorization';
+                          id: string;
+                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              preview?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: string;
+                    allowedTypes: Array<string>;
+                    aspectRatio: number;
+                    maxHeight: number;
+                    maxWidth: number;
+                    minHeight: number;
+                    minWidth: number;
+                  }
+                | undefined;
+            }>
+          | undefined;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }>
+    | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
 };
 
 export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{
@@ -13955,7 +14396,7 @@ export type HubProviderQuery = {
           lifecycleTemplates: Array<{
             __typename?: 'LifecycleTemplate';
             id: string;
-            definition?: string | undefined;
+            definition: string;
             type: LifecycleType;
             info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
           }>;
@@ -14045,7 +14486,7 @@ export type HubInfoFragment = {
         lifecycleTemplates: Array<{
           __typename?: 'LifecycleTemplate';
           id: string;
-          definition?: string | undefined;
+          definition: string;
           type: LifecycleType;
           info: { __typename?: 'TemplateInfo'; id: string; title: string; description: string };
         }>;

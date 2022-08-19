@@ -35,15 +35,9 @@ const ContributingUsers = ({ users, loading = false }: ContributingUsersProps) =
   }
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} columns={{ xs: 1, md: 2 }}>
       {users.map(user => (
-        <Grid
-          key={user.id}
-          item
-          flexGrow={1}
-          flexBasis="25%"
-          maxWidth={{ xs: 'auto', sm: 'auto', md: '50%', lg: '33%', xl: '25%' }}
-        >
+        <Grid key={user.id} item xs={1}>
           <UserCard
             displayName={user.displayName}
             tags={user.tags}

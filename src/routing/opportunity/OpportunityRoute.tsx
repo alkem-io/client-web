@@ -10,9 +10,10 @@ import OpportunityAgreementsPage from '../../pages/Opportunity/OpportunityAgreem
 import ContributePage from '../../pages/Contribute/ContributePage';
 import { nameOfUrl } from '../url-params';
 import AspectProvider from '../../context/aspect/AspectProvider';
-import AspectRoute from '../aspect/AspectRoute';
+import AspectRoute from '../../domain/aspect/views/AspectRoute';
 import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
 import { routes } from '../../domain/opportunity/routes/opportunityRoutes';
+import CalloutsPage from '../../domain/callout/CalloutsPage';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -38,19 +39,23 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         <Route index element={<Navigate replace to={routes.Dashboard} />} />
         <Route path={routes.Dashboard} element={<OpportunityDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<OpportunityDashboardPage dialog="updates" />} />
-        <Route path={routes.Explore} element={<ContributePage entityTypeName="opportunity" />} />
+        <Route path={`${routes.Dashboard}/contributors`} element={<OpportunityDashboardPage dialog="contributors" />} />
+        <Route
+          path={routes.Explore}
+          element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
+        />
         <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="opportunity" />} />
         <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
         <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
+        <Route
+          path={`${routes.Explore}/aspects/:${nameOfUrl.aspectNameId}/*`}
+          element={
+            <AspectProvider>
+              <AspectRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} />
+            </AspectProvider>
+          }
+        />
       </Route>
-      <Route
-        path={`contribute/aspects/:${nameOfUrl.aspectNameId}/*`}
-        element={
-          <AspectProvider>
-            <AspectRoute paths={currentPaths} />
-          </AspectProvider>
-        }
-      />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

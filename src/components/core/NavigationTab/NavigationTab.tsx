@@ -4,6 +4,7 @@ import { RouterLink } from '../RouterLink';
 
 interface NagivationTabProps extends TabProps {
   to: string;
+  state?: Record<string, unknown>;
 }
 
 const StyledTab = styled(Tab)(({ theme }) => ({
@@ -13,19 +14,22 @@ const StyledTab = styled(Tab)(({ theme }) => ({
   },
 })) as typeof Tab;
 
-const NavigationTab = forwardRef<HTMLAnchorElement, NagivationTabProps>(({ to, value, icon, label, disabled }, ref) => {
-  return (
-    <StyledTab
-      ref={ref}
-      iconPosition="start"
-      component={RouterLink}
-      to={to}
-      value={value}
-      icon={icon}
-      label={label}
-      disabled={disabled}
-    />
-  );
-});
+const NavigationTab = forwardRef<HTMLAnchorElement, NagivationTabProps>(
+  ({ to, state, value, icon, label, disabled }, ref) => {
+    return (
+      <StyledTab
+        ref={ref}
+        iconPosition="start"
+        component={RouterLink}
+        to={to}
+        state={state}
+        value={value}
+        icon={icon}
+        label={label}
+        disabled={disabled}
+      />
+    );
+  }
+);
 
 export default NavigationTab;

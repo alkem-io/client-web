@@ -25,7 +25,7 @@ const DashboardSectionAspects: FC<DashboardSectionAspectsProps> = ({ aspects, as
         items={aspects}
         deps={[parentEntityIds.hubNameId, parentEntityIds.challengeNameId, parentEntityIds.opportunityNameId]}
       >
-        {aspect => <AspectCard aspect={aspect} {...parentEntityIds} />}
+        {aspect => <AspectCard aspect={aspect} {...parentEntityIds} keepScroll />}
       </CardsLayout>
     </DashboardSection>
   );

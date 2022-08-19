@@ -32,7 +32,9 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     onError: handleError,
   });
 
-  const handleCreateCalloutOpened = useCallback(() => setIsCalloutCreationDialogOpen(true), []);
+  const handleCreateCalloutOpened = useCallback(() => {
+    setIsCalloutCreationDialogOpen(true);
+  }, []);
   const handleCreateCalloutClosed = useCallback(() => setIsCalloutCreationDialogOpen(false), []);
   const handleCalloutPublished = useCallback(
     async (callout: CalloutCreationType) => {

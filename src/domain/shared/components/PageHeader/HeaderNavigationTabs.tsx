@@ -5,12 +5,17 @@ import HeaderNavigationTab from './HeaderNavigationTab';
 
 const Root = styled(Box)(({ theme }) => ({
   position: 'relative',
-  '.MuiTab-root.settings-button': {
-    color: theme.palette.common.white,
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    minHeight: theme.spacing(5),
+  '& .MuiTab-root.settings-button': {
+    flex: 'initial',
+    minWidth: 24,
+  },
+  '& .MuiTabs-root': {
+    paddingLeft: theme.spacing(2),
+    paddingRight: 0,
+    [theme.breakpoints.only('xs')]: {
+      paddingLeft: 1,
+      paddingRight: 1,
+    },
   },
 }));
 
@@ -18,32 +23,15 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
   minHeight: 0,
   color: theme.palette.common.white,
   backgroundColor: theme.palette.primary.main,
-  [theme.breakpoints.up('xs')]: {
-    paddingLeft: 0,
-    paddingRight: theme.spacing(5),
-  },
-  [theme.breakpoints.up('lg')]: {
-    paddingLeft: theme.spacing(8),
-    paddingRight: theme.spacing(8),
-  },
-  '& .MuiTabs-scroller': {
-    overflowX: 'visible',
-    overflowY: 'visible',
-  },
   '& .MuiTabs-indicator': {
     backgroundColor: theme.palette.common.white,
     bottom: 2,
     height: 2,
   },
-  '& .MuiTabs-flexContainer': {
-    display: 'flex',
-    justifyContent: 'center',
-  },
   '& .MuiTab-root': {
     fontSize: theme.typography.button.fontSize,
     flexGrow: 1,
     minHeight: theme.spacing(5),
-    position: 'relative',
     top: -2,
   },
 }));
@@ -70,15 +58,15 @@ const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
         allowScrollButtonsMobile
       >
         {children}
+        {showSettings && (
+          <HeaderNavigationTab
+            className="settings-button"
+            icon={<SettingsOutlined />}
+            value={'settings'}
+            to={settingsUrl}
+          />
+        )}
       </StyledTabs>
-      {showSettings && (
-        <HeaderNavigationTab
-          className="settings-button"
-          icon={<SettingsOutlined />}
-          value={'settings'}
-          to={settingsUrl}
-        />
-      )}
     </Root>
   );
 };

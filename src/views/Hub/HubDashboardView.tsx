@@ -112,6 +112,14 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
             <Markdown children={vision} />
           </DashboardGenericSection>
           {communityReadAccess && (
+            <EntityDashboardLeadsSection
+              organizationsHeader={t('pages.hub.sections.dashboard.organization')}
+              usersHeader={t('community.host')}
+              leadUsers={leadUsers}
+              leadOrganizations={hostOrganizations}
+            />
+          )}
+          {communityReadAccess && (
             <>
               <DashboardUpdatesSection entities={{ hubId: hubNameId, communityId }} />
               <SectionSpacer />
@@ -119,14 +127,6 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
                 <DashboardDiscussionsSection discussions={discussions} isMember={isMember} />
               )}
             </>
-          )}
-          {communityReadAccess && (
-            <EntityDashboardLeadsSection
-              organizationsHeader={t('pages.hub.sections.dashboard.organization')}
-              usersHeader={t('community.host')}
-              leadUsers={leadUsers}
-              leadOrganizations={hostOrganizations}
-            />
           )}
           {communityReadAccess && (
             <EntityDashboardContributorsSection

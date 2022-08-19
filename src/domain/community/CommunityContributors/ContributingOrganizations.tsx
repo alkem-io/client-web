@@ -32,15 +32,9 @@ const ContributingOrganizations: FC<ContributingOrganizationsProps> = ({
   }
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={3} columns={1}>
       {organizations?.map(org => (
-        <Grid
-          key={org.id}
-          item
-          flexGrow={1}
-          flexBasis="100%"
-          maxWidth={{ xs: 'auto', sm: 'auto', md: 'auto', lg: '50%', xl: '50%' }}
-        >
+        <Grid key={org.id} item xs={1}>
           <OrganizationCard {...org} />
         </Grid>
       ))}

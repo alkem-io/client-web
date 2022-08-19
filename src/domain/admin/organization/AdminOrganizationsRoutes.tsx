@@ -7,10 +7,14 @@ import { Error404, PageProps } from '../../../pages';
 import { nameOfUrl } from '../../../routing/url-params';
 import OrganizationAdminRoutes from './OrganizationAdminRoutes';
 import AdminOrganizationsPage from '../../../pages/Admin/AdminOrganizations/AdminOrganizationsPage';
+import { useTranslation } from 'react-i18next';
+import AdminLayout from '../toplevel/AdminLayout';
+import { AdminSection } from '../toplevel/constants';
 
 const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
   const currentPaths = useMemo(() => [...paths, { value: url, name: 'organizations', real: true }], [paths]);
+  const { t } = useTranslation();
 
   return (
     <Routes>
@@ -18,7 +22,15 @@ const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
         <Route index element={<AdminOrganizationsPage paths={currentPaths} />}></Route>
         <Route
           path={'new'}
-          element={<OrganizationPage title={'Create organization'} mode={EditMode.new} paths={currentPaths} />}
+          element={
+            <AdminLayout currentTab={AdminSection.Organization}>
+              <OrganizationPage
+                title={t('pages.admin.organization.create-organization')}
+                mode={EditMode.new}
+                paths={currentPaths}
+              />
+            </AdminLayout>
+          }
         ></Route>
         <Route
           path={`:${nameOfUrl.organizationNameId}/*`}
