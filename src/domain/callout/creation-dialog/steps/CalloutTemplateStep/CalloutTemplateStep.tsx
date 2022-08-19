@@ -2,12 +2,21 @@ import React, { ComponentType, FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StepComponentProps } from '../../../../shared/components/Steps/step/Step';
 import { CalloutType } from '../../../../../models/graphql-schema';
-import { StepLayoutImpl } from '../../step-layout/StepLayout';
+import { StepLayout } from '../../step-layout/StepLayout';
 import CalloutAspectTemplateStep from './CalloutAspectTemplateStep';
 import CalloutCanvasTemplateStep from './CalloutCanvasTemplateStep';
 import { CalloutTemplateStepProps } from './CalloutTemplateStepProps';
 
-const CalloutTemplateStep: FC<StepComponentProps & CalloutTemplateStepProps> = ({ callout, onChange, onClose, activeStep, isValid, steps, next, prev }) => {
+const CalloutTemplateStep: FC<StepComponentProps & CalloutTemplateStepProps> = ({
+  callout,
+  onChange,
+  onClose,
+  activeStep,
+  isValid,
+  steps,
+  next,
+  prev,
+}) => {
   const { t } = useTranslation();
 
   const TemplateStepComponent = useMemo<ComponentType<CalloutTemplateStepProps> | null>(() => {
@@ -21,21 +30,17 @@ const CalloutTemplateStep: FC<StepComponentProps & CalloutTemplateStepProps> = (
   }, [callout]);
 
   return (
-    <StepLayoutImpl
+    <StepLayout
       dialogTitle={t('components.callout-creation.title')}
       onClose={onClose}
-      next={next} prev={prev}
+      next={next}
+      prev={prev}
       activeStep={activeStep}
       steps={steps}
       isValid={isValid}
     >
-      {TemplateStepComponent && (
-        <TemplateStepComponent
-          callout={callout}
-          onChange={onChange}
-        />
-      )}
-    </StepLayoutImpl>
+      {TemplateStepComponent && <TemplateStepComponent callout={callout} onChange={onChange} />}
+    </StepLayout>
   );
 };
 CalloutTemplateStep.displayName = 'CalloutTemplateStep';

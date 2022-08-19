@@ -1,37 +1,44 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import CalloutForm, { CalloutFormOutput } from '../../../../components/composite/aspect/AspectCreationDialog/form/CalloutForm';
-import { CalloutCreationType } from '../CalloutCreationDialog';
+import CalloutForm, {
+  CalloutFormOutput,
+} from '../../../../components/composite/aspect/AspectCreationDialog/form/CalloutForm';
 import { StepComponentProps } from '../../../shared/components/Steps/step/Step';
-import { StepLayoutImpl } from '../step-layout/StepLayout';
+import { StepLayout } from '../step-layout/StepLayout';
+import { CalloutStepProps } from './CalloutStepProps';
 
-export interface CalloutInfoStepProps {
-  callout: CalloutCreationType;
+export interface CalloutInfoStepProps extends CalloutStepProps {
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
-  onClose?: () => void;
 }
 
-const CalloutInfoStep: FC<StepComponentProps & CalloutInfoStepProps> = ({ callout, onChange, onClose, onStatusChanged, activeStep, isValid, steps, next, prev }) => {
+const CalloutInfoStep: FC<StepComponentProps & CalloutInfoStepProps> = ({
+  callout,
+  onChange,
+  onClose,
+  onStatusChanged,
+  activeStep,
+  isValid,
+  steps,
+  next,
+  prev,
+}) => {
   const { t } = useTranslation();
   return (
-    <StepLayoutImpl
+    <StepLayout
       dialogTitle={t('components.callout-creation.title')}
       onClose={onClose}
-      next={next} prev={prev}
+      next={next}
+      prev={prev}
       activeStep={activeStep}
       steps={steps}
       isValid={isValid}
     >
       <Box paddingY={theme => theme.spacing(2)}>
-        <CalloutForm
-          callout={callout}
-          onChange={onChange}
-          onStatusChanged={onStatusChanged}
-        />
+        <CalloutForm callout={callout} onChange={onChange} onStatusChanged={onStatusChanged} />
       </Box>
-    </StepLayoutImpl>
+    </StepLayout>
   );
 };
 CalloutInfoStep.displayName = 'CalloutInfoStep';

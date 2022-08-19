@@ -9,11 +9,7 @@ import FormRow from '../../../../../domain/shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';
 import MarkdownInput from '../../../../Admin/Common/MarkdownInput';
-import { MID_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
-import InputLabel from '@mui/material/InputLabel/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
+import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 import HelpButton from '../../../../core/HelpButton';
 import FormikSelect from '../../../forms/FormikSelect';
 
@@ -29,7 +25,7 @@ export type CalloutFormInput = {
   displayName?: string;
   description?: string;
   type?: CalloutType;
-}
+};
 
 export type CalloutFormOutput = {
   displayName: string;
@@ -54,9 +50,17 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
   };
 
   const validationSchema = yup.object().shape({
-    displayName: yup.string().required().max(255),
-    description: yup.string().required().max(65535), // https://mariadb.com/kb/en/text
-    type: yup.string().required(),
+    displayName: yup
+      .string()
+      .required(t('common.field-required'))
+      .min(3, ({ min }) => t('common.field-min-length', { min }))
+      .max(SMALL_TEXT_LENGTH, ({ max }) => t('common.field-max-length', { max })),
+    description: yup
+      .string()
+      .required()
+      .min(3, ({ min }) => t('common.field-min-length', { min }))
+      .max(500, ({ max }) => t('common.field-max-length', { max })),
+    type: yup.string().required(t('common.field-required')),
   });
 
   const handleChange = (values: FormValueType) => {
@@ -73,7 +77,8 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
       return t('components.callout-creation.info-step.type-cards-help');
     } else if (callout?.type === CalloutType.Canvas) {
       return t('components.callout-creation.info-step.type-canvases-help');
-    } if (callout?.type === CalloutType.Discussion) {
+    }
+    if (callout?.type === CalloutType.Discussion) {
       return t('components.callout-creation.info-step.type-comments-help');
     } else {
       return '';
@@ -95,43 +100,37 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
     >
       {formikState => (
         <>
-        <Grid container spacing={2}>
-          <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
-          <FormRow cols={1}>
-            <FormikInputField
-              name="displayName"
-              title={t('common.title')}
-              placeholder={t('common.title')}
+          <Grid container spacing={2}>
+            <FormikEffect onChange={handleChange} onStatusChange={onStatusChanged} />
+            <FormRow cols={1}>
+              <FormikInputField name="displayName" title={t('common.title')} placeholder={t('common.title')} />
+            </FormRow>
+            <SectionSpacer />
+            <MarkdownInput
+              name="description"
+              label={t('components.callout-creation.info-step.description')}
+              rows={7}
+              maxLength={MID_TEXT_LENGTH}
+              withCounter
             />
-          </FormRow>
-          <SectionSpacer />
-          <MarkdownInput
-            name="description"
-            label={t('components.callout-creation.info-step.description')}
-            rows={7}
-            maxLength={MID_TEXT_LENGTH}
-            withCounter
-          />
-          <SectionSpacer />
-          <FormRow>
-            <FormikSelect
-              name="type"
-              title={t('components.callout-creation.info-step.callout-label')}
-              values={calloutTypes}
-              endAdornment={
-                <InputAdornment position="start">
-                  <HelpButton
-                    helpText={helpText}
-                  />
-                </InputAdornment>
-              }
-            />
-          </FormRow>
-        </Grid>
-        {typeof children === 'function' ? (children as Function)(formikState) : children}
+            <SectionSpacer />
+            <FormRow>
+              <FormikSelect
+                name="type"
+                title={t('components.callout-creation.callout-type-label')}
+                values={calloutTypes}
+                endAdornment={
+                  <InputAdornment position="start">
+                    <HelpButton helpText={helpText} />
+                  </InputAdornment>
+                }
+              />
+            </FormRow>
+          </Grid>
+          {typeof children === 'function' ? (children as Function)(formikState) : children}
         </>
       )}
     </Formik>
-  )
+  );
 };
 export default CalloutForm;

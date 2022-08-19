@@ -1,43 +1,81 @@
 import React, { FC, useCallback, useState } from 'react';
-import { CalloutType } from '../../../models/graphql-schema';
+import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
+import { CalloutType } from '../../../models/graphql-schema';
 import Steps from '../../shared/components/Steps/Steps';
 import Step from '../../shared/components/Steps/step/Step';
-import { CalloutStep3 } from './steps/CalloutStep1';
 import { StepLayoutHolder } from './step-layout/StepLayout';
 import CalloutInfoStep from './steps/CalloutInfoStep';
-import { useTranslation } from 'react-i18next';
 import CalloutTemplateStep from './steps/CalloutTemplateStep/CalloutTemplateStep';
+import CalloutSummaryStep from './steps/CalloutSummaryStep/CalloutSummaryStep';
+import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 
-export type CalloutCreationType = {
+export type CalloutDialogCreationType = {
   description?: string;
   displayName?: string;
-  type?: CalloutType;
   templateId?: string;
+  type?: CalloutType;
 };
-
-interface CalloutCreationOutput {}
 
 export interface CalloutCreationDialogProps {
   open: boolean;
+  isPublishing: boolean;
   onClose: () => void;
-  // todo return type
-  onCreate: (aspect: CalloutCreationOutput) => Promise<{} | undefined>;
+  onPublish: (callout: CalloutCreationType) => Promise<void>;
+  onSaveAsDraft: (callout: CalloutCreationType) => Promise<void>;
 }
 
-const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose }) => {
+const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
+  open,
+  isPublishing,
+  onClose,
+  onPublish,
+  onSaveAsDraft,
+}) => {
   const { t } = useTranslation();
 
-  const [callout, setCallout] = useState<CalloutCreationType>({});
+  const [callout, setCallout] = useState<CalloutDialogCreationType>({});
   const [isInfoStepValid, setIsInfoStepValid] = useState(false);
+  const [isTemplateStepValid, setIsTemplateStepValid] = useState(false);
 
-  const handleInfoStepValueChange = useCallback(infoStepCallout => {
-    setCallout({ ...callout, ...infoStepCallout });
-  }, [callout]);
-  const handleInfoStepStatusChange = useCallback(isValid => setIsInfoStepValid(isValid), []);
-  const handleTemplateStepValueChange = useCallback(templateId => {
-    setCallout({ ...callout, templateId })
-  }, [callout]);
+  const handleInfoStepValueChange = useCallback(
+    infoStepCallout => {
+      setCallout({ ...callout, ...infoStepCallout });
+    },
+    [callout]
+  );
+  const handleInfoStepStatusChange = useCallback((isValid: boolean) => setIsInfoStepValid(isValid), []);
+  const handleTemplateStepValueChange = useCallback(
+    (templateId: string) => {
+      setCallout({ ...callout, templateId });
+      setIsTemplateStepValid(true);
+    },
+    [callout]
+  );
+  const handleSummaryStepPublish = useCallback(
+    () =>
+      onPublish({
+        displayName: callout.displayName!,
+        description: callout.description!,
+        templateId: callout.templateId!,
+        type: callout.type!,
+      }),
+    [callout, onPublish]
+  );
+  const handleSummarySaveAsDraft = useCallback(
+    () =>
+      onSaveAsDraft({
+        displayName: callout.displayName!,
+        description: callout.description!,
+        templateId: callout.templateId!,
+        type: callout.type!,
+      }),
+    [callout, onSaveAsDraft]
+  );
+  const handleClose = useCallback(() => {
+    setCallout({});
+    onClose?.();
+  }, [onClose]);
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
@@ -46,23 +84,28 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose }
           <Step
             component={CalloutInfoStep}
             title={t('components.callout-creation.info-step.title')}
-            isValid={isInfoStepValid}
             callout={callout}
+            onClose={handleClose}
+            isValid={isInfoStepValid}
             onChange={handleInfoStepValueChange}
             onStatusChanged={handleInfoStepStatusChange}
-            onClose={onClose}
           />
           <Step
             component={CalloutTemplateStep}
             title={t('components.callout-creation.template-step.title')}
             callout={callout}
+            onClose={handleClose}
+            isValid={isTemplateStepValid}
             onChange={handleTemplateStepValueChange}
-            onClose={onClose}
           />
           <Step
-            component={CalloutStep3}
+            component={CalloutSummaryStep}
             title={t('components.callout-creation.create-step.title')}
-            onClose={onClose}
+            callout={callout}
+            onClose={handleClose}
+            onPublish={handleSummaryStepPublish}
+            onSaveAsDraft={handleSummarySaveAsDraft}
+            isPublishing={isPublishing}
           />
         </Steps>
       </StepLayoutHolder>

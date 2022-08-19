@@ -117,6 +117,9 @@
     "no-updates": "No updates",
     "no-tags": "No tags available",
     "no-references": "No references available",
+    "field-required": "This field is required",
+    "field-min-length": "This field must be minimum of {{min}} characters",
+    "field-max-length": "This field must be maximum of {{max}} characters",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
@@ -318,10 +321,10 @@
     },
     "callout-creation": {
       "title": "Create a new Callout",
+      "callout-type-label": "Callout type",
       "info-step": {
         "title": "Details",
         "description": "Description",
-        "callout-label": "Callout type",
         "type-comments": "Comments",
         "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
         "type-cards": "Cards",

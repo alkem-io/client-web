@@ -1,0 +1,13 @@
+mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
+  createCalloutOnCollaboration(calloutData: $calloutData) {
+    id
+  }
+}
+
+query hubCollaborationId($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    collaboration {
+      id
+    }
+  }
+}

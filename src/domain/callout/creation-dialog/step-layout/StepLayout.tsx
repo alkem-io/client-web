@@ -1,12 +1,12 @@
 import React, { FC, useMemo } from 'react';
-import { Box, LinearProgress, Step, StepLabel, Stepper } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { Box, Step, StepLabel, Stepper, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../components/core/dialog';
-import Button from '@mui/material/Button';
 import createLayoutHolder from '../../../shared/layout/LayoutHolder';
 import { StepDefinition } from '../../../shared/components/Steps/step/Step';
-import { useTranslation } from 'react-i18next';
+import { LoadingButton } from '@mui/lab';
 
-export interface StepLayoutProps {
+interface StepLayoutProps {
   dialogTitle: string;
   next?: () => void;
   prev?: () => void;
@@ -16,7 +16,16 @@ export interface StepLayoutProps {
   activeStep: string;
 }
 
-export const StepLayoutImpl: FC<StepLayoutProps> = ({ activeStep, steps, children, dialogTitle, onClose, isValid = true, next, prev }) => {
+const StepLayoutImpl: FC<StepLayoutProps> = ({
+  activeStep,
+  steps,
+  children,
+  dialogTitle,
+  onClose,
+  isValid = true,
+  next,
+  prev,
+}) => {
   const { t } = useTranslation();
   // For now, using just the active step position to determine whether the previous steps are completed.
   // It's possible to base the state of the Steps on whether a step was "really" completed (e.g. the form was filled),
@@ -56,21 +65,60 @@ export const StepLayoutImpl: FC<StepLayoutProps> = ({ activeStep, steps, childre
   );
 };
 
-export interface StepSummaryLayoutProps {
-  onClose: () => void;
+interface StepSummaryLayoutProps {
+  dialogTitle: string;
+  isPublishing: boolean;
+  prev?: () => void;
+  onPublish?: () => Promise<void>;
+  onSaveAsDraft?: () => Promise<void>;
+  onClose?: () => void;
 }
 
-export const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({ children, onClose }) => {
+const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({
+  children,
+  dialogTitle,
+  onClose,
+  isPublishing,
+  prev,
+  onPublish,
+  onSaveAsDraft,
+}) => {
+  const { t } = useTranslation();
+
   return (
     <Box>
-      <DialogTitle id="callout-creation-title" onClose={onClose}>
-        Summary
+      <DialogTitle id="callout-summary-title" onClose={onClose}>
+        {dialogTitle}
       </DialogTitle>
-      <LinearProgress value={100} variant="determinate" />
-      Congrats!
       <DialogContent>{children}</DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Finish</Button>
+      <DialogActions sx={{ justifyContent: 'end' }}>
+        {prev && (
+          <Button disabled={isPublishing} onClick={prev} variant="outlined">
+            {t('buttons.back')}
+          </Button>
+        )}
+        {onSaveAsDraft && (
+          <LoadingButton
+            loading={isPublishing}
+            loadingPosition="start"
+            loadingIndicator={`${t('buttons.save-draft')}...`}
+            onClick={onSaveAsDraft}
+            variant="contained"
+          >
+            {t('buttons.save-draft')}
+          </LoadingButton>
+        )}
+        {onPublish && (
+          <LoadingButton
+            loading={isPublishing}
+            loadingPosition="start"
+            loadingIndicator={`${t('buttons.publish')}...`}
+            onClick={onPublish}
+            variant="contained"
+          >
+            {t('buttons.publish')}
+          </LoadingButton>
+        )}
       </DialogActions>
     </Box>
   );

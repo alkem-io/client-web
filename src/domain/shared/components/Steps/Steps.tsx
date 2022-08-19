@@ -17,10 +17,14 @@ const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOr
 
   const [activeStep, setActiveStep] = useState(initialStep);
 
-  const definitions = useMemo<StepDefinition[]>(() => children.map(x => ({
-    title: x.props.title,
-    name: x.props.component.displayName!,
-  })), [children]);
+  const definitions = useMemo<StepDefinition[]>(
+    () =>
+      children.map(x => ({
+        title: x.props.title,
+        name: x.props.component.displayName!,
+      })),
+    [children]
+  );
 
   const currentStep = children.find(x => x.props.component.displayName === activeStep);
 
@@ -37,7 +41,7 @@ const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOr
       return undefined;
     }
 
-    return () => setActiveStep(children[index - 1]!.props.component.displayName!)
+    return () => setActiveStep(children[index - 1]!.props.component.displayName!);
   }, [activeStep]);
 
   const next = useMemo(() => {
@@ -52,9 +56,10 @@ const Steps = <PassedProps extends {}>({ initialActiveStep, children: childrenOr
 
   // Taking whatever props we make use of here from a <Step>, passing the rest to the step Component
   const { component: Component, title, ...passedProps } = currentStep.props;
-  console.log(passedProps);
 
-  return <Component activeStep={activeStep} steps={definitions} prev={prev} next={next} {...passedProps as PassedProps} />;
+  return (
+    <Component activeStep={activeStep} steps={definitions} prev={prev} next={next} {...(passedProps as PassedProps)} />
+  );
 };
 
 export default Steps;

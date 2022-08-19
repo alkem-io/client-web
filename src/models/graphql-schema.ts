@@ -853,9 +853,9 @@ export type CreateCalloutOnCollaborationInput = {
   /** The display name for the entity. */
   displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   /** State of the callout. */
-  state: CalloutState;
+  state?: InputMaybe<CalloutState>;
   /** Callout type. */
   type: CalloutType;
   /** Visibility of the Callout. */
@@ -12721,6 +12721,24 @@ export type CanvasTemplateValueQuery = {
         }
       | undefined;
   };
+};
+
+export type CreateCalloutMutationVariables = Exact<{
+  calloutData: CreateCalloutOnCollaborationInput;
+}>;
+
+export type CreateCalloutMutation = {
+  __typename?: 'Mutation';
+  createCalloutOnCollaboration: { __typename?: 'Callout'; id: string };
+};
+
+export type HubCollaborationIdQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCollaborationIdQuery = {
+  __typename?: 'Query';
+  hub: { __typename?: 'Hub'; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
 };
 
 export type AspectsOnCalloutFragment = {

@@ -1,7 +1,5 @@
-import { CalloutCreationType } from '../../CalloutCreationDialog';
+import { CalloutStepProps } from '../CalloutStepProps';
 
-export interface CalloutTemplateStepProps {
-  callout: CalloutCreationType;
+export interface CalloutTemplateStepProps extends CalloutStepProps {
   onChange?: (templateId: string) => void;
-  onClose?: () => void;
 }

@@ -9,6 +9,7 @@ export interface StepComponentProps {
   activeStep: string;
   steps: StepDefinition[];
   isValid?: boolean;
+  onClose?: () => void;
   next?: () => void;
   prev?: () => void;
 }
