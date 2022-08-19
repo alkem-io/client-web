@@ -40,12 +40,14 @@ const CalloutLayout = ({ callout, children, maxHeight }: PropsWithChildren<Callo
           <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
         </Heading>
         <Typography sx={{ marginY: 2 }}>{callout.description}</Typography>
-        {/* Padding are set to prevent cutting Paper shadow by overflow: scroll. Margins are compensating the visual shift. */}
+        {/* Paddings are set to prevent cutting Paper shadow by overflow: scroll.
+            Margins are compensating the visual shift. Except for the left margin, we want a bit of left shifting */}
         <Box
           maxHeight={maxHeight && (theme => theme.spacing(maxHeight + 4))}
           overflow={typeof maxHeight === 'undefined' ? undefined : 'auto'}
           padding={2}
           margin={-2}
+          marginLeft={0}
         >
           {children}
         </Box>

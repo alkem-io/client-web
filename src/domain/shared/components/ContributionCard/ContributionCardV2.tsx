@@ -27,6 +27,7 @@ export interface ContributionCardV2Details {
 
 export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
 export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
+export const CONTRIBUTION_CARD_WIDTH = 254;
 
 export interface ContributionCardV2Props {
   details?: ContributionCardV2Details;
@@ -48,7 +49,7 @@ const useStyles = makeStyles<Theme, Pick<ContributionCardV2Details, 'mediaSize'>
   createStyles({
     card: {
       height: '100%',
-      width: 254,
+      width: CONTRIBUTION_CARD_WIDTH,
       display: 'flex',
       flexDirection: 'column',
     },

@@ -1,11 +1,19 @@
 import React, { cloneElement, FC, ReactElement, useMemo } from 'react';
-import { Box, BoxProps } from '@mui/material';
+import { Box, BoxProps, styled } from '@mui/material';
 import { Identifiable } from '../../types/Identifiable';
+import { CONTRIBUTION_CARD_WIDTH } from '../../components/ContributionCard/ContributionCardV2';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import LinkCard from '../../../../components/core/LinkCard/LinkCard';
+import Typography from '../../../../components/core/Typography';
 
-interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
+interface CardsLayoutProps<Item extends Identifiable | null | undefined>
+  extends CardLayoutContainerProps,
+    CreateButtonProps {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
+  showCreateButton?: boolean;
+  createButtonLoading?: boolean;
 }
 
 /**
@@ -19,6 +27,8 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   items,
   children,
   deps = [],
+  onCreateButtonClick,
+  showCreateButton = false,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const cards = useMemo(
@@ -31,7 +41,12 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
     [items, ...deps]
   );
 
-  return <CardLayoutContainer {...layoutProps}>{cards}</CardLayoutContainer>;
+  return (
+    <CardLayoutContainer {...layoutProps}>
+      {showCreateButton && <CreateButton onCreateButtonClick={onCreateButtonClick}>Add</CreateButton>}
+      {cards}
+    </CardLayoutContainer>
+  );
 };
 
 export default CardsLayout;
@@ -58,5 +73,32 @@ export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = 
     <Box flexBasis={flexBasis} maxWidth={maxWidth} flexGrow={flexGrow}>
       {children}
     </Box>
+  );
+};
+
+interface CreateButtonProps {
+  onCreateButtonClick?: () => void;
+}
+
+const CreateButtonElement = styled(LinkCard)(({ theme }) => ({
+  width: CONTRIBUTION_CARD_WIDTH,
+  cursor: 'pointer',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: theme.palette.common.white,
+  '& .MuiSvgIcon-root': {
+    width: theme.spacing(4.5),
+    height: theme.spacing(4.5),
+  },
+}));
+
+export const CreateButton: FC<CreateButtonProps> = ({ onCreateButtonClick, ...buttonProps }) => {
+  return (
+    <CreateButtonElement onClick={onCreateButtonClick} {...buttonProps}>
+      <Typography variant="h1" weight="bold" color="primary">
+        <AddCircleOutlineIcon width={20} />
+      </Typography>
+    </CreateButtonElement>
   );
 };
