@@ -19,6 +19,7 @@ import AspectRoute from '../../domain/aspect/views/AspectRoute';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
 import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
 import { routes } from '../../domain/challenge/routes/challengeRoutes';
+import CalloutsPage from '../../domain/callout/CalloutsPage';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -45,7 +46,10 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<ChallengeDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<ChallengeDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<ChallengeDashboardPage dialog="contributors" />} />
-        <Route path={routes.Explore} element={<ContributePage entityTypeName="challenge" />} />
+        <Route
+          path={routes.Explore}
+          element={<CalloutsPage entityTypeName="challenge" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
+        />
         <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="challenge" />} />
         <Route path={routes.About} element={<ChallengeContextPage paths={currentPaths} />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />

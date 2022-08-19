@@ -1,16 +1,11 @@
-import React, { Children, cloneElement, FC, ReactElement } from 'react';
-import { Box, BoxProps, styled } from '@mui/material';
-import areDepsEqual from '../../utils/areDepsEqual';
+import React, { cloneElement, FC, ReactElement, useMemo } from 'react';
+import { Box, BoxProps } from '@mui/material';
 import { Identifiable } from '../../types/Identifiable';
 
-interface CardsLayoutProps<Item extends Identifiable | null | undefined> {
+interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
-}
-
-interface CardsLayoutComponent {
-  <Item extends Identifiable | null | undefined>(props: CardsLayoutProps<Item>): ReactElement;
 }
 
 /**
@@ -20,40 +15,34 @@ interface CardsLayoutComponent {
  * @param deps - deps to consider the render callback refreshed, as in useCallback(callback, deps)
  * @constructor
  */
-const CardsLayout = React.memo(
-  <Item extends Identifiable | null | undefined>({ items, children }: CardsLayoutProps<Item>) => {
-    return (
-      <CardLayoutContainer>
-        {items.map((item, index) => {
-          const card = children(item);
-          const key = item ? item.id : `__loading_${index}`;
-          return cloneElement(card, { key });
-        })}
-      </CardLayoutContainer>
-    );
-  },
-  (prevProps, nextProps) => {
-    return prevProps.items === nextProps.items && areDepsEqual(prevProps.deps, nextProps.deps);
-  }
-) as CardsLayoutComponent;
+const CardsLayout = <Item extends Identifiable | null | undefined>({
+  items,
+  children,
+  deps = [],
+  ...layoutProps
+}: CardsLayoutProps<Item>) => {
+  const cards = useMemo(
+    () =>
+      items.map((item, index) => {
+        const card = children(item);
+        const key = item ? item.id : `__loading_${index}`;
+        return cloneElement(card, { key });
+      }),
+    [items, ...deps]
+  );
+
+  return <CardLayoutContainer {...layoutProps}>{cards}</CardLayoutContainer>;
+};
 
 export default CardsLayout;
 
-type ContainerProps = {
-  cardsCount: number;
-};
-const Root = styled(Box)<ContainerProps>(({ cardsCount }) => ({
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: cardsCount > 3 ? 'space-around' : 'start', // For less than 3 cards pile them on the left
-}));
+interface CardLayoutContainerProps extends BoxProps {}
 
-export const CardLayoutContainer: FC = ({ children }) => {
-  const cardsCount = Children.count(children);
+export const CardLayoutContainer: FC<CardLayoutContainerProps> = ({ sx, children, ...boxProps }) => {
   return (
-    <Root gap={2} cardsCount={cardsCount}>
+    <Box gap={2} {...boxProps} sx={{ display: 'flex', flexWrap: 'wrap', ...sx }}>
       {children}
-    </Root>
+    </Box>
   );
 };
 

@@ -16,6 +16,7 @@ import AspectRoute from '../../domain/aspect/views/AspectRoute';
 import AspectProvider from '../../context/aspect/AspectProvider';
 import { routes } from '../../domain/hub/routes/hubRoutes';
 import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
+import CalloutsPage from '../../domain/callout/CalloutsPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName } = useHub();
@@ -32,7 +33,10 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         <Route path={routes.Dashboard} element={<HubDashboardPage />} />
         <Route path={`${routes.Dashboard}/updates`} element={<HubDashboardPage dialog="updates" />} />
         <Route path={`${routes.Dashboard}/contributors`} element={<HubDashboardPage dialog="contributors" />} />
-        <Route path={routes.Explore} element={<ContributePage entityTypeName="hub" />} />
+        <Route
+          path={routes.Explore}
+          element={<CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
+        />
         <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="hub" />} />
         <Route path={routes.About} element={<HubContextPage paths={currentPaths} />} />
         <Route path={routes.Challenges} element={<HubChallengesPage paths={currentPaths} />} />

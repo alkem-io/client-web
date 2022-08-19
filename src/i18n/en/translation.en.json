@@ -71,6 +71,7 @@
     "administration": "Administration",
     "add": "Add",
     "remove": "Remove",
+    "callout": "Callout",
     "canvas": "Canvas",
     "comment": "Comment",
     "comments": "Comments",
@@ -273,6 +274,9 @@
     "leads": "Leads",
     "members": "Members",
     "host": "Host"
+  },
+  "callout": {
+    "draftNotice": "DRAFT - This Callout is only visible for admins."
   },
   "forms": {
     "validations": {
