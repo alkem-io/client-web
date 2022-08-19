@@ -1,6 +1,12 @@
 import { useCallback, useState } from 'react';
-import { useCreateCalloutMutation, useHubCollaborationIdQuery } from '../../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useHub } from '../../../../hooks';
+import {
+  CalloutFragmentDoc,
+  useChallengeCollaborationIdQuery,
+  useCreateCalloutMutation,
+  useHubCollaborationIdQuery,
+  useOpportunityCollaborationIdQuery,
+} from '../../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useUrlParams } from '../../../../hooks';
 import { CalloutType, CalloutVisibility } from '../../../../models/graphql-schema';
 
 export type CalloutCreationType = {
@@ -20,16 +26,68 @@ interface CalloutCreationUtils {
 }
 
 export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils => {
-  const { hubId } = useHub();
+  const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
   const handleError = useApolloErrorHandler();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
   const [isPublishing, setIsPublishing] = useState(false);
 
-  const { data } = useHubCollaborationIdQuery({ variables: { hubId }, skip: !hubId });
-  const collaborationID = data?.hub?.collaboration?.id;
+  const { data: hubData } = useHubCollaborationIdQuery({
+    variables: { hubId: hubNameId! },
+    skip: !hubNameId || !!challengeNameId || !!opportunityNameId,
+  });
+  const { data: challengeData } = useChallengeCollaborationIdQuery({
+    variables: {
+      hubId: hubNameId!,
+      challengeId: challengeNameId!,
+    },
+    skip: !hubNameId || !challengeNameId || !!opportunityNameId,
+  });
+  const { data: opportunityData } = useOpportunityCollaborationIdQuery({
+    variables: {
+      hubId: hubNameId!,
+      opportunityId: opportunityNameId!,
+    },
+    skip: !hubNameId || !opportunityNameId,
+  });
+
+  const collaborationID: string | undefined = (
+    hubData?.hub ??
+    challengeData?.hub?.challenge ??
+    opportunityData?.hub?.opportunity
+  )?.collaboration?.id;
 
   const [createCallout] = useCreateCalloutMutation({
     onError: handleError,
+    update: (cache, { data }) => {
+      if (!data || !collaborationID) {
+        return;
+      }
+
+      const { createCalloutOnCollaboration } = data;
+
+      const collabRefId = cache.identify({
+        __typename: 'Collaboration',
+        id: collaborationID,
+      });
+
+      if (!collabRefId) {
+        return;
+      }
+
+      cache.modify({
+        id: collabRefId,
+        fields: {
+          callouts(existing = []) {
+            const newCalloutRef = cache.writeFragment({
+              data: createCalloutOnCollaboration,
+              fragment: CalloutFragmentDoc,
+              fragmentName: 'Callout',
+            });
+            return [...existing, newCalloutRef];
+          },
+        },
+      });
+    },
   });
 
   const handleCreateCalloutOpened = useCallback(() => {

@@ -12667,6 +12667,9 @@ export type HubCalloutsQuery = {
       | {
           __typename?: 'Collaboration';
           id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           callouts?:
             | Array<{
                 __typename?: 'Callout';
@@ -12751,9 +12754,6 @@ export type HubCalloutsQuery = {
                   | undefined;
               }>
             | undefined;
-          authorization?:
-            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-            | undefined;
         }
       | undefined;
   };
@@ -12776,6 +12776,9 @@ export type ChallengeCalloutsQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             callouts?:
               | Array<{
                   __typename?: 'Callout';
@@ -12863,9 +12866,6 @@ export type ChallengeCalloutsQuery = {
                       }
                     | undefined;
                 }>
-              | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
           }
         | undefined;
@@ -12890,6 +12890,9 @@ export type OpportunityCalloutsQuery = {
         | {
             __typename?: 'Collaboration';
             id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             callouts?:
               | Array<{
                   __typename?: 'Callout';
@@ -12978,91 +12981,75 @@ export type OpportunityCalloutsQuery = {
                     | undefined;
                 }>
               | undefined;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
           }
         | undefined;
     };
   };
 };
 
-export type CalloutsFragment = {
-  __typename?: 'Collaboration';
+export type CalloutFragment = {
+  __typename?: 'Callout';
   id: string;
-  callouts?:
+  nameID: string;
+  type: CalloutType;
+  displayName: string;
+  description?: string | undefined;
+  state: CalloutState;
+  aspects?:
     | Array<{
-        __typename?: 'Callout';
+        __typename?: 'Aspect';
         id: string;
         nameID: string;
-        type: CalloutType;
         displayName: string;
-        description?: string | undefined;
-        state: CalloutState;
-        aspects?:
-          | Array<{
-              __typename?: 'Aspect';
+        type: string;
+        description: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+      }>
+    | undefined;
+  canvases?:
+    | Array<{
+        __typename?: 'Canvas';
+        id: string;
+        nameID: string;
+        displayName: string;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
               id: string;
-              nameID: string;
-              displayName: string;
-              type: string;
-              description: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+        checkout?:
+          | {
+              __typename?: 'CanvasCheckout';
+              id: string;
+              lockedBy: string;
+              status: CanvasCheckoutStateEnum;
+              lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
               authorization?:
                 | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
                 | undefined;
-              banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-            }>
+            }
           | undefined;
-        canvases?:
-          | Array<{
-              __typename?: 'Canvas';
+        preview?:
+          | {
+              __typename?: 'Visual';
               id: string;
-              nameID: string;
-              displayName: string;
-              authorization?:
-                | {
-                    __typename?: 'Authorization';
-                    id: string;
-                    myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    anonymousReadAccess: boolean;
-                  }
-                | undefined;
-              checkout?:
-                | {
-                    __typename?: 'CanvasCheckout';
-                    id: string;
-                    lockedBy: string;
-                    status: CanvasCheckoutStateEnum;
-                    lifecycle: { __typename?: 'Lifecycle'; id: string; nextEvents?: Array<string> | undefined };
-                    authorization?:
-                      | {
-                          __typename?: 'Authorization';
-                          id: string;
-                          myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                        }
-                      | undefined;
-                  }
-                | undefined;
-              preview?:
-                | {
-                    __typename?: 'Visual';
-                    id: string;
-                    uri: string;
-                    name: string;
-                    allowedTypes: Array<string>;
-                    aspectRatio: number;
-                    maxHeight: number;
-                    maxWidth: number;
-                    minHeight: number;
-                    minWidth: number;
-                  }
-                | undefined;
-            }>
-          | undefined;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
           | undefined;
       }>
     | undefined;
@@ -13170,7 +13157,16 @@ export type CreateCalloutMutationVariables = Exact<{
 
 export type CreateCalloutMutation = {
   __typename?: 'Mutation';
-  createCalloutOnCollaboration: { __typename?: 'Callout'; id: string };
+  createCalloutOnCollaboration: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    displayName: string;
+    description?: string | undefined;
+    state: CalloutState;
+    visibility: CalloutVisibility;
+  };
 };
 
 export type HubCollaborationIdQueryVariables = Exact<{
@@ -13180,6 +13176,42 @@ export type HubCollaborationIdQueryVariables = Exact<{
 export type HubCollaborationIdQuery = {
   __typename?: 'Query';
   hub: { __typename?: 'Hub'; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
+};
+
+export type ChallengeCollaborationIdQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCollaborationIdQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+    };
+  };
+};
+
+export type OpportunityCollaborationIdQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCollaborationIdQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+    };
+  };
 };
 
 export type AspectsOnCalloutFragment = {

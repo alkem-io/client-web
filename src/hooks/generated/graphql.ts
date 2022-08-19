@@ -1607,26 +1607,19 @@ export const ContributeTabAspectFragmentDoc = gql`
   }
   ${AspectCardFragmentDoc}
 `;
-export const CalloutsFragmentDoc = gql`
-  fragment Callouts on Collaboration {
+export const CalloutFragmentDoc = gql`
+  fragment Callout on Callout {
     id
-    callouts {
-      id
-      nameID
-      type
-      displayName
-      description
-      state
-      aspects {
-        ...ContributeTabAspect
-      }
-      canvases {
-        ...CanvasDetails
-      }
-      authorization {
-        id
-        myPrivileges
-      }
+    nameID
+    type
+    displayName
+    description
+    state
+    aspects {
+      ...ContributeTabAspect
+    }
+    canvases {
+      ...CanvasDetails
     }
     authorization {
       id
@@ -15788,11 +15781,18 @@ export const HubCalloutsDocument = gql`
     hub(ID: $hubNameId) {
       id
       collaboration {
-        ...Callouts
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts {
+          ...Callout
+        }
       }
     }
   }
-  ${CalloutsFragmentDoc}
+  ${CalloutFragmentDoc}
 `;
 
 /**
@@ -15845,12 +15845,19 @@ export const ChallengeCalloutsDocument = gql`
       challenge(ID: $challengeNameId) {
         id
         collaboration {
-          ...Callouts
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          callouts {
+            ...Callout
+          }
         }
       }
     }
   }
-  ${CalloutsFragmentDoc}
+  ${CalloutFragmentDoc}
 `;
 
 /**
@@ -15907,12 +15914,19 @@ export const OpportunityCalloutsDocument = gql`
       opportunity(ID: $opportunityNameId) {
         id
         collaboration {
-          ...Callouts
+          id
+          authorization {
+            id
+            myPrivileges
+          }
+          callouts {
+            ...Callout
+          }
         }
       }
     }
   }
-  ${CalloutsFragmentDoc}
+  ${CalloutFragmentDoc}
 `;
 
 /**
@@ -16246,6 +16260,12 @@ export const CreateCalloutDocument = gql`
   mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     createCalloutOnCollaboration(calloutData: $calloutData) {
       id
+      nameID
+      type
+      displayName
+      description
+      state
+      visibility
     }
   }
 `;
@@ -16347,6 +16367,136 @@ export type HubCollaborationIdQueryResult = Apollo.QueryResult<
 >;
 export function refetchHubCollaborationIdQuery(variables: SchemaTypes.HubCollaborationIdQueryVariables) {
   return { query: HubCollaborationIdDocument, variables: variables };
+}
+export const ChallengeCollaborationIdDocument = gql`
+  query challengeCollaborationId($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        collaboration {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeCollaborationIdQuery__
+ *
+ * To run a query within a React component, call `useChallengeCollaborationIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeCollaborationIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeCollaborationIdQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeCollaborationIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeCollaborationIdQuery,
+    SchemaTypes.ChallengeCollaborationIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeCollaborationIdQuery, SchemaTypes.ChallengeCollaborationIdQueryVariables>(
+    ChallengeCollaborationIdDocument,
+    options
+  );
+}
+export function useChallengeCollaborationIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeCollaborationIdQuery,
+    SchemaTypes.ChallengeCollaborationIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeCollaborationIdQuery,
+    SchemaTypes.ChallengeCollaborationIdQueryVariables
+  >(ChallengeCollaborationIdDocument, options);
+}
+export type ChallengeCollaborationIdQueryHookResult = ReturnType<typeof useChallengeCollaborationIdQuery>;
+export type ChallengeCollaborationIdLazyQueryHookResult = ReturnType<typeof useChallengeCollaborationIdLazyQuery>;
+export type ChallengeCollaborationIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeCollaborationIdQuery,
+  SchemaTypes.ChallengeCollaborationIdQueryVariables
+>;
+export function refetchChallengeCollaborationIdQuery(variables: SchemaTypes.ChallengeCollaborationIdQueryVariables) {
+  return { query: ChallengeCollaborationIdDocument, variables: variables };
+}
+export const OpportunityCollaborationIdDocument = gql`
+  query opportunityCollaborationId($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      opportunity(ID: $opportunityId) {
+        id
+        collaboration {
+          id
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useOpportunityCollaborationIdQuery__
+ *
+ * To run a query within a React component, call `useOpportunityCollaborationIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOpportunityCollaborationIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOpportunityCollaborationIdQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      opportunityId: // value for 'opportunityId'
+ *   },
+ * });
+ */
+export function useOpportunityCollaborationIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.OpportunityCollaborationIdQuery,
+    SchemaTypes.OpportunityCollaborationIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.OpportunityCollaborationIdQuery,
+    SchemaTypes.OpportunityCollaborationIdQueryVariables
+  >(OpportunityCollaborationIdDocument, options);
+}
+export function useOpportunityCollaborationIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.OpportunityCollaborationIdQuery,
+    SchemaTypes.OpportunityCollaborationIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.OpportunityCollaborationIdQuery,
+    SchemaTypes.OpportunityCollaborationIdQueryVariables
+  >(OpportunityCollaborationIdDocument, options);
+}
+export type OpportunityCollaborationIdQueryHookResult = ReturnType<typeof useOpportunityCollaborationIdQuery>;
+export type OpportunityCollaborationIdLazyQueryHookResult = ReturnType<typeof useOpportunityCollaborationIdLazyQuery>;
+export type OpportunityCollaborationIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.OpportunityCollaborationIdQuery,
+  SchemaTypes.OpportunityCollaborationIdQueryVariables
+>;
+export function refetchOpportunityCollaborationIdQuery(
+  variables: SchemaTypes.OpportunityCollaborationIdQueryVariables
+) {
+  return { query: OpportunityCollaborationIdDocument, variables: variables };
 }
 export const CalloutAspectCreatedDocument = gql`
   subscription CalloutAspectCreated($calloutID: UUID!) {
