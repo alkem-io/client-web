@@ -1,7 +1,7 @@
 import CalloutLayout, { CalloutLayoutProps } from './CalloutLayout';
 import AspectCard, { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
 import CardsLayout from '../shared/layout/CardsLayout/CardsLayout';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../hooks/generated/graphql';
@@ -15,9 +15,17 @@ interface AspectCalloutProps extends OptionalCoreEntityIds {
     aspects: AspectCardAspect[];
   };
   loading?: boolean;
+  showCreateButton?: boolean;
 }
 
-const AspectCallout = ({ callout, loading, hubNameId, challengeNameId, opportunityNameId }: AspectCalloutProps) => {
+const AspectCallout = ({
+  callout,
+  loading,
+  hubNameId,
+  challengeNameId,
+  opportunityNameId,
+  showCreateButton,
+}: AspectCalloutProps) => {
   // Dialog handling
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
@@ -25,13 +33,13 @@ const AspectCallout = ({ callout, loading, hubNameId, challengeNameId, opportuni
 
   // Create aspects
   const handleError = useApolloErrorHandler();
-  const { canCreateAspects, calloutId, subscriptionEnabled } = useAspectsData({
+  const { subscriptionEnabled } = useAspectsData({
     hubNameId: hubNameId || '',
     challengeNameId,
     opportunityNameId,
   });
 
-  const [createAspect, { loading: creating }] = useCreateAspectFromContributeTabMutation({
+  const [createAspect] = useCreateAspectFromContributeTabMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (subscriptionEnabled || !data) {
@@ -42,7 +50,7 @@ const AspectCallout = ({ callout, loading, hubNameId, challengeNameId, opportuni
 
       const calloutRefId = cache.identify({
         __typename: 'Callout',
-        id: calloutId,
+        id: callout.id,
       });
 
       if (!calloutRefId) {
@@ -66,10 +74,11 @@ const AspectCallout = ({ callout, loading, hubNameId, challengeNameId, opportuni
   });
 
   const onCreate = async (aspect: OnCreateInput) => {
+    setAspectDialogOpen(false);
     const { data } = await createAspect({
       variables: {
         aspectData: {
-          calloutID: calloutId!,
+          calloutID: callout.id,
           displayName: aspect.displayName,
           description: aspect.description,
           type: aspect.type,
@@ -108,14 +117,15 @@ const AspectCallout = ({ callout, loading, hubNameId, challengeNameId, opportuni
     return nameID ? { nameID } : undefined;
   };
 
+  const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
+
   return (
     <>
       <CalloutLayout callout={callout} maxHeight={42.5}>
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.aspects}
           deps={[hubNameId, challengeNameId, opportunityNameId]}
-          showCreateButton={canCreateAspects}
-          createButtonLoading={creating}
+          showCreateButton={showCreateButton}
           onCreateButtonClick={handleCreateDialogOpened}
         >
           {aspect => (
@@ -134,7 +144,7 @@ const AspectCallout = ({ callout, loading, hubNameId, challengeNameId, opportuni
         open={aspectDialogOpen}
         onClose={handleCreateDialogClosed}
         onCreate={onCreate}
-        aspectNames={callout.aspects.map(x => x.displayName)}
+        aspectNames={aspectNames}
         hubNameId={hubNameId!}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}

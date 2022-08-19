@@ -22,7 +22,6 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
   const PageLayout = usePageLayoutByEntity(entityTypeName);
 
   const { callouts, canCreateCallout, loading } = useCallouts({ hubNameId, challengeNameId, opportunityNameId });
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [/* use for the Dialog */ backToCanvases, buildLinkToCanvasRaw] = useBackToParentPage(rootUrl);
 
@@ -52,10 +51,22 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                   hubNameId={hubNameId!}
                   challengeNameId={challengeNameId}
                   opportunityNameId={opportunityNameId}
+                  showCreateButton={canCreateCallout}
                 />
               );
             case CalloutType.Canvas:
-              return <CanvasCallout key={callout.id} callout={callout} buildCanvasUrl={buildLinkToCanvas} />;
+              return (
+                <CanvasCallout
+                  key={callout.id}
+                  callout={callout}
+                  loading={loading}
+                  hubNameId={hubNameId!}
+                  challengeNameId={challengeNameId}
+                  opportunityNameId={opportunityNameId}
+                  buildCanvasUrl={buildLinkToCanvas}
+                  showCreateButton={canCreateCallout}
+                />
+              );
             default:
               throw new Error('Unexpected Callout type');
           }

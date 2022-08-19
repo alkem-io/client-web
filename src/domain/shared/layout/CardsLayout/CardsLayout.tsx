@@ -13,7 +13,6 @@ interface CardsLayoutProps<Item extends Identifiable | null | undefined>
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
   showCreateButton?: boolean;
-  createButtonLoading?: boolean;
 }
 
 /**
@@ -27,8 +26,9 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   items,
   children,
   deps = [],
-  onCreateButtonClick,
   showCreateButton = false,
+  onCreateButtonClick,
+  createButtonWidth = CONTRIBUTION_CARD_WIDTH,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const cards = useMemo(
@@ -43,7 +43,9 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
   return (
     <CardLayoutContainer {...layoutProps}>
-      {showCreateButton && <CreateButton onCreateButtonClick={onCreateButtonClick}>Add</CreateButton>}
+      {showCreateButton && (
+        <CreateButton onCreateButtonClick={onCreateButtonClick} createButtonWidth={createButtonWidth} />
+      )}
       {cards}
     </CardLayoutContainer>
   );
@@ -78,6 +80,7 @@ export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = 
 
 interface CreateButtonProps {
   onCreateButtonClick?: () => void;
+  createButtonWidth?: number;
 }
 
 const CreateButtonElement = styled(LinkCard)(({ theme }) => ({
@@ -93,9 +96,9 @@ const CreateButtonElement = styled(LinkCard)(({ theme }) => ({
   },
 }));
 
-export const CreateButton: FC<CreateButtonProps> = ({ onCreateButtonClick, ...buttonProps }) => {
+export const CreateButton: FC<CreateButtonProps> = ({ onCreateButtonClick, createButtonWidth }) => {
   return (
-    <CreateButtonElement onClick={onCreateButtonClick} {...buttonProps}>
+    <CreateButtonElement onClick={onCreateButtonClick} sx={{ width: createButtonWidth }}>
       <Typography variant="h1" weight="bold" color="primary">
         <AddCircleOutlineIcon width={20} />
       </Typography>
