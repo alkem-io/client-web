@@ -14,6 +14,7 @@ import {
   CanvasDetailsFragment,
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
+  Project,
   Reference,
 } from '../../models/graphql-schema';
 import { replaceAll } from '../../utils/replaceAll';
@@ -117,7 +118,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
-  const { context, projects = [], collaboration, activity = [] } = opportunity;
+  const { context, collaboration, activity = [] } = opportunity;
+  // Note: Projects are removed from the graphql query until we add them back in properly.
+  const projects: Project[] = [];
   const relations = collaboration?.relations ?? [];
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
