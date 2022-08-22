@@ -1,7 +1,8 @@
 import createLayoutWithOutlet from '../../shared/layout/LayoutHolderWithOutlet';
-import AspectLayout from './AspectLayout';
+import { default as AspectLayoutImpl } from './AspectLayout';
 
-const { LayoutHolder, Layout } = createLayoutWithOutlet(AspectLayout);
+const { LayoutHolder: AspectLayoutHolder, createLayout } = createLayoutWithOutlet();
 
-export { LayoutHolder as AspectLayoutHolder };
-export default Layout;
+export const AspectLayout = createLayout(AspectLayoutImpl);
+
+export { AspectLayoutHolder };
