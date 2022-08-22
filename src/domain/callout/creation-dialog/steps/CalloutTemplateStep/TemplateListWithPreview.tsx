@@ -22,7 +22,7 @@ export const TemplateListWithPreview: FC<TemplateListProps> = ({
   templatePreviewComponent,
   loading,
   selectedTemplateId,
-  onSelection
+  onSelection,
 }) => {
   const { t } = useTranslation();
 
@@ -33,11 +33,11 @@ export const TemplateListWithPreview: FC<TemplateListProps> = ({
         <Skeleton component={ListItem} />
         <Skeleton component={ListItem} />
       </List>
-    )
+    );
   }
 
   if (!templates.length) {
-    return <Typography>{t('components.callout-creation.template-step.no-templates')}</Typography>
+    return <Typography>{t('components.callout-creation.template-step.no-templates')}</Typography>;
   }
 
   const sortedTemplates = templates.sort((a, b) => a.title.localeCompare(b.title));
