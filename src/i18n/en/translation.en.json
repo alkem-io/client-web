@@ -153,6 +153,8 @@
     "title": "Title",
     "warning": "Warning",
     "preview": "Preview",
+    "help": "Help",
+    "language": "Language",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
