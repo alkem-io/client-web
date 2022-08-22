@@ -538,6 +538,12 @@ export type Collaboration = {
   relations?: Maybe<Array<Relation>>;
 };
 
+export type CollaborationCalloutsArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type Comments = {
   __typename?: 'Comments';
   /** The authorization rules for the entity */
@@ -8772,6 +8778,7 @@ export type HubCanvasesQuery = {
 
 export type HubCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 

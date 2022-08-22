@@ -3,6 +3,7 @@ import { useUrlParams, useUserContext } from '../../hooks';
 import {
   CanvasContentUpdatedDocument,
   useChallengeCanvasValuesQuery,
+  useHubCanvasesQuery,
   useHubCanvasValuesQuery,
   useOpportunityCanvasValuesQuery,
 } from '../../hooks/generated/graphql';
@@ -75,20 +76,12 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   const skipChallenge = Boolean(queryOpportunityId) || !Boolean(queryChallengeId) || !Boolean(canvasId);
   const skipOpportunity = !Boolean(queryOpportunityId) || !Boolean(canvasId);
 
-  const {
-    data: hubData,
-    loading: loadingHubCanvasValue,
-    subscribeToMore: subHub,
-  } = useHubCanvasValuesQuery({
+  const { data: hubCanvasMetadata } = useHubCanvasesQuery({
+    variables: { hubId },
+    skip: !!(challengeId || opportunityId),
     errorPolicy: 'all',
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-and-network',
-    skip: skipHub,
-    variables: {
-      hubId: queryHubId,
-      canvasId: canvasId || '',
-    },
   });
+
   const {
     data: challengeData,
     loading: loadingChallengeCanvasValue,
@@ -116,6 +109,28 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
     variables: {
       hubId: queryHubId,
       opportunityId: queryOpportunityId || '',
+      canvasId: canvasId || '',
+    },
+  });
+
+  const callout =
+    getCanvasCallout(hubCanvasMetadata?.hub.collaboration?.callouts) ??
+    getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts) ??
+    getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts);
+  const calloutId = callout?.id;
+
+  const {
+    data: hubData,
+    loading: loadingHubCanvasValue,
+    subscribeToMore: subHub,
+  } = useHubCanvasValuesQuery({
+    errorPolicy: 'all',
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-and-network',
+    skip: skipHub,
+    variables: {
+      hubId: queryHubId,
+      calloutId: calloutId || '',
       canvasId: canvasId || '',
     },
   });

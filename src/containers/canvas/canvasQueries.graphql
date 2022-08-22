@@ -84,12 +84,12 @@ query hubCanvases($hubId: UUID_NAMEID!) {
   }
 }
 
-query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
+query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID!, $canvasId: UUID!) {
   hub(ID: $hubId) {
     id
     collaboration {
       id
-      callouts {
+      callouts(IDs: [$calloutId]) {
         id
         type
         authorization {

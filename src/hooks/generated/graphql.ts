@@ -11132,12 +11132,12 @@ export function refetchHubCanvasesQuery(variables: SchemaTypes.HubCanvasesQueryV
   return { query: HubCanvasesDocument, variables: variables };
 }
 export const HubCanvasValuesDocument = gql`
-  query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
+  query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID!, $canvasId: UUID!) {
     hub(ID: $hubId) {
       id
       collaboration {
         id
-        callouts {
+        callouts(IDs: [$calloutId]) {
           id
           type
           authorization {
@@ -11169,6 +11169,7 @@ export const HubCanvasValuesDocument = gql`
  * const { data, loading, error } = useHubCanvasValuesQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      calloutId: // value for 'calloutId'
  *      canvasId: // value for 'canvasId'
  *   },
  * });
