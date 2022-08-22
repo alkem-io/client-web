@@ -1,13 +1,14 @@
-import CalloutLayout, { CalloutLayoutProps } from './CalloutLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
 import React, { useState } from 'react';
-import SimpleCard, { SIMPLE_CARD_WIDTH } from '../shared/components/SimpleCard';
+import SimpleCard from '../../shared/components/SimpleCard';
 import { WbIncandescentOutlined } from '@mui/icons-material';
-import { LinkWithState } from '../shared/types/LinkWithState';
-import CardsLayout from '../shared/layout/CardsLayout/CardsLayout';
-import { OptionalCoreEntityIds } from '../shared/types/CoreEntityIds';
-import CanvasCreateDialog from '../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
-import { CanvasProvider } from '../../containers/canvas/CanvasProvider';
-import CanvasActionsContainer from '../../containers/canvas/CanvasActionsContainer';
+import { LinkWithState } from '../../shared/types/LinkWithState';
+import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
+import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
+import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
+import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
+import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
+import { CreateNewCanvasButton } from './CreateNewCanvasButton';
 
 interface Canvas {
   id: string;
@@ -24,16 +25,16 @@ interface CanvasCalloutProps extends OptionalCoreEntityIds {
   };
   buildCanvasUrl: (canvasId: string) => LinkWithState;
   loading?: boolean;
-  showCreateButton?: boolean;
+  canCreate?: boolean;
 }
 
 const CanvasCallout = ({
   callout,
   loading,
-  showCreateButton,
   hubNameId,
   challengeNameId,
   opportunityNameId,
+  canCreate,
   buildCanvasUrl,
 }: CanvasCalloutProps) => {
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
@@ -46,9 +47,12 @@ const CanvasCallout = ({
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.canvases}
           deps={[hubNameId, challengeNameId, opportunityNameId]}
-          showCreateButton={showCreateButton}
-          onCreateButtonClick={handleCreateDialogOpened}
-          createButtonWidth={SIMPLE_CARD_WIDTH}
+          {...(canCreate
+            ? {
+                createButtonComponent: CreateNewCanvasButton,
+                createButtonOnClick: handleCreateDialogOpened,
+              }
+            : {})}
         >
           {canvas => (
             <SimpleCard

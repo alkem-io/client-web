@@ -1,18 +1,18 @@
-import React, { cloneElement, FC, ReactElement, useMemo } from 'react';
-import { Box, BoxProps, styled } from '@mui/material';
+import React, { cloneElement, ComponentType, FC, ReactElement, useMemo } from 'react';
+import { Box, BoxProps } from '@mui/material';
 import { Identifiable } from '../../types/Identifiable';
-import { CONTRIBUTION_CARD_WIDTH } from '../../components/ContributionCard/ContributionCardV2';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import LinkCard from '../../../../components/core/LinkCard/LinkCard';
-import Typography from '../../../../components/core/Typography';
+import {} from '../../components/ContributionCard/ContributionCardV2';
 
-interface CardsLayoutProps<Item extends Identifiable | null | undefined>
-  extends CardLayoutContainerProps,
-    CreateButtonProps {
+export interface CreateButtonProps {
+  onClick?: () => void;
+}
+interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
   showCreateButton?: boolean;
+  createButtonComponent?: ComponentType<CreateButtonProps>;
+  createButtonOnClick?: () => void;
 }
 
 /**
@@ -26,9 +26,8 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   items,
   children,
   deps = [],
-  showCreateButton = false,
-  onCreateButtonClick,
-  createButtonWidth = CONTRIBUTION_CARD_WIDTH,
+  createButtonComponent: CreateButton,
+  createButtonOnClick,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const cards = useMemo(
@@ -43,9 +42,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
   return (
     <CardLayoutContainer {...layoutProps}>
-      {showCreateButton && (
-        <CreateButton onCreateButtonClick={onCreateButtonClick} createButtonWidth={createButtonWidth} />
-      )}
+      {CreateButton && <CreateButton onClick={createButtonOnClick} />}
       {cards}
     </CardLayoutContainer>
   );
@@ -75,33 +72,5 @@ export const CardLayoutItem: FC<CardLayoutItemProps> = ({ children, flexBasis = 
     <Box flexBasis={flexBasis} maxWidth={maxWidth} flexGrow={flexGrow}>
       {children}
     </Box>
-  );
-};
-
-interface CreateButtonProps {
-  onCreateButtonClick?: () => void;
-  createButtonWidth?: number;
-}
-
-const CreateButtonElement = styled(LinkCard)(({ theme }) => ({
-  width: CONTRIBUTION_CARD_WIDTH,
-  cursor: 'pointer',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: theme.palette.common.white,
-  '& .MuiSvgIcon-root': {
-    width: theme.spacing(4.5),
-    height: theme.spacing(4.5),
-  },
-}));
-
-export const CreateButton: FC<CreateButtonProps> = ({ onCreateButtonClick, createButtonWidth }) => {
-  return (
-    <CreateButtonElement onClick={onCreateButtonClick} sx={{ width: createButtonWidth }}>
-      <Typography variant="h1" weight="bold" color="primary">
-        <AddCircleOutlineIcon width={20} />
-      </Typography>
-    </CreateButtonElement>
   );
 };

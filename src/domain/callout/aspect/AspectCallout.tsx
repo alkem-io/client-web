@@ -1,12 +1,13 @@
-import CalloutLayout, { CalloutLayoutProps } from './CalloutLayout';
-import AspectCard, { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
-import CardsLayout from '../shared/layout/CardsLayout/CardsLayout';
+import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
+import AspectCard, { AspectCardAspect } from '../../../components/composite/common/cards/AspectCard/AspectCard';
+import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
-import { OptionalCoreEntityIds } from '../shared/types/CoreEntityIds';
-import AspectCreationDialog from '../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
-import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAspectsData } from '../../hooks';
-import { CreateAspectOnCalloutInput } from '../../models/graphql-schema';
+import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
+import AspectCreationDialog from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
+import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useAspectsData } from '../../../hooks';
+import { CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
+import { CreateNewAspectButton } from './CreateNewAspectButton';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -15,16 +16,16 @@ interface AspectCalloutProps extends OptionalCoreEntityIds {
     aspects: AspectCardAspect[];
   };
   loading?: boolean;
-  showCreateButton?: boolean;
+  canCreate?: boolean;
 }
 
 const AspectCallout = ({
   callout,
   loading,
+  canCreate,
   hubNameId,
   challengeNameId,
   opportunityNameId,
-  showCreateButton,
 }: AspectCalloutProps) => {
   // Dialog handling
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
@@ -125,8 +126,12 @@ const AspectCallout = ({
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.aspects}
           deps={[hubNameId, challengeNameId, opportunityNameId]}
-          showCreateButton={showCreateButton}
-          onCreateButtonClick={handleCreateDialogOpened}
+          {...(canCreate
+            ? {
+                createButtonComponent: CreateNewAspectButton,
+                createButtonOnClick: handleCreateDialogOpened,
+              }
+            : {})}
         >
           {aspect => (
             <AspectCard

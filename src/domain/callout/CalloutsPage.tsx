@@ -5,9 +5,9 @@ import { EntityPageSection } from '../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../hooks';
 import useCallouts from './useCallouts';
 import { Box, Button } from '@mui/material';
-import AspectCallout from './AspectCallout';
+import AspectCallout from './aspect/AspectCallout';
 import { CalloutType } from '../../models/graphql-schema';
-import CanvasCallout from './CanvasCallout';
+import CanvasCallout from './canvas/CanvasCallout';
 import useBackToParentPage from '../shared/utils/useBackToParentPage';
 import { useTranslation } from 'react-i18next';
 
@@ -51,7 +51,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                   hubNameId={hubNameId!}
                   challengeNameId={challengeNameId}
                   opportunityNameId={opportunityNameId}
-                  showCreateButton={canCreateCallout}
+                  canCreate={canCreateCallout}
                 />
               );
             case CalloutType.Canvas:
@@ -64,7 +64,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                   challengeNameId={challengeNameId}
                   opportunityNameId={opportunityNameId}
                   buildCanvasUrl={buildLinkToCanvas}
-                  showCreateButton={canCreateCallout}
+                  canCreate={canCreateCallout}
                 />
               );
             default:
