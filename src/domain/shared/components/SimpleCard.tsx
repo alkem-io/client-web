@@ -7,7 +7,7 @@ import IconLabel from './IconLabel';
 import { LinkWithState } from '../types/LinkWithState';
 
 const ElevatedPaper = withElevationOnHover(Paper);
-export const SIMPLE_CARD_WIDTH = 208;
+export const SIMPLE_CARD_THEME_WIDTH = 26;
 
 const ImagePreview = ({ src }: { src: string }) => {
   const backgroundImage = `url(${src})`;
@@ -33,7 +33,7 @@ const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCard
     <LinkNoUnderline {...linkProps}>
       <ElevatedPaper
         sx={{
-          width: SIMPLE_CARD_WIDTH,
+          width: theme => theme.spacing(SIMPLE_CARD_THEME_WIDTH),
           height: theme => theme.spacing(18),
           background: theme => theme.palette.background.default,
           display: 'flex',

@@ -4,10 +4,10 @@ import LinkCard from '../../../components/core/LinkCard/LinkCard';
 import Typography from '../../../components/core/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { CreateButtonProps } from '../../shared/layout/CardsLayout/CardsLayout';
-import { SIMPLE_CARD_WIDTH } from '../../shared/components/SimpleCard';
+import { SIMPLE_CARD_THEME_WIDTH } from '../../shared/components/SimpleCard';
 
 const ButtonElement = styled(LinkCard)(({ theme }) => ({
-  width: SIMPLE_CARD_WIDTH,
+  width: theme.spacing(SIMPLE_CARD_THEME_WIDTH),
   cursor: 'pointer',
   display: 'flex',
   justifyContent: 'center',
