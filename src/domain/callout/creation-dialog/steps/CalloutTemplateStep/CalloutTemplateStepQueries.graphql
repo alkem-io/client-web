@@ -1,0 +1,61 @@
+query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    templates {
+      aspectTemplates {
+        id
+        info {
+          ...TemplateTitle
+        }
+      }
+    }
+  }
+}
+
+query CanvasTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    templates {
+      canvasTemplates {
+        id
+        info {
+          ...TemplateTitle
+        }
+      }
+    }
+  }
+}
+
+fragment TemplateTitle on TemplateInfo {
+  id
+  title
+}
+
+query AspectTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
+  hub(ID: $hubId) {
+    templates {
+      aspectTemplate(ID: $id) {
+        id
+        type
+        defaultDescription
+        info {
+          id
+          description
+          tagset {
+            id
+            tags
+          }
+        }
+      }
+    }
+  }
+}
+
+query CanvasTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
+  hub(ID: $hubId) {
+    templates {
+      canvasTemplate(ID: $id) {
+        id
+        value
+      }
+    }
+  }
+}

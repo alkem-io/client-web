@@ -10,7 +10,7 @@ import { AspectSettingsFragment, Visual } from '../../models/graphql-schema';
 import EditVisualsView from '../../views/Visuals/EditVisualsView';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import Typography from '@mui/material/Typography';
-import AspectLayout from '../../domain/aspect/views/AspectLayoutWithOutlet';
+import { AspectLayout } from '../../domain/aspect/views/AspectLayoutWithOutlet';
 import { AspectDialogSection } from '../../domain/aspect/views/AspectDialogSection';
 
 export interface AspectSettingsPageProps {

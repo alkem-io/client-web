@@ -2,7 +2,6 @@ import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import DashboardUpdatesSection from '../../domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Hub/InterestModal';
@@ -25,9 +24,6 @@ import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardL
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import { buildCanvasUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
-
-const SPACING = 2;
-const PROJECTS_NUMBER_IN_SECTION = 2;
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
@@ -107,7 +103,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
 
   const { opportunity } = entities;
   const communityId = opportunity?.community?.id || '';
-  const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
   const { id, collaboration } = opportunity;
@@ -157,30 +152,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <DashboardGenericSection
-            headerText={t('pages.opportunity.sections.dashboard.projects.title')}
-            helpText={t('pages.opportunity.sections.dashboard.projects.help-text')}
-            navText={t('buttons.see-all')}
-            navLink={'projects'}
-          >
-            <Grid container item spacing={SPACING}>
-              {projects.slice(0, PROJECTS_NUMBER_IN_SECTION).map((x, i) => {
-                return (
-                  <Grid key={i} item>
-                    <EntityContributionCard
-                      loading={loading}
-                      activities={[]}
-                      details={{
-                        headerText: x.displayName,
-                        mediaUrl: '',
-                        url: `../projects/${x.nameID}`,
-                      }}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </DashboardGenericSection>
           <DashboardSectionAspects
             aspects={entities.aspects}
             aspectsCount={entities.aspectsCount}
