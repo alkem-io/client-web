@@ -11,9 +11,9 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import LandscapeIcon from '@mui/icons-material/Landscape';
-import GroupIcon from '@mui/icons-material/Group';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import LandscapeOutlinedIcon from '@mui/icons-material/LandscapeOutlined';
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import LanguageIcon from '@mui/icons-material/Language';
 import CloseIcon from '@mui/icons-material/Close';
@@ -152,7 +152,7 @@ interface HamburgerDropdownProps {
 }
 
 const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen, onClose }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { pathname } = useLocation();
   const { isAuthenticated, user: userMetadata } = useUserContext();
@@ -160,10 +160,16 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
   const isAdmin = userMetadata?.isAdmin;
 
   const [languageOpen, setLanguageOpen] = React.useState(false);
+  const [selectedLang, setSelectedLang] = React.useState(i18n.language);
 
   const handleLanguageExpand = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     setLanguageOpen(state => !state);
+  }, []);
+
+  const handleLanguageSelection = useCallback(language => {
+    i18n.changeLanguage(language);
+    setSelectedLang(language);
   }, []);
 
   return (
@@ -202,20 +208,20 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
         )}
         <MenuItem component={RouterLink} to="/challenges">
           <ListItemIcon>
-            <LandscapeIcon />
+            <LandscapeOutlinedIcon />
           </ListItemIcon>
           {t('common.challenges')}
         </MenuItem>
         <MenuItem component={RouterLink} to="/contributors">
           <ListItemIcon>
-            <GroupIcon />
+            <GroupOutlinedIcon />
           </ListItemIcon>
           {t('common.contributors')}
         </MenuItem>
         {user && (
           <MenuItem component={RouterLink} to={buildUserProfileUrl(user.nameID)}>
             <ListItemIcon>
-              <AssignmentIndIcon />
+              <AssignmentIndOutlinedIcon />
             </ListItemIcon>
             {t('common.my-profile')}
           </MenuItem>
@@ -228,7 +234,15 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             {t('common.admin')}
           </MenuItem>
         )}
-        <Divider />
+        <Divider variant="middle" />
+        {isAuthenticated && (
+          <MenuItem component={RouterLink} to="/identity/logout">
+            <ListItemIcon>
+              <MeetingRoomOutlinedIcon />
+            </ListItemIcon>
+            {t('authentication.sign-out')}
+          </MenuItem>
+        )}
         <MenuItem component={RouterLink} to="/help">
           <ListItemIcon>
             <HelpOutlineIcon />
@@ -240,23 +254,17 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             <LanguageIcon />
           </ListItemIcon>
           {t('common.language')}
-          <Box sx={{ ml: 1, mt: 0.5 }}>{languageOpen ? <ExpandLess /> : <ExpandMore />}</Box>
+          <Box sx={{ ml: 1, mt: 0.5, display: 'flex', alignItems: 'center' }}>
+            {languageOpen ? <ExpandLess /> : <ExpandMore />}
+          </Box>
         </MenuItem>
         <Collapse in={languageOpen} timeout="auto" unmountOnExit>
           {supportedLngs.map(x => (
-            <MenuItem key={x} value={x}>
+            <MenuItem key={x} onClick={() => handleLanguageSelection(x)} selected={x === selectedLang}>
               <ListItemText primary={x} />
             </MenuItem>
           ))}
         </Collapse>
-        {isAuthenticated && (
-          <MenuItem component={RouterLink} to="/identity/logout">
-            <ListItemIcon>
-              <MeetingRoomOutlinedIcon />
-            </ListItemIcon>
-            {t('authentication.sign-out')}
-          </MenuItem>
-        )}
       </Menu>
     </>
   );
