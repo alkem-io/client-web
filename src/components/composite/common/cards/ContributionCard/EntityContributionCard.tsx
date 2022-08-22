@@ -6,7 +6,7 @@ import ActivitiesV2 from '../../Activities/ActivitiesV2';
 import { ActivityItem } from '../../ActivityPanel/Activities';
 import ContributionCardV2, {
   ContributionCardV2Props,
-} from '../../../../../domain/shared/components/ContributuionCard/ContributionCardV2';
+} from '../../../../../domain/shared/components/ContributionCard/ContributionCardV2';
 
 const PREFIX = 'EntityContributionCard';
 const cssClasses = {

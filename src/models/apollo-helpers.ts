@@ -1528,18 +1528,24 @@ export type TemplateInfoFieldPolicy = {
   visual?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type TemplatesSetKeySpecifier = (
+  | 'aspectTemplate'
   | 'aspectTemplates'
   | 'authorization'
+  | 'canvasTemplate'
   | 'canvasTemplates'
   | 'id'
+  | 'lifecycleTemplate'
   | 'lifecycleTemplates'
   | TemplatesSetKeySpecifier
 )[];
 export type TemplatesSetFieldPolicy = {
+  aspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  canvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycleTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UpdatesKeySpecifier = ('authorization' | 'id' | 'messages' | UpdatesKeySpecifier)[];
