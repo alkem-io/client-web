@@ -73,22 +73,25 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
   };
 
   const helpText = useMemo(() => {
-    if (callout?.type === CalloutType.Card) {
-      return t('components.callout-creation.info-step.type-cards-help');
-    } else if (callout?.type === CalloutType.Canvas) {
-      return t('components.callout-creation.info-step.type-canvases-help');
-    }
-    if (callout?.type === CalloutType.Discussion) {
-      return t('components.callout-creation.info-step.type-comments-help');
-    } else {
-      return '';
+    switch (callout?.type) {
+      case CalloutType.Card:
+        return t('components.callout-creation.info-step.type-cards-help');
+      case CalloutType.Canvas:
+        return t('components.callout-creation.info-step.type-canvases-help');
+      case CalloutType.Discussion:
+        return t('components.callout-creation.info-step.type-comments-help');
+      default:
+        return '';
     }
   }, [callout]);
 
-  const calloutTypes = [
-    { id: CalloutType.Card, name: 'Cards' },
-    { id: CalloutType.Canvas, name: 'Canvases' },
-  ];
+  const calloutTypes = useMemo(
+    () => [
+      { id: CalloutType.Card, name: t('common.cards') },
+      { id: CalloutType.Canvas, name: t('common.canvases') },
+    ],
+    []
+  );
 
   return (
     <Formik
