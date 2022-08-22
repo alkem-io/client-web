@@ -841,7 +841,6 @@
       "success": "Feedback submitted"
     },
     "aspect": {
-      "aspect-breadcrumbs": "This aspect is part of:",
       "dashboard": {
         "comment": {
           "placeholder": "Type your comment here"
@@ -1008,7 +1007,6 @@
     },
     "challenge": {
       "title": "Challenge",
-      "challenge-breadcrumbs": "This challenge is part of:",
       "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "And more ..."
@@ -1036,7 +1034,6 @@
     },
     "opportunity": {
       "title": "Opportunity",
-      "opportunity-breadcrumbs": "This opportunity is part of:",
       "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {

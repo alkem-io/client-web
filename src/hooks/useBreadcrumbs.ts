@@ -1,18 +1,20 @@
-import { useMemo } from 'react';
+import { ComponentType, useMemo } from 'react';
 import { useUrlParams } from '.';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../utils/urlBuilders';
 import { useChallengeNameQuery, useHubNameQuery, useOpportunityNameQuery } from './generated/graphql';
+import HubIcon from '@mui/icons-material/Hub';
+import FilterHdrIcon from '@mui/icons-material/FilterHdr';
 
 export interface BreadcrumbsItem {
-  name?: string;
+  title: string;
+  icon: ComponentType;
   url: string;
 }
 
 export const useBreadcrumbs = () => {
   const { hubNameId, challengeNameId, opportunityNameId, aspectNameId, projectNameId } = useUrlParams();
 
-  // Only show opportunity breadcrumb if we are showing an Aspect or a Project
-  const showOpportunity = aspectNameId || projectNameId;
+  const showOpportunity = false; // TODO: Never show opportunity for now.
 
   const { data: _hub, loading: loadingHub } = useHubNameQuery({
     variables: {
@@ -46,21 +48,24 @@ export const useBreadcrumbs = () => {
       // Hub breadcrumb - if we are watching a challenge or an aspect
       if (hubNameId && (challengeNameId || aspectNameId)) {
         items.push({
-          name: _hub?.hub.displayName,
+          title: _hub?.hub.displayName || '',
+          icon: HubIcon,
           url: buildHubUrl(hubNameId),
         });
       }
       // Challenge breadcrumb - if we are watching an opportunity or an aspect in a challenge
       if (hubNameId && challengeNameId && (opportunityNameId || aspectNameId)) {
         items.push({
-          name: _challenge?.hub.challenge.displayName,
+          title: _challenge?.hub.challenge.displayName || '',
+          icon: FilterHdrIcon,
           url: buildChallengeUrl(hubNameId, challengeNameId),
         });
       }
       // Opportunity breadcrumb - if we are inside an opportunity and showOpportunity is true
       if (hubNameId && challengeNameId && opportunityNameId && showOpportunity) {
         items.push({
-          name: _opportunity?.hub.opportunity.displayName,
+          title: _opportunity?.hub.opportunity.displayName || '',
+          icon: FilterHdrIcon, // TODO: We'll need an opportunity Icon if we want to show opportunity breadcrumb
           url: buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId),
         });
       }

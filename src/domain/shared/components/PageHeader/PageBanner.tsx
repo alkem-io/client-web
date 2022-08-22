@@ -22,6 +22,7 @@ const Title = styled(Box)(({ theme }) => ({
   paddingTop: theme.spacing(1),
   paddingBottom: theme.spacing(0.5),
   minHeight: theme.spacing(7),
+  zIndex: 20,
   [theme.breakpoints.only('xs')]: {
     height: '100%',
   },
@@ -44,6 +45,7 @@ const Image = styled('img')(() => ({
   top: 0,
   width: '100%',
   height: '100%',
+  zIndex: 10,
 }));
 
 export interface PageBannerProps {
@@ -51,18 +53,10 @@ export interface PageBannerProps {
   tagline?: string;
   bannerUrl?: string;
   showBreadcrumbs?: boolean;
-  breadcrumbsTitle?: string;
   loading?: boolean;
 }
 
-const PageBanner: FC<PageBannerProps> = ({
-  title,
-  tagline,
-  bannerUrl,
-  showBreadcrumbs,
-  breadcrumbsTitle,
-  loading = false,
-}) => {
+const PageBanner: FC<PageBannerProps> = ({ title, tagline, bannerUrl, showBreadcrumbs, loading = false }) => {
   bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
 
   return (
@@ -70,9 +64,9 @@ const PageBanner: FC<PageBannerProps> = ({
       <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />
       {!loading && (
         <>
+          {showBreadcrumbs && <BreadcrumbsView />}
           <Image src={bannerUrl} alt={`${title} - Banner image`} />
           <Title>
-            {showBreadcrumbs && <BreadcrumbsView title={breadcrumbsTitle} />}
             <Typography variant={'h1'}>{title}</Typography>
             <Typography variant={'caption'}>{tagline}</Typography>
           </Title>
