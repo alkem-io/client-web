@@ -70,13 +70,6 @@ fragment OpportunityPage on Opportunity {
   community {
     ...EntityDashboardCommunity
   }
-  #
-  projects {
-    id
-    nameID
-    displayName
-    description
-  }
 }
 
 fragment OpportunityPageRelations on Relation {

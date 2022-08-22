@@ -17,7 +17,7 @@ export const paletteOptions: PaletteOptions = {
   },
   neutralLight: { main: '#F9F9F9' },
   background: { default: '#ffffff', paper: '#F9F9F9' },
-  divider: '#00BCD440',
+  divider: grey[400],
   mode: 'light',
   grey: {
     main: grey[300],
