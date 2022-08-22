@@ -1,5 +1,5 @@
 import React, { FC, forwardRef, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from '@xstate/react';
 import { AppBar, Box, Container, Theme } from '@mui/material';
@@ -126,10 +126,13 @@ const DesktopTopBar = () => {
 };
 
 const MobileTopBar = () => {
+  const navigate = useNavigate();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleOpen = useCallback((event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget), []);
   const handleClose = useCallback(() => setAnchorEl(null), []);
+  const handleSearch = useCallback(() => navigate('/search'), []);
 
   return (
     <Box height={theme => theme.spacing(7)} display="flex" gap={2} alignItems="center" justifyContent="space-between">
@@ -137,7 +140,7 @@ const MobileTopBar = () => {
 
       <LogoComponent height={theme => theme.spacing(4)} />
 
-      <IconButton sx={{ mr: 2 }} size="small">
+      <IconButton sx={{ mr: 2 }} size="small" onClick={handleSearch}>
         <SearchIcon />
       </IconButton>
     </Box>
