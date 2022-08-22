@@ -6,6 +6,7 @@ import Heading from '../shared/components/Heading';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
+import { Authorization } from '../../models/graphql-schema';
 
 export interface CalloutLayoutProps {
   callout: {
@@ -14,6 +15,7 @@ export interface CalloutLayoutProps {
     description?: string;
     draft?: boolean;
     editable?: boolean;
+    authorization?: Authorization;
   };
   maxHeight?: number;
 }

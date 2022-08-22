@@ -63,7 +63,6 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     hubNameId={hubNameId!}
                     challengeNameId={challengeNameId}
                     opportunityNameId={opportunityNameId}
-                    canCreate={canCreateCallout}
                   />
                 );
               case CalloutType.Canvas:
@@ -76,7 +75,6 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     challengeNameId={challengeNameId}
                     opportunityNameId={opportunityNameId}
                     buildCanvasUrl={buildLinkToCanvas}
-                    canCreate={canCreateCallout}
                   />
                 );
               default:

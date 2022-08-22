@@ -30,7 +30,7 @@ type CalloutTypesWithChildTypes = {
   [Type in keyof CalloutChildTypePropName]: { type: Type } & CalloutWithChildType<CalloutChildTypePropName[Type]>;
 };
 
-type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description'> &
+type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description' | 'authorization'> &
   (CalloutTypesWithChildTypes[CalloutType.Card] | CalloutTypesWithChildTypes[CalloutType.Canvas]) & {
     draft: boolean;
     editable: boolean;
@@ -62,6 +62,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     const editable = false; // todo client-2378; authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
     return {
       ...callout,
+      authorization,
       draft,
       editable,
     } as TypedCallout;

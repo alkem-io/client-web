@@ -6,7 +6,7 @@ import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAspectsData } from '../../../hooks';
-import { CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
+import { AuthorizationPrivilege, CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
 import { CreateNewAspectButton } from './CreateNewAspectButton';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
@@ -16,17 +16,9 @@ interface AspectCalloutProps extends OptionalCoreEntityIds {
     aspects: AspectCardAspect[];
   };
   loading?: boolean;
-  canCreate?: boolean;
 }
 
-const AspectCallout = ({
-  callout,
-  loading,
-  canCreate,
-  hubNameId,
-  challengeNameId,
-  opportunityNameId,
-}: AspectCalloutProps) => {
+const AspectCallout = ({ callout, loading, hubNameId, challengeNameId, opportunityNameId }: AspectCalloutProps) => {
   // Dialog handling
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
@@ -34,6 +26,8 @@ const AspectCallout = ({
 
   // Create aspects
   const handleError = useApolloErrorHandler();
+  const canCreateAspects = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect);
+
   const { subscriptionEnabled } = useAspectsData({
     hubNameId: hubNameId || '',
     challengeNameId,
@@ -126,7 +120,7 @@ const AspectCallout = ({
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.aspects}
           deps={[hubNameId, challengeNameId, opportunityNameId]}
-          {...(canCreate
+          {...(canCreateAspects
             ? {
                 createButtonComponent: CreateNewAspectButton,
                 createButtonOnClick: handleCreateDialogOpened,
