@@ -1397,12 +1397,6 @@ export const OpportunityPageFragmentDoc = gql`
     community {
       ...EntityDashboardCommunity
     }
-    projects {
-      id
-      nameID
-      displayName
-      description
-    }
   }
   ${AspectCardFragmentDoc}
   ${CanvasDetailsFragmentDoc}

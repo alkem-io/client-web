@@ -11168,15 +11168,6 @@ export type OpportunityPageQuery = {
               | undefined;
           }
         | undefined;
-      projects?:
-        | Array<{
-            __typename?: 'Project';
-            id: string;
-            nameID: string;
-            displayName: string;
-            description?: string | undefined;
-          }>
-        | undefined;
     };
   };
 };
@@ -11374,15 +11365,6 @@ export type OpportunityPageFragment = {
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
       }
-    | undefined;
-  projects?:
-    | Array<{
-        __typename?: 'Project';
-        id: string;
-        nameID: string;
-        displayName: string;
-        description?: string | undefined;
-      }>
     | undefined;
 };
 
