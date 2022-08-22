@@ -2377,6 +2377,8 @@ export type Platform = {
   opensource: Scalars['String'];
   /** URL to the privacy policy for the platform */
   privacy: Scalars['String'];
+  /** URL where users can get information about previouse releases */
+  releases: Scalars['String'];
   /** URL to the security policy for the platform */
   security: Scalars['String'];
   /** URL where users can get support for the platform */
@@ -3675,6 +3677,7 @@ export type ConfigurationFragment = {
     impact: string;
     foundation: string;
     opensource: string;
+    releases: string;
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
@@ -5737,6 +5740,7 @@ export type ConfigurationQuery = {
       impact: string;
       foundation: string;
       opensource: string;
+      releases: string;
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };

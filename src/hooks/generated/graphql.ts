@@ -180,6 +180,7 @@ export const ConfigurationFragmentDoc = gql`
       impact
       foundation
       opensource
+      releases
       featureFlags {
         enabled
         name
