@@ -8,6 +8,7 @@ import CalloutAspectSummary from './CalloutAspectSummary';
 import CalloutCanvasSummary from './CalloutCanvasSummary';
 import { CalloutStepProps } from '../CalloutStepProps';
 import { StepComponentProps } from '../../../../shared/components/Steps/step/Step';
+import Markdown from '../../../../../components/core/Markdown';
 
 interface CalloutSummaryStepProps extends CalloutStepProps {
   onPublish: () => Promise<void>;
@@ -66,7 +67,7 @@ const CalloutSummary: FC<{
       <Box>
         <TypographyTitle>{t('common.description')}</TypographyTitle>
         <Typography variant="body2" sx={{ overflowWrap: 'anywhere' }}>
-          {callout?.description}
+          <Markdown>{callout?.description!}</Markdown>
         </Typography>
       </Box>
       <Box>
