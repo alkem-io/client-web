@@ -41,6 +41,7 @@ fragment ChallengeProfile on Challenge {
     callouts {
       id
       type
+      visibility
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }
