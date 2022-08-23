@@ -1,13 +1,11 @@
-import React, { ComponentType, FC, useMemo } from 'react';
+import React, { ComponentType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled, Typography, Box } from '@mui/material';
 import { StepSummaryLayout } from '../../step-layout/StepLayout';
-import { CalloutType } from '../../../../../models/graphql-schema';
 import { CalloutDialogCreationType } from '../../CalloutCreationDialog';
-import CalloutAspectSummary from './CalloutAspectSummary';
-import CalloutCanvasSummary from './CalloutCanvasSummary';
 import { CalloutStepProps } from '../CalloutStepProps';
 import { StepComponentProps } from '../../../../shared/components/Steps/step/Step';
+import Markdown from '../../../../../components/core/Markdown';
 
 interface CalloutSummaryStepProps extends CalloutStepProps {
   onPublish: () => Promise<void>;
@@ -25,7 +23,7 @@ const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const TemplatePreviewComponent = useMemo<ComponentType<CalloutStepProps> | null>(() => {
+  /*const TemplatePreviewComponent = useMemo<ComponentType<CalloutStepProps> | null>(() => {
     if (callout?.type === CalloutType.Card) {
       return CalloutAspectSummary;
     } else if (callout?.type === CalloutType.Canvas) {
@@ -33,7 +31,7 @@ const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
     } else {
       return null;
     }
-  }, [callout]);
+  }, [callout]);*/
 
   return (
     <StepSummaryLayout
@@ -44,7 +42,7 @@ const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
       onSaveAsDraft={onSaveAsDraft}
       isPublishing={isPublishing}
     >
-      <CalloutSummary callout={callout} templatePreviewComponent={TemplatePreviewComponent} />
+      <CalloutSummary callout={callout} /* templatePreviewComponent={TemplatePreviewComponent} */ />
     </StepSummaryLayout>
   );
 };
@@ -53,7 +51,7 @@ export default CalloutSummaryStep;
 
 const CalloutSummary: FC<{
   callout: CalloutDialogCreationType;
-  templatePreviewComponent: ComponentType<CalloutStepProps> | null;
+  templatePreviewComponent?: ComponentType<CalloutStepProps> | null;
 }> = ({ callout, templatePreviewComponent: TemplatePreview }) => {
   const { t } = useTranslation();
 
@@ -66,7 +64,7 @@ const CalloutSummary: FC<{
       <Box>
         <TypographyTitle>{t('common.description')}</TypographyTitle>
         <Typography variant="body2" sx={{ overflowWrap: 'anywhere' }}>
-          {callout?.description}
+          <Markdown>{callout?.description!}</Markdown>
         </Typography>
       </Box>
       <Box>
