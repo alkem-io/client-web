@@ -2383,6 +2383,8 @@ export type Platform = {
   opensource: Scalars['String'];
   /** URL to the privacy policy for the platform */
   privacy: Scalars['String'];
+  /** URL where users can get information about previouse releases */
+  releases: Scalars['String'];
   /** URL to the security policy for the platform */
   security: Scalars['String'];
   /** URL where users can get support for the platform */
@@ -8966,6 +8968,7 @@ export type ChallengeCanvasesQuery = {
 export type ChallengeCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 
@@ -9143,6 +9146,7 @@ export type OpportunityCanvasesQuery = {
 export type OpportunityCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 

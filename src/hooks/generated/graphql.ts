@@ -11263,14 +11263,14 @@ export function refetchChallengeCanvasesQuery(variables: SchemaTypes.ChallengeCa
   return { query: ChallengeCanvasesDocument, variables: variables };
 }
 export const ChallengeCanvasValuesDocument = gql`
-  query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasId: UUID!) {
+  query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutId: UUID!, $canvasId: UUID!) {
     hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
         collaboration {
           id
-          callouts {
+          callouts(IDs: [$calloutId]) {
             id
             type
             authorization {
@@ -11304,6 +11304,7 @@ export const ChallengeCanvasValuesDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
+ *      calloutId: // value for 'calloutId'
  *      canvasId: // value for 'canvasId'
  *   },
  * });
@@ -11407,14 +11408,19 @@ export function refetchOpportunityCanvasesQuery(variables: SchemaTypes.Opportuni
   return { query: OpportunityCanvasesDocument, variables: variables };
 }
 export const OpportunityCanvasValuesDocument = gql`
-  query opportunityCanvasValues($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasId: UUID!) {
+  query opportunityCanvasValues(
+    $hubId: UUID_NAMEID!
+    $opportunityId: UUID_NAMEID!
+    $calloutId: UUID!
+    $canvasId: UUID!
+  ) {
     hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
         collaboration {
           id
-          callouts {
+          callouts(IDs: [$calloutId]) {
             id
             type
             authorization {
@@ -11448,6 +11454,7 @@ export const OpportunityCanvasValuesDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
+ *      calloutId: // value for 'calloutId'
  *      canvasId: // value for 'canvasId'
  *   },
  * });

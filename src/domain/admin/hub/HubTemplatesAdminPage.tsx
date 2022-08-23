@@ -55,7 +55,8 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     lifecycleTemplates,
     id: templatesSetID,
   } = hubTemplatesData?.hub.templates ?? {};
-  const canvases = getCanvasCallout(hubCanvasesData?.hub.collaboration?.callouts)?.canvases;
+  const canvasCallout = getCanvasCallout(hubCanvasesData?.hub.collaboration?.callouts);
+  const canvases = canvasCallout?.canvases;
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
@@ -79,6 +80,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         edit={edit}
         loadCanvases={loadCanvases}
         canvases={canvases}
+        calloutId={canvasCallout?.id}
       />
       <SectionSpacer />
       <AdminInnovationTemplatesSection

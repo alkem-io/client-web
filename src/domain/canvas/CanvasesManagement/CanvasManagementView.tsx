@@ -109,7 +109,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
         buildCanvasUrl={buildCanvasUrl}
         {...options}
       />
-      <CanvasValueContainer canvasId={actualActiveCanvas?.id}>
+      <CanvasValueContainer canvasId={actualActiveCanvas?.id} calloutId={calloutID}>
         {entities => (
           <CanvasDialog
             entities={{ canvas: entities.canvas }}

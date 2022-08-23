@@ -3,7 +3,6 @@ import { useUrlParams, useUserContext } from '../../hooks';
 import {
   CanvasContentUpdatedDocument,
   useChallengeCanvasValuesQuery,
-  useHubCanvasesQuery,
   useHubCanvasValuesQuery,
   useOpportunityCanvasValuesQuery,
 } from '../../hooks/generated/graphql';
@@ -30,6 +29,7 @@ export interface CanvasValueContainerState {
 
 export interface CanvasValueParams {
   canvasId: string | undefined;
+  calloutId: string | undefined;
   params?: TemplateQuery;
 }
 
@@ -53,7 +53,13 @@ const useSubscribeToCanvas = UseSubscriptionToSubEntity<
   },
 });
 
-const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasId, params, onCanvasValueLoaded }) => {
+const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
+  children,
+  canvasId,
+  calloutId,
+  params,
+  onCanvasValueLoaded,
+}) => {
   const {
     hubNameId: hubId = '',
     challengeNameId: challengeId = '',
@@ -76,12 +82,6 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   const skipChallenge = Boolean(queryOpportunityId) || !Boolean(queryChallengeId) || !Boolean(canvasId);
   const skipOpportunity = !Boolean(queryOpportunityId) || !Boolean(canvasId);
 
-  const { data: hubCanvasMetadata } = useHubCanvasesQuery({
-    variables: { hubId },
-    skip: !!(challengeId || opportunityId),
-    errorPolicy: 'all',
-  });
-
   const {
     data: challengeData,
     loading: loadingChallengeCanvasValue,
@@ -95,6 +95,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
       hubId: queryHubId,
       challengeId: queryChallengeId || '',
       canvasId: canvasId || '',
+      calloutId: calloutId || '',
     },
   });
   const {
@@ -110,14 +111,9 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
       hubId: queryHubId,
       opportunityId: queryOpportunityId || '',
       canvasId: canvasId || '',
+      calloutId: calloutId || '',
     },
   });
-
-  const callout =
-    getCanvasCallout(hubCanvasMetadata?.hub.collaboration?.callouts) ??
-    getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts) ??
-    getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts);
-  const calloutId = callout?.id;
 
   const {
     data: hubData,
