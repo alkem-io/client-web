@@ -1109,6 +1109,7 @@ export const ChallengeProfileFragmentDoc = gql`
       callouts {
         id
         type
+        visibility
         aspects(limit: 2, shuffle: true) {
           ...AspectCard
         }
@@ -1307,6 +1308,7 @@ export const HubPageFragmentDoc = gql`
       callouts {
         id
         type
+        visibility
         aspects(limit: 2, shuffle: true) {
           ...AspectCard
         }
@@ -1369,6 +1371,7 @@ export const OpportunityPageFragmentDoc = gql`
       callouts {
         id
         type
+        visibility
         aspects(limit: 2, shuffle: true) {
           ...AspectCard
         }
