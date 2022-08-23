@@ -8,8 +8,7 @@ import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
 import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
-import { CreateNewCanvasButton } from './CreateNewCanvasButton';
-import { AuthorizationPrivilege } from '../../../models/graphql-schema';
+import CreateCalloutItemButton from '../CreateCalloutItemButton';
 
 interface Canvas {
   id: string;
@@ -26,6 +25,7 @@ interface CanvasCalloutProps extends OptionalCoreEntityIds {
   };
   buildCanvasUrl: (canvasId: string) => LinkWithState;
   loading?: boolean;
+  canCreate?: boolean;
 }
 
 const CanvasCallout = ({
@@ -35,11 +35,11 @@ const CanvasCallout = ({
   challengeNameId,
   opportunityNameId,
   buildCanvasUrl,
+  canCreate = false,
 }: CanvasCalloutProps) => {
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
   const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
   const handleCreateDialogClosed = () => setShowCreateCanvasDialog(false);
-  const canCreateCanvases = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas);
 
   return (
     <>
@@ -47,10 +47,13 @@ const CanvasCallout = ({
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.canvases}
           deps={[hubNameId, challengeNameId, opportunityNameId]}
-          {...(canCreateCanvases
+          {...(canCreate
             ? {
-                createButtonComponent: CreateNewCanvasButton,
-                createButtonOnClick: handleCreateDialogOpened,
+                createButtonComponent: (
+                  <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+                    <SimpleCard to={''}></SimpleCard>
+                  </CreateCalloutItemButton>
+                ),
               }
             : {})}
         >

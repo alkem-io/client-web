@@ -28,6 +28,7 @@ export interface ContributionCardV2Details {
 export const CONTRIBUTION_CARD_HEIGHT_SPACING = 18;
 export const CONTRIBUTION_CARD_WIDTH_SPACING = 32;
 export const CONTRIBUTION_CARD_THEME_WIDTH = 32;
+export const CONTRIBUTION_CARD_THEME_HEIGHT = 42;
 
 export interface ContributionCardV2Props {
   details?: ContributionCardV2Details;

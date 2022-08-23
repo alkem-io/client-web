@@ -8,6 +8,7 @@ import { LinkWithState } from '../types/LinkWithState';
 
 const ElevatedPaper = withElevationOnHover(Paper);
 export const SIMPLE_CARD_THEME_WIDTH = 25;
+export const SIMPLE_CARD_THEME_HEIGHT = 18;
 
 const ImagePreview = ({ src }: { src: string }) => {
   const backgroundImage = `url(${src})`;
@@ -23,9 +24,9 @@ const PositionedIcon = ({ iconComponent }: Pick<IconProps, 'iconComponent'>) => 
 };
 
 export interface SimpleCardProps extends LinkWithState {
-  title: ReactNode;
-  imageUrl: string | undefined;
-  iconComponent: ComponentType<SvgIconProps>;
+  title?: ReactNode;
+  imageUrl?: string;
+  iconComponent?: ComponentType<SvgIconProps>;
 }
 
 const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCardProps) => {
@@ -34,14 +35,18 @@ const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCard
       <ElevatedPaper
         sx={{
           width: theme => theme.spacing(SIMPLE_CARD_THEME_WIDTH),
-          height: theme => theme.spacing(18),
+          height: theme => theme.spacing(SIMPLE_CARD_THEME_HEIGHT),
           background: theme => theme.palette.background.default,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'stretch',
         }}
       >
-        {imageUrl ? <ImagePreview src={imageUrl} /> : <PositionedIcon iconComponent={iconComponent} />}
+        {imageUrl ? (
+          <ImagePreview src={imageUrl} />
+        ) : iconComponent ? (
+          <PositionedIcon iconComponent={iconComponent} />
+        ) : null}
         <IconLabel>{title}</IconLabel>
       </ElevatedPaper>
     </LinkNoUnderline>
