@@ -12,7 +12,7 @@ import { AuthorizationPrivilege } from '../models/graphql-schema';
 import { AspectWithPermissions, EntityIds } from '../containers/ContributeTabContainer/ContributeTabContainer';
 import useCalloutAspectCreatedSubscription from '../domain/collaboration/useCalloutAspectCreatedSubscription';
 import { ApolloError } from '@apollo/client';
-import { getAspectCallout } from '../containers/aspect/getAspectCallout';
+import { getCardCallout, getCardCallouts } from '../containers/aspect/getAspectCallout';
 
 export interface AspectsData {
   aspects: AspectWithPermissions[] | undefined;
@@ -55,8 +55,8 @@ export const useAspectsData = ({
     skip: !canReadHubCollaboration || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubCallout = getAspectCallout(hubAspectData?.hub?.collaboration?.callouts);
-  const hubAspects = hubCallout?.aspects;
+  const hubCallouts = getCardCallouts(hubAspectData?.hub?.collaboration?.callouts);
+  const hubAspects = hubCallouts?.flatMap(x => x.aspects);
 
   const {
     data: challengeCollaborationData,
@@ -82,8 +82,8 @@ export const useAspectsData = ({
     skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeCallout = getAspectCallout(challengeAspectData?.hub?.challenge?.collaboration?.callouts);
-  const challengeAspects = challengeCallout?.aspects;
+  const challengeCallouts = getCardCallouts(challengeAspectData?.hub?.challenge?.collaboration?.callouts);
+  const challengeAspects = challengeCallouts?.flatMap(x => x.aspects);
 
   const {
     data: opportunityCollaborationData,
@@ -113,22 +113,22 @@ export const useAspectsData = ({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
   });
-  const opportunityCallout = getAspectCallout(opportunityAspectData?.hub?.opportunity?.collaboration?.callouts);
+  const opportunityCallout = getCardCallout(opportunityAspectData?.hub?.opportunity?.collaboration?.callouts);
   const opportunityAspects = opportunityCallout?.aspects;
 
   const hubAspectSubscription = useCalloutAspectCreatedSubscription(
     hubAspectData,
-    hubData => getAspectCallout(hubData?.hub?.collaboration?.callouts),
+    hubData => getCardCallout(hubData?.hub?.collaboration?.callouts),
     subscribeToHub
   );
   const challengeAspectSubscription = useCalloutAspectCreatedSubscription(
     challengeAspectData,
-    challengeData => getAspectCallout(challengeData?.hub?.challenge?.collaboration?.callouts),
+    challengeData => getCardCallout(challengeData?.hub?.challenge?.collaboration?.callouts),
     subscribeToChallenges
   );
   const opportunityAspectSubscription = useCalloutAspectCreatedSubscription(
     opportunityAspectData,
-    opportunityData => getAspectCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts),
+    opportunityData => getCardCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts),
     subscribeToOpportunity
   );
 

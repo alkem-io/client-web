@@ -48,6 +48,7 @@ fragment AspectDashboardData on Collaboration {
 
 fragment AspectDashboard on Aspect {
   id
+  nameID
   type
   displayName
   description

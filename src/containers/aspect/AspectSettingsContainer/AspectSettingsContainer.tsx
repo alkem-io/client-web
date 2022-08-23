@@ -20,7 +20,7 @@ import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
-import { getAspectCallout } from '../getAspectCallout';
+import { getCardCallout } from '../getAspectCallout';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];
@@ -83,7 +83,9 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = getAspectCallout(hubData?.hub?.collaboration?.callouts)?.aspects?.[0];
+  const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
+    x => x.nameID === aspectNameId
+  );
 
   const {
     data: challengeData,
@@ -94,7 +96,10 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = getAspectCallout(challengeData?.hub?.challenge?.collaboration?.callouts)?.aspects?.[0];
+  const challengeAspect = getCardCallout(
+    challengeData?.hub?.challenge?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
@@ -105,7 +110,10 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = getAspectCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts)?.aspects?.[0];
+  const opportunityAspect = getCardCallout(
+    opportunityData?.hub?.opportunity?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;
