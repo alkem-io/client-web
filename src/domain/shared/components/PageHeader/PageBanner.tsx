@@ -44,7 +44,6 @@ const Title = styled(Box)(({ theme }) => ({
 }));
 
 const Ellipser = styled('div')(() => ({
-  whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   '& > *': {
