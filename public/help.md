@@ -2,7 +2,7 @@
 
 Welcome to Alkemio, an open-source innovation platform!
 
-This manual will help you understand the purpose of the platform, how and by whom it can be used, as well as key the functionalities and terminology.
+This manual will help you understand the purpose of the platform, how and by whom it can be used, as well as the key functionalities and terminology.
 
 ---
 
@@ -48,3 +48,9 @@ The list below describes the key terminology within each of these levels.
 | User | A user is any individual with an Alkemio account, independent of the user's affiliation with an organization. |
 | Vision | The vision of the facilitating or leading organization with regards to the Challenge (Hub). |
 | Who | A description by the Facilitating or Leading Organization of the required or desired contributor type for a Challenge (Hub).
+
+---
+
+# Release notes
+
+To read more about our features, check out our release notes <a href="https://github.com/alkem-io/client-web/releases" target="_blank">here</a>.
