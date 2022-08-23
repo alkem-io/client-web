@@ -1,5 +1,5 @@
 import { styled } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 import LinkCard from '../../components/core/LinkCard/LinkCard';
 import Typography from '../../components/core/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -38,6 +38,7 @@ const ButtonContent = styled('div')(({ theme }) => ({
 
 interface CreateCalloutItemButtonProps {
   onClick: () => void;
+  children: ReactNode;
 }
 const CreateCalloutItemButton = ({ onClick, children }: PropsWithChildren<CreateCalloutItemButtonProps>) => {
   return (
