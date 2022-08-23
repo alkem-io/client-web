@@ -4,9 +4,9 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, Card } from '@mui/material';
 import Heading from '../shared/components/Heading';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 import { Authorization, AuthorizationPrivilege } from '../../models/graphql-schema';
+import Markdown from '../../components/core/Markdown';
 
 export interface CalloutLayoutProps {
   callout: {
@@ -46,7 +46,7 @@ const CalloutLayout = ({ callout, children, maxHeight }: PropsWithChildren<Callo
         <Heading sx={{ display: 'flex', gap: 2.5 }}>
           <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
         </Heading>
-        <Typography sx={{ marginY: 2 }}>{callout.description}</Typography>
+        <Markdown>{callout.description || ''}</Markdown>
         {/* Paddings are set to prevent cutting Paper shadow by overflow: scroll.
             Margins are compensating the visual shift. Except for the left margin, we want a bit of left shifting */}
         <Box
