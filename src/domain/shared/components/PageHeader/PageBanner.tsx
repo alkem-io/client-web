@@ -69,7 +69,7 @@ export interface PageBannerProps {
 }
 
 const PageBanner: FC<PageBannerProps> = ({ title, tagline, bannerUrl, showBreadcrumbs, loading = false }) => {
-  const [containerReference, addAutomaticTooltip] = useAutomaticTooltip();
+  const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 
   bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
 

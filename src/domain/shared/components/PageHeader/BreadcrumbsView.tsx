@@ -58,7 +58,7 @@ interface BreadcrumbsViewProps {}
 
 const BreadcrumbsView: FC<BreadcrumbsViewProps> = () => {
   const { loading, breadcrumbs } = useBreadcrumbs();
-  const [containerReference, addAutomaticTooltip] = useAutomaticTooltip();
+  const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 
   return (
     <>
