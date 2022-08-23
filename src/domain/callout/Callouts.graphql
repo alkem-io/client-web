@@ -90,4 +90,5 @@ fragment Callout on Callout {
     id
     myPrivileges
   }
+  visibility
 }

@@ -8,6 +8,7 @@ import {
   AuthorizationPrivilege,
   Callout,
   CalloutType,
+  CalloutVisibility,
   CanvasDetailsFragment,
   ContributeTabAspectFragment,
 } from '../../models/graphql-schema';
@@ -58,7 +59,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
   const canCreateCallout = collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout);
 
   const callouts = collaboration?.callouts?.map(({ authorization, ...callout }) => {
-    const draft = false;
+    const draft = callout?.visibility === CalloutVisibility.Draft;
     const editable = false; // todo client-2378; authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
     return {
       ...callout,
