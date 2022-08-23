@@ -12672,6 +12672,7 @@ export type HubCalloutsQuery = {
                 displayName: string;
                 description?: string | undefined;
                 state: CalloutState;
+                visibility: CalloutVisibility;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -12781,6 +12782,7 @@ export type ChallengeCalloutsQuery = {
                   displayName: string;
                   description?: string | undefined;
                   state: CalloutState;
+                  visibility: CalloutVisibility;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -12895,6 +12897,7 @@ export type OpportunityCalloutsQuery = {
                   displayName: string;
                   description?: string | undefined;
                   state: CalloutState;
+                  visibility: CalloutVisibility;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -12988,6 +12991,7 @@ export type CalloutFragment = {
   displayName: string;
   description?: string | undefined;
   state: CalloutState;
+  visibility: CalloutVisibility;
   aspects?:
     | Array<{
         __typename?: 'Aspect';

@@ -1619,6 +1619,7 @@ export const CalloutFragmentDoc = gql`
       id
       myPrivileges
     }
+    visibility
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
