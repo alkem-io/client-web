@@ -1,4 +1,4 @@
-import React, { cloneElement, ComponentType, FC, ReactElement, useMemo } from 'react';
+import React, { cloneElement, FC, ReactElement, useMemo } from 'react';
 import { Box, BoxProps } from '@mui/material';
 import { Identifiable } from '../../types/Identifiable';
 import {} from '../../components/ContributionCard/ContributionCardV2';
@@ -11,8 +11,7 @@ interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
   showCreateButton?: boolean;
-  createButtonComponent?: ComponentType<CreateButtonProps>;
-  createButtonOnClick?: () => void;
+  createButtonComponent?: React.ReactNode;
 }
 
 /**
@@ -27,7 +26,6 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
   children,
   deps = [],
   createButtonComponent: CreateButton,
-  createButtonOnClick,
   ...layoutProps
 }: CardsLayoutProps<Item>) => {
   const cards = useMemo(
@@ -42,7 +40,7 @@ const CardsLayout = <Item extends Identifiable | null | undefined>({
 
   return (
     <CardLayoutContainer {...layoutProps}>
-      {CreateButton && <CreateButton onClick={createButtonOnClick} />}
+      {CreateButton}
       {cards}
     </CardLayoutContainer>
   );
