@@ -53,4 +53,4 @@ The list below describes the key terminology within each of these levels.
 
 # Release notes
 
-To read more about our features, check out our release notes <a href="https://github.com/alkem-io/client-web/releases" target="_blank">here</a>.
+To read more about our features, check out our release notes <a href="https://www.alkemio.foundation/releases" target="_blank">here</a>.
