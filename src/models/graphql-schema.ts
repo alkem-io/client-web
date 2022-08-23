@@ -9453,6 +9453,7 @@ export type ChallengePageQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
+                  visibility: CalloutVisibility;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -9714,6 +9715,7 @@ export type ChallengeProfileFragment = {
               __typename?: 'Callout';
               id: string;
               type: CalloutType;
+              visibility: CalloutVisibility;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -10569,6 +10571,7 @@ export type HubPageQuery = {
                 __typename?: 'Callout';
                 id: string;
                 type: CalloutType;
+                visibility: CalloutVisibility;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -10786,6 +10789,7 @@ export type HubPageFragment = {
               __typename?: 'Callout';
               id: string;
               type: CalloutType;
+              visibility: CalloutVisibility;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -11011,6 +11015,7 @@ export type OpportunityPageQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
+                  visibility: CalloutVisibility;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -11213,6 +11218,7 @@ export type OpportunityPageFragment = {
               __typename?: 'Callout';
               id: string;
               type: CalloutType;
+              visibility: CalloutVisibility;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';

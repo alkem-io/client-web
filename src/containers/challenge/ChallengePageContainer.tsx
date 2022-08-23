@@ -17,8 +17,10 @@ import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
-import { getCanvasCallout } from '../canvas/getCanvasCallout';
-import { getAspectCallout } from '../aspect/getAspectCallout';
+import {
+  getAspectsFromPublishedCallouts,
+  getCanvasesFromPublishedCallouts,
+} from '../../domain/callout/utils/getPublishedCallouts';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -45,8 +47,6 @@ export interface ChallengeContainerState {
   loading: boolean;
   error?: ApolloError;
 }
-
-const EMPTY = [];
 
 export interface ChallengePageContainerProps
   extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
@@ -77,10 +77,10 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const opportunitiesCount = useMemo(() => getActivityCount(activity, ActivityType.Opportunity), [activity]);
 
-  const aspects = getAspectCallout(_challenge?.hub.challenge.collaboration?.callouts)?.aspects || EMPTY;
+  const aspects = getAspectsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 3);
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
-  const canvases = getCanvasCallout(_challenge?.hub.challenge.collaboration?.callouts)?.canvases || EMPTY;
+  const canvases = getCanvasesFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 3);
   const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
 
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);

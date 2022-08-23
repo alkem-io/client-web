@@ -23,8 +23,10 @@ import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
-import { getCanvasCallout } from '../canvas/getCanvasCallout';
-import { getAspectCallout } from '../aspect/getAspectCallout';
+import {
+  getAspectsFromPublishedCallouts,
+  getCanvasesFromPublishedCallouts,
+} from '../../domain/callout/utils/getPublishedCallouts';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -125,9 +127,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
   const { references = [] } = context ?? {};
-  const aspects = getAspectCallout(collaboration?.callouts)?.aspects ?? [];
-  const canvases = getCanvasCallout(collaboration?.callouts)?.canvases ?? [];
-
+  const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 3);
+  const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 3);
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
   const meme = references?.find(x => x.name === 'meme') as Reference;
