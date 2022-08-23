@@ -12,6 +12,7 @@ export interface Configuration {
     impact: string;
     foundation: string;
     opensource: string;
+    releases: string;
     featureFlags: FeatureFlag[];
   };
   sentry: {

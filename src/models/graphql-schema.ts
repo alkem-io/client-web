@@ -3701,6 +3701,7 @@ export type ConfigurationFragment = {
     impact: string;
     foundation: string;
     opensource: string;
+    releases: string;
     featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
   };
   sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
@@ -5763,6 +5764,7 @@ export type ConfigurationQuery = {
       impact: string;
       foundation: string;
       opensource: string;
+      releases: string;
       featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
     };
     sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
@@ -9460,6 +9462,7 @@ export type ChallengePageQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
+                  visibility: CalloutVisibility;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -9721,6 +9724,7 @@ export type ChallengeProfileFragment = {
               __typename?: 'Callout';
               id: string;
               type: CalloutType;
+              visibility: CalloutVisibility;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -10576,6 +10580,7 @@ export type HubPageQuery = {
                 __typename?: 'Callout';
                 id: string;
                 type: CalloutType;
+                visibility: CalloutVisibility;
                 aspects?:
                   | Array<{
                       __typename?: 'Aspect';
@@ -10793,6 +10798,7 @@ export type HubPageFragment = {
               __typename?: 'Callout';
               id: string;
               type: CalloutType;
+              visibility: CalloutVisibility;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
@@ -11018,6 +11024,7 @@ export type OpportunityPageQuery = {
                   __typename?: 'Callout';
                   id: string;
                   type: CalloutType;
+                  visibility: CalloutVisibility;
                   aspects?:
                     | Array<{
                         __typename?: 'Aspect';
@@ -11220,6 +11227,7 @@ export type OpportunityPageFragment = {
               __typename?: 'Callout';
               id: string;
               type: CalloutType;
+              visibility: CalloutVisibility;
               aspects?:
                 | Array<{
                     __typename?: 'Aspect';
