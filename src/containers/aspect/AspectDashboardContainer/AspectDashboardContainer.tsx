@@ -1,9 +1,10 @@
 import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
+import { AspectDashboardFragment, AuthorizationPrivilege, CalloutType, Scalars } from '../../../models/graphql-schema';
 import {
   AspectMessageFragmentDoc,
   useAspectCreatorQuery,
+  useCalloutAspectProviderQuery,
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
@@ -59,6 +60,24 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
+  const { data: hubCalloutAspectData } = useCalloutAspectProviderQuery({
+    variables: { hubNameId },
+    onError: handleError,
+  });
+  const hubAspectsCallout = hubCalloutAspectData?.hub.collaboration?.callouts?.find(
+    x => x.type === CalloutType.Card && x.aspects?.find(x => x.nameID === aspectNameId)
+  );
+  const challengeAspectsCallout = hubCalloutAspectData?.hub.challenges
+    ?.flatMap(x => x.collaboration)
+    .flatMap(x => x?.callouts)
+    .find(x => x?.type === CalloutType.Card && x.aspects?.find(x => x.nameID === aspectNameId));
+  const opportunityAspectsCallout = hubCalloutAspectData?.hub.challenges
+    ?.flatMap(x => x.opportunities)
+    .flatMap(x => x?.collaboration)
+    .flatMap(x => x?.callouts)
+    .find(x => x?.type === CalloutType.Card && x.aspects?.find(x => x.nameID === aspectNameId));
+  const calloutId = hubAspectsCallout?.id ?? challengeAspectsCallout?.id ?? opportunityAspectsCallout?.id ?? '';
+
   const isAspectDefined = aspectNameId && hubNameId;
 
   const {
@@ -67,7 +86,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: hubError,
     subscribeToMore: subscribeToHub,
   } = useHubAspectQuery({
-    variables: { hubNameId, aspectNameId },
+    variables: { hubNameId, aspectNameId, calloutId },
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
@@ -81,7 +100,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: challengeError,
     subscribeToMore: subscribeToChallenge,
   } = useChallengeAspectQuery({
-    variables: { hubNameId, challengeNameId, aspectNameId },
+    variables: { hubNameId, challengeNameId, aspectNameId, calloutId },
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
@@ -96,7 +115,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: opportunityError,
     subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectQuery({
-    variables: { hubNameId, opportunityNameId, aspectNameId },
+    variables: { hubNameId, opportunityNameId, aspectNameId, calloutId },
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });

@@ -767,7 +767,7 @@ export const AspectDashboardDataFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts {
+    callouts(IDs: [$calloutId]) {
       id
       type
       aspects(IDs: [$aspectNameId]) {
@@ -10531,7 +10531,7 @@ export type JoinCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.JoinCommunityMutationVariables
 >;
 export const HubAspectDocument = gql`
-  query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
@@ -10556,6 +10556,7 @@ export const HubAspectDocument = gql`
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10581,7 +10582,12 @@ export function refetchHubAspectQuery(variables: SchemaTypes.HubAspectQueryVaria
   return { query: HubAspectDocument, variables: variables };
 }
 export const ChallengeAspectDocument = gql`
-  query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query ChallengeAspect(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
+  ) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
@@ -10610,6 +10616,7 @@ export const ChallengeAspectDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10641,7 +10648,12 @@ export function refetchChallengeAspectQuery(variables: SchemaTypes.ChallengeAspe
   return { query: ChallengeAspectDocument, variables: variables };
 }
 export const OpportunityAspectDocument = gql`
-  query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query OpportunityAspect(
+    $hubNameId: UUID_NAMEID!
+    $opportunityNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
+  ) {
     hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
@@ -10670,6 +10682,7 @@ export const OpportunityAspectDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */

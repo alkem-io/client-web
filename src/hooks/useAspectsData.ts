@@ -113,32 +113,37 @@ export const useAspectsData = ({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
   });
-  const opportunityCallout = getCardCallout(opportunityAspectData?.hub?.opportunity?.collaboration?.callouts);
-  const opportunityAspects = opportunityCallout?.aspects;
+  const opportunityCallouts = getCardCallouts(opportunityAspectData?.hub?.opportunity?.collaboration?.callouts);
+  const opportunityAspects = opportunityCallouts?.flatMap(x => x.aspects);
 
   const hubAspectSubscription = useCalloutAspectCreatedSubscription(
     hubAspectData,
-    hubData => getCardCallout(hubData?.hub?.collaboration?.callouts),
+    hubData => getCardCallout(hubData?.hub?.collaboration?.callouts, ''), //toDo fix this
     subscribeToHub
   );
   const challengeAspectSubscription = useCalloutAspectCreatedSubscription(
     challengeAspectData,
-    challengeData => getCardCallout(challengeData?.hub?.challenge?.collaboration?.callouts),
+    challengeData => getCardCallout(challengeData?.hub?.challenge?.collaboration?.callouts, ''), //toDo fix this
     subscribeToChallenges
   );
   const opportunityAspectSubscription = useCalloutAspectCreatedSubscription(
     opportunityAspectData,
-    opportunityData => getCardCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts),
+    opportunityData => getCardCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts, ''), //toDo fix this
     subscribeToOpportunity
   );
 
   const isSubscriptionEnabled =
     hubAspectSubscription.enabled || challengeAspectSubscription.enabled || opportunityAspectSubscription.enabled;
 
+  //toDo - fix this, map types properly
   const aspects: AspectWithPermissions[] | undefined = useMemo(
     () =>
       (hubAspects ?? challengeAspects ?? opportunityAspects)?.map(x => ({
-        ...x,
+        id: x?.id as string,
+        nameID: x?.nameID as string,
+        displayName: x?.displayName as string,
+        type: x?.type as string,
+        description: x?.description as string,
         canDelete: x?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete),
       })),
     [hubAspects, challengeAspects, opportunityAspects]
@@ -165,7 +170,10 @@ export const useAspectsData = ({
     canReadHubCollaboration ?? canReadChallengeCollaboration ?? canReadOpportunityCollaboration ?? true;
   const canCreateAspects = canCreateAspectOnHub ?? canCreateAspectOnChallenge ?? canCreateAspectOnOpportunity ?? false;
 
-  const calloutId = hubCallout?.id ?? challengeCallout?.id ?? opportunityCallout?.id;
+  let calloutId = ''; //toDo fix this
+  if (hubCallouts) calloutId = hubCallouts[0].id;
+  if (challengeCallouts) calloutId = challengeCallouts[0].id;
+  if (opportunityCallouts) calloutId = opportunityCallouts[0].id;
 
   return {
     aspects,
