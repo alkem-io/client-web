@@ -39,6 +39,7 @@ fragment HubPage on Hub {
     callouts {
       id
       type
+      visibility
       aspects(limit: 2, shuffle: true) {
         ...AspectCard
       }

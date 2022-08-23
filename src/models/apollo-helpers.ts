@@ -1151,6 +1151,7 @@ export type PlatformKeySpecifier = (
   | 'impact'
   | 'opensource'
   | 'privacy'
+  | 'releases'
   | 'security'
   | 'support'
   | 'terms'
@@ -1164,6 +1165,7 @@ export type PlatformFieldPolicy = {
   impact?: FieldPolicy<any> | FieldReadFunction<any>;
   opensource?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
+  releases?: FieldPolicy<any> | FieldReadFunction<any>;
   security?: FieldPolicy<any> | FieldReadFunction<any>;
   support?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
