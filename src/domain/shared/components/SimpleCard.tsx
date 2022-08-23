@@ -24,9 +24,9 @@ const PositionedIcon = ({ iconComponent }: Pick<IconProps, 'iconComponent'>) => 
 };
 
 export interface SimpleCardProps extends LinkWithState {
-  title: ReactNode;
-  imageUrl: string | undefined;
-  iconComponent: ComponentType<SvgIconProps>;
+  title?: ReactNode;
+  imageUrl?: string;
+  iconComponent?: ComponentType<SvgIconProps>;
 }
 
 const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCardProps) => {
@@ -42,7 +42,11 @@ const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCard
           alignItems: 'stretch',
         }}
       >
-        {imageUrl ? <ImagePreview src={imageUrl} /> : <PositionedIcon iconComponent={iconComponent} />}
+        {imageUrl ? (
+          <ImagePreview src={imageUrl} />
+        ) : iconComponent ? (
+          <PositionedIcon iconComponent={iconComponent} />
+        ) : null}
         <IconLabel>{title}</IconLabel>
       </ElevatedPaper>
     </LinkNoUnderline>

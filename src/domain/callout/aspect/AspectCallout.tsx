@@ -7,7 +7,7 @@ import AspectCreationDialog from '../../../components/composite/aspect/AspectCre
 import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAspectsData } from '../../../hooks';
 import { CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
-import { CreateNewAspectButton } from './CreateNewAspectButton';
+import CreateCalloutItemButton from '../CreateCalloutItemButton';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -129,8 +129,11 @@ const AspectCallout = ({
           deps={[hubNameId, challengeNameId, opportunityNameId]}
           {...(canCreate
             ? {
-                createButtonComponent: CreateNewAspectButton,
-                createButtonOnClick: handleCreateDialogOpened,
+                createButtonComponent: (
+                  <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+                    <AspectCard />
+                  </CreateCalloutItemButton>
+                ),
               }
             : {})}
         >

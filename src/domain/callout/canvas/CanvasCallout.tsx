@@ -8,7 +8,7 @@ import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
 import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
-import { CreateNewCanvasButton } from './CreateNewCanvasButton';
+import CreateCalloutItemButton from '../CreateCalloutItemButton';
 
 interface Canvas {
   id: string;
@@ -49,8 +49,11 @@ const CanvasCallout = ({
           deps={[hubNameId, challengeNameId, opportunityNameId]}
           {...(canCreate
             ? {
-                createButtonComponent: CreateNewCanvasButton,
-                createButtonOnClick: handleCreateDialogOpened,
+                createButtonComponent: (
+                  <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+                    <SimpleCard to={''}></SimpleCard>
+                  </CreateCalloutItemButton>
+                ),
               }
             : {})}
         >
