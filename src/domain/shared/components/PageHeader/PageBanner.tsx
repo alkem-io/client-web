@@ -1,15 +1,21 @@
 import { Box, Skeleton, styled, Typography } from '@mui/material';
 import { FC } from 'react';
 import hexToRGBA from '../../../../utils/hexToRGBA';
+import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
 
 export const BANNER_ASPECT_RATIO = '6/1'; // Original banner images were 768 x 128 pixels
 export const DEFAULT_BANNER_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
+export const TITLE_HEIGHT = 7;
 
 const Root = styled(Box)(({ theme }) => ({
   aspectRatio: BANNER_ASPECT_RATIO,
   backgroundColor: theme.palette.grey[100],
   position: 'relative',
+  [theme.breakpoints.down('lg')]: {
+    // On small screens title goes under the banner image
+    marginBottom: theme.spacing(TITLE_HEIGHT),
+  },
 }));
 
 const Title = styled(Box)(({ theme }) => ({
@@ -19,24 +25,31 @@ const Title = styled(Box)(({ theme }) => ({
   width: '100%',
   bottom: 0,
   textAlign: 'center',
-  paddingTop: theme.spacing(1),
-  paddingBottom: theme.spacing(0.5),
-  minHeight: theme.spacing(7),
+  padding: theme.spacing(1, 2, 0.5, 2),
+  height: theme.spacing(TITLE_HEIGHT),
   zIndex: 20,
-  [theme.breakpoints.only('xs')]: {
-    height: '100%',
+  [theme.breakpoints.down('lg')]: {
+    position: 'relative',
+    backgroundColor: '#004f54',
   },
+  // Title
   '& h1': {
     fontSize: '1.2rem',
     fontWeight: 'bold',
   },
+  // Tagline:
   '& .MuiTypography-caption': {
-    fontStyle: 'italic ',
+    fontStyle: 'italic',
   },
-  '& .MuiBreadcrumbs-root, & .MuiLink-root, & .MuiTypography-button': {
-    color: theme.palette.common.white,
-    fontSize: theme.typography.caption.fontSize,
-    fontWeight: 'bold',
+}));
+
+const Ellipser = styled('div')(() => ({
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  '& > *': {
+    display: 'inline',
+    whiteSpace: 'nowrap',
   },
 }));
 
@@ -57,18 +70,28 @@ export interface PageBannerProps {
 }
 
 const PageBanner: FC<PageBannerProps> = ({ title, tagline, bannerUrl, showBreadcrumbs, loading = false }) => {
+  const [containerReference, addAutomaticTooltip] = useAutomaticTooltip();
+
   bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
 
   return (
-    <Root>
+    <Root ref={containerReference}>
       <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />
       {!loading && (
         <>
           {showBreadcrumbs && <BreadcrumbsView />}
           <Image src={bannerUrl} alt={`${title} - Banner image`} />
           <Title>
-            <Typography variant={'h1'}>{title}</Typography>
-            <Typography variant={'caption'}>{tagline}</Typography>
+            <Ellipser>
+              <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
+                {title}
+              </Typography>
+            </Ellipser>
+            <Ellipser>
+              <Typography variant={'caption'} ref={element => addAutomaticTooltip(element)}>
+                {tagline}
+              </Typography>
+            </Ellipser>
           </Title>
         </>
       )}

@@ -2,6 +2,7 @@ import { Box, Breadcrumbs, styled, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { RouterLink } from '../../../../components/core/RouterLink';
 import { useBreadcrumbs } from '../../../../hooks';
+import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 
 const Root = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -9,7 +10,7 @@ const Root = styled(Box)(({ theme }) => ({
   left: 0,
   textAlign: 'left',
   zIndex: 20,
-  maxWidth: '50%',
+  maxWidth: '45%',
   '& .MuiBreadcrumbs-separator': {
     display: 'none !important',
   },
@@ -20,11 +21,12 @@ const Root = styled(Box)(({ theme }) => ({
     lineHeight: 1,
   },
   '& .MuiBreadcrumbs-ol li': {
+    lineHeight: 0,
     display: 'block',
     marginTop: theme.spacing(1),
     whiteSpace: 'nowrap',
-    [theme.breakpoints.down('lg')]: {
-      marginTop: theme.spacing(0.2),
+    [theme.breakpoints.down('sm')]: {
+      marginTop: theme.spacing(0.7),
     },
   },
 }));
@@ -56,17 +58,21 @@ interface BreadcrumbsViewProps {}
 
 const BreadcrumbsView: FC<BreadcrumbsViewProps> = () => {
   const { loading, breadcrumbs } = useBreadcrumbs();
+  const [containerReference, addAutomaticTooltip] = useAutomaticTooltip();
+
   return (
     <>
       {!loading && breadcrumbs.length > 0 && (
-        <Root>
+        <Root ref={containerReference}>
           <Breadcrumbs>
             {breadcrumbs.map((item, i) => {
               const Icon = item.icon;
               return (
                 <Breadcrumb key={i} to={item.url!}>
                   <Icon />
-                  <Typography variant={'button'}>{item.title}</Typography>
+                  <Typography variant={'button'} ref={element => addAutomaticTooltip(element)}>
+                    {item.title}
+                  </Typography>
                 </Breadcrumb>
               );
             })}
