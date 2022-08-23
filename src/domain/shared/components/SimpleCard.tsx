@@ -7,7 +7,7 @@ import IconLabel from './IconLabel';
 import { LinkWithState } from '../types/LinkWithState';
 
 const ElevatedPaper = withElevationOnHover(Paper);
-export const SIMPLE_CARD_THEME_WIDTH = 25;
+export const SIMPLE_CARD_THEME_WIDTH = 32;
 
 const ImagePreview = ({ src }: { src: string }) => {
   const backgroundImage = `url(${src})`;

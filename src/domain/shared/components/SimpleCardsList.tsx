@@ -7,7 +7,7 @@ const SimpleCardsList = ({ children }: PropsWithChildren<{}>) => {
   }));
 
   return (
-    <Root display="flex" flexWrap="wrap" columnGap={8} rowGap={3} justifyContent="start">
+    <Root display="flex" flexWrap="wrap" columnGap={2} rowGap={3} justifyContent="start">
       {children}
     </Root>
   );
