@@ -11,7 +11,6 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import LandscapeOutlinedIcon from '@mui/icons-material/LandscapeOutlined';
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -36,6 +35,7 @@ import LogoComponent from './LogoComponent';
 import SearchBar from './SearchBar';
 import TopNavIcons from './TopNavIcons';
 import { supportedLngs } from '../../../../i18n/config';
+import { ChallengeIcon } from '../../../icons/ChallengeIcon';
 
 const PREFIX = 'TopBar';
 
@@ -211,7 +211,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
         )}
         <MenuItem component={RouterLink} to="/challenges">
           <ListItemIcon>
-            <LandscapeOutlinedIcon />
+            <ChallengeIcon />
           </ListItemIcon>
           {t('common.challenges')}
         </MenuItem>
