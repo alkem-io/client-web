@@ -17,9 +17,10 @@ interface CanvasFormikSelectInputProps {
   label: string;
   name: string;
   canvases: Canvas[] | undefined;
+  calloutId: string | undefined;
 }
 
-const CanvasFormikSelectInput = ({ label, name, canvases }: CanvasFormikSelectInputProps) => {
+const CanvasFormikSelectInput = ({ label, name, canvases, calloutId }: CanvasFormikSelectInputProps) => {
   const [canvasId, setCanvasId] = useState<string>();
 
   const tErr = useValidationMessageTranslation();
@@ -44,7 +45,11 @@ const CanvasFormikSelectInput = ({ label, name, canvases }: CanvasFormikSelectIn
   const preventSubmittingFormOnWhiteboardControlClick: MouseEventHandler = e => e.preventDefault();
 
   return (
-    <CanvasValueContainer canvasId={canvasId} onCanvasValueLoaded={canvas => helpers.setValue(canvas?.value)}>
+    <CanvasValueContainer
+      canvasId={canvasId}
+      calloutId={calloutId}
+      onCanvasValueLoaded={canvas => helpers.setValue(canvas?.value)}
+    >
       {({ canvas: canvasLoaded }) => {
         const showWhiteboard = Boolean(canvasLoaded || field.value);
 

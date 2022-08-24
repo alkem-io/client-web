@@ -726,6 +726,7 @@ export const AspectMessageFragmentDoc = gql`
 export const AspectDashboardFragmentDoc = gql`
   fragment AspectDashboard on Aspect {
     id
+    nameID
     type
     displayName
     description
@@ -766,7 +767,7 @@ export const AspectDashboardDataFragmentDoc = gql`
       id
       myPrivileges
     }
-    callouts {
+    callouts(IDs: [$calloutId]) {
       id
       type
       aspects(IDs: [$aspectNameId]) {
@@ -1494,7 +1495,7 @@ export const AspectProvidedFragmentDoc = gql`
 export const AspectProviderDataFragmentDoc = gql`
   fragment AspectProviderData on Collaboration {
     id
-    callouts {
+    callouts(IDs: [$calloutId]) {
       id
       type
       aspects(IDs: [$aspectNameId]) {
@@ -1503,6 +1504,20 @@ export const AspectProviderDataFragmentDoc = gql`
     }
   }
   ${AspectProvidedFragmentDoc}
+`;
+export const CalloutAspectInfoFragmentDoc = gql`
+  fragment CalloutAspectInfo on Collaboration {
+    id
+    callouts {
+      id
+      nameID
+      type
+      aspects {
+        id
+        nameID
+      }
+    }
+  }
 `;
 export const AvailableUserFragmentDoc = gql`
   fragment AvailableUser on User {
@@ -10516,7 +10531,7 @@ export type JoinCommunityMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.JoinCommunityMutationVariables
 >;
 export const HubAspectDocument = gql`
-  query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
@@ -10541,6 +10556,7 @@ export const HubAspectDocument = gql`
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10566,7 +10582,12 @@ export function refetchHubAspectQuery(variables: SchemaTypes.HubAspectQueryVaria
   return { query: HubAspectDocument, variables: variables };
 }
 export const ChallengeAspectDocument = gql`
-  query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query ChallengeAspect(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
+  ) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
@@ -10595,6 +10616,7 @@ export const ChallengeAspectDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10626,7 +10648,12 @@ export function refetchChallengeAspectQuery(variables: SchemaTypes.ChallengeAspe
   return { query: ChallengeAspectDocument, variables: variables };
 }
 export const OpportunityAspectDocument = gql`
-  query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query OpportunityAspect(
+    $hubNameId: UUID_NAMEID!
+    $opportunityNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
+  ) {
     hub(ID: $hubNameId) {
       id
       opportunity(ID: $opportunityNameId) {
@@ -10655,6 +10682,7 @@ export const OpportunityAspectDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10807,12 +10835,12 @@ export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateAspectMutationVariables
 >;
 export const HubAspectSettingsDocument = gql`
-  query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
         id
-        callouts {
+        callouts(IDs: [$calloutId]) {
           id
           type
           aspects(IDs: [$aspectNameId]) {
@@ -10839,6 +10867,7 @@ export const HubAspectSettingsDocument = gql`
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10873,14 +10902,19 @@ export function refetchHubAspectSettingsQuery(variables: SchemaTypes.HubAspectSe
   return { query: HubAspectSettingsDocument, variables: variables };
 }
 export const ChallengeAspectSettingsDocument = gql`
-  query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query ChallengeAspectSettings(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
+  ) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
         id
         collaboration {
           id
-          callouts {
+          callouts(IDs: [$calloutId]) {
             id
             type
             aspects(IDs: [$aspectNameId]) {
@@ -10909,6 +10943,7 @@ export const ChallengeAspectSettingsDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10950,6 +10985,7 @@ export const OpportunityAspectSettingsDocument = gql`
     $hubNameId: UUID_NAMEID!
     $opportunityNameId: UUID_NAMEID!
     $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -10957,7 +10993,7 @@ export const OpportunityAspectSettingsDocument = gql`
         id
         collaboration {
           id
-          callouts {
+          callouts(IDs: [$calloutId]) {
             id
             type
             aspects(IDs: [$aspectNameId]) {
@@ -10986,6 +11022,7 @@ export const OpportunityAspectSettingsDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -11136,12 +11173,12 @@ export function refetchHubCanvasesQuery(variables: SchemaTypes.HubCanvasesQueryV
   return { query: HubCanvasesDocument, variables: variables };
 }
 export const HubCanvasValuesDocument = gql`
-  query hubCanvasValues($hubId: UUID_NAMEID!, $canvasId: UUID!) {
+  query hubCanvasValues($hubId: UUID_NAMEID!, $calloutId: UUID!, $canvasId: UUID!) {
     hub(ID: $hubId) {
       id
       collaboration {
         id
-        callouts {
+        callouts(IDs: [$calloutId]) {
           id
           type
           authorization {
@@ -11173,6 +11210,7 @@ export const HubCanvasValuesDocument = gql`
  * const { data, loading, error } = useHubCanvasValuesQuery({
  *   variables: {
  *      hubId: // value for 'hubId'
+ *      calloutId: // value for 'calloutId'
  *      canvasId: // value for 'canvasId'
  *   },
  * });
@@ -11267,14 +11305,14 @@ export function refetchChallengeCanvasesQuery(variables: SchemaTypes.ChallengeCa
   return { query: ChallengeCanvasesDocument, variables: variables };
 }
 export const ChallengeCanvasValuesDocument = gql`
-  query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasId: UUID!) {
+  query challengeCanvasValues($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutId: UUID!, $canvasId: UUID!) {
     hub(ID: $hubId) {
       id
       challenge(ID: $challengeId) {
         id
         collaboration {
           id
-          callouts {
+          callouts(IDs: [$calloutId]) {
             id
             type
             authorization {
@@ -11308,6 +11346,7 @@ export const ChallengeCanvasValuesDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      challengeId: // value for 'challengeId'
+ *      calloutId: // value for 'calloutId'
  *      canvasId: // value for 'canvasId'
  *   },
  * });
@@ -11411,14 +11450,19 @@ export function refetchOpportunityCanvasesQuery(variables: SchemaTypes.Opportuni
   return { query: OpportunityCanvasesDocument, variables: variables };
 }
 export const OpportunityCanvasValuesDocument = gql`
-  query opportunityCanvasValues($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasId: UUID!) {
+  query opportunityCanvasValues(
+    $hubId: UUID_NAMEID!
+    $opportunityId: UUID_NAMEID!
+    $calloutId: UUID!
+    $canvasId: UUID!
+  ) {
     hub(ID: $hubId) {
       id
       opportunity(ID: $opportunityId) {
         id
         collaboration {
           id
-          callouts {
+          callouts(IDs: [$calloutId]) {
             id
             type
             authorization {
@@ -11452,6 +11496,7 @@ export const OpportunityCanvasValuesDocument = gql`
  *   variables: {
  *      hubId: // value for 'hubId'
  *      opportunityId: // value for 'opportunityId'
+ *      calloutId: // value for 'calloutId'
  *      canvasId: // value for 'canvasId'
  *   },
  * });
@@ -14277,8 +14322,81 @@ export type OpportunityProviderQueryResult = Apollo.QueryResult<
 export function refetchOpportunityProviderQuery(variables: SchemaTypes.OpportunityProviderQueryVariables) {
   return { query: OpportunityProviderDocument, variables: variables };
 }
+export const CalloutAspectProviderDocument = gql`
+  query CalloutAspectProvider($hubNameId: UUID_NAMEID!) {
+    hub(ID: $hubNameId) {
+      id
+      collaboration {
+        ...CalloutAspectInfo
+      }
+      challenges {
+        id
+        collaboration {
+          ...CalloutAspectInfo
+        }
+        opportunities {
+          id
+          collaboration {
+            ...CalloutAspectInfo
+          }
+        }
+      }
+    }
+  }
+  ${CalloutAspectInfoFragmentDoc}
+`;
+
+/**
+ * __useCalloutAspectProviderQuery__
+ *
+ * To run a query within a React component, call `useCalloutAspectProviderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutAspectProviderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutAspectProviderQuery({
+ *   variables: {
+ *      hubNameId: // value for 'hubNameId'
+ *   },
+ * });
+ */
+export function useCalloutAspectProviderQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutAspectProviderQuery,
+    SchemaTypes.CalloutAspectProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutAspectProviderQuery, SchemaTypes.CalloutAspectProviderQueryVariables>(
+    CalloutAspectProviderDocument,
+    options
+  );
+}
+export function useCalloutAspectProviderLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutAspectProviderQuery,
+    SchemaTypes.CalloutAspectProviderQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutAspectProviderQuery, SchemaTypes.CalloutAspectProviderQueryVariables>(
+    CalloutAspectProviderDocument,
+    options
+  );
+}
+export type CalloutAspectProviderQueryHookResult = ReturnType<typeof useCalloutAspectProviderQuery>;
+export type CalloutAspectProviderLazyQueryHookResult = ReturnType<typeof useCalloutAspectProviderLazyQuery>;
+export type CalloutAspectProviderQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutAspectProviderQuery,
+  SchemaTypes.CalloutAspectProviderQueryVariables
+>;
+export function refetchCalloutAspectProviderQuery(variables: SchemaTypes.CalloutAspectProviderQueryVariables) {
+  return { query: CalloutAspectProviderDocument, variables: variables };
+}
 export const HubAspectProviderDocument = gql`
-  query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
@@ -14303,6 +14421,7 @@ export const HubAspectProviderDocument = gql`
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -14337,7 +14456,12 @@ export function refetchHubAspectProviderQuery(variables: SchemaTypes.HubAspectPr
   return { query: HubAspectProviderDocument, variables: variables };
 }
 export const ChallengeAspectProviderDocument = gql`
-  query ChallengeAspectProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query ChallengeAspectProvider(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
+  ) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
@@ -14366,6 +14490,7 @@ export const ChallengeAspectProviderDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -14407,6 +14532,7 @@ export const OpportunityAspectProviderDocument = gql`
     $hubNameId: UUID_NAMEID!
     $opportunityNameId: UUID_NAMEID!
     $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -14436,6 +14562,7 @@ export const OpportunityAspectProviderDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */

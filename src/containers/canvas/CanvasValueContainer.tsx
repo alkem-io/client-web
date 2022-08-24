@@ -29,6 +29,7 @@ export interface CanvasValueContainerState {
 
 export interface CanvasValueParams {
   canvasId: string | undefined;
+  calloutId: string | undefined;
   params?: TemplateQuery;
 }
 
@@ -52,7 +53,13 @@ const useSubscribeToCanvas = UseSubscriptionToSubEntity<
   },
 });
 
-const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasId, params, onCanvasValueLoaded }) => {
+const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
+  children,
+  canvasId,
+  calloutId,
+  params,
+  onCanvasValueLoaded,
+}) => {
   const {
     hubNameId: hubId = '',
     challengeNameId: challengeId = '',
@@ -76,20 +83,6 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   const skipOpportunity = !Boolean(queryOpportunityId) || !Boolean(canvasId);
 
   const {
-    data: hubData,
-    loading: loadingHubCanvasValue,
-    subscribeToMore: subHub,
-  } = useHubCanvasValuesQuery({
-    errorPolicy: 'all',
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-and-network',
-    skip: skipHub,
-    variables: {
-      hubId: queryHubId,
-      canvasId: canvasId || '',
-    },
-  });
-  const {
     data: challengeData,
     loading: loadingChallengeCanvasValue,
     subscribeToMore: subChallenge,
@@ -102,6 +95,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
       hubId: queryHubId,
       challengeId: queryChallengeId || '',
       canvasId: canvasId || '',
+      calloutId: calloutId || '',
     },
   });
   const {
@@ -116,6 +110,23 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
     variables: {
       hubId: queryHubId,
       opportunityId: queryOpportunityId || '',
+      canvasId: canvasId || '',
+      calloutId: calloutId || '',
+    },
+  });
+
+  const {
+    data: hubData,
+    loading: loadingHubCanvasValue,
+    subscribeToMore: subHub,
+  } = useHubCanvasValuesQuery({
+    errorPolicy: 'all',
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-and-network',
+    skip: skipHub,
+    variables: {
+      hubId: queryHubId,
+      calloutId: calloutId || '',
       canvasId: canvasId || '',
     },
   });

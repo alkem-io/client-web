@@ -538,6 +538,12 @@ export type Collaboration = {
   relations?: Maybe<Array<Relation>>;
 };
 
+export type CollaborationCalloutsArgs = {
+  IDs?: InputMaybe<Array<Scalars['UUID']>>;
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type Comments = {
   __typename?: 'Comments';
   /** The authorization rules for the entity */
@@ -7914,6 +7920,7 @@ export type JoinCommunityMutation = {
 export type HubAspectQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type HubAspectQuery = {
@@ -7937,6 +7944,7 @@ export type HubAspectQuery = {
                   | Array<{
                       __typename?: 'Aspect';
                       id: string;
+                      nameID: string;
                       type: string;
                       displayName: string;
                       description: string;
@@ -7988,6 +7996,7 @@ export type ChallengeAspectQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type ChallengeAspectQuery = {
@@ -8014,6 +8023,7 @@ export type ChallengeAspectQuery = {
                     | Array<{
                         __typename?: 'Aspect';
                         id: string;
+                        nameID: string;
                         type: string;
                         displayName: string;
                         description: string;
@@ -8066,6 +8076,7 @@ export type OpportunityAspectQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type OpportunityAspectQuery = {
@@ -8092,6 +8103,7 @@ export type OpportunityAspectQuery = {
                     | Array<{
                         __typename?: 'Aspect';
                         id: string;
+                        nameID: string;
                         type: string;
                         displayName: string;
                         description: string;
@@ -8155,6 +8167,7 @@ export type AspectDashboardDataFragment = {
           | Array<{
               __typename?: 'Aspect';
               id: string;
+              nameID: string;
               type: string;
               displayName: string;
               description: string;
@@ -8196,6 +8209,7 @@ export type AspectDashboardDataFragment = {
 export type AspectDashboardFragment = {
   __typename?: 'Aspect';
   id: string;
+  nameID: string;
   type: string;
   displayName: string;
   description: string;
@@ -8266,6 +8280,7 @@ export type UpdateAspectMutation = {
 export type HubAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type HubAspectSettingsQuery = {
@@ -8348,6 +8363,7 @@ export type ChallengeAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type ChallengeAspectSettingsQuery = {
@@ -8434,6 +8450,7 @@ export type OpportunityAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type OpportunityAspectSettingsQuery = {
@@ -8794,6 +8811,7 @@ export type HubCanvasesQuery = {
 
 export type HubCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 
@@ -8963,6 +8981,7 @@ export type ChallengeCanvasesQuery = {
 export type ChallengeCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 
@@ -9140,6 +9159,7 @@ export type OpportunityCanvasesQuery = {
 export type OpportunityCanvasValuesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
   canvasId: Scalars['UUID'];
 }>;
 
@@ -11793,9 +11813,79 @@ export type OpportunityProviderFragment = {
     | undefined;
 };
 
+export type CalloutAspectProviderQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CalloutAspectProviderQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                nameID: string;
+                type: CalloutType;
+                aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          collaboration?:
+            | {
+                __typename?: 'Collaboration';
+                id: string;
+                callouts?:
+                  | Array<{
+                      __typename?: 'Callout';
+                      id: string;
+                      nameID: string;
+                      type: CalloutType;
+                      aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
+                    }>
+                  | undefined;
+              }
+            | undefined;
+          opportunities?:
+            | Array<{
+                __typename?: 'Opportunity';
+                id: string;
+                collaboration?:
+                  | {
+                      __typename?: 'Collaboration';
+                      id: string;
+                      callouts?:
+                        | Array<{
+                            __typename?: 'Callout';
+                            id: string;
+                            nameID: string;
+                            type: CalloutType;
+                            aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }>
+      | undefined;
+  };
+};
+
 export type HubAspectProviderQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type HubAspectProviderQuery = {
@@ -11838,6 +11928,7 @@ export type ChallengeAspectProviderQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type ChallengeAspectProviderQuery = {
@@ -11884,6 +11975,7 @@ export type OpportunityAspectProviderQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type OpportunityAspectProviderQuery = {
@@ -11956,6 +12048,20 @@ export type AspectProvidedFragment = {
   displayName: string;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type CalloutAspectInfoFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  callouts?:
+    | Array<{
+        __typename?: 'Callout';
+        id: string;
+        nameID: string;
+        type: CalloutType;
+        aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
+      }>
     | undefined;
 };
 

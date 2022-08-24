@@ -7,7 +7,8 @@ import {
 } from '../../hooks/generated/graphql';
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
-import { getAspectCallout } from '../../containers/aspect/getAspectCallout';
+import { getCardCallout } from '../../containers/aspect/getAspectCallout';
+import { useCalloutFromAspect } from '../../hooks/useCalloutFromAspect';
 
 interface AspectPermissions {
   canUpdate: boolean;
@@ -34,39 +35,47 @@ const AspectProvider: FC = ({ children }) => {
 
   const handleError = useApolloErrorHandler();
   const isAspectDefined = aspectNameId && hubNameId;
+  const { calloutId } = useCalloutFromAspect({ hubNameId, aspectNameId });
 
   const {
     data: hubData,
     loading: hubLoading,
     error: hubError,
   } = useHubAspectProviderQuery({
-    variables: { hubNameId, aspectNameId },
-    skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
+    variables: { hubNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = getAspectCallout(hubData?.hub?.collaboration?.callouts)?.aspects?.[0];
-
+  const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
+    x => x.nameID === aspectNameId
+  );
   const {
     data: challengeData,
     loading: challengeLoading,
     error: challengeError,
   } = useChallengeAspectProviderQuery({
-    variables: { hubNameId, challengeNameId, aspectNameId },
-    skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
+    variables: { hubNameId, challengeNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = getAspectCallout(challengeData?.hub?.challenge?.collaboration?.callouts)?.aspects?.[0];
+  const challengeAspect = getCardCallout(
+    challengeData?.hub?.challenge?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
     loading: opportunityLoading,
     error: opportunityError,
   } = useOpportunityAspectProviderQuery({
-    variables: { hubNameId, opportunityNameId, aspectNameId },
-    skip: !isAspectDefined || !opportunityNameId,
+    variables: { hubNameId, opportunityNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = getAspectCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts)?.aspects?.[0];
+  const opportunityAspect = getCardCallout(
+    opportunityData?.hub?.opportunity?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;

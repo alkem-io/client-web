@@ -1,4 +1,30 @@
-query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query CalloutAspectProvider($hubNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    collaboration {
+      ...CalloutAspectInfo
+    }
+    challenges
+    {
+      id
+      collaboration
+      {
+        ...CalloutAspectInfo
+      }
+      opportunities
+      {
+        id
+        collaboration
+        {
+          ...CalloutAspectInfo
+        }
+      }
+    }
+  }
+}
+
+
+query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     collaboration {
@@ -7,7 +33,7 @@ query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
   }
 }
 
-query ChallengeAspectProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query ChallengeAspectProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
@@ -19,7 +45,7 @@ query ChallengeAspectProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_N
   }
 }
 
-query OpportunityAspectProvider($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query OpportunityAspectProvider($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
@@ -33,7 +59,7 @@ query OpportunityAspectProvider($hubNameId: UUID_NAMEID!, $opportunityNameId: UU
 
 fragment AspectProviderData on Collaboration {
   id
-  callouts {
+  callouts(IDs: [$calloutId]) {
     id
     type
     aspects(IDs: [$aspectNameId]) {
@@ -50,4 +76,19 @@ fragment AspectProvided on Aspect {
     id
     myPrivileges
   }
+}
+
+fragment CalloutAspectInfo on Collaboration {
+ 			id
+      callouts
+      {
+        id
+        nameID
+        type
+        aspects
+        {
+          id
+          nameID
+        }
+      }
 }

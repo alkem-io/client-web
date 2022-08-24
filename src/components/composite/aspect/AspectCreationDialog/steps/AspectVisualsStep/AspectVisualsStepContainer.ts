@@ -10,7 +10,7 @@ import {
   useOpportunityAspectVisualsQuery,
 } from '../../../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../../../hooks';
-import { getAspectCallout } from '../../../../../../containers/aspect/getAspectCallout';
+import { getCardCallout } from '../../../../../../containers/aspect/getAspectCallout';
 
 export interface EntityIds {
   hubNameId: Scalars['UUID_NAMEID'];
@@ -47,7 +47,9 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = getAspectCallout(hubData?.hub?.collaboration?.callouts)?.aspects?.[0];
+  const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
+    x => x.nameID === aspectNameId
+  );
 
   const {
     data: challengeData,
@@ -58,7 +60,10 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = getAspectCallout(challengeData?.hub?.challenge?.collaboration?.callouts)?.aspects?.[0];
+  const challengeAspect = getCardCallout(
+    challengeData?.hub?.challenge?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
@@ -69,7 +74,10 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = getAspectCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts)?.aspects?.[0];
+  const opportunityAspect = getCardCallout(
+    opportunityData?.hub?.opportunity?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;

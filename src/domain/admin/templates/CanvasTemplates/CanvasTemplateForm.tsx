@@ -26,13 +26,22 @@ interface CanvasTemplateFormProps {
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<CanvasTemplateFormValues>) => ReactNode);
   canvases: Canvas[] | undefined;
+  calloutId: string | undefined;
 }
 
 const validator = {
   value: yup.string().required(),
 };
 
-const CanvasTemplateForm = ({ title, initialValues, visual, onSubmit, actions, canvases }: CanvasTemplateFormProps) => {
+const CanvasTemplateForm = ({
+  title,
+  initialValues,
+  visual,
+  onSubmit,
+  actions,
+  canvases,
+  calloutId,
+}: CanvasTemplateFormProps) => {
   const { t } = useTranslation();
 
   return (
@@ -45,7 +54,7 @@ const CanvasTemplateForm = ({ title, initialValues, visual, onSubmit, actions, c
       validator={validator}
     >
       <TemplateFormRows>
-        <CanvasFormikSelectInput label={t('common.canvas')} name="value" canvases={canvases} />
+        <CanvasFormikSelectInput label={t('common.canvas')} name="value" canvases={canvases} calloutId={calloutId} />
       </TemplateFormRows>
     </TemplateForm>
   );
