@@ -90,7 +90,7 @@ export const buildCanvasUrl = (
   challengeNameId?: string,
   opportunityNameId?: string
 ) => {
-  const canvasUrl = `/${EntityPageSection.Explore}/${canvasNameId}`;
+  const canvasUrl = `/${EntityPageSection.Explore}/canvases/${canvasNameId}`;
   if (challengeNameId) {
     if (opportunityNameId) {
       return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${canvasUrl}`;

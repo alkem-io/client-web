@@ -15,10 +15,10 @@ import { useCalloutCreation } from '../../domain/callout/creation-dialog/useCall
 interface ContributePageProps {
   entityTypeName: EntityTypeName;
 }
-
+// todo: Delete component as it is not used
 const ContributePage: FC<ContributePageProps> = ({ entityTypeName }) => {
   const { t } = useTranslation();
-  const { hubNameId, canvasId } = useUrlParams();
+  const { hubNameId, canvasNameId: canvasId } = useUrlParams();
 
   const currentPath = useResolvedPath(canvasId ? '..' : '.');
 
