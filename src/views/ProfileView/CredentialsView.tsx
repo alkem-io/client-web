@@ -1,11 +1,7 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CONTRIBUTION_CARD_HEIGHT_SPACING,
-  CONTRIBUTION_CARD_WIDTH_SPACING,
-  CredentialCard,
-} from '../../components/composite/common/cards';
+import { CredentialCard } from '../../components/composite/common/cards';
 import ProfileCard, { ProfileCardProps } from '../../components/composite/common/cards/ProfileCard/ProfileCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import UserCredentialsContainer from '../../containers/user/UserCredentialsContainer';
@@ -20,18 +16,18 @@ const SkeletonItem = () => (
     <Skeleton
       variant="rectangular"
       sx={{
-        height: theme => theme.spacing(CONTRIBUTION_CARD_HEIGHT_SPACING / 2),
-        width: theme => theme.spacing(CONTRIBUTION_CARD_WIDTH_SPACING),
+        height: theme => theme.spacing(theme.cards.contributionCard.height / 2),
+        width: theme => theme.spacing(theme.cards.contributionCard.width),
       }}
     />
     <Skeleton
       sx={{
-        width: theme => theme.spacing(CONTRIBUTION_CARD_WIDTH_SPACING),
+        width: theme => theme.spacing(theme.cards.contributionCard.width),
       }}
     />
     <Skeleton
       sx={{
-        width: theme => theme.spacing(CONTRIBUTION_CARD_WIDTH_SPACING),
+        width: theme => theme.spacing(theme.cards.contributionCard.width),
       }}
     />
   </Grid>
