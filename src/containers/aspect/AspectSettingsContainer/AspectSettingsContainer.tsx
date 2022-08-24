@@ -15,6 +15,7 @@ import { newReferenceName } from '../../../utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import { getCardCallout } from '../getAspectCallout';
 import { useCalloutFromAspect } from '../../../hooks/useCalloutFromAspect';
+import clearCacheForType from '../../../domain/shared/utils/apollo-cache/clearCacheForType';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];
@@ -144,7 +145,14 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
 
   const [deleteAspect, { loading: deleting }] = useDeleteAspectMutation({
     onError: handleError,
-    update: removeFromCache,
+    update: (cache, mutationResult) => {
+      // Clear activity counters
+      clearCacheForType(cache, 'Hub');
+      clearCacheForType(cache, 'Challenge');
+      clearCacheForType(cache, 'Opportunity');
+
+      return removeFromCache(cache, mutationResult);
+    },
   });
 
   const handleDelete = async (id: string) => {

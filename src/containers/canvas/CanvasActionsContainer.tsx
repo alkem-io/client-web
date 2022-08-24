@@ -17,6 +17,7 @@ import {
   DeleteCanvasInput,
 } from '../../models/graphql-schema';
 import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
+import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';
 
 export interface ICanvasActions {
   onCreate: (canvas: CreateCanvasOnCalloutInput) => Promise<void>;
@@ -68,6 +69,11 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
             },
           },
         });
+
+        // Clear activity counters
+        clearCacheForType(cache, 'Hub');
+        clearCacheForType(cache, 'Challenge');
+        clearCacheForType(cache, 'Opportunity');
       },
       variables: {
         input: canvas,
@@ -90,6 +96,10 @@ const CanvasActionsContainer: FC<CanvasActionsContainerProps> = ({ children }) =
         if (output) {
           evictFromCache(cache, String(output.id), 'Canvas');
         }
+        // Clear activity counters
+        clearCacheForType(cache, 'Hub');
+        clearCacheForType(cache, 'Challenge');
+        clearCacheForType(cache, 'Opportunity');
       },
       variables: {
         input: canvas,
