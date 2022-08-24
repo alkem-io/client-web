@@ -20,6 +20,16 @@ export const theme: ThemeOptions = {
     },
   },
   earlyAccessAlert: { height: 40 },
+  cards: {
+    simpleCard: {
+      width: 32,
+      height: 18,
+    },
+    contributionCard: {
+      width: 32,
+      height: 18,
+    },
+  },
   sidebar: {
     maxWidth: 280,
     minWidth: 90,
@@ -38,6 +48,16 @@ declare module '@mui/material/styles' {
     earlyAccessAlert: {
       height: number;
     };
+    cards: {
+      simpleCard: {
+        width: number;
+        height: number;
+      };
+      contributionCard: {
+        width: number;
+        height: number;
+      };
+    };
   }
   interface ThemeOptions {
     sidebar?: {
@@ -46,6 +66,16 @@ declare module '@mui/material/styles' {
     };
     earlyAccessAlert?: {
       height?: number;
+    };
+    cards: {
+      simpleCard: {
+        width: number;
+        height: number;
+      };
+      contributionCard: {
+        width: number;
+        height: number;
+      };
     };
   }
 }
