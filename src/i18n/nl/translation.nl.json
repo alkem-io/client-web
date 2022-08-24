@@ -77,8 +77,8 @@
     "comments": "Opmerkingen",
     "email": "Email",
     "state": "Staat",
-    "aspect": "Aspect",
-    "aspects": "Aspecten",
+    "aspect": "Kaart",
+    "aspects": "Kaarten",
     "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",
@@ -261,27 +261,27 @@
   },
   "components": {
     "context-section": {
-      "create-card": "Aspect succesvol aangemaakt",
+      "create-card": "Kaart succesvol aangemaakt",
       "give-feedback": "Geef feedback"
     },
     "aspect-creation": {
-      "title": "Maak nieuw Aspect aan",
+      "title": "Maak nieuw Kaart aan",
       "type-step": {
         "title": "Het soort additionele context om toe te voegen.",
         "error": "Fout opgetreden tijdens het laden van de types",
-        "label": "Soort Aspect",
-        "type-help-text-short": "Kies het aspect type dat het best overeenkomt met de context die je wilt delen.",
-        "type-help-text": "Aspecten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke actoren. De set Aspect-types dat hier beschikbaar is staat vast. Kies het aspect-type dat het best overeenkomt met de context die je wilt delen."
+        "label": "Soort Kaart",
+        "type-help-text-short": "Kies het Kaart type dat het best overeenkomt met de context die je wilt delen.",
+        "type-help-text": "Kaarten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke actoren. De set Kaart-types dat hier beschikbaar is staat vast. Kies het Kaart-type dat het best overeenkomt met de context die je wilt delen."
       },
       "info-step": {
         "title": "Details",
         "description": "Deel alsjeblieft de details.",
-        "description-placeholder": "Een beschrijving voor dit Aspect",
-        "description-help-text": "Voeg hier de belangrijkste informatie toe over het Aspect. Waarom is het relevant? Hoe is het gerelateerd?",
-        "tags-help-text": "Voeg labels toe om effectief de informatie over het Aspect over te dragen. Goede labels maken Aspecten makkelijker vindbaar.",
-        "name-help-text": "Een beschrijvende naam voor het Aspect.",
+        "description-placeholder": "Een beschrijving voor dit Kaart",
+        "description-help-text": "Voeg hier de belangrijkste informatie toe over het Kaart. Waarom is het relevant? Hoe is het gerelateerd?",
+        "tags-help-text": "Voeg labels toe om effectief de informatie over het Kaart over te dragen. Goede labels maken Kaart makkelijker vindbaar.",
+        "name-help-text": "Een beschrijvende naam voor het Kaart.",
         "name-id-help-text": "Naam-ID help tekst",
-        "unique-name-validation-text": "${path} is al in gebruik voor een ander Aspect."
+        "unique-name-validation-text": "${path} is al in gebruik voor een ander Kaart."
       },
       "create-step": {
         "title": "Laatste controle",
@@ -289,13 +289,13 @@
         "name": "Naam",
         "description": "Omschrijving",
         "links": "Relevante links",
-        "explanation": "Door het voltooien van deze stap zal het Aspect aangemaakt worden. In de volgende stap kan het Aspect verder worden bewerkt via het instellingen blad. Daar kunen bijvoorbeeld referenties en afbeeldingen voor de omslagfoto geselecteerd worden."
+        "explanation": "Door het voltooien van deze stap zal het Kaart aangemaakt worden. In de volgende stap kan het Kaart verder worden bewerkt via het instellingen blad. Daar kunen bijvoorbeeld referenties en afbeeldingen voor de omslagfoto geselecteerd worden."
       },
       "visuals-step": {
         "title": "Afbeeldingen",
-        "headline": "Gefeliciteerd, je hebt succesvol een Aspect aangemaakt!",
-        "explanation": "Om je Aspect verder te personaliseren kan je afbeeldingen toevoegen, zoals een omslagfoto.",
-        "bottom-note": "Je kan ook achteraf de afbeeldingen wijzigen of referenties toevoegen in de instellingen van het Aspect."
+        "headline": "Gefeliciteerd, je hebt succesvol een Kaart aangemaakt!",
+        "explanation": "Om je Kaart verder te personaliseren kan je afbeeldingen toevoegen, zoals een omslagfoto.",
+        "bottom-note": "Je kan ook achteraf de afbeeldingen wijzigen of referenties toevoegen in de instellingen van het Kaart."
       }
     },
     "visual-upload": {
@@ -630,7 +630,7 @@
           "description": "Hier kan je de community verkennen. Je kan de gebruikers en organisaties zien die bijdragen, maar ook de updates die zijn gedeeld."
         },
         "contribute": {
-          "description": "Hier kan je jouw inzichten geven die bijdragen aan een beter begrip van de context. Deze bijdragen worden Aspecten genoemd. Het gaat erom dat de 'wisdom of the community' wordt gebruikt. \n Voeg extra Aspecten toe of reageer en discusieer rond bestaande Aspecten die door anderen zijn toegevoegd!"
+          "description": "Hier kan je jouw inzichten geven die bijdragen aan een beter begrip van de context. Deze bijdragen worden Kaarten genoemd. Het gaat erom dat de 'wisdom of the community' wordt gebruikt. \n Voeg extra Kaarten toe of reageer en discusieer rond bestaande Kaarten die door anderen zijn toegevoegd!"
         },
         "discussions": {
           "description": "Hier kan je met andere leden uit de community discussieren rond deze {{entity}}."
@@ -641,7 +641,7 @@
       }
     },
     "contribute": {
-      "no-aspects": "Geen Aspecten gevonden"
+      "no-cards": "Geen Kaarten gevonden"
     },
     "admin": {
       "generic": {
@@ -1142,8 +1142,8 @@
     "title": "Community"
   },
   "aspect-edit": {
-    "new": "Nieuw Aspect",
-    "edit": "Pas Aspect aan"
+    "new": "Nieuw Kaart",
+    "edit": "Pas Kaart aan"
   },
   "contributors-section": {
     "title": "Bijdragers",

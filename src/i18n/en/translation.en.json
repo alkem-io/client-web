@@ -744,7 +744,7 @@
       }
     },
     "contribute": {
-      "no-aspects": "No Card found"
+      "no-cards": "No Card found"
     },
     "explore": {
       "create-callout": "Create new Callout"
