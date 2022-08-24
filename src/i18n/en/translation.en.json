@@ -95,8 +95,8 @@
     "edit-entity": "Edit {{entity}}",
     "email": "Email",
     "state": "State",
-    "aspect": "Aspect",
-    "aspects": "Aspects",
+    "aspect": "Card",
+    "aspects": "Cards",
     "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",
@@ -303,8 +303,8 @@
     }
   },
   "aspect-templates": {
-    "aspect-template": "Aspect template",
-    "default-description": "Default aspect description",
+    "aspect-template": "Card template",
+    "default-description": "Default Card description",
     "banner-narrow": "Banner narrow"
   },
   "canvas-templates": {
@@ -328,7 +328,7 @@
       "headline": "Alkemio is growing! In total, the platform now hosts:"
     },
     "context-section": {
-      "create-aspect": "Successfully created the aspect",
+      "create-card": "Successfully created the Card",
       "give-feedback": "Give feedback"
     },
     "callout-creation": {
@@ -340,9 +340,9 @@
         "type-comments": "Comments",
         "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
         "type-cards": "Cards",
-        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format. In the next step you can choose the type of card",
+        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
         "type-canvases": "Canvases",
-        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a whiteboard, allowing them to draw and use text. In the next step you can choose a template for the canvas"
+        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
       },
       "template-step": {
         "title": "Templates",
@@ -355,23 +355,23 @@
       }
     },
     "aspect-creation": {
-      "title": "Create a new aspect",
+      "title": "Create a new Card",
       "type-step": {
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
-        "label": "Aspect Type",
-        "type-help-text-short": "Please choose the aspect type that best matches the context you wish to share.",
-        "type-help-text": "Aspects allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of aspect types that are available in this context is fixed. Please choose the aspect type that best matches the context you wish to share."
+        "label": "Card Type",
+        "type-help-text-short": "Please choose the Card type that best matches the context you wish to share.",
+        "type-help-text": "Card allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of Card types that are available in this context is fixed. Please choose the Card type that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Details",
         "description": "Please share the details",
-        "description-placeholder": "A description for this aspect",
-        "description-help-text": "Add here the key information about the aspect. Why is it relevant? How does it relate?",
-        "tags-help-text": "Add free form tags to help quickly convey the key information about the aspect. Good tags also help make the Aspect easier to find in searches.",
-        "name-help-text": "A descriptive name for this aspect.",
+        "description-placeholder": "A description for this Card",
+        "description-help-text": "Add here the key information about the aspCardect. Why is it relevant? How does it relate?",
+        "tags-help-text": "Add free form tags to help quickly convey the key information about the Card. Good tags also help make the Card easier to find in searches.",
+        "name-help-text": "A descriptive name for this Card.",
         "name-id-help-text": "Name ID help text",
-        "unique-name-validation-text": "${path} is already used in another aspect"
+        "unique-name-validation-text": "${path} is already used in another Card"
       },
       "create-step": {
         "title": "Create",
@@ -379,12 +379,12 @@
         "name": "Name",
         "description": "Description",
         "links": "Relevant Links",
-        "explanation": "By completing this step the Aspect will be created and you will have the option to add visuals."
+        "explanation": "By completing this step the Card will be created and you will have the option to add visuals."
       },
       "visuals-step": {
         "title": "Visuals",
-        "headline": "Congratulations, you have now successfully created an aspect!",
-        "explanation": "To further personalize your aspect, please consider adding visuals such as a Banner to the card.",
+        "headline": "Congratulations, you have now successfully created an Card!",
+        "explanation": "To further personalize your Card, please consider adding visuals such as a Banner to the card.",
         "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding references and a Banner for the Dashboard card."
       }
     },
@@ -744,7 +744,7 @@
       }
     },
     "contribute": {
-      "no-aspects": "No aspects found"
+      "no-cards": "No Card found"
     },
     "explore": {
       "create-callout": "Create new Callout"
@@ -769,7 +769,7 @@
           },
           "templates": {
             "description": "Here you can create and edit templates for this {{entity}}.",
-            "aspect-templates": "Aspect Templates",
+            "aspect-templates": "Card Templates",
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template."
@@ -1290,11 +1290,11 @@
     "title": "Community"
   },
   "aspect-edit": {
-    "new": "New Aspect",
-    "edit": "Edit Aspect",
+    "new": "New Card",
+    "edit": "Edit Card",
     "type": {
-      "title": "Aspect Type",
-      "help-text": "Type of Aspect"
+      "title": "Card Type",
+      "help-text": "What type of information do you want to share?"
     }
   },
   "innovation-edit": {
