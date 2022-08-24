@@ -249,7 +249,7 @@
   },
   "components": {
     "context-section": {
-      "create-aspect": "Аспектът е успешно създаден"
+      "create-card": "Аспектът е успешно създаден"
     },
     "aspect-creation": {
       "title": "Създай нов аспект",

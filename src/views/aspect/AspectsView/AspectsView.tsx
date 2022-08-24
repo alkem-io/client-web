@@ -58,7 +58,7 @@ const AspectsView: FC<AspectsViewProps> = ({
           <CardFilter data={aspects} tagsValueGetter={aspectTagsValueGetter} valueGetter={aspectValueGetter}>
             {filteredAspects =>
               !aspectsLoading && !filteredAspects.length ? (
-                t('pages.contribute.no-aspects')
+                t('pages.contribute.no-cards')
               ) : (
                 <CardsLayout
                   items={aspectsLoading ? [undefined, undefined] : filteredAspects}

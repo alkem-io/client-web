@@ -4,6 +4,10 @@ Welcome to Alkemio, an open-source innovation platform!
 
 This manual will help you understand the purpose of the platform, how and by whom it can be used, as well as the key functionalities and terminology.
 
+For information about our latest releases, please check out our <a href="https://alkemio.foundation/releases" target="_blank">Releases page</a>.
+
+For questions not covered by the information below, please check out our <a href="https://alkemio.foundation/faq" target="_blank">FAQ page</a>.
+
 ---
 
 # The structure of Alkemio
@@ -14,7 +18,7 @@ Each level has a **Community** around it. Individuals and Organizations can choo
 
 Within all three levels, Users can discuss the topic, share relevant information in a structured manner, and brainstorm by using canvases.
 
-![](https://i.imgur.com/sdNrpea.png)
+![](./structure.png)
 
 ---
 
@@ -50,7 +54,3 @@ The list below describes the key terminology within each of these levels.
 | Who | A description by the Facilitating or Leading Organization of the required or desired contributor type for a Challenge (Hub).
 
 ---
-
-# Release notes
-
-To read more about our features, check out our release notes <a href="https://www.alkemio.foundation/releases" target="_blank">here</a>.
