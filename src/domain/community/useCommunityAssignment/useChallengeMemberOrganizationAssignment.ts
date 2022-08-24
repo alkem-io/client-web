@@ -20,7 +20,7 @@ const useChallengeMemberOrganizationAssignment = (options: Options) =>
         existingMembers: data?.hub.challenge?.community?.memberOrganizations,
       };
     },
-    refetchMembersQuery: refetchChallengeCommunityMembersQuery,
+    refetchQueries: [refetchChallengeCommunityMembersQuery],
   });
 
 export default useChallengeMemberOrganizationAssignment;

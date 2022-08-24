@@ -31,6 +31,7 @@ export const FormikInputField: FC<InputFieldProps> = ({
   InputProps,
   helpText,
   loading,
+  rows,
   ...rest
 }) => {
   const tErr = useValidationMessageTranslation();
@@ -65,6 +66,8 @@ export const FormikInputField: FC<InputFieldProps> = ({
       required={required}
       disabled={loading || disabled}
       autoComplete={autoComplete}
+      rows={rows}
+      multiline={!!rows}
       fullWidth
       InputProps={{
         ...InputProps,

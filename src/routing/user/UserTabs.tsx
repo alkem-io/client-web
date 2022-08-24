@@ -1,4 +1,4 @@
-import { ContentPasteOutlined, ForumOutlined, GroupOutlined, SettingsOutlined } from '@mui/icons-material';
+import { ContentPasteOutlined, ForumOutlined, GroupOutlined, NotificationsNoneOutlined } from '@mui/icons-material';
 import { Tabs } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ const UserTabs: FC<UserTabsProps> = ({ children }) => {
 
             <NavigationTab icon={<ForumOutlined />} label={t('common.organizations')} {...routesObj['organizations']} />
             <NavigationTab
-              icon={<SettingsOutlined />}
+              icon={<NotificationsNoneOutlined />}
               label={t('common.notifications')}
               {...routesObj['notifications']}
             />

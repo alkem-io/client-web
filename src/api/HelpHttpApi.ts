@@ -1,7 +1,7 @@
 import { HelpApi } from './HelpApi';
 
 const getHelpTextMd = async () => {
-  const response = await fetch('/help.md');
+  const response = await fetch('/help/help.md');
   if (!response.ok) {
     throw new Error(response.statusText);
   }

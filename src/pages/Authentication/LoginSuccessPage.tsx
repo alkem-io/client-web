@@ -1,21 +1,20 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/constants';
-import { logger } from '../../services/logging/winston/logger';
+import { STORAGE_KEY_RETURN_URL } from '../../models/constants';
 
 interface LoginSuccessPageProps {}
 
 export const LoginSuccessPage: FC<LoginSuccessPageProps> = () => {
-  const redirectUrl = localStorage.getItem(LOCAL_STORAGE_RETURN_URL_KEY);
+  useEffect(
+    () => () => {
+      sessionStorage.removeItem(STORAGE_KEY_RETURN_URL);
+    },
+    []
+  );
 
-  if (redirectUrl) {
-    try {
-      localStorage.removeItem(LOCAL_STORAGE_RETURN_URL_KEY);
-    } catch {
-      logger.error('Can not remove key!');
-    }
-    return <Navigate to={redirectUrl} />;
-  }
-  return <Navigate to={'/'} />;
+  const redirectUrl = sessionStorage.getItem(STORAGE_KEY_RETURN_URL) ?? '/';
+
+  return <Navigate to={redirectUrl} />;
 };
+
 export default LoginSuccessPage;

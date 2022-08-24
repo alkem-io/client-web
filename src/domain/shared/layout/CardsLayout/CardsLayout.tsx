@@ -1,16 +1,17 @@
-import React, { cloneElement, FC, ReactElement } from 'react';
+import React, { cloneElement, FC, ReactElement, useMemo } from 'react';
 import { Box, BoxProps } from '@mui/material';
-import areDepsEqual from '../../utils/areDepsEqual';
 import { Identifiable } from '../../types/Identifiable';
+import {} from '../../components/ContributionCard/ContributionCardV2';
 
-interface CardsLayoutProps<Item extends Identifiable | null | undefined> {
+export interface CreateButtonProps {
+  onClick?: () => void;
+}
+interface CardsLayoutProps<Item extends Identifiable | null | undefined> extends CardLayoutContainerProps {
   items: Item[];
   children: (item: Item) => ReactElement<unknown>;
   deps?: unknown[];
-}
-
-interface CardsLayoutComponent {
-  <Item extends Identifiable | null | undefined>(props: CardsLayoutProps<Item>): ReactElement;
+  showCreateButton?: boolean;
+  createButtonComponent?: React.ReactNode;
 }
 
 /**
@@ -20,28 +21,38 @@ interface CardsLayoutComponent {
  * @param deps - deps to consider the render callback refreshed, as in useCallback(callback, deps)
  * @constructor
  */
-const CardsLayout = React.memo(
-  <Item extends Identifiable | null | undefined>({ items, children }: CardsLayoutProps<Item>) => {
-    return (
-      <CardLayoutContainer>
-        {items.map((item, index) => {
-          const card = children(item);
-          const key = item ? item.id : `__loading_${index}`;
-          return cloneElement(card, { key });
-        })}
-      </CardLayoutContainer>
-    );
-  },
-  (prevProps, nextProps) => {
-    return prevProps.items === nextProps.items && areDepsEqual(prevProps.deps, nextProps.deps);
-  }
-) as CardsLayoutComponent;
+const CardsLayout = <Item extends Identifiable | null | undefined>({
+  items,
+  children,
+  deps = [],
+  createButtonComponent: CreateButton,
+  ...layoutProps
+}: CardsLayoutProps<Item>) => {
+  const cards = useMemo(
+    () =>
+      items.map((item, index) => {
+        const card = children(item);
+        const key = item ? item.id : `__loading_${index}`;
+        return cloneElement(card, { key });
+      }),
+    [items, ...deps]
+  );
+
+  return (
+    <CardLayoutContainer {...layoutProps}>
+      {CreateButton}
+      {cards}
+    </CardLayoutContainer>
+  );
+};
 
 export default CardsLayout;
 
-export const CardLayoutContainer: FC = ({ children }) => {
+interface CardLayoutContainerProps extends BoxProps {}
+
+export const CardLayoutContainer: FC<CardLayoutContainerProps> = ({ sx, children, ...boxProps }) => {
   return (
-    <Box gap={2} display="flex" flexWrap="wrap">
+    <Box gap={2} {...boxProps} sx={{ display: 'flex', flexWrap: 'wrap', ...sx }}>
       {children}
     </Box>
   );

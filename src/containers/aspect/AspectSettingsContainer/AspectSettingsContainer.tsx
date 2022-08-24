@@ -1,14 +1,7 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../models/container';
-import {
-  PushFunc,
-  RemoveFunc,
-  useApolloErrorHandler,
-  useAspectsData,
-  useEditReference,
-  useNotification,
-} from '../../../hooks';
+import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
 import {
   useChallengeAspectSettingsQuery,
   useDeleteAspectMutation,
@@ -20,6 +13,8 @@ import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
+import { getCardCallout } from '../getAspectCallout';
+import { useCalloutFromAspect } from '../../../hooks/useCalloutFromAspect';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];
@@ -68,9 +63,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
-  const { aspects } = useAspectsData({ hubNameId, challengeNameId, opportunityNameId });
-  const aspectsNames = useMemo(() => aspects?.map(x => x.displayName), [aspects]);
-
+  const { calloutId } = useCalloutFromAspect({ hubNameId, aspectNameId });
   const isAspectDefined = aspectNameId && hubNameId;
 
   const {
@@ -78,35 +71,49 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     loading: hubLoading,
     error: hubError,
   } = useHubAspectSettingsQuery({
-    variables: { hubNameId, aspectNameId },
-    skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
+    variables: { hubNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = hubData?.hub?.context?.aspects?.[0];
+  const parentCalloutFromHub = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId);
+  const parentCalloutAspectNamesFromHub = parentCalloutFromHub?.aspects?.map(x => x.displayName);
+  const hubAspect = parentCalloutFromHub?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: challengeData,
     loading: challengeLoading,
     error: challengeError,
   } = useChallengeAspectSettingsQuery({
-    variables: { hubNameId, challengeNameId: challengeNameId ?? '', aspectNameId },
-    skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
+    variables: { hubNameId, challengeNameId: challengeNameId ?? '', aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = challengeData?.hub?.challenge?.context?.aspects?.[0];
+  const parentCalloutFromChallenge = getCardCallout(
+    challengeData?.hub?.challenge?.collaboration?.callouts,
+    aspectNameId
+  );
+  const parentCalloutAspectNamesFromChallenge = parentCalloutFromChallenge?.aspects?.map(x => x.displayName);
+  const challengeAspect = parentCalloutFromChallenge?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
     loading: opportunityLoading,
     error: opportunityError,
   } = useOpportunityAspectSettingsQuery({
-    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '', aspectNameId },
-    skip: !isAspectDefined || !opportunityNameId,
+    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '', aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = opportunityData?.hub?.opportunity?.context?.aspects?.[0];
+  const parentCalloutFromOpportunity = getCardCallout(
+    opportunityData?.hub?.opportunity?.collaboration?.callouts,
+    aspectNameId
+  );
+  const parentCalloutAspectNamesFromOpportunity = parentCalloutFromOpportunity?.aspects?.map(x => x.displayName);
+  const opportunityAspect = parentCalloutFromOpportunity?.aspects?.find(x => x.nameID === aspectNameId);
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
+  const parentCalloutAspectNames =
+    parentCalloutAspectNamesFromHub ?? parentCalloutAspectNamesFromChallenge ?? parentCalloutAspectNamesFromOpportunity;
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
@@ -170,7 +177,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   return (
     <>
       {children(
-        { aspect, aspectsNames },
+        { aspect, aspectsNames: parentCalloutAspectNames },
         { loading, error, updating, deleting, updateError },
         { handleUpdate, handleAddReference, handleRemoveReference, handleDelete }
       )}

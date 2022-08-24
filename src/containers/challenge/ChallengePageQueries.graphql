@@ -35,28 +35,23 @@ fragment ChallengeProfile on Challenge {
     visuals {
       ...VisualFull
     }
-    aspects(limit: 2, shuffle: true) {
-      ...AspectCard
+  }
+  collaboration {
+    id
+    callouts {
+      id
+      type
+      visibility
+      aspects(limit: 2, shuffle: true) {
+        ...AspectCard
+      }
+      canvases(limit: 2, shuffle: true) {
+        ...CanvasDetails
+      }
     }
   }
   community {
-    id
-    leadUsers {
-      ...DashboardLeadUser
-    }
-    memberUsers {
-      ...DashboardContributingUser
-    }
-    leadOrganizations {
-      ...AssociatedOrganizationDetails
-    }
-    memberOrganizations {
-      ...DashboardContributingOrganization
-    }
-    authorization {
-      id
-      myPrivileges
-    }
+    ...EntityDashboardCommunity
   }
   tagset {
     id

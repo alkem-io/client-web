@@ -11,6 +11,8 @@ import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWith
 import useOpportunityLeadOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityLeadOrganizationAssignment';
 import useOpportunityMemberOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityMemberOrganizationAssignment';
 import {
+  refetchOpportunityAvailableLeadUsersQuery,
+  refetchOpportunityAvailableMemberUsersQuery,
   refetchOpportunityCommunityMembersQuery,
   useOpportunityAvailableLeadUsersLazyQuery,
   useOpportunityAvailableMemberUsersLazyQuery,
@@ -44,18 +46,15 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
       hubId: hubNameId,
       opportunityId: opportunity?.nameID,
     },
-    useExistingMembersQuery: options => {
-      const { data } = useOpportunityCommunityMembersQuery(options);
-
-      return {
-        communityId: data?.hub.opportunity.community?.id,
-        existingMembers: data?.hub.opportunity.community?.memberUsers,
-      };
+    existingUsersOptions: {
+      useQuery: useOpportunityCommunityMembersQuery,
+      readCommunity: data => data?.hub.opportunity.community,
+      refetchQuery: refetchOpportunityCommunityMembersQuery,
     },
-    refetchMembersQuery: refetchOpportunityCommunityMembersQuery,
-    availableUsers: {
+    availableUsersOptions: {
       useLazyQuery: useOpportunityAvailableMemberUsersLazyQuery,
-      getResult: data => data.hub.opportunity.community?.availableMemberUsers,
+      readUsers: data => data.hub.opportunity.community?.availableMemberUsers,
+      refetchQuery: refetchOpportunityAvailableMemberUsersQuery,
     },
   });
 
@@ -65,18 +64,15 @@ const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePref
       hubId: hubNameId,
       opportunityId: opportunity?.nameID,
     },
-    useExistingMembersQuery: options => {
-      const { data } = useOpportunityCommunityMembersQuery(options);
-
-      return {
-        communityId: data?.hub.opportunity.community?.id,
-        existingMembers: data?.hub.opportunity.community?.leadUsers,
-      };
+    existingUsersOptions: {
+      useQuery: useOpportunityCommunityMembersQuery,
+      readCommunity: data => data?.hub.opportunity.community,
+      refetchQuery: refetchOpportunityCommunityMembersQuery,
     },
-    refetchMembersQuery: refetchOpportunityCommunityMembersQuery,
-    availableUsers: {
+    availableUsersOptions: {
       useLazyQuery: useOpportunityAvailableLeadUsersLazyQuery,
-      getResult: data => data.hub.opportunity.community?.availableLeadUsers,
+      readUsers: data => data.hub.opportunity.community?.availableLeadUsers,
+      refetchQuery: refetchOpportunityAvailableLeadUsersQuery,
     },
   });
 

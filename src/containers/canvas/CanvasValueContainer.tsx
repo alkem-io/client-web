@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { useUrlParams, useUserContext } from '../../hooks';
 import {
   CanvasContentUpdatedDocument,
@@ -17,6 +17,7 @@ import {
 import { TemplateQuery } from './CanvasProvider';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 import findById from '../../domain/shared/utils/findById';
+import { getCanvasCallout } from './getCanvasCallout';
 
 export interface ICanvasValueEntities {
   canvas?: Canvas;
@@ -28,12 +29,15 @@ export interface CanvasValueContainerState {
 
 export interface CanvasValueParams {
   canvasId: string | undefined;
+  calloutId: string | undefined;
   params?: TemplateQuery;
 }
 
 export interface CanvasValueContainerProps
   extends ContainerChildProps<ICanvasValueEntities, {}, CanvasValueContainerState>,
-    CanvasValueParams {}
+    CanvasValueParams {
+  onCanvasValueLoaded?: (canvas: Canvas) => void;
+}
 
 const useSubscribeToCanvas = UseSubscriptionToSubEntity<
   CanvasValueFragment & CanvasDetailsFragment,
@@ -49,7 +53,13 @@ const useSubscribeToCanvas = UseSubscriptionToSubEntity<
   },
 });
 
-const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasId, params }) => {
+const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
+  children,
+  canvasId,
+  calloutId,
+  params,
+  onCanvasValueLoaded,
+}) => {
   const {
     hubNameId: hubId = '',
     challengeNameId: challengeId = '',
@@ -73,20 +83,6 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
   const skipOpportunity = !Boolean(queryOpportunityId) || !Boolean(canvasId);
 
   const {
-    data: hubData,
-    loading: loadingHubCanvasValue,
-    subscribeToMore: subHub,
-  } = useHubCanvasValuesQuery({
-    errorPolicy: 'all',
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'cache-and-network',
-    skip: skipHub,
-    variables: {
-      hubId: queryHubId,
-      canvasId: canvasId || '',
-    },
-  });
-  const {
     data: challengeData,
     loading: loadingChallengeCanvasValue,
     subscribeToMore: subChallenge,
@@ -99,6 +95,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
       hubId: queryHubId,
       challengeId: queryChallengeId || '',
       canvasId: canvasId || '',
+      calloutId: calloutId || '',
     },
   });
   const {
@@ -114,34 +111,62 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({ children, canvasI
       hubId: queryHubId,
       opportunityId: queryOpportunityId || '',
       canvasId: canvasId || '',
+      calloutId: calloutId || '',
+    },
+  });
+
+  const {
+    data: hubData,
+    loading: loadingHubCanvasValue,
+    subscribeToMore: subHub,
+  } = useHubCanvasValuesQuery({
+    errorPolicy: 'all',
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-and-network',
+    skip: skipHub,
+    variables: {
+      hubId: queryHubId,
+      calloutId: calloutId || '',
+      canvasId: canvasId || '',
     },
   });
 
   const canvas = useMemo(() => {
     const sourceArray =
-      hubData?.hub.context?.canvases ||
-      challengeData?.hub.challenge.context?.canvases ||
-      opportunityData?.hub.opportunity.context?.canvases;
+      getCanvasCallout(hubData?.hub.collaboration?.callouts)?.canvases ||
+      getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts)?.canvases ||
+      getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts)?.canvases;
 
     return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
   }, [hubData, challengeData, opportunityData, canvasId]);
 
+  useEffect(() => {
+    if (canvas) {
+      onCanvasValueLoaded?.(canvas);
+    }
+  }, [canvas]);
+
   const skipCanvasSubscription = !canvasId || canvas?.checkout?.lockedBy === userId;
 
-  useSubscribeToCanvas(hubData, data => findById(data?.hub.context?.canvases, canvasId!), subHub, {
-    skip: skipCanvasSubscription,
-  });
+  useSubscribeToCanvas(
+    hubData,
+    data => findById(getCanvasCallout(data?.hub.collaboration?.callouts)?.canvases, canvasId!),
+    subHub,
+    {
+      skip: skipCanvasSubscription,
+    }
+  );
 
   useSubscribeToCanvas(
     challengeData,
-    data => findById(data?.hub.challenge.context?.canvases, canvasId!),
+    data => findById(getCanvasCallout(data?.hub.challenge.collaboration?.callouts)?.canvases, canvasId!),
     subChallenge,
     { skip: skipCanvasSubscription }
   );
 
   useSubscribeToCanvas(
     opportunityData,
-    data => findById(data?.hub.opportunity.context?.canvases, canvasId!),
+    data => findById(getCanvasCallout(data?.hub.opportunity.collaboration?.callouts)?.canvases, canvasId!),
     subOpportunity,
     { skip: skipCanvasSubscription }
   );

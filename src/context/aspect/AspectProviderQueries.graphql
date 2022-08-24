@@ -1,40 +1,70 @@
-query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query CalloutAspectProvider($hubNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
-    context {
+    collaboration {
+      ...CalloutAspectInfo
+    }
+    challenges
+    {
+      id
+      collaboration
+      {
+        ...CalloutAspectInfo
+      }
+      opportunities
+      {
+        id
+        collaboration
+        {
+          ...CalloutAspectInfo
+        }
+      }
+    }
+  }
+}
+
+
+query HubAspectProvider($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
+  hub(ID: $hubNameId) {
+    id
+    collaboration {
       ...AspectProviderData
     }
   }
 }
 
-query ChallengeAspectProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query ChallengeAspectProvider($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
-      context {
+      collaboration {
         ...AspectProviderData
       }
     }
   }
 }
 
-query OpportunityAspectProvider($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query OpportunityAspectProvider($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
-      context {
+      collaboration {
         ...AspectProviderData
       }
     }
   }
 }
 
-fragment AspectProviderData on Context {
+fragment AspectProviderData on Collaboration {
   id
-  aspects(IDs: [$aspectNameId]) {
-    ...AspectProvided
+  callouts(IDs: [$calloutId]) {
+    id
+    type
+    aspects(IDs: [$aspectNameId]) {
+      ...AspectProvided
+    }
   }
 }
 
@@ -46,4 +76,19 @@ fragment AspectProvided on Aspect {
     id
     myPrivileges
   }
+}
+
+fragment CalloutAspectInfo on Collaboration {
+ 			id
+      callouts
+      {
+        id
+        nameID
+        type
+        aspects
+        {
+          id
+          nameID
+        }
+      }
 }

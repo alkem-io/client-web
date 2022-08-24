@@ -9,12 +9,12 @@ import AspectTypeStep from './steps/AspectTypeStep/AspectTypeStep';
 import AspectReviewStep from './steps/AspectReviewStep/AspectReviewStep';
 import { AspectFormOutput } from '../AspectForm/AspectForm';
 import AspectInfoStep from './steps/AspectInfoStep/AspectInfoStep';
-import { CreateAspectOnContextInput } from '../../../../models/graphql-schema';
+import { CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
 import HelpButton from '../../../core/HelpButton';
 import AspectVisualsStep, { AspectVisualsStepProps } from './steps/AspectVisualsStep/AspectVisualsStep';
 
-export type AspectCreationType = Partial<CreateAspectOnContextInput>;
-export type AspectCreationOutput = Omit<CreateAspectOnContextInput, 'contextID'>;
+export type AspectCreationType = Partial<CreateAspectOnCalloutInput>;
+export type AspectCreationOutput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
 enum DialogStep {
   Type,

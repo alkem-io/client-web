@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, List, OutlinedInput } from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
-import React, { useState } from 'react';
+import React, { forwardRef, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import IconButton from '../../../components/core/IconButton';
 import RemoveModal from '../../../components/core/RemoveModal';
@@ -55,7 +55,21 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
   const [isModalOpened, setModalOpened] = useState<boolean>(false);
   const [itemToRemove, setItemToRemove] = useState<SearchableListItem | null>(null);
 
-  const lazyLoading = useLazyLoading({
+  const Loader = useMemo(
+    () =>
+      forwardRef<HTMLDivElement>((props, ref) => (
+        <>
+          <LoadingListItem ref={ref} />
+          {times(pageSize - 1, i => (
+            <LoadingListItem key={`__loading_${i}`} />
+          ))}
+        </>
+      )),
+    [pageSize]
+  );
+
+  const loader = useLazyLoading(Loader, {
+    hasMore,
     loading,
     fetchMore,
   });
@@ -116,14 +130,7 @@ const SimpleSearchableList = <Item extends SearchableListItem>({
                 }
               />
             ))}
-        {hasMore && (
-          <>
-            <LoadingListItem ref={lazyLoading.ref} />
-            {times(pageSize - 1, i => (
-              <LoadingListItem key={`__loading_${i}`} />
-            ))}
-          </>
-        )}
+        {loader}
       </List>
       <RemoveModal
         show={isModalOpened}

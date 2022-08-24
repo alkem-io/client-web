@@ -2,7 +2,6 @@ import { ApolloError } from '@apollo/client';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
 import { useOpportunityPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
@@ -12,17 +11,25 @@ import {
   AspectCardFragment,
   AuthorizationCredential,
   AuthorizationPrivilege,
+  CanvasDetailsFragment,
   OpportunityPageFragment,
+  OpportunityPageRelationsFragment,
+  Project,
   Reference,
 } from '../../models/graphql-schema';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { replaceAll } from '../../utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
+import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import {
+  getAspectsFromPublishedCallouts,
+  getCanvasesFromPublishedCallouts,
+} from '../../domain/callout/utils/getPublishedCallouts';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
+  hubId: string;
   opportunity: OpportunityPageFragment;
   permissions: {
     canEdit: boolean;
@@ -42,17 +49,18 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   url: string;
   meme?: Reference;
   links: Reference[];
-  activity: ActivityItem[];
   opportunityProjects: OpportunityProject[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   relations: {
-    incoming: OpportunityPageFragment['relations'];
-    outgoing: OpportunityPageFragment['relations'];
+    incoming: OpportunityPageRelationsFragment[];
+    outgoing: OpportunityPageRelationsFragment[];
   };
   discussions: Discussion[];
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -112,11 +120,15 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
-  const { context, projects = [], relations = [], activity: _activity = [] } = opportunity;
+  const { context, collaboration, activity = [] } = opportunity;
+  // Note: Projects are removed from the graphql query until we add them back in properly.
+  const projects: Project[] = [];
+  const relations = collaboration?.relations ?? [];
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references = [], aspects = [] } = context ?? {};
-
+  const { references = [] } = context ?? {};
+  const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
+  const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
   const meme = references?.find(x => x.name === 'meme') as Reference;
@@ -134,28 +146,6 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const onProjectTransition = (project?: any) => {
     navigate(project?.nameID ?? 'new');
   };
-
-  // const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
-
-  const activity: ActivityItem[] = useMemo(() => {
-    return [
-      {
-        name: t('common.projects'),
-        count: getActivityCount(_activity, 'projects'),
-        color: 'positive',
-      },
-      {
-        name: t('common.interests'),
-        count: getActivityCount(_activity, 'relations'),
-        color: 'primary',
-      },
-      {
-        name: t('common.members'),
-        count: getActivityCount(_activity, 'members'),
-        color: 'neutralMedium',
-      },
-    ];
-  }, [_activity]);
 
   const opportunityProjects = useMemo(() => {
     const projectList: OpportunityProject[] = projects.map(p => ({
@@ -180,7 +170,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     return projectList;
   }, [projects, onProjectTransition, permissions.projectWrite, t]);
 
-  const aspectsCount = useAspectsCount(_activity);
+  const aspectsCount = useAspectsCount(activity);
+
+  const canvasesCount = useCanvasesCount(activity);
 
   const contributors = useCommunityMembersAsCardProps(opportunity?.community);
 
@@ -188,9 +180,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     <>
       {children(
         {
+          hubId,
           opportunity,
           url: buildAdminOpportunityUrl(hubNameId, challengeNameId, opportunity.nameID),
-          activity,
           meme,
           links,
           permissions: {
@@ -212,6 +204,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           discussions: [], //discussionList,
           aspects,
           aspectsCount,
+          canvases,
+          canvasesCount,
           ...contributors,
         },
         {

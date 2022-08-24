@@ -1,0 +1,94 @@
+query HubCallouts($hubNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    collaboration {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      callouts {
+        ...Callout
+      }
+    }
+  }
+}
+
+query ChallengeCallouts($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts {
+          ...Callout
+        }
+      }
+    }
+  }
+}
+
+query OpportunityCallouts($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts {
+          ...Callout
+        }
+      }
+    }
+  }
+}
+
+mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!) {
+  createAspectOnCallout(aspectData: $aspectData) {
+    id
+    nameID
+    displayName
+    description
+    type
+    tagset {
+      id
+      name
+      tags
+    }
+    banner {
+      ...VisualUri
+    }
+    bannerNarrow {
+      ...VisualUri
+    }
+  }
+}
+
+fragment Callout on Callout {
+  id
+  nameID
+  type
+  displayName
+  description
+  state
+  aspects {
+    ...ContributeTabAspect
+  }
+  canvases {
+    ...CanvasDetails
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  visibility
+}

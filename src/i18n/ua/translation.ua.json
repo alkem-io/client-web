@@ -1,4 +1,10 @@
 {
+  "notifications": {
+    "release-updates": {
+      "text": "Ми внесли деякі зміни на нашу платформу. Цікаво почитати про це?",
+      "link": "Натисніть тут"
+    }
+  },
   "cookie": {
     "consent": "Цей сайт використовує cookie файли для належної роботи, відповідно до нашої політики конфіденційності"
   },
@@ -72,6 +78,7 @@
     "hubs": "Центри",
     "challenge": "Випробування",
     "challenges": "Випробування",
+    "contributors": "Контрибʼютори",
     "opportunity": "Можливість",
     "opportunities": "Можливості",
     "organization": "Організація",
@@ -105,7 +112,7 @@
     "community": "Спільнота",
     "canvases": "Полотна",
     "settings": "Налаштування",
-    "search": "Пошук",
+    "search": "Пошук...",
     "reference": "Посилання",
     "references": "Посилання",
     "notifications": "Сповіщення",
@@ -247,7 +254,7 @@
   },
   "components": {
     "context-section": {
-      "create-aspect": "Аспект створено"
+      "create-card": "Аспект створено"
     },
     "aspect-creation": {
       "title": "Створити новий аспект",

@@ -9,13 +9,10 @@ import DiscussionPage from '../../pages/Discussions/DiscussionPage';
 import NewDiscussionPage from '../../pages/Discussions/NewDiscussionPage';
 import { nameOfUrl } from '../url-params';
 import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import { EntityTypeName } from '../../domain/shared/layout/PageLayout/PageLayout';
 
-interface DiscussionsRouteProps extends PageProps {
-  entityTypeName: EntityTypeName;
-}
+interface DiscussionsRouteProps extends PageProps {}
 
-export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ entityTypeName, paths }) => {
+export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ paths }) => {
   const { isFeatureEnabled } = useConfig();
   const { pathname } = useResolvedPath('.');
 
@@ -29,7 +26,7 @@ export const DiscussionsRoute: FC<DiscussionsRouteProps> = ({ entityTypeName, pa
           index
           element={
             <DiscussionsProvider>
-              <DiscussionListPage entityTypeName={entityTypeName} paths={currentPaths} />
+              <DiscussionListPage paths={currentPaths} />
             </DiscussionsProvider>
           }
         />

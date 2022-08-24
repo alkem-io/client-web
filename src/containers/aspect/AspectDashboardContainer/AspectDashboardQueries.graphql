@@ -1,49 +1,54 @@
-query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query HubAspect($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
-    context {
+    collaboration {
       ...AspectDashboardData
     }
   }
 }
 
-query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query ChallengeAspect($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
-      context {
+      collaboration {
         ...AspectDashboardData
       }
     }
   }
 }
 
-query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+query OpportunityAspect($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
-      context {
+      collaboration {
         ...AspectDashboardData
       }
     }
   }
 }
 
-fragment AspectDashboardData on Context {
+fragment AspectDashboardData on Collaboration {
   id
   authorization {
     id
     myPrivileges
   }
-  aspects(IDs: [$aspectNameId]) {
-    ...AspectDashboard
+  callouts(IDs: [$calloutId]) {
+    id
+    type
+    aspects(IDs: [$aspectNameId]) {
+      ...AspectDashboard
+    }
   }
 }
 
 fragment AspectDashboard on Aspect {
   id
+  nameID
   type
   displayName
   description

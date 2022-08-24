@@ -1,5 +1,5 @@
-mutation CreateAspect($aspectData: CreateAspectOnContextInput!) {
-  createAspectOnContext(aspectData: $aspectData) {
+mutation CreateAspect($aspectData: CreateAspectOnCalloutInput!) {
+  createAspectOnCallout(aspectData: $aspectData) {
     id
     nameID
     displayName

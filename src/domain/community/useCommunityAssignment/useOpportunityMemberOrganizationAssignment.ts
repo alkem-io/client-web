@@ -20,7 +20,7 @@ const useOpportunityMemberOrganizationAssignment = (options: Options) =>
         existingMembers: data?.hub.opportunity?.community?.memberOrganizations,
       };
     },
-    refetchMembersQuery: refetchOpportunityCommunityMembersQuery,
+    refetchQueries: [refetchOpportunityCommunityMembersQuery],
   });
 
 export default useOpportunityMemberOrganizationAssignment;

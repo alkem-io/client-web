@@ -1,4 +1,5 @@
 import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH, COMMUNITY_ROUTE } from '../models/constants';
+import { EntityPageSection } from '../domain/shared/layout/EntityPageSection';
 
 export const buildHubUrl = (hubNameId: string) => `/${hubNameId}`;
 
@@ -71,7 +72,7 @@ export const buildAspectUrl = (
   challengeNameId?: string,
   opportunityNameId?: string
 ) => {
-  const aspectUrl = `/contribute/aspects/${aspectNameId}`;
+  const aspectUrl = `/${EntityPageSection.Explore}/aspects/${aspectNameId}`;
   if (challengeNameId) {
     if (opportunityNameId) {
       return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${aspectUrl}`;
@@ -80,5 +81,23 @@ export const buildAspectUrl = (
     }
   } else {
     return `${buildHubUrl(hubNameId)}${aspectUrl}`;
+  }
+};
+
+export const buildCanvasUrl = (
+  canvasNameId: string,
+  hubNameId: string,
+  challengeNameId?: string,
+  opportunityNameId?: string
+) => {
+  const canvasUrl = `/${EntityPageSection.Explore}/canvases/${canvasNameId}`;
+  if (challengeNameId) {
+    if (opportunityNameId) {
+      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${canvasUrl}`;
+    } else {
+      return `${buildChallengeUrl(hubNameId, challengeNameId)}${canvasUrl}`;
+    }
+  } else {
+    return `${buildHubUrl(hubNameId)}${canvasUrl}`;
   }
 };

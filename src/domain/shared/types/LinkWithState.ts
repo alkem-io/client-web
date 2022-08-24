@@ -1,4 +1,4 @@
 export interface LinkWithState {
-  url: string;
-  linkState?: Record<string, unknown>;
+  to: string;
+  state?: Record<string, unknown>;
 }

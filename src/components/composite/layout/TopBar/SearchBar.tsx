@@ -1,91 +1,91 @@
-import { Box, Container, Theme } from '@mui/material';
-import { useSelector } from '@xstate/react';
-import React from 'react';
-import Skeleton from '@mui/material/Skeleton';
-import { useGlobalState, useUserContext } from '../../../../hooks';
-import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
-import UserSegment from '../../entities/User/UserSegment';
-import LogoComponent from './LogoComponent';
-import TopSearchComponent from './TopSearchComponent';
-import LanguageSelect from '../../../LanguageSelect/LanguageSelect';
-import { Link } from 'react-router-dom';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import SignInSegment from '../../../../domain/session/SignInSegment';
+import * as React from 'react';
+import { useCallback, useLayoutEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import TextField from '@mui/material/TextField';
+import { Box, InputAdornment, useTheme } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import { useMatch } from 'react-router-dom';
+import { useQueryParams } from '../../../../hooks';
 
-const USER_SEGMENT_MAX_WIDTH = (theme: Theme) => theme.spacing(33); // approx. 25 characters
-const USER_SEGMENT_USER_NAME_PROPS = {
-  sx: {
-    display: { xs: 'none', md: 'flex' },
-  },
-};
+const SEARCH_ROUTE = '/search';
+const SEARCH_TERMS_PARAM = 'terms';
+const getSearchTerms = (searchInput: string) => searchInput.split(' ').join(',');
 
 const SearchBar = () => {
-  const { user, verified, isAuthenticated, loadingMe } = useUserContext();
-  const breakpoint = useCurrentBreakpoint();
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const match = useMatch(SEARCH_ROUTE);
+  const query = useQueryParams();
+  const getInitialValue = () => {
+    const terms = match ? query.get(SEARCH_TERMS_PARAM) : null;
+    return terms ? terms.split(',').join(' ') : '';
+  };
+  const [value, setValue] = useState(getInitialValue);
 
-  const {
-    ui: { userSegmentService },
-  } = useGlobalState();
-
-  const isUserSegmentVisible = useSelector(userSegmentService, state => {
-    return state.matches('visible');
-  });
-
-  const renderUserProfileSegment = () => {
-    if (loadingMe) {
-      return <Skeleton sx={{ flexBasis: theme => theme.spacing(19), flexShrink: 1 }} />;
+  useLayoutEffect(() => {
+    if (match && query.get(SEARCH_TERMS_PARAM) === getSearchTerms(value)) {
+      return;
     }
-    if (!isAuthenticated) {
-      return <SignInSegment />;
+    setValue('');
+  }, [match, query]);
+
+  const keyPressHandler = ({ code }: React.KeyboardEvent<HTMLDivElement>) => {
+    if (code === 'Enter' || code === 'NumpadEnter') {
+      const terms = getSearchTerms(value);
+      const params = new URLSearchParams();
+      params.set(SEARCH_TERMS_PARAM, terms);
+      navigate(`${SEARCH_ROUTE}?${params}`, { replace: true });
     }
-    return (
-      isUserSegmentVisible &&
-      user && (
-        <UserSegment
-          flexShrink={1}
-          minWidth={0}
-          maxWidth={USER_SEGMENT_MAX_WIDTH}
-          userMetadata={user}
-          emailVerified={verified}
-          userNameProps={USER_SEGMENT_USER_NAME_PROPS}
-        />
-      )
-    );
   };
 
-  return (
-    <Container maxWidth={breakpoint}>
-      <Box paddingY={2} display="flex" gap={2} alignItems="center" justifyContent="space-between">
-        <LogoComponent />
-        <Box
-          flexGrow={1}
-          justifyContent="center"
-          sx={{
-            maxWidth: theme => theme.spacing(64),
-            display: {
-              xs: 'none',
-              md: 'block',
-            },
-          }}
-        >
-          <TopSearchComponent />
-        </Box>
-        <LanguageSelect sx={{ flexShrink: 0 }} />
-        <Link to="/help">
-          <HelpOutlineIcon color="primary" />
-        </Link>
-        {renderUserProfileSegment()}
-      </Box>
-    </Container>
+  const handleValueChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(event.target.value);
+    },
+    [setValue]
   );
-};
 
-export const SearchBarSpacer = () => {
   return (
-    <Box paddingY={2}>
-      <LogoComponent />
+    <Box
+      flexGrow={1}
+      justifyContent="center"
+      sx={{
+        display: {
+          xs: 'none',
+          md: 'block',
+        },
+        width: {
+          md: theme.spacing(15),
+          lg: theme.spacing(35),
+          xl: theme.spacing(42),
+        },
+      }}
+    >
+      <TextField
+        value={value}
+        onChange={handleValueChange}
+        aria-label="Search"
+        placeholder={t('common.search')}
+        margin="dense"
+        onKeyPress={keyPressHandler}
+        sx={{
+          padding: 0,
+          margin: 0,
+          width: '100%',
+        }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+          size: 'small',
+        }}
+        variant="outlined"
+      />
     </Box>
   );
 };
-
 export default SearchBar;

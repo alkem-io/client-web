@@ -29,6 +29,7 @@ export * from './useCurrentBreakpoint';
 
 export * from './operations/useEditReference';
 export * from './useNavigation';
+export * from './useBreadcrumbs';
 export * from './useNotification';
 export * from './useQueryParams';
 export * from './useSentry';

@@ -1,4 +1,10 @@
 {
+  "notifications": {
+    "release-updates": {
+      "text": "We've made some changes on our platform. Curious to read about it?",
+      "link": "Click here"
+    }
+  },
   "cookie": {
     "consent": "By clicking \"Accept All Cookies\", you agree to the storing of cookies on your device to enhance site navigation and analyze site usage.",
     "settings": "When visiting a website, information can be stored on your browser in the form of cookies. This information can be about you, your preferences and your device. Mostly, this information is used to make the website work as good as possible. Some websites use it for marketing purposes. As Alkemio does not allow any advertisement on its website, we only distinguish two types of cookies.",
@@ -16,6 +22,8 @@
     "explore": "Explore",
     "ok": "Ok",
     "create": "Create",
+    "publish": "Publish",
+    "save-draft": "Save as draft",
     "save": "Save",
     "back": "Back",
     "next": "Next",
@@ -68,23 +76,32 @@
     "name": "Name",
     "username": "Username",
     "tags": "Tags",
+    "administration": "Administration",
     "add": "Add",
     "remove": "Remove",
+    "callout": "Callout",
+    "canvas": "Canvas",
+    "canvases": "Canvases",
     "comment": "Comment",
     "comments": "Comments",
+    "card": "Card",
+    "cards": "Cards",
     "create": "Create",
     "create-new": "Create new",
     "create-new-entity": "Create new {{entity}}",
     "description": "Description",
+    "about": "About",
+    "explore": "Explore",
     "edit-entity": "Edit {{entity}}",
     "email": "Email",
     "state": "State",
-    "aspect": "Aspect",
-    "aspects": "Aspects",
+    "aspect": "Card",
+    "aspects": "Cards",
     "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",
     "challenges": "Challenges",
+    "contributors": "Contributors",
     "opportunity": "Opportunity",
     "opportunities": "Opportunities",
     "organization": "Organization",
@@ -94,7 +111,7 @@
     "interest": "Interest",
     "interests": "Interests",
     "project": "Project",
-    "projects": "Projects",
+    "agreements": "Agreements",
     "templates": "Templates",
     "group": "Group",
     "groups": "Groups",
@@ -107,6 +124,9 @@
     "no-updates": "No updates",
     "no-tags": "No tags available",
     "no-references": "No references available",
+    "field-required": "This field is required",
+    "field-min-length": "This field must be minimum of {{min}} characters",
+    "field-max-length": "This field must be maximum of {{max}} characters",
     "membership": "Membership",
     "owner": "Owner",
     "admin": "Admin",
@@ -119,9 +139,8 @@
     "contribute": "Contribute",
     "context": "Context",
     "community": "Community",
-    "canvases": "Canvases",
     "settings": "Settings",
-    "search": "Search",
+    "search": "Search...",
     "reference": "Reference",
     "references": "References",
     "notifications": "Notifications",
@@ -139,6 +158,9 @@
     "show-all": "Show all",
     "title": "Title",
     "warning": "Warning",
+    "preview": "Preview",
+    "help": "Help",
+    "language": "Language",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -268,6 +290,9 @@
     "members": "Members",
     "host": "Host"
   },
+  "callout": {
+    "draftNotice": "DRAFT - This Callout is only visible for admins."
+  },
   "forms": {
     "validations": {
       "required": "This field is required!",
@@ -278,36 +303,75 @@
     }
   },
   "aspect-templates": {
-    "aspect-template": "Aspect template",
-    "default-description": "Default aspect description",
+    "aspect-template": "Card template",
+    "default-description": "Default Card description",
     "banner-narrow": "Banner narrow"
   },
+  "canvas-templates": {
+    "canvas-template": "Canvas template"
+  },
+  "innovation-templates": {
+    "innovation-template": "Innovation Flow template",
+    "definition": {
+      "title": "Definition",
+      "placeholder": "Here you can paste the description from Xstate Visualizer with the various lifecycle states"
+    },
+    "type": {
+      "title": "Type"
+    }
+  },
   "components": {
+    "lifecycle-visualizer": {
+      "error": "The definition was not able to be visualized"
+    },
     "activity-tooltip": {
       "headline": "Alkemio is growing! In total, the platform now hosts:"
     },
     "context-section": {
-      "create-aspect": "Successfully created the aspect",
+      "create-card": "Successfully created the Card",
       "give-feedback": "Give feedback"
     },
+    "callout-creation": {
+      "title": "Create a new Callout",
+      "callout-type-label": "Callout type",
+      "info-step": {
+        "title": "Details",
+        "description": "Description",
+        "type-comments": "Comments",
+        "type-comments-help": "Select ‘Comments’ when you want people to answer in a simple text format, like a messageboard",
+        "type-cards": "Cards",
+        "type-cards-help": "Select ‘Cards’ when you want people to answer in a card format.",
+        "type-canvases": "Canvases",
+        "type-canvases-help": "Select ‘Canvases’ when you want people to answer on a visual whiteboard, allowing them to draw and use text. "
+      },
+      "template-step": {
+        "title": "Templates",
+        "no-templates": "No templates available",
+        "card-template-label": "Choose a a template  that you want to use for the Callout"
+      },
+      "create-step": {
+        "title": "Create",
+        "card-template-label": "Choose Card template"
+      }
+    },
     "aspect-creation": {
-      "title": "Create a new aspect",
+      "title": "Create a new Card",
       "type-step": {
         "title": "The type of the additional context to add.",
         "error": "Error occurred while loading the types",
-        "label": "Aspect Type",
-        "type-help-text-short": "Please choose the aspect type that best matches the context you wish to share.",
-        "type-help-text": "Aspects allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of aspect types that are available in this context is fixed. Please choose the aspect type that best matches the context you wish to share."
+        "label": "Card Type",
+        "type-help-text-short": "Please choose the Card type that best matches the context you wish to share.",
+        "type-help-text": "Card allow the sharing of relevant context, such as other initiatives, knowledge or key stakeholders. The set of Card types that are available in this context is fixed. Please choose the Card type that best matches the context you wish to share."
       },
       "info-step": {
         "title": "Details",
         "description": "Please share the details",
-        "description-placeholder": "A description for this aspect",
-        "description-help-text": "Add here the key information about the aspect. Why is it relevant? How does it relate?",
-        "tags-help-text": "Add free form tags to help quickly convey the key information about the aspect. Good tags also help make the Aspect easier to find in searches.",
-        "name-help-text": "A descriptive name for this aspect.",
+        "description-placeholder": "A description for this Card",
+        "description-help-text": "Add here the key information about the aspCardect. Why is it relevant? How does it relate?",
+        "tags-help-text": "Add free form tags to help quickly convey the key information about the Card. Good tags also help make the Card easier to find in searches.",
+        "name-help-text": "A descriptive name for this Card.",
         "name-id-help-text": "Name ID help text",
-        "unique-name-validation-text": "${path} is already used in another aspect"
+        "unique-name-validation-text": "${path} is already used in another Card"
       },
       "create-step": {
         "title": "Create",
@@ -315,12 +379,12 @@
         "name": "Name",
         "description": "Description",
         "links": "Relevant Links",
-        "explanation": "By completing this step the Aspect will be created and you will have the option to add visuals."
+        "explanation": "By completing this step the Card will be created and you will have the option to add visuals."
       },
       "visuals-step": {
         "title": "Visuals",
-        "headline": "Congratulations, you have now successfully created an aspect!",
-        "explanation": "To further personalize your aspect, please consider adding visuals such as a Banner to the card.",
+        "headline": "Congratulations, you have now successfully created an Card!",
+        "explanation": "To further personalize your Card, please consider adding visuals such as a Banner to the card.",
         "bottom-note": "You will still have the possibility to change these visuals under the settings tab as well as adding references and a Banner for the Dashboard card."
       }
     },
@@ -660,16 +724,16 @@
         "dashboard": {
           "description": "Here you can see the summary for this {{entity}}. Navigate through the other tabs to see more detailed information!"
         },
-        "context": {
-          "description": "Here you can explore the context of this {{entity}}. This information is provided by the organization managing this {{entity}}."
+        "about": {
+          "description": "Here you can explore the context of this {{entity}}, as well as the community."
         },
         "community": {
           "description": "Here you can explore the Community. See the Users and Organizations that are contributing, as well as updates that have been shared.",
           "leading-contributors": "Leading Contributors",
           "contributors": "Contributors"
         },
-        "contribute": {
-          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community.\nAdd additional aspects that are relevant, as well as comment on aspects added by others."
+        "explore": {
+          "description": "Here you can contribute your insights to understanding the context. It is about surfacing up the wisdom of the community."
         },
         "discussions": {
           "description": "Here you can read and participate in discussions around this {{entity}}."
@@ -680,7 +744,10 @@
       }
     },
     "contribute": {
-      "no-aspects": "No aspects found"
+      "no-cards": "No Card found"
+    },
+    "explore": {
+      "create-callout": "Create new Callout"
     },
     "admin": {
       "generic": {
@@ -701,14 +768,16 @@
             "description": "Here you can tweak authorization settings for this {{entity}}."
           },
           "templates": {
-            "description": "Here you can create and edit Aspect and Canvas templates for this {{entity}}.",
-            "aspect-templates": "Aspect Templates",
+            "description": "Here you can create and edit templates for this {{entity}}.",
+            "aspect-templates": "Card Templates",
             "canvas-templates": "Canvas Templates",
+            "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template."
           }
         }
       },
       "organization": {
+        "create-organization": "Create organization",
         "authorization": {
           "preferences": {
             "title": "Authorization",
@@ -729,7 +798,7 @@
         },
         "sections": {
           "opportunities": {
-            "description": "Here you can edit opportunities for this hub."
+            "description": "Here you can edit opportunities for this challenge."
           }
         },
         "notifications": {
@@ -914,6 +983,7 @@
     },
     "hub": {
       "title": "Hub",
+      "about-this-hub": "About this Hub",
       "application": {
         "title": "Application to join {{entity}} \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",
@@ -943,6 +1013,7 @@
     },
     "challenge": {
       "title": "Challenge",
+      "about-this-challenge": "About this Challenge",
       "organizationBanner": {
         "load-more": "And more ..."
       },
@@ -969,6 +1040,7 @@
     },
     "opportunity": {
       "title": "Opportunity",
+      "about-this-opportunity": "About this Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
@@ -984,19 +1056,13 @@
           "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
         },
         "apply": "Interested in collaboration?",
+        "agreements": {
+          "description": "Agreements are the formation of concrete next steps to be taken. This new functionality will be available soon.\n\nIdeas, suggestions? Please reach out!"
+        },
         "projects": {
-          "description": "Here you can manage your projects and suggest new ones to your stakeholders.",
-          "header": {
-            "text": "Projects",
-            "tag": "Coming soon"
-          },
-          "subheader": "Changing the world one project at a time",
-          "body": "Manage your projects and suggest new ones to your stakeholders.",
           "more-projects": "MORE PROJECTS STARTING SOON",
           "new-project": {
-            "header": "New project",
-            "subheader": "This could be the project that makes the difference",
-            "body": "Starting a new project is easy. In just a few steps your project is good to go. Set the scope, allocate resources, pick your hero’s and let stakeholders vote for your proposal. When everyone has signed the fun can begin. Let’s get started!"
+            "header": "New project"
           }
         }
       }
@@ -1199,6 +1265,7 @@
     "loading-flow": "Loading flow",
     "loading-error": "Loading error",
     "messages": {
+      "successfully-recovered-password": "Please enter a new password within the next 15 minutes to complete your password reset.",
       "verification-flow-expired": "The verification link has expired. Please request a fresh one by submitting your email once again.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again."
     }
@@ -1211,6 +1278,7 @@
   },
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",
+    "dialog-title": "All Updates",
     "no-data": "No updates available."
   },
   "dashboard-discussions-section": {
@@ -1222,12 +1290,16 @@
     "title": "Community"
   },
   "aspect-edit": {
-    "new": "New Aspect",
-    "edit": "Edit Aspect",
+    "new": "New Card",
+    "edit": "Edit Card",
     "type": {
-      "title": "Aspect Type",
-      "help-text": "Type of Aspect"
+      "title": "Card Type",
+      "help-text": "What type of information do you want to share?"
     }
+  },
+  "innovation-edit": {
+    "new": "New Innovation flow",
+    "edit": "Edit Innovation flow"
   },
   "contributors-section": {
     "title": "Contributors",
@@ -1245,6 +1317,7 @@
     "no-data": "No {{name, lowercase}} available"
   },
   "dashboard-contributors-section": {
+    "dialog-title": "Contributors",
     "more": "...plus {{count}} more"
   },
   "associates-view": {

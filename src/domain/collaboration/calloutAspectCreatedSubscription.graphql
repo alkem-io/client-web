@@ -1,0 +1,7 @@
+subscription CalloutAspectCreated($calloutID: UUID!) {
+  calloutAspectCreated(calloutID: $calloutID) {
+    aspect {
+      ...ContributeTabAspect
+    }
+  }
+}

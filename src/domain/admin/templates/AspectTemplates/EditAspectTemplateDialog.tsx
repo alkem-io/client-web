@@ -12,41 +12,35 @@ interface EditAspectTemplateDialogProps {
   onClose: DialogProps['onClose'];
   onSubmit: (values: AspectTemplateFormSubmittedValues) => void;
   onDelete: () => void;
-  aspectTemplate: AdminAspectTemplateFragment | undefined;
+  template: AdminAspectTemplateFragment | undefined;
 }
 
-const EditAspectTemplateDialog = ({
-  aspectTemplate,
-  open,
-  onClose,
-  onSubmit,
-  onDelete,
-}: EditAspectTemplateDialogProps) => {
+const EditAspectTemplateDialog = ({ template, open, onClose, onSubmit, onDelete }: EditAspectTemplateDialogProps) => {
   const { t } = useTranslation();
 
-  if (!aspectTemplate) {
+  if (!template) {
     return null;
   }
 
   const values: Partial<AspectTemplateFormValues> = {
-    type: aspectTemplate.type,
-    defaultDescription: aspectTemplate.defaultDescription,
-    title: aspectTemplate.info.title,
-    description: aspectTemplate.info.description,
-    tags: aspectTemplate.info.tagset?.tags,
+    type: template.type,
+    defaultDescription: template.defaultDescription,
+    title: template.info.title,
+    description: template.info.description,
+    tags: template.info.tagset?.tags,
   };
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      PaperProps={{ sx: { backgroundColor: 'background.default' } }}
+      PaperProps={{ sx: { backgroundColor: 'background.default', width: theme => theme.spacing(128) } }}
       maxWidth={false}
     >
       <AspectTemplateForm
         title={t('common.edit-entity', { entity: t('aspect-templates.aspect-template') })}
         initialValues={values}
-        visual={aspectTemplate.info.visual}
+        visual={template.info.visual}
         onSubmit={onSubmit}
         actions={
           <>

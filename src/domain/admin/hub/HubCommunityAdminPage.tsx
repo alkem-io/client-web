@@ -12,6 +12,8 @@ import useHubApplications from './providers/useHubApplications';
 import { HubCommunityAdminMembershipPreferencesSection } from './HubCommunityAdminMembershipPreferencesSection';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
 import {
+  refetchHubAvailableLeadUsersQuery,
+  refetchHubAvailableMemberUsersQuery,
   refetchHubCommunityMembersQuery,
   useHubAvailableLeadUsersLazyQuery,
   useHubAvailableMemberUsersLazyQuery,
@@ -39,7 +41,7 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '..
         existingMembers: data?.hub.community?.memberOrganizations,
       };
     },
-    refetchMembersQuery: refetchHubCommunityMembersQuery,
+    refetchQueries: [refetchHubCommunityMembersQuery],
   });
 
   const leadUsersProps = useCommunityUserAssignment({
@@ -47,36 +49,30 @@ const HubCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '..
     variables: {
       hubId,
     },
-    useExistingMembersQuery: options => {
-      const { data } = useHubCommunityMembersQuery(options);
-
-      return {
-        communityId: data?.hub.community?.id,
-        existingMembers: data?.hub.community?.leadUsers,
-      };
+    existingUsersOptions: {
+      useQuery: useHubCommunityMembersQuery,
+      readCommunity: data => data.hub.community,
+      refetchQuery: refetchHubCommunityMembersQuery,
     },
-    refetchMembersQuery: refetchHubCommunityMembersQuery,
-    availableUsers: {
+    availableUsersOptions: {
       useLazyQuery: useHubAvailableLeadUsersLazyQuery,
-      getResult: data => data.hub.community?.availableLeadUsers,
+      readUsers: data => data.hub.community?.availableLeadUsers,
+      refetchQuery: refetchHubAvailableLeadUsersQuery,
     },
   });
 
   const memberUsersProps = useCommunityUserAssignment({
     memberType: 'member',
     variables: { hubId },
-    useExistingMembersQuery: ({ variables, skip }) => {
-      const { data } = useHubCommunityMembersQuery({ variables, skip });
-
-      return {
-        communityId,
-        existingMembers: data?.hub.community?.memberUsers,
-      };
+    existingUsersOptions: {
+      useQuery: useHubCommunityMembersQuery,
+      readCommunity: data => data.hub.community,
+      refetchQuery: refetchHubCommunityMembersQuery,
     },
-    refetchMembersQuery: refetchHubCommunityMembersQuery,
-    availableUsers: {
+    availableUsersOptions: {
       useLazyQuery: useHubAvailableMemberUsersLazyQuery,
-      getResult: data => data.hub.community?.availableMemberUsers,
+      readUsers: data => data.hub.community?.availableMemberUsers,
+      refetchQuery: refetchHubAvailableMemberUsersQuery,
     },
   });
 

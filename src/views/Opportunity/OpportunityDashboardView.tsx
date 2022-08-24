@@ -1,33 +1,34 @@
 import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import EntityContributionCard from '../../components/composite/common/cards/ContributionCard/EntityContributionCard';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import DashboardOpportunityStatistics from '../../domain/shared/components/DashboardSections/DashboardOpportunityStatistics';
 import DashboardUpdatesSection from '../../domain/shared/components/DashboardSections/DashboardUpdatesSection';
 import InterestModal from '../../components/composite/entities/Hub/InterestModal';
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
-import { OpportunityPageFragment, Reference } from '../../models/graphql-schema';
+import {
+  CanvasDetailsFragment,
+  OpportunityPageFragment,
+  OpportunityPageRelationsFragment,
+  Reference,
+} from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
-import { getVisualBanner } from '../../utils/visuals.utils';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
 import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-
-const SPACING = 2;
-const PROJECTS_NUMBER_IN_SECTION = 2;
+import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
+import { buildCanvasUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
+import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
   opportunity: OpportunityPageFragment;
-  activity: ActivityItem[];
+  // activity: ActivityItem[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   discussions: Discussion[];
@@ -35,11 +36,13 @@ export interface OpportunityDashboardViewEntities {
   links: Reference[];
   meme?: Reference;
   relations: {
-    incoming: OpportunityPageFragment['relations'];
-    outgoing: OpportunityPageFragment['relations'];
+    incoming: OpportunityPageRelationsFragment[];
+    outgoing: OpportunityPageRelationsFragment[];
   };
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
 }
 
 export interface OpportunityDashboardViewActions {
@@ -82,19 +85,28 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const { challengeNameId } = useChallenge();
   const { hubId, opportunityId } = useOpportunity();
 
+  const [, buildLinkToCanvas] = useBackToParentPage(
+    buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID)
+  );
+
+  const buildCanvasLink = useCallback(
+    (canvasNameId: string) => {
+      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId, entities.opportunity.nameID);
+      return buildLinkToCanvas(url);
+    },
+    [hubNameId, challengeNameId, entities.opportunity]
+  );
+
   const { user: userMetadata } = useUserContext();
 
   const isNotMember = opportunityId && userMetadata ? !userMetadata.ofOpportunity(opportunityId) : true;
 
   const { opportunity } = entities;
-  const lifecycle = opportunity?.lifecycle;
   const communityId = opportunity?.community?.id || '';
-  const projects = opportunity?.projects || [];
   const { communityReadAccess } = options;
 
-  const { id, context, displayName } = opportunity;
-  const { visuals, tagline = '', vision = '' } = context ?? {};
-  const banner = getVisualBanner(visuals);
+  const { id, collaboration } = opportunity;
+  const { id: collaborationId } = collaboration ?? {};
 
   const { loading } = state;
 
@@ -103,8 +115,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
       <Grid container spacing={2}>
         <DashboardColumn>
           <DashboardGenericSection
-            bannerUrl={banner}
-            headerText={displayName}
+            headerText={t('pages.opportunity.about-this-opportunity')}
             primaryAction={
               isNotMember && (
                 <Button onClick={actions.onInterestOpen} variant="contained">
@@ -113,23 +124,8 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               )
             }
           >
-            <Markdown children={tagline} />
-            <Markdown children={vision} />
+            <Markdown children={opportunity?.context?.vision || ''} />
           </DashboardGenericSection>
-          <DashboardOpportunityStatistics
-            headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
-            activities={entities.activity}
-            lifecycle={lifecycle}
-            loading={loading}
-          />
-          {communityReadAccess && (
-            <>
-              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
-              {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
-              {/* <SectionSpacer />
-              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
-            </>
-          )}
           {communityReadAccess && (
             <EntityDashboardLeadsSection
               usersHeader={t('community.leads')}
@@ -137,6 +133,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               leadUsers={opportunity?.community?.leadUsers}
               leadOrganizations={opportunity?.community?.leadOrganizations}
             />
+          )}
+          {communityReadAccess && (
+            <>
+              <DashboardUpdatesSection entities={{ hubId: hubId, communityId: communityId }} />
+              {/* The discussions are not loaded, check OpportunityPageContainer if you try to enable them. */}
+              {/* <SectionSpacer />
+              <DashboardDiscussionsSection discussions={discussions} isMember={options.isMemberOfOpportunity} /> */}
+            </>
           )}
           {communityReadAccess && (
             <EntityDashboardContributorsSection
@@ -148,30 +152,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <DashboardGenericSection
-            headerText={t('pages.opportunity.sections.dashboard.projects.title')}
-            helpText={t('pages.opportunity.sections.dashboard.projects.help-text')}
-            navText={t('buttons.see-all')}
-            navLink={'projects'}
-          >
-            <Grid container item spacing={SPACING}>
-              {projects.slice(0, PROJECTS_NUMBER_IN_SECTION).map((x, i) => {
-                return (
-                  <Grid key={i} item>
-                    <EntityContributionCard
-                      loading={loading}
-                      activities={[]}
-                      details={{
-                        headerText: x.displayName,
-                        mediaUrl: '',
-                        url: `../projects/${x.nameID}`,
-                      }}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>
-          </DashboardGenericSection>
           <DashboardSectionAspects
             aspects={entities.aspects}
             aspectsCount={entities.aspectsCount}
@@ -179,9 +159,21 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
             challengeNameId={challengeNameId}
             opportunityNameId={opportunity.nameID}
           />
+          <CanvasesDashboardPreview
+            canvases={entities.canvases}
+            canvasesCount={entities.canvasesCount}
+            noItemsMessage={t('pages.canvas.no-canvases')}
+            buildCanvasLink={buildCanvasLink}
+            loading={loading}
+          />
         </DashboardColumn>
       </Grid>
-      <InterestModal onHide={actions.onInterestClose} show={state.showInterestModal} opportunityId={id} />
+      <InterestModal
+        onHide={actions.onInterestClose}
+        show={state.showInterestModal}
+        collaborationId={collaborationId}
+        opportunityId={id}
+      />
     </>
   );
 };

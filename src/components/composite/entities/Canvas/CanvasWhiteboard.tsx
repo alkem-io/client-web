@@ -1,15 +1,15 @@
-import Excalidraw from '@excalidraw/excalidraw';
+import { Excalidraw } from '@excalidraw/excalidraw';
 import { ExportedDataState, ImportedDataState } from '@excalidraw/excalidraw/types/data/types';
 import { ExcalidrawAPIRefValue, ExcalidrawProps } from '@excalidraw/excalidraw/types/types';
 import BackupIcon from '@mui/icons-material/Backup';
 import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { debounce } from 'lodash';
-import React, { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { useCombinedRefs } from '../../../../hooks/useCombinedRefs';
-import { CANVAS_LOADED_EVENT_NAME, CanvasLoadedEvent } from '../../../../types/events';
 import { Identifiable } from '../../../../domain/shared/types/Identifiable';
+import useAsyncInterruptibleCallback from '../../../../domain/shared/utils/useAsyncInterruptibleCallback';
 
 const useActorWhiteboardStyles = makeStyles(theme => ({
   container: {
@@ -53,72 +53,59 @@ export interface CanvasWhiteboardProps {
   actions: CanvasWhiteboardActions;
 }
 
-const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps>(
+const CANVAS_UPDATE_DEBOUNCE_INTERVAL = 100;
+const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
+
+const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue | null, CanvasWhiteboardProps>(
   ({ entities, actions, options }, excalidrawRef) => {
     const { canvas } = entities;
 
     const styles = useActorWhiteboardStyles();
-    const [offsetHeight, setOffsetHeight] = useState(0);
-    const innerRef = useRef<ExcalidrawAPIRefValue>(null);
-    const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue>(excalidrawRef, innerRef);
+    const combinedRef = useCombinedRefs<ExcalidrawAPIRefValue | null>(null, excalidrawRef);
 
     const value = canvas?.value;
     const data = useMemo(() => (value ? JSON.parse(value) : initialExcalidrawState), [value]);
 
-    const refreshOnDataChange = useCallback(
+    const refreshOnDataChange = useAsyncInterruptibleCallback(check =>
       debounce(async debouncedData => {
-        try {
-          const excalidraw = await combinedRef.current?.readyPromise;
-
-          excalidraw?.updateScene(debouncedData);
-
-          // don't have another way to signal that the canvas loading has finished
-          if (canvas) {
-            window.dispatchEvent(
-              new CustomEvent<CanvasLoadedEvent>(CANVAS_LOADED_EVENT_NAME, {
-                detail: {
-                  canvasId: canvas.id,
-                },
-              })
-            );
-          }
-        } catch (ex) {
-          // Excalidraw attempts to perform state updates on an unmounted component
-        }
-      }, 100),
-      [combinedRef.current]
+        const excalidraw = await check(combinedRef.current?.readyPromise);
+        excalidraw?.updateScene(debouncedData);
+      }, CANVAS_UPDATE_DEBOUNCE_INTERVAL)
     );
 
     useEffect(() => {
       // apparently when a canvas state is changed too fast
       // it is not reflected by excalidraw (they don't have internal debounce for state change)
       refreshOnDataChange(data);
+      return refreshOnDataChange.cancel;
     }, [refreshOnDataChange, data]);
 
+    const scrollToContent = useAsyncInterruptibleCallback(check => async () => {
+      const excalidraw = await check(combinedRef.current?.readyPromise);
+      excalidraw?.scrollToContent();
+    });
+
     useEffect(() => {
-      async function scrollToContent() {
-        const excalidraw = await combinedRef.current?.readyPromise;
-
-        excalidraw?.scrollToContent();
-      }
-
       if (canvas?.id) {
         scrollToContent();
       }
     }, [canvas?.id]);
 
-    useEffect(() => {
-      const onScroll = async e => {
-        setOffsetHeight(e.target.offsetHeight);
-        const excalidraw = await combinedRef.current?.readyPromise;
-        if (excalidraw) {
-          excalidraw.refresh();
-        }
-      };
-      window.addEventListener('scroll', onScroll, true);
+    const handleScroll = useAsyncInterruptibleCallback(check =>
+      debounce(async () => {
+        const excalidraw = await check(combinedRef.current?.readyPromise);
+        excalidraw?.refresh();
+      }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL)
+    );
 
-      return () => window.removeEventListener('scroll', onScroll);
-    }, [offsetHeight]);
+    useEffect(() => {
+      window.addEventListener('scroll', handleScroll, true);
+
+      return () => {
+        handleScroll.cancel();
+        window.removeEventListener('scroll', handleScroll, true);
+      };
+    }, []);
 
     // This needs to be removed in case it crashes the export window
     // We already have a Save button
@@ -160,18 +147,21 @@ const CanvasWhiteboard = forwardRef<ExcalidrawAPIRefValue, CanvasWhiteboardProps
 
     return (
       <div className={styles.container}>
-        <Excalidraw
-          ref={combinedRef as any}
-          initialData={data}
-          UIOptions={{
-            ...UIOptions,
-            ...externalUIOptions,
-          }}
-          isCollaborating={false}
-          gridModeEnabled
-          viewModeEnabled
-          {...restOptions}
-        />
+        {canvas && (
+          <Excalidraw
+            key={canvas.id} // initializing a fresh Excalidraw for each canvas
+            ref={combinedRef}
+            initialData={data}
+            UIOptions={{
+              ...UIOptions,
+              ...externalUIOptions,
+            }}
+            isCollaborating={false}
+            gridModeEnabled
+            viewModeEnabled
+            {...restOptions}
+          />
+        )}
       </div>
     );
   }

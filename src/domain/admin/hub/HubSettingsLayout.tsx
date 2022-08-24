@@ -5,6 +5,8 @@ import { useHub } from '../../../hooks';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
+import HubPageBanner from '../../hub/layout/HubPageBanner';
+import HubTabs from '../../hub/layout/HubTabs';
 
 interface HubSettingsLayoutProps {
   currentTab: SettingsSection;
@@ -28,7 +30,16 @@ const tabs: TabDefinition<SettingsSection>[] = [
 const HubSettingsLayout: FC<HubSettingsLayoutProps> = props => {
   const entityAttrs = useHub();
 
-  return <EntitySettingsLayout entityTypeName="hub" tabs={tabs} {...entityAttrs} {...props} />;
+  return (
+    <EntitySettingsLayout
+      entityTypeName="hub"
+      tabs={tabs}
+      pageBannerComponent={HubPageBanner}
+      tabsComponent={HubTabs}
+      {...entityAttrs}
+      {...props}
+    />
+  );
 };
 
 export default HubSettingsLayout;

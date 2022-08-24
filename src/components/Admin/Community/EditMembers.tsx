@@ -10,7 +10,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import React, { ComponentType, ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { ComponentType, forwardRef, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Filter } from '../Common/Filter';
 import TableRowLoading from '../../../domain/shared/pagination/TableRowLoading';
@@ -158,9 +158,18 @@ export const AvailableMembers = <Member extends Identifiable>({
     onSearchTermChangeDebounced(searchTerm);
   }, [searchTerm]);
 
-  const lazyLoading = useLazyLoading({
-    fetchMore,
+  const columnsCount = React.Children.count(renderHeader()) + 1;
+
+  const Loader = useMemo(
+    () => forwardRef<HTMLTableRowElement>((props, ref) => <TableRowLoading ref={ref} colSpan={columnsCount} />),
+    [columnsCount]
+  );
+
+  const loader = useLazyLoading(Loader, {
+    hasMore,
+    updating,
     loading,
+    fetchMore,
   });
 
   return (
@@ -210,7 +219,7 @@ export const AvailableMembers = <Member extends Identifiable>({
               {renderRow(m, Cell)}
             </StyledTableRow>
           ))}
-          {hasMore && <TableRowLoading ref={lazyLoading.ref} colSpan={2} />}
+          {loader}
         </TableBody>
       </ScrollableTable>
     </>

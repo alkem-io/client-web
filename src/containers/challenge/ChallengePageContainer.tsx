@@ -1,27 +1,37 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import { AspectCardFragment, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
+import {
+  AspectCardFragment,
+  AuthorizationPrivilege,
+  CanvasDetailsFragment,
+  ChallengeProfileFragment,
+} from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
+import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import {
+  getAspectsFromPublishedCallouts,
+  getCanvasesFromPublishedCallouts,
+} from '../../domain/callout/utils/getPublishedCallouts';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
   hubNameId: string;
   hubDisplayName: string;
   challenge?: ChallengeProfileFragment;
-  activity: ActivityItem[];
+  opportunitiesCount: number | undefined;
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
   permissions: {
     canEdit: boolean;
     communityReadAccess: boolean;
@@ -38,13 +48,10 @@ export interface ChallengeContainerState {
   error?: ApolloError;
 }
 
-const EMPTY = [];
-
 export interface ChallengePageContainerProps
   extends ContainerChildProps<ChallengeContainerEntities, ChallengeContainerActions, ChallengeContainerState> {}
 
 export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ children }) => {
-  const { t } = useTranslation();
   const { user, isAuthenticated } = useUserContext();
   const { loading: loadingHubContext, ...hub } = useHub();
   const { hubId, hubNameId, challengeId, challengeNameId, loading } = useChallenge();
@@ -66,30 +73,15 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
-  const activity: ActivityItem[] = useMemo(() => {
-    const _activity = _challenge?.hub.challenge.activity || [];
-    return [
-      {
-        name: t('common.opportunities'),
-        type: ActivityType.Opportunity,
-        count: getActivityCount(_activity, 'opportunities'),
-        color: 'primary',
-      },
-      {
-        name: t('common.projects'),
-        count: getActivityCount(_activity, 'projects'),
-        color: 'positive',
-      },
-      {
-        name: t('common.members'),
-        count: getActivityCount(_activity, 'members'),
-        color: 'neutralMedium',
-      },
-    ];
-  }, [_challenge]);
+  const { activity = [] } = _challenge?.hub.challenge || {};
 
-  const aspects = _challenge?.hub.challenge.context?.aspects || EMPTY;
+  const opportunitiesCount = useMemo(() => getActivityCount(activity, ActivityType.Opportunity), [activity]);
+
+  const aspects = getAspectsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
+
+  const canvases = getCanvasesFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
+  const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
 
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
 
@@ -101,9 +93,11 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           hubNameId,
           hubDisplayName: hub.displayName,
           challenge: _challenge?.hub.challenge,
-          activity,
+          opportunitiesCount,
           aspects,
           aspectsCount,
+          canvases,
+          canvasesCount,
           permissions,
           isAuthenticated,
           isMember: user?.ofChallenge(challengeId) || false,

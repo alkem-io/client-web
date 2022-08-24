@@ -5,7 +5,7 @@ import HubContextView from '../../views/Hub/HubContextView';
 import ContextTabContainer from '../../containers/context/ContextTabContainer';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import PageLayout from '../../domain/shared/layout/PageLayout';
+import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
 
 export interface HubContextPageProps extends PageProps {}
 
@@ -22,7 +22,7 @@ const HubContextPage: FC<HubContextPageProps> = ({ paths }) => {
   const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
 
   return (
-    <PageLayout currentSection={EntityPageSection.Context} entityTypeName="hub">
+    <HubPageLayout currentSection={EntityPageSection.About}>
       <ContextTabContainer hubNameId={hubNameId} loadReferences={loadAspectsAndReferences}>
         {(entities, state) => (
           <HubContextView
@@ -40,10 +40,11 @@ const HubContextPage: FC<HubContextPageProps> = ({ paths }) => {
             }}
             options={{}}
             actions={{}}
+            activity={entities.activity}
           />
         )}
       </ContextTabContainer>
-    </PageLayout>
+    </HubPageLayout>
   );
 };
 export default HubContextPage;

@@ -11,6 +11,8 @@ import {
 import AuthorizationPageProps from './AuthorizationPageProps';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
+import AdminLayout from '../../domain/admin/toplevel/AdminLayout';
+import { AdminSection } from '../../domain/admin/toplevel/constants';
 
 const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();
@@ -69,14 +71,16 @@ const GlobalCommunityAuthorizationPage: FC<AuthorizationPageProps> = ({ paths })
   };
 
   return (
-    <Container maxWidth="xl">
-      <EditMemberCredentials
-        onAdd={handleAdd}
-        onRemove={handleRemove}
-        credential={credential}
-        updating={addingMember || removingMember}
-      />
-    </Container>
+    <AdminLayout currentTab={AdminSection.Authorization}>
+      <Container maxWidth="xl">
+        <EditMemberCredentials
+          onAdd={handleAdd}
+          onRemove={handleRemove}
+          credential={credential}
+          updating={addingMember || removingMember}
+        />
+      </Container>
+    </AdminLayout>
   );
 };
 export default GlobalCommunityAuthorizationPage;

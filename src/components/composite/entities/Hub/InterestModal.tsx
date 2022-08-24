@@ -30,9 +30,10 @@ interface P {
   onHide: () => void;
   show: boolean;
   opportunityId: string;
+  collaborationId: string | undefined;
 }
 
-const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
+const InterestModal: FC<P> = ({ onHide, show, opportunityId, collaborationId }) => {
   const { t } = useTranslation();
   const styles = useStyles();
   const { hubNameId } = useHub();
@@ -60,10 +61,14 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
   };
 
   const onSubmit = () => {
+    if (!collaborationId) {
+      return;
+    }
+
     createRelation({
       variables: {
         input: {
-          parentID: opportunityId,
+          collaborationID: collaborationId,
           type: 'incoming',
           actorName: userData?.me.displayName || '',
           actorType: 'user',
@@ -85,7 +90,7 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
       </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2}>
-          {data?.createRelation.id ? (
+          {data?.createRelationOnCollaboration.id ? (
             <Grid item lg={12}>
               <Typography variant={'h3'} color={'positive'}>
                 The request successfully sent
@@ -133,11 +138,13 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId }) => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        {data?.createRelation.id && <Button onClick={onHide} variant={'primary'} text={t('buttons.close')} />}
+        {data?.createRelationOnCollaboration.id && (
+          <Button onClick={onHide} variant={'primary'} text={t('buttons.close')} />
+        )}
         {loading ? (
           <Loading text={'Sending the request...'} />
         ) : (
-          !data?.createRelation.id && (
+          !data?.createRelationOnCollaboration.id && (
             <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid} text={t('buttons.submit')} />
           )
         )}

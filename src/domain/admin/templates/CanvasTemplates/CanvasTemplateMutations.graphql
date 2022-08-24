@@ -1,0 +1,25 @@
+mutation updateCanvasTemplate($templateId: UUID!, $value: JSON, $info: UpdateTemplateInfoInput) {
+  updateCanvasTemplate(canvasTemplateInput: {
+    ID: $templateId
+    value: $value
+    info: $info
+  }) {
+    id
+  }
+}
+
+mutation createCanvasTemplate($templatesSetId: UUID!, $value: JSON!, $info: CreateTemplateInfoInput!) {
+  createCanvasTemplate(canvasTemplateInput: {
+    templatesSetID: $templatesSetId
+    value: $value
+    info: $info
+  }) {
+    id
+  }
+}
+
+mutation deleteCanvasTemplate($templateId: UUID!) {
+  deleteCanvasTemplate(deleteData: { ID: $templateId }) {
+    id
+  }
+}

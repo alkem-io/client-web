@@ -8,9 +8,10 @@ import {
 } from '../../hooks/generated/graphql';
 import {
   CanvasDetailsFragment,
-  ContextWithCanvasDetailsFragment,
+  CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../models/graphql-schema';
+import { getCanvasCallout } from './getCanvasCallout';
 
 interface CanvasProviderProps {
   children: (entities: IProvidedEntities, state: IProvidedEntitiesState) => React.ReactNode;
@@ -23,8 +24,8 @@ export type TemplateQuery = {
 export interface IProvidedEntities {
   canvases: CanvasDetailsFragment[];
   templates: CreateCanvasCanvasTemplateFragment[];
-  contextId: string | undefined;
-  authorization: ContextWithCanvasDetailsFragment['authorization'];
+  calloutId: string | undefined;
+  authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
 }
 
 export interface IProvidedEntitiesState {
@@ -61,20 +62,22 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     errorPolicy: 'all',
   });
 
-  const context =
-    hubData?.hub.context ?? challengeData?.hub.challenge.context ?? opportunityData?.hub.opportunity.context;
+  const callout =
+    getCanvasCallout(hubData?.hub.collaboration?.callouts) ??
+    getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts) ??
+    getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts);
 
-  const canvases = context?.canvases ?? [];
+  const canvases = callout?.canvases ?? [];
 
   const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
 
-  const contextId = context?.id;
-  const authorization = context?.authorization;
+  const calloutId = callout?.id;
+  const authorization = callout?.authorization;
 
   return (
     <>
       {children(
-        { canvases, templates, contextId, authorization },
+        { canvases, templates, calloutId, authorization },
         { loadingCanvases: loadingHub || loadingChallenge || loadingOpportunity, loadingTemplates }
       )}
     </>

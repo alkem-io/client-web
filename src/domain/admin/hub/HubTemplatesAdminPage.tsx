@@ -3,50 +3,93 @@ import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
-import { refetchHubTemplatesQuery, useHubTemplatesQuery } from '../../../hooks/generated/graphql';
+import {
+  refetchHubTemplatesQuery,
+  useHubCanvasesLazyQuery,
+  useHubTemplatesQuery,
+} from '../../../hooks/generated/graphql';
 import { useParams } from 'react-router-dom';
 import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspectTemplatesSection';
+import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
+import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
+import { getCanvasCallout } from '../../../containers/canvas/getCanvasCallout';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
   routePrefix: string;
   aspectTemplatesRoutePath: string;
   canvasTemplatesRoutePath: string;
+  innovationTemplatesRoutePath: string;
   edit?: boolean;
 }
-
-const PAGE_KEY_TEMPLATES = 'HubTemplatesAdmin';
 
 const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   hubId,
   paths,
   routePrefix,
   aspectTemplatesRoutePath,
+  canvasTemplatesRoutePath,
+  innovationTemplatesRoutePath,
   edit = false,
 }) => {
-  const { aspectTemplateId } = useParams();
+  const { aspectTemplateId, canvasTemplateId, innovationTemplateId } = useParams();
 
   useAppendBreadcrumb(paths, { name: 'templates' });
 
-  const [backFromAspectTemplateDialog, buildLink] = useBackToParentPage(PAGE_KEY_TEMPLATES, routePrefix);
+  const [backFromTemplateDialog, buildLink] = useBackToParentPage(routePrefix);
 
-  const { data } = useHubTemplatesQuery({
+  const { data: hubTemplatesData } = useHubTemplatesQuery({
     variables: { hubId },
     skip: !hubId, // hub id can be an empty string due to some `|| ''` happening above in the tree
   });
 
-  const { aspectTemplates, id: templatesSetID } = data?.hub.templates ?? {};
+  const [loadCanvases, { data: hubCanvasesData }] = useHubCanvasesLazyQuery({
+    variables: { hubId },
+  });
+
+  const {
+    aspectTemplates,
+    canvasTemplates,
+    lifecycleTemplates,
+    id: templatesSetID,
+  } = hubTemplatesData?.hub.templates ?? {};
+  const canvasCallout = getCanvasCallout(hubCanvasesData?.hub.collaboration?.callouts);
+  const canvases = canvasCallout?.canvases;
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
       <AdminAspectTemplatesSection
-        aspectTemplateId={aspectTemplateId}
+        templateId={aspectTemplateId}
         templatesSetId={templatesSetID}
-        aspectTemplates={aspectTemplates}
-        onCloseAspectTemplateDialog={backFromAspectTemplateDialog}
+        templates={aspectTemplates}
+        onCloseTemplateDialog={backFromTemplateDialog}
         refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
-        buildAspectTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
+        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${aspectTemplatesRoutePath}/${id}`)}
+        edit={edit}
+      />
+      <SectionSpacer />
+      <AdminCanvasTemplatesSection
+        templateId={canvasTemplateId}
+        templatesSetId={templatesSetID}
+        templates={canvasTemplates}
+        onCloseTemplateDialog={backFromTemplateDialog}
+        refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
+        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${canvasTemplatesRoutePath}/${id}`)}
+        edit={edit}
+        loadCanvases={loadCanvases}
+        canvases={canvases}
+        calloutId={canvasCallout?.id}
+      />
+      <SectionSpacer />
+      <AdminInnovationTemplatesSection
+        templateId={innovationTemplateId}
+        templatesSetId={templatesSetID}
+        templates={lifecycleTemplates}
+        onCloseTemplateDialog={backFromTemplateDialog}
+        refetchQueries={[refetchHubTemplatesQuery({ hubId })]}
+        buildTemplateLink={({ id }) => buildLink(`${routePrefix}/${innovationTemplatesRoutePath}/${id}`)}
         edit={edit}
       />
     </HubSettingsLayout>

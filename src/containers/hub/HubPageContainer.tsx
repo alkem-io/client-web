@@ -1,13 +1,12 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { useHub, useUserContext } from '../../hooks';
 import { useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import {
   AspectCardFragment,
   AuthorizationPrivilege,
+  CanvasDetailsFragment,
   ChallengeCardFragment,
   HubPageFragment,
 } from '../../models/graphql-schema';
@@ -19,6 +18,11 @@ import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
+import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import {
+  getAspectsFromPublishedCallouts,
+  getCanvasesFromPublishedCallouts,
+} from '../../domain/callout/utils/getPublishedCallouts';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -28,7 +32,7 @@ export interface HubContainerEntities {
     communityReadAccess: boolean;
     challengesReadAccess: boolean;
   };
-  activity: ActivityItem[];
+  challengesCount: number | undefined;
   isAuthenticated: boolean;
   isMember: boolean;
   isGlobalAdmin: boolean;
@@ -36,6 +40,8 @@ export interface HubContainerEntities {
   challenges: ChallengeCardFragment[];
   aspects: AspectCardFragment[];
   aspectsCount: number | undefined;
+  canvases: CanvasDetailsFragment[];
+  canvasesCount: number | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
@@ -55,7 +61,6 @@ export interface HubPageContainerProps
 const EMPTY = [];
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
-  const { t } = useTranslation();
   const { hubId, hubNameId, loading: loadingHub } = useHub();
   const { data: _hub, loading: loadingHubQuery } = useHubPageQuery({
     variables: { hubId: hubNameId },
@@ -69,27 +74,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     x => x === AuthorizationPrivilege.Read
   );
 
-  const activity: ActivityItem[] = useMemo(() => {
-    const _activity = _hub?.hub.activity || [];
-    return [
-      {
-        name: t('common.challenges'),
-        type: ActivityType.Challenge,
-        count: getActivityCount(_activity, 'challenges'),
-        color: 'neutral',
-      },
-      {
-        name: t('common.opportunities'),
-        count: getActivityCount(_activity, 'opportunities'),
-        color: 'primary',
-      },
-      {
-        name: t('common.members'),
-        count: getActivityCount(_activity, 'members'),
-        color: 'neutralMedium',
-      },
-    ];
-  }, [_hub]);
+  const challengesCount = useMemo(() => getActivityCount(_hub?.hub.activity, ActivityType.Challenge), [_hub]);
 
   const isMember = user?.ofHub(hubId) ?? false;
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
@@ -104,8 +89,11 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
-  const aspects = _hub?.hub.context?.aspects ?? EMPTY;
+  const aspects = getAspectsFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
   const aspectsCount = useAspectsCount(_hub?.hub.activity);
+
+  const canvases = getCanvasesFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
+  const canvasesCount = useCanvasesCount(_hub?.hub.activity);
 
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 
@@ -117,13 +105,15 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           discussionList,
           isPrivate,
           permissions,
-          activity,
+          challengesCount,
           isAuthenticated,
           isMember,
           isGlobalAdmin,
           challenges,
           aspects,
           aspectsCount,
+          canvases,
+          canvasesCount,
           ...contributors,
         },
         {

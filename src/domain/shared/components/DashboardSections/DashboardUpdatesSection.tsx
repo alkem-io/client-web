@@ -27,7 +27,7 @@ const DashboardUpdatesSection: FC<DashboardUpdatesSectionProps> = ({ entities: {
           <DashboardGenericSection
             headerText={t('dashboard-updates-section.title', { count: messages.length })}
             navText={t('buttons.see-all')}
-            navLink={'community'}
+            navLink={'dashboard/updates'}
           >
             {retrievingUpdateMessages ? (
               <SingleUpdateView loading={retrievingUpdateMessages} />

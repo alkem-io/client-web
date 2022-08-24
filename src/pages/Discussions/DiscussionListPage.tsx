@@ -15,15 +15,11 @@ import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProv
 import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
 import { PageProps } from '../common';
 import { useUpdateNavigation } from '../../hooks';
-import PageLayout from '../../domain/shared/layout/PageLayout';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import { EntityTypeName } from '../../domain/shared/layout/PageLayout/PageLayout';
 
-interface DiscussionsPageProps extends PageProps {
-  entityTypeName: EntityTypeName;
-}
+interface DiscussionsPageProps extends PageProps {}
 
-export const DiscussionListPage: FC<DiscussionsPageProps> = ({ entityTypeName, paths }) => {
+// TODO use for Discussions Dialog?
+export const DiscussionListPage: FC<DiscussionsPageProps> = ({ paths }) => {
   const { t } = useTranslation();
   const { communityName } = useCommunityContext();
   const { discussionList, loading, permissions } = useDiscussionsContext();
@@ -54,32 +50,30 @@ export const DiscussionListPage: FC<DiscussionsPageProps> = ({ entityTypeName, p
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <PageLayout currentSection={EntityPageSection.Discussions} entityTypeName={entityTypeName}>
-      <DiscussionsLayout
-        title={t('components.discussions-list.name', { community: communityName })}
-        newUrl={'new'}
-        canCreateDiscussion={permissions.canCreateDiscussion}
-        categorySelector={
-          <CategorySelector
-            categories={categoryConfig}
-            onSelect={setCategory}
-            value={category}
-            showLabels={!mediumScreen}
-          />
-        }
-      >
-        <DiscussionListView
-          entities={{
-            discussions: filtered,
-          }}
-          state={{
-            loading: loading,
-          }}
-          actions={{}}
-          options={{}}
+    <DiscussionsLayout
+      title={t('components.discussions-list.name', { community: communityName })}
+      newUrl={'new'}
+      canCreateDiscussion={permissions.canCreateDiscussion}
+      categorySelector={
+        <CategorySelector
+          categories={categoryConfig}
+          onSelect={setCategory}
+          value={category}
+          showLabels={!mediumScreen}
         />
-      </DiscussionsLayout>
-    </PageLayout>
+      }
+    >
+      <DiscussionListView
+        entities={{
+          discussions: filtered,
+        }}
+        state={{
+          loading: loading,
+        }}
+        actions={{}}
+        options={{}}
+      />
+    </DiscussionsLayout>
   );
 };
 export default DiscussionListPage;

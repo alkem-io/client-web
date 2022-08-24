@@ -14,6 +14,8 @@ import ChallengeCommunityAdminMembershipPreferencesSection from './ChallengeComm
 import useChallengeLeadOrganizationAssignment from '../../community/useCommunityAssignment/useChallengeLeadOrganizationAssignment';
 import useChallengeMemberOrganizationAssignment from '../../community/useCommunityAssignment/useChallengeMemberOrganizationAssignment';
 import {
+  refetchChallengeAvailableLeadUsersQuery,
+  refetchChallengeAvailableMemberUsersQuery,
   refetchChallengeCommunityMembersQuery,
   useChallengeAvailableLeadUsersLazyQuery,
   useChallengeAvailableMemberUsersLazyQuery,
@@ -48,18 +50,15 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
       hubId,
       challengeId,
     },
-    useExistingMembersQuery: options => {
-      const { data } = useChallengeCommunityMembersQuery(options);
-
-      return {
-        communityId: data?.hub.challenge.community?.id,
-        existingMembers: data?.hub.challenge.community?.memberUsers,
-      };
+    existingUsersOptions: {
+      useQuery: useChallengeCommunityMembersQuery,
+      readCommunity: data => data?.hub.challenge.community,
+      refetchQuery: refetchChallengeCommunityMembersQuery,
     },
-    refetchMembersQuery: refetchChallengeCommunityMembersQuery,
-    availableUsers: {
+    availableUsersOptions: {
       useLazyQuery: useChallengeAvailableMemberUsersLazyQuery,
-      getResult: data => data.hub.challenge.community?.availableMemberUsers,
+      readUsers: data => data.hub.challenge.community?.availableMemberUsers,
+      refetchQuery: refetchChallengeAvailableMemberUsersQuery,
     },
   });
 
@@ -69,18 +68,15 @@ const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix
       hubId,
       challengeId,
     },
-    useExistingMembersQuery: options => {
-      const { data } = useChallengeCommunityMembersQuery(options);
-
-      return {
-        communityId: data?.hub.challenge.community?.id,
-        existingMembers: data?.hub.challenge.community?.leadUsers,
-      };
+    existingUsersOptions: {
+      useQuery: useChallengeCommunityMembersQuery,
+      readCommunity: data => data?.hub.challenge.community,
+      refetchQuery: refetchChallengeCommunityMembersQuery,
     },
-    refetchMembersQuery: refetchChallengeCommunityMembersQuery,
-    availableUsers: {
+    availableUsersOptions: {
       useLazyQuery: useChallengeAvailableLeadUsersLazyQuery,
-      getResult: data => data.hub.challenge.community?.availableLeadUsers,
+      readUsers: data => data.hub.challenge.community?.availableLeadUsers,
+      refetchQuery: refetchChallengeAvailableLeadUsersQuery,
     },
   });
 

@@ -16,7 +16,7 @@ const insertSpacers = (children: ChildrenType) => {
   });
 };
 
-interface ContextSectionColumnProps extends Omit<GridProps, 'children'> {
+export interface ContextSectionColumnProps extends Omit<GridProps, 'children'> {
   children: ChildrenType;
 }
 

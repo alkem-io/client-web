@@ -45,5 +45,15 @@ fragment HubInfo on Hub {
       }
       value
     }
+    lifecycleTemplates {
+      id
+      definition
+      type
+      info {
+        id
+        title
+        description
+      }
+    }
   }
 }

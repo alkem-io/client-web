@@ -19,6 +19,8 @@ import {
   renderComponentOrChildrenFn,
 } from '../../../utils/containers/ComponentOrChildrenFn';
 import useAspectCommentsMessageReceivedSubscription from '../../../domain/aspect/comments/useAspectCommentsMessageReceivedSubscription';
+import { getCardCallout } from '../getAspectCallout';
+import { useCalloutFromAspect } from '../../../hooks/useCalloutFromAspect';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -58,6 +60,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
+  const { calloutId } = useCalloutFromAspect({ hubNameId, aspectNameId });
   const isAspectDefined = aspectNameId && hubNameId;
 
   const {
@@ -66,11 +69,13 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: hubError,
     subscribeToMore: subscribeToHub,
   } = useHubAspectQuery({
-    variables: { hubNameId, aspectNameId },
-    skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
+    variables: { hubNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = hubData?.hub?.context?.aspects?.[0];
+  const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
+    x => x.nameID === aspectNameId
+  );
 
   const {
     data: challengeData,
@@ -78,11 +83,14 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: challengeError,
     subscribeToMore: subscribeToChallenge,
   } = useChallengeAspectQuery({
-    variables: { hubNameId, challengeNameId, aspectNameId },
-    skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
+    variables: { hubNameId, challengeNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = challengeData?.hub?.challenge?.context?.aspects?.[0];
+  const challengeAspect = getCardCallout(
+    challengeData?.hub?.challenge?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
@@ -90,11 +98,14 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: opportunityError,
     subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectQuery({
-    variables: { hubNameId, opportunityNameId, aspectNameId },
-    skip: !isAspectDefined || !opportunityNameId,
+    variables: { hubNameId, opportunityNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = opportunityData?.hub?.opportunity?.context?.aspects?.[0];
+  const opportunityAspect = getCardCallout(
+    opportunityData?.hub?.opportunity?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;
@@ -102,17 +113,26 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
 
   const hubCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     hubData,
-    hubData => hubData?.hub?.context?.aspects?.[0],
+    hubData =>
+      getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
+        x => x.nameID === aspectNameId
+      ),
     subscribeToHub
   );
   const challengeCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     challengeData,
-    challengeData => challengeData?.hub?.challenge?.context?.aspects?.[0],
+    challengeData =>
+      getCardCallout(challengeData?.hub?.challenge?.collaboration?.callouts, aspectNameId)?.aspects?.find(
+        x => x.nameID === aspectNameId
+      ),
     subscribeToChallenge
   );
   const opportunityCommentsSubscription = useAspectCommentsMessageReceivedSubscription(
     opportunityData,
-    opportunityData => opportunityData?.hub?.opportunity?.context?.aspects?.[0],
+    opportunityData =>
+      getCardCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts, aspectNameId)?.aspects?.find(
+        x => x.nameID === aspectNameId
+      ),
     subscribeToOpportunity
   );
 

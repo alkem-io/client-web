@@ -6,19 +6,15 @@ import Button from '../../components/core/Button';
 import Typography from '../../components/core/Typography';
 import { useQueryParams } from '../../hooks';
 import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
-import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH, LOCAL_STORAGE_RETURN_URL_KEY } from '../../models/constants';
+import { AUTH_REGISTER_PATH } from '../../models/constants';
 import { Box } from '@mui/material';
+import { buildLoginUrl } from '../../utils/urlBuilders';
 
 interface AuthRequiredPageProps {}
 
 export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
-  const returnUrl = useQueryParams().get('returnUrl');
+  const returnUrl = useQueryParams().get('returnUrl') ?? undefined;
   const { t } = useTranslation();
-  if (returnUrl) {
-    localStorage.setItem(LOCAL_STORAGE_RETURN_URL_KEY, returnUrl);
-  } else {
-    localStorage.removeItem(LOCAL_STORAGE_RETURN_URL_KEY);
-  }
 
   return (
     <AuthenticationLayout>
@@ -32,7 +28,7 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
       <Box marginTop={4} textAlign={'center'}>
         <Button
           as={Link}
-          to={AUTH_LOGIN_PATH}
+          to={buildLoginUrl(returnUrl)}
           variant={'primary'}
           style={{ marginLeft: 20 }}
           text={t('authentication.sign-in')}

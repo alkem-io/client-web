@@ -1,0 +1,66 @@
+import React, { PropsWithChildren } from 'react';
+import { Link } from 'react-router-dom';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { Box, Card } from '@mui/material';
+import Heading from '../shared/components/Heading';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import { useTranslation } from 'react-i18next';
+import { Authorization, AuthorizationPrivilege } from '../../models/graphql-schema';
+import Markdown from '../../components/core/Markdown';
+
+export interface CalloutLayoutProps {
+  callout: {
+    id: string;
+    displayName: string;
+    description?: string;
+    draft?: boolean;
+    editable?: boolean;
+    authorization?: Authorization;
+  };
+  maxHeight?: number;
+}
+
+const CalloutLayout = ({ callout, children, maxHeight }: PropsWithChildren<CalloutLayoutProps>) => {
+  const { t } = useTranslation();
+  const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+
+  if (dontShow) {
+    return null;
+  }
+
+  return (
+    <Card key={callout.id}>
+      {callout.draft && (
+        <Box padding={1.5} sx={{ color: 'neutralLight.main', backgroundColor: 'primary.main' }}>
+          <Heading textAlign="center">{t('callout.draftNotice')}</Heading>
+        </Box>
+      )}
+      <Box m={3} position="relative">
+        {callout.editable && (
+          <Link to={''}>
+            <SettingsOutlinedIcon
+              sx={theme => ({ position: 'absolute', right: theme.spacing(-1.5), top: theme.spacing(-1.5) })}
+            />
+          </Link>
+        )}
+        <Heading sx={{ display: 'flex', gap: 2.5 }}>
+          <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
+        </Heading>
+        <Markdown>{callout.description || ''}</Markdown>
+        {/* Paddings are set to prevent cutting Paper shadow by overflow: scroll.
+            Margins are compensating the visual shift. Except for the left margin, we want a bit of left shifting */}
+        <Box
+          maxHeight={maxHeight && (theme => theme.spacing(maxHeight + 4))}
+          overflow={typeof maxHeight === 'undefined' ? undefined : 'auto'}
+          padding={2}
+          margin={-2}
+          marginLeft={0}
+        >
+          {children}
+        </Box>
+      </Box>
+    </Card>
+  );
+};
+
+export default CalloutLayout;

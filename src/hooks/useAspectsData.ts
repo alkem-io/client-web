@@ -1,17 +1,18 @@
 import { useMemo } from 'react';
 import { useApolloErrorHandler, useHub } from './index';
 import {
-  usePrivilegesOnHubContextQuery,
+  usePrivilegesOnHubCollaborationQuery,
   useHubAspectsQuery,
-  usePrivilegesOnChallengeContextQuery,
+  usePrivilegesOnChallengeCollaborationQuery,
   useChallengeAspectsQuery,
-  usePrivilegesOnOpportunityContextQuery,
+  usePrivilegesOnOpportunityCollaborationQuery,
   useOpportunityAspectsQuery,
 } from './generated/graphql';
 import { AuthorizationPrivilege } from '../models/graphql-schema';
 import { AspectWithPermissions, EntityIds } from '../containers/ContributeTabContainer/ContributeTabContainer';
-import useContextAspectCreatedSubscription from '../domain/context/useContextAspectCreatedSubscription';
+import useCalloutAspectCreatedSubscription from '../domain/collaboration/useCalloutAspectCreatedSubscription';
 import { ApolloError } from '@apollo/client';
+import { getCardCallout, getCardCallouts } from '../containers/aspect/getAspectCallout';
 
 export interface AspectsData {
   aspects: AspectWithPermissions[] | undefined;
@@ -19,7 +20,7 @@ export interface AspectsData {
   error: ApolloError | undefined;
   canReadAspects: boolean;
   canCreateAspects: boolean;
-  contextId: string | undefined;
+  calloutId: string | undefined;
   subscriptionEnabled: boolean;
 }
 
@@ -32,18 +33,18 @@ export const useAspectsData = ({
   const { loading: hubLoading } = useHub();
 
   const {
-    data: hubContextData,
-    loading: hubContextLoading,
-    error: hubContextError,
-  } = usePrivilegesOnHubContextQuery({
+    data: hubCollaborationData,
+    loading: hubCollaborationLoading,
+    error: hubCollaborationError,
+  } = usePrivilegesOnHubCollaborationQuery({
     variables: { hubNameId },
     skip: !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubContext = hubContextData?.hub?.context;
-  const hubContextPrivileges = hubContext?.authorization?.myPrivileges;
-  const canReadHubContext = hubContextPrivileges?.includes(AuthorizationPrivilege.Read);
-  const canCreateAspectOnHub = hubContextPrivileges?.includes(AuthorizationPrivilege.CreateAspect);
+  const hubCollaboration = hubCollaborationData?.hub?.collaboration;
+  const hubCollaborationPrivileges = hubCollaboration?.authorization?.myPrivileges;
+  const canReadHubCollaboration = hubCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
+  const canCreateAspectOnHub = hubCollaborationPrivileges?.includes(AuthorizationPrivilege.CreateAspect);
   const {
     data: hubAspectData,
     loading: hubAspectLoading,
@@ -51,24 +52,25 @@ export const useAspectsData = ({
     subscribeToMore: subscribeToHub,
   } = useHubAspectsQuery({
     variables: { hubNameId },
-    skip: !canReadHubContext || !!(challengeNameId || opportunityNameId),
+    skip: !canReadHubCollaboration || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspects = hubAspectData?.hub?.context?.aspects;
+  const hubCallouts = getCardCallouts(hubAspectData?.hub?.collaboration?.callouts);
+  const hubAspects = hubCallouts?.flatMap(x => x.aspects);
 
   const {
-    data: challengeContextData,
-    loading: challengeContextLoading,
-    error: challengeContextError,
-  } = usePrivilegesOnChallengeContextQuery({
+    data: challengeCollaborationData,
+    loading: challengeCollaborationLoading,
+    error: challengeCollaborationError,
+  } = usePrivilegesOnChallengeCollaborationQuery({
     variables: { hubNameId, challengeNameId: challengeNameId ?? '' },
     skip: !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeContext = challengeContextData?.hub?.challenge?.context;
-  const challengeContextPrivileges = challengeContext?.authorization?.myPrivileges;
-  const canReadChallengeContext = challengeContextPrivileges?.includes(AuthorizationPrivilege.Read);
-  const canCreateAspectOnChallenge = challengeContextPrivileges?.includes(AuthorizationPrivilege.CreateAspect);
+  const challengeCollaboration = challengeCollaborationData?.hub?.challenge?.collaboration;
+  const challengeCollaborationPrivileges = challengeCollaboration?.authorization?.myPrivileges;
+  const canReadChallengeCollaboration = challengeCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
+  const canCreateAspectOnChallenge = challengeCollaborationPrivileges?.includes(AuthorizationPrivilege.CreateAspect);
 
   const {
     data: challengeAspectData,
@@ -77,24 +79,27 @@ export const useAspectsData = ({
     subscribeToMore: subscribeToChallenges,
   } = useChallengeAspectsQuery({
     variables: { hubNameId, challengeNameId: challengeNameId ?? '' },
-    skip: !canReadChallengeContext || !challengeNameId || !!opportunityNameId,
+    skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspects = challengeAspectData?.hub?.challenge?.context?.aspects;
+  const challengeCallouts = getCardCallouts(challengeAspectData?.hub?.challenge?.collaboration?.callouts);
+  const challengeAspects = challengeCallouts?.flatMap(x => x.aspects);
 
   const {
-    data: opportunityContextData,
-    loading: opportunityContextLoading,
-    error: opportunityContextError,
-  } = usePrivilegesOnOpportunityContextQuery({
+    data: opportunityCollaborationData,
+    loading: opportunityCollaborationLoading,
+    error: opportunityCollaborationError,
+  } = usePrivilegesOnOpportunityCollaborationQuery({
     variables: { hubNameId, opportunityNameId: opportunityNameId ?? '' },
     skip: !opportunityNameId,
     onError: handleError,
   });
-  const opportunityContext = opportunityContextData?.hub?.opportunity?.context;
-  const opportunityContextPrivileges = opportunityContext?.authorization?.myPrivileges;
-  const canReadOpportunityContext = opportunityContextPrivileges?.includes(AuthorizationPrivilege.Read);
-  const canCreateAspectOnOpportunity = opportunityContextPrivileges?.includes(AuthorizationPrivilege.CreateAspect);
+  const opportunityCollaboration = opportunityCollaborationData?.hub?.opportunity?.collaboration;
+  const opportunityCollaborationPrivileges = opportunityCollaboration?.authorization?.myPrivileges;
+  const canReadOpportunityCollaboration = opportunityCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
+  const canCreateAspectOnOpportunity = opportunityCollaborationPrivileges?.includes(
+    AuthorizationPrivilege.CreateAspect
+  );
 
   const {
     data: opportunityAspectData,
@@ -103,62 +108,72 @@ export const useAspectsData = ({
     subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectsQuery({
     variables: { hubNameId, opportunityNameId: opportunityNameId ?? '' },
-    skip: !canReadOpportunityContext || !opportunityNameId,
+    skip: !canReadOpportunityCollaboration || !opportunityNameId,
     onError: handleError,
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-first',
   });
-  const opportunityAspects = opportunityAspectData?.hub?.opportunity?.context?.aspects;
+  const opportunityCallouts = getCardCallouts(opportunityAspectData?.hub?.opportunity?.collaboration?.callouts);
+  const opportunityAspects = opportunityCallouts?.flatMap(x => x.aspects);
 
-  const hubAspectSubscription = useContextAspectCreatedSubscription(
+  const hubAspectSubscription = useCalloutAspectCreatedSubscription(
     hubAspectData,
-    hubData => hubData?.hub?.context,
+    hubData => getCardCallout(hubData?.hub?.collaboration?.callouts, ''), //toDo fix this
     subscribeToHub
   );
-  const challengeAspectSubscription = useContextAspectCreatedSubscription(
+  const challengeAspectSubscription = useCalloutAspectCreatedSubscription(
     challengeAspectData,
-    challengeData => challengeData?.hub?.challenge?.context,
+    challengeData => getCardCallout(challengeData?.hub?.challenge?.collaboration?.callouts, ''), //toDo fix this
     subscribeToChallenges
   );
-  const opportunityAspectSubscription = useContextAspectCreatedSubscription(
+  const opportunityAspectSubscription = useCalloutAspectCreatedSubscription(
     opportunityAspectData,
-    opportunityData => opportunityData?.hub?.opportunity?.context,
+    opportunityData => getCardCallout(opportunityData?.hub?.opportunity?.collaboration?.callouts, ''), //toDo fix this
     subscribeToOpportunity
   );
 
   const isSubscriptionEnabled =
     hubAspectSubscription.enabled || challengeAspectSubscription.enabled || opportunityAspectSubscription.enabled;
 
+  //toDo - fix this, map types properly
   const aspects: AspectWithPermissions[] | undefined = useMemo(
     () =>
       (hubAspects ?? challengeAspects ?? opportunityAspects)?.map(x => ({
-        ...x,
+        id: x?.id as string,
+        nameID: x?.nameID as string,
+        displayName: x?.displayName as string,
+        type: x?.type as string,
+        description: x?.description as string,
         canDelete: x?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete),
       })),
     [hubAspects, challengeAspects, opportunityAspects]
   );
 
   const loading =
-    hubContextLoading ||
-    challengeContextLoading ||
-    opportunityContextLoading ||
+    hubCollaborationLoading ||
+    challengeCollaborationLoading ||
+    opportunityCollaborationLoading ||
     hubAspectLoading ||
     challengeAspectLoading ||
     opportunityAspectLoading ||
     hubLoading;
 
   const error =
-    hubContextError ??
-    challengeContextError ??
-    opportunityContextError ??
+    hubCollaborationError ??
+    challengeCollaborationError ??
+    opportunityCollaborationError ??
     hubAspectError ??
     challengeAspectError ??
     opportunityAspectError;
 
-  const canReadAspects = canReadHubContext ?? canReadChallengeContext ?? canReadOpportunityContext ?? true;
+  const canReadAspects =
+    canReadHubCollaboration ?? canReadChallengeCollaboration ?? canReadOpportunityCollaboration ?? true;
   const canCreateAspects = canCreateAspectOnHub ?? canCreateAspectOnChallenge ?? canCreateAspectOnOpportunity ?? false;
 
-  const contextId = hubContext?.id ?? challengeContext?.id ?? opportunityContext?.id;
+  let calloutId = ''; //toDo fix this
+  if (hubCallouts) calloutId = hubCallouts[0].id;
+  if (challengeCallouts) calloutId = challengeCallouts[0].id;
+  if (opportunityCallouts) calloutId = opportunityCallouts[0].id;
 
   return {
     aspects,
@@ -166,7 +181,7 @@ export const useAspectsData = ({
     error,
     canReadAspects,
     canCreateAspects,
-    contextId,
+    calloutId,
     subscriptionEnabled: isSubscriptionEnabled,
   };
 };

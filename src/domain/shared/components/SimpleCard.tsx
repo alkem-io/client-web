@@ -22,25 +22,29 @@ const PositionedIcon = ({ iconComponent }: Pick<IconProps, 'iconComponent'>) => 
 };
 
 export interface SimpleCardProps extends LinkWithState {
-  title: ReactNode;
-  imageUrl: string | undefined;
-  iconComponent: ComponentType<SvgIconProps>;
+  title?: ReactNode;
+  imageUrl?: string;
+  iconComponent?: ComponentType<SvgIconProps>;
 }
 
-const SimpleCard = ({ url, linkState, title, imageUrl, iconComponent }: SimpleCardProps) => {
+const SimpleCard = ({ title, imageUrl, iconComponent, ...linkProps }: SimpleCardProps) => {
   return (
-    <LinkNoUnderline to={url} state={linkState}>
+    <LinkNoUnderline {...linkProps}>
       <ElevatedPaper
         sx={{
-          width: theme => theme.spacing(26),
-          height: theme => theme.spacing(18),
+          width: theme => theme.spacing(theme.cards.simpleCard.width),
+          height: theme => theme.spacing(theme.cards.simpleCard.height),
           background: theme => theme.palette.background.default,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'stretch',
         }}
       >
-        {imageUrl ? <ImagePreview src={imageUrl} /> : <PositionedIcon iconComponent={iconComponent} />}
+        {imageUrl ? (
+          <ImagePreview src={imageUrl} />
+        ) : iconComponent ? (
+          <PositionedIcon iconComponent={iconComponent} />
+        ) : null}
         <IconLabel>{title}</IconLabel>
       </ElevatedPaper>
     </LinkNoUnderline>

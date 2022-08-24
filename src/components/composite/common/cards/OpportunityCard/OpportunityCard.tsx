@@ -43,10 +43,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
       }}
       label={isMember(opportunity.id) ? EntityContributionCardLabel.Member : undefined}
       loading={loading}
-      activities={[
-        { name: t('common.projects'), count: getActivityCount(activity, 'projects') },
-        { name: t('common.members'), count: getActivityCount(activity, 'members') },
-      ]}
+      activities={[{ name: t('common.members'), count: getActivityCount(activity, 'members') }]}
     />
   );
 };

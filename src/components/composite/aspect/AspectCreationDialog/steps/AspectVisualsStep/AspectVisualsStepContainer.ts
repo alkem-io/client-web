@@ -10,6 +10,7 @@ import {
   useOpportunityAspectVisualsQuery,
 } from '../../../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../../../hooks';
+import { getCardCallout } from '../../../../../../containers/aspect/getAspectCallout';
 
 export interface EntityIds {
   hubNameId: Scalars['UUID_NAMEID'];
@@ -46,7 +47,9 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = hubData?.hub?.context?.aspects?.[0];
+  const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
+    x => x.nameID === aspectNameId
+  );
 
   const {
     data: challengeData,
@@ -57,7 +60,10 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = challengeData?.hub?.challenge?.context?.aspects?.[0];
+  const challengeAspect = getCardCallout(
+    challengeData?.hub?.challenge?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
@@ -68,7 +74,10 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = opportunityData?.hub?.opportunity?.context?.aspects?.[0];
+  const opportunityAspect = getCardCallout(
+    opportunityData?.hub?.opportunity?.collaboration?.callouts,
+    aspectNameId
+  )?.aspects?.find(x => x.nameID === aspectNameId);
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
   const loading = hubLoading || challengeLoading || opportunityLoading;

@@ -8,6 +8,7 @@ import WelcomeSection from './WelcomeSection';
 import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
+import PlatformUpdates from '../../domain/notifications/ReleaseUpdates/ReleaseUpdatesNotification';
 
 const currentPaths = [];
 
@@ -18,6 +19,7 @@ export const HomePage = () => {
 
   return (
     <>
+      <PlatformUpdates />
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <WelcomeSection />

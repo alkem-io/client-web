@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import HubEditForm, { HubEditFormValuesType } from '../../../components/Admin/HubEditForm';
 import Button from '../../../components/core/Button';
 import Typography from '../../../components/core/Typography';
+import AdminLayout from '../../../domain/admin/toplevel/AdminLayout';
+import { AdminSection } from '../../../domain/admin/toplevel/constants';
 import { formatDatabaseLocation } from '../../../domain/location/LocationUtils';
 import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../../hooks';
 import {
@@ -82,25 +84,27 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
 
   let submitWired;
   return (
-    <Container maxWidth="xl">
-      <Box marginY={3}>
-        <Typography variant={'h2'}>{'New Hub'}</Typography>
-      </Box>
-      <HubEditForm
-        isEdit={false}
-        onSubmit={onSubmit}
-        wireSubmit={submit => (submitWired = submit)}
-        organizations={organizations}
-      />
-      <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
-        <Button
-          disabled={isLoading}
-          variant="primary"
-          onClick={() => submitWired()}
-          text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
+    <AdminLayout currentTab={AdminSection.Hub}>
+      <Container maxWidth="xl">
+        <Box marginY={3}>
+          <Typography variant="h2">{'New Hub'}</Typography>
+        </Box>
+        <HubEditForm
+          isEdit={false}
+          onSubmit={onSubmit}
+          wireSubmit={submit => (submitWired = submit)}
+          organizations={organizations}
         />
-      </Box>
-    </Container>
+        <Box display="flex" marginY={4} justifyContent="flex-end">
+          <Button
+            disabled={isLoading}
+            variant="primary"
+            onClick={() => submitWired()}
+            text={t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
+          />
+        </Box>
+      </Container>
+    </AdminLayout>
   );
 };
 export default NewHub;
