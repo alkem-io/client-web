@@ -127,8 +127,8 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
   const { references = [] } = context ?? {};
-  const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 3);
-  const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 3);
+  const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
+  const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
 
   const meme = references?.find(x => x.name === 'meme') as Reference;

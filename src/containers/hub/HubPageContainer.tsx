@@ -89,10 +89,10 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
-  const aspects = getAspectsFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 3);
+  const aspects = getAspectsFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
   const aspectsCount = useAspectsCount(_hub?.hub.activity);
 
-  const canvases = getCanvasesFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 3);
+  const canvases = getCanvasesFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
   const canvasesCount = useCanvasesCount(_hub?.hub.activity);
 
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
