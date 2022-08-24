@@ -1,14 +1,7 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../models/container';
-import {
-  PushFunc,
-  RemoveFunc,
-  useApolloErrorHandler,
-  useAspectsData,
-  useEditReference,
-  useNotification,
-} from '../../../hooks';
+import { PushFunc, RemoveFunc, useApolloErrorHandler, useEditReference, useNotification } from '../../../hooks';
 import {
   useChallengeAspectSettingsQuery,
   useDeleteAspectMutation,
@@ -69,8 +62,6 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
-  const { aspects } = useAspectsData({ hubNameId, challengeNameId, opportunityNameId });
-  const aspectsNames = useMemo(() => aspects?.map(x => x.displayName), [aspects]);
 
   const isAspectDefined = aspectNameId && hubNameId;
 
@@ -83,9 +74,9 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
-  const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
-    x => x.nameID === aspectNameId
-  );
+  const parentCalloutFromHub = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId);
+  const parentCalloutAspectNamesFromHub = parentCalloutFromHub?.aspects?.map(x => x.displayName);
+  const hubAspect = parentCalloutFromHub?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: challengeData,
@@ -96,10 +87,12 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
-  const challengeAspect = getCardCallout(
+  const parentCalloutFromChallenge = getCardCallout(
     challengeData?.hub?.challenge?.collaboration?.callouts,
     aspectNameId
-  )?.aspects?.find(x => x.nameID === aspectNameId);
+  );
+  const parentCalloutAspectNamesFromChallenge = parentCalloutFromChallenge?.aspects?.map(x => x.displayName);
+  const challengeAspect = parentCalloutFromChallenge?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
     data: opportunityData,
@@ -110,12 +103,16 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
-  const opportunityAspect = getCardCallout(
+  const parentCalloutFromOpportunity = getCardCallout(
     opportunityData?.hub?.opportunity?.collaboration?.callouts,
     aspectNameId
-  )?.aspects?.find(x => x.nameID === aspectNameId);
+  );
+  const parentCalloutAspectNamesFromOpportunity = parentCalloutFromOpportunity?.aspects?.map(x => x.displayName);
+  const opportunityAspect = parentCalloutFromOpportunity?.aspects?.find(x => x.nameID === aspectNameId);
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
+  const parentCalloutAspectNames =
+    parentCalloutAspectNamesFromHub ?? parentCalloutAspectNamesFromChallenge ?? parentCalloutAspectNamesFromOpportunity;
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
@@ -179,7 +176,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   return (
     <>
       {children(
-        { aspect, aspectsNames },
+        { aspect, aspectsNames: parentCalloutAspectNames },
         { loading, error, updating, deleting, updateError },
         { handleUpdate, handleAddReference, handleRemoveReference, handleDelete }
       )}
