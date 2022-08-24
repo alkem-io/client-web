@@ -1,10 +1,9 @@
 import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
-import { AspectDashboardFragment, AuthorizationPrivilege, CalloutType, Scalars } from '../../../models/graphql-schema';
+import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
   AspectMessageFragmentDoc,
   useAspectCreatorQuery,
-  useCalloutAspectProviderQuery,
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
@@ -21,6 +20,7 @@ import {
 } from '../../../utils/containers/ComponentOrChildrenFn';
 import useAspectCommentsMessageReceivedSubscription from '../../../domain/aspect/comments/useAspectCommentsMessageReceivedSubscription';
 import { getCardCallout } from '../getAspectCallout';
+import { useCalloutFromAspect } from '../../../hooks/useCalloutFromAspect';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -60,24 +60,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
 
-  const { data: hubCalloutAspectData } = useCalloutAspectProviderQuery({
-    variables: { hubNameId },
-    onError: handleError,
-  });
-  const hubAspectsCallout = hubCalloutAspectData?.hub.collaboration?.callouts?.find(
-    x => x.type === CalloutType.Card && x.aspects?.find(x => x.nameID === aspectNameId)
-  );
-  const challengeAspectsCallout = hubCalloutAspectData?.hub.challenges
-    ?.flatMap(x => x.collaboration)
-    .flatMap(x => x?.callouts)
-    .find(x => x?.type === CalloutType.Card && x.aspects?.find(x => x.nameID === aspectNameId));
-  const opportunityAspectsCallout = hubCalloutAspectData?.hub.challenges
-    ?.flatMap(x => x.opportunities)
-    .flatMap(x => x?.collaboration)
-    .flatMap(x => x?.callouts)
-    .find(x => x?.type === CalloutType.Card && x.aspects?.find(x => x.nameID === aspectNameId));
-  const calloutId = hubAspectsCallout?.id ?? challengeAspectsCallout?.id ?? opportunityAspectsCallout?.id ?? '';
-
+  const { calloutId } = useCalloutFromAspect({ hubNameId, aspectNameId });
   const isAspectDefined = aspectNameId && hubNameId;
 
   const {
@@ -86,8 +69,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: hubError,
     subscribeToMore: subscribeToHub,
   } = useHubAspectQuery({
-    variables: { hubNameId, aspectNameId, calloutId },
-    skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
+    variables: { hubNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
   const hubAspect = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId)?.aspects?.find(
@@ -100,8 +83,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: challengeError,
     subscribeToMore: subscribeToChallenge,
   } = useChallengeAspectQuery({
-    variables: { hubNameId, challengeNameId, aspectNameId, calloutId },
-    skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
+    variables: { hubNameId, challengeNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
   const challengeAspect = getCardCallout(
@@ -115,8 +98,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error: opportunityError,
     subscribeToMore: subscribeToOpportunity,
   } = useOpportunityAspectQuery({
-    variables: { hubNameId, opportunityNameId, aspectNameId, calloutId },
-    skip: !isAspectDefined || !opportunityNameId,
+    variables: { hubNameId, opportunityNameId, aspectNameId, calloutId: calloutId! },
+    skip: !calloutId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
   const opportunityAspect = getCardCallout(
