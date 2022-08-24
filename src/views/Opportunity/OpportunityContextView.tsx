@@ -67,19 +67,14 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ activity, ent
   const activityItems: ActivityItem[] = useMemo(() => {
     return [
       {
-        name: t('common.agreements'),
-        count: getActivityCount(activity, 'projects'),
-        color: 'positive',
+        name: t('common.members'),
+        count: getActivityCount(activity, 'members'),
+        color: 'neutralMedium',
       },
       {
         name: t('common.interests'),
         count: getActivityCount(activity, 'relations'),
         color: 'primary',
-      },
-      {
-        name: t('common.members'),
-        count: getActivityCount(activity, 'members'),
-        color: 'neutralMedium',
       },
     ];
   }, [activity, i18n.language]);
