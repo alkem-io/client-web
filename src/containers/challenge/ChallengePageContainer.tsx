@@ -77,10 +77,10 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const opportunitiesCount = useMemo(() => getActivityCount(activity, ActivityType.Opportunity), [activity]);
 
-  const aspects = getAspectsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 3);
+  const aspects = getAspectsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
   const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
 
-  const canvases = getCanvasesFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 3);
+  const canvases = getCanvasesFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
   const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
 
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
