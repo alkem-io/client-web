@@ -91,3 +91,21 @@ fragment ChallengeProfile on Challenge {
     }
   }
 }
+
+query ChallengeDashboardReferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+  hub(ID: $hubId) {
+    id
+    challenge(ID: $challengeId) {
+      id
+      context {
+        id
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+}
