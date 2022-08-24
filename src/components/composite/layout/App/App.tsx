@@ -11,7 +11,6 @@ import useCommunityUpdatesNotifier from '../../../../hooks/subscription/Communit
 import CookieConsent from '../../../../domain/cookies/CookieConsent';
 import { useCookies } from 'react-cookie';
 import { COOKIE_NAME } from '../../../../domain/cookies/useAlkemioCookies';
-import PlatformUpdates from '../../../../domain/notifications/ReleaseUpdates/ReleaseUpdatesNotification';
 
 const App: FC = () => {
   const [cookies] = useCookies([COOKIE_NAME]);
@@ -42,7 +41,6 @@ const App: FC = () => {
         <TopBar />
         <Main>
           <TopBarSpacer />
-          <PlatformUpdates />
           <Outlet />
         </Main>
         <Footer />

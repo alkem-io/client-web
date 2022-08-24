@@ -12,9 +12,9 @@ const UpdatesContainer: FC = ({ children }) => {
         fontFamily: theme.typography.fontFamily,
         color: 'white',
         display: 'flex',
-        flexWrap: 'wrap',
         justifyContent: 'space-between',
         width: '100%',
+        zIndex: 10,
       }}
     >
       {children}
