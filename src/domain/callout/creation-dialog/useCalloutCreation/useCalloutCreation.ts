@@ -79,7 +79,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
         fields: {
           callouts(existing = []) {
             const newCalloutRef = cache.writeFragment({
-              data: createCalloutOnCollaboration,
+              data: { aspects: [], canvases: [], ...createCalloutOnCollaboration },
               fragment: CalloutFragmentDoc,
               fragmentName: 'Callout',
             });

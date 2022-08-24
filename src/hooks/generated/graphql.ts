@@ -10846,6 +10846,10 @@ export const HubAspectSettingsDocument = gql`
           aspects(IDs: [$aspectNameId]) {
             ...AspectSettings
           }
+          aspectNames: aspects {
+            id
+            displayName
+          }
         }
       }
     }
@@ -10919,6 +10923,10 @@ export const ChallengeAspectSettingsDocument = gql`
             type
             aspects(IDs: [$aspectNameId]) {
               ...AspectSettings
+            }
+            aspectNames: aspects {
+              id
+              displayName
             }
           }
         }
@@ -10998,6 +11006,10 @@ export const OpportunityAspectSettingsDocument = gql`
             type
             aspects(IDs: [$aspectNameId]) {
               ...AspectSettings
+            }
+            aspectNames: aspects {
+              id
+              displayName
             }
           }
         }
@@ -16392,6 +16404,10 @@ export const CreateCalloutDocument = gql`
       description
       state
       visibility
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 `;

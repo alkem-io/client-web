@@ -8352,6 +8352,7 @@ export type HubAspectSettingsQuery = {
                         | undefined;
                     }>
                   | undefined;
+                aspectNames?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
               }>
             | undefined;
         }
@@ -8438,6 +8439,7 @@ export type ChallengeAspectSettingsQuery = {
                           | undefined;
                       }>
                     | undefined;
+                  aspectNames?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
                 }>
               | undefined;
           }
@@ -8525,6 +8527,7 @@ export type OpportunityAspectSettingsQuery = {
                           | undefined;
                       }>
                     | undefined;
+                  aspectNames?: Array<{ __typename?: 'Aspect'; id: string; displayName: string }> | undefined;
                 }>
               | undefined;
           }
@@ -13268,6 +13271,9 @@ export type CreateCalloutMutation = {
     description?: string | undefined;
     state: CalloutState;
     visibility: CalloutVisibility;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
   };
 };
 

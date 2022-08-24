@@ -7,6 +7,10 @@ mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     description
     state
     visibility
+    authorization {
+      id
+      myPrivileges
+    }
   }
 }
 
