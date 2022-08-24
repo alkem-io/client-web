@@ -2,8 +2,8 @@ import { ComponentType, useMemo } from 'react';
 import { useUrlParams } from '.';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../utils/urlBuilders';
 import { useChallengeNameQuery, useHubNameQuery, useOpportunityNameQuery } from './generated/graphql';
-import HubIcon from '@mui/icons-material/Hub';
-import FilterHdrIcon from '@mui/icons-material/FilterHdr';
+import { HubOutlined } from '@mui/icons-material';
+import { ChallengeIcon } from '../components/icons/ChallengeIcon';
 
 export interface BreadcrumbsItem {
   title: string;
@@ -49,7 +49,7 @@ export const useBreadcrumbs = () => {
       if (hubNameId && (challengeNameId || aspectNameId)) {
         items.push({
           title: _hub?.hub.displayName || '',
-          icon: HubIcon,
+          icon: HubOutlined,
           url: buildHubUrl(hubNameId),
         });
       }
@@ -57,7 +57,7 @@ export const useBreadcrumbs = () => {
       if (hubNameId && challengeNameId && (opportunityNameId || aspectNameId)) {
         items.push({
           title: _challenge?.hub.challenge.displayName || '',
-          icon: FilterHdrIcon,
+          icon: ChallengeIcon,
           url: buildChallengeUrl(hubNameId, challengeNameId),
         });
       }
@@ -65,7 +65,7 @@ export const useBreadcrumbs = () => {
       if (hubNameId && challengeNameId && opportunityNameId && showOpportunity) {
         items.push({
           title: _opportunity?.hub.opportunity.displayName || '',
-          icon: FilterHdrIcon, // TODO: We'll need an opportunity Icon if we want to show opportunity breadcrumb
+          icon: ChallengeIcon, // TODO: We'll need an opportunity Icon if we want to show opportunity breadcrumb
           url: buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId),
         });
       }
