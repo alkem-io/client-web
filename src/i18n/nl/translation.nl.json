@@ -261,7 +261,7 @@
   },
   "components": {
     "context-section": {
-      "create-aspect": "Aspect succesvol aangemaakt",
+      "create-card": "Aspect succesvol aangemaakt",
       "give-feedback": "Geef feedback"
     },
     "aspect-creation": {
