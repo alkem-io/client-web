@@ -8280,6 +8280,7 @@ export type UpdateAspectMutation = {
 export type HubAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type HubAspectSettingsQuery = {
@@ -8362,6 +8363,7 @@ export type ChallengeAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type ChallengeAspectSettingsQuery = {
@@ -8448,6 +8450,7 @@ export type OpportunityAspectSettingsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
   opportunityNameId: Scalars['UUID_NAMEID'];
   aspectNameId: Scalars['UUID_NAMEID'];
+  calloutId: Scalars['UUID'];
 }>;
 
 export type OpportunityAspectSettingsQuery = {

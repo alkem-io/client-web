@@ -10835,12 +10835,12 @@ export type UpdateAspectMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateAspectMutationVariables
 >;
 export const HubAspectSettingsDocument = gql`
-  query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID!) {
     hub(ID: $hubNameId) {
       id
       collaboration {
         id
-        callouts {
+        callouts(IDs: [$calloutId]) {
           id
           type
           aspects(IDs: [$aspectNameId]) {
@@ -10867,6 +10867,7 @@ export const HubAspectSettingsDocument = gql`
  *   variables: {
  *      hubNameId: // value for 'hubNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10901,14 +10902,19 @@ export function refetchHubAspectSettingsQuery(variables: SchemaTypes.HubAspectSe
   return { query: HubAspectSettingsDocument, variables: variables };
 }
 export const ChallengeAspectSettingsDocument = gql`
-  query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!) {
+  query ChallengeAspectSettings(
+    $hubNameId: UUID_NAMEID!
+    $challengeNameId: UUID_NAMEID!
+    $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
+  ) {
     hub(ID: $hubNameId) {
       id
       challenge(ID: $challengeNameId) {
         id
         collaboration {
           id
-          callouts {
+          callouts(IDs: [$calloutId]) {
             id
             type
             aspects(IDs: [$aspectNameId]) {
@@ -10937,6 +10943,7 @@ export const ChallengeAspectSettingsDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      challengeNameId: // value for 'challengeNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
@@ -10978,6 +10985,7 @@ export const OpportunityAspectSettingsDocument = gql`
     $hubNameId: UUID_NAMEID!
     $opportunityNameId: UUID_NAMEID!
     $aspectNameId: UUID_NAMEID!
+    $calloutId: UUID!
   ) {
     hub(ID: $hubNameId) {
       id
@@ -10985,7 +10993,7 @@ export const OpportunityAspectSettingsDocument = gql`
         id
         collaboration {
           id
-          callouts {
+          callouts(IDs: [$calloutId]) {
             id
             type
             aspects(IDs: [$aspectNameId]) {
@@ -11014,6 +11022,7 @@ export const OpportunityAspectSettingsDocument = gql`
  *      hubNameId: // value for 'hubNameId'
  *      opportunityNameId: // value for 'opportunityNameId'
  *      aspectNameId: // value for 'aspectNameId'
+ *      calloutId: // value for 'calloutId'
  *   },
  * });
  */
