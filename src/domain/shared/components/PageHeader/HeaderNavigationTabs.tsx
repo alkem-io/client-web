@@ -8,6 +8,7 @@ const Root = styled(Box)(({ theme }) => ({
   '& .MuiTab-root.settings-button': {
     flex: 'initial',
     minWidth: 24,
+    marginRight: theme.spacing(1),
   },
   '& .MuiTabs-root': {
     paddingLeft: theme.spacing(2),
@@ -21,10 +22,10 @@ const Root = styled(Box)(({ theme }) => ({
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   minHeight: 0,
-  color: theme.palette.common.white,
+  color: theme.palette.primary.contrastText,
   backgroundColor: theme.palette.primary.main,
   '& .MuiTabs-indicator': {
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.primary.contrastText,
     bottom: 2,
     height: 2,
   },
@@ -33,6 +34,7 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
     flexGrow: 1,
     minHeight: theme.spacing(5),
     top: -2,
+    marginRight: 0,
   },
 }));
 
