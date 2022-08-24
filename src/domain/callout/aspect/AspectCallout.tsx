@@ -8,6 +8,7 @@ import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from 
 import { useApolloErrorHandler, useAspectsData } from '../../../hooks';
 import { CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
+import clearCacheForType from '../../shared/utils/apollo-cache/clearCacheForType';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -44,6 +45,11 @@ const AspectCallout = ({
   const [createAspect] = useCreateAspectFromContributeTabMutation({
     onError: handleError,
     update: (cache, { data }) => {
+      // Clear activity counters
+      clearCacheForType(cache, 'Hub');
+      clearCacheForType(cache, 'Challenge');
+      clearCacheForType(cache, 'Opportunity');
+
       if (subscriptionEnabled || !data) {
         return;
       }
