@@ -1,11 +1,11 @@
 import { useApolloErrorHandler } from './index';
 import {
-  usePrivilegesOnHubCollaborationQuery,
-  useHubAspectsQuery,
+  useChallengeCalloutQuery,
+  useHubCalloutQuery,
+  useOpportunityCalloutQuery,
   usePrivilegesOnChallengeCollaborationQuery,
-  useChallengeAspectsQuery,
+  usePrivilegesOnHubCollaborationQuery,
   usePrivilegesOnOpportunityCollaborationQuery,
-  useOpportunityAspectsQuery,
 } from './generated/graphql';
 import { AspectCardFragment, AuthorizationPrivilege, Scalars } from '../models/graphql-schema';
 import useCalloutAspectCreatedSubscription from '../domain/collaboration/useCalloutAspectCreatedSubscription';
@@ -38,8 +38,8 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const hubCollaboration = hubCollaborationData?.hub?.collaboration;
   const hubCollaborationPrivileges = hubCollaboration?.authorization?.myPrivileges;
   const canReadHubCollaboration = hubCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
-  const { data: hubAspectData, subscribeToMore: subscribeToHub } = useHubAspectsQuery({
-    variables: { hubNameId },
+  const { data: hubAspectData, subscribeToMore: subscribeToHub } = useHubCalloutQuery({
+    variables: { hubNameId, calloutId },
     skip: !canReadHubCollaboration || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
@@ -53,8 +53,8 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const challengeCollaborationPrivileges = challengeCollaboration?.authorization?.myPrivileges;
   const canReadChallengeCollaboration = challengeCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: challengeAspectData, subscribeToMore: subscribeToChallenges } = useChallengeAspectsQuery({
-    variables: { hubNameId, challengeNameId: challengeNameId ?? '' },
+  const { data: challengeAspectData, subscribeToMore: subscribeToChallenges } = useChallengeCalloutQuery({
+    variables: { hubNameId, calloutId, challengeNameId: challengeNameId ?? '' },
     skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
@@ -68,8 +68,8 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const opportunityCollaborationPrivileges = opportunityCollaboration?.authorization?.myPrivileges;
   const canReadOpportunityCollaboration = opportunityCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
-  const { data: opportunityAspectData, subscribeToMore: subscribeToOpportunity } = useOpportunityAspectsQuery({
-    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '' },
+  const { data: opportunityAspectData, subscribeToMore: subscribeToOpportunity } = useOpportunityCalloutQuery({
+    variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId ?? '' },
     skip: !canReadOpportunityCollaboration || !opportunityNameId,
     onError: handleError,
     fetchPolicy: 'network-only',
