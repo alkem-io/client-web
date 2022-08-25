@@ -76,11 +76,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
         color: 'primary',
       },
       {
-        name: t('common.agreements'),
-        count: getActivityCount(activity, 'projects'),
-        color: 'positive',
-      },
-      {
         name: t('common.members'),
         count: getActivityCount(activity, 'members'),
         color: 'neutralMedium',
