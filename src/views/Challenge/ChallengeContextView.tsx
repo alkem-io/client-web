@@ -13,7 +13,6 @@ import {
   Context,
   ContextTabFragment,
   LifecycleContextTabFragment,
-  ReferenceContextTabFragment,
   Tagset,
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
@@ -35,7 +34,6 @@ interface ChallengeContextEntities {
   challengeDisplayName?: string;
   challengeTagset?: Tagset;
   challengeLifecycle?: LifecycleContextTabFragment;
-  references?: ReferenceContextTabFragment[];
 }
 interface ChallengeContextActions {}
 interface ChallengeContextState {
@@ -65,7 +63,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
     who = '',
     id = '',
   } = context || ({} as Context);
-  const references = entities?.references;
 
   const activityItems: ActivityItem[] = useMemo(() => {
     return [
@@ -110,7 +107,6 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
         who={who}
         contextId={id}
         keywords={challengeTagset?.tags}
-        references={references}
         loading={loading}
         leftColumn={
           <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.statistics.title')}>

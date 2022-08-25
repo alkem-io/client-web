@@ -3,7 +3,6 @@ import OpportunityContextView from '../../views/Opportunity/OpportunityContextVi
 import { PageProps } from '../common';
 import { useOpportunity, useUpdateNavigation } from '../../hooks';
 import ContextTabContainer from '../../containers/context/ContextTabContainer';
-import { AuthorizationPrivilege } from '../../models/graphql-schema';
 import OpportunityPageLayout from '../../domain/opportunity/layout/OpportunityPageLayout';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
@@ -13,21 +12,11 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
   const currentPaths = useMemo(() => [...paths, { value: '/context', name: 'context', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const {
-    hubNameId,
-    opportunityNameId,
-    displayName,
-    permissions: { contextPrivileges },
-  } = useOpportunity();
-  const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
+  const { hubNameId, opportunityNameId, displayName } = useOpportunity();
 
   return (
     <OpportunityPageLayout currentSection={EntityPageSection.About}>
-      <ContextTabContainer
-        hubNameId={hubNameId}
-        opportunityNameId={opportunityNameId}
-        loadReferences={loadAspectsAndReferences}
-      >
+      <ContextTabContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
         {(entities, state) => (
           <OpportunityContextView
             entities={{
@@ -35,7 +24,6 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
               opportunityTagset: entities.tagset,
               opportunityLifecycle: entities.lifecycle,
               context: entities.context,
-              references: entities?.references,
             }}
             state={{
               loading: state.loading,

@@ -1,16 +1,14 @@
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PublicIcon from '@mui/icons-material/Public';
-import SchoolIcon from '@mui/icons-material/School';
 import { Grid, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Location, Reference } from '../../../models/graphql-schema';
+import { Location } from '../../../models/graphql-schema';
 import Markdown from '../../core/Markdown';
 import { SectionSpacer } from '../../../domain/shared/components/Section/Section';
 import SectionHeader from '../../../domain/shared/components/Section/SectionHeader';
 import TagsComponent from '../../../domain/shared/components/TagsComponent/TagsComponent';
-import References from '../common/References/References';
 import DashboardSection from './DashboardSection/DashboardSection';
 import ContextSectionIcon from './ContextSectionIcon';
 import DashboardColumn, { ContextSectionColumnProps } from './DashboardSection/DashboardColumn';
@@ -28,7 +26,6 @@ export interface ContextSectionProps {
   background?: string;
   impact?: string;
   who?: string;
-  references?: Reference[];
   loading: boolean | undefined;
   leftColumn?: ContextSectionColumnProps['children'];
   rightColumn?: ContextSectionColumnProps['children'];
@@ -44,7 +41,6 @@ const ContextSection: FC<ContextSectionProps> = ({
   vision,
   impact,
   who,
-  references,
   leftColumn,
   rightColumn,
 }) => {
@@ -74,13 +70,6 @@ const ContextSection: FC<ContextSectionProps> = ({
             collapsible
           >
             <Typography component={Markdown} variant="body1" children={background} />
-          </DashboardSection>
-          <DashboardSection
-            headerText={t('components.referenceSegment.title')}
-            primaryAction={<ContextSectionIcon component={SchoolIcon} />}
-            collapsible
-          >
-            <References references={references} />
           </DashboardSection>
           <DashboardSection
             headerText={t('components.contextSegment.impact.title')}
