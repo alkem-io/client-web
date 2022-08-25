@@ -10,4 +10,10 @@ export const getCanvasCallouts = <T extends { type: CalloutType }>(callouts: T[]
 
 export const getAllCanvasesOnCallouts = <T extends { type: CalloutType; canvases?: CanvasDetailsFragment[] }>(
   callouts: T[] | undefined
-) => callouts?.filter(x => x.type === CalloutType.Canvas).map(x => x.canvases);
+) => {
+  const filteredCallouts = callouts?.filter(x => x.type === CalloutType.Canvas) ?? [];
+  return filteredCallouts.reduce((acc, curr) => {
+    const currAspects = curr?.canvases ?? [];
+    return [...acc, ...currAspects];
+  }, [] as CanvasDetailsFragment[]);
+};

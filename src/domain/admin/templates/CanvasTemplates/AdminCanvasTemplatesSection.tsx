@@ -65,6 +65,7 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
   return (
     <AdminTemplatesSection
       {...props}
+      calloutId={''}
       canvases={canvases}
       headerText={t('pages.admin.generic.sections.templates.canvas-templates')}
       templateCardComponent={CanvasTemplateCard}
