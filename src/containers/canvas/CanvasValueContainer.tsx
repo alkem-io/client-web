@@ -78,9 +78,10 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     queryHubId = params?.hubId;
   }
 
-  const skipHub = Boolean(queryChallengeId) || Boolean(queryOpportunityId) || !Boolean(canvasId);
-  const skipChallenge = Boolean(queryOpportunityId) || !Boolean(queryChallengeId) || !Boolean(canvasId);
-  const skipOpportunity = !Boolean(queryOpportunityId) || !Boolean(canvasId);
+  const skipHub = !Boolean(calloutId) || Boolean(queryChallengeId) || Boolean(queryOpportunityId) || !Boolean(canvasId);
+  const skipChallenge =
+    !Boolean(calloutId) || Boolean(queryOpportunityId) || !Boolean(queryChallengeId) || !Boolean(canvasId);
+  const skipOpportunity = !Boolean(calloutId) || !Boolean(queryOpportunityId) || !Boolean(canvasId);
 
   const {
     data: challengeData,
@@ -95,7 +96,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
       hubId: queryHubId,
       challengeId: queryChallengeId || '',
       canvasId: canvasId || '',
-      calloutId: calloutId || '',
+      calloutId: calloutId!,
     },
   });
   const {
@@ -111,7 +112,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
       hubId: queryHubId,
       opportunityId: queryOpportunityId || '',
       canvasId: canvasId || '',
-      calloutId: calloutId || '',
+      calloutId: calloutId!,
     },
   });
 
@@ -126,16 +127,16 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     skip: skipHub,
     variables: {
       hubId: queryHubId,
-      calloutId: calloutId || '',
+      calloutId: calloutId!,
       canvasId: canvasId || '',
     },
   });
 
   const canvas = useMemo(() => {
     const sourceArray =
-      getCanvasCallout(hubData?.hub.collaboration?.callouts)?.canvases ||
-      getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts)?.canvases ||
-      getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts)?.canvases;
+      getCanvasCallout(hubData?.hub.collaboration?.callouts, calloutId!)?.canvases ||
+      getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts, calloutId!)?.canvases ||
+      getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts, calloutId!)?.canvases;
 
     return sourceArray?.find(c => c.id === canvasId) as Canvas | undefined;
   }, [hubData, challengeData, opportunityData, canvasId]);
@@ -150,7 +151,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
 
   useSubscribeToCanvas(
     hubData,
-    data => findById(getCanvasCallout(data?.hub.collaboration?.callouts)?.canvases, canvasId!),
+    data => findById(getCanvasCallout(data?.hub.collaboration?.callouts, calloutId!)?.canvases, canvasId!),
     subHub,
     {
       skip: skipCanvasSubscription,
@@ -159,14 +160,14 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
 
   useSubscribeToCanvas(
     challengeData,
-    data => findById(getCanvasCallout(data?.hub.challenge.collaboration?.callouts)?.canvases, canvasId!),
+    data => findById(getCanvasCallout(data?.hub.challenge.collaboration?.callouts, calloutId!)?.canvases, canvasId!),
     subChallenge,
     { skip: skipCanvasSubscription }
   );
 
   useSubscribeToCanvas(
     opportunityData,
-    data => findById(getCanvasCallout(data?.hub.opportunity.collaboration?.callouts)?.canvases, canvasId!),
+    data => findById(getCanvasCallout(data?.hub.opportunity.collaboration?.callouts, calloutId!)?.canvases, canvasId!),
     subOpportunity,
     { skip: skipCanvasSubscription }
   );

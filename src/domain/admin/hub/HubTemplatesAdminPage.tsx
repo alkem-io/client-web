@@ -14,7 +14,7 @@ import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspec
 import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
-import { getCanvasCallout } from '../../../containers/canvas/getCanvasCallout';
+import { getAllCanvasesOnCallouts } from '../../../containers/canvas/getCanvasCallout';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
@@ -55,8 +55,9 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     lifecycleTemplates,
     id: templatesSetID,
   } = hubTemplatesData?.hub.templates ?? {};
-  const canvasCallout = getCanvasCallout(hubCanvasesData?.hub.collaboration?.callouts);
-  const canvases = canvasCallout?.canvases;
+
+  // assuming we'll provide templates for the canvases only from hub callout canvases
+  const canvases = getAllCanvasesOnCallouts(hubCanvasesData?.hub.collaboration?.callouts);
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
@@ -80,7 +81,6 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         edit={edit}
         loadCanvases={loadCanvases}
         canvases={canvases}
-        calloutId={canvasCallout?.id}
       />
       <SectionSpacer />
       <AdminInnovationTemplatesSection

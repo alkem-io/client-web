@@ -29,15 +29,9 @@ interface AdminCanvasTemplatesSectionProps {
   edit?: boolean;
   loadCanvases: () => void;
   canvases: CanvasDetailsFragment[] | undefined;
-  calloutId: string | undefined;
 }
 
-const AdminCanvasTemplatesSection = ({
-  loadCanvases,
-  canvases,
-  calloutId,
-  ...props
-}: AdminCanvasTemplatesSectionProps) => {
+const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: AdminCanvasTemplatesSectionProps) => {
   const { t } = useTranslation();
 
   const CreateCanvasTemplateDialogWithCanvases = useMemo(
@@ -72,7 +66,6 @@ const AdminCanvasTemplatesSection = ({
     <AdminTemplatesSection
       {...props}
       canvases={canvases}
-      calloutId={calloutId}
       headerText={t('pages.admin.generic.sections.templates.canvas-templates')}
       templateCardComponent={CanvasTemplateCard}
       templatePreviewComponent={CanvasTemplatePreview}
