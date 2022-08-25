@@ -11,6 +11,12 @@ mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
       id
       myPrivileges
     }
+    canvases {
+      id
+    }
+    aspects {
+      id
+    }
   }
 }
 
