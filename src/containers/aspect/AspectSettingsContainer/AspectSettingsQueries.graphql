@@ -5,9 +5,13 @@ query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $
       id
       callouts(IDs: [$calloutId])  {
         id
-          type
+        type
         aspects(IDs: [$aspectNameId]) {
           ...AspectSettings
+        }
+        aspectNames: aspects {
+          id
+          displayName
         }
       }
     }
@@ -27,6 +31,10 @@ query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_N
           aspects(IDs: [$aspectNameId]) {
             ...AspectSettings
           }
+          aspectNames: aspects {
+            id
+            displayName
+          }
         }
       }
     }
@@ -45,6 +53,10 @@ query OpportunityAspectSettings($hubNameId: UUID_NAMEID!, $opportunityNameId: UU
           type
           aspects(IDs: [$aspectNameId]) {
             ...AspectSettings
+          }
+          aspectNames: aspects {
+            id
+            displayName
           }
         }
       }
