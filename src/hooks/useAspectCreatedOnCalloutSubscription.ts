@@ -45,7 +45,7 @@ export const useAspectCreatedOnCalloutSubscription = ({
   });
 
   const { data: challengeCollaborationData } = usePrivilegesOnChallengeCollaborationQuery({
-    variables: { hubNameId, challengeNameId: challengeNameId ?? '' },
+    variables: { hubNameId, challengeNameId: challengeNameId! },
     skip: !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
@@ -54,13 +54,13 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const canReadChallengeCollaboration = challengeCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
   const { data: challengeAspectData, subscribeToMore: subscribeToChallenges } = useChallengeCalloutQuery({
-    variables: { hubNameId, calloutId, challengeNameId: challengeNameId ?? '' },
+    variables: { hubNameId, calloutId, challengeNameId: challengeNameId! },
     skip: !canReadChallengeCollaboration || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
 
   const { data: opportunityCollaborationData } = usePrivilegesOnOpportunityCollaborationQuery({
-    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '' },
+    variables: { hubNameId, opportunityNameId: opportunityNameId! },
     skip: !opportunityNameId,
     onError: handleError,
   });
@@ -69,7 +69,7 @@ export const useAspectCreatedOnCalloutSubscription = ({
   const canReadOpportunityCollaboration = opportunityCollaborationPrivileges?.includes(AuthorizationPrivilege.Read);
 
   const { data: opportunityAspectData, subscribeToMore: subscribeToOpportunity } = useOpportunityCalloutQuery({
-    variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId ?? '' },
+    variables: { hubNameId, calloutId, opportunityNameId: opportunityNameId! },
     skip: !canReadOpportunityCollaboration || !opportunityNameId,
     onError: handleError,
     fetchPolicy: 'network-only',
