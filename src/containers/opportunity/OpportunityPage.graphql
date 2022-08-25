@@ -62,6 +62,7 @@ fragment OpportunityPage on Opportunity {
     references {
       id
       name
+      description
       uri
     }
     visuals {

@@ -38,7 +38,7 @@ const UserSegment = <El extends ElementType>({
 }: UserSegmentProps<El>) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, roles } = userMetadata;
+  const { user, roles, isAdmin } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef<HTMLButtonElement>(null);
 
@@ -97,17 +97,19 @@ const UserSegment = <El extends ElementType>({
                 </ListItemIcon>
                 <ListItemText primary={t('buttons.my-profile')} />
               </ListItemButton>
-              <ListItemButton
-                onClick={() => {
-                  setDropdownOpen(false);
-                  navigate('/admin', { replace: true });
-                }}
-              >
-                <ListItemIcon>
-                  <SettingsOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary={t('common.admin')} />
-              </ListItemButton>
+              {isAdmin && (
+                <ListItemButton
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    navigate('/admin', { replace: true });
+                  }}
+                >
+                  <ListItemIcon>
+                    <SettingsOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t('common.admin')} />
+                </ListItemButton>
+              )}
               <ListItemButton
                 onClick={() => {
                   setDropdownOpen(false);

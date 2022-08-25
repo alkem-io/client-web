@@ -91,9 +91,13 @@ const AspectForm: FC<AspectFormProps> = ({
   const uniqueNameValidator = yup
     .string()
     .required('name is required')
-    .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value =>
-      Boolean(value && (!aspectNames?.includes(value) || value === aspect?.displayName))
-    );
+    .test('is-valid-name', t('components.aspect-creation.info-step.unique-name-validation-text'), value => {
+      if (edit) {
+        return Boolean(value && (!aspectNames?.includes(value) || value === aspect?.displayName));
+      } else {
+        return Boolean(value && !aspectNames?.includes(value));
+      }
+    });
 
   const validationSchema = yup.object().shape({
     name: displayNameValidator.concat(uniqueNameValidator),

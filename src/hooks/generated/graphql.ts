@@ -1192,23 +1192,6 @@ export const ContextTabFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const ReferenceContextTabFragmentDoc = gql`
-  fragment ReferenceContextTab on Reference {
-    id
-    name
-    uri
-    description
-  }
-`;
-export const ContextTabExtraFragmentDoc = gql`
-  fragment ContextTabExtra on Context {
-    id
-    references {
-      ...ReferenceContextTab
-    }
-  }
-  ${ReferenceContextTabFragmentDoc}
-`;
 export const LifecycleContextTabFragmentDoc = gql`
   fragment LifecycleContextTab on Lifecycle {
     id
@@ -1393,6 +1376,7 @@ export const OpportunityPageFragmentDoc = gql`
       references {
         id
         name
+        description
         uri
       }
       visuals {
@@ -10846,6 +10830,10 @@ export const HubAspectSettingsDocument = gql`
           aspects(IDs: [$aspectNameId]) {
             ...AspectSettings
           }
+          aspectNames: aspects {
+            id
+            displayName
+          }
         }
       }
     }
@@ -10919,6 +10907,10 @@ export const ChallengeAspectSettingsDocument = gql`
             type
             aspects(IDs: [$aspectNameId]) {
               ...AspectSettings
+            }
+            aspectNames: aspects {
+              id
+              displayName
             }
           }
         }
@@ -10998,6 +10990,10 @@ export const OpportunityAspectSettingsDocument = gql`
             type
             aspects(IDs: [$aspectNameId]) {
               ...AspectSettings
+            }
+            aspectNames: aspects {
+              id
+              displayName
             }
           }
         }
@@ -11985,6 +11981,80 @@ export type ChallengePageQueryResult = Apollo.QueryResult<
 export function refetchChallengePageQuery(variables: SchemaTypes.ChallengePageQueryVariables) {
   return { query: ChallengePageDocument, variables: variables };
 }
+export const ChallengeDashboardReferencesDocument = gql`
+  query ChallengeDashboardReferences($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      challenge(ID: $challengeId) {
+        id
+        context {
+          id
+          references {
+            id
+            name
+            uri
+            description
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useChallengeDashboardReferencesQuery__
+ *
+ * To run a query within a React component, call `useChallengeDashboardReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeDashboardReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeDashboardReferencesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *      challengeId: // value for 'challengeId'
+ *   },
+ * });
+ */
+export function useChallengeDashboardReferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeDashboardReferencesQuery,
+    SchemaTypes.ChallengeDashboardReferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ChallengeDashboardReferencesQuery,
+    SchemaTypes.ChallengeDashboardReferencesQueryVariables
+  >(ChallengeDashboardReferencesDocument, options);
+}
+export function useChallengeDashboardReferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeDashboardReferencesQuery,
+    SchemaTypes.ChallengeDashboardReferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeDashboardReferencesQuery,
+    SchemaTypes.ChallengeDashboardReferencesQueryVariables
+  >(ChallengeDashboardReferencesDocument, options);
+}
+export type ChallengeDashboardReferencesQueryHookResult = ReturnType<typeof useChallengeDashboardReferencesQuery>;
+export type ChallengeDashboardReferencesLazyQueryHookResult = ReturnType<
+  typeof useChallengeDashboardReferencesLazyQuery
+>;
+export type ChallengeDashboardReferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeDashboardReferencesQuery,
+  SchemaTypes.ChallengeDashboardReferencesQueryVariables
+>;
+export function refetchChallengeDashboardReferencesQuery(
+  variables: SchemaTypes.ChallengeDashboardReferencesQueryVariables
+) {
+  return { query: ChallengeDashboardReferencesDocument, variables: variables };
+}
 export const ChallengesOverviewPageDocument = gql`
   query ChallengesOverviewPage($rolesData: RolesUserInput!) {
     rolesUser(rolesData: $rolesData) {
@@ -12320,72 +12390,6 @@ export type HubContextQueryResult = Apollo.QueryResult<
 export function refetchHubContextQuery(variables: SchemaTypes.HubContextQueryVariables) {
   return { query: HubContextDocument, variables: variables };
 }
-export const HubContextExtraDocument = gql`
-  query HubContextExtra($hubNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      displayName
-      tagset {
-        id
-        name
-        tags
-      }
-      context {
-        ...ContextTabExtra
-      }
-      activity {
-        ...ActivityItem
-      }
-    }
-  }
-  ${ContextTabExtraFragmentDoc}
-  ${ActivityItemFragmentDoc}
-`;
-
-/**
- * __useHubContextExtraQuery__
- *
- * To run a query within a React component, call `useHubContextExtraQuery` and pass it any options that fit your needs.
- * When your component renders, `useHubContextExtraQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHubContextExtraQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *   },
- * });
- */
-export function useHubContextExtraQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.HubContextExtraQuery, SchemaTypes.HubContextExtraQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.HubContextExtraQuery, SchemaTypes.HubContextExtraQueryVariables>(
-    HubContextExtraDocument,
-    options
-  );
-}
-export function useHubContextExtraLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.HubContextExtraQuery, SchemaTypes.HubContextExtraQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.HubContextExtraQuery, SchemaTypes.HubContextExtraQueryVariables>(
-    HubContextExtraDocument,
-    options
-  );
-}
-export type HubContextExtraQueryHookResult = ReturnType<typeof useHubContextExtraQuery>;
-export type HubContextExtraLazyQueryHookResult = ReturnType<typeof useHubContextExtraLazyQuery>;
-export type HubContextExtraQueryResult = Apollo.QueryResult<
-  SchemaTypes.HubContextExtraQuery,
-  SchemaTypes.HubContextExtraQueryVariables
->;
-export function refetchHubContextExtraQuery(variables: SchemaTypes.HubContextExtraQueryVariables) {
-  return { query: HubContextExtraDocument, variables: variables };
-}
 export const ChallengeContextDocument = gql`
   query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -12468,88 +12472,6 @@ export type ChallengeContextQueryResult = Apollo.QueryResult<
 export function refetchChallengeContextQuery(variables: SchemaTypes.ChallengeContextQueryVariables) {
   return { query: ChallengeContextDocument, variables: variables };
 }
-export const ChallengeContextExtraDocument = gql`
-  query ChallengeContextExtra($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      displayName
-      challenge(ID: $challengeNameId) {
-        id
-        nameID
-        displayName
-        tagset {
-          id
-          name
-          tags
-        }
-        lifecycle {
-          ...LifecycleContextTab
-        }
-        context {
-          ...ContextTabExtra
-        }
-        activity {
-          ...ActivityItem
-        }
-      }
-    }
-  }
-  ${LifecycleContextTabFragmentDoc}
-  ${ContextTabExtraFragmentDoc}
-  ${ActivityItemFragmentDoc}
-`;
-
-/**
- * __useChallengeContextExtraQuery__
- *
- * To run a query within a React component, call `useChallengeContextExtraQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengeContextExtraQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useChallengeContextExtraQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      challengeNameId: // value for 'challengeNameId'
- *   },
- * });
- */
-export function useChallengeContextExtraQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengeContextExtraQuery,
-    SchemaTypes.ChallengeContextExtraQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengeContextExtraQuery, SchemaTypes.ChallengeContextExtraQueryVariables>(
-    ChallengeContextExtraDocument,
-    options
-  );
-}
-export function useChallengeContextExtraLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengeContextExtraQuery,
-    SchemaTypes.ChallengeContextExtraQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengeContextExtraQuery, SchemaTypes.ChallengeContextExtraQueryVariables>(
-    ChallengeContextExtraDocument,
-    options
-  );
-}
-export type ChallengeContextExtraQueryHookResult = ReturnType<typeof useChallengeContextExtraQuery>;
-export type ChallengeContextExtraLazyQueryHookResult = ReturnType<typeof useChallengeContextExtraLazyQuery>;
-export type ChallengeContextExtraQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengeContextExtraQuery,
-  SchemaTypes.ChallengeContextExtraQueryVariables
->;
-export function refetchChallengeContextExtraQuery(variables: SchemaTypes.ChallengeContextExtraQueryVariables) {
-  return { query: ChallengeContextExtraDocument, variables: variables };
-}
 export const OpportunityContextDocument = gql`
   query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
@@ -12630,87 +12552,6 @@ export type OpportunityContextQueryResult = Apollo.QueryResult<
 >;
 export function refetchOpportunityContextQuery(variables: SchemaTypes.OpportunityContextQueryVariables) {
   return { query: OpportunityContextDocument, variables: variables };
-}
-export const OpportunityContextExtraDocument = gql`
-  query OpportunityContextExtra($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-    hub(ID: $hubNameId) {
-      id
-      nameID
-      opportunity(ID: $opportunityNameId) {
-        id
-        nameID
-        displayName
-        tagset {
-          id
-          name
-          tags
-        }
-        lifecycle {
-          ...LifecycleContextTab
-        }
-        context {
-          ...ContextTabExtra
-        }
-        activity {
-          ...ActivityItem
-        }
-      }
-    }
-  }
-  ${LifecycleContextTabFragmentDoc}
-  ${ContextTabExtraFragmentDoc}
-  ${ActivityItemFragmentDoc}
-`;
-
-/**
- * __useOpportunityContextExtraQuery__
- *
- * To run a query within a React component, call `useOpportunityContextExtraQuery` and pass it any options that fit your needs.
- * When your component renders, `useOpportunityContextExtraQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOpportunityContextExtraQuery({
- *   variables: {
- *      hubNameId: // value for 'hubNameId'
- *      opportunityNameId: // value for 'opportunityNameId'
- *   },
- * });
- */
-export function useOpportunityContextExtraQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.OpportunityContextExtraQuery,
-    SchemaTypes.OpportunityContextExtraQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.OpportunityContextExtraQuery, SchemaTypes.OpportunityContextExtraQueryVariables>(
-    OpportunityContextExtraDocument,
-    options
-  );
-}
-export function useOpportunityContextExtraLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.OpportunityContextExtraQuery,
-    SchemaTypes.OpportunityContextExtraQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.OpportunityContextExtraQuery,
-    SchemaTypes.OpportunityContextExtraQueryVariables
-  >(OpportunityContextExtraDocument, options);
-}
-export type OpportunityContextExtraQueryHookResult = ReturnType<typeof useOpportunityContextExtraQuery>;
-export type OpportunityContextExtraLazyQueryHookResult = ReturnType<typeof useOpportunityContextExtraLazyQuery>;
-export type OpportunityContextExtraQueryResult = Apollo.QueryResult<
-  SchemaTypes.OpportunityContextExtraQuery,
-  SchemaTypes.OpportunityContextExtraQueryVariables
->;
-export function refetchOpportunityContextExtraQuery(variables: SchemaTypes.OpportunityContextExtraQueryVariables) {
-  return { query: OpportunityContextExtraDocument, variables: variables };
 }
 export const CommunityFeedbackTemplatesDocument = gql`
   query communityFeedbackTemplates {
@@ -13206,6 +13047,72 @@ export type HubPageLazyQueryHookResult = ReturnType<typeof useHubPageLazyQuery>;
 export type HubPageQueryResult = Apollo.QueryResult<SchemaTypes.HubPageQuery, SchemaTypes.HubPageQueryVariables>;
 export function refetchHubPageQuery(variables: SchemaTypes.HubPageQueryVariables) {
   return { query: HubPageDocument, variables: variables };
+}
+export const HubDashboardReferencesDocument = gql`
+  query HubDashboardReferences($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      id
+      context {
+        id
+        references {
+          id
+          name
+          uri
+          description
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useHubDashboardReferencesQuery__
+ *
+ * To run a query within a React component, call `useHubDashboardReferencesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHubDashboardReferencesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHubDashboardReferencesQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useHubDashboardReferencesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.HubDashboardReferencesQuery,
+    SchemaTypes.HubDashboardReferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
+    HubDashboardReferencesDocument,
+    options
+  );
+}
+export function useHubDashboardReferencesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.HubDashboardReferencesQuery,
+    SchemaTypes.HubDashboardReferencesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.HubDashboardReferencesQuery, SchemaTypes.HubDashboardReferencesQueryVariables>(
+    HubDashboardReferencesDocument,
+    options
+  );
+}
+export type HubDashboardReferencesQueryHookResult = ReturnType<typeof useHubDashboardReferencesQuery>;
+export type HubDashboardReferencesLazyQueryHookResult = ReturnType<typeof useHubDashboardReferencesLazyQuery>;
+export type HubDashboardReferencesQueryResult = Apollo.QueryResult<
+  SchemaTypes.HubDashboardReferencesQuery,
+  SchemaTypes.HubDashboardReferencesQueryVariables
+>;
+export function refetchHubDashboardReferencesQuery(variables: SchemaTypes.HubDashboardReferencesQueryVariables) {
+  return { query: HubDashboardReferencesDocument, variables: variables };
 }
 export const AssignUserAsOpportunityAdminDocument = gql`
   mutation assignUserAsOpportunityAdmin($input: AssignOpportunityAdminInput!) {
@@ -16392,6 +16299,16 @@ export const CreateCalloutDocument = gql`
       description
       state
       visibility
+      authorization {
+        id
+        myPrivileges
+      }
+      canvases {
+        id
+      }
+      aspects {
+        id
+      }
     }
   }
 `;
