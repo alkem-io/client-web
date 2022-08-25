@@ -5,7 +5,7 @@ import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAspectsData } from '../../../hooks';
+import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../hooks';
 import { CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 
@@ -35,8 +35,9 @@ const AspectCallout = ({
   // Create aspects
   const handleError = useApolloErrorHandler();
 
-  const { subscriptionEnabled } = useAspectsData({
+  const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
     hubNameId: hubNameId || '',
+    calloutId: callout.id,
     challengeNameId,
     opportunityNameId,
   });
