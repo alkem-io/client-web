@@ -76,7 +76,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     onError: handleError,
   });
   const parentCalloutFromHub = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId);
-  const parentCalloutAspectNamesFromHub = parentCalloutFromHub?.aspects?.map(x => x.displayName);
+  const parentCalloutAspectNamesFromHub = parentCalloutFromHub?.aspectNames?.map(x => x.displayName);
   const hubAspect = parentCalloutFromHub?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
@@ -92,7 +92,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     challengeData?.hub?.challenge?.collaboration?.callouts,
     aspectNameId
   );
-  const parentCalloutAspectNamesFromChallenge = parentCalloutFromChallenge?.aspects?.map(x => x.displayName);
+  const parentCalloutAspectNamesFromChallenge = parentCalloutFromChallenge?.aspectNames?.map(x => x.displayName);
   const challengeAspect = parentCalloutFromChallenge?.aspects?.find(x => x.nameID === aspectNameId);
 
   const {
@@ -108,7 +108,7 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     opportunityData?.hub?.opportunity?.collaboration?.callouts,
     aspectNameId
   );
-  const parentCalloutAspectNamesFromOpportunity = parentCalloutFromOpportunity?.aspects?.map(x => x.displayName);
+  const parentCalloutAspectNamesFromOpportunity = parentCalloutFromOpportunity?.aspectNames?.map(x => x.displayName);
   const opportunityAspect = parentCalloutFromOpportunity?.aspects?.find(x => x.nameID === aspectNameId);
 
   const aspect = hubAspect ?? challengeAspect ?? opportunityAspect;
