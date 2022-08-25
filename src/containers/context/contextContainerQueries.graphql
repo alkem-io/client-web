@@ -18,24 +18,6 @@ query HubContext($hubNameId: UUID_NAMEID!) {
     }
   }
 }
-query HubContextExtra($hubNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
-    id
-    nameID
-    displayName
-    tagset {
-      id
-      name
-      tags
-    }
-    context {
-      ...ContextTabExtra
-    }
-    activity {
-      ...ActivityItem
-    }
-  }
-}
 # chall queries
 query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
@@ -59,32 +41,6 @@ query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
       }
       context {
         ...ContextTab
-      }
-      activity {
-        ...ActivityItem
-      }
-    }
-  }
-}
-query ChallengeContextExtra($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
-    id
-    nameID
-    displayName
-    challenge(ID: $challengeNameId) {
-      id
-      nameID
-      displayName
-      tagset {
-        id
-        name
-        tags
-      }
-      lifecycle {
-        ...LifecycleContextTab
-      }
-      context {
-        ...ContextTabExtra
       }
       activity {
         ...ActivityItem
@@ -118,31 +74,6 @@ query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
     }
   }
 }
-query OpportunityContextExtra($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
-  hub(ID: $hubNameId) {
-    id
-    nameID
-    opportunity(ID: $opportunityNameId) {
-      id
-      nameID
-      displayName
-      tagset {
-        id
-        name
-        tags
-      }
-      lifecycle {
-        ...LifecycleContextTab
-      }
-      context {
-        ...ContextTabExtra
-      }
-      activity {
-        ...ActivityItem
-      }
-    }
-  }
-}
 # context tab fragments
 fragment ContextTab on Context {
   id
@@ -160,23 +91,11 @@ fragment ContextTab on Context {
     ...VisualFull
   }
 }
-fragment ContextTabExtra on Context {
-  id
-  references {
-    ...ReferenceContextTab
-  }
-}
 #
 fragment LifecycleContextTab on Lifecycle {
   id
   state
   machineDef
-}
-fragment ReferenceContextTab on Reference {
-  id
-  name
-  uri
-  description
 }
 fragment ActivityItem on NVP {
   id

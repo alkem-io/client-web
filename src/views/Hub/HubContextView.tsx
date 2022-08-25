@@ -3,13 +3,7 @@ import React, { FC, useMemo } from 'react';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import ContextSection from '../../components/composite/sections/ContextSection';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import {
-  ActivityItemFragment,
-  Context,
-  ContextTabFragment,
-  ReferenceContextTabFragment,
-  Tagset,
-} from '../../models/graphql-schema';
+import { ActivityItemFragment, Context, ContextTabFragment, Tagset } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
 import { ActivityType } from '../../domain/activity/ActivityType';
@@ -25,7 +19,6 @@ interface HubContextEntities {
   hubNameId?: string;
   hubDisplayName?: string;
   hubTagSet?: Tagset;
-  references?: ReferenceContextTabFragment[];
 }
 interface HubContextActions {}
 interface HubContextState {
@@ -52,7 +45,6 @@ export const HubContextView: FC<HubContextViewProps> = ({ activity, entities, st
     who = '',
     id = '',
   } = context || ({} as Context);
-  const references = entities?.references;
 
   const { t, i18n } = useTranslation();
 
@@ -95,7 +87,6 @@ export const HubContextView: FC<HubContextViewProps> = ({ activity, entities, st
       vision={vision}
       who={who}
       contextId={id}
-      references={references}
       loading={loading}
       leftColumn={
         <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>
