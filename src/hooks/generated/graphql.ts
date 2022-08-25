@@ -16303,6 +16303,12 @@ export const CreateCalloutDocument = gql`
         id
         myPrivileges
       }
+      canvases {
+        id
+      }
+      aspects {
+        id
+      }
     }
   }
 `;

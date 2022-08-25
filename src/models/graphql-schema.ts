@@ -13219,6 +13219,8 @@ export type CreateCalloutMutation = {
     authorization?:
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
+    canvases?: Array<{ __typename?: 'Canvas'; id: string }> | undefined;
+    aspects?: Array<{ __typename?: 'Aspect'; id: string }> | undefined;
   };
 };
 
