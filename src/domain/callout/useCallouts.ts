@@ -60,7 +60,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
 
   const callouts = collaboration?.callouts?.map(({ authorization, ...callout }) => {
     const draft = callout?.visibility === CalloutVisibility.Draft;
-    const editable = false; // todo client-2378; authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+    const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
     return {
       ...callout,
       authorization,

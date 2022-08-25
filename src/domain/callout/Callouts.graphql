@@ -185,3 +185,14 @@ fragment Callout on Callout {
   }
   visibility
 }
+
+mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
+  updateCallout(calloutData: $calloutData) {
+    id
+    description
+    displayName
+    state
+    type
+    visibility
+  }
+}

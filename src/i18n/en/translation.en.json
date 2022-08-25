@@ -23,6 +23,7 @@
     "ok": "Ok",
     "create": "Create",
     "publish": "Publish",
+    "unpublish": "Unpublish",
     "save-draft": "Save as draft",
     "save": "Save",
     "back": "Back",

@@ -3070,11 +3070,11 @@ export type UpdateCalloutInput = {
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
   /** State of the callout. */
-  state: CalloutState;
+  state?: InputMaybe<CalloutState>;
   /** Callout type. */
-  type: CalloutType;
+  type?: InputMaybe<CalloutType>;
   /** Visibility of the Callout. */
-  visibility: CalloutVisibility;
+  visibility?: InputMaybe<CalloutVisibility>;
 };
 
 export type UpdateCanvasDirectInput = {
@@ -13300,6 +13300,23 @@ export type CalloutFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
+};
+
+export type UpdateCalloutMutationVariables = Exact<{
+  calloutData: UpdateCalloutInput;
+}>;
+
+export type UpdateCalloutMutation = {
+  __typename?: 'Mutation';
+  updateCallout: {
+    __typename?: 'Callout';
+    id: string;
+    description?: string | undefined;
+    displayName: string;
+    state: CalloutState;
+    type: CalloutType;
+    visibility: CalloutVisibility;
+  };
 };
 
 export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{

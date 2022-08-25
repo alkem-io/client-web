@@ -74,7 +74,7 @@ interface StepSummaryLayoutProps {
   onClose?: () => void;
 }
 
-const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({
+export const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({
   children,
   dialogTitle,
   onClose,
