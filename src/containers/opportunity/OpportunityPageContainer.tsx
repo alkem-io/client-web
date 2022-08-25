@@ -61,6 +61,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   aspectsCount: number | undefined;
   canvases: CanvasDetailsFragment[];
   canvasesCount: number | undefined;
+  references: Reference[] | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -126,7 +127,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const relations = collaboration?.relations ?? [];
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references = [] } = context ?? {};
+  const { references } = context ?? {};
   const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
@@ -206,6 +207,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           aspectsCount,
           canvases,
           canvasesCount,
+          references,
           ...contributors,
         },
         {

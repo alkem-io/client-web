@@ -24,6 +24,10 @@ import { buildCanvasUrl, buildChallengeUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import withOptionalCount from '../../domain/shared/utils/withOptionalCount';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import ContextSectionIcon from '../../components/composite/sections/ContextSectionIcon';
+import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
+import References from '../../components/composite/common/References/References';
+import DashboardSection from '../../components/composite/sections/DashboardSection/DashboardSection';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -49,7 +53,8 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     [hubNameId, challengeNameId]
   );
 
-  const { challenge, isMember, discussions, permissions, aspects, aspectsCount, canvases, canvasesCount } = entities;
+  const { challenge, isMember, discussions, permissions, aspects, aspectsCount, canvases, canvasesCount, references } =
+    entities;
 
   const { loading } = state;
 
@@ -103,6 +108,13 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           )}
         </DashboardColumn>
         <DashboardColumn>
+          <DashboardSection
+            headerText={t('components.referenceSegment.title')}
+            primaryAction={<ContextSectionIcon component={SchoolIcon} />}
+            collapsible
+          >
+            <References references={references} />
+          </DashboardSection>
           <DashboardGenericSection
             headerText={withOptionalCount(
               t('pages.challenge.sections.dashboard.opportunities.title'),
