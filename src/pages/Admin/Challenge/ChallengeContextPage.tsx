@@ -3,7 +3,6 @@ import { PageProps } from '../../common';
 import { useChallenge, useHub, useUpdateNavigation } from '../../../hooks';
 import { ChallengeContextView } from '../../../views/Challenge/ChallengeContextView';
 import ContextTabContainer from '../../../containers/context/ContextTabContainer';
-import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 import ChallengePageLayout from '../../../domain/challenge/layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../domain/shared/layout/EntityPageSection';
 
@@ -14,23 +13,11 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   const { displayName: hubDisplayName } = useHub();
-  const {
-    hubId,
-    hubNameId,
-    displayName: challengeDisplayName,
-    challengeId,
-    challengeNameId,
-    permissions: { contextPrivileges },
-  } = useChallenge();
-  const loadAspectsAndReferences = contextPrivileges.includes(AuthorizationPrivilege.Read);
+  const { hubId, hubNameId, displayName: challengeDisplayName, challengeId, challengeNameId } = useChallenge();
 
   return (
     <ChallengePageLayout currentSection={EntityPageSection.About}>
-      <ContextTabContainer
-        hubNameId={hubNameId}
-        challengeNameId={challengeNameId}
-        loadReferences={loadAspectsAndReferences}
-      >
+      <ContextTabContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
         {(entities, state) => (
           <ChallengeContextView
             entities={{
@@ -43,7 +30,6 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
               challengeTagset: entities.tagset,
               challengeLifecycle: entities.lifecycle,
               context: entities.context,
-              references: entities.references,
             }}
             state={{
               loading: state.loading,

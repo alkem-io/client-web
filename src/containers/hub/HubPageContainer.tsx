@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useHub, useUserContext } from '../../hooks';
-import { useHubPageQuery } from '../../hooks/generated/graphql';
+import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import {
   AspectCardFragment,
@@ -9,6 +9,7 @@ import {
   CanvasDetailsFragment,
   ChallengeCardFragment,
   HubPageFragment,
+  Reference,
 } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
@@ -42,6 +43,7 @@ export interface HubContainerEntities {
   aspectsCount: number | undefined;
   canvases: CanvasDetailsFragment[];
   canvasesCount: number | undefined;
+  references: Reference[] | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
@@ -67,8 +69,12 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     errorPolicy: 'all',
   });
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
-
   const { user, isAuthenticated } = useUserContext();
+  // don't load references without READ privilige on Context
+  const { data: referencesData } = useHubDashboardReferencesQuery({
+    variables: { hubId },
+    skip: !_hub?.hub?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
+  });
 
   const communityReadAccess = (_hub?.hub?.community?.authorization?.myPrivileges ?? []).some(
     x => x === AuthorizationPrivilege.Read
@@ -97,6 +103,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 
+  const references = referencesData?.hub?.context?.references;
+
   return (
     <>
       {children(
@@ -114,6 +122,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           aspectsCount,
           canvases,
           canvasesCount,
+          references,
           ...contributors,
         },
         {

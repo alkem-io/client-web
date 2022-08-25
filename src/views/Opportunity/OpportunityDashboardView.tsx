@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
+import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
@@ -24,6 +25,9 @@ import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardL
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import { buildCanvasUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
+import DashboardSection from '../../components/composite/sections/DashboardSection/DashboardSection';
+import References from '../../components/composite/common/References/References';
+import ContextSectionIcon from '../../components/composite/sections/ContextSectionIcon';
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
@@ -43,6 +47,7 @@ export interface OpportunityDashboardViewEntities {
   aspectsCount: number | undefined;
   canvases: CanvasDetailsFragment[];
   canvasesCount: number | undefined;
+  references: Reference[] | undefined;
 }
 
 export interface OpportunityDashboardViewActions {
@@ -105,8 +110,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const communityId = opportunity?.community?.id || '';
   const { communityReadAccess } = options;
 
-  const { id, collaboration } = opportunity;
+  const { id, collaboration, context } = opportunity;
   const { id: collaborationId } = collaboration ?? {};
+  const references = context?.references;
 
   const { loading } = state;
 
@@ -152,6 +158,13 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
+          <DashboardSection
+            headerText={t('components.referenceSegment.title')}
+            primaryAction={<ContextSectionIcon component={SchoolIcon} />}
+            collapsible
+          >
+            <References references={references} />
+          </DashboardSection>
           <DashboardSectionAspects
             aspects={entities.aspects}
             aspectsCount={entities.aspectsCount}
