@@ -7,6 +7,7 @@ import { LoadingButton } from '@mui/lab';
 import { CampaignOutlined } from '@mui/icons-material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../components/core/dialog';
 import { CalloutVisibility } from '../../../models/graphql-schema';
+import { LoadingButton } from '@mui/lab';
 
 export interface CalloutVisibilityChangeDialogProps {
   open: boolean;
