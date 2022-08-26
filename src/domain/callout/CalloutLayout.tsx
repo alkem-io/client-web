@@ -19,7 +19,7 @@ export interface CalloutLayoutProps {
     authorization?: Authorization;
   };
   maxHeight?: number;
-  onVisibilityChanged: (visibility: CalloutVisibility) => void;
+  onVisibilityChanged: (visibility: CalloutVisibility) => Promise<void>;
 }
 
 const CalloutLayout = ({
@@ -38,17 +38,9 @@ const CalloutLayout = ({
   );
   const handleSettingsClosed = useCallback(() => setSettingsAnchorEl(null), []);
   //
-  const handleVisibilityChanged = useCallback((visibility: CalloutVisibility) => {
-    // todo loading logic
-    onVisibilityChanged(visibility);
-  }, []);
-  //
-  const [visDialogOpened, setVisDialogOpened] = useState(true);
+  const [visDialogOpened, setVisDialogOpened] = useState(false);
   const handleVisDialogOpened = useCallback(() => {
     setVisDialogOpened(true);
-    setSettingsAnchorEl(null);
-  }, []);
-  const handleEditDialogOpened = useCallback(() => {
     setSettingsAnchorEl(null);
   }, []);
   const handleVisDialogClosed = useCallback(() => setVisDialogOpened(false), []);
@@ -56,6 +48,14 @@ const CalloutLayout = ({
     () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
     [callout.draft]
   );
+  const handleVisibilityChanged = useCallback(async (visibility: CalloutVisibility) => {
+    await onVisibilityChanged(visibility);
+    setVisDialogOpened(false);
+  }, []);
+  //
+  const handleEditDialogOpened = useCallback(() => {
+    setSettingsAnchorEl(null);
+  }, []);
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
   if (dontShow) {
