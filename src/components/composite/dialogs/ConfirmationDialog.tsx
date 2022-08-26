@@ -1,12 +1,11 @@
-import Dialog from '@mui/material/Dialog';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import Dialog from '@mui/material/Dialog';
+import { LoadingButton } from '@mui/lab';
 import TranslationKey from '../../../types/TranslationKey';
-import { Loading } from '../../core';
-import Button from '../../core/Button';
 import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 
-interface ConfirmationDialogProps {
+export interface ConfirmationDialogProps {
   entities: {
     titleId?: TranslationKey;
     title?: string | React.ReactNode;
@@ -46,23 +45,20 @@ const ConfirmationDialog: FC<ConfirmationDialogProps> = ({ entities, actions, op
   }
 
   return (
-    <Dialog open={options.show} aria-labelledby="confirmation-dialog">
+    <Dialog open={options.show} aria-labelledby="confirmation-dialog" onClose={actions.onCancel}>
       <DialogTitle id="confirmation-dialog-title" onClose={actions.onCancel}>
         {title}
       </DialogTitle>
       <DialogContent>{content}</DialogContent>
-      <DialogActions>
-        {state?.isLoading ? (
-          <Loading text={'Loading ...'} />
-        ) : (
-          <Button
-            small
-            variant={'negative'}
-            onClick={actions.onConfirm}
-            disabled={state?.isLoading}
-            text={confirmButtonText}
-          />
-        )}
+      <DialogActions sx={{ justifyContent: 'end' }}>
+        <LoadingButton
+          variant="text"
+          loading={state?.isLoading}
+          disabled={state?.isLoading}
+          onClick={actions.onConfirm}
+        >
+          {confirmButtonText}
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

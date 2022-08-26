@@ -16024,58 +16024,6 @@ export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.CreateAspectFromContributeTabMutation,
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
 >;
-export const UpdateCalloutDocument = gql`
-  mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
-    updateCallout(calloutData: $calloutData) {
-      id
-      description
-      displayName
-      state
-      type
-      visibility
-    }
-  }
-`;
-export type UpdateCalloutMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateCalloutMutation,
-  SchemaTypes.UpdateCalloutMutationVariables
->;
-
-/**
- * __useUpdateCalloutMutation__
- *
- * To run a mutation, you first call `useUpdateCalloutMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateCalloutMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateCalloutMutation, { data, loading, error }] = useUpdateCalloutMutation({
- *   variables: {
- *      calloutData: // value for 'calloutData'
- *   },
- * });
- */
-export function useUpdateCalloutMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UpdateCalloutMutation,
-    SchemaTypes.UpdateCalloutMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateCalloutMutation, SchemaTypes.UpdateCalloutMutationVariables>(
-    UpdateCalloutDocument,
-    options
-  );
-}
-export type UpdateCalloutMutationHookResult = ReturnType<typeof useUpdateCalloutMutation>;
-export type UpdateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutMutation>;
-export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateCalloutMutation,
-  SchemaTypes.UpdateCalloutMutationVariables
->;
 export const AspectTemplatesOnCalloutCreationDocument = gql`
   query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -16605,6 +16553,105 @@ export function refetchOpportunityCollaborationIdQuery(
 ) {
   return { query: OpportunityCollaborationIdDocument, variables: variables };
 }
+export const UpdateCalloutDocument = gql`
+  mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
+    updateCallout(calloutData: $calloutData) {
+      id
+      description
+      displayName
+      state
+      type
+      visibility
+    }
+  }
+`;
+export type UpdateCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutMutation,
+  SchemaTypes.UpdateCalloutMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutMutation, { data, loading, error }] = useUpdateCalloutMutation({
+ *   variables: {
+ *      calloutData: // value for 'calloutData'
+ *   },
+ * });
+ */
+export function useUpdateCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutMutation,
+    SchemaTypes.UpdateCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.UpdateCalloutMutation, SchemaTypes.UpdateCalloutMutationVariables>(
+    UpdateCalloutDocument,
+    options
+  );
+}
+export type UpdateCalloutMutationHookResult = ReturnType<typeof useUpdateCalloutMutation>;
+export type UpdateCalloutMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutMutation>;
+export type UpdateCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutMutation,
+  SchemaTypes.UpdateCalloutMutationVariables
+>;
+export const DeleteCalloutDocument = gql`
+  mutation DeleteCallout($calloutId: UUID!) {
+    deleteCallout(deleteData: { ID: $calloutId }) {
+      id
+    }
+  }
+`;
+export type DeleteCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteCalloutMutation,
+  SchemaTypes.DeleteCalloutMutationVariables
+>;
+
+/**
+ * __useDeleteCalloutMutation__
+ *
+ * To run a mutation, you first call `useDeleteCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCalloutMutation, { data, loading, error }] = useDeleteCalloutMutation({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useDeleteCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteCalloutMutation,
+    SchemaTypes.DeleteCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.DeleteCalloutMutation, SchemaTypes.DeleteCalloutMutationVariables>(
+    DeleteCalloutDocument,
+    options
+  );
+}
+export type DeleteCalloutMutationHookResult = ReturnType<typeof useDeleteCalloutMutation>;
+export type DeleteCalloutMutationResult = Apollo.MutationResult<SchemaTypes.DeleteCalloutMutation>;
+export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteCalloutMutation,
+  SchemaTypes.DeleteCalloutMutationVariables
+>;
 export const CalloutAspectCreatedDocument = gql`
   subscription CalloutAspectCreated($calloutID: UUID!) {
     calloutAspectCreated(calloutID: $calloutID) {

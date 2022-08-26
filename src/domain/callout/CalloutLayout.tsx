@@ -1,61 +1,84 @@
 import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, Card, IconButton, Menu, MenuItem } from '@mui/material';
-import Heading from '../shared/components/Heading';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import { useTranslation } from 'react-i18next';
-import { Authorization, AuthorizationPrivilege, CalloutVisibility } from '../../models/graphql-schema';
+import {
+  Authorization,
+  AuthorizationPrivilege,
+  Callout,
+  CalloutType,
+  CalloutVisibility,
+} from '../../models/graphql-schema';
 import Markdown from '../../components/core/Markdown';
-import CalloutVisibilityChangeDialog from './visibility-change-dialog/CalloutVisibilityChangeDialog';
+import Heading from '../shared/components/Heading';
 import { CalloutSummary } from './creation-dialog/steps/CalloutSummaryStep/CalloutSummaryStep';
+import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
+import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
+import { CalloutEditType } from './edit/CalloutEditType';
 
-export interface CalloutLayoutProps {
+export interface CalloutLayoutEvents {
+  onVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
+  onCalloutEdit: (callout: CalloutEditType) => Promise<void>;
+  onCalloutDelete: (callout: CalloutEditType) => Promise<void>;
+}
+
+export interface CalloutLayoutProps extends CalloutLayoutEvents {
   callout: {
     id: string;
     displayName: string;
-    description?: string;
+    description: string;
+    type: CalloutType;
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;
   };
   maxHeight?: number;
-  onVisibilityChanged: (visibility: CalloutVisibility) => Promise<void>;
 }
 
 const CalloutLayout = ({
   callout,
   children,
   maxHeight,
-  onVisibilityChanged,
+  onVisibilityChange,
+  onCalloutEdit,
+  onCalloutDelete,
 }: PropsWithChildren<CalloutLayoutProps>) => {
   const { t } = useTranslation();
+
   const [settingsAnchorEl, setSettingsAnchorEl] = useState<null | HTMLElement>(null);
   const settingsOpened = Boolean(settingsAnchorEl);
-  // todo: should this be passed from props?
-  const handleSettingsOpened = useCallback(
-    (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget),
-    []
-  );
-  const handleSettingsClosed = useCallback(() => setSettingsAnchorEl(null), []);
+  const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
+  const handleSettingsClose = () => setSettingsAnchorEl(null);
   //
-  const [visDialogOpened, setVisDialogOpened] = useState(false);
-  const handleVisDialogOpened = useCallback(() => {
-    setVisDialogOpened(true);
+  const [visDialogOpen, setVisDialogOpen] = useState(false);
+  const handleVisDialogOpen = () => {
+    setVisDialogOpen(true);
     setSettingsAnchorEl(null);
-  }, []);
-  const handleVisDialogClosed = useCallback(() => setVisDialogOpened(false), []);
+  };
+  const handleVisDialogClose = () => setVisDialogOpen(false);
   const visDialogTitle = useMemo(
     () => `${t(`buttons.${callout.draft ? '' : 'un'}publish` as const)} ${t('common.callout')}`,
     [callout.draft]
   );
-  const handleVisibilityChanged = useCallback(async (visibility: CalloutVisibility) => {
-    await onVisibilityChanged(visibility);
-    setVisDialogOpened(false);
-  }, []);
+  const handleVisibilityChange = async (visibility: CalloutVisibility) => {
+    await onVisibilityChange(callout.id, visibility);
+    setVisDialogOpen(false);
+  };
   //
-  const handleEditDialogOpened = useCallback(() => {
+  const [editDialogOpened, setEditDialogOpened] = useState(false);
+  const handleEditDialogOpen = () => {
     setSettingsAnchorEl(null);
-  }, []);
+    setEditDialogOpened(true);
+  };
+  const handleEditDialogClosed = () => setEditDialogOpened(false);
+  const handleCalloutEdit = useCallback(
+    async (newCallout: CalloutEditType) => {
+      await onCalloutEdit(newCallout);
+      setEditDialogOpened(false);
+    },
+    [onCalloutEdit, setEditDialogOpened]
+  );
 
   const dontShow = callout.draft && !callout?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
   if (dontShow) {
@@ -105,7 +128,7 @@ const CalloutLayout = ({
         aria-labelledby="callout-settings-button"
         anchorEl={settingsAnchorEl}
         open={settingsOpened}
-        onClose={handleSettingsClosed}
+        onClose={handleSettingsClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -115,20 +138,28 @@ const CalloutLayout = ({
           horizontal: 'left',
         }}
       >
-        <MenuItem onClick={handleEditDialogOpened}>{t('buttons.edit').toLocaleUpperCase()}</MenuItem>
-        <MenuItem onClick={handleVisDialogOpened}>
+        <MenuItem onClick={handleEditDialogOpen}>{t('buttons.edit').toLocaleUpperCase()}</MenuItem>
+        <MenuItem onClick={handleVisDialogOpen}>
           {t(`buttons.${callout.draft ? '' : 'un'}publish` as const).toLocaleUpperCase()}
         </MenuItem>
       </Menu>
       <CalloutVisibilityChangeDialog
-        open={visDialogOpened}
-        onClose={handleVisDialogClosed}
+        open={visDialogOpen}
+        onClose={handleVisDialogClose}
         title={visDialogTitle}
         draft={callout.draft}
-        onVisibilityChanged={handleVisibilityChanged}
+        onVisibilityChanged={handleVisibilityChange}
       >
         <CalloutSummary callout={callout} />
       </CalloutVisibilityChangeDialog>
+      <CalloutEditDialog
+        open={editDialogOpened}
+        onClose={handleEditDialogClosed}
+        callout={callout}
+        title={`${t('buttons.edit')} ${t('common.callout')}`}
+        onCalloutEdit={handleCalloutEdit}
+        onDelete={onCalloutDelete}
+      />
     </>
   );
 };

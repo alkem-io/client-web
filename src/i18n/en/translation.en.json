@@ -292,7 +292,9 @@
     "host": "Host"
   },
   "callout": {
-    "draftNotice": "DRAFT - This Callout is only visible for admins."
+    "draftNotice": "DRAFT - This Callout is only visible for admins.",
+    "delete-confirm-title": "Delete Callout?",
+    "delete-confirm-text": "All aspects and canvases under the Callout will also be deleted."
   },
   "forms": {
     "validations": {

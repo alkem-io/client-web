@@ -353,7 +353,7 @@ export type Callout = {
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
   /** The description of this Callout */
-  description?: Maybe<Scalars['Markdown']>;
+  description: Scalars['Markdown'];
   /** The Discussion object for this Callout. */
   discussion?: Maybe<Discussion>;
   /** The display name. */
@@ -12478,7 +12478,7 @@ export type HubCalloutsQuery = {
                 nameID: string;
                 type: CalloutType;
                 displayName: string;
-                description?: string | undefined;
+                description: string;
                 state: CalloutState;
                 visibility: CalloutVisibility;
                 aspects?:
@@ -12588,7 +12588,7 @@ export type ChallengeCalloutsQuery = {
                   nameID: string;
                   type: CalloutType;
                   displayName: string;
-                  description?: string | undefined;
+                  description: string;
                   state: CalloutState;
                   visibility: CalloutVisibility;
                   aspects?:
@@ -12703,7 +12703,7 @@ export type OpportunityCalloutsQuery = {
                   nameID: string;
                   type: CalloutType;
                   displayName: string;
-                  description?: string | undefined;
+                  description: string;
                   state: CalloutState;
                   visibility: CalloutVisibility;
                   aspects?:
@@ -12815,7 +12815,7 @@ export type HubCalloutQuery = {
                 nameID: string;
                 type: CalloutType;
                 displayName: string;
-                description?: string | undefined;
+                description: string;
                 state: CalloutState;
                 visibility: CalloutVisibility;
                 aspects?:
@@ -12926,7 +12926,7 @@ export type ChallengeCalloutQuery = {
                   nameID: string;
                   type: CalloutType;
                   displayName: string;
-                  description?: string | undefined;
+                  description: string;
                   state: CalloutState;
                   visibility: CalloutVisibility;
                   aspects?:
@@ -13042,7 +13042,7 @@ export type OpportunityCalloutQuery = {
                   nameID: string;
                   type: CalloutType;
                   displayName: string;
-                  description?: string | undefined;
+                  description: string;
                   state: CalloutState;
                   visibility: CalloutVisibility;
                   aspects?:
@@ -13236,7 +13236,7 @@ export type CalloutFragment = {
   nameID: string;
   type: CalloutType;
   displayName: string;
-  description?: string | undefined;
+  description: string;
   state: CalloutState;
   visibility: CalloutVisibility;
   aspects?:
@@ -13300,23 +13300,6 @@ export type CalloutFragment = {
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
-};
-
-export type UpdateCalloutMutationVariables = Exact<{
-  calloutData: UpdateCalloutInput;
-}>;
-
-export type UpdateCalloutMutation = {
-  __typename?: 'Mutation';
-  updateCallout: {
-    __typename?: 'Callout';
-    id: string;
-    description?: string | undefined;
-    displayName: string;
-    state: CalloutState;
-    type: CalloutType;
-    visibility: CalloutVisibility;
-  };
 };
 
 export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{
@@ -13424,7 +13407,7 @@ export type CreateCalloutMutation = {
     nameID: string;
     type: CalloutType;
     displayName: string;
-    description?: string | undefined;
+    description: string;
     state: CalloutState;
     visibility: CalloutVisibility;
     authorization?:
@@ -13479,6 +13462,29 @@ export type OpportunityCollaborationIdQuery = {
     };
   };
 };
+
+export type UpdateCalloutMutationVariables = Exact<{
+  calloutData: UpdateCalloutInput;
+}>;
+
+export type UpdateCalloutMutation = {
+  __typename?: 'Mutation';
+  updateCallout: {
+    __typename?: 'Callout';
+    id: string;
+    description: string;
+    displayName: string;
+    state: CalloutState;
+    type: CalloutType;
+    visibility: CalloutVisibility;
+  };
+};
+
+export type DeleteCalloutMutationVariables = Exact<{
+  calloutId: Scalars['UUID'];
+}>;
+
+export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
 
 export type AspectsOnCalloutFragment = {
   __typename?: 'Callout';

@@ -1,21 +1,17 @@
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import AspectCard, { AspectCardAspect } from '../../../components/composite/common/cards/AspectCard/AspectCard';
 import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
-import {
-  AspectCardFragmentDoc,
-  useCreateAspectFromContributeTabMutation,
-  useUpdateCalloutMutation,
-} from '../../../hooks/generated/graphql';
+import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../hooks';
-import { CalloutVisibility, CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
+import { CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
-interface AspectCalloutProps extends OptionalCoreEntityIds {
+interface AspectCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
     aspects: AspectCardAspect[];
   };
@@ -30,6 +26,9 @@ const AspectCallout = ({
   hubNameId,
   challengeNameId,
   opportunityNameId,
+  onCalloutEdit,
+  onVisibilityChange,
+  onCalloutDelete,
 }: AspectCalloutProps) => {
   // Dialog handling
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
@@ -125,21 +124,15 @@ const AspectCallout = ({
 
   const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
 
-  const [updateCallout] = useUpdateCalloutMutation({ onError: handleError });
-  const onVisibilityChanged = useCallback(
-    async (visibility: CalloutVisibility) => {
-      await updateCallout({
-        variables: { calloutData: { ID: callout.id, visibility } },
-      });
-    },
-    [
-      /* visibility is not part of the callout */
-    ]
-  );
-
   return (
     <>
-      <CalloutLayout callout={callout} maxHeight={42.5} onVisibilityChanged={onVisibilityChanged}>
+      <CalloutLayout
+        callout={callout}
+        maxHeight={42.5}
+        onVisibilityChange={onVisibilityChange}
+        onCalloutEdit={onCalloutEdit}
+        onCalloutDelete={onCalloutDelete}
+      >
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.aspects}
           deps={[hubNameId, challengeNameId, opportunityNameId]}

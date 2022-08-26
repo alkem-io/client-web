@@ -35,12 +35,13 @@ export type CalloutFormOutput = {
 
 export interface CalloutFormProps {
   callout?: CalloutFormInput;
+  edit?: boolean;
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
   children?: FormikConfig<FormValueType>['children'];
 }
 
-const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged, children }) => {
+const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, onStatusChanged, children }) => {
   const { t } = useTranslation();
 
   const initialValues: FormValueType = {
@@ -120,6 +121,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, onChange, onStatusChanged,
             <FormRow>
               <FormikSelect
                 name="type"
+                disabled={edit}
                 title={t('components.callout-creation.callout-type-label')}
                 values={calloutTypes}
                 endAdornment={

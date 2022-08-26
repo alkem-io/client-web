@@ -1,5 +1,5 @@
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
-import React, { useCallback, useState } from 'react';
+import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
+import React, { useState } from 'react';
 import SimpleCard from '../../shared/components/SimpleCard';
 import { WbIncandescentOutlined } from '@mui/icons-material';
 import { LinkWithState } from '../../shared/types/LinkWithState';
@@ -9,9 +9,6 @@ import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDial
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { useUpdateCalloutMutation } from '../../../hooks/generated/graphql';
-import { CalloutVisibility } from '../../../models/graphql-schema';
-import { useApolloErrorHandler } from '../../../hooks';
 
 interface Canvas {
   id: string;
@@ -22,7 +19,7 @@ interface Canvas {
   };
 }
 
-interface CanvasCalloutProps extends OptionalCoreEntityIds {
+interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
     canvases: Canvas[];
   };
@@ -39,28 +36,23 @@ const CanvasCallout = ({
   opportunityNameId,
   buildCanvasUrl,
   canCreate = false,
+  onCalloutEdit,
+  onVisibilityChange,
+  onCalloutDelete,
 }: CanvasCalloutProps) => {
-  const handleError = useApolloErrorHandler();
-
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
   const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
   const handleCreateDialogClosed = () => setShowCreateCanvasDialog(false);
 
-  const [updateCallout] = useUpdateCalloutMutation({ onError: handleError });
-  const onVisibilityChanged = useCallback(
-    async (visibility: CalloutVisibility) => {
-      await updateCallout({
-        variables: { calloutData: { ID: callout.id, visibility } },
-      });
-    },
-    [
-      /* visibility is not part of the callout */
-    ]
-  );
-
   return (
     <>
-      <CalloutLayout callout={callout} maxHeight={18} onVisibilityChanged={onVisibilityChanged}>
+      <CalloutLayout
+        callout={callout}
+        maxHeight={18}
+        onVisibilityChange={onVisibilityChange}
+        onCalloutEdit={onCalloutEdit}
+        onCalloutDelete={onCalloutDelete}
+      >
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.canvases}
           deps={[hubNameId, challengeNameId, opportunityNameId]}
