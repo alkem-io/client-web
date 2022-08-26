@@ -48,8 +48,8 @@ const CanvasCallout = ({
 
   const [updateCallout] = useUpdateCalloutMutation({ onError: handleError });
   const onVisibilityChanged = useCallback(
-    (visibility: CalloutVisibility) => {
-      updateCallout({
+    async (visibility: CalloutVisibility) => {
+      await updateCallout({
         variables: { calloutData: { ID: callout.id, visibility } },
       });
     },

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
@@ -6,13 +6,14 @@ import Button from '@mui/material/Button';
 import { CampaignOutlined } from '@mui/icons-material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../components/core/dialog';
 import { CalloutVisibility } from '../../../models/graphql-schema';
+import { LoadingButton } from '@mui/lab';
 
 export interface CalloutVisibilityChangeDialogProps {
   open: boolean;
   title: string;
   draft: boolean;
   onClose: () => void;
-  onVisibilityChanged: (visibility: CalloutVisibility) => void;
+  onVisibilityChanged: (visibility: CalloutVisibility) => Promise<void>;
 }
 
 const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
@@ -24,6 +25,14 @@ const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
   onVisibilityChanged,
 }) => {
   const { t } = useTranslation();
+
+  const [loading, setLoading] = useState(false);
+  const handleVisibilityChanged = async () => {
+    setLoading(true);
+    await onVisibilityChanged(draft ? CalloutVisibility.Published : CalloutVisibility.Draft);
+    setLoading(false);
+  };
+
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-visibility-dialog-title" onClose={onClose}>
       <DialogTitle onClose={onClose}>
@@ -34,15 +43,12 @@ const CalloutVisibilityChangeDialog: FC<CalloutVisibilityChangeDialogProps> = ({
       </DialogTitle>
       <DialogContent dividers>{children}</DialogContent>
       <DialogActions sx={{ justifyContent: 'end' }}>
-        <Button onClick={onClose} variant="text">
+        <Button onClick={onClose} disabled={loading} variant="text">
           {t('buttons.cancel')}
         </Button>
-        <Button
-          onClick={() => onVisibilityChanged(draft ? CalloutVisibility.Published : CalloutVisibility.Draft)}
-          variant="contained"
-        >
+        <LoadingButton loading={loading} variant="contained" onClick={handleVisibilityChanged}>
           {t(`buttons.${draft ? '' : 'un'}publish` as const)}
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );
