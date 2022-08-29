@@ -47,10 +47,7 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
 
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-          // Just show the Explore tab. See: #2436
-          element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
-          // Redirect to Explore tab
-          //element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
+          element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
         />
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}

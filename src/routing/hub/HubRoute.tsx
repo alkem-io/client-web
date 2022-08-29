@@ -40,10 +40,7 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
 
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-          // Just show the Explore tab. See: #2436
-          element={<CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
-          // Redirect to Explore tab
-          //element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
+          element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
         />
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
