@@ -1,5 +1,5 @@
 import { Box, Skeleton, styled, Typography } from '@mui/material';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import hexToRGBA from '../../../../utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
@@ -52,12 +52,20 @@ const Ellipser = styled('div')(() => ({
   },
 }));
 
-const Image = styled('img')(() => ({
+const ImageWrapper = styled('div')(() => ({
   position: 'absolute',
   top: 0,
   width: '100%',
   height: '100%',
+  overflow: 'hidden',
   zIndex: 10,
+}));
+
+const Image = styled('img')(() => ({
+  objectFit: 'cover',
+  objectPosition: '0 0',
+  width: '100%',
+  height: '100%',
 }));
 
 export interface PageBannerProps {
@@ -68,18 +76,28 @@ export interface PageBannerProps {
   loading?: boolean;
 }
 
-const PageBanner: FC<PageBannerProps> = ({ title, tagline, bannerUrl, showBreadcrumbs, loading = false }) => {
+const PageBanner: FC<PageBannerProps> = ({
+  title,
+  tagline,
+  bannerUrl,
+  showBreadcrumbs,
+  loading: dataLoading = false,
+}) => {
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 
   bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
 
+  const [imageLoading, setImageLoading] = useState(true);
+
   return (
     <Root ref={containerReference}>
-      <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />
-      {!loading && (
+      {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
+      {!dataLoading && (
         <>
           {showBreadcrumbs && <BreadcrumbsView />}
-          <Image src={bannerUrl} alt={`${title} - Banner image`} />
+          <ImageWrapper>
+            <Image src={bannerUrl} alt={`${title} - Banner image`} onLoad={() => setImageLoading(false)} />
+          </ImageWrapper>
           <Title>
             <Ellipser>
               <Typography variant={'h1'} ref={element => addAutomaticTooltip(element)}>
