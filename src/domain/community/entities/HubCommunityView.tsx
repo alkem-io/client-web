@@ -3,10 +3,8 @@ import { useHub, useUserContext } from '../../../hooks';
 import { toOrganizationCardProps } from '../utils/useOrganizationCardProps';
 import { useHubCommunityContributorsQuery } from '../../../hooks/generated/graphql';
 import { useTranslation } from 'react-i18next';
-import HostOrganization from '../CommunityContributors/HostOrganization';
 import CommunityContributorsSection from '../CommunityContributors/CommunityContributorsSection';
 import useCommunityContributors from '../CommunityContributors/useCommunityContributors';
-import { Accordion } from '../../../components/composite/common/Accordion/Accordion';
 import ContributingUsers from '../CommunityContributors/ContributingUsers';
 import useSearchAcrossMultipleLists from '../../shared/utils/useSearchAcrossMultipleLists';
 import { userCardValueGetter } from '../../../components/core/card-filter/value-getters/cards/user-card-value-getter';
@@ -14,6 +12,9 @@ import { organizationCardValueGetter } from './ChallengeCommunityView';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import CommunityContributorsSearch from '../CommunityContributors/CommunityContributorsSearch';
 import useUserCardProps from '../utils/useUserCardProps';
+import ContributingOrganizations from '../CommunityContributors/ContributingOrganizations';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
+import SectionHeader from '../../shared/components/Section/SectionHeader';
 
 const HubCommunityView: FC = () => {
   const { hubId } = useHub();
@@ -50,13 +51,17 @@ const HubCommunityView: FC = () => {
 
   return (
     <>
-      <HostOrganization organization={hostOrganization} loading={loading} />
-      <SectionSpacer />
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
-      <Accordion title={t('community.leading-users')} ariaKey="lead-users" loading={loading}>
+      <DashboardGenericSection>
+        <SectionHeader text={t('pages.community.hub-host.title')} helpText={t('pages.community.hub-host.help-text')} />
+        <SectionSpacer />
+        <ContributingOrganizations organizations={hostOrganization ? [hostOrganization] : []} loading={loading} />
+        <SectionSpacer />
+        <SectionHeader text={t('community.leading-users')} />
+        <SectionSpacer />
         <ContributingUsers users={leadUserCards} loading={loading} />
-      </Accordion>
+      </DashboardGenericSection>
       <CommunityContributorsSection
         resourceId={hubId}
         organizations={memberOrganizations}
