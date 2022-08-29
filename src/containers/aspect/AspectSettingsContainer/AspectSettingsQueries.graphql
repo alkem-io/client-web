@@ -1,9 +1,9 @@
-query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     collaboration {
       id
-      callouts(IDs: [$calloutId])  {
+      callouts(IDs: [$calloutNameId])  {
         id
         type
         aspects(IDs: [$aspectNameId]) {
@@ -18,14 +18,14 @@ query HubAspectSettings($hubNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $
   }
 }
 
-query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     challenge(ID: $challengeNameId) {
       id
       collaboration {
         id
-        callouts(IDs: [$calloutId])  {
+        callouts(IDs: [$calloutNameId])  {
           id
           type
           aspects(IDs: [$aspectNameId]) {
@@ -41,14 +41,14 @@ query ChallengeAspectSettings($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_N
   }
 }
 
-query OpportunityAspectSettings($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+query OpportunityAspectSettings($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $aspectNameId: UUID_NAMEID!, $calloutNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
     opportunity(ID: $opportunityNameId) {
       id
       collaboration {
         id
-        callouts(IDs: [$calloutId]) {
+        callouts(IDs: [$calloutNameId]) {
           id
           type
           aspects(IDs: [$aspectNameId]) {
