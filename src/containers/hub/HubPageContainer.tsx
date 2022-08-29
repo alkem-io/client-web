@@ -3,14 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useHub, useUserContext } from '../../hooks';
 import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import {
-  AspectCardFragment,
-  AuthorizationPrivilege,
-  CanvasDetailsFragment,
-  ChallengeCardFragment,
-  HubPageFragment,
-  Reference,
-} from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment, Reference } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../models/discussion/discussion';
@@ -24,6 +17,7 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -39,9 +33,9 @@ export interface HubContainerEntities {
   isGlobalAdmin: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
-  aspects: (AspectCardFragment & { calloutNameId: string })[];
+  aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
-  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
+  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;

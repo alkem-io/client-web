@@ -4,7 +4,6 @@ import { useConfig } from '../../../hooks';
 import { FEATURE_COLLABORATION_CANVASES } from '../../../models/constants';
 import {
   AuthorizationPrivilege,
-  CanvasDetailsFragment,
   CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../../models/graphql-schema';
@@ -16,10 +15,11 @@ import CanvasManagementView, {
 } from './CanvasManagementView';
 import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout';
 import Loading from '../../../components/core/Loading/Loading';
+import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
   entityTypeName: EntityTypeName;
-  canvases: (CanvasDetailsFragment & { calloutNameId })[];
+  canvases: CanvasFragmentWithCallout[];
   templates: CreateCanvasCanvasTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];

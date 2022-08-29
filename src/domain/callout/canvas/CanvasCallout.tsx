@@ -9,10 +9,10 @@ import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDial
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
-import { Canvas } from '../../../models/graphql-schema';
+import { CanvasFragmentWithCallout } from '../useCallouts';
 
-type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview';
-export type CanvasCard = Pick<Canvas, NeededFields> & { calloutNameId: string };
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
+export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
 
 interface CanvasCalloutProps extends OptionalCoreEntityIds {
   callout: CalloutLayoutProps['callout'] & {

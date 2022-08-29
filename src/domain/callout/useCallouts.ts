@@ -18,9 +18,12 @@ interface CalloutChildTypePropName {
   [CalloutType.Canvas]: 'canvases';
 }
 
+export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
+export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId: string };
+
 interface CalloutChildPropValue {
-  aspects: (ContributeTabAspectFragment & { calloutNameId: string })[];
-  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
+  aspects: AspectFragmentWithCallout[];
+  canvases: CanvasFragmentWithCallout[];
 }
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
