@@ -47,9 +47,8 @@ const AspectCallout = ({
     onError: handleError,
     update: (cache, { data }) => {
       // Clear activity counters
-      clearCacheForType(cache, 'Hub');
-      clearCacheForType(cache, 'Challenge');
-      clearCacheForType(cache, 'Opportunity');
+      // clearing this entry won't make it refetch
+      clearCacheForType(cache, 'NVP:aspects');
 
       if (subscriptionEnabled || !data) {
         return;
