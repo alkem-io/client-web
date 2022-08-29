@@ -53,6 +53,7 @@ fragment HubPage on Hub {
     id
     callouts {
       id
+      nameID
       type
       visibility
       aspects(limit: 2, shuffle: true) {

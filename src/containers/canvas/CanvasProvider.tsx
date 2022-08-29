@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
 import { useUrlParams } from '../../hooks';
 import {
   useCanvasTemplatesQuery,
@@ -7,7 +8,6 @@ import {
   useOpportunityCanvasesQuery,
 } from '../../hooks/generated/graphql';
 import {
-  CanvasDetailsFragment,
   CollaborationWithCanvasDetailsFragment,
   CreateCanvasCanvasTemplateFragment,
 } from '../../models/graphql-schema';
@@ -22,7 +22,7 @@ export type TemplateQuery = {
 } & { hubId: string };
 
 export interface IProvidedEntities {
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasFragmentWithCallout[];
   templates: CreateCanvasCanvasTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
@@ -67,7 +67,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts) ??
     getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts);
 
-  const canvases = callout?.canvases ?? [];
+  const canvases = callout?.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })) ?? [];
 
   const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
 

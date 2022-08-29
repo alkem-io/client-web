@@ -3,20 +3,20 @@ import DashboardGenericSection, {
 } from '../../shared/components/DashboardSections/DashboardGenericSection';
 import { Typography } from '@mui/material';
 import React from 'react';
-import { CanvasDetailsFragment } from '../../../models/graphql-schema';
 import { WbIncandescentOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import SimpleCard from '../../shared/components/SimpleCard';
 import { LinkWithState } from '../../shared/types/LinkWithState';
 import SimpleCardsList from '../../shared/components/SimpleCardsList';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 interface CanvasesDashboardPreviewProps extends DashboardGenericSectionProps {
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   loading?: boolean;
   noItemsMessage?: string;
-  buildCanvasLink: (canvasNameId: string) => LinkWithState;
+  buildCanvasLink: (canvasNameId: string, calloutNameId) => LinkWithState;
 }
 
 const CanvasesDashboardPreview = ({
@@ -44,7 +44,7 @@ const CanvasesDashboardPreview = ({
           {canvases.map(canvas => (
             <SimpleCard
               key={canvas.id}
-              {...buildCanvasLink(canvas.nameID)}
+              {...buildCanvasLink(canvas.nameID, canvas.calloutNameId)}
               title={canvas.displayName}
               imageUrl={canvas.preview?.uri}
               iconComponent={WbIncandescentOutlined}

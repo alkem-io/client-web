@@ -29,7 +29,8 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
   const [/* use for the Dialog */ backToCanvases, buildLinkToCanvasRaw] = useBackToParentPage(rootUrl);
 
   const buildLinkToCanvas = useMemo(
-    () => (url: string) => buildLinkToCanvasRaw(`${rootUrl}/canvases/${url}`),
+    () => (canvasNameId: string, calloutNameId: string) =>
+      buildLinkToCanvasRaw(`${rootUrl}/callouts/${calloutNameId}/canvases/${canvasNameId}`),
     [rootUrl, buildLinkToCanvasRaw]
   );
 

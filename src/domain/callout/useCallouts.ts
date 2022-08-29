@@ -18,9 +18,12 @@ interface CalloutChildTypePropName {
   [CalloutType.Canvas]: 'canvases';
 }
 
+export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
+export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId: string };
+
 interface CalloutChildPropValue {
-  aspects: ContributeTabAspectFragment[];
-  canvases: CanvasDetailsFragment[];
+  aspects: AspectFragmentWithCallout[];
+  canvases: CanvasFragmentWithCallout[];
 }
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
@@ -63,6 +66,9 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
     const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
     return {
       ...callout,
+      // Add calloutNameId to all the canvases and aspects
+      canvases: callout.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })),
+      aspects: callout.aspects?.map(aspect => ({ ...aspect, calloutNameId: callout.nameID })),
       authorization,
       draft,
       editable,

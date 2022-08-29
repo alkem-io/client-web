@@ -861,6 +861,7 @@ export const CollaborationWithCanvasDetailsFragmentDoc = gql`
     id
     callouts {
       id
+      nameID
       type
       authorization {
         id
@@ -1100,6 +1101,7 @@ export const ChallengeProfileFragmentDoc = gql`
       id
       callouts {
         id
+        nameID
         type
         visibility
         aspects(limit: 2, shuffle: true) {
@@ -1282,6 +1284,7 @@ export const HubPageFragmentDoc = gql`
       id
       callouts {
         id
+        nameID
         type
         visibility
         aspects(limit: 2, shuffle: true) {
@@ -1345,6 +1348,7 @@ export const OpportunityPageFragmentDoc = gql`
       }
       callouts {
         id
+        nameID
         type
         visibility
         aspects(limit: 2, shuffle: true) {

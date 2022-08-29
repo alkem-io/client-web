@@ -5,12 +5,7 @@ import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengeDashboardReferencesQuery, useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import {
-  AspectCardFragment,
-  AuthorizationPrivilege,
-  CanvasDetailsFragment,
-  ChallengeProfileFragment,
-} from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
@@ -22,6 +17,7 @@ import {
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
 import { Reference } from '../../models/Profile';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -29,10 +25,10 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   hubDisplayName: string;
   challenge?: ChallengeProfileFragment;
   opportunitiesCount: number | undefined;
-  aspects: AspectCardFragment[];
+  aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   references: Reference[] | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   permissions: {
     canEdit: boolean;
