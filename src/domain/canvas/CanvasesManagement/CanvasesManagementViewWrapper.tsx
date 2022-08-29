@@ -19,7 +19,7 @@ import Loading from '../../../components/core/Loading/Loading';
 
 export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder, CanvasNavigationMethods {
   entityTypeName: EntityTypeName;
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId })[];
   templates: CreateCanvasCanvasTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];

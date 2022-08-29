@@ -29,10 +29,10 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   hubDisplayName: string;
   challenge?: ChallengeProfileFragment;
   opportunitiesCount: number | undefined;
-  aspects: AspectCardFragment[];
+  aspects: (AspectCardFragment & { calloutNameId: string })[];
   aspectsCount: number | undefined;
   references: Reference[] | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
   canvasesCount: number | undefined;
   permissions: {
     canEdit: boolean;

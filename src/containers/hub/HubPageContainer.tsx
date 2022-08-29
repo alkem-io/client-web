@@ -39,9 +39,9 @@ export interface HubContainerEntities {
   isGlobalAdmin: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
-  aspects: AspectCardFragment[];
+  aspects: (AspectCardFragment & { calloutNameId: string })[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;

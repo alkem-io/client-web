@@ -13,6 +13,7 @@ import CreateCalloutItemButton from '../CreateCalloutItemButton';
 interface Canvas {
   id: string;
   nameID: string;
+  calloutNameId: string;
   displayName: string;
   preview?: {
     uri: string;
@@ -23,7 +24,7 @@ interface CanvasCalloutProps extends OptionalCoreEntityIds {
   callout: CalloutLayoutProps['callout'] & {
     canvases: Canvas[];
   };
-  buildCanvasUrl: (canvasId: string) => LinkWithState;
+  buildCanvasUrl: (canvasNameId: string, calloutNameId: string) => LinkWithState;
   loading?: boolean;
   canCreate?: boolean;
 }
@@ -60,7 +61,7 @@ const CanvasCallout = ({
           {canvas => (
             <SimpleCard
               key={canvas!.id}
-              {...buildCanvasUrl(canvas!.nameID)}
+              {...buildCanvasUrl(canvas!.nameID, canvas!.calloutNameId)}
               title={canvas!.displayName}
               imageUrl={canvas!.preview?.uri}
               iconComponent={WbIncandescentOutlined}

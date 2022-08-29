@@ -48,9 +48,9 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   discussions: Discussion[];
   organization?: any;
   challenges: ChallengeCardFragment[];
-  aspects: AspectCardAspect[];
+  aspects: (AspectCardAspect & { calloutNameId: string })[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   community?: any;
@@ -95,8 +95,8 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   const [, buildLinkToCanvas] = useBackToParentPage(buildHubUrl(hubNameId));
 
   const buildCanvasLink = useCallback(
-    (canvasNameId: string) => {
-      const url = buildCanvasUrl(canvasNameId, hubNameId);
+    (canvasNameId: string, calloutNameId: string) => {
+      const url = buildCanvasUrl({ hubNameId, calloutNameId, canvasNameId });
       return buildLinkToCanvas(url);
     },
     [hubNameId]

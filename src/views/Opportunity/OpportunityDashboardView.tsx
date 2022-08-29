@@ -43,9 +43,9 @@ export interface OpportunityDashboardViewEntities {
     incoming: OpportunityPageRelationsFragment[];
     outgoing: OpportunityPageRelationsFragment[];
   };
-  aspects: AspectCardAspect[];
+  aspects: (AspectCardAspect & { calloutNameId })[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId })[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
 }
@@ -95,8 +95,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   );
 
   const buildCanvasLink = useCallback(
-    (canvasNameId: string) => {
-      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId, entities.opportunity.nameID);
+    (canvasNameId: string, calloutNameId: string) => {
+      const url = buildCanvasUrl({
+        hubNameId,
+        challengeNameId,
+        opportunityNameId: entities.opportunity.nameID,
+        calloutNameId,
+        canvasNameId,
+      });
       return buildLinkToCanvas(url);
     },
     [hubNameId, challengeNameId, entities.opportunity]

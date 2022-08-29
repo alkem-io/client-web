@@ -22,7 +22,7 @@ export type TemplateQuery = {
 } & { hubId: string };
 
 export interface IProvidedEntities {
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
   templates: CreateCanvasCanvasTemplateFragment[];
   calloutId: string | undefined;
   authorization: NonNullable<CollaborationWithCanvasDetailsFragment['callouts']>[0]['authorization'];
@@ -67,7 +67,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts) ??
     getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts);
 
-  const canvases = callout?.canvases ?? [];
+  const canvases = callout?.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })) ?? [];
 
   const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
 

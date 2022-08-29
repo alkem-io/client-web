@@ -8429,6 +8429,7 @@ export type CollaborationWithCanvasDetailsFragment = {
     | Array<{
         __typename?: 'Callout';
         id: string;
+        nameID: string;
         type: CalloutType;
         authorization?:
           | {
@@ -8505,6 +8506,7 @@ export type HubCanvasesQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                nameID: string;
                 type: CalloutType;
                 authorization?:
                   | {
@@ -8669,6 +8671,7 @@ export type ChallengeCanvasesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   authorization?:
                     | {
@@ -8847,6 +8850,7 @@ export type OpportunityCanvasesQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   authorization?:
                     | {
@@ -9230,6 +9234,7 @@ export type ChallengePageQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   visibility: CalloutVisibility;
                   aspects?:
@@ -9492,6 +9497,7 @@ export type ChallengeProfileFragment = {
           | Array<{
               __typename?: 'Callout';
               id: string;
+              nameID: string;
               type: CalloutType;
               visibility: CalloutVisibility;
               aspects?:
@@ -10268,6 +10274,7 @@ export type HubPageQuery = {
             | Array<{
                 __typename?: 'Callout';
                 id: string;
+                nameID: string;
                 type: CalloutType;
                 visibility: CalloutVisibility;
                 aspects?:
@@ -10507,6 +10514,7 @@ export type HubPageFragment = {
           | Array<{
               __typename?: 'Callout';
               id: string;
+              nameID: string;
               type: CalloutType;
               visibility: CalloutVisibility;
               aspects?:
@@ -10733,6 +10741,7 @@ export type OpportunityPageQuery = {
               | Array<{
                   __typename?: 'Callout';
                   id: string;
+                  nameID: string;
                   type: CalloutType;
                   visibility: CalloutVisibility;
                   aspects?:
@@ -10938,6 +10947,7 @@ export type OpportunityPageFragment = {
           | Array<{
               __typename?: 'Callout';
               id: string;
+              nameID: string;
               type: CalloutType;
               visibility: CalloutVisibility;
               aspects?:

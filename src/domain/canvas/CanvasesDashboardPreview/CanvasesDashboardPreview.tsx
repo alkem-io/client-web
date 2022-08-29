@@ -12,11 +12,11 @@ import SimpleCardsList from '../../shared/components/SimpleCardsList';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 
 interface CanvasesDashboardPreviewProps extends DashboardGenericSectionProps {
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
   canvasesCount: number | undefined;
   loading?: boolean;
   noItemsMessage?: string;
-  buildCanvasLink: (canvasNameId: string) => LinkWithState;
+  buildCanvasLink: (canvasNameId: string, calloutNameId) => LinkWithState;
 }
 
 const CanvasesDashboardPreview = ({
@@ -44,7 +44,7 @@ const CanvasesDashboardPreview = ({
           {canvases.map(canvas => (
             <SimpleCard
               key={canvas.id}
-              {...buildCanvasLink(canvas.nameID)}
+              {...buildCanvasLink(canvas.nameID, canvas.calloutNameId)}
               title={canvas.displayName}
               imageUrl={canvas.preview?.uri}
               iconComponent={WbIncandescentOutlined}

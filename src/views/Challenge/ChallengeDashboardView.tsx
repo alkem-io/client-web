@@ -46,8 +46,8 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
   const [, buildLinkToCanvas] = useBackToParentPage(buildChallengeUrl(hubNameId, challengeNameId));
 
   const buildCanvasLink = useCallback(
-    (canvasNameId: string) => {
-      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId);
+    (canvasNameId: string, calloutNameId: string) => {
+      const url = buildCanvasUrl({ hubNameId, challengeNameId, calloutNameId, canvasNameId });
       return buildLinkToCanvas(url);
     },
     [hubNameId, challengeNameId]

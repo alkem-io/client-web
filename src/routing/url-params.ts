@@ -12,6 +12,7 @@ export default interface UrlParams extends Record<string, string | undefined> {
   userNameId?: string;
   role?: AuthorizationCredential;
   discussionId?: string;
+  calloutNameId?: string;
   aspectNameId?: string;
   canvasNameId?: string;
 }

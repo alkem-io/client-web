@@ -11,14 +11,14 @@ import { LinkWithState } from '../../shared/types/LinkWithState';
 import SimpleCardsList from '../../shared/components/SimpleCardsList';
 
 interface CanvasesDashboardSectionProps extends DashboardGenericSectionProps {
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
   loading?: boolean;
   noItemsMessage?: string;
   howToMessage?: string;
   onCreate?: () => void;
   canDelete?: boolean;
   canCreate?: boolean;
-  buildCanvasUrl: (canvas: CanvasDetailsFragment) => LinkWithState;
+  buildCanvasUrl: (canvasNameId: string, calloutNameId: string) => LinkWithState;
 }
 
 const CanvasesDashboardSection = ({
@@ -51,7 +51,7 @@ const CanvasesDashboardSection = ({
           {canvases.map(canvas => (
             <SimpleCard
               key={canvas.id}
-              {...buildCanvasUrl(canvas)}
+              {...buildCanvasUrl(canvas.nameID, canvas.calloutNameId)}
               title={canvas.displayName}
               imageUrl={canvas.preview?.uri}
               iconComponent={WbIncandescentOutlined}

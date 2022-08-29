@@ -23,7 +23,7 @@ export interface ActiveCanvasIdHolder {
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
   calloutID: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
   templates: CreateCanvasCanvasTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
@@ -49,7 +49,7 @@ export interface CanvasManagementViewOptions {
 
 export interface CanvasNavigationMethods {
   backToCanvases: () => void;
-  buildLinkToCanvas: (url: string) => LinkWithState;
+  buildLinkToCanvas: (canvasNameId: string, calloutNameId: string) => LinkWithState;
 }
 
 export interface CanvasBeingDeleted {
@@ -93,7 +93,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   const isCanvasAvailable = actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
 
   const buildCanvasUrl = useCallback(
-    (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
+    (canvasNameId: string, calloutNameId: string) => buildLinkToCanvas(canvasNameId, calloutNameId),
     [buildLinkToCanvas]
   );
 

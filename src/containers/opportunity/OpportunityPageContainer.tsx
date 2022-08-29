@@ -57,9 +57,9 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     outgoing: OpportunityPageRelationsFragment[];
   };
   discussions: Discussion[];
-  aspects: AspectCardFragment[];
+  aspects: (AspectCardFragment & { calloutNameId: string })[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
 }
