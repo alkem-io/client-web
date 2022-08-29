@@ -13,13 +13,11 @@ import OpportunityRoute from '../opportunity/OpportunityRoute';
 import ChallengeDashboardPage from '../../pages/Challenge/ChallengeDashboardPage';
 import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPage';
 import ChallengeOpportunityPage from '../../pages/Admin/Challenge/ChallengeOpportunityPage';
-import AspectProvider from '../../context/aspect/AspectProvider';
-import AspectRoute from '../../domain/aspect/views/AspectRoute';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
 import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
 import { routes } from '../../domain/challenge/routes/challengeRoutes';
 import CalloutsPage from '../../domain/callout/CalloutsPage';
-import CanvasRoute from '../../domain/canvas/views/CanvasRoute';
+import CalloutRoute from '../callout/CalloutRoute';
 
 interface ChallengeRootProps extends PageProps {}
 
@@ -52,17 +50,16 @@ const ChallengeRoute: FC<ChallengeRootProps> = ({ paths: _paths }) => {
         />
         <Route path={routes.About} element={<ChallengeContextPage paths={currentPaths} />} />
         <Route path={routes.Opportunities} element={<ChallengeOpportunityPage paths={currentPaths} />} />
+
         <Route
-          path={`${routes.Explore}/aspects/:${nameOfUrl.aspectNameId}/*`}
-          element={
-            <AspectProvider>
-              <AspectRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} />
-            </AspectProvider>
-          }
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
+          element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
         />
         <Route
-          path={`${routes.Explore}/canvases/:${nameOfUrl.canvasNameId}/*`}
-          element={<CanvasRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'hub'} />}
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
+          element={
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'challenge'} />
+          }
         />
       </Route>
       <Route path={'apply/*'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.challenge} />} />

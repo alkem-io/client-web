@@ -8,12 +8,10 @@ import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboa
 import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
 import OpportunityAgreementsPage from '../../pages/Opportunity/OpportunityAgreementsPage';
 import { nameOfUrl } from '../url-params';
-import AspectProvider from '../../context/aspect/AspectProvider';
-import AspectRoute from '../../domain/aspect/views/AspectRoute';
 import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
 import { routes } from '../../domain/opportunity/routes/opportunityRoutes';
 import CalloutsPage from '../../domain/callout/CalloutsPage';
-import CanvasRoute from '../../domain/canvas/views/CanvasRoute';
+import CalloutRoute from '../callout/CalloutRoute';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -46,17 +44,16 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
         />
         <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
         <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
+
         <Route
-          path={`${routes.Explore}/aspects/:${nameOfUrl.aspectNameId}/*`}
-          element={
-            <AspectProvider>
-              <AspectRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} />
-            </AspectProvider>
-          }
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
+          element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
         />
         <Route
-          path={`${routes.Explore}/canvases/:${nameOfUrl.canvasNameId}/*`}
-          element={<CanvasRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'hub'} />}
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
+          element={
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'opportunity'} />
+          }
         />
       </Route>
       <Route path="*" element={<Error404 />} />

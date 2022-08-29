@@ -4,9 +4,13 @@ import {
   CalloutVisibility,
   CanvasDetailsFragment,
 } from '../../../models/graphql-schema';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../useCallouts';
+
+// These are two utility functions to reduce an array of callouts with an inside array of aspects/canvases
+// and flatten them into a single array of (AspectCardFragment & { calloutNameId: string}) or (CanvasDetailsFragment & { calloutNameId: string})
 
 export const getAspectsFromPublishedCallouts = <
-  T extends { type: CalloutType; visibility: CalloutVisibility; aspects?: AspectCardFragment[] }
+  T extends { nameID: string; type: CalloutType; visibility: CalloutVisibility; aspects?: AspectCardFragment[] }
 >(
   callouts: T[] | undefined
 ) => {
@@ -14,12 +18,15 @@ export const getAspectsFromPublishedCallouts = <
     callouts?.filter(x => x.type === CalloutType.Card && x.visibility === CalloutVisibility.Published) ?? [];
   return filteredCallouts.reduce((acc, curr) => {
     const currAspects = curr?.aspects ?? [];
-    return [...acc, ...currAspects];
-  }, [] as AspectCardFragment[]);
+    const allAspects = [...acc, ...currAspects];
+    return allAspects.map(aspect => {
+      return { calloutNameId: curr!.nameID, ...aspect };
+    });
+  }, [] as AspectFragmentWithCallout[]);
 };
 
 export const getCanvasesFromPublishedCallouts = <
-  T extends { type: CalloutType; visibility: CalloutVisibility; canvases?: CanvasDetailsFragment[] }
+  T extends { nameID: string; type: CalloutType; visibility: CalloutVisibility; canvases?: CanvasDetailsFragment[] }
 >(
   callouts: T[] | undefined
 ) => {
@@ -27,6 +34,9 @@ export const getCanvasesFromPublishedCallouts = <
     callouts?.filter(x => x.type === CalloutType.Canvas && x.visibility === CalloutVisibility.Published) ?? [];
   return filteredCallouts.reduce((acc, curr) => {
     const currCanvases = curr?.canvases ?? [];
-    return [...acc, ...currCanvases];
-  }, [] as CanvasDetailsFragment[]);
+    const allCanvases = [...acc, ...currCanvases];
+    return allCanvases.map(canvas => {
+      return { calloutNameId: curr!.nameID, ...canvas };
+    });
+  }, [] as CanvasFragmentWithCallout[]);
 };

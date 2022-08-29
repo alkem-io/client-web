@@ -9,21 +9,16 @@ import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDial
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
+import { CanvasFragmentWithCallout } from '../useCallouts';
 
-interface Canvas {
-  id: string;
-  nameID: string;
-  displayName: string;
-  preview?: {
-    uri: string;
-  };
-}
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
+export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
 
 interface CanvasCalloutProps extends OptionalCoreEntityIds {
   callout: CalloutLayoutProps['callout'] & {
-    canvases: Canvas[];
+    canvases: CanvasCard[];
   };
-  buildCanvasUrl: (canvasId: string) => LinkWithState;
+  buildCanvasUrl: (canvasNameId: string, calloutNameId: string) => LinkWithState;
   loading?: boolean;
   canCreate?: boolean;
 }
@@ -60,7 +55,7 @@ const CanvasCallout = ({
           {canvas => (
             <SimpleCard
               key={canvas!.id}
-              {...buildCanvasUrl(canvas!.nameID)}
+              {...buildCanvasUrl(canvas!.nameID, canvas!.calloutNameId)}
               title={canvas!.displayName}
               imageUrl={canvas!.preview?.uri}
               iconComponent={WbIncandescentOutlined}

@@ -7,14 +7,11 @@ import ConfirmationDialog from '../../../components/composite/dialogs/Confirmati
 import { ICanvasActions } from '../../../containers/canvas/CanvasActionsContainer';
 import CanvasValueContainer from '../../../containers/canvas/CanvasValueContainer';
 import { useUserContext } from '../../../hooks';
-import {
-  CanvasCheckoutStateEnum,
-  CanvasDetailsFragment,
-  CreateCanvasCanvasTemplateFragment,
-} from '../../../models/graphql-schema';
+import { CanvasCheckoutStateEnum, CreateCanvasCanvasTemplateFragment } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 import CanvasesDashboardSection from '../CanvasesDashboardSection/CanvasesDashboardSection';
 import { LinkWithState } from '../../shared/types/LinkWithState';
+import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 export interface ActiveCanvasIdHolder {
   canvasId?: string;
@@ -23,7 +20,7 @@ export interface ActiveCanvasIdHolder {
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
   calloutID: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasFragmentWithCallout[];
   templates: CreateCanvasCanvasTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
@@ -49,7 +46,7 @@ export interface CanvasManagementViewOptions {
 
 export interface CanvasNavigationMethods {
   backToCanvases: () => void;
-  buildLinkToCanvas: (url: string) => LinkWithState;
+  buildLinkToCanvas: (canvasNameId: string, calloutNameId: string) => LinkWithState;
 }
 
 export interface CanvasBeingDeleted {
@@ -93,7 +90,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   const isCanvasAvailable = actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
 
   const buildCanvasUrl = useCallback(
-    (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
+    (canvasNameId: string, calloutNameId: string) => buildLinkToCanvas(canvasNameId, calloutNameId),
     [buildLinkToCanvas]
   );
 

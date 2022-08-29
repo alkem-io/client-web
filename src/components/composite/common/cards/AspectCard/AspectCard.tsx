@@ -47,7 +47,10 @@ const Root = styled('div')(({ theme }) => ({
 }));
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'description' | 'type' | 'tagset';
-export type AspectCardAspect = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment };
+export type AspectCardAspect = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment } & {
+  calloutNameId: string;
+};
+
 export interface AspectCardProps {
   aspect?: AspectCardAspect;
   hubNameId?: string;
@@ -65,7 +68,14 @@ const AspectCard: FC<AspectCardProps> = ({
   opportunityNameId,
   keepScroll,
 }) => {
-  const { nameID = '', displayName = '', description = '', type = '', tagset } = (aspect || {}) as AspectCardAspect;
+  const {
+    nameID = '',
+    calloutNameId = '',
+    displayName = '',
+    description = '',
+    type = '',
+    tagset,
+  } = (aspect || {}) as AspectCardAspect;
   const bannerNarrow = aspect?.bannerNarrow?.uri;
 
   return (
@@ -76,7 +86,16 @@ const AspectCard: FC<AspectCardProps> = ({
         labelText: type,
         labelAboveTitle: true,
         tags: tagset?.tags ?? [],
-        url: hubNameId && nameID && buildAspectUrl(nameID, hubNameId, challengeNameId, opportunityNameId),
+        url:
+          hubNameId &&
+          nameID &&
+          buildAspectUrl({
+            hubNameId,
+            challengeNameId,
+            opportunityNameId,
+            calloutNameId,
+            aspectNameId: nameID,
+          }),
         keepScroll: keepScroll,
       }}
       loading={loading}

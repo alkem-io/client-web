@@ -63,6 +63,7 @@ fragment CollaborationWithCanvasDetails on Collaboration {
   id
   callouts {
     id
+    nameID
     type
     authorization {
       id
