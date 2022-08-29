@@ -10,11 +10,7 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { Discussion } from '../../models/discussion/discussion';
-import {
-  AssociatedOrganizationDetailsFragment,
-  CanvasDetailsFragment,
-  ChallengeCardFragment,
-} from '../../models/graphql-schema';
+import { AssociatedOrganizationDetailsFragment, ChallengeCardFragment } from '../../models/graphql-schema';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
@@ -37,6 +33,7 @@ import ContextSectionIcon from '../../components/composite/sections/ContextSecti
 import References from '../../components/composite/common/References/References';
 import DashboardSection from '../../components/composite/sections/DashboardSection/DashboardSection';
 import { Reference } from '../../models/Profile';
+import { CanvasCard } from '../../domain/callout/canvas/CanvasCallout';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
@@ -48,9 +45,9 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   discussions: Discussion[];
   organization?: any;
   challenges: ChallengeCardFragment[];
-  aspects: (AspectCardAspect & { calloutNameId: string })[];
+  aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
-  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
+  canvases: CanvasCard[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
   community?: any;

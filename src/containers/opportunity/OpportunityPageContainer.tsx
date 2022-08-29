@@ -8,10 +8,8 @@ import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import {
-  AspectCardFragment,
   AuthorizationCredential,
   AuthorizationPrivilege,
-  CanvasDetailsFragment,
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
   Project,
@@ -27,6 +25,7 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -57,9 +56,9 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     outgoing: OpportunityPageRelationsFragment[];
   };
   discussions: Discussion[];
-  aspects: (AspectCardFragment & { calloutNameId: string })[];
+  aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
-  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
+  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
 }

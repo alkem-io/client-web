@@ -9,12 +9,7 @@ import InterestModal from '../../components/composite/entities/Hub/InterestModal
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
-import {
-  CanvasDetailsFragment,
-  OpportunityPageFragment,
-  OpportunityPageRelationsFragment,
-  Reference,
-} from '../../models/graphql-schema';
+import { OpportunityPageFragment, OpportunityPageRelationsFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
@@ -28,6 +23,7 @@ import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import DashboardSection from '../../components/composite/sections/DashboardSection/DashboardSection';
 import References from '../../components/composite/common/References/References';
 import ContextSectionIcon from '../../components/composite/sections/ContextSectionIcon';
+import { CanvasCard } from '../../domain/callout/canvas/CanvasCallout';
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
@@ -43,9 +39,9 @@ export interface OpportunityDashboardViewEntities {
     incoming: OpportunityPageRelationsFragment[];
     outgoing: OpportunityPageRelationsFragment[];
   };
-  aspects: (AspectCardAspect & { calloutNameId })[];
+  aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
-  canvases: (CanvasDetailsFragment & { calloutNameId })[];
+  canvases: CanvasCard[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
 }

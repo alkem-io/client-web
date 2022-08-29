@@ -3,16 +3,16 @@ import DashboardGenericSection, {
 } from '../../shared/components/DashboardSections/DashboardGenericSection';
 import { Typography } from '@mui/material';
 import React from 'react';
-import { CanvasDetailsFragment } from '../../../models/graphql-schema';
 import { WbIncandescentOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import SimpleCard from '../../shared/components/SimpleCard';
 import { LinkWithState } from '../../shared/types/LinkWithState';
 import SimpleCardsList from '../../shared/components/SimpleCardsList';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 interface CanvasesDashboardPreviewProps extends DashboardGenericSectionProps {
-  canvases: (CanvasDetailsFragment & { calloutNameId: string })[];
+  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   loading?: boolean;
   noItemsMessage?: string;

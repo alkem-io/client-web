@@ -4,6 +4,7 @@ import {
   CalloutVisibility,
   CanvasDetailsFragment,
 } from '../../../models/graphql-schema';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../useCallouts';
 
 // These are two utility functions to reduce an array of callouts with an inside array of aspects/canvases
 // and flatten them into a single array of (AspectCardFragment & { calloutNameId: string}) or (CanvasDetailsFragment & { calloutNameId: string})
@@ -21,7 +22,7 @@ export const getAspectsFromPublishedCallouts = <
     return allAspects.map(aspect => {
       return { calloutNameId: curr!.nameID, ...aspect };
     });
-  }, [] as (AspectCardFragment & { calloutNameId: string })[]);
+  }, [] as AspectFragmentWithCallout[]);
 };
 
 export const getCanvasesFromPublishedCallouts = <
@@ -37,5 +38,5 @@ export const getCanvasesFromPublishedCallouts = <
     return allCanvases.map(canvas => {
       return { calloutNameId: curr!.nameID, ...canvas };
     });
-  }, [] as (CanvasDetailsFragment & { calloutNameId: string })[]);
+  }, [] as CanvasFragmentWithCallout[]);
 };
