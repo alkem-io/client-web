@@ -50,6 +50,7 @@ type NeededFields = 'id' | 'nameID' | 'displayName' | 'description' | 'type' | '
 export type AspectCardAspect = Pick<Aspect, NeededFields> & { bannerNarrow?: VisualUriFragment } & {
   calloutNameId: string;
 };
+
 export interface AspectCardProps {
   aspect?: AspectCardAspect;
   hubNameId?: string;
