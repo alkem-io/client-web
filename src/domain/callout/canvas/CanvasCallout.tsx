@@ -1,4 +1,4 @@
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import React, { useState } from 'react';
 import SimpleCard from '../../shared/components/SimpleCard';
 import { WbIncandescentOutlined } from '@mui/icons-material';
@@ -14,7 +14,7 @@ import { CanvasFragmentWithCallout } from '../useCallouts';
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
 export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
 
-interface CanvasCalloutProps extends OptionalCoreEntityIds {
+interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
     canvases: CanvasCard[];
   };
@@ -31,6 +31,9 @@ const CanvasCallout = ({
   opportunityNameId,
   buildCanvasUrl,
   canCreate = false,
+  onCalloutEdit,
+  onVisibilityChange,
+  onCalloutDelete,
 }: CanvasCalloutProps) => {
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
   const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
@@ -38,7 +41,13 @@ const CanvasCallout = ({
 
   return (
     <>
-      <CalloutLayout callout={callout} maxHeight={18}>
+      <CalloutLayout
+        callout={callout}
+        maxHeight={18}
+        onVisibilityChange={onVisibilityChange}
+        onCalloutEdit={onCalloutEdit}
+        onCalloutDelete={onCalloutDelete}
+      >
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.canvases}
           deps={[hubNameId, challengeNameId, opportunityNameId]}

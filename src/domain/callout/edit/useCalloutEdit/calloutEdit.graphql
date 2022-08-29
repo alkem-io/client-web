@@ -1,0 +1,17 @@
+mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
+  updateCallout(calloutData: $calloutData) {
+    id
+    description
+    displayName
+    state
+    type
+    visibility
+  }
+}
+
+mutation DeleteCallout($calloutId: UUID!) {
+  deleteCallout(deleteData: { ID: $calloutId }) {
+    id
+  }
+}
+$calloutId

@@ -9,14 +9,10 @@ export interface CalloutAspectSummaryStepProps extends CalloutStepProps {}
 const CalloutAspectSummary: FC<CalloutAspectSummaryStepProps> = ({ callout }) => {
   const { hubId } = useHub();
 
-  const {
-    data: aspectTemplateData,
-    loading: aspectTemplateValueLoading,
-    error,
-  } = useAspectTemplateValueQuery({
+  const { data: aspectTemplateData, loading: aspectTemplateValueLoading } = useAspectTemplateValueQuery({
     variables: { hubId, id: callout.templateId! },
   });
-  console.log(error);
+
   const { type = '', defaultDescription = '', info } = aspectTemplateData?.hub?.templates?.aspectTemplate ?? {};
   const { description = '', tagset } = info ?? {};
   const tags = tagset?.tags ?? [];
