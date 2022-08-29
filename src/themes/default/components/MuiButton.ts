@@ -54,6 +54,11 @@ const MuiButton = (theme: Theme): Components['MuiButton'] | undefined => {
 declare module '@mui/material/Button' {
   interface ButtonPropsColorOverrides {
     grey: true;
+    positive: true;
+    negative: true;
+    neutral: true;
+    neutralMedium: true;
+    neutralLight: true;
   }
 }
 
