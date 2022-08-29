@@ -9,20 +9,14 @@ import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDial
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
+import { Canvas } from '../../../models/graphql-schema';
 
-interface Canvas {
-  id: string;
-  nameID: string;
-  calloutNameId: string;
-  displayName: string;
-  preview?: {
-    uri: string;
-  };
-}
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview';
+export type CanvasCard = Pick<Canvas, NeededFields> & { calloutNameId: string };
 
 interface CanvasCalloutProps extends OptionalCoreEntityIds {
   callout: CalloutLayoutProps['callout'] & {
-    canvases: Canvas[];
+    canvases: CanvasCard[];
   };
   buildCanvasUrl: (canvasNameId: string, calloutNameId: string) => LinkWithState;
   loading?: boolean;
