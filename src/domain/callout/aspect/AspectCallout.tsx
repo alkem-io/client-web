@@ -1,17 +1,17 @@
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import AspectCard, { AspectCardAspect } from '../../../components/composite/common/cards/AspectCard/AspectCard';
 import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useAspectsData } from '../../../hooks';
+import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../hooks';
 import { CreateAspectOnCalloutInput } from '../../../models/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
-interface AspectCalloutProps extends OptionalCoreEntityIds {
+interface AspectCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
     aspects: AspectCardAspect[];
   };
@@ -26,17 +26,20 @@ const AspectCallout = ({
   hubNameId,
   challengeNameId,
   opportunityNameId,
+  onCalloutEdit,
+  onVisibilityChange,
+  onCalloutDelete,
 }: AspectCalloutProps) => {
   // Dialog handling
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
   const handleCreateDialogClosed = () => setAspectDialogOpen(false);
 
-  // Create aspects
   const handleError = useApolloErrorHandler();
 
-  const { subscriptionEnabled } = useAspectsData({
+  const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
     hubNameId: hubNameId || '',
+    calloutId: callout.id,
     challengeNameId,
     opportunityNameId,
   });
@@ -123,7 +126,13 @@ const AspectCallout = ({
 
   return (
     <>
-      <CalloutLayout callout={callout} maxHeight={42.5}>
+      <CalloutLayout
+        callout={callout}
+        maxHeight={42.5}
+        onVisibilityChange={onVisibilityChange}
+        onCalloutEdit={onCalloutEdit}
+        onCalloutDelete={onCalloutDelete}
+      >
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.aspects}
           deps={[hubNameId, challengeNameId, opportunityNameId]}

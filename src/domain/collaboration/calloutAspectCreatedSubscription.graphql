@@ -1,4 +1,4 @@
-subscription CalloutAspectCreated($calloutID: UUID!) {
+subscription CalloutAspectCreated($calloutID: UUID_NAMEID!) {
   calloutAspectCreated(calloutID: $calloutID) {
     aspect {
       ...ContributeTabAspect

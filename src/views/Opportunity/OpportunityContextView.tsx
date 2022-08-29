@@ -9,7 +9,6 @@ import {
   Context,
   ContextTabFragment,
   LifecycleContextTabFragment,
-  ReferenceContextTabFragment,
   Tagset,
 } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
@@ -25,7 +24,6 @@ export interface OpportunityContextViewEntities {
   opportunityTagset?: Tagset;
   opportunityLifecycle?: LifecycleContextTabFragment;
   aspects?: AspectCardFragment[];
-  references?: ReferenceContextTabFragment[];
 }
 
 export interface OpportunityContextViewActions {}
@@ -60,7 +58,6 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ activity, ent
     who = '',
     id = '',
   } = context || ({} as Context);
-  const references = entities?.references;
 
   const { t, i18n } = useTranslation();
 
@@ -95,7 +92,6 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ activity, ent
       who={who}
       contextId={id}
       keywords={opportunityTagset?.tags}
-      references={references}
       loading={loading}
       leftColumn={
         <DashboardOpportunityStatistics

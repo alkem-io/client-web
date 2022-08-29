@@ -1,15 +1,9 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useHub, useUserContext } from '../../hooks';
-import { useHubPageQuery } from '../../hooks/generated/graphql';
+import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import {
-  AspectCardFragment,
-  AuthorizationPrivilege,
-  CanvasDetailsFragment,
-  ChallengeCardFragment,
-  HubPageFragment,
-} from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment, Reference } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../models/discussion/discussion';
@@ -23,6 +17,7 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -38,10 +33,11 @@ export interface HubContainerEntities {
   isGlobalAdmin: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
-  aspects: AspectCardFragment[];
+  aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
+  references: Reference[] | undefined;
   memberUsers: WithId<ContributorCardProps>[] | undefined;
   memberUsersCount: number | undefined;
   memberOrganizations: WithId<ContributorCardProps>[] | undefined;
@@ -67,8 +63,12 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     errorPolicy: 'all',
   });
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
-
   const { user, isAuthenticated } = useUserContext();
+  // don't load references without READ privilige on Context
+  const { data: referencesData } = useHubDashboardReferencesQuery({
+    variables: { hubId },
+    skip: !_hub?.hub?.context?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Read),
+  });
 
   const communityReadAccess = (_hub?.hub?.community?.authorization?.myPrivileges ?? []).some(
     x => x === AuthorizationPrivilege.Read
@@ -97,6 +97,8 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 
+  const references = referencesData?.hub?.context?.references;
+
   return (
     <>
       {children(
@@ -114,6 +116,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           aspectsCount,
           canvases,
           canvasesCount,
+          references,
           ...contributors,
         },
         {

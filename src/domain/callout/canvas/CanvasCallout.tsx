@@ -1,4 +1,4 @@
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import React, { useState } from 'react';
 import SimpleCard from '../../shared/components/SimpleCard';
 import { WbIncandescentOutlined } from '@mui/icons-material';
@@ -9,21 +9,16 @@ import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDial
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
+import { CanvasFragmentWithCallout } from '../useCallouts';
 
-interface Canvas {
-  id: string;
-  nameID: string;
-  displayName: string;
-  preview?: {
-    uri: string;
-  };
-}
+type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
+export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
 
-interface CanvasCalloutProps extends OptionalCoreEntityIds {
+interface CanvasCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
-    canvases: Canvas[];
+    canvases: CanvasCard[];
   };
-  buildCanvasUrl: (canvasId: string) => LinkWithState;
+  buildCanvasUrl: (canvasNameId: string, calloutNameId: string) => LinkWithState;
   loading?: boolean;
   canCreate?: boolean;
 }
@@ -36,6 +31,9 @@ const CanvasCallout = ({
   opportunityNameId,
   buildCanvasUrl,
   canCreate = false,
+  onCalloutEdit,
+  onVisibilityChange,
+  onCalloutDelete,
 }: CanvasCalloutProps) => {
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
   const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
@@ -43,7 +41,13 @@ const CanvasCallout = ({
 
   return (
     <>
-      <CalloutLayout callout={callout} maxHeight={18}>
+      <CalloutLayout
+        callout={callout}
+        maxHeight={18}
+        onVisibilityChange={onVisibilityChange}
+        onCalloutEdit={onCalloutEdit}
+        onCalloutDelete={onCalloutDelete}
+      >
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.canvases}
           deps={[hubNameId, challengeNameId, opportunityNameId]}
@@ -60,7 +64,7 @@ const CanvasCallout = ({
           {canvas => (
             <SimpleCard
               key={canvas!.id}
-              {...buildCanvasUrl(canvas!.nameID)}
+              {...buildCanvasUrl(canvas!.nameID, canvas!.calloutNameId)}
               title={canvas!.displayName}
               imageUrl={canvas!.preview?.uri}
               iconComponent={WbIncandescentOutlined}

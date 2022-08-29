@@ -11,12 +11,10 @@ import { Error404, PageProps } from '../../pages';
 import HubDashboardPage from '../../pages/Hub/HubDashboardPage';
 import HubContextPage from '../../pages/Hub/HubContextPage';
 import HubChallengesPage from '../../pages/Hub/HubChallengesPage';
-import AspectRoute from '../../domain/aspect/views/AspectRoute';
-import AspectProvider from '../../context/aspect/AspectProvider';
 import { routes } from '../../domain/hub/routes/hubRoutes';
 import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
 import CalloutsPage from '../../domain/callout/CalloutsPage';
-import CanvasRoute from '../../domain/canvas/views/CanvasRoute';
+import CalloutRoute from '../callout/CalloutRoute';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName } = useHub();
@@ -39,17 +37,14 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
         />
         <Route path={routes.About} element={<HubContextPage paths={currentPaths} />} />
         <Route path={routes.Challenges} element={<HubChallengesPage paths={currentPaths} />} />
+
         <Route
-          path={`${routes.Explore}/aspects/:${nameOfUrl.aspectNameId}/*`}
-          element={
-            <AspectProvider>
-              <AspectRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} />
-            </AspectProvider>
-          }
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
+          element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
         />
         <Route
-          path={`${routes.Explore}/canvases/:${nameOfUrl.canvasNameId}/*`}
-          element={<CanvasRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'hub'} />}
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
+          element={<CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'hub'} />}
         />
       </Route>
       <Route path={'apply'} element={<ApplyRoute paths={currentPaths} type={ApplicationTypeEnum.hub} />} />

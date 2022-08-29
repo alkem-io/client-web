@@ -8,7 +8,6 @@ import {
 import { ApolloError } from '@apollo/client';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 import { getCardCallout } from '../../containers/aspect/getAspectCallout';
-import { useCalloutFromAspect } from '../../hooks/useCalloutFromAspect';
 
 interface AspectPermissions {
   canUpdate: boolean;
@@ -31,11 +30,16 @@ const AspectContext = React.createContext<AspectContextProps>({
 });
 
 const AspectProvider: FC = ({ children }) => {
-  const { hubNameId = '', challengeNameId = '', opportunityNameId = '', aspectNameId = '' } = useUrlParams();
+  const {
+    hubNameId = '',
+    challengeNameId = '',
+    opportunityNameId = '',
+    aspectNameId = '',
+    calloutId = '',
+  } = useUrlParams();
 
   const handleError = useApolloErrorHandler();
   const isAspectDefined = aspectNameId && hubNameId;
-  const { calloutId } = useCalloutFromAspect({ hubNameId, aspectNameId });
 
   const {
     data: hubData,

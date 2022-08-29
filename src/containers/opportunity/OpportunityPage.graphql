@@ -40,6 +40,7 @@ fragment OpportunityPage on Opportunity {
     }
     callouts {
       id
+      nameID
       type
       visibility
       aspects(limit: 2, shuffle: true) {
@@ -62,6 +63,7 @@ fragment OpportunityPage on Opportunity {
     references {
       id
       name
+      description
       uri
     }
     visuals {

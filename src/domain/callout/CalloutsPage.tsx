@@ -12,6 +12,7 @@ import useBackToParentPage from '../shared/utils/useBackToParentPage';
 import { useTranslation } from 'react-i18next';
 import { useCalloutCreation } from './creation-dialog/useCalloutCreation/useCalloutCreation';
 import CalloutCreationDialog from './creation-dialog/CalloutCreationDialog';
+import { useCalloutEdit } from './edit/useCalloutEdit/useCalloutEdit';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -28,7 +29,8 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
   const [/* use for the Dialog */ backToCanvases, buildLinkToCanvasRaw] = useBackToParentPage(rootUrl);
 
   const buildLinkToCanvas = useMemo(
-    () => (url: string) => buildLinkToCanvasRaw(`${rootUrl}/canvases/${url}`),
+    () => (canvasNameId: string, calloutNameId: string) =>
+      buildLinkToCanvasRaw(`${rootUrl}/callouts/${calloutNameId}/canvases/${canvasNameId}`),
     [rootUrl, buildLinkToCanvasRaw]
   );
 
@@ -42,6 +44,8 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
     handleCalloutDrafted,
     isPublishing,
   } = useCalloutCreation();
+
+  const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
   return (
     <>
@@ -64,6 +68,9 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     challengeNameId={challengeNameId}
                     opportunityNameId={opportunityNameId}
                     canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateAspect)}
+                    onCalloutEdit={handleEdit}
+                    onVisibilityChange={handleVisibilityChange}
+                    onCalloutDelete={handleDelete}
                   />
                 );
               case CalloutType.Canvas:
@@ -77,6 +84,9 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     opportunityNameId={opportunityNameId}
                     buildCanvasUrl={buildLinkToCanvas}
                     canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
+                    onCalloutEdit={handleEdit}
+                    onVisibilityChange={handleVisibilityChange}
+                    onCalloutDelete={handleDelete}
                   />
                 );
               default:

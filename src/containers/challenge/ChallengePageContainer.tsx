@@ -2,15 +2,10 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useHub, useUserContext } from '../../hooks';
-import { useChallengePageQuery } from '../../hooks/generated/graphql';
+import { useChallengeDashboardReferencesQuery, useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
-import {
-  AspectCardFragment,
-  AuthorizationPrivilege,
-  CanvasDetailsFragment,
-  ChallengeProfileFragment,
-} from '../../models/graphql-schema';
+import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
@@ -21,6 +16,8 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
+import { Reference } from '../../models/Profile';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -28,9 +25,10 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   hubDisplayName: string;
   challenge?: ChallengeProfileFragment;
   opportunitiesCount: number | undefined;
-  aspects: AspectCardFragment[];
+  aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  references: Reference[] | undefined;
+  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   permissions: {
     canEdit: boolean;
@@ -71,6 +69,18 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     ),
   };
 
+  const canReadReferences = _challenge?.hub?.challenge?.context?.authorization?.myPrivileges?.includes(
+    AuthorizationPrivilege.Read
+  );
+
+  const { data: referenceData } = useChallengeDashboardReferencesQuery({
+    variables: {
+      hubId: hubNameId,
+      challengeId: challengeNameId,
+    },
+    skip: !canReadReferences,
+  });
+
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
   const { activity = [] } = _challenge?.hub.challenge || {};
@@ -84,6 +94,8 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
   const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
 
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
+
+  const references = referenceData?.hub?.challenge?.context?.references;
 
   return (
     <>
@@ -100,6 +112,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           canvasesCount,
           permissions,
           isAuthenticated,
+          references,
           isMember: user?.ofChallenge(challengeId) || false,
           discussions: discussionList,
           ...contributors,

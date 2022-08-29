@@ -8,10 +8,8 @@ import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../models/discussion/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import {
-  AspectCardFragment,
   AuthorizationCredential,
   AuthorizationPrivilege,
-  CanvasDetailsFragment,
   OpportunityPageFragment,
   OpportunityPageRelationsFragment,
   Project,
@@ -27,6 +25,7 @@ import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -57,10 +56,11 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
     outgoing: OpportunityPageRelationsFragment[];
   };
   discussions: Discussion[];
-  aspects: AspectCardFragment[];
+  aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
+  references: Reference[] | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -126,7 +126,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   const relations = collaboration?.relations ?? [];
   // const actorGroups = context?.ecosystemModel?.actorGroups ?? [];
 
-  const { references = [] } = context ?? {};
+  const { references } = context ?? {};
   const aspects = getAspectsFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   const canvases = getCanvasesFromPublishedCallouts(collaboration?.callouts).slice(0, 2);
   // const actorGroupTypes = config?.configuration.template.opportunities[0].actorGroups ?? [];
@@ -206,6 +206,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           aspectsCount,
           canvases,
           canvasesCount,
+          references,
           ...contributors,
         },
         {

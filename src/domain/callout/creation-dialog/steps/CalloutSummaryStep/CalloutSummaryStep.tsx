@@ -49,7 +49,7 @@ const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
 CalloutSummaryStep.displayName = 'CalloutSummaryStep';
 export default CalloutSummaryStep;
 
-const CalloutSummary: FC<{
+export const CalloutSummary: FC<{
   callout: CalloutDialogCreationType;
   templatePreviewComponent?: ComponentType<CalloutStepProps> | null;
 }> = ({ callout, templatePreviewComponent: TemplatePreview }) => {

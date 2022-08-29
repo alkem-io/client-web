@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
+import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
@@ -8,12 +9,7 @@ import InterestModal from '../../components/composite/entities/Hub/InterestModal
 import Markdown from '../../components/core/Markdown';
 import { useChallenge, useHub, useOpportunity, useUserContext } from '../../hooks';
 import { Discussion } from '../../models/discussion/discussion';
-import {
-  CanvasDetailsFragment,
-  OpportunityPageFragment,
-  OpportunityPageRelationsFragment,
-  Reference,
-} from '../../models/graphql-schema';
+import { OpportunityPageFragment, OpportunityPageRelationsFragment, Reference } from '../../models/graphql-schema';
 import { ViewProps } from '../../models/view';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
@@ -24,6 +20,10 @@ import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardL
 import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import { buildCanvasUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
+import DashboardSection from '../../components/composite/sections/DashboardSection/DashboardSection';
+import References from '../../components/composite/common/References/References';
+import ContextSectionIcon from '../../components/composite/sections/ContextSectionIcon';
+import { CanvasCard } from '../../domain/callout/canvas/CanvasCallout';
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
@@ -41,8 +41,9 @@ export interface OpportunityDashboardViewEntities {
   };
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasCard[];
   canvasesCount: number | undefined;
+  references: Reference[] | undefined;
 }
 
 export interface OpportunityDashboardViewActions {
@@ -90,8 +91,14 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   );
 
   const buildCanvasLink = useCallback(
-    (canvasNameId: string) => {
-      const url = buildCanvasUrl(canvasNameId, hubNameId, challengeNameId, entities.opportunity.nameID);
+    (canvasNameId: string, calloutNameId: string) => {
+      const url = buildCanvasUrl({
+        hubNameId,
+        challengeNameId,
+        opportunityNameId: entities.opportunity.nameID,
+        calloutNameId,
+        canvasNameId,
+      });
       return buildLinkToCanvas(url);
     },
     [hubNameId, challengeNameId, entities.opportunity]
@@ -105,8 +112,9 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
   const communityId = opportunity?.community?.id || '';
   const { communityReadAccess } = options;
 
-  const { id, collaboration } = opportunity;
+  const { id, collaboration, context } = opportunity;
   const { id: collaborationId } = collaboration ?? {};
+  const references = context?.references;
 
   const { loading } = state;
 
@@ -152,6 +160,13 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
+          <DashboardSection
+            headerText={t('components.referenceSegment.title')}
+            primaryAction={<ContextSectionIcon component={SchoolIcon} />}
+            collapsible
+          >
+            <References references={references} />
+          </DashboardSection>
           <DashboardSectionAspects
             aspects={entities.aspects}
             aspectsCount={entities.aspectsCount}

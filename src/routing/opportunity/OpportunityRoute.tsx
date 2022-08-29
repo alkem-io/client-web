@@ -7,13 +7,11 @@ import { Error404, PageProps } from '../../pages';
 import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboardPage';
 import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
 import OpportunityAgreementsPage from '../../pages/Opportunity/OpportunityAgreementsPage';
-import ContributePage from '../../pages/Contribute/ContributePage';
 import { nameOfUrl } from '../url-params';
-import AspectProvider from '../../context/aspect/AspectProvider';
-import AspectRoute from '../../domain/aspect/views/AspectRoute';
 import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
 import { routes } from '../../domain/opportunity/routes/opportunityRoutes';
 import CalloutsPage from '../../domain/callout/CalloutsPage';
+import CalloutRoute from '../callout/CalloutRoute';
 
 interface OpportunityRootProps extends PageProps {}
 
@@ -44,15 +42,17 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
           path={routes.Explore}
           element={<CalloutsPage entityTypeName="opportunity" rootUrl={`${resolved.pathname}/${routes.Explore}`} />}
         />
-        <Route path={`${routes.Explore}/:canvasId`} element={<ContributePage entityTypeName="opportunity" />} />
         <Route path={routes.About} element={<OpportunityContextPage paths={currentPaths} />} />
         <Route path={routes.Agreements} element={<OpportunityAgreementsPage paths={currentPaths} />} />
+
         <Route
-          path={`${routes.Explore}/aspects/:${nameOfUrl.aspectNameId}/*`}
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
+          element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
+        />
+        <Route
+          path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
           element={
-            <AspectProvider>
-              <AspectRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} />
-            </AspectProvider>
+            <CalloutRoute parentPagePath={`${resolved.pathname}/${routes.Explore}`} entityTypeName={'opportunity'} />
           }
         />
       </Route>

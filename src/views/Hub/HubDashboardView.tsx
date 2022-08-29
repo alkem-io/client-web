@@ -1,6 +1,7 @@
 import { Grid } from '@mui/material';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
 import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
 import DashboardDiscussionsSection from '../../domain/shared/components/DashboardSections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
@@ -9,11 +10,7 @@ import Markdown from '../../components/core/Markdown';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
 import { Discussion } from '../../models/discussion/discussion';
-import {
-  AssociatedOrganizationDetailsFragment,
-  CanvasDetailsFragment,
-  ChallengeCardFragment,
-} from '../../models/graphql-schema';
+import { AssociatedOrganizationDetailsFragment, ChallengeCardFragment } from '../../models/graphql-schema';
 import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
@@ -32,6 +29,11 @@ import { buildCanvasUrl, buildHubUrl } from '../../utils/urlBuilders';
 import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import withOptionalCount from '../../domain/shared/utils/withOptionalCount';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import ContextSectionIcon from '../../components/composite/sections/ContextSectionIcon';
+import References from '../../components/composite/common/References/References';
+import DashboardSection from '../../components/composite/sections/DashboardSection/DashboardSection';
+import { Reference } from '../../models/Profile';
+import { CanvasCard } from '../../domain/callout/canvas/CanvasCallout';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
@@ -45,8 +47,9 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   challenges: ChallengeCardFragment[];
   aspects: AspectCardAspect[];
   aspectsCount: number | undefined;
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasCard[];
   canvasesCount: number | undefined;
+  references: Reference[] | undefined;
   community?: any;
   loading: boolean;
   isMember?: boolean;
@@ -69,6 +72,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   aspectsCount,
   canvases,
   canvasesCount,
+  references,
   loading,
   isMember = false,
   communityReadAccess = false,
@@ -88,8 +92,8 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   const [, buildLinkToCanvas] = useBackToParentPage(buildHubUrl(hubNameId));
 
   const buildCanvasLink = useCallback(
-    (canvasNameId: string) => {
-      const url = buildCanvasUrl(canvasNameId, hubNameId);
+    (canvasNameId: string, calloutNameId: string) => {
+      const url = buildCanvasUrl({ hubNameId, calloutNameId, canvasNameId });
       return buildLinkToCanvas(url);
     },
     [hubNameId]
@@ -138,6 +142,13 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           )}
         </DashboardColumn>
         <DashboardColumn>
+          <DashboardSection
+            headerText={t('components.referenceSegment.title')}
+            primaryAction={<ContextSectionIcon component={SchoolIcon} />}
+            collapsible
+          >
+            <References references={references} />
+          </DashboardSection>
           {challengesReadAccess && (
             <DashboardGenericSection
               headerText={withOptionalCount(t('pages.hub.sections.dashboard.challenges.title'), challengesCount)}
