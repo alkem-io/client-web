@@ -28,7 +28,7 @@ export interface CanvasesManagementViewWrapperProps extends ActiveCanvasIdHolder
 }
 
 const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
-  canvasId,
+  canvasNameId,
   calloutId,
   canvases,
   templates,
@@ -62,8 +62,8 @@ const CanvasesManagementViewWrapper: FC<CanvasesManagementViewWrapperProps> = ({
           entities={{
             canvases,
             templates,
-            calloutID: calloutId,
-            canvasId,
+            calloutId,
+            canvasNameId,
             contextSource: entityTypeName as CanvasManagementViewEntities['contextSource'],
           }}
           actions={actions}

@@ -16,7 +16,9 @@ const CanvasRoute: FC<CanvasRouteProps> = ({ parentPagePath, entityTypeName }) =
     <Routes>
       <Route
         path="/"
-        element={<CanvasesView canvasId={canvasNameId} parentUrl={parentPagePath} entityTypeName={entityTypeName} />}
+        element={
+          <CanvasesView canvasNameId={canvasNameId} parentUrl={parentPagePath} entityTypeName={entityTypeName} />
+        }
       />
     </Routes>
   );

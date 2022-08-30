@@ -6,13 +6,13 @@ import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout'
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 
 export interface CanvasesPageProps {
-  canvasId?: string;
+  canvasNameId?: string;
   calloutNameId?: string;
   parentUrl: string;
   entityTypeName: EntityTypeName;
 }
 
-const CanvasesView: FC<CanvasesPageProps> = ({ canvasId, entityTypeName, parentUrl }) => {
+const CanvasesView: FC<CanvasesPageProps> = ({ canvasNameId, entityTypeName, parentUrl }) => {
   const [, buildLinkToCanvasRaw] = useBackToParentPage(parentUrl);
   // todo: do the back nagivation properly
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const CanvasesView: FC<CanvasesPageProps> = ({ canvasId, entityTypeName, parentU
     <CanvasProvider>
       {(entities, state) => (
         <CanvasesManagementViewWrapper
-          canvasId={canvasId}
+          canvasNameId={canvasNameId}
           backToCanvases={backToCanvases}
           buildLinkToCanvas={buildLinkToCanvas}
           entityTypeName={entityTypeName}
