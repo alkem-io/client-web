@@ -19,7 +19,7 @@ export interface AspectSettingsPageProps {
 
 const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
   const { t } = useTranslation();
-  const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '', calloutNameId = '' } = useUrlParams();
   const resolved = useResolvedPath('.');
   const navigate = useNavigate();
 
@@ -45,6 +45,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
         aspectNameId={aspectNameId}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}
+        calloutNameId={calloutNameId}
       >
         {(entities, state, actions) => {
           const visuals = (entities.aspect ? [entities.aspect.banner, entities.aspect.bannerNarrow] : []) as Visual[];
