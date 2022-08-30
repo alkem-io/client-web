@@ -84,10 +84,13 @@ const PageBanner: FC<PageBannerProps> = ({
   loading: dataLoading = false,
 }) => {
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
-
   bannerUrl = bannerUrl || DEFAULT_BANNER_URL;
 
   const [imageLoading, setImageLoading] = useState(true);
+
+  const imageLoadError = () => {
+    setImageLoading(false);
+  };
 
   return (
     <Root ref={containerReference}>
@@ -96,7 +99,12 @@ const PageBanner: FC<PageBannerProps> = ({
         <>
           {showBreadcrumbs && <BreadcrumbsView />}
           <ImageWrapper>
-            <Image src={bannerUrl} alt={`${title} - Banner image`} onLoad={() => setImageLoading(false)} />
+            <Image
+              src={bannerUrl}
+              alt={`${title} - Banner image`}
+              onLoad={() => setImageLoading(false)}
+              onError={imageLoadError}
+            />
           </ImageWrapper>
           <Title>
             <Ellipser>
