@@ -17,11 +17,12 @@ interface CanvasFormikSelectInputProps {
   label: string;
   name: string;
   canvases: Canvas[] | undefined;
-  calloutId: string | undefined;
+  getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 
-const CanvasFormikSelectInput = ({ label, name, canvases, calloutId }: CanvasFormikSelectInputProps) => {
+const CanvasFormikSelectInput = ({ label, name, canvases, getParentCalloutId }: CanvasFormikSelectInputProps) => {
   const [canvasId, setCanvasId] = useState<string>();
+  const [calloutId, setCalloutId] = useState<string>();
 
   const tErr = useValidationMessageTranslation();
 
@@ -30,6 +31,8 @@ const CanvasFormikSelectInput = ({ label, name, canvases, calloutId }: CanvasFor
   const handleChange: SelectInputProps<string>['onChange'] = event => {
     const selectedCanvasId = event.target.value;
     const canvas = canvases?.find(({ id }) => id === selectedCanvasId);
+    const parentCalloutId = getParentCalloutId(canvas?.id);
+    setCalloutId(parentCalloutId);
     setCanvasId(canvas?.id);
   };
 
@@ -50,9 +53,8 @@ const CanvasFormikSelectInput = ({ label, name, canvases, calloutId }: CanvasFor
       calloutId={calloutId}
       onCanvasValueLoaded={canvas => helpers.setValue(canvas?.value)}
     >
-      {({ canvas: canvasLoaded }) => {
-        const showWhiteboard = Boolean(canvasLoaded || field.value);
-
+      {({ canvas: loadedCanvas }) => {
+        const showWhiteboard = Boolean(loadedCanvas || field.value);
         return (
           <>
             <Box>

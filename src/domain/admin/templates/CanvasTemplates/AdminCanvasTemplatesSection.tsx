@@ -29,6 +29,7 @@ interface AdminCanvasTemplatesSectionProps {
   edit?: boolean;
   loadCanvases: () => void;
   canvases: CanvasDetailsFragment[] | undefined;
+  getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 
 const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: AdminCanvasTemplatesSectionProps) => {
@@ -65,7 +66,6 @@ const AdminCanvasTemplatesSection = ({ loadCanvases, canvases, ...props }: Admin
   return (
     <AdminTemplatesSection
       {...props}
-      calloutId={''}
       canvases={canvases}
       headerText={t('pages.admin.generic.sections.templates.canvas-templates')}
       templateCardComponent={CanvasTemplateCard}

@@ -14,17 +14,17 @@ export interface EditCanvasTemplateDialogProps {
   onDelete: () => void;
   template: AdminCanvasTemplateFragment | undefined;
   canvases: CanvasDetailsFragment[] | undefined;
-  calloutId: string | undefined;
+  getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 
 const EditCanvasTemplateDialog = ({
   template,
   canvases,
-  calloutId,
   open,
   onClose,
   onSubmit,
   onDelete,
+  getParentCalloutId,
 }: EditCanvasTemplateDialogProps) => {
   const { t } = useTranslation();
 
@@ -51,8 +51,8 @@ const EditCanvasTemplateDialog = ({
         initialValues={values}
         visual={template.info.visual}
         canvases={canvases}
-        calloutId={calloutId}
         onSubmit={onSubmit}
+        getParentCalloutId={getParentCalloutId}
         actions={
           <>
             <DeleteButton onClick={onDelete} />
