@@ -53,9 +53,10 @@ const HubCommunityView: FC = () => {
     <>
       <CommunityContributorsSearch value={searchTerms} onChange={onSearchTermsChange} />
       <SectionSpacer />
-      <DashboardGenericSection>
-        <SectionHeader text={t('pages.community.hub-host.title')} helpText={t('pages.community.hub-host.help-text')} />
-        <SectionSpacer />
+      <DashboardGenericSection
+        headerText={t('pages.community.hub-host.title')}
+        helpText={t('pages.community.hub-host.help-text')}
+      >
         <ContributingOrganizations organizations={hostOrganization ? [hostOrganization] : []} loading={loading} />
         <SectionSpacer />
         <SectionHeader text={t('community.leading-users')} />
