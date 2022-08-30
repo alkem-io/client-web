@@ -10,7 +10,7 @@ export interface AspectDashboardPageProps {
 }
 
 const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
-  const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '' } = useUrlParams();
+  const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '', calloutNameId = '' } = useUrlParams();
 
   return (
     <AspectLayout currentSection={AspectDialogSection.Dashboard} onClose={onClose}>
@@ -19,6 +19,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
         aspectNameId={aspectNameId}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}
+        calloutNameId={calloutNameId}
       >
         {({ aspect, messages, commentId, ...rest }) => (
           <AspectDashboardView
