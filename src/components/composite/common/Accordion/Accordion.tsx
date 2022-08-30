@@ -29,7 +29,7 @@ export const Accordion: FC<AccordionProps> = ({
   summarySx,
 }) => {
   return (
-    <MuiAccordion sx={sx} defaultExpanded>
+    <MuiAccordion sx={sx} defaultExpanded variant="outlined">
       <AccordionSummary
         expandIcon={<ExpandMoreIcon sx={{ fontSize: 60, color: 'primary.main' }} />}
         aria-controls={`panel-${ariaKey}-content`}
