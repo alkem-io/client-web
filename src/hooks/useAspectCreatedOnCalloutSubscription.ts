@@ -78,7 +78,7 @@ export const useAspectCreatedOnCalloutSubscription = ({
 
   const hubAspectSubscription = useCalloutAspectCreatedSubscription(
     hubAspectData,
-    hubData => hubData?.hub?.collaboration?.callouts?.find(x => x.id === calloutId), //toDo fix this
+    hubData => hubData?.hub?.collaboration?.callouts?.find(x => x.id === calloutId),
     subscribeToHub
   );
   const challengeAspectSubscription = useCalloutAspectCreatedSubscription(
