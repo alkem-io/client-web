@@ -7,6 +7,7 @@ import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 
 export interface CanvasesPageProps {
   canvasId?: string;
+  calloutNameId?: string;
   parentUrl: string;
   entityTypeName: EntityTypeName;
 }

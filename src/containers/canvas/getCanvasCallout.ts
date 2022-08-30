@@ -1,9 +1,9 @@
 import { CalloutType, CanvasDetailsFragment } from '../../models/graphql-schema';
 // temp function used in the transition period for switching to collaboration; for choosing the correct callout by type
-export const getCanvasCallout = <A extends { nameID: string }, T extends { type: CalloutType; canvases?: A[] }>(
-  canvases: T[] | undefined,
-  canvasNameID: string
-) => canvases?.find(x => x.type === CalloutType.Canvas && x.canvases?.some(x => x.nameID === canvasNameID));
+export const getCanvasCallout = <T extends { type: CalloutType; nameID: string }>(
+  callouts: T[] | undefined,
+  calloutNameId: string
+) => callouts?.find(x => x.type === CalloutType.Canvas && x.nameID === calloutNameId);
 
 export const getCanvasCalloutContainingCanvas = <
   A extends { id: string },
