@@ -2928,7 +2928,7 @@ export type SubscriptionAspectCommentsMessageReceivedArgs = {
 };
 
 export type SubscriptionCalloutAspectCreatedArgs = {
-  calloutID: Scalars['UUID_NAMEID'];
+  calloutID: Scalars['UUID'];
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
@@ -13449,7 +13449,7 @@ export type AspectsOnCalloutFragment = {
 };
 
 export type CalloutAspectCreatedSubscriptionVariables = Exact<{
-  calloutID: Scalars['UUID_NAMEID'];
+  calloutID: Scalars['UUID'];
 }>;
 
 export type CalloutAspectCreatedSubscription = {

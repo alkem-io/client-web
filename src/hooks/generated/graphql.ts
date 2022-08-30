@@ -16589,7 +16589,7 @@ export type DeleteCalloutMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCalloutMutationVariables
 >;
 export const CalloutAspectCreatedDocument = gql`
-  subscription CalloutAspectCreated($calloutID: UUID_NAMEID!) {
+  subscription CalloutAspectCreated($calloutID: UUID!) {
     calloutAspectCreated(calloutID: $calloutID) {
       aspect {
         ...ContributeTabAspect
