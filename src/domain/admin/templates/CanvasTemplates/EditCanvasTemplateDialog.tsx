@@ -13,7 +13,7 @@ export interface EditCanvasTemplateDialogProps {
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
   onDelete: () => void;
   template: AdminCanvasTemplateFragment | undefined;
-  canvases: CanvasDetailsFragment[] | undefined;
+  canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 

@@ -25,7 +25,7 @@ interface CanvasTemplateFormProps {
   visual?: Visual;
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
   actions: ReactNode | ((formState: FormikProps<CanvasTemplateFormValues>) => ReactNode);
-  canvases: Canvas[] | undefined;
+  canvases: Canvas[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 

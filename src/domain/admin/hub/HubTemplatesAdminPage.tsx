@@ -61,7 +61,6 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
   const canvases = getAllCanvasesOnCallouts(hubCanvasesData?.hub.collaboration?.callouts);
   const findParentCalloutId = useCallback(
     (canvasId: string | undefined): string | undefined => {
-      if (!canvasId) return undefined;
       const parentCallout = hubCanvasesData?.hub.collaboration?.callouts?.find(
         x => x.type === CalloutType.Canvas && x.canvases?.some(x => x.id === canvasId)
       );

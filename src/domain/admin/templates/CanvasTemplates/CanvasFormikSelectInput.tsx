@@ -16,7 +16,7 @@ export interface Canvas extends Identifiable {
 interface CanvasFormikSelectInputProps {
   label: string;
   name: string;
-  canvases: Canvas[] | undefined;
+  canvases: Canvas[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 
@@ -30,7 +30,7 @@ const CanvasFormikSelectInput = ({ label, name, canvases, getParentCalloutId }: 
 
   const handleChange: SelectInputProps<string>['onChange'] = event => {
     const selectedCanvasId = event.target.value;
-    const canvas = canvases?.find(({ id }) => id === selectedCanvasId);
+    const canvas = canvases.find(({ id }) => id === selectedCanvasId);
     const parentCalloutId = getParentCalloutId(canvas?.id);
     setCalloutId(parentCalloutId);
     setCanvasId(canvas?.id);

@@ -28,7 +28,7 @@ interface AdminCanvasTemplatesSectionProps {
   buildTemplateLink: (aspect: AdminCanvasTemplateFragment) => LinkWithState;
   edit?: boolean;
   loadCanvases: () => void;
-  canvases: CanvasDetailsFragment[] | undefined;
+  canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 

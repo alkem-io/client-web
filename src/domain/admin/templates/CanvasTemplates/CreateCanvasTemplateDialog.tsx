@@ -10,7 +10,7 @@ export interface CreateCanvasTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
-  canvases: CanvasDetailsFragment[] | undefined;
+  canvases: CanvasDetailsFragment[];
   getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 
