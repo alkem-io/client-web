@@ -14,4 +14,3 @@ mutation DeleteCallout($calloutId: UUID!) {
     id
   }
 }
-$calloutId
