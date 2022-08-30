@@ -95,7 +95,7 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     variables: {
       hubId: queryHubId,
       challengeId: queryChallengeId || '',
-      canvasId: canvasId || '',
+      canvasId: canvasId!,
       calloutId: calloutId!,
     },
   });
@@ -111,8 +111,8 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     variables: {
       hubId: queryHubId,
       opportunityId: queryOpportunityId || '',
-      canvasId: canvasId || '',
       calloutId: calloutId!,
+      canvasId: canvasId!,
     },
   });
 
@@ -127,8 +127,8 @@ const CanvasValueContainer: FC<CanvasValueContainerProps> = ({
     skip: skipHub,
     variables: {
       hubId: queryHubId,
+      canvasId: canvasId!,
       calloutId: calloutId!,
-      canvasId: canvasId || '',
     },
   });
 
