@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import HubSettingsLayout from './HubSettingsLayout';
 import { SettingsSection } from '../layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
@@ -14,7 +14,8 @@ import AdminAspectTemplatesSection from '../templates/AspectTemplates/AdminAspec
 import AdminCanvasTemplatesSection from '../templates/CanvasTemplates/AdminCanvasTemplatesSection';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 import AdminInnovationTemplatesSection from '../templates/InnovationTemplates/AdminInnovationTemplatesSection';
-import { getCanvasCallout } from '../../../containers/canvas/getCanvasCallout';
+import { getAllCanvasesOnCallouts } from '../../../containers/canvas/getCanvasCallout';
+import { CalloutType } from '../../../models/graphql-schema';
 
 interface HubTemplatesAdminPageProps extends SettingsPageProps {
   hubId: string;
@@ -55,8 +56,18 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
     lifecycleTemplates,
     id: templatesSetID,
   } = hubTemplatesData?.hub.templates ?? {};
-  const canvasCallout = getCanvasCallout(hubCanvasesData?.hub.collaboration?.callouts);
-  const canvases = canvasCallout?.canvases;
+
+  // assuming we'll provide templates for the canvases only from hub callout canvases
+  const canvases = getAllCanvasesOnCallouts(hubCanvasesData?.hub.collaboration?.callouts);
+  const findParentCalloutId = useCallback(
+    (canvasId: string | undefined): string | undefined => {
+      const parentCallout = hubCanvasesData?.hub.collaboration?.callouts?.find(
+        x => x.type === CalloutType.Canvas && x.canvases?.some(x => x.id === canvasId)
+      );
+      return parentCallout?.id;
+    },
+    [hubCanvasesData?.hub.collaboration?.callouts]
+  );
 
   return (
     <HubSettingsLayout currentTab={SettingsSection.Templates} tabRoutePrefix={`${routePrefix}/../`}>
@@ -80,7 +91,7 @@ const HubTemplatesAdminPage: FC<HubTemplatesAdminPageProps> = ({
         edit={edit}
         loadCanvases={loadCanvases}
         canvases={canvases}
-        calloutId={canvasCallout?.id}
+        getParentCalloutId={findParentCalloutId}
       />
       <SectionSpacer />
       <AdminInnovationTemplatesSection

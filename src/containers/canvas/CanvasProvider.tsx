@@ -38,6 +38,7 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
     hubNameId: hubId = '',
     challengeNameId: challengeId = '',
     opportunityNameId: opportunityId = '',
+    calloutNameId: calloutId = '',
   } = useUrlParams();
 
   const { data: canvasTemplates, loading: loadingTemplates } = useCanvasTemplatesQuery({
@@ -63,15 +64,13 @@ const CanvasProvider: FC<CanvasProviderProps> = ({ children }) => {
   });
 
   const callout =
-    getCanvasCallout(hubData?.hub.collaboration?.callouts) ??
-    getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts) ??
-    getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts);
+    getCanvasCallout(hubData?.hub.collaboration?.callouts, calloutId) ??
+    getCanvasCallout(challengeData?.hub.challenge.collaboration?.callouts, calloutId) ??
+    getCanvasCallout(opportunityData?.hub.opportunity.collaboration?.callouts, calloutId);
 
   const canvases = callout?.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })) ?? [];
 
   const templates = canvasTemplates?.hub.templates?.canvasTemplates ?? [];
-
-  const calloutId = callout?.id;
   const authorization = callout?.authorization;
 
   return (
