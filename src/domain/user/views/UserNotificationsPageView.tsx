@@ -1,11 +1,11 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Preference, UserPreferenceType } from '../../models/graphql-schema';
-import { ViewProps } from '../../models/view';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import { useUserContext } from '../../hooks';
-import PreferenceSection from '../../components/composite/common/PreferenceSection/PreferenceSection';
+import { Preference, UserPreferenceType } from '../../../models/graphql-schema';
+import { ViewProps } from '../../../models/view';
+import { SectionSpacer } from '../../shared/components/Section/Section';
+import { useUserContext } from '../../../hooks';
+import PreferenceSection from '../../../components/composite/common/PreferenceSection/PreferenceSection';
 
 export interface UserNotificationsPageViewEntities {
   preferences: Preference[];

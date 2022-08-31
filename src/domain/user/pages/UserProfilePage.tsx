@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
-import { Error404, PageProps } from '../';
-import { Loading } from '../../components/core';
-import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import { useUserMetadata } from '../../domain/user/hooks/useUserMetadata';
-import { useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
-import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
+import { Loading } from '../../../components/core';
+import { useUpdateNavigation, useUrlParams } from '../../../hooks';
+import { PageProps, Error404 } from '../../../pages';
+import PageBanner from '../../shared/components/PageHeader/PageBanner';
+import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import { useUserContext } from '../hooks/useUserContext';
+import { useUserMetadata } from '../hooks/useUserMetadata';
+import UserProfilePageView, { UserProfileViewPageProps } from '../views/UserProfilePageView';
 
 interface UserProfileProps extends PageProps {
   edit?: boolean;

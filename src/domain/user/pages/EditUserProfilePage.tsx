@@ -1,17 +1,27 @@
 import React, { FC, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { useResolvedPath } from 'react-router-dom';
-import { UserForm } from '../../components/composite/forms/UserForm';
-import { Loading } from '../../components/core';
-import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
-import { useCreateTagsetOnProfileMutation, useUpdateUserMutation, useUserQuery } from '../../hooks/generated/graphql';
-import { EditMode } from '../../models/editMode';
-import { User } from '../../models/graphql-schema';
-import { UserModel } from '../../models/User';
-import { logger } from '../../services/logging/winston/logger';
-import { buildUserProfileUrl } from '../../utils/urlBuilders';
-import { PageProps } from '../common';
-import { getUpdateUserInput } from '../../utils/getUpdateUserInput';
+import { UserForm } from '../../../components/composite/forms/UserForm';
+import { Loading } from '../../../components/core';
+import {
+  useApolloErrorHandler,
+  useNotification,
+  useUpdateNavigation,
+  useUrlParams,
+  useUserContext,
+} from '../../../hooks';
+import {
+  useCreateTagsetOnProfileMutation,
+  useUpdateUserMutation,
+  useUserQuery,
+} from '../../../hooks/generated/graphql';
+import { EditMode } from '../../../models/editMode';
+import { User } from '../../../models/graphql-schema';
+import { UserModel } from '../../../models/User';
+import { logger } from '../../../services/logging/winston/logger';
+import { buildUserProfileUrl } from '../../../utils/urlBuilders';
+import { PageProps } from '../../../pages/common';
+import { getUpdateUserInput } from '../../../utils/getUpdateUserInput';
 
 interface EditUserProfilePageProps extends PageProps {}
 

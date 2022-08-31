@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
-import UserNotificationsContainer from '../../containers/user/UserNotificationsContainer';
-import UserNotificationsPageView from '../../views/User/UserNotificationsPageView';
-import { PageProps } from '../common';
 
-import { useUpdateNavigation } from '../../hooks';
 import { useResolvedPath } from 'react-router-dom';
+import UserNotificationsContainer from '../../../containers/user/UserNotificationsContainer';
+import { useUpdateNavigation } from '../../../hooks';
+import { PageProps } from '../../../pages';
+import UserNotificationsPageView from '../views/UserNotificationsPageView';
 
 export interface UserNotificationsPageProps extends PageProps {}
 

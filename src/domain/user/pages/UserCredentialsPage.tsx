@@ -5,17 +5,18 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
-import CredentialCard from '../../components/composite/common/cards/CredentialCard/CredentialCard';
-import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import OfferAlkemioCommunityCredentialDialog from '../../components/composite/dialogs/CredentialDialog.tsx/OfferAlkemioCommunityCredentialDialog';
-import RequestCredentialDialog from '../../components/composite/dialogs/CredentialDialog.tsx/RequestCredentialDialog';
-import QRCodeDialog from '../../components/composite/dialogs/QRCodeDialog/QRCodeDialog';
-import { Loading } from '../../components/core';
-import { CardLayoutContainer, CardLayoutItem } from '../../domain/shared/layout/CardsLayout/CardsLayout';
-import UserCredentialsContainer from '../../containers/user/UserCredentialsContainer';
-import { useNotification, useUpdateNavigation, useUserContext } from '../../hooks';
-import { PageProps } from '../common';
-import { useProfileVerifiedCredentialSubscription, useUserSsiLazyQuery } from '../../hooks/generated/graphql';
+import { CredentialCard } from '../../../components/composite/common/cards';
+import OfferAlkemioCommunityCredentialDialog from '../../../components/composite/dialogs/CredentialDialog.tsx/OfferAlkemioCommunityCredentialDialog';
+import RequestCredentialDialog from '../../../components/composite/dialogs/CredentialDialog.tsx/RequestCredentialDialog';
+import QRCodeDialog from '../../../components/composite/dialogs/QRCodeDialog/QRCodeDialog';
+import { Loading } from '../../../components/core';
+import UserCredentialsContainer from '../../../containers/user/UserCredentialsContainer';
+import { useNotification, useUpdateNavigation } from '../../../hooks';
+import { useUserSsiLazyQuery, useProfileVerifiedCredentialSubscription } from '../../../hooks/generated/graphql';
+import { PageProps } from '../../../pages';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
+import { CardLayoutContainer, CardLayoutItem } from '../../shared/layout/CardsLayout/CardsLayout';
+import { useUserContext } from '../hooks/useUserContext';
 
 interface UserCredentialsPageProps extends PageProps {}
 

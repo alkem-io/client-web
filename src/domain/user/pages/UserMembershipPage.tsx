@@ -2,10 +2,10 @@ import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
-import { useUserMetadata } from '../../domain/user/hooks/useUserMetadata';
-import { useUpdateNavigation, useUrlParams } from '../../hooks';
-import { ContributionsView } from '../../views/ProfileView';
-import { PageProps } from '../common';
+import { useUrlParams, useUpdateNavigation } from '../../../hooks';
+import { PageProps } from '../../../pages';
+import { ContributionsView } from '../../../views/ProfileView';
+import { useUserMetadata } from '../hooks/useUserMetadata';
 
 export interface UserMembershipPageProps extends PageProps {}
 

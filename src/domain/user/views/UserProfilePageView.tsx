@@ -1,11 +1,11 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useConfig } from '../../hooks';
-import { FEATURE_SSI } from '../../models/constants';
-import { ContributionsView, CredentialsView } from '../ProfileView';
-import AssociatedOrganizationsLazilyFetched from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
-import UserProfileView, { UserProfileViewProps } from '../ProfileView/UserProfileView';
+import { useConfig } from '../../../hooks';
+import { FEATURE_SSI } from '../../../models/constants';
+import { CredentialsView, ContributionsView } from '../../../views/ProfileView';
+import UserProfileView, { UserProfileViewProps } from '../../../views/ProfileView/UserProfileView';
+import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {}
 

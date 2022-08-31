@@ -2,13 +2,13 @@ import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { useConfig, useUpdateNavigation } from '../../hooks';
 import { Error404, PageProps } from '../../pages';
-import EditUserProfilePage from '../../pages/User/EditUserProfilePage';
-import UserMembershipPage from '../../pages/User/UserMembershipPage';
-import UserNotificationsPage from '../../pages/User/UserNotificationsPage';
-import UserOrganizationsPage from '../../pages/User/UserOrganizationsPage';
-import UserCredentialsPage from '../../pages/User/UserCredentialsPage';
+import EditUserProfilePage from '../../domain/user/pages/EditUserProfilePage';
 import UserTabs from './UserTabs';
 import { FEATURE_SSI } from '../../models/constants';
+import UserNotificationsPage from '../../domain/user/pages/UserNotificationsPage';
+import UserOrganizationsPage from '../../domain/user/pages/UserOrganizationsPage';
+import UserMembershipPage from '../../domain/user/pages/UserMembershipPage';
+import UserCredentialsPage from '../../domain/user/pages/UserCredentialsPage';
 
 interface UserSettingsProps extends PageProps {}
 
