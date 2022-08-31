@@ -18,9 +18,12 @@ interface CalloutChildTypePropName {
   [CalloutType.Canvas]: 'canvases';
 }
 
+export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
+export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId: string };
+
 interface CalloutChildPropValue {
-  aspects: ContributeTabAspectFragment[];
-  canvases: CanvasDetailsFragment[];
+  aspects: AspectFragmentWithCallout[];
+  canvases: CanvasFragmentWithCallout[];
 }
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
@@ -60,9 +63,12 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
 
   const callouts = collaboration?.callouts?.map(({ authorization, ...callout }) => {
     const draft = callout?.visibility === CalloutVisibility.Draft;
-    const editable = false; // todo client-2378; authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+    const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
     return {
       ...callout,
+      // Add calloutNameId to all the canvases and aspects
+      canvases: callout.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })),
+      aspects: callout.aspects?.map(aspect => ({ ...aspect, calloutNameId: callout.nameID })),
       authorization,
       draft,
       editable,

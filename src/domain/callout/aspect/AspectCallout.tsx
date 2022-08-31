@@ -1,4 +1,4 @@
-import CalloutLayout, { CalloutLayoutProps } from '../CalloutLayout';
+import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import AspectCard, { AspectCardAspect } from '../../../components/composite/common/cards/AspectCard/AspectCard';
 import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
@@ -11,7 +11,7 @@ import CreateCalloutItemButton from '../CreateCalloutItemButton';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
-interface AspectCalloutProps extends OptionalCoreEntityIds {
+interface AspectCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
     aspects: AspectCardAspect[];
   };
@@ -26,13 +26,15 @@ const AspectCallout = ({
   hubNameId,
   challengeNameId,
   opportunityNameId,
+  onCalloutEdit,
+  onVisibilityChange,
+  onCalloutDelete,
 }: AspectCalloutProps) => {
   // Dialog handling
   const [aspectDialogOpen, setAspectDialogOpen] = useState(false);
   const handleCreateDialogOpened = () => setAspectDialogOpen(true);
   const handleCreateDialogClosed = () => setAspectDialogOpen(false);
 
-  // Create aspects
   const handleError = useApolloErrorHandler();
 
   const { subscriptionEnabled } = useAspectCreatedOnCalloutSubscription({
@@ -124,7 +126,13 @@ const AspectCallout = ({
 
   return (
     <>
-      <CalloutLayout callout={callout} maxHeight={42.5}>
+      <CalloutLayout
+        callout={callout}
+        maxHeight={42.5}
+        onVisibilityChange={onVisibilityChange}
+        onCalloutEdit={onCalloutEdit}
+        onCalloutDelete={onCalloutDelete}
+      >
         <CardsLayout
           items={loading ? [undefined, undefined] : callout.aspects}
           deps={[hubNameId, challengeNameId, opportunityNameId]}

@@ -14,7 +14,6 @@ import { Reference } from '../../../models/Profile';
 import { newReferenceName } from '../../../utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import { getCardCallout } from '../getAspectCallout';
-import { useCalloutFromAspect } from '../../../hooks/useCalloutFromAspect';
 
 type AspectUpdateData = Pick<Aspect, 'id' | 'displayName' | 'description' | 'type'> & {
   tags: string[];
@@ -51,6 +50,7 @@ export interface AspectSettingsContainerProps
   challengeNameId?: string;
   opportunityNameId?: string;
   aspectNameId: string;
+  calloutNameId: string;
 }
 
 const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
@@ -59,11 +59,11 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
   aspectNameId,
   challengeNameId,
   opportunityNameId,
+  calloutNameId,
 }) => {
   const handleError = useApolloErrorHandler();
   const notify = useNotification();
   const { addReference, deleteReference, setPush, setRemove } = useEditReference();
-  const { calloutId } = useCalloutFromAspect({ hubNameId, aspectNameId });
   const isAspectDefined = aspectNameId && hubNameId;
 
   const {
@@ -71,8 +71,8 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     loading: hubLoading,
     error: hubError,
   } = useHubAspectSettingsQuery({
-    variables: { hubNameId, aspectNameId, calloutId: calloutId! },
-    skip: !calloutId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
+    variables: { hubNameId, aspectNameId, calloutNameId },
+    skip: !calloutNameId || !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
   const parentCalloutFromHub = getCardCallout(hubData?.hub?.collaboration?.callouts, aspectNameId);
@@ -84,8 +84,8 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     loading: challengeLoading,
     error: challengeError,
   } = useChallengeAspectSettingsQuery({
-    variables: { hubNameId, challengeNameId: challengeNameId ?? '', aspectNameId, calloutId: calloutId! },
-    skip: !calloutId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
+    variables: { hubNameId, challengeNameId: challengeNameId ?? '', aspectNameId, calloutNameId },
+    skip: !calloutNameId || !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
   const parentCalloutFromChallenge = getCardCallout(
@@ -100,8 +100,8 @@ const AspectSettingsContainer: FC<AspectSettingsContainerProps> = ({
     loading: opportunityLoading,
     error: opportunityError,
   } = useOpportunityAspectSettingsQuery({
-    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '', aspectNameId, calloutId: calloutId! },
-    skip: !calloutId || !isAspectDefined || !opportunityNameId,
+    variables: { hubNameId, opportunityNameId: opportunityNameId ?? '', aspectNameId, calloutNameId },
+    skip: !calloutNameId || !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });
   const parentCalloutFromOpportunity = getCardCallout(

@@ -7,23 +7,20 @@ import ConfirmationDialog from '../../../components/composite/dialogs/Confirmati
 import { ICanvasActions } from '../../../containers/canvas/CanvasActionsContainer';
 import CanvasValueContainer from '../../../containers/canvas/CanvasValueContainer';
 import { useUserContext } from '../../../hooks';
-import {
-  CanvasCheckoutStateEnum,
-  CanvasDetailsFragment,
-  CreateCanvasCanvasTemplateFragment,
-} from '../../../models/graphql-schema';
+import { CanvasCheckoutStateEnum, CreateCanvasCanvasTemplateFragment } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 import CanvasesDashboardSection from '../CanvasesDashboardSection/CanvasesDashboardSection';
 import { LinkWithState } from '../../shared/types/LinkWithState';
+import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 export interface ActiveCanvasIdHolder {
-  canvasId?: string;
+  canvasNameId?: string;
 }
 
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
-  calloutID: string;
+  calloutId: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
-  canvases: CanvasDetailsFragment[];
+  canvases: CanvasFragmentWithCallout[];
   templates: CreateCanvasCanvasTemplateFragment[];
   templateListHeader?: string;
   templateListSubheader?: string;
@@ -49,7 +46,7 @@ export interface CanvasManagementViewOptions {
 
 export interface CanvasNavigationMethods {
   backToCanvases: () => void;
-  buildLinkToCanvas: (url: string) => LinkWithState;
+  buildLinkToCanvas: (canvasNameId: string, calloutNameId: string) => LinkWithState;
 }
 
 export interface CanvasBeingDeleted {
@@ -75,7 +72,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   backToCanvases,
   buildLinkToCanvas,
 }) => {
-  const { canvasId, calloutID } = entities;
+  const { canvasNameId, calloutId: calloutID } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
@@ -83,8 +80,8 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   const { t } = useTranslation();
 
   const actualActiveCanvas = useMemo(
-    () => (canvasId ? entities.canvases.find(c => c.nameID === canvasId) : undefined),
-    [canvasId, entities.canvases]
+    () => (canvasNameId ? entities.canvases.find(c => c.nameID === canvasNameId) : undefined),
+    [canvasNameId, entities.canvases]
   );
 
   const isCanvasCheckedoutByMe =
@@ -93,7 +90,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   const isCanvasAvailable = actualActiveCanvas?.checkout?.status === CanvasCheckoutStateEnum.Available;
 
   const buildCanvasUrl = useCallback(
-    (canvas: CanvasDetailsFragment) => buildLinkToCanvas(canvas.nameID),
+    (canvasNameId: string, calloutNameId: string) => buildLinkToCanvas(canvasNameId, calloutNameId),
     [buildLinkToCanvas]
   );
 
@@ -121,7 +118,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
               onDelete: c => setCanvasBeingDeleted({ canvasID: c.id, displayName: c.displayName, calloutID }),
             }}
             options={{
-              show: Boolean(canvasId),
+              show: Boolean(canvasNameId),
               canCheckout: isCanvasAvailable && options.canUpdate,
               canEdit: isCanvasCheckedoutByMe && options.canUpdate,
               canDelete: isCanvasAvailable && options.canDelete,
