@@ -1,6 +1,6 @@
 import { Session } from '@ory/kratos-client';
 import React, { FC } from 'react';
-import { useWhoami } from '../core/auth/authentication/hooks/useWhoami';
+import { useWhoami } from '../hooks/useWhoami';
 
 export interface AuthContext {
   loading: boolean;

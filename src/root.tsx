@@ -3,7 +3,6 @@ import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import AlkemioApolloProvider from './context/ApolloProvider';
-import { AuthenticationProvider } from './context/AuthenticationProvider';
 import { ConfigProvider } from './context/ConfigProvider';
 import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { NavigationProvider } from './context/NavigationProvider';
@@ -16,6 +15,7 @@ import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
 import { CookiesProvider } from 'react-cookie';
 import { publicGraphQLEndpoint, privateGraphQLEndpoint } from './common/constants/endpoints';
+import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
