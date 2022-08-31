@@ -34,7 +34,7 @@ import LanguageSelect from './LanguageSelect';
 import LogoComponent from './LogoComponent';
 import SearchBar from './SearchBar';
 import TopNavIcons from './TopNavIcons';
-import { supportedLngs } from '../../../../i18n/config';
+import { supportedLngs } from '../../../../core/i18n/config';
 import { ChallengeIcon } from '../../../icons/ChallengeIcon';
 
 const PREFIX = 'TopBar';

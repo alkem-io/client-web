@@ -10,7 +10,7 @@ import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import ServerMetadataProvider from './context/ServerMetadataProvider';
 import { ThemeProvider } from './context/ThemeProvider';
 import { UserProvider } from './domain/user/providers/UserProvider/UserProvider';
-import './i18n/config';
+import './core/i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
 import { CookiesProvider } from 'react-cookie';

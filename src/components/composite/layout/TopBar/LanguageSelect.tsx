@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from 'react';
 import { Box, MenuItem, TextField, TextFieldProps } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { supportedLngs } from '../../../../i18n/config';
+import { supportedLngs } from '../../../../core/i18n/config';
 
 interface LanguageSelectProps {
   sx?: TextFieldProps['sx'];

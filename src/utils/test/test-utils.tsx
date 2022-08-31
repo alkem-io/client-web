@@ -3,7 +3,7 @@ import { render, RenderOptions } from '@testing-library/react';
 import React, { FC, ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { ThemeProvider } from '../../context/ThemeProvider';
-import i18n from '../../i18n/config';
+import i18n from '../../core/i18n/config';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
