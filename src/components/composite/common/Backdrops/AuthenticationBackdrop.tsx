@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import BackdropWithMessage, { BackdropProps } from './BackdropWithMessage';
 import { AUTH_LOGIN_PATH } from '../../../../models/constants';
 import Button from '../../../core/Button';
-import { useAuthenticationContext } from '../../../../hooks';
+import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 
 const AuthenticationBackdrop: FC<BackdropProps> = ({ children, blockName }) => {
   const { t } = useTranslation();

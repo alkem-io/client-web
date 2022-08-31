@@ -8,12 +8,12 @@ import ProfileDetail from '../../components/composite/common/ProfileDetail/Profi
 import SocialLinks, { isSocialLink } from '../../components/composite/common/SocialLinks/SocialLinks';
 import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
 import Typography from '../../components/core/Typography';
-import { UserMetadata } from '../../hooks';
 import { isSocialNetworkSupported, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
 import References from '../../components/composite/common/References/References';
 import LocationView from '../../domain/location/LocationView';
 import { formatLocation } from '../../domain/location/LocationUtils';
 import { styled } from '@mui/styles';
+import { UserMetadata } from '../../domain/user/hooks/useUserMetadataWrapper';
 
 export interface UserProfileViewProps {
   entities: {

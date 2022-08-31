@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
-import { useConfig, useGraphQLClient } from '../hooks';
+import { useConfig } from '../hooks';
 import { ApolloProvider } from '@apollo/client';
 import { FEATURE_SUBSCRIPTIONS } from '../models/constants';
+import { useGraphQLClient } from '../core/apollo/hooks/useGraphQLClient';
 
 interface Props {
   apiUrl: string;

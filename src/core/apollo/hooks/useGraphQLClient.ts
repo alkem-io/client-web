@@ -1,9 +1,16 @@
 import { useMemo, useRef } from 'react';
 import { from, InMemoryCache, NormalizedCacheObject, ApolloClient } from '@apollo/client';
-import { typePolicies } from '../../config/graphql/typePolicies';
-import { env } from '../../types/env';
-import { consoleLink, errorLink, httpLink, omitTypenameLink, retryLink, redirectLink } from '../../utils/graphql-links';
 import { once } from 'lodash';
+import { env } from '../../../types/env';
+import {
+  omitTypenameLink,
+  consoleLink,
+  errorLink,
+  retryLink,
+  redirectLink,
+  httpLink,
+} from '../../../utils/graphql-links';
+import { typePolicies } from '../../../config/graphql/typePolicies';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');
 const enableErrorLogging = !!(env && env?.REACT_APP_LOG_ERRORS === 'true');

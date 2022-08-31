@@ -9,9 +9,9 @@ import Button from '../../components/core/Button';
 import Delimiter from '../../components/core/Delimiter';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
+import useKratosFlow, { FlowTypeName } from '../../core/auth/authentication/hooks/useKratosFlow';
 import { useConfig } from '../../hooks';
 import { AUTH_LOGIN_PATH } from '../../models/constants';
-import useKratosFlow, { FlowTypeName } from '../../hooks/kratos/useKratosFlow';
 
 interface RegisterPageProps {
   flow?: string;

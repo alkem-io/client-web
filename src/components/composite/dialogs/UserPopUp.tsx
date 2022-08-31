@@ -8,7 +8,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserMetadata } from '../../../hooks';
 import { makeStyles } from '@mui/styles';
 import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import { Loading } from '../../core';
@@ -20,6 +19,7 @@ import { RouterLink } from '../../core/RouterLink';
 import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
 import Typography from '../../core/Typography';
+import { useUserMetadata } from '../../../domain/user/hooks/useUserMetadata';
 
 const useUserPopUpStyles = makeStyles(theme => ({
   header: {

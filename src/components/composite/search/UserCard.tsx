@@ -1,6 +1,5 @@
 import React, { FC, memo, useMemo, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { useUserMetadata } from '../../../hooks';
 import { User } from '../../../models/graphql-schema';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import Avatar from '../../core/Avatar';
@@ -10,6 +9,7 @@ import UserPopUp from '../dialogs/UserPopUp';
 import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
 import Tooltip from '@mui/material/Tooltip';
+import { useUserMetadata } from '../../../domain/user/hooks/useUserMetadata';
 
 export interface UserCardProps extends User {
   terms?: Array<string>;

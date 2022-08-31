@@ -1,5 +1,5 @@
-import { User } from '../../models/graphql-schema';
-import { useUserProfileQuery } from '../generated/graphql';
+import { useUserProfileQuery } from '../../../hooks/generated/graphql';
+import { User } from '../../../models/graphql-schema';
 import { useUserMetadataWrapper } from './useUserMetadataWrapper';
 
 export const useUserMetadata = (id: string) => {

@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import KratosUI from '../../components/Authentication/KratosUI';
 import Loading from '../../components/core/Loading/Loading';
 import Typography from '../../components/core/Typography';
-import useKratosFlow, { FlowTypeName } from '../../hooks/kratos/useKratosFlow';
+import useKratosFlow, { FlowTypeName } from '../../core/auth/authentication/hooks/useKratosFlow';
 
 interface RegisterPageProps {
   flow: string;

@@ -2,7 +2,8 @@ import { Typography } from '@mui/material';
 import React, { FC, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import Loading from '../../components/core/Loading/Loading';
-import { useLogoutUrl, useUpdateNavigation } from '../../hooks';
+import { useLogoutUrl } from '../../core/auth/authentication/hooks/useLogoutUrl';
+import { useUpdateNavigation } from '../../hooks';
 
 interface LogoutPageProps {}
 

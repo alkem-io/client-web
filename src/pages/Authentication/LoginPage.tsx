@@ -12,7 +12,7 @@ import Typography from '../../components/core/Typography';
 import { useUpdateNavigation } from '../../hooks';
 import { AUTH_REGISTER_PATH } from '../../models/constants';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
-import useKratosFlow, { FlowTypeName } from '../../hooks/kratos/useKratosFlow';
+import useKratosFlow, { FlowTypeName } from '../../core/auth/authentication/hooks/useKratosFlow';
 
 interface LoginPageProps {
   flow?: string;

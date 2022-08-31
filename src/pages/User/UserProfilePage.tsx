@@ -3,7 +3,8 @@ import { Error404, PageProps } from '../';
 import { Loading } from '../../components/core';
 import PageBanner from '../../domain/shared/components/PageHeader/PageBanner';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import { useUpdateNavigation, useUrlParams, useUserContext, useUserMetadata } from '../../hooks';
+import { useUserMetadata } from '../../domain/user/hooks/useUserMetadata';
+import { useUpdateNavigation, useUrlParams, useUserContext } from '../../hooks';
 import UserProfilePageView, { UserProfileViewPageProps } from '../../views/User/UserProfilePageView';
 
 interface UserProfileProps extends PageProps {

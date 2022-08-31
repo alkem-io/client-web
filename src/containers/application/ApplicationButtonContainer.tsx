@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ApplicationButtonProps } from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import { useApolloErrorHandler, useAuthenticationContext, useChallenge, useHub, useUserContext } from '../../hooks';
+import { useApolloErrorHandler, useChallenge, useHub, useUserContext } from '../../hooks';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,
@@ -12,6 +12,7 @@ import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../uti
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';
+import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: ApplicationButtonProps;

@@ -1,12 +1,13 @@
 import { OrganizationCardFragment, OrganizationVerificationEnum } from '../../../models/graphql-schema';
 import { OrganizationCardProps } from '../../../components/composite/common/cards/Organization/OrganizationCard';
 import getActivityCount from '../../activity/utils/getActivityCount';
-import { getUserCardRoleNameKey, UserMetadata, useUserContext } from '../../../hooks';
+import { getUserCardRoleNameKey, useUserContext } from '../../../hooks';
 import { buildOrganizationUrl } from '../../../utils/urlBuilders';
 import { Identifiable } from '../../shared/types/Identifiable';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { TFunction } from 'i18next';
+import { UserMetadata } from '../../user/hooks/useUserMetadataWrapper';
 
 export const toOrganizationCardProps = (
   org: OrganizationCardFragment,

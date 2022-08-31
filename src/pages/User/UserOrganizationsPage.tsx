@@ -2,9 +2,10 @@ import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
-import { useUpdateNavigation, useUrlParams, useUserMetadata } from '../../hooks';
+import { useUpdateNavigation, useUrlParams } from '../../hooks';
 import AssociatedOrganizationsLazilyFetched from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { PageProps } from '../common';
+import { useUserMetadata } from '../../domain/user/hooks/useUserMetadata';
 
 export interface UserOrganizationsPageProps extends PageProps {}
 

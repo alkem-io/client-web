@@ -1,15 +1,15 @@
-import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../models/constants/tagset.constants';
-import { ContributionItem } from '../../models/entities/contribution';
+import { useCallback } from 'react';
+import { useCredentialsResolver } from '../../../hooks';
+import { KEYWORDS_TAGSET, SKILLS_TAGSET } from '../../../models/constants/tagset.constants';
+import { ContributionItem } from '../../../models/entities/contribution';
 import {
   AuthorizationCredential,
-  AuthorizationPrivilege,
-  MyPrivilegesFragment,
-  User,
   UserRolesDetailsFragment,
-} from '../../models/graphql-schema';
-import { Role } from '../../models/Role';
-import { useCredentialsResolver } from '../useCredentialsResolver';
-import { useCallback } from 'react';
+  MyPrivilegesFragment,
+  AuthorizationPrivilege,
+  User,
+} from '../../../models/graphql-schema';
+import { Role } from '../../../models/Role';
 
 export interface UserPermissions {
   canCreate: boolean;
