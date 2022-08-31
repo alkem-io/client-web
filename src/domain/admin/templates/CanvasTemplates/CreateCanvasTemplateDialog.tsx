@@ -10,16 +10,16 @@ export interface CreateCanvasTemplateDialogProps {
   open: boolean;
   onClose: DialogProps['onClose'];
   onSubmit: (values: CanvasTemplateFormSubmittedValues) => void;
-  canvases: CanvasDetailsFragment[] | undefined;
-  calloutId: string | undefined;
+  canvases: CanvasDetailsFragment[];
+  getParentCalloutId: (canvasNameId: string | undefined) => string | undefined;
 }
 
 const CreateCanvasTemplateDialog = ({
   canvases,
   open,
-  calloutId,
   onClose,
   onSubmit,
+  getParentCalloutId,
 }: CreateCanvasTemplateDialogProps) => {
   const { t } = useTranslation();
 
@@ -36,8 +36,8 @@ const CreateCanvasTemplateDialog = ({
         title={t('common.create-new-entity', { entity: t('canvas-templates.canvas-template') })}
         initialValues={values}
         canvases={canvases}
-        calloutId={calloutId}
         onSubmit={onSubmit}
+        getParentCalloutId={getParentCalloutId}
         actions={<FormikSubmitButton variant="contained">{t('common.create')}</FormikSubmitButton>}
       />
     </Dialog>

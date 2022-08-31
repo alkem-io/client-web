@@ -14,11 +14,11 @@ import { LinkWithState } from '../../shared/types/LinkWithState';
 import { CanvasFragmentWithCallout } from '../../callout/useCallouts';
 
 export interface ActiveCanvasIdHolder {
-  canvasId?: string;
+  canvasNameId?: string;
 }
 
 export interface CanvasManagementViewEntities extends ActiveCanvasIdHolder {
-  calloutID: string;
+  calloutId: string;
   contextSource: 'hub' | 'challenge' | 'opportunity';
   canvases: CanvasFragmentWithCallout[];
   templates: CreateCanvasCanvasTemplateFragment[];
@@ -72,7 +72,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   backToCanvases,
   buildLinkToCanvas,
 }) => {
-  const { canvasId, calloutID } = entities;
+  const { canvasNameId, calloutId: calloutID } = entities;
   const [canvasBeingDeleted, setCanvasBeingDeleted] = useState<CanvasBeingDeleted | undefined>(undefined);
 
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState<boolean>(false);
@@ -80,8 +80,8 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
   const { t } = useTranslation();
 
   const actualActiveCanvas = useMemo(
-    () => (canvasId ? entities.canvases.find(c => c.nameID === canvasId) : undefined),
-    [canvasId, entities.canvases]
+    () => (canvasNameId ? entities.canvases.find(c => c.nameID === canvasNameId) : undefined),
+    [canvasNameId, entities.canvases]
   );
 
   const isCanvasCheckedoutByMe =
@@ -118,7 +118,7 @@ const CanvasManagementView: FC<CanvasManagementViewProps> = ({
               onDelete: c => setCanvasBeingDeleted({ canvasID: c.id, displayName: c.displayName, calloutID }),
             }}
             options={{
-              show: Boolean(canvasId),
+              show: Boolean(canvasNameId),
               canCheckout: isCanvasAvailable && options.canUpdate,
               canEdit: isCanvasCheckedoutByMe && options.canUpdate,
               canDelete: isCanvasAvailable && options.canDelete,
