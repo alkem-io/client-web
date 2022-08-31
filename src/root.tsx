@@ -14,12 +14,8 @@ import { UserProvider } from './domain/user/providers/UserProvider/UserProvider'
 import './i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';
-import { env } from './types/env';
 import { CookiesProvider } from 'react-cookie';
-
-const domain = (env && env.REACT_APP_ALKEMIO_DOMAIN) ?? '';
-export const publicGraphQLEndpoint = domain + '/api/public/graphql';
-export const privateGraphQLEndpoint = domain + '/api/private/graphql';
+import { publicGraphQLEndpoint, privateGraphQLEndpoint } from './common/constants/endpoints';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {

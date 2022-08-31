@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { privateGraphQLEndpoint } from '../../common/constants/endpoints';
 import Button from '../../components/core/Button';
 import Section from '../../components/core/Section';
 import Typography from '../../components/core/Typography';
-import { privateGraphQLEndpoint } from '../../root';
 
 export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
   const { t } = useTranslation();
