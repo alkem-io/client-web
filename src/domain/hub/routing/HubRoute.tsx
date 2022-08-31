@@ -1,20 +1,20 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
-import { ChallengeProvider } from '../../context/ChallengeProvider';
-import { CommunityContextProvider } from '../../domain/community/CommunityContext';
-import { useHub } from '../../hooks';
-import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import ApplyRoute from '../application/apply.route';
-import { nameOfUrl } from '../url-params';
-import ChallengeRoute from '../challenge/ChallengeRoute';
-import { Error404, PageProps } from '../../pages';
-import HubDashboardPage from '../../pages/Hub/HubDashboardPage';
-import HubContextPage from '../../pages/Hub/HubContextPage';
-import HubChallengesPage from '../../pages/Hub/HubChallengesPage';
-import { routes } from '../../domain/hub/routes/hubRoutes';
-import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
-import CalloutsPage from '../../domain/callout/CalloutsPage';
-import CalloutRoute from '../callout/CalloutRoute';
+import { ChallengeProvider } from '../../../context/ChallengeProvider';
+import { CommunityContextProvider } from '../../community/CommunityContext';
+import { useHub } from '../../../hooks';
+import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import ApplyRoute from '../../application/routing/apply.route';
+import { nameOfUrl } from '../../../routing/url-params';
+import ChallengeRoute from '../../challenge/routing/ChallengeRoute';
+import { Error404, PageProps } from '../../../pages';
+import HubDashboardPage from '../../../pages/Hub/HubDashboardPage';
+import HubContextPage from '../../../pages/Hub/HubContextPage';
+import HubChallengesPage from '../../../pages/Hub/HubChallengesPage';
+import { routes } from '../routes/hubRoutes';
+import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
+import CalloutsPage from '../../callout/CalloutsPage';
+import CalloutRoute from '../../../routing/callout/CalloutRoute';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName } = useHub();

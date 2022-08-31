@@ -1,22 +1,21 @@
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
-import React, { FC, useMemo } from 'react';
-import LifecycleState from '../../components/composite/entities/Lifecycle/LifecycleState';
-import ContextSection from '../../components/composite/sections/ContextSection';
-import {
-  ActivityItemFragment,
-  AspectCardFragment,
-  Context,
-  ContextTabFragment,
-  LifecycleContextTabFragment,
-  Tagset,
-} from '../../models/graphql-schema';
-import { ViewProps } from '../../models/view';
-import DashboardOpportunityStatistics from '../../domain/shared/components/DashboardSections/DashboardOpportunityStatistics';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
+import React, { Context, FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import OpportunityCommunityView from '../../domain/community/entities/OpportunityCommunityView';
+import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
+import LifecycleState from '../../../components/composite/entities/Lifecycle/LifecycleState';
+import ContextSection from '../../../components/composite/sections/ContextSection';
+import {
+  ContextTabFragment,
+  Tagset,
+  LifecycleContextTabFragment,
+  AspectCardFragment,
+  ActivityItemFragment,
+} from '../../../models/graphql-schema';
+import { ViewProps } from '../../../models/view';
+import getActivityCount from '../../activity/utils/getActivityCount';
+import OpportunityCommunityView from '../../community/entities/OpportunityCommunityView';
+import DashboardOpportunityStatistics from '../../shared/components/DashboardSections/DashboardOpportunityStatistics';
 
 export interface OpportunityContextViewEntities {
   context?: ContextTabFragment;

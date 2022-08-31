@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { Error404, PageProps } from '../../pages';
-import ApplyPage from '../../domain/application/pages/ApplyPage';
-import RestrictedRoute from '../RestrictedRoute';
+import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import { Error404, PageProps } from '../../../pages';
+import ApplyPage from '../pages/ApplyPage';
+import RestrictedRoute from '../../../routing/RestrictedRoute';
 
 interface Props extends PageProps {
   type: ApplicationTypeEnum;

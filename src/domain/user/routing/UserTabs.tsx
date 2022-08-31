@@ -2,11 +2,11 @@ import { ContentPasteOutlined, ForumOutlined, GroupOutlined, NotificationsNoneOu
 import { Tabs } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import NavigationTab from '../../components/core/NavigationTab/NavigationTab';
-import NavigationTabs from '../../components/core/NavigationTab/NavigationTabs';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import { useConfig } from '../../hooks';
-import { FEATURE_SSI } from '../../models/constants';
+import NavigationTab from '../../../components/core/NavigationTab/NavigationTab';
+import NavigationTabs from '../../../components/core/NavigationTab/NavigationTabs';
+import { useConfig } from '../../../hooks';
+import { FEATURE_SSI } from '../../../models/constants';
 
 const routes = {
   profile: 'profile',

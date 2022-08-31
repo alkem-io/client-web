@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
-import { OpportunityPageContainer } from '../../containers';
-import OpportunityDashboardView from '../../views/Opportunity/OpportunityDashboardView';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import OpportunityPageLayout from '../../domain/opportunity/layout/OpportunityPageLayout';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
-import CommunityUpdatesDialog from '../../domain/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
 import { useResolvedPath } from 'react-router-dom';
-import ContributorsDialog from '../../domain/community/ContributorsDialog/ContributorsDialog';
-import OpportunityContributorsDialogContent from '../../domain/community/entities/OpportunityContributorsDialogContent';
+import { OpportunityPageContainer } from '../../../containers';
+import { DiscussionsProvider } from '../../../context/Discussions/DiscussionsProvider';
+import CommunityUpdatesDialog from '../../community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import ContributorsDialog from '../../community/ContributorsDialog/ContributorsDialog';
+import OpportunityContributorsDialogContent from '../../community/entities/OpportunityContributorsDialogContent';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import useBackToParentPage from '../../shared/utils/useBackToParentPage';
+import OpportunityPageLayout from '../layout/OpportunityPageLayout';
+import OpportunityDashboardView from '../views/OpportunityDashboardView';
 
 export interface OpportunityDashboardPageProps {
   dialog?: 'updates' | 'contributors';

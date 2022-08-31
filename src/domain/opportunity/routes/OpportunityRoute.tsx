@@ -1,17 +1,17 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes } from 'react-router';
 import { Navigate, useResolvedPath } from 'react-router-dom';
-import Loading from '../../components/core/Loading/Loading';
-import { useOpportunity } from '../../hooks';
-import { Error404, PageProps } from '../../pages';
-import OpportunityDashboardPage from '../../pages/Opportunity/OpportunityDashboardPage';
-import OpportunityContextPage from '../../pages/Opportunity/OpportunityContextPage';
-import OpportunityAgreementsPage from '../../pages/Opportunity/OpportunityAgreementsPage';
-import { nameOfUrl } from '../url-params';
-import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
-import { routes } from '../../domain/opportunity/routes/opportunityRoutes';
-import CalloutsPage from '../../domain/callout/CalloutsPage';
-import CalloutRoute from '../callout/CalloutRoute';
+import Loading from '../../../components/core/Loading/Loading';
+import { useOpportunity } from '../../../hooks';
+import { Error404, PageProps } from '../../../pages';
+import OpportunityAgreementsPage from '../pages/OpportunityAgreementsPage';
+import { nameOfUrl } from '../../../routing/url-params';
+import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
+import { routes } from './opportunityRoutes';
+import CalloutsPage from '../../callout/CalloutsPage';
+import CalloutRoute from '../../../routing/callout/CalloutRoute';
+import OpportunityContextPage from '../pages/OpportunityContextPage';
+import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 
 interface OpportunityRootProps extends PageProps {}
 

@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
-import OpportunityProjectsView from '../../views/Opportunity/OpportunityProjectsView';
-import { PageProps } from '../common';
-import { useUpdateNavigation } from '../../hooks';
-import OpportunityPageLayout from '../../domain/opportunity/layout/OpportunityPageLayout';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import { PageProps } from '../../../pages/common';
+import { useUpdateNavigation } from '../../../hooks';
+import OpportunityPageLayout from '../layout/OpportunityPageLayout';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import OpportunityProjectsView from '../views/OpportunityProjectsView';
 
 export interface OpportunityProjectsPageProps extends PageProps {}
 

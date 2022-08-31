@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import UserProfilePage from '../../domain/user/pages/UserProfilePage';
-import { Error404 } from '../../pages';
+import UserProfilePage from '../pages/UserProfilePage';
+import { Error404 } from '../../../pages';
 import UserSettingsRoute from './UserSettingsRoute';
 
 export const UserRoute: FC = () => {

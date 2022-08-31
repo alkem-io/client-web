@@ -10,14 +10,14 @@ import ContributorsPage from '../pages/Contributors/ContributorsPage';
 import { AdminRoute } from './admin/AdminRoute';
 import { IdentityRoute } from './identity';
 import { MessagesRoute } from './messages/MessagesRoute';
-import OrganizationRoute from './organization/OrganizationRoute';
+import OrganizationRoute from '../domain/organization/routing/OrganizationRoute';
 import ProfileRoute from './profile/ProfileRoute';
 import { Restricted } from './Restricted';
 import RestrictedRoute from './RestrictedRoute';
 import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
-import UserRoute from './user/UserRoute';
-import { HubRoute } from './hub/HubRoute';
+import UserRoute from '../domain/user/routing/UserRoute';
+import { HubRoute } from '../domain/hub/routing/HubRoute';
 import HelpPage from '../pages/Help/HelpPage';
 import { ChallengeExplorerPage } from '../domain/challenge/pages/ChallengeExplorerPage';
 

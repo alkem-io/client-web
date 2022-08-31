@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Error404, PageProps } from '../../pages';
-import CommunityContextFeedbackPage from '../../pages/Community/CommunityContextFeedbackPage';
-import RestrictedRoute from '../RestrictedRoute';
+import { PageProps, Error404 } from '../../../pages';
+import CommunityContextFeedbackPage from '../../../pages/Community/CommunityContextFeedbackPage';
+import RestrictedRoute from '../../../routing/RestrictedRoute';
 
 const CommunityFeedbackRoute: FC<PageProps> = ({ paths }) => {
   return (

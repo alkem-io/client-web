@@ -1,10 +1,11 @@
 import React, { FC, useMemo } from 'react';
-import OpportunityContextView from '../../views/Opportunity/OpportunityContextView';
-import { PageProps } from '../common';
-import { useOpportunity, useUpdateNavigation } from '../../hooks';
-import ContextTabContainer from '../../containers/context/ContextTabContainer';
-import OpportunityPageLayout from '../../domain/opportunity/layout/OpportunityPageLayout';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
+import ContextTabContainer from '../../../containers/context/ContextTabContainer';
+import { useUpdateNavigation } from '../../../hooks';
+import { PageProps } from '../../../pages';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import { useOpportunity } from '../hooks/useOpportunity';
+import OpportunityPageLayout from '../layout/OpportunityPageLayout';
+import OpportunityContextView from '../views/OpportunityContextView';
 
 export interface OpportunityContextPageProps extends PageProps {}
 

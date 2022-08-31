@@ -1,23 +1,23 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes } from 'react-router';
 import { Navigate, useResolvedPath } from 'react-router-dom';
-import Loading from '../../components/core/Loading/Loading';
-import { useChallenge } from '../../hooks';
-import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { Error404, PageProps } from '../../pages';
-import ApplyRoute from '../application/apply.route';
-import { nameOfUrl } from '../url-params';
-import { OpportunityProvider } from '../../context/OpportunityProvider/OpportunityProvider';
-import { CommunityContextProvider } from '../../domain/community/CommunityContext';
-import OpportunityRoute from '../opportunity/OpportunityRoute';
-import ChallengeDashboardPage from '../../domain/challenge/pages/ChallengeDashboardPage';
-import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPage';
-import ChallengeOpportunityPage from '../../pages/Admin/Challenge/ChallengeOpportunityPage';
+import Loading from '../../../components/core/Loading/Loading';
+import { useChallenge } from '../../../hooks';
+import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import { Error404, PageProps } from '../../../pages';
+import ApplyRoute from '../../application/routing/apply.route';
+import { nameOfUrl } from '../../../routing/url-params';
+import { OpportunityProvider } from '../../../context/OpportunityProvider/OpportunityProvider';
+import { CommunityContextProvider } from '../../community/CommunityContext';
+import OpportunityRoute from '../../opportunity/routes/OpportunityRoute';
+import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
+import ChallengeContextPage from '../../../pages/Admin/Challenge/ChallengeContextPage';
+import ChallengeOpportunityPage from '../../../pages/Admin/Challenge/ChallengeOpportunityPage';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
-import { EntityPageLayoutHolder } from '../../domain/shared/layout/PageLayout';
-import { routes } from '../../domain/challenge/routes/challengeRoutes';
-import CalloutsPage from '../../domain/callout/CalloutsPage';
-import CalloutRoute from '../callout/CalloutRoute';
+import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
+import { routes } from '../routes/challengeRoutes';
+import CalloutsPage from '../../callout/CalloutsPage';
+import CalloutRoute from '../../../routing/callout/CalloutRoute';
 
 interface ChallengeRootProps extends PageProps {}
 
