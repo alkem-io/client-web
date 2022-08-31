@@ -15963,7 +15963,9 @@ export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOp
 export const AspectTemplatesOnCalloutCreationDocument = gql`
   query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
+      id
       templates {
+        id
         aspectTemplates {
           id
           info {
@@ -16034,7 +16036,9 @@ export function refetchAspectTemplatesOnCalloutCreationQuery(
 export const CanvasTemplatesOnCalloutCreationDocument = gql`
   query CanvasTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
+      id
       templates {
+        id
         canvasTemplates {
           id
           info {
@@ -16105,7 +16109,9 @@ export function refetchCanvasTemplatesOnCalloutCreationQuery(
 export const AspectTemplateValueDocument = gql`
   query AspectTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
     hub(ID: $hubId) {
+      id
       templates {
+        id
         aspectTemplate(ID: $id) {
           id
           type
@@ -16177,7 +16183,9 @@ export function refetchAspectTemplateValueQuery(variables: SchemaTypes.AspectTem
 export const CanvasTemplateValueDocument = gql`
   query CanvasTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
     hub(ID: $hubId) {
+      id
       templates {
+        id
         canvasTemplate(ID: $id) {
           id
           value
@@ -16303,6 +16311,7 @@ export type CreateCalloutMutationOptions = Apollo.BaseMutationOptions<
 export const HubCollaborationIdDocument = gql`
   query hubCollaborationId($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
+      id
       collaboration {
         id
       }
