@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Button, Tabs } from '@mui/material';
 import { Close, DashboardOutlined, SettingsOutlined } from '@mui/icons-material';
 import NavigationTab from '../../../components/core/NavigationTab/NavigationTab';
-import { useAspect } from '../../../context/aspect/AspectProvider';
+import { useAspect } from '../context/AspectProvider';
 import { AspectDialogSection } from './AspectDialogSection';
 import { styled } from '@mui/styles';
 

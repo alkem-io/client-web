@@ -1,17 +1,20 @@
 import React, { FC, useState } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { useUrlParams } from '../../hooks';
-import AspectSettingsContainer from '../../containers/aspect/AspectSettingsContainer/AspectSettingsContainer';
-import AspectForm, { AspectFormInput, AspectFormOutput } from '../../components/composite/aspect/AspectForm/AspectForm';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
-import { AspectSettingsFragment, Visual } from '../../models/graphql-schema';
-import EditVisualsView from '../../views/Visuals/EditVisualsView';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import Typography from '@mui/material/Typography';
-import { AspectLayout } from '../../domain/aspect/views/AspectLayoutWithOutlet';
-import { AspectDialogSection } from '../../domain/aspect/views/AspectDialogSection';
+import AspectForm, {
+  AspectFormOutput,
+  AspectFormInput,
+} from '../../../components/composite/aspect/AspectForm/AspectForm';
+import AspectSettingsContainer from '../../../containers/aspect/AspectSettingsContainer/AspectSettingsContainer';
+import { useUrlParams } from '../../../hooks';
+import { AspectSettingsFragment, Visual } from '../../../models/graphql-schema';
+import EditVisualsView from '../../../views/Visuals/EditVisualsView';
+import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import { AspectDialogSection } from '../views/AspectDialogSection';
+import AspectLayout from '../views/AspectLayout';
 
 export interface AspectSettingsPageProps {
   onClose: () => void;

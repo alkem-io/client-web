@@ -1,13 +1,13 @@
 import React, { FC, useContext } from 'react';
-import { useApolloErrorHandler, useUrlParams } from '../../hooks';
+import { useApolloErrorHandler, useUrlParams } from '../../../hooks';
 import {
   useChallengeAspectProviderQuery,
   useHubAspectProviderQuery,
   useOpportunityAspectProviderQuery,
-} from '../../hooks/generated/graphql';
+} from '../../../hooks/generated/graphql';
 import { ApolloError } from '@apollo/client';
-import { AuthorizationPrivilege } from '../../models/graphql-schema';
-import { getCardCallout } from '../../containers/aspect/getAspectCallout';
+import { AuthorizationPrivilege } from '../../../models/graphql-schema';
+import { getCardCallout } from '../../../containers/aspect/getAspectCallout';
 
 interface AspectPermissions {
   canUpdate: boolean;

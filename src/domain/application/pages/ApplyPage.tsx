@@ -5,19 +5,19 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import FormikInputField from '../../components/composite/forms/FormikInputField';
-import Button from '../../components/core/Button';
-import ErrorBlock from '../../components/core/ErrorBlock';
-import Image from '../../domain/shared/components/Image';
-import { Loading } from '../../components/core/Loading/Loading';
-import Typography from '../../components/core/Typography';
-import { useApplicationCommunityQuery } from '../../containers/application/useApplicationCommunityQuery';
-import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
-import { refetchUserApplicationsQuery, useApplyForCommunityMembershipMutation } from '../../hooks/generated/graphql';
-import { ApplicationTypeEnum } from '../../models/enums/application-type';
-import { CreateNvpInput } from '../../models/graphql-schema';
-import getApplicationTypeKey from '../../utils/translation/get-application-type-key';
-import { PageProps } from '../common';
+import FormikInputField from '../../../components/composite/forms/FormikInputField';
+import Button from '../../../components/core/Button';
+import ErrorBlock from '../../../components/core/ErrorBlock';
+import Image from '../../shared/components/Image';
+import { Loading } from '../../../components/core/Loading/Loading';
+import Typography from '../../../components/core/Typography';
+import { useApplicationCommunityQuery } from '../../../containers/application/useApplicationCommunityQuery';
+import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../../hooks';
+import { refetchUserApplicationsQuery, useApplyForCommunityMembershipMutation } from '../../../hooks/generated/graphql';
+import { ApplicationTypeEnum } from '../../../models/enums/application-type';
+import { CreateNvpInput } from '../../../models/graphql-schema';
+import getApplicationTypeKey from '../../../utils/translation/get-application-type-key';
+import { PageProps } from '../../../pages/common';
 
 const useStyles = makeStyles(theme => ({
   thankYouDiv: {

@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import { useUrlParams } from '../../hooks';
-import AspectDashboardView from '../../views/aspect/AspectDashboardView';
-import AspectDashboardContainer from '../../containers/aspect/AspectDashboardContainer/AspectDashboardContainer';
-import { AspectLayout } from '../../domain/aspect/views/AspectLayoutWithOutlet';
-import { AspectDialogSection } from '../../domain/aspect/views/AspectDialogSection';
+import { useUrlParams } from '../../../hooks';
+import AspectDashboardView from '../views/AspectDashboardView';
+import AspectDashboardContainer from '../../../containers/aspect/AspectDashboardContainer/AspectDashboardContainer';
+import { AspectLayout } from '../views/AspectLayoutWithOutlet';
+import { AspectDialogSection } from '../views/AspectDialogSection';
 
 export interface AspectDashboardPageProps {
   onClose: () => void;
