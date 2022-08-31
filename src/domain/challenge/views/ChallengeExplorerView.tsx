@@ -2,16 +2,16 @@ import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Accordion } from '../../components/composite/common/Accordion/Accordion';
-import SearchTagsInput from '../../domain/shared/components/SearchTagsInput/SearchTagsInput';
-import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import { ChallengeCardContainer } from '../../containers/challenge/ChallengeCardContainer';
-import HubChallengesContainer from '../../containers/hub/HubChallengesContainer';
+import { Accordion } from '../../../components/composite/common/Accordion/Accordion';
+import ChallengeCard from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import { ChallengeCardContainer } from '../../../containers/challenge/ChallengeCardContainer';
+import HubChallengesContainer from '../../../containers/hub/HubChallengesContainer';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
+import SearchTagsInput from '../../shared/components/SearchTagsInput/SearchTagsInput';
+import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
 import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
-import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 
 export interface HubOverview {
   hubID: string;

@@ -3,16 +3,16 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useLayoutEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import KratosUI from '../../components/Authentication/KratosUI';
-import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
-import Button from '../../components/core/Button';
-import Delimiter from '../../components/core/Delimiter';
-import Loading from '../../components/core/Loading/Loading';
-import Typography from '../../components/core/Typography';
-import { useUpdateNavigation } from '../../hooks';
-import { AUTH_REGISTER_PATH } from '../../models/constants';
+import KratosUI from '../../../../components/Authentication/KratosUI';
+import AuthenticationLayout from '../../../../components/composite/layout/AuthenticationLayout';
+import Button from '../../../../components/core/Button';
+import Delimiter from '../../../../components/core/Delimiter';
+import Loading from '../../../../components/core/Loading/Loading';
+import Typography from '../../../../components/core/Typography';
+import { useUpdateNavigation } from '../../../../hooks';
+import { AUTH_REGISTER_PATH } from '../../../../models/constants';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
-import useKratosFlow, { FlowTypeName } from '../../core/auth/authentication/hooks/useKratosFlow';
+import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 
 interface LoginPageProps {
   flow?: string;

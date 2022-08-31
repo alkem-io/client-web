@@ -2,10 +2,10 @@ import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Button from '../../components/core/Button';
-import Markdown from '../../components/core/Markdown';
-import Typography from '../../components/core/Typography';
-import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
+import Button from '../../../../components/core/Button';
+import Markdown from '../../../../components/core/Markdown';
+import Typography from '../../../../components/core/Typography';
+import AuthenticationLayout from '../../../../components/composite/layout/AuthenticationLayout';
 import { Box } from '@mui/material';
 
 interface VerificationSuccessPageProps {}

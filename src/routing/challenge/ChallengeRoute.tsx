@@ -10,7 +10,7 @@ import { nameOfUrl } from '../url-params';
 import { OpportunityProvider } from '../../context/OpportunityProvider/OpportunityProvider';
 import { CommunityContextProvider } from '../../domain/community/CommunityContext';
 import OpportunityRoute from '../opportunity/OpportunityRoute';
-import ChallengeDashboardPage from '../../pages/Challenge/ChallengeDashboardPage';
+import ChallengeDashboardPage from '../../domain/challenge/pages/ChallengeDashboardPage';
 import ChallengeContextPage from '../../pages/Admin/Challenge/ChallengeContextPage';
 import ChallengeOpportunityPage from '../../pages/Admin/Challenge/ChallengeOpportunityPage';
 import CommunityFeedbackRoute from './CommunityContextFeedback';

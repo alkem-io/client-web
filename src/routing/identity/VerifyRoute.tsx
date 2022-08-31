@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import EmailVerificationRequiredPage from '../../core/auth/authentication/pages/EmailVerificationRequiredPage';
+import VerificationPage from '../../core/auth/authentication/pages/VerificationPage';
+import VerificationSuccessPage from '../../core/auth/authentication/pages/VerificationSuccessPage';
 import { useQueryParams } from '../../hooks';
-import VerificationPage from '../../pages/Authentication/VerificationPage';
-import VerificationSuccessPage from '../../pages/Authentication/VerificationSuccessPage';
-import EmailVerificationRequiredPage from '../../pages/Authentication/EmailVerificationRequiredPage';
 
 interface VerifyRouteProps {}
 

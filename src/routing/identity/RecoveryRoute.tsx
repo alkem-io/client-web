@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
+import RecoveryPage from '../../core/auth/authentication/pages/RecoveryPage';
 import { useQueryParams } from '../../hooks';
-import RecoveryPage from '../../pages/Authentication/RecoveryPage';
 
 interface RecoveryRouteProps {}
 

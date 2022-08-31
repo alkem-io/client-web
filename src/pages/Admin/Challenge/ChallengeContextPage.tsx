@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { PageProps } from '../../common';
 import { useChallenge, useHub, useUpdateNavigation } from '../../../hooks';
-import { ChallengeContextView } from '../../../views/Challenge/ChallengeContextView';
 import ContextTabContainer from '../../../containers/context/ContextTabContainer';
 import ChallengePageLayout from '../../../domain/challenge/layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../domain/shared/layout/EntityPageSection';
+import { ChallengeContextView } from '../../../domain/challenge/views/ChallengeContextView';
 
 export interface ChallengeContextPageProps extends PageProps {}
 

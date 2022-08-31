@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import Button from '../../components/core/Button';
+import Button from '../../../../components/core/Button';
 import { Box } from '@mui/material';
-import AuthenticationLayout from '../../components/composite/layout/AuthenticationLayout';
-import EmailVerificationNotice from '../../components/EmailVerificationNotice/EmailVerificationNotice';
-import Typography from '../../components/core/Typography';
+import AuthenticationLayout from '../../../../components/composite/layout/AuthenticationLayout';
+import EmailVerificationNotice from '../../../../components/EmailVerificationNotice/EmailVerificationNotice';
+import Typography from '../../../../components/core/Typography';
 
 export const EmailVerificationRequiredPage: FC = () => {
   const { t } = useTranslation();

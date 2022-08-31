@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
+import SettingsPage from '../../core/auth/authentication/pages/SettingsPage';
 import { useQueryParams } from '../../hooks';
-import SettingsPage from '../../pages/Authentication/SettingsPage';
 
 export const SettingsRoute: FC = () => {
   const params = useQueryParams();

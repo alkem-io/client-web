@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
-import { useUpdateNavigation } from '../../hooks';
-import { ChallengeExplorerContainer } from '../../containers/challenge/ChallengeExplorerContainer';
-import { ChallengeExplorerView } from '../../views/Challenge/ChallengeExplorerView';
+import { ChallengeExplorerContainer } from '../../../containers/challenge/ChallengeExplorerContainer';
+import { useUpdateNavigation } from '../../../hooks';
+import { ChallengeExplorerView } from '../views/ChallengeExplorerView';
 
 export interface ChallengeExplorerPageProps {}
 

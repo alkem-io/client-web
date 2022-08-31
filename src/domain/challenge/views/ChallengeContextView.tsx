@@ -3,26 +3,26 @@ import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
-import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import LifecycleState from '../../components/composite/entities/Lifecycle/LifecycleState';
-import ContextSection from '../../components/composite/sections/ContextSection';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
+import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
+import ApplicationButton from '../../../components/composite/common/ApplicationButton/ApplicationButton';
+import LifecycleState from '../../../components/composite/entities/Lifecycle/LifecycleState';
+import ContextSection from '../../../components/composite/sections/ContextSection';
+import { RouterLink } from '../../../components/core/RouterLink';
+import ApplicationButtonContainer from '../../../containers/application/ApplicationButtonContainer';
 import {
+  ContextTabFragment,
+  Tagset,
+  LifecycleContextTabFragment,
   ActivityItemFragment,
   Context,
-  ContextTabFragment,
-  LifecycleContextTabFragment,
-  Tagset,
-} from '../../models/graphql-schema';
-import { ViewProps } from '../../models/view';
-import { RouterLink } from '../../components/core/RouterLink';
-import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import ActivityView from '../Activity/ActivityView';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import { ActivityType } from '../../domain/activity/ActivityType';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
-import ChallengeCommunityView from '../../domain/community/entities/ChallengeCommunityView';
+} from '../../../models/graphql-schema';
+import { ViewProps } from '../../../models/view';
+import ActivityView from '../../../views/Activity/ActivityView';
+import { ActivityType } from '../../activity/ActivityType';
+import getActivityCount from '../../activity/utils/getActivityCount';
+import ChallengeCommunityView from '../../community/entities/ChallengeCommunityView';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
+import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 
 interface ChallengeContextEntities {
   context?: ContextTabFragment;

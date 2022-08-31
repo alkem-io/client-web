@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
-import { Accordion } from '../../../components/composite/common/Accordion/Accordion';
-import GroupBy from '../../../components/core/GroupBy/GroupBy';
-import ChallengeExplorerSearchContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
-import ChallengeExplorerSearchEnricherContainer from '../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
-import HubNameResolver from '../../../containers/hub/HubNameResolver';
-import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
-import ChallengeCard from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import CardsLayout from '../../../domain/shared/layout/CardsLayout/CardsLayout';
+import { Accordion } from '../../../../components/composite/common/Accordion/Accordion';
+import GroupBy from '../../../../components/core/GroupBy/GroupBy';
+import ChallengeExplorerSearchContainer from '../../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
+import ChallengeExplorerSearchEnricherContainer from '../../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
+import HubNameResolver from '../../../../containers/hub/HubNameResolver';
+import { ChallengeExplorerSearchResultFragment } from '../../../../models/graphql-schema';
+import ChallengeCard from '../../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 
 export type ChallengeExplorerGroupByType = 'hub';
 

@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ViewProps } from '../../models/view';
 import { useTranslation } from 'react-i18next';
-import PreferenceSection from '../../components/composite/common/PreferenceSection/PreferenceSection';
-import { ChallengePreferenceType, Preference } from '../../models/graphql-schema';
+import PreferenceSection from '../../../components/composite/common/PreferenceSection/PreferenceSection';
+import { Preference, ChallengePreferenceType } from '../../../models/graphql-schema';
+import { ViewProps } from '../../../models/view';
 
 export interface ChallengeMembershipPreferenceViewEntities {
   preferences: Preference[];

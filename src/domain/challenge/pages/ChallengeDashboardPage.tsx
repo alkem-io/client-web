@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import { useResolvedPath } from 'react-router-dom';
-import ChallengePageContainer from '../../containers/challenge/ChallengePageContainer';
-import { ChallengeDashboardView } from '../../views/Challenge/ChallengeDashboardView';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import ChallengePageLayout from '../../domain/challenge/layout/ChallengePageLayout';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
-import CommunityUpdatesDialog from '../../domain/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import ContributorsDialog from '../../domain/community/ContributorsDialog/ContributorsDialog';
-import ChallengeContributorsDialogContent from '../../domain/community/entities/ChallengeContributorsDialogContent';
+import ChallengePageContainer from '../../../containers/challenge/ChallengePageContainer';
+import { DiscussionsProvider } from '../../../context/Discussions/DiscussionsProvider';
+import ChallengePageLayout from '../layout/ChallengePageLayout';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import useBackToParentPage from '../../shared/utils/useBackToParentPage';
+import CommunityUpdatesDialog from '../../community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import ContributorsDialog from '../../community/ContributorsDialog/ContributorsDialog';
+import ChallengeContributorsDialogContent from '../../community/entities/ChallengeContributorsDialogContent';
+import { ChallengeDashboardView } from '../views/ChallengeDashboardView';
 
 export interface ChallengeDashboardPageProps {
   dialog?: 'updates' | 'contributors';

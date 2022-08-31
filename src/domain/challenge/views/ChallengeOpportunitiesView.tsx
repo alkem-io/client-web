@@ -1,18 +1,21 @@
 import { Box, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import OpportunityCard from '../../components/composite/common/cards/OpportunityCard/OpportunityCard';
-import { Loading } from '../../components/core';
-import CardFilter from '../../components/core/card-filter/CardFilter';
+import OpportunityCard from '../../../components/composite/common/cards/OpportunityCard/OpportunityCard';
+import { Loading } from '../../../components/core';
+import CardFilter from '../../../components/core/card-filter/CardFilter';
 import {
   entityTagsValueGetter,
   entityValueGetter,
-} from '../../components/core/card-filter/value-getters/entity-value-getter';
-import ErrorBlock from '../../components/core/ErrorBlock';
-import { ChallengeContainerEntities, ChallengeContainerState } from '../../containers/challenge/ChallengePageContainer';
-import { useChallenge } from '../../hooks';
-import { Opportunity } from '../../models/graphql-schema';
-import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
+} from '../../../components/core/card-filter/value-getters/entity-value-getter';
+import ErrorBlock from '../../../components/core/ErrorBlock';
+import {
+  ChallengeContainerEntities,
+  ChallengeContainerState,
+} from '../../../containers/challenge/ChallengePageContainer';
+import { Opportunity } from '../../../models/graphql-schema';
+import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
+import { useChallenge } from '../hooks/useChallenge';
 
 interface ChallengeOpportunitiesViewProps {
   entities: ChallengeContainerEntities;

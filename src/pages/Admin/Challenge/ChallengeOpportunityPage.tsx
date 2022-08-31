@@ -2,9 +2,9 @@ import React, { FC, useMemo } from 'react';
 import { PageProps } from '../../common';
 import { useUpdateNavigation } from '../../../hooks';
 import ChallengePageContainer from '../../../containers/challenge/ChallengePageContainer';
-import { ChallengeOpportunitiesView } from '../../../views/Challenge/ChallengeOpportunitiesView';
 import ChallengePageLayout from '../../../domain/challenge/layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../domain/shared/layout/EntityPageSection';
+import { ChallengeOpportunitiesView } from '../../../domain/challenge/views/ChallengeOpportunitiesView';
 
 export interface ChallengeOpportunityPageProps extends PageProps {}
 

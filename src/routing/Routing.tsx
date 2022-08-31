@@ -6,7 +6,6 @@ import { CommunityContextProvider } from '../domain/community/CommunityContext';
 import { HubContextProvider } from '../domain/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
-import { ChallengeExplorerPage } from '../pages/Challenge/ChallengeExplorerPage';
 import ContributorsPage from '../pages/Contributors/ContributorsPage';
 import { AdminRoute } from './admin/AdminRoute';
 import { IdentityRoute } from './identity';
@@ -20,6 +19,7 @@ import { nameOfUrl } from './url-params';
 import UserRoute from './user/UserRoute';
 import { HubRoute } from './hub/HubRoute';
 import HelpPage from '../pages/Help/HelpPage';
+import { ChallengeExplorerPage } from '../domain/challenge/pages/ChallengeExplorerPage';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();

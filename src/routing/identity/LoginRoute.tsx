@@ -1,9 +1,9 @@
 import React, { FC, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import LoginPage from '../../core/auth/authentication/pages/LoginPage';
+import LoginSuccessPage from '../../core/auth/authentication/pages/LoginSuccessPage';
 import { useQueryParams } from '../../hooks';
 import { STORAGE_KEY_RETURN_URL, RETURN_URL } from '../../models/constants';
-import LoginPage from '../../pages/Authentication/LoginPage';
-import LoginSuccessPage from '../../pages/Authentication/LoginSuccessPage';
 import { NotAuthenticatedRoute } from '../NotAuthenticatedRoute';
 
 export const LoginRoute: FC = () => {
