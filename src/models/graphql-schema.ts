@@ -413,6 +413,9 @@ export type Canvas = {
   authorization?: Maybe<Authorization>;
   /** The checkout out state of this Canvas. */
   checkout?: Maybe<CanvasCheckout>;
+  /** The id of the user that created this Canvas */
+  createdBy: Scalars['UUID'];
+  createdDate: Scalars['DateTime'];
   /** The display name. */
   displayName: Scalars['String'];
   /** The ID of the entity */
@@ -2445,6 +2448,7 @@ export enum PreferenceType {
   NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
+  NotificationCalloutCreated = 'NOTIFICATION_CALLOUT_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -3385,6 +3389,7 @@ export enum UserPreferenceType {
   NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
+  NotificationCalloutCreated = 'NOTIFICATION_CALLOUT_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -13251,9 +13256,11 @@ export type AspectTemplatesOnCalloutCreationQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    id: string;
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           aspectTemplates: Array<{
             __typename?: 'AspectTemplate';
             id: string;
@@ -13272,9 +13279,11 @@ export type CanvasTemplatesOnCalloutCreationQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    id: string;
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
@@ -13296,9 +13305,11 @@ export type AspectTemplateValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    id: string;
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           aspectTemplate?:
             | {
                 __typename?: 'AspectTemplate';
@@ -13327,9 +13338,11 @@ export type CanvasTemplateValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    id: string;
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
         }
       | undefined;
@@ -13365,7 +13378,7 @@ export type HubCollaborationIdQueryVariables = Exact<{
 
 export type HubCollaborationIdQuery = {
   __typename?: 'Query';
-  hub: { __typename?: 'Hub'; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
+  hub: { __typename?: 'Hub'; id: string; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
 };
 
 export type ChallengeCollaborationIdQueryVariables = Exact<{
