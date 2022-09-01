@@ -90,6 +90,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
     () => [
       { id: CalloutType.Card, name: t('common.cards') },
       { id: CalloutType.Canvas, name: t('common.canvases') },
+      { id: CalloutType.Discussion, name: t('common.discussion') },
     ],
     []
   );
