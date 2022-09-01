@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '../../utils/test/test-utils';
+import { render, screen } from '../../common/utils/test/test-utils';
 import RemoveModal from './RemoveModal';
 
 describe('RemoveModal - main', () => {

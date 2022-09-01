@@ -16,7 +16,7 @@ import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../.
 import { refetchUserApplicationsQuery, useApplyForCommunityMembershipMutation } from '../../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../../models/enums/application-type';
 import { CreateNvpInput } from '../../../models/graphql-schema';
-import getApplicationTypeKey from '../../../utils/translation/get-application-type-key';
+import getApplicationTypeKey from '../../../common/utils/translation/get-application-type-key';
 import { PageProps } from '../../../pages/common';
 
 const useStyles = makeStyles(theme => ({

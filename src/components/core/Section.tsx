@@ -4,7 +4,7 @@ import { Breakpoints, Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { agnosticFunctor } from '../../utils/functor';
+import { agnosticFunctor } from '../../common/utils/functor';
 import Tag from './Tag';
 import Typography from './Typography';
 

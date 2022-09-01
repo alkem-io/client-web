@@ -7,8 +7,8 @@ import {
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
-import { getVisualBanner } from '../../utils/visuals.utils';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../common/utils/urlBuilders';
+import { getVisualBanner } from '../../common/utils/visuals.utils';
 
 export interface EntityDetailsContainerEntities {
   details?: ContributionCardV2Details;

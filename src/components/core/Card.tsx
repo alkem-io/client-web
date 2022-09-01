@@ -2,10 +2,10 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Breakpoint, Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { agnosticFunctor } from '../../utils/functor';
+import { agnosticFunctor } from '../../common/utils/functor';
 import Tag, { TagProps } from './Tag';
 import Typography from './Typography';
-import hexToRGBA from '../../utils/hexToRGBA';
+import hexToRGBA from '../../common/utils/hexToRGBA';
 import Tooltip from '@mui/material/Tooltip';
 
 interface HeaderProps {

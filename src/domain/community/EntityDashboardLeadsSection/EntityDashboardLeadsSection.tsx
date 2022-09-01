@@ -8,7 +8,7 @@ import OrganizationCard, {
   OrganizationCardProps,
 } from '../../../components/composite/common/cards/Organization/OrganizationCard';
 import SectionHeader from '../../shared/components/Section/SectionHeader';
-import { buildUserProfileUrl } from '../../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../../hooks';
 import { mapToAssociatedOrganization } from '../../organization/AssociatedOrganizations/AssociatedOrganization';

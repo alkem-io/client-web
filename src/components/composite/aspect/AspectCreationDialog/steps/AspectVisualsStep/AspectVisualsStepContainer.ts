@@ -3,7 +3,7 @@ import { Scalars, Visual } from '../../../../../../models/graphql-schema';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
-} from '../../../../../../utils/containers/ComponentOrChildrenFn';
+} from '../../../../../../common/utils/containers/ComponentOrChildrenFn';
 import {
   useChallengeAspectVisualsQuery,
   useHubAspectVisualsQuery,

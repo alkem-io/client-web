@@ -2,7 +2,7 @@ import { Button, CircularProgress } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { buildLoginUrl } from '../../../../utils/urlBuilders';
+import { buildLoginUrl } from '../../../../common/utils/urlBuilders';
 import PreApplicationDialog from './PreApplicationDialog';
 import isApplicationPending from './is-application-pending';
 import PreJoinDialog from './PreJoinDialog';

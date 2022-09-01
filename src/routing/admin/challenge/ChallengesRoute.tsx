@@ -2,14 +2,14 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import FormMode from '../../../components/Admin/FormMode';
-import { ChallengeProvider } from '../../../context/ChallengeProvider';
+import { ChallengeProvider } from '../../../domain/challenge/context/ChallengeProvider';
 import { Error404, PageProps } from '../../../pages';
-import EditChallengePage from '../../../pages/Admin/Challenge/EditChallengePage';
 import { nameOfUrl } from '../../url-params';
 import { ChallengeRoute } from './ChallengeRoute';
-import ChallengeListPage from '../../../pages/Admin/Hub/HubChallenges/ChallengeListPage';
 import HubSettingsLayout from '../../../domain/admin/hub/HubSettingsLayout';
 import { SettingsSection } from '../../../domain/admin/layout/EntitySettings/constants';
+import EditChallengePage from '../../../domain/challenge/pages/EditChallengePage';
+import ChallengeListPage from '../../../domain/hub/pages/HubChallenges/ChallengeListPage';
 
 export const ChallengesRoute: FC<PageProps> = ({ paths }) => {
   const { t } = useTranslation();

@@ -8,7 +8,7 @@ import {
   useUserProfileLazyQuery,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../utils/urlBuilders';
+import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../common/utils/urlBuilders';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';

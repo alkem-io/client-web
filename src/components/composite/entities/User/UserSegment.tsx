@@ -5,7 +5,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import React, { ElementType, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
 import Typography from '../../../core/Typography';
 import UserAvatar from './UserAvatar';

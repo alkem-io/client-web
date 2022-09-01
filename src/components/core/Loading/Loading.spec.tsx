@@ -1,6 +1,6 @@
 import Loading from './Loading';
 import Typography from '../Typography';
-import { render, screen } from '../../../utils/test/test-utils';
+import { render, screen } from '../../../common/utils/test/test-utils';
 
 describe('Loading component', () => {
   // Mathcing snapshot when we are using dynamicaly generated class names is ineffective

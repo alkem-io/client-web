@@ -5,11 +5,11 @@ import { Error404, PageProps } from '../../../pages';
 import CommunityGroupsRoute from '../../../domain/admin/community/routes/CommunityGroupsAdminRoutes';
 import { OpportunitiesRoute } from '../opportunity/OpportunitiesRoute';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
-import ChallengeProfilePage from '../../../pages/Admin/Challenge/ChallengeProfile/ChallengeProfilePage';
-import ChallengeContextPage from '../../../pages/Admin/Challenge/ChallengeContext/ChallengeContextPage';
-import ChallengeCommunicationsPage from '../../../pages/Admin/Challenge/ChallengeCommunications/ChallengeCommunicationsPage';
 import ChallengeCommunityAdminPage from '../../../domain/admin/challenge/ChallengeCommunityAdminPage';
 import { ApplicationsAdminRoutes } from '../../../domain/admin/community/routes/ApplicationsAdminRoutes';
+import ChallengeCommunicationsPage from '../../../domain/challenge/pages/ChallengeCommunications/ChallengeCommunicationsPage';
+import ChallengeContextPage from '../../../domain/challenge/pages/ChallengeContextPage';
+import ChallengeProfilePage from '../../../domain/challenge/pages/ChallengeProfile/ChallengeProfilePage';
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');

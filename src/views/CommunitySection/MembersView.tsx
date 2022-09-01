@@ -6,7 +6,7 @@ import AvatarContainer from '../../components/core/AvatarContainer';
 import Typography from '../../components/core/Typography';
 import UserCardsContainer from '../../containers/user/UserCardsContainer';
 import { User } from '../../models/graphql-schema';
-import shuffleCollection from '../../utils/shuffleCollection';
+import shuffleCollection from '../../common/utils/shuffleCollection';
 
 interface MembersProps {
   shuffle?: boolean;

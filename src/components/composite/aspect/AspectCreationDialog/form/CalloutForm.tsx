@@ -3,7 +3,7 @@ import { Formik, FormikConfig } from 'formik';
 import { CalloutType } from '../../../../../models/graphql-schema';
 import * as yup from 'yup';
 import { Grid, InputAdornment } from '@mui/material';
-import FormikEffectFactory from '../../../../../utils/formik/formik-effect/FormikEffect';
+import FormikEffectFactory from '../../../../../common/utils/formik/formik-effect/FormikEffect';
 import FormikInputField from '../../../forms/FormikInputField';
 import FormRow from '../../../../../domain/shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';

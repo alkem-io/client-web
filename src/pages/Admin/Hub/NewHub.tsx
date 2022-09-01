@@ -14,7 +14,7 @@ import {
   useOrganizationsListQuery,
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
-import { createContextInput } from '../../../utils/buildContext';
+import { createContextInput } from '../../../common/utils/buildContext';
 import { PageProps } from '../../common';
 
 interface NewHubProps extends PageProps {}

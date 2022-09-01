@@ -9,7 +9,7 @@ import {
   retryLink,
   redirectLink,
   httpLink,
-} from '../../../utils/graphql-links';
+} from '../../../common/utils/graphql-links';
 import { typePolicies } from '../../../config/graphql/typePolicies';
 
 const enableQueryDebug = !!(env && env?.REACT_APP_DEBUG_QUERY === 'true');

@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Error404 } from '../../../pages';
 import AuthorizationRouteProps from '../AuthorizationRouteProps';
 import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
-import HubAuthorizationPage from '../../../pages/Admin/Hub/HubAuthorization/HubAuthorizationPage';
+import HubAuthorizationPage from '../../../domain/hub/pages/HubAuthorization/HubAuthorizationPage';
 
 const HubAuthorizationRoute: FC<AuthorizationRouteProps> = ({ paths, resourceId }) => {
   const currentPaths = useAppendBreadcrumb(paths, { name: 'authorization' });

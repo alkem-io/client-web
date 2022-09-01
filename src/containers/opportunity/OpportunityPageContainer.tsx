@@ -15,8 +15,8 @@ import {
   Project,
   Reference,
 } from '../../models/graphql-schema';
-import { replaceAll } from '../../utils/replaceAll';
-import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
+import { replaceAll } from '../../common/utils/replaceAll';
+import { buildAdminOpportunityUrl } from '../../common/utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';

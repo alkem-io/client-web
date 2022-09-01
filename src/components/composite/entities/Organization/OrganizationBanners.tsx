@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { OrganizationDetailsFragment } from '../../../../models/graphql-schema';
-import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
+import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
 import Typography from '../../../core/Typography';
 import Image from '../../../../domain/shared/components/Image';
 import OrganizationPopUp from './OrganizationPopUp';

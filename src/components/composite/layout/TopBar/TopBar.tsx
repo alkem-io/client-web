@@ -26,7 +26,7 @@ import Collapse from '@mui/material/Collapse';
 import ListItemText from '@mui/material/ListItemText';
 import { useGlobalState, useUserContext } from '../../../../hooks';
 import useCurrentBreakpoint from '../../../../hooks/useCurrentBreakpoint';
-import { buildLoginUrl, buildUserProfileUrl } from '../../../../utils/urlBuilders';
+import { buildLoginUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { RouterLink } from '../../../core/RouterLink';
 import HideOnScroll from '../HideOnScroll';
 import HelpIcon from './HelpIcon';

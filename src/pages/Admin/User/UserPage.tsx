@@ -17,8 +17,8 @@ import { EditMode } from '../../../models/editMode';
 import { CreateUserInput } from '../../../models/graphql-schema';
 import { UserModel } from '../../../models/User';
 import { logger } from '../../../services/logging/winston/logger';
-import { createUserNameID } from '../../../utils/createUserNameId';
-import { getUpdateUserInput } from '../../../utils/getUpdateUserInput';
+import { createUserNameID } from '../../../common/utils/createUserNameId';
+import { getUpdateUserInput } from '../../../common/utils/getUpdateUserInput';
 
 interface UserPageProps extends PageProps {
   mode: EditMode;

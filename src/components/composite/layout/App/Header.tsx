@@ -4,7 +4,7 @@ import ReactVisibilitySensor from 'react-visibility-sensor';
 import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import hexToRgba from '../../../../utils/hexToRGBA';
+import hexToRgba from '../../../../common/utils/hexToRGBA';
 import Toolbar from '../../../core/Toolbar';
 
 const appBarZIndex = 100;

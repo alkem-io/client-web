@@ -3,7 +3,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Avatar from '../../core/Avatar';
 import Card from '../../core/Card';
 import { makeStyles } from '@mui/styles';
-import hexToRGBA from '../../../utils/hexToRGBA';
+import hexToRGBA from '../../../common/utils/hexToRGBA';
 import OrganizationPopUp from '../entities/Organization/OrganizationPopUp';
 import TagContainer from '../../core/TagContainer';
 import Tag from '../../core/Tag';

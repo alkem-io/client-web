@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Card from '../../components/core/Card';
 import { Loading } from '../../components/core';
-import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
+import { ApplicationWithType } from '../../common/utils/application/getApplicationWithType';
 import PendingApplicationContainer from '../../containers/application/PendingApplicationContainer';
 import PendingApplicationView from './PendingApplicationView';
 

@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { OpportunitySearchResultFragment } from '../../../../models/graphql-schema';
 import PopUp, { PopUpViewmodel } from '../../search/PopUp';
-import { buildOpportunityUrl } from '../../../../utils/urlBuilders';
+import { buildOpportunityUrl } from '../../../../common/utils/urlBuilders';
 import PopUpProps from '../../dialogs/PopUpProps';
-import { getVisualAvatar } from '../../../../utils/visuals.utils';
+import { getVisualAvatar } from '../../../../common/utils/visuals.utils';
 
 const OpportunityPopUp: FC<PopUpProps<OpportunitySearchResultFragment>> = ({ onHide, entity: opportunity, hub }) => {
   const challenge = opportunity.challenge;

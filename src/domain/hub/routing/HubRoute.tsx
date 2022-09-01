@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
-import { ChallengeProvider } from '../../../context/ChallengeProvider';
+import { ChallengeProvider } from '../../challenge/context/ChallengeProvider';
 import { CommunityContextProvider } from '../../community/CommunityContext';
 import { useHub } from '../../../hooks';
 import { ApplicationTypeEnum } from '../../../models/enums/application-type';

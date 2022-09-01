@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { PushFunc, RemoveFunc, useEditReference } from '../../../hooks';
 import { Reference } from '../../../models/Profile';
-import { newReferenceName } from '../../../utils/newReferenceName';
+import { newReferenceName } from '../../../common/utils/newReferenceName';
 import ReferenceSegment, { ReferenceSegmentProps } from './ReferenceSegment';
 
 interface ContextReferenceSegmentProps extends ReferenceSegmentProps {

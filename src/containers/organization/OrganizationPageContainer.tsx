@@ -11,7 +11,7 @@ import { ContainerChildProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
 import { isSocialNetworkSupported, SocialNetworkEnum, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
 import { AuthorizationCredential, OrganizationInfoFragment, User } from '../../models/graphql-schema';
-import { buildUserProfileUrl } from '../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../common/utils/urlBuilders';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;

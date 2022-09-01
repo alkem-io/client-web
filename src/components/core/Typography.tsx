@@ -3,7 +3,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import _clamp from 'clamp-js';
 import clsx from 'clsx';
 import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
-import { replaceAll } from '../../utils/replaceAll';
+import { replaceAll } from '../../common/utils/replaceAll';
 
 const useTypographyStyles = makeStyles(theme => ({
   h1: {

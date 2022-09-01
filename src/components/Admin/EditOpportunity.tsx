@@ -12,7 +12,7 @@ import {
   useUpdateOpportunityMutation,
 } from '../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../hooks/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../utils/buildContext';
+import { createContextInput, updateContextInput } from '../../common/utils/buildContext';
 import Button from '../core/Button';
 import Typography from '../core/Typography';
 import ProfileFormWithContext, { ProfileFormValuesType } from '../composite/forms/ProfileFormWithContext';

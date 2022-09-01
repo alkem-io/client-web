@@ -2,7 +2,7 @@ import { Theme } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
 import { makeStyles } from '@mui/styles';
-import { agnosticFunctor } from '../../utils/functor';
+import { agnosticFunctor } from '../../common/utils/functor';
 import Typography from './Typography';
 
 const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({

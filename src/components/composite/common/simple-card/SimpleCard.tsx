@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import Tooltip from '@mui/material/Tooltip/Tooltip';
 import { Box } from '@mui/material';
-import hexToRGBA from '../../../../utils/hexToRGBA';
+import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import ConditionalLink from '../../../core/ConditionalLink';
 import Card from '../../../core/Card';
 import Tag from '../../../core/Tag';

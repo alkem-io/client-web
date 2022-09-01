@@ -2,10 +2,10 @@ import React, { FC, useCallback } from 'react';
 import { Nvp, Opportunity, VisualUriFragment } from '../../../../../models/graphql-schema';
 import { useTranslation } from 'react-i18next';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
-import { buildOpportunityUrl } from '../../../../../utils/urlBuilders';
+import { buildOpportunityUrl } from '../../../../../common/utils/urlBuilders';
 import getActivityCount from '../../../../../domain/activity/utils/getActivityCount';
 import { useUserContext } from '../../../../../hooks';
-import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../../../common/utils/visuals.utils';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 export interface OpportunityCardProps {

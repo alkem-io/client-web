@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { Aspect, VisualUriFragment } from '../../../../../models/graphql-schema';
 import EntityContributionCard from '../ContributionCard/EntityContributionCard';
 import { styled } from '@mui/material';
-import { buildAspectUrl } from '../../../../../utils/urlBuilders';
+import { buildAspectUrl } from '../../../../../common/utils/urlBuilders';
 import Markdown from '../../../../core/Markdown';
 
 const DEFAULT_LINE_HEIGHT = 1.5;

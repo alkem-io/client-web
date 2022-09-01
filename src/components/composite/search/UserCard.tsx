@@ -1,7 +1,7 @@
 import React, { FC, memo, useMemo, useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import { User } from '../../../models/graphql-schema';
-import hexToRGBA from '../../../utils/hexToRGBA';
+import hexToRGBA from '../../../common/utils/hexToRGBA';
 import Avatar from '../../core/Avatar';
 import Card from '../../core/Card';
 import { Loading } from '../../core';

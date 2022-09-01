@@ -1,6 +1,6 @@
 import React from 'react';
 import Tag from './Tag';
-import { render, screen } from '../../utils/test/test-utils';
+import { render, screen } from '../../common/utils/test/test-utils';
 
 describe('Tag component', () => {
   test('check Tag with message', async () => {

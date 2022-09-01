@@ -6,7 +6,7 @@ import OpportunityPopUp from '../entities/Opportunity/OpportunityPopUp';
 import { useHubNameQuery } from '../../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
 import EntitySearchCardProps from './EntitySearchCardProps';
-import { getVisualBannerNarrow } from '../../../utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../common/utils/visuals.utils';
 
 const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResultFragment>> = ({
   terms,

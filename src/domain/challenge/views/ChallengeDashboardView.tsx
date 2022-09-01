@@ -18,7 +18,7 @@ import {
 } from '../../../containers/challenge/ChallengePageContainer';
 import { useConfig } from '../../../hooks';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../models/constants';
-import { buildChallengeUrl, buildCanvasUrl } from '../../../utils/urlBuilders';
+import { buildChallengeUrl, buildCanvasUrl } from '../../../common/utils/urlBuilders';
 import CanvasesDashboardPreview from '../../canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../community/EntityDashboardContributorsSection/Types';

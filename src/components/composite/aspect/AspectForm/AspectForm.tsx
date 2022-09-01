@@ -6,7 +6,7 @@ import { Grid } from '@mui/material';
 import FormikInputField from '../../forms/FormikInputField';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../Admin/Common/TagsetSegment';
 import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
-import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
+import FormikEffectFactory from '../../../../common/utils/formik/formik-effect/FormikEffect';
 import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';
 import { Aspect, Tagset } from '../../../../models/graphql-schema';
 import ReferenceSegment, { referenceSegmentSchema } from '../../../Admin/Common/ReferenceSegment';
@@ -15,7 +15,7 @@ import { Reference } from '../../../../models/Profile';
 import MarkdownInput from '../../../Admin/Common/MarkdownInput';
 import FormRow from '../../../../domain/shared/layout/FormLayout';
 import AspectTypeFormField from '../../../../domain/aspect/AspectTypeFormField';
-import { displayNameValidator } from '../../../../utils/validator';
+import { displayNameValidator } from '../../../../common/utils/validator';
 import { LONG_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 
 type FormValueType = {

@@ -5,7 +5,7 @@ import { useUserCardsContainerQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
 import { ContainerChildProps } from '../../models/container';
 import { User } from '../../models/graphql-schema';
-import { buildUserProfileUrl } from '../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../common/utils/urlBuilders';
 
 interface UserCardsContainerEntities {
   users: UserCardProps[];

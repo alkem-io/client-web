@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { RouterLink } from '../../../core/RouterLink';
 import InputIcon from '@mui/icons-material/Input';
-import { buildLoginUrl } from '../../../../utils/urlBuilders';
+import { buildLoginUrl } from '../../../../common/utils/urlBuilders';
 
 interface SignInIconProps {
   className: string;

@@ -2,8 +2,7 @@ import { StyledEngineProvider } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import AlkemioApolloProvider from './context/ApolloProvider';
-import { ConfigProvider } from './context/ConfigProvider';
+import AlkemioApolloProvider from './core/apollo/context/ApolloProvider';
 import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { NavigationProvider } from './context/NavigationProvider';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
@@ -16,6 +15,7 @@ import ScrollToTop from './routing/ScrollToTop';
 import { CookiesProvider } from 'react-cookie';
 import { publicGraphQLEndpoint, privateGraphQLEndpoint } from './common/constants/endpoints';
 import { AuthenticationProvider } from './core/auth/authentication/context/AuthenticationProvider';
+import { ConfigProvider } from './config/context/ConfigProvider';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {

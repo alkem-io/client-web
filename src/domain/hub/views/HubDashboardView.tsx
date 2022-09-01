@@ -19,7 +19,7 @@ import {
   AssociatedOrganizationDetailsFragment,
   Reference,
 } from '../../../models/graphql-schema';
-import { buildHubUrl, buildCanvasUrl } from '../../../utils/urlBuilders';
+import { buildHubUrl, buildCanvasUrl } from '../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC, forwardRef } from 'react';
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
-import hexToRGBA from '../../utils/hexToRGBA';
+import hexToRGBA from '../../common/utils/hexToRGBA';
 import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({

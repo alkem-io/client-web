@@ -6,7 +6,7 @@ import ChallengePopUp from '../entities/Challenge/ChallengePopUp';
 import getActivityCount from '../../../domain/activity/utils/getActivityCount';
 import { ActivityItem } from '../common/ActivityPanel/Activities';
 import EntitySearchCardProps from './EntitySearchCardProps';
-import { getVisualBannerNarrow } from '../../../utils/visuals.utils';
+import { getVisualBannerNarrow } from '../../../common/utils/visuals.utils';
 
 const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFragment>> = ({
   terms,

@@ -8,7 +8,7 @@ import DiscussionOverview from '../../components/composite/entities/Communicatio
 import ConditionalLink from '../../components/core/ConditionalLink';
 import { RouterLink } from '../../components/core/RouterLink';
 import { Discussion } from '../../models/discussion/discussion';
-import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../utils/urlBuilders';
+import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../common/utils/urlBuilders';
 
 const DISCUSSIONS_NUMBER_IN_WINDOW = 3;
 

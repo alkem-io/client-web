@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { forwardRef, ReactNode, useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
-import { agnosticFunctor } from '../../utils/functor';
+import { agnosticFunctor } from '../../common/utils/functor';
 import UserPopUp from '../composite/dialogs/UserPopUp';
 import Image from '../../domain/shared/components/Image';
 import Typography from './Typography';

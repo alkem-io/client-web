@@ -7,8 +7,8 @@ import {
   useDeleteUserApplicationMutation,
   useUserProfileApplicationsQuery,
 } from '../../hooks/generated/graphql';
-import getApplicationWithType, { ApplicationWithType } from '../../utils/application/getApplicationWithType';
-import sortApplications from '../../utils/application/sortApplications';
+import getApplicationWithType, { ApplicationWithType } from '../../common/utils/application/getApplicationWithType';
+import sortApplications from '../../common/utils/application/sortApplications';
 
 export interface PendingApplicationsProps {
   entities: {

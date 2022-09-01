@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
-import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
+import { ApplicationWithType } from '../../common/utils/application/getApplicationWithType';
 import { ApplicationDialog, ApplicationDialogDataType } from '../../components/composite';
 import Tag from '../../components/core/Tag';
 import { APPLICATION_STATE_NEW } from '../../models/constants';

@@ -6,7 +6,7 @@ import {
   OrganizationContainerState,
 } from '../../../containers/organization/OrganizationPageContainer';
 import { OrganizationVerificationEnum } from '../../../models/graphql-schema';
-import { buildAdminOrganizationUrl } from '../../../utils/urlBuilders';
+import { buildAdminOrganizationUrl } from '../../../common/utils/urlBuilders';
 import {
   OrganizationProfileViewEntity,
   OrganizationProfileView,

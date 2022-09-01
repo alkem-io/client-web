@@ -1,6 +1,6 @@
 import { Box, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
-import hexToRGBA from '../../../../utils/hexToRGBA';
+import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
 

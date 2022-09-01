@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import App from '../components/composite/layout/App/App';
 import { CommunityContextProvider } from '../domain/community/CommunityContext';
 import { HubContextProvider } from '../domain/hub/HubContext/HubContext';
-import { OrganizationProvider } from '../context/OrganizationProvider';
+import { OrganizationProvider } from '../domain/organization/context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
 import ContributorsPage from '../pages/Contributors/ContributorsPage';
 import { AdminRoute } from './admin/AdminRoute';

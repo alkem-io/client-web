@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
-import { buildUserProfileUrl } from '../../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import { Loading } from '../../core';
 import Avatar from '../../core/Avatar';
 import Button from '../../core/Button';

@@ -4,7 +4,7 @@ import React, { FC, useCallback } from 'react';
 import * as yup from 'yup';
 import { TagsetTemplate } from '../../../models/graphql-schema';
 import { Tagset } from '../../../models/Profile';
-import { toTagsetTitle } from '../../../utils/toTagsetTitle';
+import { toTagsetTitle } from '../../../common/utils/toTagsetTitle';
 import { TagsInput } from '../../core';
 
 interface TagsSegmentProps {

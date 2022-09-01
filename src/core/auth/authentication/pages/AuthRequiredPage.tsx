@@ -8,7 +8,7 @@ import { useQueryParams } from '../../../../hooks';
 import AuthenticationLayout from '../../../../components/composite/layout/AuthenticationLayout';
 import { AUTH_REGISTER_PATH } from '../../../../models/constants';
 import { Box } from '@mui/material';
-import { buildLoginUrl } from '../../../../utils/urlBuilders';
+import { buildLoginUrl } from '../../../../common/utils/urlBuilders';
 
 interface AuthRequiredPageProps {}
 

@@ -1,7 +1,12 @@
 import React, { FC } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Skeleton, Typography, Link } from '@mui/material';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl, buildOrganizationUrl } from '../../utils/urlBuilders';
+import {
+  buildChallengeUrl,
+  buildHubUrl,
+  buildOpportunityUrl,
+  buildOrganizationUrl,
+} from '../../common/utils/urlBuilders';
 import { EntityNameIds } from '../../types/EntityNameIds';
 
 interface VisualProps {

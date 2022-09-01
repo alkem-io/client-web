@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
-import { fireEvent, render, screen } from '../../../../utils/test/test-utils';
+import { fireEvent, render, screen } from '../../../../common/utils/test/test-utils';
 import { ApplicationButton } from './ApplicationButton';
 import { APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED, AUTH_LOGIN_PATH } from '../../../../models/constants';
 

@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { Discussion } from '../../../../models/discussion/discussion';
 import DiscussionIcon from './DiscussionIcon';
-import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
+import { buildDiscussionUrl } from '../../../../common/utils/urlBuilders';
 
 export interface DiscussionOverviewProps {
   discussion: Discussion;

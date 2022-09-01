@@ -7,17 +7,17 @@ import { ApplicationTypeEnum } from '../../../models/enums/application-type';
 import { Error404, PageProps } from '../../../pages';
 import ApplyRoute from '../../application/routing/apply.route';
 import { nameOfUrl } from '../../../routing/url-params';
-import { OpportunityProvider } from '../../../context/OpportunityProvider/OpportunityProvider';
+import { OpportunityProvider } from '../../opportunity/context/OpportunityProvider';
 import { CommunityContextProvider } from '../../community/CommunityContext';
 import OpportunityRoute from '../../opportunity/routes/OpportunityRoute';
 import ChallengeDashboardPage from '../pages/ChallengeDashboardPage';
-import ChallengeContextPage from '../../../pages/Admin/Challenge/ChallengeContextPage';
-import ChallengeOpportunityPage from '../../../pages/Admin/Challenge/ChallengeOpportunityPage';
 import CommunityFeedbackRoute from './CommunityContextFeedback';
 import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutsPage from '../../callout/CalloutsPage';
 import CalloutRoute from '../../callout/routing/CalloutRoute';
+import ChallengeContextPage from '../pages/ChallengeContextPage';
+import ChallengeOpportunityPage from '../pages/ChallengeOpportunityPage';
 
 interface ChallengeRootProps extends PageProps {}
 

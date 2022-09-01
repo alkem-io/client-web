@@ -5,12 +5,12 @@ import { Error404, PageProps } from '../../../pages';
 import { ChallengesRoute } from '../challenge/ChallengesRoute';
 import CommunityGroupsRoute from '../../../domain/admin/community/routes/CommunityGroupsAdminRoutes';
 import HubAuthorizationRoute from './HubAuthorizationRoute';
-import HubProfilePage from '../../../pages/Admin/Hub/HubProfile/HubProfilePage';
-import HubContextPage from '../../../pages/Admin/Hub/HubContext/HubContextPage';
-import HubCommunicationsPage from '../../../pages/Admin/Hub/HubCommunication/HubCommunicationsPage';
 import HubCommunityAdminPage from '../../../domain/admin/hub/HubCommunityAdminPage';
 import { ApplicationsAdminRoutes } from '../../../domain/admin/community/routes/ApplicationsAdminRoutes';
 import HubTemplatesAdminRoutes from '../../../domain/admin/hub/HubTemplatesAdminRoutes';
+import HubCommunicationsPage from '../../../domain/hub/pages/HubCommunication/HubCommunicationsPage';
+import HubContextPage from '../../../domain/hub/pages/HubContextPage';
+import HubProfilePage from '../../../domain/hub/pages/HubProfile/HubProfilePage';
 
 interface HubAdminRouteProps extends PageProps {}
 

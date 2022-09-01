@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
-import { OrganizationProvider } from '../../../context/OrganizationProvider';
+import { OrganizationProvider } from '../../organization/context/OrganizationProvider';
 import { EditMode } from '../../../models/editMode';
 import { Error404, PageProps } from '../../../pages';
 import { nameOfUrl } from '../../../routing/url-params';

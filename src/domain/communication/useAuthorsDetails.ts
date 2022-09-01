@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { Author } from '../../models/discussion/author';
-import { buildUserProfileUrl } from '../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../common/utils/urlBuilders';
 import { useAuthorDetailsQuery } from '../../hooks/generated/graphql';
 import { uniq } from 'lodash';
 

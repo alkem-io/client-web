@@ -9,8 +9,8 @@ import ContributorsSearchContainer from '../../containers/ContributorsSearch/Con
 import { useUpdateNavigation, useUserContext } from '../../hooks';
 import { OrganizationVerificationEnum, UserContributorFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../utils/urlBuilders';
-import getUserRoleTranslationKey from '../../utils/user-role-name/get-user-role-translation-key';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../common/utils/urlBuilders';
+import getUserRoleTranslationKey from '../../common/utils/user-role-name/get-user-role-translation-key';
 import ContributorsView from '../../views/Contributors/ContributorsView';
 
 export interface ContributorsPageProps {}

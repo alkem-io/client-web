@@ -1,4 +1,4 @@
-import { cleanup, render } from '../../utils/test/test-utils';
+import { cleanup, render } from '../../common/utils/test/test-utils';
 import Toolbar from './Toolbar';
 
 afterEach(cleanup);

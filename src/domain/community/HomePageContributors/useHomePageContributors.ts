@@ -5,8 +5,8 @@ import { useContributingUsersQuery, useOrganizationsListQuery } from '../../../h
 import useServerMetadata from '../../../hooks/useServerMetadata';
 import { COUNTRIES_BY_CODE } from '../../../models/constants';
 import getActivityCount from '../../activity/utils/getActivityCount';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../../utils/urlBuilders';
-import { getVisualAvatar } from '../../../utils/visuals.utils';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../../common/utils/urlBuilders';
+import { getVisualAvatar } from '../../../common/utils/visuals.utils';
 import { ContributorCardProps } from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
 import { WithId } from '../../../types/WithId';
 

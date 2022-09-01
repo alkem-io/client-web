@@ -10,7 +10,7 @@ import {
   useUpdateOpportunityMutation,
 } from '../../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
-import { createContextInput, updateContextInput } from '../../../../utils/buildContext';
+import { createContextInput, updateContextInput } from '../../../../common/utils/buildContext';
 import Button from '../../../../components/core/Button';
 import Typography from '../../../../components/core/Typography';
 import FormMode from '../../../../components/Admin/FormMode';

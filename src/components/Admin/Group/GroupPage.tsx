@@ -11,7 +11,7 @@ import { AuthorizationCredential, User, UserGroup } from '../../../models/graphq
 import { PageProps } from '../../../pages';
 import { logger } from '../../../services/logging/winston/logger';
 import GroupForm from './GroupForm';
-import { getUpdateProfileInput } from '../../../utils/getUpdateUserInput';
+import { getUpdateProfileInput } from '../../../common/utils/getUpdateUserInput';
 import OrganizationAdminLayout from '../../../domain/admin/organization/OrganizationAdminLayout';
 import { SettingsSection } from '../../../domain/admin/layout/EntitySettings/constants';
 interface GroupPageProps extends PageProps {

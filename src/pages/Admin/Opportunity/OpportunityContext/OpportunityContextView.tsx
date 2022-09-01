@@ -7,7 +7,7 @@ import {
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityMutation,
 } from '../../../../hooks/generated/graphql';
-import { updateContextInput } from '../../../../utils/buildContext';
+import { updateContextInput } from '../../../../common/utils/buildContext';
 import Button from '../../../../components/core/Button';
 import { Context } from '../../../../models/graphql-schema';
 import ContextForm, { ContextFormValues } from '../../../../components/composite/forms/ContextForm';

@@ -2,9 +2,9 @@ import { WithId } from '../../../types/WithId';
 import { ContributorCardProps } from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
 import { UserCardProps } from '../../../components/composite/common/cards';
 import { useMemo } from 'react';
-import { buildOrganizationUrl, buildUserProfileUrl } from '../../../utils/urlBuilders';
+import { buildOrganizationUrl, buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import { COUNTRIES_BY_CODE } from '../../../models/constants';
-import { getVisualAvatar } from '../../../utils/visuals.utils';
+import { getVisualAvatar } from '../../../common/utils/visuals.utils';
 import {
   DashboardContributingOrganizationFragment,
   DashboardContributingUserFragment,
