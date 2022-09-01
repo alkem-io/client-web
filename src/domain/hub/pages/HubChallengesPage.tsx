@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
-import { useHub, useUpdateNavigation } from '../../hooks';
-import { PageProps } from '../common';
-import HubChallengesView from '../../views/Hub/HubChallengesView';
-import ChallengesCardContainer from '../../containers/hub/ChallengesCardContainer';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
+import { useHub, useUpdateNavigation } from '../../../hooks';
+import { PageProps } from '../../../pages/common';
+import HubChallengesView from '../views/HubChallengesView';
+import ChallengesCardContainer from '../../../containers/hub/ChallengesCardContainer';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import HubPageLayout from '../layout/HubPageLayout';
 
 export interface HubChallengesPageProps extends PageProps {}
 

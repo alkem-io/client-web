@@ -17,7 +17,7 @@ import CommunityFeedbackRoute from './CommunityContextFeedback';
 import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
 import { routes } from '../routes/challengeRoutes';
 import CalloutsPage from '../../callout/CalloutsPage';
-import CalloutRoute from '../../../routing/callout/CalloutRoute';
+import CalloutRoute from '../../callout/routing/CalloutRoute';
 
 interface ChallengeRootProps extends PageProps {}
 

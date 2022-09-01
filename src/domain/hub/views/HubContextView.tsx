@@ -1,17 +1,17 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import ContextSection from '../../components/composite/sections/ContextSection';
-import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { ActivityItemFragment, Context, ContextTabFragment, Tagset } from '../../models/graphql-schema';
-import { ViewProps } from '../../models/view';
-import { ActivityItem } from '../../components/composite/common/ActivityPanel/Activities';
-import { ActivityType } from '../../domain/activity/ActivityType';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useTranslation } from 'react-i18next';
-import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import ActivityView from '../Activity/ActivityView';
-import HubCommunityView from '../../domain/community/entities/HubCommunityView';
+import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
+import ApplicationButton from '../../../components/composite/common/ApplicationButton/ApplicationButton';
+import ContextSection from '../../../components/composite/sections/ContextSection';
+import ApplicationButtonContainer from '../../../containers/application/ApplicationButtonContainer';
+import { ContextTabFragment, Tagset, ActivityItemFragment, Context } from '../../../models/graphql-schema';
+import { ViewProps } from '../../../models/view';
+import { ActivityType } from '../../activity/ActivityType';
+import getActivityCount from '../../activity/utils/getActivityCount';
+import ActivityView from '../../activity/views/ActivityView';
+import HubCommunityView from '../../community/entities/HubCommunityView';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 
 interface HubContextEntities {
   context?: ContextTabFragment;

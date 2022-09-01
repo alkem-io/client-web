@@ -9,7 +9,7 @@ import { nameOfUrl } from '../../../routing/url-params';
 import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
 import { routes } from './opportunityRoutes';
 import CalloutsPage from '../../callout/CalloutsPage';
-import CalloutRoute from '../../../routing/callout/CalloutRoute';
+import CalloutRoute from '../../callout/routing/CalloutRoute';
 import OpportunityContextPage from '../pages/OpportunityContextPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 

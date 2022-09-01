@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import OrganizationPageContainer from '../../containers/organization/OrganizationPageContainer';
 import OrganizationPageLayout from '../../domain/organization/layout/OrganizationPageLayout';
+import OrganizationPageView from '../../domain/organization/views/OrganizationPageView';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import { useUpdateNavigation } from '../../hooks';
-import OrganizationPageView from '../../views/Organization/OrganizationPageView';
 import { PageProps } from '../common';
 
 interface OrganizationPageProps extends PageProps {}

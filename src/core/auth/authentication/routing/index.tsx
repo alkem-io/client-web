@@ -1,10 +1,10 @@
 import React, { FC, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { useGlobalState } from '../../hooks';
-import { Error404 } from '../../pages';
-import AuthRequiredPage from '../../core/auth/authentication/pages/AuthRequiredPage';
-import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../state/global/ui/loginNavigationMachine';
-import RestrictedRoute from '../RestrictedRoute';
+import { useGlobalState } from '../../../../hooks';
+import { Error404 } from '../../../../pages';
+import RestrictedRoute from '../../../../routing/RestrictedRoute';
+import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../../../state/global/ui/loginNavigationMachine';
+import AuthRequiredPage from '../pages/AuthRequiredPage';
 import ErrorRoute from './ErrorRoute';
 import LoginRoute from './LoginRoute';
 import LogoutRoute from './LogoutRoute';

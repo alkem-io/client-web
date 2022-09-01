@@ -4,12 +4,15 @@ import { useTranslation } from 'react-i18next';
 import {
   OrganizationContainerEntities,
   OrganizationContainerState,
-} from '../../containers/organization/OrganizationPageContainer';
-import { OrganizationVerificationEnum } from '../../models/graphql-schema';
-import { buildAdminOrganizationUrl } from '../../utils/urlBuilders';
-import AssociatesView from '../ProfileView/AssociatesView';
-import ContributionsView from '../ProfileView/ContributionsView';
-import OrganizationProfileView, { OrganizationProfileViewEntity } from '../ProfileView/OrganizationProfileView';
+} from '../../../containers/organization/OrganizationPageContainer';
+import { OrganizationVerificationEnum } from '../../../models/graphql-schema';
+import { buildAdminOrganizationUrl } from '../../../utils/urlBuilders';
+import {
+  OrganizationProfileViewEntity,
+  OrganizationProfileView,
+  AssociatesView,
+  ContributionsView,
+} from '../../../views/ProfileView';
 
 interface OrganizationPageViewProps {
   entities: OrganizationContainerEntities;

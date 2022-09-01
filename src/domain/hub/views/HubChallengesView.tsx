@@ -4,17 +4,17 @@ import { ApolloError } from '@apollo/client';
 import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import MembershipBackdrop from '../../components/composite/common/Backdrops/MembershipBackdrop';
-import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import CardFilter from '../../components/core/card-filter/CardFilter';
+import MembershipBackdrop from '../../../components/composite/common/Backdrops/MembershipBackdrop';
+import ChallengeCard from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import CardFilter from '../../../components/core/card-filter/CardFilter';
 import {
   entityTagsValueGetter,
   entityValueGetter,
-} from '../../components/core/card-filter/value-getters/entity-value-getter';
-import ErrorBlock from '../../components/core/ErrorBlock';
-import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
-import { ViewProps } from '../../models/view';
-import { Challenge, ChallengeCardFragment } from '../../models/graphql-schema';
+} from '../../../components/core/card-filter/value-getters/entity-value-getter';
+import ErrorBlock from '../../../components/core/ErrorBlock';
+import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
+import { ViewProps } from '../../../models/view';
+import { Challenge, ChallengeCardFragment } from '../../../models/graphql-schema';
 
 interface Permissions {
   canReadChallenges: boolean;

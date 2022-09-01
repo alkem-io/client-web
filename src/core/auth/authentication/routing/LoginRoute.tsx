@@ -1,10 +1,10 @@
 import React, { FC, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import LoginPage from '../../core/auth/authentication/pages/LoginPage';
-import LoginSuccessPage from '../../core/auth/authentication/pages/LoginSuccessPage';
-import { useQueryParams } from '../../hooks';
-import { STORAGE_KEY_RETURN_URL, RETURN_URL } from '../../models/constants';
-import { NotAuthenticatedRoute } from '../NotAuthenticatedRoute';
+import { useQueryParams } from '../../../../hooks';
+import { RETURN_URL, STORAGE_KEY_RETURN_URL } from '../../../../models/constants';
+import { NotAuthenticatedRoute } from '../../../../routing/NotAuthenticatedRoute';
+import LoginPage from '../pages/LoginPage';
+import LoginSuccessPage from '../pages/LoginSuccessPage';
 
 export const LoginRoute: FC = () => {
   const params = useQueryParams();

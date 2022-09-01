@@ -8,13 +8,13 @@ import ApplyRoute from '../../application/routing/apply.route';
 import { nameOfUrl } from '../../../routing/url-params';
 import ChallengeRoute from '../../challenge/routing/ChallengeRoute';
 import { Error404, PageProps } from '../../../pages';
-import HubDashboardPage from '../../../pages/Hub/HubDashboardPage';
-import HubContextPage from '../../../pages/Hub/HubContextPage';
-import HubChallengesPage from '../../../pages/Hub/HubChallengesPage';
+import HubChallengesPage from '../pages/HubChallengesPage';
 import { routes } from '../routes/hubRoutes';
 import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
 import CalloutsPage from '../../callout/CalloutsPage';
-import CalloutRoute from '../../../routing/callout/CalloutRoute';
+import CalloutRoute from '../../callout/routing/CalloutRoute';
+import HubContextPage from '../pages/HubContextPage';
+import HubDashboardPage from '../pages/HubDashboardPage';
 
 export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
   const { displayName } = useHub();

@@ -8,7 +8,6 @@ import { OrganizationProvider } from '../context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
 import ContributorsPage from '../pages/Contributors/ContributorsPage';
 import { AdminRoute } from './admin/AdminRoute';
-import { IdentityRoute } from './identity';
 import { MessagesRoute } from './messages/MessagesRoute';
 import OrganizationRoute from '../domain/organization/routing/OrganizationRoute';
 import ProfileRoute from './profile/ProfileRoute';
@@ -20,6 +19,7 @@ import UserRoute from '../domain/user/routing/UserRoute';
 import { HubRoute } from '../domain/hub/routing/HubRoute';
 import HelpPage from '../pages/Help/HelpPage';
 import { ChallengeExplorerPage } from '../domain/challenge/pages/ChallengeExplorerPage';
+import { IdentityRoute } from '../core/auth/authentication/routing';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();

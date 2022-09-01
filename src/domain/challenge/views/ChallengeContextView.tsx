@@ -17,7 +17,7 @@ import {
   Context,
 } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
-import ActivityView from '../../../views/Activity/ActivityView';
+import ActivityView from '../../activity/views/ActivityView';
 import { ActivityType } from '../../activity/ActivityType';
 import getActivityCount from '../../activity/utils/getActivityCount';
 import ChallengeCommunityView from '../../community/entities/ChallengeCommunityView';

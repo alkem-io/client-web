@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import RegistrationPage from '../../core/auth/authentication/pages/RegistrationPage';
-import RegistrationSuccessPage from '../../core/auth/authentication/pages/RegistrationSuccessPage';
-import { useQueryParams } from '../../hooks';
-import { NotAuthenticatedRoute } from '../NotAuthenticatedRoute';
+import { useQueryParams } from '../../../../hooks';
+import { NotAuthenticatedRoute } from '../../../../routing/NotAuthenticatedRoute';
+import RegistrationPage from '../pages/RegistrationPage';
+import RegistrationSuccessPage from '../pages/RegistrationSuccessPage';
 
 export const RegistrationRoute: FC = () => {
   const params = useQueryParams();

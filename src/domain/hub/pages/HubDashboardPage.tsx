@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
-import HubPageContainer from '../../containers/hub/HubPageContainer';
-import HubDashboardView from '../../views/Hub/HubDashboardView';
-import { DiscussionsProvider } from '../../context/Discussions/DiscussionsProvider';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
-import CommunityUpdatesDialog from '../../domain/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
 import { useResolvedPath } from 'react-router-dom';
-import ContributorsDialog from '../../domain/community/ContributorsDialog/ContributorsDialog';
-import HubContributorsDialogContent from '../../domain/community/entities/HubContributorsDialogContent';
+import HubPageContainer from '../../../containers/hub/HubPageContainer';
+import { DiscussionsProvider } from '../../../context/Discussions/DiscussionsProvider';
+import CommunityUpdatesDialog from '../../community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import ContributorsDialog from '../../community/ContributorsDialog/ContributorsDialog';
+import HubContributorsDialogContent from '../../community/entities/HubContributorsDialogContent';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import useBackToParentPage from '../../shared/utils/useBackToParentPage';
+import HubPageLayout from '../layout/HubPageLayout';
+import HubDashboardView from '../views/HubDashboardView';
 
 export interface HubDashboardPageProps {
   dialog?: 'updates' | 'contributors';

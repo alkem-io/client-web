@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import AspectProvider from '../../domain/aspect/context/AspectProvider';
-import AspectRoute from '../../domain/aspect/views/AspectRoute';
-import CanvasRoute from '../../domain/canvas/views/CanvasRoute';
-import { EntityTypeName } from '../../domain/shared/layout/PageLayout/SimplePageLayout';
-import { nameOfUrl } from '../url-params';
+import AspectProvider from '../../aspect/context/AspectProvider';
+import AspectRoute from '../../aspect/views/AspectRoute';
+import CanvasRoute from '../../canvas/views/CanvasRoute';
+import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout';
+import { nameOfUrl } from '../../../routing/url-params';
 
 export interface CalloutRouteProps {
   parentPagePath: string;

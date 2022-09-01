@@ -1,11 +1,11 @@
 import { SelfServiceError } from '@ory/kratos-client';
 import React, { FC, useEffect, useState } from 'react';
 import { Container } from '@mui/material';
-import { Loading } from '../../components/core/Loading/Loading';
-import { useQueryParams } from '../../hooks';
-import { logger } from '../../services/logging/winston/logger';
 import { useTranslation } from 'react-i18next';
-import { useKratosClient } from '../../core/auth/authentication/hooks/useKratosClient';
+import { Loading } from '../../../../components/core';
+import { useQueryParams } from '../../../../hooks';
+import { logger } from '../../../../services/logging/winston/logger';
+import { useKratosClient } from '../hooks/useKratosClient';
 
 export const ErrorRoute: FC = () => {
   const { t } = useTranslation();

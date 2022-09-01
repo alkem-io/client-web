@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ViewProps } from '../../models/view';
-import { OrganizationPreferenceType, Preference } from '../../models/graphql-schema';
-import PreferenceSection from '../../components/composite/common/PreferenceSection/PreferenceSection';
+import { ViewProps } from '../../../models/view';
+import { OrganizationPreferenceType, Preference } from '../../../models/graphql-schema';
+import PreferenceSection from '../../../components/composite/common/PreferenceSection/PreferenceSection';
 import { useTranslation } from 'react-i18next';
 
 export interface OrganizationAuthorizationPreferencesViewEntities {

@@ -2,38 +2,41 @@ import { Grid } from '@mui/material';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
-import ApplicationButton from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import DashboardDiscussionsSection from '../../domain/shared/components/DashboardSections/DashboardDiscussionsSection';
-import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import DashboardUpdatesSection from '../../domain/shared/components/DashboardSections/DashboardUpdatesSection';
-import Markdown from '../../components/core/Markdown';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
-import ApplicationButtonContainer from '../../containers/application/ApplicationButtonContainer';
-import { Discussion } from '../../models/discussion/discussion';
-import { AssociatedOrganizationDetailsFragment, ChallengeCardFragment } from '../../models/graphql-schema';
-import ChallengeCard from '../../components/composite/common/cards/ChallengeCard/ChallengeCard';
-import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
-import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../models/constants';
-import { useConfig } from '../../hooks';
-import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
-import DashboardSectionAspects from '../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
-import { AspectCardAspect } from '../../components/composite/common/cards/AspectCard/AspectCard';
-import EntityDashboardContributorsSection from '../../domain/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import DashboardSectionAspects from '../../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
+import ApplicationButton from '../../../components/composite/common/ApplicationButton/ApplicationButton';
+import { AspectCardAspect } from '../../../components/composite/common/cards/AspectCard/AspectCard';
+import ChallengeCard from '../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import References from '../../../components/composite/common/References/References';
+import ContextSectionIcon from '../../../components/composite/sections/ContextSectionIcon';
+import DashboardColumn from '../../../components/composite/sections/DashboardSection/DashboardColumn';
+import DashboardSection from '../../../components/composite/sections/DashboardSection/DashboardSection';
+import Markdown from '../../../components/core/Markdown';
+import ApplicationButtonContainer from '../../../containers/application/ApplicationButtonContainer';
+import { useConfig } from '../../../hooks';
+import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../models/constants';
+import {
+  ChallengeCardFragment,
+  AssociatedOrganizationDetailsFragment,
+  Reference,
+} from '../../../models/graphql-schema';
+import { buildHubUrl, buildCanvasUrl } from '../../../utils/urlBuilders';
+import { CanvasCard } from '../../callout/canvas/CanvasCallout';
+import CanvasesDashboardPreview from '../../canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
+import EntityDashboardContributorsSection from '../../community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
   EntityDashboardContributors,
   EntityDashboardLeads,
-} from '../../domain/community/EntityDashboardContributorsSection/Types';
-import EntityDashboardLeadsSection from '../../domain/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import CanvasesDashboardPreview from '../../domain/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
-import { buildCanvasUrl, buildHubUrl } from '../../utils/urlBuilders';
-import useBackToParentPage from '../../domain/shared/utils/useBackToParentPage';
-import withOptionalCount from '../../domain/shared/utils/withOptionalCount';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import ContextSectionIcon from '../../components/composite/sections/ContextSectionIcon';
-import References from '../../components/composite/common/References/References';
-import DashboardSection from '../../components/composite/sections/DashboardSection/DashboardSection';
-import { Reference } from '../../models/Profile';
-import { CanvasCard } from '../../domain/callout/canvas/CanvasCallout';
+} from '../../community/EntityDashboardContributorsSection/Types';
+import DashboardDiscussionsSection from '../../shared/components/DashboardSections/DashboardDiscussionsSection';
+import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
+import DashboardUpdatesSection from '../../shared/components/DashboardSections/DashboardUpdatesSection';
+import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import useBackToParentPage from '../../shared/utils/useBackToParentPage';
+import withOptionalCount from '../../shared/utils/withOptionalCount';
+import EntityDashboardLeadsSection from '../../community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import { Discussion } from '../../../models/discussion/discussion';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;

@@ -1,4 +1,4 @@
-import { ApolloError, Reference } from '@apollo/client';
+import { ApolloError } from '@apollo/client';
 import { Button, Grid } from '@mui/material';
 import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
 import React, { FC, useCallback } from 'react';
@@ -12,14 +12,15 @@ import DashboardColumn from '../../../components/composite/sections/DashboardSec
 import DashboardSection from '../../../components/composite/sections/DashboardSection/DashboardSection';
 import Markdown from '../../../components/core/Markdown';
 import { useHub, useChallenge } from '../../../hooks';
-import { OpportunityPageFragment, Discussion, OpportunityPageRelationsFragment } from '../../../models/graphql-schema';
+import { Discussion } from '../../../models/discussion/discussion';
+import { OpportunityPageFragment, OpportunityPageRelationsFragment, Reference } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 import { buildOpportunityUrl, buildCanvasUrl } from '../../../utils/urlBuilders';
 import { CanvasCard } from '../../callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../community/EntityDashboardContributorsSection/Types';
-import EntityDashboardLeadsSection from '../../community/EntityDashboardLeadsSection/DashboardLeadUsers';
+import EntityDashboardLeadsSection from '../../community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import DashboardUpdatesSection from '../../shared/components/DashboardSections/DashboardUpdatesSection';
 import useBackToParentPage from '../../shared/utils/useBackToParentPage';

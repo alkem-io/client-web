@@ -1,10 +1,11 @@
 import React, { FC, useMemo } from 'react';
-import { PageProps } from '../common';
-import { useHub, useUpdateNavigation } from '../../hooks';
-import HubContextView from '../../views/Hub/HubContextView';
-import ContextTabContainer from '../../containers/context/ContextTabContainer';
-import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
-import HubPageLayout from '../../domain/hub/layout/HubPageLayout';
+import ContextTabContainer from '../../../containers/context/ContextTabContainer';
+import { useUpdateNavigation } from '../../../hooks';
+import { PageProps } from '../../../pages';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
+import { useHub } from '../HubContext/useHub';
+import HubPageLayout from '../layout/HubPageLayout';
+import HubContextView from '../views/HubContextView';
 
 export interface HubContextPageProps extends PageProps {}
 

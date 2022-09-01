@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
-import React, { Context, FC, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
 import LifecycleState from '../../../components/composite/entities/Lifecycle/LifecycleState';
@@ -11,6 +11,7 @@ import {
   LifecycleContextTabFragment,
   AspectCardFragment,
   ActivityItemFragment,
+  Context,
 } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 import getActivityCount from '../../activity/utils/getActivityCount';
