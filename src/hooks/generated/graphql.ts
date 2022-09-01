@@ -13984,51 +13984,6 @@ export type OpportunityAspectProviderQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectProviderQuery(variables: SchemaTypes.OpportunityAspectProviderQueryVariables) {
   return { query: OpportunityAspectProviderDocument, variables: variables };
 }
-export const RemoveCommentFromAspectDocument = gql`
-  mutation RemoveCommentFromAspect($messageData: CommentsRemoveMessageInput!) {
-    removeComment(messageData: $messageData)
-  }
-`;
-export type RemoveCommentFromAspectMutationFn = Apollo.MutationFunction<
-  SchemaTypes.RemoveCommentFromAspectMutation,
-  SchemaTypes.RemoveCommentFromAspectMutationVariables
->;
-
-/**
- * __useRemoveCommentFromAspectMutation__
- *
- * To run a mutation, you first call `useRemoveCommentFromAspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveCommentFromAspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeCommentFromAspectMutation, { data, loading, error }] = useRemoveCommentFromAspectMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function useRemoveCommentFromAspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.RemoveCommentFromAspectMutation,
-    SchemaTypes.RemoveCommentFromAspectMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.RemoveCommentFromAspectMutation,
-    SchemaTypes.RemoveCommentFromAspectMutationVariables
-  >(RemoveCommentFromAspectDocument, options);
-}
-export type RemoveCommentFromAspectMutationHookResult = ReturnType<typeof useRemoveCommentFromAspectMutation>;
-export type RemoveCommentFromAspectMutationResult = Apollo.MutationResult<SchemaTypes.RemoveCommentFromAspectMutation>;
-export type RemoveCommentFromAspectMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.RemoveCommentFromAspectMutation,
-  SchemaTypes.RemoveCommentFromAspectMutationVariables
->;
 export const ChallengeApplicationsDocument = gql`
   query challengeApplications($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -17991,6 +17946,51 @@ export type PostCommentMutationResult = Apollo.MutationResult<SchemaTypes.PostCo
 export type PostCommentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.PostCommentMutation,
   SchemaTypes.PostCommentMutationVariables
+>;
+export const RemoveCommentDocument = gql`
+  mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
+    removeComment(messageData: $messageData)
+  }
+`;
+export type RemoveCommentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveCommentMutation,
+  SchemaTypes.RemoveCommentMutationVariables
+>;
+
+/**
+ * __useRemoveCommentMutation__
+ *
+ * To run a mutation, you first call `useRemoveCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCommentMutation, { data, loading, error }] = useRemoveCommentMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useRemoveCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveCommentMutation,
+    SchemaTypes.RemoveCommentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RemoveCommentMutation, SchemaTypes.RemoveCommentMutationVariables>(
+    RemoveCommentDocument,
+    options
+  );
+}
+export type RemoveCommentMutationHookResult = ReturnType<typeof useRemoveCommentMutation>;
+export type RemoveCommentMutationResult = Apollo.MutationResult<SchemaTypes.RemoveCommentMutation>;
+export type RemoveCommentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveCommentMutation,
+  SchemaTypes.RemoveCommentMutationVariables
 >;
 export const UserListDocument = gql`
   query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {

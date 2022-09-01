@@ -2448,6 +2448,7 @@ export enum PreferenceType {
   NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
+  NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -3388,6 +3389,7 @@ export enum UserPreferenceType {
   NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
+  NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -11704,12 +11706,6 @@ export type CalloutAspectInfoFragment = {
     | undefined;
 };
 
-export type RemoveCommentFromAspectMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
-}>;
-
-export type RemoveCommentFromAspectMutation = { __typename?: 'Mutation'; removeComment: string };
-
 export type ChallengeApplicationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -14935,6 +14931,12 @@ export type PostCommentMutation = {
   __typename?: 'Mutation';
   sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
 };
+
+export type RemoveCommentMutationVariables = Exact<{
+  messageData: CommentsRemoveMessageInput;
+}>;
+
+export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
 
 export type PageInfoFragment = {
   __typename?: 'PageInfo';

@@ -1,0 +1,3 @@
+mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
+  removeComment(messageData: $messageData)
+}
