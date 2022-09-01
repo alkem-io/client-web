@@ -2,13 +2,13 @@ import { FC, useCallback, useMemo } from 'react';
 import { ApolloError } from '@apollo/client';
 import { AspectDashboardFragment, AuthorizationPrivilege, Scalars } from '../../../models/graphql-schema';
 import {
-  AspectMessageFragmentDoc,
+  MessageDetailsFragmentDoc,
   useAspectCreatorQuery,
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
-  usePostCommentInAspectMutation,
-  useRemoveCommentFromAspectMutation,
+  usePostCommentMutation,
+  useRemoveCommentMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Comment } from '../../../models/discussion/comment';
@@ -35,12 +35,12 @@ interface Provided {
   canDeleteComment: (messageId: string) => boolean;
   aspect?: AspectDashboardFragment;
   messages: Comment[];
-  commentId?: string;
+  commentsId?: string;
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
-  handlePostComment: (commentId: string, message: string) => void;
-  handleDeleteComment: (commentId: string, messageId: string) => void;
+  handlePostComment: (commentsId: string, message: string) => void;
+  handleDeleteComment: (commentsId: string, messageId: string) => void;
   loading: boolean;
   loadingCreator: boolean;
   error?: ApolloError;
@@ -151,7 +151,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const creatorName = creator?.displayName;
   const createdDate = aspect?.createdDate.toString();
 
-  const commentId = aspect?.comments?.id;
+  const commentsId = aspect?.comments?.id;
   const _messages = aspect?.comments?.messages ?? [];
   const senders = _messages.map(x => x.sender);
   const { getAuthor } = useAuthorsDetails(senders);
@@ -179,22 +179,22 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromAspectMutation({
+  const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
     onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
 
-  const handleDeleteComment = (commentId: string, messageId: string) =>
+  const handleDeleteComment = (commentsId: string, messageId: string) =>
     deleteComment({
       variables: {
         messageData: {
-          commentsID: commentId,
+          commentsID: commentsId,
           messageID: messageId,
         },
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
+  const [postComment, { loading: postingComment }] = usePostCommentMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (isSubscribedToComments) {
@@ -202,7 +202,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       }
 
       const cacheMessageId = cache.identify({
-        id: commentId,
+        id: commentsId,
         __typename: 'Comments',
       });
 
@@ -220,8 +220,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
 
             const newMessage = cache.writeFragment({
               data: data?.sendComment,
-              fragment: AspectMessageFragmentDoc,
-              fragmentName: 'AspectMessage',
+              fragment: MessageDetailsFragmentDoc,
+              fragmentName: 'MessageDetails',
             });
             return [...existingMessages, newMessage];
           },
@@ -230,11 +230,11 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     },
   });
 
-  const handlePostComment = async (commentId: string, message: string) =>
+  const handlePostComment = async (commentsId: string, message: string) =>
     postComment({
       variables: {
         messageData: {
-          commentsID: commentId,
+          commentsID: commentsId,
           message,
         },
       },
@@ -246,7 +246,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     canDeleteComment,
     aspect,
     messages,
-    commentId,
+    commentsId,
     creatorAvatar,
     creatorName,
     createdDate,
