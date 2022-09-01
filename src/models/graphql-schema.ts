@@ -352,10 +352,10 @@ export type Callout = {
   authorization?: Maybe<Authorization>;
   /** The Canvases associated with this Callout. */
   canvases?: Maybe<Array<Canvas>>;
+  /** The Comments object for this Callout. */
+  comments?: Maybe<Comments>;
   /** The description of this Callout */
   description: Scalars['Markdown'];
-  /** The Discussion object for this Callout. */
-  discussion?: Maybe<Discussion>;
   /** The display name. */
   displayName: Scalars['String'];
   /** The ID of the entity */
@@ -2448,7 +2448,6 @@ export enum PreferenceType {
   NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
-  NotificationCalloutCreated = 'NOTIFICATION_CALLOUT_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -3389,7 +3388,6 @@ export enum UserPreferenceType {
   NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
-  NotificationCalloutCreated = 'NOTIFICATION_CALLOUT_CREATED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -7736,8 +7734,8 @@ export type HubAspectQuery = {
                               | Array<{
                                   __typename?: 'Message';
                                   id: string;
-                                  message: string;
                                   sender: string;
+                                  message: string;
                                   timestamp: number;
                                 }>
                               | undefined;
@@ -7815,8 +7813,8 @@ export type ChallengeAspectQuery = {
                                 | Array<{
                                     __typename?: 'Message';
                                     id: string;
-                                    message: string;
                                     sender: string;
+                                    message: string;
                                     timestamp: number;
                                   }>
                                 | undefined;
@@ -7895,8 +7893,8 @@ export type OpportunityAspectQuery = {
                                 | Array<{
                                     __typename?: 'Message';
                                     id: string;
-                                    message: string;
                                     sender: string;
+                                    message: string;
                                     timestamp: number;
                                   }>
                                 | undefined;
@@ -7953,8 +7951,8 @@ export type AspectDashboardDataFragment = {
                       | Array<{
                           __typename?: 'Message';
                           id: string;
-                          message: string;
                           sender: string;
+                          message: string;
                           timestamp: number;
                         }>
                       | undefined;
@@ -7988,18 +7986,10 @@ export type AspectDashboardFragment = {
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
         messages?:
-          | Array<{ __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number }>
+          | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
           | undefined;
       }
     | undefined;
-};
-
-export type AspectMessageFragment = {
-  __typename?: 'Message';
-  id: string;
-  message: string;
-  sender: string;
-  timestamp: number;
 };
 
 export type AspectCreatorQueryVariables = Exact<{
@@ -11714,15 +11704,6 @@ export type CalloutAspectInfoFragment = {
     | undefined;
 };
 
-export type PostCommentInAspectMutationVariables = Exact<{
-  messageData: CommentsSendMessageInput;
-}>;
-
-export type PostCommentInAspectMutation = {
-  __typename?: 'Mutation';
-  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
-};
-
 export type RemoveCommentFromAspectMutationVariables = Exact<{
   messageData: CommentsRemoveMessageInput;
 }>;
@@ -12493,6 +12474,28 @@ export type HubCalloutsQuery = {
                         | undefined;
                     }>
                   | undefined;
+                comments?:
+                  | {
+                      __typename?: 'Comments';
+                      id: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                      messages?:
+                        | Array<{
+                            __typename?: 'Message';
+                            id: string;
+                            sender: string;
+                            message: string;
+                            timestamp: number;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
                 authorization?:
                   | {
                       __typename?: 'Authorization';
@@ -12606,6 +12609,28 @@ export type ChallengeCalloutsQuery = {
                             }
                           | undefined;
                       }>
+                    | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              sender: string;
+                              message: string;
+                              timestamp: number;
+                            }>
+                          | undefined;
+                      }
                     | undefined;
                   authorization?:
                     | {
@@ -12722,6 +12747,28 @@ export type OpportunityCalloutsQuery = {
                           | undefined;
                       }>
                     | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              sender: string;
+                              message: string;
+                              timestamp: number;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -12829,6 +12876,28 @@ export type HubCalloutQuery = {
                           }
                         | undefined;
                     }>
+                  | undefined;
+                comments?:
+                  | {
+                      __typename?: 'Comments';
+                      id: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                      messages?:
+                        | Array<{
+                            __typename?: 'Message';
+                            id: string;
+                            sender: string;
+                            message: string;
+                            timestamp: number;
+                          }>
+                        | undefined;
+                    }
                   | undefined;
                 authorization?:
                   | {
@@ -12945,6 +13014,28 @@ export type ChallengeCalloutQuery = {
                           | undefined;
                       }>
                     | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              sender: string;
+                              message: string;
+                              timestamp: number;
+                            }>
+                          | undefined;
+                      }
+                    | undefined;
                   authorization?:
                     | {
                         __typename?: 'Authorization';
@@ -13060,6 +13151,28 @@ export type OpportunityCalloutQuery = {
                             }
                           | undefined;
                       }>
+                    | undefined;
+                  comments?:
+                    | {
+                        __typename?: 'Comments';
+                        id: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                        messages?:
+                          | Array<{
+                              __typename?: 'Message';
+                              id: string;
+                              sender: string;
+                              message: string;
+                              timestamp: number;
+                            }>
+                          | undefined;
+                      }
                     | undefined;
                   authorization?:
                     | {
@@ -13243,6 +13356,18 @@ export type CalloutFragment = {
           | undefined;
       }>
     | undefined;
+  comments?:
+    | {
+        __typename?: 'Comments';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        messages?:
+          | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+          | undefined;
+      }
+    | undefined;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -13415,6 +13540,17 @@ export type OpportunityCollaborationIdQuery = {
       collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
     };
   };
+};
+
+export type DiscussionCalloutFragment = {
+  __typename?: 'Comments';
+  id: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  messages?:
+    | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+    | undefined;
 };
 
 export type UpdateCalloutMutationVariables = Exact<{
@@ -14789,6 +14925,15 @@ export type AssociatedOrganizationDetailsFragment = {
   };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
   activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+};
+
+export type PostCommentMutationVariables = Exact<{
+  messageData: CommentsSendMessageInput;
+}>;
+
+export type PostCommentMutation = {
+  __typename?: 'Mutation';
+  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
 };
 
 export type PageInfoFragment = {

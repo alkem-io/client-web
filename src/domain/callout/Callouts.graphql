@@ -179,6 +179,9 @@ fragment Callout on Callout {
   canvases {
     ...CanvasDetails
   }
+  comments {
+    ...DiscussionCallout
+  }
   authorization {
     id
     myPrivileges

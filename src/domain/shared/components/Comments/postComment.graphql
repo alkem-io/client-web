@@ -1,4 +1,4 @@
-mutation PostCommentInAspect($messageData: CommentsSendMessageInput!) {
+mutation PostComment($messageData: CommentsSendMessageInput!) {
   sendComment(messageData: $messageData) {
     id
     message

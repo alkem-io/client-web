@@ -706,14 +706,6 @@ export const UserContributorFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const AspectMessageFragmentDoc = gql`
-  fragment AspectMessage on Message {
-    id
-    message
-    sender
-    timestamp
-  }
-`;
 export const AspectDashboardFragmentDoc = gql`
   fragment AspectDashboard on Aspect {
     id
@@ -744,12 +736,12 @@ export const AspectDashboardFragmentDoc = gql`
         myPrivileges
       }
       messages {
-        ...AspectMessage
+        ...MessageDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
-  ${AspectMessageFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 export const AspectDashboardDataFragmentDoc = gql`
   fragment AspectDashboardData on Collaboration {
@@ -1608,6 +1600,19 @@ export const ContributeTabAspectFragmentDoc = gql`
   }
   ${AspectCardFragmentDoc}
 `;
+export const DiscussionCalloutFragmentDoc = gql`
+  fragment DiscussionCallout on Comments {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    messages {
+      ...MessageDetails
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
@@ -1622,6 +1627,9 @@ export const CalloutFragmentDoc = gql`
     canvases {
       ...CanvasDetails
     }
+    comments {
+      ...DiscussionCallout
+    }
     authorization {
       id
       myPrivileges
@@ -1630,6 +1638,7 @@ export const CalloutFragmentDoc = gql`
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
+  ${DiscussionCalloutFragmentDoc}
 `;
 export const TemplateTitleFragmentDoc = gql`
   fragment TemplateTitle on TemplateInfo {
@@ -13975,56 +13984,6 @@ export type OpportunityAspectProviderQueryResult = Apollo.QueryResult<
 export function refetchOpportunityAspectProviderQuery(variables: SchemaTypes.OpportunityAspectProviderQueryVariables) {
   return { query: OpportunityAspectProviderDocument, variables: variables };
 }
-export const PostCommentInAspectDocument = gql`
-  mutation PostCommentInAspect($messageData: CommentsSendMessageInput!) {
-    sendComment(messageData: $messageData) {
-      id
-      message
-      sender
-      timestamp
-    }
-  }
-`;
-export type PostCommentInAspectMutationFn = Apollo.MutationFunction<
-  SchemaTypes.PostCommentInAspectMutation,
-  SchemaTypes.PostCommentInAspectMutationVariables
->;
-
-/**
- * __usePostCommentInAspectMutation__
- *
- * To run a mutation, you first call `usePostCommentInAspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePostCommentInAspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [postCommentInAspectMutation, { data, loading, error }] = usePostCommentInAspectMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function usePostCommentInAspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.PostCommentInAspectMutation,
-    SchemaTypes.PostCommentInAspectMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.PostCommentInAspectMutation, SchemaTypes.PostCommentInAspectMutationVariables>(
-    PostCommentInAspectDocument,
-    options
-  );
-}
-export type PostCommentInAspectMutationHookResult = ReturnType<typeof usePostCommentInAspectMutation>;
-export type PostCommentInAspectMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentInAspectMutation>;
-export type PostCommentInAspectMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.PostCommentInAspectMutation,
-  SchemaTypes.PostCommentInAspectMutationVariables
->;
 export const RemoveCommentFromAspectDocument = gql`
   mutation RemoveCommentFromAspect($messageData: CommentsRemoveMessageInput!) {
     removeComment(messageData: $messageData)
@@ -17986,6 +17945,53 @@ export type AssociatedOrganizationQueryResult = Apollo.QueryResult<
 export function refetchAssociatedOrganizationQuery(variables: SchemaTypes.AssociatedOrganizationQueryVariables) {
   return { query: AssociatedOrganizationDocument, variables: variables };
 }
+export const PostCommentDocument = gql`
+  mutation PostComment($messageData: CommentsSendMessageInput!) {
+    sendComment(messageData: $messageData) {
+      id
+      message
+      sender
+      timestamp
+    }
+  }
+`;
+export type PostCommentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.PostCommentMutation,
+  SchemaTypes.PostCommentMutationVariables
+>;
+
+/**
+ * __usePostCommentMutation__
+ *
+ * To run a mutation, you first call `usePostCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postCommentMutation, { data, loading, error }] = usePostCommentMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function usePostCommentMutation(
+  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.PostCommentMutation, SchemaTypes.PostCommentMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.PostCommentMutation, SchemaTypes.PostCommentMutationVariables>(
+    PostCommentDocument,
+    options
+  );
+}
+export type PostCommentMutationHookResult = ReturnType<typeof usePostCommentMutation>;
+export type PostCommentMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentMutation>;
+export type PostCommentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.PostCommentMutation,
+  SchemaTypes.PostCommentMutationVariables
+>;
 export const UserListDocument = gql`
   query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
