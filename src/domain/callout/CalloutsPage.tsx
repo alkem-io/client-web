@@ -99,7 +99,6 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     hubNameId={hubNameId!}
                     challengeNameId={challengeNameId}
                     opportunityNameId={opportunityNameId}
-                    canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
                     onCalloutEdit={handleEdit}
                     onVisibilityChange={handleVisibilityChange}
                     onCalloutDelete={handleDelete}

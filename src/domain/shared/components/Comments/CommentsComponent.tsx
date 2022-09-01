@@ -23,7 +23,7 @@ export interface CommentsComponentProps {
   canDeleteComment: (messageId: string) => boolean;
   handlePostComment: (commentsId: string, message: string) => Promise<FetchResult<unknown>> | void;
   handleDeleteComment: (commentsId: string, messageId: string) => void;
-  loading: boolean;
+  loading?: boolean;
 }
 
 interface ScrollState {
