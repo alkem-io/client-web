@@ -35,7 +35,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
           {author?.displayName[0]}
         </UserAvatar>
       </Grid>
-      <Grid item xs={10}>
+      <Grid item xs zeroMinWidth>
         <Box
           padding={1}
           display="flex"
