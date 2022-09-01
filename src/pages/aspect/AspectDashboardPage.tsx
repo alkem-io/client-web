@@ -21,7 +21,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
         opportunityNameId={opportunityNameId}
         calloutNameId={calloutNameId}
       >
-        {({ aspect, messages, commentId, ...rest }) => (
+        {({ aspect, messages, commentsId, ...rest }) => (
           <AspectDashboardView
             banner={aspect?.banner?.uri}
             displayName={aspect?.displayName}
@@ -30,7 +30,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
             tags={aspect?.tagset?.tags}
             references={aspect?.references}
             messages={messages}
-            commentId={commentId}
+            commentsId={commentsId}
             {...rest}
           />
         )}

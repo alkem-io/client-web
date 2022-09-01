@@ -1,6 +1,5 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ApolloError, FetchResult } from '@apollo/client';
 import { alpha, Avatar, Box, Grid } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
@@ -8,98 +7,44 @@ import DashboardGenericSection from '../../domain/shared/components/DashboardSec
 import { Reference } from '../../models/graphql-schema';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
-import DiscussionComment from '../../components/composite/common/Discussion/DiscussionComment';
-import { Comment } from '../../models/discussion/comment';
-import PostComment from '../../components/composite/common/Discussion/PostComment';
 import Markdown from '../../components/core/Markdown';
 import References from '../../components/composite/common/References/References';
 import TagLabel from '../../components/composite/common/TagLabel/TagLabel';
 import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
-import { mapWithSeparator } from '../../domain/shared/utils/joinNodes';
-import { animateScroll as scroller } from 'react-scroll';
-import { useResizeDetector } from 'react-resize-detector';
-import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
+import CommentsComponent, { CommentsComponentProps } from '../../domain/shared/components/Comments/CommentsComponent';
 
-const COMMENTS_CONTAINER_HEIGHT = 400;
-const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
-
-export interface AspectDashboardViewProps {
-  canReadComments: boolean;
-  canPostComments: boolean;
-  canDeleteComment: (messageId: string) => boolean;
+export type AspectDashboardViewProps = {
   banner?: string;
   displayName?: string;
   description?: string;
   type?: string;
-  messages?: Comment[];
-  commentId?: string;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
   creatorAvatar?: string;
   creatorName?: string;
   createdDate?: string;
-  handlePostComment: (commentId: string, message: string) => Promise<FetchResult<unknown>> | void;
-  handleDeleteComment: (commentId: string, messageId: string) => void;
   loading: boolean;
   loadingCreator: boolean;
-  error?: ApolloError;
-}
-
-interface ScrollState {
-  scrollTop: number;
-  scrollHeight: number;
-}
-
-const isScrolledToBottom = ({
-  scrollTop,
-  scrollHeight,
-  containerHeight,
-}: ScrollState & { containerHeight: number }) => {
-  // Due to a bug with the zoom in Chromium based browsers we can not check if scrollTop === (scrollHeight - containerHeight)
-  // This will return true if scrollTop is approximately equal to (scrollHeight - containerHeight), if the comments are scrolled very close to the end
-  return Math.abs(scrollHeight - containerHeight - scrollTop) < SCROLL_BOTTOM_MISTAKE_TOLERANCE;
-};
+} & CommentsComponentProps;
 
 const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const { t } = useTranslation();
-  const { loading, loadingCreator } = props;
 
-  const commentsContainerRef = useRef<HTMLElement>(null);
-  const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
-  const wasScrolledToBottomRef = useRef(true);
-
-  const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = props;
-  const { creatorName, creatorAvatar, createdDate } = props;
-  const { canReadComments, canDeleteComment, canPostComments } = props;
-  const { handlePostComment, handleDeleteComment } = props;
-
-  const onPostComment = (message: string) => (commentId ? handlePostComment(commentId, message) : undefined);
-  const onDeleteComment = (id: string) => (commentId ? handleDeleteComment(commentId, id) : undefined);
-
-  const { height: containerHeight = 0 } = useResizeDetector({
-    targetRef: commentsContainerRef,
-  });
-
-  useEffect(() => {
-    if (commentsContainerRef.current) {
-      wasScrolledToBottomRef.current = isScrolledToBottom({ ...prevScrollTopRef.current, containerHeight });
-
-      prevScrollTopRef.current = {
-        scrollTop: commentsContainerRef.current.scrollTop,
-        scrollHeight: commentsContainerRef.current.scrollHeight,
-      };
-    }
-  }, [messages]);
-
-  useEffect(() => {
-    if (wasScrolledToBottomRef.current && commentsContainerRef.current) {
-      scroller.scrollToBottom({ container: commentsContainerRef.current });
-    }
-  }, [messages]);
-
-  const handleCommentsScroll = () => {
-    prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
-  };
+  const {
+    banner,
+    displayName,
+    description,
+    type,
+    tags = [],
+    references,
+    creatorAvatar,
+    creatorName,
+    createdDate,
+    loading,
+    loadingCreator,
+    ...commentsComponentProps
+  } = props;
+  const { canReadComments } = props;
 
   return (
     <Grid container spacing={2}>
@@ -146,37 +91,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
       </DashboardColumn>
       {canReadComments && (
         <DashboardColumn>
-          <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
-            <Box
-              sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}
-              ref={commentsContainerRef}
-              onScroll={handleCommentsScroll}
-            >
-              {mapWithSeparator(messages, SectionSpacer, comment => (
-                <DiscussionComment
-                  key={comment.id}
-                  comment={comment}
-                  canDelete={canDeleteComment(comment.id)}
-                  onDelete={onDeleteComment}
-                />
-              ))}
-            </Box>
-            <SectionSpacer double />
-            <Box>
-              {canPostComments && (
-                <PostComment
-                  placeholder={t('pages.aspect.dashboard.comment.placeholder')}
-                  onPostComment={onPostComment}
-                  maxLength={MID_TEXT_LENGTH}
-                />
-              )}
-              {!canPostComments && (
-                <Box paddingY={4} display="flex" justifyContent="center">
-                  <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
-                </Box>
-              )}
-            </Box>
-          </DashboardGenericSection>
+          <CommentsComponent {...commentsComponentProps} />
         </DashboardColumn>
       )}
     </Grid>
