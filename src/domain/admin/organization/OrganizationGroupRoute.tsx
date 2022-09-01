@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useUrlParams } from '../../../hooks';
 import { useOrganizationGroupQuery } from '../../../hooks/generated/graphql';
 import { PageProps } from '../../../pages';
-import { GroupRoute } from '../../../routing/admin/GroupRoute';
+import { GroupRoute } from '../routing/GroupRoute';
 
 interface GroupRouteProps extends PageProps {}
 

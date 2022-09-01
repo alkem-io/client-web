@@ -7,7 +7,7 @@ import { HubContextProvider } from '../domain/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../domain/organization/context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
 import ContributorsPage from '../pages/Contributors/ContributorsPage';
-import { AdminRoute } from './admin/AdminRoute';
+import { AdminRoute } from '../domain/admin/routing/AdminRoute';
 import { MessagesRoute } from './messages/MessagesRoute';
 import OrganizationRoute from '../domain/organization/routing/OrganizationRoute';
 import ProfileRoute from './profile/ProfileRoute';
