@@ -2,11 +2,7 @@ overwrite: true
 schema: "http://localhost:4000/graphql"
 documents: [
   "graphql/**/*.graphql",
-  "src/containers/**/*.graphql",
-  "src/context/**/*.graphql",
-  "src/components/composite/**/*.graphql",
-  "src/hooks/**/*.graphql", # TODO move to src/domain
-  "src/domain/**/*.graphql",
+  "src/**/*.graphql"
 ]
 hooks:
   afterAllFileWrite:

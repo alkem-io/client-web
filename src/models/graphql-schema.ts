@@ -4105,6 +4105,71 @@ export type AspectVisualsFragment = {
     | undefined;
 };
 
+export type ConfigurationFragment = {
+  __typename?: 'Config';
+  authentication: {
+    __typename?: 'AuthenticationConfig';
+    providers: Array<{
+      __typename?: 'AuthenticationProviderConfig';
+      name: string;
+      label: string;
+      icon: string;
+      enabled: boolean;
+      config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
+    }>;
+  };
+  platform: {
+    __typename?: 'Platform';
+    about: string;
+    feedback: string;
+    privacy: string;
+    security: string;
+    support: string;
+    terms: string;
+    impact: string;
+    foundation: string;
+    opensource: string;
+    releases: string;
+    featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
+  };
+  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+};
+
+export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ConfigurationQuery = {
+  __typename?: 'Query';
+  configuration: {
+    __typename?: 'Config';
+    authentication: {
+      __typename?: 'AuthenticationConfig';
+      providers: Array<{
+        __typename?: 'AuthenticationProviderConfig';
+        name: string;
+        label: string;
+        icon: string;
+        enabled: boolean;
+        config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
+      }>;
+    };
+    platform: {
+      __typename?: 'Platform';
+      about: string;
+      feedback: string;
+      privacy: string;
+      security: string;
+      support: string;
+      terms: string;
+      impact: string;
+      foundation: string;
+      opensource: string;
+      releases: string;
+      featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
+    };
+    sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
+  };
+};
+
 export type HubContributionDetailsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -8064,6 +8129,101 @@ export type UserCardsContainerQuery = {
         }
       | undefined;
   }>;
+};
+
+export type MyPrivilegesFragment = {
+  __typename?: 'Authorization';
+  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+};
+
+export type AssignUserAsChallengeAdminMutationVariables = Exact<{
+  input: AssignChallengeAdminInput;
+}>;
+
+export type AssignUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsGlobalAdminMutationVariables = Exact<{
+  input: AssignGlobalAdminInput;
+}>;
+
+export type AssignUserAsGlobalAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsGlobalCommunityAdminMutationVariables = Exact<{
+  input: AssignGlobalCommunityAdminInput;
+}>;
+
+export type AssignUserAsGlobalCommunityAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsHubAdminMutationVariables = Exact<{
+  input: AssignHubAdminInput;
+}>;
+
+export type AssignUserAsHubAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type AssignUserAsOrganizationOwnerMutationVariables = Exact<{
+  input: AssignOrganizationOwnerInput;
+}>;
+
+export type AssignUserAsOrganizationOwnerMutation = {
+  __typename?: 'Mutation';
+  assignUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
+  input: RemoveChallengeAdminInput;
+}>;
+
+export type RemoveUserAsChallengeAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
+  input: RemoveGlobalAdminInput;
+}>;
+
+export type RemoveUserAsGlobalAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
+  input: RemoveGlobalCommunityAdminInput;
+}>;
+
+export type RemoveUserAsGlobalCommunityAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsHubAdminMutationVariables = Exact<{
+  input: RemoveHubAdminInput;
+}>;
+
+export type RemoveUserAsHubAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
+  input: RemoveOrganizationOwnerInput;
+}>;
+
+export type RemoveUserAsOrganizationOwnerMutation = {
+  __typename?: 'Mutation';
+  removeUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type ChallengeApplicationsQueryVariables = Exact<{
@@ -14575,11 +14735,6 @@ export type UserProfileQuery = {
       | undefined;
   };
   authorization: { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined };
-};
-
-export type MyPrivilegesFragment = {
-  __typename?: 'Authorization';
-  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
 };
 
 export type UserProfileApplicationsQueryVariables = Exact<{
