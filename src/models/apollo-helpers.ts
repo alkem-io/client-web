@@ -270,6 +270,8 @@ export type CalloutAspectCreatedFieldPolicy = {
 export type CanvasKeySpecifier = (
   | 'authorization'
   | 'checkout'
+  | 'createdBy'
+  | 'createdDate'
   | 'displayName'
   | 'id'
   | 'nameID'
@@ -280,6 +282,8 @@ export type CanvasKeySpecifier = (
 export type CanvasFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   checkout?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;

@@ -413,6 +413,9 @@ export type Canvas = {
   authorization?: Maybe<Authorization>;
   /** The checkout out state of this Canvas. */
   checkout?: Maybe<CanvasCheckout>;
+  /** The id of the user that created this Canvas */
+  createdBy: Scalars['UUID'];
+  createdDate: Scalars['DateTime'];
   /** The display name. */
   displayName: Scalars['String'];
   /** The ID of the entity */
@@ -2445,6 +2448,7 @@ export enum PreferenceType {
   NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
+  NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -3385,6 +3389,7 @@ export enum UserPreferenceType {
   NotificationAspectCommentCreated = 'NOTIFICATION_ASPECT_COMMENT_CREATED',
   NotificationAspectCreated = 'NOTIFICATION_ASPECT_CREATED',
   NotificationAspectCreatedAdmin = 'NOTIFICATION_ASPECT_CREATED_ADMIN',
+  NotificationCalloutPublished = 'NOTIFICATION_CALLOUT_PUBLISHED',
   NotificationCommunicationDiscussionCreated = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED',
   NotificationCommunicationDiscussionCreatedAdmin = 'NOTIFICATION_COMMUNICATION_DISCUSSION_CREATED_ADMIN',
   NotificationCommunicationDiscussionResponse = 'NOTIFICATION_COMMUNICATION_DISCUSSION_RESPONSE',
@@ -3472,401 +3477,6 @@ export type VisualUploadImageInput = {
   visualID: Scalars['String'];
 };
 
-export type ApplicationInfoFragment = {
-  __typename?: 'Application';
-  id: string;
-  createdDate: Date;
-  updatedDate: Date;
-  lifecycle: {
-    __typename?: 'Lifecycle';
-    id: string;
-    state?: string | undefined;
-    nextEvents?: Array<string> | undefined;
-  };
-  user: {
-    __typename?: 'User';
-    id: string;
-    displayName: string;
-    email: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        }
-      | undefined;
-  };
-  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
-};
-
-export type OrganizationCardFragment = {
-  __typename?: 'Organization';
-  id: string;
-  nameID: string;
-  displayName: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    description?: string | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
-  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-};
-
-export type AspectCardFragment = {
-  __typename?: 'Aspect';
-  id: string;
-  nameID: string;
-  displayName: string;
-  type: string;
-  description: string;
-  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-};
-
-export type ChallengeCardFragment = {
-  __typename?: 'Challenge';
-  id: string;
-  displayName: string;
-  nameID: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-};
-
-export type ChallengeInfoFragment = {
-  __typename?: 'Challenge';
-  id: string;
-  displayName: string;
-  nameID: string;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      }
-    | undefined;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-        visuals?:
-          | Array<{
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }>
-          | undefined;
-      }
-    | undefined;
-};
-
-export type CommunityMessagesFragment = {
-  __typename?: 'Community';
-  id: string;
-  communication?:
-    | {
-        __typename?: 'Communication';
-        id: string;
-        updates?:
-          | {
-              __typename?: 'Updates';
-              id: string;
-              messages?:
-                | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
-                | undefined;
-            }
-          | undefined;
-      }
-    | undefined;
-};
-
-export type MessageDetailsFragment = {
-  __typename?: 'Message';
-  id: string;
-  sender: string;
-  message: string;
-  timestamp: number;
-};
-
-export type CommunityPageMembersFragment = {
-  __typename?: 'User';
-  id: string;
-  nameID: string;
-  displayName: string;
-  email: string;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
-  profile?:
-    | {
-        __typename?: 'Profile';
-        id: string;
-        description?: string | undefined;
-        location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-      }
-    | undefined;
-};
-
-export type ConfigurationFragment = {
-  __typename?: 'Config';
-  authentication: {
-    __typename?: 'AuthenticationConfig';
-    providers: Array<{
-      __typename?: 'AuthenticationProviderConfig';
-      name: string;
-      label: string;
-      icon: string;
-      enabled: boolean;
-      config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
-    }>;
-  };
-  platform: {
-    __typename?: 'Platform';
-    about: string;
-    feedback: string;
-    privacy: string;
-    security: string;
-    support: string;
-    terms: string;
-    impact: string;
-    foundation: string;
-    opensource: string;
-    releases: string;
-    featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
-  };
-  sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
-};
-
-export type ContextDetailsFragment = {
-  __typename?: 'Context';
-  id: string;
-  tagline?: string | undefined;
-  background?: string | undefined;
-  vision?: string | undefined;
-  impact?: string | undefined;
-  who?: string | undefined;
-  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-  references?:
-    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-    | undefined;
-  visuals?:
-    | Array<{
-        __typename?: 'Visual';
-        id: string;
-        uri: string;
-        name: string;
-        allowedTypes: Array<string>;
-        aspectRatio: number;
-        maxHeight: number;
-        maxWidth: number;
-        minHeight: number;
-        minWidth: number;
-      }>
-    | undefined;
-  authorization?:
-    | {
-        __typename?: 'Authorization';
-        id: string;
-        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-        anonymousReadAccess: boolean;
-      }
-    | undefined;
-};
-
-export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
-
-export type GroupInfoFragment = {
-  __typename?: 'UserGroup';
-  id: string;
-  name: string;
-  profile?:
-    | {
-        __typename?: 'Profile';
-        id: string;
-        description?: string | undefined;
-        avatar?:
-          | {
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }
-          | undefined;
-        references?:
-          | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
-          | undefined;
-        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-      }
-    | undefined;
-};
-
-export type GroupMembersFragment = {
-  __typename?: 'User';
-  id: string;
-  displayName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-};
-
-export type ContextDetailsProviderFragment = {
-  __typename?: 'Context';
-  id: string;
-  tagline?: string | undefined;
-  background?: string | undefined;
-  vision?: string | undefined;
-  impact?: string | undefined;
-  who?: string | undefined;
-  visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-};
-
-export type MyPrivilegesFragment = {
-  __typename?: 'Authorization';
-  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-};
-
-export type NewChallengeFragment = { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
-
-export type NewOpportunityFragment = { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
-
-export type OrganizationInfoFragment = {
-  __typename?: 'Organization';
-  id: string;
-  nameID: string;
-  displayName: string;
-  contactEmail?: string | undefined;
-  domain?: string | undefined;
-  website?: string | undefined;
-  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    description?: string | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-    references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-  };
-  members?:
-    | Array<{
-        __typename?: 'User';
-        id: string;
-        nameID: string;
-        displayName: string;
-        agent?:
-          | {
-              __typename?: 'Agent';
-              id: string;
-              credentials?:
-                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                | undefined;
-            }
-          | undefined;
-        profile?:
-          | {
-              __typename?: 'Profile';
-              id: string;
-              location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-            }
-          | undefined;
-      }>
-    | undefined;
-};
-
-export type OrganizationDetailsFragment = {
-  __typename?: 'Organization';
-  id: string;
-  displayName: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    description?: string | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-  };
-};
-
-export type OrganizationProfileInfoFragment = {
-  __typename?: 'Organization';
-  id: string;
-  nameID: string;
-  displayName: string;
-  contactEmail?: string | undefined;
-  domain?: string | undefined;
-  legalEntityName?: string | undefined;
-  website?: string | undefined;
-  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    description?: string | undefined;
-    avatar?:
-      | {
-          __typename?: 'Visual';
-          id: string;
-          uri: string;
-          name: string;
-          allowedTypes: Array<string>;
-          aspectRatio: number;
-          maxHeight: number;
-          maxWidth: number;
-          minHeight: number;
-          minWidth: number;
-        }
-      | undefined;
-    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
-    references?:
-      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
-      | undefined;
-    tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-  };
-};
-
 export type ProjectDetailsFragment = {
   __typename?: 'Project';
   id: string;
@@ -3884,56 +3494,6 @@ export type ReferenceDetailsFragment = {
   uri: string;
   description: string;
 };
-
-export type ChallengeSearchResultFragment = {
-  __typename?: 'Challenge';
-  id: string;
-  displayName: string;
-  nameID: string;
-  hubID: string;
-  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-};
-
-export type OpportunitySearchResultFragment = {
-  __typename?: 'Opportunity';
-  id: string;
-  displayName: string;
-  nameID: string;
-  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string; hubID: string } | undefined;
-};
-
-export type OrganizationSearchResultFragment = {
-  __typename?: 'Organization';
-  id: string;
-  displayName: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-  };
-};
-
-export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
 
 export type VisualFullFragment = {
   __typename?: 'Visual';
@@ -3968,43 +3528,6 @@ export type CreateActorGroupMutation = {
   createActorGroup: { __typename?: 'ActorGroup'; id: string; name: string };
 };
 
-export type CreateAspectMutationVariables = Exact<{
-  aspectData: CreateAspectOnCalloutInput;
-}>;
-
-export type CreateAspectMutation = {
-  __typename?: 'Mutation';
-  createAspectOnCallout: {
-    __typename?: 'Aspect';
-    id: string;
-    nameID: string;
-    displayName: string;
-    description: string;
-    type: string;
-    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
-};
-
-export type CreateGroupOnCommunityMutationVariables = Exact<{
-  input: CreateUserGroupInput;
-}>;
-
-export type CreateGroupOnCommunityMutation = {
-  __typename?: 'Mutation';
-  createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
-};
-
-export type CreateGroupOnOrganizationMutationVariables = Exact<{
-  input: CreateUserGroupInput;
-}>;
-
-export type CreateGroupOnOrganizationMutation = {
-  __typename?: 'Mutation';
-  createGroupOnOrganization: { __typename?: 'UserGroup'; id: string; name: string };
-};
-
 export type CreateProjectMutationVariables = Exact<{
   input: CreateProjectInput;
 }>;
@@ -4020,24 +3543,6 @@ export type CreateProjectMutation = {
     lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   };
-};
-
-export type CreateReferenceOnAspectMutationVariables = Exact<{
-  referenceInput: CreateReferenceOnAspectInput;
-}>;
-
-export type CreateReferenceOnAspectMutation = {
-  __typename?: 'Mutation';
-  createReferenceOnAspect: { __typename?: 'Reference'; id: string; name: string; uri: string; description: string };
-};
-
-export type CreateReferenceOnContextMutationVariables = Exact<{
-  input: CreateReferenceOnContextInput;
-}>;
-
-export type CreateReferenceOnContextMutation = {
-  __typename?: 'Mutation';
-  createReferenceOnContext: { __typename?: 'Reference'; id: string; name: string; uri: string; description: string };
 };
 
 export type CreateReferenceOnProfileMutationVariables = Exact<{
@@ -4073,12 +3578,6 @@ export type DeleteActorMutationVariables = Exact<{
 
 export type DeleteActorMutation = { __typename?: 'Mutation'; deleteActor: { __typename?: 'Actor'; id: string } };
 
-export type DeleteAspectMutationVariables = Exact<{
-  input: DeleteAspectInput;
-}>;
-
-export type DeleteAspectMutation = { __typename?: 'Mutation'; deleteAspect: { __typename?: 'Aspect'; id: string } };
-
 export type DeleteDiscussionMutationVariables = Exact<{
   deleteData: DeleteDiscussionInput;
 }>;
@@ -4086,15 +3585,6 @@ export type DeleteDiscussionMutationVariables = Exact<{
 export type DeleteDiscussionMutation = {
   __typename?: 'Mutation';
   deleteDiscussion: { __typename?: 'Discussion'; id: string; title: string };
-};
-
-export type DeleteGroupMutationVariables = Exact<{
-  input: DeleteUserGroupInput;
-}>;
-
-export type DeleteGroupMutation = {
-  __typename?: 'Mutation';
-  deleteUserGroup: { __typename?: 'UserGroup'; id: string; name: string };
 };
 
 export type DeleteReferenceMutationVariables = Exact<{
@@ -4113,96 +3603,6 @@ export type DeleteRelationMutationVariables = Exact<{
 export type DeleteRelationMutation = {
   __typename?: 'Mutation';
   deleteRelation: { __typename?: 'Relation'; id: string };
-};
-
-export type AssignUserAsChallengeAdminMutationVariables = Exact<{
-  input: AssignChallengeAdminInput;
-}>;
-
-export type AssignUserAsChallengeAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type AssignUserAsGlobalAdminMutationVariables = Exact<{
-  input: AssignGlobalAdminInput;
-}>;
-
-export type AssignUserAsGlobalAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type AssignUserAsGlobalCommunityAdminMutationVariables = Exact<{
-  input: AssignGlobalCommunityAdminInput;
-}>;
-
-export type AssignUserAsGlobalCommunityAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type AssignUserAsHubAdminMutationVariables = Exact<{
-  input: AssignHubAdminInput;
-}>;
-
-export type AssignUserAsHubAdminMutation = {
-  __typename?: 'Mutation';
-  assignUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type AssignUserAsOrganizationOwnerMutationVariables = Exact<{
-  input: AssignOrganizationOwnerInput;
-}>;
-
-export type AssignUserAsOrganizationOwnerMutation = {
-  __typename?: 'Mutation';
-  assignUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type RemoveUserAsChallengeAdminMutationVariables = Exact<{
-  input: RemoveChallengeAdminInput;
-}>;
-
-export type RemoveUserAsChallengeAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsChallengeAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
-  input: RemoveGlobalAdminInput;
-}>;
-
-export type RemoveUserAsGlobalAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
-  input: RemoveGlobalCommunityAdminInput;
-}>;
-
-export type RemoveUserAsGlobalCommunityAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type RemoveUserAsHubAdminMutationVariables = Exact<{
-  input: RemoveHubAdminInput;
-}>;
-
-export type RemoveUserAsHubAdminMutation = {
-  __typename?: 'Mutation';
-  removeUserAsHubAdmin: { __typename?: 'User'; id: string; displayName: string };
-};
-
-export type RemoveUserAsOrganizationOwnerMutationVariables = Exact<{
-  input: RemoveOrganizationOwnerInput;
-}>;
-
-export type RemoveUserAsOrganizationOwnerMutation = {
-  __typename?: 'Mutation';
-  removeUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveMessageFromDiscussionMutationVariables = Exact<{
@@ -4227,29 +3627,6 @@ export type UpdateActorMutation = {
   };
 };
 
-export type UpdateGroupMutationVariables = Exact<{
-  input: UpdateUserGroupInput;
-}>;
-
-export type UpdateGroupMutation = {
-  __typename?: 'Mutation';
-  updateUserGroup: {
-    __typename?: 'UserGroup';
-    id: string;
-    name: string;
-    profile?:
-      | {
-          __typename?: 'Profile';
-          id: string;
-          description?: string | undefined;
-          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          references?: Array<{ __typename?: 'Reference'; uri: string; name: string; description: string }> | undefined;
-          tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
-        }
-      | undefined;
-  };
-};
-
 export type UploadVisualMutationVariables = Exact<{
   file: Scalars['Upload'];
   uploadData: VisualUploadImageInput;
@@ -4258,201 +3635,6 @@ export type UploadVisualMutationVariables = Exact<{
 export type UploadVisualMutation = {
   __typename?: 'Mutation';
   uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string };
-};
-
-export type AllCommunitiesQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type AllCommunitiesQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
-    challenges?:
-      | Array<{
-          __typename?: 'Challenge';
-          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
-        }>
-      | undefined;
-    opportunities?:
-      | Array<{
-          __typename?: 'Opportunity';
-          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
-        }>
-      | undefined;
-  };
-};
-
-export type AllCommunityDetailsFragment = { __typename?: 'Community'; id: string; displayName: string };
-
-export type ChallengesWithCommunityQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengesWithCommunityQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenges?:
-      | Array<{
-          __typename?: 'Challenge';
-          id: string;
-          nameID: string;
-          displayName: string;
-          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
-        }>
-      | undefined;
-  };
-};
-
-export type HubCommunityQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubCommunityQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          displayName: string;
-          communication?:
-            | {
-                __typename?: 'Communication';
-                id: string;
-                authorization?:
-                  | {
-                      __typename?: 'Authorization';
-                      id: string;
-                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CommunityMessagesQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityMessagesQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          communication?:
-            | {
-                __typename?: 'Communication';
-                id: string;
-                updates?:
-                  | {
-                      __typename?: 'Updates';
-                      id: string;
-                      messages?:
-                        | Array<{
-                            __typename?: 'Message';
-                            id: string;
-                            sender: string;
-                            message: string;
-                            timestamp: number;
-                          }>
-                        | undefined;
-                    }
-                  | undefined;
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CommunityGroupsQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityGroupsQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          displayName: string;
-          groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CommunityMembersQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  communityId: Scalars['UUID'];
-}>;
-
-export type CommunityMembersQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    community?:
-      | {
-          __typename?: 'Community';
-          id: string;
-          memberUsers?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type ConfigurationQueryVariables = Exact<{ [key: string]: never }>;
-
-export type ConfigurationQuery = {
-  __typename?: 'Query';
-  configuration: {
-    __typename?: 'Config';
-    authentication: {
-      __typename?: 'AuthenticationConfig';
-      providers: Array<{
-        __typename?: 'AuthenticationProviderConfig';
-        name: string;
-        label: string;
-        icon: string;
-        enabled: boolean;
-        config: { __typename: 'OryConfig'; kratosPublicBaseURL: string; issuer: string };
-      }>;
-    };
-    platform: {
-      __typename?: 'Platform';
-      about: string;
-      feedback: string;
-      privacy: string;
-      security: string;
-      support: string;
-      terms: string;
-      impact: string;
-      foundation: string;
-      opensource: string;
-      releases: string;
-      featureFlags: Array<{ __typename?: 'FeatureFlag'; enabled: boolean; name: string }>;
-    };
-    sentry: { __typename?: 'Sentry'; enabled: boolean; endpoint: string; submitPII: boolean };
-  };
 };
 
 export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
@@ -4646,61 +3828,6 @@ export type RelationsQuery = {
           }
         | undefined;
     };
-  };
-};
-
-export type RolesUserQueryVariables = Exact<{
-  input: RolesUserInput;
-}>;
-
-export type RolesUserQuery = {
-  __typename?: 'Query';
-  rolesUser: {
-    __typename?: 'ContributorRoles';
-    id: string;
-    hubs: Array<{
-      __typename?: 'RolesResultHub';
-      id: string;
-      nameID: string;
-      hubID: string;
-      displayName: string;
-      roles: Array<string>;
-      challenges: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        nameID: string;
-        displayName: string;
-        roles: Array<string>;
-      }>;
-      opportunities: Array<{
-        __typename?: 'RolesResultCommunity';
-        id: string;
-        nameID: string;
-        displayName: string;
-        roles: Array<string>;
-      }>;
-      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
-    }>;
-    organizations: Array<{
-      __typename?: 'RolesResultOrganization';
-      id: string;
-      nameID: string;
-      displayName: string;
-      roles: Array<string>;
-      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
-    }>;
-    applications?:
-      | Array<{
-          __typename?: 'ApplicationForRoleResult';
-          id: string;
-          communityID: string;
-          displayName: string;
-          state: string;
-          hubID: string;
-          challengeID?: string | undefined;
-          opportunityID?: string | undefined;
-        }>
-      | undefined;
   };
 };
 
@@ -8939,315 +8066,6 @@ export type UserCardsContainerQuery = {
   }>;
 };
 
-export type OpportunityProviderQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityProviderQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      nameID: string;
-      displayName: string;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-      context?:
-        | {
-            __typename?: 'Context';
-            id: string;
-            tagline?: string | undefined;
-            authorization?:
-              | {
-                  __typename?: 'Authorization';
-                  id: string;
-                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                  anonymousReadAccess: boolean;
-                }
-              | undefined;
-            visuals?:
-              | Array<{
-                  __typename?: 'Visual';
-                  id: string;
-                  uri: string;
-                  name: string;
-                  allowedTypes: Array<string>;
-                  aspectRatio: number;
-                  maxHeight: number;
-                  maxWidth: number;
-                  minHeight: number;
-                  minWidth: number;
-                }>
-              | undefined;
-            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-          }
-        | undefined;
-      community?:
-        | {
-            __typename?: 'Community';
-            id: string;
-            authorization?:
-              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type OpportunityProviderFragment = {
-  __typename?: 'Opportunity';
-  id: string;
-  nameID: string;
-  displayName: string;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        authorization?:
-          | {
-              __typename?: 'Authorization';
-              id: string;
-              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-              anonymousReadAccess: boolean;
-            }
-          | undefined;
-        visuals?:
-          | Array<{
-              __typename?: 'Visual';
-              id: string;
-              uri: string;
-              name: string;
-              allowedTypes: Array<string>;
-              aspectRatio: number;
-              maxHeight: number;
-              maxWidth: number;
-              minHeight: number;
-              minWidth: number;
-            }>
-          | undefined;
-        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
-      }
-    | undefined;
-  community?:
-    | {
-        __typename?: 'Community';
-        id: string;
-        authorization?:
-          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-          | undefined;
-      }
-    | undefined;
-};
-
-export type HubAspectProviderQueryVariables = Exact<{
-  hubNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubAspectProviderQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    collaboration?:
-      | {
-          __typename?: 'Collaboration';
-          id: string;
-          callouts?:
-            | Array<{
-                __typename?: 'Callout';
-                id: string;
-                type: CalloutType;
-                aspects?:
-                  | Array<{
-                      __typename?: 'Aspect';
-                      id: string;
-                      nameID: string;
-                      displayName: string;
-                      authorization?:
-                        | {
-                            __typename?: 'Authorization';
-                            id: string;
-                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                          }
-                        | undefined;
-                    }>
-                  | undefined;
-              }>
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type ChallengeAspectProviderQueryVariables = Exact<{
-  hubNameId: Scalars['UUID_NAMEID'];
-  challengeNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeAspectProviderQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  type: CalloutType;
-                  aspects?:
-                    | Array<{
-                        __typename?: 'Aspect';
-                        id: string;
-                        nameID: string;
-                        displayName: string;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type OpportunityAspectProviderQueryVariables = Exact<{
-  hubNameId: Scalars['UUID_NAMEID'];
-  opportunityNameId: Scalars['UUID_NAMEID'];
-  aspectNameId: Scalars['UUID_NAMEID'];
-  calloutNameId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityAspectProviderQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      collaboration?:
-        | {
-            __typename?: 'Collaboration';
-            id: string;
-            callouts?:
-              | Array<{
-                  __typename?: 'Callout';
-                  id: string;
-                  type: CalloutType;
-                  aspects?:
-                    | Array<{
-                        __typename?: 'Aspect';
-                        id: string;
-                        nameID: string;
-                        displayName: string;
-                        authorization?:
-                          | {
-                              __typename?: 'Authorization';
-                              id: string;
-                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
-                            }
-                          | undefined;
-                      }>
-                    | undefined;
-                }>
-              | undefined;
-          }
-        | undefined;
-    };
-  };
-};
-
-export type AspectProviderDataFragment = {
-  __typename?: 'Collaboration';
-  id: string;
-  callouts?:
-    | Array<{
-        __typename?: 'Callout';
-        id: string;
-        type: CalloutType;
-        aspects?:
-          | Array<{
-              __typename?: 'Aspect';
-              id: string;
-              nameID: string;
-              displayName: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            }>
-          | undefined;
-      }>
-    | undefined;
-};
-
-export type AspectProvidedFragment = {
-  __typename?: 'Aspect';
-  id: string;
-  nameID: string;
-  displayName: string;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-    | undefined;
-};
-
-export type CalloutAspectInfoFragment = {
-  __typename?: 'Collaboration';
-  id: string;
-  callouts?:
-    | Array<{
-        __typename?: 'Callout';
-        id: string;
-        nameID: string;
-        type: CalloutType;
-        aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
-      }>
-    | undefined;
-};
-
-export type PostCommentInAspectMutationVariables = Exact<{
-  messageData: CommentsSendMessageInput;
-}>;
-
-export type PostCommentInAspectMutation = {
-  __typename?: 'Mutation';
-  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
-};
-
-export type RemoveCommentFromAspectMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
-}>;
-
-export type RemoveCommentFromAspectMutation = { __typename?: 'Mutation'; removeComment: string };
-
 export type ChallengeApplicationsQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -9908,6 +8726,33 @@ export type DeleteInnovationTemplateMutation = {
   deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
 };
 
+export type ApplicationInfoFragment = {
+  __typename?: 'Application';
+  id: string;
+  createdDate: Date;
+  updatedDate: Date;
+  lifecycle: {
+    __typename?: 'Lifecycle';
+    id: string;
+    state?: string | undefined;
+    nextEvents?: Array<string> | undefined;
+  };
+  user: {
+    __typename?: 'User';
+    id: string;
+    displayName: string;
+    email: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        }
+      | undefined;
+  };
+  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+};
+
 export type ApplyForCommunityMembershipMutationVariables = Exact<{
   input: CommunityApplyInput;
 }>;
@@ -10096,6 +8941,265 @@ export type OpportunityNameIdQuery = {
     };
   };
 };
+
+export type HubAspectProviderQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubAspectProviderQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                type: CalloutType;
+                aspects?:
+                  | Array<{
+                      __typename?: 'Aspect';
+                      id: string;
+                      nameID: string;
+                      displayName: string;
+                      authorization?:
+                        | {
+                            __typename?: 'Authorization';
+                            id: string;
+                            myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                          }
+                        | undefined;
+                    }>
+                  | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ChallengeAspectProviderQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  challengeNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeAspectProviderQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  type: CalloutType;
+                  aspects?:
+                    | Array<{
+                        __typename?: 'Aspect';
+                        id: string;
+                        nameID: string;
+                        displayName: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                      }>
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityAspectProviderQueryVariables = Exact<{
+  hubNameId: Scalars['UUID_NAMEID'];
+  opportunityNameId: Scalars['UUID_NAMEID'];
+  aspectNameId: Scalars['UUID_NAMEID'];
+  calloutNameId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityAspectProviderQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  type: CalloutType;
+                  aspects?:
+                    | Array<{
+                        __typename?: 'Aspect';
+                        id: string;
+                        nameID: string;
+                        displayName: string;
+                        authorization?:
+                          | {
+                              __typename?: 'Authorization';
+                              id: string;
+                              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                            }
+                          | undefined;
+                      }>
+                    | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type AspectProviderDataFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  callouts?:
+    | Array<{
+        __typename?: 'Callout';
+        id: string;
+        type: CalloutType;
+        aspects?:
+          | Array<{
+              __typename?: 'Aspect';
+              id: string;
+              nameID: string;
+              displayName: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            }>
+          | undefined;
+      }>
+    | undefined;
+};
+
+export type AspectProvidedFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  nameID: string;
+  displayName: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+};
+
+export type CalloutAspectInfoFragment = {
+  __typename?: 'Collaboration';
+  id: string;
+  callouts?:
+    | Array<{
+        __typename?: 'Callout';
+        id: string;
+        nameID: string;
+        type: CalloutType;
+        aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
+      }>
+    | undefined;
+};
+
+export type PostCommentInAspectMutationVariables = Exact<{
+  messageData: CommentsSendMessageInput;
+}>;
+
+export type PostCommentInAspectMutation = {
+  __typename?: 'Mutation';
+  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+};
+
+export type RemoveCommentFromAspectMutationVariables = Exact<{
+  messageData: CommentsRemoveMessageInput;
+}>;
+
+export type RemoveCommentFromAspectMutation = { __typename?: 'Mutation'; removeComment: string };
+
+export type AspectCardFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  nameID: string;
+  displayName: string;
+  type: string;
+  description: string;
+  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+};
+
+export type ContributeTabAspectFragment = {
+  __typename?: 'Aspect';
+  id: string;
+  nameID: string;
+  displayName: string;
+  type: string;
+  description: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+};
+
+export type CreateAspectMutationVariables = Exact<{
+  aspectData: CreateAspectOnCalloutInput;
+}>;
+
+export type CreateAspectMutation = {
+  __typename?: 'Mutation';
+  createAspectOnCallout: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    displayName: string;
+    description: string;
+    type: string;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
+export type CreateReferenceOnAspectMutationVariables = Exact<{
+  referenceInput: CreateReferenceOnAspectInput;
+}>;
+
+export type CreateReferenceOnAspectMutation = {
+  __typename?: 'Mutation';
+  createReferenceOnAspect: { __typename?: 'Reference'; id: string; name: string; uri: string; description: string };
+};
+
+export type DeleteAspectMutationVariables = Exact<{
+  input: DeleteAspectInput;
+}>;
+
+export type DeleteAspectMutation = { __typename?: 'Mutation'; deleteAspect: { __typename?: 'Aspect'; id: string } };
 
 export type AspectCommentsMessageReceivedSubscriptionVariables = Exact<{
   aspectID: Scalars['UUID'];
@@ -10964,9 +10068,11 @@ export type AspectTemplatesOnCalloutCreationQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    id: string;
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           aspectTemplates: Array<{
             __typename?: 'AspectTemplate';
             id: string;
@@ -10985,9 +10091,11 @@ export type CanvasTemplatesOnCalloutCreationQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    id: string;
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           canvasTemplates: Array<{
             __typename?: 'CanvasTemplate';
             id: string;
@@ -11009,9 +10117,11 @@ export type AspectTemplateValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    id: string;
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           aspectTemplate?:
             | {
                 __typename?: 'AspectTemplate';
@@ -11040,9 +10150,11 @@ export type CanvasTemplateValueQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    id: string;
     templates?:
       | {
           __typename?: 'TemplatesSet';
+          id: string;
           canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
         }
       | undefined;
@@ -11078,7 +10190,7 @@ export type HubCollaborationIdQueryVariables = Exact<{
 
 export type HubCollaborationIdQuery = {
   __typename?: 'Query';
-  hub: { __typename?: 'Hub'; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
+  hub: { __typename?: 'Hub'; id: string; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
 };
 
 export type ChallengeCollaborationIdQueryVariables = Exact<{
@@ -11139,6 +10251,87 @@ export type DeleteCalloutMutationVariables = Exact<{
 }>;
 
 export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
+
+export type ChallengeCardFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  displayName: string;
+  nameID: string;
+  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        tagline?: string | undefined;
+        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+      }
+    | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+};
+
+export type ChallengeInfoFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  displayName: string;
+  nameID: string;
+  community?:
+    | {
+        __typename?: 'Community';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }
+    | undefined;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        tagline?: string | undefined;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+        references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
+      }
+    | undefined;
+};
+
+export type ChallengeSearchResultFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  displayName: string;
+  nameID: string;
+  hubID: string;
+  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        tagline?: string | undefined;
+        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+      }
+    | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+};
+
+export type NewChallengeFragment = { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 
 export type CreateChallengeMutationVariables = Exact<{
   input: CreateChallengeOnHubInput;
@@ -11654,6 +10847,38 @@ export type CommunityDetailsFragment = {
           | undefined;
       }
     | undefined;
+};
+
+export type HubCommunityQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCommunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          displayName: string;
+          communication?:
+            | {
+                __typename?: 'Communication';
+                id: string;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type OpportunityCommunityQueryVariables = Exact<{
@@ -12299,6 +11524,198 @@ export type ContributingUsersQuery = {
   };
 };
 
+export type CommunityMessagesFragment = {
+  __typename?: 'Community';
+  id: string;
+  communication?:
+    | {
+        __typename?: 'Communication';
+        id: string;
+        updates?:
+          | {
+              __typename?: 'Updates';
+              id: string;
+              messages?:
+                | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+                | undefined;
+            }
+          | undefined;
+      }
+    | undefined;
+};
+
+export type MessageDetailsFragment = {
+  __typename?: 'Message';
+  id: string;
+  sender: string;
+  message: string;
+  timestamp: number;
+};
+
+export type CommunityPageMembersFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  displayName: string;
+  email: string;
+  agent?:
+    | {
+        __typename?: 'Agent';
+        id: string;
+        credentials?:
+          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          | undefined;
+      }
+    | undefined;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        description?: string | undefined;
+        location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+      }
+    | undefined;
+};
+
+export type CreateGroupOnCommunityMutationVariables = Exact<{
+  input: CreateUserGroupInput;
+}>;
+
+export type CreateGroupOnCommunityMutation = {
+  __typename?: 'Mutation';
+  createGroupOnCommunity: { __typename?: 'UserGroup'; id: string; name: string };
+};
+
+export type AllCommunitiesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AllCommunitiesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
+    opportunities?:
+      | Array<{
+          __typename?: 'Opportunity';
+          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
+  };
+};
+
+export type AllCommunityDetailsFragment = { __typename?: 'Community'; id: string; displayName: string };
+
+export type ChallengesWithCommunityQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengesWithCommunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          displayName: string;
+          community?: { __typename?: 'Community'; id: string; displayName: string } | undefined;
+        }>
+      | undefined;
+  };
+};
+
+export type CommunityGroupsQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityGroupsQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          displayName: string;
+          groups?: Array<{ __typename?: 'UserGroup'; id: string; name: string }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CommunityMembersQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityMembersQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          memberUsers?: Array<{ __typename?: 'User'; id: string; displayName: string }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CommunityMessagesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  communityId: Scalars['UUID'];
+}>;
+
+export type CommunityMessagesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    community?:
+      | {
+          __typename?: 'Community';
+          id: string;
+          communication?:
+            | {
+                __typename?: 'Communication';
+                id: string;
+                updates?:
+                  | {
+                      __typename?: 'Updates';
+                      id: string;
+                      messages?:
+                        | Array<{
+                            __typename?: 'Message';
+                            id: string;
+                            sender: string;
+                            message: string;
+                            timestamp: number;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type AvailableUsersQueryVariables = Exact<{
   first: Scalars['Int'];
   after?: InputMaybe<Scalars['UUID']>;
@@ -12649,19 +12066,60 @@ export type OpportunityCommunityMembersQuery = {
   };
 };
 
-export type ContributeTabAspectFragment = {
-  __typename?: 'Aspect';
+export type ContextDetailsFragment = {
+  __typename?: 'Context';
   id: string;
-  nameID: string;
-  displayName: string;
-  type: string;
-  description: string;
-  authorization?:
-    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+  tagline?: string | undefined;
+  background?: string | undefined;
+  vision?: string | undefined;
+  impact?: string | undefined;
+  who?: string | undefined;
+  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+  references?:
+    | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
     | undefined;
-  banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+  visuals?:
+    | Array<{
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: string;
+        allowedTypes: Array<string>;
+        aspectRatio: number;
+        maxHeight: number;
+        maxWidth: number;
+        minHeight: number;
+        minWidth: number;
+      }>
+    | undefined;
+  authorization?:
+    | {
+        __typename?: 'Authorization';
+        id: string;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        anonymousReadAccess: boolean;
+      }
+    | undefined;
+};
+
+export type ContextDetailsProviderFragment = {
+  __typename?: 'Context';
+  id: string;
+  tagline?: string | undefined;
+  background?: string | undefined;
+  vision?: string | undefined;
+  impact?: string | undefined;
+  who?: string | undefined;
+  visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+};
+
+export type CreateReferenceOnContextMutationVariables = Exact<{
+  input: CreateReferenceOnContextInput;
+}>;
+
+export type CreateReferenceOnContextMutation = {
+  __typename?: 'Mutation';
+  createReferenceOnContext: { __typename?: 'Reference'; id: string; name: string; uri: string; description: string };
 };
 
 export type HubProviderQueryVariables = Exact<{
@@ -13331,6 +12789,137 @@ export type HubsQuery = {
   }>;
 };
 
+export type OpportunityProviderQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityProviderQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      displayName: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+      context?:
+        | {
+            __typename?: 'Context';
+            id: string;
+            tagline?: string | undefined;
+            authorization?:
+              | {
+                  __typename?: 'Authorization';
+                  id: string;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  anonymousReadAccess: boolean;
+                }
+              | undefined;
+            visuals?:
+              | Array<{
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: string;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                }>
+              | undefined;
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+          }
+        | undefined;
+      community?:
+        | {
+            __typename?: 'Community';
+            id: string;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type OpportunityProviderFragment = {
+  __typename?: 'Opportunity';
+  id: string;
+  nameID: string;
+  displayName: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        tagline?: string | undefined;
+        authorization?:
+          | {
+              __typename?: 'Authorization';
+              id: string;
+              myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+              anonymousReadAccess: boolean;
+            }
+          | undefined;
+        visuals?:
+          | Array<{
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }>
+          | undefined;
+        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+      }
+    | undefined;
+  community?:
+    | {
+        __typename?: 'Community';
+        id: string;
+        authorization?:
+          | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+          | undefined;
+      }
+    | undefined;
+};
+
+export type NewOpportunityFragment = { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
+
+export type OpportunitySearchResultFragment = {
+  __typename?: 'Opportunity';
+  id: string;
+  displayName: string;
+  nameID: string;
+  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+  context?:
+    | {
+        __typename?: 'Context';
+        id: string;
+        tagline?: string | undefined;
+        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+      }
+    | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string; hubID: string } | undefined;
+};
+
 export type CreateOpportunityMutationVariables = Exact<{
   input: CreateOpportunityInput;
 }>;
@@ -13765,6 +13354,139 @@ export type AssociatedOrganizationDetailsFragment = {
   activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
 };
 
+export type OrganizationCardFragment = {
+  __typename?: 'Organization';
+  id: string;
+  nameID: string;
+  displayName: string;
+  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    description?: string | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+};
+
+export type OrganizationSearchResultFragment = {
+  __typename?: 'Organization';
+  id: string;
+  displayName: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+  };
+};
+
+export type OrganizationDetailsFragment = {
+  __typename?: 'Organization';
+  id: string;
+  displayName: string;
+  nameID: string;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    description?: string | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+  };
+};
+
+export type OrganizationInfoFragment = {
+  __typename?: 'Organization';
+  id: string;
+  nameID: string;
+  displayName: string;
+  contactEmail?: string | undefined;
+  domain?: string | undefined;
+  website?: string | undefined;
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    description?: string | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+    references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+  };
+  members?:
+    | Array<{
+        __typename?: 'User';
+        id: string;
+        nameID: string;
+        displayName: string;
+        agent?:
+          | {
+              __typename?: 'Agent';
+              id: string;
+              credentials?:
+                | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+                | undefined;
+            }
+          | undefined;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+              avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+              tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
+};
+
+export type OrganizationProfileInfoFragment = {
+  __typename?: 'Organization';
+  id: string;
+  nameID: string;
+  displayName: string;
+  contactEmail?: string | undefined;
+  domain?: string | undefined;
+  legalEntityName?: string | undefined;
+  website?: string | undefined;
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    description?: string | undefined;
+    avatar?:
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: string;
+          allowedTypes: Array<string>;
+          aspectRatio: number;
+          maxHeight: number;
+          maxWidth: number;
+          minHeight: number;
+          minWidth: number;
+        }
+      | undefined;
+    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+    references?:
+      | Array<{ __typename?: 'Reference'; id: string; name: string; uri: string; description: string }>
+      | undefined;
+    tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+  };
+};
+
+export type CreateGroupOnOrganizationMutationVariables = Exact<{
+  input: CreateUserGroupInput;
+}>;
+
+export type CreateGroupOnOrganizationMutation = {
+  __typename?: 'Mutation';
+  createGroupOnOrganization: { __typename?: 'UserGroup'; id: string; name: string };
+};
+
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInput;
 }>;
@@ -14107,6 +13829,48 @@ export type UserCardFragment = {
     | undefined;
 };
 
+export type GroupDetailsFragment = { __typename?: 'UserGroup'; id: string; name: string };
+
+export type GroupInfoFragment = {
+  __typename?: 'UserGroup';
+  id: string;
+  name: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        description?: string | undefined;
+        avatar?:
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: string;
+              allowedTypes: Array<string>;
+              aspectRatio: number;
+              maxHeight: number;
+              maxWidth: number;
+              minHeight: number;
+              minWidth: number;
+            }
+          | undefined;
+        references?:
+          | Array<{ __typename?: 'Reference'; id: string; uri: string; name: string; description: string }>
+          | undefined;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+      }
+    | undefined;
+};
+
+export type GroupMembersFragment = {
+  __typename?: 'User';
+  id: string;
+  displayName: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
 export type UserAgentFragment = {
   __typename?: 'User';
   agent?:
@@ -14216,6 +13980,8 @@ export type UserRolesDetailsFragment = {
       }>
     | undefined;
 };
+
+export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
 
 export type AssignUserToGroupMutationVariables = Exact<{
   input: AssignUserGroupMemberInput;
@@ -14345,6 +14111,15 @@ export type CreateUserNewRegistrationMutation = {
   };
 };
 
+export type DeleteGroupMutationVariables = Exact<{
+  input: DeleteUserGroupInput;
+}>;
+
+export type DeleteGroupMutation = {
+  __typename?: 'Mutation';
+  deleteUserGroup: { __typename?: 'UserGroup'; id: string; name: string };
+};
+
 export type DeleteUserMutationVariables = Exact<{
   input: DeleteUserInput;
 }>;
@@ -14370,6 +14145,29 @@ export type RemoveUserFromGroupMutation = {
           lastName: string;
           email: string;
         }>
+      | undefined;
+  };
+};
+
+export type UpdateGroupMutationVariables = Exact<{
+  input: UpdateUserGroupInput;
+}>;
+
+export type UpdateGroupMutation = {
+  __typename?: 'Mutation';
+  updateUserGroup: {
+    __typename?: 'UserGroup';
+    id: string;
+    name: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          description?: string | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          references?: Array<{ __typename?: 'Reference'; uri: string; name: string; description: string }> | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; name: string; tags: Array<string> }> | undefined;
+        }
       | undefined;
   };
 };
@@ -14435,6 +14233,61 @@ export type UpdatePreferenceOnUserMutationVariables = Exact<{
 export type UpdatePreferenceOnUserMutation = {
   __typename?: 'Mutation';
   updatePreferenceOnUser: { __typename?: 'Preference'; id: string; value: string };
+};
+
+export type RolesUserQueryVariables = Exact<{
+  input: RolesUserInput;
+}>;
+
+export type RolesUserQuery = {
+  __typename?: 'Query';
+  rolesUser: {
+    __typename?: 'ContributorRoles';
+    id: string;
+    hubs: Array<{
+      __typename?: 'RolesResultHub';
+      id: string;
+      nameID: string;
+      hubID: string;
+      displayName: string;
+      roles: Array<string>;
+      challenges: Array<{
+        __typename?: 'RolesResultCommunity';
+        id: string;
+        nameID: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+      opportunities: Array<{
+        __typename?: 'RolesResultCommunity';
+        id: string;
+        nameID: string;
+        displayName: string;
+        roles: Array<string>;
+      }>;
+      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
+    }>;
+    organizations: Array<{
+      __typename?: 'RolesResultOrganization';
+      id: string;
+      nameID: string;
+      displayName: string;
+      roles: Array<string>;
+      userGroups: Array<{ __typename?: 'RolesResult'; id: string; nameID: string; displayName: string }>;
+    }>;
+    applications?:
+      | Array<{
+          __typename?: 'ApplicationForRoleResult';
+          id: string;
+          communityID: string;
+          displayName: string;
+          state: string;
+          hubID: string;
+          challengeID?: string | undefined;
+          opportunityID?: string | undefined;
+        }>
+      | undefined;
+  };
 };
 
 export type UserQueryVariables = Exact<{
@@ -14722,6 +14575,11 @@ export type UserProfileQuery = {
       | undefined;
   };
   authorization: { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined };
+};
+
+export type MyPrivilegesFragment = {
+  __typename?: 'Authorization';
+  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
 };
 
 export type UserProfileApplicationsQueryVariables = Exact<{

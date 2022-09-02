@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
-import { Button, Tabs } from '@mui/material';
-import { Close, DashboardOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Box, IconButton, Tabs } from '@mui/material';
+import { DashboardOutlined, SettingsOutlined } from '@mui/icons-material';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import NavigationTab from '../../../components/core/NavigationTab/NavigationTab';
 import { useAspect } from '../context/AspectProvider';
 import { AspectDialogSection } from './AspectDialogSection';
@@ -40,9 +41,11 @@ const AspectTabs: FC<AspectTabsProps> = ({ currentTab, onClose }) => {
           state={{ keepScroll: true }}
         />
       )}
-      <Button sx={{ minWidth: 4, marginLeft: -1 }} onClick={onClose}>
-        <Close />
-      </Button>
+      <Box sx={{ display: 'flex', minWidth: 4, marginLeft: -1 }}>
+        <IconButton onClick={onClose}>
+          <CloseOutlinedIcon />
+        </IconButton>
+      </Box>
     </RightAlignedTabs>
   );
 };

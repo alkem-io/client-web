@@ -11,3 +11,7 @@ query userProfile($input: UUID_NAMEID_EMAIL!) {
     ...MyPrivileges
   }
 }
+
+fragment MyPrivileges on Authorization {
+    myPrivileges
+}
