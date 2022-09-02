@@ -2,9 +2,9 @@ import { Box, Container } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import KratosUI from '../../../../components/Authentication/KratosUI';
-import Loading from '../../../../components/core/Loading/Loading';
-import Typography from '../../../../components/core/Typography';
+import KratosUI from '../components/KratosUI';
+import Loading from '../../../../common/components/core/Loading/Loading';
+import Typography from '../../../../common/components/core/Typography';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 
 interface RegisterPageProps {

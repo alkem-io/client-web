@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Skeleton } from '@mui/material';
-import CanvasWhiteboard from '../../../components/composite/entities/Canvas/CanvasWhiteboard';
+import CanvasWhiteboard from '../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 
 const CanvasPreview: FC<{ value: string; loading: boolean | undefined }> = ({ value, loading }) => {
   if (loading) {

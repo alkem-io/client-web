@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
-import EditMemberUsers from '../../../../../components/Admin/Community/EditMembersUsers';
+import EditMemberUsers from '../../../components/Community/EditMembersUsers';
 import OpportunityMembers from '../../../../../containers/opportunity/OpportunityMembers';
 import { useOpportunity } from '../../../../../hooks';
 import { AuthorizationCredential } from '../../../../../models/graphql-schema';

@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import AspectForm, {
   AspectFormOutput,
   AspectFormInput,
-} from '../../../components/composite/aspect/AspectForm/AspectForm';
+} from '../../../common/components/composite/aspect/AspectForm/AspectForm';
 import AspectSettingsContainer from '../../../containers/aspect/AspectSettingsContainer/AspectSettingsContainer';
 import { useUrlParams } from '../../../hooks';
 import { AspectSettingsFragment, Visual } from '../../../models/graphql-schema';

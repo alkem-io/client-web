@@ -5,7 +5,7 @@ import { AdminLifecycleTemplateFragment } from '../../../../models/graphql-schem
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
-import Markdown from '../../../../components/core/Markdown';
+import Markdown from '../../../../common/components/core/Markdown';
 import { SafeLifecycleVisualizer } from './SafeLifecycleVisualizer';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({

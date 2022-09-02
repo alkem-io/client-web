@@ -13,12 +13,12 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../common/utils/buildContext';
-import Button from '../../../components/core/Button';
-import Typography from '../../../components/core/Typography';
+import Button from '../../../common/components/core/Button';
+import Typography from '../../../common/components/core/Typography';
 import ProfileFormWithContext, {
   ProfileFormValuesType,
-} from '../../../components/composite/forms/ProfileFormWithContext';
-import FormMode from '../../../components/Admin/FormMode';
+} from '../../../common/components/composite/forms/ProfileFormWithContext';
+import FormMode from '../../admin/components/FormMode';
 import { formatDatabaseLocation } from '../../../domain/location/LocationUtils';
 import { LifecycleType } from '../../../models/graphql-schema';
 

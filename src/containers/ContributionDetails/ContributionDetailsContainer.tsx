@@ -1,5 +1,5 @@
 import React, { FC, useMemo } from 'react';
-import { ContributionCardV2Details } from '../../components/composite/common/cards';
+import { ContributionCardV2Details } from '../../common/components/composite/common/cards';
 import {
   useChallengeContributionDetailsQuery,
   useHubContributionDetailsQuery,

@@ -2,15 +2,15 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
-import DashboardSectionAspects from '../../../components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
-import ApplicationButton from '../../../components/composite/common/ApplicationButton/ApplicationButton';
-import OpportunityCard from '../../../components/composite/common/cards/OpportunityCard/OpportunityCard';
-import References from '../../../components/composite/common/References/References';
-import ContextSectionIcon from '../../../components/composite/sections/ContextSectionIcon';
-import DashboardColumn from '../../../components/composite/sections/DashboardSection/DashboardColumn';
-import DashboardSection from '../../../components/composite/sections/DashboardSection/DashboardSection';
-import { Loading } from '../../../components/core';
-import Markdown from '../../../components/core/Markdown';
+import DashboardSectionAspects from '../../../common/components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
+import ApplicationButton from '../../../common/components/composite/common/ApplicationButton/ApplicationButton';
+import OpportunityCard from '../../../common/components/composite/common/cards/OpportunityCard/OpportunityCard';
+import References from '../../../common/components/composite/common/References/References';
+import ContextSectionIcon from '../../../common/components/composite/sections/ContextSectionIcon';
+import DashboardColumn from '../../../common/components/composite/sections/DashboardSection/DashboardColumn';
+import DashboardSection from '../../../common/components/composite/sections/DashboardSection/DashboardSection';
+import { Loading } from '../../../common/components/core';
+import Markdown from '../../../common/components/core/Markdown';
 import ApplicationButtonContainer from '../../../containers/application/ApplicationButtonContainer';
 import {
   ChallengeContainerEntities,

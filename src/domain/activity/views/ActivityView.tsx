@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Grid, Typography } from '@mui/material';
-import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
-import CircleTag from '../../../components/core/CircleTag';
+import { ActivityItem } from '../../../common/components/composite/common/ActivityPanel/Activities';
+import CircleTag from '../../../common/components/core/CircleTag';
 import Skeleton from '@mui/material/Skeleton';
 
 export interface ActivityViewProps {

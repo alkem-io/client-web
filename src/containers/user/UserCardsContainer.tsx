@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { UserCardProps } from '../../components/composite/common/cards';
+import { UserCardProps } from '../../common/components/composite/common/cards';
 import { useUserCardRoleName } from '../../hooks';
 import { useUserCardsContainerQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';

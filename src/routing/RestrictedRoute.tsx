@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import Loading from '../components/core/Loading/Loading';
+import Loading from '../common/components/core/Loading/Loading';
 import { useAuthenticationContext } from '../core/auth/authentication/hooks/useAuthenticationContext';
 import { useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';

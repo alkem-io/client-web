@@ -1,14 +1,14 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HubEditFormValuesType } from '../../../../components/Admin/HubEditForm';
-import Button from '../../../../components/core/Button';
+import { HubEditFormValuesType } from '../../../admin/components/HubEditForm';
+import Button from '../../../../common/components/core/Button';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../hooks';
 import { useHub } from '../../../../hooks';
 import { useNotification } from '../../../../hooks';
 import { updateContextInput } from '../../../../common/utils/buildContext';
 import { Box, Container, Grid } from '@mui/material';
-import HubContextForm from '../../../../components/Admin/HubContextForm';
+import HubContextForm from '../../../admin/components/HubContextForm';
 import { formatDatabaseLocation } from '../../../../domain/location/LocationUtils';
 
 export const HubContext: FC = () => {

@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import FormMode from '../../../../components/Admin/FormMode';
+import FormMode from '../../components/FormMode';
 import { PageProps, Error404 } from '../../../../pages';
 import { nameOfUrl } from '../../../../routing/url-params';
 import { ChallengeProvider } from '../../../challenge/context/ChallengeProvider';

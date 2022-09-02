@@ -1,9 +1,9 @@
 import { Box, Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import HubEditForm, { HubEditFormValuesType } from '../../../../components/Admin/HubEditForm';
-import Button from '../../../../components/core/Button';
-import Typography from '../../../../components/core/Typography';
+import HubEditForm, { HubEditFormValuesType } from '../../components/HubEditForm';
+import Button from '../../../../common/components/core/Button';
+import Typography from '../../../../common/components/core/Typography';
 import AdminLayout from '../../toplevel/AdminLayout';
 import { AdminSection } from '../../toplevel/constants';
 import { formatDatabaseLocation } from '../../../location/LocationUtils';

@@ -6,7 +6,7 @@ import SectionHeader from '../Section/SectionHeader';
 import ContributorCard, {
   ContributorCardProps,
   ContributorCardSkeleton,
-} from '../../../../components/composite/common/cards/ContributorCard/ContributorCard';
+} from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';

@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UserCardProps } from '../../components/composite/common/cards';
-import { OrganizationCardProps } from '../../components/composite/common/cards/Organization/OrganizationCard';
+import { UserCardProps } from '../../common/components/composite/common/cards';
+import { OrganizationCardProps } from '../../common/components/composite/common/cards/Organization/OrganizationCard';
 import SearchTagsInput from '../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import ContributorsSearchContainer from '../../containers/ContributorsSearch/ContributorsSearchContainer';

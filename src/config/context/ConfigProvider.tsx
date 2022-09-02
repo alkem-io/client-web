@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { ApolloError } from '@apollo/client';
 import queryRequest from '../../common/utils/query-request/query-request';
-import { Loading } from '../../components/core';
+import { Loading } from '../../common/components/core';
 import { ConfigurationDocument } from '../../hooks/generated/graphql';
 import { ConfigurationQuery } from '../../models/graphql-schema';
 import { logger } from '../../services/logging/winston/logger';

@@ -1,14 +1,14 @@
 import { Box, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import OpportunityCard from '../../../components/composite/common/cards/OpportunityCard/OpportunityCard';
-import { Loading } from '../../../components/core';
-import CardFilter from '../../../components/core/card-filter/CardFilter';
+import OpportunityCard from '../../../common/components/composite/common/cards/OpportunityCard/OpportunityCard';
+import { Loading } from '../../../common/components/core';
+import CardFilter from '../../../common/components/core/card-filter/CardFilter';
 import {
   entityTagsValueGetter,
   entityValueGetter,
-} from '../../../components/core/card-filter/value-getters/entity-value-getter';
-import ErrorBlock from '../../../components/core/ErrorBlock';
+} from '../../../common/components/core/card-filter/value-getters/entity-value-getter';
+import ErrorBlock from '../../../common/components/core/ErrorBlock';
 import {
   ChallengeContainerEntities,
   ChallengeContainerState,

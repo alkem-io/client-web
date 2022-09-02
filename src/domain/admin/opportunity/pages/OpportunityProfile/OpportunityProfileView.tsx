@@ -2,8 +2,8 @@ import { Button, Grid, Typography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createContextInput, updateContextInput } from '../../../../../common/utils/buildContext';
-import FormMode from '../../../../../components/Admin/FormMode';
-import ProfileForm, { ProfileFormValues } from '../../../../../components/composite/forms/ProfileForm';
+import FormMode from '../../../components/FormMode';
+import ProfileForm, { ProfileFormValues } from '../../../../../common/components/composite/forms/ProfileForm';
 import { useNotification, useApolloErrorHandler, useChallenge, useUrlParams } from '../../../../../hooks';
 import {
   useCreateOpportunityMutation,

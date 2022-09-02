@@ -6,7 +6,7 @@ import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Type
 import AssociatedOrganizationsView from '../../organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import OrganizationCard, {
   OrganizationCardProps,
-} from '../../../components/composite/common/cards/Organization/OrganizationCard';
+} from '../../../common/components/composite/common/cards/Organization/OrganizationCard';
 import SectionHeader from '../../shared/components/Section/SectionHeader';
 import { buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';

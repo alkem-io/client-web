@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Loading } from '../../../components/core';
+import { Loading } from '../../../common/components/core';
 import { useUpdateNavigation, useUrlParams } from '../../../hooks';
 import { PageProps, Error404 } from '../../../pages';
 import PageBanner from '../../shared/components/PageHeader/PageBanner';

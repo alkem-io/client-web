@@ -1,9 +1,9 @@
 import React, { FC, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageProps } from '../../../../pages';
-import UserRemoveModal from '../../../../components/Admin/User/UserRemoveModal';
-import UserForm from '../../../../components/composite/forms/UserForm';
-import { Loading } from '../../../../components/core/Loading/Loading';
+import UserRemoveModal from '../../components/User/UserRemoveModal';
+import UserForm from '../../../../common/components/composite/forms/UserForm';
+import { Loading } from '../../../../common/components/core/Loading/Loading';
 import { useApolloErrorHandler, useNotification, useUpdateNavigation, useUrlParams } from '../../../../hooks';
 import {
   useCreateTagsetOnProfileMutation,

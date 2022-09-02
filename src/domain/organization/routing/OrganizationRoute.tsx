@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes } from 'react-router';
 import { useResolvedPath } from 'react-router-dom';
-import { Loading } from '../../../components/core';
+import { Loading } from '../../../common/components/core';
 import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
 import { useOrganization } from '../../../hooks';
 import { Error404, PageProps } from '../../../pages';

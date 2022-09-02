@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ApplicationButtonProps } from '../../components/composite/common/ApplicationButton/ApplicationButton';
+import { ApplicationButtonProps } from '../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import { useApolloErrorHandler, useChallenge, useHub, useUserContext } from '../../hooks';
 import {
   useCommunityUserPrivilegesQuery,

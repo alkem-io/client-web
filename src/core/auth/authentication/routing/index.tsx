@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { useGlobalState } from '../../../../hooks';
 import { Error404 } from '../../../../pages';
 import RestrictedRoute from '../../../../routing/RestrictedRoute';
-import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../../../state/global/ui/loginNavigationMachine';
+import { HIDE_LOGIN_NAVIGATION, SHOW_LOGIN_NAVIGATION } from '../../../state/global/ui/loginNavigationMachine';
 import AuthRequiredPage from '../pages/AuthRequiredPage';
 import ErrorRoute from './ErrorRoute';
 import LoginRoute from './LoginRoute';

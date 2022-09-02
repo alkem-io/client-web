@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { GraphQLError } from 'graphql';
-import { Severity } from '../../../state/global/notifications/notificationMachine';
+import { Severity } from '../../state/global/notifications/notificationMachine';
 import { useTranslation } from 'react-i18next';
 import { error as logError } from '../../../services/logging/sentry/log';
 import { useNotification } from '../../../hooks/useNotification';

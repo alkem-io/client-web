@@ -2,9 +2,9 @@ import { Button, Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
-import EditLifecycle from '../../../../../components/Admin/EditLifecycle';
-import ContextForm, { ContextFormValues } from '../../../../../components/composite/forms/ContextForm';
-import { Loading } from '../../../../../components/core';
+import EditLifecycle from '../../../components/EditLifecycle';
+import ContextForm, { ContextFormValues } from '../../../../../common/components/composite/forms/ContextForm';
+import { Loading } from '../../../../../common/components/core';
 import OpportunityLifecycleContainer from '../../../../../containers/opportunity/OpportunityLifecycleContainer';
 import { useNotification, useApolloErrorHandler, useUrlParams } from '../../../../../hooks';
 import {

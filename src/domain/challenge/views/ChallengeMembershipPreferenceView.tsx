@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { useTranslation } from 'react-i18next';
-import PreferenceSection from '../../../components/composite/common/PreferenceSection/PreferenceSection';
+import PreferenceSection from '../../../common/components/composite/common/PreferenceSection/PreferenceSection';
 import { Preference, ChallengePreferenceType } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 

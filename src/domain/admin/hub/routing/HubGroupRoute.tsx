@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { WithCommunity } from '../../../../components/Admin/Community/CommunityTypes';
+import { WithCommunity } from '../../components/Community/CommunityTypes';
 import { useUrlParams } from '../../../../hooks';
 import { useHubGroupQuery } from '../../../../hooks/generated/graphql';
 import { PageProps } from '../../../../pages';

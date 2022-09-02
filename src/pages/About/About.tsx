@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
-import Button from '../../components/core/Button';
-import Typography from '../../components/core/Typography';
+import Button from '../../common/components/core/Button';
+import Typography from '../../common/components/core/Typography';
 import { useUpdateNavigation } from '../../hooks';
 import useServerMetadata from '../../hooks/useServerMetadata';
 

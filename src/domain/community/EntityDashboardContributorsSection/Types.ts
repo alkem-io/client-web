@@ -1,5 +1,5 @@
 import { WithId } from '../../../types/WithId';
-import { ContributorCardProps } from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardProps } from '../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { AssociatedOrganizationDetailsFragment, DashboardLeadUserFragment } from '../../../models/graphql-schema';
 
 export interface EntityDashboardContributors {

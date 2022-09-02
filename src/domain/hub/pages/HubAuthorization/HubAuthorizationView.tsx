@@ -1,8 +1,8 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
 
-import EditMemberCredentials from '../../../../components/Admin/Authorization/EditMemberCredentials';
-import { Loading } from '../../../../components/core';
+import EditMemberCredentials from '../../../admin/components/Authorization/EditMemberCredentials';
+import { Loading } from '../../../../common/components/core';
 import { useApolloErrorHandler, useHub } from '../../../../hooks';
 import {
   refetchUsersWithCredentialsQuery,

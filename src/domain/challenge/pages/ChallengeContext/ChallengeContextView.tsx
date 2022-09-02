@@ -8,10 +8,10 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../hooks/generated/graphql';
 import { updateContextInput } from '../../../../common/utils/buildContext';
-import Button from '../../../../components/core/Button';
-import ContextForm, { ContextFormValues } from '../../../../components/composite/forms/ContextForm';
-import Loading from '../../../../components/core/Loading/Loading';
-import EditLifecycle from '../../../../components/Admin/EditLifecycle';
+import Button from '../../../../common/components/core/Button';
+import ContextForm, { ContextFormValues } from '../../../../common/components/composite/forms/ContextForm';
+import Loading from '../../../../common/components/core/Loading/Loading';
+import EditLifecycle from '../../../admin/components/EditLifecycle';
 import ChallengeLifecycleContainer from '../../../../containers/challenge/ChallengeLifecycleContainer';
 
 const ChallengeContextView: FC = () => {

@@ -1,8 +1,8 @@
 import React, { FC, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { useResolvedPath } from 'react-router-dom';
-import { UserForm } from '../../../components/composite/forms/UserForm';
-import { Loading } from '../../../components/core';
+import { UserForm } from '../../../common/components/composite/forms/UserForm';
+import { Loading } from '../../../common/components/core';
 import {
   useApolloErrorHandler,
   useNotification,

@@ -5,7 +5,7 @@ import { Preference, UserPreferenceType } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import { useUserContext } from '../../../hooks';
-import PreferenceSection from '../../../components/composite/common/PreferenceSection/PreferenceSection';
+import PreferenceSection from '../../../common/components/composite/common/PreferenceSection/PreferenceSection';
 
 export interface UserNotificationsPageViewEntities {
   preferences: Preference[];

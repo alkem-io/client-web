@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { WithCommunity } from '../../../../../components/Admin/Community/CommunityTypes';
+import { WithCommunity } from '../../../components/Community/CommunityTypes';
 import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
 import CommunityUpdatesPage from '../../../../../pages/Admin/Community/CommunityUpdatesPage';
 import { SettingsSection } from '../../../layout/EntitySettings/constants';

@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { GroupPage } from '../../../components/Admin';
-import { WithCommunity } from '../../../components/Admin/Community/CommunityTypes';
-import EditMembersPage from '../../../components/Admin/Group/EditMembersPage';
-import { Loading } from '../../../components/core';
+import { GroupPage } from '../components';
+import { WithCommunity } from '../components/Community/CommunityTypes';
+import EditMembersPage from '../components/Group/EditMembersPage';
+import { Loading } from '../../../common/components/core';
 import { UserGroup } from '../../../models/graphql-schema';
 import { Error404 } from '../../../pages';
 import { PageProps } from '../../../pages/common';

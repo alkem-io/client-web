@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import { Accordion } from '../../../../components/composite/common/Accordion/Accordion';
-import GroupBy from '../../../../components/core/GroupBy/GroupBy';
+import { Accordion } from '../../../../common/components/composite/common/Accordion/Accordion';
+import GroupBy from '../../../../common/components/core/GroupBy/GroupBy';
 import ChallengeExplorerSearchContainer from '../../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
 import ChallengeExplorerSearchEnricherContainer from '../../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
 import HubNameResolver from '../../../../containers/hub/HubNameResolver';
 import { ChallengeExplorerSearchResultFragment } from '../../../../models/graphql-schema';
-import ChallengeCard from '../../../../components/composite/common/cards/ChallengeCard/ChallengeCard';
+import ChallengeCard from '../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 
 export type ChallengeExplorerGroupByType = 'hub';

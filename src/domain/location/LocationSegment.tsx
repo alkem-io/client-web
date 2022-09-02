@@ -1,8 +1,8 @@
 import { Grid, Typography } from '@mui/material';
 import React, { FC, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import CountrySelect from '../../components/composite/forms/CountrySelect';
-import FormikInputField from '../../components/composite/forms/FormikInputField';
+import CountrySelect from '../../common/components/composite/forms/CountrySelect';
+import FormikInputField from '../../common/components/composite/forms/FormikInputField';
 import FormRow from '../shared/layout/FormLayout';
 
 interface LocationSegmentProps {

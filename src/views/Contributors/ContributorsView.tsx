@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Accordion } from '../../components/composite/common/Accordion/Accordion';
+import { Accordion } from '../../common/components/composite/common/Accordion/Accordion';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import OrganizationCard, {
   OrganizationCardProps,
-} from '../../components/composite/common/cards/Organization/OrganizationCard';
-import { UserCard, UserCardProps } from '../../components/composite/common/cards';
+} from '../../common/components/composite/common/cards/Organization/OrganizationCard';
+import { UserCard, UserCardProps } from '../../common/components/composite/common/cards';
 import { Grid } from '@mui/material';
 import { ApolloError } from '@apollo/client';
 

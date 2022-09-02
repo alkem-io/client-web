@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 
 import { PageProps } from '../../../../pages';
-import ListPage from '../../../../components/Admin/ListPage';
-import { SearchableListItem } from '../../../../components/Admin/SearchableList';
-import Loading from '../../../../components/core/Loading/Loading';
+import ListPage from '../../components/ListPage';
+import { SearchableListItem } from '../../components/SearchableList';
+import Loading from '../../../../common/components/core/Loading/Loading';
 import {
   refetchOpportunitiesQuery,
   useDeleteOpportunityMutation,

@@ -2,9 +2,9 @@ import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
-import LifecycleState from '../../../components/composite/entities/Lifecycle/LifecycleState';
-import ContextSection from '../../../components/composite/sections/ContextSection';
+import { ActivityItem } from '../../../common/components/composite/common/ActivityPanel/Activities';
+import LifecycleState from '../../../common/components/composite/entities/Lifecycle/LifecycleState';
+import ContextSection from '../../../common/components/composite/sections/ContextSection';
 import {
   ContextTabFragment,
   Tagset,

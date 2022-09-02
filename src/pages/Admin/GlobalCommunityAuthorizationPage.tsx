@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import EditMemberCredentials from '../../components/Admin/Authorization/EditMemberCredentials';
+import EditMemberCredentials from '../../domain/admin/components/Authorization/EditMemberCredentials';
 import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,

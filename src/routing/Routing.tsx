@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
-import App from '../components/composite/layout/App/App';
+import App from '../common/components/composite/layout/App/App';
 import { CommunityContextProvider } from '../domain/community/CommunityContext';
 import { HubContextProvider } from '../domain/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../domain/organization/context/OrganizationProvider';

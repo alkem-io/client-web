@@ -1,4 +1,4 @@
-import { TabDefinition } from '../../../../components/core/PageTabs/PageTabs';
+import { TabDefinition } from '../../../../common/components/core/PageTabs/PageTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';

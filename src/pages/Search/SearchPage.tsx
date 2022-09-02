@@ -15,17 +15,17 @@ import {
   OpportunitySearchCard,
   OrganizationSearchCard,
   UserCard,
-} from '../../components/composite/search';
-import { Loading } from '../../components/core';
-import { CardContainer } from '../../components/core/CardContainer';
-import MultipleSelect, { MultiSelectElement } from '../../components/core/MultipleSelect';
-import Section, { Header as SectionHeader, SubHeader } from '../../components/core/Section';
-import Typography from '../../components/core/Typography';
+} from '../../common/components/composite/search';
+import { Loading } from '../../common/components/core';
+import { CardContainer } from '../../common/components/core/CardContainer';
+import MultipleSelect, { MultiSelectElement } from '../../common/components/core/MultipleSelect';
+import Section, { Header as SectionHeader, SubHeader } from '../../common/components/core/Section';
+import Typography from '../../common/components/core/Typography';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../../models/graphql-schema';
 import { PageProps } from '../common';
-import { RouterLink } from '../../components/core/RouterLink';
+import { RouterLink } from '../../common/components/core/RouterLink';
 import { AUTH_LOGIN_PATH } from '../../models/constants';
 
 const useStyles = makeStyles(() => ({

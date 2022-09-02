@@ -3,8 +3,8 @@ import { Tabs } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import NavigationTab from '../../../components/core/NavigationTab/NavigationTab';
-import NavigationTabs from '../../../components/core/NavigationTab/NavigationTabs';
+import NavigationTab from '../../../common/components/core/NavigationTab/NavigationTab';
+import NavigationTabs from '../../../common/components/core/NavigationTab/NavigationTabs';
 import { useConfig } from '../../../hooks';
 import { FEATURE_SSI } from '../../../models/constants';
 

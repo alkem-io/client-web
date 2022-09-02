@@ -11,10 +11,10 @@ import {
 } from '../../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../../common/utils/buildContext';
-import Button from '../../../../components/core/Button';
-import Typography from '../../../../components/core/Typography';
-import FormMode from '../../../../components/Admin/FormMode';
-import ProfileForm, { ProfileFormValues } from '../../../../components/composite/forms/ProfileForm';
+import Button from '../../../../common/components/core/Button';
+import Typography from '../../../../common/components/core/Typography';
+import FormMode from '../../../admin/components/FormMode';
+import ProfileForm, { ProfileFormValues } from '../../../../common/components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../views/Visuals/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../domain/location/LocationUtils';
 

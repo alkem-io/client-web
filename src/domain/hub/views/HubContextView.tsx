@@ -1,9 +1,9 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
-import ApplicationButton from '../../../components/composite/common/ApplicationButton/ApplicationButton';
-import ContextSection from '../../../components/composite/sections/ContextSection';
+import { ActivityItem } from '../../../common/components/composite/common/ActivityPanel/Activities';
+import ApplicationButton from '../../../common/components/composite/common/ApplicationButton/ApplicationButton';
+import ContextSection from '../../../common/components/composite/sections/ContextSection';
 import ApplicationButtonContainer from '../../../containers/application/ApplicationButtonContainer';
 import { ContextTabFragment, Tagset, ActivityItemFragment, Context } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';

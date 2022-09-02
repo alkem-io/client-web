@@ -8,7 +8,7 @@ import { useChallenge, useHub } from '../../../hooks';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import ApplicationsAdminView from '../community/views/ApplicationsAdminView';
 import useChallengeApplications from './providers/useChallengeApplications';
-import { Loading } from '../../../components/core';
+import { Loading } from '../../../common/components/core';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
 import ChallengeCommunityAdminMembershipPreferencesSection from './ChallengeCommunityAdminMembershipPreferencesSection';
 import useChallengeLeadOrganizationAssignment from '../../community/useCommunityAssignment/useChallengeLeadOrganizationAssignment';
@@ -22,7 +22,7 @@ import {
   useChallengeCommunityMembersQuery,
 } from '../../../hooks/generated/graphql';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
-import EditMemberUsersWithPopup from '../../../components/Admin/Community/EditMemberUsersWithPopup';
+import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
 
 const ChallengeCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {

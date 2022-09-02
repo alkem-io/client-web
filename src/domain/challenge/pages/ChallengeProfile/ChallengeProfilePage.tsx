@@ -4,7 +4,7 @@ import { SettingsSection } from '../../../../domain/admin/layout/EntitySettings/
 import { useAppendBreadcrumb } from '../../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../../../../domain/admin/layout/EntitySettings/types';
 import ChallengeProfileView from './ChallengeProfileView';
-import FormMode from '../../../../components/Admin/FormMode';
+import FormMode from '../../../admin/components/FormMode';
 
 const ChallengeProfilePage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'profile' });

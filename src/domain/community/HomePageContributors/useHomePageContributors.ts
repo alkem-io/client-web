@@ -7,7 +7,7 @@ import { COUNTRIES_BY_CODE } from '../../../models/constants';
 import getActivityCount from '../../activity/utils/getActivityCount';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import { getVisualAvatar } from '../../../common/utils/visuals.utils';
-import { ContributorCardProps } from '../../../components/composite/common/cards/ContributorCard/ContributorCard';
+import { ContributorCardProps } from '../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { WithId } from '../../../types/WithId';
 
 const MAX_USERS_TO_SHOW = 12;

@@ -5,7 +5,7 @@ import { useAppendBreadcrumb } from '../../../hooks/usePathUtils';
 import { SettingsPageProps } from '../layout/EntitySettings/types';
 import { useHub, useOpportunity } from '../../../hooks';
 import { SectionSpacer } from '../../shared/components/Section/Section';
-import { Loading } from '../../../components/core';
+import { Loading } from '../../../common/components/core';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
 import useOpportunityLeadOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityLeadOrganizationAssignment';
@@ -20,7 +20,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
-import EditMemberUsersWithPopup from '../../../components/Admin/Community/EditMemberUsersWithPopup';
+import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
 
 const OpportunityCommunityAdminPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {
   useAppendBreadcrumb(paths, { name: 'community' });

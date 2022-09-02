@@ -2,9 +2,9 @@ import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import Button from '../../../../components/core/Button';
-import Typography from '../../../../components/core/Typography';
-import AuthenticationLayout from '../../../../components/composite/layout/AuthenticationLayout';
+import Button from '../../../../common/components/core/Button';
+import Typography from '../../../../common/components/core/Typography';
+import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
 import { Box } from '@mui/material';
 import EmailVerificationNotice from '../../../../components/EmailVerificationNotice/EmailVerificationNotice';
 

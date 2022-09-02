@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 
-import ListPage from '../../../../components/Admin/ListPage';
-import { SearchableListItem } from '../../../../components/Admin/SearchableList';
-import Loading from '../../../../components/core/Loading/Loading';
+import ListPage from '../../../admin/components/ListPage';
+import { SearchableListItem } from '../../../admin/components/SearchableList';
+import Loading from '../../../../common/components/core/Loading/Loading';
 import {
   refetchChallengesWithCommunityQuery,
   useChallengesWithCommunityQuery,

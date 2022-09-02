@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes } from 'react-router';
 import { Navigate, useResolvedPath } from 'react-router-dom';
-import Loading from '../../../components/core/Loading/Loading';
+import Loading from '../../../common/components/core/Loading/Loading';
 import { useChallenge } from '../../../hooks';
 import { ApplicationTypeEnum } from '../../../models/enums/application-type';
 import { Error404, PageProps } from '../../../pages';

@@ -7,9 +7,9 @@ import {
 } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useNotification } from '../../../../hooks';
 import { PageProps } from '../../../../pages';
-import Loading from '../../../../components/core/Loading/Loading';
-import ListPage from '../../../../components/Admin/ListPage';
-import { SearchableListItem, searchableListItemMapper } from '../../../../components/Admin/SearchableList';
+import Loading from '../../../../common/components/core/Loading/Loading';
+import ListPage from '../../components/ListPage';
+import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
 import { AuthorizationPrivilege } from '../../../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
