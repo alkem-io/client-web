@@ -1,8 +1,8 @@
 import { Box, BoxProps } from '@mui/material';
 import React, { FC } from 'react';
 import Typography from '@mui/material/Typography';
-import { fontWeight } from '../../../../components/core/Typography';
-import TagLabel from '../../../../components/composite/common/TagLabel/TagLabel';
+import { fontWeight } from '../../../../common/components/core/Typography';
+import TagLabel from '../../../../common/components/composite/common/TagLabel/TagLabel';
 
 export interface LabelAndTitleComponentProps {
   headerText: string;

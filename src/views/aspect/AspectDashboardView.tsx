@@ -7,11 +7,11 @@ import DashboardGenericSection from '../../domain/shared/components/DashboardSec
 import { Reference } from '../../models/graphql-schema';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
-import Markdown from '../../components/core/Markdown';
-import References from '../../components/composite/common/References/References';
-import TagLabel from '../../components/composite/common/TagLabel/TagLabel';
-import DashboardColumn from '../../components/composite/sections/DashboardSection/DashboardColumn';
+import References from '../../common/components/composite/common/References/References';
 import CommentsComponent, { CommentsComponentProps } from '../../domain/shared/components/Comments/CommentsComponent';
+import TagLabel from '../../common/components/composite/common/TagLabel/TagLabel';
+import DashboardColumn from '../../common/components/composite/sections/DashboardSection/DashboardColumn';
+import Markdown from '../../common/components/core/Markdown';
 
 export type AspectDashboardViewProps = {
   banner?: string;

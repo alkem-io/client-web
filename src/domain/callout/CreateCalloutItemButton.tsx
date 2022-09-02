@@ -1,7 +1,7 @@
 import { styled } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
-import LinkCard from '../../components/core/LinkCard/LinkCard';
-import Typography from '../../components/core/Typography';
+import LinkCard from '../../common/components/core/LinkCard/LinkCard';
+import Typography from '../../common/components/core/Typography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import React from 'react';
 

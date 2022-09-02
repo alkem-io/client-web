@@ -17,7 +17,7 @@ import {
 interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
   [CalloutType.Canvas]: 'canvases';
-  [CalloutType.Discussion]: 'comments';
+  [CalloutType.Comments]: 'comments';
 }
 
 export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
@@ -42,7 +42,7 @@ type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description
   (
     | CalloutTypesWithChildTypes[CalloutType.Card]
     | CalloutTypesWithChildTypes[CalloutType.Canvas]
-    | CalloutTypesWithChildTypes[CalloutType.Discussion]
+    | CalloutTypesWithChildTypes[CalloutType.Comments]
   ) & {
     draft: boolean;
     editable: boolean;

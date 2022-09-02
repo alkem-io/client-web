@@ -4,10 +4,10 @@ import Typography from '@mui/material/Typography';
 import LinkIcon from '@mui/icons-material/Link';
 import EmailIcon from '@mui/icons-material/MailOutline';
 import { OrganizationInfoFragment } from '../../models/graphql-schema';
-import { OrganizationVerifiedState } from '../../components/composite';
-import { Loading } from '../../components/core';
-import TagContainer from '../../components/core/TagContainer';
-import Tag from '../../components/core/Tag';
+import { OrganizationVerifiedState } from '../../common/components/composite';
+import { Loading } from '../../common/components/core';
+import TagContainer from '../../common/components/core/TagContainer';
+import Tag from '../../common/components/core/Tag';
 import { useTranslation } from 'react-i18next';
 
 interface Props {

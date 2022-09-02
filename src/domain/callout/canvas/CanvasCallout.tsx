@@ -5,7 +5,7 @@ import { WbIncandescentOutlined } from '@mui/icons-material';
 import { LinkWithState } from '../../shared/types/LinkWithState';
 import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
-import CanvasCreateDialog from '../../../components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
+import CanvasCreateDialog from '../../../common/components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
 import { CanvasProvider } from '../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';

@@ -1,7 +1,7 @@
 import Grid from '@mui/material/Grid';
 import LoadingUserCard from '../../shared/components/LoadingUserCard';
 import Typography from '@mui/material/Typography';
-import { UserCard } from '../../../components/composite/common/cards';
+import { UserCard } from '../../../common/components/composite/common/cards';
 import React from 'react';
 import { SearchableUserCardProps } from '../CommunityUpdates/CommunityUpdatesDashboardSection';
 import { useTranslation } from 'react-i18next';

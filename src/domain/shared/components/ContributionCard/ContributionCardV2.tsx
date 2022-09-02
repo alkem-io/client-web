@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Box, CardContent, CardMedia, Skeleton, Theme } from '@mui/material';
 import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
-import LinkCard from '../../../../components/core/LinkCard/LinkCard';
+import LinkCard from '../../../../common/components/core/LinkCard/LinkCard';
 import TagsComponent from '../TagsComponent/TagsComponent';
 import clsx from 'clsx';
 import LabelAndTitle, { LabelAndTitleComponentProps } from './LabelAndTitle';

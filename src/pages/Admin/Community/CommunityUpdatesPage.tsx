@@ -1,6 +1,6 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
-import { WithCommunity } from '../../../components/Admin/Community/CommunityTypes';
+import { WithCommunity } from '../../../domain/admin/components/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../containers/community-updates/CommunityUpdatesContainer';
 import { useHub } from '../../../hooks';
 import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';

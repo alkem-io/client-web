@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import MyHubsSection from '../../domain/hub/MyHubs/MyHubsSection';
 import { useTranslation } from 'react-i18next';
 import { UserContextValue } from '../../domain/user/providers/UserProvider/UserProvider';
-import Typography from '../../components/core/Typography';
+import Typography from '../../common/components/core/Typography';
 import { Grid } from '@mui/material';
 
 interface AuthenticatedUserHomeProps {

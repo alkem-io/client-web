@@ -7,9 +7,9 @@ import {
   useOpportunityNameIdQuery,
 } from '../../hooks/generated/graphql';
 import { Application } from '../../models/graphql-schema';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../utils/urlBuilders';
-import getApplicationTypeTranslationKey from '../../utils/application/getApplicationTypeTranslation';
-import { ApplicationWithType } from '../../utils/application/getApplicationWithType';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../../common/utils/urlBuilders';
+import getApplicationTypeTranslationKey from '../../common/utils/application/getApplicationTypeTranslation';
+import { ApplicationWithType } from '../../common/utils/application/getApplicationWithType';
 
 export type ApplicationDialogDetails = Pick<Application, 'questions' | 'createdDate' | 'updatedDate'>;
 

@@ -1,4 +1,4 @@
-import { Accordion, AccordionProps } from '../../../components/composite/common/Accordion/Accordion';
+import { Accordion, AccordionProps } from '../../../common/components/composite/common/Accordion/Accordion';
 import React from 'react';
 import CommunityContributorsView, { CommunityContributorsViewProps } from './CommunityContributorsView';
 

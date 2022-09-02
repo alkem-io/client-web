@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import DashboardGenericSection from '../DashboardSections/DashboardGenericSection';
-import DiscussionComment from '../../../../components/composite/common/Discussion/DiscussionComment';
 import { Comment } from '../../../../models/discussion/comment';
-import PostComment from '../../../../components/composite/common/Discussion/PostComment';
 import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 import { mapWithSeparator } from '../../utils/joinNodes';
 import SectionSpacer from '../Section/SectionSpacer';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
+import DiscussionComment from '../../../../common/components/composite/common/Discussion/DiscussionComment';
+import PostComment from '../../../../common/components/composite/common/Discussion/PostComment';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;

@@ -90,7 +90,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     onCalloutDelete={handleDelete}
                   />
                 );
-              case CalloutType.Discussion:
+              case CalloutType.Comments:
                 return (
                   <DiscussionCallout
                     key={callout.id}

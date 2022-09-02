@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import EditMemberUsers from '../../../../components/Admin/Community/EditMembersUsers';
+import EditMemberUsers from '../../components/Community/EditMembersUsers';
 import OrganizationMembers from '../../../../containers/organization/OrganizationMembers';
 import { useOrganization } from '../../../../hooks';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';

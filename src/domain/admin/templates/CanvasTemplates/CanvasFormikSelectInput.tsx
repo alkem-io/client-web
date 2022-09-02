@@ -4,7 +4,7 @@ import { SelectInputProps } from '@mui/material/Select/SelectInput';
 import { useField } from 'formik';
 import React, { MouseEventHandler, useMemo, useState } from 'react';
 import CanvasValueContainer from '../../../../containers/canvas/CanvasValueContainer';
-import CanvasWhiteboard from '../../../../components/composite/entities/Canvas/CanvasWhiteboard';
+import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
 import TranslationKey from '../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../../shared/i18n/ValidationMessageTranslation';
 

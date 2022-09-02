@@ -1,7 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { ContributorCardProps } from '../../components/composite/common/cards/ContributorCard/ContributorCard';
-import { isSocialLink, SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
+import { ContributorCardProps } from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import { isSocialLink, SocialLinkItem } from '../../common/components/composite/common/SocialLinks/SocialLinks';
 import { RoleType } from '../../domain/user/constants/RoleType';
 import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
 import { useRolesOrganizationQuery } from '../../hooks/generated/graphql';
@@ -11,7 +11,7 @@ import { ContainerChildProps } from '../../models/container';
 import { ContributionItem } from '../../models/entities/contribution';
 import { isSocialNetworkSupported, SocialNetworkEnum, toSocialNetworkEnum } from '../../models/enums/SocialNetworks';
 import { AuthorizationCredential, OrganizationInfoFragment, User } from '../../models/graphql-schema';
-import { buildUserProfileUrl } from '../../utils/urlBuilders';
+import { buildUserProfileUrl } from '../../common/utils/urlBuilders';
 
 export interface OrganizationContainerEntities {
   organization?: OrganizationInfoFragment;
