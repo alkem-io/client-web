@@ -4,10 +4,10 @@ import Skeleton from '@mui/material/Skeleton';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import HelpButton from '../../components/core/HelpButton';
+import HelpButton from '../../common/components/core/HelpButton';
 import { InputAdornment } from '@mui/material';
 import { useHub } from '../../hooks';
-import FormikSelect from '../../components/composite/forms/FormikSelect';
+import FormikSelect from '../../common/components/composite/forms/FormikSelect';
 
 export interface AspectTypeFormFieldProps {
   name: string;

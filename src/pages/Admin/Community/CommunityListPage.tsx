@@ -1,13 +1,13 @@
 import React, { FC, useCallback, useMemo } from 'react';
 
-import { Loading } from '../../../components/core';
+import { Loading } from '../../../common/components/core';
 import { useDeleteUserGroup, useHub } from '../../../hooks';
 import { useCommunityGroupsQuery } from '../../../hooks/generated/graphql';
 import DashboardGenericSection from '../../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import SearchableList, { SearchableListItem } from '../../../components/Admin/SearchableList';
+import SearchableList, { SearchableListItem } from '../../../domain/admin/components/SearchableList';
 import { Link } from 'react-router-dom';
-import Button from '../../../components/core/Button';
+import Button from '../../../common/components/core/Button';
 
 interface CommunityGroupListPageProps {
   communityId: string;

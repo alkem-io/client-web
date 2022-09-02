@@ -11,7 +11,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { Aspect, AspectSettingsFragment } from '../../../models/graphql-schema';
 import { Reference } from '../../../models/Profile';
-import { newReferenceName } from '../../../utils/newReferenceName';
+import { newReferenceName } from '../../../common/utils/newReferenceName';
 import removeFromCache from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import { getCardCallout } from '../getAspectCallout';
 

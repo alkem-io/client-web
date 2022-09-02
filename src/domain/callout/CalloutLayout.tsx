@@ -10,7 +10,7 @@ import {
   CalloutType,
   CalloutVisibility,
 } from '../../models/graphql-schema';
-import Markdown from '../../components/core/Markdown';
+import Markdown from '../../common/components/core/Markdown';
 import Heading from '../shared/components/Heading';
 import { CalloutSummary } from './creation-dialog/steps/CalloutSummaryStep/CalloutSummaryStep';
 import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';

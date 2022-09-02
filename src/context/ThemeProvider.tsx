@@ -1,6 +1,6 @@
 import { StyledEngineProvider, Theme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import React, { FC } from 'react';
-import { defaultTheme } from '../themes/default';
+import { defaultTheme } from '../common/themes/default';
 
 declare module '@mui/styles/defaultTheme' {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

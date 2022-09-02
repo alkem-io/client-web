@@ -3,7 +3,7 @@ import { Box, IconButton, Link, Toolbar, Tooltip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
-import { RouterLink } from '../../../../components/core/RouterLink';
+import { RouterLink } from '../../../../common/components/core/RouterLink';
 import Section, { SectionProps, SectionSpacer } from '../Section/Section';
 import SectionHeader from '../Section/SectionHeader';
 import SectionSubHeader from '../Section/SectionSubheader';

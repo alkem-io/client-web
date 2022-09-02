@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
-import { TabDefinition } from '../../../components/core/PageTabs/PageTabs';
+import { TabDefinition } from '../../../common/components/core/PageTabs/PageTabs';
 import { useHub } from '../../../hooks';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';

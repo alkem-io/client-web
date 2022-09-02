@@ -1,8 +1,8 @@
 import { Grid, Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CredentialCard } from '../../components/composite/common/cards';
-import ProfileCard, { ProfileCardProps } from '../../components/composite/common/cards/ProfileCard/ProfileCard';
+import { CredentialCard } from '../../common/components/composite/common/cards';
+import ProfileCard, { ProfileCardProps } from '../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 import { CardLayoutContainer, CardLayoutItem } from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import UserCredentialsContainer from '../../containers/user/UserCredentialsContainer';
 

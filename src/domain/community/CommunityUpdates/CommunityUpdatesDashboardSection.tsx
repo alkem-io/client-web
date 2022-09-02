@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserCardProps } from '../../../components/composite/common/cards';
+import { UserCardProps } from '../../../common/components/composite/common/cards';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';

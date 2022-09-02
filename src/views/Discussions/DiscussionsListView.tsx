@@ -2,9 +2,9 @@ import { List, ListItemText } from '@mui/material';
 import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Filter } from '../../components/Admin/Common/Filter';
-import ProfileCard from '../../components/composite/common/cards/ProfileCard/ProfileCard';
-import DiscussionOverview from '../../components/composite/entities/Communication/DiscussionOverview';
+import { Filter } from '../../domain/admin/components/Common/Filter';
+import ProfileCard from '../../common/components/composite/common/cards/ProfileCard/ProfileCard';
+import DiscussionOverview from '../../common/components/composite/entities/Communication/DiscussionOverview';
 import { Discussion } from '../../models/discussion/discussion';
 import { ViewProps } from '../../models/view';
 

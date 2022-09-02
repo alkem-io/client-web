@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react';
-import { ConfigContext } from '../context/ConfigProvider';
+import { ConfigContext } from '../config/context/ConfigProvider';
 
 export const useConfig = () => {
   const context = useContext(ConfigContext);

@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { Box, IconButton, Tabs } from '@mui/material';
 import { DashboardOutlined, SettingsOutlined } from '@mui/icons-material';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
-import NavigationTab from '../../../components/core/NavigationTab/NavigationTab';
-import { useAspect } from '../../../context/aspect/AspectProvider';
+import NavigationTab from '../../../common/components/core/NavigationTab/NavigationTab';
+import { useAspect } from '../context/AspectProvider';
 import { AspectDialogSection } from './AspectDialogSection';
 import { styled } from '@mui/styles';
 

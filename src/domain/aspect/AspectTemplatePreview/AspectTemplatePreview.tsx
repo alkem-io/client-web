@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton, styled, Typography } from '@mui/material';
-import Markdown from '../../../components/core/Markdown';
+import Markdown from '../../../common/components/core/Markdown';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 

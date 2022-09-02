@@ -3,12 +3,12 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikInputField from '../../components/composite/forms/FormikInputField';
-import FormikMarkdownField from '../../components/composite/forms/FormikMarkdownField';
-import Button from '../../components/core/Button';
-import FormikSelect from '../../components/composite/forms/FormikSelect';
+import FormikInputField from '../../common/components/composite/forms/FormikInputField';
+import FormikMarkdownField from '../../common/components/composite/forms/FormikMarkdownField';
+import Button from '../../common/components/core/Button';
+import FormikSelect from '../../common/components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../models/graphql-schema';
-import DiscussionIcon from '../../components/composite/entities/Communication/DiscussionIcon';
+import DiscussionIcon from '../../common/components/composite/entities/Communication/DiscussionIcon';
 import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 
 const discussionCategories = [

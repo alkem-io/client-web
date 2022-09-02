@@ -1,12 +1,12 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import OrganizationPage from '../../../components/Admin/Organization/OrganizationPage';
-import { OrganizationProvider } from '../../../context/OrganizationProvider';
+import OrganizationPage from '../components/Organization/OrganizationPage';
+import { OrganizationProvider } from '../../organization/context/OrganizationProvider';
 import { EditMode } from '../../../models/editMode';
 import { Error404, PageProps } from '../../../pages';
 import { nameOfUrl } from '../../../routing/url-params';
 import OrganizationAdminRoutes from './OrganizationAdminRoutes';
-import AdminOrganizationsPage from '../../../pages/Admin/AdminOrganizations/AdminOrganizationsPage';
+import AdminOrganizationsPage from '../../organization/pages/AdminOrganizationsPage';
 import { useTranslation } from 'react-i18next';
 import AdminLayout from '../toplevel/AdminLayout';
 import { AdminSection } from '../toplevel/constants';

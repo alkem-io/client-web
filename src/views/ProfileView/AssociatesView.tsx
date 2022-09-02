@@ -3,8 +3,8 @@ import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorCard, {
   ContributorCardProps,
-} from '../../components/composite/common/cards/ContributorCard/ContributorCard';
-import ProfileCard from '../../components/composite/common/cards/ProfileCard/ProfileCard';
+} from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
+import ProfileCard from '../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 
 const ASSOCIATE_CARDS_COUNT = 12;
 

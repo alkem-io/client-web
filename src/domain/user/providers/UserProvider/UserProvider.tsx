@@ -6,11 +6,11 @@ import {
   useMeQuery,
   useRolesUserQuery,
 } from '../../../../hooks/generated/graphql';
-import { useAuthenticationContext } from '../../../../hooks';
-import { UserMetadata, useUserMetadataWrapper } from '../../../../hooks';
 import { ErrorPage } from '../../../../pages';
 import { User } from '../../../../models/graphql-schema';
 import { UserRolesInEntity } from './UserRolesInEntity';
+import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
+import { UserMetadata, useUserMetadataWrapper } from '../../hooks/useUserMetadataWrapper';
 
 export interface UserContextValue {
   user: UserMetadata | undefined;

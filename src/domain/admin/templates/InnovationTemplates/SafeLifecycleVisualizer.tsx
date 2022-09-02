@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import LifecycleVisualizer, {
   validateLifecycleDefinition,
   LifecycleVisualizerProps,
-} from '../../../../components/core/LifecycleVisualizer';
+} from '../../../../common/components/core/LifecycleVisualizer';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';

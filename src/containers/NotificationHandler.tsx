@@ -4,7 +4,7 @@ import { useSelector } from '@xstate/react';
 import React, { FC } from 'react';
 import { useGlobalState } from '../hooks';
 import { NOTIFICATION_AUTO_HIDE_DURATION } from '../models/constants/configuration.constants';
-import { CLEAR_NOTIFICATION } from '../state/global/notifications/notificationMachine';
+import { CLEAR_NOTIFICATION } from '../core/state/global/notifications/notificationMachine';
 
 export const NotificationHandler: FC = () => {
   const { notificationsService } = useGlobalState();

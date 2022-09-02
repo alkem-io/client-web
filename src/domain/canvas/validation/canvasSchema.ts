@@ -1,5 +1,5 @@
 import { object } from 'yup';
-import { displayNameValidator } from '../../../utils/validator';
+import { displayNameValidator } from '../../../common/utils/validator';
 
 const canvasSchema = object({
   displayName: displayNameValidator,

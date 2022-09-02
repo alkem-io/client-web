@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { FormikProps } from 'formik';
 import { InputLabel, InputLabelProps } from '@mui/material';
-import FormikInputField from '../../../../components/composite/forms/FormikInputField';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
 import { CreateTemplateInfoInput, Visual } from '../../../../models/graphql-schema';
 import TemplateFormRows from '../TemplateFormRows';
-import FormikMarkdownField from '../../../../components/composite/forms/FormikMarkdownField';
+import FormikMarkdownField from '../../../../common/components/composite/forms/FormikMarkdownField';
 import { VERY_LONG_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 import TemplateForm from '../TemplateForm';
 
