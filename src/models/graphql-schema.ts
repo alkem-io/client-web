@@ -215,6 +215,10 @@ export type AssignGlobalCommunityAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignGlobalHubsAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type AssignHubAdminInput = {
   hubID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -288,6 +292,7 @@ export enum AuthorizationCredential {
   ChallengeMember = 'CHALLENGE_MEMBER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAdminCommunity = 'GLOBAL_ADMIN_COMMUNITY',
+  GlobalAdminHubs = 'GLOBAL_ADMIN_HUBS',
   GlobalRegistered = 'GLOBAL_REGISTERED',
   HubAdmin = 'HUB_ADMIN',
   HubHost = 'HUB_HOST',
@@ -324,6 +329,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
   CommunityJoin = 'COMMUNITY_JOIN',
@@ -337,6 +343,7 @@ export enum AuthorizationPrivilege {
   CreateRelation = 'CREATE_RELATION',
   Delete = 'DELETE',
   Grant = 'GRANT',
+  GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
   Read = 'READ',
   ReadUsers = 'READ_USERS',
   Update = 'UPDATE',
@@ -1480,6 +1487,8 @@ export type Mutation = {
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
   assignUserAsGlobalCommunityAdmin: User;
+  /** Assigns a User as a Global Hubs Admin. */
+  assignUserAsGlobalHubsAdmin: User;
   /** Assigns a User as an Hub Admin. */
   assignUserAsHubAdmin: User;
   /** Assigns a User as an Opportunity Admin. */
@@ -1636,6 +1645,8 @@ export type Mutation = {
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
   removeUserAsGlobalCommunityAdmin: User;
+  /** Removes a User from being a Global Hubs Admin. */
+  removeUserAsGlobalHubsAdmin: User;
   /** Removes a User from being an Hub Admin. */
   removeUserAsHubAdmin: User;
   /** Removes a User from being an Opportunity Admin. */
@@ -1750,6 +1761,10 @@ export type MutationAssignUserAsGlobalAdminArgs = {
 
 export type MutationAssignUserAsGlobalCommunityAdminArgs = {
   membershipData: AssignGlobalCommunityAdminInput;
+};
+
+export type MutationAssignUserAsGlobalHubsAdminArgs = {
+  membershipData: AssignGlobalHubsAdminInput;
 };
 
 export type MutationAssignUserAsHubAdminArgs = {
@@ -2054,6 +2069,10 @@ export type MutationRemoveUserAsGlobalAdminArgs = {
 
 export type MutationRemoveUserAsGlobalCommunityAdminArgs = {
   membershipData: RemoveGlobalCommunityAdminInput;
+};
+
+export type MutationRemoveUserAsGlobalHubsAdminArgs = {
+  membershipData: RemoveGlobalHubsAdminInput;
 };
 
 export type MutationRemoveUserAsHubAdminArgs = {
@@ -2753,6 +2772,10 @@ export type RemoveGlobalAdminInput = {
 };
 
 export type RemoveGlobalCommunityAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveGlobalHubsAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -8163,6 +8186,15 @@ export type AssignUserAsGlobalCommunityAdminMutation = {
   assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
+export type AssignUserAsGlobalHubsAdminMutationVariables = Exact<{
+  input: AssignGlobalHubsAdminInput;
+}>;
+
+export type AssignUserAsGlobalHubsAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalHubsAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
 export type AssignUserAsHubAdminMutationVariables = Exact<{
   input: AssignHubAdminInput;
 }>;
@@ -8197,6 +8229,15 @@ export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
 export type RemoveUserAsGlobalAdminMutation = {
   __typename?: 'Mutation';
   removeUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalHubsAdminMutationVariables = Exact<{
+  input: RemoveGlobalHubsAdminInput;
+}>;
+
+export type RemoveUserAsGlobalHubsAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalHubsAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{

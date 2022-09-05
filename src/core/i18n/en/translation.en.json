@@ -183,9 +183,14 @@
           "order": 1,
           "hidden": false
         },
+        "GLOBAL_ADMIN_HUBS": {
+          "name": "Global Hubs Admin",
+          "order": 2,
+          "hidden": false
+        },
         "GLOBAL_ADMIN_CHALLENGES": {
           "name": "Global Challenges Admin",
-          "order": 2,
+          "order": 3,
           "hidden": false
         },
         "GLOBAL_REGISTERED": {
