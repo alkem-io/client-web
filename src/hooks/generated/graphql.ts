@@ -1053,8 +1053,8 @@ export const ContributeTabAspectFragmentDoc = gql`
   }
   ${AspectCardFragmentDoc}
 `;
-export const DiscussionCalloutFragmentDoc = gql`
-  fragment DiscussionCallout on Comments {
+export const CommentsDetailsFragmentDoc = gql`
+  fragment CommentsDetails on Comments {
     id
     authorization {
       id
@@ -1081,7 +1081,7 @@ export const CalloutFragmentDoc = gql`
       ...CanvasDetails
     }
     comments {
-      ...DiscussionCallout
+      ...CommentsDetails
     }
     authorization {
       id
@@ -1091,7 +1091,7 @@ export const CalloutFragmentDoc = gql`
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
-  ${DiscussionCalloutFragmentDoc}
+  ${CommentsDetailsFragmentDoc}
 `;
 export const TemplateTitleFragmentDoc = gql`
   fragment TemplateTitle on TemplateInfo {
@@ -11163,6 +11163,9 @@ export const CreateCalloutDocument = gql`
         id
       }
       aspects {
+        id
+      }
+      comments {
         id
       }
     }

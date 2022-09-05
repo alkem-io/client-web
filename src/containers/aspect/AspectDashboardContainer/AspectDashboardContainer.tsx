@@ -7,8 +7,8 @@ import {
   useChallengeAspectQuery,
   useHubAspectQuery,
   useOpportunityAspectQuery,
-  usePostCommentMutation,
-  useRemoveCommentMutation,
+  usePostCommentInAspectMutation,
+  useRemoveCommentFromAspectMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Comment } from '../../../models/discussion/comment';
@@ -179,7 +179,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
+  const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromAspectMutation({
     onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
@@ -194,7 +194,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentMutation({
+  const [postComment, { loading: postingComment }] = usePostCommentInAspectMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (isSubscribedToComments) {

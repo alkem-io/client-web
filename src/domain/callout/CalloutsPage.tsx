@@ -13,7 +13,7 @@ import CalloutCreationDialog from './creation-dialog/CalloutCreationDialog';
 import { useCalloutEdit } from './edit/useCalloutEdit/useCalloutEdit';
 import AspectCallout from './aspect/AspectCallout';
 import CanvasCallout from './canvas/CanvasCallout';
-import DiscussionCallout from './discussion/DiscussionCallout';
+import CommentsCallout from './comments/CommentsCallout';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -92,7 +92,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                 );
               case CalloutType.Comments:
                 return (
-                  <DiscussionCallout
+                  <CommentsCallout
                     key={callout.id}
                     callout={callout}
                     loading={loading}

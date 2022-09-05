@@ -1,7 +1,7 @@
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import React, { useCallback, useMemo } from 'react';
 import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
-import { DiscussionCalloutFragmentWithCallout } from '../useCallouts';
+import { CommentsDetailsFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../shared/components/Comments/CommentsComponent';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import {
@@ -15,22 +15,22 @@ import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
-export type CommentsCallout = Pick<DiscussionCalloutFragmentWithCallout, NeededFields>;
+export type CommentsCalloutData = Pick<CommentsDetailsFragmentWithCallout, NeededFields>;
 
-interface DiscussionCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
+interface CommentsCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
-    comments: CommentsCallout;
+    comments: CommentsCalloutData;
   };
   loading?: boolean;
 }
 
-const DiscussionCallout = ({
+const CommentsCallout = ({
   callout,
   loading,
   onCalloutEdit,
   onVisibilityChange,
   onCalloutDelete,
-}: DiscussionCalloutProps) => {
+}: CommentsCalloutProps) => {
   const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
@@ -149,4 +149,4 @@ const DiscussionCallout = ({
   );
 };
 
-export default DiscussionCallout;
+export default CommentsCallout;

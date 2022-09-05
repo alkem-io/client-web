@@ -1,4 +1,4 @@
-fragment DiscussionCallout on Comments {
+fragment CommentsDetails on Comments {
     id
     authorization {
       id

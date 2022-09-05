@@ -12,12 +12,13 @@ export interface PostCommentProps {
   title?: string;
   placeholder?: string;
   maxLength?: number;
+  disabled?: boolean;
 }
 interface formValues {
   post: string;
 }
 
-const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, maxLength }) => {
+const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, maxLength, disabled }) => {
   const { t } = useTranslation();
 
   const initialValues: formValues = {
@@ -63,7 +64,7 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, 
                 variant="primary"
                 text={isSubmitting ? t('buttons.processing') : t('components.post-comment.buttons.post')}
                 type="submit"
-                disabled={!isValid || !dirty || isSubmitting}
+                disabled={disabled || !isValid || !dirty || isSubmitting}
               />
             </Grid>
           </Grid>

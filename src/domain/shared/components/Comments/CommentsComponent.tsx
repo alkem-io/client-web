@@ -16,8 +16,8 @@ const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
 export interface CommentsComponentProps {
-  messages?: Comment[];
-  commentsId?: string;
+  messages: Comment[] | undefined;
+  commentsId: string | undefined;
   canReadComments: boolean;
   canPostComments: boolean;
   canDeleteComment: (messageId: string) => boolean;
@@ -53,6 +53,7 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
   const onDeleteComment = (id: string) => (commentsId ? handleDeleteComment(commentsId, id) : undefined);
 
   const { canPostComments, canDeleteComment } = props;
+  const { loading } = props;
 
   const { height: containerHeight = 0 } = useResizeDetector({
     targetRef: commentsContainerRef,
@@ -102,6 +103,7 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
             placeholder={t('pages.aspect.dashboard.comment.placeholder')}
             onPostComment={onPostComment}
             maxLength={MID_TEXT_LENGTH}
+            disabled={loading}
           />
         )}
         {!canPostComments && (

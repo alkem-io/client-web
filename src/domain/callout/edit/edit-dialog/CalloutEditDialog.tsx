@@ -5,13 +5,11 @@ import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
 import { CampaignOutlined } from '@mui/icons-material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
-import CalloutForm, {
-  CalloutFormOutput,
-} from '../../../../common/components/composite/aspect/AspectCreationDialog/form/CalloutForm';
 import ConfirmationDialog, {
   ConfirmationDialogProps,
 } from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
+import CalloutForm, { CalloutFormOutput } from '../../creation-dialog/steps/CalloutInfoStep/CalloutForm';
 
 export interface CalloutEditDialogProps {
   open: boolean;

@@ -180,7 +180,7 @@ fragment Callout on Callout {
     ...CanvasDetails
   }
   comments {
-    ...DiscussionCallout
+    ...CommentsDetails
   }
   authorization {
     id
