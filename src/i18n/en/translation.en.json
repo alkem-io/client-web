@@ -677,6 +677,9 @@
       },
       "buttons": {
         "post": "Post comment"
+      },
+      "tooltip": {
+        "markdown-help": "You can add formatting to your comment,\nfor example:\nBold text: **bold**\nItalic text: *italic*\nHeader: ##Title\nLink: [text](url)"
       }
     },
     "new-discussion": {

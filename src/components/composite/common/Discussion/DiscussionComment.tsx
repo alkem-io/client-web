@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
-import { Avatar, Box, Paper, Typography, styled, AvatarProps, BoxProps, IconButton, Grid } from '@mui/material';
+import { Avatar, Box, Typography, styled, AvatarProps, BoxProps, IconButton, Grid } from '@mui/material';
 import { Comment } from '../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
+import { formatCommentDate } from './formatCommentDate';
 
 const AVATAR_SIZE = 7;
 
@@ -43,8 +44,6 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
           justifyContent="space-between"
           bgcolor={isRootComment ? 'background.paper' : 'neutralMedium.light'}
           borderRadius={1.5}
-          component={Paper}
-          elevation={1}
           marginRight={1}
         >
           <Grid container direction="column">
@@ -81,7 +80,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
                 <Typography variant="body2" color="neutralMedium.dark">
-                  {`${isRootComment ? 'started the discussion ' : ' '}${comment.createdAt.toLocaleString()}`}
+                  {`${isRootComment ? 'started the discussion ' : ' '}${formatCommentDate(comment.createdAt)}`}
                 </Typography>
               </Box>
             </Grid>
