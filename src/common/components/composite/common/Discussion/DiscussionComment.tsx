@@ -45,7 +45,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
               />
             }
             PopperProps={{
-              sx: { background: 'transparent !important' },
+              sx: { '& > *': { background: 'transparent' } },
             }}
           >
             {children}
@@ -87,7 +87,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
                 </Grid>
                 <Grid item xs>
                   <Typography variant="h6" color="neutralMedium.dark" sx={{ fontStyle: 'italic' }}>
-                    Host
+                    {author?.roleName}
                   </Typography>
                 </Grid>
                 <Grid item>

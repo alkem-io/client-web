@@ -12444,20 +12444,12 @@ export type CalloutAspectCreatedSubscriptionResult =
 export const AuthorDetailsDocument = gql`
   query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
-      id
-      nameID
-      displayName
+      ...UserCard
       firstName
       lastName
-      profile {
-        id
-        avatar {
-          ...VisualUri
-        }
-      }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${UserCardFragmentDoc}
 `;
 
 /**
