@@ -1,11 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
-import { Avatar, Box, Typography, styled, AvatarProps, BoxProps, IconButton, Grid } from '@mui/material';
+import { Avatar, Box, Typography, styled, AvatarProps, BoxProps, IconButton, Grid, Tooltip, Link } from '@mui/material';
 import { Comment } from '../../../../../models/discussion/comment';
 import Markdown from '../../../core/Markdown';
 import { formatCommentDate } from './formatCommentDate';
-
-const AVATAR_SIZE = 7;
+import UserCard from '../cards/user-card/UserCard';
 
 const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => ({
   overflowWrap: 'break-word',
@@ -15,8 +14,8 @@ const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => 
 }));
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
-  height: theme.spacing(AVATAR_SIZE),
-  width: theme.spacing(AVATAR_SIZE),
+  height: theme.spacing(theme.comments.avatarSize),
+  width: theme.spacing(theme.comments.avatarSize),
 }));
 
 interface DiscussionCommentProps {
@@ -28,13 +27,45 @@ interface DiscussionCommentProps {
 
 export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDelete, onDelete, isRootComment }) => {
   const { author, body, id } = comment;
+  const TooltipElement = useMemo(
+    () =>
+      ({ children }) =>
+        author ? (
+          <Tooltip
+            arrow
+            title={
+              <UserCard
+                displayName={author?.displayName}
+                avatarSrc={author?.avatarUrl}
+                tags={author?.tags || []}
+                roleName={author?.roleName}
+                city={author?.city}
+                country={author?.country}
+                url={author?.url}
+              />
+            }
+            PopperProps={{
+              sx: { background: 'transparent !important' },
+            }}
+          >
+            {children}
+          </Tooltip>
+        ) : (
+          <>{children}</>
+        ),
+    [author]
+  );
 
   return (
     <Grid container spacing={1.5}>
       <Grid item>
-        <UserAvatar src={author?.avatarUrl} variant="rounded" sx={{ borderRadius: 1.5 }}>
-          {author?.displayName[0]}
-        </UserAvatar>
+        <TooltipElement>
+          <Link href={author?.url}>
+            <UserAvatar src={author?.avatarUrl} variant="rounded" sx={{ borderRadius: 1.5 }}>
+              {author?.displayName[0]}
+            </UserAvatar>
+          </Link>
+        </TooltipElement>
       </Grid>
       <Grid item xs zeroMinWidth>
         <Box

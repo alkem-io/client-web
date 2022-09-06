@@ -1,31 +1,38 @@
 import React, { FC } from 'react';
 import { FetchResult } from '@apollo/client';
-import { Avatar, AvatarProps, Box, Grid, styled, Tooltip } from '@mui/material';
+import { Avatar, AvatarProps, Box, Grid, Popper, styled, Tooltip } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikCommentInputField from '../../forms/FormikCommentInputField';
 import HelpIcon from '@mui/icons-material/Help';
-
-const AVATAR_SIZE = 7;
+import { useUserContext } from '../../../../../hooks';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
-  height: theme.spacing(AVATAR_SIZE),
-  width: theme.spacing(AVATAR_SIZE),
+  height: theme.spacing(theme.comments.avatarSize),
+  width: theme.spacing(theme.comments.avatarSize),
 }));
+
+const PreFormatedPopper = styled(Popper)(() => ({
+  whiteSpace: 'pre-wrap',
+}));
+
 export interface PostCommentProps {
   onPostComment?: (comment: string) => Promise<FetchResult<unknown>> | void;
   title?: string;
   placeholder?: string;
   maxLength?: number;
-  userAvatarUri?: string;
+  disabled?: boolean;
 }
 interface formValues {
   post: string;
 }
 
-const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, maxLength, userAvatarUri }) => {
+const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, maxLength, disabled }) => {
   const { t } = useTranslation();
+
+  const { user } = useUserContext();
+  const userAvatarUri = user?.user?.profile?.avatar?.uri;
 
   const initialValues: formValues = {
     post: '',
@@ -64,7 +71,7 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, 
                     name="post"
                     title={title}
                     placeholder={placeholder}
-                    disabled={isSubmitting}
+                    disabled={disabled || isSubmitting}
                     maxLength={maxLength}
                     withCounter
                     required
@@ -76,11 +83,12 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, 
         </Formik>
       </Grid>
       <Grid item>
-        <Box display={'flex'}>
+        <Box display={'flex'} alignItems={'center'} height="100%">
           <Tooltip
             title={t('components.post-comment.tooltip.markdown-help')}
             arrow
             placement="right"
+            PopperComponent={PreFormatedPopper}
             aria-label={'tooltip-markdown'}
           >
             <HelpIcon color="primary" />

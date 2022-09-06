@@ -54,7 +54,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   );
 
   return (
-    <FormGroup>
+    <FormGroup sx={{ paddingBottom: theme => theme.spacing(1) }}>
       <FormControl>
         <OutlinedInput
           multiline
