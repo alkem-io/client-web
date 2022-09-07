@@ -10861,8 +10861,8 @@ export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
 >;
 export const PostCommentInCalloutDocument = gql`
-  mutation PostCommentInCallout($messageData: CommentsSendMessageInput!) {
-    sendComment(messageData: $messageData) {
+  mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
+    sendMessageOnCallout(data: $data) {
       id
       message
       sender
@@ -10888,7 +10888,7 @@ export type PostCommentInCalloutMutationFn = Apollo.MutationFunction<
  * @example
  * const [postCommentInCalloutMutation, { data, loading, error }] = usePostCommentInCalloutMutation({
  *   variables: {
- *      messageData: // value for 'messageData'
+ *      data: // value for 'data'
  *   },
  * });
  */

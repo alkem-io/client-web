@@ -105,7 +105,7 @@ const CommentsCallout = ({
             }
 
             const newMessage = cache.writeFragment({
-              data: data?.sendComment,
+              data: data?.sendMessageOnCallout,
               fragment: MessageDetailsFragmentDoc,
               fragmentName: 'MessageDetails',
             });
@@ -119,8 +119,8 @@ const CommentsCallout = ({
   const handlePostComment = async (commentsId: string, message: string) =>
     postComment({
       variables: {
-        messageData: {
-          commentsID: commentsId,
+        data: {
+          calloutID: callout.id,
           message,
         },
       },

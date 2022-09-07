@@ -390,6 +390,16 @@ export type CalloutAspectCreated = {
   calloutID: Scalars['String'];
 };
 
+export type CalloutMessageReceived = {
+  __typename?: 'CalloutMessageReceived';
+  /** The identifier for the Callout. */
+  calloutID: Scalars['String'];
+  /** The identifier for the Comments. */
+  commentsID: Scalars['String'];
+  /** The message that has been sent. */
+  message: Message;
+};
+
 export enum CalloutState {
   Archived = 'ARCHIVED',
   Closed = 'CLOSED',
@@ -1652,6 +1662,8 @@ export type Mutation = {
   revokeCredentialFromUser: User;
   /** Sends an comment message. Returns the id of the new Update message. */
   sendComment: Message;
+  /** Send a message on a Comments Callout */
+  sendMessageOnCallout: Message;
   /** Sends a message to the specified Discussion.  */
   sendMessageToDiscussion: Message;
   /** Sends an update message. Returns the id of the new Update message. */
@@ -2086,6 +2098,10 @@ export type MutationRevokeCredentialFromUserArgs = {
 
 export type MutationSendCommentArgs = {
   messageData: CommentsSendMessageInput;
+};
+
+export type MutationSendMessageOnCalloutArgs = {
+  data: SendMessageOnCalloutInput;
 };
 
 export type MutationSendMessageToDiscussionArgs = {
@@ -2891,6 +2907,13 @@ export type Searchable = {
   id: Scalars['UUID'];
 };
 
+export type SendMessageOnCalloutInput = {
+  /** The Callout the message is being sent to */
+  calloutID: Scalars['UUID'];
+  /** The message contents */
+  message: Scalars['String'];
+};
+
 export type Sentry = {
   __typename?: 'Sentry';
   /** Flag indicating if the client should use Sentry for monitoring. */
@@ -2915,6 +2938,8 @@ export type Subscription = {
   aspectCommentsMessageReceived: AspectCommentsMessageReceived;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutAspectCreated: CalloutAspectCreated;
+  /** Receive comments on Callouts */
+  calloutMessageReceived: CalloutMessageReceived;
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Discussion messages */
@@ -2933,6 +2958,10 @@ export type SubscriptionAspectCommentsMessageReceivedArgs = {
 
 export type SubscriptionCalloutAspectCreatedArgs = {
   calloutID: Scalars['UUID'];
+};
+
+export type SubscriptionCalloutMessageReceivedArgs = {
+  calloutIDs: Array<Scalars['UUID']>;
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
@@ -10273,12 +10302,12 @@ export type CreateAspectFromContributeTabMutation = {
 };
 
 export type PostCommentInCalloutMutationVariables = Exact<{
-  messageData: CommentsSendMessageInput;
+  data: SendMessageOnCalloutInput;
 }>;
 
 export type PostCommentInCalloutMutation = {
   __typename?: 'Mutation';
-  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+  sendMessageOnCallout: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
 };
 
 export type RemoveCommentFromCalloutMutationVariables = Exact<{

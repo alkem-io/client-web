@@ -267,6 +267,17 @@ export type CalloutAspectCreatedFieldPolicy = {
   aspect?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutMessageReceivedKeySpecifier = (
+  | 'calloutID'
+  | 'commentsID'
+  | 'message'
+  | CalloutMessageReceivedKeySpecifier
+)[];
+export type CalloutMessageReceivedFieldPolicy = {
+  calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentsID?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CanvasKeySpecifier = (
   | 'authorization'
   | 'checkout'
@@ -857,6 +868,7 @@ export type MutationKeySpecifier = (
   | 'removeUserFromOrganization'
   | 'revokeCredentialFromUser'
   | 'sendComment'
+  | 'sendMessageOnCallout'
   | 'sendMessageToDiscussion'
   | 'sendUpdate'
   | 'updateActor'
@@ -984,6 +996,7 @@ export type MutationFieldPolicy = {
   removeUserFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   sendComment?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendMessageOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   sendUpdate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1471,6 +1484,7 @@ export type ServiceMetadataFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'aspectCommentsMessageReceived'
   | 'calloutAspectCreated'
+  | 'calloutMessageReceived'
   | 'canvasContentUpdated'
   | 'communicationDiscussionMessageReceived'
   | 'communicationDiscussionUpdated'
@@ -1481,6 +1495,7 @@ export type SubscriptionKeySpecifier = (
 export type SubscriptionFieldPolicy = {
   aspectCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutAspectCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1763,6 +1778,10 @@ export type StrictTypedTypePolicies = {
   CalloutAspectCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutAspectCreatedKeySpecifier | (() => undefined | CalloutAspectCreatedKeySpecifier);
     fields?: CalloutAspectCreatedFieldPolicy;
+  };
+  CalloutMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutMessageReceivedKeySpecifier | (() => undefined | CalloutMessageReceivedKeySpecifier);
+    fields?: CalloutMessageReceivedFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
