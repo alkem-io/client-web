@@ -77,7 +77,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const challengesCount = useMemo(() => getActivityCount(_hub?.hub.activity, ActivityType.Challenge), [_hub]);
 
   const isMember = user?.ofHub(hubId) ?? false;
-  const isGlobalAdmin = user?.isGlobalAdmin ?? false;
+  const isGlobalAdmin = user?.isGlobalAdmin ?? user?.isGlobalAdminHubs ?? false;
   const isPrivate = !(_hub?.hub?.authorization?.anonymousReadAccess ?? true);
 
   const permissions = {

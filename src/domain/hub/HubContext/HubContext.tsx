@@ -94,7 +94,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const hubPrivileges = hub?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const isMember = user?.ofHub(hubId) ?? false;
-  const isGlobalAdmin = user?.isGlobalAdmin ?? false;
+  const isGlobalAdmin = user?.isGlobalAdmin ?? user?.isGlobalAdminHubs ?? false;
   const canReadChallenges = isPrivate ? isMember || isGlobalAdmin : true;
 
   const communityPrivileges = hub?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;

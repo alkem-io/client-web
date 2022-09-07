@@ -35,6 +35,7 @@ export interface UserMetadata {
   /** has an entity admin role, i.e. is admin of a community */
   isCommunityAdmin: boolean;
   isGlobalAdmin: boolean;
+  isGlobalAdminHubs: boolean;
   isGlobalAdminCommunity: boolean;
   roles: Role[];
   groups: string[];
@@ -156,6 +157,7 @@ export const useUserMetadataWrapper = () => {
         isAdmin: false,
         isCommunityAdmin: false,
         isGlobalAdmin: hasCredentials(AuthorizationCredential.GlobalAdmin),
+        isGlobalAdminHubs: hasCredentials(AuthorizationCredential.GlobalAdminHubs),
         isGlobalAdminCommunity: hasCredentials(AuthorizationCredential.GlobalAdminCommunity),
         roles,
         groups,
@@ -192,6 +194,7 @@ export const hasCommunityAdminRole = (roles: Role[]) => roles.some(({ type }) =>
 
 export const AdminRoles = [
   AuthorizationCredential.GlobalAdmin,
+  AuthorizationCredential.GlobalAdminHubs,
   AuthorizationCredential.GlobalAdminCommunity,
   AuthorizationCredential.ChallengeAdmin,
   AuthorizationCredential.HubAdmin,

@@ -6,7 +6,11 @@ import { useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
 // those roles have unconditional access to every restricted resource
-const adminCredentials = [AuthorizationCredential.GlobalAdmin, AuthorizationCredential.GlobalAdminCommunity];
+const adminCredentials = [
+  AuthorizationCredential.GlobalAdmin,
+  AuthorizationCredential.GlobalAdminCommunity,
+  AuthorizationCredential.GlobalAdminHubs,
+];
 
 export interface CredentialForResource {
   credential: AuthorizationCredential;
