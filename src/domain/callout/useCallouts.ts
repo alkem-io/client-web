@@ -11,19 +11,23 @@ import {
   CalloutVisibility,
   CanvasDetailsFragment,
   ContributeTabAspectFragment,
+  CommentsWithMessagesFragment,
 } from '../../models/graphql-schema';
 
 interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
   [CalloutType.Canvas]: 'canvases';
+  [CalloutType.Comments]: 'comments';
 }
 
 export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
 export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId: string };
+export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
 interface CalloutChildPropValue {
   aspects: AspectFragmentWithCallout[];
   canvases: CanvasFragmentWithCallout[];
+  comments: CommentsWithMessagesFragmentWithCallout;
 }
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {
@@ -35,7 +39,11 @@ type CalloutTypesWithChildTypes = {
 };
 
 type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description' | 'authorization'> &
-  (CalloutTypesWithChildTypes[CalloutType.Card] | CalloutTypesWithChildTypes[CalloutType.Canvas]) & {
+  (
+    | CalloutTypesWithChildTypes[CalloutType.Card]
+    | CalloutTypesWithChildTypes[CalloutType.Canvas]
+    | CalloutTypesWithChildTypes[CalloutType.Comments]
+  ) & {
     draft: boolean;
     editable: boolean;
   };
@@ -69,6 +77,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
       // Add calloutNameId to all the canvases and aspects
       canvases: callout.canvases?.map(canvas => ({ ...canvas, calloutNameId: callout.nameID })),
       aspects: callout.aspects?.map(aspect => ({ ...aspect, calloutNameId: callout.nameID })),
+      comments: { ...callout.comments, calloutNameId: callout.nameID },
       authorization,
       draft,
       editable,

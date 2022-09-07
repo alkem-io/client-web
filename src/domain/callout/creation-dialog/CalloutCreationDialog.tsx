@@ -5,7 +5,7 @@ import { CalloutType } from '../../../models/graphql-schema';
 import Steps from '../../shared/components/Steps/Steps';
 import Step from '../../shared/components/Steps/step/Step';
 import { StepLayoutHolder } from './step-layout/StepLayout';
-import CalloutInfoStep from './steps/CalloutInfoStep';
+import CalloutInfoStep from './steps/CalloutInfoStep/CalloutInfoStep';
 // import CalloutTemplateStep from './steps/CalloutTemplateStep/CalloutTemplateStep';
 import CalloutSummaryStep from './steps/CalloutSummaryStep/CalloutSummaryStep';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';

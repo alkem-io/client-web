@@ -5,14 +5,15 @@ import { EntityPageSection } from '../shared/layout/EntityPageSection';
 import { useUrlParams } from '../../hooks';
 import useCallouts from './useCallouts';
 import { Box, Button } from '@mui/material';
-import AspectCallout from './aspect/AspectCallout';
 import { AuthorizationPrivilege, CalloutType } from '../../models/graphql-schema';
-import CanvasCallout from './canvas/CanvasCallout';
 import useBackToParentPage from '../shared/utils/useBackToParentPage';
 import { useTranslation } from 'react-i18next';
 import { useCalloutCreation } from './creation-dialog/useCalloutCreation/useCalloutCreation';
 import CalloutCreationDialog from './creation-dialog/CalloutCreationDialog';
 import { useCalloutEdit } from './edit/useCalloutEdit/useCalloutEdit';
+import AspectCallout from './aspect/AspectCallout';
+import CanvasCallout from './canvas/CanvasCallout';
+import CommentsCallout from './comments/CommentsCallout';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -84,6 +85,20 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     opportunityNameId={opportunityNameId}
                     buildCanvasUrl={buildLinkToCanvas}
                     canCreate={callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCanvas)}
+                    onCalloutEdit={handleEdit}
+                    onVisibilityChange={handleVisibilityChange}
+                    onCalloutDelete={handleDelete}
+                  />
+                );
+              case CalloutType.Comments:
+                return (
+                  <CommentsCallout
+                    key={callout.id}
+                    callout={callout}
+                    loading={loading}
+                    hubNameId={hubNameId!}
+                    challengeNameId={challengeNameId}
+                    opportunityNameId={opportunityNameId}
                     onCalloutEdit={handleEdit}
                     onVisibilityChange={handleVisibilityChange}
                     onCalloutDelete={handleDelete}
