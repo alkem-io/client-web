@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import CalloutForm, { CalloutFormOutput } from './CalloutForm';
+import CalloutForm, { CalloutFormOutput } from '../../../CalloutForm';
 import { StepComponentProps } from '../../../../shared/components/Steps/step/Step';
 import { StepLayout } from '../../step-layout/StepLayout';
 import { CalloutStepProps } from '../CalloutStepProps';

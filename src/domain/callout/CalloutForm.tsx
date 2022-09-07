@@ -1,17 +1,17 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutType } from '../../../../../models/graphql-schema';
+import { CalloutType } from '../../models/graphql-schema';
 import * as yup from 'yup';
 import { Grid, InputAdornment } from '@mui/material';
-import FormRow from '../../../../shared/layout/FormLayout';
+import FormRow from '../shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../../../shared/components/Section/Section';
-import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
-import FormikInputField from '../../../../../common/components/composite/forms/FormikInputField';
-import FormikSelect from '../../../../../common/components/composite/forms/FormikSelect';
-import HelpButton from '../../../../../common/components/core/HelpButton';
-import FormikEffectFactory from '../../../../../common/utils/formik/formik-effect/FormikEffect';
-import MarkdownInput from '../../../../admin/components/Common/MarkdownInput';
+import { SectionSpacer } from '../shared/components/Section/Section';
+import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../models/constants/field-length.constants';
+import FormikInputField from '../../common/components/composite/forms/FormikInputField';
+import FormikSelect from '../../common/components/composite/forms/FormikSelect';
+import HelpButton from '../../common/components/core/HelpButton';
+import FormikEffectFactory from '../../common/utils/formik/formik-effect/FormikEffect';
+import MarkdownInput from '../admin/components/Common/MarkdownInput';
 
 type FormValueType = {
   displayName: string;

@@ -9,7 +9,7 @@ import ConfirmationDialog, {
   ConfirmationDialogProps,
 } from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
-import CalloutForm, { CalloutFormOutput } from '../../creation-dialog/steps/CalloutInfoStep/CalloutForm';
+import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
 
 export interface CalloutEditDialogProps {
   open: boolean;
