@@ -10272,6 +10272,21 @@ export type CreateAspectFromContributeTabMutation = {
   };
 };
 
+export type PostCommentInCalloutMutationVariables = Exact<{
+  messageData: CommentsSendMessageInput;
+}>;
+
+export type PostCommentInCalloutMutation = {
+  __typename?: 'Mutation';
+  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+};
+
+export type RemoveCommentFromCalloutMutationVariables = Exact<{
+  messageData: CommentsRemoveMessageInput;
+}>;
+
+export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeComment: string };
+
 export type CalloutFragment = {
   __typename?: 'Callout';
   id: string;
@@ -14094,7 +14109,7 @@ export type RolesOrganizationQuery = {
   };
 };
 
-export type CommentsDetailsFragment = {
+export type CommentsWithMessagesFragment = {
   __typename?: 'Comments';
   id: string;
   authorization?:

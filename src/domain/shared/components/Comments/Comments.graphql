@@ -1,0 +1,23 @@
+fragment CommentsWithMessages on Comments {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    messages {
+      ...MessageDetails
+    }
+}
+
+mutation PostComment($messageData: CommentsSendMessageInput!) {
+  sendComment(messageData: $messageData) {
+    id
+    message
+    sender
+    timestamp
+  }
+}
+
+mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
+  removeComment(messageData: $messageData)
+}

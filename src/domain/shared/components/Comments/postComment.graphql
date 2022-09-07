@@ -1,8 +1,0 @@
-mutation PostComment($messageData: CommentsSendMessageInput!) {
-  sendComment(messageData: $messageData) {
-    id
-    message
-    sender
-    timestamp
-  }
-}
