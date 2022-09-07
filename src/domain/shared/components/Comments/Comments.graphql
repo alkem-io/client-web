@@ -8,16 +8,3 @@ fragment CommentsWithMessages on Comments {
       ...MessageDetails
     }
 }
-
-mutation PostComment($messageData: CommentsSendMessageInput!) {
-  sendComment(messageData: $messageData) {
-    id
-    message
-    sender
-    timestamp
-  }
-}
-
-mutation RemoveComment($messageData: CommentsRemoveMessageInput!) {
-  removeComment(messageData: $messageData)
-}

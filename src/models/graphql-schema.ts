@@ -14120,21 +14120,6 @@ export type CommentsWithMessagesFragment = {
     | undefined;
 };
 
-export type PostCommentMutationVariables = Exact<{
-  messageData: CommentsSendMessageInput;
-}>;
-
-export type PostCommentMutation = {
-  __typename?: 'Mutation';
-  sendComment: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
-};
-
-export type RemoveCommentMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
-}>;
-
-export type RemoveCommentMutation = { __typename?: 'Mutation'; removeComment: string };
-
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
   startCursor?: string | undefined;
