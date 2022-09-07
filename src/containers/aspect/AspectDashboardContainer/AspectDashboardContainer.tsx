@@ -173,7 +173,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
     msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [messages, user, isAuthenticated]
+    [messages, user, isAuthenticated, canDeleteComments]
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
@@ -201,17 +201,17 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
         return;
       }
 
-      const cacheMessageId = cache.identify({
+      const cacheCommentsId = cache.identify({
         id: commentsId,
         __typename: 'Comments',
       });
 
-      if (!cacheMessageId) {
+      if (!cacheCommentsId) {
         return;
       }
 
       cache.modify({
-        id: cacheMessageId,
+        id: cacheCommentsId,
         fields: {
           messages(existingMessages = []) {
             if (!data) {

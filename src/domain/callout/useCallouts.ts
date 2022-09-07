@@ -11,7 +11,7 @@ import {
   CalloutVisibility,
   CanvasDetailsFragment,
   ContributeTabAspectFragment,
-  CommentsDetailsFragment,
+  CommentsWithMessagesFragment,
 } from '../../models/graphql-schema';
 
 interface CalloutChildTypePropName {
@@ -22,12 +22,12 @@ interface CalloutChildTypePropName {
 
 export type AspectFragmentWithCallout = ContributeTabAspectFragment & { calloutNameId: string };
 export type CanvasFragmentWithCallout = CanvasDetailsFragment & { calloutNameId: string };
-export type CommentsDetailsFragmentWithCallout = CommentsDetailsFragment & { calloutNameId: string };
+export type CommentsWithMessagesFragmentWithCallout = CommentsWithMessagesFragment & { calloutNameId: string };
 
 interface CalloutChildPropValue {
   aspects: AspectFragmentWithCallout[];
   canvases: CanvasFragmentWithCallout[];
-  comments: CommentsDetailsFragmentWithCallout;
+  comments: CommentsWithMessagesFragmentWithCallout;
 }
 
 type CalloutWithChildType<PropName extends keyof CalloutChildPropValue> = {

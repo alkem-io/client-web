@@ -1,13 +1,13 @@
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
 import React, { useCallback, useMemo } from 'react';
 import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
-import { CommentsDetailsFragmentWithCallout } from '../useCallouts';
+import { CommentsWithMessagesFragmentWithCallout } from '../useCallouts';
 import CommentsComponent from '../../shared/components/Comments/CommentsComponent';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import {
   MessageDetailsFragmentDoc,
-  usePostCommentMutation,
-  useRemoveCommentMutation,
+  usePostCommentInCalloutMutation,
+  useRemoveCommentFromCalloutMutation,
 } from '../../../hooks/generated/graphql';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
 import { Comment } from '../../../models/discussion/comment';
@@ -15,7 +15,7 @@ import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
-export type CommentsCalloutData = Pick<CommentsDetailsFragmentWithCallout, NeededFields>;
+export type CommentsCalloutData = Pick<CommentsWithMessagesFragmentWithCallout, NeededFields>;
 
 interface CommentsCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvents {
   callout: CalloutLayoutProps['callout'] & {
@@ -59,13 +59,13 @@ const CommentsCallout = ({
   const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
   const canDeleteComment = useCallback(
     msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [messages, user, isAuthenticated]
+    [messages, user, isAuthenticated, canDeleteComments]
   );
 
   const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
   const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentMutation({
+  const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromCalloutMutation({
     onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
@@ -80,24 +80,24 @@ const CommentsCallout = ({
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentMutation({
+  const [postComment, { loading: postingComment }] = usePostCommentInCalloutMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (isSubscribedToComments) {
         return;
       }
 
-      const cacheMessageId = cache.identify({
+      const cacheCommentsId = cache.identify({
         id: commentsId,
         __typename: 'Comments',
       });
 
-      if (!cacheMessageId) {
+      if (!cacheCommentsId) {
         return;
       }
 
       cache.modify({
-        id: cacheMessageId,
+        id: cacheCommentsId,
         fields: {
           messages(existingMessages = []) {
             if (!data) {
