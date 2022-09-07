@@ -19,12 +19,20 @@ export interface PostCommentProps {
   placeholder?: string;
   maxLength?: number;
   userAvatarUri?: string;
+  disabled?: boolean;
 }
 interface formValues {
   post: string;
 }
 
-const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, maxLength, userAvatarUri }) => {
+const PostComment: FC<PostCommentProps> = ({
+  onPostComment,
+  title,
+  placeholder,
+  maxLength,
+  userAvatarUri,
+  disabled,
+}) => {
   const { t } = useTranslation();
 
   const initialValues: formValues = {
@@ -64,7 +72,7 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, 
                     name="post"
                     title={title}
                     placeholder={placeholder}
-                    disabled={isSubmitting}
+                    disabled={disabled || isSubmitting}
                     maxLength={maxLength}
                     withCounter
                     required

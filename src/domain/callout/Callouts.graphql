@@ -166,6 +166,19 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
   }
 }
 
+mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
+  sendMessageOnCallout(data: $data) {
+    id
+    message
+    sender
+    timestamp
+  }
+}
+
+mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
+  removeComment(messageData: $messageData)
+}
+
 fragment Callout on Callout {
   id
   nameID
@@ -178,6 +191,9 @@ fragment Callout on Callout {
   }
   canvases {
     ...CanvasDetails
+  }
+  comments {
+    ...CommentsWithMessages
   }
   authorization {
     id

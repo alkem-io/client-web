@@ -17,6 +17,9 @@ mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     aspects {
       id
     }
+    comments {
+      id
+    }
   }
 }
 
