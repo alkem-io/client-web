@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Filter } from '../../domain/admin/components/Common/Filter';
 import ProfileCard from '../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 import DiscussionOverview from '../../common/components/composite/entities/Communication/DiscussionOverview';
-import { Discussion } from '../../models/discussion/discussion';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import { ViewProps } from '../../models/view';
 
 interface DiscussionListViewEntities {

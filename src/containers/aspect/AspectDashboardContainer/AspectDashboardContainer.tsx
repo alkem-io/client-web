@@ -11,7 +11,7 @@ import {
   useRemoveCommentFromAspectMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
-import { Comment } from '../../../models/discussion/comment';
+import { Comment } from '../../../domain/shared/components/Comments/models/comment';
 import { useAuthorsDetails } from '../../../domain/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {

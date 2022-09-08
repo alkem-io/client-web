@@ -10,7 +10,7 @@ import {
   useRemoveCommentFromCalloutMutation,
 } from '../../../hooks/generated/graphql';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
-import { Comment } from '../../../models/discussion/comment';
+import { Comment } from '../../shared/components/Comments/models/comment';
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 

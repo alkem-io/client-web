@@ -9,7 +9,7 @@ import { Reference } from '../../../models/graphql-schema';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 import MessageView from '../../shared/components/Comments/MessageView';
-import { Comment } from '../../../models/discussion/comment';
+import { Comment } from '../../shared/components/Comments/models/comment';
 import PostMessageToCommentsForm from '../../shared/components/Comments/PostMessageToCommentsForm';
 import Markdown from '../../../common/components/core/Markdown';
 import References from '../../../common/components/composite/common/References/References';

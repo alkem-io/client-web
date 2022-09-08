@@ -4,7 +4,7 @@ import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProv
 import { useChallenge, useHub, useUserContext } from '../../hooks';
 import { useChallengeDashboardReferencesQuery, useChallengePageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { Discussion } from '../../models/discussion/discussion';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';

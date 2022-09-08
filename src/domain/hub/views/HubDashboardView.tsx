@@ -36,7 +36,7 @@ import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import withOptionalCount from '../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
-import { Discussion } from '../../../models/discussion/discussion';
+import { Discussion } from '../../discussion/models/discussion';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
