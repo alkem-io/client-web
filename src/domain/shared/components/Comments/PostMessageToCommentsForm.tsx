@@ -4,9 +4,9 @@ import { Avatar, AvatarProps, Box, Grid, Popper, styled, Tooltip } from '@mui/ma
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikCommentInputField from '../../forms/FormikCommentInputField';
 import HelpIcon from '@mui/icons-material/Help';
-import { useUserContext } from '../../../../../hooks';
+import { useUserContext } from '../../../../hooks';
+import FormikCommentInputField from '../../../../common/components/composite/forms/FormikCommentInputField';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.spacing(theme.comments.avatarSize),
@@ -17,7 +17,7 @@ const PreFormatedPopper = styled(Popper)(() => ({
   whiteSpace: 'pre-wrap',
 }));
 
-export interface PostCommentProps {
+export interface PostMessageToCommentsFormProps {
   onPostComment?: (comment: string) => Promise<FetchResult<unknown>> | void;
   title?: string;
   placeholder?: string;
@@ -28,7 +28,13 @@ interface formValues {
   post: string;
 }
 
-const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, maxLength, disabled }) => {
+const PostMessageToCommentsForm: FC<PostMessageToCommentsFormProps> = ({
+  onPostComment,
+  title,
+  placeholder,
+  maxLength,
+  disabled,
+}) => {
   const { t } = useTranslation();
 
   const { user } = useUserContext();
@@ -98,4 +104,4 @@ const PostComment: FC<PostCommentProps> = ({ onPostComment, title, placeholder, 
     </Grid>
   );
 };
-export default PostComment;
+export default PostMessageToCommentsForm;

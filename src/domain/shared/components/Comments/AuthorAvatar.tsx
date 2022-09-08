@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { Avatar, styled, AvatarProps, Tooltip, Link } from '@mui/material';
-import UserCard from '../cards/user-card/UserCard';
-import { Author } from '../../../../../models/discussion/author';
+import UserCard from '../../../../common/components/composite/common/cards/user-card/UserCard';
+import { Author } from '../../../../models/discussion/author';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
   height: theme.spacing(theme.comments.avatarSize),

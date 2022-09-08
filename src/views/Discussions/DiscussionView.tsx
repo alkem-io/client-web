@@ -3,8 +3,8 @@ import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Filter from '../../domain/admin/components/Common/Filter';
-import DiscussionComment from '../../common/components/composite/common/Discussion/DiscussionComment';
-import PostComment from '../../common/components/composite/common/Discussion/PostComment';
+import DiscussionComment from '../../domain/shared/components/Comments/DiscussionComment';
+import PostMessageToCommentsForm from '../../domain/shared/components/Comments/PostMessageToCommentsForm';
 import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 import { Comment } from '../../models/discussion/comment';
 import { Discussion } from '../../models/discussion/discussion';
@@ -94,7 +94,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             <Grid item xs={12}>
               <Box paddingY={2}>
                 {canPost && (
-                  <PostComment
+                  <PostMessageToCommentsForm
                     onPostComment={comment => onPostComment && onPostComment(id, comment)}
                     title={t('components.post-comment.fields.description.title')}
                     placeholder={t('components.post-comment.fields.description.placeholder')}

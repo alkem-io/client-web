@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
 import { Box, Typography, styled, BoxProps, IconButton, Grid } from '@mui/material';
-import { Comment } from '../../../../../models/discussion/comment';
-import Markdown from '../../../core/Markdown';
+import { Comment } from '../../../../models/discussion/comment';
+import Markdown from '../../../../common/components/core/Markdown';
 import { formatCommentDate } from './formatCommentDate';
 import AuthorAvatar from './AuthorAvatar';
 

@@ -8,9 +8,9 @@ import DashboardGenericSection from '../../shared/components/DashboardSections/D
 import { Reference } from '../../../models/graphql-schema';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import DiscussionComment from '../../../common/components/composite/common/Discussion/DiscussionComment';
+import DiscussionComment from '../../shared/components/Comments/DiscussionComment';
 import { Comment } from '../../../models/discussion/comment';
-import PostComment from '../../../common/components/composite/common/Discussion/PostComment';
+import PostMessageToCommentsForm from '../../shared/components/Comments/PostMessageToCommentsForm';
 import Markdown from '../../../common/components/core/Markdown';
 import References from '../../../common/components/composite/common/References/References';
 import TagLabel from '../../../common/components/composite/common/TagLabel/TagLabel';
@@ -164,7 +164,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
             <SectionSpacer double />
             <Box>
               {canPostComments && (
-                <PostComment
+                <PostMessageToCommentsForm
                   placeholder={t('pages.aspect.dashboard.comment.placeholder')}
                   onPostComment={onPostComment}
                   maxLength={MID_TEXT_LENGTH}

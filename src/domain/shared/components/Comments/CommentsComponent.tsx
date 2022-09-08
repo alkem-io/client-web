@@ -9,8 +9,8 @@ import { mapWithSeparator } from '../../utils/joinNodes';
 import SectionSpacer from '../Section/SectionSpacer';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
-import DiscussionComment from '../../../../common/components/composite/common/Discussion/DiscussionComment';
-import PostComment from '../../../../common/components/composite/common/Discussion/PostComment';
+import DiscussionComment from './DiscussionComment';
+import PostMessageToCommentsForm from './PostMessageToCommentsForm';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -99,7 +99,7 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
       <SectionSpacer double />
       <Box>
         {canPostComments && (
-          <PostComment
+          <PostMessageToCommentsForm
             placeholder={t('pages.aspect.dashboard.comment.placeholder')}
             onPostComment={onPostComment}
             maxLength={MID_TEXT_LENGTH}
