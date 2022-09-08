@@ -1032,7 +1032,7 @@
     },
     "registration-success": {
       "header": "Bedankt voor uw inschrijving",
-      "subheader": "Bijna klaar! Een laatste stap is de validate van jou emailadres."
+      "subheader": "Bijna klaar! Een laatste stap is de validatie van je emailadres."
     },
     "verification-success": {
       "header": "Bedankt voor het verifiëren van uw email!",
