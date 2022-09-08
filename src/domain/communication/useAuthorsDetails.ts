@@ -8,7 +8,7 @@ import { AuthorizationCredential } from '../../models/graphql-schema';
 import { useChallenge, useHub, useOpportunity, WithCredentials } from '../../hooks';
 import { useTranslation } from 'react-i18next';
 import {
-  AuthorRoleNameKey,
+  MessageAuthorRoleNameKey,
   HOST_TRANSLATION_KEY,
   LEAD_TRANSLATION_KEY,
 } from '../../models/constants/translation.constants';
@@ -17,10 +17,10 @@ type ResourceTypeName = 'hub' | 'challenge' | 'opportunity';
 
 function findRoleNameKey(
   user: WithCredentials,
-  reourceType: ResourceTypeName,
+  resourceType: ResourceTypeName,
   resourceId: string
-): AuthorRoleNameKey | undefined {
-  switch (reourceType) {
+): MessageAuthorRoleNameKey | undefined {
+  switch (resourceType) {
     case 'hub': {
       if (
         user.agent?.credentials?.find(c => c.resourceID === resourceId && c.type === AuthorizationCredential.HubHost)
@@ -65,12 +65,12 @@ export const useAuthorsDetails = (authorIds: string[]) => {
   const { opportunityId } = useOpportunity();
 
   const resourceId = opportunityId || challengeId || hubId || '';
-  const reourceType: ResourceTypeName = opportunityId ? 'opportunity' : challengeId ? 'challenge' : 'hub';
+  const resourceType: ResourceTypeName = opportunityId ? 'opportunity' : challengeId ? 'challenge' : 'hub';
 
   const authors = useMemo(
     () =>
       authorData?.usersById.map<Author>(author => {
-        const roleNameKey = findRoleNameKey(author, reourceType, resourceId);
+        const roleNameKey = findRoleNameKey(author, resourceType, resourceId);
         const roleName = roleNameKey ? t(roleNameKey) : '';
         return {
           id: author.id,

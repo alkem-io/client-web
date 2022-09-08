@@ -5,4 +5,4 @@ export const LEAD_TRANSLATION_KEY = 'common.lead';
 export const HOST_TRANSLATION_KEY = 'common.host';
 
 export type RoleNameKey = typeof OWNER_TRANSLATION_KEY | typeof ADMIN_TRANSLATION_KEY | typeof MEMBER_TRANSLATION_KEY;
-export type AuthorRoleNameKey = typeof LEAD_TRANSLATION_KEY | typeof HOST_TRANSLATION_KEY;
+export type MessageAuthorRoleNameKey = typeof LEAD_TRANSLATION_KEY | typeof HOST_TRANSLATION_KEY;
