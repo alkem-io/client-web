@@ -1,17 +1,17 @@
 import React, { FC, useMemo } from 'react';
 import { Formik, FormikConfig } from 'formik';
-import { CalloutType } from '../../../../../../models/graphql-schema';
+import { CalloutType } from '../../models/graphql-schema';
 import * as yup from 'yup';
 import { Grid, InputAdornment } from '@mui/material';
-import FormikEffectFactory from '../../../../../utils/formik/formik-effect/FormikEffect';
-import FormikInputField from '../../../forms/FormikInputField';
-import FormRow from '../../../../../../domain/shared/layout/FormLayout';
+import FormRow from '../shared/layout/FormLayout';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../../../../../domain/shared/components/Section/Section';
-import MarkdownInput from '../../../../../../domain/admin/components/Common/MarkdownInput';
-import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../../../../../models/constants/field-length.constants';
-import HelpButton from '../../../../core/HelpButton';
-import FormikSelect from '../../../forms/FormikSelect';
+import { SectionSpacer } from '../shared/components/Section/Section';
+import { MID_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '../../models/constants/field-length.constants';
+import FormikInputField from '../../common/components/composite/forms/FormikInputField';
+import FormikSelect from '../../common/components/composite/forms/FormikSelect';
+import HelpButton from '../../common/components/core/HelpButton';
+import FormikEffectFactory from '../../common/utils/formik/formik-effect/FormikEffect';
+import MarkdownInput from '../admin/components/Common/MarkdownInput';
 
 type FormValueType = {
   displayName: string;
@@ -79,7 +79,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
         return t('components.callout-creation.info-step.type-cards-help');
       case CalloutType.Canvas:
         return t('components.callout-creation.info-step.type-canvases-help');
-      case CalloutType.Discussion:
+      case CalloutType.Comments:
         return t('components.callout-creation.info-step.type-comments-help');
       default:
         return '';
@@ -90,6 +90,7 @@ const CalloutForm: FC<CalloutFormProps> = ({ callout, edit = false, onChange, on
     () => [
       { id: CalloutType.Card, name: t('common.cards') },
       { id: CalloutType.Canvas, name: t('common.canvases') },
+      { id: CalloutType.Comments, name: t('common.discussion') },
     ],
     []
   );

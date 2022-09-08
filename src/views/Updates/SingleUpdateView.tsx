@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Grid, Skeleton, Avatar, Box } from '@mui/material';
-import { Author } from '../../models/discussion/author';
+import { Author } from '../../domain/shared/components/Comments/models/author';
 import Markdown from '../../common/components/core/Markdown';
 
 export interface SingleUpdateViewProps {

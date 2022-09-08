@@ -13,7 +13,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { Discussion } from '../../../../../models/discussion/discussion';
+import { Discussion } from '../../../../../domain/discussion/models/discussion';
 import DiscussionIcon from './DiscussionIcon';
 import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
 

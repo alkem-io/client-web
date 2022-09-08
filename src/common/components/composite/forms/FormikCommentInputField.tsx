@@ -10,7 +10,7 @@ import {
   OutlinedInput,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { useField } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import { makeStyles } from '@mui/styles';
 import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 
@@ -36,6 +36,7 @@ interface CommentInputField extends InputProps {
   disabled?: boolean;
   maxLength?: number;
   withCounter?: boolean;
+  submitOnReturnKey?: boolean;
 }
 
 export const FormikCommentInputField: FC<CommentInputField> = ({
@@ -44,6 +45,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
   disabled = false,
   maxLength,
   withCounter = false,
+  submitOnReturnKey = false,
 }) => {
   const styles = useStyle();
   const [field, meta, helper] = useField(name);
@@ -52,9 +54,19 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
     () => (required && Boolean(meta.error) && meta.touched ? 'is-invalid' : undefined),
     [meta]
   );
+  const { submitForm } = useFormikContext();
+
+  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = event => {
+    if (submitOnReturnKey) {
+      if (event.key === 'Enter' && event.shiftKey === false) {
+        event.preventDefault();
+        submitForm();
+      }
+    }
+  };
 
   return (
-    <FormGroup>
+    <FormGroup sx={{ paddingBottom: theme => theme.spacing(1) }}>
       <FormControl>
         <OutlinedInput
           multiline
@@ -62,6 +74,7 @@ export const FormikCommentInputField: FC<CommentInputField> = ({
           className={clsx('form-control', styles.padding, validClass, invalidClass)}
           name={field.name}
           onChange={e => helper.setValue(e.target.value)}
+          onKeyDown={onKeyDown}
           endAdornment={
             <InputAdornment position="end">
               <IconButton aria-label="post comment" size={'small'} type="submit" disabled={disabled}>

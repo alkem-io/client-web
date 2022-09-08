@@ -153,11 +153,11 @@ export const UserContributorFragmentDoc = gql`
   }
   ${VisualUriFragmentDoc}
 `;
-export const AspectMessageFragmentDoc = gql`
-  fragment AspectMessage on Message {
+export const MessageDetailsFragmentDoc = gql`
+  fragment MessageDetails on Message {
     id
-    message
     sender
+    message
     timestamp
   }
 `;
@@ -191,12 +191,12 @@ export const AspectDashboardFragmentDoc = gql`
         myPrivileges
       }
       messages {
-        ...AspectMessage
+        ...MessageDetails
       }
     }
   }
   ${VisualUriFragmentDoc}
-  ${AspectMessageFragmentDoc}
+  ${MessageDetailsFragmentDoc}
 `;
 export const AspectDashboardDataFragmentDoc = gql`
   fragment AspectDashboardData on Collaboration {
@@ -1053,6 +1053,19 @@ export const ContributeTabAspectFragmentDoc = gql`
   }
   ${AspectCardFragmentDoc}
 `;
+export const CommentsWithMessagesFragmentDoc = gql`
+  fragment CommentsWithMessages on Comments {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    messages {
+      ...MessageDetails
+    }
+  }
+  ${MessageDetailsFragmentDoc}
+`;
 export const CalloutFragmentDoc = gql`
   fragment Callout on Callout {
     id
@@ -1067,6 +1080,9 @@ export const CalloutFragmentDoc = gql`
     canvases {
       ...CanvasDetails
     }
+    comments {
+      ...CommentsWithMessages
+    }
     authorization {
       id
       myPrivileges
@@ -1075,6 +1091,7 @@ export const CalloutFragmentDoc = gql`
   }
   ${ContributeTabAspectFragmentDoc}
   ${CanvasDetailsFragmentDoc}
+  ${CommentsWithMessagesFragmentDoc}
 `;
 export const TemplateTitleFragmentDoc = gql`
   fragment TemplateTitle on TemplateInfo {
@@ -1242,14 +1259,6 @@ export const CommunityMembersFragmentDoc = gql`
   }
   ${UserCardFragmentDoc}
   ${OrganizationCardFragmentDoc}
-`;
-export const MessageDetailsFragmentDoc = gql`
-  fragment MessageDetails on Message {
-    id
-    sender
-    message
-    timestamp
-  }
 `;
 export const CommunityMessagesFragmentDoc = gql`
   fragment CommunityMessages on Community {
@@ -10949,6 +10958,102 @@ export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.CreateAspectFromContributeTabMutation,
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
 >;
+export const PostCommentInCalloutDocument = gql`
+  mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
+    sendMessageOnCallout(data: $data) {
+      id
+      message
+      sender
+      timestamp
+    }
+  }
+`;
+export type PostCommentInCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.PostCommentInCalloutMutation,
+  SchemaTypes.PostCommentInCalloutMutationVariables
+>;
+
+/**
+ * __usePostCommentInCalloutMutation__
+ *
+ * To run a mutation, you first call `usePostCommentInCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostCommentInCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postCommentInCalloutMutation, { data, loading, error }] = usePostCommentInCalloutMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function usePostCommentInCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.PostCommentInCalloutMutation,
+    SchemaTypes.PostCommentInCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.PostCommentInCalloutMutation,
+    SchemaTypes.PostCommentInCalloutMutationVariables
+  >(PostCommentInCalloutDocument, options);
+}
+export type PostCommentInCalloutMutationHookResult = ReturnType<typeof usePostCommentInCalloutMutation>;
+export type PostCommentInCalloutMutationResult = Apollo.MutationResult<SchemaTypes.PostCommentInCalloutMutation>;
+export type PostCommentInCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.PostCommentInCalloutMutation,
+  SchemaTypes.PostCommentInCalloutMutationVariables
+>;
+export const RemoveCommentFromCalloutDocument = gql`
+  mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
+    removeComment(messageData: $messageData)
+  }
+`;
+export type RemoveCommentFromCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveCommentFromCalloutMutation,
+  SchemaTypes.RemoveCommentFromCalloutMutationVariables
+>;
+
+/**
+ * __useRemoveCommentFromCalloutMutation__
+ *
+ * To run a mutation, you first call `useRemoveCommentFromCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveCommentFromCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeCommentFromCalloutMutation, { data, loading, error }] = useRemoveCommentFromCalloutMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useRemoveCommentFromCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveCommentFromCalloutMutation,
+    SchemaTypes.RemoveCommentFromCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveCommentFromCalloutMutation,
+    SchemaTypes.RemoveCommentFromCalloutMutationVariables
+  >(RemoveCommentFromCalloutDocument, options);
+}
+export type RemoveCommentFromCalloutMutationHookResult = ReturnType<typeof useRemoveCommentFromCalloutMutation>;
+export type RemoveCommentFromCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveCommentFromCalloutMutation>;
+export type RemoveCommentFromCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveCommentFromCalloutMutation,
+  SchemaTypes.RemoveCommentFromCalloutMutationVariables
+>;
 export const AspectTemplatesOnCalloutCreationDocument = gql`
   query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
@@ -11252,6 +11357,9 @@ export const CreateCalloutDocument = gql`
         id
       }
       aspects {
+        id
+      }
+      comments {
         id
       }
     }
@@ -12542,20 +12650,12 @@ export type CalloutAspectCreatedSubscriptionResult =
 export const AuthorDetailsDocument = gql`
   query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
     usersById(IDs: $ids) {
-      id
-      nameID
-      displayName
+      ...UserCard
       firstName
       lastName
-      profile {
-        id
-        avatar {
-          ...VisualUri
-        }
-      }
     }
   }
-  ${VisualUriFragmentDoc}
+  ${UserCardFragmentDoc}
 `;
 
 /**

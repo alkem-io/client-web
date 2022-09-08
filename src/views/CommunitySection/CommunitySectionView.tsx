@@ -12,7 +12,7 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../common/
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
-import { Discussion } from '../../models/discussion/discussion';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import { AuthorizationPrivilege, Message, User } from '../../models/graphql-schema';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';

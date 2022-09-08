@@ -8,9 +8,9 @@ import DashboardGenericSection from '../../shared/components/DashboardSections/D
 import { Reference } from '../../../models/graphql-schema';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import DiscussionComment from '../../../common/components/composite/common/Discussion/DiscussionComment';
-import { Comment } from '../../../models/discussion/comment';
-import PostComment from '../../../common/components/composite/common/Discussion/PostComment';
+import MessageView from '../../shared/components/Comments/MessageView';
+import { Message } from '../../shared/components/Comments/models/message';
+import PostMessageToCommentsForm from '../../shared/components/Comments/PostMessageToCommentsForm';
 import Markdown from '../../../common/components/core/Markdown';
 import References from '../../../common/components/composite/common/References/References';
 import TagLabel from '../../../common/components/composite/common/TagLabel/TagLabel';
@@ -19,7 +19,6 @@ import { mapWithSeparator } from '../../shared/utils/joinNodes';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { MID_TEXT_LENGTH } from '../../../models/constants/field-length.constants';
-import { useUserContext } from '../../../hooks';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
@@ -32,7 +31,7 @@ export interface AspectDashboardViewProps {
   displayName?: string;
   description?: string;
   type?: string;
-  messages?: Comment[];
+  messages?: Message[];
   commentId?: string;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];
@@ -68,8 +67,6 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
-
-  const { user } = useUserContext();
 
   const { banner, description, displayName, type, messages = [], commentId, tags = [], references } = props;
   const { creatorName, creatorAvatar, createdDate } = props;
@@ -155,11 +152,11 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
               ref={commentsContainerRef}
               onScroll={handleCommentsScroll}
             >
-              {mapWithSeparator(messages, SectionSpacer, comment => (
-                <DiscussionComment
-                  key={comment.id}
-                  comment={comment}
-                  canDelete={canDeleteComment(comment.id)}
+              {mapWithSeparator(messages, SectionSpacer, message => (
+                <MessageView
+                  key={message.id}
+                  message={message}
+                  canDelete={canDeleteComment(message.id)}
                   onDelete={onDeleteComment}
                 />
               ))}
@@ -167,11 +164,10 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
             <SectionSpacer double />
             <Box>
               {canPostComments && (
-                <PostComment
+                <PostMessageToCommentsForm
                   placeholder={t('pages.aspect.dashboard.comment.placeholder')}
                   onPostComment={onPostComment}
                   maxLength={MID_TEXT_LENGTH}
-                  userAvatarUri={user?.user?.profile?.avatar?.uri}
                 />
               )}
               {!canPostComments && (

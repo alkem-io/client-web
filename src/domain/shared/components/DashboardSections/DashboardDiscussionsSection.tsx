@@ -1,7 +1,7 @@
 import { Link } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Discussion } from '../../../../models/discussion/discussion';
+import { Discussion } from '../../../discussion/models/discussion';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import DiscussionOverview from '../../../../common/components/composite/entities/Communication/DiscussionOverview';
 import DashboardGenericSection from './DashboardGenericSection';

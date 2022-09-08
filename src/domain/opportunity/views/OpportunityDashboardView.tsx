@@ -12,7 +12,7 @@ import DashboardColumn from '../../../common/components/composite/sections/Dashb
 import DashboardSection from '../../../common/components/composite/sections/DashboardSection/DashboardSection';
 import Markdown from '../../../common/components/core/Markdown';
 import { useHub, useChallenge } from '../../../hooks';
-import { Discussion } from '../../../models/discussion/discussion';
+import { Discussion } from '../../discussion/models/discussion';
 import { OpportunityPageFragment, OpportunityPageRelationsFragment, Reference } from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 import { buildOpportunityUrl, buildCanvasUrl } from '../../../common/utils/urlBuilders';
