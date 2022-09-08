@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Filter from '../../domain/admin/components/Common/Filter';
-import DiscussionComment from '../../domain/shared/components/Comments/DiscussionComment';
+import MessageView from '../../domain/shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../domain/shared/components/Comments/PostMessageToCommentsForm';
 import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 import { Comment } from '../../models/discussion/comment';
@@ -47,8 +47,8 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
       <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
         <Grid item xs={12} container direction="column">
           <Grid item>
-            <DiscussionComment
-              comment={initialComment}
+            <MessageView
+              message={initialComment}
               canDelete={canDeleteDiscussion}
               onDelete={onDeleteDiscussion}
               isRootComment
@@ -74,8 +74,8 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                         <Grid container spacing={3}>
                           {filteredComments.map((c, i) => (
                             <Grid item xs={12} key={i}>
-                              <DiscussionComment
-                                comment={c}
+                              <MessageView
+                                message={c}
                                 canDelete={canDeleteComment(c.author?.id)}
                                 onDelete={onDeleteComment}
                               />

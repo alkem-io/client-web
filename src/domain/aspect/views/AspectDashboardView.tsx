@@ -8,7 +8,7 @@ import DashboardGenericSection from '../../shared/components/DashboardSections/D
 import { Reference } from '../../../models/graphql-schema';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
-import DiscussionComment from '../../shared/components/Comments/DiscussionComment';
+import MessageView from '../../shared/components/Comments/MessageView';
 import { Comment } from '../../../models/discussion/comment';
 import PostMessageToCommentsForm from '../../shared/components/Comments/PostMessageToCommentsForm';
 import Markdown from '../../../common/components/core/Markdown';
@@ -152,11 +152,11 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
               ref={commentsContainerRef}
               onScroll={handleCommentsScroll}
             >
-              {mapWithSeparator(messages, SectionSpacer, comment => (
-                <DiscussionComment
-                  key={comment.id}
-                  comment={comment}
-                  canDelete={canDeleteComment(comment.id)}
+              {mapWithSeparator(messages, SectionSpacer, message => (
+                <MessageView
+                  key={message.id}
+                  message={message}
+                  canDelete={canDeleteComment(message.id)}
                   onDelete={onDeleteComment}
                 />
               ))}
