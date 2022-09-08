@@ -3,7 +3,6 @@ import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { useTransactionScope, useHub } from '../../../../hooks';
 import { PageProps, Error404 } from '../../../../pages';
 import HubCommunicationsPage from '../../../hub/pages/HubCommunication/HubCommunicationsPage';
-import HubContextPage from '../../../hub/pages/HubContextPage';
 import HubProfilePage from '../../../hub/pages/HubProfile/HubProfilePage';
 import { ChallengesRoute } from '../../challenge/routing/ChallengesRoute';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
@@ -11,6 +10,7 @@ import HubCommunityAdminPage from '../HubCommunityAdminPage';
 import HubTemplatesAdminRoutes from '../HubTemplatesAdminRoutes';
 import HubAuthorizationRoute from './HubAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
+import HubContextPage from '../../../hub/pages/HubContext/HubContextPage';
 
 interface HubAdminRouteProps extends PageProps {}
 
