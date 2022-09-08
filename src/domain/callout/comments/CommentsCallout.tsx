@@ -10,7 +10,7 @@ import {
   useRemoveCommentFromCalloutMutation,
 } from '../../../hooks/generated/graphql';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
-import { Comment } from '../../../models/discussion/comment';
+import { Message } from '../../shared/components/Comments/models/message';
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 
@@ -41,7 +41,7 @@ const CommentsCallout = ({
   const _messages = callout?.comments?.messages ?? [];
   const senders = _messages.map(x => x.sender);
   const { getAuthor } = useAuthorsDetails(senders);
-  const messages = useMemo<Comment[]>(
+  const messages = useMemo<Message[]>(
     () =>
       _messages?.map(x => ({
         id: x.id,
@@ -56,22 +56,22 @@ const CommentsCallout = ({
     messages.find(x => x.id === msgId)?.author?.id === userId ?? false;
 
   const commentsPrivileges = callout?.comments?.authorization?.myPrivileges ?? [];
-  const canDeleteComments = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
-  const canDeleteComment = useCallback(
-    msgId => canDeleteComments || (isAuthenticated && isAuthor(msgId, user?.id)),
-    [messages, user, isAuthenticated, canDeleteComments]
+  const canDeleteMessages = commentsPrivileges.includes(AuthorizationPrivilege.Delete);
+  const canDeleteMessage = useCallback(
+    msgId => canDeleteMessages || (isAuthenticated && isAuthor(msgId, user?.id)),
+    [messages, user, isAuthenticated, canDeleteMessages]
   );
 
-  const canReadComments = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostComments = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
+  const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
+  const canPostMessages = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
 
-  const [deleteComment, { loading: deletingComment }] = useRemoveCommentFromCalloutMutation({
+  const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
     onError: handleError,
     update: (cache, { data }) => data?.removeComment && evictFromCache(cache, String(data.removeComment), 'Message'),
   });
 
-  const handleDeleteComment = (commentsId: string, messageId: string) =>
-    deleteComment({
+  const handleDeleteMessage = (commentsId: string, messageId: string) =>
+    deleteMessage({
       variables: {
         messageData: {
           commentsID: commentsId,
@@ -80,7 +80,7 @@ const CommentsCallout = ({
       },
     });
 
-  const [postComment, { loading: postingComment }] = usePostCommentInCalloutMutation({
+  const [postMessage, { loading: postingComment }] = usePostCommentInCalloutMutation({
     onError: handleError,
     update: (cache, { data }) => {
       if (isSubscribedToComments) {
@@ -116,8 +116,8 @@ const CommentsCallout = ({
     },
   });
 
-  const handlePostComment = async (commentsId: string, message: string) =>
-    postComment({
+  const handlePostMessage = async (commentsId: string, message: string) =>
+    postMessage({
       variables: {
         data: {
           calloutID: callout.id,
@@ -137,12 +137,12 @@ const CommentsCallout = ({
         <CommentsComponent
           messages={messages}
           commentsId={commentsId}
-          canReadComments={canReadComments}
-          canPostComments={canPostComments}
-          handlePostComment={handlePostComment}
-          canDeleteComment={canDeleteComment}
-          handleDeleteComment={handleDeleteComment}
-          loading={loading || postingComment || deletingComment}
+          canReadMessages={canReadMessages}
+          canPostMessages={canPostMessages}
+          handlePostMessage={handlePostMessage}
+          canDeleteMessage={canDeleteMessage}
+          handleDeleteMessage={handleDeleteMessage}
+          loading={loading || postingComment || deletingMessage}
         />
       </CalloutLayout>
     </>

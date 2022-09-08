@@ -10,8 +10,8 @@ import {
   usePostDiscussionCommentMutation,
   useRemoveMessageFromDiscussionMutation,
 } from '../../hooks/generated/graphql';
-import { Comment } from '../../models/discussion/comment';
-import { Discussion } from '../../models/discussion/discussion';
+import { Message as Comment } from '../../domain/shared/components/Comments/models/message';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import {
   CommunicationDiscussionMessageReceivedSubscription,
   CommunicationDiscussionMessageReceivedSubscriptionVariables,

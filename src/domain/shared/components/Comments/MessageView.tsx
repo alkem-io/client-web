@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
-import { Avatar, Box, Typography, styled, AvatarProps, BoxProps, IconButton, Grid } from '@mui/material';
-import { Comment } from '../../../../../models/discussion/comment';
-import Markdown from '../../../core/Markdown';
+import { Box, Typography, styled, BoxProps, IconButton, Grid } from '@mui/material';
+import { Message } from './models/message';
+import Markdown from '../../../../common/components/core/Markdown';
 import { formatCommentDate } from './formatCommentDate';
-
-const AVATAR_SIZE = 7;
+import AuthorAvatar from './AuthorAvatar';
 
 const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => ({
   overflowWrap: 'break-word',
@@ -14,27 +13,20 @@ const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => 
   '& > p:last-child': { marginBottom: 0 },
 }));
 
-const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
-  height: theme.spacing(AVATAR_SIZE),
-  width: theme.spacing(AVATAR_SIZE),
-}));
-
-interface DiscussionCommentProps {
-  comment: Comment;
+interface MessageViewProps {
+  message: Message;
   canDelete: boolean;
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
   isRootComment?: boolean;
 }
 
-export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDelete, onDelete, isRootComment }) => {
-  const { author, body, id } = comment;
+export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete, isRootComment }) => {
+  const { author, body, id } = message;
 
   return (
     <Grid container spacing={1.5}>
       <Grid item>
-        <UserAvatar src={author?.avatarUrl} variant="rounded" sx={{ borderRadius: 1.5 }}>
-          {author?.displayName[0]}
-        </UserAvatar>
+        <AuthorAvatar author={author} />
       </Grid>
       <Grid item xs zeroMinWidth>
         <Box
@@ -56,7 +48,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
                 </Grid>
                 <Grid item xs>
                   <Typography variant="h6" color="neutralMedium.dark" sx={{ fontStyle: 'italic' }}>
-                    Host
+                    {author?.roleName}
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -80,7 +72,7 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
                 <Typography variant="body2" color="neutralMedium.dark">
-                  {`${isRootComment ? 'started the discussion ' : ' '}${formatCommentDate(comment.createdAt)}`}
+                  {`${isRootComment ? 'started the discussion ' : ' '}${formatCommentDate(message.createdAt)}`}
                 </Typography>
               </Box>
             </Grid>
@@ -90,4 +82,4 @@ export const DiscussionComment: FC<DiscussionCommentProps> = ({ comment, canDele
     </Grid>
   );
 };
-export default DiscussionComment;
+export default MessageView;

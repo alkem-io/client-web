@@ -11,7 +11,7 @@ import {
   useRemoveCommentFromAspectMutation,
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
-import { Comment } from '../../../models/discussion/comment';
+import { Message } from '../../../domain/shared/components/Comments/models/message';
 import { useAuthorsDetails } from '../../../domain/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {
@@ -34,7 +34,7 @@ interface Provided {
   canPostComments: boolean;
   canDeleteComment: (messageId: string) => boolean;
   aspect?: AspectDashboardFragment;
-  messages: Comment[];
+  messages: Message[];
   commentsId?: string;
   creatorAvatar?: string;
   creatorName?: string;
@@ -155,7 +155,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
   const _messages = aspect?.comments?.messages ?? [];
   const senders = _messages.map(x => x.sender);
   const { getAuthor } = useAuthorsDetails(senders);
-  const messages = useMemo<Comment[]>(
+  const messages = useMemo<Message[]>(
     () =>
       _messages?.map(x => ({
         id: x.id,

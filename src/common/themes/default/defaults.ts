@@ -34,6 +34,9 @@ export const theme: ThemeOptions = {
     maxWidth: 280,
     minWidth: 90,
   },
+  comments: {
+    avatarSize: 7,
+  },
 };
 
 const defaultMUITheme = createTheme(theme);
@@ -58,6 +61,9 @@ declare module '@mui/material/styles' {
         height: number;
       };
     };
+    comments: {
+      avatarSize: number;
+    };
   }
   interface ThemeOptions {
     sidebar?: {
@@ -76,6 +82,9 @@ declare module '@mui/material/styles' {
         width: number;
         height: number;
       };
+    };
+    comments: {
+      avatarSize: number;
     };
   }
 }
