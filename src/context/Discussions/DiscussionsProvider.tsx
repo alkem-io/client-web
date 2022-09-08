@@ -10,7 +10,7 @@ import {
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
 } from '../../hooks/generated/graphql';
-import { Discussion } from '../../models/discussion/discussion';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import {
   AuthorizationPrivilege,
   Communication,

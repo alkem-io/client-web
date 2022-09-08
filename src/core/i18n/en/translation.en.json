@@ -98,6 +98,8 @@
     "state": "State",
     "aspect": "Card",
     "aspects": "Cards",
+    "host": "Host",
+    "lead": "Lead",
     "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",

@@ -11123,16 +11123,27 @@ export type AuthorDetailsQuery = {
   __typename?: 'Query';
   usersById: Array<{
     __typename?: 'User';
+    firstName: string;
+    lastName: string;
     id: string;
     nameID: string;
     displayName: string;
-    firstName: string;
-    lastName: string;
+    agent?:
+      | {
+          __typename?: 'Agent';
+          id: string;
+          credentials?:
+            | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+            | undefined;
+        }
+      | undefined;
     profile?:
       | {
           __typename?: 'Profile';
           id: string;
+          location?: { __typename?: 'Location'; country: string; city: string } | undefined;
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
         }
       | undefined;
   }>;

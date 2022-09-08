@@ -3,26 +3,26 @@ import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import DashboardGenericSection from '../DashboardSections/DashboardGenericSection';
-import { Comment } from '../../../../models/discussion/comment';
+import { Message } from './models/message';
 import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 import { mapWithSeparator } from '../../utils/joinNodes';
 import SectionSpacer from '../Section/SectionSpacer';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
-import DiscussionComment from '../../../../common/components/composite/common/Discussion/DiscussionComment';
-import PostComment from '../../../../common/components/composite/common/Discussion/PostComment';
+import MessageView from './MessageView';
+import PostMessageToCommentsForm from './PostMessageToCommentsForm';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
 export interface CommentsComponentProps {
-  messages: Comment[] | undefined;
+  messages: Message[] | undefined;
   commentsId: string | undefined;
-  canReadComments: boolean;
-  canPostComments: boolean;
-  canDeleteComment: (messageId: string) => boolean;
-  handlePostComment: (commentsId: string, message: string) => Promise<FetchResult<unknown>> | void;
-  handleDeleteComment: (commentsId: string, messageId: string) => void;
+  canReadMessages: boolean;
+  canPostMessages: boolean;
+  canDeleteMessage: (messageId: string) => boolean;
+  handlePostMessage: (commentsId: string, message: string) => Promise<FetchResult<unknown>> | void;
+  handleDeleteMessage: (commentsId: string, messageId: string) => void;
   loading?: boolean;
 }
 
@@ -48,11 +48,11 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
   const wasScrolledToBottomRef = useRef(true);
 
-  const { messages = [], commentsId, handlePostComment, handleDeleteComment } = props;
-  const onPostComment = (message: string) => (commentsId ? handlePostComment(commentsId, message) : undefined);
-  const onDeleteComment = (id: string) => (commentsId ? handleDeleteComment(commentsId, id) : undefined);
+  const { messages = [], commentsId, handlePostMessage, handleDeleteMessage } = props;
+  const onPostComment = (message: string) => (commentsId ? handlePostMessage(commentsId, message) : undefined);
+  const onDeleteComment = (id: string) => (commentsId ? handleDeleteMessage(commentsId, id) : undefined);
 
-  const { canPostComments, canDeleteComment } = props;
+  const { canPostMessages, canDeleteMessage } = props;
   const { loading } = props;
 
   const { height: containerHeight = 0 } = useResizeDetector({
@@ -76,7 +76,7 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
     }
   }, [messages]);
 
-  const handleCommentsScroll = () => {
+  const handleScroll = () => {
     prevScrollTopRef.current.scrollTop = commentsContainerRef.current!.scrollTop;
   };
 
@@ -85,28 +85,28 @@ const CommentsComponent: FC<CommentsComponentProps> = props => {
       <Box
         sx={{ maxHeight: COMMENTS_CONTAINER_HEIGHT, overflowY: 'auto' }}
         ref={commentsContainerRef}
-        onScroll={handleCommentsScroll}
+        onScroll={handleScroll}
       >
-        {mapWithSeparator(messages, SectionSpacer, comment => (
-          <DiscussionComment
-            key={comment.id}
-            comment={comment}
-            canDelete={canDeleteComment(comment.id)}
+        {mapWithSeparator(messages, SectionSpacer, message => (
+          <MessageView
+            key={message.id}
+            message={message}
+            canDelete={canDeleteMessage(message.id)}
             onDelete={onDeleteComment}
           />
         ))}
       </Box>
       <SectionSpacer double />
       <Box>
-        {canPostComments && (
-          <PostComment
+        {canPostMessages && (
+          <PostMessageToCommentsForm
             placeholder={t('pages.aspect.dashboard.comment.placeholder')}
             onPostComment={onPostComment}
             maxLength={MID_TEXT_LENGTH}
             disabled={loading}
           />
         )}
-        {!canPostComments && (
+        {!canPostMessages && (
           <Box paddingY={4} display="flex" justifyContent="center">
             <Typography variant="h4">{t('components.discussion.cant-post')}</Typography>
           </Box>

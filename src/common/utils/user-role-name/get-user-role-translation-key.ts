@@ -4,7 +4,7 @@ import {
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
   RoleNameKey,
-} from '../../../models/constants/translation.contants';
+} from '../../../models/constants/translation.constants';
 
 const ownerRoles = [AuthorizationCredential.OrganizationOwner];
 

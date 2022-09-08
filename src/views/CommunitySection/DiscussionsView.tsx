@@ -7,7 +7,7 @@ import { useResolvedPath } from 'react-router-dom';
 import DiscussionOverview from '../../common/components/composite/entities/Communication/DiscussionOverview';
 import ConditionalLink from '../../common/components/core/ConditionalLink';
 import { RouterLink } from '../../common/components/core/RouterLink';
-import { Discussion } from '../../models/discussion/discussion';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import { buildDiscussionsUrl, buildNewDiscussionUrl } from '../../common/utils/urlBuilders';
 
 const DISCUSSIONS_NUMBER_IN_WINDOW = 3;

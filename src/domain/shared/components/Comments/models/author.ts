@@ -5,4 +5,8 @@ export interface Author {
   lastName: string;
   avatarUrl: string;
   url: string;
+  tags?: string[];
+  roleName?: string;
+  city?: string;
+  country?: string;
 }
