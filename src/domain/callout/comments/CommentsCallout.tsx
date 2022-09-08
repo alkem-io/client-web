@@ -10,7 +10,7 @@ import {
   useRemoveCommentFromCalloutMutation,
 } from '../../../hooks/generated/graphql';
 import { useAuthorsDetails } from '../../communication/useAuthorsDetails';
-import { Comment } from '../../shared/components/Comments/models/comment';
+import { Message } from '../../shared/components/Comments/models/message';
 import { AuthorizationPrivilege } from '../../../models/graphql-schema';
 import { evictFromCache } from '../../shared/utils/apollo-cache/removeFromCache';
 
@@ -41,7 +41,7 @@ const CommentsCallout = ({
   const _messages = callout?.comments?.messages ?? [];
   const senders = _messages.map(x => x.sender);
   const { getAuthor } = useAuthorsDetails(senders);
-  const messages = useMemo<Comment[]>(
+  const messages = useMemo<Message[]>(
     () =>
       _messages?.map(x => ({
         id: x.id,

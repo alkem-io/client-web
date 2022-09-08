@@ -9,7 +9,7 @@ import { Reference } from '../../../models/graphql-schema';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 import MessageView from '../../shared/components/Comments/MessageView';
-import { Comment } from '../../shared/components/Comments/models/comment';
+import { Message } from '../../shared/components/Comments/models/message';
 import PostMessageToCommentsForm from '../../shared/components/Comments/PostMessageToCommentsForm';
 import Markdown from '../../../common/components/core/Markdown';
 import References from '../../../common/components/composite/common/References/References';
@@ -31,7 +31,7 @@ export interface AspectDashboardViewProps {
   displayName?: string;
   description?: string;
   type?: string;
-  messages?: Comment[];
+  messages?: Message[];
   commentId?: string;
   tags?: string[];
   references?: Pick<Reference, 'id' | 'name' | 'uri' | 'description'>[];

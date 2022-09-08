@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
 import { Box, Typography, styled, BoxProps, IconButton, Grid } from '@mui/material';
-import { Comment } from './models/comment';
+import { Message } from './models/message';
 import Markdown from '../../../../common/components/core/Markdown';
 import { formatCommentDate } from './formatCommentDate';
 import AuthorAvatar from './AuthorAvatar';
@@ -14,7 +14,7 @@ const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => 
 }));
 
 interface MessageViewProps {
-  message: Comment;
+  message: Message;
   canDelete: boolean;
   onDelete?: (discussionId: string, msgId?: string) => Promise<void> | void;
   isRootComment?: boolean;

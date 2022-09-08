@@ -6,7 +6,7 @@ import Filter from '../../domain/admin/components/Common/Filter';
 import MessageView from '../../domain/shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../domain/shared/components/Comments/PostMessageToCommentsForm';
 import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
-import { Comment } from '../../domain/shared/components/Comments/models/comment';
+import { Message } from '../../domain/shared/components/Comments/models/message';
 import { Discussion } from '../../domain/discussion/models/discussion';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 
@@ -40,7 +40,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     author,
     createdAt,
     body: description,
-  } as Comment;
+  } as Message;
 
   return (
     <>

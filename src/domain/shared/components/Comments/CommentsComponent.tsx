@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { FetchResult } from '@apollo/client';
 import { Box, Typography } from '@mui/material';
 import DashboardGenericSection from '../DashboardSections/DashboardGenericSection';
-import { Comment } from './models/comment';
+import { Message } from './models/message';
 import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 import { mapWithSeparator } from '../../utils/joinNodes';
 import SectionSpacer from '../Section/SectionSpacer';
@@ -16,7 +16,7 @@ const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
 export interface CommentsComponentProps {
-  messages: Comment[] | undefined;
+  messages: Message[] | undefined;
   commentsId: string | undefined;
   canReadMessages: boolean;
   canPostMessages: boolean;
