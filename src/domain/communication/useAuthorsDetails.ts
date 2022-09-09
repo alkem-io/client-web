@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Author } from '../shared/components/Comments/models/author';
+import { Author } from '../shared/components/AuthorAvatar/models/author';
 import { buildUserProfileUrl } from '../../common/utils/urlBuilders';
 import { useAuthorDetailsQuery } from '../../hooks/generated/graphql';
 import { uniq } from 'lodash';

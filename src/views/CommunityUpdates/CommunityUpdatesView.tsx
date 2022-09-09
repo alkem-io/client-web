@@ -37,7 +37,7 @@ import { FontDownloadIcon } from '../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../common/icons/FontDownloadOffIcon';
 import { useNotification } from '../../hooks';
 import { Message } from '../../models/graphql-schema';
-import { Author } from '../../domain/shared/components/Comments/models/author';
+import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
 import { LONG_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 
 export interface CommunityUpdatesViewProps {

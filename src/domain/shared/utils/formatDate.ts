@@ -5,10 +5,10 @@ const ONE_DAY = 24 * ONE_HOUR;
 const ONE_MONTH = 31 * ONE_DAY;
 const ONE_YEAR = 256 * ONE_DAY;
 
-export const formatCommentDate = (commentDate: Date): string => {
+export const formatDate = (date: Date): string => {
   const currentDate = new Date();
 
-  const diffInTime = currentDate.getTime() - commentDate.getTime();
+  const diffInTime = currentDate.getTime() - date.getTime();
 
   if (diffInTime > ONE_YEAR) {
     const timeDiff = Math.round(diffInTime / ONE_YEAR);

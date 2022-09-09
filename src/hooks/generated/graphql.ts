@@ -16982,6 +16982,71 @@ export type RolesOrganizationQueryResult = Apollo.QueryResult<
 export function refetchRolesOrganizationQuery(variables: SchemaTypes.RolesOrganizationQueryVariables) {
   return { query: RolesOrganizationDocument, variables: variables };
 }
+export const ActivityLogOnCollaborationDocument = gql`
+  query activityLogOnCollaboration($queryData: ActivityLogInput!) {
+    activityLogOnCollaboration(queryData: $queryData) {
+      id
+      type
+      resourceID
+      collaborationID
+      createdDate
+      description
+      triggeredBy
+    }
+  }
+`;
+
+/**
+ * __useActivityLogOnCollaborationQuery__
+ *
+ * To run a query within a React component, call `useActivityLogOnCollaborationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useActivityLogOnCollaborationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useActivityLogOnCollaborationQuery({
+ *   variables: {
+ *      queryData: // value for 'queryData'
+ *   },
+ * });
+ */
+export function useActivityLogOnCollaborationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >(ActivityLogOnCollaborationDocument, options);
+}
+export function useActivityLogOnCollaborationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ActivityLogOnCollaborationQuery,
+    SchemaTypes.ActivityLogOnCollaborationQueryVariables
+  >(ActivityLogOnCollaborationDocument, options);
+}
+export type ActivityLogOnCollaborationQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationQuery>;
+export type ActivityLogOnCollaborationLazyQueryHookResult = ReturnType<typeof useActivityLogOnCollaborationLazyQuery>;
+export type ActivityLogOnCollaborationQueryResult = Apollo.QueryResult<
+  SchemaTypes.ActivityLogOnCollaborationQuery,
+  SchemaTypes.ActivityLogOnCollaborationQueryVariables
+>;
+export function refetchActivityLogOnCollaborationQuery(
+  variables: SchemaTypes.ActivityLogOnCollaborationQueryVariables
+) {
+  return { query: ActivityLogOnCollaborationDocument, variables: variables };
+}
 export const AssignUserToGroupDocument = gql`
   mutation assignUserToGroup($input: AssignUserGroupMemberInput!) {
     assignUserToGroup(membershipData: $input) {

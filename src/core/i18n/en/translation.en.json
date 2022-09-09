@@ -326,6 +326,15 @@
     }
   },
   "components": {
+    "activity-log-section": {
+      "title": "Latest activities"
+    },
+    "activity-log-view": {
+      "actions": {
+        "callout-published": "published a new Callout",
+        "canvas-created": "added a new Canvas"
+      }
+    },
     "lifecycle-visualizer": {
       "error": "The definition was not able to be visualized"
     },
