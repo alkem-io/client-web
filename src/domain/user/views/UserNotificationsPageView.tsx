@@ -29,8 +29,7 @@ export interface UserNotificationsPageViewProps
 const UserNotificationsPageView: FC<UserNotificationsPageViewProps> = ({ entities, actions, state }) => {
   const { t } = useTranslation();
   const { user: userMetadata } = useUserContext();
-  const isAnyGlobalAdmin =
-    userMetadata?.isGlobalAdmin || userMetadata?.isGlobalAdminCommunity || userMetadata?.isGlobalAdminHubs;
+  const isAnyGlobalAdmin = userMetadata?.permissions.canAdminPlatform;
   const isCommunityAdmin = userMetadata?.isCommunityAdmin;
 
   const { preferences } = entities;

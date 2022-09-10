@@ -20,6 +20,7 @@ export interface UserPermissions {
   canReadUsers: boolean;
   canCreateHub: boolean;
   canCreateOrganization: boolean;
+  canAdminPlatform: boolean;
 }
 export interface UserMetadata {
   user: User;
@@ -34,9 +35,6 @@ export interface UserMetadata {
   isAdmin: boolean;
   /** has an entity admin role, i.e. is admin of a community */
   isCommunityAdmin: boolean;
-  isGlobalAdmin: boolean;
-  isGlobalAdminHubs: boolean;
-  isGlobalAdminCommunity: boolean;
   roles: Role[];
   groups: string[];
   organizations: string[];
@@ -143,6 +141,7 @@ export const useUserMetadataWrapper = () => {
         canCreateHub: myPrivileges.includes(AuthorizationPrivilege.CreateHub),
         canCreateOrganization: myPrivileges.includes(AuthorizationPrivilege.CreateOrganization),
         canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+        canAdminPlatform: myPrivileges.includes(AuthorizationPrivilege.PlatformAdmin),
       };
 
       const metadata: UserMetadata = {
@@ -156,9 +155,6 @@ export const useUserMetadataWrapper = () => {
         isOpportunityAdmin,
         isAdmin: false,
         isCommunityAdmin: false,
-        isGlobalAdmin: hasCredentials(AuthorizationCredential.GlobalAdmin),
-        isGlobalAdminHubs: hasCredentials(AuthorizationCredential.GlobalAdminHubs),
-        isGlobalAdminCommunity: hasCredentials(AuthorizationCredential.GlobalAdminCommunity),
         roles,
         groups,
         challenges,
