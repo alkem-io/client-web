@@ -38,9 +38,11 @@ const UserSegment = <El extends ElementType>({
 }: UserSegmentProps<El>) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { user, roles, isAdmin } = userMetadata;
+  const { user, roles, permissions } = userMetadata;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef<HTMLButtonElement>(null);
+
+  const isAdmin = permissions.canAdminPlatform;
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';

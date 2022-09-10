@@ -31,8 +31,6 @@ export interface UserMetadata {
   isHubAdmin: (hubId: string) => boolean;
   isChallengeAdmin: (hubId: string, challengeId: string) => boolean;
   isOpportunityAdmin: (hubId: string, challengeId: string, opportunityId: string) => boolean;
-  /** has any admin role */
-  isAdmin: boolean;
   /** has an entity admin role, i.e. is admin of a community */
   isCommunityAdmin: boolean;
   roles: Role[];
@@ -153,7 +151,6 @@ export const useUserMetadataWrapper = () => {
         isHubAdmin,
         isChallengeAdmin,
         isOpportunityAdmin,
-        isAdmin: false,
         isCommunityAdmin: false,
         roles,
         groups,
@@ -168,7 +165,6 @@ export const useUserMetadataWrapper = () => {
         permissions: permissions,
       };
 
-      metadata.isAdmin = hasAdminRole(metadata.roles);
       metadata.isCommunityAdmin = hasCommunityAdminRole(metadata.roles);
 
       return metadata;
@@ -179,24 +175,7 @@ export const useUserMetadataWrapper = () => {
   return toUserMetadata;
 };
 
-export const hasAdminRole = (roles: Role[]) => {
-  for (const role of roles) {
-    if (AdminRoles.includes(role.type)) return true;
-  }
-  return false;
-};
-
 export const hasCommunityAdminRole = (roles: Role[]) => roles.some(({ type }) => CommunityAdminRoles.includes(type));
-
-export const AdminRoles = [
-  AuthorizationCredential.GlobalAdmin,
-  AuthorizationCredential.GlobalAdminHubs,
-  AuthorizationCredential.GlobalAdminCommunity,
-  AuthorizationCredential.ChallengeAdmin,
-  AuthorizationCredential.HubAdmin,
-  AuthorizationCredential.OpportunityAdmin,
-  AuthorizationCredential.OrganizationAdmin,
-];
 
 const CommunityAdminRoles = [
   AuthorizationCredential.ChallengeAdmin,
