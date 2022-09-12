@@ -19,10 +19,10 @@ export interface ActivityLogComponentProps {
 }
 
 export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activities }) => {
-  const { getActivityViewModel } = useActivityToViewModel(activities ?? []);
+  const { getActivityViewModel, loading } = useActivityToViewModel(activities ?? []);
 
   const display = useMemo(() => {
-    if (!activities) {
+    if (!activities || loading) {
       return null;
     }
 
@@ -33,7 +33,7 @@ export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activities
         ))}
       </>
     );
-  }, [activities]);
+  }, [activities, getActivityViewModel]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: theme => theme.spacing(2) }}>
