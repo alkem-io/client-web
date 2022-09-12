@@ -1,7 +1,4 @@
-import { Author } from '../../AuthorAvatar/models/author';
+import { ActivityLogBaseViewProps } from './ActivityLogBaseView';
 
-export interface ActivityLogViewProps {
-  author: Author;
-  createdDate: Date;
-  description: string;
-}
+export interface ActivityLogViewProps
+  extends Pick<ActivityLogBaseViewProps, 'author' | 'createdDate' | 'description'> {}

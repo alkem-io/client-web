@@ -23,6 +23,7 @@ import {
 } from '../../domain/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
 import { ActivityLog } from '../../domain/shared/components/ActivityLog';
+import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -72,9 +73,17 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const { data: activityLogData } = useActivityLogOnCollaborationQuery({
     variables: { queryData: { collaborationID: collaborationID! } },
-    skip: !collaborationID
+    skip: !collaborationID,
   });
-  const activityLog = activityLogData?.activityLogOnCollaboration;
+  const activityLog = useMemo(() => {
+    if (!activityLogData) {
+      return undefined;
+    }
+
+    return [...activityLogData.activityLogOnCollaboration]
+      .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
+      .slice(0, LATEST_ACTIVITIES_COUNT);
+  }, [activityLogData]);
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
   const { user, isAuthenticated } = useUserContext();

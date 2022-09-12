@@ -14,18 +14,16 @@ export const useActivityToViewModel = (activityLog?: ActivityLog[]): ActivityToV
 
   const getActivityViewModel = (activityLog: ActivityLog) => toActivityViewModel(activityLog, authors);
 
-  const activityViewModel = activityLog?.map<ActivityLogViewProps>(
-    activity => toActivityViewModel(activity, authors)
-  );
+  const activityViewModel = activityLog?.map<ActivityLogViewProps>(activity => toActivityViewModel(activity, authors));
 
   return {
     activityViewModel,
     getActivityViewModel,
-  }
+  };
 };
 
 const toActivityViewModel = (activityLog: ActivityLog, authors: Author[]) => ({
-  author: authors.find(author => author.id === activityLog.triggeredBy) ?? {} as Author,
+  author: authors.find(author => author.id === activityLog.triggeredBy),
   createdDate: activityLog.createdDate,
-  description: activityLog.description
+  description: activityLog.description,
 });

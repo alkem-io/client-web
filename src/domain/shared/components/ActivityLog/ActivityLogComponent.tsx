@@ -12,21 +12,23 @@ export interface ActivityLogComponentProps {
 export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activityLog }) => {
   const { getActivityViewModel } = useActivityToViewModel(activityLog ?? []);
 
-  activityLog = activityLog?.filter(x => x.type === ActivityEventType.CalloutPublished || x.type === ActivityEventType.CanvasCreated)
-
-  const display = useMemo(() => (
-    <>
-      {activityLog?.map(
-        activity => <ActivityViewChooser
-          key={activity.id}
-          type={activity.type}
-          { ...getActivityViewModel(activity) }
-        />
-      )}
-    </>
-  ),
-  [activityLog]
+  activityLog = activityLog?.filter(
+    x => x.type === ActivityEventType.CalloutPublished || x.type === ActivityEventType.CanvasCreated
   );
+
+  const display = useMemo(() => {
+    if (!activityLog) {
+      return null;
+    }
+
+    return (
+      <>
+        {activityLog.map(activity => (
+          <ActivityViewChooser key={activity.id} type={activity.type} {...getActivityViewModel(activity)} />
+        ))}
+      </>
+    );
+  }, [activityLog]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: theme => theme.spacing(2) }}>
@@ -36,7 +38,8 @@ export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activityLo
 };
 
 const LoadingView = () => {
-  return ( // todo put loading comp here
+  return (
+    // todo put loading comp here
     <>
       {'loading item'}
       {'loading item'}
@@ -46,10 +49,13 @@ const LoadingView = () => {
 };
 
 interface ActivityViewChooserProps extends ActivityLogViewProps {
-  type: ActivityEventType,
+  type: ActivityEventType;
 }
 
-const ActivityViewChooser = ({ type, ...rest } : ActivityViewChooserProps ): React.ReactElement<ActivityLogViewProps> | null => {
+const ActivityViewChooser = ({
+  type,
+  ...rest
+}: ActivityViewChooserProps): React.ReactElement<ActivityLogViewProps> | null => {
   const lookup: Record<ActivityEventType, ComponentType<ActivityLogViewProps> | null> = {
     [ActivityEventType.CalloutPublished]: ActivityLogCalloutPublishedView,
     [ActivityEventType.CanvasCreated]: ActivityLogCanvasCreatedView,
@@ -70,5 +76,5 @@ const ActivityViewChooser = ({ type, ...rest } : ActivityViewChooserProps ): Rea
     return null;
   }
 
-  return <ActivityView { ...rest } />
+  return <ActivityView {...rest} />;
 };
