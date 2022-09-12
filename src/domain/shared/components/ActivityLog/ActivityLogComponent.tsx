@@ -1,50 +1,44 @@
 import React, { ComponentType, FC, useMemo } from 'react';
 import { Box } from '@mui/material';
-import { ActivityEventType } from '../../../../models/graphql-schema';
-import { ActivityLog } from './ActivityLog';
-import { ActivityLogCalloutPublishedView, ActivityLogCanvasCreatedView, ActivityLogViewProps } from './views';
+import { Activity, ActivityEventType } from '../../../../models/graphql-schema';
+import { LATEST_ACTIVITIES_COUNT } from '../../../../models/constants';
+import {
+  ActivityCardCommentCreatedView,
+  ActivityLogCalloutPublishedView,
+  ActivityLogCanvasCreatedView,
+  ActivityLogCardCreatedView,
+  ActivityLogDiscussionCommentCreatedView,
+  ActivityLogLoadingView,
+  ActivityLogMemberJoinedView,
+  ActivityLogViewProps,
+} from './views';
 import { useActivityToViewModel } from './hooks';
 
 export interface ActivityLogComponentProps {
-  activityLog: ActivityLog[] | undefined;
+  activity: Activity[] | undefined;
 }
 
-export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activityLog }) => {
-  const { getActivityViewModel } = useActivityToViewModel(activityLog ?? []);
-
-  activityLog = activityLog?.filter(
-    x => x.type === ActivityEventType.CalloutPublished || x.type === ActivityEventType.CanvasCreated
-  );
+export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activity }) => {
+  const { getActivityViewModel } = useActivityToViewModel(activity ?? []);
 
   const display = useMemo(() => {
-    if (!activityLog) {
+    if (!activity) {
       return null;
     }
 
     return (
       <>
-        {activityLog.map(activity => (
+        {activity.map(activity => (
           <ActivityViewChooser key={activity.id} type={activity.type} {...getActivityViewModel(activity)} />
         ))}
       </>
     );
-  }, [activityLog]);
+  }, [activity]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: theme => theme.spacing(2) }}>
-      {display ?? <LoadingView />}
+      {display ?? <ActivityLogLoadingView rows={LATEST_ACTIVITIES_COUNT} />}
     </Box>
-  );
-};
-
-const LoadingView = () => {
-  return (
-    // todo put loading comp here
-    <>
-      {'loading item'}
-      {'loading item'}
-      {'loading item'}
-    </>
   );
 };
 
@@ -52,28 +46,20 @@ interface ActivityViewChooserProps extends ActivityLogViewProps {
   type: ActivityEventType;
 }
 
-const ActivityViewChooser = ({
-  type,
-  ...rest
-}: ActivityViewChooserProps): React.ReactElement<ActivityLogViewProps> | null => {
+const ActivityViewChooser = ({ type, ...rest }: ActivityViewChooserProps): React.ReactElement<ActivityLogViewProps> => {
   const lookup: Record<ActivityEventType, ComponentType<ActivityLogViewProps> | null> = {
     [ActivityEventType.CalloutPublished]: ActivityLogCalloutPublishedView,
     [ActivityEventType.CanvasCreated]: ActivityLogCanvasCreatedView,
-    // todo impl others
-    [ActivityEventType.CardComment]: null,
-    [ActivityEventType.CardCreated]: null,
-    [ActivityEventType.DiscussionComment]: null,
-    [ActivityEventType.MemberJoined]: null,
+    [ActivityEventType.CardComment]: ActivityCardCommentCreatedView,
+    [ActivityEventType.CardCreated]: ActivityLogCardCreatedView,
+    [ActivityEventType.DiscussionComment]: ActivityLogDiscussionCommentCreatedView,
+    [ActivityEventType.MemberJoined]: ActivityLogMemberJoinedView,
   };
 
   const ActivityView = lookup[type];
-  // todo uncomment
-  // if (!ActivityView) {
-  //   throw new Error(`Unable to choose view for activity type: ${type}`);
-  // }
 
   if (!ActivityView) {
-    return null;
+    throw new Error(`Unable to choose a view for activity type: ${type}`);
   }
 
   return <ActivityView {...rest} />;

@@ -7,7 +7,13 @@ import {
   useHubPageQuery,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment, Reference } from '../../models/graphql-schema';
+import {
+  Activity,
+  AuthorizationPrivilege,
+  ChallengeCardFragment,
+  HubPageFragment,
+  Reference,
+} from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../domain/discussion/models/discussion';
@@ -22,7 +28,6 @@ import {
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
-import { ActivityLog } from '../../domain/shared/components/ActivityLog';
 import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
 
 export interface HubContainerEntities {
@@ -39,7 +44,7 @@ export interface HubContainerEntities {
   isGlobalAdmin: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
-  activityLog: ActivityLog[] | undefined;
+  activity: Activity[] | undefined;
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   canvases: CanvasFragmentWithCallout[];
@@ -75,7 +80,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     variables: { queryData: { collaborationID: collaborationID! } },
     skip: !collaborationID,
   });
-  const activityLog = useMemo(() => {
+  const activity = useMemo(() => {
     if (!activityLogData) {
       return undefined;
     }
@@ -141,7 +146,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           canvases,
           canvasesCount,
           references,
-          activityLog,
+          activity,
           ...contributors,
         },
         {

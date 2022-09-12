@@ -18,6 +18,7 @@ import {
   ChallengeCardFragment,
   AssociatedOrganizationDetailsFragment,
   Reference,
+  Activity,
 } from '../../../models/graphql-schema';
 import { buildHubUrl, buildCanvasUrl } from '../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../callout/canvas/CanvasCallout';
@@ -37,7 +38,7 @@ import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import withOptionalCount from '../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { Discussion } from '../../discussion/models/discussion';
-import { ActivityLog, ActivityLogSection } from '../../shared/components/ActivityLog';
+import { ActivityLogSection } from '../../shared/components/ActivityLog';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
@@ -61,7 +62,7 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   challengesReadAccess?: boolean;
   hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
   leadUsers: EntityDashboardLeads['leadUsers'];
-  activityLog: ActivityLog[] | undefined;
+  activity: Activity[] | undefined;
 }
 
 const SPACING = 2;
@@ -88,7 +89,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   memberOrganizationsCount,
   hostOrganization,
   leadUsers,
-  activityLog,
+  activity,
 }) => {
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
@@ -148,7 +149,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <ActivityLogSection activityLog={activityLog} />
+          <ActivityLogSection activity={activity} />
           <DashboardSection
             headerText={t('components.referenceSegment.title')}
             primaryAction={<ContextSectionIcon component={SchoolIcon} />}

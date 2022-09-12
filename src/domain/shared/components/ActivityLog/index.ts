@@ -1,2 +1,2 @@
-export * from './ActivityLog';
 export * from './ActivityLogSection';
+export * from './ActivityLogComponent';

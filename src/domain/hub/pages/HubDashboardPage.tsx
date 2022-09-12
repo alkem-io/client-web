@@ -49,7 +49,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 memberOrganizationsCount={entities.memberOrganizationsCount}
                 leadUsers={entities.hub?.community?.leadUsers}
                 hostOrganization={entities.hub?.host}
-                activityLog={entities.activityLog}
+                activity={entities.activity}
               />
               <CommunityUpdatesDialog
                 open={dialog === 'updates'}

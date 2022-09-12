@@ -1,19 +1,19 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Activity } from '../../../../models/graphql-schema';
 import DashboardGenericSection from '../DashboardSections/DashboardGenericSection';
 import { ActivityLogComponent } from './ActivityLogComponent';
-import { ActivityLog } from './ActivityLog';
 
 export interface ActivityLogSectionProps {
-  activityLog: ActivityLog[] | undefined;
+  activity: Activity[] | undefined;
 }
 
-export const ActivityLogSection: FC<ActivityLogSectionProps> = ({ activityLog }) => {
+export const ActivityLogSection: FC<ActivityLogSectionProps> = ({ activity }) => {
   const { t } = useTranslation();
 
   return (
     <DashboardGenericSection headerText={t('components.activity-log-section.title')}>
-      <ActivityLogComponent activityLog={activityLog} />
+      <ActivityLogComponent activity={activity} />
     </DashboardGenericSection>
-  )
+  );
 };
