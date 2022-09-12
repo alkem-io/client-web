@@ -1,12 +1,14 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, IconButton, Link, Toolbar, Tooltip } from '@mui/material';
+import { Box, IconButton, Toolbar, Tooltip } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import clsx from 'clsx';
 import React, { FC, useState } from 'react';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import Section, { SectionProps, SectionSpacer } from '../Section/Section';
 import SectionHeader from '../Section/SectionHeader';
 import SectionSubHeader from '../Section/SectionSubheader';
+import Button from '@mui/material/Button';
 
 export interface DashboardGenericSectionProps {
   bannerUrl?: string;
@@ -100,9 +102,9 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
       </Box>
       {navText && routerNavLink && (
         <Box display="flex" justifyContent="end">
-          <Link component={RouterLink} to={routerNavLink}>
+          <Button startIcon={<ArrowForwardIcon />} component={RouterLink} to={routerNavLink}>
             {navText}
-          </Link>
+          </Button>
         </Box>
       )}
       {options?.collapsible && (
