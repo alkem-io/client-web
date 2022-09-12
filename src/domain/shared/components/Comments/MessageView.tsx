@@ -9,7 +9,7 @@ import AuthorAvatar from '../AuthorAvatar/AuthorAvatar';
 const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => ({
   overflowWrap: 'break-word',
   paddingX: theme.spacing(1),
-  '& > p:first-child': { marginTop: 0 },
+  '& > p:first-of-type': { marginTop: 0 },
   '& > p:last-child': { marginBottom: 0 },
 }));
 
