@@ -809,7 +809,7 @@
             "header": "Nieuw bij Alkemio?",
             "subheader": "Op Alkemio kan iedereen op een effectieve manier Challenges beheren, een bijdrage leveren en zo impact te maken.",
             "more-info": "Bekijk demonstratie video",
-            "more-info-url": "https://vimeo.com/709543522?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=clicks&utm_content=2022VIDEOHOWTO"
+            "more-info-url": "https://vimeo.com/711138740?utm_campaign=2022VIDEO&utm_source=VIMEO&utm_medium=VIDEO&utm_term=click&utm_content=2022videointroNL"
           }
         },
         "hub": {
@@ -1032,7 +1032,7 @@
     },
     "registration-success": {
       "header": "Bedankt voor uw inschrijving",
-      "subheader": "Bijna klaar! Een laatste stap is de validate van jou emailadres."
+      "subheader": "Bijna klaar! Een laatste stap is de validatie van je emailadres."
     },
     "verification-success": {
       "header": "Bedankt voor het verifiëren van uw email!",
