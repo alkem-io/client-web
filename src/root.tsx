@@ -19,6 +19,9 @@ import { ConfigProvider } from './config/context/ConfigProvider';
 
 const useGlobalStyles = makeStyles(theme => ({
   '@global': {
+    '*': {
+      scrollbarColor: `${theme.palette.primary.main} transparent`,
+    },
     '*::-webkit-scrollbar': {
       width: 'max(.75vw, 0.5em)',
     },
