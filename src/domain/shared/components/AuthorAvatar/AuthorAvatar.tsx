@@ -4,8 +4,8 @@ import UserCard from '../../../../common/components/composite/common/cards/user-
 import { Author } from './models/author';
 
 const UserAvatar = styled(props => <Avatar {...props} />)<AvatarProps>(({ theme }) => ({
-  height: theme.spacing(theme.comments.avatarSize),
-  width: theme.spacing(theme.comments.avatarSize),
+  height: theme.avatarSize,
+  width: theme.avatarSize,
 }));
 
 export interface AuthorAvatarProps {
@@ -21,13 +21,13 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
             arrow
             title={
               <UserCard
-                displayName={author?.displayName}
-                avatarSrc={author?.avatarUrl}
-                tags={author?.tags || []}
-                roleName={author?.roleName}
-                city={author?.city}
-                country={author?.country}
-                url={author?.url}
+                displayName={author.displayName}
+                avatarSrc={author.avatarUrl}
+                tags={author.tags || []}
+                roleName={author.roleName}
+                city={author.city}
+                country={author.country}
+                url={author.url}
               />
             }
             PopperProps={{
@@ -45,9 +45,7 @@ export const AuthorAvatar: FC<AuthorAvatarProps> = ({ author }) => {
   return (
     <TooltipElement>
       <Link href={author?.url}>
-        <UserAvatar src={author?.avatarUrl} variant="rounded" sx={{ borderRadius: 1.5 }}>
-          {author?.displayName[0]}
-        </UserAvatar>
+        <UserAvatar src={author?.avatarUrl}>{author?.displayName[0]}</UserAvatar>
       </Link>
     </TooltipElement>
   );

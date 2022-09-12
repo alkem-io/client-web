@@ -5,15 +5,15 @@ import DashboardGenericSection from '../DashboardSections/DashboardGenericSectio
 import { ActivityLogComponent } from './ActivityLogComponent';
 
 export interface ActivityLogSectionProps {
-  activity: Activity[] | undefined;
+  activities: Activity[] | undefined;
 }
 
-export const ActivityLogSection: FC<ActivityLogSectionProps> = ({ activity }) => {
+export const ActivityLogSection: FC<ActivityLogSectionProps> = ({ activities }) => {
   const { t } = useTranslation();
 
   return (
     <DashboardGenericSection headerText={t('components.activity-log-section.title')}>
-      <ActivityLogComponent activity={activity} />
+      <ActivityLogComponent activities={activities} />
     </DashboardGenericSection>
   );
 };

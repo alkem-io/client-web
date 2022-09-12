@@ -15,25 +15,25 @@ import {
 import { useActivityToViewModel } from './hooks';
 
 export interface ActivityLogComponentProps {
-  activity: Activity[] | undefined;
+  activities: Activity[] | undefined;
 }
 
-export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activity }) => {
-  const { getActivityViewModel } = useActivityToViewModel(activity ?? []);
+export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activities }) => {
+  const { getActivityViewModel } = useActivityToViewModel(activities ?? []);
 
   const display = useMemo(() => {
-    if (!activity) {
+    if (!activities) {
       return null;
     }
 
     return (
       <>
-        {activity.map(activity => (
+        {activities.map(activity => (
           <ActivityViewChooser key={activity.id} type={activity.type} {...getActivityViewModel(activity)} />
         ))}
       </>
     );
-  }, [activity]);
+  }, [activities]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: theme => theme.spacing(2) }}>

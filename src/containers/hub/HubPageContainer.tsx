@@ -44,7 +44,7 @@ export interface HubContainerEntities {
   isGlobalAdmin: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
-  activity: Activity[] | undefined;
+  activities: Activity[] | undefined;
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   canvases: CanvasFragmentWithCallout[];
@@ -80,7 +80,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     variables: { queryData: { collaborationID: collaborationID! } },
     skip: !collaborationID,
   });
-  const activity = useMemo(() => {
+  const activities = useMemo(() => {
     if (!activityLogData) {
       return undefined;
     }
@@ -146,7 +146,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           canvases,
           canvasesCount,
           references,
-          activity,
+          activities,
           ...contributors,
         },
         {

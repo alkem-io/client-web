@@ -62,7 +62,7 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   challengesReadAccess?: boolean;
   hostOrganization: AssociatedOrganizationDetailsFragment | undefined;
   leadUsers: EntityDashboardLeads['leadUsers'];
-  activity: Activity[] | undefined;
+  activities: Activity[] | undefined;
 }
 
 const SPACING = 2;
@@ -89,7 +89,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
   memberOrganizationsCount,
   hostOrganization,
   leadUsers,
-  activity,
+  activities,
 }) => {
   const { t } = useTranslation();
   const { isFeatureEnabled } = useConfig();
@@ -149,7 +149,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           )}
         </DashboardColumn>
         <DashboardColumn>
-          <ActivityLogSection activity={activity} />
+          <ActivityLogSection activities={activities} />
           <DashboardSection
             headerText={t('components.referenceSegment.title')}
             primaryAction={<ContextSectionIcon component={SchoolIcon} />}

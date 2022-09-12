@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { times } from 'lodash';
-import { Skeleton } from '@mui/material';
+import { ActivityLogBaseView } from './ActivityLogBaseView';
 
 interface ActivityLogLoadingView {
   rows: number;
@@ -10,11 +10,15 @@ export const ActivityLogLoadingView: FC<ActivityLogLoadingView> = ({ rows }) => 
   return (
     <>
       {times(rows, i => (
-        <LoadingView key={`_activity_log_loading_view_row_${i}`} />
+        <ActivityLogBaseView
+          key={`_activity_log_loading_view_row_${i}`}
+          loading
+          author={undefined}
+          createdDate=""
+          action=""
+          description=""
+        />
       ))}
     </>
   );
 };
-
-// todo put loading skeleton here
-const LoadingView = () => <Skeleton />;
