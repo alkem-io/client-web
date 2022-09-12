@@ -12,7 +12,11 @@ export const ActivityLogSection: FC<ActivityLogSectionProps> = ({ activities }) 
   const { t } = useTranslation();
 
   return (
-    <DashboardGenericSection headerText={t('components.activity-log-section.title')}>
+    <DashboardGenericSection
+      headerText={t('components.activity-log-section.title')}
+      navText={t('common.explore')}
+      navLink="explore"
+    >
       <ActivityLogComponent activities={activities} />
     </DashboardGenericSection>
   );
