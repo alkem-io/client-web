@@ -7,7 +7,7 @@ import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
 import * as yup from 'yup';
-interface ContactDetailsProps {
+interface SocialLinksProps {
   title: string;
   items?: SocialLinkItem[];
 }
@@ -49,7 +49,7 @@ export interface SocialLinkItem {
 
 const schema = yup.string().url();
 
-export const SocialLinks: FC<ContactDetailsProps> = ({ title, items }) => {
+export const SocialLinks: FC<SocialLinksProps> = ({ title, items }) => {
   const filteredSortedItems = useMemo(
     () =>
       items

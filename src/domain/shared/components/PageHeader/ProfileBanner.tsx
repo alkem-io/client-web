@@ -6,6 +6,8 @@ import { Location } from '../../../../models/graphql-schema';
 import SocialLinks, { SocialLinkItem } from '../SocialLinks/SocialLinks';
 import LocationView from '../../../location/LocationView';
 import { formatLocation } from '../../../location/LocationUtils';
+import { ContactDetail } from '../ContactDetails/ContactDetails';
+import { useTranslation } from 'react-i18next';
 
 const Root = styled(Box)(({ theme }) => ({
   aspectRatio: BANNER_ASPECT_RATIO,
@@ -15,7 +17,7 @@ const Root = styled(Box)(({ theme }) => ({
 
 const Title = styled(Box)(() => ({
   '& h1': {
-    fontSize: '2rem',
+    fontSize: '1.8rem',
     fontWeight: 'bold',
   },
 }));
@@ -64,7 +66,7 @@ export interface ProfileBannerProps {
   title: string | undefined;
   tagline?: string;
   location?: Location;
-  phone?: string; // TODO: Mentioned in many places in the code but not shown anywhere in the designs
+  phone?: string;
   socialLinks?: SocialLinkItem[];
   avatarUrl?: string;
   avatarEditable?: boolean; // TODO: This will be used in the future to put a button over the avatar to upload a new image if the user has permissions
@@ -78,10 +80,13 @@ export interface ProfileBannerProps {
 const ProfileBanner: FC<ProfileBannerProps> = ({
   title,
   location,
+  phone,
   socialLinks,
   avatarUrl,
   loading: dataLoading = false,
 }) => {
+  const { t } = useTranslation();
+
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
 
   const [imageLoading, setImageLoading] = useState(true);
@@ -115,7 +120,9 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
                   {title}
                 </Typography>
               </Ellipser>
+
               <LocationView location={formatLocation(location)} />
+              <ContactDetail title={t('components.profile.fields.telephone.title')} value={phone} />
               <SocialLinks title="Contact" items={socialLinks} />
             </Title>
           </Grid>

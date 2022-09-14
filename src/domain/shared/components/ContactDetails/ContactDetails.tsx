@@ -1,20 +1,19 @@
 import React, { FC } from 'react';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { makeStyles } from '@mui/styles';
-import { User } from '../../../../../models/graphql-schema';
-import Card from '../../../core/Card';
+import { User } from '../../../../models/graphql-schema';
+import Card from '../../../../common/components/core/Card';
 import Edit from '@mui/icons-material/Edit';
-import { COUNTRIES } from '../../../../../models/constants';
-import Typography from '../../../core/Typography';
+import { COUNTRIES } from '../../../../models/constants';
 
-export const Detail: FC<{ title: string; value?: string }> = ({ title, value }) => {
+export const ContactDetail: FC<{ title: string; value?: string }> = ({ title, value }) => {
   return (
     <>
       {value && (
-        <Box marginY={1}>
-          <Typography color="primary" weight="boldLight">
+        <Box>
+          <Typography color="primary" fontWeight="bold">
             {title}
           </Typography>
           <Typography>{value}</Typography>
@@ -64,11 +63,11 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { email
             </Tooltip>
           </Box>
           <div className={styles.data}>
-            <Detail title="Email" value={email} />
-            <Detail title="Bio" value={profile?.description || ''} />
-            <Detail title="Phone" value={phone} />
-            <Detail title="Country" value={COUNTRIES.find(x => x.code === profile?.location?.country)?.name} />
-            <Detail title="City" value={profile?.location?.city} />
+            <ContactDetail title="Email" value={email} />
+            <ContactDetail title="Bio" value={profile?.description || ''} />
+            <ContactDetail title="Phone" value={phone} />
+            <ContactDetail title="Country" value={COUNTRIES.find(x => x.code === profile?.location?.country)?.name} />
+            <ContactDetail title="City" value={profile?.location?.city} />
           </div>
         </div>
       </Card>
