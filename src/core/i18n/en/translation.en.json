@@ -771,6 +771,9 @@
         },
         "canvases": {
           "description": "Canvases can be seen as digital whiteboards. Here you can create a canvas for this {{entity}} as well as find ones created by the others."
+        },
+        "profile": {
+          "description": ""
         }
       }
     },
@@ -804,6 +807,21 @@
             "canvas-templates": "Canvas Templates",
             "innovation-templates": "Innovation Flow Templates",
             "delete-confirmation": "Are you sure you want to delete {{template}} from the hub? You can also edit the information of this template."
+          },
+          "my-profile": {
+            "description": "Here you can edit your profile details."
+          },
+          "membership": {
+            "description": "Here you can see the membership information."
+          },
+          "organizations": {
+            "description": "Here you can see the associated organizations that your user is related to."
+          },
+          "notifications": {
+            "description": "Here you can edit your notifications preferences."
+          },
+          "credentials": {
+            "description": "Here you can see credentials."
           }
         }
       },
