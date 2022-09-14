@@ -1,5 +1,6 @@
 import { isChallengeId, isHubId, isOpportunityId, OptionalCoreEntityIds } from '../shared/types/CoreEntityIds';
 import {
+  useCalloutMessageReceivedSubscription,
   useChallengeCalloutsQuery,
   useHubCalloutsQuery,
   useOpportunityCalloutsQuery,
@@ -13,6 +14,11 @@ import {
   ContributeTabAspectFragment,
   CommentsWithMessagesFragment,
 } from '../../models/graphql-schema';
+import useCalloutMessageReceivedSubscriptionOnExplorePage from './useCalloutMessageReceivedSubscription';
+import { useEffect } from 'react';
+import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
+import { useApolloErrorHandler, useConfig } from '../../hooks';
+import useSubscribeToMore from '../shared/subscriptions/useSubscribeToMore';
 
 interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
@@ -46,20 +52,22 @@ type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description
   ) & {
     draft: boolean;
     editable: boolean;
+    isSubscribedToComments: boolean;
   };
 
 const useCallouts = (params: OptionalCoreEntityIds) => {
-  const { data: hubCalloutsData, loading: hubCalloutsLoading } = useHubCalloutsQuery({
+  // queries
+  const { data: hubCalloutsData, loading: hubCalloutsLoading, fetchMore: hubFetchMore } = useHubCalloutsQuery({
     variables: isHubId(params) ? params : (params as never),
     skip: !isHubId(params),
   });
 
-  const { data: challengeCalloutsData, loading: challengeCalloutsLoading } = useChallengeCalloutsQuery({
+  const { data: challengeCalloutsData, loading: challengeCalloutsLoading, fetchMore: challengeFetchMore } = useChallengeCalloutsQuery({
     variables: isChallengeId(params) ? params : (params as never),
     skip: !isChallengeId(params),
   });
 
-  const { data: opportunityCalloutsData, loading: opportunityCalloutsLoading } = useOpportunityCalloutsQuery({
+  const { data: opportunityCalloutsData, loading: opportunityCalloutsLoading, fetchMore: opportunityFetchMore } = useOpportunityCalloutsQuery({
     variables: isOpportunityId(params) ? params : (params as never),
     skip: !isOpportunityId(params),
   });
@@ -67,11 +75,16 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
   const { collaboration } =
     hubCalloutsData?.hub ?? challengeCalloutsData?.hub.challenge ?? opportunityCalloutsData?.hub.opportunity ?? {};
 
+  const commentCalloutIds = collaboration?.callouts?.filter(x => x.type === CalloutType.Comments).map(({ id }) => id);
+
+
+
   const canCreateCallout = collaboration?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.CreateCallout);
 
   const callouts = collaboration?.callouts?.map(({ authorization, ...callout }) => {
     const draft = callout?.visibility === CalloutVisibility.Draft;
     const editable = authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update);
+    const isSubscribedToComments = false; // todo
     return {
       ...callout,
       // Add calloutNameId to all the canvases and aspects
@@ -81,6 +94,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
       authorization,
       draft,
       editable,
+      isSubscribedToComments,
     } as TypedCallout;
   });
 
