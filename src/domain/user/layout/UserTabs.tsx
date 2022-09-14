@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { buildUserProfileSettingsUrl, buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
 import { useTranslation } from 'react-i18next';
@@ -19,8 +19,11 @@ const UserTabs = (props: EntityTabsProps) => {
 
   const { userNameId = '' } = useUrlParams();
   const { user: userMetadata, loading: loadingUserMetadata } = useUserMetadata(userNameId);
-  const isCurrentUser =
-    (!loadingUserContext && !loadingUserMetadata && user?.user.id === userMetadata?.user.id) || false;
+
+  const isCurrentUser = useMemo(
+    () => user?.user.id === userMetadata?.user.id,
+    [loadingUserContext, loadingUserMetadata, user, userMetadata]
+  );
 
   return (
     <HeaderNavigationTabs
