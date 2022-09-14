@@ -326,6 +326,19 @@
     }
   },
   "components": {
+    "activity-log-section": {
+      "title": "Latest activities"
+    },
+    "activity-log-view": {
+      "actions": {
+        "callout-published": "published a new Callout",
+        "canvas-created": "added a new Canvas",
+        "card-comment-created": "commented on a Card",
+        "card-created": "added a new Card",
+        "discussion-comment-created": "commented on a Discussion",
+        "member-joined": "joined"
+      }
+    },
     "lifecycle-visualizer": {
       "error": "The definition was not able to be visualized"
     },

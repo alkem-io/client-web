@@ -1,4 +1,4 @@
-import { Author } from './author';
+import { Author } from '../../AuthorAvatar/models/author';
 
 export interface Message {
   id: string;

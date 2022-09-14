@@ -1,9 +1,19 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useHub, useUserContext } from '../../hooks';
-import { useHubDashboardReferencesQuery, useHubPageQuery } from '../../hooks/generated/graphql';
+import {
+  useActivityLogOnCollaborationQuery,
+  useHubDashboardReferencesQuery,
+  useHubPageQuery,
+} from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { AuthorizationPrivilege, ChallengeCardFragment, HubPageFragment, Reference } from '../../models/graphql-schema';
+import {
+  Activity,
+  AuthorizationPrivilege,
+  ChallengeCardFragment,
+  HubPageFragment,
+  Reference,
+} from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../domain/discussion/models/discussion';
@@ -18,6 +28,7 @@ import {
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
+import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
 
 export interface HubContainerEntities {
   hub?: HubPageFragment;
@@ -33,6 +44,7 @@ export interface HubContainerEntities {
   isGlobalAdmin: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
+  activities: Activity[] | undefined;
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   canvases: CanvasFragmentWithCallout[];
@@ -62,6 +74,22 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     variables: { hubId: hubNameId },
     errorPolicy: 'all',
   });
+  const collaborationID = _hub?.hub?.collaboration?.id;
+
+  const { data: activityLogData } = useActivityLogOnCollaborationQuery({
+    variables: { queryData: { collaborationID: collaborationID! } },
+    skip: !collaborationID,
+  });
+  const activities = useMemo(() => {
+    if (!activityLogData) {
+      return undefined;
+    }
+
+    return [...activityLogData.activityLogOnCollaboration]
+      .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
+      .slice(0, LATEST_ACTIVITIES_COUNT);
+  }, [activityLogData]);
+
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
   const { user, isAuthenticated } = useUserContext();
   // don't load references without READ privilige on Context
@@ -78,6 +106,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
 
   const isMember = user?.ofHub(hubId) ?? false;
   const isGlobalAdmin = user?.isGlobalAdmin ?? false;
+
   const isPrivate = !(_hub?.hub?.authorization?.anonymousReadAccess ?? true);
 
   const permissions = {
@@ -117,6 +146,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           canvases,
           canvasesCount,
           references,
+          activities,
           ...contributors,
         },
         {
