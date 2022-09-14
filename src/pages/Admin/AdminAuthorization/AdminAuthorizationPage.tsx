@@ -18,7 +18,11 @@ const buttons = [
   },
   {
     description: 'Global community admins',
-    url: `authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
+    url: `authorization/global-community/${AuthorizationCredential.GlobalAdminCommunity}`,
+  },
+  {
+    description: 'Global Hubs Admins',
+    url: `authorization/global-hubs/${AuthorizationCredential.GlobalAdminHubs}`,
   },
 ];
 

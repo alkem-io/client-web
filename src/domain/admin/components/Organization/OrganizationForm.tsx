@@ -28,11 +28,12 @@ import { formatLocation } from '../../../location/LocationUtils';
 import { LocationSegment } from '../../../location/LocationSegment';
 import { EmptyLocation } from '../../../location/Location';
 
-const EmptyOrganization: Omit<Organization, 'authorization'> = {
+const EmptyOrganization: Organization = {
   id: '',
   nameID: '',
   displayName: '',
   contactEmail: undefined,
+  authorization: undefined,
   domain: '',
   legalEntityName: '',
   website: '',

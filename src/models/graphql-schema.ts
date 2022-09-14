@@ -2333,7 +2333,7 @@ export type Organization = Groupable &
     /** The Agent representing this User. */
     agent?: Maybe<Agent>;
     /** The Authorization for this Organization. */
-    authorization: Authorization;
+    authorization?: Maybe<Authorization>;
     /** Organization contact email */
     contactEmail?: Maybe<Scalars['String']>;
     /** The display name. */
@@ -2761,7 +2761,7 @@ export type RelayPaginatedUser = Searchable & {
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The Authorization for this User. */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -3425,7 +3425,7 @@ export type User = Searchable & {
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
   /** The Authorization for this User. */
-  authorization: Authorization;
+  authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
   /** The direct rooms this user is a member of */
@@ -8252,6 +8252,15 @@ export type AssignUserAsGlobalCommunityAdminMutation = {
   assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
+export type AssignUserAsGlobalHubsAdminMutationVariables = Exact<{
+  input: AssignGlobalHubsAdminInput;
+}>;
+
+export type AssignUserAsGlobalHubsAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalHubsAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
 export type AssignUserAsHubAdminMutationVariables = Exact<{
   input: AssignHubAdminInput;
 }>;
@@ -8286,6 +8295,15 @@ export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
 export type RemoveUserAsGlobalAdminMutation = {
   __typename?: 'Mutation';
   removeUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalHubsAdminMutationVariables = Exact<{
+  input: RemoveGlobalHubsAdminInput;
+}>;
+
+export type RemoveUserAsGlobalHubsAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalHubsAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{

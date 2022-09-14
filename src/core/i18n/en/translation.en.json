@@ -180,13 +180,13 @@
           "order": 0,
           "hidden": false
         },
-        "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Global Community Admin",
+        "GLOBAL_ADMIN_HUBS": {
+          "name": "Global Admin Hubs",
           "order": 1,
           "hidden": false
         },
-        "GLOBAL_ADMIN_HUBS": {
-          "name": "Global Challenges Admin",
+        "GLOBAL_ADMIN_COMMUNITY": {
+          "name": "Global Community Admin",
           "order": 2,
           "hidden": false
         },
@@ -242,27 +242,27 @@
         },
         "ORGANIZATION_OWNER": {
           "name": "Organization Owner",
-          "order": 11,
+          "order": 12,
           "hidden": false
         },
         "ORGANIZATION_ADMIN": {
           "name": "Organization Admin",
-          "order": 12,
+          "order": 13,
           "hidden": false
         },
         "ORGANIZATION_MEMBER": {
           "name": "Organization Member",
-          "order": 13,
+          "order": 14,
           "hidden": true
         },
         "USER_SELF_MANAGEMENT": {
           "name": "User Self Management",
-          "order": 14,
+          "order": 15,
           "hidden": true
         },
         "USER_GROUP_MEMBER": {
           "name": "User Group Member",
-          "order": 15,
+          "order": 16,
           "hidden": true
         }
       },
