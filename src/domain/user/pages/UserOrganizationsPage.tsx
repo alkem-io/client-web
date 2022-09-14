@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
 import { useUrlParams, useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
+import { SettingsSection } from '../../admin/layout/EntitySettings/constants';
+import UserSettingsLayout from '../../admin/user/layout/UserSettingsLayout';
 import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 
@@ -19,18 +21,20 @@ const UserOrganizationsPage: FC<UserOrganizationsPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <Grid container rowSpacing={4}>
-      <Grid item xs={12}>
-        <AssociatedOrganizationsLazilyFetched
-          canCreateOrganization={userMetadata?.permissions?.canCreateOrganization}
-          organizationNameIDs={userMetadata?.organizationNameIDs || []}
-          title={t('pages.user-profile.associated-organizations.title')}
-          helpText={t('pages.user-profile.associated-organizations.help')}
-          loading={loading}
-          dense
-        />
+    <UserSettingsLayout currentTab={SettingsSection.Organizations}>
+      <Grid container rowSpacing={4}>
+        <Grid item xs={12}>
+          <AssociatedOrganizationsLazilyFetched
+            canCreateOrganization={userMetadata?.permissions?.canCreateOrganization}
+            organizationNameIDs={userMetadata?.organizationNameIDs || []}
+            title={t('pages.user-profile.associated-organizations.title')}
+            helpText={t('pages.user-profile.associated-organizations.help')}
+            loading={loading}
+            dense
+          />
+        </Grid>
       </Grid>
-    </Grid>
+    </UserSettingsLayout>
   );
 };
 export default UserOrganizationsPage;

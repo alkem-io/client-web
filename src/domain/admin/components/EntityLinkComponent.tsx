@@ -6,6 +6,7 @@ import {
   buildHubUrl,
   buildOpportunityUrl,
   buildOrganizationUrl,
+  buildUserProfileUrl,
 } from '../../../common/utils/urlBuilders';
 import { EntityNameIds } from '../../../types/EntityNameIds';
 
@@ -39,6 +40,8 @@ const buildUrl = (ids: EntityNameIds) => {
     return buildChallengeUrl(ids.hubNameId, ids.challengeNameId);
   } else if ('organizationNameId' in ids) {
     return buildOrganizationUrl(ids.organizationNameId);
+  } else if ('userNameId' in ids) {
+    return buildUserProfileUrl(ids.userNameId);
   }
   return buildHubUrl(ids.hubNameId);
 };

@@ -1618,6 +1618,7 @@ export const OrganizationInfoFragmentDoc = gql`
         uri
       }
       location {
+        id
         country
         city
       }
