@@ -6,6 +6,8 @@ import { mapWithSeparator } from '../../../../../domain/shared/utils/joinNodes';
 type Child = ReactElement | false;
 type ChildrenType = Child | Child[];
 
+const isReactElement = (element: unknown): element is ReactElement => !!(element as ReactElement).type;
+
 const insertSpacers = (children: ChildrenType) => {
   if (!Array.isArray(children)) {
     return children;
@@ -31,5 +33,3 @@ const DashboardColumn: FC<ContextSectionColumnProps> = ({ children }) => {
 };
 
 export default DashboardColumn;
-
-const isReactElement = (element: unknown): element is ReactElement => !!(element as ReactElement).type;
