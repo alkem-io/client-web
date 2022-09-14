@@ -11,7 +11,9 @@ const insertSpacers = (children: ChildrenType) => {
     return children;
   }
 
-  return mapWithSeparator(children, SectionSpacer, (element, i) => {
+  const reactElements = children.filter(isReactElement);
+
+  return mapWithSeparator(reactElements, SectionSpacer, (element, i) => {
     return element && cloneElement(element, { key: `dashboard_section_${i}` });
   });
 };
@@ -29,3 +31,5 @@ const DashboardColumn: FC<ContextSectionColumnProps> = ({ children }) => {
 };
 
 export default DashboardColumn;
+
+const isReactElement = (element: unknown): element is ReactElement => !!(element as ReactElement).type;
