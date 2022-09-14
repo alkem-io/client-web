@@ -6,12 +6,16 @@ import { mapWithSeparator } from '../../../../../domain/shared/utils/joinNodes';
 type Child = ReactElement | false;
 type ChildrenType = Child | Child[];
 
+const isReactElement = (element: unknown): element is ReactElement => !!(element as ReactElement).type;
+
 const insertSpacers = (children: ChildrenType) => {
   if (!Array.isArray(children)) {
     return children;
   }
 
-  return mapWithSeparator(children, SectionSpacer, (element, i) => {
+  const reactElements = children.filter(isReactElement);
+
+  return mapWithSeparator(reactElements, SectionSpacer, (element, i) => {
     return element && cloneElement(element, { key: `dashboard_section_${i}` });
   });
 };

@@ -44,6 +44,7 @@ export interface HubContainerEntities {
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
   activities: Activity[] | undefined;
+  activityLoading: boolean;
   aspects: AspectFragmentWithCallout[];
   aspectsCount: number | undefined;
   canvases: CanvasFragmentWithCallout[];
@@ -76,7 +77,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   });
   const collaborationID = _hub?.hub?.collaboration?.id;
 
-  const { data: activityLogData } = useActivityLogOnCollaborationQuery({
+  const { data: activityLogData, loading: activityLoading } = useActivityLogOnCollaborationQuery({
     variables: { queryData: { collaborationID: collaborationID! } },
     skip: !collaborationID,
   });
@@ -145,6 +146,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           canvasesCount,
           references,
           activities,
+          activityLoading,
           ...contributors,
         },
         {
