@@ -1,11 +1,23 @@
 import React, { FC } from 'react';
-import { useOrganization } from '../../../hooks';
-import PageBanner from '../../shared/components/PageHeader/PageBanner';
+import OrganizationPageContainer from '../../../containers/organization/OrganizationPageContainer';
+import ProfileBanner from '../../shared/components/PageHeader/ProfileBanner';
 
 const OrganizationPageBanner: FC = () => {
-  const { displayName, loading, organization } = useOrganization();
-
-  return <PageBanner title={displayName} tagline={organization?.profile?.description} loading={loading} />;
+  return (
+    <OrganizationPageContainer>
+      {({ organization, permissions, socialLinks }, { loading }) => (
+        <ProfileBanner
+          title={organization?.displayName}
+          tagline={organization?.profile?.description}
+          location={organization?.profile?.location}
+          socialLinks={socialLinks}
+          avatarUrl={organization?.profile?.avatar?.uri}
+          avatarEditable={permissions.canEdit}
+          loading={loading}
+        />
+      )}
+    </OrganizationPageContainer>
+  );
 };
 
 export default OrganizationPageBanner;
