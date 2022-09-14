@@ -9,6 +9,7 @@ const Root = styled(Box)(({ theme }) => ({
     flex: 'initial',
     minWidth: 24,
     marginRight: theme.spacing(1),
+    marginLeft: 'auto',
   },
   '& .MuiTabs-root': {
     paddingLeft: theme.spacing(2),
