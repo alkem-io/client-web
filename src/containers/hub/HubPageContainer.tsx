@@ -41,7 +41,6 @@ export interface HubContainerEntities {
   challengesCount: number | undefined;
   isAuthenticated: boolean;
   isMember: boolean;
-  isGlobalAdmin: boolean;
   discussionList: Discussion[];
   challenges: ChallengeCardFragment[];
   activities: Activity[] | undefined;
@@ -67,6 +66,7 @@ export interface HubPageContainerProps
   extends ContainerChildProps<HubContainerEntities, HubContainerActions, HubContainerState> {}
 
 const EMPTY = [];
+const NO_PRIVILEGES = [];
 
 export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const { hubId, hubNameId, loading: loadingHub } = useHub();
@@ -105,15 +105,14 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const challengesCount = useMemo(() => getActivityCount(_hub?.hub.activity, ActivityType.Challenge), [_hub]);
 
   const isMember = user?.ofHub(hubId) ?? false;
-  const isGlobalAdmin = user?.isGlobalAdmin ?? false;
 
   const isPrivate = !(_hub?.hub?.authorization?.anonymousReadAccess ?? true);
+  const hubPrivileges = _hub?.hub?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const permissions = {
     canEdit: user?.isHubAdmin(hubId) || false,
     communityReadAccess,
-    // todo: use privileges instead when authorization on challenges is public
-    challengesReadAccess: isPrivate ? isMember || isGlobalAdmin : true,
+    challengesReadAccess: hubPrivileges.includes(AuthorizationPrivilege.Read),
   };
 
   const challenges = _hub?.hub.challenges ?? EMPTY;
@@ -139,7 +138,6 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
           challengesCount,
           isAuthenticated,
           isMember,
-          isGlobalAdmin,
           challenges,
           aspects,
           aspectsCount,

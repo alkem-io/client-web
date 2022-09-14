@@ -8252,6 +8252,15 @@ export type AssignUserAsGlobalCommunityAdminMutation = {
   assignUserAsGlobalCommunityAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
+export type AssignUserAsGlobalHubsAdminMutationVariables = Exact<{
+  input: AssignGlobalHubsAdminInput;
+}>;
+
+export type AssignUserAsGlobalHubsAdminMutation = {
+  __typename?: 'Mutation';
+  assignUserAsGlobalHubsAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
 export type AssignUserAsHubAdminMutationVariables = Exact<{
   input: AssignHubAdminInput;
 }>;
@@ -8286,6 +8295,15 @@ export type RemoveUserAsGlobalAdminMutationVariables = Exact<{
 export type RemoveUserAsGlobalAdminMutation = {
   __typename?: 'Mutation';
   removeUserAsGlobalAdmin: { __typename?: 'User'; id: string; displayName: string };
+};
+
+export type RemoveUserAsGlobalHubsAdminMutationVariables = Exact<{
+  input: RemoveGlobalHubsAdminInput;
+}>;
+
+export type RemoveUserAsGlobalHubsAdminMutation = {
+  __typename?: 'Mutation';
+  removeUserAsGlobalHubsAdmin: { __typename?: 'User'; id: string; displayName: string };
 };
 
 export type RemoveUserAsGlobalCommunityAdminMutationVariables = Exact<{
