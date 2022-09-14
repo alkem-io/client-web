@@ -42,10 +42,10 @@ export type Activity = {
 };
 
 export enum ActivityEventType {
-  CalloutCanvasCreated = 'CALLOUT_CANVAS_CREATED',
-  CalloutCardCreated = 'CALLOUT_CARD_CREATED',
   CalloutPublished = 'CALLOUT_PUBLISHED',
+  CanvasCreated = 'CANVAS_CREATED',
   CardComment = 'CARD_COMMENT',
+  CardCreated = 'CARD_CREATED',
   DiscussionComment = 'DISCUSSION_COMMENT',
   MemberJoined = 'MEMBER_JOINED',
 }
