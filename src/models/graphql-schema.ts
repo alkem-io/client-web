@@ -9583,7 +9583,18 @@ export type CreateCalloutMutation = {
       | undefined;
     canvases?: Array<{ __typename?: 'Canvas'; id: string }> | undefined;
     aspects?: Array<{ __typename?: 'Aspect'; id: string }> | undefined;
-    comments?: { __typename?: 'Comments'; id: string } | undefined;
+    comments?:
+      | {
+          __typename?: 'Comments';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          messages?:
+            | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+            | undefined;
+        }
+      | undefined;
   };
 };
 

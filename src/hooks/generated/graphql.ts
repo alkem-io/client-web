@@ -10484,10 +10484,11 @@ export const CreateCalloutDocument = gql`
         id
       }
       comments {
-        id
+        ...CommentsWithMessages
       }
     }
   }
+  ${CommentsWithMessagesFragmentDoc}
 `;
 export type CreateCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.CreateCalloutMutation,

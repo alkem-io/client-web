@@ -10,7 +10,6 @@ const useSubscribeOnCommentCallouts = (calloutIDs: string[], skip?: boolean) => 
 
   const enabled = areSubscriptionsEnabled && isAuthenticated && calloutIDs.length > 0 && !skip;
 
-  // todo solve multiple subscriptions
   useCalloutMessageReceivedSubscription({
     shouldResubscribe: true,
     variables: { calloutIDs },
