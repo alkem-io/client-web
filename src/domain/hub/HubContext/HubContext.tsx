@@ -1,6 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
-import { useConfig, useUrlParams, useUserContext } from '../../../hooks';
+import { useConfig, useUrlParams } from '../../../hooks';
 import { useHubProviderQuery } from '../../../hooks/generated/graphql';
 import { AuthorizationPrivilege, HubInfoFragment, TemplatesSet, Visual } from '../../../models/graphql-schema';
 
@@ -63,7 +63,6 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const { hubNameId = '' } = useUrlParams();
   // todo: still needed?
   const { error: configError } = useConfig();
-  const { user } = useUserContext();
 
   const {
     error: hubError,
@@ -93,9 +92,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const contextPrivileges = hub?.context?.authorization?.myPrivileges ?? NO_PRIVILEGES;
   const hubPrivileges = hub?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
-  const isMember = user?.ofHub(hubId) ?? false;
-  const isGlobalAdmin = user?.isGlobalAdmin ?? false;
-  const canReadChallenges = isPrivate ? isMember || isGlobalAdmin : true;
+  const canReadChallenges = hubPrivileges.includes(AuthorizationPrivilege.Read);
 
   const communityPrivileges = hub?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 

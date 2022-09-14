@@ -1,5 +1,5 @@
 import { AuthorizationPrivilege, DiscussionCategory } from '../../../models/graphql-schema';
-import { Author } from '../../shared/components/Comments/models/author';
+import { Author } from '../../shared/components/AuthorAvatar/models/author';
 import { Message as Comment } from '../../shared/components/Comments/models/message';
 
 export interface Discussion {

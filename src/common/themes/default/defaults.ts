@@ -5,11 +5,17 @@ import { paletteOptions } from './palette';
 import { typographyOptions } from './typography';
 import type {} from '@mui/lab/themeAugmentation';
 
+// use theme constant instead of these
+const SPACING = 8;
+const AVATAR_SIZE_XS = 5;
+const AVATAR_SIZE = 7;
+const AVATAR_SIZE_LG = 9;
+
 export const theme: ThemeOptions = {
   palette: paletteOptions,
   typography: typographyOptions,
   shape: { borderRadius: 4 },
-  spacing: 8,
+  spacing: SPACING,
   breakpoints: {
     values: {
       xs: 0,
@@ -19,7 +25,6 @@ export const theme: ThemeOptions = {
       xl: 1200,
     },
   },
-  earlyAccessAlert: { height: 40 },
   cards: {
     simpleCard: {
       width: 32,
@@ -30,13 +35,9 @@ export const theme: ThemeOptions = {
       height: 18,
     },
   },
-  sidebar: {
-    maxWidth: 280,
-    minWidth: 90,
-  },
-  comments: {
-    avatarSize: 7,
-  },
+  avatarSizeXs: SPACING * AVATAR_SIZE_XS,
+  avatarSize: SPACING * AVATAR_SIZE,
+  avatarSizeLg: SPACING * AVATAR_SIZE_LG,
 };
 
 const defaultMUITheme = createTheme(theme);
@@ -44,13 +45,6 @@ theme.components = componentsOverride(defaultMUITheme);
 
 declare module '@mui/material/styles' {
   interface Theme {
-    sidebar: {
-      maxWidth: number;
-      minWidth: number;
-    };
-    earlyAccessAlert: {
-      height: number;
-    };
     cards: {
       simpleCard: {
         width: number;
@@ -61,32 +55,11 @@ declare module '@mui/material/styles' {
         height: number;
       };
     };
-    comments: {
-      avatarSize: number;
-    };
+    avatarSizeXs: number;
+    avatarSize: number;
+    avatarSizeLg: number;
   }
-  interface ThemeOptions {
-    sidebar?: {
-      maxWidth?: number;
-      minWidth?: number;
-    };
-    earlyAccessAlert?: {
-      height?: number;
-    };
-    cards: {
-      simpleCard: {
-        width: number;
-        height: number;
-      };
-      contributionCard: {
-        width: number;
-        height: number;
-      };
-    };
-    comments: {
-      avatarSize: number;
-    };
-  }
+  interface ThemeOptions extends Theme {}
 }
 
 declare module '@mui/material' {

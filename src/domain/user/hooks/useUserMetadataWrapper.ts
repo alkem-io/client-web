@@ -20,6 +20,7 @@ export interface UserPermissions {
   canReadUsers: boolean;
   canCreateHub: boolean;
   canCreateOrganization: boolean;
+  canAdminPlatform: boolean;
 }
 export interface UserMetadata {
   user: User;
@@ -30,12 +31,8 @@ export interface UserMetadata {
   isHubAdmin: (hubId: string) => boolean;
   isChallengeAdmin: (hubId: string, challengeId: string) => boolean;
   isOpportunityAdmin: (hubId: string, challengeId: string, opportunityId: string) => boolean;
-  /** has any admin role */
-  isAdmin: boolean;
   /** has an entity admin role, i.e. is admin of a community */
   isCommunityAdmin: boolean;
-  isGlobalAdmin: boolean;
-  isGlobalAdminCommunity: boolean;
   roles: Role[];
   groups: string[];
   organizations: string[];
@@ -142,6 +139,7 @@ export const useUserMetadataWrapper = () => {
         canCreateHub: myPrivileges.includes(AuthorizationPrivilege.CreateHub),
         canCreateOrganization: myPrivileges.includes(AuthorizationPrivilege.CreateOrganization),
         canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
+        canAdminPlatform: myPrivileges.includes(AuthorizationPrivilege.PlatformAdmin),
       };
 
       const metadata: UserMetadata = {
@@ -153,10 +151,7 @@ export const useUserMetadataWrapper = () => {
         isHubAdmin,
         isChallengeAdmin,
         isOpportunityAdmin,
-        isAdmin: false,
         isCommunityAdmin: false,
-        isGlobalAdmin: hasCredentials(AuthorizationCredential.GlobalAdmin),
-        isGlobalAdminCommunity: hasCredentials(AuthorizationCredential.GlobalAdminCommunity),
         roles,
         groups,
         challenges,
@@ -170,7 +165,6 @@ export const useUserMetadataWrapper = () => {
         permissions: permissions,
       };
 
-      metadata.isAdmin = hasAdminRole(metadata.roles);
       metadata.isCommunityAdmin = hasCommunityAdminRole(metadata.roles);
 
       return metadata;
@@ -181,23 +175,7 @@ export const useUserMetadataWrapper = () => {
   return toUserMetadata;
 };
 
-export const hasAdminRole = (roles: Role[]) => {
-  for (const role of roles) {
-    if (AdminRoles.includes(role.type)) return true;
-  }
-  return false;
-};
-
 export const hasCommunityAdminRole = (roles: Role[]) => roles.some(({ type }) => CommunityAdminRoles.includes(type));
-
-export const AdminRoles = [
-  AuthorizationCredential.GlobalAdmin,
-  AuthorizationCredential.GlobalAdminCommunity,
-  AuthorizationCredential.ChallengeAdmin,
-  AuthorizationCredential.HubAdmin,
-  AuthorizationCredential.OpportunityAdmin,
-  AuthorizationCredential.OrganizationAdmin,
-];
 
 const CommunityAdminRoles = [
   AuthorizationCredential.ChallengeAdmin,

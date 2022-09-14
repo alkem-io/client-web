@@ -3,13 +3,13 @@ import { DeleteOutlined } from '@mui/icons-material';
 import { Box, Typography, styled, BoxProps, IconButton, Grid } from '@mui/material';
 import { Message } from './models/message';
 import Markdown from '../../../../common/components/core/Markdown';
-import { formatCommentDate } from './formatCommentDate';
-import AuthorAvatar from './AuthorAvatar';
+import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
+import AuthorAvatar from '../AuthorAvatar/AuthorAvatar';
 
 const CommentBox = styled(props => <Box {...props} />)<BoxProps>(({ theme }) => ({
   overflowWrap: 'break-word',
   paddingX: theme.spacing(1),
-  '& > p:first-child': { marginTop: 0 },
+  '& > p:first-of-type': { marginTop: 0 },
   '& > p:last-child': { marginBottom: 0 },
 }));
 
@@ -72,7 +72,7 @@ export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete
             <Grid item>
               <Box display="flex" justifyContent="flex-end">
                 <Typography variant="body2" color="neutralMedium.dark">
-                  {`${isRootComment ? 'started the discussion ' : ' '}${formatCommentDate(message.createdAt)}`}
+                  {`${isRootComment ? 'started the discussion ' : ' '}${formatTimeElapsed(message.createdAt)}`}
                 </Typography>
               </Box>
             </Grid>
