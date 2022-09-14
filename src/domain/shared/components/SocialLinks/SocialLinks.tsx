@@ -1,4 +1,4 @@
-import { Link } from '@mui/material';
+import { Link, SvgIconProps } from '@mui/material';
 import { Block, Mail, Public } from '@mui/icons-material';
 import React, { FC, useMemo } from 'react';
 import { SocialNetworkEnum, SocianNetworksSortOrder } from './models/SocialNetworks';
@@ -10,11 +10,10 @@ import * as yup from 'yup';
 interface SocialLinksProps {
   title: string;
   items?: SocialLinkItem[];
+  iconSize?: SvgIconProps['fontSize'];
 }
 
-const getSocialIcon = (type: SocialNetworkEnum) => {
-  const fontSize = 'large';
-
+const getSocialIcon = (type: SocialNetworkEnum, fontSize: SvgIconProps['fontSize'] = 'large') => {
   switch (type) {
     case SocialNetworkEnum.email:
       return <Mail fontSize={fontSize} />;
@@ -49,7 +48,7 @@ export interface SocialLinkItem {
 
 const schema = yup.string().url();
 
-export const SocialLinks: FC<SocialLinksProps> = ({ title, items }) => {
+export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) => {
   const filteredSortedItems = useMemo(
     () =>
       items
@@ -70,8 +69,9 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items }) => {
           rel="noreferrer"
           tabIndex={0}
           aria-label="social-link"
+          target="_blank"
         >
-          {getSocialIcon(item.type)}
+          {getSocialIcon(item.type, iconSize)}
         </Link>
       ))}
     </>

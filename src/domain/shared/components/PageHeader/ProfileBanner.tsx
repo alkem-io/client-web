@@ -123,7 +123,7 @@ const ProfileBanner: FC<ProfileBannerProps> = ({
 
               <LocationView location={formatLocation(location)} />
               <ContactDetail title={t('components.profile.fields.telephone.title')} value={phone} />
-              <SocialLinks title="Contact" items={socialLinks} />
+              <SocialLinks title="Contact" items={socialLinks} iconSize="medium" />
             </Title>
           </Grid>
         </Grid>
