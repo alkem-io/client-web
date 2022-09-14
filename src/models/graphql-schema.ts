@@ -10669,7 +10669,8 @@ export type CalloutMessageReceivedSubscription = {
   __typename?: 'Subscription';
   calloutMessageReceived: {
     __typename?: 'CalloutMessageReceived';
-    message: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+    commentsID: string;
+    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
   };
 };
 

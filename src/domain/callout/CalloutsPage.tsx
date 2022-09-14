@@ -6,10 +6,7 @@ import { EntityTypeName } from '../shared/layout/PageLayout/SimplePageLayout';
 import { EntityPageSection } from '../shared/layout/EntityPageSection';
 import useBackToParentPage from '../shared/utils/useBackToParentPage';
 import { useUrlParams } from '../../hooks';
-import {
-  AuthorizationPrivilege,
-  CalloutType,
-} from '../../models/graphql-schema';
+import { AuthorizationPrivilege, CalloutType } from '../../models/graphql-schema';
 import { useCalloutCreation } from './creation-dialog/useCalloutCreation/useCalloutCreation';
 import CalloutCreationDialog from './creation-dialog/CalloutCreationDialog';
 import { useCalloutEdit } from './edit/useCalloutEdit/useCalloutEdit';
@@ -17,7 +14,6 @@ import AspectCallout from './aspect/AspectCallout';
 import CanvasCallout from './canvas/CanvasCallout';
 import CommentsCallout from './comments/CommentsCallout';
 import useCallouts from './useCallouts';
-
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -106,6 +102,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     onCalloutEdit={handleEdit}
                     onVisibilityChange={handleVisibilityChange}
                     onCalloutDelete={handleDelete}
+                    isSubscribedToComments={callout.isSubscribedToComments}
                   />
                 );
               default:

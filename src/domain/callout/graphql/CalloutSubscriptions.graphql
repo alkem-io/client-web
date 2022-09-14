@@ -1,10 +1,8 @@
 subscription CalloutMessageReceived($calloutIDs: [UUID!]!) {
   calloutMessageReceived(calloutIDs: $calloutIDs) {
+    commentsID
     message {
-      id
-      message
-      sender
-      timestamp
+      ...MessageDetails
     }
   }
 }

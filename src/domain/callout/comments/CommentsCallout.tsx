@@ -21,6 +21,7 @@ interface CommentsCalloutProps extends OptionalCoreEntityIds, CalloutLayoutEvent
   callout: CalloutLayoutProps['callout'] & {
     comments: CommentsCalloutData;
   };
+  isSubscribedToComments: boolean;
   loading?: boolean;
 }
 
@@ -30,12 +31,11 @@ const CommentsCallout = ({
   onCalloutEdit,
   onVisibilityChange,
   onCalloutDelete,
+  isSubscribedToComments,
 }: CommentsCalloutProps) => {
   const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated } = useUserContext();
   const user = userMetadata?.user;
-
-  const isSubscribedToComments = false; // TODO:!! This code should be replaced when implenting task #2125
 
   const commentsId = callout.comments.id;
   const _messages = callout?.comments?.messages ?? [];

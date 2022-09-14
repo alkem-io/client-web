@@ -11599,14 +11599,13 @@ export function refetchPrivilegesOnOpportunityCollaborationQuery(
 export const CalloutMessageReceivedDocument = gql`
   subscription CalloutMessageReceived($calloutIDs: [UUID!]!) {
     calloutMessageReceived(calloutIDs: $calloutIDs) {
+      commentsID
       message {
-        id
-        message
-        sender
-        timestamp
+        ...MessageDetails
       }
     }
   }
+  ${MessageDetailsFragmentDoc}
 `;
 
 /**
