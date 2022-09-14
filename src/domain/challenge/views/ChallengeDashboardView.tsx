@@ -32,6 +32,7 @@ import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import withOptionalCount from '../../shared/utils/withOptionalCount';
 import { useChallenge } from '../hooks/useChallenge';
 import EntityDashboardLeadsSection from '../../community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import { ActivityLogSection } from '../../shared/components/ActivityLog';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -57,8 +58,18 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
     [hubNameId, challengeNameId]
   );
 
-  const { challenge, isMember, discussions, permissions, aspects, aspectsCount, canvases, canvasesCount, references } =
-    entities;
+  const {
+    challenge,
+    isMember,
+    discussions,
+    permissions,
+    aspects,
+    aspectsCount,
+    canvases,
+    canvasesCount,
+    references,
+    activities,
+  } = entities;
 
   const { loading } = state;
 
@@ -112,6 +123,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           )}
         </DashboardColumn>
         <DashboardColumn>
+          <ActivityLogSection activities={activities} />
           <DashboardSection
             headerText={t('components.referenceSegment.title')}
             primaryAction={<ContextSectionIcon component={SchoolIcon} />}

@@ -23,6 +23,38 @@ export type Scalars = {
   Upload: File;
 };
 
+export type Activity = {
+  __typename?: 'Activity';
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The id of the entity that is associated with this Activity. */
+  resourceID: Scalars['UUID'];
+  /** The id of the user that triggered this Activity. */
+  triggeredBy: Scalars['UUID'];
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export enum ActivityEventType {
+  CalloutPublished = 'CALLOUT_PUBLISHED',
+  CanvasCreated = 'CANVAS_CREATED',
+  CardComment = 'CARD_COMMENT',
+  CardCreated = 'CARD_CREATED',
+  DiscussionComment = 'DISCUSSION_COMMENT',
+  MemberJoined = 'MEMBER_JOINED',
+}
+
+export type ActivityLogInput = {
+  /** Display the activityLog results for the specified Collaboration. */
+  collaborationID: Scalars['UUID'];
+};
+
 export type Actor = {
   __typename?: 'Actor';
   /** The authorization rules for the entity */
@@ -388,16 +420,6 @@ export type CalloutAspectCreated = {
   aspect: Aspect;
   /** The identifier for the Callout on which the aspect was created. */
   calloutID: Scalars['String'];
-};
-
-export type CalloutMessageReceived = {
-  __typename?: 'CalloutMessageReceived';
-  /** The identifier for the Callout. */
-  calloutID: Scalars['String'];
-  /** The identifier for the Comments. */
-  commentsID: Scalars['String'];
-  /** The message that has been sent. */
-  message: Message;
 };
 
 export enum CalloutState {
@@ -2538,6 +2560,8 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Retrieve the ActivityLog for the specified Collaboration */
+  activityLogOnCollaboration: Array<Activity>;
   /** All Users that are members of a given room */
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
@@ -2582,6 +2606,10 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryActivityLogOnCollaborationArgs = {
+  queryData: ActivityLogInput;
 };
 
 export type QueryAdminCommunicationMembershipArgs = {
@@ -2938,8 +2966,6 @@ export type Subscription = {
   aspectCommentsMessageReceived: AspectCommentsMessageReceived;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutAspectCreated: CalloutAspectCreated;
-  /** Receive comments on Callouts */
-  calloutMessageReceived: CalloutMessageReceived;
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Discussion messages */
@@ -2958,10 +2984,6 @@ export type SubscriptionAspectCommentsMessageReceivedArgs = {
 
 export type SubscriptionCalloutAspectCreatedArgs = {
   calloutID: Scalars['UUID'];
-};
-
-export type SubscriptionCalloutMessageReceivedArgs = {
-  calloutIDs: Array<Scalars['UUID']>;
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
@@ -14165,6 +14187,24 @@ export type PageInfoFragment = {
   startCursor?: string | undefined;
   endCursor?: string | undefined;
   hasNextPage: boolean;
+};
+
+export type ActivityLogOnCollaborationQueryVariables = Exact<{
+  queryData: ActivityLogInput;
+}>;
+
+export type ActivityLogOnCollaborationQuery = {
+  __typename?: 'Query';
+  activityLogOnCollaboration: Array<{
+    __typename?: 'Activity';
+    id: string;
+    type: ActivityEventType;
+    resourceID: string;
+    collaborationID: string;
+    createdDate: Date;
+    description: string;
+    triggeredBy: string;
+  }>;
 };
 
 export type UserCardFragment = {

@@ -13,7 +13,12 @@ import DashboardSection from '../../../common/components/composite/sections/Dash
 import Markdown from '../../../common/components/core/Markdown';
 import { useHub, useChallenge } from '../../../hooks';
 import { Discussion } from '../../discussion/models/discussion';
-import { OpportunityPageFragment, OpportunityPageRelationsFragment, Reference } from '../../../models/graphql-schema';
+import {
+  Activity,
+  OpportunityPageFragment,
+  OpportunityPageRelationsFragment,
+  Reference,
+} from '../../../models/graphql-schema';
 import { ViewProps } from '../../../models/view';
 import { buildOpportunityUrl, buildCanvasUrl } from '../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../callout/canvas/CanvasCallout';
@@ -26,6 +31,7 @@ import DashboardUpdatesSection from '../../shared/components/DashboardSections/D
 import useBackToParentPage from '../../shared/utils/useBackToParentPage';
 import { useUserContext } from '../../user';
 import { useOpportunity } from '../hooks/useOpportunity';
+import { ActivityLogSection } from '../../shared/components/ActivityLog';
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
@@ -46,6 +52,7 @@ export interface OpportunityDashboardViewEntities {
   canvases: CanvasCard[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
+  activities: Activity[] | undefined;
 }
 
 export interface OpportunityDashboardViewActions {
@@ -110,7 +117,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
 
   const isNotMember = opportunityId && userMetadata ? !userMetadata.ofOpportunity(opportunityId) : true;
 
-  const { opportunity } = entities;
+  const { opportunity, activities } = entities;
   const communityId = opportunity?.community?.id || '';
   const { communityReadAccess } = options;
 
@@ -162,6 +169,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           )}
         </DashboardColumn>
         <DashboardColumn>
+          <ActivityLogSection activities={activities} />
           <DashboardSection
             headerText={t('components.referenceSegment.title')}
             primaryAction={<ContextSectionIcon component={SchoolIcon} />}

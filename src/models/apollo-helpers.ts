@@ -1,4 +1,23 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
+export type ActivityKeySpecifier = (
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'resourceID'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityKeySpecifier
+)[];
+export type ActivityFieldPolicy = {
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActorKeySpecifier = (
   | 'authorization'
   | 'description'
@@ -266,17 +285,6 @@ export type CalloutAspectCreatedKeySpecifier = ('aspect' | 'calloutID' | Callout
 export type CalloutAspectCreatedFieldPolicy = {
   aspect?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
-};
-export type CalloutMessageReceivedKeySpecifier = (
-  | 'calloutID'
-  | 'commentsID'
-  | 'message'
-  | CalloutMessageReceivedKeySpecifier
-)[];
-export type CalloutMessageReceivedFieldPolicy = {
-  calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
-  commentsID?: FieldPolicy<any> | FieldReadFunction<any>;
-  message?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CanvasKeySpecifier = (
   | 'authorization'
@@ -1261,6 +1269,7 @@ export type ProjectFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
+  | 'activityLogOnCollaboration'
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
@@ -1286,6 +1295,7 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
+  activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1484,7 +1494,6 @@ export type ServiceMetadataFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'aspectCommentsMessageReceived'
   | 'calloutAspectCreated'
-  | 'calloutMessageReceived'
   | 'canvasContentUpdated'
   | 'communicationDiscussionMessageReceived'
   | 'communicationDiscussionUpdated'
@@ -1495,7 +1504,6 @@ export type SubscriptionKeySpecifier = (
 export type SubscriptionFieldPolicy = {
   aspectCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutAspectCreated?: FieldPolicy<any> | FieldReadFunction<any>;
-  calloutMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1682,6 +1690,10 @@ export type VisualFieldPolicy = {
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
+  Activity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActivityKeySpecifier | (() => undefined | ActivityKeySpecifier);
+    fields?: ActivityFieldPolicy;
+  };
   Actor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorKeySpecifier | (() => undefined | ActorKeySpecifier);
     fields?: ActorFieldPolicy;
@@ -1778,10 +1790,6 @@ export type StrictTypedTypePolicies = {
   CalloutAspectCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutAspectCreatedKeySpecifier | (() => undefined | CalloutAspectCreatedKeySpecifier);
     fields?: CalloutAspectCreatedFieldPolicy;
-  };
-  CalloutMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
-    keyFields?: false | CalloutMessageReceivedKeySpecifier | (() => undefined | CalloutMessageReceivedKeySpecifier);
-    fields?: CalloutMessageReceivedFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);
