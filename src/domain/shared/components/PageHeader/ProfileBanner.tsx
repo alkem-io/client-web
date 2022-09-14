@@ -7,8 +7,6 @@ import SocialLinks, { SocialLinkItem } from '../SocialLinks/SocialLinks';
 import LocationView from '../../../location/LocationView';
 import { formatLocation } from '../../../location/LocationUtils';
 
-export const DEFAULT_AVATAR_URL = '/alkemio-banner/default-banner.png'; // Original banner images were 768 x 128 pixels
-
 const Root = styled(Box)(({ theme }) => ({
   aspectRatio: BANNER_ASPECT_RATIO,
   backgroundColor: theme.palette.neutralLight.main,
