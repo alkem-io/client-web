@@ -23,6 +23,38 @@ export type Scalars = {
   Upload: File;
 };
 
+export type Activity = {
+  __typename?: 'Activity';
+  /** The id of the Collaboration entity within which the Activity was generated. */
+  collaborationID: Scalars['UUID'];
+  /** The timestamp for the Activity. */
+  createdDate: Scalars['DateTime'];
+  /** The text details for this Activity. */
+  description: Scalars['String'];
+  /** The ID of the entity */
+  id: Scalars['UUID'];
+  /** The id of the entity that is associated with this Activity. */
+  resourceID: Scalars['UUID'];
+  /** The id of the user that triggered this Activity. */
+  triggeredBy: Scalars['UUID'];
+  /** The event type for this Activity. */
+  type: ActivityEventType;
+};
+
+export enum ActivityEventType {
+  CalloutPublished = 'CALLOUT_PUBLISHED',
+  CanvasCreated = 'CANVAS_CREATED',
+  CardComment = 'CARD_COMMENT',
+  CardCreated = 'CARD_CREATED',
+  DiscussionComment = 'DISCUSSION_COMMENT',
+  MemberJoined = 'MEMBER_JOINED',
+}
+
+export type ActivityLogInput = {
+  /** Display the activityLog results for the specified Collaboration. */
+  collaborationID: Scalars['UUID'];
+};
+
 export type Actor = {
   __typename?: 'Actor';
   /** The authorization rules for the entity */
@@ -370,6 +402,8 @@ export type Callout = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The sorting order for this Callout. */
+  sortOrder: Scalars['Float'];
   /** State of the Callout. */
   state: CalloutState;
   /** The Callout type, e.g. Card, Canvas, Discussion */
@@ -881,6 +915,8 @@ export type CreateCalloutOnCollaborationInput = {
   displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The sort order to assign to this Callout. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
   /** Callout type. */
@@ -2296,7 +2332,7 @@ export type Organization = Groupable &
     activity?: Maybe<Array<Nvp>>;
     /** The Agent representing this User. */
     agent?: Maybe<Agent>;
-    /** The authorization rules for the entity */
+    /** The Authorization for this Organization. */
     authorization?: Maybe<Authorization>;
     /** Organization contact email */
     contactEmail?: Maybe<Scalars['String']>;
@@ -2558,6 +2594,8 @@ export type ProjectEventInput = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Retrieve the ActivityLog for the specified Collaboration */
+  activityLogOnCollaboration: Array<Activity>;
   /** All Users that are members of a given room */
   adminCommunicationMembership: CommunicationAdminMembershipResult;
   /** Usage of the messaging platform that are not tied to the domain model. */
@@ -2602,6 +2640,10 @@ export type Query = {
   usersPaginated: PaginatedUsers;
   /** All Users that hold credentials matching the supplied criteria. */
   usersWithAuthorizationCredential: Array<User>;
+};
+
+export type QueryActivityLogOnCollaborationArgs = {
+  queryData: ActivityLogInput;
 };
 
 export type QueryAdminCommunicationMembershipArgs = {
@@ -2718,7 +2760,7 @@ export type RelayPaginatedUser = Searchable & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  /** The Authorization for this User. */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
@@ -3126,6 +3168,8 @@ export type UpdateCalloutInput = {
   displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The sort order to assign to this Callout. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
   /** Callout type. */
@@ -3380,7 +3424,7 @@ export type User = Searchable & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  /** The Authorization for this User. */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
@@ -14207,6 +14251,24 @@ export type PageInfoFragment = {
   startCursor?: string | undefined;
   endCursor?: string | undefined;
   hasNextPage: boolean;
+};
+
+export type ActivityLogOnCollaborationQueryVariables = Exact<{
+  queryData: ActivityLogInput;
+}>;
+
+export type ActivityLogOnCollaborationQuery = {
+  __typename?: 'Query';
+  activityLogOnCollaboration: Array<{
+    __typename?: 'Activity';
+    id: string;
+    type: ActivityEventType;
+    resourceID: string;
+    collaborationID: string;
+    createdDate: Date;
+    description: string;
+    triggeredBy: string;
+  }>;
 };
 
 export type UserCardFragment = {

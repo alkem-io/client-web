@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { Message, Searchable } from '../../../models/graphql-schema';
 import { Box } from '@mui/material';
 import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';
-import { Author } from '../../shared/components/Comments/models/author';
+import { Author } from '../../shared/components/AuthorAvatar/models/author';
 
 const UPDATES_CONTAINER_HEIGHT = 300;
 

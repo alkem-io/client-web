@@ -180,9 +180,14 @@
           "order": 0,
           "hidden": false
         },
+        "GLOBAL_ADMIN_HUBS": {
+          "name": "Global Admin Hubs",
+          "order": 1,
+          "hidden": false
+        },
         "GLOBAL_ADMIN_COMMUNITY": {
           "name": "Global Community Admin",
-          "order": 1,
+          "order": 2,
           "hidden": false
         },
         "GLOBAL_ADMIN_HUBS": {
@@ -202,77 +207,77 @@
         },
         "HUB_ADMIN": {
           "name": "Hub Admin",
-          "order": 3,
+          "order": 4,
           "hidden": false
         },
         "HUB_HOST": {
           "name": "Hub Host",
-          "order": 4,
+          "order": 5,
           "hidden": true
         },
         "HUB_MEMBER": {
           "name": "Hub Member",
-          "order": 5,
+          "order": 6,
           "hidden": true
         },
         "CHALLENGE_ADMIN": {
           "name": "Challenge Admin",
-          "order": 6,
+          "order": 7,
           "hidden": false
         },
         "CHALLENGE_LEAD": {
           "name": "Challenge Lead",
-          "order": 7,
+          "order": 8,
           "hidden": true
         },
         "CHALLENGE_MEMBER": {
           "name": "Challenge Member",
-          "order": 8,
+          "order": 9,
           "hidden": true
         },
         "OPPORTUNITY_ADMIN": {
           "name": "Opportunity Admin",
-          "order": 9,
+          "order": 10,
           "hidden": true
         },
         "OPPORTUNITY_MEMBER": {
           "name": "Opportunity Member",
-          "order": 10,
+          "order": 11,
           "hidden": true
         },
         "OPPORTUNITY_LEAD": {
           "name": "Opportunity Lead",
-          "order": 11,
+          "order": 12,
           "hidden": true
         },
         "ORGANIZATION_OWNER": {
           "name": "Organization Owner",
-          "order": 11,
+          "order": 13,
           "hidden": false
         },
         "ORGANIZATION_ADMIN": {
           "name": "Organization Admin",
-          "order": 12,
+          "order": 14,
           "hidden": false
         },
         "ORGANIZATION_MEMBER": {
           "name": "Organization Member",
-          "order": 13,
+          "order": 15,
           "hidden": true
         },
         "USER_SELF_MANAGEMENT": {
           "name": "User Self Management",
-          "order": 14,
+          "order": 16,
           "hidden": true
         },
         "COMMUNITY_MEMBER": {
           "name": "Community Member",
-          "order": 15,
+          "order": 17,
           "hidden": true
         },
         "USER_GROUP_MEMBER": {
           "name": "User Group Member",
-          "order": 16,
+          "order": 18,
           "hidden": true
         }
       },
@@ -331,6 +336,19 @@
     }
   },
   "components": {
+    "activity-log-section": {
+      "title": "Latest activities"
+    },
+    "activity-log-view": {
+      "actions": {
+        "callout-published": "published a new Callout",
+        "canvas-created": "added a new Canvas",
+        "card-comment-created": "commented on a Card",
+        "card-created": "added a new Card",
+        "discussion-comment-created": "commented on a Discussion",
+        "member-joined": "joined"
+      }
+    },
     "lifecycle-visualizer": {
       "error": "The definition was not able to be visualized"
     },

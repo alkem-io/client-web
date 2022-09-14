@@ -1,4 +1,23 @@
 import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
+export type ActivityKeySpecifier = (
+  | 'collaborationID'
+  | 'createdDate'
+  | 'description'
+  | 'id'
+  | 'resourceID'
+  | 'triggeredBy'
+  | 'type'
+  | ActivityKeySpecifier
+)[];
+export type ActivityFieldPolicy = {
+  collaborationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ActorKeySpecifier = (
   | 'authorization'
   | 'description'
@@ -244,6 +263,7 @@ export type CalloutKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'nameID'
+  | 'sortOrder'
   | 'state'
   | 'type'
   | 'visibility'
@@ -258,6 +278,7 @@ export type CalloutFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1265,6 +1286,7 @@ export type ProjectFieldPolicy = {
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type QueryKeySpecifier = (
+  | 'activityLogOnCollaboration'
   | 'adminCommunicationMembership'
   | 'adminCommunicationOrphanedUsage'
   | 'authorization'
@@ -1290,6 +1312,7 @@ export type QueryKeySpecifier = (
   | QueryKeySpecifier
 )[];
 export type QueryFieldPolicy = {
+  activityLogOnCollaboration?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationMembership?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationOrphanedUsage?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1686,6 +1709,10 @@ export type VisualFieldPolicy = {
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type StrictTypedTypePolicies = {
+  Activity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ActivityKeySpecifier | (() => undefined | ActivityKeySpecifier);
+    fields?: ActivityFieldPolicy;
+  };
   Actor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorKeySpecifier | (() => undefined | ActorKeySpecifier);
     fields?: ActorFieldPolicy;
