@@ -12,7 +12,7 @@ export const OrganizationPage: FC<OrganizationPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
   return (
-    <OrganizationPageLayout currentSection={EntityPageSection.Dashboard}>
+    <OrganizationPageLayout currentSection={EntityPageSection.Profile}>
       <OrganizationPageContainer>
         {(entities, state) => {
           return <OrganizationPageView entities={entities} state={state} />;
