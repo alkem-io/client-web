@@ -65,8 +65,6 @@ export interface HubDashboardView2Props extends EntityDashboardContributors {
   activities: Activity[] | undefined;
 }
 
-const SPACING = 2;
-
 const HubDashboardView: FC<HubDashboardView2Props> = ({
   vision = '',
   challenges,
@@ -108,7 +106,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
 
   return (
     <>
-      <Grid container spacing={SPACING}>
+      <Grid container spacing={2}>
         <DashboardColumn>
           <DashboardGenericSection
             headerText={t('pages.hub.about-this-hub')}
