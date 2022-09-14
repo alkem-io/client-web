@@ -18,7 +18,7 @@ mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
       id
     }
     comments {
-      id
+      ...CommentsWithMessages
     }
   }
 }

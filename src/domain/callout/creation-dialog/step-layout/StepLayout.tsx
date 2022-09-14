@@ -100,7 +100,6 @@ export const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({
         {onSaveAsDraft && (
           <LoadingButton
             loading={isPublishing}
-            loadingPosition="start"
             loadingIndicator={`${t('buttons.save-draft')}...`}
             onClick={onSaveAsDraft}
             variant="contained"
@@ -111,7 +110,6 @@ export const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({
         {onPublish && (
           <LoadingButton
             loading={isPublishing}
-            loadingPosition="start"
             loadingIndicator={`${t('buttons.publish')}...`}
             onClick={onPublish}
             variant="contained"
