@@ -1,11 +1,11 @@
 import { Link } from '@mui/material';
 import { Block, Mail, Public } from '@mui/icons-material';
 import React, { FC, useMemo } from 'react';
-import { SocialNetworkEnum, SocianNetworksSortOrder } from '../../../../../models/enums/SocialNetworks';
-import Typography from '../../../core/Typography';
-import GitHub from '../../../core/icons/GitHub';
-import LinkedIn from '../../../core/icons/LinkedIn';
-import Twitter from '../../../core/icons/Twitter';
+import { SocialNetworkEnum, SocianNetworksSortOrder } from './models/SocialNetworks';
+import Typography from '../../../../common/components/core/Typography';
+import GitHub from './icons/GitHub';
+import LinkedIn from './icons/LinkedIn';
+import Twitter from './icons/Twitter';
 import * as yup from 'yup';
 interface ContactDetailsProps {
   title: string;
@@ -57,7 +57,7 @@ export const SocialLinks: FC<ContactDetailsProps> = ({ title, items }) => {
         .sort((a, b) => SocianNetworksSortOrder[a.type] - SocianNetworksSortOrder[b.type]) || [],
     [items]
   );
-  return (
+  return filteredSortedItems && filteredSortedItems.length > 0 ? (
     <>
       <Typography color="primary" weight="boldLight">
         {title}
@@ -75,6 +75,8 @@ export const SocialLinks: FC<ContactDetailsProps> = ({ title, items }) => {
         </Link>
       ))}
     </>
+  ) : (
+    <></>
   );
 };
 
