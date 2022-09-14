@@ -32,6 +32,7 @@ const EmptyOrganization: Organization = {
   id: '',
   nameID: '',
   displayName: '',
+  authorization: undefined,
   contactEmail: undefined,
   domain: '',
   legalEntityName: '',
