@@ -263,6 +263,7 @@ export type CalloutKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'nameID'
+  | 'sortOrder'
   | 'state'
   | 'type'
   | 'visibility'
@@ -277,6 +278,7 @@ export type CalloutFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   visibility?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -285,6 +287,17 @@ export type CalloutAspectCreatedKeySpecifier = ('aspect' | 'calloutID' | Callout
 export type CalloutAspectCreatedFieldPolicy = {
   aspect?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutMessageReceivedKeySpecifier = (
+  | 'calloutID'
+  | 'commentsID'
+  | 'message'
+  | CalloutMessageReceivedKeySpecifier
+)[];
+export type CalloutMessageReceivedFieldPolicy = {
+  calloutID?: FieldPolicy<any> | FieldReadFunction<any>;
+  commentsID?: FieldPolicy<any> | FieldReadFunction<any>;
+  message?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CanvasKeySpecifier = (
   | 'authorization'
@@ -790,6 +803,7 @@ export type MutationKeySpecifier = (
   | 'assignUserAsCommunityMember'
   | 'assignUserAsGlobalAdmin'
   | 'assignUserAsGlobalCommunityAdmin'
+  | 'assignUserAsGlobalHubsAdmin'
   | 'assignUserAsHubAdmin'
   | 'assignUserAsOpportunityAdmin'
   | 'assignUserAsOrganizationAdmin'
@@ -868,6 +882,7 @@ export type MutationKeySpecifier = (
   | 'removeUserAsCommunityMember'
   | 'removeUserAsGlobalAdmin'
   | 'removeUserAsGlobalCommunityAdmin'
+  | 'removeUserAsGlobalHubsAdmin'
   | 'removeUserAsHubAdmin'
   | 'removeUserAsOpportunityAdmin'
   | 'removeUserAsOrganizationAdmin'
@@ -918,6 +933,7 @@ export type MutationFieldPolicy = {
   assignUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignUserAsGlobalHubsAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   assignUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -996,6 +1012,7 @@ export type MutationFieldPolicy = {
   removeUserAsCommunityMember?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsGlobalCommunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeUserAsGlobalHubsAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsHubAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOpportunityAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserAsOrganizationAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1494,6 +1511,7 @@ export type ServiceMetadataFieldPolicy = {
 export type SubscriptionKeySpecifier = (
   | 'aspectCommentsMessageReceived'
   | 'calloutAspectCreated'
+  | 'calloutMessageReceived'
   | 'canvasContentUpdated'
   | 'communicationDiscussionMessageReceived'
   | 'communicationDiscussionUpdated'
@@ -1504,6 +1522,7 @@ export type SubscriptionKeySpecifier = (
 export type SubscriptionFieldPolicy = {
   aspectCommentsMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutAspectCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  calloutMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   canvasContentUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communicationDiscussionUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1790,6 +1809,10 @@ export type StrictTypedTypePolicies = {
   CalloutAspectCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutAspectCreatedKeySpecifier | (() => undefined | CalloutAspectCreatedKeySpecifier);
     fields?: CalloutAspectCreatedFieldPolicy;
+  };
+  CalloutMessageReceived?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutMessageReceivedKeySpecifier | (() => undefined | CalloutMessageReceivedKeySpecifier);
+    fields?: CalloutMessageReceivedFieldPolicy;
   };
   Canvas?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CanvasKeySpecifier | (() => undefined | CanvasKeySpecifier);

@@ -49,9 +49,9 @@ interface ActivityViewChooserProps extends ActivityLogViewProps {
 const ActivityViewChooser = ({ type, ...rest }: ActivityViewChooserProps): React.ReactElement<ActivityLogViewProps> => {
   const lookup: Record<ActivityEventType, ComponentType<ActivityLogViewProps> | null> = {
     [ActivityEventType.CalloutPublished]: ActivityLogCalloutPublishedView,
-    [ActivityEventType.CanvasCreated]: ActivityLogCanvasCreatedView,
+    [ActivityEventType.CalloutCanvasCreated]: ActivityLogCanvasCreatedView,
     [ActivityEventType.CardComment]: ActivityCardCommentCreatedView,
-    [ActivityEventType.CardCreated]: ActivityLogCardCreatedView,
+    [ActivityEventType.CalloutCardCreated]: ActivityLogCardCreatedView,
     [ActivityEventType.DiscussionComment]: ActivityLogDiscussionCommentCreatedView,
     [ActivityEventType.MemberJoined]: ActivityLogMemberJoinedView,
   };

@@ -42,10 +42,10 @@ export type Activity = {
 };
 
 export enum ActivityEventType {
+  CalloutCanvasCreated = 'CALLOUT_CANVAS_CREATED',
+  CalloutCardCreated = 'CALLOUT_CARD_CREATED',
   CalloutPublished = 'CALLOUT_PUBLISHED',
-  CanvasCreated = 'CANVAS_CREATED',
   CardComment = 'CARD_COMMENT',
-  CardCreated = 'CARD_CREATED',
   DiscussionComment = 'DISCUSSION_COMMENT',
   MemberJoined = 'MEMBER_JOINED',
 }
@@ -247,6 +247,10 @@ export type AssignGlobalCommunityAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
+export type AssignGlobalHubsAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
 export type AssignHubAdminInput = {
   hubID: Scalars['UUID_NAMEID'];
   userID: Scalars['UUID_NAMEID_EMAIL'];
@@ -320,6 +324,7 @@ export enum AuthorizationCredential {
   ChallengeMember = 'CHALLENGE_MEMBER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAdminCommunity = 'GLOBAL_ADMIN_COMMUNITY',
+  GlobalAdminHubs = 'GLOBAL_ADMIN_HUBS',
   GlobalRegistered = 'GLOBAL_REGISTERED',
   HubAdmin = 'HUB_ADMIN',
   HubHost = 'HUB_HOST',
@@ -356,6 +361,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
   CommunityJoin = 'COMMUNITY_JOIN',
@@ -369,6 +375,8 @@ export enum AuthorizationPrivilege {
   CreateRelation = 'CREATE_RELATION',
   Delete = 'DELETE',
   Grant = 'GRANT',
+  GrantGlobalAdmins = 'GRANT_GLOBAL_ADMINS',
+  PlatformAdmin = 'PLATFORM_ADMIN',
   Read = 'READ',
   ReadUsers = 'READ_USERS',
   Update = 'UPDATE',
@@ -394,6 +402,8 @@ export type Callout = {
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
+  /** The sorting order for this Callout. */
+  sortOrder: Scalars['Float'];
   /** State of the Callout. */
   state: CalloutState;
   /** The Callout type, e.g. Card, Canvas, Discussion */
@@ -420,6 +430,16 @@ export type CalloutAspectCreated = {
   aspect: Aspect;
   /** The identifier for the Callout on which the aspect was created. */
   calloutID: Scalars['String'];
+};
+
+export type CalloutMessageReceived = {
+  __typename?: 'CalloutMessageReceived';
+  /** The identifier for the Callout. */
+  calloutID: Scalars['String'];
+  /** The identifier for the Comments. */
+  commentsID: Scalars['String'];
+  /** The message that has been sent. */
+  message: Message;
 };
 
 export enum CalloutState {
@@ -895,6 +915,8 @@ export type CreateCalloutOnCollaborationInput = {
   displayName: Scalars['String'];
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The sort order to assign to this Callout. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
   /** Callout type. */
@@ -1512,6 +1534,8 @@ export type Mutation = {
   assignUserAsGlobalAdmin: User;
   /** Assigns a User as a Global Community Admin. */
   assignUserAsGlobalCommunityAdmin: User;
+  /** Assigns a User as a Global Hubs Admin. */
+  assignUserAsGlobalHubsAdmin: User;
   /** Assigns a User as an Hub Admin. */
   assignUserAsHubAdmin: User;
   /** Assigns a User as an Opportunity Admin. */
@@ -1668,6 +1692,8 @@ export type Mutation = {
   removeUserAsGlobalAdmin: User;
   /** Removes a User from being a Global Community Admin. */
   removeUserAsGlobalCommunityAdmin: User;
+  /** Removes a User from being a Global Hubs Admin. */
+  removeUserAsGlobalHubsAdmin: User;
   /** Removes a User from being an Hub Admin. */
   removeUserAsHubAdmin: User;
   /** Removes a User from being an Opportunity Admin. */
@@ -1784,6 +1810,10 @@ export type MutationAssignUserAsGlobalAdminArgs = {
 
 export type MutationAssignUserAsGlobalCommunityAdminArgs = {
   membershipData: AssignGlobalCommunityAdminInput;
+};
+
+export type MutationAssignUserAsGlobalHubsAdminArgs = {
+  membershipData: AssignGlobalHubsAdminInput;
 };
 
 export type MutationAssignUserAsHubAdminArgs = {
@@ -2090,6 +2120,10 @@ export type MutationRemoveUserAsGlobalCommunityAdminArgs = {
   membershipData: RemoveGlobalCommunityAdminInput;
 };
 
+export type MutationRemoveUserAsGlobalHubsAdminArgs = {
+  membershipData: RemoveGlobalHubsAdminInput;
+};
+
 export type MutationRemoveUserAsHubAdminArgs = {
   membershipData: RemoveHubAdminInput;
 };
@@ -2298,7 +2332,7 @@ export type Organization = Groupable &
     activity?: Maybe<Array<Nvp>>;
     /** The Agent representing this User. */
     agent?: Maybe<Agent>;
-    /** The authorization rules for the entity */
+    /** The Authorization for this Organization. */
     authorization?: Maybe<Authorization>;
     /** Organization contact email */
     contactEmail?: Maybe<Scalars['String']>;
@@ -2726,7 +2760,7 @@ export type RelayPaginatedUser = Searchable & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  /** The Authorization for this User. */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
@@ -2797,6 +2831,10 @@ export type RemoveGlobalAdminInput = {
 };
 
 export type RemoveGlobalCommunityAdminInput = {
+  userID: Scalars['UUID_NAMEID_EMAIL'];
+};
+
+export type RemoveGlobalHubsAdminInput = {
   userID: Scalars['UUID_NAMEID_EMAIL'];
 };
 
@@ -2966,6 +3004,8 @@ export type Subscription = {
   aspectCommentsMessageReceived: AspectCommentsMessageReceived;
   /** Receive new Update messages on Communities the currently authenticated User is a member of. */
   calloutAspectCreated: CalloutAspectCreated;
+  /** Receive comments on Callouts */
+  calloutMessageReceived: CalloutMessageReceived;
   /** Receive updated content of a canvas */
   canvasContentUpdated: CanvasContentUpdated;
   /** Receive new Discussion messages */
@@ -2984,6 +3024,10 @@ export type SubscriptionAspectCommentsMessageReceivedArgs = {
 
 export type SubscriptionCalloutAspectCreatedArgs = {
   calloutID: Scalars['UUID'];
+};
+
+export type SubscriptionCalloutMessageReceivedArgs = {
+  calloutIDs: Array<Scalars['UUID']>;
 };
 
 export type SubscriptionCanvasContentUpdatedArgs = {
@@ -3124,6 +3168,8 @@ export type UpdateCalloutInput = {
   displayName?: InputMaybe<Scalars['String']>;
   /** A display identifier, unique within the containing scope. Note: updating the nameID will affect URL on the client. */
   nameID?: InputMaybe<Scalars['NameID']>;
+  /** The sort order to assign to this Callout. */
+  sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
   /** Callout type. */
@@ -3378,7 +3424,7 @@ export type User = Searchable & {
   accountUpn: Scalars['String'];
   /** The Agent representing this User. */
   agent?: Maybe<Agent>;
-  /** The authorization rules for the entity */
+  /** The Authorization for this User. */
   authorization?: Maybe<Authorization>;
   /** The Community rooms this user is a member of */
   communityRooms?: Maybe<Array<CommunicationRoom>>;
