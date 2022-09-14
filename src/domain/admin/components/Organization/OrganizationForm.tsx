@@ -28,7 +28,7 @@ import { formatLocation } from '../../../location/LocationUtils';
 import { LocationSegment } from '../../../location/LocationSegment';
 import { EmptyLocation } from '../../../location/Location';
 
-const EmptyOrganization: Organization = {
+const EmptyOrganization: Omit<Organization, 'authorization'> = {
   id: '',
   nameID: '',
   displayName: '',
