@@ -20,7 +20,8 @@ export interface UserPermissions {
   canReadUsers: boolean;
   canCreateHub: boolean;
   canCreateOrganization: boolean;
-  canAdminPlatform: boolean;
+  isPlatformAdmin: boolean; // has any GLOBAL admin privilege
+  isAdmin: boolean; // has any admin privilege
 }
 export interface UserMetadata {
   user: User;
@@ -89,8 +90,8 @@ export const useUserMetadataWrapper = () => {
   const toUserMetadata = useCallback(
     (
       user: User | undefined,
-      membershipData?: UserRolesDetailsFragment,
-      authorization?: MyPrivilegesFragment
+      membershipData: UserRolesDetailsFragment | undefined,
+      platformLevelAuthorization: MyPrivilegesFragment | undefined
     ): UserMetadata | undefined => {
       if (!user) {
         return;
@@ -129,7 +130,7 @@ export const useUserMetadataWrapper = () => {
       const isOpportunityAdmin = (hubId: string, challengeId: string, opportunityId) =>
         isChallengeAdmin(hubId, challengeId) || hasCredentials(AuthorizationCredential.OpportunityAdmin, opportunityId);
 
-      const myPrivileges = authorization?.myPrivileges ?? [];
+      const myPrivileges = platformLevelAuthorization?.myPrivileges ?? [];
       const permissions: UserPermissions = {
         canRead: myPrivileges.includes(AuthorizationPrivilege.Read),
         canCreate: myPrivileges.includes(AuthorizationPrivilege.Create),
@@ -139,7 +140,8 @@ export const useUserMetadataWrapper = () => {
         canCreateHub: myPrivileges.includes(AuthorizationPrivilege.CreateHub),
         canCreateOrganization: myPrivileges.includes(AuthorizationPrivilege.CreateOrganization),
         canReadUsers: myPrivileges.includes(AuthorizationPrivilege.ReadUsers),
-        canAdminPlatform: myPrivileges.includes(AuthorizationPrivilege.PlatformAdmin),
+        isPlatformAdmin: myPrivileges.includes(AuthorizationPrivilege.PlatformAdmin),
+        isAdmin: myPrivileges.includes(AuthorizationPrivilege.Admin),
       };
 
       const metadata: UserMetadata = {

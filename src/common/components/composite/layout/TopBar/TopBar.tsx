@@ -160,7 +160,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
   const { pathname } = useLocation();
   const { isAuthenticated, user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
-  const isAdmin = userMetadata?.permissions.canAdminPlatform;
+  const isAdmin = userMetadata?.permissions.isAdmin;
 
   const [languageOpen, setLanguageOpen] = React.useState(false);
   const [selectedLang, setSelectedLang] = React.useState(i18n.language);
