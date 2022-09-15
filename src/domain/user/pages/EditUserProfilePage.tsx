@@ -22,6 +22,8 @@ import { logger } from '../../../services/logging/winston/logger';
 import { buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import { PageProps } from '../../../pages/common';
 import { getUpdateUserInput } from '../../../common/utils/getUpdateUserInput';
+import UserSettingsLayout from '../../admin/user/layout/UserSettingsLayout';
+import { SettingsSection } from '../../admin/layout/EntitySettings/constants';
 
 interface EditUserProfilePageProps extends PageProps {}
 
@@ -94,13 +96,15 @@ export const EditUserProfilePage: FC<EditUserProfilePageProps> = ({ paths }) => 
   };
 
   return (
-    <UserForm
-      title={'Profile'}
-      user={{ ...user } as UserModel}
-      avatar={user?.profile?.avatar}
-      editMode={editMode}
-      onSave={handleSave}
-    />
+    <UserSettingsLayout currentTab={SettingsSection.MyProfile}>
+      <UserForm
+        title={'Profile'}
+        user={{ ...user } as UserModel}
+        avatar={user?.profile?.avatar}
+        editMode={editMode}
+        onSave={handleSave}
+      />
+    </UserSettingsLayout>
   );
 };
 

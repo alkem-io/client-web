@@ -145,40 +145,6 @@ query PrivilegesOnOpportunityCollaboration($hubNameId: UUID_NAMEID!, $opportunit
   }
 }
 
-mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!) {
-  createAspectOnCallout(aspectData: $aspectData) {
-    id
-    nameID
-    displayName
-    description
-    type
-    tagset {
-      id
-      name
-      tags
-    }
-    banner {
-      ...VisualUri
-    }
-    bannerNarrow {
-      ...VisualUri
-    }
-  }
-}
-
-mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
-  sendMessageOnCallout(data: $data) {
-    id
-    message
-    sender
-    timestamp
-  }
-}
-
-mutation RemoveCommentFromCallout($messageData: CommentsRemoveMessageInput!) {
-  removeComment(messageData: $messageData)
-}
-
 fragment Callout on Callout {
   id
   nameID

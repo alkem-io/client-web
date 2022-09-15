@@ -63,8 +63,8 @@ export const CalloutSummary: FC<{
       </Box>
       <Box>
         <TypographyTitle>{t('common.description')}</TypographyTitle>
-        <Typography variant="body2" sx={{ overflowWrap: 'anywhere' }}>
-          <Markdown>{callout?.description!}</Markdown>
+        <Typography variant="body2" sx={{ overflowWrap: 'anywhere' }} component={Markdown}>
+          {callout?.description}
         </Typography>
       </Box>
       <Box>

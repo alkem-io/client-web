@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { useTagsetsTemplateQuery } from '../../../../hooks/generated/graphql';
 import { EditMode } from '../../../../models/editMode';
-import { SocialNetworkEnum } from '../../../../models/enums/SocialNetworks';
+import { SocialNetworkEnum } from '../../../../domain/shared/components/SocialLinks/models/SocialNetworks';
 import { TagsetTemplate, Visual } from '../../../../models/graphql-schema';
 import { Reference, Tagset } from '../../../../models/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../../../../models/User';
@@ -17,7 +17,6 @@ import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/admin/com
 import { Loading } from '../../core';
 import VisualUpload from '../common/VisualUpload/VisualUpload';
 import { FormikInputField } from './FormikInputField';
-// import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../../models/constants';
 import FormRow from '../../../../domain/shared/layout/FormLayout';

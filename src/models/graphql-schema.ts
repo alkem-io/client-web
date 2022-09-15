@@ -361,6 +361,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
@@ -9480,6 +9481,244 @@ export type AspectCommentsMessageReceivedSubscription = {
   };
 };
 
+export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type AspectTemplatesOnCalloutCreationQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          aspectTemplates: Array<{
+            __typename?: 'AspectTemplate';
+            id: string;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CanvasTemplatesOnCalloutCreationQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasTemplatesOnCalloutCreationQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplates: Array<{
+            __typename?: 'CanvasTemplate';
+            id: string;
+            info: { __typename?: 'TemplateInfo'; id: string; title: string };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type TemplateTitleFragment = { __typename?: 'TemplateInfo'; id: string; title: string };
+
+export type AspectTemplateValueQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  id: Scalars['UUID'];
+}>;
+
+export type AspectTemplateValueQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          aspectTemplate?:
+            | {
+                __typename?: 'AspectTemplate';
+                id: string;
+                type: string;
+                defaultDescription: string;
+                info: {
+                  __typename?: 'TemplateInfo';
+                  id: string;
+                  description: string;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                };
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CanvasTemplateValueQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  id: Scalars['UUID'];
+}>;
+
+export type CanvasTemplateValueQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    templates?:
+      | {
+          __typename?: 'TemplatesSet';
+          id: string;
+          canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CreateCalloutMutationVariables = Exact<{
+  calloutData: CreateCalloutOnCollaborationInput;
+}>;
+
+export type CreateCalloutMutation = {
+  __typename?: 'Mutation';
+  createCalloutOnCollaboration: {
+    __typename?: 'Callout';
+    id: string;
+    nameID: string;
+    type: CalloutType;
+    displayName: string;
+    description: string;
+    state: CalloutState;
+    visibility: CalloutVisibility;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    canvases?: Array<{ __typename?: 'Canvas'; id: string }> | undefined;
+    aspects?: Array<{ __typename?: 'Aspect'; id: string }> | undefined;
+    comments?:
+      | {
+          __typename?: 'Comments';
+          id: string;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          messages?:
+            | Array<{ __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type HubCollaborationIdQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubCollaborationIdQuery = {
+  __typename?: 'Query';
+  hub: { __typename?: 'Hub'; id: string; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
+};
+
+export type ChallengeCollaborationIdQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeCollaborationIdQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+    };
+  };
+};
+
+export type OpportunityCollaborationIdQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+}>;
+
+export type OpportunityCollaborationIdQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
+    };
+  };
+};
+
+export type UpdateCalloutMutationVariables = Exact<{
+  calloutData: UpdateCalloutInput;
+}>;
+
+export type UpdateCalloutMutation = {
+  __typename?: 'Mutation';
+  updateCallout: {
+    __typename?: 'Callout';
+    id: string;
+    description: string;
+    displayName: string;
+    state: CalloutState;
+    type: CalloutType;
+    visibility: CalloutVisibility;
+  };
+};
+
+export type DeleteCalloutMutationVariables = Exact<{
+  calloutId: Scalars['UUID'];
+}>;
+
+export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
+
+export type CreateAspectFromContributeTabMutationVariables = Exact<{
+  aspectData: CreateAspectOnCalloutInput;
+}>;
+
+export type CreateAspectFromContributeTabMutation = {
+  __typename?: 'Mutation';
+  createAspectOnCallout: {
+    __typename?: 'Aspect';
+    id: string;
+    nameID: string;
+    displayName: string;
+    description: string;
+    type: string;
+    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+};
+
+export type PostCommentInCalloutMutationVariables = Exact<{
+  data: SendMessageOnCalloutInput;
+}>;
+
+export type PostCommentInCalloutMutation = {
+  __typename?: 'Mutation';
+  sendMessageOnCallout: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
+};
+
+export type RemoveCommentFromCalloutMutationVariables = Exact<{
+  messageData: CommentsRemoveMessageInput;
+}>;
+
+export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeComment: string };
+
 export type HubCalloutsQueryVariables = Exact<{
   hubNameId: Scalars['UUID_NAMEID'];
 }>;
@@ -10368,40 +10607,6 @@ export type PrivilegesOnOpportunityCollaborationQuery = {
   };
 };
 
-export type CreateAspectFromContributeTabMutationVariables = Exact<{
-  aspectData: CreateAspectOnCalloutInput;
-}>;
-
-export type CreateAspectFromContributeTabMutation = {
-  __typename?: 'Mutation';
-  createAspectOnCallout: {
-    __typename?: 'Aspect';
-    id: string;
-    nameID: string;
-    displayName: string;
-    description: string;
-    type: string;
-    tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-    banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
-};
-
-export type PostCommentInCalloutMutationVariables = Exact<{
-  data: SendMessageOnCalloutInput;
-}>;
-
-export type PostCommentInCalloutMutation = {
-  __typename?: 'Mutation';
-  sendMessageOnCallout: { __typename?: 'Message'; id: string; message: string; sender: string; timestamp: number };
-};
-
-export type RemoveCommentFromCalloutMutationVariables = Exact<{
-  messageData: CommentsRemoveMessageInput;
-}>;
-
-export type RemoveCommentFromCalloutMutation = { __typename?: 'Mutation'; removeComment: string };
-
 export type CalloutFragment = {
   __typename?: 'Callout';
   id: string;
@@ -10486,198 +10691,18 @@ export type CalloutFragment = {
     | undefined;
 };
 
-export type AspectTemplatesOnCalloutCreationQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
+export type CalloutMessageReceivedSubscriptionVariables = Exact<{
+  calloutIDs: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
-export type AspectTemplatesOnCalloutCreationQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          aspectTemplates: Array<{
-            __typename?: 'AspectTemplate';
-            id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string };
-          }>;
-        }
-      | undefined;
+export type CalloutMessageReceivedSubscription = {
+  __typename?: 'Subscription';
+  calloutMessageReceived: {
+    __typename?: 'CalloutMessageReceived';
+    commentsID: string;
+    message: { __typename?: 'Message'; id: string; sender: string; message: string; timestamp: number };
   };
 };
-
-export type CanvasTemplatesOnCalloutCreationQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type CanvasTemplatesOnCalloutCreationQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          canvasTemplates: Array<{
-            __typename?: 'CanvasTemplate';
-            id: string;
-            info: { __typename?: 'TemplateInfo'; id: string; title: string };
-          }>;
-        }
-      | undefined;
-  };
-};
-
-export type TemplateTitleFragment = { __typename?: 'TemplateInfo'; id: string; title: string };
-
-export type AspectTemplateValueQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  id: Scalars['UUID'];
-}>;
-
-export type AspectTemplateValueQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          aspectTemplate?:
-            | {
-                __typename?: 'AspectTemplate';
-                id: string;
-                type: string;
-                defaultDescription: string;
-                info: {
-                  __typename?: 'TemplateInfo';
-                  id: string;
-                  description: string;
-                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-                };
-              }
-            | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CanvasTemplateValueQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  id: Scalars['UUID'];
-}>;
-
-export type CanvasTemplateValueQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    templates?:
-      | {
-          __typename?: 'TemplatesSet';
-          id: string;
-          canvasTemplate?: { __typename?: 'CanvasTemplate'; id: string; value: string } | undefined;
-        }
-      | undefined;
-  };
-};
-
-export type CreateCalloutMutationVariables = Exact<{
-  calloutData: CreateCalloutOnCollaborationInput;
-}>;
-
-export type CreateCalloutMutation = {
-  __typename?: 'Mutation';
-  createCalloutOnCollaboration: {
-    __typename?: 'Callout';
-    id: string;
-    nameID: string;
-    type: CalloutType;
-    displayName: string;
-    description: string;
-    state: CalloutState;
-    visibility: CalloutVisibility;
-    authorization?:
-      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-      | undefined;
-    canvases?: Array<{ __typename?: 'Canvas'; id: string }> | undefined;
-    aspects?: Array<{ __typename?: 'Aspect'; id: string }> | undefined;
-    comments?: { __typename?: 'Comments'; id: string } | undefined;
-  };
-};
-
-export type HubCollaborationIdQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type HubCollaborationIdQuery = {
-  __typename?: 'Query';
-  hub: { __typename?: 'Hub'; id: string; collaboration?: { __typename?: 'Collaboration'; id: string } | undefined };
-};
-
-export type ChallengeCollaborationIdQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  challengeId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeCollaborationIdQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    challenge: {
-      __typename?: 'Challenge';
-      id: string;
-      collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
-    };
-  };
-};
-
-export type OpportunityCollaborationIdQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-  opportunityId: Scalars['UUID_NAMEID'];
-}>;
-
-export type OpportunityCollaborationIdQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    opportunity: {
-      __typename?: 'Opportunity';
-      id: string;
-      collaboration?: { __typename?: 'Collaboration'; id: string } | undefined;
-    };
-  };
-};
-
-export type UpdateCalloutMutationVariables = Exact<{
-  calloutData: UpdateCalloutInput;
-}>;
-
-export type UpdateCalloutMutation = {
-  __typename?: 'Mutation';
-  updateCallout: {
-    __typename?: 'Callout';
-    id: string;
-    description: string;
-    displayName: string;
-    state: CalloutState;
-    type: CalloutType;
-    visibility: CalloutVisibility;
-  };
-};
-
-export type DeleteCalloutMutationVariables = Exact<{
-  calloutId: Scalars['UUID'];
-}>;
-
-export type DeleteCalloutMutation = { __typename?: 'Mutation'; deleteCallout: { __typename?: 'Callout'; id: string } };
 
 export type ChallengeCardFragment = {
   __typename?: 'Challenge';
@@ -13850,7 +13875,7 @@ export type OrganizationInfoFragment = {
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   };
   members?:
     | Array<{
@@ -14106,7 +14131,7 @@ export type OrganizationInfoQuery = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+      location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
     };
     members?:
       | Array<{
@@ -15103,6 +15128,13 @@ export type UsersWithCredentialsSimpleListQuery = {
     lastName: string;
     email: string;
   }>;
+};
+
+export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLevelAuthorizationQuery = {
+  __typename?: 'Query';
+  authorization: { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined };
 };
 
 export type UserListQueryVariables = Exact<{

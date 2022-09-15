@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import { Loading } from '../../../common/components/core';
 import { useUpdateNavigation, useUrlParams } from '../../../hooks';
 import { PageProps, Error404 } from '../../../pages';
-import PageBanner from '../../shared/components/PageHeader/PageBanner';
-import SectionSpacer from '../../shared/components/Section/SectionSpacer';
+import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 import { useUserContext } from '../hooks/useUserContext';
 import { useUserMetadata } from '../hooks/useUserMetadata';
-import UserProfilePageView, { UserProfileViewPageProps } from '../views/UserProfilePageView';
+import UserPageLayout from '../layout/UserPageLayout';
+import UserProfilePageView from '../views/UserProfilePageView';
 
 interface UserProfileProps extends PageProps {
   edit?: boolean;
@@ -15,7 +15,7 @@ interface UserProfileProps extends PageProps {
 export const UserProfilePage: FC<UserProfileProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths: paths });
 
-  const { user: currentUser, verified } = useUserContext();
+  const { verified } = useUserContext();
 
   const { userNameId = '' } = useUrlParams();
 
@@ -25,16 +25,10 @@ export const UserProfilePage: FC<UserProfileProps> = ({ paths }) => {
 
   if (!userMetadata) return <Error404 />;
 
-  const options: UserProfileViewPageProps['options'] = {
-    isCurrentUser: currentUser?.user.id === userMetadata.user.id || false,
-  };
-
   return (
-    <>
-      <PageBanner title={userMetadata.user.displayName} />
-      <SectionSpacer />
-      <UserProfilePageView entities={{ userMetadata, verified }} options={options} />
-    </>
+    <UserPageLayout currentSection={EntityPageSection.Profile}>
+      <UserProfilePageView entities={{ userMetadata, verified }} />
+    </UserPageLayout>
   );
 };
 export default UserProfilePage;

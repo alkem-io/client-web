@@ -4,6 +4,7 @@ import {
   useCreateUserNewRegistrationMutation,
   useMeHasProfileQuery,
   useMeQuery,
+  usePlatformLevelAuthorizationQuery,
   useRolesUserQuery,
 } from '../../../../hooks/generated/graphql';
 import { ErrorPage } from '../../../../pages';
@@ -47,6 +48,9 @@ const UserProvider: FC<{}> = ({ children }) => {
     },
   });
 
+  const { data: platformLevelAuthorizationData } = usePlatformLevelAuthorizationQuery();
+  const platformLevelAuthorization = platformLevelAuthorizationData?.authorization;
+
   const [createUserProfile, { loading: loadingCreateUser, error }] = useCreateUserNewRegistrationMutation({
     refetchQueries: [refetchMeHasProfileQuery()],
     awaitRefetchQueries: true,
@@ -70,7 +74,7 @@ const UserProvider: FC<{}> = ({ children }) => {
   const loadingMeAndParentQueries = loadingAuthentication || loadingMeHasProfile || loadingMe;
 
   const wrappedMe = useMemo(
-    () => (meData?.me ? wrapper(meData.me as User, rolesData?.rolesUser) : undefined),
+    () => (meData?.me ? wrapper(meData.me as User, rolesData?.rolesUser, platformLevelAuthorization) : undefined),
     [meData, rolesData, wrapper]
   );
 

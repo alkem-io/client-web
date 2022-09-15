@@ -14,6 +14,8 @@ import UserCredentialsContainer from '../../../containers/user/UserCredentialsCo
 import { useNotification, useUpdateNavigation } from '../../../hooks';
 import { useUserSsiLazyQuery, useProfileVerifiedCredentialSubscription } from '../../../hooks/generated/graphql';
 import { PageProps } from '../../../pages';
+import { SettingsSection } from '../../admin/layout/EntitySettings/constants';
+import UserSettingsLayout from '../../admin/user/layout/UserSettingsLayout';
 import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import { CardLayoutContainer, CardLayoutItem } from '../../shared/layout/CardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';
@@ -50,156 +52,159 @@ export const UserCredentialsPage: FC<UserCredentialsPageProps> = ({ paths }) => 
   }
 
   return (
-    <UserCredentialsContainer userID={currentUser?.user.id}>
-      {({ verifiedCredentials, credentialMetadata }, state, actions) => (
-        <Grid container spacing={2}>
-          <Grid item xs={12} display="flex" flexDirection="column">
-            <DashboardGenericSection
-              headerText={t('pages.user-credentials.your-credentials.title')}
-              subHeaderText={t('pages.user-credentials.your-credentials.description')}
-              primaryAction={
-                <Button
-                  startIcon={<AddModeratorIcon />}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => setRequestCredentialDialogOpen(true)}
-                >
-                  {t('pages.user-credentials.your-credentials.add-credential')}
-                </Button>
-              }
-            >
-              <CardLayoutContainer>
-                {verifiedCredentials?.map((c, i) => (
-                  <CardLayoutItem key={i} flexGrow={1} maxWidth={{ xs: 'auto', sm: 'auto', md: '25%' }}>
-                    <CredentialCard
-                      entities={{
-                        claims: c.claims || [],
-                        context: JSON.parse(c.context),
-                        issued: c.issued,
-                        expires: c.expires,
-                        issuer: c.issuer,
-                        description: credentialMetadata?.find(cm => cm.uniqueType === c.type)?.description,
-                        name: c.name,
-                        type: c.type,
-                      }}
-                      loading={state.getUserCredentialsLoading}
-                    />
-                  </CardLayoutItem>
-                ))}
-              </CardLayoutContainer>
-            </DashboardGenericSection>
-          </Grid>
-          <Grid item xs={12} md={6} display="flex" flexDirection="column">
-            <DashboardGenericSection
-              headerText={t('components.alkemio-user-credential-offer-dialog.title')}
-              subHeaderText={t('components.alkemio-user-credential-offer-dialog.content')}
-              primaryAction={
-                <Button
-                  onClick={async () => {
-                    const response = await actions.generateAlkemioUserCredentialOffer();
-                    setJWT(response.jwt);
-                    setQRDialogOpen(true);
-                  }}
-                >
-                  {t('pages.user-credentials.issue')}
-                </Button>
-              }
-            >
-              <Typography variant="body2">Token Structure:</Typography>
-              <pre>
-                {(() => {
-                  const context =
-                    credentialMetadata?.find(metadata => metadata.uniqueType === 'AlkemioMemberCredential')?.context ||
-                    '{}';
+    <UserSettingsLayout currentTab={SettingsSection.Credentials}>
+      <UserCredentialsContainer userID={currentUser?.user.id}>
+        {({ verifiedCredentials, credentialMetadata }, state, actions) => (
+          <Grid container spacing={2}>
+            <Grid item xs={12} display="flex" flexDirection="column">
+              <DashboardGenericSection
+                headerText={t('pages.user-credentials.your-credentials.title')}
+                subHeaderText={t('pages.user-credentials.your-credentials.description')}
+                primaryAction={
+                  <Button
+                    startIcon={<AddModeratorIcon />}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setRequestCredentialDialogOpen(true)}
+                  >
+                    {t('pages.user-credentials.your-credentials.add-credential')}
+                  </Button>
+                }
+              >
+                <CardLayoutContainer>
+                  {verifiedCredentials?.map((c, i) => (
+                    <CardLayoutItem key={i} flexGrow={1} maxWidth={{ xs: 'auto', sm: 'auto', md: '25%' }}>
+                      <CredentialCard
+                        entities={{
+                          claims: c.claims || [],
+                          context: JSON.parse(c.context),
+                          issued: c.issued,
+                          expires: c.expires,
+                          issuer: c.issuer,
+                          description: credentialMetadata?.find(cm => cm.uniqueType === c.type)?.description,
+                          name: c.name,
+                          type: c.type,
+                        }}
+                        loading={state.getUserCredentialsLoading}
+                      />
+                    </CardLayoutItem>
+                  ))}
+                </CardLayoutContainer>
+              </DashboardGenericSection>
+            </Grid>
+            <Grid item xs={12} md={6} display="flex" flexDirection="column">
+              <DashboardGenericSection
+                headerText={t('components.alkemio-user-credential-offer-dialog.title')}
+                subHeaderText={t('components.alkemio-user-credential-offer-dialog.content')}
+                primaryAction={
+                  <Button
+                    onClick={async () => {
+                      const response = await actions.generateAlkemioUserCredentialOffer();
+                      setJWT(response.jwt);
+                      setQRDialogOpen(true);
+                    }}
+                  >
+                    {t('pages.user-credentials.issue')}
+                  </Button>
+                }
+              >
+                <Typography variant="body2">Token Structure:</Typography>
+                <pre>
+                  {(() => {
+                    const context =
+                      credentialMetadata?.find(metadata => metadata.uniqueType === 'AlkemioMemberCredential')
+                        ?.context || '{}';
 
-                  return JSON.stringify(JSON.parse(context), null, 2);
-                })()}
-              </pre>
-            </DashboardGenericSection>
-          </Grid>
-          <Grid item xs={12} md={6} display="flex" flexDirection="column">
-            <DashboardGenericSection
-              headerText={t('components.alkemio-community-member-credential-offer-dialog.title')}
-              subHeaderText={t('components.alkemio-community-member-credential-offer-dialog.content')}
-              primaryAction={
-                <Button
-                  onClick={async () => {
-                    setCommunityCredentialOfferDialogOpen(true);
-                  }}
-                >
-                  {t('pages.user-credentials.issue')}
-                </Button>
-              }
-            >
-              <Typography variant="body2">Token Structure:</Typography>
-              <pre>
-                {(() => {
-                  const context =
-                    credentialMetadata?.find(metadata => metadata.uniqueType === 'CommunityMemberCredential')
-                      ?.context || '{}';
+                    return JSON.stringify(JSON.parse(context), null, 2);
+                  })()}
+                </pre>
+              </DashboardGenericSection>
+            </Grid>
+            <Grid item xs={12} md={6} display="flex" flexDirection="column">
+              <DashboardGenericSection
+                headerText={t('components.alkemio-community-member-credential-offer-dialog.title')}
+                subHeaderText={t('components.alkemio-community-member-credential-offer-dialog.content')}
+                primaryAction={
+                  <Button
+                    onClick={async () => {
+                      setCommunityCredentialOfferDialogOpen(true);
+                    }}
+                  >
+                    {t('pages.user-credentials.issue')}
+                  </Button>
+                }
+              >
+                <Typography variant="body2">Token Structure:</Typography>
+                <pre>
+                  {(() => {
+                    const context =
+                      credentialMetadata?.find(metadata => metadata.uniqueType === 'CommunityMemberCredential')
+                        ?.context || '{}';
 
-                  return JSON.stringify(JSON.parse(context), null, 2);
-                })()}
-              </pre>
-            </DashboardGenericSection>
+                    return JSON.stringify(JSON.parse(context), null, 2);
+                  })()}
+                </pre>
+              </DashboardGenericSection>
+            </Grid>
+            {/* <ContributionDetailsContainer entities={{ }}></ContributionDetailsContainer> */}
+            <RequestCredentialDialog
+              actions={{
+                onCancel: () => setRequestCredentialDialogOpen(false),
+                onGenerate: actions.generateCredentialRequest,
+              }}
+              entities={{
+                credentialMetadata,
+                titleId: 'components.credential-share-request-dialog.title',
+                content: t('components.credential-share-request-dialog.content'),
+              }}
+              options={{
+                show: requestCredentialDialogOpen,
+              }}
+              state={{
+                isLoadingCredentialMetadata: state.getCredentialMetadataLoading,
+                isLoadingToken: state.generateCredentialRequestLoading,
+              }}
+            />
+            <OfferAlkemioCommunityCredentialDialog
+              actions={{
+                onCancel: () => setCommunityCredentialOfferDialogOpen(false),
+                onGenerate: actions.generateCommunityMemberCredentialOffer,
+              }}
+              entities={{
+                titleId: 'components.credential-share-request-dialog.title',
+                content: t('components.credential-share-request-dialog.content'),
+                contributions: currentUser.contributions,
+              }}
+              options={{
+                show: communityCredentialOfferDialogOpen,
+              }}
+              state={{
+                isLoadingContributions: loadingUserContext,
+                isLoadingToken: state.generateCommunityMemberCredentialOfferLoading,
+              }}
+            />
+            <QRCodeDialog
+              actions={{
+                onCancel: () => setQRDialogOpen(false),
+              }}
+              entities={{
+                qrCodeJwt: jwt || '',
+                titleId: 'components.alkemio-user-credential-offer-dialog.title',
+                contentId: 'components.alkemio-user-credential-offer-dialog.content',
+              }}
+              options={{
+                show: qrDialogOpen,
+              }}
+              state={{
+                isLoading:
+                  state.generateCommunityMemberCredentialOfferLoading ||
+                  state.generateAlkemioUserCredentialOfferLoading,
+              }}
+            />
           </Grid>
-          {/* <ContributionDetailsContainer entities={{ }}></ContributionDetailsContainer> */}
-          <RequestCredentialDialog
-            actions={{
-              onCancel: () => setRequestCredentialDialogOpen(false),
-              onGenerate: actions.generateCredentialRequest,
-            }}
-            entities={{
-              credentialMetadata,
-              titleId: 'components.credential-share-request-dialog.title',
-              content: t('components.credential-share-request-dialog.content'),
-            }}
-            options={{
-              show: requestCredentialDialogOpen,
-            }}
-            state={{
-              isLoadingCredentialMetadata: state.getCredentialMetadataLoading,
-              isLoadingToken: state.generateCredentialRequestLoading,
-            }}
-          />
-          <OfferAlkemioCommunityCredentialDialog
-            actions={{
-              onCancel: () => setCommunityCredentialOfferDialogOpen(false),
-              onGenerate: actions.generateCommunityMemberCredentialOffer,
-            }}
-            entities={{
-              titleId: 'components.credential-share-request-dialog.title',
-              content: t('components.credential-share-request-dialog.content'),
-              contributions: currentUser.contributions,
-            }}
-            options={{
-              show: communityCredentialOfferDialogOpen,
-            }}
-            state={{
-              isLoadingContributions: loadingUserContext,
-              isLoadingToken: state.generateCommunityMemberCredentialOfferLoading,
-            }}
-          />
-          <QRCodeDialog
-            actions={{
-              onCancel: () => setQRDialogOpen(false),
-            }}
-            entities={{
-              qrCodeJwt: jwt || '',
-              titleId: 'components.alkemio-user-credential-offer-dialog.title',
-              contentId: 'components.alkemio-user-credential-offer-dialog.content',
-            }}
-            options={{
-              show: qrDialogOpen,
-            }}
-            state={{
-              isLoading:
-                state.generateCommunityMemberCredentialOfferLoading || state.generateAlkemioUserCredentialOfferLoading,
-            }}
-          />
-        </Grid>
-      )}
-    </UserCredentialsContainer>
+        )}
+      </UserCredentialsContainer>
+    </UserSettingsLayout>
   );
 };
 
