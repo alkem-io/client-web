@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
-import { buildNewOrganizationUrl } from '../../../utils/urlBuilders';
+import { buildNewOrganizationUrl } from '../../../common/utils/urlBuilders';
 import AssociatedOrganizationsView2, { AssociatedOrganizationsViewProps } from './AssociatedOrganizationsView';
 
 export interface AssociatedOrganizationsDashboardSectionProps<

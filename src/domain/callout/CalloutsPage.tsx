@@ -1,18 +1,19 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Box, Button } from '@mui/material';
 import usePageLayoutByEntity from '../shared/utils/usePageLayoutByEntity';
 import { EntityTypeName } from '../shared/layout/PageLayout/SimplePageLayout';
 import { EntityPageSection } from '../shared/layout/EntityPageSection';
-import { useUrlParams } from '../../hooks';
-import useCallouts from './useCallouts';
-import { Box, Button } from '@mui/material';
-import AspectCallout from './aspect/AspectCallout';
-import { AuthorizationPrivilege, CalloutType } from '../../models/graphql-schema';
-import CanvasCallout from './canvas/CanvasCallout';
 import useBackToParentPage from '../shared/utils/useBackToParentPage';
-import { useTranslation } from 'react-i18next';
+import { useUrlParams } from '../../hooks';
+import { AuthorizationPrivilege, CalloutType } from '../../models/graphql-schema';
 import { useCalloutCreation } from './creation-dialog/useCalloutCreation/useCalloutCreation';
 import CalloutCreationDialog from './creation-dialog/CalloutCreationDialog';
 import { useCalloutEdit } from './edit/useCalloutEdit/useCalloutEdit';
+import AspectCallout from './aspect/AspectCallout';
+import CanvasCallout from './canvas/CanvasCallout';
+import CommentsCallout from './comments/CommentsCallout';
+import useCallouts from './useCallouts';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -87,6 +88,21 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
                     onCalloutEdit={handleEdit}
                     onVisibilityChange={handleVisibilityChange}
                     onCalloutDelete={handleDelete}
+                  />
+                );
+              case CalloutType.Comments:
+                return (
+                  <CommentsCallout
+                    key={callout.id}
+                    callout={callout}
+                    loading={loading}
+                    hubNameId={hubNameId!}
+                    challengeNameId={challengeNameId}
+                    opportunityNameId={opportunityNameId}
+                    onCalloutEdit={handleEdit}
+                    onVisibilityChange={handleVisibilityChange}
+                    onCalloutDelete={handleDelete}
+                    isSubscribedToComments={callout.isSubscribedToComments}
                   />
                 );
               default:

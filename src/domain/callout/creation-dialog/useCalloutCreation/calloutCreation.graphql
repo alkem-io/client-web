@@ -17,11 +17,15 @@ mutation createCallout($calloutData: CreateCalloutOnCollaborationInput!) {
     aspects {
       id
     }
+    comments {
+      ...CommentsWithMessages
+    }
   }
 }
 
 query hubCollaborationId($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
+    id
     collaboration {
       id
     }

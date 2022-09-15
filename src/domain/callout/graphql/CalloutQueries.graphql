@@ -1,0 +1,169 @@
+query HubCallouts($hubNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    collaboration {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      callouts {
+        ...Callout
+      }
+    }
+  }
+}
+
+query ChallengeCallouts($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts {
+          ...Callout
+        }
+      }
+    }
+  }
+}
+
+query OpportunityCallouts($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts {
+          ...Callout
+        }
+      }
+    }
+  }
+}
+query HubCallout($hubNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    collaboration {
+      id
+      authorization {
+        id
+        myPrivileges
+      }
+      callouts(IDs: [$calloutId]) {
+        ...Callout
+      }
+    }
+  }
+}
+
+query ChallengeCallout($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts(IDs: [$calloutId]) {
+          ...Callout
+        }
+      }
+    }
+  }
+}
+
+query OpportunityCallout($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!, $calloutId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        id
+        authorization {
+          id
+          myPrivileges
+        }
+        callouts(IDs: [$calloutId]) {
+          ...Callout
+        }
+      }
+    }
+  }
+}
+
+fragment PrivilegesOnCollaboration on Collaboration {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+}
+query PrivilegesOnHubCollaboration($hubNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    collaboration {
+      ...PrivilegesOnCollaboration
+    }
+  }
+}
+
+query PrivilegesOnChallengeCollaboration($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    challenge(ID: $challengeNameId) {
+      id
+      collaboration {
+        ...PrivilegesOnCollaboration
+      }
+    }
+  }
+}
+
+query PrivilegesOnOpportunityCollaboration($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
+  hub(ID: $hubNameId) {
+    id
+    opportunity(ID: $opportunityNameId) {
+      id
+      collaboration {
+        ...PrivilegesOnCollaboration
+      }
+    }
+  }
+}
+
+fragment Callout on Callout {
+  id
+  nameID
+  type
+  displayName
+  description
+  state
+  aspects {
+    ...ContributeTabAspect
+  }
+  canvases {
+    ...CanvasDetails
+  }
+  comments {
+    ...CommentsWithMessages
+  }
+  authorization {
+    id
+    myPrivileges
+  }
+  visibility
+}

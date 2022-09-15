@@ -1,5 +1,5 @@
 import React from 'react';
-import { buildAdminOrganizationUrl, buildOrganizationUrl } from '../../../utils/urlBuilders';
+import { buildAdminOrganizationUrl, buildOrganizationUrl } from '../../../common/utils/urlBuilders';
 import HeaderNavigationTab from '../../shared/components/PageHeader/HeaderNavigationTab';
 import { useTranslation } from 'react-i18next';
 import { useOrganization } from '../../../hooks';
@@ -8,7 +8,7 @@ import OrganizationPageContainer from '../../../containers/organization/Organiza
 import { EntityTabsProps } from '../../shared/layout/PageLayout/EntityPageLayout';
 
 const routes = {
-  dashboard: 'dashboard',
+  profile: 'profile',
   settings: 'settings',
 };
 
@@ -19,20 +19,18 @@ const OrganizationTabs = (props: EntityTabsProps) => {
 
   return (
     <OrganizationPageContainer>
-      {entities => (
-        <HeaderNavigationTabs value={props.currentTab}>
+      {({ permissions }) => (
+        <HeaderNavigationTabs
+          value={props.currentTab}
+          showSettings={permissions.canEdit}
+          settingsUrl={buildAdminOrganizationUrl(organizationNameId)}
+        >
           <HeaderNavigationTab
-            label={t('common.dashboard')}
-            value={routes.dashboard}
+            label={t('common.profile')}
+            value={routes.profile}
             to={buildOrganizationUrl(organizationNameId)}
+            className="singleCenteredTab"
           />
-          {entities.permissions.canEdit && (
-            <HeaderNavigationTab
-              label={t('common.settings')}
-              value={routes.settings}
-              to={buildAdminOrganizationUrl(organizationNameId)}
-            />
-          )}
         </HeaderNavigationTabs>
       )}
     </OrganizationPageContainer>

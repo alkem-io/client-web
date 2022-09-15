@@ -5,8 +5,8 @@ import DashboardHubsSection, {
 } from '../../shared/components/DashboardSections/DashboardHubsSection';
 import { useHubsQuery } from '../../../hooks/generated/graphql';
 import withOptionalCount from '../../shared/utils/withOptionalCount';
-import { Loading } from '../../../components/core';
-import { EntityContributionCardLabel } from '../../../components/composite/common/cards/ContributionCard/EntityContributionCard';
+import { Loading } from '../../../common/components/core';
+import { EntityContributionCardLabel } from '../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { USER_ROLE_HUB_LEAD, UserRolesInEntity } from '../../user/providers/UserProvider/UserRolesInEntity';
 import { keyBy } from 'lodash';
 

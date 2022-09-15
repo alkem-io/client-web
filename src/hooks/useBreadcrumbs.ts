@@ -1,9 +1,9 @@
 import { ComponentType, useMemo } from 'react';
 import { useUrlParams } from '.';
-import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../utils/urlBuilders';
+import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../common/utils/urlBuilders';
 import { useChallengeNameQuery, useHubNameQuery, useOpportunityNameQuery } from './generated/graphql';
 import { HubOutlined } from '@mui/icons-material';
-import { ChallengeIcon } from '../components/icons/ChallengeIcon';
+import { ChallengeIcon } from '../common/icons/ChallengeIcon';
 
 export interface BreadcrumbsItem {
   title: string;

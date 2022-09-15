@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { ApplicationButtonProps } from '../../components/composite/common/ApplicationButton/ApplicationButton';
-import { useApolloErrorHandler, useAuthenticationContext, useChallenge, useHub, useUserContext } from '../../hooks';
+import { ApplicationButtonProps } from '../../common/components/composite/common/ApplicationButton/ApplicationButton';
+import { useApolloErrorHandler, useChallenge, useHub, useUserContext } from '../../hooks';
 import {
   useCommunityUserPrivilegesQuery,
   useJoinCommunityMutation,
@@ -8,10 +8,11 @@ import {
   useUserProfileLazyQuery,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../utils/urlBuilders';
+import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../common/utils/urlBuilders';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';
+import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';
 
 interface ApplicationContainerEntities {
   applicationButtonProps: ApplicationButtonProps;

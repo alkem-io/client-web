@@ -12,7 +12,7 @@ import { SectionSpacer } from '../../components/Section/Section';
  * as well as any derived layout should be a usage of this one, parameterized through composition.
  */
 
-export type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization';
+export type EntityTypeName = 'hub' | 'challenge' | 'opportunity' | 'organization' | 'user';
 
 export interface SimplePageLayoutProps<Section extends string | number> {
   currentSection: Section;

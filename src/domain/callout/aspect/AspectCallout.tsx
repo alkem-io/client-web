@@ -1,9 +1,9 @@
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
-import AspectCard, { AspectCardAspect } from '../../../components/composite/common/cards/AspectCard/AspectCard';
+import AspectCard, { AspectCardAspect } from '../../../common/components/composite/common/cards/AspectCard/AspectCard';
 import CardsLayout from '../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../shared/types/CoreEntityIds';
-import AspectCreationDialog from '../../../components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
+import AspectCreationDialog from '../../../common/components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../hooks';
 import { CreateAspectOnCalloutInput } from '../../../models/graphql-schema';

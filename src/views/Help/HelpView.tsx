@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Loading } from '../../components/core';
-import Markdown, { MarkdownProps } from '../../components/core/Markdown';
+import { Loading } from '../../common/components/core';
+import Markdown, { MarkdownProps } from '../../common/components/core/Markdown';
 import rehypeRaw from 'rehype-raw';
 import { Box } from '@mui/material';
 

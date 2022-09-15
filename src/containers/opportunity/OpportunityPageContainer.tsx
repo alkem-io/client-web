@@ -2,12 +2,13 @@ import { ApolloError } from '@apollo/client';
 import { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { useAuthenticationContext, useOpportunity, useUserContext } from '../../hooks';
-import { useOpportunityPageQuery } from '../../hooks/generated/graphql';
+import { useOpportunity, useUserContext } from '../../hooks';
+import { useActivityLogOnCollaborationQuery, useOpportunityPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { Discussion } from '../../models/discussion/discussion';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import {
+  Activity,
   AuthorizationCredential,
   AuthorizationPrivilege,
   OpportunityPageFragment,
@@ -15,8 +16,8 @@ import {
   Project,
   Reference,
 } from '../../models/graphql-schema';
-import { replaceAll } from '../../utils/replaceAll';
-import { buildAdminOpportunityUrl } from '../../utils/urlBuilders';
+import { replaceAll } from '../../common/utils/replaceAll';
+import { buildAdminOpportunityUrl } from '../../common/utils/urlBuilders';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
 import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
@@ -26,6 +27,8 @@ import {
   getCanvasesFromPublishedCallouts,
 } from '../../domain/callout/utils/getPublishedCallouts';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
+import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';
+import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
 
 export interface OpportunityContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -61,6 +64,7 @@ export interface OpportunityContainerEntities extends EntityDashboardContributor
   canvases: CanvasFragmentWithCallout[];
   canvasesCount: number | undefined;
   references: Reference[] | undefined;
+  activities: Activity[] | undefined;
 }
 
 export interface OpportunityContainerActions {
@@ -104,6 +108,21 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
   });
 
   const opportunity = (query?.hub.opportunity ?? {}) as OpportunityPageFragment;
+  const collaborationID = opportunity?.collaboration?.id;
+
+  const { data: activityLogData } = useActivityLogOnCollaborationQuery({
+    variables: { queryData: { collaborationID: collaborationID! } },
+    skip: !collaborationID,
+  });
+  const activities = useMemo(() => {
+    if (!activityLogData) {
+      return undefined;
+    }
+
+    return [...activityLogData.activityLogOnCollaboration]
+      .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
+      .slice(0, LATEST_ACTIVITIES_COUNT);
+  }, [activityLogData]);
 
   const permissions = useMemo(() => {
     const isAdmin = user?.isOpportunityAdmin(hubId, challengeId, opportunityId) || false;
@@ -207,6 +226,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
           canvases,
           canvasesCount,
           references,
+          activities,
           ...contributors,
         },
         {

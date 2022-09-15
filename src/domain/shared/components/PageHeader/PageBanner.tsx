@@ -1,6 +1,6 @@
 import { Box, Skeleton, styled, Typography } from '@mui/material';
 import { FC, useState } from 'react';
-import hexToRGBA from '../../../../utils/hexToRGBA';
+import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
 
@@ -10,7 +10,7 @@ export const TITLE_HEIGHT = 7;
 
 const Root = styled(Box)(({ theme }) => ({
   aspectRatio: BANNER_ASPECT_RATIO,
-  backgroundColor: theme.palette.grey[100],
+  backgroundColor: theme.palette.neutralLight.main,
   position: 'relative',
   [theme.breakpoints.down('lg')]: {
     // On small screens title goes under the banner image
@@ -29,7 +29,7 @@ const Title = styled(Box)(({ theme }) => ({
   height: theme.spacing(TITLE_HEIGHT),
   zIndex: 20,
   [theme.breakpoints.down('lg')]: {
-    position: 'relative',
+    bottom: theme.spacing(-TITLE_HEIGHT),
     backgroundColor: '#004f54',
   },
   // Title
@@ -52,13 +52,16 @@ const Ellipser = styled('div')(() => ({
   },
 }));
 
-const ImageWrapper = styled('div')(() => ({
+const ImageWrapper = styled('div')(({ theme }) => ({
   position: 'absolute',
   top: 0,
   width: '100%',
   height: '100%',
   overflow: 'hidden',
   zIndex: 10,
+  [theme.breakpoints.down('lg')]: {
+    position: 'relative',
+  },
 }));
 
 const Image = styled('img')(() => ({
@@ -76,6 +79,10 @@ export interface PageBannerProps {
   loading?: boolean;
 }
 
+/**
+ * This is the common top banner for Hubs/Challenges/Opportunities, and in general anything else except the home.
+ * For Users/Organizations see ProfileBanner
+ */
 const PageBanner: FC<PageBannerProps> = ({
   title,
   tagline,
@@ -120,6 +127,7 @@ const PageBanner: FC<PageBannerProps> = ({
           </Title>
         </>
       )}
+      {dataLoading && <Skeleton variant="rectangular" />}
     </Root>
   );
 };

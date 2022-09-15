@@ -2,10 +2,10 @@ import { Fade } from '@mui/material';
 import clsx from 'clsx';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, useEffect, useRef, useState } from 'react';
-import Card from '../../components/core/Card';
-import Section, { Header, SubHeader } from '../../components/core/Section';
-import Spinner from '../../components/core/Spinner';
-import Typography from '../../components/core/Typography';
+import Card from '../../common/components/core/Card';
+import Section, { Header, SubHeader } from '../../common/components/core/Section';
+import Spinner from '../../common/components/core/Spinner';
+import Typography from '../../common/components/core/Typography';
 import { useConfig } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';
 import { makeStyles } from '@mui/styles';

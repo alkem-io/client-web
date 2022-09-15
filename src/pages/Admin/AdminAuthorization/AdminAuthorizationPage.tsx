@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import AdminLayout from '../../../domain/admin/toplevel/AdminLayout';
 import { PageProps } from '../../common';
 import { Container, Grid } from '@mui/material';
-import Card from '../../../components/core/Card';
-import Button from '../../../components/core/Button';
+import Card from '../../../common/components/core/Card';
+import Button from '../../../common/components/core/Button';
 import { Link as RouterLink } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';
 import { AdminSection } from '../../../domain/admin/toplevel/constants';
@@ -18,7 +18,11 @@ const buttons = [
   },
   {
     description: 'Global community admins',
-    url: `authorization/community/${AuthorizationCredential.GlobalAdminCommunity}`,
+    url: `authorization/global-community/${AuthorizationCredential.GlobalAdminCommunity}`,
+  },
+  {
+    description: 'Global Hubs Admins',
+    url: `authorization/global-hubs/${AuthorizationCredential.GlobalAdminHubs}`,
   },
 ];
 

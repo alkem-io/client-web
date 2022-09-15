@@ -1,19 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import { Agent } from '../../models/graphql-schema';
-import getUserRoleTranslationKey from '../../utils/user-role-name/get-user-role-translation-key';
+import getUserRoleTranslationKey from '../../common/utils/user-role-name/get-user-role-translation-key';
 import {
   ADMIN_TRANSLATION_KEY,
   MEMBER_TRANSLATION_KEY,
   OWNER_TRANSLATION_KEY,
   RoleNameKey,
-} from '../../models/constants/translation.contants';
+} from '../../models/constants/translation.constants';
 import { sortBy } from 'lodash';
 
 const ROLES_ORDER = [OWNER_TRANSLATION_KEY, ADMIN_TRANSLATION_KEY, MEMBER_TRANSLATION_KEY] as const;
 
 export type WithCardRole<T> = T & { roleName: string };
 export type WithCardRoleKey<T> = T & { roleNameKey: RoleNameKey };
-type WithCredentials = { agent?: Pick<Agent, 'credentials'> };
+export type WithCredentials = { agent?: Pick<Agent, 'credentials'> };
 
 /***
  * Hook because it uses translation hook

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, Button, DialogActions } from '@mui/material';
-import { DialogContent, DialogTitle } from '../../../components/core/dialog';
+import { DialogContent, DialogTitle } from '../../../common/components/core/dialog';
 import { CommunityUpdatesContainer } from '../../../containers/community-updates/CommunityUpdatesContainer';
 import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';
 

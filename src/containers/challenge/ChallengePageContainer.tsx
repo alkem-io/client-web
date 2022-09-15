@@ -2,10 +2,14 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { useChallenge, useHub, useUserContext } from '../../hooks';
-import { useChallengeDashboardReferencesQuery, useChallengePageQuery } from '../../hooks/generated/graphql';
+import {
+  useActivityLogOnCollaborationQuery,
+  useChallengeDashboardReferencesQuery,
+  useChallengePageQuery,
+} from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { Discussion } from '../../models/discussion/discussion';
-import { AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
+import { Discussion } from '../../domain/discussion/models/discussion';
+import { Activity, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
@@ -18,6 +22,7 @@ import {
 } from '../../domain/callout/utils/getPublishedCallouts';
 import { Reference } from '../../models/Profile';
 import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
+import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {
   hubId: string;
@@ -37,6 +42,7 @@ export interface ChallengeContainerEntities extends EntityDashboardContributors 
   isAuthenticated: boolean;
   isMember: boolean;
   discussions: Discussion[];
+  activities: Activity[] | undefined;
 }
 
 export interface ChallengeContainerActions {}
@@ -61,6 +67,21 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
     },
     errorPolicy: 'all',
   });
+  const collaborationID = _challenge?.hub?.challenge?.collaboration?.id;
+
+  const { data: activityLogData } = useActivityLogOnCollaborationQuery({
+    variables: { queryData: { collaborationID: collaborationID! } },
+    skip: !collaborationID,
+  });
+  const activities = useMemo(() => {
+    if (!activityLogData) {
+      return undefined;
+    }
+
+    return [...activityLogData.activityLogOnCollaboration]
+      .sort((a, b) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime())
+      .slice(0, LATEST_ACTIVITIES_COUNT);
+  }, [activityLogData]);
 
   const permissions = {
     canEdit: user?.isChallengeAdmin(hubId, challengeId) || false,
@@ -116,6 +137,7 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
           isMember: user?.ofChallenge(challengeId) || false,
           discussions: discussionList,
           ...contributors,
+          activities,
         },
         { loading: loading || loadingProfile || loadingHubContext || loadingDiscussions },
         {}

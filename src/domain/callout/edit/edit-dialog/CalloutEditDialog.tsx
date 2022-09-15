@@ -4,14 +4,12 @@ import { Box } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
 import { CampaignOutlined } from '@mui/icons-material';
-import { DialogActions, DialogContent, DialogTitle } from '../../../../components/core/dialog';
-import CalloutForm, {
-  CalloutFormOutput,
-} from '../../../../components/composite/aspect/AspectCreationDialog/form/CalloutForm';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import ConfirmationDialog, {
   ConfirmationDialogProps,
-} from '../../../../components/composite/dialogs/ConfirmationDialog';
+} from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { CalloutEditType } from '../CalloutEditType';
+import CalloutForm, { CalloutFormOutput } from '../../CalloutForm';
 
 export interface CalloutEditDialogProps {
   open: boolean;

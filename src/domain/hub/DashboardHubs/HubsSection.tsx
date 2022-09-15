@@ -10,11 +10,11 @@ import { useHubsQuery } from '../../../hooks/generated/graphql';
 import ActivityTooltip from '../../activity/ActivityTooltip';
 import useServerMetadata from '../../../hooks/useServerMetadata';
 import getActivityCount from '../../activity/utils/getActivityCount';
-import { ActivityItem } from '../../../components/composite/common/ActivityPanel/Activities';
-import { EntityContributionCardLabel } from '../../../components/composite/common/cards/ContributionCard/EntityContributionCard';
+import { ActivityItem } from '../../../common/components/composite/common/ActivityPanel/Activities';
+import { EntityContributionCardLabel } from '../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { keyBy } from 'lodash';
 import { UserRolesInEntity } from '../../user/providers/UserProvider/UserRolesInEntity';
-import { Loading } from '../../../components/core';
+import { Loading } from '../../../common/components/core';
 
 interface HubsSectionProps {
   userHubRoles: UserRolesInEntity[] | undefined;

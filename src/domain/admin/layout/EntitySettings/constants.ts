@@ -1,8 +1,11 @@
-import { TabDefinition } from '../../../../components/core/PageTabs/PageTabs';
+import { TabDefinition } from '../../../../common/components/core/PageTabs/PageTabs';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ListOutlinedIcon from '@mui/icons-material/ListOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
+import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 export enum SettingsSection {
   Profile = 'profile',
@@ -13,6 +16,11 @@ export enum SettingsSection {
   Challenges = 'challenges',
   Opportunities = 'opportunities',
   Templates = 'templates',
+  MyProfile = 'my-profile',
+  Membership = 'membership',
+  Organizations = 'organizations',
+  Notifications = 'notifications',
+  Credentials = 'credentials',
 }
 
 export const CommonTabs: TabDefinition<SettingsSection>[] = [
@@ -40,5 +48,33 @@ export const CommonTabs: TabDefinition<SettingsSection>[] = [
     section: SettingsSection.Authorization,
     route: 'authorization',
     icon: GppGoodOutlinedIcon,
+  },
+];
+
+export const UserProfileTabs: TabDefinition<SettingsSection>[] = [
+  {
+    section: SettingsSection.Membership,
+    route: 'membership',
+    icon: ContentPasteOutlinedIcon,
+  },
+  {
+    section: SettingsSection.MyProfile,
+    route: 'profile',
+    icon: PeopleOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Organizations,
+    route: 'organizations',
+    icon: ForumOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Notifications,
+    route: 'notifications',
+    icon: NotificationsNoneOutlinedIcon,
+  },
+  {
+    section: SettingsSection.Credentials,
+    route: 'credentials',
+    icon: VerifiedUserIcon,
   },
 ];

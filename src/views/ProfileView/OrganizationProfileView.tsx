@@ -1,16 +1,10 @@
-import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, Grid, Link } from '@mui/material';
-import createStyles from '@mui/styles/createStyles';
-import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
+import { Box, Card, CardContent, Grid, Link, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { SettingsButton } from '../../components/composite';
-import ProfileDetail from '../../components/composite/common/ProfileDetail/ProfileDetail';
-import SocialLinks, { SocialLinkItem } from '../../components/composite/common/SocialLinks/SocialLinks';
+import ProfileDetail from '../../common/components/composite/common/ProfileDetail/ProfileDetail';
 import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
-import VerifiedStatus from '../../components/composite/common/VerifiedStatus/VerifiedStatus';
-import Typography from '../../components/core/Typography';
-import { formatLocation } from '../../domain/location/LocationUtils';
-import LocationView from '../../domain/location/LocationView';
+import VerifiedStatus from '../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
+import Typography from '../../common/components/core/Typography';
 import { Location } from '../../models/graphql-schema';
 
 export interface OrganizationProfileViewEntity {
@@ -18,11 +12,7 @@ export interface OrganizationProfileViewEntity {
   settingsUrl: string;
   settingsTooltip: string;
   location?: Location;
-  telephone?: string;
-  avatar?: string;
-  banner?: string;
   bio?: string;
-  socialLinks?: SocialLinkItem[];
   tagsets: { name: string; tags: string[] }[];
   links: string[];
   verified?: boolean;
@@ -35,98 +25,24 @@ export interface OrganizationProfileViewProps {
   };
 }
 
-const useStyles = makeStyles(theme =>
-  createStyles({
-    card: {
-      background: theme.palette.neutralLight.main,
-    },
-    media: {
-      // TODO Use theme palette colors (primary, pacific blue, positive)
-      // background: `linear-gradient(90deg, ${theme.palette.primary.main} 1%, rgba(0,188,212,1) 43%, ${theme.palette.positive.main} 100%)`,
-      background: 'linear-gradient(90deg, rgba(0,129,143,1) 1%, rgba(0,188,212,1) 43%, rgba(0,168,143,1) 100%)',
-      height: theme.spacing(14),
-    },
-    content: {
-      paddingTop: theme.spacing(7),
-      paddingLeft: theme.spacing(7),
-      paddingRight: theme.spacing(7),
-    },
-    avatar: {
-      width: theme.spacing(16),
-      height: theme.spacing(16),
-    },
-    header: {
-      alignItems: 'flex-end',
-      paddingTop: theme.spacing(3),
-      paddingLeft: theme.spacing(7),
-      paddingRight: theme.spacing(3),
-    },
-    headerTitle: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-    },
-    headerAction: {
-      alignSelf: 'flex-end',
-    },
-    icon: {
-      marginRight: theme.spacing(1),
-    },
-  })
-);
-export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ entity, permissions }) => {
-  const styles = useStyles();
-  const { t } = useTranslation();
-  return (
-    <Card className={styles.card} square variant="outlined">
-      <CardMedia className={styles.media} image={entity.banner}>
-        <CardHeader
-          classes={{
-            action: styles.headerAction,
-            title: styles.headerTitle,
-          }}
-          avatar={
-            <Avatar variant="square" src={entity.avatar} className={styles.avatar}>
-              {entity.displayName[0]}
-            </Avatar>
-          }
-          className={styles.header}
-          action={
-            permissions.canEdit && (
-              <SettingsButton color={'primary'} to={entity.settingsUrl} tooltip={entity.settingsTooltip} />
-            )
-          }
-          title={
-            <Box padding={1} sx={{ position: 'relative', top: '48px' }}>
-              {entity.verified !== undefined && (
-                <VerifiedStatus verified={entity.verified} helpText={t('pages.organization.verified-status.help')} />
-              )}
-            </Box>
-          }
-          subheader={
-            <Box>
-              <LocationView location={formatLocation(entity.location)} />
-            </Box>
-          }
-        />
-      </CardMedia>
+const VerifiedBadge = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  right: theme.spacing(3),
+  top: theme.spacing(3),
+}));
 
-      <CardContent className={styles.content}>
+export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ entity }) => {
+  const { t } = useTranslation();
+
+  return (
+    <Card square variant="outlined">
+      <CardContent sx={{ position: 'relative', padding: theme => theme.spacing(4) }}>
+        <VerifiedBadge>
+          {entity.verified !== undefined && (
+            <VerifiedStatus verified={entity.verified} helpText={t('pages.organization.verified-status.help')} />
+          )}
+        </VerifiedBadge>
         <Grid container spacing={2} direction="column">
-          <Grid item container>
-            <Grid item xs={12}>
-              <Typography variant="h1" weight="bold">
-                {entity.displayName}
-              </Typography>
-            </Grid>
-          </Grid>
-          <Grid item container spacing={2} alignItems="flex-start">
-            <Grid item xs={6}>
-              <SocialLinks title="Contact" items={entity.socialLinks} />
-            </Grid>
-            <Grid item xs={6}>
-              <ProfileDetail title={t('components.profile.fields.telephone.title')} value={entity.telephone} />
-            </Grid>
-          </Grid>
           <Grid item>
             <ProfileDetail title={t('components.profile.fields.bio.title')} value={entity.bio} />
           </Grid>
@@ -141,16 +57,20 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
               </Grid>
             ))}
 
-          <Grid item container direction="column">
-            <Typography color="primary" weight="boldLight">
-              {t('components.profile.fields.links.title')}
-            </Typography>
-            {entity.links?.map((l, i) => (
-              <Link key={i} href={l} target="_blank">
-                {l}
-              </Link>
-            ))}
-          </Grid>
+          {entity.links && entity.links.length ? (
+            <Grid item container direction="column">
+              <Typography color="primary" weight="boldLight">
+                {t('components.profile.fields.links.title')}
+              </Typography>
+              {entity.links?.map((l, i) => (
+                <Link key={i} href={l} target="_blank">
+                  {l}
+                </Link>
+              ))}
+            </Grid>
+          ) : (
+            <></>
+          )}
         </Grid>
       </CardContent>
     </Card>

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
-import AspectDashboardPage from '../../../pages/aspect/AspectDashboardPage';
-import AspectSettingsPage from '../../../pages/aspect/AspectSettingsPage';
+import AspectDashboardPage from '../pages/AspectDashboardPage';
+import AspectSettingsPage from '../pages/AspectSettingsPage';
 import { AspectDialogSection } from './AspectDialogSection';
 import { AspectLayoutHolder } from './AspectLayoutWithOutlet';
 

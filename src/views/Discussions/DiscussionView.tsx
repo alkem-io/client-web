@@ -2,12 +2,12 @@ import { FetchResult } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Filter from '../../components/Admin/Common/Filter';
-import DiscussionComment from '../../components/composite/common/Discussion/DiscussionComment';
-import PostComment from '../../components/composite/common/Discussion/PostComment';
+import Filter from '../../domain/admin/components/Common/Filter';
+import MessageView from '../../domain/shared/components/Comments/MessageView';
+import PostMessageToCommentsForm from '../../domain/shared/components/Comments/PostMessageToCommentsForm';
 import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
-import { Comment } from '../../models/discussion/comment';
-import { Discussion } from '../../models/discussion/discussion';
+import { Message } from '../../domain/shared/components/Comments/models/message';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 
 export interface DiscussionViewProps {
@@ -40,15 +40,15 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
     author,
     createdAt,
     body: description,
-  } as Comment;
+  } as Message;
 
   return (
     <>
       <Grid container spacing={2} alignItems="stretch" wrap="nowrap">
         <Grid item xs={12} container direction="column">
           <Grid item>
-            <DiscussionComment
-              comment={initialComment}
+            <MessageView
+              message={initialComment}
               canDelete={canDeleteDiscussion}
               onDelete={onDeleteDiscussion}
               isRootComment
@@ -74,8 +74,8 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
                         <Grid container spacing={3}>
                           {filteredComments.map((c, i) => (
                             <Grid item xs={12} key={i}>
-                              <DiscussionComment
-                                comment={c}
+                              <MessageView
+                                message={c}
                                 canDelete={canDeleteComment(c.author?.id)}
                                 onDelete={onDeleteComment}
                               />
@@ -94,7 +94,7 @@ export const DiscussionView: FC<DiscussionViewProps> = ({
             <Grid item xs={12}>
               <Box paddingY={2}>
                 {canPost && (
-                  <PostComment
+                  <PostMessageToCommentsForm
                     onPostComment={comment => onPostComment && onPostComment(id, comment)}
                     title={t('components.post-comment.fields.description.title')}
                     placeholder={t('components.post-comment.fields.description.placeholder')}

@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import React, { FC } from 'react';
-import { useAuthenticationContext } from '../../../../hooks';
+import { useAuthenticationContext } from '../../../../core/auth/authentication/hooks/useAuthenticationContext';
 import { AUTH_LOGIN_PATH } from '../../../../models/constants';
 import Section, { SectionSpacer } from '../Section/Section';
 

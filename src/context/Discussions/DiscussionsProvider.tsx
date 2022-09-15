@@ -10,7 +10,7 @@ import {
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
 } from '../../hooks/generated/graphql';
-import { Discussion } from '../../models/discussion/discussion';
+import { Discussion } from '../../domain/discussion/models/discussion';
 import {
   AuthorizationPrivilege,
   Communication,
@@ -20,7 +20,7 @@ import {
   DiscussionCategory,
 } from '../../models/graphql-schema';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
-import { buildDiscussionsUrl, buildDiscussionUrl } from '../../utils/urlBuilders';
+import { buildDiscussionsUrl, buildDiscussionUrl } from '../../common/utils/urlBuilders';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 
 interface Permissions {

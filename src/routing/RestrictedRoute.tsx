@@ -1,11 +1,16 @@
 import React, { FC } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import Loading from '../components/core/Loading/Loading';
-import { useAuthenticationContext, useUserContext } from '../hooks';
+import Loading from '../common/components/core/Loading/Loading';
+import { useAuthenticationContext } from '../core/auth/authentication/hooks/useAuthenticationContext';
+import { useUserContext } from '../hooks';
 import { AuthorizationCredential } from '../models/graphql-schema';
 
 // those roles have unconditional access to every restricted resource
-const adminCredentials = [AuthorizationCredential.GlobalAdmin, AuthorizationCredential.GlobalAdminCommunity];
+const adminCredentials = [
+  AuthorizationCredential.GlobalAdmin,
+  AuthorizationCredential.GlobalAdminCommunity,
+  AuthorizationCredential.GlobalAdminHubs,
+];
 
 export interface CredentialForResource {
   credential: AuthorizationCredential;

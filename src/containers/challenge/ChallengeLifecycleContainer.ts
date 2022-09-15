@@ -2,7 +2,10 @@ import { FC } from 'react';
 import { useChallengeLifecycleQuery, useEventOnChallengeMutation } from '../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../hooks';
 import { Lifecycle } from '../../models/graphql-schema';
-import { ComponentOrChildrenFn, renderComponentOrChildrenFn } from '../../utils/containers/ComponentOrChildrenFn';
+import {
+  ComponentOrChildrenFn,
+  renderComponentOrChildrenFn,
+} from '../../common/utils/containers/ComponentOrChildrenFn';
 
 interface ChallengeLifecycleContainerProvided {
   lifecycle: Lifecycle | undefined;

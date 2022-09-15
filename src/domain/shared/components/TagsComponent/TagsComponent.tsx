@@ -12,6 +12,7 @@ import LinesFitter from '../LinesFitter/LinesFitter';
 const useStyles = makeStyles(theme =>
   createStyles({
     tagMargin: {
+      marginTop: theme.spacing(0.5),
       marginRight: theme.spacing(0.2),
       marginBottom: theme.spacing(0.2),
     },

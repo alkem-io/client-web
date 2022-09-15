@@ -1,0 +1,10 @@
+fragment CommentsWithMessages on Comments {
+    id
+    authorization {
+      id
+      myPrivileges
+    }
+    messages {
+      ...MessageDetails
+    }
+}

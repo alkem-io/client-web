@@ -75,16 +75,9 @@ fragment AspectDashboard on Aspect {
       myPrivileges
     }
     messages {
-      ...AspectMessage
+      ...MessageDetails
     }
   }
-}
-
-fragment AspectMessage on Message {
-  id
-  message
-  sender
-  timestamp
 }
 
 query AspectCreator($userId: UUID_NAMEID_EMAIL!) {

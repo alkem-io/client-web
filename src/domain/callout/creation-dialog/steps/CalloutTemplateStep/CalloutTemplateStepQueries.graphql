@@ -1,6 +1,8 @@
 query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
+    id
     templates {
+      id
       aspectTemplates {
         id
         info {
@@ -13,7 +15,9 @@ query AspectTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
 
 query CanvasTemplatesOnCalloutCreation($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
+    id
     templates {
+      id
       canvasTemplates {
         id
         info {
@@ -31,7 +35,9 @@ fragment TemplateTitle on TemplateInfo {
 
 query AspectTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
   hub(ID: $hubId) {
+    id
     templates {
+      id
       aspectTemplate(ID: $id) {
         id
         type
@@ -51,7 +57,9 @@ query AspectTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
 
 query CanvasTemplateValue($hubId: UUID_NAMEID!, $id: UUID!) {
   hub(ID: $hubId) {
+    id
     templates {
+      id
       canvasTemplate(ID: $id) {
         id
         value

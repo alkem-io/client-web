@@ -16,7 +16,7 @@ import {
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
-import { Author } from '../../models/discussion/author';
+import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 
 export interface CommunityUpdatesContainerProps {
