@@ -17,8 +17,9 @@ const Root = styled(Box)(({ theme }) => ({
 
 const Title = styled(Box)(() => ({
   '& h1': {
-    fontSize: '1.8rem',
+    fontSize: '1.7rem',
     fontWeight: 'bold',
+    lineHeight: '2rem',
   },
 }));
 
