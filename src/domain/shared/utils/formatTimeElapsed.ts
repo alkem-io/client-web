@@ -36,5 +36,10 @@ export const formatTimeElapsed = (date: Date | string): string => {
   }
 
   const timeDiff = Math.round(diffInTime / ONE_SECOND);
+
+  if (timeDiff === 0) {
+    return 'just now';
+  }
+
   return `${timeDiff} second${timeDiff === 1 ? '' : 's'} ago`;
 };

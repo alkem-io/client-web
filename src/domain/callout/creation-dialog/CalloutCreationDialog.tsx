@@ -45,7 +45,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     [callout]
   );
   const handleInfoStepStatusChange = useCallback((isValid: boolean) => setIsInfoStepValid(isValid), []);
-  /*const handleTemplateStepValueChange = useCallback(
+  /* use when template usage is defined
+  const handleTemplateStepValueChange = useCallback(
     (templateId: string) => {
       setCallout({ ...callout, templateId });
       setIsTemplateStepValid(true);
