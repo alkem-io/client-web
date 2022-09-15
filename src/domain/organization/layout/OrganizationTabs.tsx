@@ -29,6 +29,7 @@ const OrganizationTabs = (props: EntityTabsProps) => {
             label={t('common.profile')}
             value={routes.profile}
             to={buildOrganizationUrl(organizationNameId)}
+            className="singleCenteredTab"
           />
         </HeaderNavigationTabs>
       )}

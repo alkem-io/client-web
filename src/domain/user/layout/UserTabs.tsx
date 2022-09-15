@@ -31,7 +31,12 @@ const UserTabs = (props: EntityTabsProps) => {
       showSettings={isCurrentUser}
       settingsUrl={buildUserProfileSettingsUrl(userNameId)}
     >
-      <HeaderNavigationTab label={t('common.profile')} value={routes.profile} to={buildUserProfileUrl(userNameId)} />
+      <HeaderNavigationTab
+        label={t('common.profile')}
+        value={routes.profile}
+        to={buildUserProfileUrl(userNameId)}
+        className={'singleCenteredTab'}
+      />
     </HeaderNavigationTabs>
   );
 };

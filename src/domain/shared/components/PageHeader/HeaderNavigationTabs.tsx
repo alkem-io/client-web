@@ -19,6 +19,11 @@ const Root = styled(Box)(({ theme }) => ({
       paddingRight: 1,
     },
   },
+  '& .MuiTab-root.singleCenteredTab': {
+    maxWidth: '40%',
+    marginLeft: '30%',
+    marginRight: '30%',
+  },
 }));
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
