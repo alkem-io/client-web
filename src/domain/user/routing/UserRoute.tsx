@@ -3,6 +3,7 @@ import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import UserProfilePage from '../pages/UserProfilePage';
 import { Error404 } from '../../../pages';
 import UserSettingsRoute from './UserSettingsRoute';
+import { EntityPageLayoutHolder } from '../../shared/layout/PageLayout';
 
 export const UserRoute: FC = () => {
   const { pathname: url } = useResolvedPath('.');
@@ -10,11 +11,11 @@ export const UserRoute: FC = () => {
 
   return (
     <Routes>
-      <Route path={'/'}>
+      <Route path={'/'} element={<EntityPageLayoutHolder />}>
         <Route index element={<UserProfilePage paths={currentPaths} />}></Route>
-        <Route path={'settings/*'} element={<UserSettingsRoute paths={currentPaths} />}></Route>
-        <Route path="*" element={<Error404 />}></Route>
       </Route>
+      <Route path={'settings/*'} element={<UserSettingsRoute paths={currentPaths} />}></Route>
+      <Route path="*" element={<Error404 />}></Route>
     </Routes>
   );
 };

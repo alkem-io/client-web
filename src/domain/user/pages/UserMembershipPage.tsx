@@ -5,6 +5,8 @@ import { useResolvedPath } from 'react-router-dom';
 import { useUrlParams, useUpdateNavigation } from '../../../hooks';
 import { PageProps } from '../../../pages';
 import { ContributionsView } from '../../../views/ProfileView';
+import { SettingsSection } from '../../admin/layout/EntitySettings/constants';
+import UserSettingsLayout from '../../admin/user/layout/UserSettingsLayout';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 
 export interface UserMembershipPageProps extends PageProps {}
@@ -19,24 +21,26 @@ const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
   useUpdateNavigation({ currentPaths });
 
   return (
-    <Grid container rowSpacing={4}>
-      <Grid item xs={12}>
-        <ContributionsView
-          title={t('common.my-memberships')}
-          helpText={t('pages.user-profile.communities.help')}
-          contributions={userMetadata?.contributions || []}
-          loading={loading}
-        />
+    <UserSettingsLayout currentTab={SettingsSection.Membership}>
+      <Grid container rowSpacing={4}>
+        <Grid item xs={12}>
+          <ContributionsView
+            title={t('common.my-memberships')}
+            helpText={t('pages.user-profile.communities.help')}
+            contributions={userMetadata?.contributions || []}
+            loading={loading}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <ContributionsView
+            title={t('pages.user-profile.pending-applications.title')}
+            helpText={t('pages.user-profile.pending-applications.help')}
+            contributions={userMetadata?.pendingApplications || []}
+            loading={loading}
+          />
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <ContributionsView
-          title={t('pages.user-profile.pending-applications.title')}
-          helpText={t('pages.user-profile.pending-applications.help')}
-          contributions={userMetadata?.pendingApplications || []}
-          loading={loading}
-        />
-      </Grid>
-    </Grid>
+    </UserSettingsLayout>
   );
 };
 export default UserMembershipPage;

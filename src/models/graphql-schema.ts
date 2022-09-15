@@ -13874,7 +13874,7 @@ export type OrganizationInfoFragment = {
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
     references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-    location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
   };
   members?:
     | Array<{
@@ -14130,7 +14130,7 @@ export type OrganizationInfoQuery = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
       tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
       references?: Array<{ __typename?: 'Reference'; id: string; name: string; uri: string }> | undefined;
-      location?: { __typename?: 'Location'; country: string; city: string } | undefined;
+      location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
     };
     members?:
       | Array<{

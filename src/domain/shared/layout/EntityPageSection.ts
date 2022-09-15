@@ -6,4 +6,5 @@ export enum EntityPageSection {
   Challenges = 'challenges',
   Opportunities = 'opportunities',
   Agreements = 'agreements',
+  Profile = 'profile',
 }
