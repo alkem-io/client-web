@@ -152,13 +152,15 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
         </DashboardColumn>
         <DashboardColumn>
           {showActivity && <ActivityLogSection activities={activities} />}
-          <DashboardSection
-            headerText={t('components.referenceSegment.title')}
-            primaryAction={<ContextSectionIcon component={SchoolIcon} />}
-            collapsible
-          >
-            <References references={references} />
-          </DashboardSection>
+          {!!references && references.length > 0 && (
+            <DashboardSection
+              headerText={t('components.referenceSegment.title')}
+              primaryAction={<ContextSectionIcon component={SchoolIcon} />}
+              collapsible
+            >
+              <References references={references} />
+            </DashboardSection>
+          )}
           {challengesReadAccess && (
             <DashboardGenericSection
               headerText={withOptionalCount(t('pages.hub.sections.dashboard.challenges.title'), challengesCount)}
