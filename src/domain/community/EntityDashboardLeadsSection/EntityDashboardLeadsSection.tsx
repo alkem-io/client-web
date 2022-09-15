@@ -57,8 +57,12 @@ const EntityDashboardLeadsSection = ({
         organizationCardComponent={OrganizationCardTransparent}
         entityName={t('community.leading-organizations')}
       />
-      <SectionSpacer double />
-      <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
+      {!!leadUsersMapped && leadUsersMapped.length > 0 && (
+        <>
+          <SectionSpacer double />
+          <DashboardLeadUsers headerText={usersHeader} users={leadUsersMapped} />
+        </>
+      )}
     </DashboardGenericSection>
   );
 };
