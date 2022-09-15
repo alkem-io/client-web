@@ -361,6 +361,7 @@ export type AuthorizationPolicyRuleVerifiedCredential = {
 };
 
 export enum AuthorizationPrivilege {
+  Admin = 'ADMIN',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityApply = 'COMMUNITY_APPLY',
   CommunityContextReview = 'COMMUNITY_CONTEXT_REVIEW',
@@ -15103,6 +15104,13 @@ export type UsersWithCredentialsSimpleListQuery = {
     lastName: string;
     email: string;
   }>;
+};
+
+export type PlatformLevelAuthorizationQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformLevelAuthorizationQuery = {
+  __typename?: 'Query';
+  authorization: { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined };
 };
 
 export type UserListQueryVariables = Exact<{

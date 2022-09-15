@@ -42,7 +42,7 @@ const UserSegment = <El extends ElementType>({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const popoverAnchor = useRef<HTMLButtonElement>(null);
 
-  const isAdmin = permissions.canAdminPlatform;
+  const isAdmin = permissions.isPlatformAdmin;
 
   const role = useMemo(() => {
     if (!emailVerified) return 'Not verified';

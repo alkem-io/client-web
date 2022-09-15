@@ -18249,6 +18249,65 @@ export function refetchUsersWithCredentialsSimpleListQuery(
 ) {
   return { query: UsersWithCredentialsSimpleListDocument, variables: variables };
 }
+export const PlatformLevelAuthorizationDocument = gql`
+  query PlatformLevelAuthorization {
+    authorization {
+      ...MyPrivileges
+    }
+  }
+  ${MyPrivilegesFragmentDoc}
+`;
+
+/**
+ * __usePlatformLevelAuthorizationQuery__
+ *
+ * To run a query within a React component, call `usePlatformLevelAuthorizationQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformLevelAuthorizationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformLevelAuthorizationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformLevelAuthorizationQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformLevelAuthorizationQuery,
+    SchemaTypes.PlatformLevelAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.PlatformLevelAuthorizationQuery,
+    SchemaTypes.PlatformLevelAuthorizationQueryVariables
+  >(PlatformLevelAuthorizationDocument, options);
+}
+export function usePlatformLevelAuthorizationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformLevelAuthorizationQuery,
+    SchemaTypes.PlatformLevelAuthorizationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformLevelAuthorizationQuery,
+    SchemaTypes.PlatformLevelAuthorizationQueryVariables
+  >(PlatformLevelAuthorizationDocument, options);
+}
+export type PlatformLevelAuthorizationQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationQuery>;
+export type PlatformLevelAuthorizationLazyQueryHookResult = ReturnType<typeof usePlatformLevelAuthorizationLazyQuery>;
+export type PlatformLevelAuthorizationQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformLevelAuthorizationQuery,
+  SchemaTypes.PlatformLevelAuthorizationQueryVariables
+>;
+export function refetchPlatformLevelAuthorizationQuery(
+  variables?: SchemaTypes.PlatformLevelAuthorizationQueryVariables
+) {
+  return { query: PlatformLevelAuthorizationDocument, variables: variables };
+}
 export const UserListDocument = gql`
   query userList($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
