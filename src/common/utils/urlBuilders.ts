@@ -28,6 +28,8 @@ export const buildOpportunityCommunityUrl = (hubNameId: string, challengeNameId:
   buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId).concat(COMMUNITY_ROUTE);
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
+export const buildUserProfileSettingsUrl = (userNameId: string) =>
+  `${buildUserProfileUrl(userNameId)}/settings/profile`;
 
 export const buildAuthenticationRequiredURL = (returnUrl?: string) =>
   returnUrl ? `${AUTH_REQUIRED_PATH}?returnUrl=${encodeURI(returnUrl)}` : AUTH_REQUIRED_PATH;

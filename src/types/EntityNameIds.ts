@@ -13,4 +13,7 @@ export type EntityNameIds =
     }
   | {
       organizationNameId: string;
+    }
+  | {
+      userNameId: string;
     };

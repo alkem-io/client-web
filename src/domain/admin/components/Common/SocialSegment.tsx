@@ -3,9 +3,9 @@ import { Grid, InputAdornment, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
-import GitHub from '../../../../common/components/core/icons/GitHub';
-import LinkedIn from '../../../../common/components/core/icons/LinkedIn';
-import Twitter from '../../../../common/components/core/icons/Twitter';
+import GitHub from '../../../shared/components/SocialLinks/icons/GitHub';
+import LinkedIn from '../../../shared/components/SocialLinks/icons/LinkedIn';
+import Twitter from '../../../shared/components/SocialLinks/icons/Twitter';
 
 export interface SocialSegmentProps {
   readOnly?: boolean;

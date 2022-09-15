@@ -9,7 +9,7 @@ import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedO
 
 export interface UserProfileViewPageProps extends UserProfileViewProps {}
 
-export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, options }) => {
+export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) => {
   const { t } = useTranslation();
   const { contributions, pendingApplications, organizationNameIDs, user } = entities.userMetadata;
   const { id } = user;
@@ -20,7 +20,7 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities, op
     <Grid container spacing={2}>
       <Grid item container xs={12} xl={6} direction="column" spacing={2}>
         <Grid item>
-          <UserProfileView entities={entities} options={options} />
+          <UserProfileView entities={entities} />
         </Grid>
         <Grid item>
           <AssociatedOrganizationsLazilyFetched
