@@ -7,7 +7,6 @@ interface ProfileDetailProps {
 }
 
 const ProfileDetail: FC<ProfileDetailProps> = ({ title, value, ...rest }) => {
-  if (!value) return null;
   return (
     <>
       <Typography color="primary" weight="boldLight" {...rest}>

@@ -39,9 +39,6 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
             <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
           </Grid>
           <Grid item>
-            <ProfileDetail title={t('components.profile.fields.work.title')} value={''} aria-label="work" />
-          </Grid>
-          <Grid item>
             <ProfileDetail title={t('components.profile.fields.telephone.title')} value={phone} aria-label="phone" />
           </Grid>
 
