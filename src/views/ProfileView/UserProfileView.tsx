@@ -60,14 +60,16 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
             <Typography color="primary" weight="boldLight" aria-label="links">
               {t('components.profile.fields.links.title')}
             </Typography>
-            <References
-              references={nonSocialReferences}
-              noItemsView={
-                <MUITypography color="neutral.main" variant="subtitle2">
-                  {t('common.no-references')}
-                </MUITypography>
-              }
-            />
+            {!!nonSocialReferences && nonSocialReferences.length > 0 && (
+              <References
+                references={nonSocialReferences}
+                noItemsView={
+                  <MUITypography color="neutral.main" variant="subtitle2">
+                    {t('common.no-references')}
+                  </MUITypography>
+                }
+              />
+            )}
           </Grid>
         </Grid>
       </CardContent>
