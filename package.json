@@ -93,9 +93,7 @@
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:prod": "tsc --noEmit && cross-env NODE_ENV=production eslint src/**/*.ts{,x}",
     "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "gulp": "gulp",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "gulp": "gulp"
   },
   "resolutions": {
     "**/@emotion/styled": "^11.0.0"
@@ -133,7 +131,6 @@
     "@types/uuid": "^8.3.1",
     "coveralls": "^3.1.1",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-storybook": "^0.5.5",
     "husky": "^4.3.7",
     "lint-staged": "^13.0.3",
     "prettier": "^2.5.1",
