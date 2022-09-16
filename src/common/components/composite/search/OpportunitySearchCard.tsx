@@ -41,5 +41,7 @@ const OpportunitySearchCardInner: FC<EntitySearchCardProps<OpportunitySearchResu
     />
   );
 };
-
+/**
+ * @deprecated Use a new component instead
+ */
 export const OpportunitySearchCard = memo(OpportunitySearchCardInner);

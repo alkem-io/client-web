@@ -78,5 +78,7 @@ const SearchCardInner: FC<Props> = ({ terms, activity, title, backgroundImg, tag
     </div>
   );
 };
-
+/**
+ * @deprecated Use a new component instead
+ */
 export const SearchCard = memo(SearchCardInner);

@@ -102,5 +102,7 @@ const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
     </div>
   );
 };
-
+/**
+ * @deprecated Use a new component instead
+ */
 export const UserCard = memo(UserCardInner);

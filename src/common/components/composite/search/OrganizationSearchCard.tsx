@@ -113,5 +113,7 @@ const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganizationSearchRe
     </div>
   );
 };
-
+/**
+ * @deprecated Use a new component instead
+ */
 export const OrganizationSearchCard = memo(OrganizationSearchCardInner);

@@ -41,5 +41,7 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
     />
   );
 };
-
+/**
+ * @deprecated Use a new component instead
+ */
 export const ChallengeSearchCard = memo(ChallengeSearchCardInner);
