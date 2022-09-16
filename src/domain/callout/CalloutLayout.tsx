@@ -10,7 +10,7 @@ import {
   CalloutType,
   CalloutVisibility,
 } from '../../models/graphql-schema';
-import Markdown from '../../common/components/core/Markdown';
+import WrapperMarkdown from '../../common/components/core/WrapperMarkdown';
 import Heading from '../shared/components/Heading';
 import { CalloutSummary } from './creation-dialog/steps/CalloutSummaryStep/CalloutSummaryStep';
 import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
@@ -109,7 +109,7 @@ const CalloutLayout = ({
           <Heading sx={{ display: 'flex', gap: 2.5 }}>
             <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
           </Heading>
-          <Markdown>{callout.description || ''}</Markdown>
+          <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>
           {/* Paddings are set to prevent cutting Paper shadow by overflow: scroll.
               Margins are compensating the visual shift. Except for the left margin, we want a bit of left shifting */}
           <Box

@@ -10,7 +10,7 @@ import InterestModal from '../../../common/components/composite/entities/Hub/Int
 import ContextSectionIcon from '../../../common/components/composite/sections/ContextSectionIcon';
 import DashboardColumn from '../../../common/components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSection from '../../../common/components/composite/sections/DashboardSection/DashboardSection';
-import Markdown from '../../../common/components/core/Markdown';
+import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import { useHub, useChallenge } from '../../../hooks';
 import { Discussion } from '../../discussion/models/discussion';
 import {
@@ -141,7 +141,7 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               )
             }
           >
-            <Markdown children={opportunity?.context?.vision || ''} />
+            <WrapperMarkdown children={opportunity?.context?.vision || ''} />
           </DashboardGenericSection>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

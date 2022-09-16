@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { SectionSpacer } from '../../../../../../../domain/shared/components/Section/Section';
 import TagsComponent from '../../../../../../../domain/shared/components/TagsComponent/TagsComponent';
 import { AspectCreationType } from '../../AspectCreationDialog';
-import Markdown from '../../../../../core/Markdown';
+import WrapperMarkdown from '../../../../../core/WrapperMarkdown';
 
 export interface AspectReviewStepProps {
   aspect: AspectCreationType;
@@ -23,7 +23,7 @@ const AspectReviewStep: FC<AspectReviewStepProps> = ({ aspect }) => {
       </LabelRow>
       <LabelRow title={t('common.title')}>{displayName}</LabelRow>
       <LabelRow title={t('components.aspect-creation.create-step.description')}>
-        <Typography component={Markdown}>{description}</Typography>
+        <Typography component={WrapperMarkdown}>{description}</Typography>
       </LabelRow>
       <LabelRow title={t('common.tags')}>
         <Box marginTop={1}>

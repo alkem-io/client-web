@@ -10,7 +10,7 @@ import ContextSectionIcon from '../../../common/components/composite/sections/Co
 import DashboardColumn from '../../../common/components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSection from '../../../common/components/composite/sections/DashboardSection/DashboardSection';
 import { Loading } from '../../../common/components/core';
-import Markdown from '../../../common/components/core/Markdown';
+import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import ApplicationButtonContainer from '../../../containers/application/ApplicationButtonContainer';
 import {
   ChallengeContainerEntities,
@@ -94,7 +94,7 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navText={t('buttons.see-more')}
             navLink={EntityPageSection.About}
           >
-            <Markdown children={challenge?.context?.vision || ''} />
+            <WrapperMarkdown children={challenge?.context?.vision || ''} />
           </DashboardGenericSection>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

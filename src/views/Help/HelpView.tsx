@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Loading } from '../../common/components/core';
-import Markdown, { MarkdownProps } from '../../common/components/core/Markdown';
+import WrapperMarkdown, { MarkdownProps } from '../../common/components/core/WrapperMarkdown';
 import rehypeRaw from 'rehype-raw';
 import { Box } from '@mui/material';
 
@@ -16,7 +16,7 @@ const HelpView: FC<HelpViewProps> = ({ helpTextMd, isLoading }) => {
 
   return (
     <Box marginTop={2}>
-      <Markdown rehypePlugins={[rehypeRaw] as MarkdownProps['rehypePlugins']}>{helpTextMd!}</Markdown>
+      <WrapperMarkdown rehypePlugins={[rehypeRaw] as MarkdownProps['rehypePlugins']}>{helpTextMd!}</WrapperMarkdown>
     </Box>
   );
 };
