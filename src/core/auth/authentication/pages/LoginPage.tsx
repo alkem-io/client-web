@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import KratosUI from '../components/KratosUI';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import Delimiter from '../../../../common/components/core/Delimiter';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
@@ -75,7 +75,7 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
           <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
           <Delimiter>OR</Delimiter>
           <WrapperTypography variant={'h5'}>{t('pages.login.register')}</WrapperTypography>
-          <Button
+          <WrapperButton
             variant="primary"
             type="submit"
             small

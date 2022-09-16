@@ -8,7 +8,7 @@ import {
   useUpdateChallengeMutation,
 } from '../../../../hooks/generated/graphql';
 import { updateContextInput } from '../../../../common/utils/buildContext';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import ContextForm, { ContextFormValues } from '../../../../common/components/composite/forms/ContextForm';
 import Loading from '../../../../common/components/core/Loading/Loading';
 import EditLifecycle from '../../../admin/components/EditLifecycle';
@@ -52,7 +52,7 @@ const ChallengeContextView: FC = () => {
     <Grid container spacing={2}>
       <ContextForm context={challenge?.context} onSubmit={onSubmit} wireSubmit={submit => (submitWired = submit)} />
       <Grid container item justifyContent={'flex-end'}>
-        <Button
+        <WrapperButton
           disabled={isUpdating}
           variant="primary"
           onClick={() => submitWired()}

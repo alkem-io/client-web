@@ -15,7 +15,7 @@ import {
   useMeQuery,
 } from '../../../../../hooks/generated/graphql';
 import { Loading } from '../../../core';
-import Button from '../../../core/Button';
+import WrapperButton from '../../../core/WrapperButton';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
 import TextInput, { TextArea } from '../../../core/TextInput';
 import WrapperTypography from '../../../core/WrapperTypography';
@@ -139,13 +139,13 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId, collaborationId }) 
       </DialogContent>
       <DialogActions>
         {data?.createRelationOnCollaboration.id && (
-          <Button onClick={onHide} variant={'primary'} text={t('buttons.close')} />
+          <WrapperButton onClick={onHide} variant={'primary'} text={t('buttons.close')} />
         )}
         {loading ? (
           <Loading text={'Sending the request...'} />
         ) : (
           !data?.createRelationOnCollaboration.id && (
-            <Button onClick={onSubmit} variant={'primary'} disabled={!isFormValid} text={t('buttons.submit')} />
+            <WrapperButton onClick={onSubmit} variant={'primary'} disabled={!isFormValid} text={t('buttons.submit')} />
           )
         )}
       </DialogActions>

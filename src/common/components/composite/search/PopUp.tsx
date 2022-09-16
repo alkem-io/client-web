@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Avatar from '../../core/Avatar';
-import Button from '../../core/Button';
+import WrapperButton from '../../core/WrapperButton';
 import WrapperTypography from '../../core/WrapperTypography';
 import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 import { Grid } from '@mui/material';
@@ -107,7 +107,7 @@ const PopUp: FC<Props> = ({
       </DialogContent>
       {url && (
         <DialogActions>
-          <Button variant="primary" text={t('buttons.explore')} as={Link} to={url} />
+          <WrapperButton variant="primary" text={t('buttons.explore')} as={Link} to={url} />
         </DialogActions>
       )}
     </Dialog>

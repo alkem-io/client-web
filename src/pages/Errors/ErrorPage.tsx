@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { privateGraphQLEndpoint } from '../../common/constants/endpoints';
-import Button from '../../common/components/core/Button';
+import WrapperButton from '../../common/components/core/WrapperButton';
 import Section from '../../common/components/core/Section';
 import WrapperTypography from '../../common/components/core/WrapperTypography';
 
@@ -30,7 +30,7 @@ export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
           {t('pages.error.line3')}
         </WrapperTypography>
         <div>
-          <Button variant="primary" text={t('pages.error.buttons.reload')} onClick={() => window.location.reload()} />
+          <WrapperButton variant="primary" text={t('pages.error.buttons.reload')} onClick={() => window.location.reload()} />
         </div>
       </Section>
     </div>

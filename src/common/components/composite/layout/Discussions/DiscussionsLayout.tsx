@@ -4,7 +4,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import clsx from 'clsx';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import Button from '../../../core/Button';
+import WrapperButton from '../../../core/WrapperButton';
 import { RouterLink } from '../../../core/RouterLink';
 
 interface DiscussionsLayoutProps {
@@ -81,7 +81,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
             <Box flexGrow={1}></Box>
             <Box justifyContent={'flex-end'} flexShrink={0}>
               {newUrl && (
-                <Button
+                <WrapperButton
                   as={RouterLink}
                   text={t('components.discussions-layout.buttons.new-discussion')}
                   variant="primary"

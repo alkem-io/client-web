@@ -12,7 +12,7 @@ import { makeStyles } from '@mui/styles';
 import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import { Loading } from '../../core';
 import Avatar from '../../core/Avatar';
-import Button from '../../core/Button';
+import WrapperButton from '../../core/WrapperButton';
 import Delimiter from '../../core/Delimiter';
 import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 import { RouterLink } from '../../core/RouterLink';
@@ -246,7 +246,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
       </DialogContent>
       <DialogActions>
         <Link component={RouterLink} to={buildUserProfileUrl(user?.nameID || '')} underline="none">
-          <Button variant={'primary'} text={t('buttons.view-profile')} arial-label="user-profile-button" />
+          <WrapperButton variant={'primary'} text={t('buttons.view-profile')} arial-label="user-profile-button" />
         </Link>
       </DialogActions>
     </Dialog>

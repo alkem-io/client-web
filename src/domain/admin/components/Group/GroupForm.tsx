@@ -9,7 +9,7 @@ import { Reference, Tagset, TagsetTemplate, User, UserGroup } from '../../../../
 import { GroupFormGenerated } from '../../../../models/Group';
 import { Tagset as TagsetModel } from '../../../../models/Profile';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import Section, { Header } from '../../../../common/components/core/Section';
 import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
@@ -142,7 +142,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                   <Grid container item justifyContent={'flex-end'} spacing={2}>
                     {onCancel && (
                       <Grid item>
-                        <Button
+                        <WrapperButton
                           variant={isEditMode ? 'default' : 'primary'}
                           onClick={() => onCancel()}
                           disabled={isSubmitting}
@@ -152,7 +152,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                     )}
                     {onDelete && (
                       <Grid item>
-                        <Button
+                        <WrapperButton
                           variant={'negative'}
                           onClick={() => onDelete(groupId)}
                           disabled={isSubmitting}
@@ -161,7 +161,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                       </Grid>
                     )}
                     <Grid item>
-                      <Button variant={'primary'} type={'submit'} disabled={isSubmitting} text={t('buttons.save')} />
+                      <WrapperButton variant={'primary'} type={'submit'} disabled={isSubmitting} text={t('buttons.save')} />
                     </Grid>
                   </Grid>
                 )}

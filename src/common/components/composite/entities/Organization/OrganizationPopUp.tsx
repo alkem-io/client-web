@@ -15,7 +15,7 @@ import WrapperTypography from '../../../core/WrapperTypography';
 import TagContainer from '../../../core/TagContainer';
 import Tag from '../../../core/Tag';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
-import Button from '../../../core/Button';
+import WrapperButton from '../../../core/WrapperButton';
 import { Link } from 'react-router-dom';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
 import { RoleType } from '../../../../../domain/user/constants/RoleType';
@@ -201,7 +201,7 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
       </DialogContent>
       {nameID && (
         <DialogActions>
-          <Button variant="primary" text={t('buttons.explore')} as={Link} to={buildOrganizationUrl(nameID)} />
+          <WrapperButton variant="primary" text={t('buttons.explore')} as={Link} to={buildOrganizationUrl(nameID)} />
         </DialogActions>
       )}
     </Dialog>

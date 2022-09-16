@@ -6,7 +6,7 @@ import PeopleOutline from '@mui/icons-material/PeopleOutline';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useResolvedPath } from 'react-router-dom';
-import Button from '../../common/components/core/Button';
+import WrapperButton from '../../common/components/core/WrapperButton';
 import WrapperMarkdown from '../../common/components/core/WrapperMarkdown';
 import Section, { Body, Header as SectionHeader, SubHeader } from '../../common/components/core/Section';
 import { useCommunityContext } from '../../domain/community/CommunityContext';
@@ -107,7 +107,7 @@ export const CommunitySection: FC<CommunitySectionProps> = ({
           </TabList>
           <TabPanel classes={{ root: styles.tabPanel }} value={'members'}>
             <MembersView shuffle={shuffle} users={users} entityId={parentEntityId} />
-            <Button text={t('buttons.explore-and-connect')} as={RouterLink} to={`${url}/community`} />
+            <WrapperButton text={t('buttons.explore-and-connect')} as={RouterLink} to={`${url}/community`} />
           </TabPanel>
           {isFeatureEnabled(FEATURE_COMMUNICATIONS) && (
             <>

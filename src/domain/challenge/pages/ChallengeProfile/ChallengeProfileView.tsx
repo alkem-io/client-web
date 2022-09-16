@@ -11,7 +11,7 @@ import {
 } from '../../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../../common/utils/buildContext';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import FormMode from '../../../admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../common/components/composite/forms/ProfileForm';
@@ -106,7 +106,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <Button
+        <WrapperButton
           disabled={isLoading}
           variant="primary"
           onClick={() => submitWired()}

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import Button from './Button';
+import WrapperButton from './WrapperButton';
 import { DialogActions, DialogContent, DialogTitle } from './dialog';
 
 interface RelationRemoveModalProps {
@@ -23,7 +23,7 @@ const RemoveModal: FC<RelationRemoveModalProps> = ({ show, text, onCancel, title
       </DialogTitle>
       <DialogContent dividers>{text}</DialogContent>
       <DialogActions>
-        <Button small variant={'negative'} onClick={onConfirm} text={t('buttons.remove')} />
+        <WrapperButton small variant={'negative'} onClick={onConfirm} text={t('buttons.remove')} />
       </DialogActions>
     </Dialog>
   );

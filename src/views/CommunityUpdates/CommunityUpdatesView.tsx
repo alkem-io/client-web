@@ -32,7 +32,7 @@ import * as yup from 'yup';
 import MarkdownInput from '../../domain/admin/components/Common/MarkdownInput';
 import ConfirmationDialog from '../../common/components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../common/components/core/Avatar';
-import Button from '../../common/components/core/Button';
+import WrapperButton from '../../common/components/core/WrapperButton';
 import { FontDownloadIcon } from '../../common/icons/FontDownloadIcon';
 import { FontDownloadOffIcon } from '../../common/icons/FontDownloadOffIcon';
 import { useNotification } from '../../hooks';
@@ -165,7 +165,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                     />
                   </Grid>
                   <Grid container item xs={12} justifyContent="flex-end">
-                    <Button
+                    <WrapperButton
                       text={t('components.communityUpdates.actions.add.buttonTitle')}
                       type={'submit'}
                       disabled={isSubmitting || removingMessage || !isValid || !dirty}

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
-import Button from '../../common/components/core/Button';
+import WrapperButton from '../../common/components/core/WrapperButton';
 import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { useUpdateNavigation } from '../../hooks';
 import useServerMetadata from '../../hooks/useServerMetadata';
@@ -87,7 +87,7 @@ export const AboutPage = () => {
               <WrapperTypography>{t('pages.about.description')}</WrapperTypography>
             </Box>
             <a href="https://alkem.io/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
-              <Button text={t('buttons.learn-more')} />
+              <WrapperButton text={t('buttons.learn-more')} />
             </a>
           </div>
         </Grid>

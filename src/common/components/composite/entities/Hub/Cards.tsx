@@ -4,7 +4,7 @@ import Add from '@mui/icons-material/Add';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
-import Button from '../../../core/Button';
+import WrapperButton from '../../../core/WrapperButton';
 import Card from '../../../core/Card';
 import WrapperTypography from '../../../core/WrapperTypography';
 
@@ -111,7 +111,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
 
             <Box flexGrow={1}></Box>
             <div>
-              <Button text={t('buttons.details')} onClick={onSelect} />
+              <WrapperButton text={t('buttons.details')} onClick={onSelect} />
             </div>
           </Box>
         </>

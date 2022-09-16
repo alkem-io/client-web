@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
-import Button from '../../../common/components/core/Button';
+import WrapperButton from '../../../common/components/core/WrapperButton';
 import ErrorBlock from '../../../common/components/core/ErrorBlock';
 import Image from '../../shared/components/Image';
 import { Loading } from '../../../common/components/core/Loading/Loading';
@@ -140,7 +140,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
             {t('pages.hub.application.finish')}
             {communityName}
           </WrapperTypography>
-          <Button as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
+          <WrapperButton as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
         </div>
       ) : (
         <>
@@ -170,7 +170,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
                       </Grid>
                     ))}
                     <Grid item>
-                      <Button
+                      <WrapperButton
                         variant="primary"
                         type="submit"
                         disabled={isCreationLoading}

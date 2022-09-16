@@ -2,7 +2,7 @@ import CheckCircleOutline from '@mui/icons-material/CheckCircleOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
 import { Box } from '@mui/material';
@@ -31,7 +31,7 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
         <EmailVerificationNotice />
       </Box>
       <Box marginTop={4} textAlign={'center'}>
-        <Button as={RouterLink} to={'/'} text={t('buttons.home')} />
+        <WrapperButton as={RouterLink} to={'/'} text={t('buttons.home')} />
       </Box>
     </AuthenticationLayout>
   );

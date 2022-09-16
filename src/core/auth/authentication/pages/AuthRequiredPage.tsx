@@ -2,7 +2,7 @@ import ErrorOutline from '@mui/icons-material/ErrorOutline';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useQueryParams } from '../../../../hooks';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
@@ -26,14 +26,14 @@ export const AuthRequiredPage: FC<AuthRequiredPageProps> = () => {
         <WrapperTypography variant={'h3'}>{t('pages.authentication-required.subheader')}</WrapperTypography>
       </Box>
       <Box marginTop={4} textAlign={'center'}>
-        <Button
+        <WrapperButton
           as={Link}
           to={buildLoginUrl(returnUrl)}
           variant={'primary'}
           style={{ marginLeft: 20 }}
           text={t('authentication.sign-in')}
         />
-        <Button as={Link} to={AUTH_REGISTER_PATH} style={{ marginLeft: 20 }} text={t('authentication.sign-up')} />
+        <WrapperButton as={Link} to={AUTH_REGISTER_PATH} style={{ marginLeft: 20 }} text={t('authentication.sign-up')} />
       </Box>
     </AuthenticationLayout>
   );

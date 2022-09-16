@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
-import Button from '../../common/components/core/Button';
+import WrapperButton from '../../common/components/core/WrapperButton';
 import Section from '../../common/components/core/Section';
 import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { useUpdateNavigation } from '../../hooks';
@@ -22,7 +22,7 @@ export const RestrictedPage: FC<{ attemptedTarget: string }> = ({ attemptedTarge
         support.
       </WrapperTypography>
       <div>
-        <Button inset as={Link} to="/" text={t('buttons.take-me-home')} />
+        <WrapperButton inset as={Link} to="/" text={t('buttons.take-me-home')} />
       </div>
     </Section>
   );

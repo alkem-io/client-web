@@ -4,7 +4,7 @@ import { AvatarsProvider } from '../../../../context/AvatarsProvider';
 import { User } from '../../../../models/graphql-schema';
 import Avatar from '../../../../common/components/core/Avatar';
 import AvatarContainer from '../../../../common/components/core/AvatarContainer';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useTranslation } from 'react-i18next';
 
@@ -38,7 +38,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
           );
         }}
       </AvatarsProvider>
-      {editLink && <Button small as={Link} to={'members'} text={t('buttons.edit-members')} />}
+      {editLink && <WrapperButton small as={Link} to={'members'} text={t('buttons.edit-members')} />}
     </>
   );
 };
