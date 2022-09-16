@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import { Container } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import hexToRgba from '../../../../utils/hexToRGBA';
-import Toolbar from '../../../core/Toolbar';
+import WrapperToolbar from '../../../core/WrapperToolbar';
 
 const appBarZIndex = 100;
 
@@ -62,13 +62,13 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
   return (
     <>
       <ReactVisibilitySensor partialVisibility onChange={setHeaderInSight}>
-        <Toolbar innerRef={innerRef} />
+        <WrapperToolbar innerRef={innerRef} />
       </ReactVisibilitySensor>
 
       <Container className={clsx(styles[headerInSight ? 'absolute' : 'fixed'], styles.root)}>
         <Grid container spacing={2}>
           <Grid item xs>
-            <Toolbar
+            <WrapperToolbar
               dense={!headerInSight}
               className={clsx(styles.centerContent)}
               classes={{
@@ -77,7 +77,7 @@ const Header: FC<HeaderProps> = ({ children, innerRef }) => {
               }}
             >
               {children(headerInSight)}
-            </Toolbar>
+            </WrapperToolbar>
           </Grid>
         </Grid>
       </Container>
