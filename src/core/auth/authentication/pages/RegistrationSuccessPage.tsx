@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import Button from '../../../../common/components/core/Button';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
 import { Box } from '@mui/material';
 import EmailVerificationNotice from '../../../../components/EmailVerificationNotice/EmailVerificationNotice';
@@ -16,16 +16,16 @@ export const RegistrationSuccessPage: FC<RegistrationSuccessPageProps> = () => {
   return (
     <AuthenticationLayout sx={{ flexGrow: 1, display: 'flex', flexFlow: 'column nowrap' }}>
       <Box textAlign={'center'}>
-        <Typography variant={'h2'}>
+        <WrapperTypography variant={'h2'}>
           <CheckCircleOutline
             color="primary"
             sx={{
               fontSize: '8.25rem',
             }}
           />
-        </Typography>
-        <Typography variant={'h2'}>{t('pages.registration-success.header')}</Typography>
-        <Typography variant={'h3'}>{t('pages.registration-success.subheader')}</Typography>
+        </WrapperTypography>
+        <WrapperTypography variant={'h2'}>{t('pages.registration-success.header')}</WrapperTypography>
+        <WrapperTypography variant={'h3'}>{t('pages.registration-success.subheader')}</WrapperTypography>
       </Box>
       <Box flex="1 0 0" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
         <EmailVerificationNotice />

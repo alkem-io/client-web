@@ -5,7 +5,7 @@ import Button from '../../../../common/components/core/Button';
 import { Box } from '@mui/material';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
 import EmailVerificationNotice from '../../../../components/EmailVerificationNotice/EmailVerificationNotice';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 
 export const EmailVerificationRequiredPage: FC = () => {
   const { t } = useTranslation();
@@ -13,7 +13,7 @@ export const EmailVerificationRequiredPage: FC = () => {
   return (
     <AuthenticationLayout sx={{ flexGrow: 1, display: 'flex', flexFlow: 'column nowrap' }}>
       <Box flex="1 0 0" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-        <Typography variant={'h2'}>{t('pages.verification-required.header')}</Typography>
+        <WrapperTypography variant={'h2'}>{t('pages.verification-required.header')}</WrapperTypography>
         <EmailVerificationNotice />
       </Box>
       <Box marginTop={4} textAlign={'center'}>

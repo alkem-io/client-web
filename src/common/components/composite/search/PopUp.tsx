@@ -5,7 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import { makeStyles } from '@mui/styles';
 import Avatar from '../../core/Avatar';
 import Button from '../../core/Button';
-import Typography from '../../core/Typography';
+import WrapperTypography from '../../core/WrapperTypography';
 import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 import { Grid } from '@mui/material';
 import TagContainer from '../../core/TagContainer';
@@ -66,13 +66,13 @@ const PopUp: FC<Props> = ({
               <Avatar src={avatar} size={'lg'} />
             </Grid>
             <Grid item container justifyContent={'center'} xs={10}>
-              <Typography variant={'h3'} className={styles.title}>
+              <WrapperTypography variant={'h3'} className={styles.title}>
                 {displayName}
-              </Typography>
+              </WrapperTypography>
             </Grid>
           </Grid>
           <Grid item>
-            <Typography>{tagline}</Typography>
+            <WrapperTypography>{tagline}</WrapperTypography>
           </Grid>
         </Grid>
       </DialogTitle>
@@ -91,16 +91,16 @@ const PopUp: FC<Props> = ({
           </Grid>
           {hubName && (
             <Grid item>
-              <Typography weight={'medium'} variant={'h4'}>
+              <WrapperTypography weight={'medium'} variant={'h4'}>
                 {t('common.hub')}: {hubName}
-              </Typography>
+              </WrapperTypography>
             </Grid>
           )}
           {challengeName && (
             <Grid item>
-              <Typography weight={'medium'} variant={'h4'}>
+              <WrapperTypography weight={'medium'} variant={'h4'}>
                 {t('common.challenge')}: {challengeName}
-              </Typography>
+              </WrapperTypography>
             </Grid>
           )}
         </Grid>

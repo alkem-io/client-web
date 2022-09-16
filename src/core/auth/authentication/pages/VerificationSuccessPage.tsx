@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Button from '../../../../common/components/core/Button';
 import Markdown from '../../../../common/components/core/Markdown';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
 import { Box } from '@mui/material';
 
@@ -16,11 +16,11 @@ export const VerificationSuccessPage: FC<VerificationSuccessPageProps> = () => {
   return (
     <AuthenticationLayout>
       <Box textAlign={'center'}>
-        <Typography variant={'h2'}>
+        <WrapperTypography variant={'h2'}>
           <CheckCircleOutline color="primary" fontSize="large" />
-        </Typography>
-        <Typography variant={'h2'}>{t('pages.verification-success.header')}</Typography>
-        <Typography variant={'h3'}>{t('pages.verification-success.subheader')}</Typography>
+        </WrapperTypography>
+        <WrapperTypography variant={'h2'}>{t('pages.verification-success.header')}</WrapperTypography>
+        <WrapperTypography variant={'h3'}>{t('pages.verification-success.subheader')}</WrapperTypography>
         <Markdown children={t('pages.verification-success.message')} />
         <Button as={Link} to={'/'} text={t('buttons.home')} />
       </Box>

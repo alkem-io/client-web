@@ -8,7 +8,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { OrganizationDetailsFragment } from '../../../../../models/graphql-schema';
 import { buildOrganizationUrl } from '../../../../utils/urlBuilders';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 import Image from '../../../../../domain/shared/components/Image';
 import OrganizationPopUp from './OrganizationPopUp';
 
@@ -78,7 +78,7 @@ export const OrganizationBanners: FC<Props> = ({ organizations }) => {
           title={organizations.map(x => x.displayName).join(', ')}
         >
           <Box display={'flex'}>
-            <Typography variant="h3">{t('pages.challenge.organizationBanner.load-more')}</Typography>
+            <WrapperTypography variant="h3">{t('pages.challenge.organizationBanner.load-more')}</WrapperTypography>
           </Box>
         </Tooltip>
       )}

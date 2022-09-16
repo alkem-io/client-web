@@ -5,7 +5,7 @@ import { User } from '../../../../models/graphql-schema';
 import Avatar from '../../../../common/components/core/Avatar';
 import AvatarContainer from '../../../../common/components/core/AvatarContainer';
 import Button from '../../../../common/components/core/Button';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useTranslation } from 'react-i18next';
 
 interface GroupMembersDetailsProps {
@@ -17,7 +17,7 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
   const { t } = useTranslation();
   return (
     <>
-      <Typography variant={'h4'}>Members</Typography>
+      <WrapperTypography variant={'h4'}>Members</WrapperTypography>
       <AvatarsProvider users={members}>
         {populated => {
           const avatars = populated;
@@ -30,9 +30,9 @@ export const GroupMembersDetails: FC<GroupMembersDetailsProps> = ({ members, edi
               </AvatarContainer>
               <div style={{ flexBasis: '100%' }} />
               {members.length - populated.length > 0 && (
-                <Typography variant="h3" as="h3" color="positive">
+                <WrapperTypography variant="h3" as="h3" color="positive">
                   {`... + ${members.length - populated.length} other members`}
-                </Typography>
+                </WrapperTypography>
               )}
             </>
           );

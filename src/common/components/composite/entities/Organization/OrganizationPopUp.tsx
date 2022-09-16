@@ -11,7 +11,7 @@ import { useRolesOrganizationQuery, useOrganizationDetailsQuery } from '../../..
 import { makeStyles } from '@mui/styles';
 import Avatar from '../../../core/Avatar';
 import { Loading } from '../../../core';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 import TagContainer from '../../../core/TagContainer';
 import Tag from '../../../core/Tag';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
@@ -128,14 +128,14 @@ const OrganizationPopUp: FC<OrganizationPopUpProps> = ({ onHide, id }) => {
           <div className={styles.profile}>
             <Avatar src={profile?.avatar?.uri} size={'lg'} />
             <div className={styles.userName}>
-              <Typography variant={'h3'}>{name}</Typography>
+              <WrapperTypography variant={'h3'}>{name}</WrapperTypography>
             </div>
           </div>
           {profile?.description && (
             <div className={styles.description}>
-              <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
+              <WrapperTypography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
                 {profile?.description}
-              </Typography>
+              </WrapperTypography>
             </div>
           )}
         </div>

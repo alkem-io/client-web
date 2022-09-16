@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import React, { FC } from 'react';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag from './Tag';
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 
 interface HeaderProps {
   text?: string;
@@ -49,7 +49,13 @@ export const Header: FC<HeaderProps> = ({
   return (
     <Grid container>
       <Grid item xs={editComponent ? 11 : 12}>
-        <Typography as="h2" variant="h2" color="inherit" weight="bold" className={clsx(styles.header, className)}>
+        <WrapperTypography
+          as="h2"
+          variant="h2"
+          color="inherit"
+          weight="bold"
+          className={clsx(styles.header, className)}
+        >
           {text || svg}
           {tagText && <Tag className={styles.tagOffset} text={tagText} />}
           {icon && (
@@ -65,7 +71,7 @@ export const Header: FC<HeaderProps> = ({
               </Grid>
             </Grid>
           )}
-        </Typography>
+        </WrapperTypography>
       </Grid>
       {editComponent && (
         <Grid item xs={1}>
@@ -88,9 +94,15 @@ export const SubHeader: FC<HeaderProps> = ({ text, svg, className, children, cla
   return (
     <>
       {(text || svg) && (
-        <Typography as="h3" variant="h3" color="inherit" weight="regular" className={clsx(styles.header, className)}>
+        <WrapperTypography
+          as="h3"
+          variant="h3"
+          color="inherit"
+          weight="regular"
+          className={clsx(styles.header, className)}
+        >
           {text || svg}
-        </Typography>
+        </WrapperTypography>
       )}
       {children}
     </>
@@ -107,9 +119,9 @@ export const Body: FC<HeaderProps> = ({ text, svg, children, className, classes 
   return (
     <div className={clsx(styles.bodyWrap, className)}>
       {(text || svg) && (
-        <Typography as="p" variant="body1" color="neutral" weight="medium">
+        <WrapperTypography as="p" variant="body1" color="neutral" weight="medium">
           {text || svg}
-        </Typography>
+        </WrapperTypography>
       )}
       {children}
     </div>

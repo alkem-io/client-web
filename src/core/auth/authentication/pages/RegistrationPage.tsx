@@ -8,7 +8,7 @@ import AuthenticationLayout from '../../../../common/components/composite/layout
 import Button from '../../../../common/components/core/Button';
 import Delimiter from '../../../../common/components/core/Delimiter';
 import Loading from '../../../../common/components/core/Loading/Loading';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 import { useConfig } from '../../../../hooks';
 import { AUTH_LOGIN_PATH } from '../../../../models/constants';
@@ -31,11 +31,11 @@ export const RegistrationPage: FC<RegisterPageProps> = ({ flow }) => {
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Box marginY={3} textAlign={'center'}>
-            <Typography variant={'h3'}>{t('pages.registration.header')}</Typography>
+            <WrapperTypography variant={'h3'}>{t('pages.registration.header')}</WrapperTypography>
           </Box>
           <KratosUI flow={registrationFlow} termsURL={platform?.terms} privacyURL={platform?.privacy} />
           <Delimiter>OR</Delimiter>
-          <Typography variant={'h5'}>{t('pages.registration.login')}</Typography>
+          <WrapperTypography variant={'h5'}>{t('pages.registration.login')}</WrapperTypography>
           <Button
             variant="primary"
             type={'submit'}

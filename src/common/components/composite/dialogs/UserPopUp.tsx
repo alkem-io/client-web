@@ -18,7 +18,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../core/dialog';
 import { RouterLink } from '../../core/RouterLink';
 import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
-import Typography from '../../core/Typography';
+import WrapperTypography from '../../core/WrapperTypography';
 import { useUserMetadata } from '../../../../domain/user/hooks/useUserMetadata';
 
 const useUserPopUpStyles = makeStyles(theme => ({
@@ -131,14 +131,14 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
           <div className={styles.profile}>
             <Avatar src={user?.profile?.avatar?.uri} size={'lg'} />
             <div className={styles.userName}>
-              <Typography variant={'h3'}>{user?.displayName}</Typography>
+              <WrapperTypography variant={'h3'}>{user?.displayName}</WrapperTypography>
             </div>
           </div>
           {user?.profile?.description && (
             <div className={styles.description}>
-              <Typography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
+              <WrapperTypography weight={'medium'} color={'neutral'} as={'p'} clamp={3}>
                 {user?.profile.description}
-              </Typography>
+              </WrapperTypography>
             </div>
           )}
         </div>
@@ -175,21 +175,21 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
                   {groups && groups.length > 0 && (
                     <TableRow>
                       <TableCell align="center">
-                        <Typography weight={'medium'} className={styles.centeredText}>
+                        <WrapperTypography weight={'medium'} className={styles.centeredText}>
                           Groups
-                        </Typography>
+                        </WrapperTypography>
                       </TableCell>
                       <TableCell align="center">
-                        <Typography weight={'medium'}>{getStringOfNames(groups)}</Typography>
+                        <WrapperTypography weight={'medium'}>{getStringOfNames(groups)}</WrapperTypography>
                       </TableCell>
                     </TableRow>
                   )}
                   {challenges && challenges.length > 0 && (
                     <TableRow>
                       <TableCell align="center">
-                        <Typography weight={'medium'} className={styles.centeredText}>
+                        <WrapperTypography weight={'medium'} className={styles.centeredText}>
                           Challenges
-                        </Typography>
+                        </WrapperTypography>
                       </TableCell>
                       <TableCell align="center">{getStringOfNames(challenges)}</TableCell>
                     </TableRow>
@@ -197,9 +197,9 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
                   {organizations && organizations.length > 0 && (
                     <TableRow>
                       <TableCell align="center">
-                        <Typography weight={'medium'} className={styles.centeredText}>
+                        <WrapperTypography weight={'medium'} className={styles.centeredText}>
                           Organizations
-                        </Typography>
+                        </WrapperTypography>
                       </TableCell>
                       <TableCell align="center">{getStringOfNames(organizations)}</TableCell>
                     </TableRow>
@@ -207,9 +207,9 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
                   {opportunities && opportunities.length > 0 && (
                     <TableRow>
                       <TableCell align="center">
-                        <Typography weight={'medium'} className={styles.centeredText}>
+                        <WrapperTypography weight={'medium'} className={styles.centeredText}>
                           Opportunites
-                        </Typography>
+                        </WrapperTypography>
                       </TableCell>
                       <TableCell align="center">{getStringOfNames(opportunities)}</TableCell>
                     </TableRow>
@@ -218,9 +218,9 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
               </Table>
               {noMembership && (
                 <div className={styles.centeredText}>
-                  <Typography weight={'medium'} className={styles.centeredText}>
+                  <WrapperTypography weight={'medium'} className={styles.centeredText}>
                     User has no memberships
-                  </Typography>
+                  </WrapperTypography>
                 </div>
               )}
             </div>

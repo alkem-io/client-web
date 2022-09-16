@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import HubEditForm, { HubEditFormValuesType } from '../../components/HubEditForm';
 import Button from '../../../../common/components/core/Button';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import AdminLayout from '../../toplevel/AdminLayout';
 import { AdminSection } from '../../toplevel/constants';
 import { formatDatabaseLocation } from '../../../location/LocationUtils';
@@ -87,7 +87,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
     <AdminLayout currentTab={AdminSection.Hub}>
       <Container maxWidth="xl">
         <Box marginY={3}>
-          <Typography variant="h2">{'New Hub'}</Typography>
+          <WrapperTypography variant="h2">{'New Hub'}</WrapperTypography>
         </Box>
         <HubEditForm
           isEdit={false}

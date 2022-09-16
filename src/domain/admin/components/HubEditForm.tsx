@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, Reference, Tagset } from '../../../models/graphql-schema';
-import Typography from '../../../common/components/core/Typography';
+import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import ContextReferenceSegment from './Common/ContextReferenceSegment';
 import { contextSegmentSchema } from './Common/ContextSegment';
 import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
@@ -138,15 +138,15 @@ const HubEditForm: FC<Props> = ({
             <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
             <Grid item xs={12}>
-              <Typography variant={'h4'} color={'primary'}>
+              <WrapperTypography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}
-              </Typography>
+              </WrapperTypography>
             </Grid>
             <TagsetSegment tagsets={tagsets} />
             {/* <Grid item xs={12}>
-              <Typography variant={'h4'} color={'primary'}>
+              <WrapperTypography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
-              </Typography>
+              </WrapperTypography>
             </Grid>
             <VisualSegment />*/}
             {isEdit && <ContextReferenceSegment references={references || []} contextId={contextId} />}

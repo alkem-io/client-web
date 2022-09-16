@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import UserAvatar from '../../common/components/composite/common/UserAvatar/UserAvatar';
 import { Loading } from '../../common/components/core';
 import AvatarContainer from '../../common/components/core/AvatarContainer';
-import Typography from '../../common/components/core/Typography';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 import UserCardsContainer from '../../containers/user/UserCardsContainer';
 import { User } from '../../models/graphql-schema';
 import shuffleCollection from '../../common/utils/shuffleCollection';
@@ -37,9 +37,9 @@ export const MembersView: FC<MembersProps> = ({ shuffle = false, users, entityId
             </AvatarContainer>
             <div style={{ flexBasis: '100%' }} />
             {users.length - populated.length > 0 && (
-              <Typography variant="h3" as="h3" color="positive">
+              <WrapperTypography variant="h3" as="h3" color="positive">
                 {`... + ${users.length - populated.length} other members`}
-              </Typography>
+              </WrapperTypography>
             )}
           </>
         );

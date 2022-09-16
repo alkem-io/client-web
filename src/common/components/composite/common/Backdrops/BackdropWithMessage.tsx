@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { makeStyles } from '@mui/styles';
 import Backdrop from '../../../core/Backdrop';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 
 const useBackdropStyles = makeStyles(theme => ({
   backdropContainer: {
@@ -37,9 +37,9 @@ export const BackdropWithMessage: FC<BackdropProps> = ({ children, message, temp
     <div style={{ position: 'relative' }}>
       <Backdrop>{children}</Backdrop>
       <div className={styles.backdropContainer}>
-        <Typography variant="h3" className={styles.message}>
+        <WrapperTypography variant="h3" className={styles.message}>
           {message}
-        </Typography>
+        </WrapperTypography>
         {template && <div>{template}</div>}
       </div>
     </div>

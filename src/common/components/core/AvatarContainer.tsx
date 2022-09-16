@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import React, { FC, Fragment } from 'react';
 import { makeStyles } from '@mui/styles';
 import { agnosticFunctor } from '../../utils/functor';
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 
 const useAvatarStyles = makeStyles<Theme, ClassProps>(theme => ({
   container: {
@@ -51,9 +51,9 @@ const AvatarContainer: FC<AvatarContainerProps> = ({ title, classes = {}, classN
   return (
     <div className={clsx(styles.container, className)}>
       {title && (
-        <Typography variant="caption" as="h4">
+        <WrapperTypography variant="caption" as="h4">
           {title}
-        </Typography>
+        </WrapperTypography>
       )}
       <div className={clsx(styles.avatarContainer)}>
         {children.map((x, i) =>

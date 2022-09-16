@@ -20,7 +20,7 @@ import { Loading } from '../../common/components/core';
 import { CardContainer } from '../../common/components/core/CardContainer';
 import MultipleSelect, { MultiSelectElement } from '../../common/components/core/MultipleSelect';
 import Section, { Header as SectionHeader, SubHeader } from '../../common/components/core/Section';
-import Typography from '../../common/components/core/Typography';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
 import { Challenge, Opportunity, Organization, SearchQuery, User, UserGroup } from '../../models/graphql-schema';
@@ -251,7 +251,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
                   </FormControl>
                 </Grid>
                 <Grid item lg={9}>
-                  {results.length > 10 && <Typography>{t('pages.search.more-results')}</Typography>}
+                  {results.length > 10 && <WrapperTypography>{t('pages.search.more-results')}</WrapperTypography>}
                 </Grid>
               </Grid>
             </Box>
@@ -272,7 +272,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
             </CardContainer>
           )}
           {!results.length && !isSearching && (
-            <Box component={Typography} display="flex" justifyContent="center">
+            <Box component={WrapperTypography} display="flex" justifyContent="center">
               {t('pages.search.no-results')}
             </Box>
           )}

@@ -12,7 +12,7 @@ import {
 import { useNavigateToEdit } from '../../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../../common/utils/buildContext';
 import Button from '../../../../common/components/core/Button';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import FormMode from '../../../admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../common/components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../views/Visuals/EditVisualsView';
@@ -114,9 +114,9 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
         />
       </Grid>
       <Grid item marginTop={2}>
-        <Typography variant={'h4'} color={'primary'}>
+        <WrapperTypography variant={'h4'} color={'primary'}>
           {t('components.visualSegment.title')}
-        </Typography>
+        </WrapperTypography>
         <EditVisualsView visuals={challenge?.context?.visuals} />
       </Grid>
     </Grid>

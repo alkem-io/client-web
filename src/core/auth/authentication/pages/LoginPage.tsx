@@ -8,7 +8,7 @@ import AuthenticationLayout from '../../../../common/components/composite/layout
 import Button from '../../../../common/components/core/Button';
 import Delimiter from '../../../../common/components/core/Delimiter';
 import Loading from '../../../../common/components/core/Loading/Loading';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useUpdateNavigation } from '../../../../hooks';
 import { AUTH_REGISTER_PATH } from '../../../../models/constants';
 import { SelfServiceLoginFlow } from '@ory/kratos-client';
@@ -70,11 +70,11 @@ export const LoginPage: FC<LoginPageProps> = ({ flow }) => {
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Box marginY={3} textAlign={'center'}>
-            <Typography variant={'h3'}>{t('pages.login.title')}</Typography>
+            <WrapperTypography variant={'h3'}>{t('pages.login.title')}</WrapperTypography>
           </Box>
           <KratosUI flow={loginFlow} resetPasswordComponent={resetPassword} />
           <Delimiter>OR</Delimiter>
-          <Typography variant={'h5'}>{t('pages.login.register')}</Typography>
+          <WrapperTypography variant={'h5'}>{t('pages.login.register')}</WrapperTypography>
           <Button
             variant="primary"
             type="submit"

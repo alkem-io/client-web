@@ -20,7 +20,7 @@ import {
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../common/utils/buildContext';
 import Button from '../../../common/components/core/Button';
-import Typography from '../../../common/components/core/Typography';
+import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import ProfileFormWithContext, {
   ProfileFormValuesType,
 } from '../../../common/components/composite/forms/ProfileFormWithContext';
@@ -123,7 +123,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   return (
     <Grid container spacing={2}>
       <Grid item>
-        <Typography variant={'h2'}>{title}</Typography>
+        <WrapperTypography variant={'h2'}>{title}</WrapperTypography>
       </Grid>
       <ProfileFormWithContext
         isEdit={mode === FormMode.update}

@@ -18,7 +18,7 @@ import { Loading } from '../../../core';
 import Button from '../../../core/Button';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
 import TextInput, { TextArea } from '../../../core/TextInput';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 
 const useStyles = makeStyles(() => ({
   formControl: {
@@ -92,15 +92,15 @@ const InterestModal: FC<P> = ({ onHide, show, opportunityId, collaborationId }) 
         <Grid container spacing={2}>
           {data?.createRelationOnCollaboration.id ? (
             <Grid item lg={12}>
-              <Typography variant={'h3'} color={'positive'}>
+              <WrapperTypography variant={'h3'} color={'positive'}>
                 The request successfully sent
-              </Typography>
+              </WrapperTypography>
             </Grid>
           ) : (
             <>
               <Grid item lg={12}>
                 <Box marginBottom={2}>
-                  <Typography variant={'h5'}>Type of collaboration</Typography>
+                  <WrapperTypography variant={'h5'}>Type of collaboration</WrapperTypography>
                 </Box>
                 <FormControl variant="outlined" className={styles.formControl}>
                   <InputLabel id="role-select-label">Role</InputLabel>

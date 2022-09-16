@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import { Box, Container, Link, Paper } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import Toolbar from '../../../core/Toolbar';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 import Image from '../../../../../domain/shared/components/Image';
 import { useConfig } from '../../../../../hooks';
 import { RouterLink } from '../../../core/RouterLink';
@@ -95,9 +95,9 @@ const Footer: FC = ({ children }) => {
             <Grid item xs={12}>
               <Toolbar dense className={styles.footerSecondary}>
                 <Grid container justifyContent={'flex-start'}>
-                  <Typography variant="caption" color="neutralMedium" weight="boldLight">
+                  <WrapperTypography variant="caption" color="neutralMedium" weight="boldLight">
                     {t('footer.copyright')}
-                  </Typography>
+                  </WrapperTypography>
                 </Grid>
                 <Grid container justifyContent={'flex-end'}>
                   {children}

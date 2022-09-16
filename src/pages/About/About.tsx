@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
 import Button from '../../common/components/core/Button';
-import Typography from '../../common/components/core/Typography';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { useUpdateNavigation } from '../../hooks';
 import useServerMetadata from '../../hooks/useServerMetadata';
 
@@ -65,26 +65,26 @@ export const AboutPage = () => {
           <div className={styles.content}>
             <div className={styles.version}>
               <img src="/logo.png" className={styles.logo} alt="Alkemio" />
-              <Typography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</Typography>
+              <WrapperTypography color={'neutralMedium'}>v{process.env.REACT_APP_VERSION}</WrapperTypography>
             </div>
             {services.length >= 1 && (
               <Box marginBottom={4}>
-                <Typography color={'neutralMedium'}>
+                <WrapperTypography color={'neutralMedium'}>
                   {t('pages.about.powered-by', {
                     name: services[0].name,
                     version: services[0].version,
                   })}
-                </Typography>
+                </WrapperTypography>
               </Box>
             )}
 
             <Box marginBottom={4}>
-              <Typography variant={'h3'} color={'neutralMedium'}>
+              <WrapperTypography variant={'h3'} color={'neutralMedium'}>
                 {t('pages.about.title')}
-              </Typography>
+              </WrapperTypography>
             </Box>
             <Box marginBottom={4}>
-              <Typography>{t('pages.about.description')}</Typography>
+              <WrapperTypography>{t('pages.about.description')}</WrapperTypography>
             </Box>
             <a href="https://alkem.io/about/" target="_blank" rel="noopener noreferrer" className={styles.link}>
               <Button text={t('buttons.learn-more')} />

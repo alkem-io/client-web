@@ -3,7 +3,7 @@ import Grid, { GridSize } from '@mui/material/Grid';
 import { Box, Theme } from '@mui/material';
 import { Container, ContainerProps } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 
 interface CardContainerProps extends ContainerProps {
   cardHeight?: number;
@@ -68,9 +68,9 @@ const CardContainer: FC<CardContainerProps> = ({
       <Grid container spacing={2}>
         {title && (
           <Grid component={Box} item xs={12} marginBottom={4}>
-            <Typography variant="h4" color="neutral" weight="bold" className={styles.title}>
+            <WrapperTypography variant="h4" color="neutral" weight="bold" className={styles.title}>
               {title}
-            </Typography>
+            </WrapperTypography>
           </Grid>
         )}
         <Grid item xs={12}>

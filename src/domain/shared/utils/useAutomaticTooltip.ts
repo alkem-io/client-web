@@ -21,9 +21,9 @@ interface UseAutomaticTooltipResult {
  *    const  { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
  *    return (
  *      <Root ref={containerReference}>
- *        <Typography ref={e => addAutomaticTooltip(e, 'optional tooltip or just veryLongText contents')}>
+ *        <WrapperTypography ref={e => addAutomaticTooltip(e, 'optional tooltip or just veryLongText contents')}>
  *          {veryLongText}
- *         </Typography>
+ *         </WrapperTypography>
  *      </Root>
  *    );
  *

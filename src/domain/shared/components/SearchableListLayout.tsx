@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Typography from '../../../common/components/core/Typography';
+import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import Button from '../../../common/components/core/Button';
 
 interface ListPageProps {
@@ -18,7 +18,7 @@ export const SearchableListLayout: FC<ListPageProps> = ({ title, newLink, childr
       {(title || newLink) && (
         <Grid container item xs={10}>
           <Grid item xs={10}>
-            {title && <Typography variant="h3">{title}</Typography>}
+            {title && <WrapperTypography variant="h3">{title}</WrapperTypography>}
           </Grid>
           <Grid container item justifyContent="flex-end" xs={2}>
             {newLink && <Button as={Link} to={newLink} text={t('buttons.new')} />}
