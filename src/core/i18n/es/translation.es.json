@@ -1,0 +1,1364 @@
+{
+  "notifications": {
+    "release-updates": {
+      "text": "Hemos hecho algunos cambios en nuestra plataforma. ¿Quieres echar un vistazo?",
+      "link": "Haz click aquí"
+    }
+  },
+  "cookie": {
+    "consent": "Haciendo click en \"Aceptar todas las cookies\", usted acepta que se almacenen cookies en su dispositivo para mejorar la navegación por el sitio y analizar su uso.",
+    "settings": "Al visitar un sitio web, alguna información puede almacenarse en su explorador en forma de cookies. Esta información puede ser sobre usted, sus preferencias y su dispositivo. Sobre todo, esta información es usada para hacer que el sitio web funcione lo mejor posible. Algunos sitios web las usan con fines de mercadotecnia. Como Alkemio no permite ningún tipo de publicidad en su sitio web, solo distinguimos dos tipos de cookies.",
+    "technical": "Cookies técnicamente necesarias: le permiten navegar y utilizar las funciones básicas y almacenar sus preferencias.",
+    "analysis": "Cookies de análisis: permiten determinar cómo interactúan los visitantes con nuestros servicios para mejorar la experiencia del usuario."
+  },
+  "actions": {
+    "add-entity": "Añadir {{entity}}"
+  },
+  "buttons": {
+    "learn-more": "Saber más",
+    "load-more": "Cargar más",
+    "load-count-more": "Cargar {{count}} más",
+    "apply": "Aplicar",
+    "explore": "Explorar",
+    "ok": "Aceptar",
+    "create": "Crear",
+    "publish": "Publicar",
+    "unpublish": "Ocultar",
+    "save-draft": "Guardar como borrador",
+    "save": "Guardar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "edit": "Editar",
+    "see-more": "Ver más",
+    "see-all": "Ver todo",
+    "home": "Inicio",
+    "take-me-home": "Llévame a inicio",
+    "close": "Cerrar",
+    "delete": "Enviar",
+    "submit": "Enviar",
+    "remove": "Eliminar",
+    "cancel": "Cancelar",
+    "explore-and-connect": "Explorar y conectar",
+    "send-message": "Enviar mensaje",
+    "edit-members": "Editar miembros",
+    "my-profile": "Mi perfil",
+    "new": "Nuevo",
+    "sign-out": "Cerrar sesión",
+    "cancel-project": "Cancelar proyecto",
+    "create-project": "Crear proyecto",
+    "processing": "Procesando...",
+    "details": "Detalles",
+    "settings": "Configuraciones",
+    "member": "Miembro",
+    "profile": "Perfil",
+    "view-profile": "Ver de perfil",
+    "edit-photo": "Editar foto",
+    "accept-all-cookies": "Aceptar todas las cookies",
+    "confirm-choice": "Confirmar opciones"
+  },
+  "tooltips": {
+    "click-more-info": "Click para más información",
+    "click-delete": "Click para borrar"
+  },
+  "authentication": {
+    "sign-in": "Iniciar sesión",
+    "sign-up": "Registrarse",
+    "sign-out": "Cerrar sesión",
+    "log-out": "Cerrar sesión",
+    "log-in": "Iniciar sesión",
+    "login": "Iniciar sesión",
+    "register": "Registro",
+    "validation": {
+      "fill-fields": "Por favor, ¡rellena los campos obligatorios!"
+    }
+  },
+  "common": {
+    "avatar": "Avatar",
+    "name": "Nombre",
+    "username": "Nombre de usuario",
+    "tags": "Etiquetas",
+    "administration": "Administración",
+    "add": "Agregar",
+    "remove": "Eliminar",
+    "callout": "Llamada de Atención",
+    "canvas": "Pizarra",
+    "canvases": "Pizarras",
+    "comment": "Comentario",
+    "comments": "Comentarios",
+    "card": "Tarjeta",
+    "cards": "Tarjetas",
+    "create": "Crear",
+    "create-new": "Crear nuevo",
+    "create-new-entity": "Crear {{entity}}",
+    "description": "Descripción",
+    "about": "Acerca de",
+    "explore": "Explorar",
+    "edit-entity": "Editar {{entity}}",
+    "email": "Email",
+    "state": "Estado",
+    "aspect": "Tarjeta",
+    "aspects": "Tarjetas",
+    "host": "Anfitrión",
+    "lead": "Líder",
+    "hub": "Hub",
+    "hubs": "Hubs",
+    "challenge": "Desafío",
+    "challenges": "Desafíos",
+    "contributors": "Colaboradores",
+    "opportunity": "Oportunidad",
+    "opportunities": "Oportunidades",
+    "organization": "Organización",
+    "organizations": "Organizaciones",
+    "communications": "Comunicaciones",
+    "applications": "Aplicaciones",
+    "interest": "Interés",
+    "interests": "Intereses",
+    "project": "Proyecto",
+    "agreements": "Acuerdos",
+    "templates": "Plantillas",
+    "group": "Grupo",
+    "groups": "Grupos",
+    "user-group": "Grupo de usuario",
+    "user-groups": "Grupos de usuario",
+    "user": "Usuario",
+    "users": "Usuarios",
+    "update": "Actualización",
+    "updates": "Actualización",
+    "no-updates": "No hay actualizaciones",
+    "no-tags": "No hay etiquetas disponibles",
+    "no-references": "No hay referencias disponibles",
+    "field-required": "Este campo es obligatorio",
+    "field-min-length": "Este campo debe tener un mínimo de {{min}} caracteres",
+    "field-max-length": "Este campo debe tener un máximo de {{max}} caracteres",
+    "membership": "Membresía",
+    "owner": "Propietario",
+    "admin": "Administrador",
+    "member": "Miembro",
+    "members": "Miembros",
+    "empty-string": "",
+    "discussion": "Debate",
+    "discussions": "Debates",
+    "dashboard": "Inicio",
+    "contribute": "Contribuir",
+    "context": "Contexto",
+    "community": "Comunidad",
+    "settings": "Ajustes",
+    "search": "Buscar...",
+    "reference": "Referencia",
+    "references": "Referencias",
+    "notifications": "Notificaciones",
+    "credentials": "Credenciales",
+    "my-profile": "Mi perfil",
+    "my-memberships": "Mis membresías",
+    "profile": "Perfil",
+    "social": "Social",
+    "lifecycle": "Ciclo de vida",
+    "home": "Inicio",
+    "visuals": "Visuales",
+    "authorization": "Autorización",
+    "question": "Pregunta",
+    "questions": "Preguntas",
+    "show-all": "Mostrar todo",
+    "title": "Título",
+    "warning": "Advertencia",
+    "preview": "Vista previa",
+    "help": "Ayuda",
+    "language": "Idioma",
+    "genders": {
+      "notSpecified": "no especificado",
+      "male": "hombre",
+      "female": "mujer"
+    },
+    "verified-status": {
+      "verified": "Verificado",
+      "not-verified": ""
+    },
+    "enums": {
+      "authorization-credentials": {
+        "GLOBAL_ADMIN": {
+          "name": "Administrador Global",
+          "order": 0,
+          "hidden": false
+        },
+        "GLOBAL_ADMIN_HUBS": {
+          "name": "Administrador Global de Hubs",
+          "order": 1,
+          "hidden": false
+        },
+        "GLOBAL_ADMIN_COMMUNITY": {
+          "name": "Administrador Global de la Comunidad",
+          "order": 2,
+          "hidden": false
+        },
+        "GLOBAL_REGISTERED": {
+          "name": "Registrado",
+          "order": 999,
+          "hidden": true
+        },
+        "HUB_ADMIN": {
+          "name": "Administrador de Hub",
+          "order": 3,
+          "hidden": false
+        },
+        "HUB_HOST": {
+          "name": "Anfitrión de Hub",
+          "order": 4,
+          "hidden": true
+        },
+        "HUB_MEMBER": {
+          "name": "Miembro de Hub",
+          "order": 5,
+          "hidden": true
+        },
+        "CHALLENGE_ADMIN": {
+          "name": "Administrador de Desafíos",
+          "order": 6,
+          "hidden": false
+        },
+        "CHALLENGE_LEAD": {
+          "name": "Líder de Desafío",
+          "order": 7,
+          "hidden": true
+        },
+        "CHALLENGE_MEMBER": {
+          "name": "Miembro del Desafío",
+          "order": 8,
+          "hidden": true
+        },
+        "OPPORTUNITY_ADMIN": {
+          "name": "Administrador de Oportunidad",
+          "order": 9,
+          "hidden": true
+        },
+        "OPPORTUNITY_MEMBER": {
+          "name": "Miembro de Oportunidad",
+          "order": 10,
+          "hidden": true
+        },
+        "OPPORTUNITY_LEAD": {
+          "name": "Líder de Oportunidad",
+          "order": 11,
+          "hidden": true
+        },
+        "ORGANIZATION_OWNER": {
+          "name": "Propietario de la organización",
+          "order": 12,
+          "hidden": false
+        },
+        "ORGANIZATION_ADMIN": {
+          "name": "Adminstrador de la organización",
+          "order": 13,
+          "hidden": false
+        },
+        "ORGANIZATION_MEMBER": {
+          "name": "Miembro de la organización",
+          "order": 14,
+          "hidden": true
+        },
+        "USER_SELF_MANAGEMENT": {
+          "name": "Autogestión de usuario",
+          "order": 15,
+          "hidden": true
+        },
+        "USER_GROUP_MEMBER": {
+          "name": "Miembro del grupo de usuario",
+          "order": 16,
+          "hidden": true
+        }
+      },
+      "edit-mode": {
+        "new": "Nuevo",
+        "edit": "Editar",
+        "read-only": "Solo lectura"
+      },
+      "discussion-category": {
+        "GENERAL": "General",
+        "IDEAS": "Ideas",
+        "QUESTIONS": "Preguntas",
+        "SHARING": "Compartir"
+      }
+    }
+  },
+  "community": {
+    "leading-users": "Líderes",
+    "member-users": "Miembros",
+    "leading-organizations": "Organizaciones liderando",
+    "member-organizations": "Organizaciones miembros",
+    "leads": "Líderes",
+    "members": "Miembros",
+    "host": "Anfitrión"
+  },
+  "callout": {
+    "draftNotice": "BORRADOR - Esta Llamada de Atención solo es visible para administradores.",
+    "delete-confirm-title": "¿Borrar Llamada de Atención?",
+    "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de la Llamada de Atención serán borrados."
+  },
+  "forms": {
+    "validations": {
+      "required": "¡Este campo es obligatorio!",
+      "minLength": "{{field}} deben tener al menos {{min}} de caracteres",
+      "maxLength": "Excede el límite de {{max}} caracteres",
+      "alphaNumeric": "{{field}} puede contener solo caracteres en minúscula, números y guiones",
+      "nonBlank": "{{field}} no debe consistir solo en espacios en blanco"
+    }
+  },
+  "aspect-templates": {
+    "aspect-template": "Plantilla de tarjeta",
+    "default-description": "Descripción de la tarjeta por defecto",
+    "banner-narrow": "Banner estrecho"
+  },
+  "canvas-templates": {
+    "canvas-template": "Plantilla de pizarra"
+  },
+  "innovation-templates": {
+    "innovation-template": "Plantilla de Flujo de Innovación",
+    "definition": {
+      "title": "Definición",
+      "placeholder": "Aquí puedes pegar la descripción de Xstate Visualizer con los distintos estados del ciclo de vida"
+    },
+    "type": {
+      "title": "Tipo"
+    }
+  },
+  "components": {
+    "activity-log-section": {
+      "title": "Novedades"
+    },
+    "activity-log-view": {
+      "actions": {
+        "callout-published": "publicado nueva Llamada de Atención",
+        "canvas-created": "añadida nueva Pizarra",
+        "card-comment-created": "comentado en una Tarjeta",
+        "card-created": "añadido una nueva Tarjeta",
+        "discussion-comment-created": "comentado en un Debate",
+        "member-joined": "se ha unido"
+      }
+    },
+    "lifecycle-visualizer": {
+      "error": "La definición no puede ser visualizada"
+    },
+    "activity-tooltip": {
+      "headline": "¡Alkemio esta creciendo! En total, la plataforma acoge ahora:"
+    },
+    "context-section": {
+      "create-card": "Tarjeta creada con éxito",
+      "give-feedback": "Dar feedback"
+    },
+    "callout-creation": {
+      "title": "Crear Llamada de Atención",
+      "callout-type-label": "Tipo de Llamada de Atención",
+      "info-step": {
+        "title": "Detalles",
+        "description": "Descripción",
+        "type-comments": "Comentarios",
+        "type-comments-help": "Selecciona ‘Comentarios’ cuando quieras que la gente responda en formato de texto simple, como un panel de anuncios",
+        "type-cards": "Tarjetas",
+        "type-cards-help": "Selecciona ‘Tarjetas’ cuando quieras que la gente responda en un formato de Tarjeta.",
+        "type-canvases": "Pizarras",
+        "type-canvases-help": "Selecciona ‘Pizarras’ cuando quieras que la gente responda en una pizarra visual y permitirles dibujar y utilizar texto."
+      },
+      "template-step": {
+        "title": "Plantillas",
+        "no-templates": "Plantillas no disponibles",
+        "card-template-label": "Elije una plantilla para tu Llamada de Atención"
+      },
+      "create-step": {
+        "title": "Crear",
+        "card-template-label": "Elije una plantilla para la nueva Tarjeta"
+      }
+    },
+    "aspect-creation": {
+      "title": "Crear una nueva Tarjeta",
+      "type-step": {
+        "title": "El tipo de contexto adicional a añadir.",
+        "error": "Ha ocurrido un error al cargar los tipos",
+        "label": "Tipo de Tarjeta",
+        "type-help-text-short": "Por favor elije el tipo de tarjeta que mejor se adapte al contexto que deseas compartir.",
+        "type-help-text": "La tarjeta permite compartir el contexto relevante, como otras iniciativas, conocimientos o partes interesadas clave. El conjunto de tipos de tarjetas disponibles en este contexto es fijo. Por favor elije el tipo de tarjeta que mejor se adapte al contexto que deseas compartir."
+      },
+      "info-step": {
+        "title": "Detalles",
+        "description": "Por favor comparte los detalles",
+        "description-placeholder": "Una descripción para esta tarjeta",
+        "description-help-text": "Añade aquí la información clave para la Tarjeta. ¿Por qué es relevante? ¿Cómo se relaciona?",
+        "tags-help-text": "Añade etiquetas para ayudar a transmitir rápidamente la información clave sobre la tarjeta. Unas buenas etiquetas también ayudan a que la tarjeta sea más fácil de encontrar en las búsquedas.",
+        "name-help-text": "Un nombre descriptivo para esta tarjeta.",
+        "name-id-help-text": "Texto de ayuda para la identificación del Identificador",
+        "unique-name-validation-text": "${path} está usado en otra Tarjeta"
+      },
+      "create-step": {
+        "title": "Crear",
+        "type": "Tipo",
+        "name": "Nombre",
+        "description": "Descripción",
+        "links": "Enlaces relevantes",
+        "explanation": "Al completar este paso se creará la Tarjeta y tendrá la opción de añadir visuales."
+      },
+      "visuals-step": {
+        "title": "Visuales",
+        "headline": "Enhorabuena, ¡La Tarjeta ha sido creada con éxito!",
+        "explanation": "Para personalizar aún más su tarjeta, considere la posibilidad de añadir elementos visuales como un banner a la tarjeta.",
+        "bottom-note": "Seguirá teniendo la posibilidad de cambiar estos elementos visuales en la pestaña de ajustes, así como de añadir referencias y un Banner para la tarjeta del panel de control."
+      }
+    },
+    "visual-upload": {
+      "loading": "Cargando imagen...",
+      "success": "Imagen cargada con éxito",
+      "upload-hover": "Subir imagen",
+      "no-data": "Ninguna"
+    },
+    "tags-component": {
+      "more": "+{{count}} más",
+      "no-tags": "No hay etiquetas disponibles."
+    },
+    "remove-modal": {
+      "title": "Confirmar la eliminación"
+    },
+    "application-dialog": {
+      "title": "Detalles de la aplicación",
+      "created": "Creado en {{date}}",
+      "updated": "Actualizado por última vez el {{date}}"
+    },
+    "credential-share-request-dialog": {
+      "title": "Comparte tus credenciales verificadas",
+      "content": "Selecciona las credenciales que desea guardar en su cartera de Alkemio."
+    },
+    "alkemio-user-credential-offer-dialog": {
+      "title": "Usuario Alkemio",
+      "content": "Esta credencial permite al titular demostrar que es un usuario verificado de Alkemio."
+    },
+    "alkemio-community-member-credential-offer-dialog": {
+      "title": "Alkemio miembro de la comunidad",
+      "content": "Esta credencial permite al titular demostrar que es miembro de la comunidad especificada dentro de Alkemio."
+    },
+    "edit-members": {
+      "no-available-members": "No hay usuarios disponibles para añadir; por favor, comprueba los miembros de la comunidad",
+      "user-not-found": "¡Usuario no encontrado!"
+    },
+    "application-button": {
+      "apply-parent": "Aplicar al contenedor",
+      "apply-disabled": "Aplicaciones desactivadas",
+      "apply-not-signed": "Inicia sesión para unirte",
+      "apply-pending": "Aplicación pendiente",
+      "join": "Unirse",
+      "join-parent": "Unirse al contenedor",
+      "parent-pending": "Solicitud al contenedor pendiente",
+      "dialog-apply-parent": {
+        "title": "¿Quieres unirte al Hub contenedor?",
+        "body": "Para unirte a <strong title='Nombre del desafío'>'{{challengeName}}'</strong> debes unirte primero al hub <strong title='Nombre del Hub'>'{{hubName}}'</strong>. Por favor, añade el desafío al que quieres unirte en el formulario de solicitud del Hub."
+      },
+      "dialog-parent-app-pending": {
+        "title": "Solicitud al contenedor pendiente",
+        "body": "Para unirte a <strong title='Nombre del desafío'>'{{challengeName}}'</strong> debes unirte primero al hub <strong title='Nombre del Hub'>'{{hubName}}'</strong>. Ya hay una solicitud pendiente para esto, por lo que también puede presentar una solicitud paralela para <strong title='Nombre del desafío'>'{{challengeName}}'</strong>."
+      },
+      "dialog-join": {
+        "title": "Unirse a la comunidad",
+        "body": "Puedes unirte a esta comunidad sin necesidad de solicitar la afiliación, porque tienes las credenciales adecuadas.",
+        "accept-terms": "Entiendo y acepto los términos y condiciones de los miembros de la comunidad"
+      },
+      "dialog-join-parent": {
+        "title": "Unirse a la comunidad contenedora",
+        "body": "Puedes unirte a esta comunidad sin necesidad de solicitar la afiliación, porque tienes las credenciales adecuadas. Pero primero tienes que unirte a la comunidad contenedora y aceptar los términos y condiciones, después podrás unirte a esta."
+      }
+    },
+    "organization-verified": {
+      "verified": "Verificada",
+      "not-verified": ""
+    },
+    "card-filter": {
+      "title": "Filtrar"
+    },
+    "backdrop": {
+      "private": "Por favor, únete para acceder a {{blockName}}",
+      "authentication": "Por favor, inicia sesión para ver los detalles sobre {{blockName}}."
+    },
+    "referenceSegment": {
+      "title": "Referencias",
+      "missing-refreneces": "No hay referencias todavía",
+      "tooltips": {
+        "add-reference": "Agregar una referencia",
+        "remove-reference": "Borrar la referencia"
+      }
+    },
+    "editHubForm": {
+      "host": {
+        "title": "Anfitrión",
+        "select": "Seleccionar un anfitrión"
+      },
+      "read-access": "Permitir acceder a miembros externos a este Hub a los desafíos"
+    },
+    "nameSegment": {
+      "name": "Nombre",
+      "nameID": {
+        "title": "Identificador",
+        "placeholder": "Identificador textual único, utilizado para las rutas URL. Atención: No puede ser modificado después de creado."
+      }
+    },
+    "contextSegment": {
+      "tagline": "Etiqueta",
+      "background": {
+        "title": "Historia",
+        "tooltip": "¿Cuál es la situación actual? ¿Qué se ha hecho para progresar? ¿Qué resultados se han logrado?"
+      },
+      "impact": {
+        "title": "Impacto",
+        "tooltip": "¿Qué cambiaría si se logra la visión? ¿Qué usuarios u organizaciones experimentarán una realidad diferente, para bien o para mal?"
+      },
+      "vision": {
+        "title": "Visión",
+        "tooltip": "¿Que es el éxito? ¿Cómo sabrá cuando lo haya conseguido?"
+      },
+      "who": {
+        "title": "Quién",
+        "tooltip": "¿Qué deben aportar las organizaciones o los usuarios? ¿Por qué iban a querer comprometerse?"
+      }
+    },
+    "visualSegment": {
+      "title": "Visual",
+      "avatar": "Avatar",
+      "banner": "Banner",
+      "background": "Fondo"
+    },
+    "tagsSegment": {
+      "title": "Etiquetas"
+    },
+    "profileSegment": {
+      "avatar": {
+        "name": "Avatar",
+        "placeholder": "Introduce una URL de avatar..."
+      },
+      "description": {
+        "name": "Descripción",
+        "placeholder": "Introduce una descripción"
+      },
+      "location": {
+        "title": "Ubicación",
+        "country": {
+          "name": "País",
+          "placeholder": "Selecciona un país"
+        },
+        "city": {
+          "name": "Ciudad",
+          "placeholder": "Nombre de la ciudad"
+        }
+      }
+    },
+    "organizationSegment": {
+      "contactEmail": {
+        "name": "Email de contacto",
+        "placeholder": "Introduzca un email de contacto"
+      },
+      "domain": {
+        "name": "Dominio",
+        "placeholder": "Introduzca un nombre de dominio"
+      },
+      "legalEntityName": {
+        "name": "Nombre de la entidad legal",
+        "placeholder": "Introduzca el nombre legal de esta organización"
+      },
+      "website": {
+        "name": "Sitio web",
+        "placeholder": "Introduzca un sitio web"
+      },
+      "verified": {
+        "name": "Estado verificado",
+        "placeholder": "Estado verificado"
+      }
+    },
+    "card": {
+      "member": "Miembro",
+      "private": "Privado",
+      "lead": "Líder"
+    },
+    "errorblock": {
+      "message": "Lo sentimos, se ha producido un error al cargar {{blockName}}."
+    },
+    "loading": {
+      "message": "Cargando {{blockName}}..."
+    },
+    "groupForm": {
+      "title": "Editar grupo"
+    },
+    "searchableList": {
+      "placeholder": "Buscar",
+      "load-more": "Cargar más",
+      "info": "Mostrando {{count}} desde {{total}}"
+    },
+    "filter": {
+      "placeholder": "Buscar"
+    },
+    "communityUpdates": {
+      "title": "Informa a tu comunidad de las próximas novedades",
+      "updatesTitle": "Novedades",
+      "msg-not-empty": "El mensaje no puede estar vacío",
+      "actions": {
+        "add": {
+          "buttonTitle": "Publicar"
+        },
+        "remove": {
+          "confirmationTitle": "Eliminar publicación",
+          "confirmationContent": "La eliminación de una publicación de la comunidad es irreversible. ¿Está seguro de que quiere seguir?",
+          "confirmationButtonTitle": "Si"
+        }
+      }
+    },
+    "profile": {
+      "fields": {
+        "bio": {
+          "title": "Bio"
+        },
+        "description": {
+          "title": "Descripción"
+        },
+        "phone": {
+          "title": "Teléfono"
+        },
+        "telephone": {
+          "title": "Teléfono"
+        },
+        "mobile": {
+          "title": "Móvil"
+        },
+        "keywords": {
+          "title": "Palabras clave"
+        },
+        "skills": {
+          "title": "Habilidades"
+        },
+        "capabilities": {
+          "title": "Capacidades"
+        },
+        "links": {
+          "title": "Enlaces"
+        },
+        "location": {
+          "title": "Ubicación"
+        },
+        "website": {
+          "title": "Sitio web"
+        }
+      }
+    },
+    "associates": {
+      "title": "Asociados ({{count}})",
+      "help": "Usuarios asociados a esta organización"
+    },
+    "contributions": {
+      "title": "Contribuciones",
+      "help": "Los Hubs y desafíos a los que contribuye esta organización"
+    },
+    "discussions-list": {
+      "name": "Debates - {{community}}",
+      "title": "Debates ({{count}})",
+      "help": "Lista de todos los debates",
+      "posted": "{{name}} en {{- date}} - {{count}} comentario",
+      "posted_plural": "{{name}} en {{- date}} - {{count}} comentarios"
+    },
+    "discussion": {
+      "posted": "{{name}} iniciado en {{- date}} - {{count}} comentario",
+      "posted_plural": "{{name}} iniciado en {{- date}} - {{count}} comentarios",
+      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} }) - $t(components.discussion.contributed, {\"count\": {{contributed}} })",
+      "comment": "{{count}} Comentario",
+      "comment_plural": "{{count}} Comentarios",
+      "contributed": "{{count}} Persona que ha contribuido",
+      "contributed_plural": "{{count}} Personas que han contribuido",
+      "cant-post": "No puede responder en este debate",
+      "delete-discussion": "¿Borrar debate?",
+      "delete-comment": "¿Borrar comentario?"
+    },
+    "comment": {
+      "posted": "{{name}} en {{- date}}",
+      "reply": "Responder a este comentario"
+    },
+    "discussions-layout": {
+      "buttons": {
+        "new-discussion": "Iniciar nuevo debate"
+      }
+    },
+    "post-comment": {
+      "fields": {
+        "description": {
+          "title": "Comentar en este debate",
+          "placeholder": "Añadir mas información sobre el debate aquí"
+        }
+      },
+      "buttons": {
+        "post": "Publicar"
+      },
+      "tooltip": {
+        "markdown-help": "Puede añadir formato al comentario,\nPor ejemplo:\nTexto en negrita: **Entre dobles asteriscos**\nTexto en itálica: *Entre asteriscos*\nTexto Cabecera: ##Texto\nEnlace: [texto](url)"
+      }
+    },
+    "new-discussion": {
+      "title": {
+        "title": "Título",
+        "placeholder": "Título del debate"
+      },
+      "category": {
+        "title": "Categoría"
+      },
+      "description": {
+        "title": "Más información",
+        "placeholder": "Añadir más información al debate aquí"
+      },
+      "buttons": {
+        "post": "Crear debate"
+      }
+    },
+    "members-view": {
+      "title": "Miembros activos de la comunidad"
+    },
+    "community-section": {
+      "discussions": {
+        "no-data-create": "No hay debates. Crea un nuevo debate",
+        "no-data-join": "No hay debates. Por favor únase a la comunidad para crear un debate",
+        "explore": "Explorar debates"
+      }
+    }
+  },
+  "navigation": {
+    "admin": {
+      "opportunity": {
+        "create": "Crear oportunidad",
+        "edit": "Editar oportunidad"
+      },
+      "challenge": {
+        "create": "Crear desafío",
+        "edit": "Editar desafío"
+      }
+    }
+  },
+  "footer": {
+    "terms": "Términos y Condiciones",
+    "privacy": "Privacidad",
+    "security": "Seguridad",
+    "feedback": "Feedback",
+    "support": "Soporte",
+    "about": "Acerca de",
+    "copyright": "© 2022 Alkemio Foundation"
+  },
+  "pages": {
+    "generic": {
+      "sections": {
+        "dashboard": {
+          "description": "Aquí puedes ver el resumen de {{entity}}. ¡Navega por las demás pestañas para ver información más detallada!"
+        },
+        "about": {
+          "description": "Aquí puedes explorar el contexto de {{entity}}, así como la comunidad que hay detrás."
+        },
+        "community": {
+          "description": "Aquí puedes explorar la Comunidad. Ver los usuarios y organizaciones que contribuyen, así como las actualizaciones que se han compartido.",
+          "leading-contributors": "Principales contribuyentes",
+          "contributors": "Contribuyentes"
+        },
+        "explore": {
+          "description": "Aquí puedes aportar tu visión para entender el contexto. Se trata de hacer aflorar la sabiduría de la comunidad."
+        },
+        "discussions": {
+          "description": "Aquí puedes leer y participar en los debates en torno a {{entity}}."
+        },
+        "canvases": {
+          "description": "Las pizarras pueden entenderse como un lienzo virtual. Aquí puedes crear una pizarra para {{entity}} así como encontrar las creadas por los demás."
+        },
+        "profile": {
+          "description": ""
+        }
+      }
+    },
+    "contribute": {
+      "no-cards": "No se ha encontrado ninguna Tarjeta"
+    },
+    "explore": {
+      "create-callout": "Crear un nueva Llamada de Atención"
+    },
+    "admin": {
+      "generic": {
+        "sections": {
+          "profile": {
+            "description": "Aquí puedes editar el perfil de {{entity}}."
+          },
+          "context": {
+            "description": "Aquí puedes editar el contexto de {{entity}}."
+          },
+          "community": {
+            "description": "Aquí puedes editar los ajustes de la comunidad de {{entity}}."
+          },
+          "communications": {
+            "description": "Aquí puedes publicar Actualizaciones que serán visibles por todos los miembros de {{entity}}."
+          },
+          "authorization": {
+            "description": "Aquí puedes ajustar autorizaciones de acceso a {{entity}}."
+          },
+          "templates": {
+            "description": "Aquí puedes crear y editar plantillas para {{entity}}.",
+            "aspect-templates": "Plantillas de Tarjetas",
+            "canvas-templates": "Plantillas de Pizarras",
+            "innovation-templates": "Plantillas de Flujo de Innovación",
+            "delete-confirmation": "¿Estás seguro de que quieres borrar {{template}} de este Hub? También puedes editar esta plantilla si lo deseas."
+          },
+          "my-profile": {
+            "description": "Aquí puedes editar los detalles de tu perfil de usuario."
+          },
+          "membership": {
+            "description": "Aquí puedes consultar tus membresías."
+          },
+          "organizations": {
+            "description": "Aquí puedes ver las organizaciones con las que tu usuario está relacionado."
+          },
+          "notifications": {
+            "description": "Aquí puedes editar los ajustes de notificaciones."
+          },
+          "credentials": {
+            "description": "Aquí puedes ver tus credenciales."
+          }
+        }
+      },
+      "organization": {
+        "create-organization": "Crear Organización",
+        "authorization": {
+          "preferences": {
+            "title": "Autorización",
+            "subtitle": "Esta sección te permite modificar las autorizaciones de esta organización"
+          }
+        },
+        "notifications": {
+          "organization-created": "Organización creada con éxito.",
+          "organization-removed": "Organización eliminada con éxito."
+        }
+      },
+      "challenge": {
+        "community": {
+          "preferences": {
+            "title": "Membresía",
+            "subtitle": "Esta sección ter permite modificar los ajustes de membresía del desafío"
+          }
+        },
+        "sections": {
+          "opportunities": {
+            "description": "Aquí puedes gestionar las Oportunidades de este desafío."
+          }
+        },
+        "notifications": {
+          "challenge-created": "Desafío creado con éxito.",
+          "challenge-removed": "Desafío eliminado con éxito.",
+          "challenge-updated": "Desafío actualizado con éxito."
+        }
+      },
+      "hub": {
+        "sections": {
+          "challenges": {
+            "description": "Aquí puedes gestionar los desafíos de este Hub."
+          }
+        },
+        "authorization": {
+          "preferences": {
+            "subtitle": "Esta sección te permite modificar los ajustes de autorización de este Hub"
+          }
+        },
+        "community": {
+          "preferences": {
+            "title": "Membresía",
+            "subtitle": "Esta sección te permite modificar las opciones membresía de este hub."
+          }
+        },
+        "notifications": {
+          "hub-created": "Hub creado con éxito.",
+          "hub-removed": "Hub '{{name}}' eliminado con éxito."
+        }
+      },
+      "opportunity": {
+        "notifications": {
+          "opportunity-created": "Oportunidad creada con éxito.",
+          "opportunity-removed": "Oportunidad eliminada con éxito.",
+          "opportunity-updated": "Oportunidad actualizada con éxito."
+        }
+      },
+      "users": {
+        "notifications": {
+          "user-removed": "Usuario eliminado con éxito."
+        }
+      }
+    },
+    "feedback": {
+      "title": "Envía tus comentarios en esta comunidad",
+      "success": "Enviado"
+    },
+    "aspect": {
+      "dashboard": {
+        "comment": {
+          "placeholder": "Comentario..."
+        }
+      }
+    },
+    "visual-edit": {
+      "avatar": {
+        "title": "Avatar",
+        "description1": "Resolución: {{width}} ancho x {{height}} alto (en píxels)",
+        "description2": "??"
+      },
+      "banner": {
+        "title": "Banner",
+        "description1": "Resolución: {{width}} ancho x {{height}} alto (en píxels)",
+        "description2": "Uso: Banner en el panel principal"
+      },
+      "banner-narrow": {
+        "title": "Banner para las Tarjetas",
+        "description1": "Resolución: {{width}} ancho x {{height}} alto (en píxels)",
+        "description2": "Uso: Banner en las Tarjetas"
+      }
+    },
+    "contributors": {
+      "search": {
+        "title": "¡Explora los usuarios y organizaciones que están contribuyendo!",
+        "subtitle": "Introduce algún término de búsqueda. Haz click sobre las tarjetas para ver los perfiles de los resultados.",
+        "placeholder": "Buscar usuarios u Organizaciones"
+      },
+      "organizations": {
+        "title": "Organizaciones ({{count}})",
+        "subtitle": "Organizaciones que concuerdan con los términos de búsqueda introducidos.",
+        "help-text": "Haz click en las tarjetas de aquí abajo para ver dónde está contribuyendo cada organización."
+      },
+      "users": {
+        "title": "Usuarios ({{count}})",
+        "subtitle": "Usuarios que concuerdan con los términos de búsqueda introducidos.",
+        "help-text": ""
+      }
+    },
+    "search": {
+      "header": "Buscar",
+      "subheader": "Encuentra usuarios, organizaciones, grupos y desafíos.",
+      "alternativesubheader": "¿Necesitas ayuda? Encuentra usuarios relevantes, organizaciones, grupos y desafíos.",
+      "body": "",
+      "organization": {
+        "no-hosted": "Ninguna",
+        "no-leading": "Ninguna"
+      },
+      "no-results": "No se encontraron resultados",
+      "more-results": "Hay mas resultados. Por favor sé mas específico para reducir los resultados.",
+      "user-not-logged": "Inicia sesión o regístrate para incluir usuarios en tu búsqueda"
+    },
+    "challenge-explorer": {
+      "search": {
+        "title": "Explorar Desafíos",
+        "subtitle": "Esta sección te permite buscar por todos los desafíos hospedados en Alkemio que son visibles para ti.",
+        "placeholder": "Buscar desafíos en Alkemio..."
+      },
+      "my": {
+        "title": "Mis Desafíos ({{count}})",
+        "subtitle": "Esta sección te muestra los desafíos en los que estás contribuyendo.",
+        "help-text": "Una tarjeta por cada desafío, incluyendo tu rol en cada uno."
+      },
+      "hubs": {
+        "title": "Desafíos hospedados por el Hub '{{name}}': {{count}}",
+        "subtitle": "Esta sección muestra los desafíos hospedados por el Hub {{name}}, del cual eres miembro.",
+        "help-text": "Un Hub hospeda uno o mas desafíos. Tú eres miembro de este Hub."
+      }
+    },
+    "lead-organization": {
+      "search": {
+        "leading-placeholder": "Buscar por nombre o etiquetas",
+        "available-placeholder": "Buscar por nombre"
+      }
+    },
+    "activity": {
+      "title": "{{blockName}} Actividad",
+      "hubs": "Hubs de Desafíos",
+      "lifecycle-info": "Haz click para ver el Grafo de Ciclo de Vida"
+    },
+    "home": {
+      "sections": {
+        "welcome": {
+          "head": "Una nueva forma de trabajar en desafíos, juntos. Construyendo una comunidad de personas, empresas, ONGs y entes públicos.",
+          "impact": "<impact>Impacto</impact>",
+          "foundation": "<foundation>Fundación</foundation>",
+          "opensource": "<opensource>Código Abierto</opensource>",
+          "welcome-back": "¡Bienvenido de nuevo, {{username}}!",
+          "join": "¿Quieres unirte a la comunidad para ver mas?",
+          "existing-user": {
+            "header": "¿Ya eres usuario? ¡Inicia sesión!",
+            "subheader": "¡Bienvenido de nuevo! Continua donde lo dejaste y empieza a explorar nuevos desafíos.",
+            "more-info": "Mas acerca de Alkemio",
+            "more-info-url": "https://alkemio.foundation/about"
+          },
+          "new-to-alkemio": {
+            "header": "¿Nuevo en Alkemio?",
+            "subheader": "Fácil para involucrar a todo el mundo de la manera mas efectiva, permitiendo gestionar tus desafíos para crear el mayor impacto.",
+            "more-info": "Vídeo explicativo",
+            "more-info-url": "https://vimeo.com/708619604?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=Click&utm_content=2022Video"
+          }
+        },
+        "hub": {
+          "header": "¡Explorar los Hubs!",
+          "subheader": "Cada Hub contiene uno o mas Desafíos, provee contenido compartido y una comunidad para los desafíos hospedados en él.<br> Un espacio para coordinarse y colaborar. Conectar.",
+          "body": "Un Hub puede ser público o privado, y tiene una organización facilitadora que lo gestiona."
+        },
+        "my-hubs": {
+          "header": "Mis Hubs",
+          "subheader": "Esta sección te muestra los Hubs de los que eres miembro."
+        },
+        "organizations": {
+          "header": "Organizaciones",
+          "subheader": "Las entidades que quieren traer la innovación."
+        },
+        "footer": {
+          "headline": "¿Quieres saber más? Visita nuestro sitio web, contáctanos o echa un ojo a nuestro repositorio en Github.",
+          "links": {
+            "foundation": "Foundación Alkemio",
+            "contact-form": "Formulario de Contacto",
+            "github": "GitHub"
+          }
+        }
+      }
+    },
+    "organization": {
+      "settings": {
+        "tooltip": "Ajustes Organizaciones"
+      },
+      "verified-status": {
+        "help": "Estado de la verificación: Esta organización tiene la información de su identidad verificada formalmente"
+      }
+    },
+    "hub": {
+      "title": "Hub",
+      "about-this-hub": "Acerca de este Hub",
+      "application": {
+        "title": "Formulario para unirse al {{entity}} \"{{name}}\"",
+        "subheader": "Por favor contesta a estas preguntas, que se enviarán a la persona correspondiente de validar tu solicitud.",
+        "finish": "Gracias por completar tu solicitud para unirte a ",
+        "backButton": "Atrás",
+        "loading": "Cargando formulario...",
+        "errorBlockName": "las preguntas"
+      },
+      "sections": {
+        "dashboard": {
+          "organization": "Organización facilitadora",
+          "activity": "Estadísticas del Hub",
+          "challenges": {
+            "title": "Desafíos",
+            "help-text": "Esto muestra los diferentes desafíos a los que puedes contribuir en este hub."
+          },
+          "community": "Comunidad"
+        },
+        "challenges": {
+          "header": "Desafíos",
+          "subheader": "No hay frontera final",
+          "body": "",
+          "no-data": "No hay ningún desafío disponible en este hub",
+          "description": "Aquí puedes explorar los desafíos hospedados en este hub. Filtra por palabras clave para mostrar solo los temas que te interesen."
+        }
+      }
+    },
+    "challenge": {
+      "title": "Desafío",
+      "about-this-challenge": "Acerca de este Desafío",
+      "organizationBanner": {
+        "load-more": "Y mas..."
+      },
+      "sections": {
+        "dashboard": {
+          "statistics": {
+            "title": "Estadísticas del Desafío",
+            "help-text": "Estadísticas del Desafío"
+          },
+          "opportunities": {
+            "title": "Oportunidades",
+            "help-text": "Oportunidades relacionadas con este desafío"
+          },
+          "projects": {
+            "title": "Proyectos",
+            "help-text": "Proyectos relacionados con este desafío"
+          }
+        },
+        "opportunities": {
+          "description": "Aquí puedes explorar las Oportunidades que se han identificado para progresar con este desafío. Filtra por palabras clave para mostrar solo los temas que te interesen.",
+          "body-missing": "No se encontraron oportunidades en este desafío"
+        }
+      }
+    },
+    "opportunity": {
+      "title": "Oportunidad",
+      "about-this-opportunity": "Acerca de esta Oportunidad",
+      "sections": {
+        "dashboard": {
+          "statistics": {
+            "title": "Estadísticas de esta Oportunidad",
+            "help-text": "Estadísticas de esta Oportunidad"
+          },
+          "projects": {
+            "title": "Proyectos",
+            "help-text": "Proyectos relacionados con esta Oportunidad"
+          }
+        },
+        "community": {
+          "description": "Aquí puedes explorar las la comunidad. Ver qué usuarios están contribuyendo, y las actualizaciones que han sido compartidas."
+        },
+        "apply": "¿Interesado en colaborar?",
+        "agreements": {
+          "description": "Los Acuerdos son pasos concretos a tomar para la actuación. Esta funcionalidad estará disponible pronto.\n\n¿Ideas, sugerencias? ¡Cuéntanos!"
+        },
+        "projects": {
+          "more-projects": "MAS PROYECTOS EMPEZARÁN PRONTO",
+          "new-project": {
+            "header": "Nuevo proyecto"
+          }
+        }
+      }
+    },
+    "community": {
+      "title": "Página de la comunidad de {{name}}",
+      "leading-organizations": {
+        "title": "Organizaciones liderando ({{count}})",
+        "help-text": "Muestra las diferentes organizaciones y el rol que tiene cada una",
+        "no-data": "No hay organizaciones liderando por el momento"
+      },
+      "member-organizations": {
+        "no-data": "No hay organizaciones contribuyendo por el momento"
+      },
+      "hub-host": {
+        "title": "Organización Facilitadora",
+        "help-text": "La Organización que está gestionando este Hub."
+      },
+      "members": {
+        "title": "Miembros ({{count}})",
+        "help-text": "Mostrar miembros de esta comunidad y el rol que tienen.",
+        "no-data": "No hay miembros"
+      },
+      "updates": {
+        "title": "Actualizaciones ({{count}})",
+        "no-data": "No hay actualizaciones aún"
+      }
+    },
+    "canvas": {
+      "header": "Pizarras en {{blockName}}",
+      "subheader": "Crea tu propia visualización y compártela con otros.",
+      "add-canvas": "Crear Pizarra",
+      "no-canvases": "No hay pizarras aún, sé el primero en crear una.",
+      "state": {
+        "available": "Puedes trabajar en esta pizarra",
+        "checkedout": "Alguien está trabajando en esta pizarra",
+        "unknown": "Hay un problema con esta pizarra"
+      },
+      "state-actions": {
+        "check-out": "Editar",
+        "check-in": "Terminar de editar",
+        "save-as-template": "Guardar como plantilla",
+        "save-and-check-in": "Guardar & Terminar de editar",
+        "save": "Guardar",
+        "delete": "Borrar"
+      },
+      "delete": {
+        "confirmation-title": "Borrando <b>{{ blockName }}</b>",
+        "confirmation-text": "¿Estás seguro de que quieres borrar esta pizarra? Esta acción es irreversible."
+      },
+      "create-dialog": {
+        "header": "Crear una nueva pizarra",
+        "steps": {
+          "naming": "Dale un nombre a tu nueva pizarra. ¿Qué es lo que quieres representar?",
+          "templating": "Elije entre una lista de plantillas si quieres usarla para tu pizarra.",
+          "completing": "Esta pizarra va a ser creada con los siguientes parámetros"
+        },
+        "no-template-selected": "Para ver una vista preliminar de la plantilla, por favor, selecciona alguna."
+      },
+      "template": {
+        "header": "Plantillas definidas en Alkemio",
+        "no-templates": "No hay plantillas definidas aún. Sé el primero en añadir una.",
+        "how-to": "Para crear una plantilla crea una pizarra o usa una existente, y guárdala como plantilla."
+      },
+      "hub": {
+        "templatesHeader": "Plantillas definidas en este Hub",
+        "templatesSubheader": "Las plantillas definidas en este hub pueden ser utilizadas en cualquier Desafío u Oportunidad hospedada en él."
+      },
+      "challenge": {
+        "templatesHeader": "Plantillas definidas en este desafío",
+        "templatesSubheader": "Las plantillas definidas en este desafío pueden ser utilizadas en cualquier oportunidad dentro de este desafío."
+      },
+      "opportunity": {
+        "templatesHeader": "Plantillas definidas en esta oportunidad"
+      }
+    },
+    "login": {
+      "title": "Entrar",
+      "register": "¿No tienes una cuenta?"
+    },
+    "about": {
+      "title": "Reimaginando la Colaboración",
+      "description": "Alkemio pone el foco en los desafíos, cada desafío provee un lugar central y neutral para la colaboración.",
+      "powered-by": "Powered by {{name}} v{{version}}"
+    },
+    "error": {
+      "title": "Uuups!",
+      "line1": "Parece que algo no ha ido como es debido: <italic>{{message}}</italic>",
+      "line2": "Por favor comprueba que tu servidor ({{graphQLEndpoint}}) está disponible y recarga la página.",
+      "line3": "Si el error persiste, por favor, contacta con soporte.",
+      "buttons": {
+        "reload": "Recargar"
+      }
+    },
+    "four-ou-four": {
+      "message": "El recurso que estás buscando no ha sido encontrado.",
+      "buttons": {
+        "home": "Llévame a casa"
+      }
+    },
+    "logout": {
+      "loading": "Saliendo..."
+    },
+    "registration": {
+      "header": "Crear una cuenta para empezar a usar Alkemio",
+      "terms": "Acepto los <terms>Términos de uso</terms> y la <privacy>Política de Privacidad</privacy>.",
+      "login": "¿Tienes ya cuenta?"
+    },
+    "registration-success": {
+      "header": "Gracias por Registrarte.",
+      "subheader": "¡Ya casi está! Solo un paso mas, debes verificar tu email, por favor."
+    },
+    "verification-success": {
+      "header": "¡Gracias por verificar tu email!",
+      "subheader": "Tu usuario está registrado y completamente activado en Alkemio. ¡Disfruta!",
+      "message": "Por favor considera completar el resto de los datos de tu [perfil](/profile) - Ayudarás a que las solicitudes de unirte a las comunidades sean aceptadas más rápidamente y que a otros usuarios a conectar contigo."
+    },
+    "recovery": {
+      "header": "Recuperar contraseña",
+      "message": "Por favor, introduce el email que usaste para registrarte para recibir un enlace que te ayudará a recuperar tu contraseña."
+    },
+    "verification": {
+      "header": "Verificación de email",
+      "message": "Para recibir un nuevo email de verificación, por favor introduce tu dirección a continuación."
+    },
+    "verification-required": {
+      "header": "Verificación de email pendiente",
+      "message": "Por favor comprueba tu bandeja de entrada o tu carpeta de spam, deberías haber recibido un email con instrucciones para verificar tu dirección.",
+      "link": "(Si no has recibido ningún email, haz click en este link para enviarlo de nuevo)"
+    },
+    "settings": {
+      "header": "Ajustes de Usuario"
+    },
+    "user-profile": {
+      "tooltips": {
+        "settings": "Ajustes de Usuario"
+      },
+      "member-of": "Miembro de",
+      "applications": {
+        "title": "Aplicaciones pendientes"
+      },
+      "communities": {
+        "title": "Comunidades",
+        "help": "Comunidades de las que este usuario es miembro"
+      },
+      "pending-applications": {
+        "title": "Aplicaciones pendientes",
+        "help": "Aplicaciones pendientes de este usuario"
+      },
+      "associated-organizations": {
+        "title": "Organizaciones asociadas",
+        "help": "Organizaciones con las que este usuario está relacionado"
+      },
+      "verifiable-credentials": {
+        "title": "Credenciales verificadas",
+        "help": "Credenciales de este usuario emitidas por instituciones de confianza"
+      }
+    },
+    "user-credentials": {
+      "your-credentials": {
+        "title": "Mis Credenciales Verificables",
+        "description": "Alkemio guarda tus Credenciales Verificables en tu libreta hospedada en la nube. Las credenciales que compartes te otorgan privilegios en las comunidades hospedadas en la plataforma.",
+        "add-credential": "Añadir Credencial"
+      },
+      "issue": "Expedición",
+      "added-successfully": "Credencial añadida correctamente"
+    },
+    "authentication-required": {
+      "header": "La página a la que estás intentando acceder requiere que inicies sesión.",
+      "subheader": "Por favor, ¡haz log-in or regístrate para continuar!"
+    },
+    "user-notifications-settings": {
+      "general": {
+        "title": "General",
+        "subtitle": "Esta sección te permite ajustar tus preferencias a la hora de recibir notificaciones"
+      },
+      "user-administration": {
+        "title": "Plataforma de Administración",
+        "subtitle": "Esta sección solo está disponible para usuarios que son Administradores Globales de la plataforma"
+      },
+      "community-administration": {
+        "title": "Administración de la Comunidad",
+        "subtitle": "Esta sección te permite ajustar tus preferencias sobre la comunidad"
+      }
+    }
+  },
+  "operations": {
+    "user-group": {
+      "updated-successfuly": "El grupo {{name}} ha sido actualizado",
+      "deleted-successfuly": "El grupo {{name}} ha sido eliminado"
+    }
+  },
+  "kratos": {
+    "errors": {
+      "401": "No autorizado",
+      "session": {
+        "default": "No se pudo obtener información de la sesión!"
+      }
+    },
+    "loading-flow": "Cargando flujo",
+    "loading-error": "Error cargando contenido",
+    "messages": {
+      "successfully-recovered-password": "Por favor introduce una nueva contraseña en los próximos 15 minutos para completar tu recuperación de contraseña.",
+      "verification-flow-expired": "El enlace de verificación ha caducado. Por favor, solicita uno nuevo.",
+      "recovery-flow-expired": "Este enlace de recuperación de contraseña ha caducado. Por favor, solicita uno nuevo."
+    }
+  },
+  "apollo": {
+    "errors": {
+      "bad-user-input": "Dato introducido no válido.",
+      "bad-user-input-withfield": "El campo '{{field}}' no es válido."
+    }
+  },
+  "dashboard-updates-section": {
+    "title": "Actualizaciones ({{count}})",
+    "dialog-title": "Todas las Actualizaciones",
+    "no-data": "No hay actualizaciones disponibles."
+  },
+  "dashboard-discussions-section": {
+    "title": "Debates ({{count}})",
+    "no-data-create": "No hay debates disponibles. Crea un nuevo debate",
+    "no-data-join": "No hay debates disponibles. Únete a la comunidad para crear un nuevo debate"
+  },
+  "dashboard-community-section": {
+    "title": "Comunidad"
+  },
+  "aspect-edit": {
+    "new": "Nueva Tarjeta",
+    "edit": "Editar Tarjeta",
+    "type": {
+      "title": "Tipo de Tarjeta",
+      "help-text": "¿Qué tipo de información quieres compartir?"
+    }
+  },
+  "innovation-edit": {
+    "new": "Nuevo Flujo de Innovación",
+    "edit": "Editar Flujo de Innovación"
+  },
+  "contributors-section": {
+    "title": "Colaboradores",
+    "subheader": "Progresar en los Desafíos requiere muchos tipos de contribuciones, de usuarios y de organizaciones. ¡Explora para ver quién está contribuyendo y dónde!",
+    "users-title": "Usuarios",
+    "organizations-title": "Organizaciones"
+  },
+  "contributions-view": {
+    "no-data": "No hay {{name, lowercase}} disponibles"
+  },
+  "credentials-view": {
+    "no-data": "No se han presentado credenciales"
+  },
+  "associated-organizations-view": {
+    "no-data": "No hay {{name, lowercase}} disponibles"
+  },
+  "dashboard-contributors-section": {
+    "dialog-title": "Colaboradores",
+    "more": "...y {{count}} mas!"
+  },
+  "associates-view": {
+    "less": "mostrar menos",
+    "more": "...y {{count}} mas!"
+  }
+}
