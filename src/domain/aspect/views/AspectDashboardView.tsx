@@ -132,17 +132,19 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
             </>
           )}
         </DashboardGenericSection>
-        <DashboardGenericSection headerText={t('common.references')}>
-          {loading ? (
-            <>
-              <Skeleton />
-              <Skeleton />
-              <Skeleton />
-            </>
-          ) : (
-            <References references={references} noItemsView={<Typography>{t('common.no-references')}</Typography>} />
-          )}
-        </DashboardGenericSection>
+        {!!references && references.length > 0 && (
+          <DashboardGenericSection headerText={t('common.references')}>
+            {loading ? (
+              <>
+                <Skeleton />
+                <Skeleton />
+                <Skeleton />
+              </>
+            ) : (
+              <References references={references} noItemsView={<Typography>{t('common.no-references')}</Typography>} />
+            )}
+          </DashboardGenericSection>
+        )}
       </DashboardColumn>
       {canReadComments && (
         <DashboardColumn>

@@ -170,13 +170,15 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
         </DashboardColumn>
         <DashboardColumn>
           <ActivityLogSection activities={activities} />
-          <DashboardSection
-            headerText={t('components.referenceSegment.title')}
-            primaryAction={<ContextSectionIcon component={SchoolIcon} />}
-            collapsible
-          >
-            <References references={references} />
-          </DashboardSection>
+          {!!references && references.length > 0 && (
+            <DashboardSection
+              headerText={t('components.referenceSegment.title')}
+              primaryAction={<ContextSectionIcon component={SchoolIcon} />}
+              collapsible
+            >
+              <References references={references} />
+            </DashboardSection>
+          )}
           <DashboardSectionAspects
             aspects={entities.aspects}
             aspectsCount={entities.aspectsCount}
