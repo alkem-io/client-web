@@ -12,6 +12,7 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 
 // This is a helper function to build a CSS rule with a background gradient + the background image
+// The returned result will be something like: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%), url('...'), #FFF
 function backgroundBuilder(
   angle: number,
   steps: { color: string; opacity: number; position: number }[],
@@ -26,6 +27,7 @@ function backgroundBuilder(
   );
 }
 
+// Styled Blocks:
 const Root = styled(Box)(({ theme }) => ({
   aspectRatio: BANNER_ASPECT_RATIO,
   backgroundColor: theme.palette.neutralLight.main,
@@ -42,11 +44,15 @@ const Root = styled(Box)(({ theme }) => ({
   ),
 }));
 
-const ProfileInfo = styled(Box)(() => ({
+const ProfileInfo = styled(Box)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-around',
+  // Icons:
+  '& svg': {
+    marginRight: theme.spacing(0.5),
+  },
 }));
 
 const ProfileInfoWrapper = styled(Grid)(({ theme }) => ({
