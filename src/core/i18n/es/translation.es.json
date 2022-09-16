@@ -80,7 +80,7 @@
     "administration": "Administración",
     "add": "Agregar",
     "remove": "Eliminar",
-    "callout": "Llamada de Atención",
+    "callout": "Callout",
     "canvas": "Pizarra",
     "canvases": "Pizarras",
     "comment": "Comentario",
@@ -289,9 +289,9 @@
     "host": "Anfitrión"
   },
   "callout": {
-    "draftNotice": "BORRADOR - Esta Llamada de Atención solo es visible para administradores.",
-    "delete-confirm-title": "¿Borrar Llamada de Atención?",
-    "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de la Llamada de Atención serán borrados."
+    "draftNotice": "BORRADOR - Este Callout solo es visible para administradores.",
+    "delete-confirm-title": "¿Borrar Callout?",
+    "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de este Callout serán borrados."
   },
   "forms": {
     "validations": {
@@ -311,7 +311,7 @@
     "canvas-template": "Plantilla de pizarra"
   },
   "innovation-templates": {
-    "innovation-template": "Plantilla de Flujo de Innovación",
+    "innovation-template": "Plantilla de Innovation Flow",
     "definition": {
       "title": "Definición",
       "placeholder": "Aquí puedes pegar la descripción de Xstate Visualizer con los distintos estados del ciclo de vida"
@@ -326,7 +326,7 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "publicado nueva Llamada de Atención",
+        "callout-published": "publicado nuevo Callout",
         "canvas-created": "añadida nueva Pizarra",
         "card-comment-created": "comentado en una Tarjeta",
         "card-created": "añadido una nueva Tarjeta",
@@ -345,8 +345,8 @@
       "give-feedback": "Dar feedback"
     },
     "callout-creation": {
-      "title": "Crear Llamada de Atención",
-      "callout-type-label": "Tipo de Llamada de Atención",
+      "title": "Crear Callout",
+      "callout-type-label": "Tipo de Callout",
       "info-step": {
         "title": "Detalles",
         "description": "Descripción",
@@ -360,7 +360,7 @@
       "template-step": {
         "title": "Plantillas",
         "no-templates": "Plantillas no disponibles",
-        "card-template-label": "Elije una plantilla para tu Llamada de Atención"
+        "card-template-label": "Elije una plantilla para tu Callout"
       },
       "create-step": {
         "title": "Crear",
@@ -769,7 +769,7 @@
       "no-cards": "No se ha encontrado ninguna Tarjeta"
     },
     "explore": {
-      "create-callout": "Crear un nueva Llamada de Atención"
+      "create-callout": "Crear un nuevo Callout"
     },
     "admin": {
       "generic": {
@@ -793,7 +793,7 @@
             "description": "Aquí puedes crear y editar plantillas para {{entity}}.",
             "aspect-templates": "Plantillas de Tarjetas",
             "canvas-templates": "Plantillas de Pizarras",
-            "innovation-templates": "Plantillas de Flujo de Innovación",
+            "innovation-templates": "Plantillas de Innovation Flows",
             "delete-confirmation": "¿Estás seguro de que quieres borrar {{template}} de este Hub? También puedes editar esta plantilla si lo deseas."
           },
           "my-profile": {
@@ -1335,8 +1335,8 @@
     }
   },
   "innovation-edit": {
-    "new": "Nuevo Flujo de Innovación",
-    "edit": "Editar Flujo de Innovación"
+    "new": "Nuevo Innovation Flow",
+    "edit": "Editar Innovation Flow"
   },
   "contributors-section": {
     "title": "Colaboradores",
