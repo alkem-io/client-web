@@ -1,4 +1,4 @@
-import { Link, SvgIconProps } from '@mui/material';
+import { Box, Link, SvgIconProps } from '@mui/material';
 import { Block, Mail, Public } from '@mui/icons-material';
 import React, { FC, useMemo } from 'react';
 import { SocialNetworkEnum, SocianNetworksSortOrder } from './models/SocialNetworks';
@@ -8,7 +8,7 @@ import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
 import * as yup from 'yup';
 interface SocialLinksProps {
-  title: string;
+  title?: string;
   items?: SocialLinkItem[];
   iconSize?: SvgIconProps['fontSize'];
 }
@@ -57,10 +57,12 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) =>
     [items]
   );
   return filteredSortedItems && filteredSortedItems.length > 0 ? (
-    <>
-      <Typography color="primary" weight="boldLight">
-        {title}
-      </Typography>
+    <Box>
+      {title && (
+        <Typography color="primary" weight="boldLight">
+          {title}
+        </Typography>
+      )}
 
       {filteredSortedItems.map((item, i) => (
         <Link
@@ -74,7 +76,7 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) =>
           {getSocialIcon(item.type, iconSize)}
         </Link>
       ))}
-    </>
+    </Box>
   ) : (
     <></>
   );
