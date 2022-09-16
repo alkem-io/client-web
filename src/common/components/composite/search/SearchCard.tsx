@@ -1,6 +1,7 @@
-import React, { FC, memo, ReactElement, useState } from 'react';
-import { default as CoreCard } from '../../core/Card';
+import React, { FC, memo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
+import { default as CoreCard } from '../../core/Card';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { Activities, ActivityItem } from '../common/ActivityPanel/Activities';
 
@@ -31,15 +32,20 @@ interface Props {
   title: string;
   backgroundImg: string;
   tag: string;
-  dialog: ReactElement;
+  url: string | undefined;
 }
 
-const SearchCardInner: FC<Props> = ({ terms, activity, title, backgroundImg, tag, dialog }) => {
-  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+const SearchCardInner: FC<Props> = ({ terms, activity, title, backgroundImg, tag, url }) => {
+  const navigate = useNavigate();
   const styles = getStyles();
 
-  const hideHandler = () => setIsModalOpened(false);
-  const dialogWithHandlers = React.cloneElement(dialog, { onHide: hideHandler });
+  const handleClick = useCallback(() => {
+    if (!url) {
+      return;
+    }
+
+    navigate(url);
+  }, [url]);
 
   return (
     <div className={styles.relative}>
@@ -71,10 +77,8 @@ const SearchCardInner: FC<Props> = ({ terms, activity, title, backgroundImg, tag
         }}
         matchedTerms={{ terms }}
         tagProps={{ text: tag }}
-        onClick={() => !isModalOpened && setIsModalOpened(true)}
-      >
-        {isModalOpened && dialogWithHandlers}
-      </CoreCard>
+        onClick={handleClick}
+      />
     </div>
   );
 };

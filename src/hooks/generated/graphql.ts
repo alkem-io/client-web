@@ -1552,6 +1552,7 @@ export const OrganizationSearchResultFragmentDoc = gql`
   fragment OrganizationSearchResult on Organization {
     id
     displayName
+    nameID
     profile {
       id
       avatar {

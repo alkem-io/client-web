@@ -1,12 +1,12 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useMemo } from 'react';
 import { ChallengeSearchResultFragment } from '../../../../models/graphql-schema';
 import { useHubNameQuery } from '../../../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
-import ChallengePopUp from '../entities/Challenge/ChallengePopUp';
 import getActivityCount from '../../../../domain/activity/utils/getActivityCount';
 import { ActivityItem } from '../common/ActivityPanel/Activities';
 import EntitySearchCardProps from './EntitySearchCardProps';
 import { getVisualBannerNarrow } from '../../../utils/visuals.utils';
+import { buildChallengeUrl } from '../../../utils/urlBuilders';
 
 const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFragment>> = ({
   terms,
@@ -19,7 +19,17 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
     },
   });
   const hub = data?.hub;
+  const hubNameId = hub?.nameID;
+  const challengeNameId = challenge?.nameID;
   const tag = hub?.displayName || '';
+
+  const url = useMemo(() => {
+    if (!hubNameId || !challengeNameId) {
+      return;
+    }
+
+    return buildChallengeUrl(hubNameId, challengeNameId);
+  }, [hubNameId, challengeNameId]);
 
   const backgroundImg = getVisualBannerNarrow(challenge.context?.visuals) ?? '';
   const displayName = challenge.displayName || '';
@@ -37,7 +47,7 @@ const ChallengeSearchCardInner: FC<EntitySearchCardProps<ChallengeSearchResultFr
       activity={activity}
       backgroundImg={backgroundImg}
       tag={tag}
-      dialog={<ChallengePopUp entity={challenge} hub={hub} />}
+      url={url}
     />
   );
 };

@@ -1,13 +1,14 @@
-import React, { FC, memo, useMemo, useState } from 'react';
+import React, { FC, memo, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
+import { makeStyles } from '@mui/styles';
+import { OrganizationSearchResultFragment } from '../../../../models/graphql-schema';
+import { buildOrganizationUrl } from '../../../utils/urlBuilders';
 import Avatar from '../../core/Avatar';
 import Card from '../../core/Card';
-import { makeStyles } from '@mui/styles';
 import hexToRGBA from '../../../utils/hexToRGBA';
-import OrganizationPopUp from '../entities/Organization/OrganizationPopUp';
 import TagContainer from '../../core/TagContainer';
 import Tag from '../../core/Tag';
-import { OrganizationSearchResultFragment } from '../../../../models/graphql-schema';
 import EntitySearchCardProps from './EntitySearchCardProps';
 
 const OrganizationCardStyles = makeStyles(theme => ({
@@ -51,7 +52,7 @@ const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganizationSearchRe
   terms,
   entity: organization,
 }) => {
-  const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
+  const navigate = useNavigate();
   const styles = OrganizationCardStyles();
 
   const tagProps = { text: 'Organization' };
@@ -61,6 +62,16 @@ const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganizationSearchRe
 
   const tags = (organization?.profile?.tagsets || []).flatMap(x => x.tags);
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
+
+  const url = buildOrganizationUrl(organization.nameID);
+
+  const handleClick = () => {
+    if (!url) {
+      return;
+    }
+
+    navigate(url);
+  };
 
   return (
     <div className={styles.relative}>
@@ -102,14 +113,8 @@ const OrganizationSearchCardInner: FC<EntitySearchCardProps<OrganizationSearchRe
         }}
         tagProps={tagProps}
         matchedTerms={{ terms }}
-        onClick={() => {
-          !isModalOpened && setIsModalOpened(true);
-        }}
-      >
-        {isModalOpened && organization && (
-          <OrganizationPopUp id={organization?.id} onHide={() => setIsModalOpened(false)} />
-        )}
-      </Card>
+        onClick={handleClick}
+      />
     </div>
   );
 };
