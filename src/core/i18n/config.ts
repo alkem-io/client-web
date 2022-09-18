@@ -11,11 +11,11 @@ export const resources = {
   en: {
     translation: translationEn,
   },
-  es: {
-    translation: translationEs,
-  },
   nl: {
     translation: translationNl,
+  },
+  es: {
+    translation: translationEs,
   },
   bg: {
     translation: translationBg,
@@ -27,7 +27,7 @@ export const resources = {
 
 type Language = keyof typeof resources;
 
-export const supportedLngs: Language[] = ['en', 'es', 'nl', 'bg', 'ua'];
+export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua'];
 
 i18n
   .use(initReactI18next)
