@@ -2,12 +2,17 @@ import React, { FC } from 'react';
 import Typography from '../../common/components/core/Typography';
 import { useTranslation } from 'react-i18next';
 import { Location } from './Location';
+import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import { Box, Palette, SvgIconProps } from '@mui/material';
 
 export interface LocationViewProps {
   location: Partial<Location> | string | undefined;
+  mode?: 'icon' | 'label';
+  color?: SvgIconProps['color'] & keyof Palette;
+  iconSize?: SvgIconProps['fontSize'];
 }
 
-const LocationView: FC<LocationViewProps> = ({ location }) => {
+const LocationView: FC<LocationViewProps> = ({ location, mode = 'label', color = 'primary', iconSize = 'medium' }) => {
   const { t } = useTranslation();
 
   if (!location) {
@@ -27,14 +32,26 @@ const LocationView: FC<LocationViewProps> = ({ location }) => {
     return null;
   }
 
-  return (
-    <>
-      <Typography color="primary" weight="boldLight" aria-label="Location">
-        {t('components.profile.fields.location.title')}
-      </Typography>
-      <Typography>{locationString}</Typography>
-    </>
-  );
+  switch (mode) {
+    case 'icon': {
+      return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }} title={t('components.profile.fields.location.title')}>
+          <LocationOnOutlinedIcon color={color} fontSize={iconSize} />
+          <Typography>{locationString}</Typography>
+        </Box>
+      );
+    }
+    case 'label': {
+      return (
+        <>
+          <Typography color={color} weight="boldLight" aria-label="Location">
+            {t('components.profile.fields.location.title')}
+          </Typography>
+          <Typography>{locationString}</Typography>
+        </>
+      );
+    }
+  }
 };
 
 export default LocationView;

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, ReactElement } from 'react';
 import { Box, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -7,18 +7,31 @@ import { User } from '../../../../models/graphql-schema';
 import Card from '../../../../common/components/core/Card';
 import Edit from '@mui/icons-material/Edit';
 import { COUNTRIES } from '../../../../models/constants';
+import { useTranslation } from 'react-i18next';
 
-export const ContactDetail: FC<{ title: string; value?: string }> = ({ title, value }) => {
+interface ContactDetailProps {
+  title: string;
+  icon?: ReactElement;
+  value?: string;
+}
+
+export const ContactDetail: FC<ContactDetailProps> = ({ title, icon, value }) => {
   return (
     <>
-      {value && (
-        <Box>
-          <Typography color="primary" fontWeight="bold">
-            {title}
-          </Typography>
-          <Typography>{value}</Typography>
-        </Box>
-      )}
+      {value &&
+        (icon ? (
+          <Box title={title} sx={{ display: 'flex', alignItems: 'center' }}>
+            {icon}
+            <Typography>{value}</Typography>
+          </Box>
+        ) : (
+          <Box>
+            <Typography color="primary" fontWeight="bold">
+              {title}
+            </Typography>
+            <Typography>{value}</Typography>
+          </Box>
+        ))}
     </>
   );
 };
@@ -47,6 +60,8 @@ const useContactDetailsStyles = makeStyles(theme => ({
 
 const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { email, phone, profile }, onEdit }) => {
   const styles = useContactDetailsStyles();
+  const { t } = useTranslation();
+
   return (
     <>
       <Card>
@@ -63,11 +78,14 @@ const ContactDetails: FC<{ user: User; onEdit?: () => void }> = ({ user: { email
             </Tooltip>
           </Box>
           <div className={styles.data}>
-            <ContactDetail title="Email" value={email} />
-            <ContactDetail title="Bio" value={profile?.description || ''} />
-            <ContactDetail title="Phone" value={phone} />
-            <ContactDetail title="Country" value={COUNTRIES.find(x => x.code === profile?.location?.country)?.name} />
-            <ContactDetail title="City" value={profile?.location?.city} />
+            <ContactDetail title={t('common.email')} value={email} />
+            <ContactDetail title={t('components.profile.fields.bio.title')} value={profile?.description || ''} />
+            <ContactDetail title={t('components.profile.fields.phone.title')} value={phone} />
+            <ContactDetail
+              title={t('components.profileSegment.location.country.name')}
+              value={COUNTRIES.find(x => x.code === profile?.location?.country)?.name}
+            />
+            <ContactDetail title={t('components.profileSegment.location.city.name')} value={profile?.location?.city} />
           </div>
         </div>
       </Card>
