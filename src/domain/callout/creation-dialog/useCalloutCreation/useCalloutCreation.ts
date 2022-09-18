@@ -7,7 +7,7 @@ import {
   useOpportunityCollaborationIdQuery,
 } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUrlParams } from '../../../../hooks';
-import { CalloutType, CalloutVisibility } from '../../../../models/graphql-schema';
+import { CalloutType } from '../../../../models/graphql-schema';
 
 export type CalloutCreationType = {
   description: string;
@@ -109,7 +109,6 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
             description: callout.description,
             displayName: callout.displayName,
             type: callout.type,
-            visibility: CalloutVisibility.Published,
           },
         },
       });
@@ -136,7 +135,6 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
             description: callout.description,
             displayName: callout.displayName,
             type: callout.type,
-            visibility: CalloutVisibility.Draft,
           },
         },
       });

@@ -19,6 +19,14 @@ mutation CreateAspectFromContributeTab($aspectData: CreateAspectOnCalloutInput!)
   }
 }
 
+mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
+  updateCalloutVisibility(calloutData: $calloutData) {
+    id
+    nameID
+    visibility
+  }
+}
+
 mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
   sendMessageOnCallout(data: $data) {
     id

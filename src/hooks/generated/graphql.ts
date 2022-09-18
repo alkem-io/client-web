@@ -10984,6 +10984,55 @@ export type CreateAspectFromContributeTabMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.CreateAspectFromContributeTabMutation,
   SchemaTypes.CreateAspectFromContributeTabMutationVariables
 >;
+export const UpdateCalloutVisibilityDocument = gql`
+  mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
+    updateCalloutVisibility(calloutData: $calloutData) {
+      id
+      nameID
+      visibility
+    }
+  }
+`;
+export type UpdateCalloutVisibilityMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateCalloutVisibilityMutation,
+  SchemaTypes.UpdateCalloutVisibilityMutationVariables
+>;
+
+/**
+ * __useUpdateCalloutVisibilityMutation__
+ *
+ * To run a mutation, you first call `useUpdateCalloutVisibilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCalloutVisibilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCalloutVisibilityMutation, { data, loading, error }] = useUpdateCalloutVisibilityMutation({
+ *   variables: {
+ *      calloutData: // value for 'calloutData'
+ *   },
+ * });
+ */
+export function useUpdateCalloutVisibilityMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateCalloutVisibilityMutation,
+    SchemaTypes.UpdateCalloutVisibilityMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateCalloutVisibilityMutation,
+    SchemaTypes.UpdateCalloutVisibilityMutationVariables
+  >(UpdateCalloutVisibilityDocument, options);
+}
+export type UpdateCalloutVisibilityMutationHookResult = ReturnType<typeof useUpdateCalloutVisibilityMutation>;
+export type UpdateCalloutVisibilityMutationResult = Apollo.MutationResult<SchemaTypes.UpdateCalloutVisibilityMutation>;
+export type UpdateCalloutVisibilityMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateCalloutVisibilityMutation,
+  SchemaTypes.UpdateCalloutVisibilityMutationVariables
+>;
 export const PostCommentInCalloutDocument = gql`
   mutation PostCommentInCallout($data: SendMessageOnCalloutInput!) {
     sendMessageOnCallout(data: $data) {

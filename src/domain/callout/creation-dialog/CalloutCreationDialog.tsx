@@ -19,19 +19,11 @@ export type CalloutDialogCreationType = {
 
 export interface CalloutCreationDialogProps {
   open: boolean;
-  isPublishing: boolean;
   onClose: () => void;
-  onPublish: (callout: CalloutCreationType) => Promise<void>;
   onSaveAsDraft: (callout: CalloutCreationType) => Promise<void>;
 }
 
-const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
-  open,
-  isPublishing,
-  onClose,
-  onPublish,
-  onSaveAsDraft,
-}) => {
+const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, onSaveAsDraft }) => {
   const { t } = useTranslation();
 
   const [callout, setCallout] = useState<CalloutDialogCreationType>({});
@@ -53,18 +45,6 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
     },
     [callout]
   );*/
-  const handleSummaryStepPublish = useCallback(() => {
-    const newCallout = {
-      displayName: callout.displayName!,
-      description: callout.description!,
-      templateId: callout.templateId!,
-      type: callout.type!,
-    };
-
-    setCallout({});
-
-    return onPublish(newCallout);
-  }, [callout, onPublish]);
   const handleSummarySaveAsDraft = useCallback(() => {
     const newCallout = {
       displayName: callout.displayName!,
@@ -110,9 +90,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({
             title={t('components.callout-creation.create-step.title')}
             callout={callout}
             onClose={handleClose}
-            onPublish={handleSummaryStepPublish}
             onSaveAsDraft={handleSummarySaveAsDraft}
-            isPublishing={isPublishing}
           />
         </Steps>
       </StepLayoutHolder>

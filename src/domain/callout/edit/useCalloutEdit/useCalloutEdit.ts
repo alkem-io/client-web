@@ -16,9 +16,9 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
 
   const [updateCallout] = useUpdateCalloutMutation({ onError: handleError });
   const handleVisibilityChange = useCallback(
-    async (calloutId: string, visibility: CalloutVisibility) => {
+    async (calloutId: string) => {
       await updateCallout({
-        variables: { calloutData: { ID: calloutId, visibility } },
+        variables: { calloutData: { ID: calloutId } },
       });
     },
     [updateCallout]

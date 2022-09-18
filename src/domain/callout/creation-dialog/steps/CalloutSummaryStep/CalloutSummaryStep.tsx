@@ -8,16 +8,12 @@ import { StepComponentProps } from '../../../../shared/components/Steps/step/Ste
 import Markdown from '../../../../../common/components/core/Markdown';
 
 interface CalloutSummaryStepProps extends CalloutStepProps {
-  onPublish: () => Promise<void>;
   onSaveAsDraft: () => Promise<void>;
-  isPublishing: boolean;
 }
 
 const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
   callout,
-  isPublishing,
   onClose,
-  onPublish,
   onSaveAsDraft,
   prev,
 }) => {
@@ -38,9 +34,7 @@ const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
       dialogTitle={t('components.callout-creation.title')}
       onClose={onClose}
       prev={prev}
-      onPublish={onPublish}
       onSaveAsDraft={onSaveAsDraft}
-      isPublishing={isPublishing}
     >
       <CalloutSummary callout={callout} /* templatePreviewComponent={TemplatePreviewComponent} */ />
     </StepSummaryLayout>
