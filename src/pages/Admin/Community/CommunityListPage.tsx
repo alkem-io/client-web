@@ -7,7 +7,7 @@ import DashboardGenericSection from '../../../domain/shared/components/Dashboard
 import { useTranslation } from 'react-i18next';
 import SearchableList, { SearchableListItem } from '../../../domain/admin/components/SearchableList';
 import { Link } from 'react-router-dom';
-import Button from '../../../common/components/core/Button';
+import WrapperButton from '../../../common/components/core/WrapperButton';
 
 interface CommunityGroupListPageProps {
   communityId: string;
@@ -41,7 +41,7 @@ export const CommunityGroupListPage: FC<CommunityGroupListPageProps> = ({ commun
   return (
     <DashboardGenericSection
       headerText={t('common.groups')}
-      primaryAction={<Button as={Link} to="groups/new" text={t('buttons.new')} />}
+      primaryAction={<WrapperButton as={Link} to="groups/new" text={t('buttons.new')} />}
     >
       <SearchableList data={groupsList} onDelete={onDelete} loading={loading} />
     </DashboardGenericSection>

@@ -4,8 +4,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
-import Button from '../../../../common/components/core/Button';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 
 interface CreateGroupFormProps {
   onCreate: (name: string) => Promise<void>;
@@ -29,7 +29,7 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
   return (
     <Grid container spacing={2} direction={'column'}>
       <Grid item>
-        <Typography variant="h3">Create group</Typography>
+        <WrapperTypography variant="h3">Create group</WrapperTypography>
       </Grid>
       <Grid item>
         <Formik
@@ -53,9 +53,9 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
                   </Grid>
 
                   <Grid container item justifyContent={'flex-end'}>
-                    <Button type={'submit'} color={'primary'} disabled={isSubmitting}>
+                    <WrapperButton type={'submit'} color={'primary'} disabled={isSubmitting}>
                       {t('buttons.create')}
-                    </Button>
+                    </WrapperButton>
                   </Grid>
                 </Grid>
               </Form>

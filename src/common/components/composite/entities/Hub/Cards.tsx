@@ -4,9 +4,9 @@ import Add from '@mui/icons-material/Add';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@mui/styles';
-import Button from '../../../core/Button';
+import WrapperButton from '../../../core/WrapperButton';
 import Card from '../../../core/Card';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 
 const useCardStyles = makeStyles(theme => ({
   item: {
@@ -96,22 +96,22 @@ export const ProjectCard: FC<ProjectCardProps> = ({
       {!blank && (
         <>
           {tag && (
-            <Typography
+            <WrapperTypography
               color={tag.status === 'positive' ? 'positive' : 'negative'}
               variant="caption"
               className={styles.description}
             >
               <span>{tag.text}</span>
-            </Typography>
+            </WrapperTypography>
           )}
           <Box display={'flex'} flexDirection={'column'} flexGrow={1}>
-            <Typography as={'p'} clamp={3}>
+            <WrapperTypography as={'p'} clamp={3}>
               {description}
-            </Typography>
+            </WrapperTypography>
 
             <Box flexGrow={1}></Box>
             <div>
-              <Button text={t('buttons.details')} onClick={onSelect} />
+              <WrapperButton text={t('buttons.details')} onClick={onSelect} />
             </div>
           </Box>
         </>

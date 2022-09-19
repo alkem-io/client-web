@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import Grid from '@mui/material/Grid';
 import { Box, Container, Link, Paper } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import Toolbar from '../../../core/Toolbar';
-import Typography from '../../../core/Typography';
+import WrapperToolbar from '../../../core/WrapperToolbar';
+import WrapperTypography from '../../../core/WrapperTypography';
 import Image from '../../../../../domain/shared/components/Image';
 import { useConfig } from '../../../../../hooks';
 import { RouterLink } from '../../../core/RouterLink';
@@ -50,22 +50,22 @@ const Footer: FC = ({ children }) => {
               </Link>
             </Grid>
             <Grid item xs={12}>
-              <Toolbar dense>
+              <WrapperToolbar dense>
                 <Grid container justifyContent={'center'} wrap={'nowrap'} spacing={2}>
                   <Grid container justifyContent={'center'} alignItems="center" spacing={2} wrap={'nowrap'}>
                     <Grid item>
                       <Link href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
-                        Terms
+                        {t('footer.terms')}
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
-                        Privacy
+                        {t('footer.privacy')}
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
-                        Security
+                        {t('footer.security')}
                       </Link>
                     </Grid>
                     <Grid item component={Box} display={{ xs: 'none', sm: 'block', lg: 'block' }}>
@@ -75,34 +75,34 @@ const Footer: FC = ({ children }) => {
                     </Grid>
                     <Grid item>
                       <Link href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
-                        Feedback
+                        {t('footer.feedback')}
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
-                        Support
+                        {t('footer.support')}
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
-                        About
+                        {t('footer.about')}
                       </Link>
                     </Grid>
                   </Grid>
                 </Grid>
-              </Toolbar>
+              </WrapperToolbar>
             </Grid>
             <Grid item xs={12}>
-              <Toolbar dense className={styles.footerSecondary}>
+              <WrapperToolbar dense className={styles.footerSecondary}>
                 <Grid container justifyContent={'flex-start'}>
-                  <Typography variant="caption" color="neutralMedium" weight="boldLight">
+                  <WrapperTypography variant="caption" color="neutralMedium" weight="boldLight">
                     {t('footer.copyright')}
-                  </Typography>
+                  </WrapperTypography>
                 </Grid>
                 <Grid container justifyContent={'flex-end'}>
                   {children}
                 </Grid>
-              </Toolbar>
+              </WrapperToolbar>
             </Grid>
           </Grid>
         </Container>

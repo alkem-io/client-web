@@ -9,7 +9,7 @@ import { ContextSegment, contextSegmentSchema } from '../../../../domain/admin/c
 import { NameSegment, nameSegmentSchema } from '../../../../domain/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../../domain/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/admin/components/Common/TagsetSegment';
-import Typography from '../../core/Typography';
+import WrapperTypography from '../../core/WrapperTypography';
 import InputField from '../../../../domain/admin/components/Common/InputField';
 import { EmptyLocation, Location } from '../../../../domain/location/Location';
 import { formatLocation } from '../../../../domain/location/LocationUtils';
@@ -150,15 +150,15 @@ const ProfileFormWithContext: FC<Props> = ({
             {!contextOnly && (
               <>
                 <Grid item xs={12}>
-                  <Typography variant={'h4'} color={'primary'}>
+                  <WrapperTypography variant={'h4'} color={'primary'}>
                     {t('components.tagsSegment.title')}
-                  </Typography>
+                  </WrapperTypography>
                 </Grid>
                 <TagsetSegment tagsets={tagsets} />
                 {!isEdit && (
                   <>
                     <Grid item xs={12}>
-                      <Typography variant={'h4'}>Innovation flow template</Typography>
+                      <WrapperTypography variant={'h4'}>Innovation flow template</WrapperTypography>
                     </Grid>
                     <LifecycleTemplateSegment
                       innovationFlowTemplateOptions={innovationFlowTemplateOptions}
@@ -170,9 +170,9 @@ const ProfileFormWithContext: FC<Props> = ({
               </>
             )}
             {/*<Grid item xs={12}>
-              <Typography variant={'h4'} color={'primary'}>
+              <WrapperTypography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
-              </Typography>
+              </WrapperTypography>
             </Grid>
             <VisualSegment />*/}
 

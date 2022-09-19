@@ -2,7 +2,7 @@ import { makeStyles } from '@mui/styles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Tag, { TagProps } from '../../../core/Tag';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 import Card from '../../../core/Card';
 import { Box } from '@mui/material';
 
@@ -37,9 +37,9 @@ const MemberOf: FC<MemberOfProps> = ({ groups, challenges, opportunities, hubs, 
       names &&
       names.map((x, i) => (
         <div key={i} className={styles.listDetail}>
-          <Typography as="span" className={styles.noPadding}>
+          <WrapperTypography as="span" className={styles.noPadding}>
             {x}
-          </Typography>
+          </WrapperTypography>
           <Tag text={tagText} color={tagColor} />
         </div>
       ))

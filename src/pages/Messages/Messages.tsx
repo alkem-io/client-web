@@ -5,7 +5,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import Card from '../../common/components/core/Card';
 import Section, { Header, SubHeader } from '../../common/components/core/Section';
 import Spinner from '../../common/components/core/Spinner';
-import Typography from '../../common/components/core/Typography';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { useConfig } from '../../hooks';
 import { useUpdateNavigation } from '../../hooks';
 import { makeStyles } from '@mui/styles';
@@ -168,9 +168,9 @@ export const DummyChat: FC = () => {
               <div style={{ display: 'flex' }} className={clsx(x.left ? styles.left : styles.right)}>
                 <span className={clsx(styles.message, x.left ? 'me' : 'you')}>{x.content}</span>
               </div>
-              <Typography className={clsx(x.left ? styles.textLeft : styles.textRight)} variant="caption">
+              <WrapperTypography className={clsx(x.left ? styles.textLeft : styles.textRight)} variant="caption">
                 {x.date.toLocaleTimeString()}
-              </Typography>
+              </WrapperTypography>
             </div>
           </Fade>
         ))}
@@ -241,21 +241,21 @@ const DummyChatList: FC = () => {
       }}
     >
       <div className={clsx(styles.contact, styles.active)}>
-        <Typography variant="h3" color="inherit" as="h3">
+        <WrapperTypography variant="h3" color="inherit" as="h3">
           Alkemio
-        </Typography>
-        <Typography variant="caption" color="inherit" as="h1">
+        </WrapperTypography>
+        <WrapperTypography variant="caption" color="inherit" as="h1">
           new messages
-        </Typography>
+        </WrapperTypography>
       </div>
       <div className={styles.divider}></div>
       <div className={styles.contact}>
-        <Typography variant="h3" color="inherit">
+        <WrapperTypography variant="h3" color="inherit">
           Community
-        </Typography>
-        <Typography variant="caption" color="inherit" as="h1">
+        </WrapperTypography>
+        <WrapperTypography variant="caption" color="inherit" as="h1">
           Work in progress
-        </Typography>
+        </WrapperTypography>
       </div>
       <div className={styles.divider}></div>
     </Card>

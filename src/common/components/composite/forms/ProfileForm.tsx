@@ -9,7 +9,7 @@ import { contextSegmentSchema } from '../../../../domain/admin/components/Common
 import { NameSegment, nameSegmentSchema } from '../../../../domain/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../../domain/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/admin/components/Common/TagsetSegment';
-import Typography from '../../core/Typography';
+import WrapperTypography from '../../core/WrapperTypography';
 import InputField from '../../../../domain/admin/components/Common/InputField';
 import { LocationSegment } from '../../../../domain/location/LocationSegment';
 import { EmptyLocation, Location } from '../../../../domain/location/Location';
@@ -105,9 +105,9 @@ const ProfileForm: FC<Props> = ({
             />
             <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
             <Grid item xs={12}>
-              <Typography variant={'h4'} color={'primary'}>
+              <WrapperTypography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}
-              </Typography>
+              </WrapperTypography>
             </Grid>
             <TagsetSegment tagsets={tagsets} />
             <ContextReferenceSegment references={references || []} contextId={context?.id} />

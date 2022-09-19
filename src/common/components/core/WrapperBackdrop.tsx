@@ -13,10 +13,10 @@ const useMainStyles = makeStyles(theme => ({
   },
 }));
 
-export const Backdrop: FC = ({ children }) => {
+export const WrapperBackdrop: FC = ({ children }) => {
   const styles = useMainStyles();
 
   return <div className={styles.backdrop}>{children}</div>;
 };
 
-export default Backdrop;
+export default WrapperBackdrop;

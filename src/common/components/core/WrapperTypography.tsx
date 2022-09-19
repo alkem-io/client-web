@@ -104,7 +104,7 @@ interface TypographyProps extends Record<string, unknown> {
   clamp?: string | number;
 }
 
-const Typography: FC<TypographyProps> = ({
+const WrapperTypography: FC<TypographyProps> = ({
   variant = 'body',
   color = 'neutral',
   weight = 'medium',
@@ -153,4 +153,4 @@ const Typography: FC<TypographyProps> = ({
   );
 };
 
-export default Typography;
+export default WrapperTypography;

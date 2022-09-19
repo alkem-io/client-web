@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import Button, { ButtonProps } from './Button';
+import WrapperButton, { ButtonProps } from './WrapperButton';
 
 interface LifecycleButtonProps extends ButtonProps {
   stateName: string;
 }
 
 const LifecycleButton: FC<LifecycleButtonProps> = ({ stateName, onClick }) => {
-  return <Button variant="default" onClick={onClick} text={stateName} />;
+  return <WrapperButton variant="default" onClick={onClick} text={stateName} />;
 };
 export default LifecycleButton;

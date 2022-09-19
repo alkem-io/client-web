@@ -2,7 +2,7 @@ import { Box, Link, SvgIconProps } from '@mui/material';
 import { Block, Mail, Public } from '@mui/icons-material';
 import React, { FC, useMemo } from 'react';
 import { SocialNetworkEnum, SocianNetworksSortOrder } from './models/SocialNetworks';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import GitHub from './icons/GitHub';
 import LinkedIn from './icons/LinkedIn';
 import Twitter from './icons/Twitter';
@@ -59,9 +59,9 @@ export const SocialLinks: FC<SocialLinksProps> = ({ title, items, iconSize }) =>
   return filteredSortedItems && filteredSortedItems.length > 0 ? (
     <Box>
       {title && (
-        <Typography color="primary" weight="boldLight">
+        <WrapperTypography color="primary" weight="boldLight">
           {title}
-        </Typography>
+        </WrapperTypography>
       )}
 
       {filteredSortedItems.map((item, i) => (

@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles';
 import { ApplicationInfoFragment } from '../../../../../models/graphql-schema';
 import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
 import Avatar from '../../../core/Avatar';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 import LifecycleButton from '../../../core/LifecycleButton';
 import { Optional } from '../../../../../types/util';
 import { Loading } from '../../../core';
@@ -115,9 +115,9 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
                   <div className={styles.profile}>
                     <Avatar src={avatarSrc} size={'lg'} aria-label="User avatar" />
                     <div className={styles.userName}>
-                      <Typography variant={'h3'} aria-label="Username">
+                      <WrapperTypography variant={'h3'} aria-label="Username">
                         {username}
-                      </Typography>
+                      </WrapperTypography>
                     </div>
                   </div>
                 )}
@@ -130,9 +130,9 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
                 {questions.map(x => (
                   <div key={x.id} className={styles.question}>
                     <label aria-label="Questions">{x.name}</label>
-                    <Typography weight={'boldLight'} aria-label="Answer">
+                    <WrapperTypography weight={'boldLight'} aria-label="Answer">
                       {x.value}
-                    </Typography>
+                    </WrapperTypography>
                   </div>
                 ))}
               </div>
@@ -140,14 +140,14 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
             {(createdDate || updatedDate) && (
               <div className={styles.date}>
                 {createdDate && (
-                  <Typography variant="caption" color="neutralMedium" aria-label="Date created">
+                  <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date created">
                     {t('components.application-dialog.created', { date: createdDate })}
-                  </Typography>
+                  </WrapperTypography>
                 )}
                 {updatedDate && (
-                  <Typography variant="caption" color="neutralMedium" aria-label="Date updated">
+                  <WrapperTypography variant="caption" color="neutralMedium" aria-label="Date updated">
                     {t('components.application-dialog.updated', { date: updatedDate })}
-                  </Typography>
+                  </WrapperTypography>
                 )}
               </div>
             )}

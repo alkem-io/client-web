@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import HubEditForm, { HubEditFormValuesType } from '../../../admin/components/HubEditForm';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../hooks';
 import { useHub } from '../../../../hooks';
@@ -64,7 +64,7 @@ export const HubProfile: FC = () => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Box display={'flex'} marginY={4} justifyContent={'flex-end'}>
-        <Button
+        <WrapperButton
           disabled={isLoading}
           variant="primary"
           onClick={() => submitWired()}

@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import FormikInputField from '../../../common/components/composite/forms/FormikInputField';
-import Button from '../../../common/components/core/Button';
+import WrapperButton from '../../../common/components/core/WrapperButton';
 import ErrorBlock from '../../../common/components/core/ErrorBlock';
 import Image from '../../shared/components/Image';
 import { Loading } from '../../../common/components/core/Loading/Loading';
-import Typography from '../../../common/components/core/Typography';
+import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import { useApplicationCommunityQuery } from '../../../containers/application/useApplicationCommunityQuery';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../../hooks';
 import { refetchUserApplicationsQuery, useApplyForCommunityMembershipMutation } from '../../../hooks/generated/graphql';
@@ -118,9 +118,9 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
       {loading && <Loading text={t('pages.hub.application.loading')} />}
       {!loading && !hasApplied && (
         <Box marginY={4}>
-          <Typography variant={'h2'}>
+          <WrapperTypography variant={'h2'}>
             {t('pages.hub.application.title', { name: communityName, entity: t(entityNameKey) })}
-          </Typography>
+          </WrapperTypography>
         </Box>
       )}
       {!loading && (
@@ -131,16 +131,16 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
       )}
       {!loading && !hasApplied && (
         <Box marginY={5}>
-          <Typography variant={'h3'}>{t('pages.hub.application.subheader')}</Typography>
+          <WrapperTypography variant={'h3'}>{t('pages.hub.application.subheader')}</WrapperTypography>
         </Box>
       )}
       {hasApplied ? (
         <div className={styles.thankYouDiv}>
-          <Typography variant={'h3'}>
+          <WrapperTypography variant={'h3'}>
             {t('pages.hub.application.finish')}
             {communityName}
-          </Typography>
-          <Button as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
+          </WrapperTypography>
+          <WrapperButton as={Link} to={backUrl} text={t('pages.hub.application.backButton')} />
         </div>
       ) : (
         <>
@@ -170,7 +170,7 @@ const ApplyPage: FC<ApplyPageProps> = ({ paths, type }): React.ReactElement => {
                       </Grid>
                     ))}
                     <Grid item>
-                      <Button
+                      <WrapperButton
                         variant="primary"
                         type="submit"
                         disabled={isCreationLoading}

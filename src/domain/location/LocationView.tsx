@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Typography from '../../common/components/core/Typography';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { useTranslation } from 'react-i18next';
 import { Location } from './Location';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
@@ -37,17 +37,17 @@ const LocationView: FC<LocationViewProps> = ({ location, mode = 'label', color =
       return (
         <Box sx={{ display: 'flex', alignItems: 'center' }} title={t('components.profile.fields.location.title')}>
           <LocationOnOutlinedIcon color={color} fontSize={iconSize} />
-          <Typography>{locationString}</Typography>
+          <WrapperTypography>{locationString}</WrapperTypography>
         </Box>
       );
     }
     case 'label': {
       return (
         <>
-          <Typography color={color} weight="boldLight" aria-label="Location">
+          <WrapperTypography color={color} weight="boldLight" aria-label="Location">
             {t('components.profile.fields.location.title')}
-          </Typography>
-          <Typography>{locationString}</Typography>
+          </WrapperTypography>
+          <WrapperTypography>{locationString}</WrapperTypography>
         </>
       );
     }

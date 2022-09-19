@@ -5,7 +5,7 @@ import { AdminAspectTemplateFragment } from '../../../../models/graphql-schema';
 import TagsComponent from '../../../shared/components/TagsComponent/TagsComponent';
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
-import Markdown from '../../../../common/components/core/Markdown';
+import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 import DialogWhiteBg from '../../../shared/components/DialogWhiteBg';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
@@ -48,7 +48,7 @@ const AspectTemplateView = ({ template, open, onClose, editUrl, editLinkState }:
         <Box>
           <TypographyTitle>{t('common.description')}</TypographyTitle>
           <Typography variant="body2" component="div">
-            <Markdown>{description}</Markdown>
+            <WrapperMarkdown>{description}</WrapperMarkdown>
           </Typography>
         </Box>
         <Box>
@@ -65,7 +65,7 @@ const AspectTemplateView = ({ template, open, onClose, editUrl, editLinkState }:
         <Box>
           <TypographyTitle>{t('aspect-templates.default-description')}</TypographyTitle>
           <Typography variant="body2" component="div">
-            <Markdown>{defaultDescription}</Markdown>
+            <WrapperMarkdown>{defaultDescription}</WrapperMarkdown>
           </Typography>
         </Box>
       </DialogContent>

@@ -1,15 +1,16 @@
-import React, { FC, memo, useMemo, useState } from 'react';
+import React, { FC, memo, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
+import Tooltip from '@mui/material/Tooltip';
 import { User } from '../../../../models/graphql-schema';
+import { useUserMetadata } from '../../../../domain/user/hooks/useUserMetadata';
 import hexToRGBA from '../../../utils/hexToRGBA';
+import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import Avatar from '../../core/Avatar';
 import Card from '../../core/Card';
 import { Loading } from '../../core';
-import UserPopUp from '../dialogs/UserPopUp';
 import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
-import Tooltip from '@mui/material/Tooltip';
-import { useUserMetadata } from '../../../../domain/user/hooks/useUserMetadata';
 
 export interface UserCardProps extends User {
   terms?: Array<string>;
@@ -42,9 +43,9 @@ const userCardStyles = makeStyles(theme => ({
 }));
 
 const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
-  const [isPopUpShown, setIsModalShown] = useState<boolean>(false);
   const styles = userCardStyles();
 
+  const navigate = useNavigate();
   const { user: userMetadata, loading } = useUserMetadata(id);
 
   const roleName = userMetadata?.roles[0]?.name;
@@ -54,6 +55,15 @@ const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
   const truncatedTags = useMemo(() => tags.slice(0, 3), [tags]);
 
   const avatar = userMetadata?.user.profile?.avatar?.uri;
+  const nameId = userMetadata?.user.nameID;
+
+  const handleClick = useCallback(() => {
+    if (!nameId) {
+      return;
+    }
+
+    navigate(buildUserProfileUrl(nameId));
+  }, [nameId]);
 
   if (loading) return <Loading text={''} />;
   return (
@@ -95,12 +105,12 @@ const UserCardInner: FC<UserCardProps> = ({ displayName, terms, id }) => {
         }}
         tagProps={tagProps}
         matchedTerms={{ terms }}
-        onClick={() => !isPopUpShown && setIsModalShown(true)}
-      >
-        {isPopUpShown && <UserPopUp id={id} onHide={() => setIsModalShown(false)} terms={terms || []} />}
-      </Card>
+        onClick={handleClick}
+      />
     </div>
   );
 };
-
+/**
+ * @deprecated Use a new component instead
+ */
 export const UserCard = memo(UserCardInner);

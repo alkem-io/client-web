@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { ReactNode } from 'react';
 import { makeStyles } from '@mui/styles';
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 
 export enum CircleTagSize {
   Small = 'small',
@@ -79,14 +79,14 @@ const CircleTag: React.FC<CircleTagProps> = ({
 
   return (
     <span className={clsx(styles.tag, styles[color], styles[size], className)}>
-      <Typography
+      <WrapperTypography
         variant="body1"
         color="inherit"
         weight={size === 'small' ? 'regular' : 'bold'}
         className={styles[`tagText-${size}`]}
       >
         {children}
-      </Typography>
+      </WrapperTypography>
     </span>
   );
 };

@@ -10,7 +10,7 @@ import References from '../../../common/components/composite/common/References/R
 import ContextSectionIcon from '../../../common/components/composite/sections/ContextSectionIcon';
 import DashboardColumn from '../../../common/components/composite/sections/DashboardSection/DashboardColumn';
 import DashboardSection from '../../../common/components/composite/sections/DashboardSection/DashboardSection';
-import Markdown from '../../../common/components/core/Markdown';
+import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import ApplicationButtonContainer from '../../../containers/application/ApplicationButtonContainer';
 import { useConfig } from '../../../hooks';
 import { FEATURE_COMMUNICATIONS_DISCUSSIONS } from '../../../models/constants';
@@ -122,7 +122,7 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
             navText={t('buttons.see-more')}
             navLink={EntityPageSection.About}
           >
-            <Markdown children={vision} />
+            <WrapperMarkdown children={vision} />
           </DashboardGenericSection>
           {communityReadAccess && (
             <EntityDashboardLeadsSection

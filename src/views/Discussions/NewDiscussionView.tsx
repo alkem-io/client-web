@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import FormikInputField from '../../common/components/composite/forms/FormikInputField';
 import FormikMarkdownField from '../../common/components/composite/forms/FormikMarkdownField';
-import Button from '../../common/components/core/Button';
+import WrapperButton from '../../common/components/core/WrapperButton';
 import FormikSelect from '../../common/components/composite/forms/FormikSelect';
 import { DiscussionCategory } from '../../models/graphql-schema';
 import DiscussionIcon from '../../common/components/composite/entities/Communication/DiscussionIcon';
@@ -103,7 +103,7 @@ const NewDiscussionView: FC<NewDiscussionViewProps> = ({ onPost }) => {
               />
             </Grid>
             <Grid item>
-              <Button
+              <WrapperButton
                 variant="primary"
                 text={isSubmitting ? t('buttons.processing') : t('components.new-discussion.buttons.post')}
                 type="submit"

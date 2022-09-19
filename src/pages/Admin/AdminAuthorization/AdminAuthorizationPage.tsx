@@ -3,7 +3,7 @@ import AdminLayout from '../../../domain/admin/toplevel/AdminLayout';
 import { PageProps } from '../../common';
 import { Container, Grid } from '@mui/material';
 import Card from '../../../common/components/core/Card';
-import Button from '../../../common/components/core/Button';
+import WrapperButton from '../../../common/components/core/WrapperButton';
 import { Link as RouterLink } from 'react-router-dom';
 import { useUpdateNavigation } from '../../../hooks';
 import { AdminSection } from '../../../domain/admin/toplevel/constants';
@@ -40,7 +40,7 @@ const AdminAuthorizationPage: FC<AdminAuthorizationPageProps> = ({ paths }) => {
           <Grid container spacing={2}>
             {buttons.map((btn, index) => (
               <Grid key={index} item>
-                <Button as={RouterLink} to={`/admin/${btn.url}`} text={btn.description} />
+                <WrapperButton as={RouterLink} to={`/admin/${btn.url}`} text={btn.description} />
               </Grid>
             ))}
           </Grid>

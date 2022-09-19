@@ -1,12 +1,12 @@
 import { cleanup, render } from '../../utils/test/test-utils';
-import Toolbar from './Toolbar';
+import WrapperToolbar from './WrapperToolbar';
 
 afterEach(cleanup);
 describe('Toolbar - main', () => {
   // Mathcing snapshot when we are using dynamicaly generated class names is ineffective
   test.skip('render correctly Toolbar component', () => {
     // arrange
-    const { asFragment } = render(<Toolbar />);
+    const { asFragment } = render(<WrapperToolbar />);
 
     // act
     const html = asFragment();

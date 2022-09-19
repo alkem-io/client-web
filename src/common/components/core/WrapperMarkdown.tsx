@@ -25,7 +25,7 @@ const allowedNodeTypes = ['iframe'] as const;
 
 export interface MarkdownProps extends ReactMarkdownOptions {}
 
-export const Markdown: FC<MarkdownProps> = (props: MarkdownProps) => {
+export const WrapperMarkdown: FC<MarkdownProps> = (props: MarkdownProps) => {
   // wrap this here, so that we don't have to include the gfm all the time
   return (
     <ReactMarkdown
@@ -37,4 +37,4 @@ export const Markdown: FC<MarkdownProps> = (props: MarkdownProps) => {
   );
 };
 
-export default Markdown;
+export default WrapperMarkdown;

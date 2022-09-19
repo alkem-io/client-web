@@ -5,7 +5,7 @@ import { StepSummaryLayout } from '../../step-layout/StepLayout';
 import { CalloutDialogCreationType } from '../../CalloutCreationDialog';
 import { CalloutStepProps } from '../CalloutStepProps';
 import { StepComponentProps } from '../../../../shared/components/Steps/step/Step';
-import Markdown from '../../../../../common/components/core/Markdown';
+import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
 
 interface CalloutSummaryStepProps extends CalloutStepProps {
   onSaveAsDraft: () => Promise<void>;
@@ -57,7 +57,7 @@ export const CalloutSummary: FC<{
       </Box>
       <Box>
         <TypographyTitle>{t('common.description')}</TypographyTitle>
-        <Typography variant="body2" sx={{ overflowWrap: 'anywhere' }} component={Markdown}>
+        <Typography variant="body2" sx={{ overflowWrap: 'anywhere' }} component={WrapperMarkdown}>
           {callout?.description}
         </Typography>
       </Box>

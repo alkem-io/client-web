@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { Box, styled, SxProps, Theme } from '@mui/material';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 
 const PREFIX = 'TagLabel';
 
@@ -34,9 +34,9 @@ const TagLabel: FC<TagLabelProps> = ({ children, className, sx }) => {
   return (
     <Root sx={sx}>
       <Box className={clsx(classes.entityTypeWrapper, className)}>
-        <Typography variant="caption" className={classes.entityType}>
+        <WrapperTypography variant="caption" className={classes.entityType}>
           {children}
-        </Typography>
+        </WrapperTypography>
       </Box>
     </Root>
   );

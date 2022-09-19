@@ -1,12 +1,12 @@
 import Loading from './Loading';
-import Typography from '../Typography';
+import WrapperTypography from '../WrapperTypography';
 import { render, screen } from '../../../utils/test/test-utils';
 
 describe('Loading component', () => {
   // Mathcing snapshot when we are using dynamicaly generated class names is ineffective
-  test.skip('render correctly Typography component', () => {
+  test.skip('render correctly WrapperTypography component', () => {
     // arrange
-    const { asFragment } = render(<Typography variant="caption" color="primary" />);
+    const { asFragment } = render(<WrapperTypography variant="caption" color="primary" />);
 
     // act
     const html = asFragment();
