@@ -1,5 +1,6 @@
 import i18n from 'i18next';
 import translationEn from './en/translation.en.json';
+import translationEs from './es/translation.es.json';
 import translationNl from './nl/translation.nl.json';
 import translationBg from './bg/translation.bg.json';
 import translationUa from './ua/translation.ua.json';
@@ -13,6 +14,9 @@ export const resources = {
   nl: {
     translation: translationNl,
   },
+  es: {
+    translation: translationEs,
+  },
   bg: {
     translation: translationBg,
   },
@@ -23,7 +27,7 @@ export const resources = {
 
 type Language = keyof typeof resources;
 
-export const supportedLngs: Language[] = ['en', 'nl', 'bg', 'ua'];
+export const supportedLngs: Language[] = ['en', 'nl', 'es', 'bg', 'ua'];
 
 i18n
   .use(initReactI18next)
