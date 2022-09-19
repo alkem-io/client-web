@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Grid, Skeleton, Avatar, Box } from '@mui/material';
 import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
-import Markdown from '../../common/components/core/Markdown';
+import WrapperMarkdown from '../../common/components/core/WrapperMarkdown';
 
 export interface SingleUpdateViewProps {
   author?: Author;
@@ -36,7 +36,7 @@ const SingleUpdateView: FC<SingleUpdateViewProps> = ({ author, createdDate, cont
           <Skeleton sx={{ marginBottom: t => t.spacing(0.5) }} />
         </Box>
       ) : (
-        <Markdown children={content} />
+        <WrapperMarkdown children={content} />
       )}
     </>
   );

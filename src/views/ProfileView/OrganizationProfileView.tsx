@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import ProfileDetail from '../../common/components/composite/common/ProfileDetail/ProfileDetail';
 import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComponent';
 import VerifiedStatus from '../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
-import Typography from '../../common/components/core/Typography';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { Location } from '../../models/graphql-schema';
 
 export interface OrganizationProfileViewEntity {
@@ -50,18 +50,18 @@ export const OrganizationProfileView: FC<OrganizationProfileViewProps> = ({ enti
             ?.filter(t => t.tags.length > 0)
             .map((tagset, i) => (
               <Grid item key={i}>
-                <Typography color="primary" weight="boldLight">
+                <WrapperTypography color="primary" weight="boldLight">
                   {tagset.name}
-                </Typography>
+                </WrapperTypography>
                 <TagsComponent tags={tagset.tags} count={5} />
               </Grid>
             ))}
 
           {entity.links && entity.links.length ? (
             <Grid item container direction="column">
-              <Typography color="primary" weight="boldLight">
+              <WrapperTypography color="primary" weight="boldLight">
                 {t('components.profile.fields.links.title')}
-              </Typography>
+              </WrapperTypography>
               {entity.links?.map((l, i) => (
                 <Link key={i} href={l} target="_blank">
                   {l}

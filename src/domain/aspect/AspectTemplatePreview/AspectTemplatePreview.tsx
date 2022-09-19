@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton, styled, Typography } from '@mui/material';
-import Markdown from '../../../common/components/core/Markdown';
+import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import TagsComponent from '../../shared/components/TagsComponent/TagsComponent';
 
@@ -33,7 +33,7 @@ const AspectTemplatePreview: FC<AspectPreviewProps> = ({
               <Skeleton />
             </>
           ) : (
-            <Markdown>{description}</Markdown>
+            <WrapperMarkdown>{description}</WrapperMarkdown>
           )}
         </Typography>
       </Box>
@@ -51,7 +51,7 @@ const AspectTemplatePreview: FC<AspectPreviewProps> = ({
       <Box>
         <TypographyTitle>{t('aspect-templates.default-description')}</TypographyTitle>
         <Typography variant="body2" component="div">
-          {loading ? <Skeleton /> : <Markdown>{defaultDescription}</Markdown>}
+          {loading ? <Skeleton /> : <WrapperMarkdown>{defaultDescription}</WrapperMarkdown>}
         </Typography>
       </Box>
     </>

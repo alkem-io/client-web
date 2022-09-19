@@ -7,7 +7,7 @@ import hexToRGBA from '../../../../utils/hexToRGBA';
 import ConditionalLink from '../../../core/ConditionalLink';
 import Card from '../../../core/Card';
 import Tag from '../../../core/Tag';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 import TagContainer from '../../../core/TagContainer';
 
 const useStyles = makeStyles(theme => ({
@@ -96,9 +96,9 @@ const SimpleCard: FC<Props> = ({ title, description, tags = [], url = '' }) => {
           }}
         >
           {description && (
-            <Typography color="neutralLight" className={styles.tagline} clamp={2}>
+            <WrapperTypography color="neutralLight" className={styles.tagline} clamp={2}>
               <span>{description}</span>
-            </Typography>
+            </WrapperTypography>
           )}
         </Card>
       </ConditionalLink>

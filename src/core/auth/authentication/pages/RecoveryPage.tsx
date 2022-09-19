@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import KratosUI from '../components/KratosUI';
 import Loading from '../../../../common/components/core/Loading/Loading';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import useKratosFlow, { FlowTypeName } from '../../../../core/auth/authentication/hooks/useKratosFlow';
 
 interface RegisterPageProps {
@@ -22,10 +22,10 @@ export const RecoveryPage: FC<RegisterPageProps> = ({ flow }) => {
       <Grid container spacing={2} justifyContent={'center'}>
         <Grid item sm={4}>
           <Box marginY={3} textAlign={'center'}>
-            <Typography variant={'h3'}>{t('pages.recovery.header')}</Typography>
+            <WrapperTypography variant={'h3'}>{t('pages.recovery.header')}</WrapperTypography>
           </Box>
           <Box marginY={3} textAlign={'center'}>
-            <Typography variant={'h5'}>{t('pages.recovery.message')}</Typography>
+            <WrapperTypography variant={'h5'}>{t('pages.recovery.message')}</WrapperTypography>
           </Box>
           <KratosUI flow={recoveryFlow} />
         </Grid>

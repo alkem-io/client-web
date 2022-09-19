@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { PageProps } from '..';
 import { Loading } from '../../common/components/core';
-import Button from '../../common/components/core/Button';
+import WrapperButton from '../../common/components/core/WrapperButton';
 import Card from '../../common/components/core/Card';
 import { useUpdateNavigation } from '../../hooks';
 
@@ -62,7 +62,7 @@ export const ManagementPageTemplatePage: FC<Props> = ({ title, entityUrl, data, 
               <Grid container spacing={2}>
                 {x.buttons.map((btn, index) => (
                   <Grid key={index} item>
-                    <Button as={RouterLink} to={btn.url} text={btn.description} />
+                    <WrapperButton as={RouterLink} to={btn.url} text={btn.description} />
                   </Grid>
                 ))}
               </Grid>

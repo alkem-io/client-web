@@ -2,8 +2,8 @@ import { Box, Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import HubEditForm, { HubEditFormValuesType } from '../../components/HubEditForm';
-import Button from '../../../../common/components/core/Button';
-import Typography from '../../../../common/components/core/Typography';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import AdminLayout from '../../toplevel/AdminLayout';
 import { AdminSection } from '../../toplevel/constants';
 import { formatDatabaseLocation } from '../../../location/LocationUtils';
@@ -87,7 +87,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
     <AdminLayout currentTab={AdminSection.Hub}>
       <Container maxWidth="xl">
         <Box marginY={3}>
-          <Typography variant="h2">{'New Hub'}</Typography>
+          <WrapperTypography variant="h2">{'New Hub'}</WrapperTypography>
         </Box>
         <HubEditForm
           isEdit={false}
@@ -96,7 +96,7 @@ export const NewHub: FC<NewHubProps> = ({ paths }) => {
           organizations={organizations}
         />
         <Box display="flex" marginY={4} justifyContent="flex-end">
-          <Button
+          <WrapperButton
             disabled={isLoading}
             variant="primary"
             onClick={() => submitWired()}

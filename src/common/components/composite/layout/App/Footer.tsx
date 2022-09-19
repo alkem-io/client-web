@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import Grid from '@mui/material/Grid';
 import { Box, Container, Link, Paper } from '@mui/material';
 import { makeStyles } from '@mui/styles';
-import Toolbar from '../../../core/Toolbar';
-import Typography from '../../../core/Typography';
+import WrapperToolbar from '../../../core/WrapperToolbar';
+import WrapperTypography from '../../../core/WrapperTypography';
 import Image from '../../../../../domain/shared/components/Image';
 import { useConfig } from '../../../../../hooks';
 import { RouterLink } from '../../../core/RouterLink';
@@ -50,7 +50,7 @@ const Footer: FC = ({ children }) => {
               </Link>
             </Grid>
             <Grid item xs={12}>
-              <Toolbar dense>
+              <WrapperToolbar dense>
                 <Grid container justifyContent={'center'} wrap={'nowrap'} spacing={2}>
                   <Grid container justifyContent={'center'} alignItems="center" spacing={2} wrap={'nowrap'}>
                     <Grid item>
@@ -90,19 +90,19 @@ const Footer: FC = ({ children }) => {
                     </Grid>
                   </Grid>
                 </Grid>
-              </Toolbar>
+              </WrapperToolbar>
             </Grid>
             <Grid item xs={12}>
-              <Toolbar dense className={styles.footerSecondary}>
+              <WrapperToolbar dense className={styles.footerSecondary}>
                 <Grid container justifyContent={'flex-start'}>
-                  <Typography variant="caption" color="neutralMedium" weight="boldLight">
+                  <WrapperTypography variant="caption" color="neutralMedium" weight="boldLight">
                     {t('footer.copyright')}
-                  </Typography>
+                  </WrapperTypography>
                 </Grid>
                 <Grid container justifyContent={'flex-end'}>
                   {children}
                 </Grid>
-              </Toolbar>
+              </WrapperToolbar>
             </Grid>
           </Grid>
         </Container>

@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import { UiNodeInputAttributes } from '@ory/kratos-client';
 import React, { FC, useContext } from 'react';
-import Button from '../../../../../common/components/core/Button';
+import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { KratosUIContext } from '../KratosUI';
 import { getNodeName, getNodeTitle } from './helpers';
 import { KratosProps } from './KratosProps';
@@ -15,7 +15,7 @@ export const KratosButton: FC<KratosButtonProps> = ({ node }) => {
   return (
     <Grid item xs={12}>
       {!isHidden(node) && (
-        <Button
+        <WrapperButton
           name={getNodeName(node)}
           text={getNodeTitle(node)}
           variant="primary"

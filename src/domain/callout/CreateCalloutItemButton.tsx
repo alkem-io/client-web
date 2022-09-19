@@ -1,7 +1,7 @@
 import { styled } from '@mui/material';
 import { PropsWithChildren, ReactNode } from 'react';
 import LinkCard from '../../common/components/core/LinkCard/LinkCard';
-import Typography from '../../common/components/core/Typography';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import React from 'react';
 
@@ -45,9 +45,9 @@ const CreateCalloutItemButton = ({ onClick, children }: PropsWithChildren<Create
     <ButtonElement onClick={onClick}>
       <SpaceBuffer>{children}</SpaceBuffer>
       <ButtonContent>
-        <Typography variant="h1" weight="bold" color="primary">
+        <WrapperTypography variant="h1" weight="bold" color="primary">
           <AddCircleOutlineIcon width={20} />
-        </Typography>
+        </WrapperTypography>
       </ButtonContent>
     </ButtonElement>
   );

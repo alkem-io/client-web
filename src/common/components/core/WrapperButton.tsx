@@ -109,7 +109,7 @@ export interface ButtonProps extends Record<string, unknown> {
   disabled?: boolean;
 }
 
-const Button: FC<ButtonProps> = forwardRef(
+const WrapperButton: FC<ButtonProps> = forwardRef(
   (
     {
       className,
@@ -160,4 +160,4 @@ const Button: FC<ButtonProps> = forwardRef(
   }
 );
 
-export default Button;
+export default WrapperButton;

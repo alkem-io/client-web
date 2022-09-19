@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 
 interface ProfileDetailProps {
   title: string;
@@ -9,10 +9,10 @@ interface ProfileDetailProps {
 const ProfileDetail: FC<ProfileDetailProps> = ({ title, value, ...rest }) => {
   return (
     <>
-      <Typography color="primary" weight="boldLight" {...rest}>
+      <WrapperTypography color="primary" weight="boldLight" {...rest}>
         {title}
-      </Typography>
-      <Typography>{value}</Typography>
+      </WrapperTypography>
+      <WrapperTypography>{value}</WrapperTypography>
     </>
   );
 };

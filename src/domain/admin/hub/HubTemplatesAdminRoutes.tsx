@@ -34,7 +34,6 @@ const HubTemplatesAdminRoutes = (props: HubTemplatesAdminRoutesProps) => {
         path={`${RoutePaths.canvasTemplatesRoutePath}/:canvasTemplateId/edit`}
         element={<HubTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} edit />}
       />
-      //==
       <Route
         path={`${RoutePaths.innovationTemplatesRoutePath}/:innovationTemplateId`}
         element={<HubTemplatesAdminPage {...props} routePrefix={url} {...RoutePaths} />}

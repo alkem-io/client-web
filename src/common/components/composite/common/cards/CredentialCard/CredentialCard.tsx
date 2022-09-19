@@ -3,7 +3,7 @@ import createStyles from '@mui/styles/createStyles';
 import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import LinkCard from '../../../../core/LinkCard/LinkCard';
-import Typography from '../../../../core/Typography';
+import WrapperTypography from '../../../../core/WrapperTypography';
 
 export interface CredentialCardEntities {
   name: string;
@@ -62,14 +62,14 @@ let i = 0;
 const claimParser = claims => {
   return (
     <>
-      <Typography variant="h6" color="neutralMedium">
+      <WrapperTypography variant="h6" color="neutralMedium">
         Claims:
-      </Typography>
+      </WrapperTypography>
       {claims.map(claim => (
         <Box sx={{ whiteSpace: 'initial', wordBreak: 'break-all' }}>
-          <Typography key={i++} variant="h6" color="neutralMedium">
+          <WrapperTypography key={i++} variant="h6" color="neutralMedium">
             {claim.name}: {claim.value}
-          </Typography>
+          </WrapperTypography>
         </Box>
       ))}
     </>
@@ -103,20 +103,22 @@ const CredentialCard: FC<CredentialCardProps> = ({ entities: details, loading = 
         ) : (
           <>
             <Box display="flex" flexDirection="column" justifyContent="space-between">
-              <Typography color="primary" weight="boldLight" clamp={1}>
+              <WrapperTypography color="primary" weight="boldLight" clamp={1}>
                 {name}
-              </Typography>
-              {expiryDate && <Typography variant="caption">Valid before {expiryDate.toLocaleDateString()}</Typography>}
+              </WrapperTypography>
+              {expiryDate && (
+                <WrapperTypography variant="caption">Valid before {expiryDate.toLocaleDateString()}</WrapperTypography>
+              )}
             </Box>
             <Box paddingY={1}>
               {descriptionText && (
-                <Typography variant="body2" sx={{ wordWrap: 'break-word' }}>
+                <WrapperTypography variant="body2" sx={{ wordWrap: 'break-word' }}>
                   {descriptionText}
-                </Typography>
+                </WrapperTypography>
               )}
-              <Typography variant="body2" color="neutralMedium" sx={{ wordWrap: 'break-word' }}>
+              <WrapperTypography variant="body2" color="neutralMedium" sx={{ wordWrap: 'break-word' }}>
                 {credentialInfo}
-              </Typography>
+              </WrapperTypography>
               <pre>{claimParser(claims)}</pre>
             </Box>
           </>

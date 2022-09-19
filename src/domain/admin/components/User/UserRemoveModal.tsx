@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import { Loading } from '../../../../common/components/core';
 import { DialogTitle, DialogContent, DialogActions } from '../../../../common/components/core/dialog';
 
@@ -25,7 +25,7 @@ const UserRemoveModal: FC<UserRemoveModalProps> = ({ show, onCancel, onConfirm, 
         {loading ? (
           <Loading text={'Loading ...'} />
         ) : (
-          <Button small variant={'negative'} onClick={onConfirm} disabled={loading} text={t('buttons.remove')} />
+          <WrapperButton small variant={'negative'} onClick={onConfirm} disabled={loading} text={t('buttons.remove')} />
         )}
       </DialogActions>
     </Dialog>

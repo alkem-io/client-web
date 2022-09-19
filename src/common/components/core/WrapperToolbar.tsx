@@ -32,7 +32,7 @@ interface ToolbarProps {
   innerRef?: RefObject<any>;
 }
 
-const Toolbar: FC<ToolbarProps> = ({ dense, classes, className, children, innerRef }) => {
+const WrapperToolbar: FC<ToolbarProps> = ({ dense, classes, className, children, innerRef }) => {
   const styles = useToolbarStyles();
 
   return (
@@ -51,4 +51,4 @@ const Toolbar: FC<ToolbarProps> = ({ dense, classes, className, children, innerR
   );
 };
 
-export default Toolbar;
+export default WrapperToolbar;

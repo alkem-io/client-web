@@ -6,7 +6,7 @@ import { Aspect, VisualUriFragment } from '../../../../../../models/graphql-sche
 import EntityContributionCard from '../ContributionCard/EntityContributionCard';
 import { styled } from '@mui/material';
 import { buildAspectUrl } from '../../../../../utils/urlBuilders';
-import Markdown from '../../../../core/Markdown';
+import WrapperMarkdown from '../../../../core/WrapperMarkdown';
 
 const DEFAULT_LINE_HEIGHT = 1.5;
 const LINE_CLAMP = 4;
@@ -110,7 +110,7 @@ const AspectCard: FC<AspectCardProps> = ({
       ) : (
         <Root>
           <Box className={classes.clampContainer}>
-            <Typography component={Markdown} className={classes.text}>
+            <Typography component={WrapperMarkdown} className={classes.text}>
               {description}
             </Typography>
           </Box>

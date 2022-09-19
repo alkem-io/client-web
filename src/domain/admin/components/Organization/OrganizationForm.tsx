@@ -14,7 +14,7 @@ import {
   CreateOrganizationInput,
 } from '../../../../models/graphql-schema';
 import { EditMode } from '../../../../models/editMode';
-import Button from '../../../../common/components/core/Button';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
 import Section, { Header } from '../../../../common/components/core/Section';
 import VisualUpload from '../../../../common/components/composite/common/VisualUpload/VisualUpload';
 import ProfileReferenceSegment from '../Common/ProfileReferenceSegment';
@@ -198,7 +198,7 @@ export const OrganizationForm: FC<Props> = ({
 
   const backButton = (
     <Grid item>
-      <Button
+      <WrapperButton
         variant={editMode ? 'default' : 'primary'}
         onClick={handleBack}
         text={t(`buttons.${editMode ? 'cancel' : 'back'}` as const)}
@@ -256,7 +256,7 @@ export const OrganizationForm: FC<Props> = ({
                       <Grid container item justifyContent={'flex-end'} spacing={2}>
                         {backButton}
                         <Grid item>
-                          <Button variant="primary" type={'submit'} text={t('buttons.save')} />
+                          <WrapperButton variant="primary" type={'submit'} text={t('buttons.save')} />
                         </Grid>
                       </Grid>
                     )}

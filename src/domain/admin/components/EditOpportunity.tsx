@@ -19,8 +19,8 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../common/utils/buildContext';
-import Button from '../../../common/components/core/Button';
-import Typography from '../../../common/components/core/Typography';
+import WrapperButton from '../../../common/components/core/WrapperButton';
+import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import ProfileFormWithContext, {
   ProfileFormValuesType,
 } from '../../../common/components/composite/forms/ProfileFormWithContext';
@@ -123,7 +123,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
   return (
     <Grid container spacing={2}>
       <Grid item>
-        <Typography variant={'h2'}>{title}</Typography>
+        <WrapperTypography variant={'h2'}>{title}</WrapperTypography>
       </Grid>
       <ProfileFormWithContext
         isEdit={mode === FormMode.update}
@@ -136,9 +136,9 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         wireSubmit={submit => (submitWired = submit)}
       />
       <Grid container item justifyContent={'flex-end'}>
-        <Button disabled={isLoading} color="primary" onClick={() => submitWired()}>
+        <WrapperButton disabled={isLoading} color="primary" onClick={() => submitWired()}>
           {t(`buttons.${isLoading ? 'processing' : 'save'}` as const)}
-        </Button>
+        </WrapperButton>
       </Grid>
     </Grid>
   );

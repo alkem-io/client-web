@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, FC } from 'react';
 import clsx from 'clsx';
 
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 import IconButton from './IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import { makeStyles } from '@mui/styles';
@@ -301,29 +301,29 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                 key={`${selectedEl.name}${index}`}
                 className={clsx(styles.selectedElement, disabled && styles.disabled)}
               >
-                <Typography as={'span'} weight={'boldLight'} color={'background'}>
+                <WrapperTypography as={'span'} weight={'boldLight'} color={'background'}>
                   {selectedEl.name}
-                </Typography>
+                </WrapperTypography>
                 {!disabled && (
                   <div className={styles.removeIcon} onClick={e => handleRemove(e, selectedEl)}>
-                    <Typography weight={'boldLight'}>X</Typography>
+                    <WrapperTypography weight={'boldLight'}>X</WrapperTypography>
                   </div>
                 )}
               </div>
             ))}
           </div>
         </div>
-        <Typography color={'neutralMedium'} className={styles.suggestionsTitle}>
+        <WrapperTypography color={'neutralMedium'} className={styles.suggestionsTitle}>
           {isNoMatches ? 'no suggestions' : 'search suggestions'}
-        </Typography>
+        </WrapperTypography>
 
         <div className={styles.suggestions}>
           {elements.map((el, index) => {
             return (
               <div key={index} className={styles.suggestionElement} onClick={e => handleSelect(e, el)}>
-                <Typography as={'span'} weight={'boldLight'} color={'background'}>
+                <WrapperTypography as={'span'} weight={'boldLight'} color={'background'}>
                   {el.name}
-                </Typography>
+                </WrapperTypography>
               </div>
             );
           })}

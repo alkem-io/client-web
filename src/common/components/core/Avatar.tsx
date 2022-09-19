@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles';
 import { agnosticFunctor } from '../../utils/functor';
 import UserPopUp from '../composite/dialogs/UserPopUp';
 import Image from '../../../domain/shared/components/Image';
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 import { Theme, Tooltip } from '@mui/material';
 
 type AvatarSizeName = 'md' | 'sm' | 'lg' | 'xl' | 'md2';
@@ -111,9 +111,9 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
       >
         {isEmpty && (
           <div className={clsx(styles.noAvatar, styles[theme], size, className)}>
-            <Typography variant="button" color="inherit">
+            <WrapperTypography variant="button" color="inherit">
               ?
-            </Typography>
+            </WrapperTypography>
           </div>
         )}
         {!isEmpty &&
