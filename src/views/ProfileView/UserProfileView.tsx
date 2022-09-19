@@ -25,7 +25,6 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
   const { user, keywords, skills } = userMetadata;
   const references = user.profile?.references;
   const bio = user.profile?.description;
-  const { phone } = user;
 
   const nonSocialReferences = useMemo(() => {
     return references?.filter(x => !isSocialNetworkSupported(x.name));
@@ -37,9 +36,6 @@ export const UserProfileView: FC<UserProfileViewProps> = ({ entities: { userMeta
         <Grid container spacing={2} direction="column">
           <Grid item>
             <ProfileDetail title={t('components.profile.fields.bio.title')} value={bio} aria-label="bio" />
-          </Grid>
-          <Grid item>
-            <ProfileDetail title={t('components.profile.fields.telephone.title')} value={phone} aria-label="phone" />
           </Grid>
 
           <Grid item>
