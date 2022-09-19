@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import { times } from 'lodash';
 import { ActivityLogBaseView } from './ActivityLogBaseView';
 
-interface ActivityLogLoadingView {
+interface ActivityLogLoadingViewProps {
   rows: number;
 }
 
-export const ActivityLogLoadingView: FC<ActivityLogLoadingView> = ({ rows }) => {
+export const ActivityLogLoadingView: FC<ActivityLogLoadingViewProps> = ({ rows }) => {
   return (
     <>
       {times(rows, i => (
