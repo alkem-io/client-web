@@ -3980,6 +3980,7 @@ export type SearchQuery = {
           __typename?: 'Organization';
           id: string;
           displayName: string;
+          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -13836,6 +13837,7 @@ export type OrganizationSearchResultFragment = {
   __typename?: 'Organization';
   id: string;
   displayName: string;
+  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;
