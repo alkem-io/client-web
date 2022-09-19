@@ -55,17 +55,17 @@ const Footer: FC = ({ children }) => {
                   <Grid container justifyContent={'center'} alignItems="center" spacing={2} wrap={'nowrap'}>
                     <Grid item>
                       <Link href={platform?.terms || ''} target={'_blank'} rel="noopener noreferrer">
-                        Terms
+                        {t('footer.terms')}
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href={platform?.privacy || ''} target={'_blank'} rel="noopener noreferrer">
-                        Privacy
+                        {t('footer.privacy')}
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href={platform?.security || ''} target={'_blank'} rel="noopener noreferrer">
-                        Security
+                        {t('footer.security')}
                       </Link>
                     </Grid>
                     <Grid item component={Box} display={{ xs: 'none', sm: 'block', lg: 'block' }}>
@@ -75,17 +75,17 @@ const Footer: FC = ({ children }) => {
                     </Grid>
                     <Grid item>
                       <Link href={platform?.feedback || ''} target={'_blank'} rel="noopener noreferrer">
-                        Feedback
+                        {t('footer.feedback')}
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href={platform?.support || ''} target={'_blank'} rel="noopener noreferrer">
-                        Support
+                        {t('footer.support')}
                       </Link>
                     </Grid>
                     <Grid item>
                       <Link href={platform?.about || ''} target={'_blank'} rel="noopener noreferrer">
-                        About
+                        {t('footer.about')}
                       </Link>
                     </Grid>
                   </Grid>
