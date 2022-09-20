@@ -1342,7 +1342,7 @@ export type Groupable = {
   groups?: Maybe<Array<UserGroup>>;
 };
 
-export type Hub = {
+export type Hub = Searchable & {
   __typename?: 'Hub';
   /** The activity within this Hub. */
   activity?: Maybe<Array<Nvp>>;
@@ -1372,7 +1372,6 @@ export type Hub = {
   groupsWithTag: Array<UserGroup>;
   /** The Hub host. */
   host?: Maybe<Organization>;
-  /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
@@ -3957,6 +3956,7 @@ export type SearchQuery = {
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         }
+      | { __typename?: 'Hub' }
       | {
           __typename?: 'Opportunity';
           id: string;
@@ -4350,101 +4350,6 @@ export type OpportunityContributionDetailsQuery = {
       community?: { __typename?: 'Community'; id: string } | undefined;
     };
   };
-};
-
-export type ContributorsSearchQueryVariables = Exact<{
-  searchData: SearchInput;
-}>;
-
-export type ContributorsSearchQuery = {
-  __typename?: 'Query';
-  search: Array<{
-    __typename?: 'SearchResultEntry';
-    result?:
-      | { __typename?: 'Challenge' }
-      | { __typename?: 'Opportunity' }
-      | {
-          __typename?: 'Organization';
-          id: string;
-          displayName: string;
-          nameID: string;
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-          orgProfile: {
-            __typename?: 'Profile';
-            id: string;
-            description?: string | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-          };
-          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        }
-      | { __typename?: 'RelayPaginatedUser' }
-      | {
-          __typename?: 'User';
-          id: string;
-          nameID: string;
-          displayName: string;
-          agent?:
-            | {
-                __typename?: 'Agent';
-                id: string;
-                credentials?:
-                  | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-                  | undefined;
-              }
-            | undefined;
-          userProfile?:
-            | {
-                __typename?: 'Profile';
-                id: string;
-                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-              }
-            | undefined;
-        }
-      | { __typename?: 'UserGroup' }
-      | undefined;
-  }>;
-};
-
-export type OrganizationContributorFragment = {
-  __typename?: 'Organization';
-  id: string;
-  displayName: string;
-  nameID: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  orgProfile: {
-    __typename?: 'Profile';
-    id: string;
-    description?: string | undefined;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-  };
-  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-};
-
-export type UserContributorFragment = {
-  __typename?: 'User';
-  id: string;
-  nameID: string;
-  displayName: string;
-  agent?:
-    | {
-        __typename?: 'Agent';
-        id: string;
-        credentials?:
-          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
-          | undefined;
-      }
-    | undefined;
-  userProfile?:
-    | {
-        __typename?: 'Profile';
-        id: string;
-        location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-      }
-    | undefined;
 };
 
 export type CommunityUserPrivilegesQueryVariables = Exact<{
@@ -5931,6 +5836,7 @@ export type ChallengeExplorerSearchQuery = {
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         }
+      | { __typename?: 'Hub' }
       | { __typename?: 'Opportunity' }
       | { __typename?: 'Organization' }
       | { __typename?: 'RelayPaginatedUser' }
@@ -15189,4 +15095,222 @@ export type UpdatePreferenceOnHubMutationVariables = Exact<{
 export type UpdatePreferenceOnHubMutation = {
   __typename?: 'Mutation';
   updatePreferenceOnHub: { __typename?: 'Preference'; id: string; value: string };
+};
+
+export type ContributorsPageOrganizationsQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<OrganizationFilterInput>;
+}>;
+
+export type ContributorsPageOrganizationsQuery = {
+  __typename?: 'Query';
+  organizationsPaginated: {
+    __typename?: 'PaginatedOrganization';
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
+    };
+    organization: Array<{
+      __typename?: 'Organization';
+      id: string;
+      displayName: string;
+      nameID: string;
+      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      orgProfile: {
+        __typename?: 'Profile';
+        id: string;
+        description?: string | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+      };
+      verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+    }>;
+  };
+};
+
+export type ContributorsPageUsersQueryVariables = Exact<{
+  first: Scalars['Int'];
+  after?: InputMaybe<Scalars['UUID']>;
+  filter?: InputMaybe<UserFilterInput>;
+}>;
+
+export type ContributorsPageUsersQuery = {
+  __typename?: 'Query';
+  usersPaginated: {
+    __typename?: 'PaginatedUsers';
+    pageInfo: {
+      __typename?: 'PageInfo';
+      startCursor?: string | undefined;
+      endCursor?: string | undefined;
+      hasNextPage: boolean;
+    };
+    users: Array<{
+      __typename?: 'User';
+      id: string;
+      nameID: string;
+      displayName: string;
+      agent?:
+        | {
+            __typename?: 'Agent';
+            id: string;
+            credentials?:
+              | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+              | undefined;
+          }
+        | undefined;
+      userProfile?:
+        | {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+    }>;
+  };
+};
+
+export type ContributorsSearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type ContributorsSearchQuery = {
+  __typename?: 'Query';
+  search: Array<{
+    __typename?: 'SearchResultEntry';
+    result?:
+      | { __typename?: 'Challenge' }
+      | { __typename?: 'Hub' }
+      | { __typename?: 'Opportunity' }
+      | {
+          __typename?: 'Organization';
+          id: string;
+          displayName: string;
+          nameID: string;
+          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          orgProfile: {
+            __typename?: 'Profile';
+            id: string;
+            description?: string | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          };
+          verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+        }
+      | { __typename?: 'RelayPaginatedUser' }
+      | {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          agent?:
+            | {
+                __typename?: 'Agent';
+                id: string;
+                credentials?:
+                  | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+                  | undefined;
+              }
+            | undefined;
+          userProfile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+              }
+            | undefined;
+        }
+      | { __typename?: 'UserGroup' }
+      | undefined;
+  }>;
+};
+
+export type OrganizationContributorPaginatedFragment = {
+  __typename?: 'PaginatedOrganization';
+  organization: Array<{
+    __typename?: 'Organization';
+    id: string;
+    displayName: string;
+    nameID: string;
+    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    orgProfile: {
+      __typename?: 'Profile';
+      id: string;
+      description?: string | undefined;
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+    verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+  }>;
+};
+
+export type OrganizationContributorFragment = {
+  __typename?: 'Organization';
+  id: string;
+  displayName: string;
+  nameID: string;
+  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  orgProfile: {
+    __typename?: 'Profile';
+    id: string;
+    description?: string | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+  };
+  verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
+};
+
+export type UserContributorPaginatedFragment = {
+  __typename?: 'PaginatedUsers';
+  users: Array<{
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    agent?:
+      | {
+          __typename?: 'Agent';
+          id: string;
+          credentials?:
+            | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+            | undefined;
+        }
+      | undefined;
+    userProfile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+        }
+      | undefined;
+  }>;
+};
+
+export type UserContributorFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  displayName: string;
+  agent?:
+    | {
+        __typename?: 'Agent';
+        id: string;
+        credentials?:
+          | Array<{ __typename?: 'Credential'; id: string; type: AuthorizationCredential; resourceID: string }>
+          | undefined;
+      }
+    | undefined;
+  userProfile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        location?: { __typename?: 'Location'; city: string; country: string } | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+      }
+    | undefined;
 };

@@ -1,9 +1,33 @@
+query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+  organizationsPaginated (first: $first, after: $after, filter: $filter){
+		...OrganizationContributorPaginated
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
+query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+  usersPaginated (first: $first, after: $after, filter: $filter){
+		...UserContributorPaginated
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+
 query ContributorsSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {
     result {
       ...UserContributor
       ...OrganizationContributor
     }
+  }
+}
+
+fragment OrganizationContributorPaginated on PaginatedOrganization {
+  organization {
+    ...OrganizationContributor
   }
 }
 
@@ -26,6 +50,12 @@ fragment OrganizationContributor on Organization {
   verification {
     id
     status
+  }
+}
+
+fragment UserContributorPaginated on PaginatedUsers {
+  users {
+    ...UserContributor
   }
 }
 
