@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { BackdropProps } from './BackdropWithMessage';
 import { AUTH_LOGIN_PATH, AUTH_REGISTER_PATH } from '../../../../models/constants';
 import Image from '../Image';
-import { Box, Button, styled, Typography } from '@mui/material';
+import { Box, Button, styled, Typography, TypographyProps } from '@mui/material';
 
 const Root = styled(Box)(() => ({
   position: 'relative',
@@ -16,7 +16,7 @@ const Background = styled(Image)(() => ({
   height: '100%',
 }));
 
-const Message = styled(Box)(({ theme }) => ({
+const Message = styled(Box)(() => ({
   position: 'absolute',
   top: 0,
   width: '100%',
@@ -25,25 +25,40 @@ const Message = styled(Box)(({ theme }) => ({
   flexWrap: 'wrap',
   textAlign: 'center',
   alignItems: 'center',
-  paddingTop: theme.spacing(5),
 }));
 
 const ButtonsWrapper = styled(Box)(({ theme }) => ({
   flexBasis: '100%',
-  display: 'flex',
-  justifyContent: 'space-evenly',
-  marginBottom: theme.spacing(4),
+  textAlign: 'center',
+  '& > button': {
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+  },
+}));
+
+const FlexSpacer = styled(Box)(() => ({
+  flexBasis: '50%',
 }));
 
 interface ImageBackdropProps extends BackdropProps {
   src: string;
   backdropMessage: 'private' | 'authentication' | 'login'; // components.backdrop.* in the translation
   blockName: 'users-contributing' | 'all-contributing-users'; // common.block.* in the translation
+  messageSx?: TypographyProps['sx'];
 }
 
-const ImageBackdrop: FC<ImageBackdropProps> = ({ children, src, backdropMessage, blockName, show = true }) => {
+const ImageBackdrop: FC<ImageBackdropProps> = ({
+  children,
+  src,
+  backdropMessage,
+  blockName,
+  messageSx,
+  show = true,
+}) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const sx: TypographyProps['sx'] = { width: '100%', textAlign: 'center', ...messageSx };
 
   return (
     <>
@@ -52,7 +67,8 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({ children, src, backdropMessage,
           <Background src={src} />
           {children}
           <Message>
-            <Typography variant="h5" sx={{ width: '100%', textAlign: 'center' }}>
+            <FlexSpacer />
+            <Typography variant="h5" sx={sx}>
               {t(`components.backdrop.${backdropMessage}` as const, {
                 blockName: t(`common.blocks.${blockName}` as const),
               })}
@@ -65,6 +81,7 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({ children, src, backdropMessage,
                 {t('authentication.sign-up')}
               </Button>
             </ButtonsWrapper>
+            <FlexSpacer />
           </Message>
         </Root>
       )}

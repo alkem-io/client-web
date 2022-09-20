@@ -1,13 +1,31 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../models/container';
-import { useContributorsSearchQuery } from '../../../hooks/generated/graphql';
+import { useContributorsPageUsersQuery, useContributorsPageOrganizationsQuery } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
-import { OrganizationContributorFragment, UserContributorFragment } from '../../../models/graphql-schema';
+import {
+  ContributorsPageUsersQuery,
+  ContributorsPageUsersQueryVariables,
+  UserContributorFragment,
+  ContributorsPageOrganizationsQuery,
+  ContributorsPageOrganizationsQueryVariables,
+  OrganizationContributorFragment,
+} from '../../../models/graphql-schema';
+import usePaginatedQuery from '../../../domain/shared/pagination/usePaginatedQuery';
+
+export interface PaginatedResult<T> {
+  items: T[] | undefined;
+  hasMore: boolean | undefined;
+  pageSize: number;
+  firstPageSize: number;
+  loading: boolean;
+  error?: ApolloError;
+  fetchMore: (itemsNumber?: number) => Promise<void>;
+}
 
 export interface ContributorsSearchContainerEntities {
-  users: UserContributorFragment[];
-  organizations: OrganizationContributorFragment[];
+  users: PaginatedResult<UserContributorFragment> | undefined;
+  organizations: PaginatedResult<OrganizationContributorFragment> | undefined;
 }
 
 export interface ContributorsSearchContainerActions {}
@@ -23,35 +41,73 @@ export interface ContributorsSearchContainerProps
     ContributorsSearchContainerActions,
     ContributorsSearchContainerState
   > {
-  terms: string[];
+  searchTerms: string;
+  pageSize: number;
 }
 
-const typeFilterAuth = ['user', 'organization'];
-const typeFilterNonAuth = ['organization'];
-
-const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ terms, children }) => {
+const ContributorsSearchContainer: FC<ContributorsSearchContainerProps> = ({ searchTerms, pageSize, children }) => {
   const { isAuthenticated } = useUserContext();
   const handleError = useApolloErrorHandler();
-  const { data, loading, error } = useContributorsSearchQuery({
+
+  const usersQueryResult = usePaginatedQuery<ContributorsPageUsersQuery, ContributorsPageUsersQueryVariables>({
+    useQuery: useContributorsPageUsersQuery,
+    options: {
+      fetchPolicy: 'cache-first',
+      nextFetchPolicy: 'cache-first',
+      onError: handleError,
+      skip: !isAuthenticated,
+    },
     variables: {
-      searchData: {
-        terms,
-        tagsetNames: ['skills', 'keywords'],
-        typesFilter: isAuthenticated ? typeFilterAuth : typeFilterNonAuth,
+      filter: { firstName: searchTerms, lastName: searchTerms, email: searchTerms },
+    },
+    pageSize: pageSize,
+    getPageInfo: result => result.usersPaginated.pageInfo,
+  });
+
+  const users: PaginatedResult<UserContributorFragment> = {
+    items: usersQueryResult.data?.usersPaginated.users,
+    loading: usersQueryResult.loading,
+    hasMore: usersQueryResult.hasMore,
+    pageSize: usersQueryResult.pageSize,
+    firstPageSize: usersQueryResult.firstPageSize,
+    error: usersQueryResult.error,
+    fetchMore: usersQueryResult.fetchMore,
+  };
+
+  const oragnizationsQueryResult = usePaginatedQuery<
+    ContributorsPageOrganizationsQuery,
+    ContributorsPageOrganizationsQueryVariables
+  >({
+    useQuery: useContributorsPageOrganizationsQuery,
+    options: {
+      fetchPolicy: 'cache-first',
+      nextFetchPolicy: 'cache-first',
+    },
+    variables: {
+      filter: {
+        contactEmail: searchTerms,
+        displayName: searchTerms,
+        domain: searchTerms,
+        nameID: searchTerms,
+        website: searchTerms,
       },
     },
-    onError: handleError,
-    fetchPolicy: 'no-cache',
-    skip: !terms.length,
+    pageSize: pageSize,
+    getPageInfo: result => result.organizationsPaginated.pageInfo,
   });
-  const results = data?.search ?? [];
-  const users = results
-    .filter(({ result }) => result?.__typename === 'User')
-    .map(({ result }) => ({ ...result })) as UserContributorFragment[];
-  const organizations = results
-    .filter(({ result }) => result?.__typename === 'Organization')
-    .map(({ result }) => ({ ...result })) as OrganizationContributorFragment[];
 
+  const organizations: PaginatedResult<OrganizationContributorFragment> = {
+    items: oragnizationsQueryResult.data?.organizationsPaginated.organization,
+    loading: oragnizationsQueryResult.loading,
+    hasMore: oragnizationsQueryResult.hasMore,
+    pageSize: oragnizationsQueryResult.pageSize,
+    firstPageSize: oragnizationsQueryResult.firstPageSize,
+    error: oragnizationsQueryResult.error,
+    fetchMore: oragnizationsQueryResult.fetchMore,
+  };
+
+  const loading = users.loading || organizations.loading;
+  const error = users.error || organizations.error;
   return <>{children({ users, organizations }, { loading, error }, {})}</>;
 };
 export default ContributorsSearchContainer;
