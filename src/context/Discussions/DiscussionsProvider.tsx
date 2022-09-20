@@ -2,7 +2,7 @@ import { uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
 import { useApolloErrorHandler, useHub } from '../../hooks';
-import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionUpdatedDocument,
   refetchCommunityDiscussionListQuery,
@@ -10,7 +10,7 @@ import {
   useCreateDiscussionMutation,
   useDeleteDiscussionMutation,
 } from '../../hooks/generated/graphql';
-import { Discussion } from '../../domain/discussion/models/discussion';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import {
   AuthorizationPrivilege,
   Communication,

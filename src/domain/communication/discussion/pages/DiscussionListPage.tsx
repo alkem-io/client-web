@@ -10,13 +10,13 @@ import {
 } from '@mui/icons-material';
 import CategorySelector, {
   CategoryConfig,
-} from '../../common/components/composite/common/CategorySelector/CategorySelector';
-import DiscussionsLayout from '../../common/components/composite/layout/Discussions/DiscussionsLayout';
-import { useCommunityContext } from '../../domain/community/CommunityContext';
-import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { DiscussionListView } from '../../views/Discussions/DiscussionsListView';
-import { PageProps } from '../common';
-import { useUpdateNavigation } from '../../hooks';
+} from '../../../../common/components/composite/common/CategorySelector/CategorySelector';
+import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
+import { useCommunityContext } from '../../../community/CommunityContext';
+import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
+import { DiscussionListView } from '../../../../views/Discussions/DiscussionsListView';
+import { PageProps } from '../../../../pages/common';
+import { useUpdateNavigation } from '../../../../hooks';
 
 interface DiscussionsPageProps extends PageProps {}
 

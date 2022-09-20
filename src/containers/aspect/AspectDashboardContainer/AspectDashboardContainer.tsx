@@ -12,7 +12,7 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Message } from '../../../domain/shared/components/Comments/models/message';
-import { useAuthorsDetails } from '../../../domain/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../../domain/communication/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,

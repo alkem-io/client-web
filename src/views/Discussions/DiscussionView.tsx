@@ -7,7 +7,7 @@ import MessageView from '../../domain/shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../domain/shared/components/Comments/PostMessageToCommentsForm';
 import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
 import { Message } from '../../domain/shared/components/Comments/models/message';
-import { Discussion } from '../../domain/discussion/models/discussion';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
 
 export interface DiscussionViewProps {

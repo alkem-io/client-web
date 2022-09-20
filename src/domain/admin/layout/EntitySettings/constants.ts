@@ -41,7 +41,7 @@ export const CommonTabs: TabDefinition<SettingsSection>[] = [
   },
   {
     section: SettingsSection.Communications,
-    route: 'communications',
+    route: 'communication',
     icon: ForumOutlinedIcon,
   },
   {

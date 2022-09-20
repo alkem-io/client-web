@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
-import DiscussionsLayout from '../../common/components/composite/layout/Discussions/DiscussionsLayout';
-import { useCommunityContext } from '../../domain/community/CommunityContext';
-import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import NewDiscussionView from '../../views/Discussions/NewDiscussionView';
-import { PageProps } from '../common';
-import { useUpdateNavigation } from '../../hooks';
+import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
+import { useCommunityContext } from '../../../community/CommunityContext';
+import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
+import NewDiscussionView from '../../../../views/Discussions/NewDiscussionView';
+import { PageProps } from '../../../../pages/common';
+import { useUpdateNavigation } from '../../../../hooks';
 
 export interface NewDiscussionPageProps extends PageProps {}
 

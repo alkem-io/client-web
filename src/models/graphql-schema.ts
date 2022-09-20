@@ -1513,7 +1513,7 @@ export type Metadata = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Ensure all community members are registered for communications. */
+  /** Ensure all community members are registered for communication. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];

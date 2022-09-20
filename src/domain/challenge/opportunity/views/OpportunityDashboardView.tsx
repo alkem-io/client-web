@@ -12,7 +12,7 @@ import DashboardColumn from '../../../../common/components/composite/sections/Da
 import DashboardSection from '../../../../common/components/composite/sections/DashboardSection/DashboardSection';
 import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 import { useHub, useChallenge } from '../../../../hooks';
-import { Discussion } from '../../../discussion/models/discussion';
+import { Discussion } from '../../../communication/discussion/models/discussion';
 import {
   Activity,
   OpportunityPageFragment,

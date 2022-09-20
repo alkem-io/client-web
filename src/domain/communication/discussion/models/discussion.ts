@@ -1,6 +1,6 @@
-import { AuthorizationPrivilege, DiscussionCategory } from '../../../models/graphql-schema';
-import { Author } from '../../shared/components/AuthorAvatar/models/author';
-import { Message as Comment } from '../../shared/components/Comments/models/message';
+import { AuthorizationPrivilege, DiscussionCategory } from '../../../../models/graphql-schema';
+import { Author } from '../../../shared/components/AuthorAvatar/models/author';
+import { Message as Comment } from '../../../shared/components/Comments/models/message';
 
 export interface Discussion {
   id: string;

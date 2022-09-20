@@ -16,7 +16,7 @@ import {
 } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { Discussion } from '../../domain/discussion/models/discussion';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';

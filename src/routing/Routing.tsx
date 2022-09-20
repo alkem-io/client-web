@@ -8,7 +8,7 @@ import { OrganizationProvider } from '../domain/contributor/organization/context
 import { AboutPage, Error404, HomePage } from '../pages';
 import ContributorsPage from '../domain/contributor/ContributorsPage';
 import { AdminRoute } from '../domain/admin/routing/AdminRoute';
-import { MessagesRoute } from './messages/MessagesRoute';
+import { MessagesRoute } from '../domain/communication/messages/routing/MessagesRoute';
 import OrganizationRoute from '../domain/contributor/organization/routing/OrganizationRoute';
 import ProfileRoute from './profile/ProfileRoute';
 import { Restricted } from './Restricted';

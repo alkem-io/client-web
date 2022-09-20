@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
-import { Error404, MessagesPage } from '../../pages';
+import { Error404, MessagesPage } from '../../../../pages';
 
 export const MessagesRoute: FC = () => {
   const { pathname: url } = useResolvedPath('.');

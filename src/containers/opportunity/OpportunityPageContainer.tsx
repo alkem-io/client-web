@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { useOpportunity, useUserContext } from '../../hooks';
 import { useActivityLogOnCollaborationQuery, useOpportunityPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { Discussion } from '../../domain/discussion/models/discussion';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import {
   Activity,

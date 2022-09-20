@@ -12,12 +12,12 @@ import Section, { Body, Header as SectionHeader, SubHeader } from '../../common/
 import { useCommunityContext } from '../../domain/community/CommunityContext';
 import { useConfig } from '../../hooks';
 import { FEATURE_COMMUNICATIONS } from '../../models/constants';
-import { Discussion } from '../../domain/discussion/models/discussion';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { AuthorizationPrivilege, Message, User } from '../../models/graphql-schema';
 import { CommunityUpdatesView } from '../CommunityUpdates/CommunityUpdatesView';
 import DiscussionsView from './DiscussionsView';
 import MembersView from './MembersView';
-import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/communication/useAuthorsDetails';
 
 export interface CommunitySectionPropsExt
   extends Omit<CommunitySectionProps, 'updates' | 'discussions' | 'users' | 'parentEntityId'> {}
