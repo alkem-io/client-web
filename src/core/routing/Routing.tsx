@@ -17,7 +17,7 @@ import { SearchRoute } from './search.route';
 import { nameOfUrl } from './url-params';
 import UserRoute from '../../domain/community/contributor/user/routing/UserRoute';
 import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
-import HelpPage from '../../pages/Help/HelpPage';
+import HelpPage from '../help/pages/HelpPage';
 import { ChallengeExplorerPage } from '../../domain/challenge/challenge/pages/ChallengeExplorerPage';
 import { IdentityRoute } from '../auth/authentication/routing';
 

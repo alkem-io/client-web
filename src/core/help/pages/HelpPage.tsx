@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from 'react';
-import HelpContainer from '../../containers/help/HelpContainer';
-import helpHttpApi from '../../core/help/api/HelpHttpApi';
-import HelpView from '../../core/help/views/HelpView';
-import { useUpdateNavigation } from '../../hooks';
-import { Path } from '../../context/NavigationProvider';
+import HelpContainer from '../../../containers/help/HelpContainer';
+import helpHttpApi from '../api/HelpHttpApi';
+import HelpView from '../views/HelpView';
+import { useUpdateNavigation } from '../../../hooks';
+import { Path } from '../../../context/NavigationProvider';
 
 interface HelpPageProps {
   paths?: Path[];
