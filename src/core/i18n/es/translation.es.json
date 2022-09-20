@@ -919,10 +919,10 @@
         "placeholder": "Buscar..."
       },
       "organizations": {
-        "title": "Organizaciones ({{count}})"
+        "title": "Organizaciones"
       },
       "users": {
-        "title": "Usuarios ({{count}})"
+        "title": "Usuarios"
       }
     },
     "search": {

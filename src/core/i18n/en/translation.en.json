@@ -920,10 +920,10 @@
         "placeholder": "Search..."
       },
       "organizations": {
-        "title": "Organizations ({{count}})"
+        "title": "Organizations"
       },
       "users": {
-        "title": "Users ({{count}})"
+        "title": "Users"
       }
     },
     "search": {

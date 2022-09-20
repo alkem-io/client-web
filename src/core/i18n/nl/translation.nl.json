@@ -734,14 +734,10 @@
         "placeholder": "Zoek naar gebruikers en organisaties"
       },
       "organizations": {
-        "title": "Organisaties ({{count}})",
-        "subtitle": "Organisaties die overeenkomen met uw zoektermen.",
-        "help-text": "Klik op de kaarten hieronder om te kijken welke organisatie bijdraagt."
+        "title": "Organisaties"
       },
       "users": {
-        "title": "Gebruikers ({{count}})",
-        "subtitle": "Gebruikers die overeenkomen met uw zoektermen.",
-        "help-text": ""
+        "title": "Gebruikers"
       }
     },
     "search": {
