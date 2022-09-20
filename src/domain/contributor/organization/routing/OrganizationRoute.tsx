@@ -5,7 +5,7 @@ import { Loading } from '../../../../common/components/core';
 import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
 import { useOrganization } from '../../../../hooks';
 import { Error404, PageProps } from '../../../../pages';
-import OrganizationPage from '../../../../pages/Organization/OrganizationPage';
+import OrganizationPage from '../pages/OrganizationPage';
 
 const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');

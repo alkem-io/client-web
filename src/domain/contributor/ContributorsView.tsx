@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Accordion } from '../../common/components/composite/common/Accordion/Accordion';
-import { SectionSpacer } from '../../domain/shared/components/Section/Section';
+import { SectionSpacer } from '../shared/components/Section/Section';
 import OrganizationCard, {
   OrganizationCardProps,
 } from '../../common/components/composite/common/cards/Organization/OrganizationCard';

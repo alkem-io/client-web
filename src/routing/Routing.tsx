@@ -6,7 +6,7 @@ import { CommunityContextProvider } from '../domain/community/CommunityContext';
 import { HubContextProvider } from '../domain/challenge/hub/HubContext/HubContext';
 import { OrganizationProvider } from '../domain/contributor/organization/context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../pages';
-import ContributorsPage from '../pages/Contributors/ContributorsPage';
+import ContributorsPage from '../domain/contributor/ContributorsPage';
 import { AdminRoute } from '../domain/admin/routing/AdminRoute';
 import { MessagesRoute } from './messages/MessagesRoute';
 import OrganizationRoute from '../domain/contributor/organization/routing/OrganizationRoute';
