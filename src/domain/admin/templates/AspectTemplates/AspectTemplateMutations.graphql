@@ -1,4 +1,4 @@
-mutation updateAspectTemplate($templateId: UUID!, $defaultDescription: WrapperMarkdown, $info: UpdateTemplateInfoInput, $type: String) {
+mutation updateAspectTemplate($templateId: UUID!, $defaultDescription: Markdown, $info: UpdateTemplateInfoInput, $type: String) {
   updateAspectTemplate(aspectTemplateInput: {
     ID: $templateId
     defaultDescription: $defaultDescription
@@ -9,7 +9,7 @@ mutation updateAspectTemplate($templateId: UUID!, $defaultDescription: WrapperMa
   }
 }
 
-mutation createAspectTemplate($templatesSetId: UUID!, $defaultDescription: WrapperMarkdown!, $info: CreateTemplateInfoInput!, $type: String!) {
+mutation createAspectTemplate($templatesSetId: UUID!, $defaultDescription: Markdown!, $info: CreateTemplateInfoInput!, $type: String!) {
   createAspectTemplate(aspectTemplateInput: {
     templatesSetID: $templatesSetId
     defaultDescription: $defaultDescription

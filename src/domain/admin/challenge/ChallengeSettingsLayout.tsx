@@ -5,8 +5,8 @@ import { useChallenge } from '../../../hooks';
 import { CommonTabs } from '../layout/EntitySettings/constants';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
-import ChallengePageBanner from '../../challenge/layout/ChallengePageBanner';
-import ChallengeTabs from '../../challenge/layout/ChallengeTabs';
+import ChallengePageBanner from '../../challenge/challenge/layout/ChallengePageBanner';
+import ChallengeTabs from '../../challenge/challenge/layout/ChallengeTabs';
 
 interface ChallengeSettingsLayoutProps {
   currentTab: SettingsSection;

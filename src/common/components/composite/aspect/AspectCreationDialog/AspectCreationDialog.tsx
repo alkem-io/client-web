@@ -122,7 +122,7 @@ const AspectCreationDialog: FC<AspectCreationDialogProps> = ({
       label: t('components.aspect-creation.create-step.title'),
     },
     {
-      label: t('components.aspect-creation.visuals-step.title'),
+      label: t('components.aspect-creation.visual-step.title'),
     },
   ];
 

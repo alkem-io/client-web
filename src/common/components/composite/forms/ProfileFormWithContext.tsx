@@ -26,7 +26,7 @@ export interface ProfileFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
-  // visuals: Visual2[]; todo: enable when it's time
+  // visual: Visual2[]; todo: enable when it's time
   tagsets: Tagset[];
   innovationFlowTemplateID: string;
 }

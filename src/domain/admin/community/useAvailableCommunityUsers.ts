@@ -1,5 +1,5 @@
 import { AvailableUserFragment, PageInfoFragment, UserFilterInput } from '../../../models/graphql-schema';
-import useUsersSearch, { UseUsersSearchResult } from '../../community/useAvailableMembersWithCredential/useUsersSearch';
+import useUsersSearch, { UseUsersSearchResult } from '../../community/community/useAvailableMembersWithCredential/useUsersSearch';
 import usePaginatedQuery, {
   NonPaginationVariables,
   PaginationOptionsLazy,

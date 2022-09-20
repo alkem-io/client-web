@@ -3,7 +3,7 @@ import { Route, Routes, Navigate, useResolvedPath } from 'react-router-dom';
 import { useTransactionScope } from '../../../hooks';
 import { AuthorizationCredential } from '../../../models/graphql-schema';
 import { Error404 } from '../../../pages';
-import RestrictedRoute from '../../../routing/RestrictedRoute';
+import RestrictedRoute from '../../../core/routing/RestrictedRoute';
 import GlobalAuthorizationRoute from './GlobalAuthorizationRoute';
 import { AdminOrganizationsRoutes } from '../organization';
 import { UsersRoute } from '../user/routing/UsersRoute';

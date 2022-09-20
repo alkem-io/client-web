@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import ChallengePreferenceContainer from '../../../containers/preferences/challenge/ChallengePreferenceContainer';
-import ChallengeMembershipPreferenceView from '../../challenge/views/ChallengeMembershipPreferenceView';
+import ChallengeMembershipPreferenceView from '../../challenge/challenge/views/ChallengeMembershipPreferenceView';
 
 interface Props {
   hubId: string;

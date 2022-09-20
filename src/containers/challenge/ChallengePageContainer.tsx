@@ -8,20 +8,20 @@ import {
   useChallengePageQuery,
 } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { Discussion } from '../../domain/discussion/models/discussion';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { Activity, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';
-import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
-import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
-import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
-import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
+import { EntityDashboardContributors } from '../../domain/community/community/EntityDashboardContributorsSection/Types';
+import useCommunityMembersAsCardProps from '../../domain/community/community/utils/useCommunityMembersAsCardProps';
+import { useCanvasesCount } from '../../domain/collaboration/canvas/utils/canvasesCount';
 import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
-} from '../../domain/callout/utils/getPublishedCallouts';
+} from '../../domain/collaboration/callout/utils/getPublishedCallouts';
 import { Reference } from '../../models/Profile';
-import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/collaboration/callout/useCallouts';
 import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
 
 export interface ChallengeContainerEntities extends EntityDashboardContributors {

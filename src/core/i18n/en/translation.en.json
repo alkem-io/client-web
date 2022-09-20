@@ -94,6 +94,7 @@
     "about": "About",
     "explore": "Explore",
     "edit-entity": "Edit {{entity}}",
+    "filter": "Filter",
     "email": "Email",
     "state": "State",
     "aspect": "Card",
@@ -360,7 +361,7 @@
       "template-step": {
         "title": "Templates",
         "no-templates": "No templates available",
-        "card-template-label": "Choose a a template  that you want to use for the Callout"
+        "card-template-label": "Choose a template  that you want to use for the Callout"
       },
       "create-step": {
         "title": "Create",
@@ -729,6 +730,12 @@
     }
   },
   "footer": {
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "security": "Security",
+    "feedback": "Feedback",
+    "support": "Support",
+    "about": "About",
     "copyright": "© 2022 Alkemio Foundation"
   },
   "pages": {

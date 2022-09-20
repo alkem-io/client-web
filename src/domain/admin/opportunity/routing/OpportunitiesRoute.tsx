@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import EditOpportunity from '../../components/EditOpportunity';
 import FormMode from '../../components/FormMode';
-import { OpportunityProvider } from '../../../opportunity/context/OpportunityProvider';
+import { OpportunityProvider } from '../../../challenge/opportunity/context/OpportunityProvider';
 import ChallengeSettingsLayout from '../../challenge/ChallengeSettingsLayout';
 import { SettingsSection } from '../../layout/EntitySettings/constants';
 import { Error404, PageProps } from '../../../../pages';
-import { nameOfUrl } from '../../../../routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/url-params';
 import { OpportunityRoute } from './OpportunityRoute';
-import ChallengeOpportunitiesPage from '../../../challenge/pages/ChallengeOpportunities/ChallengeOpportunitiesPage';
+import ChallengeOpportunitiesPage from '../../../challenge/challenge/pages/ChallengeOpportunities/ChallengeOpportunitiesPage';
 
 interface Props extends PageProps {}
 

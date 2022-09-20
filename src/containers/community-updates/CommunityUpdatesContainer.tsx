@@ -15,7 +15,7 @@ import {
   Updates,
 } from '../../models/graphql-schema';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
-import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/communication/useAuthorsDetails';
 import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 

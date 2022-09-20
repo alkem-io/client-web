@@ -2,14 +2,14 @@ import React, { FC, useMemo } from 'react';
 import { Route, Routes, useResolvedPath, Navigate } from 'react-router-dom';
 import { useHub, useChallenge } from '../../../../hooks';
 import { PageProps, Error404 } from '../../../../pages';
-import ChallengeCommunicationsPage from '../../../challenge/pages/ChallengeCommunications/ChallengeCommunicationsPage';
-import ChallengeProfilePage from '../../../challenge/pages/ChallengeProfile/ChallengeProfilePage';
+import ChallengeCommunicationsPage from '../../../challenge/challenge/pages/ChallengeCommunications/ChallengeCommunicationsPage';
+import ChallengeProfilePage from '../../../challenge/challenge/pages/ChallengeProfile/ChallengeProfilePage';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import { OpportunitiesRoute } from '../../opportunity/routing/OpportunitiesRoute';
 import ChallengeCommunityAdminPage from '../ChallengeCommunityAdminPage';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
-import ChallengeContextPage from '../../../challenge/pages/ChallengeContext/ChallengeContextPage';
+import ChallengeContextPage from '../../../challenge/challenge/pages/ChallengeContext/ChallengeContextPage';
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');

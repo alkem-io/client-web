@@ -11,8 +11,8 @@ import useChallengeApplications from './providers/useChallengeApplications';
 import { Loading } from '../../../common/components/core';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
 import ChallengeCommunityAdminMembershipPreferencesSection from './ChallengeCommunityAdminMembershipPreferencesSection';
-import useChallengeLeadOrganizationAssignment from '../../community/useCommunityAssignment/useChallengeLeadOrganizationAssignment';
-import useChallengeMemberOrganizationAssignment from '../../community/useCommunityAssignment/useChallengeMemberOrganizationAssignment';
+import useChallengeLeadOrganizationAssignment from '../../community/community/useCommunityAssignment/useChallengeLeadOrganizationAssignment';
+import useChallengeMemberOrganizationAssignment from '../../community/community/useCommunityAssignment/useChallengeMemberOrganizationAssignment';
 import {
   refetchChallengeAvailableLeadUsersQuery,
   refetchChallengeAvailableMemberUsersQuery,

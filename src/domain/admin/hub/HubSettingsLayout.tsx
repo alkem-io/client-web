@@ -5,8 +5,8 @@ import { useHub } from '../../../hooks';
 import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
 import WbIncandescentOutlinedIcon from '@mui/icons-material/WbIncandescentOutlined';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
-import HubPageBanner from '../../hub/layout/HubPageBanner';
-import HubTabs from '../../hub/layout/HubTabs';
+import HubPageBanner from '../../challenge/hub/layout/HubPageBanner';
+import HubTabs from '../../challenge/hub/layout/HubTabs';
 
 interface HubSettingsLayoutProps {
   currentTab: SettingsSection;

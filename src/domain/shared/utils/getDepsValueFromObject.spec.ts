@@ -7,7 +7,7 @@ describe('getValuesSorted', () => {
         x: 0,
         '11': 'eleven',
         '1': 'one',
-        Alkemio: 'Putting challenges central',
+        Alkemio: 'Putting challenge central',
         Alkemio1: 'Allowing everyone to contribute.',
       })
     ).toEqual(
@@ -17,7 +17,7 @@ describe('getValuesSorted', () => {
         '11',
         'eleven',
         'Alkemio',
-        'Putting challenges central',
+        'Putting challenge central',
         'Alkemio1',
         'Allowing everyone to contribute.',
         'x',

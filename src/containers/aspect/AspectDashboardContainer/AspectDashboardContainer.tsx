@@ -12,13 +12,13 @@ import {
 } from '../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../hooks';
 import { Message } from '../../../domain/shared/components/Comments/models/message';
-import { useAuthorsDetails } from '../../../domain/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../../domain/communication/communication/useAuthorsDetails';
 import { evictFromCache } from '../../../domain/shared/utils/apollo-cache/removeFromCache';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../common/utils/containers/ComponentOrChildrenFn';
-import useAspectCommentsMessageReceivedSubscription from '../../../domain/aspect/comments/useAspectCommentsMessageReceivedSubscription';
+import useAspectCommentsMessageReceivedSubscription from '../../../domain/collaboration/aspect/comments/useAspectCommentsMessageReceivedSubscription';
 import { getCardCallout } from '../getAspectCallout';
 
 interface EntityIds {

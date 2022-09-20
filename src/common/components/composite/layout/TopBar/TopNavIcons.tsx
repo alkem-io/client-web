@@ -70,12 +70,12 @@ const TopNavIcons = () => {
 
   const menuItems: MenuItem[] = [
     {
-      title: t('common.challenges'),
+      title: t('common.challenge'),
       icon: <ChallengeIcon />,
       url: '/challenges',
     },
     {
-      title: t('common.contributors'),
+      title: t('common.contributor'),
       icon: <GroupOutlinedIcon />,
       url: '/contributors',
     },

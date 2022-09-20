@@ -4,7 +4,7 @@ import { EditMode } from '../../../../models/editMode';
 import { Error404, PageProps } from '../../../../pages';
 import AdminUsersPage from '../AdminUsers/AdminUsersPage';
 import { UserPage } from '../pages/UserPage';
-import { nameOfUrl } from '../../../../routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/url-params';
 
 export const UsersRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');

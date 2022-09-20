@@ -3,7 +3,7 @@ import { useUserContext } from '../../../../hooks';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';
 import AuthorizationPageProps from '../../../../pages/Admin/AuthorizationPageProps';
 import EditMemberUsers, { EditMemberUsersProps } from '../Community/EditMembersUsers';
-import { useAvailableMembersWithCredential } from '../../../community/useAvailableMembersWithCredential';
+import { useAvailableMembersWithCredential } from '../../../community/community/useAvailableMembersWithCredential';
 
 interface EditAdminCredentialsProps
   extends Omit<AuthorizationPageProps, 'paths'>,

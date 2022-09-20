@@ -16,10 +16,10 @@ const AspectVisualsStepView: FC<AspectVisualsStepViewProps> = ({ bannerNarrow })
   return (
     <>
       <Typography sx={{ textTransform: 'uppercase', fontWeight: 'bold' }}>
-        {t('components.aspect-creation.visuals-step.headline')}
+        {t('components.aspect-creation.visual-step.headline')}
       </Typography>
       <SectionSpacer double />
-      <Typography variant="subtitle2">{t('components.aspect-creation.visuals-step.explanation')}</Typography>
+      <Typography variant="subtitle2">{t('components.aspect-creation.visual-step.explanation')}</Typography>
       <SectionSpacer />
       <Box display="flex" flexDirection="row" paddingBottom={3}>
         <VisualUpload visual={bannerNarrow} />
@@ -34,7 +34,7 @@ const AspectVisualsStepView: FC<AspectVisualsStepViewProps> = ({ bannerNarrow })
           <Typography variant="subtitle1">{t('pages.visual-edit.banner.description2')}</Typography>
         </Box>
       </Box>
-      <Typography variant="subtitle2">{t('components.aspect-creation.visuals-step.bottom-note')}</Typography>
+      <Typography variant="subtitle2">{t('components.aspect-creation.visual-step.bottom-note')}</Typography>
     </>
   );
 };

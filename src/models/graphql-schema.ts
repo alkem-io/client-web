@@ -1354,7 +1354,7 @@ export type Hub = {
   authorization?: Maybe<Authorization>;
   /** A particular Challenge, either by its ID or nameID */
   challenge: Challenge;
-  /** The challenges for the hub. */
+  /** The challenge for the hub. */
   challenges?: Maybe<Array<Challenge>>;
   /** The collaboration for the Hub. */
   collaboration?: Maybe<Collaboration>;
@@ -1513,7 +1513,7 @@ export type Metadata = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Ensure all community members are registered for communications. */
+  /** Ensure all community members are registered for communication. */
   adminCommunicationEnsureAccessToCommunications: Scalars['Boolean'];
   /** Remove an orphaned room from messaging platform. */
   adminCommunicationRemoveOrphanedRoom: Scalars['Boolean'];
@@ -2950,7 +2950,7 @@ export type RolesUserInput = {
 };
 
 export type SearchInput = {
-  /** Restrict the search to only the specified challenges. Default is all Challenges. */
+  /** Restrict the search to only the specified challenge. Default is all Challenges. */
   challengesFilter?: InputMaybe<Array<Scalars['Float']>>;
   /** Expand the search to includes Tagsets with the provided names. Max 2. */
   tagsetNames?: InputMaybe<Array<Scalars['String']>>;
@@ -3980,6 +3980,7 @@ export type SearchQuery = {
           __typename?: 'Organization';
           id: string;
           displayName: string;
+          nameID: string;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -13836,6 +13837,7 @@ export type OrganizationSearchResultFragment = {
   __typename?: 'Organization';
   id: string;
   displayName: string;
+  nameID: string;
   profile: {
     __typename?: 'Profile';
     id: string;

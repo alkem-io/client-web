@@ -19,7 +19,7 @@ import {
   useHubAvailableMemberUsersLazyQuery,
   useHubCommunityMembersQuery,
 } from '../../../hooks/generated/graphql';
-import useMemberOrganizationAssignment from '../../community/useCommunityAssignment/useMemberOrganizationAssignment';
+import useMemberOrganizationAssignment from '../../community/community/useCommunityAssignment/useMemberOrganizationAssignment';
 import useCommunityUserAssignment from '../community/useCommunityUserAssignment';
 import EditCommunityMembersSection from '../community/views/EditCommunityMembersSection';
 import EditMemberUsersWithPopup from '../components/Community/EditMemberUsersWithPopup';
