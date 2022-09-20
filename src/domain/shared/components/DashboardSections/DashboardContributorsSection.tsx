@@ -10,7 +10,7 @@ import ContributorCard, {
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';
-import { UserMetadata } from '../../../user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../../contributor/user/hooks/useUserMetadataWrapper';
 
 const MAX_USERS_TO_SHOW = 12;
 const MAX_ORGANIZATIONS_TO_SHOW = 12;
@@ -75,7 +75,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
           </Grid>
           <Box display="flex" justifyContent="end" paddingTop={2}>
             {usersRemainingCount > 0 && (
-              <Typography>{t('dashboard-contributors-section.more', { count: usersRemainingCount })}</Typography>
+              <Typography>{t('dashboard-contributor-section.more', { count: usersRemainingCount })}</Typography>
             )}
           </Box>
         </Grid>
@@ -100,7 +100,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
           <Box display="flex" justifyContent="end" paddingTop={2}>
             {organizationsRemainingCount > 0 && (
               <Typography>
-                {t('dashboard-contributors-section.more', { count: organizationsRemainingCount })}
+                {t('dashboard-contributor-section.more', { count: organizationsRemainingCount })}
               </Typography>
             )}
           </Box>

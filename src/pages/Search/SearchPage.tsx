@@ -175,7 +175,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         </Box>
       )}
       <SearchResultSection
-        title={`${t('common.challenges')} & ${t('common.opportunities')}`}
+        title={`${t('common.challenge')} & ${t('common.opportunities')}`}
         filterConfig={entityFilterConfig}
         results={entityResults}
         onFilterChange={handleEntityFilterChange}
@@ -184,7 +184,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
       <SectionSpacer double />
       <SearchResultSection
         filterConfig={contributorFilterConfig}
-        title={t('common.contributors')}
+        title={t('common.contributor')}
         results={contributorResults}
         onFilterChange={handleContributorFilterChange}
         loading={isSearching}

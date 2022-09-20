@@ -23,7 +23,7 @@ import { TagsetSegment, tagsetSegmentSchema } from '../Common/TagsetSegment';
 import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { organizationSegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
-import { OrganizationInput } from '../../../organization/OrganizationInput';
+import { OrganizationInput } from '../../../contributor/organization/OrganizationInput';
 import { formatLocation } from '../../../location/LocationUtils';
 import { LocationSegment } from '../../../location/LocationSegment';
 import { EmptyLocation } from '../../../location/Location';

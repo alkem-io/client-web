@@ -19,7 +19,7 @@ import { RouterLink } from '../../core/RouterLink';
 import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
 import WrapperTypography from '../../core/WrapperTypography';
-import { useUserMetadata } from '../../../../domain/user/hooks/useUserMetadata';
+import { useUserMetadata } from '../../../../domain/contributor/user/hooks/useUserMetadata';
 
 const useUserPopUpStyles = makeStyles(theme => ({
   header: {

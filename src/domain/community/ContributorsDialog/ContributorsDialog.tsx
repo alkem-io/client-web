@@ -25,7 +25,7 @@ const ContributorsDialog: FC<ContributorsDialogProps> = ({ open, onClose, dialog
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="community-updates-dialog-title">
       <DialogTitle id="community-updates-dialog-title" onClose={handleClose}>
         <Box display="flex" alignItems="center">
-          {t('dashboard-contributors-section.dialog-title')}
+          {t('dashboard-contributor-section.dialog-title')}
         </Box>
       </DialogTitle>
       <DialogContent dividers>

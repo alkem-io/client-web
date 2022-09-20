@@ -2,15 +2,15 @@ import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { useTransactionScope, useHub } from '../../../../hooks';
 import { PageProps, Error404 } from '../../../../pages';
-import HubCommunicationsPage from '../../../hub/pages/HubCommunication/HubCommunicationsPage';
-import HubProfilePage from '../../../hub/pages/HubProfile/HubProfilePage';
+import HubCommunicationsPage from '../../../challenge/hub/pages/HubCommunication/HubCommunicationsPage';
+import HubProfilePage from '../../../challenge/hub/pages/HubProfile/HubProfilePage';
 import { ChallengesRoute } from '../../challenge/routing/ChallengesRoute';
 import { ApplicationsAdminRoutes } from '../../community/routes/ApplicationsAdminRoutes';
 import HubCommunityAdminPage from '../HubCommunityAdminPage';
 import HubTemplatesAdminRoutes from '../HubTemplatesAdminRoutes';
 import HubAuthorizationRoute from './HubAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
-import HubContextPage from '../../../hub/pages/HubContext/HubContextPage';
+import HubContextPage from '../../../challenge/hub/pages/HubContext/HubContextPage';
 
 interface HubAdminRouteProps extends PageProps {}
 

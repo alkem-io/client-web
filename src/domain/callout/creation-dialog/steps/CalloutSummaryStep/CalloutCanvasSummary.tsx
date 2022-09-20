@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useCanvasTemplateValueQuery } from '../../../../../hooks/generated/graphql';
-import { useHub } from '../../../../hub/HubContext/useHub';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import CanvasPreview from '../../../../canvas/CanvasPreview/CanvasPreview';
 import { CalloutStepProps } from '../CalloutStepProps';
 

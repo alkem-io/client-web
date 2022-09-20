@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { ContributorCardProps } from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { isSocialLink, SocialLinkItem } from '../../domain/shared/components/SocialLinks/SocialLinks';
-import { RoleType } from '../../domain/user/constants/RoleType';
+import { RoleType } from '../../domain/contributor/user/constants/RoleType';
 import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
 import { useRolesOrganizationQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';
@@ -126,7 +126,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       hubId: x.id,
     }));
 
-    // Loop over hubs, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
+    // Loop over hubs, filter the challenge in which user has the role 'lead' and map those challenge to ContributionItems
     const challengeContributions =
       membershipData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
         h.challenges

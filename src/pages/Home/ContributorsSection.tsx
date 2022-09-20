@@ -20,18 +20,18 @@ const ContributorsSection = () => {
 
   return (
     <DashboardContributorsSection
-      headerText={t('contributors-section.title')}
-      subHeaderText={t('contributors-section.subheader')}
+      headerText={t('contributor-section.title')}
+      subHeaderText={t('contributor-section.subheader')}
       userTitle={
         <SectionHeaderTextWithActivity
-          headerText={t('contributors-section.users-title')}
+          headerText={t('contributor-section.users-title')}
           activity={usersActivity}
           loading={isLoadingActivities}
         />
       }
       organizationTitle={
         <SectionHeaderTextWithActivity
-          headerText={t('contributors-section.organizations-title')}
+          headerText={t('contributor-section.organizations-title')}
           activity={organizationsActivity}
           loading={isLoadingActivities}
         />

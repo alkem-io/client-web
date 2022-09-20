@@ -4,7 +4,7 @@ import {
   useCanvasTemplateValueQuery,
 } from '../../../../../hooks/generated/graphql';
 import { CalloutType } from '../../../../../models/graphql-schema';
-import { useHub } from '../../../../hub/HubContext/useHub';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import CanvasPreview from '../../../../canvas/CanvasPreview/CanvasPreview';
 import { CalloutTemplateStepProps } from './CalloutTemplateStepProps';
 import { TemplateListWithPreview } from './TemplateListWithPreview';

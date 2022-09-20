@@ -7,7 +7,7 @@ import { Identifiable } from '../../shared/types/Identifiable';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import { TFunction } from 'i18next';
-import { UserMetadata } from '../../user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../contributor/user/hooks/useUserMetadataWrapper';
 
 export const toOrganizationCardProps = (
   org: OrganizationCardFragment,

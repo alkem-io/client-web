@@ -4,7 +4,7 @@ import {
   useAspectTemplateValueQuery,
 } from '../../../../../hooks/generated/graphql';
 import { CalloutType } from '../../../../../models/graphql-schema';
-import { useHub } from '../../../../hub/HubContext/useHub';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import AspectTemplatePreview from '../../../../aspect/AspectTemplatePreview/AspectTemplatePreview';
 import { TemplateListWithPreview } from './TemplateListWithPreview';
 import { CalloutTemplateStepProps } from './CalloutTemplateStepProps';

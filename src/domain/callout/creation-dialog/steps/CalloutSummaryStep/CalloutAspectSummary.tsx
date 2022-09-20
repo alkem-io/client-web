@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useAspectTemplateValueQuery } from '../../../../../hooks/generated/graphql';
-import { useHub } from '../../../../hub/HubContext/useHub';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
 import AspectTemplatePreview from '../../../../aspect/AspectTemplatePreview/AspectTemplatePreview';
 import { CalloutStepProps } from '../CalloutStepProps';
 

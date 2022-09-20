@@ -39,7 +39,7 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
       loading={loading}
       activities={[
         {
-          name: t('common.challenges'),
+          name: t('common.challenge'),
           count: getActivityCount(activity, 'challenges'),
           color: 'primary',
         },

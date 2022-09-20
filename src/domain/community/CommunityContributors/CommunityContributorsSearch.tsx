@@ -16,10 +16,10 @@ const CommunityContributorsSearch: FC<CommunityContributorsSearchProps> = ({ onC
 
   return (
     <DashboardGenericSection
-      headerText={t('pages.contributors.search.title')}
-      subHeaderText={t('pages.contributors.search.subtitle')}
+      headerText={t('pages.contributor.search.title')}
+      subHeaderText={t('pages.contributor.search.subtitle')}
     >
-      <SearchTagsInput placeholder={t('pages.contributors.search.placeholder')} onChange={handleChange} {...props} />
+      <SearchTagsInput placeholder={t('pages.contributor.search.placeholder')} onChange={handleChange} {...props} />
     </DashboardGenericSection>
   );
 };

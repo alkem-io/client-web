@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import OrganizationPageContainer from '../../containers/organization/OrganizationPageContainer';
-import OrganizationPageLayout from '../../domain/organization/layout/OrganizationPageLayout';
-import OrganizationPageView from '../../domain/organization/views/OrganizationPageView';
+import OrganizationPageLayout from '../../domain/contributor/organization/layout/OrganizationPageLayout';
+import OrganizationPageView from '../../domain/contributor/organization/views/OrganizationPageView';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 import { useUpdateNavigation } from '../../hooks';
 import { PageProps } from '../common';

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import DashboardGenericSection from '../../shared/components/DashboardSections/DashboardGenericSection';
 import { SectionSpacer } from '../../shared/components/Section/Section';
 import { EntityDashboardLeads } from '../EntityDashboardContributorsSection/Types';
-import AssociatedOrganizationsView from '../../organization/AssociatedOrganizations/AssociatedOrganizationsView';
+import AssociatedOrganizationsView from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganizationsView';
 import OrganizationCard, {
   OrganizationCardProps,
 } from '../../../common/components/composite/common/cards/Organization/OrganizationCard';
@@ -11,7 +11,7 @@ import SectionHeader from '../../shared/components/Section/SectionHeader';
 import { buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import DashboardLeadUsers from './DashboardLeadUsers';
 import { useUserContext } from '../../../hooks';
-import { mapToAssociatedOrganization } from '../../organization/AssociatedOrganizations/AssociatedOrganization';
+import { mapToAssociatedOrganization } from '../../contributor/organization/AssociatedOrganizations/AssociatedOrganization';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
 
 const OrganizationCardTransparent = (props: OrganizationCardProps) => <OrganizationCard {...props} transparent />;

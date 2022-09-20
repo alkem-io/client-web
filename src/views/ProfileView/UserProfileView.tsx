@@ -6,7 +6,7 @@ import TagsComponent from '../../domain/shared/components/TagsComponent/TagsComp
 import WrapperTypography from '../../common/components/core/WrapperTypography';
 import References from '../../common/components/composite/common/References/References';
 import { styled } from '@mui/styles';
-import { UserMetadata } from '../../domain/user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../domain/contributor/user/hooks/useUserMetadataWrapper';
 import { isSocialNetworkSupported } from '../../domain/shared/components/SocialLinks/models/SocialNetworks';
 
 export interface UserProfileViewProps {

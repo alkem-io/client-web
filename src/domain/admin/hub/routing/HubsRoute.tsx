@@ -4,7 +4,7 @@ import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { useTransactionScope } from '../../../../hooks';
 import { PageProps, Error404 } from '../../../../pages';
 import { nameOfUrl } from '../../../../routing/url-params';
-import { HubContextProvider } from '../../../hub/HubContext/HubContext';
+import { HubContextProvider } from '../../../challenge/hub/HubContext/HubContext';
 import AdminHubsPage from '../pages/AdminHubsPage';
 import NewHub from '../pages/NewHub';
 import { HubRoute } from './HubRoute';

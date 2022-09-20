@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { CommonTabs, SettingsSection } from '../layout/EntitySettings/constants';
 import { useOpportunity } from '../../../hooks';
 import EntitySettingsLayout from '../layout/EntitySettings/EntitySettingsLayout';
-import OpportunityPageBanner from '../../opportunity/layout/OpportunityPageBanner';
-import OpportunityTabs from '../../opportunity/layout/OpportunityTabs';
+import OpportunityPageBanner from '../../challenge/opportunity/layout/OpportunityPageBanner';
+import OpportunityTabs from '../../challenge/opportunity/layout/OpportunityTabs';
 
 interface OpportunitySettingsLayoutProps {
   currentTab: SettingsSection;
