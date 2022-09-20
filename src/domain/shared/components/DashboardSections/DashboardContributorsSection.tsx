@@ -69,7 +69,11 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
             })}
             {!user && (
               <Grid item>
-                <ImageBackdrop src={USERS_GRAYED_OUT_IMAGE} blockName={'users-contributing'} />
+                <ImageBackdrop
+                  src={USERS_GRAYED_OUT_IMAGE}
+                  backdropMessage={'authentication'}
+                  blockName={'users-contributing'}
+                />
               </Grid>
             )}
           </Grid>
