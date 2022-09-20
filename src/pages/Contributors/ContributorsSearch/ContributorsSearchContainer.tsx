@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../models/container';
-import { useContributorsSearchQuery } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUserContext } from '../../hooks';
-import { OrganizationContributorFragment, UserContributorFragment } from '../../models/graphql-schema';
+import { ContainerChildProps } from '../../../models/container';
+import { useContributorsSearchQuery } from '../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useUserContext } from '../../../hooks';
+import { OrganizationContributorFragment, UserContributorFragment } from '../../../models/graphql-schema';
 
 export interface ContributorsSearchContainerEntities {
   users: UserContributorFragment[];
