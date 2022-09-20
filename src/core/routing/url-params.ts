@@ -1,5 +1,5 @@
-import nameof from '../common/utils/name-of';
-import { AuthorizationCredential } from '../models/graphql-schema';
+import nameof from '../../common/utils/name-of';
+import { AuthorizationCredential } from '../../models/graphql-schema';
 
 export default interface UrlParams extends Record<string, string | undefined> {
   hubNameId?: string;

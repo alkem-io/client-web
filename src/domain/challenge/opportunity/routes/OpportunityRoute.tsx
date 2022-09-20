@@ -5,7 +5,7 @@ import Loading from '../../../../common/components/core/Loading/Loading';
 import { useOpportunity } from '../../../../hooks';
 import { Error404, PageProps } from '../../../../pages';
 import OpportunityAgreementsPage from '../pages/OpportunityAgreementsPage';
-import { nameOfUrl } from '../../../../routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/url-params';
 import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
 import { routes } from './opportunityRoutes';
 import CalloutsPage from '../../../collaboration/callout/CalloutsPage';

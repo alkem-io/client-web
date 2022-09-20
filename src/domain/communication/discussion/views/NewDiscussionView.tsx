@@ -3,13 +3,13 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import FormikInputField from '../../common/components/composite/forms/FormikInputField';
-import FormikMarkdownField from '../../common/components/composite/forms/FormikMarkdownField';
-import WrapperButton from '../../common/components/core/WrapperButton';
-import FormikSelect from '../../common/components/composite/forms/FormikSelect';
-import { DiscussionCategory } from '../../models/graphql-schema';
-import DiscussionIcon from '../../common/components/composite/entities/Communication/DiscussionIcon';
-import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import FormikMarkdownField from '../../../../common/components/composite/forms/FormikMarkdownField';
+import WrapperButton from '../../../../common/components/core/WrapperButton';
+import FormikSelect from '../../../../common/components/composite/forms/FormikSelect';
+import { DiscussionCategory } from '../../../../models/graphql-schema';
+import DiscussionIcon from '../../../../common/components/composite/entities/Communication/DiscussionIcon';
+import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 
 const discussionCategories = [
   {

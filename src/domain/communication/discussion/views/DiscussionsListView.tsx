@@ -2,11 +2,11 @@ import { List, ListItemText } from '@mui/material';
 import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Filter } from '../../domain/admin/components/Common/Filter';
-import ProfileCard from '../../common/components/composite/common/cards/ProfileCard/ProfileCard';
-import DiscussionOverview from '../../common/components/composite/entities/Communication/DiscussionOverview';
-import { Discussion } from '../../domain/communication/discussion/models/discussion';
-import { ViewProps } from '../../models/view';
+import { Filter } from '../../../admin/components/Common/Filter';
+import ProfileCard from '../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
+import DiscussionOverview from '../../../../common/components/composite/entities/Communication/DiscussionOverview';
+import { Discussion } from '../models/discussion';
+import { ViewProps } from '../../../../models/view';
 
 interface DiscussionListViewEntities {
   discussions: Discussion[];

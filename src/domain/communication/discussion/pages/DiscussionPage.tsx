@@ -8,7 +8,7 @@ import { useCommunityContext } from '../../../community/community/CommunityConte
 import { useDiscussionContext } from '../../../../context/Discussions/DiscussionProvider';
 import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
 import { useUpdateNavigation, useUserContext } from '../../../../hooks';
-import DiscussionView from '../../../../views/Discussions/DiscussionView';
+import DiscussionView from '../views/DiscussionView';
 import { PageProps } from '../../../../pages/common';
 
 interface DiscussionPageProps extends PageProps {}

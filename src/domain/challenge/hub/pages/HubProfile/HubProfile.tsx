@@ -8,7 +8,7 @@ import { useHub } from '../../../../../hooks';
 import { useNotification } from '../../../../../hooks';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import { Box, Container } from '@mui/material';
-import EditVisualsView from '../../../../../views/Visuals/EditVisualsView';
+import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../location/LocationUtils';
 
 export const HubProfile: FC = () => {

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import FormMode from '../../components/FormMode';
 import { PageProps, Error404 } from '../../../../pages';
-import { nameOfUrl } from '../../../../routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/url-params';
 import { ChallengeProvider } from '../../../challenge/challenge/context/ChallengeProvider';
 import EditChallengePage from '../../../challenge/challenge/pages/EditChallengePage';
 import ChallengeListPage from '../../../challenge/hub/pages/HubChallenges/ChallengeListPage';

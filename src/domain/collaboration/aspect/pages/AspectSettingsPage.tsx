@@ -11,7 +11,7 @@ import AspectForm, {
 import AspectSettingsContainer from '../../../../containers/aspect/AspectSettingsContainer/AspectSettingsContainer';
 import { useUrlParams } from '../../../../hooks';
 import { AspectSettingsFragment, Visual } from '../../../../models/graphql-schema';
-import EditVisualsView from '../../../../views/Visuals/EditVisualsView';
+import EditVisualsView from '../../../common/visual/views/EditVisualsView';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { AspectDialogSection } from '../views/AspectDialogSection';
 import AspectLayout from '../views/AspectLayout';
@@ -94,7 +94,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
                   <>
                     <SectionSpacer double />
                     <Box>
-                      <Typography variant={'h4'}>{t('common.visuals')}</Typography>
+                      <Typography variant={'h4'}>{t('common.visual')}</Typography>
                       <SectionSpacer />
                       <EditVisualsView visuals={visuals} />
                     </Box>

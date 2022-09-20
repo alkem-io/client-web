@@ -3,7 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { ApplicationTypeEnum } from '../../../../models/enums/application-type';
 import { Error404, PageProps } from '../../../../pages';
 import ApplyPage from '../pages/ApplyPage';
-import RestrictedRoute from '../../../../routing/RestrictedRoute';
+import RestrictedRoute from '../../../../core/routing/RestrictedRoute';
 
 interface Props extends PageProps {
   type: ApplicationTypeEnum;

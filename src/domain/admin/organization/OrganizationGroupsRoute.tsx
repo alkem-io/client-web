@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Route, Routes, useResolvedPath } from 'react-router-dom';
 import { CreateOrganizationGroupPage } from '../components/Organization/CreateOrganizationGroup';
 import { Error404, PageProps } from '../../../pages';
-import { nameOfUrl } from '../../../routing/url-params';
+import { nameOfUrl } from '../../../core/routing/url-params';
 import { OrganizationGroupRoute } from './OrganizationGroupRoute';
 import { useAppendPaths } from '../../../hooks/usePathUtils';
 

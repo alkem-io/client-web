@@ -7,7 +7,7 @@ import { OpportunityProvider } from '../../../challenge/opportunity/context/Oppo
 import ChallengeSettingsLayout from '../../challenge/ChallengeSettingsLayout';
 import { SettingsSection } from '../../layout/EntitySettings/constants';
 import { Error404, PageProps } from '../../../../pages';
-import { nameOfUrl } from '../../../../routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/url-params';
 import { OpportunityRoute } from './OpportunityRoute';
 import ChallengeOpportunitiesPage from '../../../challenge/challenge/pages/ChallengeOpportunities/ChallengeOpportunitiesPage';
 

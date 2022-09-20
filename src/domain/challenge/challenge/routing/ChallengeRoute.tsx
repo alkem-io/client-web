@@ -6,7 +6,7 @@ import { useChallenge } from '../../../../hooks';
 import { ApplicationTypeEnum } from '../../../../models/enums/application-type';
 import { Error404, PageProps } from '../../../../pages';
 import ApplyRoute from '../../../community/application/routing/apply.route';
-import { nameOfUrl } from '../../../../routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/url-params';
 import { OpportunityProvider } from '../../opportunity/context/OpportunityProvider';
 import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import OpportunityRoute from '../../opportunity/routes/OpportunityRoute';

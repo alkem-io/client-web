@@ -14,7 +14,7 @@ import CategorySelector, {
 import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
 import { useCommunityContext } from '../../../community/community/CommunityContext';
 import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
-import { DiscussionListView } from '../../../../views/Discussions/DiscussionsListView';
+import { DiscussionListView } from '../views/DiscussionsListView';
 import { PageProps } from '../../../../pages/common';
 import { useUpdateNavigation } from '../../../../hooks';
 

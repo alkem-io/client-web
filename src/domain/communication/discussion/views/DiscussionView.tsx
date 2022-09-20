@@ -2,13 +2,13 @@ import { FetchResult } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Filter from '../../domain/admin/components/Common/Filter';
-import MessageView from '../../domain/shared/components/Comments/MessageView';
-import PostMessageToCommentsForm from '../../domain/shared/components/Comments/PostMessageToCommentsForm';
-import { MID_TEXT_LENGTH } from '../../models/constants/field-length.constants';
-import { Message } from '../../domain/shared/components/Comments/models/message';
-import { Discussion } from '../../domain/communication/discussion/models/discussion';
-import { AuthorizationPrivilege } from '../../models/graphql-schema';
+import Filter from '../../../admin/components/Common/Filter';
+import MessageView from '../../../shared/components/Comments/MessageView';
+import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
+import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { Message } from '../../../shared/components/Comments/models/message';
+import { Discussion } from '../models/discussion';
+import { AuthorizationPrivilege } from '../../../../models/graphql-schema';
 
 export interface DiscussionViewProps {
   discussion: Discussion;

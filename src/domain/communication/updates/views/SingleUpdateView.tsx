@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Grid, Skeleton, Avatar, Box } from '@mui/material';
-import { Author } from '../../domain/shared/components/AuthorAvatar/models/author';
-import WrapperMarkdown from '../../common/components/core/WrapperMarkdown';
+import { Author } from '../../../shared/components/AuthorAvatar/models/author';
+import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 
 export interface SingleUpdateViewProps {
   author?: Author;

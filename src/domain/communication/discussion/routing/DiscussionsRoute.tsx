@@ -7,7 +7,7 @@ import { Error404, PageProps } from '../../../../pages';
 import DiscussionListPage from '../pages/DiscussionListPage';
 import DiscussionPage from '../pages/DiscussionPage';
 import NewDiscussionPage from '../pages/NewDiscussionPage';
-import { nameOfUrl } from '../../../../routing/url-params';
+import { nameOfUrl } from '../../../../core/routing/url-params';
 import { DiscussionsProvider } from '../../../../context/Discussions/DiscussionsProvider';
 
 interface DiscussionsRouteProps extends PageProps {}

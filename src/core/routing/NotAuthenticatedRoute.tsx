@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuthenticationContext } from '../core/auth/authentication/hooks/useAuthenticationContext';
+import { useAuthenticationContext } from '../auth/authentication/hooks/useAuthenticationContext';
 
 export const NotAuthenticatedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthenticationContext();

@@ -14,7 +14,7 @@ import {
 } from '../../../../../hooks/generated/graphql';
 import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
 import { Context } from '../../../../../models/graphql-schema';
-import EditVisualsView from '../../../../../views/Visuals/EditVisualsView';
+import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../location/LocationUtils';
 
 interface Props {
