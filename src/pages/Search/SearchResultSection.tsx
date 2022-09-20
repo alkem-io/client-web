@@ -2,9 +2,9 @@ import { FilterConfig, FilterDefinition } from './Filter';
 import React, { FC, useMemo, useState } from 'react';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { EntityFilter } from './EntityFilter';
-import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
-import SearchResultCardChooser from './SearchResultCardChooser';
 import { ResultType } from './SearchPage';
+import { SearchHubCard, SearchUserCard } from '../../domain/shared/components/search-cards';
+import { Box } from '@mui/material';
 
 interface ResultSectionProps {
   title: string;
@@ -35,9 +35,13 @@ const SearchResultSection: FC<ResultSectionProps> = ({
       headerText={titleWithCount}
       primaryAction={<EntityFilter config={filterConfig} onChange={handleFilterChange} />}
     >
-      <CardsLayout items={loading ? [undefined, undefined] : results} deps={[filter]}>
-        {result => <SearchResultCardChooser result={result} />}
-      </CardsLayout>
+      {/*<CardsLayout items={loading ? [undefined, undefined] : results} deps={[filter]}>*/}
+      {/*  {result => <SearchResultCardChooser result={result} />}*/}
+      {/*</CardsLayout>*/}
+      <Box sx={{ display: 'flex', gap: '16px' }}>
+        <SearchHubCard />
+        <SearchUserCard />
+      </Box>
     </DashboardGenericSection>
   );
 };
