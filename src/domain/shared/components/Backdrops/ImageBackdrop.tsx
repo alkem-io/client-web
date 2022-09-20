@@ -41,7 +41,7 @@ interface ImageBackdropProps extends BackdropProps {
   blockName: 'users-contributing' | 'all-contributing-users'; // common.block.* in the translation
 }
 
-const ImageBackdrop: FC<ImageBackdropProps> = ({ children, src, blockName, show = true }) => {
+const ImageBackdrop: FC<ImageBackdropProps> = ({ children, src, backdropMessage, blockName, show = true }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
@@ -53,7 +53,9 @@ const ImageBackdrop: FC<ImageBackdropProps> = ({ children, src, blockName, show 
           {children}
           <Message>
             <Typography variant="h5" sx={{ width: '100%', textAlign: 'center' }}>
-              {t(`components.backdrop.${backdropMessage}`, { blockName: t(`common.blocks.${blockName}` as const) })}
+              {t(`components.backdrop.${backdropMessage}` as const, {
+                blockName: t(`common.blocks.${blockName}` as const),
+              })}
             </Typography>
             <ButtonsWrapper>
               <Button variant={'contained'} onClick={() => navigate(AUTH_LOGIN_PATH, { replace: true })}>

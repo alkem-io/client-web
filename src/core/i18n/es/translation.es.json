@@ -279,7 +279,8 @@
       }
     },
     "blocks": {
-      "users-contributing": "los usuarios que están contribuyendo."
+      "users-contributing": "los usuarios que están contribuyendo.",
+      "all-contributing-users": "todos los colaboradores."
     }
   },
   "community": {
@@ -473,7 +474,8 @@
     },
     "backdrop": {
       "private": "Por favor, únete para acceder a {{blockName}}",
-      "authentication": "Por favor, inicia sesión para ver los detalles sobre {{blockName}}."
+      "authentication": "Por favor, inicia sesión para ver los detalles sobre {{blockName}}.",
+      "login": "Por favor, inicia sesión para ver {{blockName}}."
     },
     "referenceSegment": {
       "title": "Referencias",

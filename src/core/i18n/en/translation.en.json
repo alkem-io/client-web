@@ -280,7 +280,8 @@
       }
     },
     "blocks": {
-      "users-contributing": "users that are contributing"
+      "users-contributing": "users that are contributing",
+      "all-contributing-users": "all contributing users"
     }
   },
   "community": {
@@ -474,7 +475,8 @@
     },
     "backdrop": {
       "private": "Please become a member to access {{blockName}}",
-      "authentication": "Please sign in to see details about the {{blockName}}."
+      "authentication": "Please sign in to see details about the {{blockName}}.",
+      "login": "Please log in to see {{blockName}}"
     },
     "referenceSegment": {
       "title": "References",
