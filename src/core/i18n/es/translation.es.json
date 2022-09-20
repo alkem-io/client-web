@@ -277,6 +277,9 @@
         "QUESTIONS": "Preguntas",
         "SHARING": "Compartir"
       }
+    },
+    "blocks": {
+      "users-contributing": "los usuarios que están contribuyendo."
     }
   },
   "community": {
