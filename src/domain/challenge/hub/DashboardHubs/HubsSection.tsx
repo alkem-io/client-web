@@ -13,7 +13,7 @@ import getActivityCount from '../../../activity/utils/getActivityCount';
 import { ActivityItem } from '../../../../common/components/composite/common/ActivityPanel/Activities';
 import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { keyBy } from 'lodash';
-import { UserRolesInEntity } from '../../../contributor/user/providers/UserProvider/UserRolesInEntity';
+import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
 import { Loading } from '../../../../common/components/core';
 
 interface HubsSectionProps {

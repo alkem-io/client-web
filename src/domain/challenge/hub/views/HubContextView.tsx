@@ -10,7 +10,7 @@ import { ViewProps } from '../../../../models/view';
 import { ActivityType } from '../../../activity/ActivityType';
 import getActivityCount from '../../../activity/utils/getActivityCount';
 import ActivityView from '../../../activity/views/ActivityView';
-import HubCommunityView from '../../../community/entities/HubCommunityView';
+import HubCommunityView from '../../../community/community/entities/HubCommunityView';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 
 interface HubContextEntities {

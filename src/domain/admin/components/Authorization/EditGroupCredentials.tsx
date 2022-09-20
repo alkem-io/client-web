@@ -7,7 +7,7 @@ import {
 import { useApolloErrorHandler } from '../../../../hooks';
 import { AuthorizationCredential } from '../../../../models/graphql-schema';
 import EditMemberUsers from '../Community/EditMembersUsers';
-import { useAvailableMembersWithCredential } from '../../../community/useAvailableMembersWithCredential';
+import { useAvailableMembersWithCredential } from '../../../community/community/useAvailableMembersWithCredential';
 
 interface EditCredentialsProps {
   credential: GroupCredentials;

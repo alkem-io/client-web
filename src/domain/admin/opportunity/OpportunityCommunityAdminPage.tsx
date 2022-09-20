@@ -8,8 +8,8 @@ import { SectionSpacer } from '../../shared/components/Section/Section';
 import { Loading } from '../../../common/components/core';
 import CommunityGroupListPage from '../../../pages/Admin/Community/CommunityListPage';
 import EditOrganizationsWithPopup from '../community/views/EditOrganizationsWithPopup';
-import useOpportunityLeadOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityLeadOrganizationAssignment';
-import useOpportunityMemberOrganizationAssignment from '../../community/useCommunityAssignment/useOpportunityMemberOrganizationAssignment';
+import useOpportunityLeadOrganizationAssignment from '../../community/community/useCommunityAssignment/useOpportunityLeadOrganizationAssignment';
+import useOpportunityMemberOrganizationAssignment from '../../community/community/useCommunityAssignment/useOpportunityMemberOrganizationAssignment';
 import {
   refetchOpportunityAvailableLeadUsersQuery,
   refetchOpportunityAvailableMemberUsersQuery,

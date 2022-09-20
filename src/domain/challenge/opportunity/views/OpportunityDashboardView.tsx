@@ -23,13 +23,13 @@ import { ViewProps } from '../../../../models/view';
 import { buildOpportunityUrl, buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
-import EntityDashboardContributorsSection from '../../../community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
-import { EntityDashboardContributors } from '../../../community/EntityDashboardContributorsSection/Types';
-import EntityDashboardLeadsSection from '../../../community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import { EntityDashboardContributors } from '../../../community/community/EntityDashboardContributorsSection/Types';
+import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import { useUserContext } from '../../../contributor/user';
+import { useUserContext } from '../../../community/contributor/user';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { ActivityLogSection } from '../../../shared/components/ActivityLog';
 

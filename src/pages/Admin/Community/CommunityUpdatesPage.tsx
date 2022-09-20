@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { WithCommunity } from '../../../domain/admin/components/Community/CommunityTypes';
 import { CommunityUpdatesContainer } from '../../../containers/community-updates/CommunityUpdatesContainer';
 import { useHub } from '../../../hooks';
-import { CommunityUpdatesView } from '../../../views/CommunityUpdates/CommunityUpdatesView';
+import { CommunityUpdatesView } from '../../../domain/community/community/views/CommunityUpdates/CommunityUpdatesView';
 
 interface CommunityUpdatesPageProps extends WithCommunity {}
 

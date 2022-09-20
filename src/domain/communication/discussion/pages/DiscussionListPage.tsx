@@ -12,7 +12,7 @@ import CategorySelector, {
   CategoryConfig,
 } from '../../../../common/components/composite/common/CategorySelector/CategorySelector';
 import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
-import { useCommunityContext } from '../../../community/CommunityContext';
+import { useCommunityContext } from '../../../community/community/CommunityContext';
 import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
 import { DiscussionListView } from '../../../../views/Discussions/DiscussionsListView';
 import { PageProps } from '../../../../pages/common';

@@ -20,7 +20,7 @@ import { ViewProps } from '../../../../models/view';
 import ActivityView from '../../../activity/views/ActivityView';
 import { ActivityType } from '../../../activity/ActivityType';
 import getActivityCount from '../../../activity/utils/getActivityCount';
-import ChallengeCommunityView from '../../../community/entities/ChallengeCommunityView';
+import ChallengeCommunityView from '../../../community/community/entities/ChallengeCommunityView';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 

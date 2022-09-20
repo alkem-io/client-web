@@ -1,10 +1,10 @@
 import React, { FC, useMemo } from 'react';
 import { Navigate, Route, Routes, useResolvedPath } from 'react-router-dom';
 import { ChallengeProvider } from '../../challenge/context/ChallengeProvider';
-import { CommunityContextProvider } from '../../../community/CommunityContext';
+import { CommunityContextProvider } from '../../../community/community/CommunityContext';
 import { useHub } from '../../../../hooks';
 import { ApplicationTypeEnum } from '../../../../models/enums/application-type';
-import ApplyRoute from '../../../application/routing/apply.route';
+import ApplyRoute from '../../../community/application/routing/apply.route';
 import { nameOfUrl } from '../../../../routing/url-params';
 import ChallengeRoute from '../../challenge/routing/ChallengeRoute';
 import { Error404, PageProps } from '../../../../pages';

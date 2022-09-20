@@ -9,7 +9,7 @@ import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
 import WrapperTypography from '../../../core/WrapperTypography';
 import UserAvatar from './UserAvatar';
-import { UserMetadata } from '../../../../../domain/contributor/user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../../../../domain/community/contributor/user/hooks/useUserMetadataWrapper';
 
 const PREFIX = 'UserSegment';
 

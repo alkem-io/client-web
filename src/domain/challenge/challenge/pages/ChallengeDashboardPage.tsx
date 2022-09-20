@@ -5,9 +5,9 @@ import { DiscussionsProvider } from '../../../../context/Discussions/Discussions
 import ChallengePageLayout from '../layout/ChallengePageLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
-import CommunityUpdatesDialog from '../../../community/CommunityUpdatesDialog/CommunityUpdatesDialog';
-import ContributorsDialog from '../../../community/ContributorsDialog/ContributorsDialog';
-import ChallengeContributorsDialogContent from '../../../community/entities/ChallengeContributorsDialogContent';
+import CommunityUpdatesDialog from '../../../community/community/CommunityUpdatesDialog/CommunityUpdatesDialog';
+import ContributorsDialog from '../../../community/community/ContributorsDialog/ContributorsDialog';
+import ChallengeContributorsDialogContent from '../../../community/community/entities/ChallengeContributorsDialogContent';
 import { ChallengeDashboardView } from '../views/ChallengeDashboardView';
 
 export interface ChallengeDashboardPageProps {

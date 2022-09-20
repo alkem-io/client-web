@@ -23,11 +23,11 @@ import {
 import { buildHubUrl, buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
 import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
-import EntityDashboardContributorsSection from '../../../community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
+import EntityDashboardContributorsSection from '../../../community/community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import {
   EntityDashboardContributors,
   EntityDashboardLeads,
-} from '../../../community/EntityDashboardContributorsSection/Types';
+} from '../../../community/community/EntityDashboardContributorsSection/Types';
 import DashboardDiscussionsSection from '../../../shared/components/DashboardSections/DashboardDiscussionsSection';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import DashboardUpdatesSection from '../../../shared/components/DashboardSections/DashboardUpdatesSection';
@@ -36,7 +36,7 @@ import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
-import EntityDashboardLeadsSection from '../../../community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
+import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { Discussion } from '../../../communication/discussion/models/discussion';
 import { ActivityLogSection } from '../../../shared/components/ActivityLog';
 

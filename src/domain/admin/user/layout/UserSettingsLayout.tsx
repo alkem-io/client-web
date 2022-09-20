@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { useConfig } from '../../../../hooks';
 import { FEATURE_SSI } from '../../../../models/constants';
-import { useUserContext } from '../../../contributor/user';
-import UserPageBanner from '../../../contributor/user/layout/UserPageBanner';
-import UserTabs from '../../../contributor/user/layout/UserTabs';
+import { useUserContext } from '../../../community/contributor/user';
+import UserPageBanner from '../../../community/contributor/user/layout/UserPageBanner';
+import UserTabs from '../../../community/contributor/user/layout/UserTabs';
 import { UserProfileTabs, SettingsSection } from '../../layout/EntitySettings/constants';
 import EntitySettingsLayout from '../../layout/EntitySettings/EntitySettingsLayout';
 

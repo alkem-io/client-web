@@ -21,7 +21,7 @@ import {
   MessageDetailsFragment,
 } from '../../models/graphql-schema';
 import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
-import { useCommunityContext } from '../../domain/community/CommunityContext';
+import { useCommunityContext } from '../../domain/community/community/CommunityContext';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 import { FetchResult } from '@apollo/client';

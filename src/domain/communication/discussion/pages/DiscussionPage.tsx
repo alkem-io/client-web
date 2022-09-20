@@ -4,7 +4,7 @@ import DiscussionIcon from '../../../../common/components/composite/entities/Com
 import DiscussionsLayout from '../../../../common/components/composite/layout/Discussions/DiscussionsLayout';
 import { Loading } from '../../../../common/components/core';
 import RemoveModal from '../../../../common/components/core/RemoveModal';
-import { useCommunityContext } from '../../../community/CommunityContext';
+import { useCommunityContext } from '../../../community/community/CommunityContext';
 import { useDiscussionContext } from '../../../../context/Discussions/DiscussionProvider';
 import { useDiscussionsContext } from '../../../../context/Discussions/DiscussionsProvider';
 import { useUpdateNavigation, useUserContext } from '../../../../hooks';

@@ -19,8 +19,8 @@ import {
 import { replaceAll } from '../../common/utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../common/utils/urlBuilders';
 import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
-import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
-import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
+import useCommunityMembersAsCardProps from '../../domain/community/community/utils/useCommunityMembersAsCardProps';
+import { EntityDashboardContributors } from '../../domain/community/community/EntityDashboardContributorsSection/Types';
 import { useCanvasesCount } from '../../domain/collaboration/canvas/utils/canvasesCount';
 import {
   getAspectsFromPublishedCallouts,

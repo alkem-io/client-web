@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import MyHubsSection from '../../domain/challenge/hub/MyHubs/MyHubsSection';
 import { useTranslation } from 'react-i18next';
-import { UserContextValue } from '../../domain/contributor/user/providers/UserProvider/UserProvider';
+import { UserContextValue } from '../../domain/community/contributor/user/providers/UserProvider/UserProvider';
 import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { Grid } from '@mui/material';
 

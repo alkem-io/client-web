@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { ContributorCardProps } from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { isSocialLink, SocialLinkItem } from '../../domain/shared/components/SocialLinks/SocialLinks';
-import { RoleType } from '../../domain/contributor/user/constants/RoleType';
+import { RoleType } from '../../domain/community/contributor/user/constants/RoleType';
 import { useOrganization, useUserCardRoleName, useUserContext } from '../../hooks';
 import { useRolesOrganizationQuery } from '../../hooks/generated/graphql';
 import { COUNTRIES_BY_CODE } from '../../models/constants';

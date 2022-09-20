@@ -21,7 +21,7 @@ import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
-import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
+import useCommunityMembersAsCardProps from '../../domain/community/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/collaboration/canvas/utils/canvasesCount';
 import {
   getAspectsFromPublishedCallouts,

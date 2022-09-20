@@ -19,7 +19,7 @@ import {
   Discussion as DiscussionGraphql,
   DiscussionCategory,
 } from '../../models/graphql-schema';
-import { useCommunityContext } from '../../domain/community/CommunityContext';
+import { useCommunityContext } from '../../domain/community/community/CommunityContext';
 import { buildDiscussionsUrl, buildDiscussionUrl } from '../../common/utils/urlBuilders';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 

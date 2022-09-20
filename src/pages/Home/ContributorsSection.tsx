@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardContributorsSection from '../../domain/shared/components/DashboardSections/DashboardContributorsSection';
-import { useHomePageContributors } from '../../domain/community/HomePageContributors';
+import { useHomePageContributors } from '../../domain/community/community/HomePageContributors';
 import SectionHeaderTextWithActivity from '../../domain/activity/SectionHeaderTextWithActivity';
 import useServerMetadata from '../../hooks/useServerMetadata';
 import getActivityCount from '../../domain/activity/utils/getActivityCount';

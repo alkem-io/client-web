@@ -8,7 +8,7 @@ import { NavigationProvider } from './context/NavigationProvider';
 import SentryErrorBoundaryProvider from './context/SentryErrorBoundaryProvider';
 import ServerMetadataProvider from './context/ServerMetadataProvider';
 import { ThemeProvider } from './context/ThemeProvider';
-import { UserProvider } from './domain/contributor/user/providers/UserProvider/UserProvider';
+import { UserProvider } from './domain/community/contributor/user/providers/UserProvider/UserProvider';
 import './core/i18n/config';
 import { Routing } from './routing/Routing';
 import ScrollToTop from './routing/ScrollToTop';

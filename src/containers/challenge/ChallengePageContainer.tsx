@@ -13,8 +13,8 @@ import { Activity, AuthorizationPrivilege, ChallengeProfileFragment } from '../.
 import getActivityCount from '../../domain/activity/utils/getActivityCount';
 import { ActivityType } from '../../domain/activity/ActivityType';
 import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
-import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
-import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
+import { EntityDashboardContributors } from '../../domain/community/community/EntityDashboardContributorsSection/Types';
+import useCommunityMembersAsCardProps from '../../domain/community/community/utils/useCommunityMembersAsCardProps';
 import { useCanvasesCount } from '../../domain/collaboration/canvas/utils/canvasesCount';
 import {
   getAspectsFromPublishedCallouts,
