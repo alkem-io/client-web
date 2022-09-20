@@ -26,7 +26,7 @@ const UserMembershipPage: FC<UserMembershipPageProps> = ({ paths }) => {
         <Grid item xs={12}>
           <ContributionsView
             title={t('common.my-memberships')}
-            helpText={t('pages.user-profile.community.help')}
+            helpText={t('pages.user-profile.communities.help')}
             contributions={userMetadata?.contributions || []}
             loading={loading}
           />

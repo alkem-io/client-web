@@ -11,7 +11,7 @@ import ChallengeContributorsDialogContent from '../../../community/community/ent
 import { ChallengeDashboardView } from '../views/ChallengeDashboardView';
 
 export interface ChallengeDashboardPageProps {
-  dialog?: 'updates' | 'contributor';
+  dialog?: 'updates' | 'contributors';
 }
 
 const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => {
@@ -33,7 +33,7 @@ const ChallengeDashboardPage: FC<ChallengeDashboardPageProps> = ({ dialog }) => 
                 communityId={entities.challenge?.community?.id}
               />
               <ContributorsDialog
-                open={dialog === 'contributor'}
+                open={dialog === 'contributors'}
                 onClose={backToDashboard}
                 dialogContent={ChallengeContributorsDialogContent}
               />

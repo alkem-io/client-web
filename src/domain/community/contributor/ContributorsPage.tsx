@@ -30,12 +30,12 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
   return (
     <Box paddingY={2}>
       <DashboardGenericSection
-        headerText={t('pages.contributor.search.title')}
-        subHeaderText={t('pages.contributor.search.subtitle')}
+        headerText={t('pages.contributors.search.title')}
+        subHeaderText={t('pages.contributors.search.subtitle')}
       >
         <SearchTagsInput
           value={searchTerms}
-          placeholder={t('pages.contributor.search.placeholder')}
+          placeholder={t('pages.contributors.search.placeholder')}
           onChange={onSearchHandler}
         />
       </DashboardGenericSection>

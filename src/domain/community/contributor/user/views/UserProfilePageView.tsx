@@ -43,8 +43,8 @@ export const UserProfilePageView: FC<UserProfileViewPageProps> = ({ entities }) 
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <ContributionsView
-              title={t('pages.user-profile.community.title')}
-              helpText={t('pages.user-profile.community.help')}
+              title={t('pages.user-profile.communities.title')}
+              helpText={t('pages.user-profile.communities.help')}
               contributions={contributions}
             />
           </Grid>

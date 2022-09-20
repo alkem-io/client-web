@@ -75,7 +75,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
           </Grid>
           <Box display="flex" justifyContent="end" paddingTop={2}>
             {usersRemainingCount > 0 && (
-              <Typography>{t('dashboard-contributor-section.more', { count: usersRemainingCount })}</Typography>
+              <Typography>{t('dashboard-contributors-section.more', { count: usersRemainingCount })}</Typography>
             )}
           </Box>
         </Grid>
@@ -100,7 +100,7 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
           <Box display="flex" justifyContent="end" paddingTop={2}>
             {organizationsRemainingCount > 0 && (
               <Typography>
-                {t('dashboard-contributor-section.more', { count: organizationsRemainingCount })}
+                {t('dashboard-contributors-section.more', { count: organizationsRemainingCount })}
               </Typography>
             )}
           </Box>

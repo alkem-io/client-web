@@ -163,8 +163,8 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           )}
           {challengesReadAccess && (
             <DashboardGenericSection
-              headerText={withOptionalCount(t('pages.hub.sections.dashboard.challenge.title'), challengesCount)}
-              helpText={t('pages.hub.sections.dashboard.challenge.help-text')}
+              headerText={withOptionalCount(t('pages.hub.sections.dashboard.challenges.title'), challengesCount)}
+              helpText={t('pages.hub.sections.dashboard.challenges.help-text')}
               navText={t('buttons.see-all')}
               navLink={'challenges'}
             >

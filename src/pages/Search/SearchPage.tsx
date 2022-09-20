@@ -184,7 +184,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
       <SectionSpacer double />
       <SearchResultSection
         filterConfig={contributorFilterConfig}
-        title={t('common.contributor')}
+        title={t('common.contributors')}
         results={contributorResults}
         onFilterChange={handleContributorFilterChange}
         loading={isSearching}

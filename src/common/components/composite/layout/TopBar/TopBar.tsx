@@ -219,7 +219,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
           <ListItemIcon>
             <GroupOutlinedIcon />
           </ListItemIcon>
-          {t('common.contributor')}
+          {t('common.contributors')}
         </MenuItem>
         {user && (
           <MenuItem component={RouterLink} to={buildUserProfileUrl(user.nameID)}>

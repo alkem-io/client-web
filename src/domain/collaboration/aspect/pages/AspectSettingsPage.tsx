@@ -94,7 +94,7 @@ const AspectSettingsPage: FC<AspectSettingsPageProps> = ({ onClose }) => {
                   <>
                     <SectionSpacer double />
                     <Box>
-                      <Typography variant={'h4'}>{t('common.visual')}</Typography>
+                      <Typography variant={'h4'}>{t('common.visuals')}</Typography>
                       <SectionSpacer />
                       <EditVisualsView visuals={visuals} />
                     </Box>

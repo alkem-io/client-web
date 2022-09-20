@@ -49,17 +49,17 @@ const HubChallengesView: FC<HubChallengesViewProps> = ({ entities, state }) => {
   const { canReadChallenges } = permissions;
 
   return (
-    <MembershipBackdrop show={!canReadChallenges} blockName={t('pages.hub.sections.challenge.header')}>
+    <MembershipBackdrop show={!canReadChallenges} blockName={t('pages.hub.sections.challenges.header')}>
       {state.error && (
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <ErrorBlock blockName={t('pages.hub.sections.challenge.header')} />
+            <ErrorBlock blockName={t('pages.hub.sections.challenges.header')} />
           </Grid>
         </Grid>
       )}
       {!state.loading && !challenges.length ? (
         <Box paddingBottom={2} display="flex" justifyContent="center">
-          <Typography>{t('pages.hub.sections.challenge.no-data')}</Typography>
+          <Typography>{t('pages.hub.sections.challenges.no-data')}</Typography>
         </Box>
       ) : (
         <CardFilter

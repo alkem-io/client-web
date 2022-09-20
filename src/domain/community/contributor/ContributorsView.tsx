@@ -24,9 +24,9 @@ const ContributorsView: FC<ContributorsViewProps> = ({ users = [], showUsers, or
     <>
       <SectionSpacer double />
       <Accordion
-        title={t('pages.contributor.organizations.title', { count: organizations.length })}
-        subtitle={t('pages.contributor.organizations.subtitle')}
-        helpText={t('pages.contributor.organizations.help-text')}
+        title={t('pages.contributors.organizations.title', { count: organizations.length })}
+        subtitle={t('pages.contributors.organizations.subtitle')}
+        helpText={t('pages.contributors.organizations.help-text')}
         ariaKey={'organization'}
       >
         <Grid container spacing={3}>
@@ -48,9 +48,9 @@ const ContributorsView: FC<ContributorsViewProps> = ({ users = [], showUsers, or
         <>
           <SectionSpacer double />
           <Accordion
-            title={t('pages.contributor.users.title', { count: users.length })}
-            subtitle={t('pages.contributor.users.subtitle')}
-            helpText={t('pages.contributor.users.help-text')}
+            title={t('pages.contributors.users.title', { count: users.length })}
+            subtitle={t('pages.contributors.users.subtitle')}
+            helpText={t('pages.contributors.users.help-text')}
             ariaKey={'organization'}
           >
             <Grid container spacing={6}>

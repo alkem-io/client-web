@@ -11,7 +11,7 @@ import HubPageLayout from '../layout/HubPageLayout';
 import HubDashboardView from '../views/HubDashboardView';
 
 export interface HubDashboardPageProps {
-  dialog?: 'updates' | 'contributor';
+  dialog?: 'updates' | 'contributors';
 }
 
 const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
@@ -59,7 +59,7 @@ const HubDashboardPage: FC<HubDashboardPageProps> = ({ dialog }) => {
                 communityId={entities.hub?.community?.id}
               />
               <ContributorsDialog
-                open={dialog === 'contributor'}
+                open={dialog === 'contributors'}
                 onClose={backToDashboard}
                 dialogContent={HubContributorsDialogContent}
               />

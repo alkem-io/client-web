@@ -75,7 +75,7 @@ const TopNavIcons = () => {
       url: '/challenges',
     },
     {
-      title: t('common.contributor'),
+      title: t('common.contributors'),
       icon: <GroupOutlinedIcon />,
       url: '/contributors',
     },

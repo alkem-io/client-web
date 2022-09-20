@@ -17,7 +17,7 @@ const EntityDashboardContributorsSection = ({
 
   return (
     <DashboardGenericSection
-      headerText={t('contributor-section.title')}
+      headerText={t('contributors-section.title')}
       navText={t('buttons.see-more')}
       navLink={`${EntityPageSection.Dashboard}/contributors`}
     >

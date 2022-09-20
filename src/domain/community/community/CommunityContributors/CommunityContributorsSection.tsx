@@ -23,9 +23,9 @@ const accordionStyle = {
   border: `1px solid ${headingBackgroundColor}`,
 } as const;
 
-const ContributorTypeLabel: Record<ContributorType, 'leading-contributor' | 'contributor'> = {
-  leading: 'leading-contributor',
-  member: 'contributor',
+const ContributorTypeLabel: Record<ContributorType, 'leading-contributors' | 'contributors'> = {
+  leading: 'leading-contributors',
+  member: 'contributors',
 };
 
 const CommunityContributorsSection = ({

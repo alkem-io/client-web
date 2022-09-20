@@ -11,7 +11,7 @@ import OpportunityPageLayout from '../layout/OpportunityPageLayout';
 import OpportunityDashboardView from '../views/OpportunityDashboardView';
 
 export interface OpportunityDashboardPageProps {
-  dialog?: 'updates' | 'contributor';
+  dialog?: 'updates' | 'contributors';
 }
 
 const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog }) => {
@@ -43,7 +43,7 @@ const OpportunityDashboardPage: FC<OpportunityDashboardPageProps> = ({ dialog })
                 communityId={entities.opportunity?.community?.id}
               />
               <ContributorsDialog
-                open={dialog === 'contributor'}
+                open={dialog === 'contributors'}
                 onClose={backToDashboard}
                 dialogContent={OpportunityContributorsDialogContent}
               />
