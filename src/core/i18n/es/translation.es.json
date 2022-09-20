@@ -909,19 +909,15 @@
     },
     "contributors": {
       "search": {
-        "title": "¡Explora los usuarios y organizaciones que están contribuyendo!",
-        "subtitle": "Introduce algún término de búsqueda. Haz click sobre las tarjetas para ver los perfiles de los resultados.",
-        "placeholder": "Buscar usuarios u Organizaciones"
+        "title": "Mira quienes están contribuyendo",
+        "subtitle": "Echa un ojo a las organizaciones y usuarios que están contribuyendo a los Desafíos, Oportunidades y Hubs en la plataforma",
+        "placeholder": "Buscar..."
       },
       "organizations": {
-        "title": "Organizaciones ({{count}})",
-        "subtitle": "Organizaciones que concuerdan con los términos de búsqueda introducidos.",
-        "help-text": "Haz click en las tarjetas de aquí abajo para ver dónde está contribuyendo cada organización."
+        "title": "Organizaciones ({{count}})"
       },
       "users": {
-        "title": "Usuarios ({{count}})",
-        "subtitle": "Usuarios que concuerdan con los términos de búsqueda introducidos.",
-        "help-text": ""
+        "title": "Usuarios ({{count}})"
       }
     },
     "search": {
