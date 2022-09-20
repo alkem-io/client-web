@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { HelpApi } from '../../api/HelpApi';
+import { HelpApi } from '../../core/help/api/HelpApi';
 import {
   ComponentOrChildrenFn,
   renderComponentOrChildrenFn,
