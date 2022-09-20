@@ -16,7 +16,7 @@ import { PushFunc, RemoveFunc } from '../../../../../hooks';
 import { Reference } from '../../../../../models/Profile';
 import MarkdownInput from '../../../../../domain/admin/components/Common/MarkdownInput';
 import FormRow from '../../../../../domain/shared/layout/FormLayout';
-import AspectTypeFormField from '../../../../../domain/aspect/AspectTypeFormField';
+import AspectTypeFormField from '../../../../../domain/collaboration/aspect/AspectTypeFormField';
 import { displayNameValidator } from '../../../../utils/validator';
 import { LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 

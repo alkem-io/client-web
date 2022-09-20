@@ -11,8 +11,8 @@ import { Error404, PageProps } from '../../../../pages';
 import HubChallengesPage from '../pages/HubChallengesPage';
 import { routes } from '../routes/hubRoutes';
 import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
-import CalloutsPage from '../../../callout/CalloutsPage';
-import CalloutRoute from '../../../callout/routing/CalloutRoute';
+import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
+import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import HubContextPage from '../pages/HubContextPage';
 import HubDashboardPage from '../pages/HubDashboardPage';
 

@@ -21,8 +21,8 @@ import {
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
 import { buildOpportunityUrl, buildCanvasUrl } from '../../../../common/utils/urlBuilders';
-import { CanvasCard } from '../../../callout/canvas/CanvasCallout';
-import CanvasesDashboardPreview from '../../../canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
+import { CanvasCard } from '../../../collaboration/callout/canvas/CanvasCallout';
+import CanvasesDashboardPreview from '../../../collaboration/canvas/CanvasesDashboardPreview/CanvasesDashboardPreview';
 import EntityDashboardContributorsSection from '../../../community/EntityDashboardContributorsSection/EntityDashboardContributorsSection';
 import { EntityDashboardContributors } from '../../../community/EntityDashboardContributorsSection/Types';
 import EntityDashboardLeadsSection from '../../../community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';

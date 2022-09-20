@@ -8,8 +8,8 @@ import OpportunityAgreementsPage from '../pages/OpportunityAgreementsPage';
 import { nameOfUrl } from '../../../../routing/url-params';
 import { EntityPageLayoutHolder } from '../../../shared/layout/PageLayout';
 import { routes } from './opportunityRoutes';
-import CalloutsPage from '../../../callout/CalloutsPage';
-import CalloutRoute from '../../../callout/routing/CalloutRoute';
+import CalloutsPage from '../../../collaboration/callout/CalloutsPage';
+import CalloutRoute from '../../../collaboration/callout/routing/CalloutRoute';
 import OpportunityContextPage from '../pages/OpportunityContextPage';
 import OpportunityDashboardPage from '../pages/OpportunityDashboardPage';
 

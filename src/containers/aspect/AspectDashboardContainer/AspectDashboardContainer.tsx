@@ -18,7 +18,7 @@ import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
 } from '../../../common/utils/containers/ComponentOrChildrenFn';
-import useAspectCommentsMessageReceivedSubscription from '../../../domain/aspect/comments/useAspectCommentsMessageReceivedSubscription';
+import useAspectCommentsMessageReceivedSubscription from '../../../domain/collaboration/aspect/comments/useAspectCommentsMessageReceivedSubscription';
 import { getCardCallout } from '../getAspectCallout';
 
 interface EntityIds {
