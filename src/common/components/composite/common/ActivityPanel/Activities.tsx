@@ -1,8 +1,8 @@
 import { Grid, Skeleton, Theme, useMediaQuery } from '@mui/material';
 import React, { FC } from 'react';
 import WrapperTypography from '../../../core/WrapperTypography';
-import { ActivityType } from '../../../../../domain/activity/ActivityType';
-import ActivityCircleView from '../../../../../domain/activity/ActivityCircleView';
+import { ActivityType } from '../../../../../domain/platform/activity/ActivityType';
+import ActivityCircleView from '../../../../../domain/platform/activity/ActivityCircleView';
 
 export interface ActivityItem {
   name: string;

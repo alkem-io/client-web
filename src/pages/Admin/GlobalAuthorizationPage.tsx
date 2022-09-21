@@ -2,9 +2,9 @@ import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
-import EditMemberCredentials from '../../domain/admin/components/Authorization/EditMemberCredentials';
-import AdminLayout from '../../domain/admin/toplevel/AdminLayout';
-import { AdminSection } from '../../domain/admin/toplevel/constants';
+import EditMemberCredentials from '../../domain/platform/admin/components/Authorization/EditMemberCredentials';
+import AdminLayout from '../../domain/platform/admin/toplevel/AdminLayout';
+import { AdminSection } from '../../domain/platform/admin/toplevel/constants';
 import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,

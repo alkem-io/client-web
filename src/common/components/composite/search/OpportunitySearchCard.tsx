@@ -1,7 +1,7 @@
 import React, { FC, memo, useMemo } from 'react';
 import { OpportunitySearchResultFragment } from '../../../../models/graphql-schema';
 import { ActivityItem } from '../common/ActivityPanel/Activities';
-import getActivityCount from '../../../../domain/activity/utils/getActivityCount';
+import getActivityCount from '../../../../domain/platform/activity/utils/getActivityCount';
 import { useHubNameQuery } from '../../../../hooks/generated/graphql';
 import { getVisualBannerNarrow } from '../../../utils/visuals.utils';
 import { buildOpportunityUrl } from '../../../utils/urlBuilders';
