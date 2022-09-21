@@ -9,6 +9,13 @@ mutation UpdateCallout($calloutData: UpdateCalloutInput!) {
   }
 }
 
+mutation UpdateCalloutVisibility($calloutData: UpdateCalloutVisibilityInput!) {
+  updateCalloutVisibility(calloutData: $calloutData) {
+    id
+    visibility
+  }
+}
+
 mutation DeleteCallout($calloutId: UUID!) {
   deleteCallout(deleteData: { ID: $calloutId }) {
     id

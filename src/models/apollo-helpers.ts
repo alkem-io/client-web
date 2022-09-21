@@ -898,6 +898,7 @@ export type MutationKeySpecifier = (
   | 'updateAspect'
   | 'updateAspectTemplate'
   | 'updateCallout'
+  | 'updateCalloutVisibility'
   | 'updateCanvas'
   | 'updateCanvasTemplate'
   | 'updateChallenge'
@@ -1028,6 +1029,7 @@ export type MutationFieldPolicy = {
   updateAspect?: FieldPolicy<any> | FieldReadFunction<any>;
   updateAspectTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvas?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCanvasTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateChallenge?: FieldPolicy<any> | FieldReadFunction<any>;
