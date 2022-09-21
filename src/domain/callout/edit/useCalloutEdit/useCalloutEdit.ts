@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
-import { useDeleteCalloutMutation, useUpdateCalloutMutation } from '../../../../hooks/generated/graphql';
+import {
+  useDeleteCalloutMutation,
+  useUpdateCalloutMutation,
+  useUpdateCalloutVisibilityMutation,
+} from '../../../../hooks/generated/graphql';
 import { Callout, CalloutVisibility } from '../../../../models/graphql-schema';
 import { useApolloErrorHandler } from '../../../../hooks';
 import { CalloutEditType } from '../CalloutEditType';
@@ -15,13 +19,14 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
   const handleError = useApolloErrorHandler();
 
   const [updateCallout] = useUpdateCalloutMutation({ onError: handleError });
+  const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation({ onError: handleError });
   const handleVisibilityChange = useCallback(
-    async (calloutId: string) => {
-      await updateCallout({
-        variables: { calloutData: { ID: calloutId } },
+    async (calloutId: string, visibility: CalloutVisibility) => {
+      await updateCalloutVisibility({
+        variables: { calloutData: { calloutID: calloutId, visibility: visibility } },
       });
     },
-    [updateCallout]
+    [updateCalloutVisibility]
   );
   const handleEdit = useCallback(
     async (callout: CalloutEditType) => {

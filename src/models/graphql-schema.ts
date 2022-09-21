@@ -1340,7 +1340,7 @@ export type Groupable = {
   groups?: Maybe<Array<UserGroup>>;
 };
 
-export type Hub = {
+export type Hub = Searchable & {
   __typename?: 'Hub';
   /** The activity within this Hub. */
   activity?: Maybe<Array<Nvp>>;
@@ -1370,7 +1370,6 @@ export type Hub = {
   groupsWithTag: Array<UserGroup>;
   /** The Hub host. */
   host?: Maybe<Organization>;
-  /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
@@ -3966,6 +3965,7 @@ export type SearchQuery = {
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         }
+      | { __typename?: 'Hub' }
       | {
           __typename?: 'Opportunity';
           id: string;
@@ -4371,6 +4371,7 @@ export type ContributorsSearchQuery = {
     __typename?: 'SearchResultEntry';
     result?:
       | { __typename?: 'Challenge' }
+      | { __typename?: 'Hub' }
       | { __typename?: 'Opportunity' }
       | {
           __typename?: 'Organization';
@@ -5940,6 +5941,7 @@ export type ChallengeExplorerSearchQuery = {
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         }
+      | { __typename?: 'Hub' }
       | { __typename?: 'Opportunity' }
       | { __typename?: 'Organization' }
       | { __typename?: 'RelayPaginatedUser' }
