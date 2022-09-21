@@ -93,7 +93,7 @@ const TopBar = forwardRef<HTMLDivElement>((_, _ref) => {
 export const TopBarSpacer = () => {
   const theme = useTheme();
 
-  return <Box height={theme.spacing(TopBarHeight)} sx={{ visibility: 'hidden' }}></Box>;
+  return <Box height={theme.spacing(TopBarHeight)} sx={{ visibility: 'hidden' }} />;
 };
 
 export default TopBar;

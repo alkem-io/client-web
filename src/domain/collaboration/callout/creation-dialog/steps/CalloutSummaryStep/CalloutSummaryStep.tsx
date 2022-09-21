@@ -8,17 +8,15 @@ import { StepComponentProps } from '../../../../../shared/components/Steps/step/
 import WrapperMarkdown from '../../../../../../common/components/core/WrapperMarkdown';
 
 interface CalloutSummaryStepProps extends CalloutStepProps {
-  onPublish: () => Promise<void>;
   onSaveAsDraft: () => Promise<void>;
-  isPublishing: boolean;
+  isCreating: boolean;
 }
 
 const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
   callout,
-  isPublishing,
   onClose,
-  onPublish,
   onSaveAsDraft,
+  isCreating,
   prev,
 }) => {
   const { t } = useTranslation();
@@ -38,9 +36,8 @@ const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
       dialogTitle={t('components.callout-creation.title')}
       onClose={onClose}
       prev={prev}
-      onPublish={onPublish}
       onSaveAsDraft={onSaveAsDraft}
-      isPublishing={isPublishing}
+      isCreating={isCreating}
     >
       <CalloutSummary callout={callout} /* templatePreviewComponent={TemplatePreviewComponent} */ />
     </StepSummaryLayout>
