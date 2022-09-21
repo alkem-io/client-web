@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useResolvedPath } from 'react-router-dom';
 import { useUrlParams, useUpdateNavigation } from '../../../../../hooks';
 import { PageProps } from '../../../../../pages';
-import { SettingsSection } from '../../../../admin/layout/EntitySettings/constants';
-import UserSettingsLayout from '../../../../admin/user/layout/UserSettingsLayout';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
+import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import AssociatedOrganizationsLazilyFetched from '../../organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 import { useUserMetadata } from '../hooks/useUserMetadata';
 

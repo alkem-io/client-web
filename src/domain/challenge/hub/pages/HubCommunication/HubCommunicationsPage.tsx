@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
-import HubSettingsLayout from '../../../../admin/hub/HubSettingsLayout';
-import { SettingsSection } from '../../../../admin/layout/EntitySettings/constants';
+import HubSettingsLayout from '../../../../platform/admin/hub/HubSettingsLayout';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../../../../admin/layout/EntitySettings/types';
-import { WithCommunity } from '../../../../admin/components/Community/CommunityTypes';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
+import { WithCommunity } from '../../../../platform/admin/components/Community/CommunityTypes';
 import CommunityUpdatesPage from '../../../../../pages/Admin/Community/CommunityUpdatesPage';
 
 interface HubCommunicationsPageProps extends SettingsPageProps {

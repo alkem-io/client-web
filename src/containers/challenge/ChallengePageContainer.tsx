@@ -10,8 +10,8 @@ import {
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { Activity, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
-import { ActivityType } from '../../domain/activity/ActivityType';
+import getActivityCount from '../../domain/platform/activity/utils/getActivityCount';
+import { ActivityType } from '../../domain/platform/activity/ActivityType';
 import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
 import { EntityDashboardContributors } from '../../domain/community/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../domain/community/community/utils/useCommunityMembersAsCardProps';

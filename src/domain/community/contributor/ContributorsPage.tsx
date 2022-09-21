@@ -8,7 +8,7 @@ import DashboardGenericSection from '../../shared/components/DashboardSections/D
 import ContributorsSearchContainer from '../../../containers/ContributorsSearch/ContributorsSearchContainer';
 import { useUpdateNavigation, useUserContext } from '../../../hooks';
 import { OrganizationVerificationEnum, UserContributorFragment } from '../../../models/graphql-schema';
-import getActivityCount from '../../activity/utils/getActivityCount';
+import getActivityCount from '../../platform/activity/utils/getActivityCount';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../common/utils/urlBuilders';
 import getUserRoleTranslationKey from '../../../common/utils/user-role-name/get-user-role-translation-key';
 import ContributorsView from './ContributorsView';

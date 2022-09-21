@@ -2,7 +2,7 @@ import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
 import { Context } from '../../../../models/graphql-schema';
-import { ContextSegment, contextSegmentSchema } from '../../../../domain/admin/components/Common/ContextSegment';
+import { ContextSegment, contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 
 export interface ContextFormValues {
   background: string;

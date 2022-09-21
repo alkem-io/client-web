@@ -4,17 +4,17 @@ import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
 import { Grid } from '@mui/material';
 import FormikInputField from '../../forms/FormikInputField';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../../../domain/admin/components/Common/TagsetSegment';
+import { TagsetSegment, tagsetSegmentSchema } from '../../../../../domain/platform/admin/components/Common/TagsetSegment';
 import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
 import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';
 import { Aspect, Tagset } from '../../../../../models/graphql-schema';
 import ReferenceSegment, {
   referenceSegmentSchema,
-} from '../../../../../domain/admin/components/Common/ReferenceSegment';
+} from '../../../../../domain/platform/admin/components/Common/ReferenceSegment';
 import { PushFunc, RemoveFunc } from '../../../../../hooks';
 import { Reference } from '../../../../../models/Profile';
-import MarkdownInput from '../../../../../domain/admin/components/Common/MarkdownInput';
+import MarkdownInput from '../../../../../domain/platform/admin/components/Common/MarkdownInput';
 import FormRow from '../../../../../domain/shared/layout/FormLayout';
 import AspectTypeFormField from '../../../../../domain/collaboration/aspect/AspectTypeFormField';
 import { displayNameValidator } from '../../../../utils/validator';

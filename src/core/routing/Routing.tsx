@@ -7,7 +7,7 @@ import { HubContextProvider } from '../../domain/challenge/hub/HubContext/HubCon
 import { OrganizationProvider } from '../../domain/community/contributor/organization/context/OrganizationProvider';
 import { AboutPage, Error404, HomePage } from '../../pages';
 import ContributorsPage from '../../domain/community/contributor/ContributorsPage';
-import { AdminRoute } from '../../domain/admin/routing/AdminRoute';
+import { AdminRoute } from '../../domain/platform/admin/routing/AdminRoute';
 import { MessagesRoute } from '../../domain/communication/messages/routing/MessagesRoute';
 import OrganizationRoute from '../../domain/community/contributor/organization/routing/OrganizationRoute';
 import ProfileRoute from '../../domain/community/profile/routing/ProfileRoute';

@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HubEditFormValuesType } from '../../../../admin/components/HubEditForm';
+import { HubEditFormValuesType } from '../../../../platform/admin/components/HubEditForm';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../../hooks';
@@ -8,7 +8,7 @@ import { useHub } from '../../../../../hooks';
 import { useNotification } from '../../../../../hooks';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import { Box, Container, Grid } from '@mui/material';
-import HubContextForm from '../../../../admin/components/HubContextForm';
+import HubContextForm from '../../../../platform/admin/components/HubContextForm';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
 export const HubContext: FC = () => {

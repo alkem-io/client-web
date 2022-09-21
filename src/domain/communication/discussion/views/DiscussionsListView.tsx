@@ -2,7 +2,7 @@ import { List, ListItemText } from '@mui/material';
 import { Skeleton } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Filter } from '../../../admin/components/Common/Filter';
+import { Filter } from '../../../platform/admin/components/Common/Filter';
 import ProfileCard from '../../../../common/components/composite/common/cards/ProfileCard/ProfileCard';
 import DiscussionOverview from '../../../../common/components/composite/entities/Communication/DiscussionOverview';
 import { Discussion } from '../models/discussion';

@@ -29,7 +29,7 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
-import MarkdownInput from '../../../../admin/components/Common/MarkdownInput';
+import MarkdownInput from '../../../../platform/admin/components/Common/MarkdownInput';
 import ConfirmationDialog from '../../../../../common/components/composite/dialogs/ConfirmationDialog';
 import Avatar from '../../../../../common/components/core/Avatar';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';

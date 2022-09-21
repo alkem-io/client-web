@@ -1,5 +1,5 @@
 import { getUserCardRoleNameKey } from '../../../../../hooks';
-import getActivityCount from '../../../../activity/utils/getActivityCount';
+import getActivityCount from '../../../../platform/activity/utils/getActivityCount';
 import {
   AssociatedOrganizationDetailsFragment,
   OrganizationVerificationEnum,

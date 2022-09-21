@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
 import React, { FC } from 'react';
 
-import EditMemberCredentials from '../../../../admin/components/Authorization/EditMemberCredentials';
+import EditMemberCredentials from '../../../../platform/admin/components/Authorization/EditMemberCredentials';
 import { Loading } from '../../../../../common/components/core';
 import { useApolloErrorHandler, useChallenge } from '../../../../../hooks';
 import {

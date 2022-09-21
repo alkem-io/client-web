@@ -2,7 +2,7 @@ import { FetchResult } from '@apollo/client';
 import { Box, Grid, Typography } from '@mui/material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Filter from '../../../admin/components/Common/Filter';
+import Filter from '../../../platform/admin/components/Common/Filter';
 import MessageView from '../../../shared/components/Comments/MessageView';
 import PostMessageToCommentsForm from '../../../shared/components/Comments/PostMessageToCommentsForm';
 import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';

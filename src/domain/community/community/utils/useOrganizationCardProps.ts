@@ -1,6 +1,6 @@
 import { OrganizationCardFragment, OrganizationVerificationEnum } from '../../../../models/graphql-schema';
 import { OrganizationCardProps } from '../../../../common/components/composite/common/cards/Organization/OrganizationCard';
-import getActivityCount from '../../../activity/utils/getActivityCount';
+import getActivityCount from '../../../platform/activity/utils/getActivityCount';
 import { getUserCardRoleNameKey, useUserContext } from '../../../../hooks';
 import { buildOrganizationUrl } from '../../../../common/utils/urlBuilders';
 import { Identifiable } from '../../../shared/types/Identifiable';

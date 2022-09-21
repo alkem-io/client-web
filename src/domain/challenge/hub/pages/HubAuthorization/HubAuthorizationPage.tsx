@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import HubSettingsLayout from '../../../../admin/hub/HubSettingsLayout';
-import { SettingsSection } from '../../../../admin/layout/EntitySettings/constants';
+import HubSettingsLayout from '../../../../platform/admin/hub/HubSettingsLayout';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../../../../admin/layout/EntitySettings/types';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
 import HubAuthorizationView from './HubAuthorizationView';
 import {
   AuthorizationCredential,

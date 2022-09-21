@@ -22,8 +22,8 @@ import { logger } from '../../../../../services/logging/winston/logger';
 import { buildUserProfileUrl } from '../../../../../common/utils/urlBuilders';
 import { PageProps } from '../../../../../pages/common';
 import { getUpdateUserInput } from '../../../../../common/utils/getUpdateUserInput';
-import UserSettingsLayout from '../../../../admin/user/layout/UserSettingsLayout';
-import { SettingsSection } from '../../../../admin/layout/EntitySettings/constants';
+import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 
 interface EditUserProfilePageProps extends PageProps {}
 

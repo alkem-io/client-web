@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import ChallengeSettingsLayout from '../../../../admin/challenge/ChallengeSettingsLayout';
-import { SettingsSection } from '../../../../admin/layout/EntitySettings/constants';
+import ChallengeSettingsLayout from '../../../../platform/admin/challenge/ChallengeSettingsLayout';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import { useAppendBreadcrumb } from '../../../../../hooks/usePathUtils';
-import { SettingsPageProps } from '../../../../admin/layout/EntitySettings/types';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
 import ChallengeContextView from './ChallengeContextView';
 
 const ChallengeContextPage: FC<SettingsPageProps> = ({ paths, routePrefix = '../' }) => {

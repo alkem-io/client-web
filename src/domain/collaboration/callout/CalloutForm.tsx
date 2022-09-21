@@ -11,7 +11,7 @@ import FormikInputField from '../../../common/components/composite/forms/FormikI
 import FormikSelect from '../../../common/components/composite/forms/FormikSelect';
 import HelpButton from '../../../common/components/core/HelpButton';
 import FormikEffectFactory from '../../../common/utils/formik/formik-effect/FormikEffect';
-import MarkdownInput from '../../admin/components/Common/MarkdownInput';
+import MarkdownInput from '../../platform/admin/components/Common/MarkdownInput';
 
 type FormValueType = {
   displayName: string;

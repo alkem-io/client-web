@@ -7,9 +7,9 @@ import DashboardHubsSection, {
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { useUserContext } from '../../../../hooks';
 import { useHubsQuery } from '../../../../hooks/generated/graphql';
-import ActivityTooltip from '../../../activity/ActivityTooltip';
+import ActivityTooltip from '../../../platform/activity/ActivityTooltip';
 import useServerMetadata from '../../../../hooks/useServerMetadata';
-import getActivityCount from '../../../activity/utils/getActivityCount';
+import getActivityCount from '../../../platform/activity/utils/getActivityCount';
 import { ActivityItem } from '../../../../common/components/composite/common/ActivityPanel/Activities';
 import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { keyBy } from 'lodash';

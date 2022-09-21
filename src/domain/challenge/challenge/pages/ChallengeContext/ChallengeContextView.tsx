@@ -11,7 +11,7 @@ import { updateContextInput } from '../../../../../common/utils/buildContext';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import ContextForm, { ContextFormValues } from '../../../../../common/components/composite/forms/ContextForm';
 import Loading from '../../../../../common/components/core/Loading/Loading';
-import EditLifecycle from '../../../../admin/components/EditLifecycle';
+import EditLifecycle from '../../../../platform/admin/components/EditLifecycle';
 import ChallengeLifecycleContainer from '../../../../../containers/challenge/ChallengeLifecycleContainer';
 
 const ChallengeContextView: FC = () => {

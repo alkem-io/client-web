@@ -17,9 +17,9 @@ import {
   Context,
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
-import ActivityView from '../../../activity/views/ActivityView';
-import { ActivityType } from '../../../activity/ActivityType';
-import getActivityCount from '../../../activity/utils/getActivityCount';
+import ActivityView from '../../../platform/activity/views/ActivityView';
+import { ActivityType } from '../../../platform/activity/ActivityType';
+import getActivityCount from '../../../platform/activity/utils/getActivityCount';
 import ChallengeCommunityView from '../../../community/community/entities/ChallengeCommunityView';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';

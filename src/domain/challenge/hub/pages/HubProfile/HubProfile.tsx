@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import HubEditForm, { HubEditFormValuesType } from '../../../../admin/components/HubEditForm';
+import HubEditForm, { HubEditFormValuesType } from '../../../../platform/admin/components/HubEditForm';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { useOrganizationsListQuery, useUpdateHubMutation } from '../../../../../hooks/generated/graphql';
 import { useApolloErrorHandler } from '../../../../../hooks';

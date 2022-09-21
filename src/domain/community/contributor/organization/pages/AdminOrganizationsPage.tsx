@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import AdminLayout from '../../../../admin/toplevel/AdminLayout';
+import AdminLayout from '../../../../platform/admin/toplevel/AdminLayout';
 import { PageProps } from '../../../../../pages/common';
-import { AdminSection } from '../../../../admin/toplevel/constants';
-import useAdminGlobalOrganizationsList from '../../../../admin/organization/GlobalOrganizationsList/useAdminGlobalOrganizationsList';
+import { AdminSection } from '../../../../platform/admin/toplevel/constants';
+import useAdminGlobalOrganizationsList from '../../../../platform/admin/organization/GlobalOrganizationsList/useAdminGlobalOrganizationsList';
 import SearchableListLayout from '../../../../shared/components/SearchableListLayout';
 import { useResolvedPath } from 'react-router-dom';
 import SimpleSearchableList from '../../../../shared/components/SimpleSearchableList';

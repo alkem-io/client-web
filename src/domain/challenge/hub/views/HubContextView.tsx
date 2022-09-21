@@ -7,9 +7,9 @@ import ContextSection from '../../../../common/components/composite/sections/Con
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
 import { ContextTabFragment, Tagset, ActivityItemFragment, Context } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
-import { ActivityType } from '../../../activity/ActivityType';
-import getActivityCount from '../../../activity/utils/getActivityCount';
-import ActivityView from '../../../activity/views/ActivityView';
+import { ActivityType } from '../../../platform/activity/ActivityType';
+import getActivityCount from '../../../platform/activity/utils/getActivityCount';
+import ActivityView from '../../../platform/activity/views/ActivityView';
 import HubCommunityView from '../../../community/community/entities/HubCommunityView';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 

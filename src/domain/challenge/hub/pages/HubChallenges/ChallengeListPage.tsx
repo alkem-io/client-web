@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import HubSettingsLayout from '../../../../admin/hub/HubSettingsLayout';
-import { SettingsSection } from '../../../../admin/layout/EntitySettings/constants';
+import HubSettingsLayout from '../../../../platform/admin/hub/HubSettingsLayout';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
 import ChallengeListView from './ChallengeListView';
-import { SettingsPageProps } from '../../../../admin/layout/EntitySettings/types';
+import { SettingsPageProps } from '../../../../platform/admin/layout/EntitySettings/types';
 
 const ChallengeListPage: FC<SettingsPageProps> = ({ paths, routePrefix }) => {
   return (

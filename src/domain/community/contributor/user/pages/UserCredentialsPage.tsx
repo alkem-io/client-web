@@ -14,8 +14,8 @@ import UserCredentialsContainer from '../../../../../containers/user/UserCredent
 import { useNotification, useUpdateNavigation } from '../../../../../hooks';
 import { useUserSsiLazyQuery, useProfileVerifiedCredentialSubscription } from '../../../../../hooks/generated/graphql';
 import { PageProps } from '../../../../../pages';
-import { SettingsSection } from '../../../../admin/layout/EntitySettings/constants';
-import UserSettingsLayout from '../../../../admin/user/layout/UserSettingsLayout';
+import { SettingsSection } from '../../../../platform/admin/layout/EntitySettings/constants';
+import UserSettingsLayout from '../../../../platform/admin/user/layout/UserSettingsLayout';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import { CardLayoutContainer, CardLayoutItem } from '../../../../shared/layout/CardsLayout/CardsLayout';
 import { useUserContext } from '../hooks/useUserContext';

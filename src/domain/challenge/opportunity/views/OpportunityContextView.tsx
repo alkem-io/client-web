@@ -14,7 +14,7 @@ import {
   Context,
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
-import getActivityCount from '../../../activity/utils/getActivityCount';
+import getActivityCount from '../../../platform/activity/utils/getActivityCount';
 import OpportunityCommunityView from '../../../community/community/entities/OpportunityCommunityView';
 import DashboardOpportunityStatistics from '../../../shared/components/DashboardSections/DashboardOpportunityStatistics';
 

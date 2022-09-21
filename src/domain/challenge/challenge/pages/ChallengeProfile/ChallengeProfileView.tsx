@@ -13,7 +13,7 @@ import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
 import { createContextInput, updateContextInput } from '../../../../../common/utils/buildContext';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
-import FormMode from '../../../../admin/components/FormMode';
+import FormMode from '../../../../platform/admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
 import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';

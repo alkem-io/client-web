@@ -18,7 +18,7 @@ import WrapperTypography from '../../../../common/components/core/WrapperTypogra
 import ProfileFormWithContext, {
   ProfileFormValuesType,
 } from '../../../../common/components/composite/forms/ProfileFormWithContext';
-import FormMode from '../../../admin/components/FormMode';
+import FormMode from '../../../platform/admin/components/FormMode';
 import { formatDatabaseLocation } from '../../../common/location/LocationUtils';
 import { LifecycleType } from '../../../../models/graphql-schema';
 

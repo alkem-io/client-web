@@ -4,7 +4,7 @@ import { useUserContext } from '../../../../hooks';
 import { useContributingUsersQuery, useOrganizationsListQuery } from '../../../../hooks/generated/graphql';
 import useServerMetadata from '../../../../hooks/useServerMetadata';
 import { COUNTRIES_BY_CODE } from '../../../../models/constants';
-import getActivityCount from '../../../activity/utils/getActivityCount';
+import getActivityCount from '../../../platform/activity/utils/getActivityCount';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualAvatar } from '../../../../common/utils/visuals.utils';
 import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';

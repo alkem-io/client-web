@@ -8,7 +8,7 @@ import WelcomeSection from './WelcomeSection';
 import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
-import PlatformUpdates from '../../domain/notifications/ReleaseUpdates/ReleaseUpdatesNotification';
+import PlatformUpdates from '../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesNotification';
 
 const currentPaths = [];
 
