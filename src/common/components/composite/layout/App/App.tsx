@@ -8,9 +8,9 @@ import Footer from './Footer';
 import Main from './Main';
 import useServerMetadata from '../../../../../hooks/useServerMetadata';
 import useCommunityUpdatesNotifier from '../../../../../hooks/subscription/CommunityUpdatesNotifier';
-import CookieConsent from '../../../../../domain/cookies/CookieConsent';
+import CookieConsent from '../../../../../domain/platform/cookies/CookieConsent';
 import { useCookies } from 'react-cookie';
-import { COOKIE_NAME } from '../../../../../domain/cookies/useAlkemioCookies';
+import { COOKIE_NAME } from '../../../../../domain/platform/cookies/useAlkemioCookies';
 
 const App: FC = () => {
   const [cookies] = useCookies([COOKIE_NAME]);
