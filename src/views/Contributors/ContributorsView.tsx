@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
+import React, { FC, forwardRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Accordion } from '../../common/components/composite/common/Accordion/Accordion';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { Box, Button, Grid, styled } from '@mui/material';
 import { times } from 'lodash';
@@ -12,6 +11,8 @@ import { PaginatedResult } from '../../pages/Contributors/ContributorsSearch/Con
 import { OrganizationContributorFragment, UserContributorFragment } from '../../models/graphql-schema';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../common/utils/urlBuilders';
 import ImageBackdrop from '../../domain/shared/components/Backdrops/ImageBackdrop';
+import useLazyLoading from '../../domain/shared/pagination/useLazyLoading';
+import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 
 const USERS_GRAYED_OUT_IMAGE = '/contributors/users-grayed.png';
 export const ITEMS_PER_PAGE = 16;
@@ -58,13 +59,46 @@ const ContributorsView: FC<ContributorsViewProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const UsersLoader = useMemo(
+    () =>
+      forwardRef<HTMLDivElement>((props, ref) => (
+        <>
+          <Box ref={ref}>
+            <Button onClick={() => users?.fetchMore(ITEMS_PER_PAGE)}>{t('buttons.load-more')}</Button>
+          </Box>
+        </>
+      )),
+    [users?.pageSize]
+  );
+
+  const usersLoader = useLazyLoading(UsersLoader, {
+    hasMore: users?.hasMore || false,
+    loading: users?.loading || false,
+    fetchMore: () => (users?.fetchMore ? users?.fetchMore() : Promise.resolve()),
+  });
+
+  const OrgsLoader = useMemo(
+    () =>
+      forwardRef<HTMLDivElement>((props, ref) => (
+        <>
+          <Box ref={ref}>
+            <Button onClick={() => orgs?.fetchMore(ITEMS_PER_PAGE)}>{t('buttons.load-more')}</Button>
+          </Box>
+        </>
+      )),
+    [orgs?.pageSize]
+  );
+
+  const orgsLoader = useLazyLoading(OrgsLoader, {
+    hasMore: orgs?.hasMore || false,
+    loading: orgs?.loading || false,
+    fetchMore: () => (orgs?.fetchMore ? orgs?.fetchMore() : Promise.resolve()),
+  });
+
   return (
     <>
       <SectionSpacer double />
-      <Accordion
-        title={t('pages.contributors.organizations.title', { count: orgs?.firstPageSize || 0 })}
-        ariaKey={'organization'}
-      >
+      <DashboardGenericSection headerText={t('pages.contributors.organizations.title')}>
         <ScrollerBox>
           <Grid container spacing={1}>
             <>
@@ -80,12 +114,17 @@ const ContributorsView: FC<ContributorsViewProps> = ({
                     <ContributorCard {...org} />
                   </Grid>
                 ))}
+              {!orgs?.loading && orgs?.hasMore && (
+                <Grid item flexBasis="100%" display={'flex'} justifyContent={'end'}>
+                  {orgsLoader}
+                </Grid>
+              )}
             </>
           </Grid>
         </ScrollerBox>
-      </Accordion>
+      </DashboardGenericSection>
       <SectionSpacer double />
-      <Accordion title={t('pages.contributors.users.title')} ariaKey={'organization'}>
+      <DashboardGenericSection headerText={t('pages.contributors.users.title')}>
         {showUsers && (
           <ScrollerBox>
             <Grid container spacing={1}>
@@ -103,7 +142,7 @@ const ContributorsView: FC<ContributorsViewProps> = ({
                 ))}
               {!users?.loading && users?.hasMore && (
                 <Grid item flexBasis="100%" display={'flex'} justifyContent={'end'}>
-                  <Button onClick={() => users.fetchMore(ITEMS_PER_PAGE)}>{t('buttons.load-more')}</Button>
+                  {usersLoader}
                 </Grid>
               )}
             </Grid>
@@ -123,7 +162,7 @@ const ContributorsView: FC<ContributorsViewProps> = ({
             />
           </Grid>
         )}
-      </Accordion>
+      </DashboardGenericSection>
     </>
   );
 };
