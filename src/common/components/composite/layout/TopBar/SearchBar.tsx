@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { useCallback, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
+import { useMatch } from 'react-router-dom';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import TextField from '@mui/material/TextField';
 import { Box, InputAdornment, useTheme } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { useMatch } from 'react-router-dom';
+import IconButton from '@mui/material/IconButton';
 import { useQueryParams } from '../../../../../hooks';
 
 const SEARCH_ROUTE = '/search';
@@ -33,10 +33,7 @@ const SearchBar = () => {
 
   const keyPressHandler = ({ code }: React.KeyboardEvent<HTMLDivElement>) => {
     if (code === 'Enter' || code === 'NumpadEnter') {
-      const terms = getSearchTerms(value);
-      const params = new URLSearchParams();
-      params.set(SEARCH_TERMS_PARAM, terms);
-      navigate(`${SEARCH_ROUTE}?${params}`, { replace: true });
+      handleNavigateToSearchPage();
     }
   };
 
@@ -46,6 +43,12 @@ const SearchBar = () => {
     },
     [setValue]
   );
+
+  const handleNavigateToSearchPage = useCallback(() => {
+    const terms = getSearchTerms(value);
+    const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
+    navigate(`${SEARCH_ROUTE}?${params}`, { replace: true });
+  }, [value, SEARCH_ROUTE, SEARCH_TERMS_PARAM]);
 
   return (
     <Box
@@ -76,12 +79,15 @@ const SearchBar = () => {
           width: '100%',
         }}
         InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton onClick={handleNavigateToSearchPage}>
+                <SearchIcon color="primary" />
+              </IconButton>
             </InputAdornment>
           ),
           size: 'small',
+          sx: { paddingRight: '4px' },
         }}
         variant="outlined"
       />
