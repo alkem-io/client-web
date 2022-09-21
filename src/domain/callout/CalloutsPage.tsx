@@ -37,8 +37,13 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
 
   const { t } = useTranslation();
 
-  const { isCalloutCreationDialogOpen, handleCreateCalloutOpened, handleCreateCalloutClosed, handleCalloutDrafted } =
-    useCalloutCreation();
+  const {
+    isCalloutCreationDialogOpen,
+    handleCreateCalloutOpened,
+    handleCreateCalloutClosed,
+    handleCalloutDrafted,
+    isCreating,
+  } = useCalloutCreation();
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
@@ -109,6 +114,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
         onSaveAsDraft={handleCalloutDrafted}
+        isCreating={isCreating}
       />
     </>
   );

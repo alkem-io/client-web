@@ -21,9 +21,10 @@ export interface CalloutCreationDialogProps {
   open: boolean;
   onClose: () => void;
   onSaveAsDraft: (callout: CalloutCreationType) => Promise<void>;
+  isCreating: boolean;
 }
 
-const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, onSaveAsDraft }) => {
+const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, onSaveAsDraft, isCreating }) => {
   const { t } = useTranslation();
 
   const [callout, setCallout] = useState<CalloutDialogCreationType>({});
@@ -45,7 +46,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
     },
     [callout]
   );*/
-  const handleSummarySaveAsDraft = useCallback(() => {
+  const handleSummarySaveAsDraft = useCallback(async () => {
     const newCallout = {
       displayName: callout.displayName!,
       description: callout.description!,
@@ -53,13 +54,15 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
       type: callout.type!,
     };
 
+    const result = await onSaveAsDraft(newCallout);
+
     setCallout({});
 
-    return onSaveAsDraft(newCallout);
+    return result;
   }, [callout, onSaveAsDraft]);
   const handleClose = useCallback(() => {
-    setCallout({});
     onClose?.();
+    setCallout({});
   }, [onClose]);
 
   return (
@@ -91,6 +94,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
             callout={callout}
             onClose={handleClose}
             onSaveAsDraft={handleSummarySaveAsDraft}
+            isCreating={isCreating}
           />
         </Steps>
       </StepLayoutHolder>

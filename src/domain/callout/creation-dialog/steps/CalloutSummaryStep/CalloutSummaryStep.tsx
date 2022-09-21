@@ -9,12 +9,14 @@ import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdo
 
 interface CalloutSummaryStepProps extends CalloutStepProps {
   onSaveAsDraft: () => Promise<void>;
+  isCreating: boolean;
 }
 
 const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
   callout,
   onClose,
   onSaveAsDraft,
+  isCreating,
   prev,
 }) => {
   const { t } = useTranslation();
@@ -35,6 +37,7 @@ const CalloutSummaryStep: FC<StepComponentProps & CalloutSummaryStepProps> = ({
       onClose={onClose}
       prev={prev}
       onSaveAsDraft={onSaveAsDraft}
+      isCreating={isCreating}
     >
       <CalloutSummary callout={callout} /* templatePreviewComponent={TemplatePreviewComponent} */ />
     </StepSummaryLayout>

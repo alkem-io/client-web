@@ -1722,7 +1722,7 @@ export type Mutation = {
   updateAspectTemplate: AspectTemplate;
   /** Update a Callout. */
   updateCallout: Callout;
-  /** Update the visibility (Draft / Published) of the specified Callout. */
+  /** Update the visibility of the specified Callout. */
   updateCalloutVisibility: Callout;
   /** Updates the specified Canvas. */
   updateCanvas: Canvas;
@@ -3176,15 +3176,13 @@ export type UpdateCalloutInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
-  /** Callout type. */
-  type?: InputMaybe<CalloutType>;
 };
 
 export type UpdateCalloutVisibilityInput = {
   /** The identifier for the Callout whose visibility is to be updated. */
   calloutID: Scalars['String'];
   /** Visibility of the Callout. */
-  visibility?: InputMaybe<CalloutVisibility>;
+  visibility: CalloutVisibility;
 };
 
 export type UpdateCanvasDirectInput = {
@@ -9691,6 +9689,15 @@ export type UpdateCalloutMutation = {
   };
 };
 
+export type UpdateCalloutVisibilityMutationVariables = Exact<{
+  calloutData: UpdateCalloutVisibilityInput;
+}>;
+
+export type UpdateCalloutVisibilityMutation = {
+  __typename?: 'Mutation';
+  updateCalloutVisibility: { __typename?: 'Callout'; id: string; visibility: CalloutVisibility };
+};
+
 export type DeleteCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID'];
 }>;
@@ -9714,15 +9721,6 @@ export type CreateAspectFromContributeTabMutation = {
     banner?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     bannerNarrow?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
-};
-
-export type UpdateCalloutVisibilityMutationVariables = Exact<{
-  calloutData: UpdateCalloutVisibilityInput;
-}>;
-
-export type UpdateCalloutVisibilityMutation = {
-  __typename?: 'Mutation';
-  updateCalloutVisibility: { __typename?: 'Callout'; id: string; nameID: string; visibility: CalloutVisibility };
 };
 
 export type PostCommentInCalloutMutationVariables = Exact<{

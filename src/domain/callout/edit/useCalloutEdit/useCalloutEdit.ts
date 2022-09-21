@@ -20,6 +20,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
 
   const [updateCallout] = useUpdateCalloutMutation({ onError: handleError });
   const [updateCalloutVisibility] = useUpdateCalloutVisibilityMutation({ onError: handleError });
+
   const handleVisibilityChange = useCallback(
     async (calloutId: string, visibility: CalloutVisibility) => {
       await updateCalloutVisibility({
@@ -42,7 +43,6 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
     },
     [updateCallout]
   );
-  //
   const [deleteCallout] = useDeleteCalloutMutation({
     onError: handleError,
     update: removeFromCache,

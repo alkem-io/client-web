@@ -68,6 +68,7 @@ const StepLayoutImpl: FC<StepLayoutProps> = ({
 interface StepSummaryLayoutProps {
   dialogTitle: string;
   prev?: () => void;
+  isCreating: boolean;
   onSaveAsDraft?: () => Promise<void>;
   onClose?: () => void;
 }
@@ -78,6 +79,7 @@ export const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({
   onClose,
   prev,
   onSaveAsDraft,
+  isCreating,
 }) => {
   const { t } = useTranslation();
 
@@ -89,12 +91,17 @@ export const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({
       <DialogContent>{children}</DialogContent>
       <DialogActions sx={{ justifyContent: 'end' }}>
         {prev && (
-          <Button onClick={prev} variant="outlined">
+          <Button disabled={isCreating} onClick={prev} variant="outlined">
             {t('buttons.back')}
           </Button>
         )}
         {onSaveAsDraft && (
-          <LoadingButton loadingIndicator={`${t('buttons.save-draft')}...`} onClick={onSaveAsDraft} variant="contained">
+          <LoadingButton
+            loading={isCreating}
+            loadingIndicator={`${t('buttons.save-draft')}...`}
+            onClick={onSaveAsDraft}
+            variant="contained"
+          >
             {t('buttons.save-draft')}
           </LoadingButton>
         )}

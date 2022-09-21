@@ -20,16 +20,15 @@ interface CalloutCreationUtils {
   isCalloutCreationDialogOpen: boolean;
   handleCreateCalloutOpened: () => void;
   handleCreateCalloutClosed: () => void;
-  handleCalloutPublished: (callout: CalloutCreationType) => Promise<void>;
   handleCalloutDrafted: (callout: CalloutCreationType) => Promise<void>;
-  isPublishing: boolean;
+  isCreating: boolean;
 }
 
 export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils => {
   const { hubNameId, challengeNameId, opportunityNameId } = useUrlParams();
   const handleError = useApolloErrorHandler();
   const [isCalloutCreationDialogOpen, setIsCalloutCreationDialogOpen] = useState(initialOpened);
-  const [isPublishing, setIsPublishing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const { data: hubData } = useHubCollaborationIdQuery({
     variables: { hubId: hubNameId! },
@@ -94,39 +93,13 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     setIsCalloutCreationDialogOpen(true);
   }, []);
   const handleCreateCalloutClosed = useCallback(() => setIsCalloutCreationDialogOpen(false), []);
-  const handleCalloutPublished = useCallback(
-    async (callout: CalloutCreationType) => {
-      if (!collaborationID) {
-        return;
-      }
-
-      setIsPublishing(true);
-
-      await createCallout({
-        variables: {
-          calloutData: {
-            collaborationID,
-            description: callout.description,
-            displayName: callout.displayName,
-            type: callout.type,
-          },
-        },
-      });
-
-      setIsPublishing(false);
-      setIsCalloutCreationDialogOpen(false);
-
-      return;
-    },
-    [collaborationID]
-  );
   const handleCalloutDrafted = useCallback(
     async (callout: CalloutCreationType) => {
       if (!collaborationID) {
         return;
       }
 
-      setIsPublishing(true);
+      setIsCreating(true);
 
       await createCallout({
         variables: {
@@ -139,7 +112,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
         },
       });
 
-      setIsPublishing(false);
+      setIsCreating(false);
       setIsCalloutCreationDialogOpen(false);
 
       return;
@@ -151,8 +124,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
     isCalloutCreationDialogOpen,
     handleCreateCalloutOpened,
     handleCreateCalloutClosed,
-    handleCalloutPublished,
     handleCalloutDrafted,
-    isPublishing,
+    isCreating,
   };
 };
