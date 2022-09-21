@@ -51,7 +51,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ activity, entities, st
   const activityItems: ActivityItem[] = useMemo(() => {
     return [
       {
-        name: t('common.challenge'),
+        name: t('common.challenges'),
         type: ActivityType.Challenge,
         count: getActivityCount(activity, 'challenges'),
         color: 'neutral',
