@@ -41,9 +41,8 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
     isCalloutCreationDialogOpen,
     handleCreateCalloutOpened,
     handleCreateCalloutClosed,
-    handleCalloutPublished,
     handleCalloutDrafted,
-    isPublishing,
+    isCreating,
   } = useCalloutCreation();
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
@@ -114,9 +113,8 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
       <CalloutCreationDialog
         open={isCalloutCreationDialogOpen}
         onClose={handleCreateCalloutClosed}
-        onPublish={handleCalloutPublished}
         onSaveAsDraft={handleCalloutDrafted}
-        isPublishing={isPublishing}
+        isCreating={isCreating}
       />
     </>
   );

@@ -922,8 +922,6 @@ export type CreateCalloutOnCollaborationInput = {
   state?: InputMaybe<CalloutState>;
   /** Callout type. */
   type: CalloutType;
-  /** Visibility of the Callout. */
-  visibility: CalloutVisibility;
 };
 
 export type CreateCanvasOnCalloutInput = {
@@ -1342,7 +1340,7 @@ export type Groupable = {
   groups?: Maybe<Array<UserGroup>>;
 };
 
-export type Hub = {
+export type Hub = Searchable & {
   __typename?: 'Hub';
   /** The activity within this Hub. */
   activity?: Maybe<Array<Nvp>>;
@@ -1372,7 +1370,6 @@ export type Hub = {
   groupsWithTag: Array<UserGroup>;
   /** The Hub host. */
   host?: Maybe<Organization>;
-  /** The ID of the entity */
   id: Scalars['UUID'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
@@ -1725,6 +1722,8 @@ export type Mutation = {
   updateAspectTemplate: AspectTemplate;
   /** Update a Callout. */
   updateCallout: Callout;
+  /** Update the visibility of the specified Callout. */
+  updateCalloutVisibility: Callout;
   /** Updates the specified Canvas. */
   updateCanvas: Canvas;
   /** Updates the specified CanvasTemplate. */
@@ -2183,6 +2182,10 @@ export type MutationUpdateAspectTemplateArgs = {
 
 export type MutationUpdateCalloutArgs = {
   calloutData: UpdateCalloutInput;
+};
+
+export type MutationUpdateCalloutVisibilityArgs = {
+  calloutData: UpdateCalloutVisibilityInput;
 };
 
 export type MutationUpdateCanvasArgs = {
@@ -3173,10 +3176,13 @@ export type UpdateCalloutInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
-  /** Callout type. */
-  type?: InputMaybe<CalloutType>;
+};
+
+export type UpdateCalloutVisibilityInput = {
+  /** The identifier for the Callout whose visibility is to be updated. */
+  calloutID: Scalars['String'];
   /** Visibility of the Callout. */
-  visibility?: InputMaybe<CalloutVisibility>;
+  visibility: CalloutVisibility;
 };
 
 export type UpdateCanvasDirectInput = {
@@ -3957,6 +3963,7 @@ export type SearchQuery = {
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         }
+      | { __typename?: 'Hub' }
       | {
           __typename?: 'Opportunity';
           id: string;
@@ -4362,6 +4369,7 @@ export type ContributorsSearchQuery = {
     __typename?: 'SearchResultEntry';
     result?:
       | { __typename?: 'Challenge' }
+      | { __typename?: 'Hub' }
       | { __typename?: 'Opportunity' }
       | {
           __typename?: 'Organization';
@@ -5931,6 +5939,7 @@ export type ChallengeExplorerSearchQuery = {
             | undefined;
           tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
         }
+      | { __typename?: 'Hub' }
       | { __typename?: 'Opportunity' }
       | { __typename?: 'Organization' }
       | { __typename?: 'RelayPaginatedUser' }
@@ -9678,6 +9687,15 @@ export type UpdateCalloutMutation = {
     type: CalloutType;
     visibility: CalloutVisibility;
   };
+};
+
+export type UpdateCalloutVisibilityMutationVariables = Exact<{
+  calloutData: UpdateCalloutVisibilityInput;
+}>;
+
+export type UpdateCalloutVisibilityMutation = {
+  __typename?: 'Mutation';
+  updateCalloutVisibility: { __typename?: 'Callout'; id: string; visibility: CalloutVisibility };
 };
 
 export type DeleteCalloutMutationVariables = Exact<{
