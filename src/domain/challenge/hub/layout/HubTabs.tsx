@@ -24,7 +24,7 @@ const HubTabs = (props: EntityTabsProps) => {
       subEntityTab={
         <HeaderNavigationTab
           disabled={!permissions.canReadChallenges}
-          label={t('common.challenge')}
+          label={t('common.challenges')}
           value={EntityPageSection.Challenges}
           to={`${rootUrl}/${EntityPageSection.Challenges}`}
         />

@@ -25,7 +25,7 @@ const AlkemioActivitySection: FC<{
     () => [
       { name: t('pages.activity.hubs'), isLoading: loading, count: hubCount, color: 'primary' },
       {
-        name: t('common.challenge'),
+        name: t('common.challenges'),
         isLoading: loading,
         count: challengeCount,
         color: 'primary',

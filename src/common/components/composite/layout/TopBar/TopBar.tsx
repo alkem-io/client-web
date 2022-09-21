@@ -213,7 +213,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
           <ListItemIcon>
             <ChallengeIcon />
           </ListItemIcon>
-          {t('common.challenge')}
+          {t('common.challenges')}
         </MenuItem>
         <MenuItem component={RouterLink} to="/contributors">
           <ListItemIcon>

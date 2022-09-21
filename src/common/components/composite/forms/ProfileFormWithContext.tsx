@@ -5,7 +5,10 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, LifecycleType, Reference, Tagset } from '../../../../models/graphql-schema';
 import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
-import { ContextSegment, contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
+import {
+  ContextSegment,
+  contextSegmentSchema,
+} from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
@@ -26,7 +29,7 @@ export interface ProfileFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
-  // visual: Visual2[]; todo: enable when it's time
+  // visuals: Visual2[]; todo: enable when it's time
   tagsets: Tagset[];
   innovationFlowTemplateID: string;
 }

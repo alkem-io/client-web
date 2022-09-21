@@ -55,7 +55,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
     () => [
       { name: t('pages.activity.hubs'), isLoading: isLoadingActivities, count: hubCount, color: 'primary' },
       {
-        name: t('common.challenge'),
+        name: t('common.challenges'),
         isLoading: isLoadingActivities,
         count: challengeCount,
         color: 'primary',
