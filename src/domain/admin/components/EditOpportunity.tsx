@@ -26,7 +26,7 @@ import ProfileFormWithContext, {
 } from '../../../common/components/composite/forms/ProfileFormWithContext';
 import FormMode from './FormMode';
 import { Context, LifecycleType } from '../../../models/graphql-schema';
-import { formatDatabaseLocation } from '../../location/LocationUtils';
+import { formatDatabaseLocation } from '../../common/location/LocationUtils';
 
 interface Props {
   mode: FormMode;

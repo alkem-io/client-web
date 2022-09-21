@@ -9,7 +9,7 @@ import { useNotification } from '../../../../../hooks';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import { Box, Container, Grid } from '@mui/material';
 import HubContextForm from '../../../../admin/components/HubContextForm';
-import { formatDatabaseLocation } from '../../../../location/LocationUtils';
+import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
 export const HubContext: FC = () => {
   const { t } = useTranslation();

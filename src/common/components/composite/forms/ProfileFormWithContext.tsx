@@ -11,9 +11,9 @@ import { referenceSegmentSchema } from '../../../../domain/admin/components/Comm
 import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/admin/components/Common/TagsetSegment';
 import WrapperTypography from '../../core/WrapperTypography';
 import InputField from '../../../../domain/admin/components/Common/InputField';
-import { EmptyLocation, Location } from '../../../../domain/location/Location';
-import { formatLocation } from '../../../../domain/location/LocationUtils';
-import { LocationSegment } from '../../../../domain/location/LocationSegment';
+import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
+import { formatLocation } from '../../../../domain/common/location/LocationUtils';
+import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { LifecycleTemplateSegment } from '../../../../domain/admin/components/Common/LifecycleTemplateSegment';
 import { FormikSelectValue } from './FormikSelect';
 export interface ProfileFormValuesType {

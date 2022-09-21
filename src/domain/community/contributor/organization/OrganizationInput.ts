@@ -1,6 +1,6 @@
 import { Tagset } from '../../../../models/Profile';
 import { OrganizationVerificationEnum, Reference } from '../../../../models/graphql-schema';
-import { Location } from '../../../location/Location';
+import { Location } from '../../../common/location/Location';
 
 export interface OrganizationInput {
   name: string | undefined;

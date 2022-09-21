@@ -15,7 +15,7 @@ import {
 import { useNavigateToEdit } from '../../../../../hooks/useNavigateToEdit';
 import { Context } from '../../../../../models/graphql-schema';
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
-import { formatDatabaseLocation } from '../../../../location/LocationUtils';
+import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
 interface Props {
   mode: FormMode;

@@ -13,9 +13,9 @@ import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { TagsetSegment, tagsetSegmentSchema } from './Common/TagsetSegment';
 import { visualSegmentSchema } from './Common/VisualSegment';
 import InputField from './Common/InputField';
-import { EmptyLocation, Location } from '../../location/Location';
-import { formatLocation } from '../../location/LocationUtils';
-import { LocationSegment } from '../../location/LocationSegment';
+import { EmptyLocation, Location } from '../../common/location/Location';
+import { formatLocation } from '../../common/location/LocationUtils';
+import { LocationSegment } from '../../common/location/LocationSegment';
 
 interface Props {
   context?: Context;

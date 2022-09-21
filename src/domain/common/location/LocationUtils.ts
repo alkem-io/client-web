@@ -1,6 +1,6 @@
-import { Maybe, Location as GraphQLLocation } from '../../models/graphql-schema';
-import { Location as LocationModel } from '../../domain/location/Location';
-import { COUNTRIES } from '../../models/constants';
+import { Maybe, Location as GraphQLLocation } from '../../../models/graphql-schema';
+import { Location as LocationModel } from './Location';
+import { COUNTRIES } from '../../../models/constants';
 
 /**
  * formatLocation turns a Location coming from a GraphQL query into a Location usable by the UI.

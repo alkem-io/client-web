@@ -24,9 +24,9 @@ import { ProfileSegment, profileSegmentSchema } from '../Common/ProfileSegment';
 import { organizationSegmentSchema, OrganizationSegment } from '../Common/OrganizationSegment';
 import { NameSegment, nameSegmentSchema } from '../Common/NameSegment';
 import { OrganizationInput } from '../../../community/contributor/organization/OrganizationInput';
-import { formatLocation } from '../../../location/LocationUtils';
-import { LocationSegment } from '../../../location/LocationSegment';
-import { EmptyLocation } from '../../../location/Location';
+import { formatLocation } from '../../../common/location/LocationUtils';
+import { LocationSegment } from '../../../common/location/LocationSegment';
+import { EmptyLocation } from '../../../common/location/Location';
 
 const EmptyOrganization: Omit<Organization, 'authorization'> = {
   id: '',

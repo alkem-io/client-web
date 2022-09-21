@@ -6,7 +6,7 @@ import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import AdminLayout from '../../toplevel/AdminLayout';
 import { AdminSection } from '../../toplevel/constants';
-import { formatDatabaseLocation } from '../../../location/LocationUtils';
+import { formatDatabaseLocation } from '../../../common/location/LocationUtils';
 import { useApolloErrorHandler, useNotification, useUpdateNavigation } from '../../../../hooks';
 import {
   HubDetailsFragmentDoc,

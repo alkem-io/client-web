@@ -16,7 +16,7 @@ import WrapperTypography from '../../../../../common/components/core/WrapperTypo
 import FormMode from '../../../../admin/components/FormMode';
 import ProfileForm, { ProfileFormValues } from '../../../../../common/components/composite/forms/ProfileForm';
 import EditVisualsView from '../../../../common/visual/views/EditVisualsView';
-import { formatDatabaseLocation } from '../../../../location/LocationUtils';
+import { formatDatabaseLocation } from '../../../../common/location/LocationUtils';
 
 interface Props {
   mode: FormMode;

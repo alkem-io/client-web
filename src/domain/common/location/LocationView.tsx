@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import WrapperTypography from '../../common/components/core/WrapperTypography';
+import WrapperTypography from '../../../common/components/core/WrapperTypography';
 import { useTranslation } from 'react-i18next';
 import { Location } from './Location';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';

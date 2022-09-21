@@ -1,4 +1,4 @@
-import { CountryType } from '../../models/constants';
+import { CountryType } from '../../../models/constants';
 
 export interface Location {
   city: string;

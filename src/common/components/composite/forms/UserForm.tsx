@@ -20,7 +20,7 @@ import { FormikInputField } from './FormikInputField';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../../models/constants';
 import FormRow from '../../../../domain/shared/layout/FormLayout';
-import { LocationSegment } from '../../../../domain/location/LocationSegment';
+import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),
