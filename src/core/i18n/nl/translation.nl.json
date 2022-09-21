@@ -686,6 +686,9 @@
       "buttons": {
         "post": "Plaats opmerking"
       }
+      "tooltip": {
+        "markdown-help": "Je kunt een format toevoegen aan je reactie,\nbijvoorbeeld:\nDikgedrukte tekst: **dikgedrukt**\nCursieve tekst: *cursief*\nHeader: ##Titel\nLink: [tekst](url)"
+      }
     },
     "new-discussion": {
       "title": {
@@ -727,6 +730,12 @@
     }
   },
   "footer": {
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "security": "Security",
+    "feedback": "Feedback",
+    "support": "Support",
+    "about": "About",
     "copyright": "© 2022 Stichting Alkemio"
   },
   "pages": {
@@ -735,25 +744,33 @@
         "dashboard": {
           "description": "Hier kan je een samenvatting zien van deze {{entity}}. Navigeer door de andere tabbladen om meer gedetailleerde informatie te zien!"
         },
-        "context": {
-          "description": "Hier kan je de context verkennen van deze {{entity}}. Deze informatie is gegeven door de organisatie(s) die deze {{entity}} beheren."
+        "about": {
+          "description": "Hier kun je de context en community vinden van deze {{entity}}."
         },
         "community": {
-          "description": "Hier kan je de community verkennen. Je kan de gebruikers en organisaties zien die bijdragen, maar ook de updates die zijn gedeeld."
+          "description": "Hier kun je de Community vinden. Zie welke gebruikers en organisaties een bijdrage leveren en welke updates er geplaatst zijn.",
+          "leading-contributors": "Leading bijdragers",
+          "contributors": "Bijdragers"
         },
-        "contribute": {
-          "description": "Hier kan je jouw inzichten geven die bijdragen aan een beter begrip van de context. Deze bijdragen worden Kaarten genoemd. Het gaat erom dat de 'wisdom of the community' wordt gebruikt. \n Voeg extra Kaarten toe of reageer en discusieer rond bestaande Kaarten die door anderen zijn toegevoegd!"
+        "explore": {
+          "description": "Hier kun je je inzichten delen die bijdragen aan het verrijken van de context. Hier worden de kennis en ervaringen van de community verzameld."
         },
         "discussions": {
-          "description": "Hier kan je met andere leden uit de community discussieren rond deze {{entity}}."
+          "description": "Hier kun meer lezen over en bijdragen een de discussies van deze {{entity}}."
         },
         "canvases": {
-          "description": "Canvassen kunnen worden gezien als digitale whiteboards. In deze sectie kan je een canvas aanmaken voor deze {{entity}}, of bestaande canvassen bekijken en bewerken."
+          "description": "Canvasen zijn digitale whiteboards. Je kunt hier een Canvas creëren voor deze {{entity}}, maar ook de Canvasen van anderen vinden."
+        },
+        "profile": {
+          "description": ""
         }
       }
     },
     "contribute": {
       "no-cards": "Geen Kaarten gevonden"
+    },
+    "explore": {
+      "create-callout": "Maak een nieuwe Callout aan"
     },
     "admin": {
       "generic": {
@@ -772,22 +789,49 @@
           },
           "authorization": {
             "description": "Hier kan je de authorisatie-instellingen aanpassen voor deze {{entity}}."
+          },
+          "templates": {
+            "description": "Hier kun je Templates maken en aanpassen voor deze {{entity}}.",
+            "aspect-templates": "Templates voor Kaarten",
+            "canvas-templates": "Templates voor Canvasen",
+            "innovation-templates": "Templates voor Innovation Flows",
+            "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Hub? Je kunt ook de template informatie aanpassen?"
+          },
+          "my-profile": {
+            "description": "Hier kun je de details van je profiel aanpassen."
+          },
+          "membership": {
+            "description": "Hier kun je meer informatie zien over je lidmaatschap."
+          },
+          "organizations": {
+            "description": "Hier kun je alle geassocieerde organisaties zien van deze gebruiker."
+          },
+          "notifications": {
+            "description": "Hier kun je je voorkeuren voor notificaties aanpassen."
+          },
+          "credentials": {
+            "description": "Hier kun je de credentials zien."
           }
         }
       },
       "organization": {
+        "create-organization": "Maak organisatie aan",
         "authorization": {
           "preferences": {
             "title": "Authorisatie",
             "subtitle": "In deze sectie kan je de autorisatie van de organisaties aanpassen"
           }
+        },
+        "notifications": {
+          "organization-created": "Organisatie succesvol aangemaakt.",
+          "organization-removed": "Organisatie succesvol verwijderd."
         }
       },
       "challenge": {
         "community": {
           "preferences": {
             "title": "Lidmaatschap",
-            "subtitle": "In deze sectie kan je de $t(common.challenge) lidmaatschap-voorkeuren aanpassen"
+            "subtitle": "In deze sectie kun je de lidmaatschap voorkeuren aanpassen voor de $t(common.challenge)"
           }
         },
         "sections": {
@@ -795,6 +839,11 @@
             "description": "Hier kan je de Opportunities voor deze Hub aanpassen."
           }
         }
+        "notifications": {
+          "challenge-created": "Challenge succesvol aangemaakt.",
+          "challenge-removed": "Challenge succesvol verwijderd.",
+          "challenge-updated": "Challenge succesvol aangepast."
+        }      
       },
       "hub": {
         "sections": {
@@ -813,8 +862,23 @@
             "subtitle": "In deze sectie kan je de $t(common.hub) lidmaatschap-voorkeuren aanpassen"
           }
         }
+        "notifications": {
+          "hub-created": "Hub succesvol aangemaakt.",
+          "hub-removed": "Hub '{{name}}' succesvol verwijderd."
+        }
       },
-      "opportunity": {}
+      "opportunity": {
+        "notifications": {
+          "opportunity-created": "Opportunity succesvol aangemaakt.",
+          "opportunity-removed": "Opportunity succesvol verwijderd.",
+          "opportunity-updated": "Opportunity succesvol geupdate."
+        }
+      },
+      "users": {
+        "notifications": {
+          "user-removed": "Gebruiker succesvol verwijderd."
+        }
+      }
     },
     "feedback": {
       "title": "Geef feedback op de context van deze community",
@@ -957,6 +1021,7 @@
     },
     "hub": {
       "title": "Hub",
+      "about-this-hub": "Over deze Hub",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
         "subheader": "Vul de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
@@ -986,6 +1051,7 @@
     },
     "challenge": {
       "title": "Challenge",
+      "about-this-challenge": "Over deze Challenge",
       "organizationBanner": {
         "load-more": "En meer ..."
       },
@@ -1012,6 +1078,7 @@
     },
     "opportunity": {
       "title": "Opportunity",
+      "about-this-opportunity": "Over deze Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
@@ -1241,7 +1308,13 @@
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven."
     }
   },
-  "dashboard-updates-section": {
+  "apollo": {
+    "errors": {
+      "bad-user-input": "Ongeldige waarde in het gestuurde formulier.",
+      "bad-user-input-withfield": "De waarde van '{{field}}' is ongeldig."
+    }
+  },
+"dashboard-updates-section": {
     "title": "Updates ({{count}})",
     "no-data": "Geen updates beschikbaar."
   },
