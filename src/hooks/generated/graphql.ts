@@ -1134,30 +1134,6 @@ export const ChallengeInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const ChallengeSearchResultFragmentDoc = gql`
-  fragment ChallengeSearchResult on Challenge {
-    id
-    displayName
-    nameID
-    hubID
-    activity {
-      name
-      value
-    }
-    context {
-      id
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    tagset {
-      id
-      tags
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
@@ -1519,54 +1495,6 @@ export const NewOpportunityFragmentDoc = gql`
     displayName
   }
 `;
-export const OpportunitySearchResultFragmentDoc = gql`
-  fragment OpportunitySearchResult on Opportunity {
-    id
-    displayName
-    nameID
-    activity {
-      name
-      value
-    }
-    context {
-      id
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    tagset {
-      id
-      tags
-    }
-    challenge {
-      id
-      nameID
-      displayName
-      hubID
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const OrganizationSearchResultFragmentDoc = gql`
-  fragment OrganizationSearchResult on Organization {
-    id
-    displayName
-    nameID
-    profile {
-      id
-      avatar {
-        ...VisualUri
-      }
-      tagsets {
-        id
-        name
-        tags
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const OrganizationDetailsFragmentDoc = gql`
   fragment OrganizationDetails on Organization {
     id
@@ -1841,10 +1769,89 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
-export const UserSearchResultFragmentDoc = gql`
-  fragment UserSearchResult on UserGroup {
-    name
+export const ProfileSearchResultFragmentDoc = gql`
+  fragment ProfileSearchResult on Profile {
     id
+    location {
+      id
+      country
+      city
+    }
+    tagsets {
+      id
+      tags
+    }
+    avatar {
+      id
+      uri
+    }
+  }
+`;
+export const UserSearchResultFragmentDoc = gql`
+  fragment UserSearchResult on User {
+    id
+    nameID
+    displayName
+    profile {
+      ...ProfileSearchResult
+    }
+  }
+  ${ProfileSearchResultFragmentDoc}
+`;
+export const OrganizationSearchResultFragmentDoc = gql`
+  fragment OrganizationSearchResult on Organization {
+    id
+    nameID
+    displayName
+    profile_: profile {
+      ...ProfileSearchResult
+    }
+  }
+  ${ProfileSearchResultFragmentDoc}
+`;
+export const HubSearchResultFragmentDoc = gql`
+  fragment HubSearchResult on Hub {
+    id
+    nameID
+    displayName
+    context {
+      id
+      tagline
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+`;
+export const ChallengeSearchResultFragmentDoc = gql`
+  fragment ChallengeSearchResult on Challenge {
+    id
+    nameID
+    displayName
+    context {
+      id
+      tagline
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+`;
+export const OpportunitySearchResultFragmentDoc = gql`
+  fragment OpportunitySearchResult on Opportunity {
+    id
+    nameID
+    displayName
+    context {
+      id
+      tagline
+    }
+    tagset {
+      id
+      tags
+    }
   }
 `;
 export const CreateActorDocument = gql`
@@ -2896,63 +2903,6 @@ export type RelationsLazyQueryHookResult = ReturnType<typeof useRelationsLazyQue
 export type RelationsQueryResult = Apollo.QueryResult<SchemaTypes.RelationsQuery, SchemaTypes.RelationsQueryVariables>;
 export function refetchRelationsQuery(variables: SchemaTypes.RelationsQueryVariables) {
   return { query: RelationsDocument, variables: variables };
-}
-export const SearchDocument = gql`
-  query search($searchData: SearchInput!) {
-    search(searchData: $searchData) {
-      score
-      terms
-      result {
-        ... on User {
-          displayName
-          id
-        }
-        ...UserSearchResult
-        ...OrganizationSearchResult
-        ...ChallengeSearchResult
-        ...OpportunitySearchResult
-      }
-    }
-  }
-  ${UserSearchResultFragmentDoc}
-  ${OrganizationSearchResultFragmentDoc}
-  ${ChallengeSearchResultFragmentDoc}
-  ${OpportunitySearchResultFragmentDoc}
-`;
-
-/**
- * __useSearchQuery__
- *
- * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchQuery({
- *   variables: {
- *      searchData: // value for 'searchData'
- *   },
- * });
- */
-export function useSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
-}
-export function useSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
-}
-export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
-export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
-export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
-export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
-  return { query: SearchDocument, variables: variables };
 }
 export const ServerMetadataDocument = gql`
   query serverMetadata {
@@ -18566,3 +18516,68 @@ export type UpdatePreferenceOnHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnHubMutation,
   SchemaTypes.UpdatePreferenceOnHubMutationVariables
 >;
+export const SearchDocument = gql`
+  query search($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      score
+      terms
+      result {
+        ... on User {
+          ...UserSearchResult
+        }
+        ... on Organization {
+          ...OrganizationSearchResult
+        }
+        ... on Hub {
+          ...HubSearchResult
+        }
+        ... on Challenge {
+          ...ChallengeSearchResult
+        }
+        ... on Opportunity {
+          ...OpportunitySearchResult
+        }
+      }
+    }
+  }
+  ${UserSearchResultFragmentDoc}
+  ${OrganizationSearchResultFragmentDoc}
+  ${HubSearchResultFragmentDoc}
+  ${ChallengeSearchResultFragmentDoc}
+  ${OpportunitySearchResultFragmentDoc}
+`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
+}
+export function useSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
+}
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
+export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
+  return { query: SearchDocument, variables: variables };
+}

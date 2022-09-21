@@ -7,13 +7,13 @@ import CardActions from '@mui/material/CardActions';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import TagsComponent from '../TagsComponent/TagsComponent';
-import { ClampedTypography } from '../ClampedTypography';
+import TagsComponent from '../../TagsComponent/TagsComponent';
+import { ClampedTypography } from '../../ClampedTypography';
 
 const MATCH_TERMS_HEIGHT = 50;
-const NAME_HEIGHT = 64;
+const NAME_HEIGHT = 60;
 
-const MatchTermsBox = styled(CardActions)(({ theme }) => ({ width: theme.cards.search.width, height: MATCH_TERMS_HEIGHT }));
+const MatchTermsBox = styled(CardActions)(({ theme }) => ({ width: theme.cards.search.width }));
 const Label = styled(Typography)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: 'white',
@@ -32,7 +32,8 @@ const NameBox = styled(Box)(({ theme }) => ({
   paddingLeft: theme.spacing(1),
 }));
 
-const getCalculatedCardBox = (height: number) => styled(Card)(({ theme }) => ({ width: theme.cards.search.width, height }));
+const getCalculatedCardBox = (height: number) =>
+  styled(Card)(({ theme }) => ({ width: theme.cards.search.width, height }));
 
 const getCalculatedCardImage = (mediaHeight: number) =>
   styled(props => <CardMedia {...props} />)<CardMediaProps & ComponentPropsWithRef<'img'>>(({ theme }) => ({
@@ -49,6 +50,9 @@ const getCalculatedCardContents = (cardHeight: number, mediaHeight: number) =>
   styled(CardContent)(({ theme }) => ({
     width: theme.cards.search.width,
     height: cardHeight - mediaHeight - NAME_HEIGHT - MATCH_TERMS_HEIGHT,
+    padding: 0,
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
   }));
 
 export interface SearchBaseCardProps {
@@ -82,7 +86,7 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({ image, imgAlt, height, imgHei
       </CardImage>
       <NameBox>
         <Icon fontSize="medium" color="primary" sx={{ mr: theme => theme.spacing(0.5) }} />
-        <ClampedTypography variant={'h4'} sx={{ color: 'primary.main' }} clamp={2}>
+        <ClampedTypography variant={'h5'} sx={{ color: 'primary.main' }} clamp={2}>
           {name}
         </ClampedTypography>
       </NameBox>

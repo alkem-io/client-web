@@ -3935,73 +3935,6 @@ export type RelationsQuery = {
   };
 };
 
-export type SearchQueryVariables = Exact<{
-  searchData: SearchInput;
-}>;
-
-export type SearchQuery = {
-  __typename?: 'Query';
-  search: Array<{
-    __typename?: 'SearchResultEntry';
-    score?: number | undefined;
-    terms?: Array<string> | undefined;
-    result?:
-      | {
-          __typename?: 'Challenge';
-          id: string;
-          displayName: string;
-          nameID: string;
-          hubID: string;
-          activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-          context?:
-            | {
-                __typename?: 'Context';
-                id: string;
-                tagline?: string | undefined;
-                visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-              }
-            | undefined;
-          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-        }
-      | { __typename?: 'Hub' }
-      | {
-          __typename?: 'Opportunity';
-          id: string;
-          displayName: string;
-          nameID: string;
-          activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-          context?:
-            | {
-                __typename?: 'Context';
-                id: string;
-                tagline?: string | undefined;
-                visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-              }
-            | undefined;
-          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-          challenge?:
-            | { __typename?: 'Challenge'; id: string; nameID: string; displayName: string; hubID: string }
-            | undefined;
-        }
-      | {
-          __typename?: 'Organization';
-          id: string;
-          displayName: string;
-          nameID: string;
-          profile: {
-            __typename?: 'Profile';
-            id: string;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-          };
-        }
-      | { __typename?: 'RelayPaginatedUser' }
-      | { __typename?: 'User'; displayName: string; id: string }
-      | { __typename?: 'UserGroup'; name: string; id: string }
-      | undefined;
-  }>;
-};
-
 export type ServerMetadataQueryVariables = Exact<{ [key: string]: never }>;
 
 export type ServerMetadataQuery = {
@@ -10784,24 +10717,6 @@ export type ChallengeInfoFragment = {
     | undefined;
 };
 
-export type ChallengeSearchResultFragment = {
-  __typename?: 'Challenge';
-  id: string;
-  displayName: string;
-  nameID: string;
-  hubID: string;
-  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-};
-
 export type NewChallengeFragment = { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 
 export type CreateChallengeMutationVariables = Exact<{
@@ -13384,24 +13299,6 @@ export type OpportunityProviderFragment = {
 
 export type NewOpportunityFragment = { __typename?: 'Opportunity'; id: string; nameID: string; displayName: string };
 
-export type OpportunitySearchResultFragment = {
-  __typename?: 'Opportunity';
-  id: string;
-  displayName: string;
-  nameID: string;
-  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
-  challenge?: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string; hubID: string } | undefined;
-};
-
 export type CreateOpportunityMutationVariables = Exact<{
   input: CreateOpportunityInput;
 }>;
@@ -13849,19 +13746,6 @@ export type OrganizationCardFragment = {
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-};
-
-export type OrganizationSearchResultFragment = {
-  __typename?: 'Organization';
-  id: string;
-  displayName: string;
-  nameID: string;
-  profile: {
-    __typename?: 'Profile';
-    id: string;
-    avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
-    tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
-  };
 };
 
 export type OrganizationDetailsFragment = {
@@ -14492,8 +14376,6 @@ export type UserRolesDetailsFragment = {
       }>
     | undefined;
 };
-
-export type UserSearchResultFragment = { __typename?: 'UserGroup'; name: string; id: string };
 
 export type AssignUserToGroupMutationVariables = Exact<{
   input: AssignUserGroupMemberInput;
@@ -15207,4 +15089,138 @@ export type UpdatePreferenceOnHubMutationVariables = Exact<{
 export type UpdatePreferenceOnHubMutation = {
   __typename?: 'Mutation';
   updatePreferenceOnHub: { __typename?: 'Preference'; id: string; value: string };
+};
+
+export type SearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type SearchQuery = {
+  __typename?: 'Query';
+  search: Array<{
+    __typename?: 'SearchResultEntry';
+    score?: number | undefined;
+    terms?: Array<string> | undefined;
+    result?:
+      | {
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        }
+      | {
+          __typename?: 'Hub';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        }
+      | {
+          __typename?: 'Opportunity';
+          id: string;
+          nameID: string;
+          displayName: string;
+          context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        }
+      | {
+          __typename?: 'Organization';
+          id: string;
+          nameID: string;
+          displayName: string;
+          profile_: {
+            __typename?: 'Profile';
+            id: string;
+            location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          };
+        }
+      | { __typename?: 'RelayPaginatedUser' }
+      | {
+          __typename?: 'User';
+          id: string;
+          nameID: string;
+          displayName: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+                tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+                avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+              }
+            | undefined;
+        }
+      | { __typename?: 'UserGroup' }
+      | undefined;
+  }>;
+};
+
+export type UserSearchResultFragment = {
+  __typename?: 'User';
+  id: string;
+  nameID: string;
+  displayName: string;
+  profile?:
+    | {
+        __typename?: 'Profile';
+        id: string;
+        location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+      }
+    | undefined;
+};
+
+export type OrganizationSearchResultFragment = {
+  __typename?: 'Organization';
+  id: string;
+  nameID: string;
+  displayName: string;
+  profile_: {
+    __typename?: 'Profile';
+    id: string;
+    location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+    tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+  };
+};
+
+export type ProfileSearchResultFragment = {
+  __typename?: 'Profile';
+  id: string;
+  location?: { __typename?: 'Location'; id: string; country: string; city: string } | undefined;
+  tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+  avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+};
+
+export type HubSearchResultFragment = {
+  __typename?: 'Hub';
+  id: string;
+  nameID: string;
+  displayName: string;
+  context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+};
+
+export type ChallengeSearchResultFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  nameID: string;
+  displayName: string;
+  context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+};
+
+export type OpportunitySearchResultFragment = {
+  __typename?: 'Opportunity';
+  id: string;
+  nameID: string;
+  displayName: string;
+  context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
+  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
 };

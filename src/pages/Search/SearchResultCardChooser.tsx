@@ -1,35 +1,34 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import Skeleton from '@mui/material/Skeleton';
-import EntitySearchCardProps from '../../common/components/composite/search/EntitySearchCardProps';
+import { ResultMetadataType, ResultType } from './SearchPage';
+import { SearchHubCard, SearchHubCardProps, SearchUserCard } from '../../domain/shared/components/search-cards';
 import {
-  ChallengeSearchCard,
-  OpportunitySearchCard,
-  OrganizationSearchCard,
-  UserCard,
-} from '../../common/components/composite/search';
-import { Challenge, Opportunity, Organization, User } from '../../models/graphql-schema';
-import { ResultType } from './SearchPage';
+  SearchOpportunityCard,
+  SearchOpportunityCardProps,
+} from '../../domain/shared/components/search-cards/SearchOpportunityCard';
+import { SearchOrganizationCard } from '../../domain/shared/components/search-cards/SearchOrganizationCard';
+import {
+  SearchChallengeCard,
+  SearchChallengeCardProps,
+} from '../../domain/shared/components/search-cards/SearchChallengeCard';
+import { Challenge, Hub, Opportunity } from '../../models/graphql-schema';
+import { VisualName } from '../../models/constants/visuals.constants';
+import { getVisualByType } from '../../common/utils/visuals.utils';
+import { SearchJourneyCardProps } from '../../domain/shared/components/search-cards/SearchJourneyCardProps';
+import { SearchJourneyWithParentCardProps } from '../../domain/shared/components/search-cards/SearchJourneyWithParentCardProps';
 
 const SearchResultCardChooser = ({ result }: { result: ResultType | undefined }) => {
   if (!result || !result.__typename) {
-    // todo better skeleton
-    return <Skeleton width="200px" height="250px" />;
+    return <Skeleton sx={theme => ({ width: theme.cards.search.width, height: theme.cards.search.contributor.height })} />;
   }
 
-  const cardDict: Record<NonNullable<ResultType['__typename']>, ReactElement<EntitySearchCardProps<unknown>>> = {
-    User: <UserCard key={result.id} {...(result as User)} />,
-    Opportunity: <OpportunitySearchCard key={result.id} terms={result.terms} entity={result as Opportunity} />,
-    Organization: <OrganizationSearchCard key={result.id} terms={result.terms} entity={result as Organization} />,
-    Challenge: <ChallengeSearchCard key={result.id} terms={result.terms} entity={result as Challenge} />,
+  const cardDict: Record<NonNullable<ResultType['__typename']>, React.ReactElement> = {
+    Hub: <SearchHubCard  />,
+    Challenge: SearchChallengeCard,
+    Opportunity: SearchOpportunityCard,
+    User: SearchUserCard,
+    Organization: SearchOrganizationCard,
   };
-
-  if (result.__typename === 'User') return <UserCard key={result.id} {...result} />;
-  if (result.__typename === 'Opportunity')
-    return <OpportunitySearchCard key={result.id} terms={result.terms} entity={result} />;
-  if (result.__typename === 'Organization')
-    return <OrganizationSearchCard key={result.id} terms={result.terms} entity={result} />;
-  if (result.__typename === 'Challenge')
-    return <ChallengeSearchCard key={result.id} terms={result.terms} entity={result} />;
 
   const card = cardDict[result.__typename];
 
@@ -40,3 +39,22 @@ const SearchResultCardChooser = ({ result }: { result: ResultType | undefined })
   return card;
 };
 export default SearchResultCardChooser;
+
+type JourneyCardProps = SearchJourneyCardProps | SearchJourneyWithParentCardProps;
+type JourneyResultType = (Hub | Challenge | Opportunity) & ResultMetadataType;
+
+const hydrateJourneyCard = (Card: React.ComponentType<JourneyCardProps>, data: JourneyResultType, url: string) => {
+  const tagline = data?.context?.tagline ?? '';
+  const image = getVisualByType(VisualName.BANNER, data?.context?.visuals ?? [])?.uri ?? '';
+
+  return  (
+    <Card
+      name={data.displayName}
+      isMember={true}
+      tagline={tagline}
+      image={image}
+      matchedTerms={data.terms}
+      url={url}
+    />
+  );
+};

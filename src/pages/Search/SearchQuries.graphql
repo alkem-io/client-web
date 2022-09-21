@@ -1,0 +1,101 @@
+query search($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    score
+    terms
+    result {
+      ... on User {
+        ...UserSearchResult
+      }
+      ... on Organization {
+        ...OrganizationSearchResult
+      }
+      ... on Hub {
+        ...HubSearchResult
+      }
+      ... on Challenge {
+        ...ChallengeSearchResult
+      }
+      ... on Opportunity {
+        ...OpportunitySearchResult
+      }
+    }
+  }
+}
+
+fragment UserSearchResult on User {
+  id
+  nameID
+  displayName
+  profile {
+    ...ProfileSearchResult
+  }
+}
+
+fragment OrganizationSearchResult on Organization {
+  id
+  nameID
+  displayName
+  profile_: profile {
+    ...ProfileSearchResult
+  }
+}
+
+fragment ProfileSearchResult on Profile {
+  id
+  location {
+    id
+    country
+    city
+  }
+  tagsets {
+    id
+    tags
+  }
+  avatar {
+    id
+    uri
+  }
+}
+
+fragment HubSearchResult on Hub {
+  id
+  nameID
+  displayName
+  context {
+    id
+    tagline
+  }
+  tagset {
+    id
+    tags
+  }
+}
+
+fragment ChallengeSearchResult on Challenge {
+  id
+  nameID
+  displayName
+  context {
+    id
+    tagline
+  }
+  tagset {
+    id
+    tags
+  }
+}
+
+
+fragment OpportunitySearchResult on Opportunity {
+  id
+  nameID
+  displayName
+  context {
+    id
+    tagline
+  }
+  tagset {
+    id
+    tags
+  }
+}
