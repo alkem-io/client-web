@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ContributorsSearchContainer from './ContributorsSearch/ContributorsSearchContainer';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
@@ -7,6 +7,7 @@ import ContributorsView, { ITEMS_PER_PAGE } from '../../views/Contributors/Contr
 import { InputAdornment, OutlinedInput, Typography } from '@mui/material';
 import SectionSpacer from '../../domain/shared/components/Section/SectionSpacer';
 import SearchIcon from '@mui/icons-material/Search';
+import { debounce } from 'lodash';
 
 export interface ContributorsPageProps {}
 
@@ -16,11 +17,18 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
 
   useUpdateNavigation({ currentPaths });
   const [searchTerms, setSearchTerms] = useState<string>('');
+  const [searchTermsDebounced, setSearchTermsDebounced] = useState<string>('');
 
   const { isAuthenticated } = useUserContext();
 
+  const onSearchHandlerDebounced = useCallback(
+    debounce((value: string) => setSearchTermsDebounced(value), 500),
+    []
+  );
+
   const onSearchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerms(e.target.value);
+    onSearchHandlerDebounced(e.target.value);
   };
 
   return (
@@ -39,7 +47,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
           </InputAdornment>
         }
       />
-      <ContributorsSearchContainer searchTerms={searchTerms} pageSize={ITEMS_PER_PAGE}>
+      <ContributorsSearchContainer searchTerms={searchTermsDebounced} pageSize={ITEMS_PER_PAGE}>
         {({ users, organizations }) => {
           return (
             <ContributorsView

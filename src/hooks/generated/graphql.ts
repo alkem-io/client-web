@@ -1821,8 +1821,12 @@ export const OrganizationContributorPaginatedFragmentDoc = gql`
     organization {
       ...OrganizationContributor
     }
+    pageInfo {
+      ...PageInfo
+    }
   }
   ${OrganizationContributorFragmentDoc}
+  ${PageInfoFragmentDoc}
 `;
 export const UserContributorFragmentDoc = gql`
   fragment UserContributor on User {
@@ -1860,8 +1864,12 @@ export const UserContributorPaginatedFragmentDoc = gql`
     users {
       ...UserContributor
     }
+    pageInfo {
+      ...PageInfo
+    }
   }
   ${UserContributorFragmentDoc}
+  ${PageInfoFragmentDoc}
 `;
 export const CreateActorDocument = gql`
   mutation createActor($input: CreateActorInput!) {
@@ -18524,13 +18532,9 @@ export const ContributorsPageOrganizationsDocument = gql`
   query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
     organizationsPaginated(first: $first, after: $after, filter: $filter) {
       ...OrganizationContributorPaginated
-      pageInfo {
-        ...PageInfo
-      }
     }
   }
   ${OrganizationContributorPaginatedFragmentDoc}
-  ${PageInfoFragmentDoc}
 `;
 
 /**
@@ -18592,13 +18596,9 @@ export const ContributorsPageUsersDocument = gql`
   query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
     usersPaginated(first: $first, after: $after, filter: $filter) {
       ...UserContributorPaginated
-      pageInfo {
-        ...PageInfo
-      }
     }
   }
   ${UserContributorPaginatedFragmentDoc}
-  ${PageInfoFragmentDoc}
 `;
 
 /**
@@ -18651,66 +18651,4 @@ export type ContributorsPageUsersQueryResult = Apollo.QueryResult<
 >;
 export function refetchContributorsPageUsersQuery(variables: SchemaTypes.ContributorsPageUsersQueryVariables) {
   return { query: ContributorsPageUsersDocument, variables: variables };
-}
-export const ContributorsSearchDocument = gql`
-  query ContributorsSearch($searchData: SearchInput!) {
-    search(searchData: $searchData) {
-      result {
-        ...UserContributor
-        ...OrganizationContributor
-      }
-    }
-  }
-  ${UserContributorFragmentDoc}
-  ${OrganizationContributorFragmentDoc}
-`;
-
-/**
- * __useContributorsSearchQuery__
- *
- * To run a query within a React component, call `useContributorsSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useContributorsSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useContributorsSearchQuery({
- *   variables: {
- *      searchData: // value for 'searchData'
- *   },
- * });
- */
-export function useContributorsSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ContributorsSearchQuery,
-    SchemaTypes.ContributorsSearchQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ContributorsSearchQuery, SchemaTypes.ContributorsSearchQueryVariables>(
-    ContributorsSearchDocument,
-    options
-  );
-}
-export function useContributorsSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ContributorsSearchQuery,
-    SchemaTypes.ContributorsSearchQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ContributorsSearchQuery, SchemaTypes.ContributorsSearchQueryVariables>(
-    ContributorsSearchDocument,
-    options
-  );
-}
-export type ContributorsSearchQueryHookResult = ReturnType<typeof useContributorsSearchQuery>;
-export type ContributorsSearchLazyQueryHookResult = ReturnType<typeof useContributorsSearchLazyQuery>;
-export type ContributorsSearchQueryResult = Apollo.QueryResult<
-  SchemaTypes.ContributorsSearchQuery,
-  SchemaTypes.ContributorsSearchQueryVariables
->;
-export function refetchContributorsSearchQuery(variables: SchemaTypes.ContributorsSearchQueryVariables) {
-  return { query: ContributorsSearchDocument, variables: variables };
 }
