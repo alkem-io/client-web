@@ -5,7 +5,7 @@
   "author": "Alkemio Foundation",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alkem-io/Client.Web.git"
+    "url": "https://github.com/alkem-io/client-web.git"
   },
   "license": "EUPL-1.2",
   "dependencies": {
@@ -71,7 +71,9 @@
     "react-visibility-sensor": "^5.1.1",
     "rehype-raw": "^6.1.1",
     "relay-compiler": "^13.1.1",
+    "remark-emoji": "^3.0.2",
     "remark-gfm": "^3.0.1",
+    "remark-github": "^11.2.4",
     "replace-special-characters": "^1.2.5",
     "subscriptions-transport-ws": "^0.11.0",
     "typescript": "~4.1.3",

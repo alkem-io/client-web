@@ -81,7 +81,6 @@ const AspectCallout = ({
   });
 
   const onCreate = async (aspect: OnCreateInput) => {
-    setAspectDialogOpen(false);
     const { data } = await createAspect({
       variables: {
         aspectData: {
@@ -165,6 +164,7 @@ const AspectCallout = ({
         onClose={handleCreateDialogClosed}
         onCreate={onCreate}
         aspectNames={aspectNames}
+        calloutNameId={callout.id}
         hubNameId={hubNameId!}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}
