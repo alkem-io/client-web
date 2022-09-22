@@ -45,7 +45,7 @@ describe('TextIpnut component', () => {
 
   test('TextArea onChange event', async () => {
     // act
-    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled />);
+    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled={false} />);
     userEvent.clear(screen.getByRole('textbox'));
     userEvent.type(screen.getByRole('textbox'), 'ab{enter}a');
 
@@ -55,7 +55,7 @@ describe('TextIpnut component', () => {
 
   test('TextInput disabled="false" input', async () => {
     // act
-    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled />);
+    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled={false} />);
     userEvent.clear(screen.getByRole('textbox'));
     userEvent.type(screen.getByRole('textbox'), 'ab{enter}a');
 
@@ -65,7 +65,7 @@ describe('TextIpnut component', () => {
 
   test('TextArea has value', async () => {
     // act
-    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled />);
+    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled={false} />);
 
     // assert
     expect(screen.getByRole('textbox')).toHaveValue(value);
@@ -73,7 +73,7 @@ describe('TextIpnut component', () => {
 
   test('TextInput has value', async () => {
     // act
-    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled />);
+    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled={false} />);
 
     // assert
     expect(screen.getByRole('textbox')).toHaveValue(value);
@@ -81,7 +81,7 @@ describe('TextIpnut component', () => {
 
   test('TextArea has label', async () => {
     // act
-    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled />);
+    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled={false} />);
 
     // assert
     expect(screen.getByText(label)).toBeInTheDocument();
@@ -89,7 +89,7 @@ describe('TextIpnut component', () => {
 
   test('TextInput has label', async () => {
     // act
-    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled />);
+    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled={false} />);
 
     // assert
     expect(screen.getByText(label)).toBeInTheDocument();

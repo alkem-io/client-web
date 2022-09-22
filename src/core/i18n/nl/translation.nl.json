@@ -486,7 +486,7 @@
         "title": "Organisator",
         "select": "Select een organisator"
       },
-      "read-access": "Sta niet-leden van de Hub toe de Challenges te lezen",
+      "read-access": "Sta niet-leden van de Hub toe de Challenges te lezen"
     },
     "nameSegment": {
       "name": "Naam",
