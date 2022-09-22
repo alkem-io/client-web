@@ -1,5 +1,7 @@
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
-import AspectCard, { AspectCardAspect } from '../../../../common/components/composite/common/cards/AspectCard/AspectCard';
+import AspectCard, {
+  AspectCardAspect,
+} from '../../../../common/components/composite/common/cards/AspectCard/AspectCard';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
@@ -79,7 +81,6 @@ const AspectCallout = ({
   });
 
   const onCreate = async (aspect: OnCreateInput) => {
-    setAspectDialogOpen(false);
     const { data } = await createAspect({
       variables: {
         aspectData: {
@@ -163,6 +164,7 @@ const AspectCallout = ({
         onClose={handleCreateDialogClosed}
         onCreate={onCreate}
         aspectNames={aspectNames}
+        calloutNameId={callout.id}
         hubNameId={hubNameId!}
         challengeNameId={challengeNameId}
         opportunityNameId={opportunityNameId}
