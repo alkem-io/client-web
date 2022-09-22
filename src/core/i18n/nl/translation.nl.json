@@ -24,7 +24,7 @@
     "create": "Maak aan",
     "publish": "Publiceer",
     "unpublish": "Depubliceer",
-    "save-draft": "Sla op als voorlopige versie",
+    "save-draft": "Voorlopig opslaan",
     "save": "Opslaan",
     "back": "Terug",
     "next": "Volgende",
@@ -281,8 +281,8 @@
     }
   },
   "community": {
-    "leading-users": "Leidende Gebruikers",
-    "member-users": "Lid Gebruikers",
+    "leading-users": "Lead",
+    "member-users": "Leden",
     "leading-organizations": "Leidende Organisaties",
     "member-organizations": "Lid Organisaties",
     "leads": "Leads",
@@ -352,7 +352,7 @@
         "title": "Details",
         "description": "Omschrijving",
         "type-comments": "Discussie",
-        "type-comments-help": "Selecteer ‘Comments’ als je wilt dat mensen antwoorden via een simpele reactie, zoals een discussiebord.",
+        "type-comments-help": "Selecteer ‘Discussie’ als je wilt dat mensen antwoorden via een simpele reactie.",
         "type-cards": "Kaarten",
         "type-cards-help": "Selecteerd 'Kaarten' als je wilt dat mensen kennis delen via een Kaart met een beschrijving, referenties, en de mogelijkheid om commentaar te geven.",
         "type-canvases": "Canvasen",
