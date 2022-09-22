@@ -10,7 +10,7 @@ import ContributorCard, {
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';
-import { UserMetadata } from '../../../user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../../community/contributor/user/hooks/useUserMetadataWrapper';
 import ImageBackdrop from '../Backdrops/ImageBackdrop';
 
 const MAX_USERS_TO_SHOW = 12;

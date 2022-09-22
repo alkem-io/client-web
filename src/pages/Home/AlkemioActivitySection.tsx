@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../common/components/composite/common/ActivityPanel/Activities';
 import DashboardActivitySection from '../../domain/shared/components/DashboardSections/DashboardActivitySection';
 import { SectionProps } from '../../domain/shared/components/Section/Section';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
+import getActivityCount from '../../domain/platform/activity/utils/getActivityCount';
 import useServerMetadata from '../../hooks/useServerMetadata';
 
 const AlkemioActivitySection: FC<{

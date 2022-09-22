@@ -22,7 +22,7 @@ import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import CanvasList from '../../lists/Canvas/CanvasList';
 import CanvasListItem, { CanvasListItemCanvas } from '../../lists/Canvas/CanvasListItem';
-import canvasSchema from '../../../../../domain/canvas/validation/canvasSchema';
+import canvasSchema from '../../../../../domain/collaboration/canvas/validation/canvasSchema';
 import FormikInputField from '../../forms/FormikInputField';
 import { Identifiable } from '../../../../../domain/shared/types/Identifiable';
 import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';

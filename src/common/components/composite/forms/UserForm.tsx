@@ -10,17 +10,17 @@ import { TagsetTemplate, Visual } from '../../../../models/graphql-schema';
 import { Reference, Tagset } from '../../../../models/Profile';
 import { defaultUser, UserFormGenerated, UserModel } from '../../../../models/User';
 import { logger } from '../../../../services/logging/winston/logger';
-import ProfileReferenceSegment from '../../../../domain/admin/components/Common/ProfileReferenceSegment';
-import { referenceSegmentValidationObject } from '../../../../domain/admin/components/Common/ReferenceSegment';
-import SocialSegment from '../../../../domain/admin/components/Common/SocialSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/admin/components/Common/TagsetSegment';
+import ProfileReferenceSegment from '../../../../domain/platform/admin/components/Common/ProfileReferenceSegment';
+import { referenceSegmentValidationObject } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
+import SocialSegment from '../../../../domain/platform/admin/components/Common/SocialSegment';
+import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
 import { Loading } from '../../core';
 import VisualUpload from '../common/VisualUpload/VisualUpload';
 import { FormikInputField } from './FormikInputField';
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import { COUNTRIES } from '../../../../models/constants';
 import FormRow from '../../../../domain/shared/layout/FormLayout';
-import { LocationSegment } from '../../../../domain/location/LocationSegment';
+import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 
 const socialNames = [
   SocialNetworkEnum.github.toString(),

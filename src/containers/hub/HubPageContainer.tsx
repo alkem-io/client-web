@@ -14,20 +14,20 @@ import {
   HubPageFragment,
   Reference,
 } from '../../models/graphql-schema';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
+import getActivityCount from '../../domain/platform/activity/utils/getActivityCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
-import { Discussion } from '../../domain/discussion/models/discussion';
-import { ActivityType } from '../../domain/activity/ActivityType';
-import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
+import { ActivityType } from '../../domain/platform/activity/ActivityType';
+import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
-import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
-import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import useCommunityMembersAsCardProps from '../../domain/community/community/utils/useCommunityMembersAsCardProps';
+import { useCanvasesCount } from '../../domain/collaboration/canvas/utils/canvasesCount';
 import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
-} from '../../domain/callout/utils/getPublishedCallouts';
-import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
+} from '../../domain/collaboration/callout/utils/getPublishedCallouts';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/collaboration/callout/useCallouts';
 import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
 
 export interface HubContainerEntities {

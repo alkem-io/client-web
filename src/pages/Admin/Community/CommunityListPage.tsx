@@ -5,7 +5,7 @@ import { useDeleteUserGroup, useHub } from '../../../hooks';
 import { useCommunityGroupsQuery } from '../../../hooks/generated/graphql';
 import DashboardGenericSection from '../../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { useTranslation } from 'react-i18next';
-import SearchableList, { SearchableListItem } from '../../../domain/admin/components/SearchableList';
+import SearchableList, { SearchableListItem } from '../../../domain/platform/admin/components/SearchableList';
 import { Link } from 'react-router-dom';
 import WrapperButton from '../../../common/components/core/WrapperButton';
 

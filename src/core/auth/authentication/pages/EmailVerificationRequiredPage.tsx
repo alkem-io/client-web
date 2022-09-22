@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import WrapperButton from '../../../../common/components/core/WrapperButton';
 import { Box } from '@mui/material';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
-import EmailVerificationNotice from '../../../../components/EmailVerificationNotice/EmailVerificationNotice';
+import EmailVerificationNotice from '../../verification/components/EmailVerificationNotice/EmailVerificationNotice';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 
 export const EmailVerificationRequiredPage: FC = () => {
