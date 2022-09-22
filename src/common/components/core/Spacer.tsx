@@ -17,5 +17,5 @@ const useSpacerStyles = makeStyles(theme => ({
 export const Spacer: FC<SpacerProps> = ({ variant = 'md' }) => {
   const styles = useSpacerStyles();
 
-  return <div className={styles[`${variant}Spacer`]}></div>;
+  return <div className={styles[`${variant}Spacer`]} />;
 };

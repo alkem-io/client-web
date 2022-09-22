@@ -91,7 +91,7 @@
     "create-new": "Maak nieuwe aan",
     "create-new-entity": "Maak nieuwe {{entity}} aan",
     "description": "Omschrijving",
-    "about": "Over"
+    "about": "Over",
     "explore": "Explore",
     "edit-entity": "Pas {{entity}} aan",
     "filter": "Filter",
@@ -296,7 +296,7 @@
   },
   "forms": {
     "validations": {
-      "required": "Dit veld is vereist!"
+      "required": "Dit veld is vereist!",
       "minLength": "{{field}} moet tenminste {{min}} karakters lang zijn",
       "maxLength": "Limiet van {{max}} karakters overschreden",
       "alphaNumeric": "{{field}} kan alleen bestaan uit kleine letters, nummers of koppeltekens",
@@ -486,7 +486,7 @@
         "title": "Organisator",
         "select": "Select een organisator"
       },
-      "read-access": "Sta niet-leden van de Hub toe de Challenges te lezen",
+      "read-access": "Sta niet-leden van de Hub toe de Challenges te lezen"
     },
     "nameSegment": {
       "name": "Naam",
@@ -568,7 +568,7 @@
     },
     "card": {
       "member": "Lid",
-      "private": "Privé"
+      "private": "Privé",
       "lead": "Lead"
     },
     "errorblock": {
@@ -685,7 +685,7 @@
       },
       "buttons": {
         "post": "Plaats opmerking"
-      }
+      },
       "tooltip": {
         "markdown-help": "Je kunt een format toevoegen aan je reactie,\nbijvoorbeeld:\nDikgedrukte tekst: **dikgedrukt**\nCursieve tekst: *cursief*\nHeader: ##Titel\nLink: [tekst](url)"
       }
@@ -838,12 +838,12 @@
           "opportunities": {
             "description": "Hier kan je de Opportunities voor deze Hub aanpassen."
           }
-        }
+        },
         "notifications": {
           "challenge-created": "Challenge succesvol aangemaakt.",
           "challenge-removed": "Challenge succesvol verwijderd.",
           "challenge-updated": "Challenge succesvol aangepast."
-        }      
+        }
       },
       "hub": {
         "sections": {
@@ -861,7 +861,7 @@
             "title": "Lidmaatschap",
             "subtitle": "In deze sectie kan je de $t(common.hub) lidmaatschap-voorkeuren aanpassen"
           }
-        }
+        },
         "notifications": {
           "hub-created": "Hub succesvol aangemaakt.",
           "hub-removed": "Hub '{{name}}' succesvol verwijderd."
@@ -1325,7 +1325,7 @@
   },
   "aspect-edit": {
     "new": "Nieuw Kaart",
-    "edit": "Pas Kaart aan"
+    "edit": "Pas Kaart aan",
     "type": {
       "title": "Kaart Type",
       "help-text": "Welke informatie type wil je delen?"

@@ -166,7 +166,7 @@ const ProfileFormWithContext: FC<Props> = ({
                     <LifecycleTemplateSegment
                       innovationFlowTemplateOptions={innovationFlowTemplateOptions}
                       definition={selectedInnovationFlowTemplate?.definition || ''}
-                      required={true}
+                      required
                     />
                   </>
                 )}

@@ -57,7 +57,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth>
-      <InputLabel shrink={true}>{title}</InputLabel>
+      <InputLabel shrink>{title}</InputLabel>
       <Select
         name={name}
         value={field.value}

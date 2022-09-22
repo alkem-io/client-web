@@ -9,8 +9,8 @@ export const MessagesRoute: FC = () => {
   return (
     <Routes>
       <Route path={'/'}>
-        <Route index element={<MessagesPage paths={currentPaths} />}></Route>
-        <Route path="*" element={<Error404 />}></Route>
+        <Route index element={<MessagesPage paths={currentPaths} />} />
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );

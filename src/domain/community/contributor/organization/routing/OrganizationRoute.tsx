@@ -26,9 +26,9 @@ const OrganizationRoute: FC<PageProps> = ({ paths }) => {
   return (
     <Routes>
       <Route path={'/'} element={<EntityPageLayoutHolder />}>
-        <Route index element={<OrganizationPage paths={currentPaths} />}></Route>
+        <Route index element={<OrganizationPage paths={currentPaths} />} />
       </Route>
-      <Route path="*" element={<Error404 />}></Route>
+      <Route path="*" element={<Error404 />} />
     </Routes>
   );
 };

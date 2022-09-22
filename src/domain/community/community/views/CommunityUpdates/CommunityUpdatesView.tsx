@@ -256,7 +256,7 @@ export const CommunityUpdatesView: FC<CommunityUpdatesViewProps> = ({ entities, 
                         </Typography>
                       )}
                     </Box>
-                    {!(expanded || disableCollapse) && <Box className={styles.rootFade}></Box>}
+                    {!(expanded || disableCollapse) && <Box className={styles.rootFade} />}
                   </Collapse>
                 </CardContent>
                 {displayCardActions && (

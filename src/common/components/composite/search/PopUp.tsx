@@ -58,7 +58,7 @@ const PopUp: FC<Props> = ({
   const styles = getStyles();
 
   return (
-    <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="challenge-dialog-title">
+    <Dialog open maxWidth="md" fullWidth aria-labelledby="challenge-dialog-title">
       <DialogTitle id="challenge-dialog-title" onClose={onHide}>
         <Grid container spacing={2}>
           <Grid item container alignItems={'center'}>

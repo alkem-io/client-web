@@ -28,7 +28,7 @@ export const LoginRoute: FC = () => {
           </NotAuthenticatedRoute>
         }
       />
-      <Route path={'success'} element={<LoginSuccessPage />}></Route>
+      <Route path={'success'} element={<LoginSuccessPage />} />
     </Routes>
   );
 };
