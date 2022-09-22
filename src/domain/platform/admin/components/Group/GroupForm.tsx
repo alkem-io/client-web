@@ -96,7 +96,7 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
           <Form noValidate onSubmit={handleSubmit}>
             <Section
               avatar={<VisualUpload visual={group?.profile?.avatar} />}
-              details={<GroupMembersDetails members={members || []} editLink={true} />}
+              details={<GroupMembersDetails members={members || []} editLink />}
             >
               <Header text={title} />
               <Grid container spacing={2}>

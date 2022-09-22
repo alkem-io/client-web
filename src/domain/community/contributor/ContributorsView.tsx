@@ -88,7 +88,7 @@ export default ContributorsView;
 const OrganizationLoadingCard = () => {
   return (
     <Grid item xs={6}>
-      <OrganizationCard loading={true} />
+      <OrganizationCard loading />
     </Grid>
   );
 };
@@ -96,7 +96,7 @@ const OrganizationLoadingCard = () => {
 const UserLoadingCard = () => {
   return (
     <Grid item xl={3} lg={4} sm={6} xs={12}>
-      <UserCard loading={true} />
+      <UserCard loading />
     </Grid>
   );
 };

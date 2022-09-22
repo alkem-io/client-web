@@ -109,7 +109,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({
               {description}
             </WrapperTypography>
 
-            <Box flexGrow={1}></Box>
+            <Box flexGrow={1} />
             <div>
               <WrapperButton text={t('buttons.details')} onClick={onSelect} />
             </div>

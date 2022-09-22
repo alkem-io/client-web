@@ -125,7 +125,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
     !(opportunities && opportunities.length > 0);
 
   return (
-    <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
+    <Dialog open maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
       <DialogTitle id="user-dialog-title" onClose={onHide}>
         <div className={styles.header}>
           <div className={styles.profile}>

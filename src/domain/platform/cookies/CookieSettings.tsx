@@ -43,7 +43,7 @@ const CookieSettings: FC = () => {
         <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
           <FormGroup>
             <FormControlLabel
-              control={<Checkbox style={{ color: '#FFFFFF' }} checked={true} name="technical" />}
+              control={<Checkbox style={{ color: '#FFFFFF' }} checked name="technical" />}
               label={CookieLabels.technical}
             />
             <FormControlLabel
