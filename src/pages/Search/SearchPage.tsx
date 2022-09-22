@@ -175,7 +175,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         </Box>
       )}
       <SearchResultSection
-        title={`${t('common.challenge')} & ${t('common.opportunities')}`}
+        title={`${t('common.challenges')} & ${t('common.opportunities')}`}
         filterConfig={entityFilterConfig}
         results={entityResults}
         onFilterChange={handleEntityFilterChange}

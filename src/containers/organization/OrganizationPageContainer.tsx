@@ -126,7 +126,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
       hubId: x.id,
     }));
 
-    // Loop over hubs, filter the challenge in which user has the role 'lead' and map those challenge to ContributionItems
+    // Loop over hubs, filter the challenges in which user has the role 'lead' and map those challenges to ContributionItems
     const challengeContributions =
       membershipData?.rolesOrganization?.hubs.flatMap<ContributionItem>(h =>
         h.challenges

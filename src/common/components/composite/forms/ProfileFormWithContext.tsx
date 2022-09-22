@@ -112,7 +112,7 @@ const ProfileFormWithContext: FC<Props> = ({
     vision: contextSegmentSchema.fields?.vision || yup.string(),
     who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
-    // visual: visualSegmentSchema,
+    // visuals: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
     innovationFlowTemplateID: yup.string().required(t('forms.validations.required')),
   });
