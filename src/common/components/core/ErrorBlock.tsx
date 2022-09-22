@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReportGmailerrorred from '@mui/icons-material/ReportGmailerrorred';
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 import { Box, Grid } from '@mui/material';
 
 const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => {
@@ -10,9 +10,9 @@ const ErrorBlock: FC<{ blockName: string }> = ({ blockName }) => {
     <Grid container justifyContent={'center'} alignItems={'center'}>
       <ReportGmailerrorred fontSize="large" color="warning" />
       <Box marginLeft={3}>
-        <Typography variant={'h5'} color={'neutralMedium'}>
+        <WrapperTypography variant={'h5'} color={'neutralMedium'}>
           {t('components.errorblock.message', { blockName: blockName.toLocaleLowerCase() })}
-        </Typography>
+        </WrapperTypography>
       </Box>
     </Grid>
   );

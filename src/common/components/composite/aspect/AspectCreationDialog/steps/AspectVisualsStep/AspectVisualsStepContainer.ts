@@ -13,6 +13,7 @@ import { useApolloErrorHandler } from '../../../../../../../hooks';
 import { getCardCallout } from '../../../../../../../containers/aspect/getAspectCallout';
 
 export interface EntityIds {
+  calloutNameId: Scalars['UUID_NAMEID'];
   hubNameId: Scalars['UUID_NAMEID'];
   challengeNameId?: Scalars['UUID_NAMEID'];
   opportunityNameId?: Scalars['UUID_NAMEID'];
@@ -28,6 +29,7 @@ interface Provided {
 type AspectCreationDialogVisualStepContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
 const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStepContainerProps> = ({
+  calloutNameId,
   hubNameId,
   aspectNameId = '',
   challengeNameId = '',
@@ -43,7 +45,7 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     loading: hubLoading,
     error: hubError,
   } = useHubAspectVisualsQuery({
-    variables: { hubNameId, aspectNameId },
+    variables: { calloutNameId, hubNameId, aspectNameId },
     skip: !isAspectDefined || !!(challengeNameId || opportunityNameId),
     onError: handleError,
   });
@@ -56,7 +58,7 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     loading: challengeLoading,
     error: challengeError,
   } = useChallengeAspectVisualsQuery({
-    variables: { hubNameId, challengeNameId, aspectNameId },
+    variables: { calloutNameId, hubNameId, challengeNameId, aspectNameId },
     skip: !isAspectDefined || !challengeNameId || !!opportunityNameId,
     onError: handleError,
   });
@@ -70,7 +72,7 @@ const AspectCreationDialogVisualStepContainer: FC<AspectCreationDialogVisualStep
     loading: opportunityLoading,
     error: opportunityError,
   } = useOpportunityAspectVisualsQuery({
-    variables: { hubNameId, opportunityNameId, aspectNameId },
+    variables: { calloutNameId, hubNameId, opportunityNameId, aspectNameId },
     skip: !isAspectDefined || !opportunityNameId,
     onError: handleError,
   });

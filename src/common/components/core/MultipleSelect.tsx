@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState, FC } from 'react';
 import clsx from 'clsx';
-
-import Typography from './Typography';
-import IconButton from './IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import { makeStyles } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
+
+import WrapperTypography from './WrapperTypography';
 
 const useMultipleSelectStyles = makeStyles(theme => ({
   groupContainer: {
@@ -251,24 +252,30 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     onChange && onChange(newSelected);
   };
 
+  const handleSearch = (value?: string) => {
+    value = value ?? input.current.value;
+
+    if (shouldOpenTooltip()) return;
+
+    const isAlreadySelected = selectedElements.find(el => el.name === value);
+    if (isAlreadySelected) return;
+
+    const newElements = elementsNoFilter.filter(el => el.name !== value);
+
+    resetInput();
+    setElementsNoFilter(newElements);
+    setSelected([...selectedElements, { name: value }]);
+    setNoMatches(false);
+    onChange && onChange([...selectedElements, { name: value }]);
+    onSearch && onSearch();
+    onInput && onInput('');
+  };
+
   const handleInputChange = e => {
     const value = e.target.value.toLowerCase();
     onInput && onInput(value);
     if (allowUnknownValues && e.key === 'Enter' && value !== '') {
-      if (shouldOpenTooltip()) return;
-
-      const isAlreadySelected = selectedElements.find(el => el.name === value);
-      if (isAlreadySelected) return;
-
-      const newElements = elementsNoFilter.filter(el => el.name !== value);
-
-      resetInput();
-      setElementsNoFilter(newElements);
-      setSelected([...selectedElements, { name: value }]);
-      setNoMatches(false);
-      onChange && onChange([...selectedElements, { name: value }]);
-      onSearch && onSearch();
-      onInput && onInput('');
+      handleSearch(value);
     }
   };
 
@@ -282,9 +289,6 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
           onClick={() => input.current.focus()}
         >
           <section className={styles.flexCenterContainer}>
-            <IconButton onClick={onSearch} className={styles.searchButton} size="large">
-              <SearchIcon color="inherit" fontSize="small" />
-            </IconButton>
             <Tooltip id="overlay-example" title={'You have reached the tags limit of 5'} open={isTooltipShown}>
               <input
                 ref={input}
@@ -295,35 +299,40 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
               />
             </Tooltip>
           </section>
-          <div className={styles.elements}>
-            {selectedElements.map((selectedEl, index) => (
-              <div
-                key={`${selectedEl.name}${index}`}
-                className={clsx(styles.selectedElement, disabled && styles.disabled)}
-              >
-                <Typography as={'span'} weight={'boldLight'} color={'background'}>
-                  {selectedEl.name}
-                </Typography>
-                {!disabled && (
-                  <div className={styles.removeIcon} onClick={e => handleRemove(e, selectedEl)}>
-                    <Typography weight={'boldLight'}>X</Typography>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+          <Box sx={{ display: 'flex' }}>
+            <div className={styles.elements}>
+              {selectedElements.map((selectedEl, index) => (
+                <div
+                  key={`${selectedEl.name}${index}`}
+                  className={clsx(styles.selectedElement, disabled && styles.disabled)}
+                >
+                  <WrapperTypography as={'span'} weight={'boldLight'} color={'background'}>
+                    {selectedEl.name}
+                  </WrapperTypography>
+                  {!disabled && (
+                    <div className={styles.removeIcon} onClick={e => handleRemove(e, selectedEl)}>
+                      <WrapperTypography weight={'boldLight'}>X</WrapperTypography>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            <IconButton onClick={() => handleSearch()}>
+              <SearchIcon color="primary" />
+            </IconButton>
+          </Box>
         </div>
-        <Typography color={'neutralMedium'} className={styles.suggestionsTitle}>
+        <WrapperTypography color={'neutralMedium'} className={styles.suggestionsTitle}>
           {isNoMatches ? 'no suggestions' : 'search suggestions'}
-        </Typography>
+        </WrapperTypography>
 
         <div className={styles.suggestions}>
           {elements.map((el, index) => {
             return (
               <div key={index} className={styles.suggestionElement} onClick={e => handleSelect(e, el)}>
-                <Typography as={'span'} weight={'boldLight'} color={'background'}>
+                <WrapperTypography as={'span'} weight={'boldLight'} color={'background'}>
                   {el.name}
-                </Typography>
+                </WrapperTypography>
               </div>
             );
           })}

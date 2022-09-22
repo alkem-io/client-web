@@ -1,8 +1,8 @@
 import { Grid, Skeleton, Theme, useMediaQuery } from '@mui/material';
 import React, { FC } from 'react';
-import Typography from '../../../core/Typography';
-import { ActivityType } from '../../../../../domain/activity/ActivityType';
-import ActivityCircleView from '../../../../../domain/activity/ActivityCircleView';
+import WrapperTypography from '../../../core/WrapperTypography';
+import { ActivityType } from '../../../../../domain/platform/activity/ActivityType';
+import ActivityCircleView from '../../../../../domain/platform/activity/ActivityCircleView';
 
 export interface ActivityItem {
   name: string;
@@ -21,7 +21,7 @@ export const Activities: FC<{ items: ActivityItem[]; asList?: boolean }> = ({ it
         <Grid key={i} item xs={12} md={asList ? 12 : 6}>
           <Grid container justifyContent="space-between" alignItems="center" gap={2}>
             <Grid item>
-              {!isLoading && <Typography variant="caption">{name}</Typography>}
+              {!isLoading && <WrapperTypography variant="caption">{name}</WrapperTypography>}
               {isLoading && <Skeleton variant="text" sx={{ minWidth: 150 }} />}
             </Grid>
             <Grid item>

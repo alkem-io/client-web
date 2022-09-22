@@ -12,8 +12,8 @@ import {
 import { useApolloErrorHandler } from '../../hooks';
 import { AuthorizationCredential, Organization, UserDisplayNameFragment } from '../../models/graphql-schema';
 import { Member } from '../../models/User';
-import { useAvailableMembersWithCredential } from '../../domain/community/useAvailableMembersWithCredential';
-import { AvailableMembersResults } from '../../domain/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
+import { useAvailableMembersWithCredential } from '../../domain/community/community/useAvailableMembersWithCredential';
+import { AvailableMembersResults } from '../../domain/community/community/useAvailableMembersWithCredential/useAvailableMembersWithCredential';
 
 const organizationMemberCredential = AuthorizationCredential.OrganizationMember;
 const organizationAdminCredential = AuthorizationCredential.OrganizationAdmin;

@@ -4,7 +4,7 @@ import { Breakpoint, Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { agnosticFunctor } from '../../utils/functor';
 import Tag, { TagProps } from './Tag';
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 import hexToRGBA from '../../utils/hexToRGBA';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -41,9 +41,15 @@ export const HeaderCaption: FC<HeaderProps> = ({ text, className, classes }) => 
   const styles = useHeaderStyles(classes || {});
 
   return (
-    <Typography as="div" variant="caption" color="background" weight="bold" className={clsx(styles.header, className)}>
+    <WrapperTypography
+      as="div"
+      variant="caption"
+      color="background"
+      weight="bold"
+      className={clsx(styles.header, className)}
+    >
       <span>{text}</span>
-    </Typography>
+    </WrapperTypography>
   );
 };
 
@@ -69,7 +75,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
     return (
       <Tooltip placement="right" id={`challenge-${text}-tooltip`} title={text || ''} arrow>
         <div className={styles.primaryTextWrapper}>
-          <Typography
+          <WrapperTypography
             as="h4"
             variant="h4"
             weight="bold"
@@ -78,7 +84,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
             clamp={2}
           >
             {text}
-          </Typography>
+          </WrapperTypography>
         </div>
       </Tooltip>
     );
@@ -86,7 +92,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
 
   return (
     <div className={styles.primaryTextWrapper}>
-      <Typography
+      <WrapperTypography
         as="h4"
         variant="h4"
         weight="bold"
@@ -95,7 +101,7 @@ export const PrimaryText: FC<HeaderProps> = ({ text, tooltip, className, classes
         clamp={2}
       >
         {text}
-      </Typography>
+      </WrapperTypography>
     </div>
   );
 };
@@ -193,17 +199,21 @@ export const MatchedTerms: FC<MatchedTermsProps> = ({ terms, variant = 'primary'
     <div className={styles.tagsContainer}>
       {terms && terms.length > 0 && (
         <>
-          <Typography as={'span'} color={variant === 'light' ? 'background' : 'primary'} className={styles.title}>
+          <WrapperTypography
+            as={'span'}
+            color={variant === 'light' ? 'background' : 'primary'}
+            className={styles.title}
+          >
             Matched terms:{' '}
-          </Typography>
+          </WrapperTypography>
           {terms?.map((t, index) => (
-            <Typography
+            <WrapperTypography
               key={index}
               className={clsx(styles.tag, styles[variant])}
               color={variant === 'light' ? 'primary' : 'background'}
             >
               {t}
-            </Typography>
+            </WrapperTypography>
           ))}
         </>
       )}
@@ -357,10 +367,10 @@ const Card: FC<CardProps> = ({
 
         {primaryTextProps && <PrimaryText {...primaryTextProps} />}
         {level && (
-          <Typography color={'background'}>
+          <WrapperTypography color={'background'}>
             {!isHubLevel && `${level.level}: `}
             {`${level.name} `}
-          </Typography>
+          </WrapperTypography>
         )}
 
         {matchedTerms && (

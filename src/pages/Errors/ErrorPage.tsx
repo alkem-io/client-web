@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { privateGraphQLEndpoint } from '../../common/constants/endpoints';
-import Button from '../../common/components/core/Button';
+import WrapperButton from '../../common/components/core/WrapperButton';
 import Section from '../../common/components/core/Section';
-import Typography from '../../common/components/core/Typography';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 
 export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
   const { t } = useTranslation();
@@ -11,10 +11,10 @@ export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
   return (
     <div style={{ display: 'flex', height: '100%', alignItems: 'center' }}>
       <Section>
-        <Typography as="h1" variant="h1" weight="bold">
+        <WrapperTypography as="h1" variant="h1" weight="bold">
           {t('pages.error.title')}
-        </Typography>
-        <Typography as="h2" variant="h3" color="neutral">
+        </WrapperTypography>
+        <WrapperTypography as="h2" variant="h3" color="neutral">
           <Trans
             i18nKey="pages.error.line1"
             values={{ message: error.message }}
@@ -22,15 +22,15 @@ export const ErrorPage: FC<{ error: Error }> = ({ error }) => {
               italic: <i />,
             }}
           />
-        </Typography>
-        <Typography as="h2" variant="h3" color="neutral">
+        </WrapperTypography>
+        <WrapperTypography as="h2" variant="h3" color="neutral">
           {t('pages.error.line2', { graphQLEndpoint: privateGraphQLEndpoint })}
-        </Typography>
-        <Typography as="h5" variant="h5" color="neutralMedium">
+        </WrapperTypography>
+        <WrapperTypography as="h5" variant="h5" color="neutralMedium">
           {t('pages.error.line3')}
-        </Typography>
+        </WrapperTypography>
         <div>
-          <Button variant="primary" text={t('pages.error.buttons.reload')} onClick={() => window.location.reload()} />
+          <WrapperButton variant="primary" text={t('pages.error.buttons.reload')} onClick={() => window.location.reload()} />
         </div>
       </Section>
     </div>

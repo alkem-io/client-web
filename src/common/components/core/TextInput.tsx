@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { FC } from 'react';
 import { makeStyles } from '@mui/styles';
-import Typography from './Typography';
+import WrapperTypography from './WrapperTypography';
 
 const useButtonStyles = makeStyles(theme => ({
   inputContainer: {
@@ -115,9 +115,9 @@ const TextInput: FC<TextInputProps> = ({
   return (
     <div className={clsx(styles.inputContainer, styles[variant], error && styles.error)}>
       {label && (
-        <Typography variant="caption" color="inherit" weight="boldLight" className={styles.label}>
+        <WrapperTypography variant="caption" color="inherit" weight="boldLight" className={styles.label}>
           {label}
-        </Typography>
+        </WrapperTypography>
       )}
       <input
         type="text"
@@ -155,9 +155,9 @@ const TextArea: FC<TextAreaProps> = ({
   return (
     <div className={clsx(styles.inputContainer, styles[variant], error && styles.error)}>
       {label && (
-        <Typography variant="caption" color="inherit" weight="boldLight" className={styles.label}>
+        <WrapperTypography variant="caption" color="inherit" weight="boldLight" className={styles.label}>
           {label}
-        </Typography>
+        </WrapperTypography>
       )}
       <textarea
         rows={rows}

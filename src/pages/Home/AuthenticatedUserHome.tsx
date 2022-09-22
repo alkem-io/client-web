@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
-import MyHubsSection from '../../domain/hub/MyHubs/MyHubsSection';
+import MyHubsSection from '../../domain/challenge/hub/MyHubs/MyHubsSection';
 import { useTranslation } from 'react-i18next';
-import { UserContextValue } from '../../domain/user/providers/UserProvider/UserProvider';
-import Typography from '../../common/components/core/Typography';
+import { UserContextValue } from '../../domain/community/contributor/user/providers/UserProvider/UserProvider';
+import WrapperTypography from '../../common/components/core/WrapperTypography';
 import { Grid } from '@mui/material';
 
 interface AuthenticatedUserHomeProps {
@@ -14,9 +14,9 @@ const AuthenticatedUserHome = forwardRef<HTMLDivElement, AuthenticatedUserHomePr
 
   return (
     <Grid item xs={12} ref={ref}>
-      <Typography variant="h3" weight="bold">
+      <WrapperTypography variant="h3" weight="bold">
         {t('pages.home.sections.welcome.welcome-back', { username: user.user?.user.firstName })}
-      </Typography>
+      </WrapperTypography>
       <MyHubsSection userHubRoles={user.userHubRoles} loading={user.loading} />
     </Grid>
   );

@@ -7,9 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { buildUserProfileUrl } from '../../../../utils/urlBuilders';
 import Avatar from '../../../core/Avatar';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 import UserAvatar from './UserAvatar';
-import { UserMetadata } from '../../../../../domain/user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../../../../domain/community/contributor/user/hooks/useUserMetadataWrapper';
 
 const PREFIX = 'UserSegment';
 
@@ -81,11 +81,11 @@ const UserSegment = <El extends ElementType>({
             <Box display="flex" flexDirection="column" alignItems="center" className={classes.userHeader}>
               <Avatar size={'lg'} src={user.profile?.avatar?.uri} />
               <Box textAlign={'center'}>
-                <Typography variant="h3">{user.displayName}</Typography>
+                <WrapperTypography variant="h3">{user.displayName}</WrapperTypography>
               </Box>
-              <Typography variant="h5" color="neutralMedium">
+              <WrapperTypography variant="h5" color="neutralMedium">
                 {role}
-              </Typography>
+              </WrapperTypography>
             </Box>
             <List>
               <ListItemButton

@@ -1,6 +1,6 @@
 import { CircularProgress } from '@mui/material';
 import React, { FC } from 'react';
-import Typography from '../Typography';
+import WrapperTypography from '../WrapperTypography';
 import { useLoadingStyles } from './Loading.styles';
 
 interface LoadingProps {
@@ -13,9 +13,9 @@ export const Loading: FC<LoadingProps> = ({ text = 'Loading' }) => {
   return (
     <div className={styles.container}>
       <CircularProgress className={styles.spinner} />
-      <Typography variant="caption" color="primary" className={styles.text}>
+      <WrapperTypography variant="caption" color="primary" className={styles.text}>
         {text}
-      </Typography>
+      </WrapperTypography>
     </div>
   );
 };

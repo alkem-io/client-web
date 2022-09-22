@@ -4,7 +4,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { Help } from '@mui/icons-material';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import Typography from '../../../core/Typography';
+import WrapperTypography from '../../../core/WrapperTypography';
 
 interface VerifiedStatusProps {
   verified: boolean;
@@ -27,14 +27,14 @@ export const VerifiedStatus: FC<VerifiedStatusProps> = ({ verified, helpText }) 
   const color = verified ? 'success' : 'warning';
 
   return (
-    <Typography weight="bold" color={color}>
+    <WrapperTypography weight="bold" color={color}>
       {verified ? t('common.verified-status.verified') : t('common.verified-status.not-verified')}
       {helpText && verified && (
         <Tooltip title={helpText} arrow placement="right">
           <Help color="primary" className={styles.icon} />
         </Tooltip>
       )}
-    </Typography>
+    </WrapperTypography>
   );
 };
 export default VerifiedStatus;

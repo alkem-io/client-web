@@ -1,0 +1,16 @@
+fragment OrganizationSearchResult on Organization {
+  id
+  displayName
+  nameID
+  profile {
+    id
+    avatar {
+      ...VisualUri
+    }
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+}

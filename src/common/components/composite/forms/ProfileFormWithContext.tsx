@@ -4,17 +4,20 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Context, LifecycleType, Reference, Tagset } from '../../../../models/graphql-schema';
-import ContextReferenceSegment from '../../../../domain/admin/components/Common/ContextReferenceSegment';
-import { ContextSegment, contextSegmentSchema } from '../../../../domain/admin/components/Common/ContextSegment';
-import { NameSegment, nameSegmentSchema } from '../../../../domain/admin/components/Common/NameSegment';
-import { referenceSegmentSchema } from '../../../../domain/admin/components/Common/ReferenceSegment';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/admin/components/Common/TagsetSegment';
-import Typography from '../../core/Typography';
-import InputField from '../../../../domain/admin/components/Common/InputField';
-import { EmptyLocation, Location } from '../../../../domain/location/Location';
-import { formatLocation } from '../../../../domain/location/LocationUtils';
-import { LocationSegment } from '../../../../domain/location/LocationSegment';
-import { LifecycleTemplateSegment } from '../../../../domain/admin/components/Common/LifecycleTemplateSegment';
+import ContextReferenceSegment from '../../../../domain/platform/admin/components/Common/ContextReferenceSegment';
+import {
+  ContextSegment,
+  contextSegmentSchema,
+} from '../../../../domain/platform/admin/components/Common/ContextSegment';
+import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
+import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
+import { TagsetSegment, tagsetSegmentSchema } from '../../../../domain/platform/admin/components/Common/TagsetSegment';
+import WrapperTypography from '../../core/WrapperTypography';
+import InputField from '../../../../domain/platform/admin/components/Common/InputField';
+import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
+import { formatLocation } from '../../../../domain/common/location/LocationUtils';
+import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
+import { LifecycleTemplateSegment } from '../../../../domain/platform/admin/components/Common/LifecycleTemplateSegment';
 import { FormikSelectValue } from './FormikSelect';
 export interface ProfileFormValuesType {
   name: string;
@@ -150,29 +153,29 @@ const ProfileFormWithContext: FC<Props> = ({
             {!contextOnly && (
               <>
                 <Grid item xs={12}>
-                  <Typography variant={'h4'} color={'primary'}>
+                  <WrapperTypography variant={'h4'} color={'primary'}>
                     {t('components.tagsSegment.title')}
-                  </Typography>
+                  </WrapperTypography>
                 </Grid>
                 <TagsetSegment tagsets={tagsets} />
                 {!isEdit && (
                   <>
                     <Grid item xs={12}>
-                      <Typography variant={'h4'}>Innovation flow template</Typography>
+                      <WrapperTypography variant={'h4'}>Innovation flow template</WrapperTypography>
                     </Grid>
                     <LifecycleTemplateSegment
                       innovationFlowTemplateOptions={innovationFlowTemplateOptions}
                       definition={selectedInnovationFlowTemplate?.definition || ''}
-                      required={true}
+                      required
                     />
                   </>
                 )}
               </>
             )}
             {/*<Grid item xs={12}>
-              <Typography variant={'h4'} color={'primary'}>
+              <WrapperTypography variant={'h4'} color={'primary'}>
                 {t('components.visualSegment.title')}
-              </Typography>
+              </WrapperTypography>
             </Grid>
             <VisualSegment />*/}
 

@@ -3,12 +3,12 @@ import React from 'react';
 import { SectionSpacer } from '../../domain/shared/components/Section/Section';
 import { useUpdateNavigation, useUserContext } from '../../hooks';
 import ContributorsSection from './ContributorsSection';
-import HubsSection from '../../domain/hub/DashboardHubs/HubsSection';
+import HubsSection from '../../domain/challenge/hub/DashboardHubs/HubsSection';
 import WelcomeSection from './WelcomeSection';
 import HomePageFooter from './HomePageFooter';
 import AnonymousUserHome from './AnonymousUserHome';
 import AuthenticatedUserHome from './AuthenticatedUserHome';
-import PlatformUpdates from '../../domain/notifications/ReleaseUpdates/ReleaseUpdatesNotification';
+import PlatformUpdates from '../../domain/platform/notifications/ReleaseUpdates/ReleaseUpdatesNotification';
 
 const currentPaths = [];
 

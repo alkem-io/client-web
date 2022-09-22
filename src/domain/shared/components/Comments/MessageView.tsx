@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { DeleteOutlined } from '@mui/icons-material';
 import { Box, Typography, styled, BoxProps, IconButton, Grid } from '@mui/material';
 import { Message } from './models/message';
-import Markdown from '../../../../common/components/core/Markdown';
+import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 import { formatTimeElapsed } from '../../utils/formatTimeElapsed';
 import AuthorAvatar from '../AuthorAvatar/AuthorAvatar';
 
@@ -64,7 +64,7 @@ export const MessageView: FC<MessageViewProps> = ({ message, canDelete, onDelete
               <Grid item zeroMinWidth>
                 <Box>
                   <CommentBox>
-                    <Markdown>{body}</Markdown>
+                    <WrapperMarkdown>{body}</WrapperMarkdown>
                   </CommentBox>
                 </Box>
               </Grid>

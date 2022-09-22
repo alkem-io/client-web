@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useQueryParams } from '../../../../hooks';
 import { RETURN_URL, STORAGE_KEY_RETURN_URL } from '../../../../models/constants';
-import { NotAuthenticatedRoute } from '../../../../routing/NotAuthenticatedRoute';
+import { NotAuthenticatedRoute } from '../../../routing/NotAuthenticatedRoute';
 import LoginPage from '../pages/LoginPage';
 import LoginSuccessPage from '../pages/LoginSuccessPage';
 
@@ -28,7 +28,7 @@ export const LoginRoute: FC = () => {
           </NotAuthenticatedRoute>
         }
       />
-      <Route path={'success'} element={<LoginSuccessPage />}></Route>
+      <Route path={'success'} element={<LoginSuccessPage />} />
     </Routes>
   );
 };

@@ -1,7 +1,7 @@
 import { Container } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import EditMemberCredentials from '../../domain/admin/components/Authorization/EditMemberCredentials';
+import EditMemberCredentials from '../../domain/platform/admin/components/Authorization/EditMemberCredentials';
 import { useApolloErrorHandler, useUpdateNavigation, useUrlParams } from '../../hooks';
 import {
   refetchUsersWithCredentialsQuery,
@@ -11,8 +11,8 @@ import {
 import AuthorizationPageProps from './AuthorizationPageProps';
 import { AuthorizationCredential } from '../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
-import AdminLayout from '../../domain/admin/toplevel/AdminLayout';
-import { AdminSection } from '../../domain/admin/toplevel/constants';
+import AdminLayout from '../../domain/platform/admin/toplevel/AdminLayout';
+import { AdminSection } from '../../domain/platform/admin/toplevel/constants';
 
 const GlobalHubsAdminAuthorizationPage: FC<AuthorizationPageProps> = ({ paths }) => {
   const { t } = useTranslation();

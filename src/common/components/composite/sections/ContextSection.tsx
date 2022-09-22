@@ -5,15 +5,15 @@ import { Grid, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Location } from '../../../../models/graphql-schema';
-import Markdown from '../../core/Markdown';
+import WrapperMarkdown from '../../core/WrapperMarkdown';
 import { SectionSpacer } from '../../../../domain/shared/components/Section/Section';
 import SectionHeader from '../../../../domain/shared/components/Section/SectionHeader';
 import TagsComponent from '../../../../domain/shared/components/TagsComponent/TagsComponent';
 import DashboardSection from './DashboardSection/DashboardSection';
 import ContextSectionIcon from './ContextSectionIcon';
 import DashboardColumn, { ContextSectionColumnProps } from './DashboardSection/DashboardColumn';
-import LocationView from '../../../../domain/location/LocationView';
-import { formatLocation } from '../../../../domain/location/LocationUtils';
+import LocationView from '../../../../domain/common/location/LocationView';
+import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 
 export interface ContextSectionProps {
   contextId?: string;
@@ -53,7 +53,7 @@ const ContextSection: FC<ContextSectionProps> = ({
           <DashboardSection
             primaryAction={primaryAction}
             headerText={displayName}
-            subHeaderText={<Typography component={Markdown} variant="h5" children={tagline} color="primary" />}
+            subHeaderText={<Typography component={WrapperMarkdown} variant="h5" children={tagline} color="primary" />}
             size="large"
             collapsible
           >
@@ -62,28 +62,28 @@ const ContextSection: FC<ContextSectionProps> = ({
             <LocationView location={formatLocation(location)} />
             <SectionSpacer />
             <SectionHeader text={t('components.contextSegment.vision.title')} />
-            <Typography component={Markdown} variant="body1" children={vision} />
+            <Typography component={WrapperMarkdown} variant="body1" children={vision} />
           </DashboardSection>
           <DashboardSection
             headerText={t('components.contextSegment.background.title')}
             primaryAction={<ContextSectionIcon component={MenuBookIcon} />}
             collapsible
           >
-            <Typography component={Markdown} variant="body1" children={background} />
+            <Typography component={WrapperMarkdown} variant="body1" children={background} />
           </DashboardSection>
           <DashboardSection
             headerText={t('components.contextSegment.impact.title')}
             primaryAction={<ContextSectionIcon component={PublicIcon} />}
             collapsible
           >
-            <Typography component={Markdown} variant="body1" children={impact} />
+            <Typography component={WrapperMarkdown} variant="body1" children={impact} />
           </DashboardSection>
           <DashboardSection
             headerText={t('components.contextSegment.who.title')}
             primaryAction={<ContextSectionIcon component={PeopleAltIcon} />}
             collapsible
           >
-            <Typography component={Markdown} variant="body1" children={who} />
+            <Typography component={WrapperMarkdown} variant="body1" children={who} />
           </DashboardSection>
           <>{leftColumn}</>
         </DashboardColumn>
