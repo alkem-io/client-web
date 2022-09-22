@@ -1,8 +1,11 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../models/container';
-import { useContributorsPageUsersQuery, useContributorsPageOrganizationsQuery } from '../../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUserContext } from '../../../hooks';
+import { ContainerChildProps } from '../../../../models/container';
+import {
+  useContributorsPageUsersQuery,
+  useContributorsPageOrganizationsQuery,
+} from '../../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 import {
   ContributorsPageUsersQuery,
   ContributorsPageUsersQueryVariables,
@@ -10,8 +13,8 @@ import {
   ContributorsPageOrganizationsQuery,
   ContributorsPageOrganizationsQueryVariables,
   OrganizationContributorFragment,
-} from '../../../models/graphql-schema';
-import usePaginatedQuery from '../../../domain/shared/pagination/usePaginatedQuery';
+} from '../../../../models/graphql-schema';
+import usePaginatedQuery from '../../../shared/pagination/usePaginatedQuery';
 
 export interface PaginatedResult<T> {
   items: T[] | undefined;

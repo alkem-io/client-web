@@ -4,7 +4,6 @@ import { ApolloError } from '@apollo/client';
 import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import MembershipBackdrop from '../../../../common/components/composite/common/Backdrops/MembershipBackdrop';
 import ChallengeCard from '../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardFilter from '../../../../common/components/core/card-filter/CardFilter';
 import {
@@ -15,6 +14,7 @@ import ErrorBlock from '../../../../common/components/core/ErrorBlock';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { ViewProps } from '../../../../models/view';
 import { Challenge, ChallengeCardFragment } from '../../../../models/graphql-schema';
+import MembershipBackdrop from '../../../shared/components/Backdrops/MembershipBackdrop';
 
 interface Permissions {
   canReadChallenges: boolean;
