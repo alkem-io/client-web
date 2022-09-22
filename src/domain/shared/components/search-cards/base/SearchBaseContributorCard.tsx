@@ -12,8 +12,8 @@ const LocationBox = styled(Box)({
 });
 
 export interface SearchBaseContributorCardProps extends SearchBaseCardImplProps {
-  country: string;
-  city: string;
+  country?: string;
+  city?: string;
 }
 
 const SearchBaseContributorCard: FC<SearchBaseContributorCardProps> = ({

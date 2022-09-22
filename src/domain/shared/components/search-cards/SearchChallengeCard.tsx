@@ -1,17 +1,18 @@
 import React, { FC } from 'react';
+import HubOutlinedIcon from '@mui/icons-material/HubOutlined';
 import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
-import { SearchBaseJourneyCard } from './base/SearchBaseJourneyCard';
-import { SearchJourneyWithParentImplProps } from './SearchJourneyWithParentCard';
+import SearchJourneyWithParentCard, { SearchJourneyWithParentImplProps } from './SearchJourneyWithParentCard';
 
 export interface SearchChallengeCardProps extends SearchJourneyWithParentImplProps {}
 
 export const SearchChallengeCard: FC<SearchChallengeCardProps> = ({ children, ...rest }) => {
   return (
-    <SearchBaseJourneyCard
+    <SearchJourneyWithParentCard
       icon={ChallengeIcon}
+      parentIcon={HubOutlinedIcon}
       { ...rest }
     >
       {children}
-    </SearchBaseJourneyCard>
+    </SearchJourneyWithParentCard>
   );
 };

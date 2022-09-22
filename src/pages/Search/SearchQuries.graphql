@@ -52,8 +52,7 @@ fragment ProfileSearchResult on Profile {
     tags
   }
   avatar {
-    id
-    uri
+    ...VisualUri
   }
 }
 
@@ -64,6 +63,9 @@ fragment HubSearchResult on Hub {
   context {
     id
     tagline
+    visuals {
+      ...VisualUri
+    }
   }
   tagset {
     id
@@ -75,9 +77,13 @@ fragment ChallengeSearchResult on Challenge {
   id
   nameID
   displayName
+  hubID
   context {
     id
     tagline
+    visuals {
+      ...VisualUri
+    }
   }
   tagset {
     id
@@ -93,9 +99,18 @@ fragment OpportunitySearchResult on Opportunity {
   context {
     id
     tagline
+    visuals {
+      ...VisualUri
+    }
   }
   tagset {
     id
     tags
+  }
+  challenge {
+    id
+    nameID
+    displayName
+    hubID
   }
 }

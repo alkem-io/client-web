@@ -8,7 +8,14 @@ import MultipleSelect, { MultiSelectElement } from '../../common/components/core
 import Section, { Header as SectionHeader, SubHeader } from '../../common/components/core/Section';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
-import { Challenge, Hub, Opportunity, Organization, SearchQuery, User } from '../../models/graphql-schema';
+import {
+  ChallengeSearchResultFragment,
+  HubSearchResultFragment,
+  OpportunitySearchResultFragment,
+  OrganizationSearchResultFragment,
+  SearchQuery,
+  UserSearchResultFragment,
+} from '../../models/graphql-schema';
 import { PageProps } from '../common';
 import { RouterLink } from '../../common/components/core/RouterLink';
 import { AUTH_LOGIN_PATH } from '../../models/constants';
@@ -56,7 +63,15 @@ const entityFilterConfig: FilterConfig = {
 };
 
 export type ResultMetadataType = { score: number; terms: string[] };
-export type ResultType = (User | Organization | Hub | Challenge | Opportunity) & ResultMetadataType;
+export type SearchResult<T> = T & ResultMetadataType;
+
+export type ResultType = SearchResult<
+  UserSearchResultFragment
+  | OrganizationSearchResultFragment
+  | HubSearchResultFragment
+  | ChallengeSearchResultFragment
+  | OpportunitySearchResultFragment
+>;
 
 const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const handleError = useApolloErrorHandler();
@@ -176,7 +191,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         </Box>
       )}
       <SearchResultSection
-        title={`${t('common.hubs')}, t('common.challenges')} & ${t('common.opportunities')}`}
+        title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
         filterConfig={entityFilterConfig}
         results={journeyResults}
         onFilterChange={handleEntityFilterChange}

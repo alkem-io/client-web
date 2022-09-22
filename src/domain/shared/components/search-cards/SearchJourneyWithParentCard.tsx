@@ -3,7 +3,7 @@ import { SvgIconProps, Box } from '@mui/material';
 import { SearchBaseJourneyCard, SearchBaseJourneyCardProps } from './base/SearchBaseJourneyCard';
 import { ClampedTypography } from '../ClampedTypography';
 
-export type SearchJourneyWithParentImplProps = Omit<SearchJourneyWithParentCardProps, 'icon'>;
+export type SearchJourneyWithParentImplProps = Omit<SearchJourneyWithParentCardProps, 'icon' | 'parentIcon'>;
 interface SearchJourneyWithParentCardProps extends SearchBaseJourneyCardProps  {
   parentIcon: React.ComponentType<SvgIconProps>;
   parentName: string;

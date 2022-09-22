@@ -1,12 +1,11 @@
 import React, { ComponentPropsWithRef, FC, useMemo } from 'react';
-import { CardMediaProps, styled, SvgIconProps, SxProps } from '@mui/material';
+import { CardMediaProps, styled, SvgIconProps } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import TagsComponent from '../../TagsComponent/TagsComponent';
 import { ClampedTypography } from '../../ClampedTypography';
 
@@ -59,7 +58,7 @@ export type SearchBaseCardImplProps = Omit<SearchBaseCardProps, 'height' | 'imgH
 interface SearchBaseCardProps {
   height: number;
   imgHeight: number;
-  image: string;
+  image: string | undefined;
   imgAlt?: string; // todo make required when alt text is available for visuals
   matchedTerms: string[];
   icon: React.ComponentType<SvgIconProps>,
@@ -77,7 +76,8 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({ image, imgAlt, height, imgHei
     ],
     [imgHeight]
   );
-
+  // todo image on NO img url
+  // todo use url for clicks
   return (
     <CardBox>
       <CardImage image={image} alt={imgAlt}>

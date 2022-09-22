@@ -1782,10 +1782,10 @@ export const ProfileSearchResultFragmentDoc = gql`
       tags
     }
     avatar {
-      id
-      uri
+      ...VisualUri
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const UserSearchResultFragmentDoc = gql`
   fragment UserSearchResult on User {
@@ -1817,27 +1817,36 @@ export const HubSearchResultFragmentDoc = gql`
     context {
       id
       tagline
+      visuals {
+        ...VisualUri
+      }
     }
     tagset {
       id
       tags
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const ChallengeSearchResultFragmentDoc = gql`
   fragment ChallengeSearchResult on Challenge {
     id
     nameID
     displayName
+    hubID
     context {
       id
       tagline
+      visuals {
+        ...VisualUri
+      }
     }
     tagset {
       id
       tags
     }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const OpportunitySearchResultFragmentDoc = gql`
   fragment OpportunitySearchResult on Opportunity {
@@ -1847,12 +1856,22 @@ export const OpportunitySearchResultFragmentDoc = gql`
     context {
       id
       tagline
+      visuals {
+        ...VisualUri
+      }
     }
     tagset {
       id
       tags
     }
+    challenge {
+      id
+      nameID
+      displayName
+      hubID
+    }
   }
+  ${VisualUriFragmentDoc}
 `;
 export const CreateActorDocument = gql`
   mutation createActor($input: CreateActorInput!) {
@@ -12384,13 +12403,11 @@ export const ChallengeNameDocument = gql`
   query challengeName($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
+      nameID
       challenge(ID: $challengeId) {
         id
+        nameID
         displayName
-        community {
-          id
-          displayName
-        }
       }
     }
   }
