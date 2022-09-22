@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useOrganizationsListQuery } from '../../hooks/generated/graphql';
-import AssociatedOrganizationsLazilyFetched from '../../domain/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
+import AssociatedOrganizationsLazilyFetched from '../../domain/community/contributor/organization/AssociatedOrganizations/AssociatedOrganizationsLazilyFetched';
 
 const OrganizationSection = () => {
   const { t } = useTranslation();

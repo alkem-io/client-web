@@ -10,7 +10,7 @@ import {
 import { ContainerChildProps } from '../../models/container';
 import { buildChallengeApplyUrl, buildHubApplyUrl, buildHubUrl } from '../../common/utils/urlBuilders';
 import { AuthorizationPrivilege } from '../../models/graphql-schema';
-import { useCommunityContext } from '../../domain/community/CommunityContext';
+import { useCommunityContext } from '../../domain/community/community/CommunityContext';
 import clearCacheForType from '../../domain/shared/utils/apollo-cache/clearCacheForType';
 import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';
 

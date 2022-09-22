@@ -33,7 +33,7 @@ import { DialogContent, DialogTitle } from '../../../core/dialog';
 import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
 import CanvasListItemState from '../../lists/Canvas/CanvasListItemState';
 import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
-import getCanvasBannerCardDimensions from '../../../../../domain/canvas/utils/getCanvasBannerCardDimensions';
+import getCanvasBannerCardDimensions from '../../../../../domain/collaboration/canvas/utils/getCanvasBannerCardDimensions';
 
 interface CanvasDialogProps {
   entities: {

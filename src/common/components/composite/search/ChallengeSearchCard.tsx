@@ -2,7 +2,7 @@ import React, { FC, memo, useMemo } from 'react';
 import { ChallengeSearchResultFragment } from '../../../../models/graphql-schema';
 import { useHubNameQuery } from '../../../../hooks/generated/graphql';
 import { SearchCard } from './SearchCard';
-import getActivityCount from '../../../../domain/activity/utils/getActivityCount';
+import getActivityCount from '../../../../domain/platform/activity/utils/getActivityCount';
 import { ActivityItem } from '../common/ActivityPanel/Activities';
 import EntitySearchCardProps from './EntitySearchCardProps';
 import { getVisualBannerNarrow } from '../../../utils/visuals.utils';

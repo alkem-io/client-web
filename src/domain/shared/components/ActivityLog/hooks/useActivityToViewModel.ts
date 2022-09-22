@@ -1,5 +1,5 @@
 import { ActivityLogViewProps } from '../views';
-import { useAuthorsDetails } from '../../../../communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../../../communication/communication/useAuthorsDetails';
 import { Activity } from '../../../../../models/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
 import { useCallback, useMemo } from 'react';

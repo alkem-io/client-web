@@ -10,7 +10,7 @@ import { Member } from '../../models/User';
 import {
   useAvailableMembersWithCredential,
   AvailableMembersResults,
-} from '../../domain/community/useAvailableMembersWithCredential';
+} from '../../domain/community/community/useAvailableMembersWithCredential';
 
 const opportunityAdminCredential = AuthorizationCredential.OpportunityAdmin;
 

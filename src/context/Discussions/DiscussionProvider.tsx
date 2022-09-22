@@ -1,7 +1,7 @@
 import { sortBy, uniq } from 'lodash';
 import React, { FC, useContext, useMemo } from 'react';
 import { useApolloErrorHandler, useConfig, useHub, useUrlParams } from '../../hooks';
-import { useAuthorsDetails } from '../../domain/communication/useAuthorsDetails';
+import { useAuthorsDetails } from '../../domain/communication/communication/useAuthorsDetails';
 import {
   CommunicationDiscussionMessageReceivedDocument,
   MessageDetailsFragmentDoc,
@@ -11,7 +11,7 @@ import {
   useRemoveMessageFromDiscussionMutation,
 } from '../../hooks/generated/graphql';
 import { Message as Comment } from '../../domain/shared/components/Comments/models/message';
-import { Discussion } from '../../domain/discussion/models/discussion';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import {
   CommunicationDiscussionMessageReceivedSubscription,
   CommunicationDiscussionMessageReceivedSubscriptionVariables,
@@ -21,7 +21,7 @@ import {
   MessageDetailsFragment,
 } from '../../models/graphql-schema';
 import { evictFromCache } from '../../domain/shared/utils/apollo-cache/removeFromCache';
-import { useCommunityContext } from '../../domain/community/CommunityContext';
+import { useCommunityContext } from '../../domain/community/community/CommunityContext';
 import { FEATURE_SUBSCRIPTIONS } from '../../models/constants';
 import UseSubscriptionToSubEntity from '../../domain/shared/subscriptions/useSubscriptionToSubEntity';
 import { FetchResult } from '@apollo/client';

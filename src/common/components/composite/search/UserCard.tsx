@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import Tooltip from '@mui/material/Tooltip';
 import { User } from '../../../../models/graphql-schema';
-import { useUserMetadata } from '../../../../domain/user/hooks/useUserMetadata';
+import { useUserMetadata } from '../../../../domain/community/contributor/user/hooks/useUserMetadata';
 import hexToRGBA from '../../../utils/hexToRGBA';
 import { buildUserProfileUrl } from '../../../utils/urlBuilders';
 import Avatar from '../../core/Avatar';
