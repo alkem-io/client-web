@@ -281,10 +281,10 @@
     }
   },
   "community": {
-    "leading-users": "Leading Users",
-    "member-users": "Member Users",
-    "leading-organizations": "Leading Organizations",
-    "member-organizations": "Member Organizations",
+    "leading-users": "Leidende Gebruikers",
+    "member-users": "Lid Gebruikers",
+    "leading-organizations": "Leidende Organisaties",
+    "member-organizations": "Lid Organisaties",
     "leads": "Leads",
     "members": "Leden",
     "host": "Host"
@@ -351,10 +351,10 @@
       "info-step": {
         "title": "Details",
         "description": "Omschrijving",
-        "type-comments": "Comments",
+        "type-comments": "Discussie",
         "type-comments-help": "Selecteer ‘Comments’ als je wilt dat mensen antwoorden via een simpele reactie, zoals een discussiebord.",
         "type-cards": "Kaarten",
-        "type-cards-help": "Selecteerd 'Kaarten' als je wilt dat mensen reageren in een Kaart formaat.",
+        "type-cards-help": "Selecteerd 'Kaarten' als je wilt dat mensen kennis delen via een Kaart met een beschrijving, referenties, en de mogelijkheid om commentaar te geven.",
         "type-canvases": "Canvasen",
         "type-canvases-help": "Selecteer ‘Canvasen’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven."
       },
@@ -1316,6 +1316,7 @@
   },
 "dashboard-updates-section": {
     "title": "Updates ({{count}})",
+    "dialog-title": "Alle Updates",
     "no-data": "Geen updates beschikbaar."
   },
   "dashboard-discussions-section": {
@@ -1329,6 +1330,14 @@
   "aspect-edit": {
     "new": "Nieuw Kaart",
     "edit": "Pas Kaart aan"
+    "type": {
+      "title": "Kaart Type",
+      "help-text": "Welke informatie type wil je delen?"
+    }
+  },
+  "innovation-edit": {
+    "new": "Nieuwe Innovation flow",
+    "edit": "Pas Innovation flow aan"
   },
   "contributors-section": {
     "title": "Bijdragers",
