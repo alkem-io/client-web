@@ -1,3 +1,3 @@
 import { SearchBaseContributorCardProps } from './base/SearchBaseContributorCard';
 
-export interface SearchContributorCardProps extends Omit<SearchBaseContributorCardProps, 'icon'>  {}
+export type SearchContributorCardProps = Omit<SearchBaseContributorCardProps, 'icon'>;

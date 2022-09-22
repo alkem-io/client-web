@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 import StarBorderOutlinedIcon from '@mui/icons-material/StarBorderOutlined';
-import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
 import { SearchBaseJourneyCard } from './base/SearchBaseJourneyCard';
-import { SearchJourneyWithParentCardProps } from './SearchJourneyWithParentCardProps';
+import { SearchJourneyWithParentImplProps } from './SearchJourneyWithParentCard';
 
-export interface SearchOpportunityCardProps extends SearchJourneyWithParentCardProps {}
+export interface SearchOpportunityCardProps extends SearchJourneyWithParentImplProps {}
 
-export const SearchOpportunityCard: FC<SearchOpportunityCardProps> = ({ ...rest }) => {
+export const SearchOpportunityCard: FC<SearchOpportunityCardProps> = ({ children, ...rest }) => {
   return (
     <SearchBaseJourneyCard
       icon={StarBorderOutlinedIcon}
-      parentIcon={ChallengeIcon}
       { ...rest }
-    />
+    >
+      {children}
+    </SearchBaseJourneyCard>
   );
 };

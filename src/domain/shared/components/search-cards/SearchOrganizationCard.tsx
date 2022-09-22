@@ -5,21 +5,11 @@ import { SearchContributorCardProps } from './SearchContributorCardProps';
 
 export interface SearchOrganizationCardProps extends SearchContributorCardProps {}
 
-export const SearchOrganizationCard: FC<SearchOrganizationCardProps> = ({
-  image, imgAlt, name,
-  city, country,
-  matchedTerms, url,
-}) => {
+export const SearchOrganizationCard: FC<SearchOrganizationCardProps> = (props) => {
   return (
     <SearchBaseContributorCard
       icon={WorkspacesOutlinedIcon}
-      name={name}
-      image={image}
-      imgAlt={imgAlt}
-      country={country}
-      city={city}
-      matchedTerms={matchedTerms}
-      url={url}
+      { ...props }
     />
   );
 };

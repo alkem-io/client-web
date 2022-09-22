@@ -3,7 +3,7 @@ import { styled, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import SearchBaseCard, { SearchBaseCardProps } from './SearchBaseCard';
+import SearchBaseCard, { SearchBaseCardImplProps } from './SearchBaseCard';
 
 const LocationBox = styled(Box)({
   display: 'flex',
@@ -11,7 +11,7 @@ const LocationBox = styled(Box)({
   paddingTop: '3px',
 });
 
-export interface SearchBaseContributorCardProps extends Omit<SearchBaseCardProps, 'height' | 'imgHeight'> {
+export interface SearchBaseContributorCardProps extends SearchBaseCardImplProps {
   country: string;
   city: string;
 }

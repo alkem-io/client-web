@@ -55,7 +55,8 @@ const getCalculatedCardContents = (cardHeight: number, mediaHeight: number) =>
     paddingRight: theme.spacing(1),
   }));
 
-export interface SearchBaseCardProps {
+export type SearchBaseCardImplProps = Omit<SearchBaseCardProps, 'height' | 'imgHeight'>;
+interface SearchBaseCardProps {
   height: number;
   imgHeight: number;
   image: string;
