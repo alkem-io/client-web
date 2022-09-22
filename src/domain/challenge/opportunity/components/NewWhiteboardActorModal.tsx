@@ -243,7 +243,7 @@ const NewWhiteboardActorModal: FC<NewWhiteboardActorModalProps> = ({ show, onHid
           {({ isSubmitting, handleSubmit }) => (
             <Form onSubmit={handleSubmit}>
               <label htmlFor="actor">Acctor: </label>
-              <FormikSelect title="Actor" name="actor" values={actors}></FormikSelect>
+              <FormikSelect title="Actor" name="actor" values={actors} />
               <Button variant="text" type="submit" disabled={isSubmitting}>
                 Add Actor
               </Button>

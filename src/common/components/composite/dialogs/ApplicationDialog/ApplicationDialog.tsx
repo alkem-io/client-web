@@ -99,7 +99,7 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
   const updatedDate = app?.updatedDate ? new Date(app?.updatedDate).toLocaleString() : '';
 
   return (
-    <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="dialog-title">
+    <Dialog open maxWidth="md" fullWidth aria-labelledby="dialog-title">
       {loading && (
         <DialogTitle id="dialog-title" onClose={onHide}>
           <Loading />

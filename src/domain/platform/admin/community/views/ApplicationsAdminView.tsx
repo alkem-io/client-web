@@ -62,8 +62,8 @@ export const ApplicationsAdminView: FC<ApplicationsAdminViewProps> = ({ applicat
           rows={applicationsVm}
           columns={columnDefinitions}
           density="compact"
-          hideFooter={true}
-          disableColumnSelector={true}
+          hideFooter
+          disableColumnSelector
           onRowClick={param => {
             const appId = param.getValue(param.id, 'id');
             setAppChosen(applications.find(x => x.id === appId));
