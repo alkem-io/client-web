@@ -29,7 +29,7 @@ export interface ProfileFormValuesType {
   vision: string;
   who: string;
   references: Reference[];
-  // visual: Visual2[]; todo: enable when it's time
+  // visuals: Visual2[]; todo: enable when it's time
   tagsets: Tagset[];
   innovationFlowTemplateID: string;
 }
@@ -112,7 +112,7 @@ const ProfileFormWithContext: FC<Props> = ({
     vision: contextSegmentSchema.fields?.vision || yup.string(),
     who: contextSegmentSchema.fields?.who || yup.string(),
     references: referenceSegmentSchema,
-    // visuals: visualSegmentSchema,
+    // visual: visualSegmentSchema,
     tagsets: tagsetSegmentSchema,
     innovationFlowTemplateID: yup.string().required(t('forms.validations.required')),
   });
