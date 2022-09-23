@@ -940,19 +940,18 @@
     },
     "challenge-explorer": {
       "search": {
-        "title": "Explorar Desafíos",
-        "subtitle": "Esta sección te permite buscar por todos los desafíos hospedados en Alkemio que son visibles para ti.",
-        "placeholder": "Buscar desafíos en Alkemio..."
+        "title": "Explorar Desafíos Públicos",
+        "subtitle": "Introduce tus términos de búsqueda, (por ejemplo 'innovación') a continuación y encuentra Desafíos relacionados. Por favor, ten en cuenta que en Alkemio hay ambos, hubs públicos y privados. Aquí puedes encontrar los desafíos de los hubs públicos. Los desafíos de los hubs privados son visibles solo si has iniciado sesión y eres miembro de estos hubs.",
+        "placeholder": "Buscar..."
+      },
+      "side-note": {
+        "title": "La estructura de Alkemio",
+        "description": "En Alkemio, los Desafíos se organizan dentro de un Hub. Cada Hub tiene su pripio marco de referencia específico en el cual los Desafíos se usan para entender los problemas que se están tratando."
       },
       "my": {
         "title": "Mis Desafíos ({{count}})",
         "subtitle": "Esta sección te muestra los desafíos en los que estás contribuyendo.",
         "help-text": "Una tarjeta por cada desafío, incluyendo tu rol en cada uno."
-      },
-      "hubs": {
-        "title": "Desafíos hospedados por el Hub '{{name}}': {{count}}",
-        "subtitle": "Esta sección muestra los desafíos hospedados por el Hub {{name}}, del cual eres miembro.",
-        "help-text": "Un Hub hospeda uno o mas desafíos. Tú eres miembro de este Hub."
       }
     },
     "lead-organization": {

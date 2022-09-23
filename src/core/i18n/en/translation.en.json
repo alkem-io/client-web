@@ -941,19 +941,18 @@
     },
     "challenge-explorer": {
       "search": {
-        "title": "Explore Challenges",
-        "subtitle": "This section allows you to search through all the Challenges hosted on Alkemio that are visible to you.",
-        "placeholder": "Search by terms for challenges in Alkemio..."
+        "title": "Explore Public Challenges",
+        "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge hubs. Here you can find all challenges from the public hubs. Challenges from private hubs are visible when you are signed in and a member of that particular hub.",
+        "placeholder": "Search..."
+      },
+      "side-note": {
+        "title": "The Alkemio Structure",
+        "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
       },
       "my": {
         "title": "My challenges ({{count}})",
         "subtitle": "This section shows you the challenges you are contributing to. ",
         "help-text": "One card per Challenge membership, including the role you have in each."
-      },
-      "hubs": {
-        "title": "Challenges hosted by '{{name}}' Hub ({{count}})",
-        "subtitle": "This section shows you the Challenges hosted in the {{name}} hub, where you are a member.",
-        "help-text": "A Challenge Hub hosts one or more Challenges. You are member of the Hub below."
       }
     },
     "lead-organization": {
