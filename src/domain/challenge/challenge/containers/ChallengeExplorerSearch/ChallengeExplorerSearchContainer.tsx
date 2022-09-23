@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../../models/container';
-import { useChallengeExplorerSearchQuery } from '../../../hooks/generated/graphql';
-import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
-import { useApolloErrorHandler } from '../../../hooks';
+import { ContainerChildProps } from '../../../../../models/container';
+import { useChallengeExplorerSearchQuery } from '../../../../../hooks/generated/graphql';
+import { ChallengeExplorerSearchResultFragment } from '../../../../../models/graphql-schema';
+import { useApolloErrorHandler } from '../../../../../hooks';
 
 export interface ChallengeSearchResultContainerEntities {
   challenges: ChallengeExplorerSearchResultFragment[];

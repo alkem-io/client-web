@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ChallengeExplorerSearchResultFragment } from '../../../models/graphql-schema';
-import { useChallengeExplorerSearchEnricherQuery } from '../../../hooks/generated/graphql';
-import { ContainerChildProps } from '../../../models/container';
-import { useApolloErrorHandler } from '../../../hooks';
+import { ChallengeExplorerSearchResultFragment } from '../../../../../models/graphql-schema';
+import { useChallengeExplorerSearchEnricherQuery } from '../../../../../hooks/generated/graphql';
+import { ContainerChildProps } from '../../../../../models/container';
+import { useApolloErrorHandler } from '../../../../../hooks';
 
 type EnrichInfo = {
   hubNameId?: string;

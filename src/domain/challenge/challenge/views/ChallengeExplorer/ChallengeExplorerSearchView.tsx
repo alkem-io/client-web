@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Accordion } from '../../../../../common/components/composite/common/Accordion/Accordion';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
-import ChallengeExplorerSearchContainer from '../../../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
-import ChallengeExplorerSearchEnricherContainer from '../../../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
+import ChallengeExplorerSearchContainer from '../../containers/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
+import ChallengeExplorerSearchEnricherContainer from '../../containers/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
 import HubNameResolver from '../../../../../containers/hub/HubNameResolver';
 import { ChallengeExplorerSearchResultFragment } from '../../../../../models/graphql-schema';
 import ChallengeCard from '../../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
