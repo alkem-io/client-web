@@ -7790,8 +7790,8 @@ export type RemoveUserAsOrganizationOwnerMutationOptions = Apollo.BaseMutationOp
   SchemaTypes.RemoveUserAsOrganizationOwnerMutation,
   SchemaTypes.RemoveUserAsOrganizationOwnerMutationVariables
 >;
-export const ChallengesExplorerPageDocument = gql`
-  query ChallengesExplorerPage($rolesData: RolesUserInput!) {
+export const ChallengeExplorerPageDocument = gql`
+  query ChallengeExplorerPage($rolesData: RolesUserInput!) {
     rolesUser(rolesData: $rolesData) {
       hubs {
         id
@@ -7808,53 +7808,53 @@ export const ChallengesExplorerPageDocument = gql`
 `;
 
 /**
- * __useChallengesExplorerPageQuery__
+ * __useChallengeExplorerPageQuery__
  *
- * To run a query within a React component, call `useChallengesExplorerPageQuery` and pass it any options that fit your needs.
- * When your component renders, `useChallengesExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useChallengeExplorerPageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerPageQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useChallengesExplorerPageQuery({
+ * const { data, loading, error } = useChallengeExplorerPageQuery({
  *   variables: {
  *      rolesData: // value for 'rolesData'
  *   },
  * });
  */
-export function useChallengesExplorerPageQuery(
+export function useChallengeExplorerPageQuery(
   baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ChallengesExplorerPageQuery,
-    SchemaTypes.ChallengesExplorerPageQueryVariables
+    SchemaTypes.ChallengeExplorerPageQuery,
+    SchemaTypes.ChallengeExplorerPageQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ChallengesExplorerPageQuery, SchemaTypes.ChallengesExplorerPageQueryVariables>(
-    ChallengesExplorerPageDocument,
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
+    ChallengeExplorerPageDocument,
     options
   );
 }
-export function useChallengesExplorerPageLazyQuery(
+export function useChallengeExplorerPageLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ChallengesExplorerPageQuery,
-    SchemaTypes.ChallengesExplorerPageQueryVariables
+    SchemaTypes.ChallengeExplorerPageQuery,
+    SchemaTypes.ChallengeExplorerPageQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ChallengesExplorerPageQuery, SchemaTypes.ChallengesExplorerPageQueryVariables>(
-    ChallengesExplorerPageDocument,
+  return Apollo.useLazyQuery<SchemaTypes.ChallengeExplorerPageQuery, SchemaTypes.ChallengeExplorerPageQueryVariables>(
+    ChallengeExplorerPageDocument,
     options
   );
 }
-export type ChallengesExplorerPageQueryHookResult = ReturnType<typeof useChallengesExplorerPageQuery>;
-export type ChallengesExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengesExplorerPageLazyQuery>;
-export type ChallengesExplorerPageQueryResult = Apollo.QueryResult<
-  SchemaTypes.ChallengesExplorerPageQuery,
-  SchemaTypes.ChallengesExplorerPageQueryVariables
+export type ChallengeExplorerPageQueryHookResult = ReturnType<typeof useChallengeExplorerPageQuery>;
+export type ChallengeExplorerPageLazyQueryHookResult = ReturnType<typeof useChallengeExplorerPageLazyQuery>;
+export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerPageQuery,
+  SchemaTypes.ChallengeExplorerPageQueryVariables
 >;
-export function refetchChallengesExplorerPageQuery(variables: SchemaTypes.ChallengesExplorerPageQueryVariables) {
-  return { query: ChallengesExplorerPageDocument, variables: variables };
+export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.ChallengeExplorerPageQueryVariables) {
+  return { query: ChallengeExplorerPageDocument, variables: variables };
 }
 export const ChallengeExplorerSearchDocument = gql`
   query ChallengeExplorerSearch($searchData: SearchInput!) {

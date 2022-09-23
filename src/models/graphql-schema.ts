@@ -8154,11 +8154,11 @@ export type RemoveUserAsOrganizationOwnerMutation = {
   removeUserAsOrganizationOwner: { __typename?: 'User'; id: string; displayName: string };
 };
 
-export type ChallengesExplorerPageQueryVariables = Exact<{
+export type ChallengeExplorerPageQueryVariables = Exact<{
   rolesData: RolesUserInput;
 }>;
 
-export type ChallengesExplorerPageQuery = {
+export type ChallengeExplorerPageQuery = {
   __typename?: 'Query';
   rolesUser: {
     __typename?: 'ContributorRoles';
