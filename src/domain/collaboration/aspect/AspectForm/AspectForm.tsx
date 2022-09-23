@@ -3,22 +3,20 @@ import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
 import { Grid } from '@mui/material';
-import FormikInputField from '../../forms/FormikInputField';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../../../domain/platform/admin/components/Common/TagsetSegment';
-import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';
-import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import { TagsetSegment, tagsetSegmentSchema } from '../../../platform/admin/components/Common/TagsetSegment';
+import { SectionSpacer } from '../../../shared/components/Section/Section';
+import FormikEffectFactory from '../../../../common/utils/formik/formik-effect/FormikEffect';
 import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';
-import { Aspect, Tagset } from '../../../../../models/graphql-schema';
-import ReferenceSegment, {
-  referenceSegmentSchema,
-} from '../../../../../domain/platform/admin/components/Common/ReferenceSegment';
-import { PushFunc, RemoveFunc } from '../../../../../hooks';
-import { Reference } from '../../../../../models/Profile';
-import MarkdownInput from '../../../../../domain/platform/admin/components/Common/MarkdownInput';
-import FormRow from '../../../../../domain/shared/layout/FormLayout';
-import AspectTypeFormField from '../../../../../domain/collaboration/aspect/AspectTypeFormField';
-import { displayNameValidator } from '../../../../utils/validator';
-import { LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { Aspect, Tagset } from '../../../../models/graphql-schema';
+import ReferenceSegment, { referenceSegmentSchema } from '../../../platform/admin/components/Common/ReferenceSegment';
+import { PushFunc, RemoveFunc } from '../../../../hooks';
+import { Reference } from '../../../../models/Profile';
+import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
+import FormRow from '../../../shared/layout/FormLayout';
+import AspectTypeFormField from './AspectTypeFormField';
+import { displayNameValidator } from '../../../../common/utils/validator';
+import { LONG_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
 
 type FormValueType = {
   name: string;

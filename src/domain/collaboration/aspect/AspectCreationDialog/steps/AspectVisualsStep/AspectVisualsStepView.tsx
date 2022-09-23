@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../../../../../../domain/shared/components/Section/Section';
-import VisualUpload from '../../../../common/VisualUpload/VisualUpload';
-import { Visual } from '../../../../../../../models/graphql-schema';
+import { SectionSpacer } from '../../../../../shared/components/Section/Section';
+import VisualUpload from '../../../../../../common/components/composite/common/VisualUpload/VisualUpload';
+import { Visual } from '../../../../../../models/graphql-schema';
 
 export interface AspectVisualsStepViewProps {
   bannerNarrow: Visual;

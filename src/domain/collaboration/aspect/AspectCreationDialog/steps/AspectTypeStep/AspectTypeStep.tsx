@@ -6,9 +6,9 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import HelpButton from '../../../../../core/HelpButton';
+import HelpButton from '../../../../../../common/components/core/HelpButton';
 import { InputAdornment } from '@mui/material';
-import { useHub } from '../../../../../../../hooks';
+import { useHub } from '../../../../../../hooks';
 
 export interface AspectTypeStepProps {
   type?: string;

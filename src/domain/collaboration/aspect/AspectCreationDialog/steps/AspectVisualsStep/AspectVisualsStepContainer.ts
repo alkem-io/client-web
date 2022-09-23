@@ -1,16 +1,16 @@
 import { FC } from 'react';
-import { Scalars, Visual } from '../../../../../../../models/graphql-schema';
+import { Scalars, Visual } from '../../../../../../models/graphql-schema';
 import {
   ContainerPropsWithProvided,
   renderComponentOrChildrenFn,
-} from '../../../../../../utils/containers/ComponentOrChildrenFn';
+} from '../../../../../../common/utils/containers/ComponentOrChildrenFn';
 import {
   useChallengeAspectVisualsQuery,
   useHubAspectVisualsQuery,
   useOpportunityAspectVisualsQuery,
-} from '../../../../../../../hooks/generated/graphql';
-import { useApolloErrorHandler } from '../../../../../../../hooks';
-import { getCardCallout } from '../../../../../../../containers/aspect/getAspectCallout';
+} from '../../../../../../hooks/generated/graphql';
+import { useApolloErrorHandler } from '../../../../../../hooks';
+import { getCardCallout } from '../../../../../../containers/aspect/getAspectCallout';
 
 export interface EntityIds {
   calloutNameId: Scalars['UUID_NAMEID'];

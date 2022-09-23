@@ -1,7 +1,7 @@
 import { Avatar, Tooltip } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { UserCard, UserCardProps } from '../cards';
-import ConditionalLink from '../../../core/ConditionalLink';
+import { UserCard, UserCardProps } from '../../../../common/components/composite/common/cards';
+import ConditionalLink from '../../../../common/components/core/ConditionalLink';
 
 interface UserAvatarProps extends UserCardProps {}
 

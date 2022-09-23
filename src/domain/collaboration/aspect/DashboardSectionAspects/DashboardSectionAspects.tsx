@@ -1,9 +1,11 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import DashboardSection from '../../sections/DashboardSection/DashboardSection';
-import AspectCard, { AspectCardAspect } from '../../common/cards/AspectCard/AspectCard';
-import CardsLayout from '../../../../../domain/shared/layout/CardsLayout/CardsLayout';
-import { EntityPageSection } from '../../../../../domain/shared/layout/EntityPageSection';
+import DashboardSection from '../../../../common/components/composite/sections/DashboardSection/DashboardSection';
+import AspectCard, {
+  AspectCardAspect,
+} from '../../../../common/components/composite/common/cards/AspectCard/AspectCard';
+import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
+import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 
 interface DashboardSectionAspectsProps {
   aspects: AspectCardAspect[];

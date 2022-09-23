@@ -5,7 +5,7 @@ import AspectCard, {
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
-import AspectCreationDialog from '../../../../common/components/composite/aspect/AspectCreationDialog/AspectCreationDialog';
+import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../../hooks';
 import { CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';

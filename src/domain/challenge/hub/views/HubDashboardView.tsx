@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React, { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
-import DashboardSectionAspects from '../../../../common/components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
+import DashboardSectionAspects from '../../../collaboration/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import { AspectCardAspect } from '../../../../common/components/composite/common/cards/AspectCard/AspectCard';
 import ChallengeCard from '../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';

@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
-import { SectionSpacer } from '../../../../../../../domain/shared/components/Section/Section';
-import TagsComponent from '../../../../../../../domain/shared/components/TagsComponent/TagsComponent';
+import { SectionSpacer } from '../../../../../shared/components/Section/Section';
+import TagsComponent from '../../../../../shared/components/TagsComponent/TagsComponent';
 import { AspectCreationType } from '../../AspectCreationDialog';
-import WrapperMarkdown from '../../../../../core/WrapperMarkdown';
+import WrapperMarkdown from '../../../../../../common/components/core/WrapperMarkdown';
 
 export interface AspectReviewStepProps {
   aspect: AspectCreationType;

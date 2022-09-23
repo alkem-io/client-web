@@ -4,13 +4,13 @@ import Dialog from '@mui/material/Dialog';
 import Stepper from '@mui/material/Stepper';
 import { Box, Button, DialogActions, Step } from '@mui/material';
 import StepLabel from '@mui/material/StepLabel';
-import { DialogContent, DialogTitle } from '../../../core/dialog';
+import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import AspectTypeStep from './steps/AspectTypeStep/AspectTypeStep';
 import AspectReviewStep from './steps/AspectReviewStep/AspectReviewStep';
 import { AspectFormOutput } from '../AspectForm/AspectForm';
 import AspectInfoStep from './steps/AspectInfoStep/AspectInfoStep';
-import { CreateAspectOnCalloutInput } from '../../../../../models/graphql-schema';
-import HelpButton from '../../../core/HelpButton';
+import { CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
+import HelpButton from '../../../../common/components/core/HelpButton';
 import AspectVisualsStep, { AspectVisualsStepProps } from './steps/AspectVisualsStep/AspectVisualsStep';
 
 export type AspectCreationType = Partial<CreateAspectOnCalloutInput>;

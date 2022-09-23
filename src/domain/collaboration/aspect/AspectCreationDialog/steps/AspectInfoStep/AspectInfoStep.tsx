@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useHub } from '../../../../../../../hooks';
+import { useHub } from '../../../../../../hooks';
 import AspectForm, { AspectFormOutput } from '../../../AspectForm/AspectForm';
 import { AspectCreationType } from '../../AspectCreationDialog';
 

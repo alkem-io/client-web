@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Loading } from '../../../../../core';
+import { Loading } from '../../../../../../common/components/core';
 import AspectCreationDialogVisualStepContainer, { EntityIds } from './AspectVisualsStepContainer';
 import AspectVisualsStepView from './AspectVisualsStepView';
 
