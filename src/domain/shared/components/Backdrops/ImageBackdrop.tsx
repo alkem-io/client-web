@@ -42,8 +42,8 @@ const FlexSpacer = styled(Box)(() => ({
 
 interface ImageBackdropProps extends BackdropProps {
   src: string;
-  backdropMessage: 'private' | 'authentication' | 'login'; // components.backdrop.* in the translation
-  blockName: 'users-contributing' | 'all-contributing-users'; // common.block.* in the translation
+  backdropMessage: 'private' | 'authentication' | 'login'; // translation: components.backdrop.*
+  blockName: 'users-contributing' | 'all-contributing-users'; // translation: common.block.*
   messageSx?: TypographyProps['sx'];
 }
 

@@ -181,7 +181,7 @@
           "order": 0,
           "hidden": false
         },
-          "GLOBAL_ADMIN_HUBS": {
+        "GLOBAL_ADMIN_HUBS": {
           "name": "Globale Hubs Beheerder",
           "order": 1,
           "hidden": false
@@ -278,6 +278,10 @@
         "QUESTIONS": "Vragen",
         "SHARING": "Delen"
       }
+    },
+    "blocks": {
+      "users-contributing": "gebruikers die bijdragen",
+      "all-contributing-users": "alle bijdragende gebruikers"
     }
   },
   "community": {
@@ -471,7 +475,8 @@
     },
     "backdrop": {
       "private": "Wordt lid om toegang te krijgen tot {{blockName}}",
-      "authentication": "Log in om details te zien over {{blockName}}."
+      "authentication": "Log in om details te zien over {{blockName}}.",
+      "log-in": "Log in om {{blockName}} te zien"
     },
     "referenceSegment": {
       "title": "Referenties",
@@ -910,8 +915,8 @@
     },
     "contributors": {
       "search": {
-        "title": "Verken de gebruikers en organisaties die al bijdragen!",
-        "subtitle": "Voeg een of meer zoektermen toe. Klik op de kaarten in de zoekresultaten om de profielen te bekijken.",
+        "title": "Kijk wie bijdraagt",
+        "subtitle": "Bekijk de organisaties en gebruikers die bijdragen aan de Challenges, Opportunities en Hubs op het platform.",
         "placeholder": "Zoek naar gebruikers en organisaties"
       },
       "organizations": {
@@ -1310,7 +1315,7 @@
       "bad-user-input-withfield": "De waarde van '{{field}}' is ongeldig."
     }
   },
-"dashboard-updates-section": {
+  "dashboard-updates-section": {
     "title": "Updates ({{count}})",
     "dialog-title": "Alle Updates",
     "no-data": "Geen updates beschikbaar."

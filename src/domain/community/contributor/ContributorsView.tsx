@@ -27,6 +27,7 @@ const ScrollerBox = styled(Box)(({ theme }) => ({
 
 const userToContributorCard = (user: UserContributorFragment): ContributorCardProps => {
   return {
+    id: user.id,
     displayName: user.displayName,
     avatar: user.userProfile?.avatar?.uri ?? '',
     url: buildUserProfileUrl(user.nameID),
@@ -40,6 +41,7 @@ const userToContributorCard = (user: UserContributorFragment): ContributorCardPr
 
 const organizationToContributorCard = (org: OrganizationContributorFragment): ContributorCardProps => {
   return {
+    id: org.id,
     displayName: org.displayName,
     avatar: org.orgProfile.avatar?.uri ?? '',
     url: buildOrganizationUrl(org.nameID),
@@ -104,13 +106,13 @@ const ContributorsView: FC<ContributorsViewProps> = ({
             <>
               {orgs?.loading &&
                 times(ITEMS_PER_PAGE, i => (
-                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={i}>
+                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={`__loading_${i}`}>
                     <ContributorCardSkeleton />
                   </Grid>
                 ))}
               {!orgs?.loading &&
-                orgs?.items?.map(organizationToContributorCard).map((org, i) => (
-                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={i}>
+                orgs?.items?.map(organizationToContributorCard).map(org => (
+                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={org.id}>
                     <ContributorCard {...org} />
                   </Grid>
                 ))}
@@ -130,13 +132,13 @@ const ContributorsView: FC<ContributorsViewProps> = ({
             <Grid container spacing={1}>
               {users?.loading &&
                 times(ITEMS_PER_PAGE, i => (
-                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={i}>
+                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={`__loading_${i}`}>
                     <ContributorCardSkeleton />
                   </Grid>
                 ))}
               {!users?.loading &&
-                users?.items?.map(userToContributorCard).map((user, i) => (
-                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={i}>
+                users?.items?.map(userToContributorCard).map(user => (
+                  <Grid item flexBasis={`${GRID_ITEM_WIDTH}%`} key={user.id}>
                     <ContributorCard {...user} />
                   </Grid>
                 ))}
