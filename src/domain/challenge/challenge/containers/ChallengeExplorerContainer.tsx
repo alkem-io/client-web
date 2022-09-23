@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../../models/container';
 import { SimpleHubResultEntryFragment } from '../../../../models/graphql-schema';
-import { useChallengesOverviewPageQuery } from '../../../../hooks/generated/graphql';
+import { useChallengesExplorerPageQuery } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 
 export type SimpleChallenge = {
@@ -11,31 +11,35 @@ export type SimpleChallenge = {
   hubNameId: string;
 };
 
-export interface ChallengesOverviewContainerEntities {
+export interface ChallengesExplorerContainerEntities {
+  isLoggedIn: boolean;
+  searchTerms: string[];
   userChallenges?: SimpleChallenge[];
   userHubs?: SimpleHubResultEntryFragment[];
 }
 
-export interface ChallengesOverviewContainerActions {}
+export interface ChallengesExplorerContainerActions {}
 
-export interface ChallengesOverviewContainerState {
+export interface ChallengesExplorerContainerState {
   loading: boolean;
   error?: ApolloError;
 }
 
 export interface ChallengePageContainerProps
   extends ContainerChildProps<
-    ChallengesOverviewContainerEntities,
-    ChallengesOverviewContainerActions,
-    ChallengesOverviewContainerState
-  > {}
+    ChallengesExplorerContainerEntities,
+    ChallengesExplorerContainerActions,
+    ChallengesExplorerContainerState
+  > {
+  searchTerms: string[];
+}
 
-export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ children }) => {
+export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ searchTerms, children }) => {
   const handleError = useApolloErrorHandler();
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
 
-  const { data, loading, error } = useChallengesOverviewPageQuery({
+  const { data, loading, error } = useChallengesExplorerPageQuery({
     onError: handleError,
     variables: {
       rolesData: {
@@ -63,5 +67,12 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ ch
       nameID,
     }));
 
-  return <>{children({ userChallenges, userHubs }, { loading, error }, {})}</>;
+  const provided = {
+    isLoggedIn: !!user,
+    searchTerms,
+    userChallenges,
+    userHubs,
+  };
+
+  return <>{children(provided, { loading, error }, {})}</>;
 };

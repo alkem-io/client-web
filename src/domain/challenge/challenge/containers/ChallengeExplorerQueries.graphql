@@ -1,4 +1,4 @@
-query ChallengesOverviewPage($rolesData: RolesUserInput!) {
+query ChallengesExplorerPage($rolesData: RolesUserInput!) {
   rolesUser(rolesData: $rolesData) {
     hubs {
       id
