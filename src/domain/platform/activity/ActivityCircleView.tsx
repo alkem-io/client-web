@@ -1,5 +1,9 @@
 import React, { PropsWithChildren } from 'react';
-import CircleTag, { CircleTagProps, CircleTagSize, CircleTagSizeStyles } from '../../../common/components/core/CircleTag';
+import CircleTag, {
+  CircleTagProps,
+  CircleTagSize,
+  CircleTagSizeStyles,
+} from '../../../common/components/core/CircleTag';
 import { Skeleton } from '@mui/material';
 
 export interface ActivityCircleViewProps {

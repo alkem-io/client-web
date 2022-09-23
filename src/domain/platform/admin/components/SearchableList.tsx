@@ -113,7 +113,10 @@ export const SearchableList: FC<SearchableListProps> = ({ data = [], edit = fals
         text={`Are you sure you want to remove: ${itemToRemove?.value}`}
       />
       {filteredData.length > limit && limit < 50 && (
-        <WrapperButton onClick={() => setLimit(x => (x >= 50 ? x : x + 10))} text={t('components.searchableList.load-more')} />
+        <WrapperButton
+          onClick={() => setLimit(x => (x >= 50 ? x : x + 10))}
+          text={t('components.searchableList.load-more')}
+        />
       )}
     </>
   );

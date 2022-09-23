@@ -278,6 +278,10 @@
         "QUESTIONS": "Questions",
         "SHARING": "Sharing"
       }
+    },
+    "blocks": {
+      "users-contributing": "users that are contributing",
+      "all-contributing-users": "all contributing users"
     }
   },
   "community": {
@@ -471,7 +475,8 @@
     },
     "backdrop": {
       "private": "Please become a member to access {{blockName}}",
-      "authentication": "Please sign in to see details about the {{blockName}}."
+      "authentication": "Please sign in to see details about the {{blockName}}.",
+      "login": "Please log in to see {{blockName}}"
     },
     "referenceSegment": {
       "title": "References",
@@ -910,19 +915,15 @@
     },
     "contributors": {
       "search": {
-        "title": "Explore the users and organizations that are contributing!",
-        "subtitle": "Enter one or more search terms. Click on the cards in the search results to see the profiles.",
-        "placeholder": "Search for users and organizations"
+        "title": "See who's contributing",
+        "subtitle": "Have a look at the organizations and users that are contributing to the Challenges, Opportunities and Hubs on the platform.",
+        "placeholder": "Search..."
       },
       "organizations": {
-        "title": "Organizations ({{count}})",
-        "subtitle": "Organizations matching the search terms entered.",
-        "help-text": "Click on the cards below to see where each Organization is contributing."
+        "title": "Organizations"
       },
       "users": {
-        "title": "Users ({{count}})",
-        "subtitle": "Users matching the search terms entered.",
-        "help-text": ""
+        "title": "Users"
       }
     },
     "search": {

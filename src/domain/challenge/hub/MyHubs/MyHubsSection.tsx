@@ -7,7 +7,10 @@ import { useHubsQuery } from '../../../../hooks/generated/graphql';
 import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { Loading } from '../../../../common/components/core';
 import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
-import { USER_ROLE_HUB_LEAD, UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
+import {
+  USER_ROLE_HUB_LEAD,
+  UserRolesInEntity,
+} from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
 import { keyBy } from 'lodash';
 
 interface MyHubsSectionProps {

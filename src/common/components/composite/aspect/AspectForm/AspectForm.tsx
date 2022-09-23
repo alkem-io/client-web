@@ -4,7 +4,10 @@ import * as yup from 'yup';
 import { Formik, FormikConfig } from 'formik';
 import { Grid } from '@mui/material';
 import FormikInputField from '../../forms/FormikInputField';
-import { TagsetSegment, tagsetSegmentSchema } from '../../../../../domain/platform/admin/components/Common/TagsetSegment';
+import {
+  TagsetSegment,
+  tagsetSegmentSchema,
+} from '../../../../../domain/platform/admin/components/Common/TagsetSegment';
 import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';
 import FormikEffectFactory from '../../../../utils/formik/formik-effect/FormikEffect';
 import { AspectCreationType } from '../AspectCreationDialog/AspectCreationDialog';

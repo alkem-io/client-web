@@ -14,6 +14,7 @@ interface ContributorCardTooltip {
 }
 
 export interface ContributorCardProps {
+  id: string;
   avatar: string;
   displayName: string;
   tooltip?: ContributorCardTooltip;
