@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { Accordion } from '../../../../../common/components/composite/common/Accordion/Accordion';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
-import ChallengeExplorerSearchContainer from '../../containers/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
 import ChallengeExplorerSearchEnricherContainer from '../../containers/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
 import HubNameResolver from '../../../../../containers/hub/HubNameResolver';
 import { ChallengeExplorerSearchResultFragment } from '../../../../../models/graphql-schema';
@@ -11,11 +10,11 @@ import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
 export type ChallengeExplorerGroupByType = 'hub';
 
 export interface ChallengeExplorerSearchViewProps {
-  terms: string[];
+  challenges: ChallengeExplorerSearchResultFragment[] | undefined;
   groupBy: ChallengeExplorerGroupByType;
 }
 
-const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ terms, groupBy }) => {
+const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ challenges, groupBy }) => {
   const groupKey = getGroupKey(groupBy);
 
   if (!groupKey) {
@@ -23,9 +22,8 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
   }
 
   return (
-    <ChallengeExplorerSearchContainer terms={terms}>
-      {({ challenges }) =>
-        challenges.length > 0 && (
+    <>
+      {challenges && challenges.length > 0 && (
           <GroupBy data={challenges} groupKey={groupKey}>
             {groups => {
               return groups.map(({ keyValue, values }) => (
@@ -50,8 +48,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
           </GroupBy>
         )
       }
-    </ChallengeExplorerSearchContainer>
-  );
+    </>);
 };
 export default ChallengeExplorerSearchView;
 

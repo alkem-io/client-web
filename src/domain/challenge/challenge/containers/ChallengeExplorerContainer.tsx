@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../../models/container';
-import { SimpleHubResultEntryFragment } from '../../../../models/graphql-schema';
-import { useChallengeExplorerPageQuery } from '../../../../hooks/generated/graphql';
+import { ChallengeExplorerSearchResultFragment, SimpleHubResultEntryFragment } from '../../../../models/graphql-schema';
+import { useChallengeExplorerPageQuery, useChallengeExplorerSearchQuery } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 
 export type SimpleChallenge = {
@@ -16,6 +16,7 @@ export interface ChallengeExplorerContainerEntities {
   searchTerms: string[];
   userChallenges?: SimpleChallenge[];
   userHubs?: SimpleHubResultEntryFragment[];
+  publicChallenges?: ChallengeExplorerSearchResultFragment[];
 }
 
 export interface ChallengeExplorerContainerActions {}
@@ -38,6 +39,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   const handleError = useApolloErrorHandler();
   const { user: userMetadata } = useUserContext();
   const user = userMetadata?.user;
+  const isLoggedIn = !!user;
 
   const { data, loading, error } = useChallengeExplorerPageQuery({
     onError: handleError,
@@ -46,8 +48,9 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         userID: user?.id || '',
       },
     },
-    skip: !user,
+    skip: !isLoggedIn,
   });
+
   const hubs = data?.rolesUser.hubs;
   const userChallenges: SimpleChallenge[] | undefined =
     hubs &&
@@ -67,11 +70,28 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
       nameID,
     }));
 
+  // Public
+  const { data: publicData, loading: _searchLoading, error: _searchError } = useChallengeExplorerSearchQuery({ //!!
+    onError: handleError,
+    variables: {
+      searchData: {
+        terms: searchTerms,
+        tagsetNames: ['skills', 'keywords'],
+        typesFilter: ['challenge'],
+      },
+    },
+    fetchPolicy: 'no-cache',
+    skip: !searchTerms.length,
+  });
+
+  const publicChallenges = (publicData?.search ?? []).map(x => x.result as ChallengeExplorerSearchResultFragment);
+
   const provided = {
     isLoggedIn: !!user,
     searchTerms,
     userChallenges,
     userHubs,
+    publicChallenges,
   };
 
   return <>{children(provided, { loading, error }, {})}</>;

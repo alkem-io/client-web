@@ -18,8 +18,6 @@ export interface CardFilterInputProps {
 }
 
 const SearchTagsInput = ({ value, onChange, placeholder }: CardFilterInputProps) => {
-  const { t } = useTranslation();
-
   const options = useMemo(() => uniqSortedByOccurrences(value), [value]);
 
   const handleChange: CardFilterInputProps['onChange'] = (event, value, reason) => {
@@ -29,7 +27,18 @@ const SearchTagsInput = ({ value, onChange, placeholder }: CardFilterInputProps)
 
   const renderInput = useCallback(
     (props: AutocompleteRenderInputParams) => (
-      <TextField {...props} variant="outlined" placeholder={placeholder} label={t('components.card-filter.title')} />
+      <TextField
+        {...props}
+        variant="outlined"
+        placeholder={placeholder}
+        label={placeholder}
+        /*InputProps={{
+          endAdornment: (
+            //!!
+            <SearchIcon color="primary" />
+          ),
+        }}*/
+      />
     ),
     [placeholder]
   );
@@ -46,6 +55,7 @@ const SearchTagsInput = ({ value, onChange, placeholder }: CardFilterInputProps)
         disableCloseOnSelect
         options={options}
         getOptionLabel={option => option}
+        value={value}
         isOptionEqualToValue={(option, value) => option === value}
         groupBy={() => 'Tags'}
         onChange={handleChange}
