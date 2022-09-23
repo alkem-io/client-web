@@ -943,7 +943,8 @@
       "search": {
         "title": "Explore Public Challenges",
         "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge hubs. Here you can find all challenges from the public hubs. Challenges from private hubs are visible when you are signed in and a member of that particular hub.",
-        "placeholder": "Search..."
+        "placeholder": "Search...",
+        "default-search-term": "Innovation"
       },
       "side-note": {
         "title": "The Alkemio Structure",
