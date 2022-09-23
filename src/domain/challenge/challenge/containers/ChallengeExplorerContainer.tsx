@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
-import { ContainerChildProps } from '../../models/container';
-import { SimpleHubResultEntryFragment } from '../../models/graphql-schema';
-import { useChallengesOverviewPageQuery } from '../../hooks/generated/graphql';
-import { useApolloErrorHandler, useUserContext } from '../../hooks';
+import { ContainerChildProps } from '../../../../models/container';
+import { SimpleHubResultEntryFragment } from '../../../../models/graphql-schema';
+import { useChallengesOverviewPageQuery } from '../../../../hooks/generated/graphql';
+import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 
 export type SimpleChallenge = {
   id: string;
