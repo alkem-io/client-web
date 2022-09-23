@@ -15,6 +15,7 @@ export interface DashboardGenericSectionProps {
   alwaysShowBanner?: boolean;
   bannerOverlay?: React.ReactNode;
   headerText?: React.ReactNode;
+  headerIcon?: React.ReactNode;
   helpText?: string;
   headerSpacing?: 'double' | 'none' | 'default';
   primaryAction?: React.ReactNode;
@@ -53,6 +54,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   alwaysShowBanner,
   bannerOverlay,
   headerText,
+  headerIcon,
   subHeaderText,
   helpText,
   headerSpacing = 'default',
@@ -83,7 +85,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
       sideBannerRight={sideBannerRight}
     >
       {headerText && (
-        <SectionHeader text={headerText} helpText={helpText}>
+        <SectionHeader text={headerText} icon={headerIcon} helpText={helpText}>
           {primaryAction}
         </SectionHeader>
       )}
