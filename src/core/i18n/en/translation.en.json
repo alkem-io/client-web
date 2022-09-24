@@ -331,12 +331,12 @@
     },
     "activity-log-view": {
       "actions": {
-        "callout-published": "published a new Callout",
-        "canvas-created": "added a new Canvas",
-        "card-comment-created": "commented on a Card",
-        "card-created": "added a new Card",
-        "discussion-comment-created": "commented on a Discussion",
-        "member-joined": "joined"
+        "callout-published": "${displayName} published a new Callout",
+        "canvas-created": "added a Canvas to '${displayName}'",
+        "card-comment-created": "commented on Card '${displayName}",
+        "card-created": "added a Card to ${displayName}",
+        "discussion-comment-created": "commented on ${displayName",
+        "member-joined": "joined this {communityType}"
       }
     },
     "lifecycle-visualizer": {
