@@ -33,6 +33,8 @@ export type Activity = {
   description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The id of the parent of the entity within which the Activity was generated. */
+  parentID?: Maybe<Scalars['UUID']>;
   /** The id of the entity that is associated with this Activity. */
   resourceID: Scalars['UUID'];
   /** The id of the user that triggered this Activity. */
@@ -542,6 +544,7 @@ export type Challenge = Searchable & {
   context?: Maybe<Context>;
   /** The display name. */
   displayName: Scalars['String'];
+  /** The ID of the containing Hub. */
   hubID: Scalars['String'];
   id: Scalars['UUID'];
   /** The lifeycle for the Challenge. */
@@ -1387,6 +1390,8 @@ export type Hub = Searchable & {
   tagset?: Maybe<Tagset>;
   /** The templates in use by this Hub */
   templates?: Maybe<TemplatesSet>;
+  /** Visibility of the Hub. */
+  visibility: HubVisibility;
 };
 
 export type HubApplicationArgs = {
@@ -1442,6 +1447,12 @@ export enum HubPreferenceType {
   MembershipApplicationsFromAnyone = 'MEMBERSHIP_APPLICATIONS_FROM_ANYONE',
   MembershipJoinHubFromAnyone = 'MEMBERSHIP_JOIN_HUB_FROM_ANYONE',
   MembershipJoinHubFromHostOrganizationMembers = 'MEMBERSHIP_JOIN_HUB_FROM_HOST_ORGANIZATION_MEMBERS',
+}
+
+export enum HubVisibility {
+  Active = 'ACTIVE',
+  Archived = 'ARCHIVED',
+  Demo = 'DEMO',
 }
 
 export type Lifecycle = {
@@ -1738,6 +1749,8 @@ export type Mutation = {
   updateEcosystemModel: EcosystemModel;
   /** Updates the Hub. */
   updateHub: Hub;
+  /** Update the visibility of the specified Hub. */
+  updateHubVisibility: Hub;
   /** Updates the specified LifecycleTemplate. */
   updateLifecycleTemplate: LifecycleTemplate;
   /** Updates the specified Opportunity. */
@@ -2216,6 +2229,10 @@ export type MutationUpdateHubArgs = {
   hubData: UpdateHubInput;
 };
 
+export type MutationUpdateHubVisibilityArgs = {
+  visibilityData: UpdateHubVisibilityInput;
+};
+
 export type MutationUpdateLifecycleTemplateArgs = {
   lifecycleTemplateInput: UpdateLifecycleTemplateInput;
 };
@@ -2658,6 +2675,10 @@ export type QueryHubArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
 
+export type QueryHubsArgs = {
+  visibilities?: InputMaybe<Array<HubVisibility>>;
+};
+
 export type QueryOrganizationArgs = {
   ID: Scalars['UUID_NAMEID'];
 };
@@ -2883,6 +2904,8 @@ export type RevokeAuthorizationCredentialInput = {
 export type RolesOrganizationInput = {
   /** The ID of the organization to retrieve the roles of. */
   organizationID: Scalars['UUID_NAMEID'];
+  /** Return roles in Hubs with a Visibility matching one of the provided types. */
+  visibilities?: InputMaybe<Array<HubVisibility>>;
 };
 
 export type RolesResult = {
@@ -2950,6 +2973,8 @@ export type RolesResultOrganization = {
 export type RolesUserInput = {
   /** The ID of the user to retrieve the roles of. */
   userID: Scalars['UUID_NAMEID_EMAIL'];
+  /** Return roles in Hubs with a Visibility matching one of the provided types. */
+  visibilities?: InputMaybe<Array<HubVisibility>>;
 };
 
 export type SearchInput = {
@@ -3276,6 +3301,13 @@ export type UpdateHubPreferenceInput = {
   /** Type of the user preference */
   type: HubPreferenceType;
   value: Scalars['String'];
+};
+
+export type UpdateHubVisibilityInput = {
+  /** The identifier for the Hub whose visibility is to be updated. */
+  hubID: Scalars['String'];
+  /** Visibility of the Hub. */
+  visibility: HubVisibility;
 };
 
 export type UpdateLifecycleTemplateInput = {
@@ -8737,6 +8769,7 @@ export type HubProviderQuery = {
   __typename?: 'Query';
   hub: {
     __typename?: 'Hub';
+    visibility: HubVisibility;
     id: string;
     nameID: string;
     displayName: string;
@@ -8827,6 +8860,7 @@ export type HubProviderQuery = {
 
 export type HubInfoFragment = {
   __typename?: 'Hub';
+  visibility: HubVisibility;
   id: string;
   nameID: string;
   displayName: string;
@@ -9119,6 +9153,7 @@ export type AdminHubsListQuery = {
   __typename?: 'Query';
   hubs: Array<{
     __typename?: 'Hub';
+    visibility: HubVisibility;
     id: string;
     nameID: string;
     displayName: string;

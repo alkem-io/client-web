@@ -24,6 +24,7 @@ fragment HubInfo on Hub {
       myPrivileges
     }
   }
+  visibility
   templates {
     id
     aspectTemplates {
