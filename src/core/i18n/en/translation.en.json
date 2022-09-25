@@ -970,7 +970,7 @@
     "home": {
       "sections": {
         "welcome": {
-          "head": "Empowering society. The platform to succeed in working on challenges, together",
+          "head": "Empowering society. The platform to succeed in working on challenges, together.",
           "impact": "<impact>Purpose Driven</impact>",
           "foundation": "<foundation>Innovation</foundation>",
           "opensource": "<opensource>Open Source</opensource>",
@@ -986,13 +986,14 @@
             "header": "New to Alkemio?",
             "subheader": "Easy for you to engage in effective and meaningful ways. Find solutions to challenges.",
             "more-info": "Contact us!",
-            "more-info-url": "hhttps://alkemio.foundation/feedback/"
+            "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
         "hub": {
           "header": "Explore the Challenge Hubs!",
           "subheader": "Each Hub contains one or more Challenges, providing shared context and community for Challenges hosted there. <br> A space to coordinate and collaborate. Connect.",
-          "body": "Each Hub has members that are contributing. Become a member via the Hub page. Most Hubs are fully visible to everyone, some are private and content is only visible to members."
+          "body": "Membership: Each Hub has members that are contributing. Become a member via the Hub page.",
+          "body1": "Visibility: Most Hubs are public and hence fully visible to everyone. For private Hubs, the content is only available after becoming a member."
         },
         "my-hubs": {
           "header": "My Hubs",
