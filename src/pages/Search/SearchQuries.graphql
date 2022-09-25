@@ -114,3 +114,25 @@ fragment OpportunitySearchResult on Opportunity {
     hubID
   }
 }
+
+query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
+  rolesUser(rolesData: { userID: $userId }) {
+    hubs {
+      id
+      roles
+      challenges {
+        id
+        nameID
+        roles
+      }
+      opportunities {
+        id
+        roles
+      }
+    }
+    organizations {
+      id
+      roles
+    }
+  }
+}

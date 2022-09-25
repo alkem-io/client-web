@@ -9,6 +9,7 @@ import {
   HubSearchResultFragment,
   OpportunitySearchResultFragment,
   OrganizationSearchResultFragment,
+  UserRolesSearchCardsQuery,
   UserSearchResultFragment,
 } from '../../models/graphql-schema';
 import { getVisualBanner } from '../../common/utils/visuals.utils';
@@ -19,16 +20,29 @@ import {
   buildOrganizationUrl,
   buildUserProfileUrl,
 } from '../../common/utils/urlBuilders';
-import { useHubNameQuery } from '../../hooks/generated/graphql';
+import { useHubNameQuery, useUserRolesSearchCardsQuery } from '../../hooks/generated/graphql';
+import { RoleType } from '../../domain/user/constants/RoleType';
+import { useUserContext } from '../../domain/user/hooks/useUserContext';
+import { SearchOpportunityCard } from '../../domain/shared/components/search-cards';
 
 const SearchResultCardChooser = ({ result }: { result: ResultType | undefined }): React.ReactElement | null => {
+  const { user: userMetadata } = useUserContext();
+  const userId = userMetadata?.user?.id;
+  const { data: rolesData } = useUserRolesSearchCardsQuery({
+    variables: {
+      userId: userId!,
+    },
+    skip: !userId,
+  });
+  const userRoles = rolesData?.rolesUser;
+
   const {
     hydrateHubCard,
     useHydrateChallengeCardHook,
     useHydrateOpportunityCardHook,
     hydrateUserCard,
     hydrateOrganizationCard,
-  } = useHydrateCard(result);
+  } = useHydrateCard(result, userRoles);
 
   const hydrateChallengeCardResult = useHydrateChallengeCardHook();
   const hydrateOpportunityCardResult = useHydrateOpportunityCardHook();
@@ -57,19 +71,30 @@ const SearchResultCardChooser = ({ result }: { result: ResultType | undefined })
 };
 export default SearchResultCardChooser;
 
-const useHydrateCard = (result: ResultType | undefined) => {
+const useHydrateCard = (
+  result: ResultType | undefined,
+  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
+) => {
   const hydrateUserCard = () => _hydrateUserCard(result as SearchResult<UserSearchResultFragment>);
 
   const hydrateOrganizationCard = () =>
-    _hydrateOrganizationCard(result as SearchResult<OrganizationSearchResultFragment>);
+    _hydrateOrganizationCard(result as SearchResult<OrganizationSearchResultFragment>, userRoles);
 
-  const hydrateHubCard = () => _hydrateHubCard(result as SearchResult<HubSearchResultFragment>);
+  const hydrateHubCard = () => _hydrateHubCard(result as SearchResult<HubSearchResultFragment>, userRoles);
 
   const useHydrateChallengeCardHook = () =>
-    useHydrateChallengeCard(result as SearchResult<ChallengeSearchResultFragment>, !result || !result['hubID']);
+    useHydrateChallengeCard(
+      result as SearchResult<ChallengeSearchResultFragment>,
+      userRoles,
+      !result || !result['hubID']
+    );
 
   const useHydrateOpportunityCardHook = () =>
-    useHydrateOpportunityCard(result as SearchResult<OpportunitySearchResultFragment>, !result || !result['challenge']);
+    useHydrateOpportunityCard(
+      result as SearchResult<OpportunitySearchResultFragment>,
+      userRoles,
+      !result || !result['challenge']
+    );
 
   return {
     hydrateUserCard,
@@ -100,17 +125,23 @@ const _hydrateUserCard = (data: SearchResult<UserSearchResultFragment>): React.R
   );
 };
 
-const _hydrateOrganizationCard = (data: SearchResult<OrganizationSearchResultFragment>) => {
+const _hydrateOrganizationCard = (
+  data: SearchResult<OrganizationSearchResultFragment>,
+  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
+) => {
   // todo extract in func
   const profile = data.profile_;
   const image = profile?.avatar?.uri;
   const { country, city } = profile?.location ?? {};
   const url = buildOrganizationUrl(data.nameID);
 
+  const organizationRoles = userRoles?.organizations.find(x => x.id === data.id);
+  const label = organizationRoles?.roles.find(x => x === RoleType.Associate);
+
   return (
     <SearchOrganizationCard
       image={image}
-      label={'placeholder'}
+      label={label}
       name={data.displayName}
       country={country}
       city={city}
@@ -120,7 +151,10 @@ const _hydrateOrganizationCard = (data: SearchResult<OrganizationSearchResultFra
   );
 };
 
-const _hydrateHubCard = (data: SearchResult<HubSearchResultFragment>) => {
+const _hydrateHubCard = (
+  data: SearchResult<HubSearchResultFragment>,
+  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined
+) => {
   const context = data.context;
   const tagline = context?.tagline;
   const image = getVisualBanner(context?.visuals);
@@ -128,10 +162,22 @@ const _hydrateHubCard = (data: SearchResult<HubSearchResultFragment>) => {
   const matchedTerms = data.terms;
   const url = buildHubUrl(data.nameID);
 
-  return <SearchHubCard image={image} name={name} tagline={tagline} matchedTerms={matchedTerms} url={url} />;
+  const hubRoles = userRoles?.hubs.find(x => x.id === data.id);
+  const label =
+    hubRoles?.roles.find(x => x === RoleType.Lead) ||
+    hubRoles?.roles.find(x => x === RoleType.Host) ||
+    hubRoles?.roles.find(x => x === RoleType.Member);
+
+  return (
+    <SearchHubCard image={image} label={label} name={name} tagline={tagline} matchedTerms={matchedTerms} url={url} />
+  );
 };
 
-const useHydrateChallengeCard = (data: SearchResult<ChallengeSearchResultFragment> | undefined, skip: boolean) => {
+const useHydrateChallengeCard = (
+  data: SearchResult<ChallengeSearchResultFragment> | undefined,
+  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined,
+  skip: boolean
+) => {
   const context = data?.context;
   const tagline = context?.tagline;
   const image = getVisualBanner(context?.visuals);
@@ -159,9 +205,15 @@ const useHydrateChallengeCard = (data: SearchResult<ChallengeSearchResultFragmen
   const hubDisplayName = hubData.hub.displayName;
   const url = buildChallengeUrl(hubNameId, nameID);
 
+  const challengeRoles = userRoles?.hubs.find(x => x.id === hubId)?.challenges.find(x => x.id === data?.id);
+
+  const label =
+    challengeRoles?.roles.find(x => x === RoleType.Lead) || challengeRoles?.roles.find(x => x === RoleType.Member);
+
   return (
     <SearchChallengeCard
       image={image}
+      label={label}
       name={name}
       tagline={tagline}
       parentName={hubDisplayName}
@@ -171,7 +223,11 @@ const useHydrateChallengeCard = (data: SearchResult<ChallengeSearchResultFragmen
   );
 };
 
-const useHydrateOpportunityCard = (data: SearchResult<OpportunitySearchResultFragment> | undefined, skip: boolean) => {
+const useHydrateOpportunityCard = (
+  data: SearchResult<OpportunitySearchResultFragment> | undefined,
+  userRoles: UserRolesSearchCardsQuery['rolesUser'] | undefined,
+  skip: boolean
+) => {
   const context = data?.context;
   const tagline = context?.tagline;
   const image = getVisualBanner(context?.visuals);
@@ -193,7 +249,7 @@ const useHydrateOpportunityCard = (data: SearchResult<OpportunitySearchResultFra
     return null;
   }
 
-  if (!hubData || !challengeNameId || !name || !nameID) {
+  if (!hubData || !challengeNameId || !name || !nameID || !challengeDisplayName) {
     return null;
   }
 
@@ -201,13 +257,17 @@ const useHydrateOpportunityCard = (data: SearchResult<OpportunitySearchResultFra
 
   const url = buildOpportunityUrl(hubNameId, challengeNameId, nameID);
 
-  if (!challengeDisplayName) {
-    return null;
-  }
+  const opportunityRoles = userRoles?.hubs
+    .find(x => x.id === data?.challenge?.hubID)
+    ?.opportunities.find(x => x.id === data?.id);
+
+  const label =
+    opportunityRoles?.roles.find(x => x === RoleType.Lead) || opportunityRoles?.roles.find(x => x === RoleType.Member);
 
   return (
-    <SearchChallengeCard
+    <SearchOpportunityCard
       image={image}
+      label={label}
       name={name}
       tagline={tagline}
       parentName={challengeDisplayName}

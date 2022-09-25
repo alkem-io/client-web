@@ -8,6 +8,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TagsComponent from '../../TagsComponent/TagsComponent';
 import { ClampedTypography } from '../../ClampedTypography';
+import { RouterLink } from '../../../../../common/components/core/RouterLink';
+import Link from '@mui/material/Link';
 
 const MATCH_TERMS_HEIGHT = 50;
 const NAME_HEIGHT = 60;
@@ -22,6 +24,7 @@ const Label = styled(Typography)(({ theme }) => ({
   borderTopLeftRadius: 20,
   borderBottomLeftRadius: 20,
   marginBottom: 1,
+  textTransform: 'uppercase',
 }));
 const NameBox = styled(Box)(({ theme }) => ({
   width: theme.cards.search.width,
@@ -38,6 +41,7 @@ const getCalculatedCardImage = (mediaHeight: number) =>
   styled(props => <CardMedia {...props} />)<CardMediaProps & ComponentPropsWithRef<'img'>>(({ theme }) => ({
     width: theme.cards.search.width,
     height: mediaHeight,
+    backgroundColor: theme.palette.neutralMedium.main,
     display: 'flex',
     // align end on the horizontal
     justifyContent: 'end',
@@ -61,43 +65,51 @@ interface SearchBaseCardProps {
   image: string | undefined;
   imgAlt?: string; // todo make required when alt text is available for visuals
   matchedTerms: string[];
-  icon: React.ComponentType<SvgIconProps>,
+  icon: React.ComponentType<SvgIconProps>;
   name: string;
   label?: string; // todo working var name
   url: string;
 }
 
-const SearchBaseCard: FC<SearchBaseCardProps> = ({ image, imgAlt, height, imgHeight, label, icon: Icon, name, matchedTerms, url, children }) => {
+const SearchBaseCard: FC<SearchBaseCardProps> = ({
+  image,
+  imgAlt,
+  height,
+  imgHeight,
+  label,
+  icon: Icon,
+  name,
+  matchedTerms,
+  url,
+  children,
+}) => {
   const [CardBox, CardImage, CardContents] = useMemo(
     () => [
       getCalculatedCardBox(height),
       getCalculatedCardImage(imgHeight),
-      getCalculatedCardContents(height, imgHeight)
+      getCalculatedCardContents(height, imgHeight),
     ],
     [imgHeight]
   );
   // todo image on NO img url
-  // todo use url for clicks
   return (
-    <CardBox>
-      <CardImage image={image} alt={imgAlt}>
-        <Label>
-          {label}
-        </Label>
-      </CardImage>
-      <NameBox>
-        <Icon fontSize="medium" color="primary" sx={{ mr: theme => theme.spacing(0.5) }} />
-        <ClampedTypography variant={'h5'} sx={{ color: 'primary.main' }} clamp={2}>
-          {name}
-        </ClampedTypography>
-      </NameBox>
-      <CardContents>
-        {children}
-      </CardContents>
-      <MatchTermsBox>
-        <TagsComponent tags={matchedTerms} count={2} />
-      </MatchTermsBox>
-    </CardBox>
+    <Link component={RouterLink} to={url} underline="none">
+      <CardBox>
+        <CardImage image={image} alt={imgAlt}>
+          <Label>{label}</Label>
+        </CardImage>
+        <NameBox>
+          <Icon fontSize="medium" color="primary" sx={{ mr: theme => theme.spacing(0.5) }} />
+          <ClampedTypography variant={'h5'} sx={{ color: 'primary.main' }} clamp={2}>
+            {name}
+          </ClampedTypography>
+        </NameBox>
+        <CardContents>{children}</CardContents>
+        <MatchTermsBox>
+          <TagsComponent tags={matchedTerms} count={2} />
+        </MatchTermsBox>
+      </CardBox>
+    </Link>
   );
 };
 export default SearchBaseCard;

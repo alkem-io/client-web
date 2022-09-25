@@ -1,15 +1,11 @@
 import React, { FC } from 'react';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
-import SearchBaseContributorCard, { SearchBaseContributorCardProps } from './base/SearchBaseContributorCard';
+import SearchBaseContributorCard from './base/SearchBaseContributorCard';
 import { SearchContributorCardProps } from './SearchContributorCardProps';
 
 export interface SearchUserCardProps extends SearchContributorCardProps {}
 
-export const SearchUserCard: FC<SearchUserCardProps> = ({
-  image, imgAlt, name,
-  city, country,
-  matchedTerms, url,
-}) => {
+export const SearchUserCard: FC<SearchUserCardProps> = ({ image, imgAlt, name, city, country, matchedTerms, url }) => {
   return (
     <SearchBaseContributorCard
       icon={PersonOutlinedIcon}
