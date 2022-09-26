@@ -44,11 +44,11 @@ const WelcomeSection = () => {
         {tLinks('pages.home.sections.welcome.impact', {
           impact: { href: platform?.impact },
         })}
-        {tLinks('pages.home.sections.welcome.foundation', {
-          foundation: { href: platform?.foundation },
-        })}
         {tLinks('pages.home.sections.welcome.opensource', {
           opensource: { href: platform?.opensource },
+        })}
+        {tLinks('pages.home.sections.welcome.foundation', {
+          foundation: { href: platform?.foundation },
         })}
       </Box>
     </>
