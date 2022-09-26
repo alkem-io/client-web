@@ -5,7 +5,7 @@ import { ClampedTypography, ClampedTypographyProps } from '../../ClampedTypograp
 import SearchBaseCard, { SearchBaseCardImplProps } from './SearchBaseCard';
 
 const TaglineBox = styled(Box)<BoxProps & ClampedTypographyProps>({
-  height: 100,
+  height: 75,
 });
 
 export interface SearchBaseJourneyCardProps extends SearchBaseCardImplProps {
@@ -20,11 +20,9 @@ export const SearchBaseJourneyCard: FC<SearchBaseJourneyCardProps> = ({ tagline,
       imgHeight={theme.cards.search.journey.imgHeight}
       {...rest}
     >
-      {tagline && (
-        <TaglineBox component={ClampedTypography} clamp={4}>
-          {tagline}
-        </TaglineBox>
-      )}
+      <TaglineBox component={ClampedTypography} clamp={3}>
+        {tagline}
+      </TaglineBox>
       {children}
     </SearchBaseCard>
   );
