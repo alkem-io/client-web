@@ -2,9 +2,9 @@ import { FilterConfig, FilterDefinition } from './Filter';
 import React, { FC, useMemo, useState } from 'react';
 import DashboardGenericSection from '../../domain/shared/components/DashboardSections/DashboardGenericSection';
 import { EntityFilter } from './EntityFilter';
+import { ResultType } from './SearchPage';
 import CardsLayout from '../../domain/shared/layout/CardsLayout/CardsLayout';
 import SearchResultCardChooser from './SearchResultCardChooser';
-import { ResultType } from './SearchPage';
 
 interface ResultSectionProps {
   title: string;
