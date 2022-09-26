@@ -38,12 +38,7 @@ export const useWhoami = () => {
   }, [kratosClient]);
 
   const verified = useMemo(() => {
-    const identity = session?.identity;
-    if (!identity) {
-      setError(`Unable to load identity on session: ${session}`);
-      return false;
-    }
-    return identity.verifiable_addresses?.[0].verified || false;
+    return session?.identity?.verifiable_addresses?.[0].verified || false;
   }, [session]);
 
   return { session, loading, error, isAuthenticated, verified };
