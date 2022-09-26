@@ -47,7 +47,7 @@ const contributorFilterConfig: FilterConfig = {
 const entityFilterConfig: FilterConfig = {
   all: {
     title: 'All',
-    value: ['opportunity', 'challenge'],
+    value: ['hub', 'opportunity', 'challenge'],
     typename: 'all',
   },
   opportunity: {
@@ -60,13 +60,18 @@ const entityFilterConfig: FilterConfig = {
     value: ['challenge'],
     typename: 'Challenge',
   },
+  hub: {
+    title: 'Hubs only',
+    value: ['hub'],
+    typename: 'Hub',
+  },
 };
 
 export type ResultMetadataType = { score: number; terms: string[] };
 export type SearchResult<T> = T & ResultMetadataType;
 
 export type ResultType = SearchResult<
-  UserSearchResultFragment
+  | UserSearchResultFragment
   | OrganizationSearchResultFragment
   | HubSearchResultFragment
   | ChallengeSearchResultFragment
@@ -162,7 +167,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
   const [journeyResults, contributorResults] = useMemo(
     () => [
-      results?.filter(({ __typename }) => __typename === 'Hub' || __typename === 'Challenge' || __typename === 'Opportunity'),
+      results?.filter(
+        ({ __typename }) => __typename === 'Hub' || __typename === 'Challenge' || __typename === 'Opportunity'
+      ),
       results?.filter(({ __typename }) => __typename === 'User' || __typename === 'Organization'),
     ],
     [results]
