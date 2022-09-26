@@ -11,7 +11,7 @@ const ALL_COOKIES = [...Object.values(CookieTypes)];
 const createCookieOptions = () => {
   const date = new Date();
   date.setDate(date.getDate() + 150);
-  return { expires: date };
+  return { expires: date, path: '/' };
 };
 
 export const useAlkemioCookies = () => {
