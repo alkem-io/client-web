@@ -11,9 +11,7 @@ describe('TextIpnut component', () => {
   // Mathcing snapshot when we are using dynamicaly generated class names is ineffective
   test.skip('render correctly TextInput/Input component', () => {
     // act
-    const { asFragment } = render(
-      <TextInput onChange={onChange} value={value} label={label} inset small disabled />
-    );
+    const { asFragment } = render(<TextInput onChange={onChange} value={value} label={label} inset small disabled />);
     const html = asFragment();
 
     // assert
@@ -23,9 +21,7 @@ describe('TextIpnut component', () => {
   // Mathcing snapshot when we are using dynamicaly generated class names is ineffective
   test.skip('render correctly TextArea/Input component', () => {
     // act
-    const { asFragment } = render(
-      <TextArea onChange={onChange} value={value} label={label} inset small disabled />
-    );
+    const { asFragment } = render(<TextArea onChange={onChange} value={value} label={label} inset small disabled />);
     const html = asFragment();
 
     // assert

@@ -71,7 +71,7 @@ describe('ApplicationButton component', () => {
 
   describe('has pending application', () => {
     [APPLICATION_STATE_NEW, APPLICATION_STATE_REJECTED].forEach(x =>
-      test(x, () => {
+      test(`${x}`, () => {
         // arrange
         const props = {
           loading: false,

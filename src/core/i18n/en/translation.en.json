@@ -326,6 +326,9 @@
     }
   },
   "components": {
+    "search-cards": {
+      "matched-terms": "Matched Terms"
+    },
     "activity-log-section": {
       "title": "Latest activities"
     },
