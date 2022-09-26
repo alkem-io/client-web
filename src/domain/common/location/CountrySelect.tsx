@@ -2,7 +2,7 @@ import { TextField } from '@mui/material';
 import { Autocomplete } from '@mui/material';
 import { useField } from 'formik';
 import React, { FC } from 'react';
-import { COUNTRIES, CountryType } from '../../../../models/constants';
+import { COUNTRIES, CountryType } from '../../../models/constants';
 
 interface CountrySelectProps {
   title?: string;
