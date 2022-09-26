@@ -7,11 +7,7 @@ export interface SearchChallengeCardProps extends SearchJourneyWithParentImplPro
 
 export const SearchChallengeCard: FC<SearchChallengeCardProps> = ({ children, ...rest }) => {
   return (
-    <SearchJourneyWithParentCard
-      icon={ChallengeIcon}
-      parentIcon={HubOutlinedIcon}
-      { ...rest }
-    >
+    <SearchJourneyWithParentCard icon={ChallengeIcon} parentIcon={HubOutlinedIcon} {...rest}>
       {children}
     </SearchJourneyWithParentCard>
   );

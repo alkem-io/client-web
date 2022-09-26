@@ -4,17 +4,19 @@ import { SearchBaseJourneyCard, SearchBaseJourneyCardProps } from './base/Search
 import { ClampedTypography } from '../ClampedTypography';
 
 export type SearchJourneyWithParentImplProps = Omit<SearchJourneyWithParentCardProps, 'icon' | 'parentIcon'>;
-interface SearchJourneyWithParentCardProps extends SearchBaseJourneyCardProps  {
+interface SearchJourneyWithParentCardProps extends SearchBaseJourneyCardProps {
   parentIcon: React.ComponentType<SvgIconProps>;
   parentName: string;
 }
 
-const SearchJourneyWithParentCard: FC<SearchJourneyWithParentCardProps> = ({ parentIcon: ParentIcon, parentName, ...rest }) => {
+const SearchJourneyWithParentCard: FC<SearchJourneyWithParentCardProps> = ({
+  parentIcon: ParentIcon,
+  parentName,
+  ...rest
+}) => {
   return (
-    <SearchBaseJourneyCard
-      { ...rest }
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: '14px', }}>
+    <SearchBaseJourneyCard {...rest}>
+      <Box sx={{ display: 'flex', alignItems: 'center', paddingTop: '14px' }}>
         {ParentIcon && <ParentIcon fontSize="small" sx={{ mr: 0.5 }} />}
         {parentName && (
           <ClampedTypography clamp={1} variant="caption" sx={{ textTransform: 'Uppercase' }}>

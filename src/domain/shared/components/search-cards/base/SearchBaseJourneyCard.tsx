@@ -12,17 +12,13 @@ export interface SearchBaseJourneyCardProps extends SearchBaseCardImplProps {
   tagline?: string;
 }
 
-export const SearchBaseJourneyCard: FC<SearchBaseJourneyCardProps> = ({
-  tagline,
-  children,
-  ...rest
-}) => {
+export const SearchBaseJourneyCard: FC<SearchBaseJourneyCardProps> = ({ tagline, children, ...rest }) => {
   const theme = useTheme();
   return (
     <SearchBaseCard
       height={theme.cards.search.journey.height}
       imgHeight={theme.cards.search.journey.imgHeight}
-      { ...rest }
+      {...rest}
     >
       {tagline && (
         <TaglineBox component={ClampedTypography} clamp={4}>

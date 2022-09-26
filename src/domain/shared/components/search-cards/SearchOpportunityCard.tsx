@@ -7,11 +7,7 @@ export interface SearchOpportunityCardProps extends SearchJourneyWithParentImplP
 
 export const SearchOpportunityCard: FC<SearchOpportunityCardProps> = ({ children, ...rest }) => {
   return (
-    <SearchJourneyWithParentCard
-      icon={BatchPredictionOutlinedIcon}
-      parentIcon={ChallengeIcon}
-      { ...rest }
-    >
+    <SearchJourneyWithParentCard icon={BatchPredictionOutlinedIcon} parentIcon={ChallengeIcon} {...rest}>
       {children}
     </SearchJourneyWithParentCard>
   );

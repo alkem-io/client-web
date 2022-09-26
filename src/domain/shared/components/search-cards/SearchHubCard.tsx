@@ -5,11 +5,6 @@ import { SearchJourneyCardProps } from './SearchJourneyCardProps';
 
 export interface SearchHubCardProps extends SearchJourneyCardProps {}
 
-export const SearchHubCard: FC<SearchHubCardProps> = (props) => {
-  return (
-    <SearchBaseJourneyCard
-      icon={HubOutlinedIcon}
-      { ...props }
-    />
-  );
+export const SearchHubCard: FC<SearchHubCardProps> = props => {
+  return <SearchBaseJourneyCard icon={HubOutlinedIcon} {...props} />;
 };

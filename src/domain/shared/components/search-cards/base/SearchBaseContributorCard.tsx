@@ -17,10 +17,15 @@ export interface SearchBaseContributorCardProps extends SearchBaseCardImplProps 
 }
 
 const SearchBaseContributorCard: FC<SearchBaseContributorCardProps> = ({
-  image, imgAlt, label, matchedTerms,
-  icon, name,
-  country, city,
-  url
+  image,
+  imgAlt,
+  label,
+  matchedTerms,
+  icon,
+  name,
+  country,
+  city,
+  url,
 }) => {
   const theme = useTheme();
 
@@ -48,10 +53,8 @@ const SearchBaseContributorCard: FC<SearchBaseContributorCardProps> = ({
       {location && (
         <LocationBox>
           <LocationOnOutlinedIcon fontSize={'inherit'} />
-         <Typography variant={'subtitle2'}>
-          {location}
-         </Typography>
-       </LocationBox>
+          <Typography variant={'subtitle2'}>{location}</Typography>
+        </LocationBox>
       )}
     </SearchBaseCard>
   );
