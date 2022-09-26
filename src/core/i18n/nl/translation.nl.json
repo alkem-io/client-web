@@ -11,6 +11,9 @@
     "technical": "Technisch noodzakelijke cookies: maken het mogelijk op de website te navigeren en uw voorkeuren op te slaan.",
     "analysis": "Analytische cookies: staan ons toe vast te stellen hoe gebruikers onze dienst gebruiken om de gebruikerservaring te verbeteren."
   },
+  "actions": {
+    "add-entity": "Voeg {{entity}} toe"
+  },
   "buttons": {
     "learn-more": "Meer leren",
     "load-more": "Laad meer",
@@ -19,6 +22,9 @@
     "explore": "Verken",
     "ok": "Ok",
     "create": "Maak aan",
+    "publish": "Publiceer",
+    "unpublish": "Depubliceer",
+    "save-draft": "Voorlopig opslaan",
     "save": "Opslaan",
     "back": "Terug",
     "next": "Volgende",
@@ -71,14 +77,30 @@
     "name": "Naam",
     "username": "Gebruikersnaam",
     "tags": "Labels",
+    "administration": "Administratie",
     "add": "Voeg toe",
     "remove": "Verwijder",
-    "comment": "Operking",
+    "callout": "Callout",
+    "canvas": "Canvas",
+    "canvases": "Canvassen",
+    "comment": "Opmerking",
     "comments": "Opmerkingen",
+    "card": "Kaart",
+    "cards": "Kaarten",
+    "create": "Maak aan",
+    "create-new": "Maak nieuwe aan",
+    "create-new-entity": "Maak nieuwe {{entity}} aan",
+    "description": "Omschrijving",
+    "about": "Over",
+    "explore": "Explore",
+    "edit-entity": "Pas {{entity}} aan",
+    "filter": "Filter",
     "email": "Email",
     "state": "Staat",
     "aspect": "Kaart",
     "aspects": "Kaarten",
+    "host": "Host",
+    "lead": "Lead",
     "hub": "Hub",
     "hubs": "Hubs",
     "challenge": "Challenge",
@@ -93,7 +115,8 @@
     "interest": "Interesse",
     "interests": "Interesses",
     "project": "Project",
-    "projects": "Projecten",
+    "agreements": "Overeenkomsten",
+    "templates": "Templates",
     "group": "Groep",
     "groups": "Groepen",
     "user-group": "Gebruikersgroep",
@@ -105,6 +128,9 @@
     "no-updates": "Geen updates",
     "no-tags": "Geen labels beschikbaar",
     "no-references": "Geen referenties beschikbaar",
+    "field-required": "Dit veld is vereist",
+    "field-min-length": "Dit veld moet bestaan uit minimaal {{min}} karakters",
+    "field-max-length": "Dit veld moet bestaan uit maximaal {{max}} karakters",
     "membership": "Lidmaatschap",
     "owner": "Eigenaar",
     "admin": "Beheerder",
@@ -113,11 +139,10 @@
     "empty-string": "",
     "discussion": "Discussie",
     "discussions": "Discussies",
-    "dashboard": "Overzicht",
-    "contribute": "Bijdragen",
+    "dashboard": "Dashboard",
+    "contribute": "Draag bij",
     "context": "Context",
     "community": "Community",
-    "canvases": "Canvassen",
     "settings": "Instellingen",
     "search": "Zoek...",
     "reference": "Referentie",
@@ -125,7 +150,7 @@
     "notifications": "Notificaties",
     "credentials": "Credentials",
     "my-profile": "Mijn profiel",
-    "my-memberships": "My lidmaatschappen",
+    "my-memberships": "Mijn lidmaatschappen",
     "profile": "Profiel",
     "social": "Sociaal",
     "lifecycle": "Levenscyclus",
@@ -136,6 +161,10 @@
     "questions": "Vragen",
     "show-all": "Toon alles",
     "title": "Titel",
+    "warning": "Waarschuwing",
+    "preview": "Preview",
+    "help": "Help",
+    "language": "Taal",
     "genders": {
       "notSpecified": "niet gespecificeerd",
       "male": "man",
@@ -152,13 +181,13 @@
           "order": 0,
           "hidden": false
         },
-        "GLOBAL_ADMIN_COMMUNITY": {
-          "name": "Globale Community Beheerder",
+        "GLOBAL_ADMIN_HUBS": {
+          "name": "Globale Hubs Beheerder",
           "order": 1,
           "hidden": false
         },
-        "GLOBAL_ADMIN_CHALLENGES": {
-          "name": "Globale Challenges Beheerder",
+        "GLOBAL_ADMIN_COMMUNITY": {
+          "name": "Globale Community Beheerder",
           "order": 2,
           "hidden": false
         },
@@ -168,12 +197,12 @@
           "hidden": true
         },
         "HUB_ADMIN": {
-          "name": "Beheerder Hub",
+          "name": "Hub Beheerder",
           "order": 3,
           "hidden": false
         },
         "HUB_HOST": {
-          "name": "Organisator Hub",
+          "name": "Hub Host",
           "order": 4,
           "hidden": true
         },
@@ -183,60 +212,65 @@
           "hidden": true
         },
         "CHALLENGE_ADMIN": {
-          "name": "Beheerder Challenge",
+          "name": "Challenge Beheerder",
           "order": 6,
           "hidden": false
         },
         "CHALLENGE_LEAD": {
-          "name": "Leidinggevende Challenge",
+          "name": "Challenge Lead",
           "order": 7,
           "hidden": true
         },
         "CHALLENGE_MEMBER": {
-          "name": "Lid Challenge",
+          "name": "Challenge Lid",
           "order": 8,
           "hidden": true
         },
         "OPPORTUNITY_ADMIN": {
-          "name": "Beheerder Opportunity",
+          "name": "Opportunity Beheerder",
           "order": 9,
           "hidden": true
         },
         "OPPORTUNITY_MEMBER": {
-          "name": "Lid Opportunity",
+          "name": "Opportunity Lid",
           "order": 10,
           "hidden": true
         },
-        "ORGANIZATION_OWNER": {
-          "name": "Eigenaar Organisatie",
+        "OPPORTUNITY_LEAD": {
+          "name": "Opportunity Lead",
           "order": 11,
-          "hidden": false
+          "hidden": true
         },
-        "ORGANIZATION_ADMIN": {
-          "name": "Beheerder Organisatie",
+        "ORGANIZATION_OWNER": {
+          "name": "Organisatie Eigenaar",
           "order": 12,
           "hidden": false
         },
-        "ORGANIZATION_MEMBER": {
-          "name": "Lid Organisatie",
+        "ORGANIZATION_ADMIN": {
+          "name": "Organisatie Beheerder",
           "order": 13,
+          "hidden": false
+        },
+        "ORGANIZATION_MEMBER": {
+          "name": "Organisatie Lid",
+          "order": 14,
           "hidden": true
         },
         "USER_SELF_MANAGEMENT": {
           "name": "Gebruiker Eigen Management",
-          "order": 14,
+          "order": 15,
           "hidden": true
         },
         "USER_GROUP_MEMBER": {
           "name": "Lid Gebruikersgroep",
-          "order": 15,
+          "order": 16,
           "hidden": true
         }
       },
       "edit-mode": {
         "new": "Nieuw",
         "edit": "Pas aan",
-        "read-only": "Alleen-lezen"
+        "read-only": "Alleen lezen"
       },
       "discussion-category": {
         "GENERAL": "Algemeen",
@@ -244,39 +278,118 @@
         "QUESTIONS": "Vragen",
         "SHARING": "Delen"
       }
+    },
+    "blocks": {
+      "users-contributing": "gebruikers die bijdragen",
+      "all-contributing-users": "alle bijdragende gebruikers"
     }
   },
   "community": {
-    "leading-organizations": "Leidende organisaties"
+    "leading-users": "Lead",
+    "member-users": "Leden",
+    "leading-organizations": "Leidende Organisaties",
+    "member-organizations": "Lid Organisaties",
+    "leads": "Leads",
+    "members": "Leden",
+    "host": "Host"
+  },
+  "callout": {
+    "draftNotice": "Voorlopige versie - Deze Callout is alleen zichtbaar voor Beheerders",
+    "delete-confirm-title": "Callout verwijderen?",
+    "delete-confirm-text": "Alle Kaarten, Canvasen en discussies onder deze Callout worden ook verwijderd."
   },
   "forms": {
     "validations": {
-      "required": "Dit veld is vereist!"
+      "required": "Dit veld is vereist!",
+      "minLength": "{{field}} moet tenminste {{min}} karakters lang zijn",
+      "maxLength": "Limiet van {{max}} karakters overschreden",
+      "alphaNumeric": "{{field}} kan alleen bestaan uit kleine letters, nummers of koppeltekens",
+      "nonBlank": "{{field}} kan niet slechts uit spaties bestaan"
+    }
+  },
+  "aspect-templates": {
+    "aspect-template": "Kaart template",
+    "default-description": "Standaard Kaart omschrijving",
+    "banner-narrow": "Smalle banner"
+  },
+  "canvas-templates": {
+    "canvas-template": "Canvas template"
+  },
+  "innovation-templates": {
+    "innovation-template": "Innovation flow template",
+    "definition": {
+      "title": "Definitie",
+      "placeholder": "Hier kun je de omschrijving van Xstate Visualizer plakken met de verschillende Innovation Flow states."
+    },
+    "type": {
+      "title": "Type"
     }
   },
   "components": {
+    "activity-log-section": {
+      "title": "Latest activities"
+    },
+    "activity-log-view": {
+      "actions": {
+        "callout-published": "heeft een nieuwe Callout gepubliceerd",
+        "canvas-created": "heeft een nieuwe Canvas toegevoegd",
+        "card-comment-created": "heeft gereageerd op een Kaart",
+        "card-created": "heeft een nieuwe Kaart toegevoegd",
+        "discussion-comment-created": "heeft gereageerd op een Discussie Callout",
+        "member-joined": "is lid geworden"
+      }
+    },
+    "lifecycle-visualizer": {
+      "error": "De definitie kon niet gevisualiseerd worden"
+    },
+    "activity-tooltip": {
+      "headline": "Alkemio groeit! Op het platform zijn in totaal:"
+    },
     "context-section": {
-      "create-card": "Kaart succesvol aangemaakt",
+      "create-card": "Kaart aangemaakt!",
       "give-feedback": "Geef feedback"
     },
+    "callout-creation": {
+      "title": "Maak een nieuwe Callout",
+      "callout-type-label": "Callout type",
+      "info-step": {
+        "title": "Details",
+        "description": "Omschrijving",
+        "type-comments": "Discussie",
+        "type-comments-help": "Selecteer ‘Discussie’ als je wilt dat mensen antwoorden via een simpele reactie.",
+        "type-cards": "Kaarten",
+        "type-cards-help": "Selecteerd 'Kaarten' als je wilt dat mensen kennis delen via een Kaart met een beschrijving, referenties, en de mogelijkheid om commentaar te geven.",
+        "type-canvases": "Canvasen",
+        "type-canvases-help": "Selecteer ‘Canvasen’ als je wilt dat mensen antwoorden via visuele whiteboards waar ze op kunnen tekenen en schrijven."
+      },
+      "template-step": {
+        "title": "Templates",
+        "no-templates": "Geen templates beschikbaar",
+        "card-template-label": "Kies een template dat je zou willen gebruiken voor de Callout"
+      },
+      "create-step": {
+        "title": "Maak aan",
+        "card-template-label": "Kies een template voor de Kaart"
+      }
+    },
     "aspect-creation": {
-      "title": "Maak nieuw Kaart aan",
+      "title": "Maak een nieuw Kaart aan",
       "type-step": {
         "title": "Het soort additionele context om toe te voegen.",
         "error": "Fout opgetreden tijdens het laden van de types",
         "label": "Soort Kaart",
-        "type-help-text-short": "Kies het Kaart type dat het best overeenkomt met de context die je wilt delen.",
-        "type-help-text": "Kaarten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke actoren. De set Kaart-types dat hier beschikbaar is staat vast. Kies het Kaart-type dat het best overeenkomt met de context die je wilt delen."
+        "type-help-text-short": "Kies het Kaart type dat het beste overeenkomt met de context die je wilt delen.",
+        "type-help-text": "Kaarten maken het mogelijk om relevante context te delen, zoals andere intiatieven, kennis of belangrijke stakeholders. De set Kaart-types dat hier beschikbaar is staat vast. Kies het Kaart-type dat het beste overeenkomt met de context die je wilt delen."
       },
       "info-step": {
         "title": "Details",
         "description": "Deel alsjeblieft de details.",
-        "description-placeholder": "Een beschrijving voor dit Kaart",
-        "description-help-text": "Voeg hier de belangrijkste informatie toe over het Kaart. Waarom is het relevant? Hoe is het gerelateerd?",
-        "tags-help-text": "Voeg labels toe om effectief de informatie over het Kaart over te dragen. Goede labels maken Kaart makkelijker vindbaar.",
+        "description-placeholder": "Een beschrijving voor deze Kaart",
+        "description-help-text": "Voeg hier de belangrijkste informatie toe over de Kaart. Waarom is het relevant? Hoe is het gerelateerd?",
+        "tags-help-text": "Voeg informatieve labels toe die het vinden van de Kaart makkelijker maken.",
         "name-help-text": "Een beschrijvende naam voor het Kaart.",
         "name-id-help-text": "Naam-ID help tekst",
-        "unique-name-validation-text": "${path} is al in gebruik voor een ander Kaart."
+        "unique-name-validation-text": "${path} is al in gebruik voor een andere Kaart."
       },
       "create-step": {
         "title": "Laatste controle",
@@ -284,7 +397,7 @@
         "name": "Naam",
         "description": "Omschrijving",
         "links": "Relevante links",
-        "explanation": "Door het voltooien van deze stap zal het Kaart aangemaakt worden. In de volgende stap kan het Kaart verder worden bewerkt via het instellingen blad. Daar kunen bijvoorbeeld referenties en afbeeldingen voor de omslagfoto geselecteerd worden."
+        "explanation": "Door het voltooien van deze stap zal de Kaart aangemaakt worden. In de volgende stap kan de Kaart verder worden bewerkt via de instellingen. Daar kunnen bijvoorbeeld referenties en afbeeldingen voor de omslagfoto geselecteerd worden."
       },
       "visuals-step": {
         "title": "Afbeeldingen",
@@ -331,7 +444,7 @@
       "apply-parent": "Schrijf in voor de bovenliggende groep",
       "apply-disabled": "Inschrijven niet toegelaten",
       "apply-not-signed": "Log in om in te schrijven",
-      "apply-pending": "Uw inschrijving loopt",
+      "apply-pending": "Uw aanmelding is in behandeling",
       "join": "Word lid",
       "join-parent": "Word lid van de bovenliggende groep",
       "parent-pending": "Inschrijving van bovenliggende groep loopt",
@@ -362,7 +475,8 @@
     },
     "backdrop": {
       "private": "Wordt lid om toegang te krijgen tot {{blockName}}",
-      "authentication": "Log in om details te zien over {{blockName}}."
+      "authentication": "Log in om details te zien over {{blockName}}.",
+      "log-in": "Log in om {{blockName}} te zien"
     },
     "referenceSegment": {
       "title": "Referenties",
@@ -377,8 +491,7 @@
         "title": "Organisator",
         "select": "Select een organisator"
       },
-      "read-access": "Sta niet-leden van de Hub toe de Challenges te lezen",
-      "read-access-title": "Zichtbaarheid"
+      "read-access": "Sta niet-leden van de Hub toe de Challenges te lezen"
     },
     "nameSegment": {
       "name": "Naam",
@@ -423,6 +536,17 @@
       "description": {
         "name": "Omschrijving",
         "placeholder": "Voeg een omschrijving toe"
+      },
+      "location": {
+        "title": "Locatie",
+        "country": {
+          "name": "Land",
+          "placeholder": "Selecteer een land"
+        },
+        "city": {
+          "name": "Stad",
+          "placeholder": "Naam van de stad"
+        }
       }
     },
     "organizationSegment": {
@@ -449,7 +573,8 @@
     },
     "card": {
       "member": "Lid",
-      "private": "Privé"
+      "private": "Privé",
+      "lead": "Lead"
     },
     "errorblock": {
       "message": "Excuses, er is een fout opgetreden tijdens het laden van {{blockName}}."
@@ -517,9 +642,6 @@
         },
         "website": {
           "title": "Website"
-        },
-        "work": {
-          "title": "Beroep"
         }
       }
     },
@@ -568,6 +690,9 @@
       },
       "buttons": {
         "post": "Plaats opmerking"
+      },
+      "tooltip": {
+        "markdown-help": "Je kunt een format toevoegen aan je reactie,\nbijvoorbeeld:\nDikgedrukte tekst: **dikgedrukt**\nCursieve tekst: *cursief*\nHeader: ##Titel\nLink: [tekst](url)"
       }
     },
     "new-discussion": {
@@ -610,6 +735,12 @@
     }
   },
   "footer": {
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "security": "Security",
+    "feedback": "Feedback",
+    "support": "Support",
+    "about": "About",
     "copyright": "© 2022 Stichting Alkemio"
   },
   "pages": {
@@ -618,25 +749,33 @@
         "dashboard": {
           "description": "Hier kan je een samenvatting zien van deze {{entity}}. Navigeer door de andere tabbladen om meer gedetailleerde informatie te zien!"
         },
-        "context": {
-          "description": "Hier kan je de context verkennen van deze {{entity}}. Deze informatie is gegeven door de organisatie(s) die deze {{entity}} beheren."
+        "about": {
+          "description": "Hier kun je de context en community vinden van deze {{entity}}."
         },
         "community": {
-          "description": "Hier kan je de community verkennen. Je kan de gebruikers en organisaties zien die bijdragen, maar ook de updates die zijn gedeeld."
+          "description": "Hier kun je de Community vinden. Zie welke gebruikers en organisaties een bijdrage leveren en welke updates er geplaatst zijn.",
+          "leading-contributors": "Leading bijdragers",
+          "contributors": "Bijdragers"
         },
-        "contribute": {
-          "description": "Hier kan je jouw inzichten geven die bijdragen aan een beter begrip van de context. Deze bijdragen worden Kaarten genoemd. Het gaat erom dat de 'wisdom of the community' wordt gebruikt. \n Voeg extra Kaarten toe of reageer en discusieer rond bestaande Kaarten die door anderen zijn toegevoegd!"
+        "explore": {
+          "description": "Hier kun je je inzichten delen die bijdragen aan het verrijken van de context. Hier worden de kennis en ervaringen van de community verzameld."
         },
         "discussions": {
-          "description": "Hier kan je met andere leden uit de community discussieren rond deze {{entity}}."
+          "description": "Hier kun meer lezen over en bijdragen een de discussies van deze {{entity}}."
         },
         "canvases": {
-          "description": "Canvassen kunnen worden gezien als digitale whiteboards. In deze sectie kan je een canvas aanmaken voor deze {{entity}}, of bestaande canvassen bekijken en bewerken."
+          "description": "Canvasen zijn digitale whiteboards. Je kunt hier een Canvas creëren voor deze {{entity}}, maar ook de Canvasen van anderen vinden."
+        },
+        "profile": {
+          "description": ""
         }
       }
     },
     "contribute": {
       "no-cards": "Geen Kaarten gevonden"
+    },
+    "explore": {
+      "create-callout": "Maak een nieuwe Callout aan"
     },
     "admin": {
       "generic": {
@@ -655,28 +794,60 @@
           },
           "authorization": {
             "description": "Hier kan je de authorisatie-instellingen aanpassen voor deze {{entity}}."
+          },
+          "templates": {
+            "description": "Hier kun je Templates maken en aanpassen voor deze {{entity}}.",
+            "aspect-templates": "Templates voor Kaarten",
+            "canvas-templates": "Templates voor Canvasen",
+            "innovation-templates": "Templates voor Innovation Flows",
+            "delete-confirmation": "Weet je zeker dat je {{template}} wil verwijderen van de Hub? Je kunt ook de template informatie aanpassen?"
+          },
+          "my-profile": {
+            "description": "Hier kun je de details van je profiel aanpassen."
+          },
+          "membership": {
+            "description": "Hier kun je meer informatie zien over je lidmaatschap."
+          },
+          "organizations": {
+            "description": "Hier kun je alle geassocieerde organisaties zien van deze gebruiker."
+          },
+          "notifications": {
+            "description": "Hier kun je je voorkeuren voor notificaties aanpassen."
+          },
+          "credentials": {
+            "description": "Hier kun je de credentials zien."
           }
         }
       },
       "organization": {
+        "create-organization": "Maak organisatie aan",
         "authorization": {
           "preferences": {
             "title": "Authorisatie",
             "subtitle": "In deze sectie kan je de autorisatie van de organisaties aanpassen"
           }
+        },
+        "notifications": {
+          "organization-created": "Organisatie succesvol aangemaakt.",
+          "organization-removed": "Organisatie succesvol verwijderd."
         }
       },
       "challenge": {
         "community": {
           "preferences": {
             "title": "Lidmaatschap",
-            "subtitle": "In deze sectie kan je de $t(common.challenge) lidmaatschap-voorkeuren aanpassen"
+            "subtitle": "In deze sectie kun je de lidmaatschap voorkeuren aanpassen voor de $t(common.challenge)"
           }
         },
         "sections": {
           "opportunities": {
             "description": "Hier kan je de Opportunities voor deze Hub aanpassen."
           }
+        },
+        "notifications": {
+          "challenge-created": "Challenge succesvol aangemaakt.",
+          "challenge-removed": "Challenge succesvol verwijderd.",
+          "challenge-updated": "Challenge succesvol aangepast."
         }
       },
       "hub": {
@@ -695,9 +866,24 @@
             "title": "Lidmaatschap",
             "subtitle": "In deze sectie kan je de $t(common.hub) lidmaatschap-voorkeuren aanpassen"
           }
+        },
+        "notifications": {
+          "hub-created": "Hub succesvol aangemaakt.",
+          "hub-removed": "Hub '{{name}}' succesvol verwijderd."
         }
       },
-      "opportunity": {}
+      "opportunity": {
+        "notifications": {
+          "opportunity-created": "Opportunity succesvol aangemaakt.",
+          "opportunity-removed": "Opportunity succesvol verwijderd.",
+          "opportunity-updated": "Opportunity succesvol geupdate."
+        }
+      },
+      "users": {
+        "notifications": {
+          "user-removed": "Gebruiker succesvol verwijderd."
+        }
+      }
     },
     "feedback": {
       "title": "Geef feedback op de context van deze community",
@@ -729,19 +915,15 @@
     },
     "contributors": {
       "search": {
-        "title": "Verken de gebruikers en organisaties die al bijdragen!",
-        "subtitle": "Voeg een of meer zoektermen toe. Klik op de kaarten in de zoekresultaten om de profielen te bekijken.",
+        "title": "Kijk wie bijdraagt",
+        "subtitle": "Bekijk de organisaties en gebruikers die bijdragen aan de Challenges, Opportunities en Hubs op het platform.",
         "placeholder": "Zoek naar gebruikers en organisaties"
       },
       "organizations": {
-        "title": "Organisaties ({{count}})",
-        "subtitle": "Organisaties die overeenkomen met uw zoektermen.",
-        "help-text": "Klik op de kaarten hieronder om te kijken welke organisatie bijdraagt."
+        "title": "Organisaties"
       },
       "users": {
-        "title": "Gebruikers ({{count}})",
-        "subtitle": "Gebruikers die overeenkomen met uw zoektermen.",
-        "help-text": ""
+        "title": "Gebruikers"
       }
     },
     "search": {
@@ -840,6 +1022,7 @@
     },
     "hub": {
       "title": "Hub",
+      "about-this-hub": "Over deze Hub",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
         "subheader": "Vul de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
@@ -869,6 +1052,7 @@
     },
     "challenge": {
       "title": "Challenge",
+      "about-this-challenge": "Over deze Challenge",
       "organizationBanner": {
         "load-more": "En meer ..."
       },
@@ -895,6 +1079,7 @@
     },
     "opportunity": {
       "title": "Opportunity",
+      "about-this-opportunity": "Over deze Opportunity",
       "sections": {
         "dashboard": {
           "statistics": {
@@ -1124,8 +1309,15 @@
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven."
     }
   },
+  "apollo": {
+    "errors": {
+      "bad-user-input": "Ongeldige waarde in het gestuurde formulier.",
+      "bad-user-input-withfield": "De waarde van '{{field}}' is ongeldig."
+    }
+  },
   "dashboard-updates-section": {
     "title": "Updates ({{count}})",
+    "dialog-title": "Alle Updates",
     "no-data": "Geen updates beschikbaar."
   },
   "dashboard-discussions-section": {
@@ -1138,7 +1330,15 @@
   },
   "aspect-edit": {
     "new": "Nieuw Kaart",
-    "edit": "Pas Kaart aan"
+    "edit": "Pas Kaart aan",
+    "type": {
+      "title": "Kaart Type",
+      "help-text": "Welke informatie type wil je delen?"
+    }
+  },
+  "innovation-edit": {
+    "new": "Nieuwe Innovation flow",
+    "edit": "Pas Innovation flow aan"
   },
   "contributors-section": {
     "title": "Bijdragers",

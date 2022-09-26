@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Challenge, Nvp, VisualUriFragment } from '../../../../../../models/graphql-schema';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { buildChallengeUrl } from '../../../../../utils/urlBuilders';
-import getActivityCount from '../../../../../../domain/activity/utils/getActivityCount';
+import getActivityCount from '../../../../../../domain/platform/activity/utils/getActivityCount';
 import { useUserContext } from '../../../../../../hooks';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 

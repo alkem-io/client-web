@@ -19,7 +19,7 @@ import { RouterLink } from '../../core/RouterLink';
 import Tag from '../../core/Tag';
 import TagContainer from '../../core/TagContainer';
 import WrapperTypography from '../../core/WrapperTypography';
-import { useUserMetadata } from '../../../../domain/user/hooks/useUserMetadata';
+import { useUserMetadata } from '../../../../domain/community/contributor/user/hooks/useUserMetadata';
 
 const useUserPopUpStyles = makeStyles(theme => ({
   header: {
@@ -125,7 +125,7 @@ const UserPopUp: FC<UserPopUpProps> = ({ id, onHide }) => {
     !(opportunities && opportunities.length > 0);
 
   return (
-    <Dialog open={true} maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
+    <Dialog open maxWidth="md" fullWidth aria-labelledby="user-dialog-title">
       <DialogTitle id="user-dialog-title" onClose={onHide}>
         <div className={styles.header}>
           <div className={styles.profile}>

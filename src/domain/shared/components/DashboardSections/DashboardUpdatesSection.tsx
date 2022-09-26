@@ -6,7 +6,7 @@ import {
 } from '../../../../containers/community-updates/CommunityUpdatesContainer';
 import { AvatarsProvider } from '../../../../context/AvatarsProvider';
 import { buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
-import SingleUpdateView from '../../../../views/Updates/SingleUpdateView';
+import SingleUpdateView from '../../../communication/updates/views/SingleUpdateView';
 import DashboardGenericSection from './DashboardGenericSection';
 
 export interface DashboardUpdatesSectionProps {

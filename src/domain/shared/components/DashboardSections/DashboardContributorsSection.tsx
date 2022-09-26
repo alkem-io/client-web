@@ -10,10 +10,12 @@ import ContributorCard, {
 import Section, { DashboardGenericSectionProps } from './DashboardGenericSection';
 import { WithId } from '../../../../types/WithId';
 import { times } from 'lodash';
-import { UserMetadata } from '../../../user/hooks/useUserMetadataWrapper';
+import { UserMetadata } from '../../../community/contributor/user/hooks/useUserMetadataWrapper';
+import ImageBackdrop from '../Backdrops/ImageBackdrop';
 
 const MAX_USERS_TO_SHOW = 12;
 const MAX_ORGANIZATIONS_TO_SHOW = 12;
+const USERS_GRAYED_OUT_IMAGE = '/contributors/users-grayed-home.png';
 
 export interface DashboardContributorsSectionSectionProps extends DashboardGenericSectionProps {
   userTitle: ReactNode;
@@ -67,17 +69,21 @@ const DashboardContributorsSection: FC<DashboardContributorsSectionSectionProps>
             })}
             {!user && (
               <Grid item>
-                <Typography variant="body1">
-                  {t('components.backdrop.authentication', { blockName: 'Users that are contributing' })}
-                </Typography>
+                <ImageBackdrop
+                  src={USERS_GRAYED_OUT_IMAGE}
+                  backdropMessage={'authentication'}
+                  blockName={'users-contributing'}
+                />
               </Grid>
             )}
           </Grid>
-          <Box display="flex" justifyContent="end" paddingTop={2}>
-            {usersRemainingCount > 0 && (
-              <Typography>{t('dashboard-contributors-section.more', { count: usersRemainingCount })}</Typography>
-            )}
-          </Box>
+          {user && (
+            <Box display="flex" justifyContent="end" paddingTop={2}>
+              {usersRemainingCount > 0 && (
+                <Typography>{t('dashboard-contributors-section.more', { count: usersRemainingCount })}</Typography>
+              )}
+            </Box>
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
           <SectionHeader text={organizationTitle} />

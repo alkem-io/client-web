@@ -21,9 +21,9 @@ import {
   buildUserProfileUrl,
 } from '../../common/utils/urlBuilders';
 import { useHubNameQuery, useUserRolesSearchCardsQuery } from '../../hooks/generated/graphql';
-import { RoleType } from '../../domain/user/constants/RoleType';
-import { useUserContext } from '../../domain/user/hooks/useUserContext';
 import { SearchOpportunityCard } from '../../domain/shared/components/search-cards';
+import { useUserContext } from '../../domain/community/contributor/user/hooks/useUserContext';
+import { RoleType } from '../../domain/community/contributor/user/constants/RoleType';
 
 const SearchResultCardChooser = ({ result }: { result: ResultType | undefined }): React.ReactElement | null => {
   const { user: userMetadata } = useUserContext();

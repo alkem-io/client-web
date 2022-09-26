@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardContributorsSection from '../../domain/shared/components/DashboardSections/DashboardContributorsSection';
-import { useHomePageContributors } from '../../domain/community/HomePageContributors';
-import SectionHeaderTextWithActivity from '../../domain/activity/SectionHeaderTextWithActivity';
+import { useHomePageContributors } from '../../domain/community/community/HomePageContributors';
+import SectionHeaderTextWithActivity from '../../domain/platform/activity/SectionHeaderTextWithActivity';
 import useServerMetadata from '../../hooks/useServerMetadata';
-import getActivityCount from '../../domain/activity/utils/getActivityCount';
-import { ActivityType } from '../../domain/activity/ActivityType';
+import getActivityCount from '../../domain/platform/activity/utils/getActivityCount';
+import { ActivityType } from '../../domain/platform/activity/ActivityType';
 
 const ACTIVITY_TYPES: ActivityType[] = [ActivityType.User, ActivityType.Organization];
 

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { useOpportunity, useUserContext } from '../../hooks';
 import { useActivityLogOnCollaborationQuery, useOpportunityPageQuery } from '../../hooks/generated/graphql';
 import { ContainerChildProps } from '../../models/container';
-import { Discussion } from '../../domain/discussion/models/discussion';
+import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { OpportunityProject } from '../../models/entities/opportunity';
 import {
   Activity,
@@ -18,15 +18,15 @@ import {
 } from '../../models/graphql-schema';
 import { replaceAll } from '../../common/utils/replaceAll';
 import { buildAdminOpportunityUrl } from '../../common/utils/urlBuilders';
-import { useAspectsCount } from '../../domain/aspect/utils/aspectsCount';
-import useCommunityMembersAsCardProps from '../../domain/community/utils/useCommunityMembersAsCardProps';
-import { EntityDashboardContributors } from '../../domain/community/EntityDashboardContributorsSection/Types';
-import { useCanvasesCount } from '../../domain/canvas/utils/canvasesCount';
+import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
+import useCommunityMembersAsCardProps from '../../domain/community/community/utils/useCommunityMembersAsCardProps';
+import { EntityDashboardContributors } from '../../domain/community/community/EntityDashboardContributorsSection/Types';
+import { useCanvasesCount } from '../../domain/collaboration/canvas/utils/canvasesCount';
 import {
   getAspectsFromPublishedCallouts,
   getCanvasesFromPublishedCallouts,
-} from '../../domain/callout/utils/getPublishedCallouts';
-import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/callout/useCallouts';
+} from '../../domain/collaboration/callout/utils/getPublishedCallouts';
+import { AspectFragmentWithCallout, CanvasFragmentWithCallout } from '../../domain/collaboration/callout/useCallouts';
 import { useAuthenticationContext } from '../../core/auth/authentication/hooks/useAuthenticationContext';
 import { LATEST_ACTIVITIES_COUNT } from '../../models/constants';
 

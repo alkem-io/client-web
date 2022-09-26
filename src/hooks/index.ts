@@ -1,4 +1,4 @@
-export * from '../domain/user/hooks/useUserContext';
+export * from '../domain/community/contributor/user/hooks/useUserContext';
 
 export * from '../core/apollo/hooks/useApolloErrorHandler';
 
@@ -10,10 +10,10 @@ export * from './operations/useDeleteUserGroup';
 export * from './cards/useUserCardRoleName';
 export { default as useUserCardRoleName } from './cards/useUserCardRoleName';
 
-export * from '../domain/hub/HubContext/useHub';
-export * from '../domain/organization/hooks/useOrganization';
-export * from '../domain/challenge/hooks/useChallenge';
-export * from '../domain/opportunity/hooks/useOpportunity';
+export * from '../domain/challenge/hub/HubContext/useHub';
+export * from '../domain/community/contributor/organization/hooks/useOrganization';
+export * from '../domain/challenge/challenge/hooks/useChallenge';
+export * from '../domain/challenge/opportunity/hooks/useOpportunity';
 export * from './useAspectCreatedOnCalloutSubscription';
 
 export * from './useUrlParams';

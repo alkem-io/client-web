@@ -8,7 +8,7 @@ import {
   usePrivilegesOnOpportunityCollaborationQuery,
 } from './generated/graphql';
 import { AspectCardFragment, AuthorizationPrivilege, Scalars } from '../models/graphql-schema';
-import useCalloutAspectCreatedSubscription from '../domain/collaboration/useCalloutAspectCreatedSubscription';
+import useCalloutAspectCreatedSubscription from '../domain/collaboration/collaboration/useCalloutAspectCreatedSubscription';
 
 export type AspectWithPermissions = AspectCardFragment & { canDelete: boolean | undefined };
 export interface AspectsData {

@@ -11,9 +11,7 @@ describe('TextIpnut component', () => {
   // Mathcing snapshot when we are using dynamicaly generated class names is ineffective
   test.skip('render correctly TextInput/Input component', () => {
     // act
-    const { asFragment } = render(
-      <TextInput onChange={onChange} value={value} label={label} inset={true} small={true} disabled={true} />
-    );
+    const { asFragment } = render(<TextInput onChange={onChange} value={value} label={label} inset small disabled />);
     const html = asFragment();
 
     // assert
@@ -23,9 +21,7 @@ describe('TextIpnut component', () => {
   // Mathcing snapshot when we are using dynamicaly generated class names is ineffective
   test.skip('render correctly TextArea/Input component', () => {
     // act
-    const { asFragment } = render(
-      <TextArea onChange={onChange} value={value} label={label} inset={true} small={true} disabled={true} />
-    );
+    const { asFragment } = render(<TextArea onChange={onChange} value={value} label={label} inset small disabled />);
     const html = asFragment();
 
     // assert
@@ -34,7 +30,7 @@ describe('TextIpnut component', () => {
 
   test('disabled="true" input', () => {
     // act
-    render(<TextArea onChange={onChange} value={value} label={label} inset={true} small={true} disabled={true} />);
+    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled />);
     userEvent.type(screen.getByRole('textbox'), 'Hello,{enter}World!');
 
     // assert
@@ -45,7 +41,7 @@ describe('TextIpnut component', () => {
 
   test('TextArea onChange event', async () => {
     // act
-    render(<TextArea onChange={onChange} value={value} label={label} inset={true} small={true} disabled={false} />);
+    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled={false} />);
     userEvent.clear(screen.getByRole('textbox'));
     userEvent.type(screen.getByRole('textbox'), 'ab{enter}a');
 
@@ -55,7 +51,7 @@ describe('TextIpnut component', () => {
 
   test('TextInput disabled="false" input', async () => {
     // act
-    render(<TextInput onChange={onChange} value={value} label={label} inset={true} small={true} disabled={false} />);
+    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled={false} />);
     userEvent.clear(screen.getByRole('textbox'));
     userEvent.type(screen.getByRole('textbox'), 'ab{enter}a');
 
@@ -65,7 +61,7 @@ describe('TextIpnut component', () => {
 
   test('TextArea has value', async () => {
     // act
-    render(<TextArea onChange={onChange} value={value} label={label} inset={true} small={true} disabled={false} />);
+    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled={false} />);
 
     // assert
     expect(screen.getByRole('textbox')).toHaveValue(value);
@@ -73,7 +69,7 @@ describe('TextIpnut component', () => {
 
   test('TextInput has value', async () => {
     // act
-    render(<TextInput onChange={onChange} value={value} label={label} inset={true} small={true} disabled={false} />);
+    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled={false} />);
 
     // assert
     expect(screen.getByRole('textbox')).toHaveValue(value);
@@ -81,7 +77,7 @@ describe('TextIpnut component', () => {
 
   test('TextArea has label', async () => {
     // act
-    render(<TextArea onChange={onChange} value={value} label={label} inset={true} small={true} disabled={false} />);
+    render(<TextArea onChange={onChange} value={value} label={label} inset small disabled={false} />);
 
     // assert
     expect(screen.getByText(label)).toBeInTheDocument();
@@ -89,7 +85,7 @@ describe('TextIpnut component', () => {
 
   test('TextInput has label', async () => {
     // act
-    render(<TextInput onChange={onChange} value={value} label={label} inset={true} small={true} disabled={false} />);
+    render(<TextInput onChange={onChange} value={value} label={label} inset small disabled={false} />);
 
     // assert
     expect(screen.getByText(label)).toBeInTheDocument();

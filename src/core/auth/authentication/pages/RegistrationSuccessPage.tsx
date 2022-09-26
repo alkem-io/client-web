@@ -6,7 +6,7 @@ import WrapperButton from '../../../../common/components/core/WrapperButton';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import AuthenticationLayout from '../../../../common/components/composite/layout/AuthenticationLayout';
 import { Box } from '@mui/material';
-import EmailVerificationNotice from '../../../../components/EmailVerificationNotice/EmailVerificationNotice';
+import EmailVerificationNotice from '../../verification/components/EmailVerificationNotice/EmailVerificationNotice';
 
 interface RegistrationSuccessPageProps {}
 

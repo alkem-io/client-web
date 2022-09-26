@@ -12,8 +12,8 @@ import TagsComponent from '../../../../domain/shared/components/TagsComponent/Ta
 import DashboardSection from './DashboardSection/DashboardSection';
 import ContextSectionIcon from './ContextSectionIcon';
 import DashboardColumn, { ContextSectionColumnProps } from './DashboardSection/DashboardColumn';
-import LocationView from '../../../../domain/location/LocationView';
-import { formatLocation } from '../../../../domain/location/LocationUtils';
+import LocationView from '../../../../domain/common/location/LocationView';
+import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 
 export interface ContextSectionProps {
   contextId?: string;

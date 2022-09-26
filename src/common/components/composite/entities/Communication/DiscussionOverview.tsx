@@ -13,7 +13,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useResolvedPath } from 'react-router-dom';
-import { Discussion } from '../../../../../domain/discussion/models/discussion';
+import { Discussion } from '../../../../../domain/communication/discussion/models/discussion';
 import DiscussionIcon from './DiscussionIcon';
 import { buildDiscussionUrl } from '../../../../utils/urlBuilders';
 
@@ -62,7 +62,7 @@ const DiscussionOverview: FC<DiscussionOverviewProps> = ({ discussion }) => {
             </Typography>
           </Box>
         }
-        disableTypography={true}
+        disableTypography
       />
       {SHOW_AVATARS && (
         <ListItemAvatar>
