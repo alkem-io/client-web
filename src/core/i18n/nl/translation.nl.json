@@ -980,14 +980,15 @@
           "new-to-alkemio": {
             "header": "Nieuw bij Alkemio?",
             "subheader": "Op Alkemio kan iedereen op een effectieve manier Challenges beheren, een bijdrage leveren en zo impact te maken.",
-            "more-info": "Bekijk demonstratie video",
-            "more-info-url": "https://vimeo.com/711138740?utm_campaign=2022VIDEO&utm_source=VIMEO&utm_medium=VIDEO&utm_term=click&utm_content=2022videointroNL"
+            "more-info": "Contact opnemen!",
+            "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
         "hub": {
           "header": "Verken de Challenge Hubs!",
           "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een community voor de Challenges die er worden beheerd. <br> Een omgeving om te coördineren en samen te werken. Om te verbinden.",
-          "body": "Een Hub kan Openbaar of Besloten zijn en heeft een faciliterende Organisatie."
+          "body": "Lidmaatschap: Elke Hub heeft leden die een bijdrage leveren. Word lid via de Hub pagina.",
+          "body1": "Zichtbaarheid: De meeste Hubs zijn openbaar en dus volledig zichtbaar voor iedereen. Voor privé Hubs is de inhoud alleen beschikbaar nadat je lid bent geworden."
         },
         "my-hubs": {
           "header": "Mijn Hubs",

@@ -983,14 +983,15 @@
           "new-to-alkemio": {
             "header": "¿Nuevo en Alkemio?",
             "subheader": "Fácil para involucrar a todo el mundo de la manera mas efectiva, permitiendo gestionar tus desafíos para crear el mayor impacto.",
-            "more-info": "Vídeo explicativo",
-            "more-info-url": "https://vimeo.com/708619604?utm_campaign=2022VIDEO&utm_source=VIDEO&utm_medium=VIMEO&utm_term=Click&utm_content=2022Video"
+            "more-info": "Contacta con nosotros",
+            "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
         "hub": {
           "header": "¡Explorar los Hubs!",
           "subheader": "Cada Hub contiene uno o mas Desafíos, provee contenido compartido y una comunidad para los desafíos hospedados en él.<br> Un espacio para coordinarse y colaborar. Conectar.",
-          "body": "Un Hub puede ser público o privado, y tiene una organización facilitadora que lo gestiona."
+          "body": "Membresía: Cada Hub tiene miembros que contribuyen. Hazte miembro a través de la página del Hub.",
+          "body1": "Visibilidad: La mayoría de los Hubs son públicos y, por tanto, totalmente visibles para todo el mundo. En el caso de los Hubs privados, el contenido sólo estará disponible después de hacerte miembro."
         },
         "my-hubs": {
           "header": "Mis Hubs",
