@@ -992,7 +992,7 @@
           "header": "¡Explorar los Hubs!",
           "subheader": "Cada Hub contiene uno o mas Desafíos, provee contenido compartido y una comunidad para los desafíos hospedados en él.<br> Un espacio para coordinarse y colaborar. Conectar.",
           "body": "Membresía: Cada Hub tiene miembros que contribuyen. Hazte miembro a través de la página del Hub.",
-          "body1": "Visibilidad: La mayoría de los Hubs son públicos y, por tanto, totalmente visibles para todo el mundo. En el caso de los Hubs privados, el contenido sólo está disponible después de convertirse en miembro."
+          "body1": "Visibilidad: La mayoría de los Hubs son públicos y, por tanto, totalmente visibles para todo el mundo. En el caso de los Hubs privados, el contenido sólo estará disponible después de hacerte miembro."
         },
         "my-hubs": {
           "header": "Mis Hubs",
