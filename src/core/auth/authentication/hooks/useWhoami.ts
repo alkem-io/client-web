@@ -38,7 +38,7 @@ export const useWhoami = () => {
   }, [kratosClient]);
 
   const verified = useMemo(() => {
-    return session?.identity.verifiable_addresses?.[0].verified || false;
+    return session?.identity?.verifiable_addresses?.[0].verified || false;
   }, [session]);
 
   return { session, loading, error, isAuthenticated, verified };
