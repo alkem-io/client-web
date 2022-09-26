@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Aspect, VisualUriFragment } from '../../../../../../models/graphql-schema';
-import EntityContributionCard from '../ContributionCard/EntityContributionCard';
+import { Aspect, VisualUriFragment } from '../../../../models/graphql-schema';
+import EntityContributionCard from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { styled } from '@mui/material';
-import { buildAspectUrl } from '../../../../../utils/urlBuilders';
-import WrapperMarkdown from '../../../../core/WrapperMarkdown';
+import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
+import WrapperMarkdown from '../../../../common/components/core/WrapperMarkdown';
 
 const DEFAULT_LINE_HEIGHT = 1.5;
 const LINE_CLAMP = 4;

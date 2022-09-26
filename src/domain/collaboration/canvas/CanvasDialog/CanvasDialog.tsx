@@ -25,15 +25,15 @@ import { makeStyles } from '@mui/styles';
 import { isEqual } from 'lodash';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CanvasWithoutValue } from '../../../../../models/entities/canvas';
-import { Canvas, CanvasCheckoutStateEnum } from '../../../../../models/graphql-schema';
-import TranslationKey from '../../../../../types/TranslationKey';
-import { Loading } from '../../../core';
-import { DialogContent, DialogTitle } from '../../../core/dialog';
-import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
-import CanvasListItemState from '../../lists/Canvas/CanvasListItemState';
+import { CanvasWithoutValue } from '../../../../models/entities/canvas';
+import { Canvas, CanvasCheckoutStateEnum } from '../../../../models/graphql-schema';
+import TranslationKey from '../../../../types/TranslationKey';
+import { Loading } from '../../../../common/components/core';
+import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
+import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
+import CanvasListItemState from '../CanvasList/CanvasListItemState';
 import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
-import getCanvasBannerCardDimensions from '../../../../../domain/collaboration/canvas/utils/getCanvasBannerCardDimensions';
+import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
 
 interface CanvasDialogProps {
   entities: {

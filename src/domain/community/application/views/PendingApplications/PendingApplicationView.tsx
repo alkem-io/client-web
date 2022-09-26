@@ -9,7 +9,7 @@ import Tooltip from '@mui/material/Tooltip/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 import { ApplicationWithType } from '../../../../../common/utils/application/getApplicationWithType';
-import { ApplicationDialog, ApplicationDialogDataType } from '../../../../../common/components/composite';
+import { ApplicationDialog, ApplicationDialogDataType } from '../../dialogs/ApplicationDialog';
 import Tag from '../../../../../common/components/core/Tag';
 import { APPLICATION_STATE_NEW } from '../../../../../models/constants';
 import { makeStyles } from '@mui/styles';

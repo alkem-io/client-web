@@ -1,7 +1,7 @@
 import { List, ListProps } from '@mui/material';
 import React, { FC } from 'react';
 import CanvasListItem, { CanvasListItemCanvas, CanvasListItemSkeleton } from './CanvasListItem';
-import { Identifiable } from '../../../../../domain/shared/types/Identifiable';
+import { Identifiable } from '../../../shared/types/Identifiable';
 
 interface CanvasListProps extends ListProps {
   entities: {

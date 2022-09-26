@@ -1,8 +1,8 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
-import { Context } from '../../../../models/graphql-schema';
-import { ContextSegment, contextSegmentSchema } from '../../../../domain/platform/admin/components/Common/ContextSegment';
+import { Context } from '../../../models/graphql-schema';
+import { ContextSegment, contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
 
 export interface ContextFormValues {
   background: string;
@@ -17,7 +17,7 @@ interface Props {
   wireSubmit: (setter: () => void) => void;
 }
 
-const ContextForm: FC<Props> = ({ context, onSubmit, wireSubmit }) => {
+export const ContextForm: FC<Props> = ({ context, onSubmit, wireSubmit }) => {
   const initialValues: ContextFormValues = {
     background: context?.background || '',
     impact: context?.impact || '',
@@ -55,5 +55,3 @@ const ContextForm: FC<Props> = ({ context, onSubmit, wireSubmit }) => {
     </Formik>
   );
 };
-
-export default ContextForm;

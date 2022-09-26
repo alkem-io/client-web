@@ -16,16 +16,16 @@ import { makeStyles } from '@mui/styles';
 import { Formik } from 'formik';
 import React, { FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CreateCanvasCanvasTemplateFragment, CreateCanvasOnCalloutInput } from '../../../../../models/graphql-schema';
-import { Loading } from '../../../core';
-import { DialogContent, DialogTitle } from '../../../core/dialog';
-import CanvasWhiteboard from '../../entities/Canvas/CanvasWhiteboard';
-import CanvasList from '../../lists/Canvas/CanvasList';
-import CanvasListItem, { CanvasListItemCanvas } from '../../lists/Canvas/CanvasListItem';
-import canvasSchema from '../../../../../domain/collaboration/canvas/validation/canvasSchema';
-import FormikInputField from '../../forms/FormikInputField';
-import { Identifiable } from '../../../../../domain/shared/types/Identifiable';
-import { SectionSpacer } from '../../../../../domain/shared/components/Section/Section';
+import { CreateCanvasCanvasTemplateFragment, CreateCanvasOnCalloutInput } from '../../../../models/graphql-schema';
+import { Loading } from '../../../../common/components/core';
+import { DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
+import CanvasWhiteboard from '../../../../common/components/composite/entities/Canvas/CanvasWhiteboard';
+import CanvasList from '../CanvasList/CanvasList';
+import CanvasListItem, { CanvasListItemCanvas } from '../CanvasList/CanvasListItem';
+import canvasSchema from '../validation/canvasSchema';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import { Identifiable } from '../../../shared/types/Identifiable';
+import { SectionSpacer } from '../../../shared/components/Section/Section';
 
 const useStyles = makeStyles(theme => ({
   dialogRoot: {

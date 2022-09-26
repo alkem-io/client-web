@@ -4,7 +4,7 @@ import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardSectionAspects from '../../../collaboration/aspect/DashboardSectionAspects/DashboardSectionAspects';
-import { AspectCardAspect } from '../../../../common/components/composite/common/cards/AspectCard/AspectCard';
+import { AspectCardAspect } from '../../../collaboration/aspect/AspectCard/AspectCard';
 import References from '../../../../common/components/composite/common/References/References';
 import InterestModal from '../../../../common/components/composite/entities/Hub/InterestModal';
 import ContextSectionIcon from '../../../../common/components/composite/sections/ContextSectionIcon';

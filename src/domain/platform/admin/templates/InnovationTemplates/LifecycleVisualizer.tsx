@@ -3,7 +3,7 @@ import React, { FC, useEffect, useMemo, useRef } from 'react';
 import { createMachine } from 'xstate';
 import { toDirectedGraph } from '@xstate/graph';
 import { Theme, useTheme } from '@mui/material/styles';
-import { Lifecycle } from '../../../models/graphql-schema';
+import { Lifecycle } from '../../../../../models/graphql-schema';
 
 export interface GraphThemeOptions {
   strokePrimaryColor?: string;

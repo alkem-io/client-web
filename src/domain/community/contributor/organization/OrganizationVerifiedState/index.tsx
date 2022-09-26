@@ -31,7 +31,7 @@ interface Props {
   state: OrganizationVerificationEnum;
 }
 
-const OrganizationVerifiedState: FC<Props> = ({ state }) => {
+export const OrganizationVerifiedState: FC<Props> = ({ state }) => {
   const { t } = useTranslation();
   const styles = useStyles();
 
@@ -45,4 +45,3 @@ const OrganizationVerifiedState: FC<Props> = ({ state }) => {
     </Typography>
   );
 };
-export default OrganizationVerifiedState;

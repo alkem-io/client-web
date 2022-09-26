@@ -1,7 +1,5 @@
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
-import AspectCard, {
-  AspectCardAspect,
-} from '../../../../common/components/composite/common/cards/AspectCard/AspectCard';
+import AspectCard, { AspectCardAspect } from '../../aspect/AspectCard/AspectCard';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import React, { useMemo, useState } from 'react';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';

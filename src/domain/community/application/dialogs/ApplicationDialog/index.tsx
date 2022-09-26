@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { makeStyles } from '@mui/styles';
 import { ApplicationInfoFragment } from '../../../../../models/graphql-schema';
-import { DialogActions, DialogContent, DialogTitle } from '../../../core/dialog';
-import Avatar from '../../../core/Avatar';
-import WrapperTypography from '../../../core/WrapperTypography';
-import LifecycleButton from '../../../core/LifecycleButton';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
+import Avatar from '../../../../../common/components/core/Avatar';
+import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
+import LifecycleButton from '../../../../platform/admin/templates/InnovationTemplates/LifecycleButton';
 import { Optional } from '../../../../../types/util';
-import { Loading } from '../../../core';
+import { Loading } from '../../../../../common/components/core';
 
 const appStyles = makeStyles(theme => ({
   minHeight: {
@@ -82,7 +82,7 @@ export interface ApplicationDialogProps {
   loading?: boolean;
 }
 
-const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewState, loading }) => {
+export const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewState, loading }) => {
   const { t } = useTranslation();
   const styles = appStyles();
 
@@ -171,4 +171,3 @@ const ApplicationDialog: FC<ApplicationDialogProps> = ({ app, onHide, onSetNewSt
     </Dialog>
   );
 };
-export default ApplicationDialog;

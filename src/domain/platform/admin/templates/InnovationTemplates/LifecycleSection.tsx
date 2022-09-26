@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Lifecycle } from '../../../../models/graphql-schema';
-import DashboardGenericSection from '../../../../domain/shared/components/DashboardSections/DashboardGenericSection';
-import LifecycleState from '../entities/Lifecycle/LifecycleState';
+import { Lifecycle } from '../../../../../models/graphql-schema';
+import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
+import LifecycleState from './LifecycleState';
 
 export interface LifecycleSectionProps {
   lifecycle?: Pick<Lifecycle, 'machineDef' | 'state'>;

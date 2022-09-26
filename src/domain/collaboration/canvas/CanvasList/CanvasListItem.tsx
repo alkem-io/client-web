@@ -14,9 +14,9 @@ import {
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { FC } from 'react';
-import { AuthorizationPrivilege, CanvasDetailsFragment } from '../../../../../models/graphql-schema';
+import { AuthorizationPrivilege, CanvasDetailsFragment } from '../../../../models/graphql-schema';
 import CanvasListItemState from './CanvasListItemState';
-import { Identifiable } from '../../../../../domain/shared/types/Identifiable';
+import { Identifiable } from '../../../shared/types/Identifiable';
 
 const useStyles = makeStyles(theme => ({
   active: {

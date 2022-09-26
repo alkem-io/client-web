@@ -1,9 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import DashboardSection from '../../../../common/components/composite/sections/DashboardSection/DashboardSection';
-import AspectCard, {
-  AspectCardAspect,
-} from '../../../../common/components/composite/common/cards/AspectCard/AspectCard';
+import AspectCard, { AspectCardAspect } from '../AspectCard/AspectCard';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 

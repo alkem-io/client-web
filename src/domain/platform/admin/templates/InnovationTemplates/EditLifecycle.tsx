@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
-import { Lifecycle } from '../../../../models/graphql-schema';
-import LifecycleVisualizer from '../../../../common/components/core/LifecycleVisualizer';
-import LifecycleButton from '../../../../common/components/core/LifecycleButton';
+import { Lifecycle } from '../../../../../models/graphql-schema';
+import LifecycleVisualizer from './LifecycleVisualizer';
+import LifecycleButton from './LifecycleButton';
 
 interface EditLifecycleProps {
   lifecycle: Lifecycle | undefined;

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import WrapperButton, { ButtonProps } from './WrapperButton';
+import WrapperButton, { ButtonProps } from '../../../../../common/components/core/WrapperButton';
 
 interface LifecycleButtonProps extends ButtonProps {
   stateName: string;

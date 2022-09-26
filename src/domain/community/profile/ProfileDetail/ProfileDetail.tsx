@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import WrapperTypography from '../../../core/WrapperTypography';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 
 interface ProfileDetailProps {
   title: string;
