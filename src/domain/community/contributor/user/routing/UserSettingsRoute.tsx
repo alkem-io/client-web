@@ -22,15 +22,15 @@ export const UserSettingsRoute: FC<UserSettingsProps> = ({ paths }) => {
   return (
     <Routes>
       <Route path={'/'} element={<EntityPageLayoutHolder />}>
-        <Route index element={<Navigate to={'profile'} />}></Route>
-        <Route path={'profile'} element={<EditUserProfilePage paths={currentPaths} />}></Route>
-        <Route path={'membership'} element={<UserMembershipPage paths={currentPaths} />}></Route>
-        <Route path={'organizations'} element={<UserOrganizationsPage paths={currentPaths} />}></Route>
-        <Route path={'notifications'} element={<UserNotificationsPage paths={currentPaths} />}></Route>
+        <Route index element={<Navigate to={'profile'} />} />
+        <Route path={'profile'} element={<EditUserProfilePage paths={currentPaths} />} />
+        <Route path={'membership'} element={<UserMembershipPage paths={currentPaths} />} />
+        <Route path={'organizations'} element={<UserOrganizationsPage paths={currentPaths} />} />
+        <Route path={'notifications'} element={<UserNotificationsPage paths={currentPaths} />} />
         {isFeatureEnabled(FEATURE_SSI) && (
-          <Route path={'credentials'} element={<UserCredentialsPage paths={currentPaths} />}></Route>
+          <Route path={'credentials'} element={<UserCredentialsPage paths={currentPaths} />} />
         )}
-        <Route path="*" element={<Error404 />}></Route>
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );

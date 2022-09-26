@@ -23,7 +23,7 @@ export const NotificationHandler: FC = () => {
         return (
           <Snackbar
             key={i}
-            open={true}
+            open
             autoHideDuration={NOTIFICATION_AUTO_HIDE_DURATION}
             onClose={() => closeMessage(x.id)}
             anchorOrigin={{

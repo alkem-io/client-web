@@ -131,7 +131,7 @@ const HubEditForm: FC<Props> = ({
                 title={t('components.editHubForm.host.title')}
                 name={'host'}
                 values={organizations}
-                required={true}
+                required
                 placeholder={t('components.editHubForm.host.title')}
               />
             </Grid>

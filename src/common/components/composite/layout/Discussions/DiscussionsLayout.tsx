@@ -78,7 +78,7 @@ export const DiscussionsLayout: FC<DiscussionsLayoutProps> = ({
               {icon && <span className={styles.icon}>{icon}</span>}
               <Typography variant="h3">{title}</Typography>
             </Box>
-            <Box flexGrow={1}></Box>
+            <Box flexGrow={1} />
             <Box justifyContent={'flex-end'} flexShrink={0}>
               {newUrl && (
                 <WrapperButton

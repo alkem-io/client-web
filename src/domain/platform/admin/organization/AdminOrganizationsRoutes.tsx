@@ -19,7 +19,7 @@ const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
   return (
     <Routes>
       <Route path={'/'}>
-        <Route index element={<AdminOrganizationsPage paths={currentPaths} />}></Route>
+        <Route index element={<AdminOrganizationsPage paths={currentPaths} />} />
         <Route
           path={'new'}
           element={
@@ -31,7 +31,7 @@ const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
               />
             </AdminLayout>
           }
-        ></Route>
+        />
         <Route
           path={`:${nameOfUrl.organizationNameId}/*`}
           element={
@@ -39,8 +39,8 @@ const AdminOrganizationsRoutes: FC<PageProps> = ({ paths }) => {
               <OrganizationAdminRoutes paths={currentPaths} />
             </OrganizationProvider>
           }
-        ></Route>
-        <Route path="*" element={<Error404 />}></Route>
+        />
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );

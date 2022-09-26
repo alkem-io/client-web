@@ -91,7 +91,7 @@ const PendingApplicationView: FC<PendingApplicationViewProps> = ({ entities, act
       <Grid container spacing={1} justifyContent={'space-between'} alignItems={'center'} className={styles.row}>
         <Grid item xs={6}>
           <Link component={RouterLink} to={entities.url} aria-label="Link to entity">
-            <Typography className={styles.noPadding} noWrap={true} aria-label="Application display name">
+            <Typography className={styles.noPadding} noWrap aria-label="Application display name">
               {displayName}
             </Typography>
           </Link>

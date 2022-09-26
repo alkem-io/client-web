@@ -55,7 +55,7 @@ const CanvasCallout = ({
             ? {
                 createButtonComponent: (
                   <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-                    <SimpleCard to={''}></SimpleCard>
+                    <SimpleCard to={''} />
                   </CreateCalloutItemButton>
                 ),
               }

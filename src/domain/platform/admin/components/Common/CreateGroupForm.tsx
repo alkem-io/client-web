@@ -47,7 +47,7 @@ export const CreateGroupForm: FC<CreateGroupFormProps> = ({ onCreate }) => {
                       name={'name'}
                       title={'Name'}
                       value={values.name}
-                      required={true}
+                      required
                       placeholder={'Enter a name'}
                     />
                   </Grid>

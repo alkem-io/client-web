@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { makeStyles } from '@mui/styles';
-import WrapperBackdrop from '../../../core/WrapperBackdrop';
-import WrapperTypography from '../../../core/WrapperTypography';
+import WrapperBackdrop from '../../../../common/components/core/WrapperBackdrop';
+import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 
 const useBackdropStyles = makeStyles(theme => ({
   backdropContainer: {

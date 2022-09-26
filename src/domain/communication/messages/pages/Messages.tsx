@@ -188,7 +188,7 @@ export const DummyChat: FC = () => {
             </div>
           </div>
         </Fade>
-        <div ref={bottomRef}></div>
+        <div ref={bottomRef} />
       </div>
     </Card>
   );
@@ -248,7 +248,7 @@ const DummyChatList: FC = () => {
           new messages
         </WrapperTypography>
       </div>
-      <div className={styles.divider}></div>
+      <div className={styles.divider} />
       <div className={styles.contact}>
         <WrapperTypography variant="h3" color="inherit">
           Community
@@ -257,7 +257,7 @@ const DummyChatList: FC = () => {
           Work in progress
         </WrapperTypography>
       </div>
-      <div className={styles.divider}></div>
+      <div className={styles.divider} />
     </Card>
   );
 };

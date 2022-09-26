@@ -21,7 +21,7 @@ const ApplyRoute: FC<Props> = ({ paths, type }) => {
             </RestrictedRoute>
           }
         />
-        <Route path="*" element={<Error404 />}></Route>
+        <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
   );
