@@ -7,6 +7,7 @@ import { ChallengeExplorerSearchResultFragment } from '../../../../../models/gra
 import ChallengeCard from '../../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
 import { HubIcon } from '../../../../../common/icons/HubIcon';
+import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -30,18 +31,21 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ cha
             return groups.map(({ keyValue, values }) => (
               <ChallengeExplorerHubDataResolver key={keyValue} hubId={keyValue}>
                 {({ displayName, tagline }) => (
-                  <DashboardGenericSection headerText={displayName} headerIcon={<HubIcon />} subHeaderText={tagline}>
-                    <CardsLayout items={values}>
-                      {challenge => (
-                        // TODO enrich at the level of the LayoutContainer
-                        <ChallengeExplorerSearchEnricherContainer challenge={challenge}>
-                          {({ challenge: enrichedChallenge }) => (
-                            <ChallengeCard challenge={enrichedChallenge} hubNameId={challenge.hubID} />
-                          )}
-                        </ChallengeExplorerSearchEnricherContainer>
-                      )}
-                    </CardsLayout>
-                  </DashboardGenericSection>
+                  <>
+                    <DashboardGenericSection headerText={displayName} headerIcon={<HubIcon />} subHeaderText={tagline}>
+                      <CardsLayout items={values}>
+                        {challenge => (
+                          // TODO enrich at the level of the LayoutContainer
+                          <ChallengeExplorerSearchEnricherContainer challenge={challenge}>
+                            {({ challenge: enrichedChallenge }) => (
+                              <ChallengeCard challenge={enrichedChallenge} hubNameId={challenge.hubID} />
+                            )}
+                          </ChallengeExplorerSearchEnricherContainer>
+                        )}
+                      </CardsLayout>
+                    </DashboardGenericSection>
+                    <SectionSpacer />
+                  </>
                 )}
               </ChallengeExplorerHubDataResolver>
             ));

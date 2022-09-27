@@ -953,9 +953,17 @@
         "title": "The Alkemio Structure",
         "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
       },
+      "my-search": {
+        "title": "Explore other Challenges accessible to you",
+        "subtitle": "On Alkemio, there are both public and private hubs. Here you’ll find all challenges from public Hubs and private Hubs that you are a member of. Enter your search terms (e.g. ‘innovation’) below to find matching challenges. "
+      },
       "my": {
         "title": "My challenges",
         "subtitle": "Here you'll find the challenges that you are contributing to."
+      },
+      "other": {
+        "title": "Challenges within My Hubs",
+        "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of."
       }
     },
     "lead-organization": {

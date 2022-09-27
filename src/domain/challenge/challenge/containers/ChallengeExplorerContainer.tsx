@@ -15,6 +15,7 @@ export interface ChallengeExplorerContainerEntities {
   isLoggedIn: boolean;
   searchTerms: string[];
   userChallenges?: SimpleChallenge[];
+  otherUserChallenges?: SimpleChallenge[];
   userHubs?: SimpleHubResultEntryFragment[];
   publicChallenges?: ChallengeExplorerSearchResultFragment[];
 }
@@ -71,7 +72,8 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     }));
 
   // Public
-  const { data: publicData, loading: _searchLoading, error: _searchError } = useChallengeExplorerSearchQuery({ //!!
+  const { data: publicData } = useChallengeExplorerSearchQuery({
+    //!!
     onError: handleError,
     variables: {
       searchData: {
@@ -90,6 +92,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     isLoggedIn: !!user,
     searchTerms,
     userChallenges,
+    otherUserChallenges: [], // TODO: Query My Hubs to see other challenges in the hubs I am a member of
     userHubs,
     publicChallenges,
   };
