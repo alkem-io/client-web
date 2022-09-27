@@ -10,6 +10,7 @@ import { CanvasProvider } from '../../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CanvasFragmentWithCallout } from '../useCallouts';
+import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
 export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
@@ -43,34 +44,35 @@ const CanvasCallout = ({
     <>
       <CalloutLayout
         callout={callout}
-        maxHeight={18}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
       >
-        <CardsLayout
-          items={loading ? [undefined, undefined] : callout.canvases}
-          deps={[hubNameId, challengeNameId, opportunityNameId]}
-          {...(canCreate
-            ? {
-                createButtonComponent: (
-                  <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-                    <SimpleCard to={''} />
-                  </CreateCalloutItemButton>
-                ),
-              }
-            : {})}
-        >
-          {canvas => (
-            <SimpleCard
-              key={canvas!.id}
-              {...buildCanvasUrl(canvas!.nameID, canvas!.calloutNameId)}
-              title={canvas!.displayName}
-              imageUrl={canvas!.preview?.uri}
-              iconComponent={WbIncandescentOutlined}
-            />
-          )}
-        </CardsLayout>
+        <CardsLayoutScroller maxHeight={18}>
+          <CardsLayout
+            items={loading ? [undefined, undefined] : callout.canvases}
+            deps={[hubNameId, challengeNameId, opportunityNameId]}
+            {...(canCreate
+              ? {
+                  createButtonComponent: (
+                    <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+                      <SimpleCard to={''} />
+                    </CreateCalloutItemButton>
+                  ),
+                }
+              : {})}
+          >
+            {canvas => (
+              <SimpleCard
+                key={canvas!.id}
+                {...buildCanvasUrl(canvas!.nameID, canvas!.calloutNameId)}
+                title={canvas!.displayName}
+                imageUrl={canvas!.preview?.uri}
+                iconComponent={WbIncandescentOutlined}
+              />
+            )}
+          </CardsLayout>
+        </CardsLayoutScroller>
       </CalloutLayout>
       <CanvasProvider>
         {(entities, state) => (

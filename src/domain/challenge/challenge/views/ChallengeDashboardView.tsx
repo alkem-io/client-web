@@ -142,7 +142,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navText={t('buttons.see-all')}
             navLink={'opportunities'}
           >
-            {/* TODO check if flexBasis: '50%' was ever needed */}
             <CardsLayout
               items={opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION) || []}
               deps={[hubNameId, challengeNameId]}

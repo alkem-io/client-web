@@ -10,6 +10,7 @@ import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from 
 import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../../hooks';
 import { CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
+import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 
 export type OnCreateInput = Omit<CreateAspectOnCalloutInput, 'calloutID'>;
 
@@ -129,35 +130,36 @@ const AspectCallout = ({
     <>
       <CalloutLayout
         callout={callout}
-        maxHeight={42.5}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
       >
-        <CardsLayout
-          items={loading ? [undefined, undefined] : callout.aspects}
-          deps={[hubNameId, challengeNameId, opportunityNameId]}
-          {...(canCreate
-            ? {
-                createButtonComponent: (
-                  <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-                    <AspectCard />
-                  </CreateCalloutItemButton>
-                ),
-              }
-            : {})}
-        >
-          {aspect => (
-            <AspectCard
-              aspect={aspect}
-              hubNameId={hubNameId}
-              challengeNameId={challengeNameId}
-              opportunityNameId={opportunityNameId}
-              loading={!aspect}
-              keepScroll
-            />
-          )}
-        </CardsLayout>
+        <CardsLayoutScroller maxHeight={42.5}>
+          <CardsLayout
+            items={loading ? [undefined, undefined] : callout.aspects}
+            deps={[hubNameId, challengeNameId, opportunityNameId]}
+            {...(canCreate
+              ? {
+                  createButtonComponent: (
+                    <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+                      <AspectCard />
+                    </CreateCalloutItemButton>
+                  ),
+                }
+              : {})}
+          >
+            {aspect => (
+              <AspectCard
+                aspect={aspect}
+                hubNameId={hubNameId}
+                challengeNameId={challengeNameId}
+                opportunityNameId={opportunityNameId}
+                loading={!aspect}
+                keepScroll
+              />
+            )}
+          </CardsLayout>
+        </CardsLayoutScroller>
       </CalloutLayout>
       <AspectCreationDialog
         open={aspectDialogOpen}
