@@ -1,5 +1,8 @@
-query hubName($hubId: UUID_NAMEID!) {
+query challengeExplorerHubData($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
    ...HubName
+   context {
+     tagline
+   }
   }
 }
