@@ -8,64 +8,60 @@ import { ChallengeCardContainer } from '../../../../containers/challenge/Challen
 import HubChallengesContainer from '../../../../containers/hub/HubChallengesContainer';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
-import { ChallengeExplorerContainerEntities, ChallengeExplorerContainerState } from '../containers/ChallengeExplorerContainer';
+import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import {
+  ChallengeExplorerContainerEntities,
+  ChallengeExplorerContainerState,
+} from '../containers/ChallengeExplorerContainer';
 import ChallengeExplorerHeader from './ChallengeExplorer/ChallengeExplorerHeader';
 import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
 
-/*
-export interface HubOverview {
-  hubID: string;
-  nameID: string;
-  displayName: string;
-  tagline?: string;
-}
-
-interface ChallengeOverview {
-  id: string;
-  hubId: string;
-  hubNameId: string;
-}
-*/
-export interface ChallengeExplorerViewProps extends ChallengeExplorerContainerEntities, ChallengeExplorerContainerState {
+export interface ChallengeExplorerViewProps
+  extends ChallengeExplorerContainerEntities,
+    ChallengeExplorerContainerState {
   setSearchTerms: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
-  _isLoggedIn,
+  isLoggedIn,
   searchTerms,
   setSearchTerms,
   userChallenges,
   userHubs,
   publicChallenges,
-  _loading  //!!
+  _loading,
 }) => {
   const { t } = useTranslation();
   const [groupBy] = useState<ChallengeExplorerGroupByType>('hub');
 
   return (
-    <Box paddingY={2}>
+    <Box paddingY={2} marginTop={2}>
       <Grid container rowSpacing={4}>
-        <Grid item>
-          <ChallengeExplorerHeader searchTerms={searchTerms} onSearchTermsChange={setSearchTerms} />
-        </Grid>
+        {!isLoggedIn && (
+          <Grid item>
+            <ChallengeExplorerHeader searchTerms={searchTerms} onSearchTermsChange={setSearchTerms} />
+          </Grid>
+        )}
         {userChallenges && (
           <Grid item xs={12}>
             <DashboardGenericSection
-              headerText={t('pages.challenge-explorer.my.title', { count: userChallenges.length })}
+              headerText={t('pages.challenge-explorer.my.title')}
+              headerCounter={userChallenges.length}
               subHeaderText={t('pages.challenge-explorer.my.subtitle')}
-              helpText={t('pages.challenge-explorer.my.help-text')}
             >
-              <CardsLayout items={userChallenges}>
-                {({ hubNameId, id: challengeId }) => (
-                  // TODO move data enrichment to an enhanced version of BetterCardLayoutContainer
-                  // then, within this function, just render a normal ChallengeCard
-                  <ChallengeCardContainer hubNameId={hubNameId} challengeNameId={challengeId}>
-                    {({ challenge }) => challenge && <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
-                  </ChallengeCardContainer>
-                )}
-              </CardsLayout>
+              <CardsLayoutScroller maxHeight={42}>
+                <CardsLayout items={userChallenges}>
+                  {({ hubNameId, id: challengeId }) => (
+                    // TODO move data enrichment to an enhanced version of BetterCardLayoutContainer
+                    // then, within this function, just render a normal ChallengeCard
+                    <ChallengeCardContainer hubNameId={hubNameId} challengeNameId={challengeId}>
+                      {({ challenge }) => challenge && <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
+                    </ChallengeCardContainer>
+                  )}
+                </CardsLayout>
+              </CardsLayoutScroller>
             </DashboardGenericSection>
           </Grid>
         )}
@@ -75,7 +71,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
           </Box>
         </Grid>
         {userHubs &&
-          userHubs.map((hub) => (
+          userHubs.map(hub => (
             <HubChallengesContainer
               key={hub.hubID}
               entities={{
@@ -87,7 +83,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
                   <DashboardGenericSection
                     headerText={hub.displayName}
                     headerIcon={<HubIcon />}
-                    subHeaderText={hub.displayName + '//!! Tagline'}
+                    subHeaderText={hub.displayName + 'Tagline'}
                   >
                     <CardsLayout items={cEntities.challenges} deps={[hub.nameID]}>
                       {challenge => <ChallengeCard challenge={challenge} hubNameId={hub.nameID} />}

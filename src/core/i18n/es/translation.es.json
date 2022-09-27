@@ -949,9 +949,8 @@
         "description": "En Alkemio, los Desafíos se organizan dentro de un Hub. Cada Hub tiene su pripio marco de referencia específico en el cual los Desafíos se usan para entender los problemas que se están tratando."
       },
       "my": {
-        "title": "Mis Desafíos ({{count}})",
-        "subtitle": "Esta sección te muestra los desafíos en los que estás contribuyendo.",
-        "help-text": "Una tarjeta por cada desafío, incluyendo tu rol en cada uno."
+        "title": "Mis Desafíos",
+        "subtitle": "Aquí encontrarás los desafíos en los que estás contribuyendo."
       }
     },
     "lead-organization": {

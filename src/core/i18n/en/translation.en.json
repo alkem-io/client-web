@@ -951,9 +951,8 @@
         "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
       },
       "my": {
-        "title": "My challenges ({{count}})",
-        "subtitle": "This section shows you the challenges you are contributing to. ",
-        "help-text": "One card per Challenge membership, including the role you have in each."
+        "title": "My challenges",
+        "subtitle": "Here you'll find the challenges that you are contributing to."
       }
     },
     "lead-organization": {

@@ -946,9 +946,8 @@
         "placeholder": "Zoek met termen naar Challenges op Alkemio..."
       },
       "my": {
-        "title": "Mijn Challenges ({{count}})",
-        "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. ",
-        "help-text": "Een kaart per Challenge-lidmaatschap, inclusief de rol die je in elke Challenge hebt."
+        "title": "Mijn Challenges",
+        "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. "
       }
     },
     "lead-organization": {
