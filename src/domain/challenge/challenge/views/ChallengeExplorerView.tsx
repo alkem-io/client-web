@@ -29,7 +29,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
   setSearchTerms,
   userChallenges,
   userHubs,
-  publicChallenges,
+  searchResults,
 }) => {
   const { t } = useTranslation();
   const [groupBy] = useState<ChallengeExplorerGroupByType>('hub');
@@ -112,10 +112,10 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
             />
           </Grid>
         )}
-        {/* PUBLIC: Search public hubs/hubs that the user has access to, for searchTerms */}
+        {/* PUBLIC: Search challenges in public hubs/hubs that the user has access to */}
         <Grid item xs={12}>
           <Box paddingTop={2}>
-            <ChallengeExplorerSearchView challenges={publicChallenges} groupBy={groupBy} />
+            <ChallengeExplorerSearchView challenges={searchResults} groupBy={groupBy} />
           </Box>
         </Grid>
       </Grid>

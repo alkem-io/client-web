@@ -17,7 +17,7 @@ export interface ChallengeExplorerContainerEntities {
   userChallenges?: SimpleChallenge[];
   otherUserChallenges?: SimpleChallenge[];
   userHubs?: SimpleHubResultEntryFragment[];
-  publicChallenges?: ChallengeExplorerSearchResultFragment[];
+  searchResults?: ChallengeExplorerSearchResultFragment[];
 }
 
 export interface ChallengeExplorerContainerActions {}
@@ -71,9 +71,8 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
       nameID,
     }));
 
-  // Public
-  const { data: publicData } = useChallengeExplorerSearchQuery({
-    //!!
+  // Search
+  const { data: searchData } = useChallengeExplorerSearchQuery({
     onError: handleError,
     variables: {
       searchData: {
@@ -86,15 +85,14 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     skip: !searchTerms.length,
   });
 
-  const publicChallenges = (publicData?.search ?? []).map(x => x.result as ChallengeExplorerSearchResultFragment);
+  const searchResults = (searchData?.search ?? []).map(x => x.result as ChallengeExplorerSearchResultFragment);
 
   const provided = {
     isLoggedIn: !!user,
     searchTerms,
     userChallenges,
-    otherUserChallenges: [], // TODO: Query My Hubs to see other challenges in the hubs I am a member of
     userHubs,
-    publicChallenges,
+    searchResults,
   };
 
   return <>{children(provided, { loading, error }, {})}</>;
