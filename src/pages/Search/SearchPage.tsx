@@ -44,7 +44,7 @@ const contributorFilterConfig: FilterConfig = {
   },
 };
 // todo translate
-const entityFilterConfig: FilterConfig = {
+const journeyFilterConfig: FilterConfig = {
   all: {
     title: 'All',
     value: ['hub', 'opportunity', 'challenge'],
@@ -96,7 +96,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   // todo only the value can be used instead
   const [contributorFilterValue, setContributorFilterValue] = useState<string[]>(contributorFilterConfig.all.value);
-  const [entityFilterValue, setEntityFilterValue] = useState<string[]>(entityFilterConfig.all.value);
+  const [entityFilterValue, setEntityFilterValue] = useState<string[]>(journeyFilterConfig.all.value);
 
   useEffect(() => {
     setTermsFromQuery(termsFromUrl);
@@ -105,7 +105,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
   const resetState = () => {
     setContributorFilterValue(contributorFilterConfig.all.value);
-    setEntityFilterValue(entityFilterConfig.all.value);
+    setEntityFilterValue(journeyFilterConfig.all.value);
     setSearchTerms([]);
     setResults(undefined);
   };
@@ -199,7 +199,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
       )}
       <SearchResultSection
         title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
-        filterConfig={entityFilterConfig}
+        filterConfig={journeyFilterConfig}
         results={journeyResults}
         onFilterChange={handleEntityFilterChange}
         loading={isSearching}

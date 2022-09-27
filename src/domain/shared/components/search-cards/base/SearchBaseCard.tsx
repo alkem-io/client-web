@@ -10,11 +10,17 @@ import TagsComponent from '../../TagsComponent/TagsComponent';
 import { ClampedTypography } from '../../ClampedTypography';
 import { RouterLink } from '../../../../../common/components/core/RouterLink';
 import Link from '@mui/material/Link';
+import { useTranslation } from 'react-i18next';
 
-const MATCH_TERMS_HEIGHT = 50;
+const MATCHED_TERMS_HEIGHT = 75;
 const NAME_HEIGHT = 60;
 
-const MatchTermsBox = styled(CardActions)(({ theme }) => ({ width: theme.cards.search.width }));
+const MatchTermsBox = styled(CardActions)(({ theme }) => ({
+  width: theme.cards.search.width,
+  height: MATCHED_TERMS_HEIGHT,
+  alignItems: 'normal',
+  flexDirection: 'column',
+}));
 const Label = styled(Typography)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   color: 'white',
@@ -52,10 +58,11 @@ const getCalculatedCardImage = (mediaHeight: number) =>
 const getCalculatedCardContents = (cardHeight: number, mediaHeight: number) =>
   styled(CardContent)(({ theme }) => ({
     width: theme.cards.search.width,
-    height: cardHeight - mediaHeight - NAME_HEIGHT - MATCH_TERMS_HEIGHT,
+    height: cardHeight - mediaHeight - NAME_HEIGHT - MATCHED_TERMS_HEIGHT,
     padding: 0,
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
+    paddingTop: theme.spacing(0.5),
   }));
 
 export type SearchBaseCardImplProps = Omit<SearchBaseCardProps, 'height' | 'imgHeight'>;
@@ -83,6 +90,7 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({
   url,
   children,
 }) => {
+  const { t } = useTranslation();
   const [CardBox, CardImage, CardContents] = useMemo(
     () => [
       getCalculatedCardBox(height),
@@ -91,7 +99,7 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({
     ],
     [imgHeight]
   );
-  // todo image on NO img url
+
   return (
     <Link component={RouterLink} to={url} underline="none">
       <CardBox>
@@ -106,7 +114,8 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({
         </NameBox>
         <CardContents>{children}</CardContents>
         <MatchTermsBox>
-          <TagsComponent tags={matchedTerms} count={2} />
+          <Typography sx={{ fontWeight: 'bold' }}>{t('components.search-cards.matched-terms')}</Typography>
+          <TagsComponent tags={matchedTerms} count={3} />
         </MatchTermsBox>
       </CardBox>
     </Link>

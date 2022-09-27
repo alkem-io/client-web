@@ -29,13 +29,13 @@ export const theme: ThemeOptions = {
     search: {
       width: 264,
       contributor: {
-        height: 394,
+        height: 418,
         imgHeight: 264,
       },
       journey: {
         height: 342,
         imgHeight: 88,
-      }
+      },
     },
     simpleCard: {
       width: 32,
@@ -61,13 +61,13 @@ declare module '@mui/material/styles' {
         width: number;
         contributor: {
           height: number;
-          imgHeight: number,
-        },
+          imgHeight: number;
+        };
         journey: {
           height: number;
-          imgHeight: number,
-        }
-      },
+          imgHeight: number;
+        };
+      };
       simpleCard: {
         width: number;
         height: number;

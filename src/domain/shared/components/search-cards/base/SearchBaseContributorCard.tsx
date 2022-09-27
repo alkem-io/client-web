@@ -5,11 +5,11 @@ import Typography from '@mui/material/Typography';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import SearchBaseCard, { SearchBaseCardImplProps } from './SearchBaseCard';
 
-const LocationBox = styled(Box)({
+const LocationBox = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  paddingTop: '3px',
-});
+  height: theme.typography.subtitle2.fontSize,
+}));
 
 export interface SearchBaseContributorCardProps extends SearchBaseCardImplProps {
   country?: string;

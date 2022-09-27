@@ -3180,8 +3180,6 @@ export type UpdateCalloutInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
-  /** Callout type. */
-  type?: InputMaybe<CalloutType>;
 };
 
 export type UpdateCalloutVisibilityInput = {
