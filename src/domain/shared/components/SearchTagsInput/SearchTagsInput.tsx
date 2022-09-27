@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import Autocomplete, { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { Chip } from '@mui/material';
@@ -27,18 +26,7 @@ const SearchTagsInput = ({ value, onChange, placeholder }: CardFilterInputProps)
 
   const renderInput = useCallback(
     (props: AutocompleteRenderInputParams) => (
-      <TextField
-        {...props}
-        variant="outlined"
-        placeholder={placeholder}
-        label={placeholder}
-        /*InputProps={{
-          endAdornment: (
-            //!!
-            <SearchIcon color="primary" />
-          ),
-        }}*/
-      />
+      <TextField {...props} variant="outlined" placeholder={placeholder} label={placeholder} />
     ),
     [placeholder]
   );
