@@ -33,6 +33,8 @@ export type Activity = {
   description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The id of the parent of the entity within which the Activity was generated. */
+  parentID?: Maybe<Scalars['UUID']>;
   /** The id of the entity that is associated with this Activity. */
   resourceID: Scalars['UUID'];
   /** The id of the user that triggered this Activity. */
@@ -2927,6 +2929,8 @@ export type RolesResultHub = {
   opportunities: Array<RolesResultCommunity>;
   /** The roles held by the contributor */
   roles: Array<Scalars['String']>;
+  /** A one line description */
+  tagline?: Maybe<Scalars['String']>;
   /** Details of the Groups in the Organizations the user is a member of */
   userGroups: Array<RolesResult>;
 };
@@ -3176,6 +3180,8 @@ export type UpdateCalloutInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+  /** Callout type. */
+  type?: InputMaybe<CalloutType>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -8110,6 +8116,21 @@ export type SimpleHubResultEntryFragment = {
   hubID: string;
   nameID: string;
   displayName: string;
+};
+
+export type ChallengeExplorerHubDataQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type ChallengeExplorerHubDataQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    displayName: string;
+    context?: { __typename?: 'Context'; tagline?: string | undefined } | undefined;
+  };
 };
 
 export type ChallengeExplorerSearchQueryVariables = Exact<{

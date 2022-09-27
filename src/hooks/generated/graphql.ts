@@ -7825,6 +7825,67 @@ export type ChallengeExplorerPageQueryResult = Apollo.QueryResult<
 export function refetchChallengeExplorerPageQuery(variables: SchemaTypes.ChallengeExplorerPageQueryVariables) {
   return { query: ChallengeExplorerPageDocument, variables: variables };
 }
+export const ChallengeExplorerHubDataDocument = gql`
+  query ChallengeExplorerHubData($hubId: UUID_NAMEID!) {
+    hub(ID: $hubId) {
+      ...HubName
+      context {
+        tagline
+      }
+    }
+  }
+  ${HubNameFragmentDoc}
+`;
+
+/**
+ * __useChallengeExplorerHubDataQuery__
+ *
+ * To run a query within a React component, call `useChallengeExplorerHubDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChallengeExplorerHubDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChallengeExplorerHubDataQuery({
+ *   variables: {
+ *      hubId: // value for 'hubId'
+ *   },
+ * });
+ */
+export function useChallengeExplorerHubDataQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ChallengeExplorerHubDataQuery,
+    SchemaTypes.ChallengeExplorerHubDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ChallengeExplorerHubDataQuery, SchemaTypes.ChallengeExplorerHubDataQueryVariables>(
+    ChallengeExplorerHubDataDocument,
+    options
+  );
+}
+export function useChallengeExplorerHubDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ChallengeExplorerHubDataQuery,
+    SchemaTypes.ChallengeExplorerHubDataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ChallengeExplorerHubDataQuery,
+    SchemaTypes.ChallengeExplorerHubDataQueryVariables
+  >(ChallengeExplorerHubDataDocument, options);
+}
+export type ChallengeExplorerHubDataQueryHookResult = ReturnType<typeof useChallengeExplorerHubDataQuery>;
+export type ChallengeExplorerHubDataLazyQueryHookResult = ReturnType<typeof useChallengeExplorerHubDataLazyQuery>;
+export type ChallengeExplorerHubDataQueryResult = Apollo.QueryResult<
+  SchemaTypes.ChallengeExplorerHubDataQuery,
+  SchemaTypes.ChallengeExplorerHubDataQueryVariables
+>;
+export function refetchChallengeExplorerHubDataQuery(variables: SchemaTypes.ChallengeExplorerHubDataQueryVariables) {
+  return { query: ChallengeExplorerHubDataDocument, variables: variables };
+}
 export const ChallengeExplorerSearchDocument = gql`
   query ChallengeExplorerSearch($searchData: SearchInput!) {
     search(searchData: $searchData) {

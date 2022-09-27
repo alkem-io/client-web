@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
-import { Accordion } from '../../../../../common/components/composite/common/Accordion/Accordion';
+import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
 import ChallengeExplorerSearchEnricherContainer from '../../containers/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
-import HubNameResolver from '../../../../../containers/hub/HubNameResolver';
+import ChallengeExplorerHubDataResolver from '../../containers/ChallengeExplorerSearch/ChallengeExplorerHubDataResolver';
 import { ChallengeExplorerSearchResultFragment } from '../../../../../models/graphql-schema';
 import ChallengeCard from '../../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
+import { HubIcon } from '../../../../../common/icons/HubIcon';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
@@ -24,31 +25,31 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ cha
   return (
     <>
       {challenges && challenges.length > 0 && (
-          <GroupBy data={challenges} groupKey={groupKey}>
-            {groups => {
-              return groups.map(({ keyValue, values }) => (
-                <HubNameResolver key={keyValue} hubId={keyValue}>
-                  {({ displayName }) => (
-                    <Accordion title={displayName} ariaKey={keyValue}>
-                      <CardsLayout items={values}>
-                        {challenge => (
-                          // TODO enrich at the level of the LayoutContainer
-                          <ChallengeExplorerSearchEnricherContainer challenge={challenge}>
-                            {({ challenge: enrichedChallenge }) => (
-                              <ChallengeCard challenge={enrichedChallenge} hubNameId={challenge.hubID} />
-                            )}
-                          </ChallengeExplorerSearchEnricherContainer>
-                        )}
-                      </CardsLayout>
-                    </Accordion>
-                  )}
-                </HubNameResolver>
-              ));
-            }}
-          </GroupBy>
-        )
-      }
-    </>);
+        <GroupBy data={challenges} groupKey={groupKey}>
+          {groups => {
+            return groups.map(({ keyValue, values }) => (
+              <ChallengeExplorerHubDataResolver key={keyValue} hubId={keyValue}>
+                {({ displayName, tagline }) => (
+                  <DashboardGenericSection headerText={displayName} headerIcon={<HubIcon />} subHeaderText={tagline}>
+                    <CardsLayout items={values}>
+                      {challenge => (
+                        // TODO enrich at the level of the LayoutContainer
+                        <ChallengeExplorerSearchEnricherContainer challenge={challenge}>
+                          {({ challenge: enrichedChallenge }) => (
+                            <ChallengeCard challenge={enrichedChallenge} hubNameId={challenge.hubID} />
+                          )}
+                        </ChallengeExplorerSearchEnricherContainer>
+                      )}
+                    </CardsLayout>
+                  </DashboardGenericSection>
+                )}
+              </ChallengeExplorerHubDataResolver>
+            ));
+          }}
+        </GroupBy>
+      )}
+    </>
+  );
 };
 export default ChallengeExplorerSearchView;
 
