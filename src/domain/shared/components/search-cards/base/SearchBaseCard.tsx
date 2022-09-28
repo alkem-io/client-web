@@ -71,7 +71,7 @@ interface SearchBaseCardProps {
   imgHeight: number;
   image: string | undefined;
   imgAlt?: string; // todo make required when alt text is available for visuals
-  matchedTerms: string[];
+  matchedTerms?: string[];
   icon: React.ComponentType<SvgIconProps>;
   name: string;
   label?: string; // todo working var name
@@ -113,10 +113,12 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({
           </ClampedTypography>
         </NameBox>
         <CardContents>{children}</CardContents>
-        <MatchTermsBox>
-          <Typography sx={{ fontWeight: 'bold' }}>{t('components.search-cards.matched-terms')}</Typography>
-          <TagsComponent tags={matchedTerms} count={3} />
-        </MatchTermsBox>
+        {matchedTerms && matchedTerms.length > 0 && (
+          <MatchTermsBox>
+            <Typography sx={{ fontWeight: 'bold' }}>{t('components.search-cards.matched-terms')}</Typography>
+            <TagsComponent tags={matchedTerms} count={3} />
+          </MatchTermsBox>
+        )}
       </CardBox>
     </Link>
   );

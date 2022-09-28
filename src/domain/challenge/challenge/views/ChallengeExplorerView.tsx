@@ -1,21 +1,29 @@
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ChallengeCard from '../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
 import { ChallengeCardContainer } from '../../../../containers/challenge/ChallengeCardContainer';
-import HubChallengesContainer from '../../../../containers/hub/HubChallengesContainer';
+import HubChallengesContainer from '../containers/HubChallengesContainer';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import CardsLayout, { CardLayoutContainer } from '../../../shared/layout/CardsLayout/CardsLayout';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 import {
   ChallengeExplorerContainerEntities,
   ChallengeExplorerContainerState,
+  SimpleChallenge,
 } from '../containers/ChallengeExplorerContainer';
 import ChallengeExplorerHeader from './ChallengeExplorer/ChallengeExplorerHeader';
 import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
+import { Challenge } from '../../../../models/graphql-schema';
+import { SearchChallengeCard } from '../../../shared/components/search-cards';
+import { getVisualBannerNarrow } from '../../../../common/utils/visuals.utils';
+import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
+import { useUserContext } from '../../../../hooks';
+import { RoleType } from '../../../community/contributor/user/constants/RoleType';
+import CardsLayoutFilterContainer from '../../../shared/layout/CardsLayout/CardsLayoutFilterContainer';
 
 export interface ChallengeExplorerViewProps
   extends ChallengeExplorerContainerEntities,
@@ -30,9 +38,31 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
   userChallenges,
   userHubs,
   searchResults,
+  loading,
 }) => {
   const { t } = useTranslation();
+  const { user } = useUserContext();
   const [groupBy] = useState<ChallengeExplorerGroupByType>('hub');
+
+  const filterUserChallenges = useCallback(
+    (challenge: Challenge) => {
+      return userChallenges?.find(userChallenge => userChallenge.id === challenge.id) === undefined;
+    },
+    [userChallenges]
+  );
+
+  const getCardLabel = useCallback(
+    (roles: string[]) => {
+      return roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member);
+    },
+    [user]
+  );
+
+  const filterChallenges = (item: SimpleChallenge, index: number, allItems: SimpleChallenge[], filterValue: string) => {
+    return item.displayName.indexOf(filterValue) > -1 || item.hubDisplayName.indexOf(filterValue) > -1;
+  };
+
+  if (loading) return null;
 
   return (
     <Box paddingY={2} marginTop={2}>
@@ -55,22 +85,37 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
               headerCounter={userChallenges.length}
               subHeaderText={t('pages.challenge-explorer.my.subtitle')}
             >
-              {/* TODO FILTER HERE */}
-              <CardsLayoutScroller maxHeight={42} sx={{ marginRight: 0 }}>
-                <CardsLayout items={userChallenges}>
-                  {({ hubNameId, id: challengeId }) => (
-                    // TODO move data enrichment to an enhanced version of BetterCardLayoutContainer
-                    // then, within this function, just render a normal ChallengeCard
-                    <ChallengeCardContainer hubNameId={hubNameId} challengeNameId={challengeId}>
-                      {({ challenge }) => challenge && <ChallengeCard challenge={challenge} hubNameId={hubNameId} />}
-                    </ChallengeCardContainer>
-                  )}
-                </CardsLayout>
-              </CardsLayoutScroller>
+              <CardsLayoutFilterContainer items={userChallenges} filter={filterChallenges}>
+                {({ filteredItems: filteredUserChallenges }) => (
+                  <CardsLayoutScroller maxHeight={42} sx={{ marginRight: 0 }}>
+                    <CardsLayout items={filteredUserChallenges}>
+                      {({ hubNameId, hubDisplayName, id: challengeId, roles, matchedTerms }) => (
+                        // TODO move data enrichment to an enhanced version of BetterCardLayoutContainer
+                        // then, within this function, just render a normal ChallengeCard
+                        <ChallengeCardContainer hubNameId={hubNameId} challengeNameId={challengeId}>
+                          {({ challenge }) =>
+                            challenge && (
+                              <SearchChallengeCard
+                                name={challenge.displayName}
+                                tagline={challenge.context?.tagline}
+                                image={getVisualBannerNarrow(challenge.context?.visuals)}
+                                matchedTerms={matchedTerms}
+                                label={getCardLabel(roles)}
+                                url={buildChallengeUrl(hubNameId, challenge.nameID)}
+                                parentName={hubDisplayName}
+                              />
+                            )
+                          }
+                        </ChallengeCardContainer>
+                      )}
+                    </CardsLayout>
+                  </CardsLayoutScroller>
+                )}
+              </CardsLayoutFilterContainer>
             </DashboardGenericSection>
           </Grid>
         )}
-        {/* PRIVATE: Challenges within my hubs */}
+        {/* PRIVATE: Other challenges within my hubs */}
         {userHubs && userHubs.length > 0 && (
           <Grid item xs={12}>
             {/* TODO: Make this counter work */}
@@ -88,9 +133,9 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
                         hubNameId: hub.nameID,
                       }}
                     >
-                      {cEntities => (
+                      {({ challenges: challengesInHub }) => (
                         <>
-                          {cEntities.challenges.map(challenge => (
+                          {challengesInHub.filter(filterUserChallenges).map(challenge => (
                             <ChallengeCard challenge={challenge} hubNameId={hub.nameID} />
                           ))}
                         </>
