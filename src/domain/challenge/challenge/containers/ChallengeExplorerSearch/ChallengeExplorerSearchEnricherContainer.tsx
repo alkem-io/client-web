@@ -8,6 +8,7 @@ import { useApolloErrorHandler } from '../../../../../hooks';
 type EnrichInfo = {
   hubNameId?: string;
   hubDisplayName?: string;
+  imageUrl?: string;
 };
 
 type EnrichedChallenge = ChallengeExplorerSearchResultFragment & EnrichInfo;
@@ -47,6 +48,7 @@ const ChallengeExplorerSearchEnricherContainer: FC<ChallengeExplorerSearchEnrich
   const hub = data?.hub;
   const enrichedChallenge: EnrichedChallenge = {
     ...challenge,
+    imageUrl: challenge.context?.visuals?.length ? challenge.context?.visuals[0].uri : undefined,
     hubNameId: hub?.nameID,
     hubDisplayName: hub?.displayName,
   };

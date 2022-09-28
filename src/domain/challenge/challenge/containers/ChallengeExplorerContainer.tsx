@@ -9,6 +9,7 @@ export type SimpleChallenge = {
   id: string;
   hubId: string;
   hubNameId: string;
+  hubDisplayName: string;
   displayName: string;
   roles: string[];
 };
@@ -56,11 +57,12 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   const hubs = data?.rolesUser.hubs;
   const userChallenges: SimpleChallenge[] | undefined =
     hubs &&
-    hubs.flatMap(x =>
-      x?.challenges.map(challenge => ({
+    hubs.flatMap(hub =>
+      hub?.challenges.map(challenge => ({
         id: challenge.id,
-        hubNameId: x.nameID,
-        hubId: x.hubID,
+        hubNameId: hub.nameID,
+        hubDisplayName: hub.displayName,
+        hubId: hub.hubID,
         displayName: challenge.displayName,
         roles: challenge.roles,
       }))
