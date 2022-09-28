@@ -909,6 +909,7 @@ export const HubInfoFragmentDoc = gql`
         myPrivileges
       }
     }
+    visibility
     templates {
       id
       aspectTemplates {
@@ -9093,8 +9094,9 @@ export type UpdateHubMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const AdminHubsListDocument = gql`
   query adminHubsList {
-    hubs {
+    hubs(visibilities: [ARCHIVED, ACTIVE, DEMO]) {
       ...AdminHub
+      visibility
     }
   }
   ${AdminHubFragmentDoc}
