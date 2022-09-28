@@ -4,6 +4,7 @@ export type ActivityKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentID'
   | 'resourceID'
   | 'triggeredBy'
   | 'type'
@@ -14,6 +15,7 @@ export type ActivityFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentID?: FieldPolicy<any> | FieldReadFunction<any>;
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -703,6 +705,7 @@ export type HubKeySpecifier = (
   | 'projects'
   | 'tagset'
   | 'templates'
+  | 'visibility'
   | HubKeySpecifier
 )[];
 export type HubFieldPolicy = {
@@ -729,6 +732,7 @@ export type HubFieldPolicy = {
   projects?: FieldPolicy<any> | FieldReadFunction<any>;
   tagset?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
+  visibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type HubAspectTemplateKeySpecifier = (
   | 'defaultDescription'
@@ -906,6 +910,7 @@ export type MutationKeySpecifier = (
   | 'updateDiscussion'
   | 'updateEcosystemModel'
   | 'updateHub'
+  | 'updateHubVisibility'
   | 'updateLifecycleTemplate'
   | 'updateOpportunity'
   | 'updateOpportunityInnovationFlow'
@@ -1037,6 +1042,7 @@ export type MutationFieldPolicy = {
   updateDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
   updateEcosystemModel?: FieldPolicy<any> | FieldReadFunction<any>;
   updateHub?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateHubVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateLifecycleTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunity?: FieldPolicy<any> | FieldReadFunction<any>;
   updateOpportunityInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;

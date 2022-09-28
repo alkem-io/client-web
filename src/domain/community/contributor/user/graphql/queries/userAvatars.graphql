@@ -1,4 +1,4 @@
-query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
+query userAvatars($ids: [UUID!]!) {
   usersById(IDs: $ids) {
     id
     nameID

@@ -1,5 +1,5 @@
-query organizationsList($limit: Float, $shuffle: Boolean) {
-  organizations(limit: $limit, shuffle: $shuffle) {
+query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+  organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials}) {
     id
     nameID
     displayName
