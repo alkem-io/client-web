@@ -31,10 +31,10 @@ const SearchBar = () => {
     setValue('');
   }, [match, query]);
 
-  const isTermEmpty = useMemo(() => value.length < MINIMUM_TERM_LENGTH, [value]);
+  const isTermValid = useMemo(() => value.length < MINIMUM_TERM_LENGTH, [value]);
 
   const keyPressHandler = ({ code }: React.KeyboardEvent<HTMLDivElement>) => {
-    if (isTermEmpty) {
+    if (isTermValid) {
       return;
     }
 
@@ -51,18 +51,18 @@ const SearchBar = () => {
   );
 
   const handleNavigateToSearchPage = useCallback(() => {
-    if (match && isTermEmpty) {
+    if (match && isTermValid) {
       return;
     }
 
-    if (isTermEmpty) {
+    if (isTermValid) {
       return navigate(SEARCH_ROUTE);
     }
 
     const terms = getSearchTerms(value);
     const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
     navigate(`${SEARCH_ROUTE}?${params}`);
-  }, [match, isTermEmpty, value, SEARCH_ROUTE, SEARCH_TERMS_PARAM]);
+  }, [match, isTermValid, value, SEARCH_ROUTE, SEARCH_TERMS_PARAM]);
 
   return (
     <Box
