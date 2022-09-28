@@ -7321,7 +7321,7 @@ export function refetchUserSsiQuery(variables?: SchemaTypes.UserSsiQueryVariable
   return { query: UserSsiDocument, variables: variables };
 }
 export const UserCardsContainerDocument = gql`
-  query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
+  query userCardsContainer($ids: [UUID!]!) {
     usersById(IDs: $ids) {
       id
       nameID
@@ -12941,7 +12941,7 @@ export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCa
 export type CalloutAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
 export const AuthorDetailsDocument = gql`
-  query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
+  query authorDetails($ids: [UUID!]!) {
     usersById(IDs: $ids) {
       ...UserCard
       firstName
@@ -15898,8 +15898,8 @@ export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.Organ
   return { query: OrganizationProfileInfoDocument, variables: variables };
 }
 export const OrganizationsListDocument = gql`
-  query organizationsList($limit: Float, $shuffle: Boolean) {
-    organizations(limit: $limit, shuffle: $shuffle) {
+  query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+    organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
       displayName
@@ -15928,6 +15928,7 @@ export const OrganizationsListDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      shuffle: // value for 'shuffle'
+ *      filterCredentials: // value for 'filterCredentials'
  *   },
  * });
  */
@@ -16687,7 +16688,7 @@ export function refetchUserApplicationsQuery(variables: SchemaTypes.UserApplicat
   return { query: UserApplicationsDocument, variables: variables };
 }
 export const UserAvatarsDocument = gql`
-  query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
+  query userAvatars($ids: [UUID!]!) {
     usersById(IDs: $ids) {
       id
       nameID
