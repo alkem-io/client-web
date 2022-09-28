@@ -5,6 +5,7 @@ query ChallengeExplorerPage($rolesData: RolesUserInput!) {
       ...SimpleHubResultEntry
       challenges {
         id
+        displayName
         roles
       }
       roles

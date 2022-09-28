@@ -21,6 +21,7 @@ fragment ChallengeExplorerSearchResult on Challenge {
     visuals {
       ...VisualUri
     }
+    tagline
   }
   tagset {
     id

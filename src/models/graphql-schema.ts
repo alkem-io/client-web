@@ -8106,7 +8106,7 @@ export type ChallengeExplorerPageQuery = {
       hubID: string;
       nameID: string;
       displayName: string;
-      challenges: Array<{ __typename?: 'RolesResultCommunity'; id: string; roles: Array<string> }>;
+      challenges: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string; roles: Array<string> }>;
     }>;
   };
 };
@@ -8153,6 +8153,7 @@ export type ChallengeExplorerSearchQuery = {
             | {
                 __typename?: 'Context';
                 id: string;
+                tagline?: string | undefined;
                 visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
               }
             | undefined;
@@ -8179,6 +8180,7 @@ export type ChallengeExplorerSearchResultFragment = {
     | {
         __typename?: 'Context';
         id: string;
+        tagline?: string | undefined;
         visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
       }
     | undefined;
@@ -8203,6 +8205,36 @@ export type ChallengeExplorerSearchEnricherQueryVariables = Exact<{
 export type ChallengeExplorerSearchEnricherQuery = {
   __typename?: 'Query';
   hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
+};
+
+export type HubChallengesQueryVariables = Exact<{
+  hubId: Scalars['UUID_NAMEID'];
+}>;
+
+export type HubChallengesQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          displayName: string;
+          nameID: string;
+          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          context?:
+            | {
+                __typename?: 'Context';
+                id: string;
+                tagline?: string | undefined;
+                visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
+              }
+            | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
+        }>
+      | undefined;
+  };
 };
 
 export type ChallengeCardFragment = {
