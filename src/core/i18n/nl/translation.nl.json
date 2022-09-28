@@ -327,7 +327,7 @@
   },
   "components": {
     "activity-log-section": {
-      "title": "Latest activities"
+      "title": "Laatste activiteiten"
     },
     "activity-log-view": {
       "actions": {
