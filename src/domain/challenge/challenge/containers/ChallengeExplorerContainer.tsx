@@ -9,13 +9,14 @@ export type SimpleChallenge = {
   id: string;
   hubId: string;
   hubNameId: string;
+  displayName: string;
+  roles: string[];
 };
 
 export interface ChallengeExplorerContainerEntities {
   isLoggedIn: boolean;
   searchTerms: string[];
   userChallenges?: SimpleChallenge[];
-  otherUserChallenges?: SimpleChallenge[];
   userHubs?: SimpleHubResultEntryFragment[];
   searchResults?: ChallengeExplorerSearchResultFragment[];
 }
@@ -56,10 +57,12 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   const userChallenges: SimpleChallenge[] | undefined =
     hubs &&
     hubs.flatMap(x =>
-      x?.challenges.map(y => ({
-        id: y.id,
+      x?.challenges.map(challenge => ({
+        id: challenge.id,
         hubNameId: x.nameID,
         hubId: x.hubID,
+        displayName: challenge.displayName,
+        roles: challenge.roles,
       }))
     );
 
@@ -88,7 +91,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   const searchResults = (searchData?.search ?? []).map(x => x.result as ChallengeExplorerSearchResultFragment);
 
   const provided = {
-    isLoggedIn: !!user,
+    isLoggedIn,
     searchTerms,
     userChallenges,
     userHubs,
