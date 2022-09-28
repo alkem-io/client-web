@@ -4,6 +4,7 @@ export type ActivityKeySpecifier = (
   | 'createdDate'
   | 'description'
   | 'id'
+  | 'parentID'
   | 'resourceID'
   | 'triggeredBy'
   | 'type'
@@ -14,6 +15,7 @@ export type ActivityFieldPolicy = {
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   description?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  parentID?: FieldPolicy<any> | FieldReadFunction<any>;
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   triggeredBy?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;

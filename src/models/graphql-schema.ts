@@ -33,6 +33,8 @@ export type Activity = {
   description: Scalars['String'];
   /** The ID of the entity */
   id: Scalars['UUID'];
+  /** The id of the parent of the entity within which the Activity was generated. */
+  parentID?: Maybe<Scalars['UUID']>;
   /** The id of the entity that is associated with this Activity. */
   resourceID: Scalars['UUID'];
   /** The id of the user that triggered this Activity. */
@@ -850,6 +852,11 @@ export type Context = {
   visuals?: Maybe<Array<Visual>>;
   /** Who should get involved in this challenge */
   who?: Maybe<Scalars['String']>;
+};
+
+export type ContributorFilterInput = {
+  /** Return contributors with credentials in the provided list */
+  credentials?: InputMaybe<Array<AuthorizationCredential>>;
 };
 
 export type ContributorRoles = {
@@ -2663,6 +2670,7 @@ export type QueryOrganizationArgs = {
 };
 
 export type QueryOrganizationsArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
@@ -2696,12 +2704,13 @@ export type QueryUserAuthorizationPrivilegesArgs = {
 };
 
 export type QueryUsersArgs = {
+  filter?: InputMaybe<ContributorFilterInput>;
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type QueryUsersByIdArgs = {
-  IDs: Array<Scalars['UUID_NAMEID_EMAIL']>;
+  IDs: Array<Scalars['UUID']>;
 };
 
 export type QueryUsersPaginatedArgs = {
@@ -3176,6 +3185,8 @@ export type UpdateCalloutInput = {
   sortOrder?: InputMaybe<Scalars['Float']>;
   /** State of the callout. */
   state?: InputMaybe<CalloutState>;
+  /** Callout type. */
+  type?: InputMaybe<CalloutType>;
 };
 
 export type UpdateCalloutVisibilityInput = {
@@ -8040,7 +8051,7 @@ export type UserSsiQuery = {
 };
 
 export type UserCardsContainerQueryVariables = Exact<{
-  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
+  ids: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type UserCardsContainerQuery = {
@@ -11365,7 +11376,7 @@ export type CalloutAspectCreatedSubscription = {
 };
 
 export type AuthorDetailsQueryVariables = Exact<{
-  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
+  ids: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type AuthorDetailsQuery = {
@@ -13482,6 +13493,7 @@ export type OrganizationProfileInfoQuery = {
 export type OrganizationsListQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']>;
   shuffle?: InputMaybe<Scalars['Boolean']>;
+  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
 }>;
 
 export type OrganizationsListQuery = {
@@ -14112,7 +14124,7 @@ export type UserApplicationsQuery = {
 };
 
 export type UserAvatarsQueryVariables = Exact<{
-  ids: Array<Scalars['UUID_NAMEID_EMAIL']> | Scalars['UUID_NAMEID_EMAIL'];
+  ids: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type UserAvatarsQuery = {
