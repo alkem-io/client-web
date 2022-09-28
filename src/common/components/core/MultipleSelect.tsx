@@ -180,6 +180,7 @@ interface MultipleSelectProps {
   label?: string;
   onTop?: boolean;
   height?: number;
+  minLength?: number;
 }
 
 const MultipleSelect: FC<MultipleSelectProps> = ({
@@ -190,6 +191,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   allowUnknownValues,
   defaultValue,
   disabled,
+  minLength = 2,
 }) => {
   const select = useRef<HTMLDivElement>(document.createElement('div'));
   const input = useRef<HTMLInputElement>(document.createElement('input'));
@@ -198,6 +200,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const [selectedElements, setSelected] = useState<Array<MultiSelectElement>>(defaultValue || []);
   const [isNoMatches, setNoMatches] = useState<boolean>(false);
   const [isTooltipShown, setTooltipShown] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState(disabled ?? true);
   const styles = useMultipleSelectStyles();
 
   useEffect(() => setElements(_elements), [_elements]);
@@ -255,6 +258,10 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const handleSearch = (value?: string) => {
     value = value ?? input.current.value;
 
+    if (!value) {
+      return;
+    }
+
     if (shouldOpenTooltip()) return;
 
     const isAlreadySelected = selectedElements.find(el => el.name === value);
@@ -274,7 +281,8 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const handleInputChange = e => {
     const value = e.target.value.toLowerCase();
     onInput && onInput(value);
-    if (allowUnknownValues && e.key === 'Enter' && value !== '') {
+    setIsDisabled(value.length < minLength);
+    if (allowUnknownValues && e.key === 'Enter' && value.length >= minLength) {
       handleSearch(value);
     }
   };
@@ -317,7 +325,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                 </div>
               ))}
             </div>
-            <IconButton onClick={() => handleSearch()}>
+            <IconButton onClick={() => handleSearch()} disabled={isDisabled}>
               <SearchIcon color="primary" />
             </IconButton>
           </Box>
