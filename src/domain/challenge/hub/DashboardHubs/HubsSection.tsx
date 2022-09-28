@@ -81,6 +81,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
       getHubCardLabel={getHubCardLabel}
     >
       <Typography variant="body1">{t('pages.home.sections.hub.body')}</Typography>
+      <Typography variant="body1">{t('pages.home.sections.hub.body1')}</Typography>
       <SectionSpacer />
       {isLoading && <Loading />}
     </DashboardHubsSection>

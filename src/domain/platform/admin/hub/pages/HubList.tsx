@@ -10,7 +10,7 @@ import { PageProps } from '../../../../../pages';
 import Loading from '../../../../../common/components/core/Loading/Loading';
 import ListPage from '../../components/ListPage';
 import { SearchableListItem, searchableListItemMapper } from '../../components/SearchableList';
-import { AuthorizationPrivilege } from '../../../../../models/graphql-schema';
+import { AuthorizationPrivilege, HubVisibility } from '../../../../../models/graphql-schema';
 import { useResolvedPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -23,13 +23,19 @@ export const HubList: FC<HubListProps> = ({ paths }) => {
   const { t } = useTranslation();
 
   const { data: hubsData, loading: loadingHubs } = useAdminHubsListQuery();
-  const hubList = useMemo(
-    () =>
+  const hubList = useMemo(() => {
+    return (
       hubsData?.hubs
         .filter(x => (x.authorization?.myPrivileges ?? []).find(y => y === AuthorizationPrivilege.Update))
-        .map(searchableListItemMapper()) || [],
-    [hubsData]
-  );
+        .map(x => {
+          if (x.visibility !== HubVisibility.Active) {
+            return { ...x, displayName: `${x.displayName} [${x.visibility.toUpperCase()}]` };
+          }
+          return x;
+        })
+        .map(searchableListItemMapper()) || []
+    );
+  }, [hubsData]);
 
   const [deleteHub] = useDeleteHubMutation({
     refetchQueries: [refetchAdminHubsListQuery()],

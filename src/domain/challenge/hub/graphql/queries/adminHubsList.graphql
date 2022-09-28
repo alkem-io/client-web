@@ -1,5 +1,6 @@
 query adminHubsList {
-  hubs {
+  hubs(visibilities: [ARCHIVED, ACTIVE, DEMO]) {
     ...AdminHub
+    visibility
   }
 }

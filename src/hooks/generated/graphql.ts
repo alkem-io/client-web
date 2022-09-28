@@ -98,61 +98,6 @@ export const VisualUriFragmentDoc = gql`
     name
   }
 `;
-export const OrganizationContributorFragmentDoc = gql`
-  fragment OrganizationContributor on Organization {
-    id
-    displayName
-    nameID
-    activity {
-      id
-      name
-      value
-    }
-    orgProfile: profile {
-      id
-      avatar {
-        ...VisualUri
-      }
-      description
-    }
-    verification {
-      id
-      status
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
-export const UserContributorFragmentDoc = gql`
-  fragment UserContributor on User {
-    id
-    nameID
-    displayName
-    agent {
-      id
-      credentials {
-        id
-        type
-        resourceID
-      }
-    }
-    userProfile: profile {
-      id
-      location {
-        city
-        country
-      }
-      avatar {
-        ...VisualUri
-      }
-      tagsets {
-        id
-        name
-        tags
-      }
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const MessageDetailsFragmentDoc = gql`
   fragment MessageDetails on Message {
     id
@@ -911,30 +856,6 @@ export const ChallengeInfoFragmentDoc = gql`
   }
   ${VisualFullFragmentDoc}
 `;
-export const ChallengeSearchResultFragmentDoc = gql`
-  fragment ChallengeSearchResult on Challenge {
-    id
-    displayName
-    nameID
-    hubID
-    activity {
-      name
-      value
-    }
-    context {
-      id
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    tagset {
-      id
-      tags
-    }
-  }
-  ${VisualUriFragmentDoc}
-`;
 export const NewChallengeFragmentDoc = gql`
   fragment NewChallenge on Challenge {
     id
@@ -988,6 +909,7 @@ export const HubInfoFragmentDoc = gql`
         myPrivileges
       }
     }
+    visibility
     templates {
       id
       aspectTemplates {
@@ -1124,35 +1046,6 @@ export const NewOpportunityFragmentDoc = gql`
     nameID
     displayName
   }
-`;
-export const OpportunitySearchResultFragmentDoc = gql`
-  fragment OpportunitySearchResult on Opportunity {
-    id
-    displayName
-    nameID
-    activity {
-      name
-      value
-    }
-    context {
-      id
-      tagline
-      visuals {
-        ...VisualUri
-      }
-    }
-    tagset {
-      id
-      tags
-    }
-    challenge {
-      id
-      nameID
-      displayName
-      hubID
-    }
-  }
-  ${VisualUriFragmentDoc}
 `;
 export const AspectProvidedFragmentDoc = gql`
   fragment AspectProvided on Aspect {
@@ -1457,13 +1350,68 @@ export const CommunityMemberUserFragmentDoc = gql`
     email
   }
 `;
-export const OrganizationSearchResultFragmentDoc = gql`
-  fragment OrganizationSearchResult on Organization {
+export const OrganizationContributorFragmentDoc = gql`
+  fragment OrganizationContributor on Organization {
     id
     displayName
     nameID
-    profile {
+    activity {
       id
+      name
+      value
+    }
+    orgProfile: profile {
+      id
+      avatar {
+        ...VisualUri
+      }
+      description
+    }
+    verification {
+      id
+      status
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const PageInfoFragmentDoc = gql`
+  fragment PageInfo on PageInfo {
+    startCursor
+    endCursor
+    hasNextPage
+  }
+`;
+export const OrganizationContributorPaginatedFragmentDoc = gql`
+  fragment OrganizationContributorPaginated on PaginatedOrganization {
+    organization {
+      ...OrganizationContributor
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+  ${OrganizationContributorFragmentDoc}
+  ${PageInfoFragmentDoc}
+`;
+export const UserContributorFragmentDoc = gql`
+  fragment UserContributor on User {
+    id
+    nameID
+    displayName
+    agent {
+      id
+      credentials {
+        id
+        type
+        resourceID
+      }
+    }
+    userProfile: profile {
+      id
+      location {
+        city
+        country
+      }
       avatar {
         ...VisualUri
       }
@@ -1475,6 +1423,18 @@ export const OrganizationSearchResultFragmentDoc = gql`
     }
   }
   ${VisualUriFragmentDoc}
+`;
+export const UserContributorPaginatedFragmentDoc = gql`
+  fragment UserContributorPaginated on PaginatedUsers {
+    users {
+      ...UserContributor
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+  ${UserContributorFragmentDoc}
+  ${PageInfoFragmentDoc}
 `;
 export const OrganizationDetailsFragmentDoc = gql`
   fragment OrganizationDetails on Organization {
@@ -1750,24 +1710,11 @@ export const UserRolesDetailsFragmentDoc = gql`
     }
   }
 `;
-export const UserSearchResultFragmentDoc = gql`
-  fragment UserSearchResult on UserGroup {
-    name
-    id
-  }
-`;
 export const AvailableUserFragmentDoc = gql`
   fragment AvailableUser on User {
     id
     displayName
     email
-  }
-`;
-export const PageInfoFragmentDoc = gql`
-  fragment PageInfo on PageInfo {
-    startCursor
-    endCursor
-    hasNextPage
   }
 `;
 export const CommunityAvailableLeadUsersFragmentDoc = gql`
@@ -1846,6 +1793,110 @@ export const AdminCanvasTemplateFragmentDoc = gql`
     }
   }
   ${TemplateInfoFragmentDoc}
+`;
+export const ProfileSearchResultFragmentDoc = gql`
+  fragment ProfileSearchResult on Profile {
+    id
+    location {
+      id
+      country
+      city
+    }
+    tagsets {
+      id
+      tags
+    }
+    avatar {
+      ...VisualUri
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const UserSearchResultFragmentDoc = gql`
+  fragment UserSearchResult on User {
+    id
+    nameID
+    displayName
+    profile {
+      ...ProfileSearchResult
+    }
+  }
+  ${ProfileSearchResultFragmentDoc}
+`;
+export const OrganizationSearchResultFragmentDoc = gql`
+  fragment OrganizationSearchResult on Organization {
+    id
+    nameID
+    displayName
+    profile_: profile {
+      ...ProfileSearchResult
+    }
+  }
+  ${ProfileSearchResultFragmentDoc}
+`;
+export const HubSearchResultFragmentDoc = gql`
+  fragment HubSearchResult on Hub {
+    id
+    nameID
+    displayName
+    context {
+      id
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const ChallengeSearchResultFragmentDoc = gql`
+  fragment ChallengeSearchResult on Challenge {
+    id
+    nameID
+    displayName
+    hubID
+    context {
+      id
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    tagset {
+      id
+      tags
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+export const OpportunitySearchResultFragmentDoc = gql`
+  fragment OpportunitySearchResult on Opportunity {
+    id
+    nameID
+    displayName
+    context {
+      id
+      tagline
+      visuals {
+        ...VisualUri
+      }
+    }
+    tagset {
+      id
+      tags
+    }
+    challenge {
+      id
+      nameID
+      displayName
+      hubID
+    }
+  }
+  ${VisualUriFragmentDoc}
 `;
 export const CreateActorDocument = gql`
   mutation createActor($input: CreateActorInput!) {
@@ -2897,63 +2948,6 @@ export type RelationsQueryResult = Apollo.QueryResult<SchemaTypes.RelationsQuery
 export function refetchRelationsQuery(variables: SchemaTypes.RelationsQueryVariables) {
   return { query: RelationsDocument, variables: variables };
 }
-export const SearchDocument = gql`
-  query search($searchData: SearchInput!) {
-    search(searchData: $searchData) {
-      score
-      terms
-      result {
-        ... on User {
-          displayName
-          id
-        }
-        ...UserSearchResult
-        ...OrganizationSearchResult
-        ...ChallengeSearchResult
-        ...OpportunitySearchResult
-      }
-    }
-  }
-  ${UserSearchResultFragmentDoc}
-  ${OrganizationSearchResultFragmentDoc}
-  ${ChallengeSearchResultFragmentDoc}
-  ${OpportunitySearchResultFragmentDoc}
-`;
-
-/**
- * __useSearchQuery__
- *
- * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useSearchQuery({
- *   variables: {
- *      searchData: // value for 'searchData'
- *   },
- * });
- */
-export function useSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
-}
-export function useSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
-}
-export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
-export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
-export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
-export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
-  return { query: SearchDocument, variables: variables };
-}
 export const ServerMetadataDocument = gql`
   query serverMetadata {
     metadata {
@@ -3632,68 +3626,6 @@ export function refetchOpportunityContributionDetailsQuery(
   variables: SchemaTypes.OpportunityContributionDetailsQueryVariables
 ) {
   return { query: OpportunityContributionDetailsDocument, variables: variables };
-}
-export const ContributorsSearchDocument = gql`
-  query ContributorsSearch($searchData: SearchInput!) {
-    search(searchData: $searchData) {
-      result {
-        ...UserContributor
-        ...OrganizationContributor
-      }
-    }
-  }
-  ${UserContributorFragmentDoc}
-  ${OrganizationContributorFragmentDoc}
-`;
-
-/**
- * __useContributorsSearchQuery__
- *
- * To run a query within a React component, call `useContributorsSearchQuery` and pass it any options that fit your needs.
- * When your component renders, `useContributorsSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useContributorsSearchQuery({
- *   variables: {
- *      searchData: // value for 'searchData'
- *   },
- * });
- */
-export function useContributorsSearchQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ContributorsSearchQuery,
-    SchemaTypes.ContributorsSearchQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ContributorsSearchQuery, SchemaTypes.ContributorsSearchQueryVariables>(
-    ContributorsSearchDocument,
-    options
-  );
-}
-export function useContributorsSearchLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ContributorsSearchQuery,
-    SchemaTypes.ContributorsSearchQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ContributorsSearchQuery, SchemaTypes.ContributorsSearchQueryVariables>(
-    ContributorsSearchDocument,
-    options
-  );
-}
-export type ContributorsSearchQueryHookResult = ReturnType<typeof useContributorsSearchQuery>;
-export type ContributorsSearchLazyQueryHookResult = ReturnType<typeof useContributorsSearchLazyQuery>;
-export type ContributorsSearchQueryResult = Apollo.QueryResult<
-  SchemaTypes.ContributorsSearchQuery,
-  SchemaTypes.ContributorsSearchQueryVariables
->;
-export function refetchContributorsSearchQuery(variables: SchemaTypes.ContributorsSearchQueryVariables) {
-  return { query: ContributorsSearchDocument, variables: variables };
 }
 export const CommunityUserPrivilegesDocument = gql`
   query communityUserPrivileges($hubNameId: UUID_NAMEID!, $communityId: UUID!) {
@@ -7389,7 +7321,7 @@ export function refetchUserSsiQuery(variables?: SchemaTypes.UserSsiQueryVariable
   return { query: UserSsiDocument, variables: variables };
 }
 export const UserCardsContainerDocument = gql`
-  query userCardsContainer($ids: [UUID_NAMEID_EMAIL!]!) {
+  query userCardsContainer($ids: [UUID!]!) {
     usersById(IDs: $ids) {
       id
       nameID
@@ -8709,13 +8641,11 @@ export const ChallengeNameDocument = gql`
   query challengeName($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
+      nameID
       challenge(ID: $challengeId) {
         id
+        nameID
         displayName
-        community {
-          id
-          displayName
-        }
       }
     }
   }
@@ -9164,8 +9094,9 @@ export type UpdateHubMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const AdminHubsListDocument = gql`
   query adminHubsList {
-    hubs {
+    hubs(visibilities: [ARCHIVED, ACTIVE, DEMO]) {
       ...AdminHub
+      visibility
     }
   }
   ${AdminHubFragmentDoc}
@@ -13010,7 +12941,7 @@ export type CalloutAspectCreatedSubscriptionHookResult = ReturnType<typeof useCa
 export type CalloutAspectCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutAspectCreatedSubscription>;
 export const AuthorDetailsDocument = gql`
-  query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
+  query authorDetails($ids: [UUID!]!) {
     usersById(IDs: $ids) {
       ...UserCard
       firstName
@@ -15215,6 +15146,130 @@ export function refetchOpportunityCommunityMembersQuery(
 ) {
   return { query: OpportunityCommunityMembersDocument, variables: variables };
 }
+export const ContributorsPageOrganizationsDocument = gql`
+  query ContributorsPageOrganizations($first: Int!, $after: UUID, $filter: OrganizationFilterInput) {
+    organizationsPaginated(first: $first, after: $after, filter: $filter) {
+      ...OrganizationContributorPaginated
+    }
+  }
+  ${OrganizationContributorPaginatedFragmentDoc}
+`;
+
+/**
+ * __useContributorsPageOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useContributorsPageOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorsPageOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorsPageOrganizationsQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useContributorsPageOrganizationsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorsPageOrganizationsQuery,
+    SchemaTypes.ContributorsPageOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ContributorsPageOrganizationsQuery,
+    SchemaTypes.ContributorsPageOrganizationsQueryVariables
+  >(ContributorsPageOrganizationsDocument, options);
+}
+export function useContributorsPageOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorsPageOrganizationsQuery,
+    SchemaTypes.ContributorsPageOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ContributorsPageOrganizationsQuery,
+    SchemaTypes.ContributorsPageOrganizationsQueryVariables
+  >(ContributorsPageOrganizationsDocument, options);
+}
+export type ContributorsPageOrganizationsQueryHookResult = ReturnType<typeof useContributorsPageOrganizationsQuery>;
+export type ContributorsPageOrganizationsLazyQueryHookResult = ReturnType<
+  typeof useContributorsPageOrganizationsLazyQuery
+>;
+export type ContributorsPageOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorsPageOrganizationsQuery,
+  SchemaTypes.ContributorsPageOrganizationsQueryVariables
+>;
+export function refetchContributorsPageOrganizationsQuery(
+  variables: SchemaTypes.ContributorsPageOrganizationsQueryVariables
+) {
+  return { query: ContributorsPageOrganizationsDocument, variables: variables };
+}
+export const ContributorsPageUsersDocument = gql`
+  query ContributorsPageUsers($first: Int!, $after: UUID, $filter: UserFilterInput) {
+    usersPaginated(first: $first, after: $after, filter: $filter) {
+      ...UserContributorPaginated
+    }
+  }
+  ${UserContributorPaginatedFragmentDoc}
+`;
+
+/**
+ * __useContributorsPageUsersQuery__
+ *
+ * To run a query within a React component, call `useContributorsPageUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorsPageUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorsPageUsersQuery({
+ *   variables: {
+ *      first: // value for 'first'
+ *      after: // value for 'after'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useContributorsPageUsersQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorsPageUsersQuery,
+    SchemaTypes.ContributorsPageUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ContributorsPageUsersQuery, SchemaTypes.ContributorsPageUsersQueryVariables>(
+    ContributorsPageUsersDocument,
+    options
+  );
+}
+export function useContributorsPageUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorsPageUsersQuery,
+    SchemaTypes.ContributorsPageUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ContributorsPageUsersQuery, SchemaTypes.ContributorsPageUsersQueryVariables>(
+    ContributorsPageUsersDocument,
+    options
+  );
+}
+export type ContributorsPageUsersQueryHookResult = ReturnType<typeof useContributorsPageUsersQuery>;
+export type ContributorsPageUsersLazyQueryHookResult = ReturnType<typeof useContributorsPageUsersLazyQuery>;
+export type ContributorsPageUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorsPageUsersQuery,
+  SchemaTypes.ContributorsPageUsersQueryVariables
+>;
+export function refetchContributorsPageUsersQuery(variables: SchemaTypes.ContributorsPageUsersQueryVariables) {
+  return { query: ContributorsPageUsersDocument, variables: variables };
+}
 export const AssociatedOrganizationDocument = gql`
   query associatedOrganization($organizationId: UUID_NAMEID!) {
     organization(ID: $organizationId) {
@@ -15843,8 +15898,8 @@ export function refetchOrganizationProfileInfoQuery(variables: SchemaTypes.Organ
   return { query: OrganizationProfileInfoDocument, variables: variables };
 }
 export const OrganizationsListDocument = gql`
-  query organizationsList($limit: Float, $shuffle: Boolean) {
-    organizations(limit: $limit, shuffle: $shuffle) {
+  query organizationsList($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+    organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
       id
       nameID
       displayName
@@ -15873,6 +15928,7 @@ export const OrganizationsListDocument = gql`
  *   variables: {
  *      limit: // value for 'limit'
  *      shuffle: // value for 'shuffle'
+ *      filterCredentials: // value for 'filterCredentials'
  *   },
  * });
  */
@@ -16632,7 +16688,7 @@ export function refetchUserApplicationsQuery(variables: SchemaTypes.UserApplicat
   return { query: UserApplicationsDocument, variables: variables };
 }
 export const UserAvatarsDocument = gql`
-  query userAvatars($ids: [UUID_NAMEID_EMAIL!]!) {
+  query userAvatars($ids: [UUID!]!) {
     usersById(IDs: $ids) {
       id
       nameID
@@ -18575,3 +18631,141 @@ export type UpdatePreferenceOnHubMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePreferenceOnHubMutation,
   SchemaTypes.UpdatePreferenceOnHubMutationVariables
 >;
+export const SearchDocument = gql`
+  query search($searchData: SearchInput!) {
+    search(searchData: $searchData) {
+      score
+      terms
+      result {
+        ... on User {
+          ...UserSearchResult
+        }
+        ... on Organization {
+          ...OrganizationSearchResult
+        }
+        ... on Hub {
+          ...HubSearchResult
+        }
+        ... on Challenge {
+          ...ChallengeSearchResult
+        }
+        ... on Opportunity {
+          ...OpportunitySearchResult
+        }
+      }
+    }
+  }
+  ${UserSearchResultFragmentDoc}
+  ${OrganizationSearchResultFragmentDoc}
+  ${HubSearchResultFragmentDoc}
+  ${ChallengeSearchResultFragmentDoc}
+  ${OpportunitySearchResultFragmentDoc}
+`;
+
+/**
+ * __useSearchQuery__
+ *
+ * To run a query within a React component, call `useSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
+}
+export function useSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>(SearchDocument, options);
+}
+export type SearchQueryHookResult = ReturnType<typeof useSearchQuery>;
+export type SearchLazyQueryHookResult = ReturnType<typeof useSearchLazyQuery>;
+export type SearchQueryResult = Apollo.QueryResult<SchemaTypes.SearchQuery, SchemaTypes.SearchQueryVariables>;
+export function refetchSearchQuery(variables: SchemaTypes.SearchQueryVariables) {
+  return { query: SearchDocument, variables: variables };
+}
+export const UserRolesSearchCardsDocument = gql`
+  query userRolesSearchCards($userId: UUID_NAMEID_EMAIL!) {
+    rolesUser(rolesData: { userID: $userId }) {
+      hubs {
+        id
+        roles
+        challenges {
+          id
+          nameID
+          roles
+        }
+        opportunities {
+          id
+          roles
+        }
+      }
+      organizations {
+        id
+        roles
+      }
+    }
+  }
+`;
+
+/**
+ * __useUserRolesSearchCardsQuery__
+ *
+ * To run a query within a React component, call `useUserRolesSearchCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserRolesSearchCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserRolesSearchCardsQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserRolesSearchCardsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserRolesSearchCardsQuery,
+    SchemaTypes.UserRolesSearchCardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
+    UserRolesSearchCardsDocument,
+    options
+  );
+}
+export function useUserRolesSearchCardsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserRolesSearchCardsQuery,
+    SchemaTypes.UserRolesSearchCardsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserRolesSearchCardsQuery, SchemaTypes.UserRolesSearchCardsQueryVariables>(
+    UserRolesSearchCardsDocument,
+    options
+  );
+}
+export type UserRolesSearchCardsQueryHookResult = ReturnType<typeof useUserRolesSearchCardsQuery>;
+export type UserRolesSearchCardsLazyQueryHookResult = ReturnType<typeof useUserRolesSearchCardsLazyQuery>;
+export type UserRolesSearchCardsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserRolesSearchCardsQuery,
+  SchemaTypes.UserRolesSearchCardsQueryVariables
+>;
+export function refetchUserRolesSearchCardsQuery(variables: SchemaTypes.UserRolesSearchCardsQueryVariables) {
+  return { query: UserRolesSearchCardsDocument, variables: variables };
+}

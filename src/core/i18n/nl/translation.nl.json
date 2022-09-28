@@ -181,7 +181,7 @@
           "order": 0,
           "hidden": false
         },
-          "GLOBAL_ADMIN_HUBS": {
+        "GLOBAL_ADMIN_HUBS": {
           "name": "Globale Hubs Beheerder",
           "order": 1,
           "hidden": false
@@ -278,6 +278,10 @@
         "QUESTIONS": "Vragen",
         "SHARING": "Delen"
       }
+    },
+    "blocks": {
+      "users-contributing": "gebruikers die bijdragen",
+      "all-contributing-users": "alle bijdragende gebruikers"
     }
   },
   "community": {
@@ -323,7 +327,7 @@
   },
   "components": {
     "activity-log-section": {
-      "title": "Latest activities"
+      "title": "Laatste activiteiten"
     },
     "activity-log-view": {
       "actions": {
@@ -471,7 +475,8 @@
     },
     "backdrop": {
       "private": "Wordt lid om toegang te krijgen tot {{blockName}}",
-      "authentication": "Log in om details te zien over {{blockName}}."
+      "authentication": "Log in om details te zien over {{blockName}}.",
+      "log-in": "Log in om {{blockName}} te zien"
     },
     "referenceSegment": {
       "title": "Referenties",
@@ -910,19 +915,15 @@
     },
     "contributors": {
       "search": {
-        "title": "Verken de gebruikers en organisaties die al bijdragen!",
-        "subtitle": "Voeg een of meer zoektermen toe. Klik op de kaarten in de zoekresultaten om de profielen te bekijken.",
+        "title": "Kijk wie bijdraagt",
+        "subtitle": "Bekijk de organisaties en gebruikers die bijdragen aan de Challenges, Opportunities en Hubs op het platform.",
         "placeholder": "Zoek naar gebruikers en organisaties"
       },
       "organizations": {
-        "title": "Organisaties ({{count}})",
-        "subtitle": "Organisaties die overeenkomen met uw zoektermen.",
-        "help-text": "Klik op de kaarten hieronder om te kijken welke organisatie bijdraagt."
+        "title": "Organisaties"
       },
       "users": {
-        "title": "Gebruikers ({{count}})",
-        "subtitle": "Gebruikers die overeenkomen met uw zoektermen.",
-        "help-text": ""
+        "title": "Gebruikers"
       }
     },
     "search": {
@@ -984,14 +985,15 @@
           "new-to-alkemio": {
             "header": "Nieuw bij Alkemio?",
             "subheader": "Op Alkemio kan iedereen op een effectieve manier Challenges beheren, een bijdrage leveren en zo impact te maken.",
-            "more-info": "Bekijk demonstratie video",
-            "more-info-url": "https://vimeo.com/711138740?utm_campaign=2022VIDEO&utm_source=VIMEO&utm_medium=VIDEO&utm_term=click&utm_content=2022videointroNL"
+            "more-info": "Contact opnemen!",
+            "more-info-url": "https://alkemio.foundation/feedback/"
           }
         },
         "hub": {
           "header": "Verken de Challenge Hubs!",
           "subheader": "Elke Hub bevat een of meer Challenges en biedt context en een community voor de Challenges die er worden beheerd. <br> Een omgeving om te coördineren en samen te werken. Om te verbinden.",
-          "body": "Een Hub kan Openbaar of Besloten zijn en heeft een faciliterende Organisatie."
+          "body": "Lidmaatschap: Elke Hub heeft leden die een bijdrage leveren. Word lid via de Hub pagina.",
+          "body1": "Zichtbaarheid: De meeste Hubs zijn openbaar en dus volledig zichtbaar voor iedereen. Voor privé Hubs is de inhoud alleen beschikbaar nadat je lid bent geworden."
         },
         "my-hubs": {
           "header": "Mijn Hubs",
@@ -1314,7 +1316,7 @@
       "bad-user-input-withfield": "De waarde van '{{field}}' is ongeldig."
     }
   },
-"dashboard-updates-section": {
+  "dashboard-updates-section": {
     "title": "Updates ({{count}})",
     "dialog-title": "Alle Updates",
     "no-data": "Geen updates beschikbaar."

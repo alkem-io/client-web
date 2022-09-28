@@ -161,7 +161,12 @@ export const GroupForm: FC<GroupFormProps> = ({ title, group, members, onSave, o
                       </Grid>
                     )}
                     <Grid item>
-                      <WrapperButton variant={'primary'} type={'submit'} disabled={isSubmitting} text={t('buttons.save')} />
+                      <WrapperButton
+                        variant={'primary'}
+                        type={'submit'}
+                        disabled={isSubmitting}
+                        text={t('buttons.save')}
+                      />
                     </Grid>
                   </Grid>
                 )}

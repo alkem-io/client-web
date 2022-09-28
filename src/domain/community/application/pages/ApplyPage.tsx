@@ -13,7 +13,10 @@ import { Loading } from '../../../../common/components/core/Loading/Loading';
 import WrapperTypography from '../../../../common/components/core/WrapperTypography';
 import { useApplicationCommunityQuery } from '../../../../containers/application/useApplicationCommunityQuery';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../../../hooks';
-import { refetchUserApplicationsQuery, useApplyForCommunityMembershipMutation } from '../../../../hooks/generated/graphql';
+import {
+  refetchUserApplicationsQuery,
+  useApplyForCommunityMembershipMutation,
+} from '../../../../hooks/generated/graphql';
 import { ApplicationTypeEnum } from '../../../../models/enums/application-type';
 import { CreateNvpInput } from '../../../../models/graphql-schema';
 import getApplicationTypeKey from '../../../../common/utils/translation/get-application-type-key';

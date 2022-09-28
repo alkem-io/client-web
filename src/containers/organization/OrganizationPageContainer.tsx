@@ -106,6 +106,7 @@ export const OrganizationPageContainer: FC<OrganizationPageContainerProps> = ({ 
   const associates = useMemo<ContributorCardProps[]>(() => {
     return (
       usersWithRoles.map<ContributorCardProps>(x => ({
+        id: x.id,
         displayName: x.displayName,
         roleName: x.roleName,
         avatar: x.profile?.avatar?.uri || '',
