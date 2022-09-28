@@ -27,7 +27,7 @@ const useHomePageContributors = () => {
     variables: {
       limit: MAX_ORGANIZATIONS_TO_SHOW,
       shuffle: true,
-      filterCredentials: [AuthorizationCredential.HubHost],
+      filterCredentials: [AuthorizationCredential.HubHost, AuthorizationCredential.ChallengeLead],
     },
   });
 
