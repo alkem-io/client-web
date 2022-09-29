@@ -85,8 +85,8 @@ const CheckboxesFilter = <T extends Identifiable>({
           </Button>
           <Menu anchorEl={buttonElement} open={open} onClose={handleClose}>
             {filterStatus.map(filter => (
-              <MenuItem onClick={handleChangeFilter(filter.id)}>
-                <Switch key={filter.id} checked={filter.selected} />
+              <MenuItem onClick={handleChangeFilter(filter.id)} key={`filter_${filter.id}`}>
+                <Switch checked={filter.selected} />
                 {filter.displayName}
               </MenuItem>
             ))}

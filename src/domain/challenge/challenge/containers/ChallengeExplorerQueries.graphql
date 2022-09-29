@@ -19,13 +19,32 @@ fragment SimpleHubResultEntry on RolesResultHub
   displayName
 }
 
+query ChallengeExplorerSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    result {
+      ...ChallengeExplorerSearchResult
+    }
+    terms
+  }
+}
 
-query ChallengeExplorerData($hubIDs: [UUID!]) {
+fragment ChallengeExplorerSearchResult on Challenge {
+  id
+  displayName
+  nameID
+  hubID
+}
+
+query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
   hubs(IDs: $hubIDs) {
     id
     nameID
     displayName
-    challenges {
+    context {
+      id
+      tagline
+    }
+    challenges (IDs: $challengeIDs) {
       id
       nameID
       displayName

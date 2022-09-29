@@ -1,22 +1,36 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
-import ChallengeExplorerSearchEnricherContainer from '../../containers/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
-import ChallengeExplorerHubDataResolver from '../../containers/ChallengeExplorerSearch/ChallengeExplorerHubDataResolver';
-import { ChallengeExplorerSearchResultFragment } from '../../../../../models/graphql-schema';
-import ChallengeCard from '../../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
 import { HubIcon } from '../../../../../common/icons/HubIcon';
+import { SearchChallengeCard } from '../../../../shared/components/search-cards';
+import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
+import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import { useUserContext } from '../../../../../hooks';
+import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
+import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
+import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
 export interface ChallengeExplorerSearchViewProps {
-  challenges: ChallengeExplorerSearchResultFragment[] | undefined;
+  challenges: SimpleChallengeWithSearchTerms[] | undefined;
   groupBy: ChallengeExplorerGroupByType;
+  searchTerms: string[] | undefined;
 }
 
-const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ challenges, groupBy }) => {
+const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ challenges, groupBy, searchTerms }) => {
+  const { t } = useTranslation();
+  const { user } = useUserContext();
+  const getCardLabel = useCallback(
+    (roles: string[]) => {
+      return roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member);
+    },
+    [user]
+  );
+
   const groupKey = getGroupKey(groupBy);
 
   if (!groupKey) {
@@ -29,40 +43,47 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ cha
         <GroupBy data={challenges} groupKey={groupKey}>
           {groups => {
             return groups.map(({ keyValue, values }) => (
-              <ChallengeExplorerHubDataResolver key={keyValue} hubId={keyValue}>
-                {({ displayName, tagline }) => (
-                  <>
-                    <DashboardGenericSection headerText={displayName} headerIcon={<HubIcon />} subHeaderText={tagline}>
-                      <CardsLayout items={values}>
-                        {challenge => (
-                          // TODO enrich at the level of the LayoutContainer
-                          <ChallengeExplorerSearchEnricherContainer challenge={challenge}>
-                            {({ challenge: enrichedChallenge }) => (
-                              <ChallengeCard challenge={enrichedChallenge} hubNameId={challenge.hubID} />
-                            )}
-                          </ChallengeExplorerSearchEnricherContainer>
-                        )}
-                      </CardsLayout>
-                    </DashboardGenericSection>
-                    <SectionSpacer />
-                  </>
-                )}
-              </ChallengeExplorerHubDataResolver>
+              <Box key={`boxchallenge_${keyValue}`}>
+                <DashboardGenericSection
+                  key={`challenge_${keyValue}`}
+                  headerText={values[0].hubDisplayName}
+                  headerIcon={<HubIcon />}
+                  subHeaderText={values[0].hubTagline}
+                >
+                  <CardsLayoutScroller maxHeight={43} sx={{ marginRight: 0 }}>
+                    <CardsLayout items={values}>
+                      {challenge => (
+                        <SearchChallengeCard
+                          name={challenge.displayName}
+                          tagline={challenge.tagline}
+                          image={challenge.imageUrl}
+                          matchedTerms={challenge.matchedTerms}
+                          label={getCardLabel(challenge.roles)}
+                          url={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
+                          parentName={challenge.hubDisplayName}
+                        />
+                      )}
+                    </CardsLayout>
+                  </CardsLayoutScroller>
+                </DashboardGenericSection>
+                <SectionSpacer key={`spacer_${keyValue}`} />
+              </Box>
             ));
           }}
         </GroupBy>
+      )}
+      {searchTerms && searchTerms?.length > 0 && !challenges?.length && (
+        <Box>{t('pages.challenge-explorer.search.no-results')}</Box>
       )}
     </>
   );
 };
 export default ChallengeExplorerSearchView;
 
-const getGroupKey = (
-  groupBy: ChallengeExplorerGroupByType
-): keyof ChallengeExplorerSearchResultFragment | undefined => {
+const getGroupKey = (groupBy: ChallengeExplorerGroupByType): keyof SimpleChallengeWithSearchTerms | undefined => {
   switch (groupBy) {
     case 'hub':
-      return 'hubID';
+      return 'hubId';
     default:
       return undefined;
   }

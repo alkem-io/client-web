@@ -17,12 +17,15 @@ export type SimpleChallenge = {
   hubId: string;
   hubNameId: string;
   hubDisplayName: string;
+  hubTagline: string;
   displayName: string;
   tagline: string;
   imageUrl: string | undefined;
   tags: string[];
   roles: string[];
 };
+
+export type SimpleChallengeWithSearchTerms = SimpleChallenge & { matchedTerms: string[] };
 
 export const simpleChallengeValueGetter = (c: SimpleChallenge): ValueType => ({
   id: c.id,
@@ -42,7 +45,7 @@ export interface ChallengeExplorerContainerEntities {
   searchTerms: string[];
   myChallenges?: SimpleChallenge[];
   otherChallenges?: SimpleChallenge[];
-  searchResults?: ChallengeExplorerSearchResultFragment[];
+  searchResults?: SimpleChallengeWithSearchTerms[];
 }
 
 export interface ChallengeExplorerContainerActions {}
@@ -68,6 +71,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   const user = userMetadata?.user;
   const isLoggedIn = !!user;
 
+  // PRIVATE: Challenges if the user is logged in
   const {
     data: userChallenges,
     loading: loadingUserData,
@@ -107,6 +111,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         hubId: hub.id,
         hubNameId: hub.nameID,
         hubDisplayName: hub.displayName,
+        hubTagline: hub.context?.tagline || '',
         displayName: ch.displayName,
         imageUrl: getVisualBannerNarrow(ch.context?.visuals),
         tagline: ch.context?.tagline || '',
@@ -115,12 +120,11 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
       })) || []
   );
 
-  // Private: Challenges if the user is logged in
   const myChallenges = allChallengesInMyHubs?.filter(ch => myChallengesIDs?.includes(ch.id));
   const otherChallenges = allChallengesInMyHubs?.filter(ch => !myChallengesIDs?.includes(ch.id));
 
-  // Search
-  const { data: searchData, loading: loadingSearch } = useChallengeExplorerSearchQuery({
+  // PUBLIC: Search for challenges
+  const { data: rawSearchResults, loading: loadingSearchResults } = useChallengeExplorerSearchQuery({
     onError: handleError,
     variables: {
       searchData: {
@@ -133,7 +137,42 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     skip: !searchTerms.length,
   });
 
-  const searchResults = (searchData?.search ?? []).map(x => x.result as ChallengeExplorerSearchResultFragment);
+  // Obtain the data of the challenges returned by the search
+  const hubIDsSearch = rawSearchResults?.search.map(
+    result => (result.result as ChallengeExplorerSearchResultFragment)?.hubID
+  );
+  const challengesIDsSearch = rawSearchResults?.search.map(
+    result => (result.result as ChallengeExplorerSearchResultFragment)?.id
+  );
+
+  const { data: searchResultsData, loading: loadingSearchResultsData } = useChallengeExplorerDataQuery({
+    onError: handleError,
+    variables: {
+      hubIDs: hubIDsSearch,
+      challengeIDs: challengesIDsSearch,
+    },
+    skip: !hubIDsSearch?.length || !challengesIDsSearch?.length,
+  });
+
+  const searchResults: SimpleChallengeWithSearchTerms[] | undefined = searchResultsData?.hubs?.flatMap(
+    hub =>
+      hub.challenges?.map<SimpleChallengeWithSearchTerms>(ch => ({
+        id: ch.id,
+        nameID: ch.nameID,
+        hubId: hub.id,
+        hubNameId: hub.nameID,
+        hubDisplayName: hub.displayName,
+        hubTagline: hub.context?.tagline || '',
+        displayName: ch.displayName,
+        imageUrl: getVisualBannerNarrow(ch.context?.visuals),
+        tagline: ch.context?.tagline || '',
+        tags: ch.tagset?.tags || [],
+        roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
+        matchedTerms:
+          rawSearchResults?.search.find(r => (r.result as ChallengeExplorerSearchResultFragment)?.id === ch.id)
+            ?.terms || [],
+      })) || []
+  );
 
   const provided = {
     isLoggedIn,
@@ -144,6 +183,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   };
 
   const loading = loadingUser || loadingUserData || loadingChallengeData;
+  const loadingSearch = loadingSearchResults || loadingSearchResultsData;
 
   return <>{children(provided, { loading, loadingSearch, error }, {})}</>;
 };

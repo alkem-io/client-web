@@ -7986,8 +7986,38 @@ export type SimpleHubResultEntryFragment = {
   displayName: string;
 };
 
+export type ChallengeExplorerSearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type ChallengeExplorerSearchQuery = {
+  __typename?: 'Query';
+  search: Array<{
+    __typename?: 'SearchResultEntry';
+    terms?: Array<string> | undefined;
+    result?:
+      | { __typename?: 'Challenge'; id: string; displayName: string; nameID: string; hubID: string }
+      | { __typename?: 'Hub' }
+      | { __typename?: 'Opportunity' }
+      | { __typename?: 'Organization' }
+      | { __typename?: 'RelayPaginatedUser' }
+      | { __typename?: 'User' }
+      | { __typename?: 'UserGroup' }
+      | undefined;
+  }>;
+};
+
+export type ChallengeExplorerSearchResultFragment = {
+  __typename?: 'Challenge';
+  id: string;
+  displayName: string;
+  nameID: string;
+  hubID: string;
+};
+
 export type ChallengeExplorerDataQueryVariables = Exact<{
   hubIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
+  challengeIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
 }>;
 
 export type ChallengeExplorerDataQuery = {
@@ -7997,6 +8027,7 @@ export type ChallengeExplorerDataQuery = {
     id: string;
     nameID: string;
     displayName: string;
+    context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
     challenges?:
       | Array<{
           __typename?: 'Challenge';
@@ -8015,95 +8046,6 @@ export type ChallengeExplorerDataQuery = {
         }>
       | undefined;
   }>;
-};
-
-export type ChallengeExplorerHubDataQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeExplorerHubDataQuery = {
-  __typename?: 'Query';
-  hub: {
-    __typename?: 'Hub';
-    id: string;
-    nameID: string;
-    displayName: string;
-    context?: { __typename?: 'Context'; id: string; tagline?: string | undefined } | undefined;
-  };
-};
-
-export type ChallengeExplorerSearchQueryVariables = Exact<{
-  searchData: SearchInput;
-}>;
-
-export type ChallengeExplorerSearchQuery = {
-  __typename?: 'Query';
-  search: Array<{
-    __typename?: 'SearchResultEntry';
-    result?:
-      | {
-          __typename?: 'Challenge';
-          id: string;
-          displayName: string;
-          nameID: string;
-          hubID: string;
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-          context?:
-            | {
-                __typename?: 'Context';
-                id: string;
-                tagline?: string | undefined;
-                visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-              }
-            | undefined;
-          tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-        }
-      | { __typename?: 'Hub' }
-      | { __typename?: 'Opportunity' }
-      | { __typename?: 'Organization' }
-      | { __typename?: 'RelayPaginatedUser' }
-      | { __typename?: 'User' }
-      | { __typename?: 'UserGroup' }
-      | undefined;
-  }>;
-};
-
-export type ChallengeExplorerSearchResultFragment = {
-  __typename?: 'Challenge';
-  id: string;
-  displayName: string;
-  nameID: string;
-  hubID: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
-  context?:
-    | {
-        __typename?: 'Context';
-        id: string;
-        tagline?: string | undefined;
-        visuals?: Array<{ __typename?: 'Visual'; id: string; uri: string; name: string }> | undefined;
-      }
-    | undefined;
-  tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-};
-
-export type SimpleHubQueryVariables = Exact<{
-  ID: Scalars['UUID_NAMEID'];
-}>;
-
-export type SimpleHubQuery = {
-  __typename?: 'Query';
-  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-};
-
-export type SimpleHubFragment = { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
-
-export type ChallengeExplorerSearchEnricherQueryVariables = Exact<{
-  hubId: Scalars['UUID_NAMEID'];
-}>;
-
-export type ChallengeExplorerSearchEnricherQuery = {
-  __typename?: 'Query';
-  hub: { __typename?: 'Hub'; id: string; nameID: string; displayName: string };
 };
 
 export type HubChallengesQueryVariables = Exact<{

@@ -10,7 +10,7 @@ import ChallengeExplorerHeader from './ChallengeExplorer/ChallengeExplorerHeader
 import ChallengeExplorerSearchView, {
   ChallengeExplorerGroupByType,
 } from './ChallengeExplorer/ChallengeExplorerSearchView';
-import ChallengesList from './ChallengeExplorer/ChallengesList';
+import ChallengeExplorerListView from './ChallengeExplorer/ChallengeExplorerListView';
 
 export interface ChallengeExplorerViewProps
   extends ChallengeExplorerContainerEntities,
@@ -44,7 +44,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
         {/* PRIVATE: My Challenges container */}
         {myChallenges && (
           <Grid item xs={12}>
-            <ChallengesList
+            <ChallengeExplorerListView
               headerText={t('pages.challenge-explorer.my.title')}
               headerCounter={myChallenges.length}
               subHeaderText={t('pages.challenge-explorer.my.subtitle')}
@@ -55,7 +55,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
         {/* PRIVATE: Other challenges within my hubs */}
         {otherChallenges && (
           <Grid item xs={12}>
-            <ChallengesList
+            <ChallengeExplorerListView
               headerText={t('pages.challenge-explorer.other.title')}
               headerCounter={otherChallenges.length}
               subHeaderText={t('pages.challenge-explorer.other.subtitle')}

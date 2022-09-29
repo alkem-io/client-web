@@ -1,7 +1,0 @@
-query ChallengeExplorerSearchEnricher($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    nameID
-    displayName
-  }
-}

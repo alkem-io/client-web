@@ -17,7 +17,7 @@ import {
   simpleChallengeHubDataGetter,
 } from '../../containers/ChallengeExplorerContainer';
 
-export interface ChallengesListProps {
+export interface ChallengeExplorerListViewProps {
   headerText: string;
   headerCounter?: number;
   subHeaderText: string;
@@ -25,7 +25,7 @@ export interface ChallengesListProps {
   enableFilterByHub?: boolean;
 }
 
-const ChallengesList: FC<ChallengesListProps> = ({
+const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
   headerText,
   headerCounter,
   subHeaderText,
@@ -87,4 +87,4 @@ const ChallengesList: FC<ChallengesListProps> = ({
   );
 };
 
-export default ChallengesList;
+export default ChallengeExplorerListView;
