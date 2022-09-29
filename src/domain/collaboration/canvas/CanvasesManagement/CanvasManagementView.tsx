@@ -1,8 +1,8 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useCallback, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import CanvasCreateDialog from '../../../../common/components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
-import CanvasDialog from '../../../../common/components/composite/dialogs/CanvasDialog/CanvasDialog';
+import CanvasCreateDialog from '../CanvasDialog/CanvasCreateDialog';
+import CanvasDialog from '../CanvasDialog/CanvasDialog';
 import ConfirmationDialog from '../../../../common/components/composite/dialogs/ConfirmationDialog';
 import { ICanvasActions } from '../../../../containers/canvas/CanvasActionsContainer';
 import CanvasValueContainer from '../../../../containers/canvas/CanvasValueContainer';

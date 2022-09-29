@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useApolloErrorHandler } from '../../../../../hooks';
 import { useEventOnApplicationMutation } from '../../../../../hooks/generated/graphql';
 import { ApplicationInfoFragment } from '../../../../../models/graphql-schema';
-import { ApplicationDialog } from '../../../../../common/components/composite';
+import { ApplicationDialog } from '../../../../community/application/dialogs/ApplicationDialog';
 import { Box } from '@mui/material';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 

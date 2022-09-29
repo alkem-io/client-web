@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityItem } from '../../../../common/components/composite/common/ActivityPanel/Activities';
-import LifecycleState from '../../../../common/components/composite/entities/Lifecycle/LifecycleState';
+import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
 import ContextSection from '../../../../common/components/composite/sections/ContextSection';
 import {
   ContextTabFragment,

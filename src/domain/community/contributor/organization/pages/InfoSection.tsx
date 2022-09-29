@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import LinkIcon from '@mui/icons-material/Link';
 import EmailIcon from '@mui/icons-material/MailOutline';
 import { OrganizationInfoFragment } from '../../../../../models/graphql-schema';
-import { OrganizationVerifiedState } from '../../../../../common/components/composite';
+import { OrganizationVerifiedState } from '../OrganizationVerifiedState';
 import { Loading } from '../../../../../common/components/core';
 import TagContainer from '../../../../../common/components/core/TagContainer';
 import Tag from '../../../../../common/components/core/Tag';
