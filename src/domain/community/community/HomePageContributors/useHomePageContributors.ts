@@ -9,6 +9,7 @@ import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/ut
 import { getVisualAvatar } from '../../../../common/utils/visuals.utils';
 import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
 import { WithId } from '../../../../types/WithId';
+import { AuthorizationCredential } from '../../../../models/graphql-schema';
 
 const MAX_USERS_TO_SHOW = 12;
 const MAX_ORGANIZATIONS_TO_SHOW = 12;
@@ -26,6 +27,7 @@ const useHomePageContributors = () => {
     variables: {
       limit: MAX_ORGANIZATIONS_TO_SHOW,
       shuffle: true,
+      filterCredentials: [AuthorizationCredential.HubHost, AuthorizationCredential.ChallengeLead],
     },
   });
 

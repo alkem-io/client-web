@@ -1,4 +1,4 @@
-query authorDetails($ids: [UUID_NAMEID_EMAIL!]!) {
+query authorDetails($ids: [UUID!]!) {
   usersById(IDs: $ids) {
     ...UserCard
     firstName

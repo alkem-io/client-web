@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import UserAvatar from '../../../../../common/components/composite/common/UserAvatar/UserAvatar';
+import UserAvatar from '../../UserAvatar/UserAvatar';
 import { Loading } from '../../../../../common/components/core';
 import AvatarContainer from '../../../../../common/components/core/AvatarContainer';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';

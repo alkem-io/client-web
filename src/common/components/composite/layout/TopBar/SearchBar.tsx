@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState, useMemo } from 'react';
 import { useMatch } from 'react-router-dom';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -7,9 +7,9 @@ import { Box, InputAdornment, useTheme } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
 import { useQueryParams } from '../../../../../hooks';
+import { SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../../../../models/constants';
 
-const SEARCH_ROUTE = '/search';
-const SEARCH_TERMS_PARAM = 'terms';
+const MINIMUM_TERM_LENGTH = 2;
 const getSearchTerms = (searchInput: string) => searchInput.split(' ').join(',');
 
 const SearchBar = () => {
@@ -31,7 +31,13 @@ const SearchBar = () => {
     setValue('');
   }, [match, query]);
 
+  const isTermValid = useMemo(() => value.length < MINIMUM_TERM_LENGTH, [value]);
+
   const keyPressHandler = ({ code }: React.KeyboardEvent<HTMLDivElement>) => {
+    if (isTermValid) {
+      return;
+    }
+
     if (code === 'Enter' || code === 'NumpadEnter') {
       handleNavigateToSearchPage();
     }
@@ -45,10 +51,18 @@ const SearchBar = () => {
   );
 
   const handleNavigateToSearchPage = useCallback(() => {
+    if (match && isTermValid) {
+      return;
+    }
+
+    if (isTermValid) {
+      return navigate(SEARCH_ROUTE);
+    }
+
     const terms = getSearchTerms(value);
     const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
-    navigate(`${SEARCH_ROUTE}?${params}`, { replace: true });
-  }, [value, SEARCH_ROUTE, SEARCH_TERMS_PARAM]);
+    navigate(`${SEARCH_ROUTE}?${params}`);
+  }, [match, isTermValid, value, SEARCH_ROUTE, SEARCH_TERMS_PARAM]);
 
   return (
     <Box

@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import { ActivityItem } from '../../../../common/components/composite/common/ActivityPanel/Activities';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import LifecycleState from '../../../../common/components/composite/entities/Lifecycle/LifecycleState';
+import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
 import ContextSection from '../../../../common/components/composite/sections/ContextSection';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
