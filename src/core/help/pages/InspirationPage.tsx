@@ -4,19 +4,19 @@ import { Path } from '../../../context/NavigationProvider';
 import { useFetchMd } from '../hooks/useFetchMd';
 import HelpView from '../views/HelpView';
 
-interface HelpPageProps {
+interface InspirationPageProps {
   paths?: Path[];
 }
 
 const EMPTY_PATHS = [];
 
-const HelpPage: FC<HelpPageProps> = ({ paths = EMPTY_PATHS }) => {
-  const currentPaths = useMemo(() => [...paths, { value: '', name: 'help', real: true }], [paths]);
+const InspirationPage: FC<InspirationPageProps> = ({ paths = EMPTY_PATHS }) => {
+  const currentPaths = useMemo(() => [...paths, { value: '', name: 'inspiration', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const { data, loading, error } = useFetchMd('/help/help.md');
+  const { data, loading, error } = useFetchMd('/help/inspiration.md');
 
   return <HelpView helpTextMd={data} isLoading={loading} error={error} />;
 };
 
-export default HelpPage;
+export default InspirationPage;

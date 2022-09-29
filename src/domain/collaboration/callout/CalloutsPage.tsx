@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
 import { EntityTypeName } from '../../shared/layout/PageLayout/SimplePageLayout';
 import { EntityPageSection } from '../../shared/layout/EntityPageSection';
@@ -14,6 +16,8 @@ import AspectCallout from './aspect/AspectCallout';
 import CanvasCallout from './canvas/CanvasCallout';
 import CommentsCallout from './comments/CommentsCallout';
 import useCallouts from './useCallouts';
+import { RouterLink } from '../../../common/components/core/RouterLink';
+import { INSPIRATION_ROUTE } from '../../../models/constants';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -50,12 +54,22 @@ const CalloutsPage = ({ entityTypeName, rootUrl }: CalloutsPageProps) => {
   return (
     <>
       <PageLayout currentSection={EntityPageSection.Explore}>
-        <Box display="flex" flexDirection="column" gap={3.5}>
+        <Box display="flex" justifyContent="end" mb={1} gap={1}>
+          <Button
+            variant="text"
+            startIcon={<TipsAndUpdatesOutlinedIcon />}
+            component={RouterLink}
+            to={INSPIRATION_ROUTE}
+          >
+            {t('common.inspiration')}
+          </Button>
           {canCreateCallout && (
-            <Button variant="contained" sx={{ alignSelf: 'end' }} onClick={handleCreateCalloutOpened}>
-              {t('common.create-new-entity', { entity: t('common.callout') })}
+            <Button variant="contained" startIcon={<AddOutlinedIcon />} onClick={handleCreateCalloutOpened}>
+              {t('common.create')}
             </Button>
           )}
+        </Box>
+        <Box display="flex" flexDirection="column" gap={3.5}>
           {callouts?.map(callout => {
             switch (callout.type) {
               case CalloutType.Card:
