@@ -14,7 +14,7 @@ const InspirationPage: FC<InspirationPageProps> = ({ paths = EMPTY_PATHS }) => {
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'inspiration', real: true }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const { data, loading, error } = useFetchMd('/help/inspiration.md');
+  const { data, loading, error } = useFetchMd('/help/callout-inspiration.md');
 
   return <HelpView helpTextMd={data} isLoading={loading} error={error} />;
 };
