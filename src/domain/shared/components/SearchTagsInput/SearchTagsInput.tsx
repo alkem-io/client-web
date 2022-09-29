@@ -12,12 +12,14 @@ export type ValueType = {
 
 export interface CardFilterInputProps {
   value: string[];
+  availableTags?: string[];
   onChange?: AutocompleteProps<string, true, undefined, true>['onChange'];
+  label?: string;
   placeholder?: string;
 }
 
-const SearchTagsInput = ({ value, onChange, placeholder }: CardFilterInputProps) => {
-  const options = useMemo(() => uniqSortedByOccurrences(value), [value]);
+const SearchTagsInput = ({ value, availableTags = [], onChange, label, placeholder }: CardFilterInputProps) => {
+  const options = useMemo(() => uniqSortedByOccurrences(availableTags), [availableTags]);
 
   const handleChange: CardFilterInputProps['onChange'] = (event, value, reason) => {
     const trimmedValues = value.map(x => x.trim().toLowerCase());
@@ -26,9 +28,9 @@ const SearchTagsInput = ({ value, onChange, placeholder }: CardFilterInputProps)
 
   const renderInput = useCallback(
     (props: AutocompleteRenderInputParams) => (
-      <TextField {...props} variant="outlined" placeholder={placeholder} label={placeholder} />
+      <TextField {...props} variant="outlined" placeholder={placeholder} label={label} />
     ),
-    [placeholder]
+    [label, placeholder]
   );
 
   return (

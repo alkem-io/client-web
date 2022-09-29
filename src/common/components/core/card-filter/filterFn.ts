@@ -12,25 +12,57 @@ type FlatValueType = {
   value: string;
 };
 
-export default function filterFn<T extends Identifiable>(data: T[], terms: string[], valueGetter: ValueGetter<T>): T[] {
+export type MatchInformation = {
+  // TODO: I'm having a compilation error if I remove this questionmark down here and haven't been able to fix it
+  matchedTerms?: string[];
+};
+
+type MatchedValue = FlatValueType & MatchInformation;
+
+/**
+ * @param data array of objects
+ * @param terms array of strings to search them on these objects
+ * @param valueGetter function to retrieve information from each object. Will return an array of { id, values[] that apply to this object }
+ * @returns an array with a copy of the same objects + an extra property added called matchedTerms with the terms found in each object
+ */
+export default function filterFn<T extends Identifiable>(
+  data: T[],
+  terms: string[],
+  valueGetter: ValueGetter<T>
+): (T & MatchInformation)[] {
   if (!data.length) {
-    return data;
+    return [];
   }
 
+  // If no terms to search just return all the objects with an empty matchedTerms array
   if (!terms.length) {
-    return data;
+    return data.map(item => ({ ...item, matchedTerms: [] }));
   }
 
   // \b is word boundary - match whole words only
-  const toRegex = (pattern: string) => new RegExp(`\\b${pattern}\\b`, 'gi');
+  const toRegex = (term: string) => ({ term, regex: new RegExp(`\\b${term}\\b`, 'gi') });
   const termsRegex = terms.map(toRegex);
 
-  const valueTypes = data.map(valueGetter);
-  const flatValueType = valueTypes.map(toFlatValueType);
+  const values = data.map(valueGetter);
+  const flatValues = values.map(toFlatValueType);
 
-  const result = flatValueType.filter(({ value }) => termsRegex.some(term => value.match(term)));
+  const results: MatchedValue[] = flatValues
+    .map(fv => ({
+      ...fv,
+      // Find if there are any terms that match the flatValue
+      matchedTerms: termsRegex.filter(term => fv.value.match(term.regex)).map(termRegex => termRegex.term),
+    }))
+    // Filter to get only the objects that had at least one match
+    .filter(result => result.matchedTerms.length);
 
-  return data.filter(({ id: dataId }) => result.some(({ id: resultId }) => resultId === dataId));
+  // We have an array of MatchedValues now. Find their corresponding object:
+  return data
+    .filter(({ id: dataId }) => results.some(({ id: resultId }) => resultId === dataId))
+    .map(item => ({
+      // Return the entire object + matchedTerms
+      ...item,
+      matchedTerms: results.find(r => r.id === item.id)?.matchedTerms,
+    }));
 }
 
 const toFlatValueType = ({ id, values }: ValueType): FlatValueType => ({

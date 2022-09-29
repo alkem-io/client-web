@@ -4,6 +4,7 @@ import { ContainerChildProps } from '../../../../models/container';
 import { ChallengeExplorerSearchResultFragment, SimpleHubResultEntryFragment } from '../../../../models/graphql-schema';
 import { useChallengeExplorerPageQuery, useChallengeExplorerSearchQuery } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
+import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
 
 export type SimpleChallenge = {
   id: string;
@@ -11,8 +12,14 @@ export type SimpleChallenge = {
   hubNameId: string;
   hubDisplayName: string;
   displayName: string;
+  tagline: string; //!!?? TODO
   roles: string[];
 };
+
+export const simpleChallengeValueGetter = (c: SimpleChallenge): ValueType => ({
+  id: c.id,
+  values: [c.displayName, c.tagline, c.hubDisplayName],
+});
 
 export interface ChallengeExplorerContainerEntities {
   isLoggedIn: boolean;
@@ -64,6 +71,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         hubDisplayName: hub.displayName,
         hubId: hub.hubID,
         displayName: challenge.displayName,
+        tagline: '', //challenge.tagline, //!!
         roles: challenge.roles,
       }))
     );
