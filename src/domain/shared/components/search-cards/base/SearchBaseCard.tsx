@@ -71,7 +71,7 @@ interface SearchBaseCardProps {
   imgHeight: number;
   image: string | undefined;
   imgAlt?: string; // todo make required when alt text is available for visuals
-  matchedTerms?: string[];
+  matchedTerms: string[];
   icon: React.ComponentType<SvgIconProps>;
   name: string;
   label?: string; // todo working var name

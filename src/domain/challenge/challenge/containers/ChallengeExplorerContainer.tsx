@@ -1,31 +1,41 @@
 import { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../../../models/container';
-import { ChallengeExplorerSearchResultFragment, SimpleHubResultEntryFragment } from '../../../../models/graphql-schema';
-import { useChallengeExplorerPageQuery, useChallengeExplorerSearchQuery } from '../../../../hooks/generated/graphql';
+import { ChallengeExplorerSearchResultFragment } from '../../../../models/graphql-schema';
+import {
+  useChallengeExplorerDataQuery,
+  useChallengeExplorerPageQuery,
+  useChallengeExplorerSearchQuery,
+} from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUserContext } from '../../../../hooks';
 import { ValueType } from '../../../../common/components/core/card-filter/filterFn';
+import { getVisualBannerNarrow } from '../../../../common/utils/visuals.utils';
 
 export type SimpleChallenge = {
   id: string;
+  nameID: string;
   hubId: string;
   hubNameId: string;
   hubDisplayName: string;
   displayName: string;
-  tagline: string; //!!?? TODO
+  tagline: string;
+  imageUrl: string | undefined;
+  tags: string[];
   roles: string[];
 };
 
 export const simpleChallengeValueGetter = (c: SimpleChallenge): ValueType => ({
   id: c.id,
-  values: [c.displayName, c.tagline, c.hubDisplayName],
+  values: [c.displayName, c.tagline, c.hubDisplayName, ...c.tags],
 });
+
+export const simpleChallengeTagsValueGetter = (c: SimpleChallenge): string[] => c.tags;
 
 export interface ChallengeExplorerContainerEntities {
   isLoggedIn: boolean;
   searchTerms: string[];
-  userChallenges?: SimpleChallenge[];
-  userHubs?: SimpleHubResultEntryFragment[];
+  myChallenges?: SimpleChallenge[];
+  otherChallenges?: SimpleChallenge[];
   searchResults?: ChallengeExplorerSearchResultFragment[];
 }
 
@@ -47,11 +57,15 @@ export interface ChallengePageContainerProps
 
 export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ searchTerms, children }) => {
   const handleError = useApolloErrorHandler();
-  const { user: userMetadata } = useUserContext();
+  const { user: userMetadata, loading: loadingUser } = useUserContext();
   const user = userMetadata?.user;
   const isLoggedIn = !!user;
 
-  const { data, loading, error } = useChallengeExplorerPageQuery({
+  const {
+    data: userChallenges,
+    loading: loadingUserData,
+    error,
+  } = useChallengeExplorerPageQuery({
     onError: handleError,
     variables: {
       rolesData: {
@@ -61,28 +75,41 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     skip: !isLoggedIn,
   });
 
-  const hubs = data?.rolesUser.hubs;
-  const userChallenges: SimpleChallenge[] | undefined =
-    hubs &&
-    hubs.flatMap(hub =>
-      hub?.challenges.map(challenge => ({
-        id: challenge.id,
+  const hubIDs = userChallenges?.rolesUser.hubs.map(hub => hub.id) || [];
+  const myChallengesIDs = userChallenges?.rolesUser.hubs.flatMap(hub => hub.challenges.map(challenge => challenge.id));
+  const challengeRoles =
+    userChallenges?.rolesUser.hubs.flatMap(hub =>
+      hub.challenges.map(challenge => ({ id: challenge.id, roles: challenge.roles }))
+    ) || [];
+
+  const { data: challengeData, loading: loadingChallengeData } = useChallengeExplorerDataQuery({
+    onError: handleError,
+    variables: {
+      hubIDs,
+    },
+    skip: !hubIDs?.length,
+  });
+
+  // With both the userChallenges loaded from the roles query and the challengeData loaded from a hubs query
+  // build the output data arrays:
+  const allChallengesInMyHubs: SimpleChallenge[] | undefined = challengeData?.hubs?.flatMap(
+    hub =>
+      hub.challenges?.map<SimpleChallenge>(ch => ({
+        id: ch.id,
+        nameID: ch.nameID,
+        hubId: hub.id,
         hubNameId: hub.nameID,
         hubDisplayName: hub.displayName,
-        hubId: hub.hubID,
-        displayName: challenge.displayName,
-        tagline: '', //challenge.tagline, //!!
-        roles: challenge.roles,
-      }))
-    );
+        displayName: ch.displayName,
+        imageUrl: getVisualBannerNarrow(ch.context?.visuals),
+        tagline: ch.context?.tagline || '',
+        tags: ch.tagset?.tags || [],
+        roles: challengeRoles.find(c => c.id === ch.id)?.roles || [],
+      })) || []
+  );
 
-  const userHubs: SimpleHubResultEntryFragment[] | undefined =
-    hubs &&
-    hubs.map(({ hubID, displayName, nameID }) => ({
-      hubID,
-      displayName,
-      nameID,
-    }));
+  const myChallenges = allChallengesInMyHubs?.filter(ch => myChallengesIDs?.includes(ch.id));
+  const otherChallenges = allChallengesInMyHubs?.filter(ch => !myChallengesIDs?.includes(ch.id));
 
   // Search
   const { data: searchData } = useChallengeExplorerSearchQuery({
@@ -103,10 +130,12 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   const provided = {
     isLoggedIn,
     searchTerms,
-    userChallenges,
-    userHubs,
+    myChallenges,
+    otherChallenges,
     searchResults,
   };
+
+  const loading = loadingUser || loadingUserData || loadingChallengeData;
 
   return <>{children(provided, { loading, error }, {})}</>;
 };

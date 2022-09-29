@@ -15,7 +15,7 @@ const CardsLayoutScroller = ({ maxHeight, sx, children }: PropsWithChildren<Card
       overflow="auto"
       padding={2}
       margin={-2}
-      marginLeft={0}
+      marginTop={0}
       sx={{ ...sx }}
     >
       {children}
