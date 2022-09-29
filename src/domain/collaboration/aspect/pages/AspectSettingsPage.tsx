@@ -4,10 +4,7 @@ import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import AspectForm, {
-  AspectFormOutput,
-  AspectFormInput,
-} from '../../../../common/components/composite/aspect/AspectForm/AspectForm';
+import AspectForm, { AspectFormOutput, AspectFormInput } from '../AspectForm/AspectForm';
 import AspectSettingsContainer from '../../../../containers/aspect/AspectSettingsContainer/AspectSettingsContainer';
 import { useUrlParams } from '../../../../hooks';
 import { AspectSettingsFragment, Visual } from '../../../../models/graphql-schema';
