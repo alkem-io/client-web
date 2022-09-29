@@ -25,8 +25,7 @@ export const ActivityLogBaseView: FC<ActivityLogBaseViewProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-  const adjustedDate = adjustServerDateForTimezone(createdDate);
-  const formattedTime = useMemo(() => formatTimeElapsed(adjustedDate), [createdDate]);
+  const formattedTime = useMemo(() => formatTimeElapsed(adjustServerDateForTimezone(createdDate)), [createdDate]);
 
   const title = useMemo(
     () => `${formattedTime} ${author?.displayName ?? t('common.user')} ${action}`,
