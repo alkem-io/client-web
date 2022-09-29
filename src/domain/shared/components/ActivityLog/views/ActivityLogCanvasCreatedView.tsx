@@ -7,7 +7,7 @@ export interface ActivityLogCanvasCreatedViewProps extends ActivityLogViewProps 
 
 export const ActivityLogCanvasCreatedView: FC<ActivityLogCanvasCreatedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.canvas-created');
+  const action = t('components.activity-log-view.actions.canvas-created', { displayName: 'calloutDisplayName' });
 
   return <ActivityLogBaseView action={action} {...props} />;
 };

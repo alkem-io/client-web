@@ -7,7 +7,7 @@ export interface ActivityLogCardCreatedViewProps extends ActivityLogViewProps {}
 
 export const ActivityLogCardCreatedView: FC<ActivityLogCardCreatedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.card-created');
+  const action = t('components.activity-log-view.actions.card-created', { displayName: 'cardDisplayName' });
 
   return <ActivityLogBaseView action={action} {...props} />;
 };

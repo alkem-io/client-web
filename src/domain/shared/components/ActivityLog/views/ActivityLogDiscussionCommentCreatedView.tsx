@@ -7,7 +7,7 @@ export interface ActivityLogDiscussionCommentCreatedViewProps extends ActivityLo
 
 export const ActivityLogDiscussionCommentCreatedView: FC<ActivityLogDiscussionCommentCreatedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.discussion-comment-created');
+  const action = t('components.activity-log-view.actions.discussion-comment-created', { displayName: 'displayName' });
 
   return <ActivityLogBaseView action={action} {...props} />;
 };
