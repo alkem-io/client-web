@@ -1,9 +1,9 @@
 import React, { FC, useCallback } from 'react';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
-import SearchTagsInput, { CardFilterInputProps } from '../../../shared/components/SearchTagsInput/SearchTagsInput';
+import SearchTagsInput, { SearchTagsInputProps } from '../../../shared/components/SearchTagsInput/SearchTagsInput';
 import { useTranslation } from 'react-i18next';
 
-interface CommunityContributorsSearchProps extends Pick<CardFilterInputProps, 'value'> {
+interface CommunityContributorsSearchProps extends Pick<SearchTagsInputProps, 'value'> {
   onChange: (searchTerms: string[]) => void;
 }
 

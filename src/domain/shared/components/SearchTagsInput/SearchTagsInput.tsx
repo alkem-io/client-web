@@ -10,7 +10,7 @@ export type ValueType = {
   values: string[];
 };
 
-export interface CardFilterInputProps {
+export interface SearchTagsInputProps {
   value: string[];
   availableTags?: string[];
   onChange?: AutocompleteProps<string, true, undefined, true>['onChange'];
@@ -18,10 +18,10 @@ export interface CardFilterInputProps {
   placeholder?: string;
 }
 
-const SearchTagsInput = ({ value, availableTags = [], onChange, label, placeholder }: CardFilterInputProps) => {
+const SearchTagsInput = ({ value, availableTags = [], onChange, label, placeholder }: SearchTagsInputProps) => {
   const options = useMemo(() => uniqSortedByOccurrences(availableTags), [availableTags]);
 
-  const handleChange: CardFilterInputProps['onChange'] = (event, value, reason) => {
+  const handleChange: SearchTagsInputProps['onChange'] = (event, value, reason) => {
     const trimmedValues = value.map(x => x.trim().toLowerCase());
     onChange?.(event, trimmedValues, reason);
   };

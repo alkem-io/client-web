@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import filterFn, { MatchInformation, ValueType } from './filterFn';
 import SearchTagsInput, {
-  CardFilterInputProps,
+  SearchTagsInputProps,
 } from '../../../../domain/shared/components/SearchTagsInput/SearchTagsInput';
 import { Identifiable } from '../../../../domain/shared/types/Identifiable';
 import { useTranslation } from 'react-i18next';
 
-export interface CardFilterProps<T extends Identifiable> extends Omit<CardFilterInputProps, 'value' | 'availableTags'> {
+export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTagsInputProps, 'value' | 'availableTags'> {
   data: T[];
   tagsValueGetter?: (data: T) => string[];
   valueGetter: (data: T) => ValueType;
