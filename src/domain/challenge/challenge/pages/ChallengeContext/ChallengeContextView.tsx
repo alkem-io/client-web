@@ -9,9 +9,9 @@ import {
 } from '../../../../../hooks/generated/graphql';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import ContextForm, { ContextFormValues } from '../../../../../common/components/composite/forms/ContextForm';
+import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
 import Loading from '../../../../../common/components/core/Loading/Loading';
-import EditLifecycle from '../../../../platform/admin/components/EditLifecycle';
+import EditLifecycle from '../../../../platform/admin/templates/InnovationTemplates/EditLifecycle';
 import ChallengeLifecycleContainer from '../../../../../containers/challenge/ChallengeLifecycleContainer';
 
 const ChallengeContextView: FC = () => {

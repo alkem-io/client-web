@@ -9,7 +9,7 @@ import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import FormikSelect, { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
-import { validateLifecycleDefinition } from '../../../../../common/components/core/LifecycleVisualizer';
+import { validateLifecycleDefinition } from './LifecycleVisualizer';
 import { SafeLifecycleVisualizer } from './SafeLifecycleVisualizer';
 
 export interface InnovationTemplateFormValues {

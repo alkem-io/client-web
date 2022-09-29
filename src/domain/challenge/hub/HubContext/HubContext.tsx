@@ -2,7 +2,13 @@ import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useConfig, useUrlParams } from '../../../../hooks';
 import { useHubProviderQuery } from '../../../../hooks/generated/graphql';
-import { AuthorizationPrivilege, HubInfoFragment, TemplatesSet, Visual } from '../../../../models/graphql-schema';
+import {
+  AuthorizationPrivilege,
+  HubInfoFragment,
+  HubVisibility,
+  TemplatesSet,
+  Visual,
+} from '../../../../models/graphql-schema';
 
 export interface HubPermissions {
   viewerCanUpdate: boolean;
@@ -29,6 +35,7 @@ interface HubContextProps {
   hostId?: string;
   tagset?: HubInfoFragment['tagset'];
   context?: HubInfoFragment['context'];
+  visibility: HubVisibility;
 }
 
 const HubContext = React.createContext<HubContextProps>({
@@ -52,6 +59,7 @@ const HubContext = React.createContext<HubContextProps>({
     communityReadAccess: false,
     contextPrivileges: [],
   },
+  visibility: HubVisibility.Active,
   refetchHub: () => {},
 });
 
@@ -77,6 +85,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
 
   const hub = data?.hub;
   const hubId = hub?.id || '';
+  const visibility = hub?.visibility || HubVisibility.Active;
   const displayName = hub?.displayName || '';
   const communityId = hub?.community?.id ?? '';
   const visuals = hub?.context?.visuals ?? [];
@@ -123,6 +132,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
         tagset: hub?.tagset,
         hostId: hub?.host?.id,
         context: hub?.context,
+        visibility,
       }}
     >
       {children}

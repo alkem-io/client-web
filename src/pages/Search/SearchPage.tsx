@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { Box } from '@mui/material';
 import Link from '@mui/material/Link';
 import HelpOutline from '@mui/icons-material/HelpOutline';
@@ -8,10 +8,17 @@ import MultipleSelect, { MultiSelectElement } from '../../common/components/core
 import Section, { Header as SectionHeader, SubHeader } from '../../common/components/core/Section';
 import { useApolloErrorHandler, useUpdateNavigation, useUserContext } from '../../hooks';
 import { useSearchLazyQuery } from '../../hooks/generated/graphql';
-import { Challenge, Opportunity, Organization, SearchQuery, User } from '../../models/graphql-schema';
+import {
+  ChallengeSearchResultFragment,
+  HubSearchResultFragment,
+  OpportunitySearchResultFragment,
+  OrganizationSearchResultFragment,
+  SearchQuery,
+  UserSearchResultFragment,
+} from '../../models/graphql-schema';
 import { PageProps } from '../common';
 import { RouterLink } from '../../common/components/core/RouterLink';
-import { AUTH_LOGIN_PATH } from '../../models/constants';
+import { AUTH_LOGIN_PATH, SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../models/constants';
 import SectionSpacer from '../../domain/shared/components/Section/SectionSpacer';
 import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
@@ -37,10 +44,10 @@ const contributorFilterConfig: FilterConfig = {
   },
 };
 // todo translate
-const entityFilterConfig: FilterConfig = {
+const journeyFilterConfig: FilterConfig = {
   all: {
     title: 'All',
-    value: ['opportunity', 'challenge'],
+    value: ['hub', 'opportunity', 'challenge'],
     typename: 'all',
   },
   opportunity: {
@@ -53,14 +60,29 @@ const entityFilterConfig: FilterConfig = {
     value: ['challenge'],
     typename: 'Challenge',
   },
+  hub: {
+    title: 'Hubs only',
+    value: ['hub'],
+    typename: 'Hub',
+  },
 };
 
-export type ResultType = (User | Organization | Challenge | Opportunity) & { score: number; terms: string[] };
+export type ResultMetadataType = { score: number; terms: string[] };
+export type SearchResult<T> = T & ResultMetadataType;
+
+export type ResultType = SearchResult<
+  | UserSearchResultFragment
+  | OrganizationSearchResultFragment
+  | HubSearchResultFragment
+  | ChallengeSearchResultFragment
+  | OpportunitySearchResultFragment
+>;
 
 const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const handleError = useApolloErrorHandler();
   useUpdateNavigation({ currentPaths: paths });
 
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
 
@@ -75,7 +97,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const [searchTerms, setSearchTerms] = useState<string[]>([]);
   // todo only the value can be used instead
   const [contributorFilterValue, setContributorFilterValue] = useState<string[]>(contributorFilterConfig.all.value);
-  const [entityFilterValue, setEntityFilterValue] = useState<string[]>(entityFilterConfig.all.value);
+  const [entityFilterValue, setEntityFilterValue] = useState<string[]>(journeyFilterConfig.all.value);
 
   useEffect(() => {
     setTermsFromQuery(termsFromUrl);
@@ -84,7 +106,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
 
   const resetState = () => {
     setContributorFilterValue(contributorFilterConfig.all.value);
-    setEntityFilterValue(entityFilterConfig.all.value);
+    setEntityFilterValue(journeyFilterConfig.all.value);
     setSearchTerms([]);
     setResults(undefined);
   };
@@ -97,6 +119,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     if (!newValue.length) {
       resetState();
     } else {
+      const terms = newTerms.join(',');
+      const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
+      navigate(`${SEARCH_ROUTE}?${params}`);
       searchQuery(newTerms, [...contributorFilterValue, ...entityFilterValue]);
     }
   };
@@ -144,9 +169,11 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const handleContributorFilterChange = (value: string[]) => setContributorFilterValue(value);
   const handleEntityFilterChange = (value: string[]) => setEntityFilterValue(value);
 
-  const [entityResults, contributorResults] = useMemo(
+  const [journeyResults, contributorResults] = useMemo(
     () => [
-      results?.filter(({ __typename }) => __typename === 'Challenge' || __typename === 'Opportunity'),
+      results?.filter(
+        ({ __typename }) => __typename === 'Hub' || __typename === 'Challenge' || __typename === 'Opportunity'
+      ),
       results?.filter(({ __typename }) => __typename === 'User' || __typename === 'Organization'),
     ],
     [results]
@@ -165,6 +192,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           defaultValue={termsFromQuery}
           elements={tags}
           allowUnknownValues
+          minLength={2}
         />
       </Section>
       {!isAuthenticated && (
@@ -175,9 +203,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
         </Box>
       )}
       <SearchResultSection
-        title={`${t('common.challenges')} & ${t('common.opportunities')}`}
-        filterConfig={entityFilterConfig}
-        results={entityResults}
+        title={`${t('common.hubs')}, ${t('common.challenges')} & ${t('common.opportunities')}`}
+        filterConfig={journeyFilterConfig}
+        results={journeyResults}
         onFilterChange={handleEntityFilterChange}
         loading={isSearching}
       />

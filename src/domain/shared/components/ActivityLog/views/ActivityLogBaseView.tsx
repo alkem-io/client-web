@@ -7,6 +7,7 @@ import { formatTimeElapsed } from '../../../utils/formatTimeElapsed';
 import AuthorAvatar from '../../AuthorAvatar/AuthorAvatar';
 import { Author } from '../../AuthorAvatar/models/author';
 import { ClampedTypography } from '../../ClampedTypography';
+import { adjustServerDateForTimezone } from '../../../utils/adjustServerDateForTimezone';
 
 export interface ActivityLogBaseViewProps {
   author: Author | undefined;
@@ -24,8 +25,7 @@ export const ActivityLogBaseView: FC<ActivityLogBaseViewProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-
-  const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
+  const formattedTime = useMemo(() => formatTimeElapsed(adjustServerDateForTimezone(createdDate)), [createdDate]);
 
   const title = useMemo(
     () => `${formattedTime} ${author?.displayName ?? t('common.user')} ${action}`,

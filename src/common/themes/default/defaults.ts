@@ -26,6 +26,17 @@ export const theme: ThemeOptions = {
     },
   },
   cards: {
+    search: {
+      width: 264,
+      contributor: {
+        height: 418,
+        imgHeight: 264,
+      },
+      journey: {
+        height: 342,
+        imgHeight: 88,
+      },
+    },
     simpleCard: {
       width: 32,
       height: 18,
@@ -46,6 +57,17 @@ theme.components = componentsOverride(defaultMUITheme);
 declare module '@mui/material/styles' {
   interface Theme {
     cards: {
+      search: {
+        width: number;
+        contributor: {
+          height: number;
+          imgHeight: number;
+        };
+        journey: {
+          height: number;
+          imgHeight: number;
+        };
+      };
       simpleCard: {
         width: number;
         height: number;

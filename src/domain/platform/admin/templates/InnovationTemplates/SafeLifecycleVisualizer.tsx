@@ -1,8 +1,5 @@
 import React, { useMemo } from 'react';
-import LifecycleVisualizer, {
-  validateLifecycleDefinition,
-  LifecycleVisualizerProps,
-} from '../../../../../common/components/core/LifecycleVisualizer';
+import LifecycleVisualizer, { validateLifecycleDefinition, LifecycleVisualizerProps } from './LifecycleVisualizer';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';

@@ -1,13 +1,11 @@
 query challengeName($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
+    nameID
     challenge(ID: $challengeId) {
       id
+      nameID
       displayName
-      community {
-        id
-        displayName
-      }
     }
   }
 }
