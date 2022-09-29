@@ -18,3 +18,28 @@ fragment SimpleHubResultEntry on RolesResultHub
   nameID
   displayName
 }
+
+
+query ChallengeExplorerData($hubIDs: [UUID!]) {
+  hubs(IDs: $hubIDs) {
+    id
+    nameID
+    displayName
+    challenges {
+      id
+      nameID
+      displayName
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+  }
+}

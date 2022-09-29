@@ -1465,7 +1465,6 @@ export type RolesResultHubKeySpecifier = (
   | 'nameID'
   | 'opportunities'
   | 'roles'
-  | 'tagline'
   | 'userGroups'
   | RolesResultHubKeySpecifier
 )[];
@@ -1477,7 +1476,6 @@ export type RolesResultHubFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   roles?: FieldPolicy<any> | FieldReadFunction<any>;
-  tagline?: FieldPolicy<any> | FieldReadFunction<any>;
   userGroups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RolesResultOrganizationKeySpecifier = (
