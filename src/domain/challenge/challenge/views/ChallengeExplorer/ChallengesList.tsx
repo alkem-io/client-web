@@ -6,6 +6,7 @@ import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
 import { useUserContext } from '../../../../../hooks';
 import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
 import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
+import CheckboxesFilter from '../../../../shared/components/CheckboxesFilter/CheckboxesFilter';
 import { SearchChallengeCard } from '../../../../shared/components/search-cards';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
 import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
@@ -13,6 +14,7 @@ import {
   SimpleChallenge,
   simpleChallengeValueGetter,
   simpleChallengeTagsValueGetter,
+  simpleChallengeHubDataGetter,
 } from '../../containers/ChallengeExplorerContainer';
 
 export interface ChallengesListProps {
@@ -28,7 +30,7 @@ const ChallengesList: FC<ChallengesListProps> = ({
   headerCounter,
   subHeaderText,
   challenges,
-  enableFilterByHub = true,
+  enableFilterByHub = false,
 }) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
@@ -40,34 +42,47 @@ const ChallengesList: FC<ChallengesListProps> = ({
   );
 
   return (
-    <DashboardGenericSection headerText={headerText} headerCounter={headerCounter} subHeaderText={subHeaderText}>
-      {enableFilterByHub && <p>TODO: Filter by hub</p>}
-      <CardFilter
-        data={challenges}
-        valueGetter={simpleChallengeValueGetter}
-        tagsValueGetter={simpleChallengeTagsValueGetter}
+    <DashboardGenericSection
+      headerText={headerText}
+      headerCounter={headerCounter}
+      subHeaderText={subHeaderText}
+      options={{ overflowVisible: true }}
+    >
+      <CheckboxesFilter
+        enable={enableFilterByHub}
+        items={challenges}
+        filterableDataGetter={simpleChallengeHubDataGetter}
+        sx={{ top: theme => theme.spacing(-10) }}
       >
-        {filteredChallenges => (
-          <CardsLayoutScroller maxHeight={43} sx={{ marginRight: 0 }}>
-            <CardsLayout items={filteredChallenges}>
-              {challenge =>
-                challenge && (
-                  <SearchChallengeCard
-                    name={challenge.displayName}
-                    tagline={challenge.tagline}
-                    image={challenge.imageUrl}
-                    matchedTerms={challenge.matchedTerms ?? []}
-                    label={getCardLabel(challenge.roles)}
-                    url={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
-                    parentName={challenge.hubDisplayName}
-                  />
-                )
-              }
-            </CardsLayout>
-            {filteredChallenges.length === 0 && <Box>{t('pages.challenge-explorer.search.no-results')}</Box>}
-          </CardsLayoutScroller>
+        {filteredByHubChallenges => (
+          <CardFilter
+            data={filteredByHubChallenges}
+            valueGetter={simpleChallengeValueGetter}
+            tagsValueGetter={simpleChallengeTagsValueGetter}
+          >
+            {filteredChallenges => (
+              <CardsLayoutScroller maxHeight={43} sx={{ marginRight: 0 }}>
+                <CardsLayout items={filteredChallenges}>
+                  {challenge =>
+                    challenge && (
+                      <SearchChallengeCard
+                        name={challenge.displayName}
+                        tagline={challenge.tagline}
+                        image={challenge.imageUrl}
+                        matchedTerms={challenge.matchedTerms ?? []}
+                        label={getCardLabel(challenge.roles)}
+                        url={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
+                        parentName={challenge.hubDisplayName}
+                      />
+                    )
+                  }
+                </CardsLayout>
+                {filteredChallenges.length === 0 && <Box>{t('pages.challenge-explorer.search.no-results')}</Box>}
+              </CardsLayoutScroller>
+            )}
+          </CardFilter>
         )}
-      </CardFilter>
+      </CheckboxesFilter>
     </DashboardGenericSection>
   );
 };

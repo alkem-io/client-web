@@ -31,6 +31,12 @@ export const simpleChallengeValueGetter = (c: SimpleChallenge): ValueType => ({
 
 export const simpleChallengeTagsValueGetter = (c: SimpleChallenge): string[] => c.tags;
 
+export const simpleChallengeHubDataGetter = (c: SimpleChallenge) => ({
+  id: c.hubId,
+  nameId: c.hubNameId,
+  displayName: c.hubDisplayName,
+});
+
 export interface ChallengeExplorerContainerEntities {
   isLoggedIn: boolean;
   searchTerms: string[];
@@ -43,6 +49,7 @@ export interface ChallengeExplorerContainerActions {}
 
 export interface ChallengeExplorerContainerState {
   loading: boolean;
+  loadingSearch: boolean;
   error?: ApolloError;
 }
 
@@ -108,11 +115,12 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
       })) || []
   );
 
+  // Private: Challenges if the user is logged in
   const myChallenges = allChallengesInMyHubs?.filter(ch => myChallengesIDs?.includes(ch.id));
   const otherChallenges = allChallengesInMyHubs?.filter(ch => !myChallengesIDs?.includes(ch.id));
 
   // Search
-  const { data: searchData } = useChallengeExplorerSearchQuery({
+  const { data: searchData, loading: loadingSearch } = useChallengeExplorerSearchQuery({
     onError: handleError,
     variables: {
       searchData: {
@@ -137,5 +145,5 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
 
   const loading = loadingUser || loadingUserData || loadingChallengeData;
 
-  return <>{children(provided, { loading, error }, {})}</>;
+  return <>{children(provided, { loading, loadingSearch, error }, {})}</>;
 };

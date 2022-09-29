@@ -29,6 +29,7 @@ export interface DashboardGenericSectionProps {
     collapsible?: {
       maxHeight: number;
     };
+    overflowVisible?: boolean;
   };
   sideBanner?: boolean;
   sideBannerRight?: boolean;
@@ -99,7 +100,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
         paddingY={1}
         maxHeight={isCollapsed && options?.collapsible ? options.collapsible.maxHeight : 'auto'}
         textOverflow="ellipsis"
-        overflow="hidden"
+        overflow={options?.overflowVisible ? 'visible' : 'hidden'}
       >
         {children}
         {secondaryAction}

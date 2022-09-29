@@ -38,11 +38,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
         {/* PUBLIC: Header if not logged in */}
         {!isLoggedIn && (
           <Grid item xs={12}>
-            <ChallengeExplorerHeader
-              searchTerms={searchTerms}
-              onSearchTermsChange={setSearchTerms}
-              isLoggedIn={isLoggedIn}
-            />
+            <ChallengeExplorerHeader searchTerms={searchTerms} onSearchTermsChange={setSearchTerms} />
           </Grid>
         )}
         {/* PRIVATE: My Challenges container */}
@@ -64,24 +60,19 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
               headerCounter={otherChallenges.length}
               subHeaderText={t('pages.challenge-explorer.other.subtitle')}
               challenges={otherChallenges}
+              enableFilterByHub
             />
           </Grid>
         )}
         {/* PRIVATE: Header for the public hubs if user is logged in */}
         {isLoggedIn && (
-          <Grid item>
-            <ChallengeExplorerHeader
-              searchTerms={searchTerms}
-              onSearchTermsChange={setSearchTerms}
-              isLoggedIn={isLoggedIn}
-            />
+          <Grid item xs={12}>
+            <ChallengeExplorerHeader searchTerms={searchTerms} onSearchTermsChange={setSearchTerms} isLoggedIn />
           </Grid>
         )}
-        {/* PUBLIC: Search challenges in public hubs/hubs that the user has access to */}
+        {/* PUBLIC: Search challenges in public hubs/hubs that the user has access to: */}
         <Grid item xs={12}>
-          <Box paddingTop={2}>
-            <ChallengeExplorerSearchView challenges={searchResults} groupBy={groupBy} searchTerms={searchTerms} />
-          </Box>
+          <ChallengeExplorerSearchView challenges={searchResults} groupBy={groupBy} searchTerms={searchTerms} />
         </Grid>
       </Grid>
     </Box>

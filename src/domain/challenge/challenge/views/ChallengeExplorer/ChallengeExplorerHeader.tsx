@@ -6,14 +6,14 @@ import SearchTagsInput from '../../../../shared/components/SearchTagsInput/Searc
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 
 export interface ChallengeExplorerHeaderProps {
-  isLoggedIn: boolean;
+  isLoggedIn?: boolean;
   searchTerms: string[];
   onSearchTermsChange: (searchTerms: string[]) => void;
 }
 
 const ChallengeExplorerHeader: FC<ChallengeExplorerHeaderProps> = ({
   searchTerms,
-  isLoggedIn,
+  isLoggedIn = false,
   onSearchTermsChange,
 }) => {
   const { t } = useTranslation();
