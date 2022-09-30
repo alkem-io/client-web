@@ -132,7 +132,7 @@ const AspectCallout = ({
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
       >
-        <CardsLayoutScroller maxHeight={42.5}>
+        <CardsLayoutScroller maxHeight={372}>
           <CardsLayout
             items={loading ? [undefined, undefined] : callout.aspects}
             deps={[hubNameId, challengeNameId, opportunityNameId]}

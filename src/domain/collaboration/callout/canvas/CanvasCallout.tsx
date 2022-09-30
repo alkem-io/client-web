@@ -48,7 +48,7 @@ const CanvasCallout = ({
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
       >
-        <CardsLayoutScroller maxHeight={18}>
+        <CardsLayoutScroller maxHeight={176}>
           <CardsLayout
             items={loading ? [undefined, undefined] : callout.canvases}
             deps={[hubNameId, challengeNameId, opportunityNameId]}

@@ -56,7 +56,7 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
                   headerIcon={<HubIcon />}
                   subHeaderText={values[0].hubTagline}
                 >
-                  <CardsLayoutScroller maxHeight={43} sx={{ marginRight: 0 }}>
+                  <CardsLayoutScroller maxHeight={376} sx={{ marginRight: 0 }}>
                     <CardsLayout items={values}>
                       {challenge => (
                         <SearchChallengeCard
