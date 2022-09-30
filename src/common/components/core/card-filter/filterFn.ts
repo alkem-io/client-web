@@ -13,7 +13,6 @@ type FlatValueType = {
 };
 
 export type MatchInformation = {
-  // TODO: I'm having a compilation error if I remove this questionmark down here and haven't been able to fix it
   matchedTerms?: string[];
 };
 
