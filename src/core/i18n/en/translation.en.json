@@ -165,6 +165,7 @@
     "warning": "Warning",
     "preview": "Preview",
     "help": "Help",
+    "loading": "Loading...",
     "language": "Language",
     "genders": {
       "notSpecified": "not specified",

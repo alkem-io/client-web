@@ -19,9 +19,15 @@ export interface ChallengeExplorerSearchViewProps {
   challenges: SimpleChallengeWithSearchTerms[] | undefined;
   groupBy: ChallengeExplorerGroupByType;
   searchTerms: string[] | undefined;
+  loading: boolean;
 }
 
-const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ challenges, groupBy, searchTerms }) => {
+const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
+  challenges,
+  groupBy,
+  searchTerms,
+  loading,
+}) => {
   const { t } = useTranslation();
   const { user } = useUserContext();
   const getCardLabel = useCallback(
@@ -72,9 +78,10 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ cha
           }}
         </GroupBy>
       )}
-      {searchTerms && searchTerms?.length > 0 && !challenges?.length && (
+      {!loading && searchTerms && searchTerms?.length > 0 && !challenges?.length && (
         <Box>{t('pages.challenge-explorer.search.no-results')}</Box>
       )}
+      {loading && <Box textAlign="center">{t('common.loading')}</Box>}
     </>
   );
 };

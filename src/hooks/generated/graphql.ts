@@ -772,18 +772,9 @@ export const MyPrivilegesFragmentDoc = gql`
     myPrivileges
   }
 `;
-export const SimpleHubResultEntryFragmentDoc = gql`
-  fragment SimpleHubResultEntry on RolesResultHub {
-    hubID
-    nameID
-    displayName
-  }
-`;
 export const ChallengeExplorerSearchResultFragmentDoc = gql`
   fragment ChallengeExplorerSearchResult on Challenge {
     id
-    displayName
-    nameID
     hubID
   }
 `;
@@ -7516,17 +7507,15 @@ export const ChallengeExplorerPageDocument = gql`
     rolesUser(rolesData: $rolesData) {
       hubs {
         id
-        ...SimpleHubResultEntry
+        hubID
         challenges {
           id
-          displayName
           roles
         }
         roles
       }
     }
   }
-  ${SimpleHubResultEntryFragmentDoc}
 `;
 
 /**

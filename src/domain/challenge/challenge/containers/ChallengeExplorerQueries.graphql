@@ -2,21 +2,14 @@ query ChallengeExplorerPage($rolesData: RolesUserInput!) {
   rolesUser(rolesData: $rolesData) {
     hubs {
       id
-      ...SimpleHubResultEntry
+      hubID
       challenges {
         id
-        displayName
         roles
       }
       roles
     }
   }
-}
-fragment SimpleHubResultEntry on RolesResultHub
-{
-  hubID
-  nameID
-  displayName
 }
 
 query ChallengeExplorerSearch($searchData: SearchInput!) {
@@ -30,8 +23,6 @@ query ChallengeExplorerSearch($searchData: SearchInput!) {
 
 fragment ChallengeExplorerSearchResult on Challenge {
   id
-  displayName
-  nameID
   hubID
 }
 

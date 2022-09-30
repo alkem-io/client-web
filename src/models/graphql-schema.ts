@@ -7970,20 +7970,11 @@ export type ChallengeExplorerPageQuery = {
     hubs: Array<{
       __typename?: 'RolesResultHub';
       id: string;
-      roles: Array<string>;
       hubID: string;
-      nameID: string;
-      displayName: string;
-      challenges: Array<{ __typename?: 'RolesResultCommunity'; id: string; displayName: string; roles: Array<string> }>;
+      roles: Array<string>;
+      challenges: Array<{ __typename?: 'RolesResultCommunity'; id: string; roles: Array<string> }>;
     }>;
   };
-};
-
-export type SimpleHubResultEntryFragment = {
-  __typename?: 'RolesResultHub';
-  hubID: string;
-  nameID: string;
-  displayName: string;
 };
 
 export type ChallengeExplorerSearchQueryVariables = Exact<{
@@ -7996,7 +7987,7 @@ export type ChallengeExplorerSearchQuery = {
     __typename?: 'SearchResultEntry';
     terms?: Array<string> | undefined;
     result?:
-      | { __typename?: 'Challenge'; id: string; displayName: string; nameID: string; hubID: string }
+      | { __typename?: 'Challenge'; id: string; hubID: string }
       | { __typename?: 'Hub' }
       | { __typename?: 'Opportunity' }
       | { __typename?: 'Organization' }
@@ -8007,13 +7998,7 @@ export type ChallengeExplorerSearchQuery = {
   }>;
 };
 
-export type ChallengeExplorerSearchResultFragment = {
-  __typename?: 'Challenge';
-  id: string;
-  displayName: string;
-  nameID: string;
-  hubID: string;
-};
+export type ChallengeExplorerSearchResultFragment = { __typename?: 'Challenge'; id: string; hubID: string };
 
 export type ChallengeExplorerDataQueryVariables = Exact<{
   hubIDs?: InputMaybe<Array<Scalars['UUID']> | Scalars['UUID']>;
