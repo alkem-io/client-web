@@ -59,36 +59,34 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
-      <Box>
-        <DialogTitle id="callout-creation-title" onClose={handleClose}>
-          <Box display="flex">
-            <CampaignOutlinedIcon sx={{ marginRight: 1 }} />
-            {t('components.callout-creation.title')}
-          </Box>
-        </DialogTitle>
-        <DialogContent dividers>
-          <Box paddingY={theme => theme.spacing(2)}>
-            <CalloutForm callout={callout} onChange={handleValueChange} onStatusChanged={handleStatusChange} />
-          </Box>
-        </DialogContent>
-        <DialogActions sx={{ justifyContent: 'end' }}>
-          {onClose && (
-            <Button onClick={onClose} variant="outlined">
-              {t('buttons.cancel')}
-            </Button>
-          )}
+      <DialogTitle id="callout-creation-title" onClose={handleClose}>
+        <Box display="flex">
+          <CampaignOutlinedIcon sx={{ marginRight: 1 }} />
+          {t('components.callout-creation.title')}
+        </Box>
+      </DialogTitle>
+      <DialogContent dividers>
+        <Box paddingY={theme => theme.spacing(2)}>
+          <CalloutForm callout={callout} onChange={handleValueChange} onStatusChanged={handleStatusChange} />
+        </Box>
+      </DialogContent>
+      <DialogActions sx={{ justifyContent: 'end' }}>
+        {onClose && (
+          <Button onClick={onClose} variant="outlined">
+            {t('buttons.cancel')}
+          </Button>
+        )}
 
-          <LoadingButton
-            loading={isCreating}
-            loadingIndicator={`${t('buttons.save-draft')}...`}
-            onClick={handleSaveAsDraft}
-            variant="contained"
-            disabled={!isValid}
-          >
-            {t('buttons.save-draft')}
-          </LoadingButton>
-        </DialogActions>
-      </Box>
+        <LoadingButton
+          loading={isCreating}
+          loadingIndicator={`${t('buttons.save-draft')}...`}
+          onClick={handleSaveAsDraft}
+          variant="contained"
+          disabled={!isValid}
+        >
+          {t('buttons.save-draft')}
+        </LoadingButton>
+      </DialogActions>
     </Dialog>
   );
 };
