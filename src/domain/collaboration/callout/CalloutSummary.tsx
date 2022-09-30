@@ -1,15 +1,22 @@
 import React, { ComponentType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled, Typography, Box } from '@mui/material';
-import { Callout } from './creation-dialog/CalloutCreationDialog';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
+import { CalloutType } from '../../../models/graphql-schema';
+
+export type CalloutSummaryFields = {
+  description: string;
+  displayName: string;
+  templateId?: string;
+  type: CalloutType;
+};
 
 export interface CalloutSumaryProps {
-  callout: Callout;
+  callout: CalloutSummaryFields;
 }
 
 export const CalloutSummary: FC<{
-  callout: Callout;
+  callout: CalloutSummaryFields;
   templatePreviewComponent?: ComponentType<CalloutSumaryProps> | null;
 }> = ({ callout, templatePreviewComponent: TemplatePreview }) => {
   const { t } = useTranslation();

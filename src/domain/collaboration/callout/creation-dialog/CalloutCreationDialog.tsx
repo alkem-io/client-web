@@ -9,7 +9,7 @@ import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import CalloutForm from '../CalloutForm';
 
-export type Callout = {
+export type CalloutCreationDialogFields = {
   description?: string;
   displayName?: string;
   templateId?: string;
@@ -26,7 +26,7 @@ export interface CalloutCreationDialogProps {
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, onSaveAsDraft, isCreating }) => {
   const { t } = useTranslation();
 
-  const [callout, setCallout] = useState<Callout>({});
+  const [callout, setCallout] = useState<CalloutCreationDialogFields>({});
   const [isValid, setIsValid] = useState(false);
 
   const handleValueChange = useCallback(
