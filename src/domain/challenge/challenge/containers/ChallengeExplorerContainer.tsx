@@ -43,9 +43,9 @@ export const simpleChallengeHubDataGetter = (c: SimpleChallenge) => ({
 export interface ChallengeExplorerContainerEntities {
   isAuthenticated: boolean;
   searchTerms: string[];
-  myChallenges?: SimpleChallenge[];
-  otherChallenges?: SimpleChallenge[];
-  searchResults?: SimpleChallengeWithSearchTerms[];
+  myChallenges: SimpleChallenge[] | undefined;
+  otherChallenges: SimpleChallenge[] | undefined;
+  searchResults: SimpleChallengeWithSearchTerms[] | undefined;
 }
 
 export interface ChallengeExplorerContainerActions {}
