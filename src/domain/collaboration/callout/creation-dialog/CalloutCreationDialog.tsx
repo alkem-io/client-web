@@ -77,6 +77,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
             isValid={isInfoStepValid}
             onChange={handleInfoStepValueChange}
             onStatusChanged={handleInfoStepStatusChange}
+            onSaveAsDraft={handleSummarySaveAsDraft}
+            isCreating={isCreating}
           />
           {/*
           this needs to be added after templates are introduced to the callouts on the server

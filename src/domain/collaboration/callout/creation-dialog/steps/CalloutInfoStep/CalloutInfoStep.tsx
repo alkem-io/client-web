@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import CalloutForm, { CalloutFormOutput } from '../../../CalloutForm';
 import { StepComponentProps } from '../../../../../shared/components/Steps/step/Step';
-import { StepLayout } from '../../step-layout/StepLayout';
+import { OneStepCreationLayout } from '../../step-layout/StepLayout';
 import { CalloutStepProps } from '../CalloutStepProps';
 
 export interface CalloutInfoStepProps extends CalloutStepProps {
   onChange?: (callout: CalloutFormOutput) => void;
   onStatusChanged?: (isValid: boolean) => void;
+  onSaveAsDraft: () => Promise<void>;
+  isCreating: boolean;
 }
 
 const CalloutInfoStep: FC<StepComponentProps & CalloutInfoStepProps> = ({
@@ -16,27 +18,23 @@ const CalloutInfoStep: FC<StepComponentProps & CalloutInfoStepProps> = ({
   onChange,
   onClose,
   onStatusChanged,
-  activeStep,
   isValid,
-  steps,
-  next,
-  prev,
+  onSaveAsDraft,
+  isCreating,
 }) => {
   const { t } = useTranslation();
   return (
-    <StepLayout
+    <OneStepCreationLayout
       dialogTitle={t('components.callout-creation.title')}
       onClose={onClose}
-      next={next}
-      prev={prev}
-      activeStep={activeStep}
-      steps={steps}
       isValid={isValid}
+      isCreating={isCreating}
+      onSaveAsDraft={onSaveAsDraft}
     >
       <Box paddingY={theme => theme.spacing(2)}>
         <CalloutForm callout={callout} onChange={onChange} onStatusChanged={onStatusChanged} />
       </Box>
-    </StepLayout>
+    </OneStepCreationLayout>
   );
 };
 CalloutInfoStep.displayName = 'CalloutInfoStep';
