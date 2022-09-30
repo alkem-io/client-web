@@ -2,7 +2,6 @@ import { Box, Button, Switch, Menu, MenuItem, styled, BoxProps } from '@mui/mate
 import React, { useState } from 'react';
 import { Identifiable } from '../../types/Identifiable';
 import { uniqBy } from 'lodash';
-import { useTranslation } from 'react-i18next';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 
 // Like for example a hub: { id, displayName }
@@ -23,6 +22,7 @@ const MenuButton = styled(Box)(() => ({
 }));
 
 export interface CheckboxesFilterProps<T extends Identifiable> {
+  caption: string;
   items: T[];
   enable?: boolean;
   filterableDataGetter: (data: T) => FilterableValue;
@@ -31,14 +31,13 @@ export interface CheckboxesFilterProps<T extends Identifiable> {
 }
 
 const CheckboxesFilter = <T extends Identifiable>({
+  caption,
   items,
   enable = true,
   filterableDataGetter: getValue,
   children,
   sx,
 }: CheckboxesFilterProps<T>) => {
-  const { t } = useTranslation();
-
   // Handle menu open/close
   const [buttonElement, setButtonElement] = React.useState<null | HTMLElement>(null);
   const open = Boolean(buttonElement);
@@ -81,7 +80,7 @@ const CheckboxesFilter = <T extends Identifiable>({
       {enable && (
         <MenuButton sx={sx}>
           <Button onClick={handleClick} variant="outlined" startIcon={<FilterAltOutlinedIcon />}>
-            {t('pages.challenge-explorer.other.filter-by-hub')}
+            {caption}
           </Button>
           <Menu anchorEl={buttonElement} open={open} onClose={handleClose}>
             {filterStatus.map(filter => (
