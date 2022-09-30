@@ -41,7 +41,7 @@ export const simpleChallengeHubDataGetter = (c: SimpleChallenge) => ({
 });
 
 export interface ChallengeExplorerContainerEntities {
-  isLoggedIn: boolean;
+  isAuthenticated: boolean;
   searchTerms: string[];
   myChallenges?: SimpleChallenge[];
   otherChallenges?: SimpleChallenge[];
@@ -67,9 +67,8 @@ export interface ChallengePageContainerProps
 
 export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ searchTerms, children }) => {
   const handleError = useApolloErrorHandler();
-  const { user: userMetadata, loading: loadingUser } = useUserContext();
+  const { user: userMetadata, isAuthenticated, loading: loadingUser } = useUserContext();
   const user = userMetadata?.user;
-  const isLoggedIn = !!user;
 
   // PRIVATE: Challenges if the user is logged in
   const {
@@ -83,7 +82,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
         userID: user?.id || '',
       },
     },
-    skip: !isLoggedIn,
+    skip: !isAuthenticated,
   });
 
   const hubIDs = userChallenges?.rolesUser.hubs.map(hub => hub.id) || [];
@@ -175,7 +174,7 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
   );
 
   const provided = {
-    isLoggedIn,
+    isAuthenticated,
     searchTerms,
     myChallenges,
     otherChallenges,

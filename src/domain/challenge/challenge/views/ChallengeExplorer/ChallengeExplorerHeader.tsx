@@ -6,21 +6,21 @@ import SearchTagsInput from '../../../../shared/components/SearchTagsInput/Searc
 import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 
 export interface ChallengeExplorerHeaderProps {
-  isLoggedIn?: boolean;
+  isAuthenticated?: boolean;
   searchTerms: string[];
   onSearchTermsChange: (searchTerms: string[]) => void;
 }
 
 const ChallengeExplorerHeader: FC<ChallengeExplorerHeaderProps> = ({
   searchTerms,
-  isLoggedIn = false,
+  isAuthenticated = false,
   onSearchTermsChange,
 }) => {
   const { t } = useTranslation();
 
   return (
     <Grid container spacing={2}>
-      {isLoggedIn && (
+      {isAuthenticated && (
         <Grid item xs={12}>
           <Typography variant="h2">{t('pages.challenge-explorer.my-search.title')}</Typography>
           <Typography>{t('pages.challenge-explorer.my-search.subtitle')}</Typography>
@@ -32,7 +32,7 @@ const ChallengeExplorerHeader: FC<ChallengeExplorerHeaderProps> = ({
           />
         </Grid>
       )}
-      {!isLoggedIn && (
+      {!isAuthenticated && (
         <>
           <Grid item xs={12} md={8}>
             <Typography variant="h2">{t('pages.challenge-explorer.search.title')}</Typography>

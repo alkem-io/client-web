@@ -19,7 +19,7 @@ export interface ChallengeExplorerViewProps
 }
 
 export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
-  isLoggedIn,
+  isAuthenticated,
   searchTerms,
   setSearchTerms,
   myChallenges,
@@ -37,7 +37,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
     <Box paddingY={2} marginTop={2}>
       <Grid container rowSpacing={4}>
         {/* PUBLIC: Header if not logged in */}
-        {!isLoggedIn && (
+        {!isAuthenticated && (
           <Grid item xs={12}>
             <ChallengeExplorerHeader searchTerms={searchTerms} onSearchTermsChange={setSearchTerms} />
           </Grid>
@@ -66,9 +66,9 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
           </Grid>
         )}
         {/* PRIVATE: Header for the public hubs if user is logged in */}
-        {isLoggedIn && (
+        {isAuthenticated && (
           <Grid item xs={12}>
-            <ChallengeExplorerHeader searchTerms={searchTerms} onSearchTermsChange={setSearchTerms} isLoggedIn />
+            <ChallengeExplorerHeader searchTerms={searchTerms} onSearchTermsChange={setSearchTerms} isAuthenticated />
           </Grid>
         )}
         {/* PUBLIC: Search challenges in public hubs/hubs that the user has access to: */}
