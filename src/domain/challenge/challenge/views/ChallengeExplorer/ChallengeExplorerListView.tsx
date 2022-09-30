@@ -33,12 +33,14 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
   enableFilterByHub = false,
 }) => {
   const { t } = useTranslation();
-  const { user } = useUserContext();
+  const { isAuthenticated } = useUserContext();
   const getCardLabel = useCallback(
     (roles: string[]) => {
-      return roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member);
+      return isAuthenticated
+      ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
+      : undefined;
     },
-    [user]
+    [isAuthenticated]
   );
 
   return (
@@ -49,6 +51,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
       options={{ overflowVisible: true }}
     >
       <CheckboxesFilter
+        caption={t('pages.challenge-explorer.other.filter-by-hub')}
         enable={enableFilterByHub}
         items={challenges}
         filterableDataGetter={simpleChallengeHubDataGetter}
@@ -59,9 +62,10 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
             data={filteredByHubChallenges}
             valueGetter={simpleChallengeValueGetter}
             tagsValueGetter={simpleChallengeTagsValueGetter}
+            keepOpen={false}
           >
             {filteredChallenges => (
-              <CardsLayoutScroller maxHeight={43} sx={{ marginRight: 0 }}>
+              <CardsLayoutScroller maxHeight={370} sx={{ marginRight: 0 }}>
                 <CardsLayout items={filteredChallenges}>
                   {challenge =>
                     challenge && (

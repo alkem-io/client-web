@@ -11,6 +11,7 @@ export interface CardFilterProps<T extends Identifiable> extends Omit<SearchTags
   tagsValueGetter?: (data: T) => string[];
   valueGetter: (data: T) => ValueType;
   inputFieldEnabled?: boolean;
+  keepOpen?: boolean;
   children: (filteredData: (T & MatchInformation)[]) => React.ReactNode;
 }
 
@@ -19,6 +20,7 @@ const CardFilter = <T extends Identifiable>({
   inputFieldEnabled = true,
   tagsValueGetter,
   valueGetter,
+  keepOpen = true,
   children,
 }: CardFilterProps<T>) => {
   const { t } = useTranslation();
@@ -49,6 +51,7 @@ const CardFilter = <T extends Identifiable>({
         onChange={handleChange}
         label={t('common.filter')}
         placeholder={t('common.filterby')}
+        disableCloseOnSelect={keepOpen}
       />
       {children(filteredData)}
     </>
