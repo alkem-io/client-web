@@ -19,7 +19,7 @@ const SectionHeader: FC<SectionHeaderProps> = ({ text, icon, helpText, counter, 
         <Typography variant="h4" fontWeight={600} marginLeft={theme => (icon ? theme.spacing(1) : 0)}>
           {text}
         </Typography>
-        {counter && (
+        {typeof counter !== 'undefined' && (
           <Box sx={{ marginLeft: theme => theme.spacing(2) }}>
             <ActivityCircleView color="primary">{counter}</ActivityCircleView>
           </Box>

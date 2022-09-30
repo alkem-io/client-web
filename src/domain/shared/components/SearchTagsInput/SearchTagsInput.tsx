@@ -16,9 +16,17 @@ export interface SearchTagsInputProps {
   onChange?: AutocompleteProps<string, true, undefined, true>['onChange'];
   label?: string;
   placeholder?: string;
+  disableCloseOnSelect?: boolean;
 }
 
-const SearchTagsInput = ({ value, availableTags = [], onChange, label, placeholder }: SearchTagsInputProps) => {
+const SearchTagsInput = ({
+  value,
+  availableTags = [],
+  onChange,
+  label,
+  placeholder,
+  disableCloseOnSelect = true,
+}: SearchTagsInputProps) => {
   const options = useMemo(() => uniqSortedByOccurrences(availableTags), [availableTags]);
 
   const handleChange: SearchTagsInputProps['onChange'] = (event, value, reason) => {
@@ -42,7 +50,7 @@ const SearchTagsInput = ({ value, availableTags = [], onChange, label, placehold
         multiple
         fullWidth
         freeSolo
-        disableCloseOnSelect
+        disableCloseOnSelect={disableCloseOnSelect}
         options={options}
         getOptionLabel={option => option}
         value={value}

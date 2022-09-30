@@ -68,7 +68,6 @@ export interface ChallengePageContainerProps
 export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ searchTerms, children }) => {
   const handleError = useApolloErrorHandler();
   const { user: userMetadata, isAuthenticated, loading: loadingUser } = useUserContext();
-  const user = userMetadata?.user;
 
   // PRIVATE: Challenges if the user is logged in
   const {
@@ -79,10 +78,10 @@ export const ChallengeExplorerContainer: FC<ChallengePageContainerProps> = ({ se
     onError: handleError,
     variables: {
       rolesData: {
-        userID: user?.id || '',
+        userID: userMetadata?.user?.id || '',
       },
     },
-    skip: !isAuthenticated,
+    skip: !isAuthenticated || !userMetadata?.user?.id,
   });
 
   const hubIDs = userChallenges?.rolesUser.hubs.map(hub => hub.id) || [];
