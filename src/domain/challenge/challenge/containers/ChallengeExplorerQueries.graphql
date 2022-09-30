@@ -2,12 +2,11 @@ query ChallengeExplorerPage($rolesData: RolesUserInput!) {
   rolesUser(rolesData: $rolesData) {
     hubs {
       id
-      hubID
+      roles
       challenges {
         id
         roles
       }
-      roles
     }
   }
 }

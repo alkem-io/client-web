@@ -7507,12 +7507,11 @@ export const ChallengeExplorerPageDocument = gql`
     rolesUser(rolesData: $rolesData) {
       hubs {
         id
-        hubID
+        roles
         challenges {
           id
           roles
         }
-        roles
       }
     }
   }

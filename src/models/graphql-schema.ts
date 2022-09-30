@@ -7970,7 +7970,6 @@ export type ChallengeExplorerPageQuery = {
     hubs: Array<{
       __typename?: 'RolesResultHub';
       id: string;
-      hubID: string;
       roles: Array<string>;
       challenges: Array<{ __typename?: 'RolesResultCommunity'; id: string; roles: Array<string> }>;
     }>;
