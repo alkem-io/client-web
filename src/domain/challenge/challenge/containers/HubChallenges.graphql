@@ -1,8 +1,0 @@
-query HubChallenges($hubId: UUID_NAMEID!) {
-  hub(ID: $hubId) {
-    id
-    challenges {
-      ...ChallengeCard
-    }
-  }
-}
