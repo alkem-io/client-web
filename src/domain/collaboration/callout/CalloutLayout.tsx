@@ -12,7 +12,7 @@ import {
 } from '../../../models/graphql-schema';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import Heading from '../../shared/components/Heading';
-import { CalloutSummary } from './creation-dialog/steps/CalloutSummaryStep/CalloutSummaryStep';
+import { CalloutSummary } from './CalloutSummary';
 import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
 import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from './edit/CalloutEditType';

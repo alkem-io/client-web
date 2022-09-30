@@ -8807,7 +8807,7 @@ export type UpdateHubMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const AdminHubsListDocument = gql`
   query adminHubsList {
-    hubs {
+    hubs(filter: { visibilities: [ARCHIVED, ACTIVE, DEMO] }) {
       ...AdminHub
       visibility
     }
