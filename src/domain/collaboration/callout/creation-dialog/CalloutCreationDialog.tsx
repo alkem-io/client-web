@@ -2,14 +2,14 @@ import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
 import { CalloutType } from '../../../../models/graphql-schema';
-import Steps from '../../../shared/components/Steps/Steps';
-import Step from '../../../shared/components/Steps/step/Step';
-import { StepLayoutHolder } from './step-layout/StepLayout';
-import CalloutInfoStep from './steps/CalloutInfoStep/CalloutInfoStep';
-// import CalloutTemplateStep from './steps/CalloutTemplateStep/CalloutTemplateStep';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
+import { Box, Button } from '@mui/material';
+import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
+import { LoadingButton } from '@mui/lab';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import CalloutForm from '../CalloutForm';
 
-export type CalloutDialogCreationType = {
+export type Callout = {
   description?: string;
   displayName?: string;
   templateId?: string;
@@ -26,17 +26,16 @@ export interface CalloutCreationDialogProps {
 const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, onSaveAsDraft, isCreating }) => {
   const { t } = useTranslation();
 
-  const [callout, setCallout] = useState<CalloutDialogCreationType>({});
-  const [isInfoStepValid, setIsInfoStepValid] = useState(false);
-  // const [isTemplateStepValid, setIsTemplateStepValid] = useState(false);
+  const [callout, setCallout] = useState<Callout>({});
+  const [isValid, setIsValid] = useState(false);
 
-  const handleInfoStepValueChange = useCallback(
-    infoStepCallout => {
-      setCallout({ ...callout, ...infoStepCallout });
+  const handleValueChange = useCallback(
+    calloutValues => {
+      setCallout({ ...callout, ...calloutValues });
     },
     [callout]
   );
-  const handleInfoStepStatusChange = useCallback((isValid: boolean) => setIsInfoStepValid(isValid), []);
+  const handleStatusChange = useCallback((isValid: boolean) => setIsValid(isValid), []);
 
   const handleSaveAsDraft = useCallback(async () => {
     const newCallout = {
@@ -52,6 +51,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
 
     return result;
   }, [callout, onSaveAsDraft]);
+
   const handleClose = useCallback(() => {
     onClose?.();
     setCallout({});
@@ -59,21 +59,36 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
-      <StepLayoutHolder>
-        <Steps>
-          <Step
-            component={CalloutInfoStep}
-            title={t('components.callout-creation.info-step.title')}
-            callout={callout}
-            onClose={handleClose}
-            isValid={isInfoStepValid}
-            onChange={handleInfoStepValueChange}
-            onStatusChanged={handleInfoStepStatusChange}
-            onSaveAsDraft={handleSaveAsDraft}
-            isCreating={isCreating}
-          />
-        </Steps>
-      </StepLayoutHolder>
+      <Box>
+        <DialogTitle id="callout-creation-title" onClose={handleClose}>
+          <Box display="flex">
+            <CampaignOutlinedIcon sx={{ marginRight: 1 }} />
+            {t('components.callout-creation.title')}
+          </Box>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box paddingY={theme => theme.spacing(2)}>
+            <CalloutForm callout={callout} onChange={handleValueChange} onStatusChanged={handleStatusChange} />
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'end' }}>
+          {onClose && (
+            <Button onClick={onClose} variant="outlined">
+              {t('buttons.cancel')}
+            </Button>
+          )}
+
+          <LoadingButton
+            loading={isCreating}
+            loadingIndicator={`${t('buttons.save-draft')}...`}
+            onClick={handleSaveAsDraft}
+            variant="contained"
+            disabled={!isValid}
+          >
+            {t('buttons.save-draft')}
+          </LoadingButton>
+        </DialogActions>
+      </Box>
     </Dialog>
   );
 };
