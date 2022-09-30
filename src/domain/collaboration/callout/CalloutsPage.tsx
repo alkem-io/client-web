@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Button } from '@mui/material';
 import usePageLayoutByEntity from '../../shared/utils/usePageLayoutByEntity';
@@ -14,6 +14,7 @@ import AspectCallout from './aspect/AspectCallout';
 import CanvasCallout from './canvas/CanvasCallout';
 import CommentsCallout from './comments/CommentsCallout';
 import useCallouts from './useCallouts';
+import { useState } from 'react';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -48,12 +49,21 @@ const CalloutsPage = ({ entityTypeName, rootUrl, scrollToCallout = false }: Call
 
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
+  // Scroll to Callout handle:
   const calloutsRefs = useRef({});
+  const [alreadyScrolled, setAlreadyScrolled] = useState(false);
 
-  if (scrollToCallout && calloutNameId) {
-    const calloutElement = calloutsRefs.current[calloutNameId];
-    calloutElement && calloutElement.scrollIntoView && calloutElement.scrollIntoView({ behavior: 'smooth' });
-  }
+  useEffect(() => {
+    if (scrollToCallout && calloutNameId) {
+      const calloutElement = calloutsRefs.current[calloutNameId];
+      if (calloutElement && calloutElement.offsetTop) {
+        if (!alreadyScrolled) {
+          window.scrollTo({ top: calloutElement.offsetTop, behavior: 'smooth' });
+          setAlreadyScrolled(true);
+        }
+      }
+    }
+  }, [scrollToCallout, calloutNameId, callouts, JSON.stringify(Object.keys(calloutsRefs.current))]);
 
   return (
     <>
@@ -66,10 +76,9 @@ const CalloutsPage = ({ entityTypeName, rootUrl, scrollToCallout = false }: Call
           )}
           {callouts?.map(callout => {
             return (
-              <>
+              <React.Fragment key={callout.nameID}>
                 <div
                   id={`callout-${callout.nameID}`}
-                  key={callout.nameID}
                   ref={element => (calloutsRefs.current[callout.nameID] = element)}
                 />
                 {(callout => {
@@ -124,7 +133,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl, scrollToCallout = false }: Call
                       throw new Error('Unexpected Callout type');
                   }
                 })(callout)}
-              </>
+              </React.Fragment>
             );
           })}
         </Box>
