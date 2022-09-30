@@ -9,9 +9,9 @@ import AspectTemplatePreview from '../../../aspect/AspectTemplatePreview/AspectT
 import { TemplateListWithPreview } from './TemplateListWithPreview';
 import { CalloutTemplateProps } from './CalloutTemplateProps';
 
-export interface CalloutAspectTemplateStepProps extends CalloutTemplateProps {}
+export interface CalloutAspectTemplateProps extends CalloutTemplateProps {}
 
-const CalloutAspectTemplate: FC<CalloutAspectTemplateStepProps> = ({ callout, onChange }) => {
+const CalloutAspectTemplate: FC<CalloutAspectTemplateProps> = ({ callout, onChange }) => {
   const { hubId } = useHub();
 
   const { data: hubAspectTemplates, loading: aspectTemplatesLoading } = useAspectTemplatesOnCalloutCreationQuery({

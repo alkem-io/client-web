@@ -9,9 +9,9 @@ import CanvasPreview from '../../../canvas/CanvasPreview/CanvasPreview';
 import { CalloutTemplateProps } from './CalloutTemplateProps';
 import { TemplateListWithPreview } from './TemplateListWithPreview';
 
-export interface CalloutCanvasTemplateStepProps extends CalloutTemplateProps {}
+export interface CalloutCanvasTemplateProps extends CalloutTemplateProps {}
 
-const CalloutCanvasTemplate: FC<CalloutCanvasTemplateStepProps> = ({ callout, onChange }) => {
+const CalloutCanvasTemplate: FC<CalloutCanvasTemplateProps> = ({ callout, onChange }) => {
   const { hubId } = useHub();
 
   const { data: hubCanvasTemplates, loading: canvasTemplatesLoading } = useCanvasTemplatesOnCalloutCreationQuery({
