@@ -1,0 +1,3 @@
+files:
+  - source: /src/core/i18n/en
+    translation: /src/core/i18n/%two_letters_code%
