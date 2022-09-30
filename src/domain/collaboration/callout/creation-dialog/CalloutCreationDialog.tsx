@@ -7,7 +7,6 @@ import Step from '../../../shared/components/Steps/step/Step';
 import { StepLayoutHolder } from './step-layout/StepLayout';
 import CalloutInfoStep from './steps/CalloutInfoStep/CalloutInfoStep';
 // import CalloutTemplateStep from './steps/CalloutTemplateStep/CalloutTemplateStep';
-import CalloutSummaryStep from './steps/CalloutSummaryStep/CalloutSummaryStep';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 
 export type CalloutDialogCreationType = {
@@ -38,15 +37,8 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
     [callout]
   );
   const handleInfoStepStatusChange = useCallback((isValid: boolean) => setIsInfoStepValid(isValid), []);
-  /* use when template usage is defined
-  const handleTemplateStepValueChange = useCallback(
-    (templateId: string) => {
-      setCallout({ ...callout, templateId });
-      setIsTemplateStepValid(true);
-    },
-    [callout]
-  );*/
-  const handleSummarySaveAsDraft = useCallback(async () => {
+
+  const handleSaveAsDraft = useCallback(async () => {
     const newCallout = {
       displayName: callout.displayName!,
       description: callout.description!,
@@ -77,25 +69,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
             isValid={isInfoStepValid}
             onChange={handleInfoStepValueChange}
             onStatusChanged={handleInfoStepStatusChange}
-            onSaveAsDraft={handleSummarySaveAsDraft}
-            isCreating={isCreating}
-          />
-          {/*
-          this needs to be added after templates are introduced to the callouts on the server
-          <Step
-            component={CalloutTemplateStep}
-            title={t('components.callout-creation.template-step.title')}
-            callout={callout}
-            onClose={handleClose}
-            isValid={isTemplateStepValid}
-            onChange={handleTemplateStepValueChange}
-          />*/}
-          <Step
-            component={CalloutSummaryStep}
-            title={t('components.callout-creation.create-step.title')}
-            callout={callout}
-            onClose={handleClose}
-            onSaveAsDraft={handleSummarySaveAsDraft}
+            onSaveAsDraft={handleSaveAsDraft}
             isCreating={isCreating}
           />
         </Steps>
