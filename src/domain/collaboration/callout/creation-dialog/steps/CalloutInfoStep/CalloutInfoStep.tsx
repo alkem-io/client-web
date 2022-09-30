@@ -23,6 +23,18 @@ const CalloutInfoStep: FC<StepComponentProps & CalloutInfoStepProps> = ({
   isCreating,
 }) => {
   const { t } = useTranslation();
+
+  // TO BE used once we add the option to select template when creating Callouts
+  // const TemplateStepComponent = useMemo<ComponentType<CalloutTemplateStepProps> | null>(() => {
+  //   if (callout?.type === CalloutType.Card) {
+  //     return CalloutAspectTemplateStep;
+  //   } else if (callout?.type === CalloutType.Canvas) {
+  //     return CalloutCanvasTemplateStep;
+  //   } else {
+  //     return null;
+  //   }
+  // }, [callout]);
+
   return (
     <OneStepCreationLayout
       dialogTitle={t('components.callout-creation.title')}
