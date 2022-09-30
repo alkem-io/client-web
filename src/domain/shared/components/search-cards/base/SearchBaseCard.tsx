@@ -113,7 +113,7 @@ const SearchBaseCard: FC<SearchBaseCardProps> = ({
           </ClampedTypography>
         </NameBox>
         <CardContents>{children}</CardContents>
-        {matchedTerms && matchedTerms.length > 0 && (
+        {matchedTerms.length > 0 && (
           <MatchTermsBox>
             <Typography sx={{ fontWeight: 'bold' }}>{t('components.search-cards.matched-terms')}</Typography>
             <TagsComponent tags={matchedTerms} count={3} />
