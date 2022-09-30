@@ -5,6 +5,7 @@ import { DialogActions, DialogContent, DialogTitle } from '../../../../../common
 import createLayoutHolder from '../../../../shared/layout/LayoutHolder';
 import { StepDefinition } from '../../../../shared/components/Steps/step/Step';
 import { LoadingButton } from '@mui/lab';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 
 interface StepLayoutProps {
   dialogTitle: string;
@@ -110,7 +111,57 @@ export const StepSummaryLayoutImpl: FC<StepSummaryLayoutProps> = ({
   );
 };
 
+interface OneStepCreationLayoutProps {
+  dialogTitle: string;
+  isValid?: boolean;
+  onClose?: () => void;
+  isCreating: boolean;
+  onSaveAsDraft?: () => Promise<void>;
+}
+
+const OneStepCreationLayoutImpl: FC<OneStepCreationLayoutProps> = ({
+  children,
+  dialogTitle,
+  onClose,
+  isValid = true,
+  onSaveAsDraft,
+  isCreating,
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Box>
+      <DialogTitle id="callout-creation-title" onClose={onClose}>
+        <Box display="flex">
+          <CampaignOutlinedIcon />
+          {dialogTitle}
+        </Box>
+      </DialogTitle>
+      <DialogContent dividers>{children}</DialogContent>
+      <DialogActions sx={{ justifyContent: 'end' }}>
+        {onClose && (
+          <Button onClick={onClose} variant="outlined">
+            {t('buttons.cancel')}
+          </Button>
+        )}
+        {onSaveAsDraft && (
+          <LoadingButton
+            loading={isCreating}
+            loadingIndicator={`${t('buttons.save-draft')}...`}
+            onClick={onSaveAsDraft}
+            variant="contained"
+            disabled={!isValid}
+          >
+            {t('buttons.save-draft')}
+          </LoadingButton>
+        )}
+      </DialogActions>
+    </Box>
+  );
+};
+
 export const { LayoutHolder: StepLayoutHolder, createLayout } = createLayoutHolder();
 
 export const StepLayout = createLayout(StepLayoutImpl);
 export const StepSummaryLayout = createLayout(StepSummaryLayoutImpl);
+export const OneStepCreationLayout = createLayout(OneStepCreationLayoutImpl);
