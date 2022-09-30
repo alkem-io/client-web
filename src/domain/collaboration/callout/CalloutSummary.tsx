@@ -1,13 +1,16 @@
 import React, { ComponentType, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled, Typography, Box } from '@mui/material';
-import { CalloutDialogCreationType } from './creation-dialog/CalloutCreationDialog';
-import { CalloutStepProps } from './creation-dialog/steps/CalloutStepProps';
+import { Callout } from './creation-dialog/CalloutCreationDialog';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 
+export interface CalloutSumaryProps {
+  callout: Callout;
+}
+
 export const CalloutSummary: FC<{
-  callout: CalloutDialogCreationType;
-  templatePreviewComponent?: ComponentType<CalloutStepProps> | null;
+  callout: Callout;
+  templatePreviewComponent?: ComponentType<CalloutSumaryProps> | null;
 }> = ({ callout, templatePreviewComponent: TemplatePreview }) => {
   const { t } = useTranslation();
 
