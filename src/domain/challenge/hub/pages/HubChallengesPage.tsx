@@ -23,7 +23,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Challenges}>
-      {permissions.canCreate && (
+      {permissions.canCreateChallenges && (
         <Box sx={{ display: 'flex', justifyContent: 'end', marginBottom: theme => theme.spacing(1) }}>
           <Button startIcon={<AddOutlinedIcon />} variant="contained" component={RouterLink} to={newChallengeUrl}>
             {t('buttons.create')}

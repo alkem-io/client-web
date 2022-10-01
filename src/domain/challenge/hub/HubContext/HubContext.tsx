@@ -14,6 +14,7 @@ export interface HubPermissions {
   viewerCanUpdate: boolean;
   canReadAspects: boolean;
   canReadChallenges: boolean;
+  canCreateChallenges: boolean;
   canCreate: boolean;
   communityReadAccess: boolean;
   contextPrivileges: AuthorizationPrivilege[];
@@ -56,6 +57,7 @@ const HubContext = React.createContext<HubContextProps>({
   permissions: {
     viewerCanUpdate: false,
     canCreate: false,
+    canCreateChallenges: false,
     canReadAspects: false,
     canReadChallenges: false,
     communityReadAccess: false,
@@ -104,6 +106,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
   const hubPrivileges = hub?.authorization?.myPrivileges ?? NO_PRIVILEGES;
 
   const canReadChallenges = hubPrivileges.includes(AuthorizationPrivilege.Read);
+  const canCreateChallenges = hubPrivileges.includes(AuthorizationPrivilege.CreateChallenge);
   const canCreate = hubPrivileges.includes(AuthorizationPrivilege.Create);
 
   const communityPrivileges = hub?.community?.authorization?.myPrivileges ?? NO_PRIVILEGES;
@@ -112,6 +115,7 @@ const HubContextProvider: FC<HubProviderProps> = ({ children }) => {
     return {
       viewerCanUpdate: hubPrivileges.includes(AuthorizationPrivilege.Update),
       canReadChallenges,
+      canCreateChallenges,
       canCreate,
       communityReadAccess: communityPrivileges.includes(AuthorizationPrivilege.Read),
       canReadAspects: contextPrivileges.includes(AuthorizationPrivilege.Read),
