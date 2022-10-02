@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
-import { ActivityType } from '../../../platform/activity/ActivityType';
+import { MetricType } from '../../../platform/metrics/MetricType';
 import { Nvp } from '../../../../models/graphql-schema';
 
 const getCanvasesCount = (activity: Nvp[] | undefined) => {
-  const value = activity?.find(activity => activity.name === ActivityType.Canvas)?.value;
+  const value = activity?.find(activity => activity.name === MetricType.Canvas)?.value;
   return typeof value === 'undefined' ? value : Number(value);
 };
 

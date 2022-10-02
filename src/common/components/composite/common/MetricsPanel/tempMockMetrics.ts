@@ -1,4 +1,4 @@
-const activitiesMock: Array<{
+const metricsMock: Array<{
   name: string;
   count: number;
   color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
@@ -25,4 +25,4 @@ const activitiesMock: Array<{
   },
 ];
 
-export default activitiesMock;
+export default metricsMock;

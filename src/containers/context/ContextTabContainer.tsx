@@ -25,7 +25,7 @@ export interface ContextTabContainerEntities {
   tagset?: Tagset;
   lifecycle?: LifecycleContextTabFragment;
   permissions: ContextTabPermissions;
-  activity: ActivityItemFragment[] | undefined;
+  metrics: ActivityItemFragment[] | undefined;
 }
 
 export interface ContextTabContainerActions {}
@@ -96,12 +96,12 @@ const ContextTabContainer: FC<ContextTabContainerProps> = ({
   const loading = hubLoading || challengeLoading || opportunityLoading;
   const error = hubError ?? challengeError ?? opportunityError;
 
-  const { activity } = hubData?.hub ?? challengeData?.hub.challenge ?? opportunityData?.hub.opportunity ?? {};
+  const { metrics } = hubData?.hub ?? challengeData?.hub.challenge ?? opportunityData?.hub.opportunity ?? {};
 
   const permissions: ContextTabPermissions = {
     canCreateCommunityContextReview,
   };
 
-  return <>{children({ context, tagset, lifecycle, permissions, activity }, { loading, error }, {})}</>;
+  return <>{children({ context, tagset, lifecycle, permissions, metrics }, { loading, error }, {})}</>;
 };
 export default ContextTabContainer;

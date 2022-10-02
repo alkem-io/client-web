@@ -1,12 +1,12 @@
 import { alpha, Paper, Tooltip } from '@mui/material';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import React, { forwardRef } from 'react';
-import { Activities, ActivityItem } from '../../../common/components/composite/common/ActivityPanel/Activities';
+import { Metrics, MetricItem } from '../../../common/components/composite/common/MetricsPanel/Metrics';
 import { useTranslation } from 'react-i18next';
 import Typography from '@mui/material/Typography';
 import SectionSpacer from '../../shared/components/Section/SectionSpacer';
 
-const ActivityTooltipContent = forwardRef<HTMLDivElement, {}>(({ children }, ref) => {
+const MetricTooltipContent = forwardRef<HTMLDivElement, {}>(({ children }, ref) => {
   const { t } = useTranslation();
 
   return (
@@ -18,20 +18,20 @@ const ActivityTooltipContent = forwardRef<HTMLDivElement, {}>(({ children }, ref
   );
 });
 
-interface ActivityTooltipProps {
-  activityItems: ActivityItem[] | undefined;
+interface MetricTooltipProps {
+  activityItems: MetricItem[] | undefined;
 }
 
-const ActivityTooltip = ({ activityItems }: ActivityTooltipProps) => {
+const MetricTooltip = ({ activityItems }: MetricTooltipProps) => {
   if (!activityItems) {
     return <AutoGraphIcon />;
   }
 
   return (
-    <Tooltip title={<Activities items={activityItems} />} components={{ Tooltip: ActivityTooltipContent }}>
+    <Tooltip title={<Metrics items={activityItems} />} components={{ Tooltip: MetricTooltipContent }}>
       <AutoGraphIcon />
     </Tooltip>
   );
 };
 
-export default ActivityTooltip;
+export default MetricTooltip;

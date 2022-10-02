@@ -19,7 +19,7 @@ fragment AssociatedOrganizationDetails on Organization {
     id
     status
   }
-  activity {
+  metrics {
     id
     name
     value

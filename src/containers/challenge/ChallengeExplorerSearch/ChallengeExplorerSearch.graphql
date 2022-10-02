@@ -11,7 +11,7 @@ fragment ChallengeExplorerSearchResult on Challenge {
   displayName
   nameID
   hubID
-  activity {
+  metrics {
     id
     name
     value

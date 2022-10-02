@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
 import { Box } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { ActivityItem } from '../ActivityPanel/Activities';
+import { MetricItem } from '../MetricsPanel/Metrics';
 
-export interface ActivitiesV2Props {
-  activity: ActivityItem[];
+export interface MetricsV2Props {
+  metrics: MetricItem[];
 }
 
-const ActivitiesV2: FC<ActivitiesV2Props> = ({ activity }) => {
+const MetricsV2: FC<MetricsV2Props> = ({ metrics }) => {
   return (
     <Grid container spacing={1} direction="column">
-      {activity.map(({ count, name }, i) => (
+      {metrics.map(({ count, name }, i) => (
         <Grid key={i} item>
           <Box component="span" paddingRight={0.5} fontWeight="bold">
             {count}
@@ -21,4 +21,4 @@ const ActivitiesV2: FC<ActivitiesV2Props> = ({ activity }) => {
     </Grid>
   );
 };
-export default ActivitiesV2;
+export default MetricsV2;

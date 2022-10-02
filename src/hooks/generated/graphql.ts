@@ -263,7 +263,7 @@ export const ChallengeExplorerSearchResultFragmentDoc = gql`
     displayName
     nameID
     hubID
-    activity {
+    metrics {
       id
       name
       value
@@ -371,7 +371,7 @@ export const AssociatedOrganizationDetailsFragmentDoc = gql`
       id
       status
     }
-    activity {
+    metrics {
       id
       name
       value
@@ -454,7 +454,7 @@ export const ChallengeProfileFragmentDoc = gql`
     id
     nameID
     displayName
-    activity {
+    metrics {
       id
       name
       value
@@ -506,7 +506,7 @@ export const ChallengeProfileFragmentDoc = gql`
       id
       nameID
       displayName
-      activity {
+      metrics {
         id
         name
         value
@@ -611,7 +611,7 @@ export const ChallengeCardFragmentDoc = gql`
     id
     displayName
     nameID
-    activity {
+    metrics {
       id
       name
       value
@@ -636,7 +636,7 @@ export const HubPageFragmentDoc = gql`
     id
     nameID
     displayName
-    activity {
+    metrics {
       id
       name
       value
@@ -706,7 +706,7 @@ export const OpportunityPageFragmentDoc = gql`
       name
       tags
     }
-    activity {
+    metrics {
       id
       name
       value
@@ -969,7 +969,7 @@ export const HubDetailsProviderFragmentDoc = gql`
       id
       anonymousReadAccess
     }
-    activity {
+    metrics {
       name
       value
     }
@@ -1237,7 +1237,7 @@ export const OrganizationCardFragmentDoc = gql`
     id
     nameID
     displayName
-    activity {
+    metrics {
       id
       name
       value
@@ -1355,7 +1355,7 @@ export const OrganizationContributorFragmentDoc = gql`
     id
     displayName
     nameID
-    activity {
+    metrics {
       id
       name
       value
@@ -2515,7 +2515,7 @@ export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
 export const GlobalActivityDocument = gql`
   query globalActivity {
     metadata {
-      activity {
+      metrics {
         name
         value
       }
@@ -2951,7 +2951,7 @@ export function refetchRelationsQuery(variables: SchemaTypes.RelationsQueryVaria
 export const ServerMetadataDocument = gql`
   query serverMetadata {
     metadata {
-      activity {
+      metrics {
         id
         name
         value
@@ -5350,7 +5350,7 @@ export const HubContextDocument = gql`
       context {
         ...ContextTab
       }
-      activity {
+      metrics {
         ...ActivityItem
       }
     }
@@ -5426,7 +5426,7 @@ export const ChallengeContextDocument = gql`
         context {
           ...ContextTab
         }
-        activity {
+        metrics {
           ...ActivityItem
         }
       }
@@ -5504,7 +5504,7 @@ export const OpportunityContextDocument = gql`
         context {
           ...ContextTab
         }
-        activity {
+        metrics {
           ...ActivityItem
         }
       }
@@ -7921,7 +7921,7 @@ export const ChallengeActivityDocument = gql`
       id
       challenge(ID: $challengeId) {
         id
-        activity {
+        metrics {
           name
           value
         }
@@ -8923,7 +8923,7 @@ export const HubActivityDocument = gql`
   query hubActivity($hubId: UUID_NAMEID!) {
     hub(ID: $hubId) {
       id
-      activity {
+      metrics {
         name
         value
       }
@@ -9904,7 +9904,7 @@ export const OpportunityActivityDocument = gql`
       id
       opportunity(ID: $opportunityId) {
         id
-        activity {
+        metrics {
           name
           value
         }
@@ -10595,7 +10595,7 @@ export const OpportunityWithActivityDocument = gql`
         id
         displayName
         nameID
-        activity {
+        metrics {
           name
           value
         }

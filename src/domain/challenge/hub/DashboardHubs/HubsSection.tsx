@@ -7,10 +7,10 @@ import DashboardHubsSection, {
 import { SectionSpacer } from '../../../shared/components/Section/Section';
 import { useUserContext } from '../../../../hooks';
 import { useHubsQuery } from '../../../../hooks/generated/graphql';
-import ActivityTooltip from '../../../platform/activity/ActivityTooltip';
+import MetricTooltip from '../../../platform/metrics/MetricTooltip';
 import useServerMetadata from '../../../../hooks/useServerMetadata';
-import getActivityCount from '../../../platform/activity/utils/getActivityCount';
-import { ActivityItem } from '../../../../common/components/composite/common/ActivityPanel/Activities';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
+import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import { EntityContributionCardLabel } from '../../../../common/components/composite/common/cards/ContributionCard/EntityContributionCard';
 import { keyBy } from 'lodash';
 import { UserRolesInEntity } from '../../../community/contributor/user/providers/UserProvider/UserRolesInEntity';
@@ -32,12 +32,12 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
     [hubsData, hubRolesByHubId]
   );
 
-  const { activity, loading: isLoadingActivities } = useServerMetadata();
+  const { metrics, loading: isLoadingActivities } = useServerMetadata();
 
   const [hubCount, challengeCount, opportunityCount] = [
-    getActivityCount(activity, 'hubs'),
-    getActivityCount(activity, 'challenges'),
-    getActivityCount(activity, 'opportunities'),
+    getMetricCount(metrics, 'hubs'),
+    getMetricCount(metrics, 'challenges'),
+    getMetricCount(metrics, 'opportunities'),
   ];
 
   const isMember = (hubId: string) => user?.ofHub(hubId) ?? false;
@@ -51,7 +51,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
     }
   };
 
-  const activityItems: ActivityItem[] = useMemo(
+  const metricItems: MetricItem[] = useMemo(
     () => [
       { name: t('pages.activity.hubs'), isLoading: isLoadingActivities, count: hubCount, color: 'primary' },
       {
@@ -67,7 +67,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
         color: 'primary',
       },
     ],
-    [activity, loading]
+    [metrics, loading]
   );
 
   const isLoading = loading || areHubsLoading;
@@ -76,7 +76,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
     <DashboardHubsSection
       headerText={t('pages.home.sections.hub.header')}
       subHeaderText={t('pages.home.sections.hub.subheader')}
-      primaryAction={<ActivityTooltip activityItems={activityItems} />}
+      primaryAction={<MetricTooltip activityItems={metricItems} />}
       hubs={hubs}
       getHubCardLabel={getHubCardLabel}
     >

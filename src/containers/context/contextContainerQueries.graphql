@@ -13,7 +13,7 @@ query HubContext($hubNameId: UUID_NAMEID!) {
     context {
       ...ContextTab
     }
-    activity {
+    metrics {
       ...ActivityItem
     }
   }
@@ -42,7 +42,7 @@ query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
       context {
         ...ContextTab
       }
-      activity {
+      metrics {
         ...ActivityItem
       }
     }
@@ -68,7 +68,7 @@ query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
       context {
         ...ContextTab
       }
-      activity {
+      metrics {
         ...ActivityItem
       }
     }

@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material';
 import { SectionSpacer } from '../../../../../../domain/shared/components/Section/Section';
-import ActivitiesV2 from '../../Activities/ActivitiesV2';
-import { ActivityItem } from '../../ActivityPanel/Activities';
+import MetricsV2 from '../../Metrics/MetricsV2';
+import { MetricItem } from '../../MetricsPanel/Metrics';
 import ContributionCardV2, {
   ContributionCardV2Props,
 } from '../../../../../../domain/shared/components/ContributionCard/ContributionCardV2';
@@ -19,7 +19,7 @@ const Card = styled(ContributionCardV2)(({ theme }) => ({
 }));
 
 export interface EntityContributionCardProps extends ContributionCardV2Props {
-  activities?: ActivityItem[];
+  metrics?: MetricItem[];
   label?: EntityContributionCardLabel;
 }
 
@@ -33,7 +33,7 @@ const EntityContributionCard: FC<EntityContributionCardProps> = ({
   details,
   classes,
   loading,
-  activities,
+  metrics,
   label,
   children,
 }) => {
@@ -52,9 +52,9 @@ const EntityContributionCard: FC<EntityContributionCardProps> = ({
   return (
     <Card details={details} classes={classes} loading={loading}>
       <SectionSpacer double />
-      {activities && (
+      {metrics && (
         <>
-          <ActivitiesV2 activity={activities} />
+          <MetricsV2 metrics={metrics} />
           <SectionSpacer />
         </>
       )}

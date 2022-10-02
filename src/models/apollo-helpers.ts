@@ -352,7 +352,6 @@ export type CanvasTemplateFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ChallengeKeySpecifier = (
-  | 'activity'
   | 'agent'
   | 'authorization'
   | 'challenges'
@@ -363,6 +362,7 @@ export type ChallengeKeySpecifier = (
   | 'hubID'
   | 'id'
   | 'lifecycle'
+  | 'metrics'
   | 'nameID'
   | 'opportunities'
   | 'preferences'
@@ -370,7 +370,6 @@ export type ChallengeKeySpecifier = (
   | ChallengeKeySpecifier
 )[];
 export type ChallengeFieldPolicy = {
-  activity?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   challenges?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -381,6 +380,7 @@ export type ChallengeFieldPolicy = {
   hubID?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -682,7 +682,6 @@ export type GroupableFieldPolicy = {
   groups?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type HubKeySpecifier = (
-  | 'activity'
   | 'agent'
   | 'application'
   | 'authorization'
@@ -697,6 +696,7 @@ export type HubKeySpecifier = (
   | 'groupsWithTag'
   | 'host'
   | 'id'
+  | 'metrics'
   | 'nameID'
   | 'opportunities'
   | 'opportunity'
@@ -709,7 +709,6 @@ export type HubKeySpecifier = (
   | HubKeySpecifier
 )[];
 export type HubFieldPolicy = {
-  activity?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   application?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -724,6 +723,7 @@ export type HubFieldPolicy = {
   groupsWithTag?: FieldPolicy<any> | FieldReadFunction<any>;
   host?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunities?: FieldPolicy<any> | FieldReadFunction<any>;
   opportunity?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -790,9 +790,9 @@ export type MessageFieldPolicy = {
   sender?: FieldPolicy<any> | FieldReadFunction<any>;
   timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type MetadataKeySpecifier = ('activity' | 'services' | MetadataKeySpecifier)[];
+export type MetadataKeySpecifier = ('metrics' | 'services' | MetadataKeySpecifier)[];
 export type MetadataFieldPolicy = {
-  activity?: FieldPolicy<any> | FieldReadFunction<any>;
+  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   services?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
@@ -1065,7 +1065,6 @@ export type NVPFieldPolicy = {
   value?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OpportunityKeySpecifier = (
-  | 'activity'
   | 'authorization'
   | 'challenge'
   | 'collaboration'
@@ -1074,6 +1073,7 @@ export type OpportunityKeySpecifier = (
   | 'displayName'
   | 'id'
   | 'lifecycle'
+  | 'metrics'
   | 'nameID'
   | 'parentId'
   | 'parentNameID'
@@ -1082,7 +1082,6 @@ export type OpportunityKeySpecifier = (
   | OpportunityKeySpecifier
 )[];
 export type OpportunityFieldPolicy = {
-  activity?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   challenge?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1091,6 +1090,7 @@ export type OpportunityFieldPolicy = {
   displayName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
+  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   parentId?: FieldPolicy<any> | FieldReadFunction<any>;
   parentNameID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1111,7 +1111,6 @@ export type OpportunityTemplateFieldPolicy = {
   relations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type OrganizationKeySpecifier = (
-  | 'activity'
   | 'agent'
   | 'authorization'
   | 'contactEmail'
@@ -1122,6 +1121,7 @@ export type OrganizationKeySpecifier = (
   | 'id'
   | 'legalEntityName'
   | 'members'
+  | 'metrics'
   | 'nameID'
   | 'preferences'
   | 'profile'
@@ -1130,7 +1130,6 @@ export type OrganizationKeySpecifier = (
   | OrganizationKeySpecifier
 )[];
 export type OrganizationFieldPolicy = {
-  activity?: FieldPolicy<any> | FieldReadFunction<any>;
   agent?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   contactEmail?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1141,6 +1140,7 @@ export type OrganizationFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   legalEntityName?: FieldPolicy<any> | FieldReadFunction<any>;
   members?: FieldPolicy<any> | FieldReadFunction<any>;
+  metrics?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   preferences?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;

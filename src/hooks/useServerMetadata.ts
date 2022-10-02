@@ -5,7 +5,7 @@ const useServerMetadata = () => {
   const ctx = useContext(ServerMetadataContext);
   return useMemo(
     () => ({
-      activity: ctx?.metadata?.activity ?? [],
+      metrics: ctx?.metadata?.metrics ?? [],
       services: ctx?.metadata?.services ?? [],
       loading: ctx.loading,
       error: ctx.error,

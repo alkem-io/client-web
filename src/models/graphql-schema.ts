@@ -528,8 +528,6 @@ export type CanvasTemplate = {
 
 export type Challenge = Searchable & {
   __typename?: 'Challenge';
-  /** The activity within this Challenge. */
-  activity?: Maybe<Array<Nvp>>;
   /** The Agent representing this Challenge. */
   agent?: Maybe<Agent>;
   /** The authorization rules for the entity */
@@ -549,6 +547,8 @@ export type Challenge = Searchable & {
   id: Scalars['UUID'];
   /** The lifeycle for the Challenge. */
   lifecycle?: Maybe<Lifecycle>;
+  /** Metrics about activity within this Challenge. */
+  metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The Opportunities for the challenge. */
@@ -1350,8 +1350,6 @@ export type Groupable = {
 
 export type Hub = Searchable & {
   __typename?: 'Hub';
-  /** The activity within this Hub. */
-  activity?: Maybe<Array<Nvp>>;
   /** The Agent representing this Hub. */
   agent?: Maybe<Agent>;
   /** A particular User Application within this Hub. */
@@ -1379,6 +1377,8 @@ export type Hub = Searchable & {
   /** The Hub host. */
   host?: Maybe<Organization>;
   id: Scalars['UUID'];
+  /** Metrics about activity within this Hub. */
+  metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** All opportunities within the hub */
@@ -1524,7 +1524,7 @@ export type Message = {
 export type Metadata = {
   __typename?: 'Metadata';
   /** Metrics about the activity on the platform */
-  activity: Array<Nvp>;
+  metrics: Array<Nvp>;
   /** Collection of metadata about Alkemio services. */
   services: Array<ServiceMetadata>;
 };
@@ -2310,8 +2310,6 @@ export type Nvp = {
 
 export type Opportunity = Searchable & {
   __typename?: 'Opportunity';
-  /** The activity within this Opportunity. */
-  activity?: Maybe<Array<Nvp>>;
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
   /** The parent Challenge of the Opportunity */
@@ -2327,6 +2325,8 @@ export type Opportunity = Searchable & {
   id: Scalars['UUID'];
   /** The lifeycle for the Opportunity. */
   lifecycle?: Maybe<Lifecycle>;
+  /** Metrics about the activity within this Opportunity. */
+  metrics?: Maybe<Array<Nvp>>;
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID'];
   /** The parent entity (challenge) ID. */
@@ -2359,8 +2359,6 @@ export type OpportunityTemplate = {
 export type Organization = Groupable &
   Searchable & {
     __typename?: 'Organization';
-    /** The activity within this Organization. */
-    activity?: Maybe<Array<Nvp>>;
     /** The Agent representing this User. */
     agent?: Maybe<Agent>;
     /** The Authorization for this Organization. */
@@ -2380,6 +2378,8 @@ export type Organization = Groupable &
     legalEntityName?: Maybe<Scalars['String']>;
     /** All users that are members of this Organization. */
     members?: Maybe<Array<User>>;
+    /** Metrics about the activity within this Organization. */
+    metrics?: Maybe<Array<Nvp>>;
     /** A name identifier of the entity, unique within a given scope. */
     nameID: Scalars['NameID'];
     /** The preferences for this Organization */
@@ -3791,7 +3791,7 @@ export type GlobalActivityQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GlobalActivityQuery = {
   __typename?: 'Query';
-  metadata: { __typename?: 'Metadata'; activity: Array<{ __typename?: 'NVP'; name: string; value: string }> };
+  metadata: { __typename?: 'Metadata'; metrics: Array<{ __typename?: 'NVP'; name: string; value: string }> };
 };
 
 export type GroupMembersQueryVariables = Exact<{
@@ -3987,7 +3987,7 @@ export type ServerMetadataQuery = {
   __typename?: 'Query';
   metadata: {
     __typename?: 'Metadata';
-    activity: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>;
+    metrics: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }>;
     services: Array<{ __typename?: 'ServiceMetadata'; name?: string | undefined; version?: string | undefined }>;
   };
 };
@@ -5641,7 +5641,7 @@ export type ChallengeExplorerSearchQuery = {
           displayName: string;
           nameID: string;
           hubID: string;
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           context?:
             | {
                 __typename?: 'Context';
@@ -5667,7 +5667,7 @@ export type ChallengeExplorerSearchResultFragment = {
   displayName: string;
   nameID: string;
   hubID: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   context?:
     | {
         __typename?: 'Context';
@@ -5713,7 +5713,7 @@ export type ChallengePageQuery = {
       id: string;
       nameID: string;
       displayName: string;
-      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       lifecycle?:
         | {
             __typename?: 'Lifecycle';
@@ -5887,7 +5887,7 @@ export type ChallengePageQuery = {
                     id: string;
                     status: OrganizationVerificationEnum;
                   };
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 }>
               | undefined;
             memberOrganizations?:
@@ -5915,7 +5915,7 @@ export type ChallengePageQuery = {
             id: string;
             nameID: string;
             displayName: string;
-            activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+            metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
             context?:
               | {
@@ -5976,7 +5976,7 @@ export type ChallengeProfileFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   lifecycle?:
     | {
         __typename?: 'Lifecycle';
@@ -6146,7 +6146,7 @@ export type ChallengeProfileFragment = {
                 id: string;
                 status: OrganizationVerificationEnum;
               };
-              activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             }>
           | undefined;
         memberOrganizations?:
@@ -6174,7 +6174,7 @@ export type ChallengeProfileFragment = {
         id: string;
         nameID: string;
         displayName: string;
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         lifecycle?: { __typename?: 'Lifecycle'; id: string; state?: string | undefined } | undefined;
         context?:
           | {
@@ -6386,7 +6386,7 @@ export type HubContextQuery = {
             | undefined;
         }
       | undefined;
-    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 
@@ -6438,7 +6438,7 @@ export type ChallengeContextQuery = {
               | undefined;
           }
         | undefined;
-      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -6487,7 +6487,7 @@ export type OpportunityContextQuery = {
               | undefined;
           }
         | undefined;
-      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     };
   };
 };
@@ -6752,7 +6752,7 @@ export type HubPageQuery = {
     id: string;
     nameID: string;
     displayName: string;
-    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     authorization?:
       | {
           __typename?: 'Authorization';
@@ -6774,7 +6774,7 @@ export type HubPageQuery = {
             avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
           };
           verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         }
       | undefined;
     context?:
@@ -6923,7 +6923,7 @@ export type HubPageQuery = {
                   id: string;
                   status: OrganizationVerificationEnum;
                 };
-                activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
               }>
             | undefined;
           memberOrganizations?:
@@ -6950,7 +6950,7 @@ export type HubPageQuery = {
           id: string;
           displayName: string;
           nameID: string;
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           context?:
             | {
                 __typename?: 'Context';
@@ -6992,7 +6992,7 @@ export type HubPageFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   authorization?:
     | {
         __typename?: 'Authorization';
@@ -7014,7 +7014,7 @@ export type HubPageFragment = {
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       }
     | undefined;
   context?:
@@ -7163,7 +7163,7 @@ export type HubPageFragment = {
                 id: string;
                 status: OrganizationVerificationEnum;
               };
-              activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             }>
           | undefined;
         memberOrganizations?:
@@ -7190,7 +7190,7 @@ export type HubPageFragment = {
         id: string;
         displayName: string;
         nameID: string;
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         context?:
           | {
               __typename?: 'Context';
@@ -7239,7 +7239,7 @@ export type OpportunityPageQuery = {
       nameID: string;
       displayName: string;
       tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       lifecycle?:
         | {
             __typename?: 'Lifecycle';
@@ -7414,7 +7414,7 @@ export type OpportunityPageQuery = {
                     id: string;
                     status: OrganizationVerificationEnum;
                   };
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 }>
               | undefined;
             memberOrganizations?:
@@ -7445,7 +7445,7 @@ export type OpportunityPageFragment = {
   nameID: string;
   displayName: string;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   lifecycle?:
     | {
         __typename?: 'Lifecycle';
@@ -7616,7 +7616,7 @@ export type OpportunityPageFragment = {
                 id: string;
                 status: OrganizationVerificationEnum;
               };
-              activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+              metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
             }>
           | undefined;
         memberOrganizations?:
@@ -8061,7 +8061,7 @@ export type ChallengeCardFragment = {
   id: string;
   displayName: string;
   nameID: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   context?:
     | {
         __typename?: 'Context';
@@ -8159,7 +8159,7 @@ export type ChallengeActivityQuery = {
     challenge: {
       __typename?: 'Challenge';
       id: string;
-      activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+      metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
     };
   };
 };
@@ -8208,7 +8208,7 @@ export type ChallengeCardQuery = {
       id: string;
       displayName: string;
       nameID: string;
-      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       context?:
         | {
             __typename?: 'Context';
@@ -8237,7 +8237,7 @@ export type ChallengeCardsQuery = {
           id: string;
           displayName: string;
           nameID: string;
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           context?:
             | {
                 __typename?: 'Context';
@@ -8760,7 +8760,7 @@ export type HubDetailsProviderFragment = {
   nameID: string;
   displayName: string;
   authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-  activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
   community?: { __typename?: 'Community'; id: string } | undefined;
   tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
   context?:
@@ -8921,7 +8921,7 @@ export type HubActivityQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
-    activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
   };
 };
 
@@ -8965,7 +8965,7 @@ export type HubCardQuery = {
     nameID: string;
     displayName: string;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
     community?: { __typename?: 'Community'; id: string } | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     context?:
@@ -9162,7 +9162,7 @@ export type HubsQuery = {
     nameID: string;
     displayName: string;
     authorization?: { __typename?: 'Authorization'; id: string; anonymousReadAccess: boolean } | undefined;
-    activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
     community?: { __typename?: 'Community'; id: string } | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; name: string; tags: Array<string> } | undefined;
     context?:
@@ -9366,7 +9366,7 @@ export type OpportunityActivityQuery = {
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
-      activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+      metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
     };
   };
 };
@@ -9676,7 +9676,7 @@ export type OpportunityWithActivityQuery = {
           id: string;
           displayName: string;
           nameID: string;
-          activity?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
+          metrics?: Array<{ __typename?: 'NVP'; name: string; value: string }> | undefined;
           context?:
             | {
                 __typename?: 'Context';
@@ -11799,7 +11799,7 @@ export type HubCommunityContributorsQuery = {
           id: string;
           nameID: string;
           displayName: string;
-          activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+          metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -11885,7 +11885,7 @@ export type HubCommunityContributorsQuery = {
                 id: string;
                 nameID: string;
                 displayName: string;
-                activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -11993,7 +11993,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12013,7 +12013,7 @@ export type ChallengeCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12122,7 +12122,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12142,7 +12142,7 @@ export type OpportunityCommunityContributorsQuery = {
                   id: string;
                   nameID: string;
                   displayName: string;
-                  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -12222,7 +12222,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -12238,7 +12238,7 @@ export type CommunityMembersFragment = {
         id: string;
         nameID: string;
         displayName: string;
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
         profile: {
           __typename?: 'Profile';
           id: string;
@@ -12300,7 +12300,7 @@ export type EntityDashboardCommunityFragment = {
           avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
         };
         verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-        activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+        metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       }>
     | undefined;
   memberOrganizations?:
@@ -12947,7 +12947,7 @@ export type ContributorsPageOrganizationsQuery = {
       id: string;
       displayName: string;
       nameID: string;
-      activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
       orgProfile: {
         __typename?: 'Profile';
         id: string;
@@ -13015,7 +13015,7 @@ export type OrganizationContributorPaginatedFragment = {
     id: string;
     displayName: string;
     nameID: string;
-    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
     orgProfile: {
       __typename?: 'Profile';
       id: string;
@@ -13037,7 +13037,7 @@ export type OrganizationContributorFragment = {
   id: string;
   displayName: string;
   nameID: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   orgProfile: {
     __typename?: 'Profile';
     id: string;
@@ -13124,7 +13124,7 @@ export type AssociatedOrganizationQuery = {
       avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
     };
     verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-    activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   };
 };
 
@@ -13140,7 +13140,7 @@ export type AssociatedOrganizationDetailsFragment = {
     avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
   };
   verification: { __typename?: 'OrganizationVerification'; id: string; status: OrganizationVerificationEnum };
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
 };
 
 export type OrganizationCardFragment = {
@@ -13148,7 +13148,7 @@ export type OrganizationCardFragment = {
   id: string;
   nameID: string;
   displayName: string;
-  activity?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;

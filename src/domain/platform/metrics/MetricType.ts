@@ -1,4 +1,4 @@
-export enum ActivityType {
+export enum MetricType {
   Opportunity = 'opportunities',
   Project = 'projects',
   Member = 'members',
