@@ -37,8 +37,8 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
   const getCardLabel = useCallback(
     (roles: string[]) => {
       return isAuthenticated
-      ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
-      : undefined;
+        ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
+        : undefined;
     },
     [isAuthenticated]
   );
@@ -65,7 +65,7 @@ const ChallengeExplorerListView: FC<ChallengeExplorerListViewProps> = ({
             keepOpen={false}
           >
             {filteredChallenges => (
-              <CardsLayoutScroller maxHeight={370} sx={{ marginRight: 0 }}>
+              <CardsLayoutScroller maxHeight={374} sx={{ marginRight: 0 }}>
                 <CardsLayout items={filteredChallenges}>
                   {challenge =>
                     challenge && (

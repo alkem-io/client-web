@@ -77,7 +77,7 @@ const CheckboxesFilter = <T extends Identifiable>({
 
   return (
     <Root>
-      {enable && (
+      {enable && values.length > 0 && (
         <MenuButton sx={sx}>
           <Button onClick={handleClick} variant="outlined" startIcon={<FilterAltOutlinedIcon />}>
             {caption}

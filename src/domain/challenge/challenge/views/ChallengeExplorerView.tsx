@@ -43,7 +43,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
           </Grid>
         )}
         {/* PRIVATE: My Challenges container */}
-        {myChallenges && (
+        {myChallenges && myChallenges.length > 0 && (
           <Grid item xs={12}>
             <ChallengeExplorerListView
               headerText={t('pages.challenge-explorer.my.title')}
@@ -54,7 +54,7 @@ export const ChallengeExplorerView: FC<ChallengeExplorerViewProps> = ({
           </Grid>
         )}
         {/* PRIVATE: Other challenges within my hubs */}
-        {otherChallenges && (
+        {otherChallenges && otherChallenges.length > 0 && (
           <Grid item xs={12}>
             <ChallengeExplorerListView
               headerText={t('pages.challenge-explorer.other.title')}
