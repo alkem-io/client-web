@@ -6,7 +6,7 @@ fragment HubDetailsProvider on Hub {
     id
     anonymousReadAccess
   }
-  activity {
+  metrics {
     name
     value
   }

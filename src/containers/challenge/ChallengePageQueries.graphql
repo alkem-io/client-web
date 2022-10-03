@@ -11,7 +11,7 @@ fragment ChallengeProfile on Challenge {
   id
   nameID
   displayName
-  activity {
+  metrics {
     id
     name
     value
@@ -63,7 +63,7 @@ fragment ChallengeProfile on Challenge {
     id
     nameID
     displayName
-    activity {
+    metrics {
       id
       name
       value

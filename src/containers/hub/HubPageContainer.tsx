@@ -14,10 +14,10 @@ import {
   HubPageFragment,
   Reference,
 } from '../../models/graphql-schema';
-import getActivityCount from '../../domain/platform/activity/utils/getActivityCount';
+import getMetricCount from '../../domain/platform/metrics/utils/getMetricCount';
 import { useDiscussionsContext } from '../../context/Discussions/DiscussionsProvider';
 import { Discussion } from '../../domain/communication/discussion/models/discussion';
-import { ActivityType } from '../../domain/platform/activity/ActivityType';
+import { MetricType } from '../../domain/platform/metrics/MetricType';
 import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
 import { WithId } from '../../types/WithId';
 import { ContributorCardProps } from '../../common/components/composite/common/cards/ContributorCard/ContributorCard';
@@ -103,7 +103,7 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
     x => x === AuthorizationPrivilege.Read
   );
 
-  const challengesCount = useMemo(() => getActivityCount(_hub?.hub.activity, ActivityType.Challenge), [_hub]);
+  const challengesCount = useMemo(() => getMetricCount(_hub?.hub.metrics, MetricType.Challenge), [_hub]);
 
   const isMember = user?.ofHub(hubId) ?? false;
 
@@ -119,10 +119,10 @@ export const HubPageContainer: FC<HubPageContainerProps> = ({ children }) => {
   const challenges = _hub?.hub.challenges ?? EMPTY;
 
   const aspects = getAspectsFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
-  const aspectsCount = useAspectsCount(_hub?.hub.activity);
+  const aspectsCount = useAspectsCount(_hub?.hub.metrics);
 
   const canvases = getCanvasesFromPublishedCallouts(_hub?.hub.collaboration?.callouts).slice(0, 2);
-  const canvasesCount = useCanvasesCount(_hub?.hub.activity);
+  const canvasesCount = useCanvasesCount(_hub?.hub.metrics);
 
   const contributors = useCommunityMembersAsCardProps(_hub?.hub.community);
 

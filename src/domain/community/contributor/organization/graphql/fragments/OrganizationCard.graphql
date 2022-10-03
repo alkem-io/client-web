@@ -2,7 +2,7 @@ fragment OrganizationCard on Organization {
   id
   nameID
   displayName
-  activity {
+  metrics {
     id
     name
     value

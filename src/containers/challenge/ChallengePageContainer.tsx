@@ -10,8 +10,8 @@ import {
 import { ContainerChildProps } from '../../models/container';
 import { Discussion } from '../../domain/communication/discussion/models/discussion';
 import { Activity, AuthorizationPrivilege, ChallengeProfileFragment } from '../../models/graphql-schema';
-import getActivityCount from '../../domain/platform/activity/utils/getActivityCount';
-import { ActivityType } from '../../domain/platform/activity/ActivityType';
+import getMetricCount from '../../domain/platform/metrics/utils/getMetricCount';
+import { MetricType } from '../../domain/platform/metrics/MetricType';
 import { useAspectsCount } from '../../domain/collaboration/aspect/utils/aspectsCount';
 import { EntityDashboardContributors } from '../../domain/community/community/EntityDashboardContributorsSection/Types';
 import useCommunityMembersAsCardProps from '../../domain/community/community/utils/useCommunityMembersAsCardProps';
@@ -104,15 +104,15 @@ export const ChallengePageContainer: FC<ChallengePageContainerProps> = ({ childr
 
   const { discussionList, loading: loadingDiscussions } = useDiscussionsContext();
 
-  const { activity = [] } = _challenge?.hub.challenge || {};
+  const { metrics = [] } = _challenge?.hub.challenge || {};
 
-  const opportunitiesCount = useMemo(() => getActivityCount(activity, ActivityType.Opportunity), [activity]);
+  const opportunitiesCount = useMemo(() => getMetricCount(metrics, MetricType.Opportunity), [metrics]);
 
   const aspects = getAspectsFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
-  const aspectsCount = useAspectsCount(_challenge?.hub.challenge.activity);
+  const aspectsCount = useAspectsCount(_challenge?.hub.challenge.metrics);
 
   const canvases = getCanvasesFromPublishedCallouts(_challenge?.hub.challenge.collaboration?.callouts).slice(0, 2);
-  const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.activity);
+  const canvasesCount = useCanvasesCount(_challenge?.hub.challenge.metrics);
 
   const contributors = useCommunityMembersAsCardProps(_challenge?.hub.challenge.community);
 

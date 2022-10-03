@@ -2,7 +2,7 @@ import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../../../common/components/composite/common/ActivityPanel/Activities';
+import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
 import ContextSection from '../../../../common/components/composite/sections/ContextSection';
 import {
@@ -10,11 +10,11 @@ import {
   Tagset,
   LifecycleContextTabFragment,
   AspectCardFragment,
-  ActivityItemFragment,
+  MetricsItemFragment,
   Context,
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
-import getActivityCount from '../../../platform/activity/utils/getActivityCount';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import OpportunityCommunityView from '../../../community/community/entities/OpportunityCommunityView';
 import DashboardOpportunityStatistics from '../../../shared/components/DashboardSections/DashboardOpportunityStatistics';
 
@@ -42,10 +42,10 @@ export interface OpportunityContextViewProps
     OpportunityContextViewState,
     OpportunityContextViewOptions
   > {
-  activity: ActivityItemFragment[] | undefined;
+  metrics: MetricsItemFragment[] | undefined;
 }
 
-const OpportunityContextView: FC<OpportunityContextViewProps> = ({ activity, entities, state }) => {
+const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: activity, entities, state }) => {
   const { loading } = state;
   const { context, opportunityDisplayName, opportunityTagset, opportunityLifecycle } = entities;
 
@@ -61,16 +61,16 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ activity, ent
 
   const { t, i18n } = useTranslation();
 
-  const activityItems: ActivityItem[] = useMemo(() => {
+  const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
         name: t('common.members'),
-        count: getActivityCount(activity, 'members'),
+        count: getMetricCount(activity, 'members'),
         color: 'neutralMedium',
       },
       {
         name: t('common.interests'),
-        count: getActivityCount(activity, 'relations'),
+        count: getMetricCount(activity, 'relations'),
         color: 'primary',
       },
     ];
@@ -96,7 +96,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ activity, ent
       leftColumn={
         <DashboardOpportunityStatistics
           headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
-          activities={activityItems}
+          activities={metricsItems}
           loading={loading}
         />
       }

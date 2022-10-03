@@ -1,19 +1,19 @@
 import React, { FC } from 'react';
 import { Lifecycle, Maybe } from '../../../../../models/graphql-schema';
 import Card, { CardProps } from '../../../core/Card';
-import { Activities, ActivityItem } from './Activities';
-import StateActivityCardItem from './StateActivityCardItem';
-import activitiesMock from './tempMockActivities';
+import { Metrics, MetricItem } from './Metrics';
+import StateActivityCardItem from './StateMetricCardItem';
+import metricsMock from './tempMockMetrics';
 
 interface ActivityCardProps extends CardProps {
   title: string;
-  items: Array<ActivityItem>;
+  items: Array<MetricItem>;
   lifecycle?: Maybe<Lifecycle>;
 }
 
 const ActivityCard: FC<ActivityCardProps> = ({
   title = 'Activity Panel',
-  items = activitiesMock,
+  items = metricsMock,
   lifecycle = null,
   classes = {},
 }) => {
@@ -31,9 +31,9 @@ const ActivityCard: FC<ActivityCardProps> = ({
       }}
       primaryTextProps={{ text: title }}
     >
-      <Activities items={items}>
+      <Metrics items={items}>
         <StateActivityCardItem lifecycle={lifecycle || undefined} />
-      </Activities>
+      </Metrics>
     </Card>
   );
 };

@@ -1,6 +1,6 @@
 query serverMetadata {
   metadata {
-    activity {
+    metrics {
       id
       name
       value

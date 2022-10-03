@@ -23,7 +23,7 @@ fragment OrganizationContributor on Organization {
   id
   displayName
   nameID
-  activity {
+  metrics {
     id
     name
     value
