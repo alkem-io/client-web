@@ -14,8 +14,7 @@ import ContextSectionIcon from './ContextSectionIcon';
 import DashboardColumn, { ContextSectionColumnProps } from './DashboardSection/DashboardColumn';
 import LocationView from '../../../../domain/common/location/LocationView';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
-
-export type JourneyType = 'hub' | 'challenge' | 'opportunity';
+import { JourneyType } from '../../../../domain/challenge/JourneyType';
 
 export interface ContextSectionProps {
   contextId?: string;

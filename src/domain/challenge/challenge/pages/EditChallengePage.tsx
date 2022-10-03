@@ -119,9 +119,9 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
         <WrapperTypography variant={'h2'}>{title}</WrapperTypography>
       </Grid>
       <ProfileFormWithContext
+        contextType="challenge"
         isEdit={mode === FormMode.update}
         name={challenge?.displayName}
-        journeyType="challenge"
         nameID={challenge?.nameID}
         tagset={challenge?.tagset}
         context={challenge?.context}

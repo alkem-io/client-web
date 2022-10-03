@@ -1,8 +1,8 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
-import { JourneyType } from '../../../common/components/composite/sections/ContextSection';
 import { Context } from '../../../models/graphql-schema';
+import { JourneyType } from '../../challenge/JourneyType';
 import { ContextSegment, contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
 
 export interface ContextFormValues {

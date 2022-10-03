@@ -134,7 +134,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
-        journeyType={'opportunity'}
+        contextType="opportunity"
       />
       <Grid container item justifyContent={'flex-end'}>
         <WrapperButton disabled={isLoading} color="primary" onClick={() => submitWired()}>

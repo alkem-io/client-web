@@ -8,7 +8,6 @@ import ContextReferenceSegment from '../../../../domain/platform/admin/component
 import {
   ContextSegment,
   contextSegmentSchema,
-  JourneyType,
 } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
@@ -20,6 +19,8 @@ import { formatLocation } from '../../../../domain/common/location/LocationUtils
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { LifecycleTemplateSegment } from '../../../../domain/platform/admin/components/Common/LifecycleTemplateSegment';
 import { FormikSelectValue } from './FormikSelect';
+import { JourneyType } from '../../../../domain/challenge/JourneyType';
+
 export interface ProfileFormValuesType {
   name: string;
   nameID: string;
@@ -48,6 +49,7 @@ interface LifecycleTemplate {
 
 interface Props {
   context?: Context;
+  contextType: JourneyType;
   name?: string;
   nameID?: string;
   tagset?: Tagset;
@@ -56,11 +58,11 @@ interface Props {
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
   isEdit: boolean;
-  journeyType: JourneyType;
 }
 // TODO: Should be renamed. Maybe 'ContextForm'
 const ProfileFormWithContext: FC<Props> = ({
   context,
+  contextType,
   name,
   nameID,
   tagset,
@@ -69,7 +71,6 @@ const ProfileFormWithContext: FC<Props> = ({
   wireSubmit,
   isEdit,
   contextOnly = false,
-  journeyType,
 }) => {
   const { t } = useTranslation();
   const tagsets = useMemo(() => {
@@ -151,7 +152,7 @@ const ProfileFormWithContext: FC<Props> = ({
               </>
             )}
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
-            <ContextSegment contextType={journeyType} />
+            <ContextSegment contextType={contextType} />
 
             {!contextOnly && (
               <>

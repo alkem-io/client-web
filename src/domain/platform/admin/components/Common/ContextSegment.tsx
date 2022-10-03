@@ -2,9 +2,8 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { JourneyType } from '../../../../challenge/JourneyType';
 import MarkdownInput from './MarkdownInput';
-
-export type JourneyType = 'hub' | 'challenge' | 'opportunity';
 
 export const contextSegmentSchema = yup.object().shape({
   background: yup.string(),
