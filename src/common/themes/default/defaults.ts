@@ -27,7 +27,7 @@ export const theme: ThemeOptions = {
   },
   cards: {
     search: {
-      width: 264,
+      width: 258,
       contributor: {
         height: 418,
         imgHeight: 264,

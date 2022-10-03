@@ -40,7 +40,9 @@ export const HubRoute: FC<PageProps> = ({ paths: _paths }) => {
 
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
+          element={
+            <CalloutsPage entityTypeName="hub" rootUrl={`${resolved.pathname}/${routes.Explore}`} scrollToCallout />
+          }
         />
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}

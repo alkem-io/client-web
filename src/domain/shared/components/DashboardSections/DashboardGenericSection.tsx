@@ -15,6 +15,8 @@ export interface DashboardGenericSectionProps {
   alwaysShowBanner?: boolean;
   bannerOverlay?: React.ReactNode;
   headerText?: React.ReactNode;
+  headerIcon?: React.ReactNode;
+  headerCounter?: number;
   helpText?: string;
   headerSpacing?: 'double' | 'none' | 'default';
   primaryAction?: React.ReactNode;
@@ -27,6 +29,7 @@ export interface DashboardGenericSectionProps {
     collapsible?: {
       maxHeight: number;
     };
+    overflowVisible?: boolean;
   };
   sideBanner?: boolean;
   sideBannerRight?: boolean;
@@ -53,6 +56,8 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
   alwaysShowBanner,
   bannerOverlay,
   headerText,
+  headerIcon,
+  headerCounter,
   subHeaderText,
   helpText,
   headerSpacing = 'default',
@@ -83,7 +88,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
       sideBannerRight={sideBannerRight}
     >
       {headerText && (
-        <SectionHeader text={headerText} helpText={helpText}>
+        <SectionHeader text={headerText} icon={headerIcon} helpText={helpText} counter={headerCounter}>
           {primaryAction}
         </SectionHeader>
       )}
@@ -95,7 +100,7 @@ const DashboardGenericSection: FC<DashboardGenericSectionProps> = ({
         paddingY={1}
         maxHeight={isCollapsed && options?.collapsible ? options.collapsible.maxHeight : 'auto'}
         textOverflow="ellipsis"
-        overflow="hidden"
+        overflow={options?.overflowVisible ? 'visible' : 'hidden'}
       >
         {children}
         {secondaryAction}
