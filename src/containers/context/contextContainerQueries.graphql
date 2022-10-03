@@ -13,8 +13,8 @@ query HubContext($hubNameId: UUID_NAMEID!) {
     context {
       ...ContextTab
     }
-    activity {
-      ...ActivityItem
+    metrics {
+      ...MetricsItem
     }
   }
 }
@@ -42,8 +42,8 @@ query ChallengeContext($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!)
       context {
         ...ContextTab
       }
-      activity {
-        ...ActivityItem
+      metrics {
+        ...MetricsItem
       }
     }
   }
@@ -68,8 +68,8 @@ query OpportunityContext($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAME
       context {
         ...ContextTab
       }
-      activity {
-        ...ActivityItem
+      metrics {
+        ...MetricsItem
       }
     }
   }
@@ -97,7 +97,7 @@ fragment LifecycleContextTab on Lifecycle {
   state
   machineDef
 }
-fragment ActivityItem on NVP {
+fragment MetricsItem on NVP {
   id
   name
   value

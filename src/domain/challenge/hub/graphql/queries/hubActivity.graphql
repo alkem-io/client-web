@@ -1,7 +1,7 @@
 query hubActivity($hubId: UUID_NAMEID!) {
   hub(ID: $hubId) {
     id
-    activity {
+    metrics {
       name
       value
     }

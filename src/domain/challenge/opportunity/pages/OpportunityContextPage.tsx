@@ -32,7 +32,7 @@ const OpportunityContextPage: FC<OpportunityContextPageProps> = ({ paths }) => {
             }}
             options={{}}
             actions={{}}
-            activity={entities.activity}
+            metrics={entities.metrics}
           />
         )}
       </ContextTabContainer>

@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React, { FC, ReactNode } from 'react';
 import HelpButton from '../../../../common/components/core/HelpButton';
-import ActivityCircleView from '../../../platform/activity/ActivityCircleView';
+import MetricCircleView from '../../../platform/metrics/MetricCircleView';
 import { SectionSpacer } from './Section';
 
 interface SectionHeaderProps {
@@ -21,7 +21,7 @@ const SectionHeader: FC<SectionHeaderProps> = ({ text, icon, helpText, counter, 
         </Typography>
         {typeof counter !== 'undefined' && (
           <Box sx={{ marginLeft: theme => theme.spacing(2) }}>
-            <ActivityCircleView color="primary">{counter}</ActivityCircleView>
+            <MetricCircleView color="primary">{counter}</MetricCircleView>
           </Box>
         )}
         {helpText && <HelpButton helpText={helpText} />}

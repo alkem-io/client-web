@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { buildHubUrl } from '../../../../../utils/urlBuilders';
-import getActivityCount from '../../../../../../domain/platform/activity/utils/getActivityCount';
+import getMetricCount from '../../../../../../domain/platform/metrics/utils/getMetricCount';
 import { Hub, Nvp, VisualUriFragment } from '../../../../../../models/graphql-schema';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 
-type HubAttrs = Pick<Hub, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
+type HubAttrs = Pick<Hub, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
   context?: { tagline?: string; visuals?: VisualUriFragment[] };
 };
 
@@ -23,7 +23,7 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
 
   const bannerNarrow = getVisualBannerNarrow(hub?.context?.visuals);
 
-  const { activity = [] } = hub;
+  const { metrics = [] } = hub;
 
   return (
     <EntityContributionCard
@@ -37,20 +37,20 @@ const HubCard: FC<HubCardProps> = ({ hub, loading = false, getLabel }) => {
       }}
       label={getLabel?.(hub)}
       loading={loading}
-      activities={[
+      metrics={[
         {
           name: t('common.challenges'),
-          count: getActivityCount(activity, 'challenges'),
+          count: getMetricCount(metrics, 'challenges'),
           color: 'primary',
         },
         {
           name: t('common.opportunities'),
-          count: getActivityCount(activity, 'opportunities'),
+          count: getMetricCount(metrics, 'opportunities'),
           color: 'primary',
         },
         {
           name: t('common.members'),
-          count: getActivityCount(activity, 'members'),
+          count: getMetricCount(metrics, 'members'),
           color: 'positive',
         },
       ]}
