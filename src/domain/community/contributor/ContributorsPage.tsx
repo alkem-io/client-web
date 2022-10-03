@@ -33,7 +33,7 @@ const ContributorsPage: FC<ContributorsPageProps> = () => {
   };
 
   return (
-    <Box paddingY={2}>
+    <Box paddingY={2} marginTop={2}>
       <Typography variant="h1">{t('pages.contributors.search.title')}</Typography>
       <Typography>{t('pages.contributors.search.subtitle')}</Typography>
       <SectionSpacer double />

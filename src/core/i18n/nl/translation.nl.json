@@ -281,7 +281,7 @@
     },
     "blocks": {
       "users-contributing": "gebruikers die bijdragen",
-      "all-contributing-users": "alle bijdragende gebruikers"
+      "all-contributing-users": "alle gebruikers die een bijdrage leveren"
     }
   },
   "community": {
@@ -476,7 +476,7 @@
     "backdrop": {
       "private": "Wordt lid om toegang te krijgen tot {{blockName}}",
       "authentication": "Log in om details te zien over {{blockName}}.",
-      "log-in": "Log in om {{blockName}} te zien"
+      "login": "Log in om {{blockName}} te zien"
     },
     "referenceSegment": {
       "title": "Referenties",
@@ -946,14 +946,8 @@
         "placeholder": "Zoek met termen naar Challenges op Alkemio..."
       },
       "my": {
-        "title": "Mijn Challenges ({{count}})",
-        "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. ",
-        "help-text": "Een kaart per Challenge-lidmaatschap, inclusief de rol die je in elke Challenge hebt."
-      },
-      "hubs": {
-        "title": "Challenges beheerd door '{{name}}' Hub ({{count}})",
-        "subtitle": "Deze sectie toont je de Challenges die worden beheerd in de {{name}} Hub waarvan je lid bent.",
-        "help-text": "Een Challenge Hub beheert een of meer Challenges. Je bent lid van onderstaande Hub."
+        "title": "Mijn Challenges",
+        "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. "
       }
     },
     "lead-organization": {
