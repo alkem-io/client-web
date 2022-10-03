@@ -21,6 +21,7 @@ import ProfileFormWithContext, {
 import FormMode from '../../../platform/admin/components/FormMode';
 import { formatDatabaseLocation } from '../../../common/location/LocationUtils';
 import { LifecycleType } from '../../../../models/graphql-schema';
+import { ChallengeContextSegment } from '../../../platform/admin/challenge/ChallengeContextSegment';
 
 interface Props {
   mode: FormMode;
@@ -119,7 +120,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
         <WrapperTypography variant={'h2'}>{title}</WrapperTypography>
       </Grid>
       <ProfileFormWithContext
-        contextType="challenge"
+        contextSegment={ChallengeContextSegment}
         isEdit={mode === FormMode.update}
         name={challenge?.displayName}
         nameID={challenge?.nameID}

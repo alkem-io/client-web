@@ -27,6 +27,7 @@ import ProfileFormWithContext, {
 import FormMode from './FormMode';
 import { Context, LifecycleType } from '../../../../models/graphql-schema';
 import { formatDatabaseLocation } from '../../../common/location/LocationUtils';
+import { OpportunityContextSegment } from '../opportunity/OpportunityContextSegment';
 
 interface Props {
   mode: FormMode;
@@ -126,6 +127,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         <WrapperTypography variant={'h2'}>{title}</WrapperTypography>
       </Grid>
       <ProfileFormWithContext
+        contextSegment={OpportunityContextSegment}
         isEdit={mode === FormMode.update}
         name={opportunity?.displayName}
         nameID={opportunity?.nameID}
@@ -134,7 +136,6 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
         context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}
-        contextType="opportunity"
       />
       <Grid container item justifyContent={'flex-end'}>
         <WrapperButton disabled={isLoading} color="primary" onClick={() => submitWired()}>

@@ -13,6 +13,7 @@ import {
   useOpportunityProfileInfoQuery,
 } from '../../../../../../hooks/generated/graphql';
 import { Context } from '../../../../../../models/graphql-schema';
+import { OpportunityContextSegment } from '../../OpportunityContextSegment';
 
 const OpportunityContextView: FC = () => {
   const { t } = useTranslation();
@@ -55,7 +56,7 @@ const OpportunityContextView: FC = () => {
   return (
     <Grid container spacing={2}>
       <ContextForm
-        journeyType="opportunity"
+        contextSegment={OpportunityContextSegment}
         context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

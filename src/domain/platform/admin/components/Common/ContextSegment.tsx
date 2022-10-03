@@ -13,11 +13,9 @@ export const contextSegmentSchema = yup.object().shape({
   who: yup.string(),
 });
 
-interface ContextSegmentProps {
-  contextType: JourneyType;
-}
+export interface ContextSegmentProps {}
 
-export const ContextSegment: FC<ContextSegmentProps> = ({ contextType }) => {
+export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType }> = ({ contextType }) => {
   const { t } = useTranslation();
 
   return (

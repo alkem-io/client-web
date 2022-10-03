@@ -5,11 +5,12 @@ import * as yup from 'yup';
 import { Location, EmptyLocation } from '../../../common/location/Location';
 import { formatLocation } from '../../../common/location/LocationUtils';
 import { Context, Reference, Tagset } from '../../../../models/graphql-schema';
-import { ContextSegment, contextSegmentSchema } from './Common/ContextSegment';
+import { contextSegmentSchema } from './Common/ContextSegment';
 import { nameSegmentSchema } from './Common/NameSegment';
 import { referenceSegmentSchema } from './Common/ReferenceSegment';
 import { tagsetSegmentSchema } from './Common/TagsetSegment';
 import { visualSegmentSchema } from './Common/VisualSegment';
+import { HubContextSegment } from '../hub/HubContextSegment';
 
 interface Props {
   context?: Context;
@@ -105,7 +106,7 @@ const HubEditForm: FC<Props> = ({ context, name, nameID, hostID, tagset, onSubmi
           isSubmitWired = true;
         }
 
-        return <ContextSegment contextType="hub" />;
+        return <HubContextSegment />;
       }}
     </Formik>
   );
