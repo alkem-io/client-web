@@ -55,6 +55,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
           path="authorization/*"
           element={<ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />}
         />
+        <Route path={'innovation-flow/*'} element={<OpportunitiesRoute paths={currentPaths} />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
