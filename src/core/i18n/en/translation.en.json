@@ -73,7 +73,9 @@
     }
   },
   "common": {
+    "error-generic": "Error occurred while loading",
     "avatar": "Avatar",
+    "inspiration": "Inspiration",
     "name": "Name",
     "username": "Username",
     "tags": "Tags",
