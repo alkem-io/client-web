@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { ApolloError } from '@apollo/client';
 import { ContainerChildProps } from '../../models/container';
 import {
-  ActivityItemFragment,
+  MetricsItemFragment,
   AuthorizationPrivilege,
   ContextTabFragment,
   LifecycleContextTabFragment,
@@ -25,7 +25,7 @@ export interface ContextTabContainerEntities {
   tagset?: Tagset;
   lifecycle?: LifecycleContextTabFragment;
   permissions: ContextTabPermissions;
-  metrics: ActivityItemFragment[] | undefined;
+  metrics: MetricsItemFragment[] | undefined;
 }
 
 export interface ContextTabContainerActions {}

@@ -13,7 +13,7 @@ import {
   ContextTabFragment,
   Tagset,
   LifecycleContextTabFragment,
-  ActivityItemFragment,
+  MetricsItemFragment,
   Context,
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
@@ -46,7 +46,7 @@ interface ChallengeContextOptions {
 
 interface ChallengeContextViewProps
   extends ViewProps<ChallengeContextEntities, ChallengeContextActions, ChallengeContextState, ChallengeContextOptions> {
-  activity: ActivityItemFragment[] | undefined;
+  activity: MetricsItemFragment[] | undefined;
 }
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, entities, state, options }) => {
@@ -64,7 +64,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
     id = '',
   } = context || ({} as Context);
 
-  const activityItems: MetricItem[] = useMemo(() => {
+  const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
         name: t('common.opportunities'),
@@ -110,7 +110,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
         loading={loading}
         leftColumn={
           <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.statistics.title')}>
-            <ActivityView activity={activityItems} loading={loading} />
+            <ActivityView activity={metricsItems} loading={loading} />
           </DashboardGenericSection>
         }
         rightColumn={<ChallengeCommunityView />}

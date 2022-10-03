@@ -19,16 +19,16 @@ const MetricTooltipContent = forwardRef<HTMLDivElement, {}>(({ children }, ref) 
 });
 
 interface MetricTooltipProps {
-  activityItems: MetricItem[] | undefined;
+  metricsItems: MetricItem[] | undefined;
 }
 
-const MetricTooltip = ({ activityItems }: MetricTooltipProps) => {
-  if (!activityItems) {
+const MetricTooltip = ({ metricsItems }: MetricTooltipProps) => {
+  if (!metricsItems) {
     return <AutoGraphIcon />;
   }
 
   return (
-    <Tooltip title={<Metrics items={activityItems} />} components={{ Tooltip: MetricTooltipContent }}>
+    <Tooltip title={<Metrics items={metricsItems} />} components={{ Tooltip: MetricTooltipContent }}>
       <AutoGraphIcon />
     </Tooltip>
   );

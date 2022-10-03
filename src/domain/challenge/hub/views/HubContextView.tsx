@@ -5,7 +5,7 @@ import { MetricItem } from '../../../../common/components/composite/common/Metri
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import ContextSection from '../../../../common/components/composite/sections/ContextSection';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
-import { ContextTabFragment, Tagset, ActivityItemFragment, Context } from '../../../../models/graphql-schema';
+import { ContextTabFragment, Tagset, MetricsItemFragment, Context } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
 import { MetricType } from '../../../platform/metrics/MetricType';
 import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
@@ -29,7 +29,7 @@ interface HubContextOptions {}
 
 interface HubContextViewProps
   extends ViewProps<HubContextEntities, HubContextActions, HubContextState, HubContextOptions> {
-  metrics: ActivityItemFragment[] | undefined;
+  metrics: MetricsItemFragment[] | undefined;
 }
 
 export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, entities, state }) => {
@@ -48,7 +48,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, ent
 
   const { t, i18n } = useTranslation();
 
-  const activityItems: MetricItem[] = useMemo(() => {
+  const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
         name: t('common.challenges'),
@@ -90,7 +90,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, ent
       loading={loading}
       leftColumn={
         <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>
-          <ActivityView activity={activityItems} loading={loading} />
+          <ActivityView activity={metricsItems} loading={loading} />
         </DashboardGenericSection>
       }
       rightColumn={<HubCommunityView />}

@@ -10,7 +10,7 @@ import {
   Tagset,
   LifecycleContextTabFragment,
   AspectCardFragment,
-  ActivityItemFragment,
+  MetricsItemFragment,
   Context,
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
@@ -42,7 +42,7 @@ export interface OpportunityContextViewProps
     OpportunityContextViewState,
     OpportunityContextViewOptions
   > {
-  metrics: ActivityItemFragment[] | undefined;
+  metrics: MetricsItemFragment[] | undefined;
 }
 
 const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: activity, entities, state }) => {
@@ -61,7 +61,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
 
   const { t, i18n } = useTranslation();
 
-  const activityItems: MetricItem[] = useMemo(() => {
+  const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
         name: t('common.members'),
@@ -96,7 +96,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
       leftColumn={
         <DashboardOpportunityStatistics
           headerText={t('pages.opportunity.sections.dashboard.statistics.title')}
-          activities={activityItems}
+          activities={metricsItems}
           loading={loading}
         />
       }

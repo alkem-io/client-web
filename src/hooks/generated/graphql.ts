@@ -535,8 +535,8 @@ export const LifecycleContextTabFragmentDoc = gql`
     machineDef
   }
 `;
-export const ActivityItemFragmentDoc = gql`
-  fragment ActivityItem on NVP {
+export const MetricsItemFragmentDoc = gql`
+  fragment MetricsItem on NVP {
     id
     name
     value
@@ -5083,12 +5083,12 @@ export const HubContextDocument = gql`
         ...ContextTab
       }
       metrics {
-        ...ActivityItem
+        ...MetricsItem
       }
     }
   }
   ${ContextTabFragmentDoc}
-  ${ActivityItemFragmentDoc}
+  ${MetricsItemFragmentDoc}
 `;
 
 /**
@@ -5159,14 +5159,14 @@ export const ChallengeContextDocument = gql`
           ...ContextTab
         }
         metrics {
-          ...ActivityItem
+          ...MetricsItem
         }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
-  ${ActivityItemFragmentDoc}
+  ${MetricsItemFragmentDoc}
 `;
 
 /**
@@ -5237,14 +5237,14 @@ export const OpportunityContextDocument = gql`
           ...ContextTab
         }
         metrics {
-          ...ActivityItem
+          ...MetricsItem
         }
       }
     }
   }
   ${LifecycleContextTabFragmentDoc}
   ${ContextTabFragmentDoc}
-  ${ActivityItemFragmentDoc}
+  ${MetricsItemFragmentDoc}
 `;
 
 /**

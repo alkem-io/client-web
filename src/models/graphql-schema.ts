@@ -6430,7 +6430,7 @@ export type LifecycleContextTabFragment = {
   machineDef: string;
 };
 
-export type ActivityItemFragment = { __typename?: 'NVP'; id: string; name: string; value: string };
+export type MetricsItemFragment = { __typename?: 'NVP'; id: string; name: string; value: string };
 
 export type CommunityFeedbackTemplatesQueryVariables = Exact<{ [key: string]: never }>;
 

@@ -76,7 +76,7 @@ const HubsSection = ({ userHubRoles, loading }: HubsSectionProps) => {
     <DashboardHubsSection
       headerText={t('pages.home.sections.hub.header')}
       subHeaderText={t('pages.home.sections.hub.subheader')}
-      primaryAction={<MetricTooltip activityItems={metricItems} />}
+      primaryAction={<MetricTooltip metricsItems={metricItems} />}
       hubs={hubs}
       getHubCardLabel={getHubCardLabel}
     >
