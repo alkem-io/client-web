@@ -6,16 +6,16 @@ import CircleTag, {
 } from '../../../common/components/core/CircleTag';
 import { Skeleton } from '@mui/material';
 
-export interface ActivityCircleViewProps {
+export interface MetricCircleViewProps {
   color?: CircleTagProps['color'];
   loading?: boolean;
 }
 
-const ActivityCircleView = ({
+const MetricCircleView = ({
   color = 'neutral',
   loading = false,
   children,
-}: PropsWithChildren<ActivityCircleViewProps>) => {
+}: PropsWithChildren<MetricCircleViewProps>) => {
   return loading ? (
     <Skeleton variant="circular" sx={CircleTagSizeStyles[CircleTagSize.Large]} />
   ) : (
@@ -23,4 +23,4 @@ const ActivityCircleView = ({
   );
 };
 
-export default ActivityCircleView;
+export default MetricCircleView;

@@ -2,7 +2,7 @@ fragment ChallengeCard on Challenge {
   id
   displayName
   nameID
-  activity {
+  metrics {
     id
     name
     value

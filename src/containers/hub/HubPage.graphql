@@ -23,7 +23,7 @@ fragment HubPage on Hub {
   id
   nameID
   displayName
-  activity {
+  metrics {
     id
     name
     value

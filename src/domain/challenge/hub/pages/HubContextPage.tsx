@@ -33,7 +33,7 @@ const HubContextPage: FC<HubContextPageProps> = ({ paths }) => {
             }}
             options={{}}
             actions={{}}
-            activity={entities.activity}
+            metrics={entities.metrics}
           />
         )}
       </ContextTabContainer>

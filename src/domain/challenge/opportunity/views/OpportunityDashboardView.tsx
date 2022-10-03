@@ -36,7 +36,7 @@ import { ActivityLogSection } from '../../../shared/components/ActivityLog';
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
   opportunity: OpportunityPageFragment;
-  // activity: ActivityItem[];
+  // activity: MetricsItem[];
   availableActorGroupNames: string[];
   existingAspectNames: string[];
   discussions: Discussion[];

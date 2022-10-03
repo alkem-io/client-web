@@ -1,18 +1,18 @@
 import { Grid, Skeleton, Theme, useMediaQuery } from '@mui/material';
 import React, { FC } from 'react';
 import WrapperTypography from '../../../core/WrapperTypography';
-import { ActivityType } from '../../../../../domain/platform/activity/ActivityType';
-import ActivityCircleView from '../../../../../domain/platform/activity/ActivityCircleView';
+import { MetricType } from '../../../../../domain/platform/metrics/MetricType';
+import MetricCircleView from '../../../../../domain/platform/metrics/MetricCircleView';
 
-export interface ActivityItem {
+export interface MetricItem {
   name: string;
-  type?: ActivityType;
+  type?: MetricType;
   isLoading?: boolean;
   count: number;
   color?: 'positive' | 'neutral' | 'primary' | 'neutralMedium';
 }
 
-export const Activities: FC<{ items: ActivityItem[]; asList?: boolean }> = ({ items, asList = true, children }) => {
+export const Metrics: FC<{ items: MetricItem[]; asList?: boolean }> = ({ items, asList = true, children }) => {
   const mediumScreen = useMediaQuery<Theme>(theme => theme.breakpoints.down('md'));
   const maxHeightSteps = mediumScreen || asList ? items.length : items.length / 2 + 1;
   return (
@@ -25,9 +25,9 @@ export const Activities: FC<{ items: ActivityItem[]; asList?: boolean }> = ({ it
               {isLoading && <Skeleton variant="text" sx={{ minWidth: 150 }} />}
             </Grid>
             <Grid item>
-              <ActivityCircleView color={color} loading={isLoading}>
+              <MetricCircleView color={color} loading={isLoading}>
                 {count}
-              </ActivityCircleView>
+              </MetricCircleView>
             </Grid>
           </Grid>
         </Grid>
