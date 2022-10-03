@@ -47,7 +47,13 @@ const OpportunityRoute: FC<OpportunityRootProps> = ({ paths: _paths }) => {
 
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}`}
-          element={<Navigate replace to={`${resolved.pathname}/${routes.Explore}`} />}
+          element={
+            <CalloutsPage
+              entityTypeName="opportunity"
+              rootUrl={`${resolved.pathname}/${routes.Explore}`}
+              scrollToCallout
+            />
+          }
         />
         <Route
           path={`${routes.Explore}/callouts/:${nameOfUrl.calloutNameId}/*`}
