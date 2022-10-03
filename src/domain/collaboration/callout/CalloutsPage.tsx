@@ -14,7 +14,7 @@ import AspectCallout from './aspect/AspectCallout';
 import CanvasCallout from './canvas/CanvasCallout';
 import CommentsCallout from './comments/CommentsCallout';
 import useCallouts from './useCallouts';
-import useScrollToElement from '../../shared/utils/scroll-utils/ScrollToElement';
+import useScrollToElement from '../../shared/utils/scroll/useScrollToElement';
 
 interface CalloutsPageProps {
   entityTypeName: EntityTypeName;
@@ -50,7 +50,7 @@ const CalloutsPage = ({ entityTypeName, rootUrl, scrollToCallout = false }: Call
   const { handleEdit, handleVisibilityChange, handleDelete } = useCalloutEdit();
 
   // Scroll to Callout handler:
-  const { addElement } = useScrollToElement({ elementId: calloutNameId, enabled: scrollToCallout });
+  const addElement = useScrollToElement(scrollToCallout, calloutNameId);
 
   return (
     <>
