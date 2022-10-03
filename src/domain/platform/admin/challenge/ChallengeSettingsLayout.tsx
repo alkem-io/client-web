@@ -23,7 +23,7 @@ const tabs: TabDefinition<SettingsSection>[] = [
   },
   {
     section: SettingsSection.InnovationFlow,
-    route: 'opportunities',
+    route: 'innovation-flow',
     icon: PolylineOutlinedIcon,
   },
 ];
