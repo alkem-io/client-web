@@ -29,12 +29,14 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-  const { user } = useUserContext();
+  const { isAuthenticated } = useUserContext();
   const getCardLabel = useCallback(
     (roles: string[]) => {
-      return roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member);
+      return isAuthenticated
+        ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
+        : undefined;
     },
-    [user]
+    [isAuthenticated]
   );
 
   const groupKey = getGroupKey(groupBy);
