@@ -50,7 +50,12 @@ const ChallengeContextView: FC = () => {
   let submitWired;
   return (
     <Grid container spacing={2}>
-      <ContextForm context={challenge?.context} onSubmit={onSubmit} wireSubmit={submit => (submitWired = submit)} />
+      <ContextForm
+        journeyType="challenge"
+        context={challenge?.context}
+        onSubmit={onSubmit}
+        wireSubmit={submit => (submitWired = submit)}
+      />
       <Grid container item justifyContent={'flex-end'}>
         <WrapperButton
           disabled={isUpdating}

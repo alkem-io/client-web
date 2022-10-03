@@ -55,6 +55,7 @@ const OpportunityContextView: FC = () => {
   return (
     <Grid container spacing={2}>
       <ContextForm
+        journeyType="opportunity"
         context={opportunity?.context as Context}
         onSubmit={onSubmit}
         wireSubmit={submit => (submitWired = submit)}

@@ -71,6 +71,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, ent
 
   return (
     <ContextSection
+      contextType="hub"
       primaryAction={
         hubId && hubNameId && hubDisplayName ? (
           <ApplicationButtonContainer>

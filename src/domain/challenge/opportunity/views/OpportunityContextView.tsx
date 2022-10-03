@@ -78,6 +78,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
 
   return (
     <ContextSection
+      contextType="opportunity"
       primaryAction={
         <Box display="flex">
           <LifecycleState lifecycle={opportunityLifecycle} />

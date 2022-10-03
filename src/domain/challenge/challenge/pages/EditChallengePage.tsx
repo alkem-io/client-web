@@ -121,6 +121,7 @@ const EditChallengePage: FC<Props> = ({ paths, mode, title }) => {
       <ProfileFormWithContext
         isEdit={mode === FormMode.update}
         name={challenge?.displayName}
+        journeyType="challenge"
         nameID={challenge?.nameID}
         tagset={challenge?.tagset}
         context={challenge?.context}

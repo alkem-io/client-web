@@ -4,6 +4,8 @@ import * as yup from 'yup';
 import { LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
 import MarkdownInput from './MarkdownInput';
 
+export type JourneyType = 'hub' | 'challenge' | 'opportunity';
+
 export const contextSegmentSchema = yup.object().shape({
   background: yup.string(),
   impact: yup.string(),
@@ -12,41 +14,43 @@ export const contextSegmentSchema = yup.object().shape({
   who: yup.string(),
 });
 
-interface ContextSegmentProps {}
+interface ContextSegmentProps {
+  contextType: JourneyType;
+}
 
-export const ContextSegment: FC<ContextSegmentProps> = () => {
+export const ContextSegment: FC<ContextSegmentProps> = ({ contextType }) => {
   const { t } = useTranslation();
 
   return (
     <>
       <MarkdownInput
         name="vision"
-        label={t('components.contextSegment.vision.title')}
-        tooltipLabel={t('components.contextSegment.vision.tooltip')}
+        label={t(`components.contextSegment.${contextType}.vision.title` as const)}
+        tooltipLabel={t(`components.contextSegment.${contextType}.vision.tooltip` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="background"
-        label={t('components.contextSegment.background.title')}
-        tooltipLabel={t('components.contextSegment.background.tooltip')}
+        label={t(`components.contextSegment.${contextType}.background.title` as const)}
+        tooltipLabel={t(`components.contextSegment.${contextType}.background.tooltip` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="impact"
-        label={t('components.contextSegment.impact.title')}
-        tooltipLabel={t('components.contextSegment.impact.tooltip')}
+        label={t(`components.contextSegment.${contextType}.impact.title` as const)}
+        tooltipLabel={t(`components.contextSegment.${contextType}.impact.tooltip` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="who"
-        label={t('components.contextSegment.who.title')}
-        tooltipLabel={t('components.contextSegment.who.tooltip')}
+        label={t(`components.contextSegment.${contextType}.who.title` as const)}
+        tooltipLabel={t(`components.contextSegment.${contextType}.who.tooltip` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter

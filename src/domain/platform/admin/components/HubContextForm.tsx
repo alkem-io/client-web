@@ -105,7 +105,7 @@ const HubEditForm: FC<Props> = ({ context, name, nameID, hostID, tagset, onSubmi
           isSubmitWired = true;
         }
 
-        return <ContextSegment />;
+        return <ContextSegment contextType="hub" />;
       }}
     </Formik>
   );

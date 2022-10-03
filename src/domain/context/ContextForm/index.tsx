@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import React, { FC } from 'react';
 import * as yup from 'yup';
+import { JourneyType } from '../../../common/components/composite/sections/ContextSection';
 import { Context } from '../../../models/graphql-schema';
 import { ContextSegment, contextSegmentSchema } from '../../platform/admin/components/Common/ContextSegment';
 
@@ -15,9 +16,10 @@ interface Props {
   context?: Context;
   onSubmit: (formData: ContextFormValues) => void;
   wireSubmit: (setter: () => void) => void;
+  journeyType: JourneyType;
 }
 
-export const ContextForm: FC<Props> = ({ context, onSubmit, wireSubmit }) => {
+export const ContextForm: FC<Props> = ({ context, onSubmit, wireSubmit, journeyType }) => {
   const initialValues: ContextFormValues = {
     background: context?.background || '',
     impact: context?.impact || '',
@@ -50,7 +52,7 @@ export const ContextForm: FC<Props> = ({ context, onSubmit, wireSubmit }) => {
           isSubmitWired = true;
         }
 
-        return <ContextSegment />;
+        return <ContextSegment contextType={journeyType} />;
       }}
     </Formik>
   );

@@ -83,6 +83,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
   return (
     <>
       <ContextSection
+        contextType="challenge"
         primaryAction={
           <Box display="flex">
             <LifecycleState lifecycle={challengeLifecycle} />

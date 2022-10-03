@@ -8,6 +8,7 @@ import ContextReferenceSegment from '../../../../domain/platform/admin/component
 import {
   ContextSegment,
   contextSegmentSchema,
+  JourneyType,
 } from '../../../../domain/platform/admin/components/Common/ContextSegment';
 import { NameSegment, nameSegmentSchema } from '../../../../domain/platform/admin/components/Common/NameSegment';
 import { referenceSegmentSchema } from '../../../../domain/platform/admin/components/Common/ReferenceSegment';
@@ -55,6 +56,7 @@ interface Props {
   wireSubmit: (setter: () => void) => void;
   contextOnly?: boolean;
   isEdit: boolean;
+  journeyType: JourneyType;
 }
 // TODO: Should be renamed. Maybe 'ContextForm'
 const ProfileFormWithContext: FC<Props> = ({
@@ -67,6 +69,7 @@ const ProfileFormWithContext: FC<Props> = ({
   wireSubmit,
   isEdit,
   contextOnly = false,
+  journeyType,
 }) => {
   const { t } = useTranslation();
   const tagsets = useMemo(() => {
@@ -148,7 +151,7 @@ const ProfileFormWithContext: FC<Props> = ({
               </>
             )}
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
-            <ContextSegment />
+            <ContextSegment contextType={journeyType} />
 
             {!contextOnly && (
               <>

@@ -15,8 +15,11 @@ import DashboardColumn, { ContextSectionColumnProps } from './DashboardSection/D
 import LocationView from '../../../../domain/common/location/LocationView';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 
+export type JourneyType = 'hub' | 'challenge' | 'opportunity';
+
 export interface ContextSectionProps {
   contextId?: string;
+  contextType: JourneyType;
   primaryAction?: ReactNode;
   displayName?: string;
   tagline?: string;
@@ -32,6 +35,7 @@ export interface ContextSectionProps {
 }
 
 const ContextSection: FC<ContextSectionProps> = ({
+  contextType,
   primaryAction,
   background,
   displayName,
@@ -61,25 +65,25 @@ const ContextSection: FC<ContextSectionProps> = ({
             <SectionSpacer />
             <LocationView location={formatLocation(location)} />
             <SectionSpacer />
-            <SectionHeader text={t('components.contextSegment.vision.title')} />
+            <SectionHeader text={t(`components.contextSegment.${contextType}.vision.title` as const)} />
             <Typography component={WrapperMarkdown} variant="body1" children={vision} />
           </DashboardSection>
           <DashboardSection
-            headerText={t('components.contextSegment.background.title')}
+            headerText={t(`components.contextSegment.${contextType}.background.title` as const)}
             primaryAction={<ContextSectionIcon component={MenuBookIcon} />}
             collapsible
           >
             <Typography component={WrapperMarkdown} variant="body1" children={background} />
           </DashboardSection>
           <DashboardSection
-            headerText={t('components.contextSegment.impact.title')}
+            headerText={t(`components.contextSegment.${contextType}.impact.title` as const)}
             primaryAction={<ContextSectionIcon component={PublicIcon} />}
             collapsible
           >
             <Typography component={WrapperMarkdown} variant="body1" children={impact} />
           </DashboardSection>
           <DashboardSection
-            headerText={t('components.contextSegment.who.title')}
+            headerText={t(`components.contextSegment.${contextType}.who.title` as const)}
             primaryAction={<ContextSectionIcon component={PeopleAltIcon} />}
             collapsible
           >
