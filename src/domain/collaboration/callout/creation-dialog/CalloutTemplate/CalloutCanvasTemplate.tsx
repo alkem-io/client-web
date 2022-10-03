@@ -2,16 +2,16 @@ import React, { FC } from 'react';
 import {
   useCanvasTemplatesOnCalloutCreationQuery,
   useCanvasTemplateValueQuery,
-} from '../../../../../../hooks/generated/graphql';
-import { CalloutType } from '../../../../../../models/graphql-schema';
-import { useHub } from '../../../../../challenge/hub/HubContext/useHub';
-import CanvasPreview from '../../../../canvas/CanvasPreview/CanvasPreview';
-import { CalloutTemplateStepProps } from './CalloutTemplateStepProps';
+} from '../../../../../hooks/generated/graphql';
+import { CalloutType } from '../../../../../models/graphql-schema';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
+import CanvasPreview from '../../../canvas/CanvasPreview/CanvasPreview';
+import { CalloutTemplateProps } from './CalloutTemplateProps';
 import { TemplateListWithPreview } from './TemplateListWithPreview';
 
-export interface CalloutCanvasTemplateStepProps extends CalloutTemplateStepProps {}
+export interface CalloutCanvasTemplateProps extends CalloutTemplateProps {}
 
-const CalloutCanvasTemplateStep: FC<CalloutCanvasTemplateStepProps> = ({ callout, onChange }) => {
+const CalloutCanvasTemplate: FC<CalloutCanvasTemplateProps> = ({ callout, onChange }) => {
   const { hubId } = useHub();
 
   const { data: hubCanvasTemplates, loading: canvasTemplatesLoading } = useCanvasTemplatesOnCalloutCreationQuery({
@@ -37,4 +37,4 @@ const CalloutCanvasTemplateStep: FC<CalloutCanvasTemplateStepProps> = ({ callout
     />
   );
 };
-export default CalloutCanvasTemplateStep;
+export default CalloutCanvasTemplate;

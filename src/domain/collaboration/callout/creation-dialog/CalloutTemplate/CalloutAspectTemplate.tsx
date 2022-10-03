@@ -2,16 +2,16 @@ import React, { FC } from 'react';
 import {
   useAspectTemplatesOnCalloutCreationQuery,
   useAspectTemplateValueQuery,
-} from '../../../../../../hooks/generated/graphql';
-import { CalloutType } from '../../../../../../models/graphql-schema';
-import { useHub } from '../../../../../challenge/hub/HubContext/useHub';
-import AspectTemplatePreview from '../../../../aspect/AspectTemplatePreview/AspectTemplatePreview';
+} from '../../../../../hooks/generated/graphql';
+import { CalloutType } from '../../../../../models/graphql-schema';
+import { useHub } from '../../../../challenge/hub/HubContext/useHub';
+import AspectTemplatePreview from '../../../aspect/AspectTemplatePreview/AspectTemplatePreview';
 import { TemplateListWithPreview } from './TemplateListWithPreview';
-import { CalloutTemplateStepProps } from './CalloutTemplateStepProps';
+import { CalloutTemplateProps } from './CalloutTemplateProps';
 
-export interface CalloutAspectTemplateStepProps extends CalloutTemplateStepProps {}
+export interface CalloutAspectTemplateProps extends CalloutTemplateProps {}
 
-const CalloutAspectTemplateStep: FC<CalloutAspectTemplateStepProps> = ({ callout, onChange }) => {
+const CalloutAspectTemplate: FC<CalloutAspectTemplateProps> = ({ callout, onChange }) => {
   const { hubId } = useHub();
 
   const { data: hubAspectTemplates, loading: aspectTemplatesLoading } = useAspectTemplatesOnCalloutCreationQuery({
@@ -47,4 +47,4 @@ const CalloutAspectTemplateStep: FC<CalloutAspectTemplateStepProps> = ({ callout
     />
   );
 };
-export default CalloutAspectTemplateStep;
+export default CalloutAspectTemplate;
