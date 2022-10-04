@@ -169,6 +169,7 @@
     "help": "Help",
     "loading": "Loading...",
     "language": "Language",
+    "innovation-flow": "Innovation flow",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -949,6 +950,9 @@
         "sections": {
           "opportunities": {
             "description": "Here you can edit opportunities for this challenge."
+          },
+          "innovation-flow": {
+            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
           }
         },
         "notifications": {
@@ -984,6 +988,11 @@
           "opportunity-created": "Opportunity created successfully.",
           "opportunity-removed": "Opportunity removed successfully.",
           "opportunity-updated": "Opportunity updated successfully."
+        },
+        "sections": {
+          "innovation-flow": {
+            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
+          }
         }
       },
       "users": {

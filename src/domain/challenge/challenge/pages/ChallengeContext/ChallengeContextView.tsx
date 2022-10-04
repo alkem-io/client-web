@@ -10,9 +10,6 @@ import {
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
-import Loading from '../../../../../common/components/core/Loading/Loading';
-import EditLifecycle from '../../../../platform/admin/templates/InnovationTemplates/EditLifecycle';
-import ChallengeLifecycleContainer from '../../../../../containers/challenge/ChallengeLifecycleContainer';
 import { ChallengeContextSegment } from '../../../../platform/admin/challenge/ChallengeContextSegment';
 
 const ChallengeContextView: FC = () => {
@@ -65,15 +62,6 @@ const ChallengeContextView: FC = () => {
           text={t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
         />
       </Grid>
-      <ChallengeLifecycleContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
-        {({ loading, ...provided }) => {
-          if (loading) {
-            return <Loading text="Loading" />;
-          }
-
-          return <EditLifecycle id={challengeId} {...provided} />;
-        }}
-      </ChallengeLifecycleContainer>
     </Grid>
   );
 };
