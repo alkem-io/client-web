@@ -297,7 +297,6 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
       handleSearch(value);
     }
   };
-  console.log('selectedElements', selectedElements);
 
   return (
     <>
