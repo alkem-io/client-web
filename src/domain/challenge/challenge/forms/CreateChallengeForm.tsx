@@ -68,7 +68,11 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       .trim()
       .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    tags: yup.array().of(yup.string().min(2)).required(validationRequiredString),
+    tags: yup
+      .array()
+      .of(yup.string().min(2))
+      .required(validationRequiredString)
+      .test('is-empty', validationRequiredString, value => Boolean(value && value.length > 0)),
   });
 
   return (
@@ -76,7 +80,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       initialValues={initialValues}
       validationSchema={validationSchema}
       enableReinitialize
-      isInitialValid={false}
+      validateOnMount
       onSubmit={() => {}}
     >
       {() => (
@@ -85,7 +89,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
           <FormikInputField
             name="displayName"
             title={t('context.challenge.displayName.title')}
-            placeholder={t('context.challenge.displayName.placeholder')}
             helperText={t('context.challenge.displayName.description')}
             disabled={isSubmitting}
             withCounter
@@ -95,7 +98,6 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
           <FormikInputField
             name="tagline"
             title={t('context.challenge.tagline.title')}
-            placeholder={t('context.challenge.tagline.placeholder')}
             helperText={t('context.challenge.tagline.description')}
             disabled={isSubmitting}
             withCounter
