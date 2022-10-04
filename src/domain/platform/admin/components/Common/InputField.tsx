@@ -37,7 +37,7 @@ const InputField: FC<InputFieldProps> = ({
         required={required}
         multiline={!!rows && rows > 1}
         rows={rows}
-        helpText={helpText}
+        helpIconText={helpText}
         loading={loading}
       />
     </Grid>
