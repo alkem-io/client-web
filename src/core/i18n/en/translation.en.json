@@ -303,6 +303,9 @@
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted."
   },
+  "journey-creation": {
+    "dialog-title": "Create a new {{entity}}"
+  },
   "context": {
     "hub": {
       "tagline": {
