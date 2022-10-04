@@ -10,6 +10,7 @@ import ChallengeCommunityAdminPage from '../ChallengeCommunityAdminPage';
 import ChallengeAuthorizationRoute from './ChallengeAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
 import ChallengeContextPage from '../../../../challenge/challenge/pages/ChallengeContext/ChallengeContextPage';
+import ChallengeInnovationFlowPage from '../../../../challenge/challenge/pages/InnovationFlow/ChallengeInnovationFlowPage';
 
 export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
   const { pathname: url } = useResolvedPath('.');
@@ -55,6 +56,7 @@ export const ChallengeRoute: FC<PageProps> = ({ paths }) => {
           path="authorization/*"
           element={<ChallengeAuthorizationRoute paths={currentPaths} resourceId={challengeId} />}
         />
+        <Route path={'innovation-flow/*'} element={<ChallengeInnovationFlowPage paths={currentPaths} />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>
