@@ -5,10 +5,11 @@ query opportunityLifecycle($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
       id
       lifecycle {
         id
-      	machineDef
-    		state
+        machineDef
+        state
         nextEvents
         stateIsFinal
+        templateName
       }
     }
   }
