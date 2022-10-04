@@ -8,7 +8,7 @@ import {
   useUpdateOpportunityInnovationFlowMutation,
 } from '../../../../../../hooks/generated/graphql';
 import Loading from '../../../../../../common/components/core/Loading/Loading';
-import EditLifecycle from '../../../../../platform/admin/templates/InnovationTemplates/EditLifecycle';
+import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
 import OpportunityLifecycleContainer from '../../../../../../containers/opportunity/OpportunityLifecycleContainer';
 import { LifecycleType } from '../../../../../../models/graphql-schema';
 import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
@@ -61,7 +61,7 @@ const OpportunityInnovationFlowView: FC = () => {
           }
 
           return (
-            <EditLifecycle
+            <UpdateInnovationFlow
               id={opportunityId}
               innovationFlowTemplates={filteredInnovationFlowTemplates}
               onSubmit={onSubmit}

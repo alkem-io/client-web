@@ -2,8 +2,7 @@ import React, { FC, useCallback, useState } from 'react';
 import { Button, Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Lifecycle } from '../../../../../models/graphql-schema';
-import LifecycleVisualizer from './LifecycleVisualizer';
-import LifecycleButton from './LifecycleButton';
+import InnovationFlowVisualizer from './InnovationFlowVisualizer';
 import SelectInnovationFlowDialog, {
   LifecycleTemplate,
   SelectInnovationFlowFormValuesType,
@@ -17,7 +16,13 @@ interface EditLifecycleProps {
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
 }
 
-const EditLifecycle: FC<EditLifecycleProps> = ({ lifecycle, id, onSetNewState, innovationFlowTemplates, onSubmit }) => {
+const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
+  lifecycle,
+  id,
+  onSetNewState,
+  innovationFlowTemplates,
+  onSubmit,
+}) => {
   const { t } = useTranslation();
   const [isSelectInnovationFlowDialogOpen, setSelectInnovationFlowDialogOpen] = useState(false);
   // const [isConfirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
@@ -34,15 +39,17 @@ const EditLifecycle: FC<EditLifecycleProps> = ({ lifecycle, id, onSetNewState, i
 
   return (
     <>
-      {lifecycle && <LifecycleVisualizer lifecycle={lifecycle} />}
+      {lifecycle && <InnovationFlowVisualizer lifecycle={lifecycle} />}
       <Button variant="outlined" onClick={openSelectInnovationFlowDialog}>
         {t('buttons.change-template')}
       </Button>
       {nextEvents && (
         <Grid container spacing={1} justifyContent="flex-end">
-          {nextEvents.map((x, i) => (
+          {nextEvents.map((stateName, i) => (
             <Grid item key={i}>
-              <LifecycleButton stateName={x} onClick={() => onSetNewState(id, x)} />
+              <Button variant="contained" color="primary" onClick={() => onSetNewState(id, stateName)}>
+                {stateName}
+              </Button>
             </Grid>
           ))}
         </Grid>
@@ -57,4 +64,4 @@ const EditLifecycle: FC<EditLifecycleProps> = ({ lifecycle, id, onSetNewState, i
     </>
   );
 };
-export default EditLifecycle;
+export default UpdateInnovationFlow;

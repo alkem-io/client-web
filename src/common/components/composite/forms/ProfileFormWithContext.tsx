@@ -17,7 +17,7 @@ import InputField from '../../../../domain/platform/admin/components/Common/Inpu
 import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
-import { LifecycleTemplateSegment } from '../../../../domain/platform/admin/components/Common/LifecycleTemplateSegment';
+import { InnovationFlowTemplateSegment } from '../../../../domain/platform/admin/components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from './FormikSelect';
 import { JourneyType } from '../../../../domain/challenge/JourneyType';
 
@@ -169,7 +169,7 @@ const ProfileFormWithContext: FC<Props> = ({
                     <Grid item xs={12}>
                       <WrapperTypography variant={'h4'}>Innovation flow template</WrapperTypography>
                     </Grid>
-                    <LifecycleTemplateSegment
+                    <InnovationFlowTemplateSegment
                       innovationFlowTemplateOptions={innovationFlowTemplateOptions}
                       definition={selectedInnovationFlowTemplate?.definition || ''}
                       required

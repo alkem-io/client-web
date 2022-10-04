@@ -6,7 +6,7 @@ import { Box, Button } from '@mui/material';
 import * as yup from 'yup';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
 import PolylineOutlinedIcon from '@mui/icons-material/PolylineOutlined';
-import { LifecycleTemplateSegment } from '../../components/Common/LifecycleTemplateSegment';
+import { InnovationFlowTemplateSegment } from '../../components/Common/InnovationFlowTemplateSegment';
 import { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
 import { LifecycleType } from '../../../../../models/graphql-schema';
 
@@ -85,7 +85,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
               );
 
               return (
-                <LifecycleTemplateSegment
+                <InnovationFlowTemplateSegment
                   innovationFlowTemplateOptions={innovationFlowTemplateOptions}
                   definition={selectedInnovationFlowTemplate?.definition || ''}
                   required

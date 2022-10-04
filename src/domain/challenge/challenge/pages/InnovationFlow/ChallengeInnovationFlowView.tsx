@@ -8,7 +8,7 @@ import {
   useUpdateChallengeInnovationFlowMutation,
 } from '../../../../../hooks/generated/graphql';
 import Loading from '../../../../../common/components/core/Loading/Loading';
-import EditLifecycle from '../../../../platform/admin/templates/InnovationTemplates/EditLifecycle';
+import UpdateInnovationFlow from '../../../../platform/admin/templates/InnovationTemplates/UpdateInnovationFlow';
 import ChallengeLifecycleContainer from '../../../../../containers/challenge/ChallengeLifecycleContainer';
 import { LifecycleType } from '../../../../../models/graphql-schema';
 import { SelectInnovationFlowFormValuesType } from '../../../../platform/admin/templates/InnovationTemplates/SelectInnovationFlowDialog';
@@ -60,7 +60,7 @@ const ChallengeInnovationFlowView: FC = () => {
           }
 
           return (
-            <EditLifecycle
+            <UpdateInnovationFlow
               id={challengeId}
               innovationFlowTemplates={filteredInnovationFlowTemplates}
               onSubmit={onSubmit}
