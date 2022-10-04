@@ -52,7 +52,7 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
             placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}
             disabled={disabled}
-            helpText={helpText}
+            helpTextIcon={helpText}
             loading={loading}
           />
         ))
@@ -70,7 +70,8 @@ interface TagsetFieldProps {
   placeholder?: string;
   as?: React.ElementType;
   disabled?: boolean;
-  helpText?: string;
+  helpTextIcon?: string;
+  helperText?: string;
   loading?: boolean;
 }
 
@@ -81,7 +82,8 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   readOnly = false,
   disabled = false,
   placeholder,
-  helpText,
+  helpTextIcon,
+  helperText,
   loading,
 }) => {
   const [field, meta, helper] = useField(name);
@@ -96,9 +98,9 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         required={required}
         disabled={disabled}
         readOnly={readOnly}
-        error={Boolean(meta.error)}
-        helperText={meta.error}
-        helpText={helpText}
+        error={Boolean(meta.error) && meta.touched}
+        helperText={meta.error ?? helperText}
+        helpTextIcon={helpTextIcon}
         onChange={items => helper.setValue(items)}
         InputLabelProps={{
           shrink: true,

@@ -36,6 +36,7 @@ interface MarkdownFieldProps extends InputProps {
   rows?: number;
   maxLength?: number;
   withCounter?: boolean;
+  helperText?: string;
   loading?: boolean;
   inputLabelComponent?: ComponentType<InputLabelProps>;
 }
@@ -52,16 +53,26 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   rows = 10,
   maxLength,
   withCounter = false,
+  helperText: _helperText,
   loading,
   inputLabelComponent: InputLabelComponent = InputLabel,
 }) => {
   const styles = useStyle();
   const [field, meta, helper] = useField(name);
-  const validClass = useMemo(() => (!Boolean(meta.error) && meta.touched ? 'is-valid' : undefined), [meta]);
+  const isError = Boolean(meta.error) && meta.touched;
+
+  const validClass = useMemo(() => (!isError && meta.touched ? 'is-valid' : undefined), [meta]);
   const invalidClass = useMemo(
-    () => (required && Boolean(meta.error) && meta.touched ? 'is-invalid' : undefined),
+    () => (required && isError && meta.touched ? 'is-invalid' : undefined),
     [meta]
   );
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return _helperText;
+    }
+
+    return meta.error;
+  }, [isError, meta.error]);
 
   return (
     <FormGroup>
@@ -91,7 +102,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         }}
       />
       {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
-      {meta.touched && <FormHelperText error={Boolean(meta.error)}>{meta.error}</FormHelperText>}
+      <FormHelperText error={isError}>{helperText}</FormHelperText>
     </FormGroup>
   );
 };
