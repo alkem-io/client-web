@@ -106,11 +106,7 @@ const ProfileForm: FC<Props> = ({
               cityFieldName="location.city"
               countryFieldName="location.country"
             />
-            <InputField
-              name="tagline"
-              label={t(`components.contextSegment.${journeyType}.tagline.title` as const)}
-              rows={3}
-            />
+            <InputField name="tagline" label={t(`context.${journeyType}.tagline.title` as const)} rows={3} />
             <Grid item xs={12}>
               <WrapperTypography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}

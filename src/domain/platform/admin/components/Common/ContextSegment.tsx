@@ -22,32 +22,32 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
     <>
       <MarkdownInput
         name="vision"
-        label={t(`components.contextSegment.${contextType}.vision.title` as const)}
-        tooltipLabel={t(`components.contextSegment.${contextType}.vision.tooltip` as const)}
+        label={t(`context.${contextType}.vision.title` as const)}
+        tooltipLabel={t(`context.${contextType}.vision.tooltip` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="background"
-        label={t(`components.contextSegment.${contextType}.background.title` as const)}
-        tooltipLabel={t(`components.contextSegment.${contextType}.background.tooltip` as const)}
+        label={t(`context.${contextType}.background.title` as const)}
+        tooltipLabel={t(`context.${contextType}.background.tooltip` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="impact"
-        label={t(`components.contextSegment.${contextType}.impact.title` as const)}
-        tooltipLabel={t(`components.contextSegment.${contextType}.impact.tooltip` as const)}
+        label={t(`context.${contextType}.impact.title` as const)}
+        tooltipLabel={t(`context.${contextType}.impact.tooltip` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="who"
-        label={t(`components.contextSegment.${contextType}.who.title` as const)}
-        tooltipLabel={t(`components.contextSegment.${contextType}.who.tooltip` as const)}
+        label={t(`context.${contextType}.who.title` as const)}
+        tooltipLabel={t(`context.${contextType}.who.tooltip` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter

@@ -150,11 +150,7 @@ const ProfileFormWithContext: FC<Props> = ({
             {!contextOnly && (
               <>
                 <NameSegment disabled={isEdit} required={!isEdit} />
-                <InputField
-                  name="tagline"
-                  label={t(`components.contextSegment.${journeyType}.tagline.title` as const)}
-                  rows={3}
-                />
+                <InputField name="tagline" label={t(`context.${journeyType}.tagline.title` as const)} rows={3} />
               </>
             )}
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />

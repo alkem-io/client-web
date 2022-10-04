@@ -302,6 +302,74 @@
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted."
   },
+  "context": {
+    "hub": {
+      "tagline": {
+        "title": "Tagline",
+        "tooltip": "Explain in one sentence..."
+      },
+      "background": {
+        "title": "Background",
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
+      },
+      "vision": {
+        "title": "Vision",
+        "tooltip": "What does success look like? How will you know when you have achieved it?"
+      },
+      "who": {
+        "title": "Who",
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?"
+      }
+    },
+    "challenge": {
+      "tagline": {
+        "title": "Tagline",
+        "tooltip": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with How might we..."
+      },
+      "background": {
+        "title": "Background",
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
+      },
+      "vision": {
+        "title": "Vision",
+        "tooltip": "What does success look like? How will you know when you have achieved it?"
+      },
+      "who": {
+        "title": "Who",
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?"
+      }
+    },
+    "opportunity": {
+      "tagline": {
+        "title": "Tagline",
+        "tooltip": "Explain in one sentence..."
+      },
+      "background": {
+        "title": "Background",
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
+      },
+      "vision": {
+        "title": "Vision",
+        "tooltip": "What does success look like? How will you know when you have achieved it?"
+      },
+      "who": {
+        "title": "Who",
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?"
+      }
+    }
+  },
   "forms": {
     "validations": {
       "required": "This field is required!",
@@ -505,74 +573,6 @@
       "nameID": {
         "title": "NameID",
         "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
-      }
-    },
-    "contextSegment": {
-      "hub": {
-        "tagline": {
-          "title": "Tagline",
-          "tooltip": "Explain in one sentence..."
-        },
-        "background": {
-          "title": "Background",
-          "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
-        },
-        "impact": {
-          "title": "Impact",
-          "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
-        },
-        "vision": {
-          "title": "Vision",
-          "tooltip": "What does success look like? How will you know when you have achieved it?"
-        },
-        "who": {
-          "title": "Who",
-          "tooltip": "What organisations or users should contribute? Why should they want to engage?"
-        }
-      },
-      "challenge": {
-        "tagline": {
-          "title": "Tagline",
-          "tooltip": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with How might we..."
-        },
-        "background": {
-          "title": "Background",
-          "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
-        },
-        "impact": {
-          "title": "Impact",
-          "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
-        },
-        "vision": {
-          "title": "Vision",
-          "tooltip": "What does success look like? How will you know when you have achieved it?"
-        },
-        "who": {
-          "title": "Who",
-          "tooltip": "What organisations or users should contribute? Why should they want to engage?"
-        }
-      },
-      "opportunity": {
-        "tagline": {
-          "title": "Tagline",
-          "tooltip": "Explain in one sentence..."
-        },
-        "background": {
-          "title": "Background",
-          "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
-        },
-        "impact": {
-          "title": "Impact",
-          "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
-        },
-        "vision": {
-          "title": "Vision",
-          "tooltip": "What does success look like? How will you know when you have achieved it?"
-        },
-        "who": {
-          "title": "Who",
-          "tooltip": "What organisations or users should contribute? Why should they want to engage?"
-        }
       }
     },
     "visualSegment": {
