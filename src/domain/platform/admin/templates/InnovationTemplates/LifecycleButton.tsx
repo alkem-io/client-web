@@ -1,11 +1,16 @@
 import React, { FC } from 'react';
-import WrapperButton, { ButtonProps } from '../../../../../common/components/core/WrapperButton';
+import { Button } from '@mui/material';
 
-interface LifecycleButtonProps extends ButtonProps {
+interface LifecycleButtonProps {
   stateName: string;
+  onClick: () => void;
 }
 
 const LifecycleButton: FC<LifecycleButtonProps> = ({ stateName, onClick }) => {
-  return <WrapperButton variant="default" onClick={onClick} text={stateName} />;
+  return (
+    <Button variant="contained" color="primary" onClick={onClick}>
+      {stateName}
+    </Button>
+  );
 };
 export default LifecycleButton;
