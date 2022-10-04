@@ -28,7 +28,6 @@ export const useJourneyCreation = () => {
     const { data } = await createChallengeLazy({
       variables: {
         input: {
-          nameID: generateNameId(value.displayName), // todo remove this after server makes it truly optional
           hubID: value.hubID,
           displayName: value.displayName,
           context: {
@@ -37,8 +36,8 @@ export const useJourneyCreation = () => {
             vision: value.vision,
           },
           tags: value.tags,
-        }
-      }
+        },
+      },
     });
 
     return data?.createChallenge;
@@ -48,7 +47,6 @@ export const useJourneyCreation = () => {
     const { data } = await createOpportunityLazy({
       variables: {
         input: {
-          nameID: generateNameId(value.displayName), // todo remove this after server makes it truly optional
           challengeID: value.challengeID,
           displayName: value.displayName,
           context: {
@@ -56,8 +54,8 @@ export const useJourneyCreation = () => {
             vision: value.vision,
           },
           tags: value.tags,
-        }
-      }
+        },
+      },
     });
 
     return data?.createOpportunity;
@@ -65,6 +63,3 @@ export const useJourneyCreation = () => {
 
   return { createChallenge, createOpportunity };
 };
-
-const generateNameId = (displayName: string) =>
-  displayName.split(' ')[0].concat(String(Math.random()).replace('.', ''));

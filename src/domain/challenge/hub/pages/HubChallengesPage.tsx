@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
@@ -20,32 +20,34 @@ export interface HubChallengesPageProps extends PageProps {}
 
 const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { hubNameId, permissions } = useHub();
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'challenges', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
-
-  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
 
   const { createChallenge } = useJourneyCreation();
 
-  const handleCreate = async (value: JourneyFormValues) => {
-    const result = await createChallenge({
-      hubID: hubNameId,
-      displayName: value.displayName,
-      tagline: value.tagline,
-      background: value.background ?? '',
-      vision: value.vision,
-      tags: value.tags,
-    });
+  const handleCreate = useCallback(
+    async (value: JourneyFormValues) => {
+      const result = await createChallenge({
+        hubID: hubNameId,
+        displayName: value.displayName,
+        tagline: value.tagline,
+        background: value.background ?? '',
+        vision: value.vision,
+        tags: value.tags,
+      });
 
-    if (!result) {
-      return ;
-    }
+      if (!result) {
+        return;
+      }
 
-    navigate(buildChallengeUrl(hubNameId, result.nameID));
-  };
+      navigate(buildChallengeUrl(hubNameId, result.nameID));
+    },
+    [navigate, createChallenge, hubNameId]
+  );
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Challenges}>

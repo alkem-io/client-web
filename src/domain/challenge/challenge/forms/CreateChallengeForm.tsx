@@ -28,13 +28,14 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
 
   const validationRequiredString = t('forms.validations.required');
 
-  const handleChanged = (value: FormValues) => onChanged({
-    displayName: value.displayName,
-    tagline: value.tagline,
-    background: value.background,
-    vision: value.background,
-    tags: value.tags,
-  });
+  const handleChanged = (value: FormValues) =>
+    onChanged({
+      displayName: value.displayName,
+      tagline: value.tagline,
+      background: value.background,
+      vision: value.background,
+      tags: value.tags,
+    });
 
   const initialValues: FormValues = {
     displayName: '',
@@ -45,21 +46,29 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
   };
 
   const validationSchema = yup.object().shape({
-    displayName: yup.string().trim()
+    displayName: yup
+      .string()
+      .trim()
       .min(3, MessageWithPayload('forms.validations.minLength'))
       .max(NORMAL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    tagline: yup.string().trim()
+    tagline: yup
+      .string()
+      .trim()
       .min(3, MessageWithPayload('forms.validations.minLength'))
       .max(NORMAL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    background: yup.string().trim()
+    background: yup
+      .string()
+      .trim()
       .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    vision: yup.string().trim()
+    vision: yup
+      .string()
+      .trim()
       .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    tags: yup.array().of(yup.string().min(2)).required(validationRequiredString)
+    tags: yup.array().of(yup.string().min(2)).required(validationRequiredString),
   });
 
   return (
@@ -75,9 +84,9 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
           <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
           <FormikInputField
             name="displayName"
-            title={t('common.name')}
-            placeholder={t('common.name')}
-            helperText={t('common.name')}
+            title={t('context.challenge.displayName.title')}
+            placeholder={t('context.challenge.displayName.placeholder')}
+            helperText={t('context.challenge.displayName.description')}
             disabled={isSubmitting}
             withCounter
             maxLength={NORMAL_TEXT_LENGTH}
@@ -85,9 +94,9 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
           <SectionSpacer />
           <FormikInputField
             name="tagline"
-            title={t('common.name')}
-            placeholder={t('common.name')}
-            helperText={t('common.name')}
+            title={t('context.challenge.tagline.title')}
+            placeholder={t('context.challenge.tagline.placeholder')}
+            helperText={t('context.challenge.tagline.description')}
             disabled={isSubmitting}
             withCounter
             maxLength={NORMAL_TEXT_LENGTH}
@@ -95,9 +104,9 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
           <SectionSpacer />
           <MarkdownInput
             name="background"
-            label={t('common.name')}
+            label={t('context.challenge.background.title')}
             rows={5}
-            helperText={t('common.name')}
+            helperText={t('context.challenge.background.description')}
             disabled={isSubmitting}
             withCounter
             maxLength={MARKDOWN_TEXT_LENGTH}
@@ -105,9 +114,9 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
           <SectionSpacer />
           <MarkdownInput
             name="vision"
-            label={t('common.name')}
+            label={t('context.challenge.vision.title')}
             rows={5}
-            helperText={t('common.name')}
+            helperText={t('context.challenge.vision.description')}
             disabled={isSubmitting}
             withCounter
             maxLength={MARKDOWN_TEXT_LENGTH}
@@ -116,8 +125,8 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
           <TagsetField
             name="tags"
             disabled={isSubmitting}
-            title={t('common.name')}
-            helperText={t('common.name')}
+            title={t('context.challenge.tags.title')}
+            helperText={t('context.challenge.tags.description')}
           />
         </Form>
       )}
