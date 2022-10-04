@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 
 import WrapperTypography from './WrapperTypography';
-import { trim, uniqBy } from 'lodash';
+import { uniqBy } from 'lodash';
 
 const useMultipleSelectStyles = makeStyles(theme => ({
   groupContainer: {
@@ -186,7 +186,9 @@ interface MultipleSelectProps {
 
 const filterEmptyValues = (values: MultiSelectElement[] | undefined) => {
   const filtered =
-    values?.map(item => ({ name: trim(item.name), id: item.id })).filter(item => item.name.length > 0) || [];
+    values
+      ?.map(item => ({ name: item?.name?.trim(), id: item?.id }))
+      .filter(item => !item || !item.name || item.name.length === 0) || [];
   return uniqBy(filtered, item => item.name);
 };
 
@@ -240,7 +242,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     const isAlreadySelected = selectedElements.find(el => el.name === value.name);
     if (isAlreadySelected) return;
 
-    const isEmpty = trim(value.name).length === 0;
+    const isEmpty = value.name.trim().length === 0;
     if (isEmpty) return;
 
     const newSelected = filterEmptyValues([...selectedElements, { name: value.name }]);
@@ -268,7 +270,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const handleSearch = (value?: string) => {
     value = value ?? input.current.value;
 
-    if (!value || trim(value).length === 0) {
+    if (!value || value.trim().length === 0) {
       return;
     }
 
