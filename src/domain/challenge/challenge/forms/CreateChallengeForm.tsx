@@ -33,7 +33,7 @@ export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting
       displayName: value.displayName,
       tagline: value.tagline,
       background: value.background,
-      vision: value.background,
+      vision: value.vision,
       tags: value.tags,
     });
 
