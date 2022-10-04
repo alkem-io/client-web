@@ -188,7 +188,7 @@ const filterEmptyValues = (values: MultiSelectElement[] | undefined) => {
   const filtered =
     values
       ?.map(item => ({ name: item?.name?.trim(), id: item?.id }))
-      .filter(item => !item || !item.name || item.name.length === 0) || [];
+      .filter(item => item && item.name && item.name.length > 0) || [];
   return uniqBy(filtered, item => item.name);
 };
 
