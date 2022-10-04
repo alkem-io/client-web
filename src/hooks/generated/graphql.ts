@@ -10205,6 +10205,7 @@ export const OpportunityLifecycleDocument = gql`
           state
           nextEvents
           stateIsFinal
+          templateName
         }
       }
     }

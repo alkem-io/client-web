@@ -21,6 +21,10 @@ const EditLifecycle: FC<EditLifecycleProps> = ({ lifecycle, id, onSetNewState, i
   const openSelectInnovationFlowDialog = () => setSelectInnovationFlowDialogOpen(true);
   const closeSelectInnovationFlowDialog = () => setSelectInnovationFlowDialogOpen(false);
 
+  const innovationFlowTemplate = innovationFlowTemplates?.find(
+    template => lifecycle && lifecycle.templateName && template.definition.includes(lifecycle.templateName)
+  );
+
   return (
     <>
       {lifecycle && <LifecycleVisualizer lifecycle={lifecycle} />}
@@ -40,7 +44,7 @@ const EditLifecycle: FC<EditLifecycleProps> = ({ lifecycle, id, onSetNewState, i
         isOpen={isSelectInnovationFlowDialogOpen}
         onClose={closeSelectInnovationFlowDialog}
         onSubmit={() => {}}
-        innovationFlowTemplateID={lifecycle?.templateName || ''}
+        innovationFlowTemplateID={innovationFlowTemplate?.id || ''}
         innovationFlowTemplates={innovationFlowTemplates}
       />
     </>

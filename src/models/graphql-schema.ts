@@ -9515,6 +9515,7 @@ export type OpportunityLifecycleQuery = {
             state?: string | undefined;
             nextEvents?: Array<string> | undefined;
             stateIsFinal: boolean;
+            templateName?: string | undefined;
           }
         | undefined;
     };
