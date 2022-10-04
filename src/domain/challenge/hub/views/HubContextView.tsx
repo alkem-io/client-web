@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import ContextSection from '../../../../common/components/composite/sections/ContextSection';
+import { HubContextSection } from './HubContextSection';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
 import { ContextTabFragment, Tagset, MetricsItemFragment, Context } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
@@ -70,7 +70,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, ent
   }, [activity, i18n.language]);
 
   return (
-    <ContextSection
+    <HubContextSection
       primaryAction={
         hubId && hubNameId && hubDisplayName ? (
           <ApplicationButtonContainer>

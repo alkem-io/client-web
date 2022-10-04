@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
-import ContextSection from '../../../../common/components/composite/sections/ContextSection';
+import { ChallengeContextSection } from './ChallengeContextSection';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
 import {
@@ -82,7 +82,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
 
   return (
     <>
-      <ContextSection
+      <ChallengeContextSection
         primaryAction={
           <Box display="flex">
             <LifecycleState lifecycle={challengeLifecycle} />

@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
-import ContextSection from '../../../../common/components/composite/sections/ContextSection';
+import { OpportunityContextSection } from './OpportunityContextSection';
 import {
   ContextTabFragment,
   Tagset,
@@ -77,7 +77,7 @@ const OpportunityContextView: FC<OpportunityContextViewProps> = ({ metrics: acti
   }, [activity, i18n.language]);
 
   return (
-    <ContextSection
+    <OpportunityContextSection
       primaryAction={
         <Box display="flex">
           <LifecycleState lifecycle={opportunityLifecycle} />
