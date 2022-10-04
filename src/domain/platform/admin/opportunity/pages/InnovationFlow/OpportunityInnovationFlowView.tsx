@@ -1,17 +1,21 @@
 import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
-import { useUrlParams } from '../../../../../../hooks';
+import { useApolloErrorHandler, useUrlParams } from '../../../../../../hooks';
 import {
+  refetchOpportunityProfileInfoQuery,
   useHubLifecycleTemplatesQuery,
   useOpportunityProfileInfoQuery,
+  useUpdateOpportunityInnovationFlowMutation,
 } from '../../../../../../hooks/generated/graphql';
 import Loading from '../../../../../../common/components/core/Loading/Loading';
 import EditLifecycle from '../../../../../platform/admin/templates/InnovationTemplates/EditLifecycle';
 import OpportunityLifecycleContainer from '../../../../../../containers/opportunity/OpportunityLifecycleContainer';
 import { LifecycleType } from '../../../../../../models/graphql-schema';
+import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
 
 const OpportunityInnovationFlowView: FC = () => {
   const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
+  const handleError = useApolloErrorHandler();
 
   const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
     variables: { hubId: hubNameId },
@@ -29,6 +33,25 @@ const OpportunityInnovationFlowView: FC = () => {
   const opportunity = opportunityProfile?.hub?.opportunity;
   const opportunityId = useMemo(() => opportunity?.id, [opportunity]);
 
+  const [updateOpportunityInnovationFlow] = useUpdateOpportunityInnovationFlowMutation({
+    onError: handleError,
+    refetchQueries: [refetchOpportunityProfileInfoQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
+    awaitRefetchQueries: true,
+  });
+
+  const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
+    const { innovationFlowTemplateID } = values;
+
+    updateOpportunityInnovationFlow({
+      variables: {
+        input: {
+          opportunityID: opportunityNameId,
+          innovationFlowTemplateID: innovationFlowTemplateID,
+        },
+      },
+    });
+  };
+
   return (
     <Grid container spacing={2}>
       <OpportunityLifecycleContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
@@ -38,7 +61,12 @@ const OpportunityInnovationFlowView: FC = () => {
           }
 
           return (
-            <EditLifecycle id={opportunityId} innovationFlowTemplates={filteredInnovationFlowTemplates} {...provided} />
+            <EditLifecycle
+              id={opportunityId}
+              innovationFlowTemplates={filteredInnovationFlowTemplates}
+              onSubmit={onSubmit}
+              {...provided}
+            />
           );
         }}
       </OpportunityLifecycleContainer>
