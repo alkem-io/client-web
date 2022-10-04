@@ -307,32 +307,32 @@
     "hub": {
       "tagline": {
         "title": "Tagline",
-        "tooltip": "Explain in one sentence...",
-        "description": "",
+        "tooltip": "",
+        "description": "Explain in one sentence what this Hub is about.",
         "placeholder": ""
       },
       "background": {
         "title": "Background",
-        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?",
+        "tooltip": "",
         "description": "",
-        "placeholder": ""
+        "placeholder": "Give a brief overview of the need for this Hub and how it came about."
       },
       "impact": {
         "title": "Impact",
-        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?",
+        "tooltip": "",
         "description": "",
-        "placeholder": ""
+        "placeholder": "What will this Hub change? How will people and organizations be affected?"
       },
       "vision": {
-        "title": "Vision",
-        "tooltip": "What does success look like? How will you know when you have achieved it?",
-        "description": "",
+        "title": "What is this community about?",
+        "tooltip": "",
+        "description": "What is the frame of reference for this Hub?",
         "placeholder": ""
       },
       "who": {
-        "title": "Who",
-        "tooltip": "What organisations or users should contribute? Why should they want to engage?",
-        "description": "",
+        "title": "Who should be involved?",
+        "tooltip": "",
+        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       }
     },
@@ -340,85 +340,85 @@
       "displayName": {
         "title": "Title",
         "description": "Try to keep it short, descriptive and engaging",
-        "placeholder": "Title"
+        "placeholder": ""
       },
       "tagline": {
         "title": "Challenge Statement",
-        "tooltip": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with How might we...",
-        "description": "Explain in one sentence what this challenge is about. It is also possible to frame it as a question, starting with How might we...",
-        "placeholder": "Challenge Statement"
+        "tooltip": "",
+        "description": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with <i>How might we...</i>",
+        "placeholder": ""
       },
       "background": {
         "title": "Current Reality",
-        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?",
-        "description": "Give a brief impression of the current state of the challenge. Think of the what, where, when and who.",
-        "placeholder": "Current Reality"
+        "tooltip": "",
+        "description": "Give a brief impression of the current state of the Challenge. Think of the <i>what, where, when and who</i>.",
+        "placeholder": ""
       },
       "impact": {
-        "title": "Impact",
-        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?",
-        "description": "",
+        "title": "Additional context",
+        "tooltip": "",
+        "description": "Give a brief overview of how this Challenge is embedded in the wider picture. What is its impact? Why is it here?",
         "placeholder": ""
       },
       "vision": {
         "title": "Future Vision",
-        "tooltip": "What does success look like? How will you know when you have achieved it?",
+        "tooltip": "",
         "description": "What does success look like? What should a solution to this Challenge comprise?",
-        "placeholder": "Future Vision"
+        "placeholder": ""
       },
       "who": {
-        "title": "Who",
-        "tooltip": "What organisations or users should contribute? Why should they want to engage?",
-        "description": "",
+        "title": "Who should contribute",
+        "tooltip": "",
+        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
         "placeholder": ""
       },
       "tags": {
         "title": "Tags",
         "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
-        "placeholder": "Tags"
+        "placeholder": ""
       }
     },
     "opportunity": {
       "displayName": {
         "title": "Title",
         "description": "Try to keep it short, descriptive and engaging",
-        "placeholder": "Title"
+        "placeholder": ""
       },
       "tagline": {
         "title": "Tagline",
-        "tooltip": "Explain in one sentence...",
-        "description": "In one sentence, explain what this opportunity is about. Think of what and what for. ",
-        "placeholder": "Tagline"
+        "tooltip": "",
+        "description": "In one sentence, explain what this Opportunity is about.",
+        "placeholder": ""
       },
       "background": {
-        "title": "Description",
-        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?",
-        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
-        "placeholder": "Description"
+        "title": "Background",
+        "tooltip": "",
+        "description": "Give a brief overview of how this Opportunity was identified and how it is embedded in the wider picture.",
+        "placeholder": ""
       },
       "impact": {
         "title": "Impact",
-        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?",
-        "description": "",
+        "tooltip": "",
+        "description": "What will this Opportunity change? How will people and organizations be affected, for good or bad?",
         "placeholder": ""
       },
       "vision": {
-        "title": "Vision",
-        "tooltip": "What does success look like? How will you know when you have achieved it?",
-        "description": "",
+        "title": "Description",
+        "tooltip": "",
+        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
         "placeholder": ""
       },
       "who": {
-        "title": "Who",
-        "tooltip": "What organisations or users should contribute? Why should they want to engage?",
-        "description": "",
+        "title": "Who is involved?",
+        "tooltip": "",
+        "description": "Describe the people and organizations who are currently working on this Opportunity.",
         "placeholder": ""
       },
 
       "tags": {
         "title": "Tags",
         "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
-        "placeholder": "Tags"
+        "placeholder": ""
       }
     }
   },
