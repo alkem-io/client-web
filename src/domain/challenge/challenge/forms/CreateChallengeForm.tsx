@@ -1,0 +1,126 @@
+import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
+import { Form, Formik } from 'formik';
+import { MessageWithPayload } from '../../../shared/i18n/ValidationMessageTranslation';
+import FormikInputField from '../../../../common/components/composite/forms/FormikInputField';
+import { MARKDOWN_TEXT_LENGTH, NORMAL_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import MarkdownInput from '../../../platform/admin/components/Common/MarkdownInput';
+import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
+import { TagsetField } from '../../../platform/admin/components/Common/TagsetSegment';
+import FormikEffectFactory from '../../../../common/utils/formik/formik-effect/FormikEffect';
+import { JourneyCreationForm } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+
+const FormikEffect = FormikEffectFactory<FormValues>();
+
+interface FormValues {
+  displayName: string;
+  tagline: string;
+  background: string;
+  vision: string;
+  tags: string[];
+}
+
+interface CreateChallengeFormProps extends JourneyCreationForm {}
+
+export const CreateChallengeForm: FC<CreateChallengeFormProps> = ({ isSubmitting, onValidChanged, onChanged }) => {
+  const { t } = useTranslation();
+
+  const validationRequiredString = t('forms.validations.required');
+
+  const handleChanged = (value: FormValues) => onChanged({
+    displayName: value.displayName,
+    tagline: value.tagline,
+    background: value.background,
+    vision: value.background,
+    tags: value.tags,
+  });
+
+  const initialValues: FormValues = {
+    displayName: '',
+    tagline: '',
+    background: '',
+    vision: '',
+    tags: [],
+  };
+
+  const validationSchema = yup.object().shape({
+    displayName: yup.string().trim()
+      .min(3, MessageWithPayload('forms.validations.minLength'))
+      .max(NORMAL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .required(validationRequiredString),
+    tagline: yup.string().trim()
+      .min(3, MessageWithPayload('forms.validations.minLength'))
+      .max(NORMAL_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .required(validationRequiredString),
+    background: yup.string().trim()
+      .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .required(validationRequiredString),
+    vision: yup.string().trim()
+      .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
+      .required(validationRequiredString),
+    tags: yup.array().of(yup.string().min(2)).required(validationRequiredString)
+  });
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      enableReinitialize
+      isInitialValid={false}
+      onSubmit={() => {}}
+    >
+      {() => (
+        <Form noValidate>
+          <FormikEffect onChange={handleChanged} onStatusChange={onValidChanged} />
+          <FormikInputField
+            name="displayName"
+            title={t('common.name')}
+            placeholder={t('common.name')}
+            helperText={t('common.name')}
+            disabled={isSubmitting}
+            withCounter
+            maxLength={NORMAL_TEXT_LENGTH}
+          />
+          <SectionSpacer />
+          <FormikInputField
+            name="tagline"
+            title={t('common.name')}
+            placeholder={t('common.name')}
+            helperText={t('common.name')}
+            disabled={isSubmitting}
+            withCounter
+            maxLength={NORMAL_TEXT_LENGTH}
+          />
+          <SectionSpacer />
+          <MarkdownInput
+            name="background"
+            label={t('common.name')}
+            rows={5}
+            helperText={t('common.name')}
+            disabled={isSubmitting}
+            withCounter
+            maxLength={MARKDOWN_TEXT_LENGTH}
+          />
+          <SectionSpacer />
+          <MarkdownInput
+            name="vision"
+            label={t('common.name')}
+            rows={5}
+            helperText={t('common.name')}
+            disabled={isSubmitting}
+            withCounter
+            maxLength={MARKDOWN_TEXT_LENGTH}
+          />
+          <SectionSpacer double />
+          <TagsetField
+            name="tags"
+            disabled={isSubmitting}
+            title={t('common.name')}
+            helperText={t('common.name')}
+          />
+        </Form>
+      )}
+    </Formik>
+  );
+};

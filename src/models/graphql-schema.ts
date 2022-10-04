@@ -957,11 +957,11 @@ export type CreateChallengeOnChallengeInput = {
   /** The display name for the entity. */
   displayName: Scalars['String'];
   /** The Innovation Flow template to use for the Challenge. */
-  innovationFlowTemplateID: Scalars['UUID'];
+  innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
   /** Set lead Organizations for the Challenge. */
   leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -971,11 +971,11 @@ export type CreateChallengeOnHubInput = {
   displayName: Scalars['String'];
   hubID: Scalars['UUID_NAMEID'];
   /** The Innovation Flow template to use for the Challenge. */
-  innovationFlowTemplateID: Scalars['UUID'];
+  innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
   /** Set lead Organizations for the Challenge. */
   leadOrganizations?: InputMaybe<Array<Scalars['UUID_NAMEID']>>;
   /** A readable identifier, unique within the containing scope. */
-  nameID: Scalars['NameID'];
+  nameID?: InputMaybe<Scalars['NameID']>;
   tags?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -1033,7 +1033,7 @@ export type CreateOpportunityInput = {
   /** The display name for the entity. */
   displayName: Scalars['String'];
   /** The Innovation Flow template to use for the Opportunity. */
-  innovationFlowTemplateID: Scalars['UUID'];
+  innovationFlowTemplateID?: InputMaybe<Scalars['UUID']>;
   /** A readable identifier, unique within the containing scope. */
   nameID: Scalars['NameID'];
   tags?: InputMaybe<Array<Scalars['String']>>;
