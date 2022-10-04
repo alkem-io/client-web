@@ -14,6 +14,7 @@ import InputField from '../../../../domain/platform/admin/components/Common/Inpu
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { EmptyLocation, Location } from '../../../../domain/common/location/Location';
 import { formatLocation } from '../../../../domain/common/location/LocationUtils';
+import { JourneyType } from '../../../../domain/challenge/JourneyType';
 
 export interface ProfileFormValues {
   name: string;
@@ -27,6 +28,7 @@ export interface ProfileFormValues {
 
 interface Props {
   context?: Context;
+  journeyType: JourneyType;
   name?: string;
   nameID?: string;
   tagset?: Tagset;
@@ -38,6 +40,7 @@ interface Props {
 
 const ProfileForm: FC<Props> = ({
   context,
+  journeyType,
   name,
   nameID,
   tagset,
@@ -103,7 +106,11 @@ const ProfileForm: FC<Props> = ({
               cityFieldName="location.city"
               countryFieldName="location.country"
             />
-            <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
+            <InputField
+              name="tagline"
+              label={t(`components.contextSegment.${journeyType}.tagline.title` as const)}
+              rows={3}
+            />
             <Grid item xs={12}>
               <WrapperTypography variant={'h4'} color={'primary'}>
                 {t('components.tagsSegment.title')}

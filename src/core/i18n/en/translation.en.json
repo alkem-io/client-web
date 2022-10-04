@@ -508,8 +508,11 @@
       }
     },
     "contextSegment": {
-      "tagline": "Tagline",
       "hub": {
+        "tagline": {
+          "title": "Tagline",
+          "tooltip": "Explain in one sentence..."
+        },
         "background": {
           "title": "Background",
           "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
@@ -528,6 +531,10 @@
         }
       },
       "challenge": {
+        "tagline": {
+          "title": "Tagline",
+          "tooltip": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with How might we..."
+        },
         "background": {
           "title": "Background",
           "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
@@ -546,6 +553,10 @@
         }
       },
       "opportunity": {
+        "tagline": {
+          "title": "Tagline",
+          "tooltip": "Explain in one sentence..."
+        },
         "background": {
           "title": "Background",
           "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"

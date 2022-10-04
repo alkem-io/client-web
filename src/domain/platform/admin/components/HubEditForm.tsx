@@ -135,7 +135,7 @@ const HubEditForm: FC<Props> = ({
                 placeholder={t('components.editHubForm.host.title')}
               />
             </Grid>
-            <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
+            <InputField name="tagline" label={t('components.contextSegment.hub.tagline.title')} rows={3} />
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
             <Grid item xs={12}>
               <WrapperTypography variant={'h4'} color={'primary'}>

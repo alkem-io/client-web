@@ -128,6 +128,7 @@ const EditOpportunity: FC<Props> = ({ paths, mode, title }) => {
       </Grid>
       <ProfileFormWithContext
         contextSegment={OpportunityContextSegment}
+        journeyType="opportunity"
         isEdit={mode === FormMode.update}
         name={opportunity?.displayName}
         nameID={opportunity?.nameID}

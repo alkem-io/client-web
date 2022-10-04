@@ -19,6 +19,7 @@ import { formatLocation } from '../../../../domain/common/location/LocationUtils
 import { LocationSegment } from '../../../../domain/common/location/LocationSegment';
 import { LifecycleTemplateSegment } from '../../../../domain/platform/admin/components/Common/LifecycleTemplateSegment';
 import { FormikSelectValue } from './FormikSelect';
+import { JourneyType } from '../../../../domain/challenge/JourneyType';
 
 export interface ProfileFormValuesType {
   name: string;
@@ -48,6 +49,7 @@ interface LifecycleTemplate {
 
 interface Props {
   context?: Context;
+  journeyType: JourneyType;
   contextSegment: ElementType<ContextSegmentProps>;
   name?: string;
   nameID?: string;
@@ -61,6 +63,7 @@ interface Props {
 // TODO: Should be renamed. Maybe 'ContextForm'
 const ProfileFormWithContext: FC<Props> = ({
   context,
+  journeyType,
   contextSegment: ContextSegment,
   name,
   nameID,
@@ -147,7 +150,11 @@ const ProfileFormWithContext: FC<Props> = ({
             {!contextOnly && (
               <>
                 <NameSegment disabled={isEdit} required={!isEdit} />
-                <InputField name="tagline" label={t('components.contextSegment.tagline')} rows={3} />
+                <InputField
+                  name="tagline"
+                  label={t(`components.contextSegment.${journeyType}.tagline.title` as const)}
+                  rows={3}
+                />
               </>
             )}
             <LocationSegment cols={2} cityFieldName="location.city" countryFieldName="location.country" />
