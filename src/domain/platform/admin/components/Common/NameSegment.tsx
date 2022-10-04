@@ -28,7 +28,7 @@ export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelp
           name="name"
           title={t('components.nameSegment.name')}
           required
-          helpText={nameHelpText}
+          helpIconText={nameHelpText}
           loading={loading}
         />
       </FormRow>
@@ -39,7 +39,7 @@ export const NameSegment: FC<NameSegmentProps> = ({ disabled, required, nameHelp
           placeholder={t('components.nameSegment.nameID.placeholder')}
           disabled={disabled}
           required={required}
-          helpText={nameIDHelpText}
+          helpIconText={nameIDHelpText}
           loading={loading}
         />
       </FormRow>

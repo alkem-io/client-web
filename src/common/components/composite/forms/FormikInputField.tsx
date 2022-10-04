@@ -1,11 +1,12 @@
-import { TextField, TextFieldProps } from '@mui/material';
-import { DistributiveOmit } from '@mui/types';
+import React, { FC, useMemo } from 'react';
 import { useField } from 'formik';
-import React, { FC } from 'react';
-import HelpButton from '../../core/HelpButton';
+import { TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
+import { DistributiveOmit } from '@mui/types';
 import TranslationKey from '../../../../types/TranslationKey';
 import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
+import HelpButton from '../../core/HelpButton';
+import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
 
 type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   title: string;
@@ -15,8 +16,11 @@ type InputFieldProps = DistributiveOmit<TextFieldProps, 'variant'> & {
   disabled?: boolean;
   placeholder?: string;
   autoComplete?: string;
+  helpIconText?: string;
   helpText?: string;
   loading?: boolean;
+  withCounter?: boolean;
+  maxLength?: number;
 };
 
 export const FormikInputField: FC<InputFieldProps> = ({
@@ -29,14 +33,27 @@ export const FormikInputField: FC<InputFieldProps> = ({
   placeholder,
   autoComplete,
   InputProps,
-  helpText,
+  helpIconText,
+  helperText: _helperText,
   loading,
   rows,
+  withCounter,
+  maxLength,
   ...rest
 }) => {
   const tErr = useValidationMessageTranslation();
 
   const [field, meta, helpers] = useField(name);
+
+  const isError = Boolean(meta.error) && meta.touched;
+
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return _helperText;
+    }
+
+    return tErr(meta.error as TranslationKey, { field: title });
+  }, [isError, meta.error]);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {
@@ -46,41 +63,43 @@ export const FormikInputField: FC<InputFieldProps> = ({
     }
   };
 
+  if (withCounter && (maxLength === undefined || maxLength < 0)) {
+    throw new Error('Counter requires "maxLength" property to be defined and with a positive value!');
+  }
+
   return (
-    <TextField
-      name={name}
-      placeholder={placeholder}
-      label={title}
-      onBlur={field.onBlur}
-      onChange={handleOnChange}
-      value={field.value || ''}
-      variant={'outlined'}
-      InputLabelProps={{ shrink: true }}
-      error={meta.touched && Boolean(meta.error)}
-      helperText={
-        meta.touched &&
-        tErr(meta.error as TranslationKey, {
-          field: title,
-        })
-      }
-      required={required}
-      disabled={loading || disabled}
-      autoComplete={autoComplete}
-      rows={rows}
-      multiline={!!rows}
-      fullWidth
-      InputProps={{
-        ...InputProps,
-        endAdornment: (
-          <>
-            {loading && <CircularProgress size={20} />}
-            {helpText && <HelpButton helpText={helpText} />}
-          </>
-        ),
-        readOnly: readOnly,
-      }}
-      {...rest}
-    />
+    <>
+      <TextField
+        name={name}
+        placeholder={placeholder}
+        label={title}
+        onBlur={field.onBlur}
+        onChange={handleOnChange}
+        value={field.value || ''}
+        variant={'outlined'}
+        InputLabelProps={{ shrink: true }}
+        error={isError}
+        helperText={helperText}
+        required={required}
+        disabled={loading || disabled}
+        autoComplete={autoComplete}
+        rows={rows}
+        multiline={!!rows}
+        fullWidth
+        InputProps={{
+          ...InputProps,
+          endAdornment: (
+            <>
+              {loading && <CircularProgress size={20} />}
+              {helpIconText && <HelpButton helpText={helpIconText} />}
+            </>
+          ),
+          readOnly: readOnly,
+        }}
+        {...rest}
+      />
+      {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
+    </>
   );
 };
 export default FormikInputField;
