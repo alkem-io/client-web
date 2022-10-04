@@ -314,14 +314,14 @@
       "background": {
         "title": "Background",
         "tooltip": "",
-        "description": "",
-        "placeholder": "Give a brief overview of the need for this Hub and how it came about."
+        "description": "Give a brief overview of the need for this Hub and how it came about.",
+        "placeholder": ""
       },
       "impact": {
         "title": "Impact",
         "tooltip": "",
-        "description": "",
-        "placeholder": "What will this Hub change? How will people and organizations be affected?"
+        "description": "What will this Hub change? How will people and organizations be affected?",
+        "placeholder": ""
       },
       "vision": {
         "title": "What is this community about?",
