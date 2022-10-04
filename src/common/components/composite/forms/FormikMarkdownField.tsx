@@ -62,10 +62,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   const isError = Boolean(meta.error) && meta.touched;
 
   const validClass = useMemo(() => (!isError && meta.touched ? 'is-valid' : undefined), [meta]);
-  const invalidClass = useMemo(
-    () => (required && isError && meta.touched ? 'is-invalid' : undefined),
-    [meta]
-  );
+  const invalidClass = useMemo(() => (required && isError && meta.touched ? 'is-invalid' : undefined), [meta]);
   const helperText = useMemo(() => {
     if (!isError) {
       return _helperText;
@@ -102,7 +99,9 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
         }}
       />
       {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
-      <FormHelperText error={isError}>{helperText}</FormHelperText>
+      <FormHelperText sx={{ width: '95%' }} error={isError}>
+        {helperText}
+      </FormHelperText>
     </FormGroup>
   );
 };
