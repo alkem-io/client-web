@@ -100,6 +100,7 @@ const ChallengeProfileView: FC<Props> = ({ mode }) => {
         isEdit={mode === FormMode.update}
         name={challenge?.displayName}
         nameID={challenge?.nameID}
+        journeyType="challenge"
         tagset={challenge?.tagset}
         context={challenge?.context}
         onSubmit={onSubmit}

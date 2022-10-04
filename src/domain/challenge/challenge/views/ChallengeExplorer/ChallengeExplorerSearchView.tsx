@@ -1,21 +1,44 @@
-import React, { FC } from 'react';
-import { Accordion } from '../../../../../common/components/composite/common/Accordion/Accordion';
+import React, { FC, useCallback } from 'react';
+import DashboardGenericSection from '../../../../shared/components/DashboardSections/DashboardGenericSection';
 import GroupBy from '../../../../../common/components/core/GroupBy/GroupBy';
-import ChallengeExplorerSearchContainer from '../../../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchContainer';
-import ChallengeExplorerSearchEnricherContainer from '../../../../../containers/challenge/ChallengeExplorerSearch/ChallengeExplorerSearchEnricherContainer';
-import HubNameResolver from '../../../../../containers/hub/HubNameResolver';
-import { ChallengeExplorerSearchResultFragment } from '../../../../../models/graphql-schema';
-import ChallengeCard from '../../../../../common/components/composite/common/cards/ChallengeCard/ChallengeCard';
 import CardsLayout from '../../../../shared/layout/CardsLayout/CardsLayout';
+import { HubIcon } from '../../../../../common/icons/HubIcon';
+import { SearchChallengeCard } from '../../../../shared/components/search-cards';
+import { SimpleChallengeWithSearchTerms } from '../../containers/ChallengeExplorerContainer';
+import CardsLayoutScroller from '../../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import { useUserContext } from '../../../../../hooks';
+import { RoleType } from '../../../../community/contributor/user/constants/RoleType';
+import { buildChallengeUrl } from '../../../../../common/utils/urlBuilders';
+import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import SectionSpacer from '../../../../shared/components/Section/SectionSpacer';
 
 export type ChallengeExplorerGroupByType = 'hub';
 
 export interface ChallengeExplorerSearchViewProps {
-  terms: string[];
+  challenges: SimpleChallengeWithSearchTerms[] | undefined;
   groupBy: ChallengeExplorerGroupByType;
+  searchTerms: string[] | undefined;
+  loading: boolean;
 }
 
-const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ terms, groupBy }) => {
+const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({
+  challenges,
+  groupBy,
+  searchTerms,
+  loading,
+}) => {
+  const { t } = useTranslation();
+  const { isAuthenticated } = useUserContext();
+  const getCardLabel = useCallback(
+    (roles: string[]) => {
+      return isAuthenticated
+        ? roles.find(r => r === RoleType.Lead) || roles.find(r => r === RoleType.Member)
+        : undefined;
+    },
+    [isAuthenticated]
+  );
+
   const groupKey = getGroupKey(groupBy);
 
   if (!groupKey) {
@@ -23,44 +46,53 @@ const ChallengeExplorerSearchView: FC<ChallengeExplorerSearchViewProps> = ({ ter
   }
 
   return (
-    <ChallengeExplorerSearchContainer terms={terms}>
-      {({ challenges }) =>
-        challenges.length > 0 && (
-          <GroupBy data={challenges} groupKey={groupKey}>
-            {groups => {
-              return groups.map(({ keyValue, values }) => (
-                <HubNameResolver key={keyValue} hubId={keyValue}>
-                  {({ displayName }) => (
-                    <Accordion title={displayName} ariaKey={keyValue}>
-                      <CardsLayout items={values}>
-                        {challenge => (
-                          // TODO enrich at the level of the LayoutContainer
-                          <ChallengeExplorerSearchEnricherContainer challenge={challenge}>
-                            {({ challenge: enrichedChallenge }) => (
-                              <ChallengeCard challenge={enrichedChallenge} hubNameId={challenge.hubID} />
-                            )}
-                          </ChallengeExplorerSearchEnricherContainer>
-                        )}
-                      </CardsLayout>
-                    </Accordion>
-                  )}
-                </HubNameResolver>
-              ));
-            }}
-          </GroupBy>
-        )
-      }
-    </ChallengeExplorerSearchContainer>
+    <>
+      {challenges && challenges.length > 0 && (
+        <GroupBy data={challenges} groupKey={groupKey}>
+          {groups => {
+            return groups.map(({ keyValue, values }) => (
+              <Box key={`boxchallenge_${keyValue}`}>
+                <DashboardGenericSection
+                  key={`challenge_${keyValue}`}
+                  headerText={values[0].hubDisplayName}
+                  headerIcon={<HubIcon />}
+                  subHeaderText={values[0].hubTagline}
+                >
+                  <CardsLayoutScroller maxHeight={376} sx={{ marginRight: 0 }}>
+                    <CardsLayout items={values}>
+                      {challenge => (
+                        <SearchChallengeCard
+                          name={challenge.displayName}
+                          tagline={challenge.tagline}
+                          image={challenge.imageUrl}
+                          matchedTerms={challenge.matchedTerms}
+                          label={getCardLabel(challenge.roles)}
+                          url={buildChallengeUrl(challenge.hubNameId, challenge.nameID)}
+                          parentName={challenge.hubDisplayName}
+                        />
+                      )}
+                    </CardsLayout>
+                  </CardsLayoutScroller>
+                </DashboardGenericSection>
+                <SectionSpacer key={`spacer_${keyValue}`} />
+              </Box>
+            ));
+          }}
+        </GroupBy>
+      )}
+      {!loading && searchTerms && searchTerms?.length > 0 && !challenges?.length && (
+        <Box>{t('pages.challenge-explorer.search.no-results')}</Box>
+      )}
+      {loading && <Box textAlign="center">{t('common.loading')}</Box>}
+    </>
   );
 };
 export default ChallengeExplorerSearchView;
 
-const getGroupKey = (
-  groupBy: ChallengeExplorerGroupByType
-): keyof ChallengeExplorerSearchResultFragment | undefined => {
+const getGroupKey = (groupBy: ChallengeExplorerGroupByType): keyof SimpleChallengeWithSearchTerms | undefined => {
   switch (groupBy) {
     case 'hub':
-      return 'hubID';
+      return 'hubId';
     default:
       return undefined;
   }

@@ -20,6 +20,8 @@ import { HubRoute } from '../../domain/challenge/hub/routing/HubRoute';
 import HelpPage from '../help/pages/HelpPage';
 import { ChallengeExplorerPage } from '../../domain/challenge/challenge/pages/ChallengeExplorerPage';
 import { IdentityRoute } from '../auth/authentication/routing';
+import { HELP_ROUTE, INSPIRATION_ROUTE } from '../../models/constants';
+import InspirationPage from '../help/pages/InspirationPage';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -74,7 +76,8 @@ export const Routing: FC = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/profile" element={<ProfileRoute />} />
         <Route path="/restricted" element={<Restricted />} />
-        <Route path="/help" element={<HelpPage />} />
+        <Route path={HELP_ROUTE} element={<HelpPage />} />
+        <Route path={INSPIRATION_ROUTE} element={<InspirationPage />} />
         <Route path="*" element={<Error404 />} />
       </Route>
     </Routes>

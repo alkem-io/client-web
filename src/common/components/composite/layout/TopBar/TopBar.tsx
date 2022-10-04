@@ -36,6 +36,7 @@ import SearchBar from './SearchBar';
 import TopNavIcons from './TopNavIcons';
 import { supportedLngs } from '../../../../../core/i18n/config';
 import { ChallengeIcon } from '../../../../icons/ChallengeIcon';
+import { HELP_ROUTE } from '../../../../../models/constants';
 
 const PREFIX = 'TopBar';
 
@@ -246,7 +247,7 @@ const HamburgerDropdown: FC<HamburgerDropdownProps> = ({ anchorEl, open, onOpen,
             {t('authentication.sign-out')}
           </MenuItem>
         )}
-        <MenuItem component={RouterLink} to="/help">
+        <MenuItem component={RouterLink} to={HELP_ROUTE}>
           <ListItemIcon>
             <HelpOutlineIcon />
           </ListItemIcon>

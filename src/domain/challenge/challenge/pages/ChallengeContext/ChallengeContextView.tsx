@@ -10,6 +10,7 @@ import {
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
 import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
+import { ChallengeContextSegment } from '../../../../platform/admin/challenge/ChallengeContextSegment';
 
 const ChallengeContextView: FC = () => {
   const { t } = useTranslation();
@@ -47,7 +48,12 @@ const ChallengeContextView: FC = () => {
   let submitWired;
   return (
     <Grid container spacing={2}>
-      <ContextForm context={challenge?.context} onSubmit={onSubmit} wireSubmit={submit => (submitWired = submit)} />
+      <ContextForm
+        contextSegment={ChallengeContextSegment}
+        context={challenge?.context}
+        onSubmit={onSubmit}
+        wireSubmit={submit => (submitWired = submit)}
+      />
       <Grid container item justifyContent={'flex-end'}>
         <WrapperButton
           disabled={isUpdating}

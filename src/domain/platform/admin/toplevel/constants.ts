@@ -1,8 +1,8 @@
 import { TabDefinition } from '../../../../common/components/core/PageTabs/PageTabs';
-import { HubOutlined } from '@mui/icons-material';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import GppGoodOutlinedIcon from '@mui/icons-material/GppGoodOutlined';
+import { HubIcon } from '../../../../common/icons/HubIcon';
 
 export enum AdminSection {
   Hub = 'hubs',
@@ -15,7 +15,7 @@ export const adminTabs: TabDefinition<AdminSection>[] = [
   {
     section: AdminSection.Hub,
     route: '/admin/hubs',
-    icon: HubOutlined,
+    icon: HubIcon,
   },
   {
     section: AdminSection.User,

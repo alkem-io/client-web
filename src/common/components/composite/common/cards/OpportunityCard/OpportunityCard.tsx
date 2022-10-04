@@ -3,13 +3,13 @@ import { Nvp, Opportunity, VisualUriFragment } from '../../../../../../models/gr
 import { useTranslation } from 'react-i18next';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { buildOpportunityUrl } from '../../../../../utils/urlBuilders';
-import getActivityCount from '../../../../../../domain/platform/activity/utils/getActivityCount';
+import getMetricCount from '../../../../../../domain/platform/metrics/utils/getMetricCount';
 import { useUserContext } from '../../../../../../hooks';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 export interface OpportunityCardProps {
-  opportunity: Pick<Opportunity, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
+  opportunity: Pick<Opportunity, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
     context?: { tagline?: string; visuals?: VisualUriFragment[] };
   };
   hubNameId: string;
@@ -29,7 +29,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
   );
 
   const bannerNarrow = getVisualBannerNarrow(opportunity?.context?.visuals);
-  const { activity = [] } = opportunity;
+  const { metrics } = opportunity;
 
   return (
     <EntityContributionCard
@@ -43,7 +43,7 @@ const OpportunityCard: FC<OpportunityCardProps> = ({ opportunity, hubNameId, cha
       }}
       label={isMember(opportunity.id) ? EntityContributionCardLabel.Member : undefined}
       loading={loading}
-      activities={[{ name: t('common.members'), count: getActivityCount(activity, 'members') }]}
+      metrics={[{ name: t('common.members'), count: getMetricCount(metrics, 'members') }]}
     />
   );
 };

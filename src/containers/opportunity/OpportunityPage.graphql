@@ -16,7 +16,7 @@ fragment OpportunityPage on Opportunity {
     name
     tags
   }
-  activity {
+  metrics {
     id
     name
     value

@@ -4,7 +4,7 @@ import { useUserContext } from '../../../../hooks';
 import { useContributingUsersQuery, useOrganizationsListQuery } from '../../../../hooks/generated/graphql';
 import useServerMetadata from '../../../../hooks/useServerMetadata';
 import { COUNTRIES_BY_CODE } from '../../../../models/constants';
-import getActivityCount from '../../../platform/activity/utils/getActivityCount';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import { buildOrganizationUrl, buildUserProfileUrl } from '../../../../common/utils/urlBuilders';
 import { getVisualAvatar } from '../../../../common/utils/visuals.utils';
 import { ContributorCardProps } from '../../../../common/components/composite/common/cards/ContributorCard/ContributorCard';
@@ -64,11 +64,8 @@ const useHomePageContributors = () => {
     [organizations]
   );
 
-  const { activity } = useServerMetadata();
-  const [usersCount, organizationsCount] = [
-    getActivityCount(activity, 'users'),
-    getActivityCount(activity, 'organizations'),
-  ];
+  const { metrics } = useServerMetadata();
+  const [usersCount, organizationsCount] = [getMetricCount(metrics, 'users'), getMetricCount(metrics, 'organizations')];
 
   return {
     entities: {
