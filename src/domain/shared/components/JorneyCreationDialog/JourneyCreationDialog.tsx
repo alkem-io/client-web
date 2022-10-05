@@ -10,16 +10,19 @@ import { JourneyCreationForm, JourneyFormValues } from './JourneyCreationForm';
 interface JourneyCreationDialogProps {
   open: boolean;
   icon: React.ReactNode;
-  title: string;
+  journeyName: string;
   onClose: () => void;
   OnCreate: (value: JourneyFormValues) => Promise<void>;
   formComponent: React.ComponentType<JourneyCreationForm>;
 }
 
 export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
-  open, icon, title,
-  onClose, OnCreate,
-  formComponent: FormComponent
+  open,
+  icon,
+  journeyName,
+  onClose,
+  OnCreate,
+  formComponent: FormComponent,
 }) => {
   const { t } = useTranslation();
   const [formInvalid, setFormInvalid] = useState(false);
@@ -28,7 +31,7 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
     displayName: '',
     tagline: '',
     vision: '',
-    tags: []
+    tags: [],
   });
 
   const handleChange = (value: JourneyFormValues) => setValue(value);
@@ -44,7 +47,7 @@ export const JourneyCreationDialog: FC<JourneyCreationDialogProps> = ({
       <DialogTitle onClose={onClose}>
         <Box display="flex" gap={1}>
           {icon}
-          {title}
+          {t('journey-creation.dialog-title', { entity: journeyName })}
         </Box>
       </DialogTitle>
       <DialogContent dividers>

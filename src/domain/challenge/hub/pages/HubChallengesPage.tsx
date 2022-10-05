@@ -77,7 +77,7 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
       <JourneyCreationDialog
         open={open}
         icon={<ChallengeIcon />}
-        title={'title'}
+        journeyName={t('common.challenge')}
         onClose={() => setOpen(false)}
         OnCreate={handleCreate}
         formComponent={CreateChallengeForm}
