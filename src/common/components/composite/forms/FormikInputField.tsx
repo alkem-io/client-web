@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from 'react';
 import { useField } from 'formik';
-import { TextField, TextFieldProps } from '@mui/material';
+import { FormHelperText, TextField, TextFieldProps } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
 import { DistributiveOmit } from '@mui/types';
 import TranslationKey from '../../../../types/TranslationKey';
@@ -75,11 +75,9 @@ export const FormikInputField: FC<InputFieldProps> = ({
         label={title}
         onBlur={field.onBlur}
         onChange={handleOnChange}
-        value={field.value || ''}
-        variant={'outlined'}
-        InputLabelProps={{ shrink: true }}
+        value={field.value}
+        variant="outlined"
         error={isError}
-        helperText={helperText}
         required={required}
         disabled={loading || disabled}
         autoComplete={autoComplete}
@@ -99,6 +97,9 @@ export const FormikInputField: FC<InputFieldProps> = ({
         {...rest}
       />
       {withCounter && <CharacterCounter count={field.value?.length} maxLength={maxLength} />}
+      <FormHelperText sx={{ width: '95%' }} error={isError}>
+        {helperText}
+      </FormHelperText>
     </>
   );
 };

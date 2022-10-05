@@ -1,5 +1,5 @@
 import { FiberManualRecord } from '@mui/icons-material';
-import { Autocomplete, Chip, FormHelperText, OutlinedTextFieldProps, TextField } from '@mui/material';
+import { Autocomplete, Chip, FormHelperText, OutlinedTextFieldProps, TextField, TextFieldProps } from '@mui/material';
 import Box from '@mui/material/Box';
 import React, { ChangeEvent, FC, forwardRef } from 'react';
 import HelpButton from '../HelpButton';
@@ -10,6 +10,7 @@ const DEFAULT_MIN_LENGTH = 2;
 // TODO: Do we realy need to extend from OutlinedTextFieldProps?
 type TagsInputProps = Omit<OutlinedTextFieldProps, 'onChange'> & {
   onChange?: (tags: (string | string[])[]) => void;
+  onBlur?: TextFieldProps['onBlur'];
   minLength?: number;
   error?: boolean;
   value: string[];
@@ -23,6 +24,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
   (
     {
       onChange,
+      onBlur,
       minLength = DEFAULT_MIN_LENGTH,
       error,
       value,
@@ -81,6 +83,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
               {...rest}
               error={error}
               variant="outlined"
+              onBlur={onBlur}
               InputProps={{
                 ...params.InputProps,
                 endAdornment: helpTextIcon && (
@@ -93,7 +96,7 @@ export const TagsInput: FC<TagsInputProps> = forwardRef(
             />
           )}
         />
-        <FormHelperText>{helperText}</FormHelperText>
+        <FormHelperText error={error}>{helperText}</FormHelperText>
       </>
     );
   }

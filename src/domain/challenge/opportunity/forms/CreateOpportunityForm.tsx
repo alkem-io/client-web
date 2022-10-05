@@ -60,7 +60,11 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       .trim()
       .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    tags: yup.array().of(yup.string().min(2)).required(validationRequiredString),
+    tags: yup
+      .array()
+      .of(yup.string().min(2))
+      .required(validationRequiredString)
+      .test('is-empty', validationRequiredString, value => Boolean(value && value.length > 0)),
   });
 
   return (
@@ -68,7 +72,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       initialValues={initialValues}
       validationSchema={validationSchema}
       enableReinitialize
-      isInitialValid={false}
+      validateOnMount
       onSubmit={() => {}}
     >
       {() => (
@@ -77,7 +81,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
           <FormikInputField
             name="displayName"
             title={t('context.opportunity.displayName.title')}
-            placeholder={t('context.opportunity.displayName.placeholder')}
             helperText={t('context.opportunity.displayName.description')}
             disabled={isSubmitting}
             withCounter
@@ -87,7 +90,6 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
           <FormikInputField
             name="tagline"
             title={t('context.opportunity.tagline.title')}
-            placeholder={t('context.opportunity.tagline.placeholder')}
             helperText={t('context.opportunity.tagline.description')}
             disabled={isSubmitting}
             withCounter
