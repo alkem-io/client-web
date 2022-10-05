@@ -837,6 +837,16 @@
     },
     "select-innovation-flow": {
       "title": "Change Innovation Flow"
+    },
+    "innovation-flow-template-segment": {
+      "help-text": {
+        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
+      }
+    },
+    "confirm-innovation-flow": {
+      "description": {
+        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
+      }
     }
   },
   "navigation": {

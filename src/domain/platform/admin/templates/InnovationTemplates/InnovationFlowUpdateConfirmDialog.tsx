@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { Box, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../../common/components/core/dialog';
 
 export interface SelectInnovationFlowDialogProps {
@@ -14,10 +14,10 @@ const InnovationFlowUpdateConfirmDialog: FC<SelectInnovationFlowDialogProps> = (
   const { t } = useTranslation();
 
   return (
-    <Dialog open={isOpen} maxWidth="xs" fullWidth aria-labelledby="change-innovation-flow">
-      <DialogTitle id="change-innovation-flow">{t('components.select-innovation-flow.title')}</DialogTitle>
-      <DialogContent dividers>
-        <Box paddingY={theme => theme.spacing(2)}>{'Are you sure?'}</Box>
+    <Dialog open={isOpen} maxWidth="xs" aria-labelledby="confirm-innovation-flow">
+      <DialogTitle id="confirm-innovation-flow">{t('components.select-innovation-flow.title')}</DialogTitle>
+      <DialogContent dividers sx={{ paddingX: 2 }}>
+        {t('components.confirm-innovation-flow.description.title')}
       </DialogContent>
       <DialogActions sx={{ justifyContent: 'end' }}>
         {onClose && <Button onClick={onClose}>{t('buttons.cancel')}</Button>}

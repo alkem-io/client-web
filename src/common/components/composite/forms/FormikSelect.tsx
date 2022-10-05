@@ -34,13 +34,14 @@ export interface FormikSelectValue {
 }
 
 export interface FormikSelectProps extends SelectProps {
-  title: string;
+  title?: string;
   name: string;
   required?: boolean;
   disabled?: boolean;
   values: FormikSelectValue[];
   placeholder?: string;
   endAdornment?: React.ReactNode;
+  helpText?: string;
 }
 
 export const FormikSelect: FC<FormikSelectProps> = ({
@@ -51,13 +52,14 @@ export const FormikSelect: FC<FormikSelectProps> = ({
   values,
   placeholder,
   endAdornment,
+  helpText,
 }) => {
   const [field, meta] = useField(name);
   const styles = useStyles();
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth>
-      <InputLabel shrink>{title}</InputLabel>
+      {title && <InputLabel shrink>{title}</InputLabel>}
       <Select
         name={name}
         value={field.value}
@@ -78,7 +80,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
           </MenuItem>
         ))}
       </Select>
-      <FormHelperText>{meta.error}</FormHelperText>
+      <FormHelperText sx={{ color: 'red' }}>{helpText || meta.error}</FormHelperText>
     </FormControl>
   );
 };
