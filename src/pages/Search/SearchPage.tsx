@@ -23,6 +23,7 @@ import SectionSpacer from '../../domain/shared/components/Section/SectionSpacer'
 import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
 import SearchResultSection from './SearchResultSection';
+import { escape } from 'lodash';
 
 const tagsetNames = ['skills', 'keywords'];
 // todo translate
@@ -90,7 +91,10 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const queryParams = new URLSearchParams(params);
   const queryParam = queryParams.get('terms');
 
-  const termsFromUrl = useMemo(() => (queryParam?.split(',') ?? []).map(x => ({ id: x, name: x })) || [], [queryParam]);
+  const termsFromUrl = useMemo(
+    () => (queryParam?.split(',') ?? []).map(escape).map(x => ({ id: x, name: x })) || [],
+    [queryParam]
+  );
   const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
 
   const [results, setResults] = useState<ResultType[]>();
