@@ -330,7 +330,7 @@
         "placeholder": ""
       },
       "vision": {
-        "title": "¿De qué trata esta comunicad?",
+        "title": "¿De qué trata esta comunidad?",
         "tooltip": "",
         "description": "¿Cual es el marco de referencia para este Hub?",
         "placeholder": ""
@@ -351,7 +351,7 @@
       "tagline": {
         "title": "En una línea",
         "tooltip": "",
-        "description": "Explica en una frase de qué se trata este Desafío. También es posible enmarcarlo como una pregunta, comenzando con <i>¿Cómo podríamos...?</i>",
+        "description": "Explica en una frase de qué se trata este Desafío. También es posible enmarcarlo como una pregunta, comenzando con '¿Cómo podríamos...?'",
         "placeholder": ""
       },
       "background": {
@@ -411,7 +411,7 @@
       "vision": {
         "title": "Descripción",
         "tooltip": "",
-        "description": "Describe la idea y el impacto que tendrá sobre el Desafío. Piensa que esto es un documento <i>vivo</i>, puede ser actualizado.",
+        "description": "Describe la idea y el impacto que tendrá sobre el Desafío. Piensa que esto es un documento 'vivo', puede ser actualizado.",
         "placeholder": ""
       },
       "who": {

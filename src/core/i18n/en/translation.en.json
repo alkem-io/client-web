@@ -351,13 +351,13 @@
       "tagline": {
         "title": "Challenge Statement",
         "tooltip": "",
-        "description": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with <i>How might we...</i>",
+        "description": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with 'How might we...'",
         "placeholder": ""
       },
       "background": {
         "title": "Current Reality",
         "tooltip": "",
-        "description": "Give a brief impression of the current state of the Challenge. Think of the <i>what, where, when and who</i>.",
+        "description": "Give a brief impression of the current state of the Challenge. Think of the 'What, where, when and who'.",
         "placeholder": ""
       },
       "impact": {

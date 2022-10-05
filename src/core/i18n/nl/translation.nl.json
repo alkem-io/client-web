@@ -340,13 +340,13 @@
       "tagline": {
         "title": "Challenge Statement",
         "tooltip": "",
-        "description": "Omschrijf in één zin waar deze Challenge over gaat. Het is ook ook mogelijk om er een vraag van te maken, beginnend met <i>Hoe kunnen we...?</i>",
+        "description": "Omschrijf in één zin waar deze Challenge over gaat. Het is ook ook mogelijk om er een vraag van te maken, beginnend met 'Hoe kunnen we...?'",
         "placeholder": ""
       },
       "background": {
         "title": "Huidige realiteit",
         "tooltip": "",
-        "description": "Schets een beeld van de huidige status van deze Challenge. Denk aan de <i>wat, waar, wanneer en wie</i>.",
+        "description": "Schets een beeld van de huidige status van deze Challenge. Denk aan de 'wat, waar, wanneer en wie'.",
         "placeholder": ""
       },
       "impact": {
