@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../../../../../hooks';
 import {
-  refetchOpportunityProfileInfoQuery,
+  refetchOpportunityLifecycleQuery,
   useHubLifecycleTemplatesQuery,
   useOpportunityProfileInfoQuery,
   useUpdateOpportunityInnovationFlowMutation,
@@ -31,11 +31,11 @@ const OpportunityInnovationFlowView: FC = () => {
   });
 
   const opportunity = opportunityProfile?.hub?.opportunity;
-  const opportunityId = useMemo(() => opportunity?.id, [opportunity]);
+  const opportunityId = useMemo(() => opportunity?.id || '', [opportunity]);
 
   const [updateOpportunityInnovationFlow] = useUpdateOpportunityInnovationFlowMutation({
     onError: handleError,
-    refetchQueries: [refetchOpportunityProfileInfoQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
+    refetchQueries: [refetchOpportunityLifecycleQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
     awaitRefetchQueries: true,
   });
 
@@ -45,7 +45,7 @@ const OpportunityInnovationFlowView: FC = () => {
     updateOpportunityInnovationFlow({
       variables: {
         input: {
-          opportunityID: opportunityNameId,
+          opportunityID: opportunityId,
           innovationFlowTemplateID: innovationFlowTemplateID,
         },
       },

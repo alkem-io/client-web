@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../../../../hooks';
 import {
-  refetchChallengeProfileInfoQuery,
+  refetchChallengeLifecycleQuery,
   useChallengeProfileInfoQuery,
   useHubLifecycleTemplatesQuery,
   useUpdateChallengeInnovationFlowMutation,
@@ -30,11 +30,11 @@ const ChallengeInnovationFlowView: FC = () => {
     skip: false,
   });
   const challenge = challengeProfile?.hub?.challenge;
-  const challengeId = challenge?.id || '';
+  const challengeId = useMemo(() => challenge?.id || '', [challenge]);
 
   const [updateChallengeInnovationFlow] = useUpdateChallengeInnovationFlowMutation({
     onError: handleError,
-    refetchQueries: [refetchChallengeProfileInfoQuery({ hubId: hubNameId, challengeId: challengeNameId })],
+    refetchQueries: [refetchChallengeLifecycleQuery({ hubId: hubNameId, challengeId: challengeNameId })],
     awaitRefetchQueries: true,
   });
 

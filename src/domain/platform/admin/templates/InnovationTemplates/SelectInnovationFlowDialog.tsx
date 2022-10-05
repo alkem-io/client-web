@@ -29,13 +29,17 @@ export interface SelectInnovationFlowDialogProps {
   onClose: () => void;
   innovationFlowTemplates: LifecycleTemplate[] | undefined;
   innovationFlowTemplateID: string;
-  onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
+  onSubmitForm: (formData: SelectInnovationFlowFormValuesType) => void;
+  wireSubmit: (setter: () => void) => void;
+  onSubmitDialog: () => void;
 }
 
 const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
   isOpen,
   onClose,
-  onSubmit,
+  onSubmitForm,
+  wireSubmit,
+  onSubmitDialog,
   innovationFlowTemplates,
   innovationFlowTemplateID = '',
 }) => {
@@ -58,7 +62,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
     innovationFlowTemplateID: yup.string().required(t('forms.validations.required')),
   });
 
-  let wiredSubmit;
+  let isSubmitWired = false;
 
   return (
     <Dialog open={isOpen} maxWidth="md" fullWidth aria-labelledby="callout-creation-title">
@@ -75,11 +79,15 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
             validationSchema={validationSchema}
             enableReinitialize
             onSubmit={async values => {
-              onSubmit(values);
+              onSubmitForm(values);
             }}
           >
             {({ values: { innovationFlowTemplateID }, handleSubmit }) => {
-              wiredSubmit = handleSubmit;
+              if (!isSubmitWired) {
+                wireSubmit(handleSubmit);
+                isSubmitWired = true;
+              }
+
               const selectedInnovationFlowTemplate = innovationFlowTemplates?.find(
                 template => template.id === innovationFlowTemplateID
               );
@@ -95,13 +103,13 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
           </Formik>
         </Box>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: 'end' }}>
+      <DialogActions>
         {onClose && (
-          <Button onClick={onClose} variant="outlined">
+          <Button onClick={onClose} sx={{ justifyContent: 'start' }}>
             {t('buttons.cancel')}
           </Button>
         )}
-        <Button onClick={() => wiredSubmit()} variant="contained">
+        <Button onClick={onSubmitDialog} variant="contained" sx={{ justifyContent: 'end' }}>
           {t('buttons.change')}
         </Button>
       </DialogActions>
