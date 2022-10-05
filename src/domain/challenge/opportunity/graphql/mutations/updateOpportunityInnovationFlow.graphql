@@ -1,0 +1,6 @@
+mutation updateOpportunityInnovationFlow($input: UpdateOpportunityInnovationFlowInput!) {
+  updateOpportunityInnovationFlow(opportunityData: $input) {
+    id
+    displayName
+  }
+}

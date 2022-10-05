@@ -13,7 +13,7 @@ export interface GraphThemeOptions {
   fontSize?: number;
 }
 
-export interface LifecycleVisualizerProps {
+export interface InnovationFlowVisualizerProps {
   lifecycle: Pick<Lifecycle, 'machineDef' | 'state'>;
   options?: GraphThemeOptions;
 }
@@ -34,7 +34,7 @@ export const validateLifecycleDefinition = (definition: string): Error | undefin
   return undefined;
 };
 
-const LifecycleVisualizer: FC<LifecycleVisualizerProps> = ({ lifecycle, options }) => {
+const InnovationFlowVisualizer: FC<InnovationFlowVisualizerProps> = ({ lifecycle, options }) => {
   const theme = useTheme();
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -255,4 +255,4 @@ const _buildGraph = (
     simulation.stop();
   }, 1);
 };
-export default LifecycleVisualizer;
+export default InnovationFlowVisualizer;

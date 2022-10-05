@@ -54,7 +54,10 @@
     "view-profile": "View Profile",
     "edit-photo": "Edit Photo",
     "accept-all-cookies": "Accept All Cookies",
-    "confirm-choice": "Confirm Choice"
+    "confirm-choice": "Confirm Choice",
+    "confirm": "Confirm",
+    "change-template": "Change template",
+    "change": "Change"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -831,6 +834,9 @@
         "no-data-join": "No discussions. Please join the community to create a discussion",
         "explore": "Explore discussions"
       }
+    },
+    "select-innovation-flow": {
+      "title": "Change Innovation Flow"
     }
   },
   "navigation": {
