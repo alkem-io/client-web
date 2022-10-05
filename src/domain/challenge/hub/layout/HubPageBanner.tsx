@@ -15,13 +15,13 @@ const HubPageBanner: FC = () => {
   switch (visibility) {
     case HubVisibility.Archived: {
       pageNotice = tLinks('pages.hub.archived-hub-notice', {
-        contact: { href: platform?.feedback || '', target: '_blank' },
+        contact: { href: platform?.feedback, target: '_blank' },
       });
       break;
     }
     case HubVisibility.Demo: {
       pageNotice = tLinks('pages.hub.demo-hub-notice', {
-        alkemio: { href: 'https://alkem.io', target: '_blank' },
+        alkemio: { href: platform?.feedback, target: '_blank' },
       });
       break;
     }
