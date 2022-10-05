@@ -10,7 +10,9 @@ import {
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useField } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
+import { useValidationMessageTranslation } from '../../../../domain/shared/i18n/ValidationMessageTranslation';
+import TranslationKey from '../../../../types/TranslationKey';
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -52,10 +54,22 @@ export const FormikSelect: FC<FormikSelectProps> = ({
   values,
   placeholder,
   endAdornment,
-  helpText,
+  helpText: _helperText,
 }) => {
+  const tErr = useValidationMessageTranslation();
+
   const [field, meta] = useField(name);
   const styles = useStyles();
+
+  const isError = Boolean(meta.error) && meta.touched;
+
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return _helperText;
+    }
+
+    return tErr(meta.error as TranslationKey, { field: name });
+  }, [isError, meta.error, _helperText]);
 
   return (
     <FormControl required={required} disabled={disabled} fullWidth>
@@ -80,7 +94,7 @@ export const FormikSelect: FC<FormikSelectProps> = ({
           </MenuItem>
         ))}
       </Select>
-      <FormHelperText sx={{ color: 'red' }}>{helpText || meta.error}</FormHelperText>
+      <FormHelperText sx={{ color: 'red' }}>{helperText}</FormHelperText>
     </FormControl>
   );
 };
