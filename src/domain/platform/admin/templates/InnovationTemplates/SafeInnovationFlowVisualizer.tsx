@@ -1,13 +1,16 @@
 import React, { useMemo } from 'react';
-import LifecycleVisualizer, { validateLifecycleDefinition, LifecycleVisualizerProps } from './LifecycleVisualizer';
+import InnovationFlowVisualizer, {
+  validateLifecycleDefinition,
+  InnovationFlowVisualizerProps,
+} from './InnovationFlowVisualizer';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useTranslation } from 'react-i18next';
 
-export const SafeLifecycleVisualizer = ({ definition }: { definition: string }) => {
+export const SafeInnovationFlowVisualizer = ({ definition }: { definition: string }) => {
   const { t } = useTranslation();
 
-  const lifecycle = useMemo<LifecycleVisualizerProps['lifecycle']>(
+  const lifecycle = useMemo<InnovationFlowVisualizerProps['lifecycle']>(
     () => ({
       machineDef: definition,
     }),
@@ -17,7 +20,7 @@ export const SafeLifecycleVisualizer = ({ definition }: { definition: string }) 
   const error = useMemo(() => validateLifecycleDefinition(definition), [definition]);
 
   if (!error) {
-    return <LifecycleVisualizer lifecycle={lifecycle} />;
+    return <InnovationFlowVisualizer lifecycle={lifecycle} />;
   }
 
   return (

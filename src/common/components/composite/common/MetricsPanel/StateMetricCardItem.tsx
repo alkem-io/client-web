@@ -9,7 +9,7 @@ import { toDirectedGraph } from '@xstate/graph';
 import { makeStyles } from '@mui/styles';
 import { Lifecycle, Maybe } from '../../../../../models/graphql-schema';
 import WrapperTypography from '../../../core/WrapperTypography';
-import LifecycleVisualizer from '../../../../../domain/platform/admin/templates/InnovationTemplates/LifecycleVisualizer';
+import InnovationFlowVisualizer from '../../../../../domain/platform/admin/templates/InnovationTemplates/InnovationFlowVisualizer';
 import { DialogContent, DialogTitle } from '../../../core/dialog';
 
 export interface ActivityCardItemProps {
@@ -60,7 +60,7 @@ export const LifecycleModal: FC<LifecycleModalProps> = ({ lifecycle, show = fals
         {nextStates && <p>Next states: {nextStates}</p>}
       </DialogTitle>
       <DialogContent dividers className={styles.content}>
-        {lifecycle && <LifecycleVisualizer lifecycle={lifecycle} />}
+        {lifecycle && <InnovationFlowVisualizer lifecycle={lifecycle} />}
       </DialogContent>
     </Dialog>
   );
