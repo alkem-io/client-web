@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useState } from 'react';
-import { Button } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Lifecycle } from '../../../../../models/graphql-schema';
 import InnovationFlowVisualizer from './InnovationFlowVisualizer';
@@ -56,23 +56,37 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
 
   return (
     <>
+      {innovationFlowTemplate?.info.title && (
+        <Typography variant="h5" color="black" fontWeight={600}>
+          {`${t('components.update-innovation-flow.template-label.title')}: ${innovationFlowTemplate?.info.title}`}
+        </Typography>
+      )}
       {lifecycle && <InnovationFlowVisualizer lifecycle={lifecycle} />}
       {nextEvents && (
         <>
-          <Button variant="outlined" onClick={openSelectInnovationFlowDialog} sx={{ alignSelf: 'start', marginX: 1 }}>
-            {t('buttons.change-template')}
-          </Button>
-          {nextEvents.map((stateName, i) => (
-            <Button
-              key={i}
-              variant="contained"
-              color="primary"
-              onClick={() => onSetNewState(entityId, stateName)}
-              sx={{ alignSelf: 'end', marginX: 0.5 }}
-            >
-              {stateName}
-            </Button>
-          ))}
+          <Grid container>
+            <Grid item xs>
+              <Button
+                variant="outlined"
+                onClick={openSelectInnovationFlowDialog}
+                sx={{ alignSelf: 'start', marginX: 1 }}
+              >
+                {t('buttons.change-template')}
+              </Button>
+            </Grid>
+            {nextEvents.map((stateName, i) => (
+              <Grid key={i} item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => onSetNewState(entityId, stateName)}
+                  sx={{ alignSelf: 'end', marginX: 0.5 }}
+                >
+                  {stateName}
+                </Button>
+              </Grid>
+            ))}
+          </Grid>
         </>
       )}
       <SelectInnovationFlowDialog
