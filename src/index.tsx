@@ -1,8 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { init as initApm } from '@elastic/apm-rum';
 import reportWebVitals from './reportWebVitals';
 import Root from './root';
 import './common/styles/index.scss';
+
+initApm({
+  // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
+  serviceName: 'alkemio-client-web',
+  // Set custom APM Server URL (default: http://localhost:8200)
+  serverUrl: 'https://acc-apm.alkem.io/',
+  // Set service version (required for sourcemap feature)
+  serviceVersion: require('../package.json').version,
+  logLevel: 'debug',
+});
 
 ReactDOM.render(<Root />, document.getElementById('root'));
 
