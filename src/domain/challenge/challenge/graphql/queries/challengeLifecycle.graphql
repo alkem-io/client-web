@@ -5,10 +5,11 @@ query challengeLifecycle($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
       id
       lifecycle {
         id
-      	machineDef
-    		state
+        machineDef
+        state
         nextEvents
         stateIsFinal
+        templateName
       }
     }
   }
