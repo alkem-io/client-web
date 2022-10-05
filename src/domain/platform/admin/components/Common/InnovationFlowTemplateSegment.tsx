@@ -1,17 +1,17 @@
 import { Grid } from '@mui/material';
 import React, { FC } from 'react';
-import { SafeLifecycleVisualizer } from '../../templates/InnovationTemplates/SafeLifecycleVisualizer';
+import { SafeInnovationFlowVisualizer } from '../../templates/InnovationTemplates/SafeInnovationFlowVisualizer';
 import FormikSelect, { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
 
-interface LifecycleTemplateSegmentProps {
+interface InnovationFlowTemplateSegmentProps {
   innovationFlowTemplateOptions: FormikSelectValue[];
-  definition: string;
+  definition: string | undefined;
   required: boolean;
 }
 
-export const LifecycleTemplateSegment: FC<LifecycleTemplateSegmentProps> = ({
+export const InnovationFlowTemplateSegment: FC<InnovationFlowTemplateSegmentProps> = ({
   innovationFlowTemplateOptions,
-  definition,
+  definition = '',
   required,
 }) => {
   return (
@@ -22,7 +22,7 @@ export const LifecycleTemplateSegment: FC<LifecycleTemplateSegmentProps> = ({
         title="Select template"
         required={required}
       />
-      {definition !== '' && <SafeLifecycleVisualizer definition={definition} />}
+      {definition !== '' && <SafeInnovationFlowVisualizer definition={definition} />}
     </Grid>
   );
 };

@@ -6,7 +6,7 @@ import TagsComponent from '../../../../shared/components/TagsComponent/TagsCompo
 import { SectionSpacer } from '../../../../shared/components/Section/Section';
 import { Link } from 'react-router-dom';
 import WrapperMarkdown from '../../../../../common/components/core/WrapperMarkdown';
-import { SafeLifecycleVisualizer } from './SafeLifecycleVisualizer';
+import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
 
 const TypographyTitle = styled(props => <Typography variant="h6" {...props} />)(() => ({
   fontWeight: 'bold',
@@ -65,7 +65,7 @@ const InnovationTemplateView = ({ template, open, onClose, editUrl, editLinkStat
         <Box>
           <TypographyTitle>{t('innovation-templates.definition.title')}</TypographyTitle>
           <Typography variant="body2" component="div">
-            <SafeLifecycleVisualizer definition={definition} />
+            <SafeInnovationFlowVisualizer definition={definition} />
           </Typography>
         </Box>
       </DialogContent>

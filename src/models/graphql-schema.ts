@@ -8125,6 +8125,15 @@ export type UpdateChallengeMutation = {
   updateChallenge: { __typename?: 'Challenge'; id: string; nameID: string; displayName: string };
 };
 
+export type UpdateChallengeInnovationFlowMutationVariables = Exact<{
+  input: UpdateChallengeInnovationFlowInput;
+}>;
+
+export type UpdateChallengeInnovationFlowMutation = {
+  __typename?: 'Mutation';
+  updateChallengeInnovationFlow: { __typename?: 'Challenge'; id: string; displayName: string };
+};
+
 export type ChallengeActivityQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
@@ -8331,6 +8340,7 @@ export type ChallengeLifecycleQuery = {
             state?: string | undefined;
             nextEvents?: Array<string> | undefined;
             stateIsFinal: boolean;
+            templateName?: string | undefined;
           }
         | undefined;
     };
@@ -9299,6 +9309,15 @@ export type UpdateOpportunityMutation = {
   updateOpportunity: { __typename?: 'Opportunity'; id: string; displayName: string };
 };
 
+export type UpdateOpportunityInnovationFlowMutationVariables = Exact<{
+  input: UpdateOpportunityInnovationFlowInput;
+}>;
+
+export type UpdateOpportunityInnovationFlowMutation = {
+  __typename?: 'Mutation';
+  updateOpportunityInnovationFlow: { __typename?: 'Opportunity'; id: string; displayName: string };
+};
+
 export type AllOpportunitiesQueryVariables = Exact<{
   hubId: Scalars['UUID_NAMEID'];
 }>;
@@ -9515,6 +9534,7 @@ export type OpportunityLifecycleQuery = {
             state?: string | undefined;
             nextEvents?: Array<string> | undefined;
             stateIsFinal: boolean;
+            templateName?: string | undefined;
           }
         | undefined;
     };

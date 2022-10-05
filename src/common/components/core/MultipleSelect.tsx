@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 
 import WrapperTypography from './WrapperTypography';
+import { uniqBy } from 'lodash';
 
 const useMultipleSelectStyles = makeStyles(theme => ({
   groupContainer: {
@@ -183,6 +184,14 @@ interface MultipleSelectProps {
   minLength?: number;
 }
 
+const filterEmptyValues = (values: MultiSelectElement[] | undefined) => {
+  const filtered =
+    values
+      ?.map(item => ({ name: item?.name?.trim(), id: item?.id }))
+      .filter(item => item && item.name && item.name.length > 0) || [];
+  return uniqBy(filtered, item => item.name);
+};
+
 const MultipleSelect: FC<MultipleSelectProps> = ({
   elements: _elements,
   onChange,
@@ -197,7 +206,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const input = useRef<HTMLInputElement>(document.createElement('input'));
   const [elements, setElements] = useState<Array<MultiSelectElement>>(_elements || []);
   const [elementsNoFilter, setElementsNoFilter] = useState<Array<MultiSelectElement>>(_elements || []);
-  const [selectedElements, setSelected] = useState<Array<MultiSelectElement>>(defaultValue || []);
+  const [selectedElements, setSelected] = useState<Array<MultiSelectElement>>(filterEmptyValues(defaultValue));
   const [isNoMatches, setNoMatches] = useState<boolean>(false);
   const [isTooltipShown, setTooltipShown] = useState<boolean>(false);
   const [isDisabled, setIsDisabled] = useState(disabled ?? true);
@@ -206,7 +215,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   useEffect(() => setElements(_elements), [_elements]);
   useEffect(() => {
     if (defaultValue && defaultValue.length > 0) {
-      setSelected(defaultValue);
+      setSelected(filterEmptyValues(defaultValue));
     }
   }, [defaultValue]);
 
@@ -233,7 +242,10 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     const isAlreadySelected = selectedElements.find(el => el.name === value.name);
     if (isAlreadySelected) return;
 
-    const newSelected = [...selectedElements, { name: value.name }];
+    const isEmpty = value.name.trim().length === 0;
+    if (isEmpty) return;
+
+    const newSelected = filterEmptyValues([...selectedElements, { name: value.name }]);
     const newElements = elementsNoFilter.filter(el => el.name !== value.name);
 
     resetInput();
@@ -258,7 +270,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const handleSearch = (value?: string) => {
     value = value ?? input.current.value;
 
-    if (!value) {
+    if (!value || value.trim().length === 0) {
       return;
     }
 
@@ -268,12 +280,13 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     if (isAlreadySelected) return;
 
     const newElements = elementsNoFilter.filter(el => el.name !== value);
+    const newSelected = filterEmptyValues([...selectedElements, { name: value }]);
 
     resetInput();
     setElementsNoFilter(newElements);
-    setSelected([...selectedElements, { name: value }]);
+    setSelected(newSelected);
     setNoMatches(false);
-    onChange && onChange([...selectedElements, { name: value }]);
+    onChange && onChange(newSelected);
     onSearch && onSearch();
     onInput && onInput('');
   };

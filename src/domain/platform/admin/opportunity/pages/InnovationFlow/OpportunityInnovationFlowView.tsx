@@ -1,21 +1,58 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
-import { useUrlParams } from '../../../../../../hooks';
-import { useOpportunityProfileInfoQuery } from '../../../../../../hooks/generated/graphql';
+import React, { FC } from 'react';
+import { useApolloErrorHandler, useUrlParams } from '../../../../../../hooks';
+import {
+  refetchOpportunityLifecycleQuery,
+  useHubLifecycleTemplatesQuery,
+  useOpportunityProfileInfoQuery,
+  useUpdateOpportunityInnovationFlowMutation,
+} from '../../../../../../hooks/generated/graphql';
 import Loading from '../../../../../../common/components/core/Loading/Loading';
-import EditLifecycle from '../../../../../platform/admin/templates/InnovationTemplates/EditLifecycle';
+import UpdateInnovationFlow from '../../../templates/InnovationTemplates/UpdateInnovationFlow';
 import OpportunityLifecycleContainer from '../../../../../../containers/opportunity/OpportunityLifecycleContainer';
+import { LifecycleType } from '../../../../../../models/graphql-schema';
+import { SelectInnovationFlowFormValuesType } from '../../../templates/InnovationTemplates/SelectInnovationFlowDialog';
 
 const OpportunityInnovationFlowView: FC = () => {
   const { hubNameId = '', opportunityNameId = '' } = useUrlParams();
+  const handleError = useApolloErrorHandler();
+
+  const { data: hubLifecycleTemplates } = useHubLifecycleTemplatesQuery({
+    variables: { hubId: hubNameId },
+  });
+  const innovationFlowTemplates = hubLifecycleTemplates?.hub?.templates?.lifecycleTemplates;
+  const filteredInnovationFlowTemplates = innovationFlowTemplates?.filter(
+    template => template.type === LifecycleType.Opportunity
+  );
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
     variables: { hubId: hubNameId, opportunityId: opportunityNameId },
-    skip: false,
+    skip: !hubNameId || !opportunityNameId,
   });
 
   const opportunity = opportunityProfile?.hub?.opportunity;
-  const opportunityId = useMemo(() => opportunity?.id, [opportunity]);
+  const opportunityId = opportunity?.id;
+
+  const [updateOpportunityInnovationFlow] = useUpdateOpportunityInnovationFlowMutation({
+    onError: handleError,
+    refetchQueries: [refetchOpportunityLifecycleQuery({ hubId: hubNameId, opportunityId: opportunityNameId })],
+    awaitRefetchQueries: true,
+  });
+
+  const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
+    const { innovationFlowTemplateID } = values;
+
+    if (opportunityId) {
+      updateOpportunityInnovationFlow({
+        variables: {
+          input: {
+            opportunityID: opportunityId,
+            innovationFlowTemplateID: innovationFlowTemplateID,
+          },
+        },
+      });
+    }
+  };
 
   return (
     <Grid container spacing={2}>
@@ -25,7 +62,14 @@ const OpportunityInnovationFlowView: FC = () => {
             return <Loading text="Loading" />;
           }
 
-          return <EditLifecycle id={opportunityId} {...provided} />;
+          return (
+            <UpdateInnovationFlow
+              entityId={opportunityId}
+              innovationFlowTemplates={filteredInnovationFlowTemplates}
+              onSubmit={onSubmit}
+              {...provided}
+            />
+          );
         }}
       </OpportunityLifecycleContainer>
     </Grid>
