@@ -298,6 +298,9 @@
     "delete-confirm-title": "Callout verwijderen?",
     "delete-confirm-text": "Alle Kaarten, Canvasen en discussies onder deze Callout worden ook verwijderd."
   },
+    "journey-creation": {
+    "dialog-title": "Maak nieuwe {{entity}} aan"
+  },
   "context": {
     "hub": {
       "tagline": {
