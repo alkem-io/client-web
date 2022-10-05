@@ -309,13 +309,13 @@
       "background": {
         "title": "Achtergrond",
         "tooltip": "",
-        "description": "Geef een korte omschrijving waar de behoefte voor deze Hub vandaan komt en hoe het is ontstaan.",
+        "description": "Geef een korte omschrijving waar de behoefte voor deze Hub vandaan komt en hoe de Hub is ontstaan.",
         "placeholder": ""
       },
       "impact": {
         "title": "Impact",
         "tooltip": "",
-        "description": "Wat zal deze Hub veranderen? Wat kan de impact zijn voor mensen en organisaties?",
+        "description": "Wat zal deze Hub veranderen? Wat is de impact voor individuen en organisaties?",
         "placeholder": ""
       },
       "vision": {
@@ -334,13 +334,13 @@
     "challenge": {
       "displayName": {
         "title": "Titel",
-        "description": "Probeer het kort, beschrijvend en interessant te houden",
+        "description": "Probeer het kort, beschrijvend en aandacht trekkend te houden",
         "placeholder": ""
       },
       "tagline": {
         "title": "Challenge Statement",
         "tooltip": "",
-        "description": "Omschrijf in één zin waar deze Challenge over gaat. Het is ook ook mogelijk om het te omschrijven als een vraag, beginnend met <i>Hoe kunnen we...?</i>,
+        "description": "Omschrijf in één zin waar deze Challenge over gaat. Het is ook ook mogelijk om er een vraag van te maken, beginnend met <i>Hoe kunnen we...?</i>,
         "placeholder": ""
       },
       "background": {
@@ -358,7 +358,7 @@
       "vision": {
         "title": "Toekomstige visie",
         "tooltip": "",
-        "description": "Hoe ziet een succesvolle toekomst eruit? Wat What does success look like? Waaruit moet de oplossing van deze Challenge bestaan?",
+        "description": "Hoe ziet een succesvolle toekomst eruit? Waaruit moet de oplossing van deze Challenge bestaan?",
         "placeholder": ""
       },
       "who": {
@@ -376,7 +376,7 @@
     "opportunity": {
       "displayName": {
         "title": "Titel",
-        "description": "Probeer het kort, beschrijvend en interessant te houden",
+        "description": "Probeer het kort, beschrijvend en aandacht trekkend te houden",
         "placeholder": ""
       },
       "tagline": {
@@ -394,7 +394,7 @@
       "impact": {
         "title": "Impact",
         "tooltip": "",
-        "description": "Wat kan deze Opportunity veranderen? Wat kan de impact zijn op mensen en organisaties?",
+        "description": "Wat zal deze Opportunity veranderen? Wat is de impact zijn op mensen en organisaties?",
         "placeholder": ""
       },
       "vision": {
@@ -404,7 +404,7 @@
         "placeholder": ""
       },
       "who": {
-        "title": "Wie is er bij betrokken?",
+        "title": "Wie is erbij betrokken?",
         "tooltip": "",
         "description": "Omschrijf de mensen en organisaties die op dit moment werken aan deze Opportunity.",
         "placeholder": ""
