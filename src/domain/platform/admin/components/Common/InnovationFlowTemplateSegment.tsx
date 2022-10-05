@@ -5,13 +5,13 @@ import FormikSelect, { FormikSelectValue } from '../../../../../common/component
 
 interface InnovationFlowTemplateSegmentProps {
   innovationFlowTemplateOptions: FormikSelectValue[];
-  definition: string;
+  definition: string | undefined;
   required: boolean;
 }
 
 export const InnovationFlowTemplateSegment: FC<InnovationFlowTemplateSegmentProps> = ({
   innovationFlowTemplateOptions,
-  definition,
+  definition = '',
   required,
 }) => {
   return (

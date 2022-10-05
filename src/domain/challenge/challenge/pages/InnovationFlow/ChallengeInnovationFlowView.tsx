@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../../../../hooks';
 import {
   refetchChallengeLifecycleQuery,
@@ -27,10 +27,10 @@ const ChallengeInnovationFlowView: FC = () => {
 
   const { data: challengeProfile } = useChallengeProfileInfoQuery({
     variables: { hubId: hubNameId, challengeId: challengeNameId },
-    skip: false,
+    skip: !hubNameId || !challengeNameId,
   });
   const challenge = challengeProfile?.hub?.challenge;
-  const challengeId = useMemo(() => challenge?.id || '', [challenge]);
+  const challengeId = challenge?.id;
 
   const [updateChallengeInnovationFlow] = useUpdateChallengeInnovationFlowMutation({
     onError: handleError,
@@ -41,27 +41,29 @@ const ChallengeInnovationFlowView: FC = () => {
   const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
     const { innovationFlowTemplateID } = values;
 
-    updateChallengeInnovationFlow({
-      variables: {
-        input: {
-          challengeID: challengeId,
-          innovationFlowTemplateID: innovationFlowTemplateID,
+    if (challengeId) {
+      updateChallengeInnovationFlow({
+        variables: {
+          input: {
+            challengeID: challengeId,
+            innovationFlowTemplateID: innovationFlowTemplateID,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   return (
     <Grid container spacing={2}>
       <ChallengeLifecycleContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
         {({ loading, ...provided }) => {
-          if (loading) {
+          if (loading || !challengeId) {
             return <Loading text="Loading" />;
           }
 
           return (
             <UpdateInnovationFlow
-              id={challengeId}
+              entityId={challengeId}
               innovationFlowTemplates={filteredInnovationFlowTemplates}
               onSubmit={onSubmit}
               {...provided}

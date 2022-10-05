@@ -28,7 +28,7 @@ export interface SelectInnovationFlowDialogProps {
   isOpen: boolean;
   onClose: () => void;
   innovationFlowTemplates: LifecycleTemplate[] | undefined;
-  innovationFlowTemplateID: string;
+  innovationFlowTemplateID: string | undefined;
   onSubmitForm: (formData: SelectInnovationFlowFormValuesType) => void;
   wireSubmit: (setter: () => void) => void;
   onSubmitDialog: () => void;
@@ -95,7 +95,7 @@ const SelectInnovationFlowDialog: FC<SelectInnovationFlowDialogProps> = ({
               return (
                 <InnovationFlowTemplateSegment
                   innovationFlowTemplateOptions={innovationFlowTemplateOptions}
-                  definition={selectedInnovationFlowTemplate?.definition || ''}
+                  definition={selectedInnovationFlowTemplate?.definition}
                   required
                 />
               );

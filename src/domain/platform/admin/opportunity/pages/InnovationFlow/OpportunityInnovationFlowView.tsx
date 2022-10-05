@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useApolloErrorHandler, useUrlParams } from '../../../../../../hooks';
 import {
   refetchOpportunityLifecycleQuery,
@@ -27,11 +27,11 @@ const OpportunityInnovationFlowView: FC = () => {
 
   const { data: opportunityProfile } = useOpportunityProfileInfoQuery({
     variables: { hubId: hubNameId, opportunityId: opportunityNameId },
-    skip: false,
+    skip: !hubNameId || !opportunityNameId,
   });
 
   const opportunity = opportunityProfile?.hub?.opportunity;
-  const opportunityId = useMemo(() => opportunity?.id || '', [opportunity]);
+  const opportunityId = opportunity?.id;
 
   const [updateOpportunityInnovationFlow] = useUpdateOpportunityInnovationFlowMutation({
     onError: handleError,
@@ -42,14 +42,16 @@ const OpportunityInnovationFlowView: FC = () => {
   const onSubmit = async (values: SelectInnovationFlowFormValuesType) => {
     const { innovationFlowTemplateID } = values;
 
-    updateOpportunityInnovationFlow({
-      variables: {
-        input: {
-          opportunityID: opportunityId,
-          innovationFlowTemplateID: innovationFlowTemplateID,
+    if (opportunityId) {
+      updateOpportunityInnovationFlow({
+        variables: {
+          input: {
+            opportunityID: opportunityId,
+            innovationFlowTemplateID: innovationFlowTemplateID,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   return (
@@ -62,7 +64,7 @@ const OpportunityInnovationFlowView: FC = () => {
 
           return (
             <UpdateInnovationFlow
-              id={opportunityId}
+              entityId={opportunityId}
               innovationFlowTemplates={filteredInnovationFlowTemplates}
               onSubmit={onSubmit}
               {...provided}

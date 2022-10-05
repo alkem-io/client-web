@@ -11,7 +11,7 @@ import InnovationFlowUpdateConfirmDialog from './InnovationFlowUpdateConfirmDial
 
 interface EditLifecycleProps {
   lifecycle: Lifecycle | undefined;
-  id: string;
+  entityId: string;
   onSetNewState: (id: string, newState: string) => void;
   innovationFlowTemplates: LifecycleTemplate[] | undefined;
   onSubmit: (formData: SelectInnovationFlowFormValuesType) => void;
@@ -19,7 +19,7 @@ interface EditLifecycleProps {
 
 const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
   lifecycle,
-  id,
+  entityId,
   onSetNewState,
   innovationFlowTemplates,
   onSubmit,
@@ -67,7 +67,7 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
               key={i}
               variant="contained"
               color="primary"
-              onClick={() => onSetNewState(id, stateName)}
+              onClick={() => onSetNewState(entityId, stateName)}
               sx={{ alignSelf: 'end', marginX: 0.5 }}
             >
               {stateName}
@@ -81,7 +81,7 @@ const UpdateInnovationFlow: FC<EditLifecycleProps> = ({
         onSubmitForm={handleSelectInnovationFlowFormSubmit}
         wireSubmit={submit => (wiredSubmit = submit)}
         onSubmitDialog={handleSelectInnovationFlowDialogSubmit}
-        innovationFlowTemplateID={innovationFlowTemplate?.id || ''}
+        innovationFlowTemplateID={innovationFlowTemplate?.id}
         innovationFlowTemplates={innovationFlowTemplates}
       />
       <InnovationFlowUpdateConfirmDialog
