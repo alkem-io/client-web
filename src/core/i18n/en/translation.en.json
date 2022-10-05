@@ -420,7 +420,6 @@
         "description": "Describe the people and organizations who are currently working on this Opportunity.",
         "placeholder": ""
       },
-
       "tags": {
         "title": "Tags",
         "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
