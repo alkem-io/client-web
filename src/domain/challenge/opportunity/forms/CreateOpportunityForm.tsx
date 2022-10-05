@@ -60,11 +60,7 @@ export const CreateOpportunityForm: FC<CreateOpportunityFormProps> = ({ isSubmit
       .trim()
       .max(MARKDOWN_TEXT_LENGTH, MessageWithPayload('forms.validations.maxLength'))
       .required(validationRequiredString),
-    tags: yup
-      .array()
-      .of(yup.string().min(2))
-      .required(validationRequiredString)
-      .test('is-empty', validationRequiredString, value => Boolean(value && value.length > 0)),
+    tags: yup.array().of(yup.string().min(2)).notRequired(),
   });
 
   return (

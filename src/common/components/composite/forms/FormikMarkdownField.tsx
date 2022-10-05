@@ -69,7 +69,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     }
 
     return meta.error;
-  }, [isError, meta.error]);
+  }, [isError, meta.error, _helperText]);
 
   return (
     <FormGroup>
