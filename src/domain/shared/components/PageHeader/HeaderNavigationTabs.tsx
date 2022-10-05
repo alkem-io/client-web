@@ -1,15 +1,17 @@
 import { SettingsOutlined } from '@mui/icons-material';
+import { ShareOutlined } from '@mui/icons-material';
 import { Box, styled, Tabs, TabsProps } from '@mui/material';
 import { FC } from 'react';
+import HeaderNavigationButton from './HeaderNavigationButton';
 import HeaderNavigationTab from './HeaderNavigationTab';
 
 const Root = styled(Box)(({ theme }) => ({
   position: 'relative',
   '& .MuiTab-root.settings-button': {
-    flex: 'initial',
+    flex: 'none',
     minWidth: 24,
-    marginRight: theme.spacing(1),
-    marginLeft: 'auto',
+    marginRight: theme.spacing(2),
+    marginLeft: theme.spacing(2),
   },
   '& .MuiTabs-root': {
     paddingLeft: theme.spacing(2),
@@ -66,6 +68,7 @@ const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
         allowScrollButtonsMobile
       >
         {children}
+        <HeaderNavigationButton className="share-button" icon={<ShareOutlined />} value={'share'} />
         {showSettings && (
           <HeaderNavigationTab
             className="settings-button"
