@@ -7,7 +7,6 @@ import InfoIcon from '@mui/icons-material/Info';
 import { useField } from 'formik';
 import { makeStyles } from '@mui/styles';
 import CharacterCounter from '../common/CharacterCounter/CharacterCounter';
-import { useTranslation } from 'react-i18next';
 
 const useStyle = makeStyles(theme => ({
   padding: {
@@ -58,7 +57,6 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
   loading,
   inputLabelComponent: InputLabelComponent = InputLabel,
 }) => {
-  const { i18n } = useTranslation();
   const styles = useStyle();
   const [field, meta, helper] = useField(name);
   const isError = Boolean(meta.error) && meta.touched;
@@ -71,7 +69,7 @@ export const FormikMarkdownField: FC<MarkdownFieldProps> = ({
     }
 
     return meta.error;
-  }, [isError, meta.error, i18n.language]);
+  }, [isError, meta.error, _helperText]);
 
   return (
     <FormGroup>
