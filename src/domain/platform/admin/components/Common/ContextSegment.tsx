@@ -24,6 +24,7 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         name="vision"
         label={t(`context.${contextType}.vision.title` as const)}
         tooltipLabel={t(`context.${contextType}.vision.tooltip` as const)}
+        helperText={t(`context.${contextType}.vision.description` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
@@ -32,6 +33,7 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         name="background"
         label={t(`context.${contextType}.background.title` as const)}
         tooltipLabel={t(`context.${contextType}.background.tooltip` as const)}
+        helperText={t(`context.${contextType}.background.description` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
@@ -40,6 +42,7 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         name="impact"
         label={t(`context.${contextType}.impact.title` as const)}
         tooltipLabel={t(`context.${contextType}.impact.tooltip` as const)}
+        helperText={t(`context.${contextType}.impact.description` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
@@ -48,6 +51,7 @@ export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType
         name="who"
         label={t(`context.${contextType}.who.title` as const)}
         tooltipLabel={t(`context.${contextType}.who.tooltip` as const)}
+        helperText={t(`context.${contextType}.who.description` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
