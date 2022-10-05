@@ -1,6 +1,6 @@
 query globalActivity {
     metadata {
-        activity {
+        metrics {
             name
             value
         }

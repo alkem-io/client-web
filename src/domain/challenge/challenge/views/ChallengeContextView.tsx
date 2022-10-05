@@ -3,23 +3,23 @@ import { useTranslation } from 'react-i18next';
 import { ApolloError } from '@apollo/client';
 import { Box } from '@mui/material';
 import Button from '@mui/material/Button';
-import { ActivityItem } from '../../../../common/components/composite/common/ActivityPanel/Activities';
+import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import LifecycleState from '../../../../common/components/composite/entities/Lifecycle/LifecycleState';
-import ContextSection from '../../../../common/components/composite/sections/ContextSection';
+import LifecycleState from '../../../platform/admin/templates/InnovationTemplates/LifecycleState';
+import { ChallengeContextSection } from './ChallengeContextSection';
 import { RouterLink } from '../../../../common/components/core/RouterLink';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
 import {
   ContextTabFragment,
   Tagset,
   LifecycleContextTabFragment,
-  ActivityItemFragment,
+  MetricsItemFragment,
   Context,
 } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
-import ActivityView from '../../../platform/activity/views/ActivityView';
-import { ActivityType } from '../../../platform/activity/ActivityType';
-import getActivityCount from '../../../platform/activity/utils/getActivityCount';
+import ActivityView from '../../../platform/metrics/views/MetricsView';
+import { MetricType } from '../../../platform/metrics/MetricType';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
 import ChallengeCommunityView from '../../../community/community/entities/ChallengeCommunityView';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
@@ -46,7 +46,7 @@ interface ChallengeContextOptions {
 
 interface ChallengeContextViewProps
   extends ViewProps<ChallengeContextEntities, ChallengeContextActions, ChallengeContextState, ChallengeContextOptions> {
-  activity: ActivityItemFragment[] | undefined;
+  activity: MetricsItemFragment[] | undefined;
 }
 
 export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, entities, state, options }) => {
@@ -64,17 +64,17 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
     id = '',
   } = context || ({} as Context);
 
-  const activityItems: ActivityItem[] = useMemo(() => {
+  const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
         name: t('common.opportunities'),
-        type: ActivityType.Opportunity,
-        count: getActivityCount(activity, 'opportunities'),
+        type: MetricType.Opportunity,
+        count: getMetricCount(activity, 'opportunities'),
         color: 'primary',
       },
       {
         name: t('common.members'),
-        count: getActivityCount(activity, 'members'),
+        count: getMetricCount(activity, 'members'),
         color: 'neutralMedium',
       },
     ];
@@ -82,7 +82,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
 
   return (
     <>
-      <ContextSection
+      <ChallengeContextSection
         primaryAction={
           <Box display="flex">
             <LifecycleState lifecycle={challengeLifecycle} />
@@ -110,7 +110,7 @@ export const ChallengeContextView: FC<ChallengeContextViewProps> = ({ activity, 
         loading={loading}
         leftColumn={
           <DashboardGenericSection headerText={t('pages.challenge.sections.dashboard.statistics.title')}>
-            <ActivityView activity={activityItems} loading={loading} />
+            <ActivityView activity={metricsItems} loading={loading} />
           </DashboardGenericSection>
         }
         rightColumn={<ChallengeCommunityView />}

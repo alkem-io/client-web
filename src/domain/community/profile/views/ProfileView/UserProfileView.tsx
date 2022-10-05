@@ -1,7 +1,7 @@
 import { Card, CardContent, Grid, Typography as MUITypography } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import ProfileDetail from '../../../../../common/components/composite/common/ProfileDetail/ProfileDetail';
+import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';
 import References from '../../../../../common/components/composite/common/References/References';

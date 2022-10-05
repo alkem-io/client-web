@@ -13,6 +13,7 @@ interface MarkdownInputFieldProps {
   required?: boolean;
   maxLength?: number;
   withCounter?: boolean;
+  helperText?: string;
   loading?: boolean;
 }
 
@@ -26,6 +27,7 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
   required,
   maxLength,
   withCounter,
+  helperText,
   loading,
 }: MarkdownInputFieldProps) => {
   const styles = useProfileStyles();
@@ -43,6 +45,7 @@ const MarkdownInput: FC<MarkdownInputFieldProps> = ({
         required={required}
         maxLength={maxLength}
         withCounter={withCounter}
+        helperText={helperText}
         loading={loading}
       />
     </Grid>

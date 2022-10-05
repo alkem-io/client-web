@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import { FieldArray, useField } from 'formik';
-import React, { FC, useCallback } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import * as yup from 'yup';
 import { TagsetTemplate } from '../../../../../models/graphql-schema';
 import { Tagset } from '../../../../../models/Profile';
@@ -52,7 +52,7 @@ export const TagsetSegment: FC<TagsSegmentProps> = ({
             placeholder={getTagsetPlaceholder(tagSet.name)}
             readOnly={readOnly}
             disabled={disabled}
-            helpText={helpText}
+            helpTextIcon={helpText}
             loading={loading}
           />
         ))
@@ -70,7 +70,8 @@ interface TagsetFieldProps {
   placeholder?: string;
   as?: React.ElementType;
   disabled?: boolean;
-  helpText?: string;
+  helpTextIcon?: string;
+  helperText?: string;
   loading?: boolean;
 }
 
@@ -81,10 +82,21 @@ export const TagsetField: FC<TagsetFieldProps> = ({
   readOnly = false,
   disabled = false,
   placeholder,
-  helpText,
+  helpTextIcon,
+  helperText: _helperText,
   loading,
 }) => {
   const [field, meta, helper] = useField(name);
+
+  const isError = Boolean(meta.error) && meta.touched;
+  const helperText = useMemo(() => {
+    if (!isError) {
+      return _helperText;
+    }
+
+    return meta.error;
+  }, [isError, meta.error]);
+
   return (
     <Grid item xs={12}>
       <TagsInput
@@ -96,13 +108,11 @@ export const TagsetField: FC<TagsetFieldProps> = ({
         required={required}
         disabled={disabled}
         readOnly={readOnly}
-        error={Boolean(meta.error)}
-        helperText={meta.error}
-        helpText={helpText}
+        error={isError}
+        helperText={helperText}
+        helpTextIcon={helpTextIcon}
         onChange={items => helper.setValue(items)}
-        InputLabelProps={{
-          shrink: true,
-        }}
+        onBlur={field.onBlur}
         fullWidth
         loading={loading}
       />

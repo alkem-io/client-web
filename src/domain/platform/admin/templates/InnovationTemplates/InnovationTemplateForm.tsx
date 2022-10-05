@@ -9,8 +9,8 @@ import TemplateForm from '../TemplateForm';
 import Typography from '@mui/material/Typography';
 import { Box } from '@mui/material';
 import FormikSelect, { FormikSelectValue } from '../../../../../common/components/composite/forms/FormikSelect';
-import { validateLifecycleDefinition } from '../../../../../common/components/core/LifecycleVisualizer';
-import { SafeLifecycleVisualizer } from './SafeLifecycleVisualizer';
+import { validateLifecycleDefinition } from './InnovationFlowVisualizer';
+import { SafeInnovationFlowVisualizer } from './SafeInnovationFlowVisualizer';
 
 export interface InnovationTemplateFormValues {
   title: string;
@@ -74,7 +74,7 @@ const InnovationTemplateForm = ({ title, initialValues, visual, onSubmit, action
           />
           <Typography>{t('common.preview')}</Typography>
           <Box sx={{ maxWidth: theme => theme.spacing(64) }}>
-            <SafeLifecycleVisualizer definition={values.definition} />
+            <SafeInnovationFlowVisualizer definition={values.definition} />
           </Box>
         </FormRows>
       )}

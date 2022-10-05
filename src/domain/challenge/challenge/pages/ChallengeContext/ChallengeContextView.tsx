@@ -9,10 +9,8 @@ import {
 } from '../../../../../hooks/generated/graphql';
 import { updateContextInput } from '../../../../../common/utils/buildContext';
 import WrapperButton from '../../../../../common/components/core/WrapperButton';
-import ContextForm, { ContextFormValues } from '../../../../../common/components/composite/forms/ContextForm';
-import Loading from '../../../../../common/components/core/Loading/Loading';
-import EditLifecycle from '../../../../platform/admin/components/EditLifecycle';
-import ChallengeLifecycleContainer from '../../../../../containers/challenge/ChallengeLifecycleContainer';
+import { ContextForm, ContextFormValues } from '../../../../context/ContextForm';
+import { ChallengeContextSegment } from '../../../../platform/admin/challenge/ChallengeContextSegment';
 
 const ChallengeContextView: FC = () => {
   const { t } = useTranslation();
@@ -50,7 +48,12 @@ const ChallengeContextView: FC = () => {
   let submitWired;
   return (
     <Grid container spacing={2}>
-      <ContextForm context={challenge?.context} onSubmit={onSubmit} wireSubmit={submit => (submitWired = submit)} />
+      <ContextForm
+        contextSegment={ChallengeContextSegment}
+        context={challenge?.context}
+        onSubmit={onSubmit}
+        wireSubmit={submit => (submitWired = submit)}
+      />
       <Grid container item justifyContent={'flex-end'}>
         <WrapperButton
           disabled={isUpdating}
@@ -59,15 +62,6 @@ const ChallengeContextView: FC = () => {
           text={t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
         />
       </Grid>
-      <ChallengeLifecycleContainer hubNameId={hubNameId} challengeNameId={challengeNameId}>
-        {({ loading, ...provided }) => {
-          if (loading) {
-            return <Loading text="Loading" />;
-          }
-
-          return <EditLifecycle id={challengeId} {...provided} />;
-        }}
-      </ChallengeLifecycleContainer>
     </Grid>
   );
 };

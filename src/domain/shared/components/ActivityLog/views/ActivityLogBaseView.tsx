@@ -24,7 +24,6 @@ export const ActivityLogBaseView: FC<ActivityLogBaseViewProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-
   const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
 
   const title = useMemo(

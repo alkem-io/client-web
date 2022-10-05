@@ -139,7 +139,7 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     };
   }, [user, opportunity, hubId, challengeId, opportunityId]);
 
-  const { context, collaboration, activity = [] } = opportunity;
+  const { context, collaboration, metrics = [] } = opportunity;
   // Note: Projects are removed from the graphql query until we add them back in properly.
   const projects: Project[] = [];
   const relations = collaboration?.relations ?? [];
@@ -189,9 +189,9 @@ const OpportunityPageContainer: FC<OpportunityPageContainerProps> = ({ children 
     return projectList;
   }, [projects, onProjectTransition, permissions.projectWrite, t]);
 
-  const aspectsCount = useAspectsCount(activity);
+  const aspectsCount = useAspectsCount(metrics);
 
-  const canvasesCount = useCanvasesCount(activity);
+  const canvasesCount = useCanvasesCount(metrics);
 
   const contributors = useCommunityMembersAsCardProps(opportunity?.community);
 

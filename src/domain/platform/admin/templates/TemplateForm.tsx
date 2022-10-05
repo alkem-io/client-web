@@ -91,7 +91,7 @@ const TemplateForm = <Values extends {}>({
                 <TagsetField
                   name="tags"
                   title={t('common.tags')}
-                  helpText={t('components.aspect-creation.info-step.tags-help-text')}
+                  helpTextIcon={t('components.aspect-creation.info-step.tags-help-text')}
                 />
                 {visual && <VisualUpload visual={visual} />}
               </TemplateFormRows>

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Box, Card, CardContent, Grid, Link, styled } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import ProfileDetail from '../../../../../common/components/composite/common/ProfileDetail/ProfileDetail';
+import ProfileDetail from '../../ProfileDetail/ProfileDetail';
 import TagsComponent from '../../../../shared/components/TagsComponent/TagsComponent';
 import VerifiedStatus from '../../../../../common/components/composite/common/VerifiedStatus/VerifiedStatus';
 import WrapperTypography from '../../../../../common/components/core/WrapperTypography';

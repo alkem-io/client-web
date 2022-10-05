@@ -12,7 +12,7 @@ import {
 } from '../../../models/graphql-schema';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import Heading from '../../shared/components/Heading';
-import { CalloutSummary } from './creation-dialog/steps/CalloutSummaryStep/CalloutSummaryStep';
+import { CalloutSummary } from './CalloutSummary';
 import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
 import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from './edit/CalloutEditType';
@@ -33,13 +33,11 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     editable?: boolean;
     authorization?: Authorization;
   };
-  maxHeight?: number;
 }
 
 const CalloutLayout = ({
   callout,
   children,
-  maxHeight,
   onVisibilityChange,
   onCalloutEdit,
   onCalloutDelete,
@@ -50,7 +48,7 @@ const CalloutLayout = ({
   const settingsOpened = Boolean(settingsAnchorEl);
   const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
   const handleSettingsClose = () => setSettingsAnchorEl(null);
-  //
+
   const [visDialogOpen, setVisDialogOpen] = useState(false);
   const handleVisDialogOpen = () => {
     setVisDialogOpen(true);
@@ -110,17 +108,8 @@ const CalloutLayout = ({
             <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
           </Heading>
           <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>
-          {/* Paddings are set to prevent cutting Paper shadow by overflow: scroll.
-              Margins are compensating the visual shift. Except for the left margin, we want a bit of left shifting */}
-          <Box
-            maxHeight={maxHeight && (theme => theme.spacing(maxHeight + 4))}
-            overflow={typeof maxHeight === 'undefined' ? undefined : 'auto'}
-            padding={2}
-            margin={-2}
-            marginLeft={0}
-          >
-            {children}
-          </Box>
+
+          {children}
         </Box>
       </Card>
       <Menu

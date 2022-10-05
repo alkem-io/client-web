@@ -1,0 +1,54 @@
+query ChallengeExplorerPage($rolesData: RolesUserInput!) {
+  rolesUser(rolesData: $rolesData) {
+    hubs {
+      id
+      roles
+      challenges {
+        id
+        roles
+      }
+    }
+  }
+}
+
+query ChallengeExplorerSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    result {
+      ...ChallengeExplorerSearchResult
+    }
+    terms
+  }
+}
+
+fragment ChallengeExplorerSearchResult on Challenge {
+  id
+  hubID
+}
+
+query ChallengeExplorerData($hubIDs: [UUID!], $challengeIDs: [UUID!]) {
+  hubs(IDs: $hubIDs) {
+    id
+    nameID
+    displayName
+    context {
+      id
+      tagline
+    }
+    challenges (IDs: $challengeIDs) {
+      id
+      nameID
+      displayName
+      context {
+        id
+        tagline
+        visuals {
+          ...VisualUri
+        }
+      }
+      tagset {
+        id
+        tags
+      }
+    }
+  }
+}

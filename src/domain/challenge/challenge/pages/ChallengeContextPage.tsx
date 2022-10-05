@@ -39,7 +39,7 @@ const ChallengeContextPage: FC<ChallengeContextPageProps> = ({ paths }) => {
               canCreateCommunityContextReview: entities.permissions.canCreateCommunityContextReview,
             }}
             actions={{}}
-            activity={entities.activity}
+            activity={entities.metrics}
           />
         )}
       </ContextTabContainer>

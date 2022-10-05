@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { Box } from '@mui/material';
 import Link from '@mui/material/Link';
 import HelpOutline from '@mui/icons-material/HelpOutline';
@@ -18,11 +18,12 @@ import {
 } from '../../models/graphql-schema';
 import { PageProps } from '../common';
 import { RouterLink } from '../../common/components/core/RouterLink';
-import { AUTH_LOGIN_PATH } from '../../models/constants';
+import { AUTH_LOGIN_PATH, SEARCH_ROUTE, SEARCH_TERMS_PARAM } from '../../models/constants';
 import SectionSpacer from '../../domain/shared/components/Section/SectionSpacer';
 import tags from './searchTagsList';
 import { FilterConfig } from './Filter';
 import SearchResultSection from './SearchResultSection';
+import { escape } from 'lodash';
 
 const tagsetNames = ['skills', 'keywords'];
 // todo translate
@@ -82,6 +83,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const handleError = useApolloErrorHandler();
   useUpdateNavigation({ currentPaths: paths });
 
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const { isAuthenticated } = useUserContext();
 
@@ -89,7 +91,10 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
   const queryParams = new URLSearchParams(params);
   const queryParam = queryParams.get('terms');
 
-  const termsFromUrl = useMemo(() => (queryParam?.split(',') ?? []).map(x => ({ id: x, name: x })) || [], [queryParam]);
+  const termsFromUrl = useMemo(
+    () => (queryParam?.split(',') ?? []).map(escape).map(x => ({ id: x, name: x })) || [],
+    [queryParam]
+  );
   const [termsFromQuery, setTermsFromQuery] = useState<MultiSelectElement[] | undefined>(undefined);
 
   const [results, setResults] = useState<ResultType[]>();
@@ -118,6 +123,9 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
     if (!newValue.length) {
       resetState();
     } else {
+      const terms = newTerms.join(',');
+      const params = new URLSearchParams({ [SEARCH_TERMS_PARAM]: terms });
+      navigate(`${SEARCH_ROUTE}?${params}`);
       searchQuery(newTerms, [...contributorFilterValue, ...entityFilterValue]);
     }
   };
@@ -188,6 +196,7 @@ const SearchPage: FC<PageProps> = ({ paths }): React.ReactElement => {
           defaultValue={termsFromQuery}
           elements={tags}
           allowUnknownValues
+          minLength={2}
         />
       </Section>
       {!isAuthenticated && (

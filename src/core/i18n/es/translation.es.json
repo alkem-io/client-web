@@ -54,7 +54,10 @@
     "view-profile": "Ver de perfil",
     "edit-photo": "Editar foto",
     "accept-all-cookies": "Aceptar todas las cookies",
-    "confirm-choice": "Confirmar opciones"
+    "confirm-choice": "Confirmar opciones",
+    "confirm": "Confirmar",
+    "change-template": "Cambiar Plantilla",
+    "change": "Cambiar"
   },
   "tooltips": {
     "click-more-info": "Click para más información",
@@ -73,7 +76,9 @@
     }
   },
   "common": {
+    "error-generic": "Ocurrió un error mientras cargaba la información",
     "avatar": "Avatar",
+    "inspiration": "Inspiración",
     "name": "Nombre",
     "username": "Nombre de usuario",
     "tags": "Etiquetas",
@@ -94,6 +99,8 @@
     "about": "Acerca de",
     "explore": "Explorar",
     "edit-entity": "Editar {{entity}}",
+    "filter": "Filtrar",
+    "filterby": "Filtrar por...",
     "email": "Email",
     "state": "Estado",
     "aspect": "Tarjeta",
@@ -163,7 +170,9 @@
     "warning": "Advertencia",
     "preview": "Vista previa",
     "help": "Ayuda",
+    "loading": "Cargando...",
     "language": "Idioma",
+    "innovation-flow": "Flujo de innovación",
     "genders": {
       "notSpecified": "no especificado",
       "male": "hombre",
@@ -297,6 +306,127 @@
     "delete-confirm-title": "¿Borrar Callout?",
     "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de este Callout serán borrados."
   },
+  "journey-creation": {
+    "dialog-title": "Crear {{entity}}"
+  },
+  "context": {
+    "hub": {
+      "tagline": {
+        "title": "En una línea",
+        "tooltip": "",
+        "description": "Explica en una línea de qué trata este Hub",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Historia",
+        "tooltip": "",
+        "description": "¿Cuál es la situación actual? ¿Qué se ha hecho para progresar? ¿Qué resultados se han logrado?",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Impacto",
+        "tooltip": "",
+        "description": "¿Qué cambiaría si se logra la visión? ¿Qué usuarios u organizaciones experimentarán una realidad diferente, para bien o para mal?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "¿De qué trata esta comunidad?",
+        "tooltip": "",
+        "description": "¿Cual es el marco de referencia para este Hub?",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "¿Quién está involucrado?",
+        "tooltip": "",
+        "description": "Piensa en personas, organizaciones, organismos públicos, insituciones de investigación, etc...",
+        "placeholder": ""
+      }
+    },
+    "challenge": {
+      "displayName": {
+        "title": "Título",
+        "description": "Intenta mantenerlo corto, interesante y atractivo.",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "En una línea",
+        "tooltip": "",
+        "description": "Explica en una frase de qué se trata este Desafío. También es posible enmarcarlo como una pregunta, comenzando con '¿Cómo podríamos...?'",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Realidad Actual",
+        "tooltip": "",
+        "description": "Una breve impresión del estado actual del desafío. Piensa en el qué, dónde, cuándo y quién.",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Contexto Adicional",
+        "tooltip": "",
+        "description": "Da un pequeño resumen de cómo este Desafío puede enmarcarse en una foto aún mas amplia. ¿Cual es su impacto? ¿Por qué está ahí?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "Visión a Futuro",
+        "tooltip": "",
+        "description": "¿Cómo se ve el éxito? ¿En qué consistiría una solución a este Desafío?",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "¿Quién debería contribuir?",
+        "tooltip": "",
+        "description": "Piensa en individuos, organizaciones, organismos públicos, centros de investigación, etc.",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Etiquetas",
+        "description": "Palabras que sean clave para el Desafío para que sea más fácil de encontrar.",
+        "placeholder": ""
+      }
+    },
+    "opportunity": {
+      "displayName": {
+        "title": "Título",
+        "description": "Intenta mantenerlo corto, interesante y atractivo.",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "En una línea",
+        "tooltip": "",
+        "description": "Explica en una frase de qué trata esta Oportunidad",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Descripción",
+        "tooltip": "",
+        "description": "Da un breve resumen de cómo esta Oportunidad fue identificada y cómo se enmarca en una foto mas amplia.",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Impacto",
+        "tooltip": "",
+        "description": "¿Qué cambiaría esta oportunidad? ¿Cómo las personas u organizaciones se verían afectadas, para bien o para mal?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "Descripción",
+        "tooltip": "",
+        "description": "Describe la idea y el impacto que tendrá sobre el Desafío. Piensa que esto es un documento 'vivo', puede ser actualizado.",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "¿Quién está involucrado?",
+        "tooltip": "",
+        "description": "Describe las personas u organizaciones que están trabajando en esta oportunidad",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Etiquetas",
+        "description": "Palabras que sean clave para la Oportunidad para que sea más fácil de encontrar.",
+        "placeholder": ""
+      }
+    }
+  },
   "forms": {
     "validations": {
       "required": "¡Este campo es obligatorio!",
@@ -325,6 +455,9 @@
     }
   },
   "components": {
+    "search-cards": {
+      "matched-terms": "Términos coincidentes"
+    },
     "activity-log-section": {
       "title": "Novedades"
     },
@@ -497,25 +630,6 @@
       "nameID": {
         "title": "Identificador",
         "placeholder": "Identificador textual único, utilizado para las rutas URL. Atención: No puede ser modificado después de creado."
-      }
-    },
-    "contextSegment": {
-      "tagline": "Etiqueta",
-      "background": {
-        "title": "Historia",
-        "tooltip": "¿Cuál es la situación actual? ¿Qué se ha hecho para progresar? ¿Qué resultados se han logrado?"
-      },
-      "impact": {
-        "title": "Impacto",
-        "tooltip": "¿Qué cambiaría si se logra la visión? ¿Qué usuarios u organizaciones experimentarán una realidad diferente, para bien o para mal?"
-      },
-      "vision": {
-        "title": "Visión",
-        "tooltip": "¿Que es el éxito? ¿Cómo sabrá cuando lo haya conseguido?"
-      },
-      "who": {
-        "title": "Quién",
-        "tooltip": "¿Qué deben aportar las organizaciones o los usuarios? ¿Por qué iban a querer comprometerse?"
       }
     },
     "visualSegment": {
@@ -719,6 +833,9 @@
         "no-data-join": "No hay debates. Por favor únase a la comunidad para crear un debate",
         "explore": "Explorar debates"
       }
+    },
+    "select-innovation-flow": {
+      "title": "Cambiar flujo de innovación"
     }
   },
   "navigation": {
@@ -940,19 +1057,28 @@
     },
     "challenge-explorer": {
       "search": {
-        "title": "Explorar Desafíos",
-        "subtitle": "Esta sección te permite buscar por todos los desafíos hospedados en Alkemio que son visibles para ti.",
-        "placeholder": "Buscar desafíos en Alkemio..."
+        "title": "Explorar Desafíos Públicos",
+        "subtitle": "Introduce tus términos de búsqueda, (por ejemplo 'innovación') a continuación y encuentra Desafíos relacionados. Por favor, ten en cuenta que en Alkemio hay ambos, hubs públicos y privados. Aquí puedes encontrar los desafíos de los hubs públicos. Los desafíos de los hubs privados son visibles solo si has iniciado sesión y eres miembro de estos hubs.",
+        "placeholder": "Buscar...",
+        "default-search-term": "Innovation",
+        "no-results": "No se encontraron resultados para tus términos de búsqueda."
+      },
+      "side-note": {
+        "title": "La estructura de Alkemio",
+        "description": "En Alkemio, los Desafíos se organizan dentro de un Hub. Cada Hub tiene su pripio marco de referencia específico en el cual los Desafíos se usan para entender los problemas que se están tratando."
+      },
+      "my-search": {
+        "title": "Explore otros desafíos a los que tienes acceso",
+        "subtitle": "En Alkemio hay ambos, Hubs públicos y privados. Aquí encontrarás los Desafíos de los Hubs públicos y privados de los que eres miembro. Introduce términos de búsqueda (por ejemplo: 'Innovación') para encontrar Desafíos coincidentes."
       },
       "my": {
-        "title": "Mis Desafíos ({{count}})",
-        "subtitle": "Esta sección te muestra los desafíos en los que estás contribuyendo.",
-        "help-text": "Una tarjeta por cada desafío, incluyendo tu rol en cada uno."
+        "title": "Mis Desafíos",
+        "subtitle": "Aquí encontrarás los desafíos en los que estás contribuyendo."
       },
-      "hubs": {
-        "title": "Desafíos hospedados por el Hub '{{name}}': {{count}}",
-        "subtitle": "Esta sección muestra los desafíos hospedados por el Hub {{name}}, del cual eres miembro.",
-        "help-text": "Un Hub hospeda uno o mas desafíos. Tú eres miembro de este Hub."
+      "other": {
+        "title": "Desafíos en mis Hubs",
+        "subtitle": "Aquí encontrarás otros desafíos hospedadas en los Hubs de los que eres miembro.",
+        "filter-by-hub": "Filtrar por Hub"
       }
     },
     "lead-organization": {
@@ -979,7 +1105,7 @@
             "header": "¿Ya eres usuario? ¡Inicia sesión!",
             "subheader": "¡Bienvenido de nuevo! Continua donde lo dejaste y empieza a explorar nuevos desafíos.",
             "more-info": "Mas acerca de Alkemio",
-            "more-info-url": "https://alkemio.foundation/about"
+            "more-info-url": "https://alkemio.foundation/manifesto"
           },
           "new-to-alkemio": {
             "header": "¿Nuevo en Alkemio?",

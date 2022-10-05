@@ -1,15 +1,15 @@
 import { ApolloError } from '@apollo/client';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityItem } from '../../../../common/components/composite/common/ActivityPanel/Activities';
+import { MetricItem } from '../../../../common/components/composite/common/MetricsPanel/Metrics';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
-import ContextSection from '../../../../common/components/composite/sections/ContextSection';
+import { HubContextSection } from './HubContextSection';
 import ApplicationButtonContainer from '../../../../containers/application/ApplicationButtonContainer';
-import { ContextTabFragment, Tagset, ActivityItemFragment, Context } from '../../../../models/graphql-schema';
+import { ContextTabFragment, Tagset, MetricsItemFragment, Context } from '../../../../models/graphql-schema';
 import { ViewProps } from '../../../../models/view';
-import { ActivityType } from '../../../platform/activity/ActivityType';
-import getActivityCount from '../../../platform/activity/utils/getActivityCount';
-import ActivityView from '../../../platform/activity/views/ActivityView';
+import { MetricType } from '../../../platform/metrics/MetricType';
+import getMetricCount from '../../../platform/metrics/utils/getMetricCount';
+import ActivityView from '../../../platform/metrics/views/MetricsView';
 import HubCommunityView from '../../../community/community/entities/HubCommunityView';
 import DashboardGenericSection from '../../../shared/components/DashboardSections/DashboardGenericSection';
 
@@ -29,10 +29,10 @@ interface HubContextOptions {}
 
 interface HubContextViewProps
   extends ViewProps<HubContextEntities, HubContextActions, HubContextState, HubContextOptions> {
-  activity: ActivityItemFragment[] | undefined;
+  metrics: MetricsItemFragment[] | undefined;
 }
 
-export const HubContextView: FC<HubContextViewProps> = ({ activity, entities, state }) => {
+export const HubContextView: FC<HubContextViewProps> = ({ metrics: activity, entities, state }) => {
   const { loading } = state;
   const { context, hubId, hubNameId, hubDisplayName, hubTagSet } = entities;
 
@@ -48,29 +48,29 @@ export const HubContextView: FC<HubContextViewProps> = ({ activity, entities, st
 
   const { t, i18n } = useTranslation();
 
-  const activityItems: ActivityItem[] = useMemo(() => {
+  const metricsItems: MetricItem[] = useMemo(() => {
     return [
       {
         name: t('common.challenges'),
-        type: ActivityType.Challenge,
-        count: getActivityCount(activity, 'challenges'),
+        type: MetricType.Challenge,
+        count: getMetricCount(activity, 'challenges'),
         color: 'neutral',
       },
       {
         name: t('common.opportunities'),
-        count: getActivityCount(activity, 'opportunities'),
+        count: getMetricCount(activity, 'opportunities'),
         color: 'primary',
       },
       {
         name: t('common.members'),
-        count: getActivityCount(activity, 'members'),
+        count: getMetricCount(activity, 'members'),
         color: 'neutralMedium',
       },
     ];
   }, [activity, i18n.language]);
 
   return (
-    <ContextSection
+    <HubContextSection
       primaryAction={
         hubId && hubNameId && hubDisplayName ? (
           <ApplicationButtonContainer>
@@ -90,7 +90,7 @@ export const HubContextView: FC<HubContextViewProps> = ({ activity, entities, st
       loading={loading}
       leftColumn={
         <DashboardGenericSection headerText={t('pages.hub.sections.dashboard.activity')}>
-          <ActivityView activity={activityItems} loading={loading} />
+          <ActivityView activity={metricsItems} loading={loading} />
         </DashboardGenericSection>
       }
       rightColumn={<HubCommunityView />}

@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import Autocomplete, { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { Chip } from '@mui/material';
@@ -11,27 +10,35 @@ export type ValueType = {
   values: string[];
 };
 
-export interface CardFilterInputProps {
+export interface SearchTagsInputProps {
   value: string[];
+  availableTags?: string[];
   onChange?: AutocompleteProps<string, true, undefined, true>['onChange'];
+  label?: string;
   placeholder?: string;
+  disableCloseOnSelect?: boolean;
 }
 
-const SearchTagsInput = ({ value, onChange, placeholder }: CardFilterInputProps) => {
-  const { t } = useTranslation();
+const SearchTagsInput = ({
+  value,
+  availableTags = [],
+  onChange,
+  label,
+  placeholder,
+  disableCloseOnSelect = true,
+}: SearchTagsInputProps) => {
+  const options = useMemo(() => uniqSortedByOccurrences(availableTags), [availableTags]);
 
-  const options = useMemo(() => uniqSortedByOccurrences(value), [value]);
-
-  const handleChange: CardFilterInputProps['onChange'] = (event, value, reason) => {
+  const handleChange: SearchTagsInputProps['onChange'] = (event, value, reason) => {
     const trimmedValues = value.map(x => x.trim().toLowerCase());
     onChange?.(event, trimmedValues, reason);
   };
 
   const renderInput = useCallback(
     (props: AutocompleteRenderInputParams) => (
-      <TextField {...props} variant="outlined" placeholder={placeholder} label={t('components.card-filter.title')} />
+      <TextField {...props} variant="outlined" placeholder={placeholder} label={label} />
     ),
-    [placeholder]
+    [label, placeholder]
   );
 
   return (
@@ -43,9 +50,10 @@ const SearchTagsInput = ({ value, onChange, placeholder }: CardFilterInputProps)
         multiple
         fullWidth
         freeSolo
-        disableCloseOnSelect
+        disableCloseOnSelect={disableCloseOnSelect}
         options={options}
         getOptionLabel={option => option}
+        value={value}
         isOptionEqualToValue={(option, value) => option === value}
         groupBy={() => 'Tags'}
         onChange={handleChange}

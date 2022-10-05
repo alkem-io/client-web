@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Challenge, Nvp, VisualUriFragment } from '../../../../../../models/graphql-schema';
 import EntityContributionCard, { EntityContributionCardLabel } from '../ContributionCard/EntityContributionCard';
 import { buildChallengeUrl } from '../../../../../utils/urlBuilders';
-import getActivityCount from '../../../../../../domain/platform/activity/utils/getActivityCount';
+import getMetricCount from '../../../../../../domain/platform/metrics/utils/getMetricCount';
 import { useUserContext } from '../../../../../../hooks';
 import { getVisualBannerNarrow } from '../../../../../utils/visuals.utils';
 
 type NeededFields = 'displayName' | 'tagset' | 'nameID' | 'authorization' | 'id';
 
-type ChallengeAttributes = Pick<Challenge, NeededFields> & { activity?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
+type ChallengeAttributes = Pick<Challenge, NeededFields> & { metrics?: (Pick<Nvp, 'name' | 'value'> | Nvp)[] } & {
   context?: { tagline?: string; visuals?: VisualUriFragment[] };
 };
 
@@ -30,19 +30,19 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
     [user]
   );
 
-  const { id, nameID, activity = [], context } = challenge ?? {};
+  const { id, nameID, metrics = [], context } = challenge ?? {};
   const bannerNarrow = getVisualBannerNarrow(context?.visuals);
   const url = hubNameId && nameID && buildChallengeUrl(hubNameId, nameID);
-  const activities = loading
+  const metricItems = loading
     ? []
     : [
         {
           name: t('common.opportunities'),
-          count: getActivityCount(activity, 'opportunities'),
+          count: getMetricCount(metrics, 'opportunities'),
         },
         {
           name: t('common.members'),
-          count: getActivityCount(activity, 'members'),
+          count: getMetricCount(metrics, 'members'),
         },
       ];
 
@@ -58,7 +58,7 @@ const ChallengeCard: FC<ChallengeCardProps> = ({ challenge, hubNameId, loading =
       }}
       label={isMember(id) ? EntityContributionCardLabel.Member : undefined}
       loading={loading}
-      activities={activities}
+      metrics={metricItems}
     />
   );
 };

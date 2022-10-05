@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid';
 import React, { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import SchoolIcon from '@mui/material/SvgIcon/SvgIcon';
-import DashboardSectionAspects from '../../../../common/components/composite/aspect/DashboardSectionAspects/DashboardSectionAspects';
+import DashboardSectionAspects from '../../../collaboration/aspect/DashboardSectionAspects/DashboardSectionAspects';
 import ApplicationButton from '../../../../common/components/composite/common/ApplicationButton/ApplicationButton';
 import OpportunityCard from '../../../../common/components/composite/common/cards/OpportunityCard/OpportunityCard';
 import References from '../../../../common/components/composite/common/References/References';
@@ -142,7 +142,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
             navText={t('buttons.see-all')}
             navLink={'opportunities'}
           >
-            {/* TODO check if flexBasis: '50%' was ever needed */}
             <CardsLayout
               items={opportunities?.slice(0, CHALLENGES_NUMBER_IN_SECTION) || []}
               deps={[hubNameId, challengeNameId]}

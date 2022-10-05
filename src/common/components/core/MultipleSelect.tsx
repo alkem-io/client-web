@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 
 import WrapperTypography from './WrapperTypography';
+import { uniqBy } from 'lodash';
 
 const useMultipleSelectStyles = makeStyles(theme => ({
   groupContainer: {
@@ -180,7 +181,16 @@ interface MultipleSelectProps {
   label?: string;
   onTop?: boolean;
   height?: number;
+  minLength?: number;
 }
+
+const filterEmptyValues = (values: MultiSelectElement[] | undefined) => {
+  const filtered =
+    values
+      ?.map(item => ({ name: item?.name?.trim(), id: item?.id }))
+      .filter(item => item && item.name && item.name.length > 0) || [];
+  return uniqBy(filtered, item => item.name);
+};
 
 const MultipleSelect: FC<MultipleSelectProps> = ({
   elements: _elements,
@@ -190,20 +200,22 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   allowUnknownValues,
   defaultValue,
   disabled,
+  minLength = 2,
 }) => {
   const select = useRef<HTMLDivElement>(document.createElement('div'));
   const input = useRef<HTMLInputElement>(document.createElement('input'));
   const [elements, setElements] = useState<Array<MultiSelectElement>>(_elements || []);
   const [elementsNoFilter, setElementsNoFilter] = useState<Array<MultiSelectElement>>(_elements || []);
-  const [selectedElements, setSelected] = useState<Array<MultiSelectElement>>(defaultValue || []);
+  const [selectedElements, setSelected] = useState<Array<MultiSelectElement>>(filterEmptyValues(defaultValue));
   const [isNoMatches, setNoMatches] = useState<boolean>(false);
   const [isTooltipShown, setTooltipShown] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState(disabled ?? true);
   const styles = useMultipleSelectStyles();
 
   useEffect(() => setElements(_elements), [_elements]);
   useEffect(() => {
     if (defaultValue && defaultValue.length > 0) {
-      setSelected(defaultValue);
+      setSelected(filterEmptyValues(defaultValue));
     }
   }, [defaultValue]);
 
@@ -230,7 +242,10 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
     const isAlreadySelected = selectedElements.find(el => el.name === value.name);
     if (isAlreadySelected) return;
 
-    const newSelected = [...selectedElements, { name: value.name }];
+    const isEmpty = value.name.trim().length === 0;
+    if (isEmpty) return;
+
+    const newSelected = filterEmptyValues([...selectedElements, { name: value.name }]);
     const newElements = elementsNoFilter.filter(el => el.name !== value.name);
 
     resetInput();
@@ -255,18 +270,23 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const handleSearch = (value?: string) => {
     value = value ?? input.current.value;
 
+    if (!value || value.trim().length === 0) {
+      return;
+    }
+
     if (shouldOpenTooltip()) return;
 
     const isAlreadySelected = selectedElements.find(el => el.name === value);
     if (isAlreadySelected) return;
 
     const newElements = elementsNoFilter.filter(el => el.name !== value);
+    const newSelected = filterEmptyValues([...selectedElements, { name: value }]);
 
     resetInput();
     setElementsNoFilter(newElements);
-    setSelected([...selectedElements, { name: value }]);
+    setSelected(newSelected);
     setNoMatches(false);
-    onChange && onChange([...selectedElements, { name: value }]);
+    onChange && onChange(newSelected);
     onSearch && onSearch();
     onInput && onInput('');
   };
@@ -274,7 +294,8 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
   const handleInputChange = e => {
     const value = e.target.value.toLowerCase();
     onInput && onInput(value);
-    if (allowUnknownValues && e.key === 'Enter' && value !== '') {
+    setIsDisabled(value.length < minLength);
+    if (allowUnknownValues && e.key === 'Enter' && value.length >= minLength) {
       handleSearch(value);
     }
   };
@@ -317,7 +338,7 @@ const MultipleSelect: FC<MultipleSelectProps> = ({
                 </div>
               ))}
             </div>
-            <IconButton onClick={() => handleSearch()}>
+            <IconButton onClick={() => handleSearch()} disabled={isDisabled}>
               <SearchIcon color="primary" />
             </IconButton>
           </Box>

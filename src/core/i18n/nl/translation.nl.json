@@ -281,7 +281,7 @@
     },
     "blocks": {
       "users-contributing": "gebruikers die bijdragen",
-      "all-contributing-users": "alle bijdragende gebruikers"
+      "all-contributing-users": "alle gebruikers die een bijdrage leveren"
     }
   },
   "community": {
@@ -297,6 +297,125 @@
     "draftNotice": "Voorlopige versie - Deze Callout is alleen zichtbaar voor Beheerders",
     "delete-confirm-title": "Callout verwijderen?",
     "delete-confirm-text": "Alle Kaarten, Canvasen en discussies onder deze Callout worden ook verwijderd."
+  },
+  "context": {
+    "hub": {
+      "tagline": {
+        "title": "Tagline",
+        "tooltip": "",
+        "description": "Leg in één zin uit waar deze Hub over gaat.",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Achtergrond",
+        "tooltip": "",
+        "description": "Geef een korte omschrijving waar de behoefte voor deze Hub vandaan komt en hoe de Hub is ontstaan.",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "",
+        "description": "Wat zal deze Hub veranderen? Wat is de impact voor individuen en organisaties?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "Waar gaat deze community over?",
+        "tooltip": "",
+        "description": "Wat is het referentiekader voor deze Hub?",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Wie moeten erbij betrokken worden?",
+        "tooltip": "",
+        "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
+        "placeholder": ""
+      }
+    },
+    "challenge": {
+      "displayName": {
+        "title": "Titel",
+        "description": "Probeer het kort, beschrijvend en aandacht trekkend te houden",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Challenge Statement",
+        "tooltip": "",
+        "description": "Omschrijf in één zin waar deze Challenge over gaat. Het is ook ook mogelijk om er een vraag van te maken, beginnend met 'Hoe kunnen we...?'",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Huidige realiteit",
+        "tooltip": "",
+        "description": "Schets een beeld van de huidige status van deze Challenge. Denk aan de 'wat, waar, wanneer en wie'.",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Extra context",
+        "tooltip": "",
+        "description": "Geef een korte beschrijving van hoe deze Challenge in het grotere plaatje past? Wat is de impact? Hoe past de Challenge in deze Hub?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "Toekomstige visie",
+        "tooltip": "",
+        "description": "Hoe ziet een succesvolle toekomst eruit? Waaruit moet de oplossing van deze Challenge bestaan?",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Wie kunnen een bijdrage leveren?",
+        "tooltip": "",
+        "description": "Denk aan individuen, organisaties, publieke instanties, onderzoeksinstituten, etc.",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "Vul de meest belangrijke tags in die ervoor zorgen dat de Challenge opvalt en makkelijk te vinden is.",
+        "placeholder": ""
+      }
+    },
+    "opportunity": {
+      "displayName": {
+        "title": "Titel",
+        "description": "Probeer het kort, beschrijvend en aandacht trekkend te houden",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Tagline",
+        "tooltip": "",
+        "description": "Leg in één zin uit waar deze Opportunity over gaat.",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Achtergrond",
+        "tooltip": "",
+        "description": "Geef een korte omschrijving van hoe de Opportunity is ontstaan en hoe het pas in het grotere plaatje.",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "",
+        "description": "Wat zal deze Opportunity veranderen? Wat is de impact zijn op mensen en organisaties?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "Omschrijving",
+        "tooltip": "",
+        "description": "Omschrijf het idee en de impact op de bijbehorende Challenge. Onthoud dat het een flexibel document is en ieder moment kan worden aangepast.",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Wie is erbij betrokken?",
+        "tooltip": "",
+        "description": "Omschrijf de mensen en organisaties die op dit moment werken aan deze Opportunity.",
+        "placeholder": ""
+      },
+
+      "tags": {
+        "title": "Tags",
+        "description": "Vul de meest belangrijke tags in die ervoor zorgen dat de Challenge opvalt en makkelijk te vinden is.",
+        "placeholder": ""
+      }
+    }
   },
   "forms": {
     "validations": {
@@ -476,7 +595,7 @@
     "backdrop": {
       "private": "Wordt lid om toegang te krijgen tot {{blockName}}",
       "authentication": "Log in om details te zien over {{blockName}}.",
-      "log-in": "Log in om {{blockName}} te zien"
+      "login": "Log in om {{blockName}} te zien"
     },
     "referenceSegment": {
       "title": "Referenties",
@@ -498,25 +617,6 @@
       "nameID": {
         "title": "NaamID",
         "placeholder": "Unieke textuele identificator, gebruikt voor URL-paden. Opmerking: kan niet aangepast worden na aanmaak."
-      }
-    },
-    "contextSegment": {
-      "tagline": "Slagzin",
-      "background": {
-        "title": "Achtergrond",
-        "tooltip": "Wat is de huidige situatie? Wat is al gedaan om voortgang te boeken? Welke resultaten zijn behaald?"
-      },
-      "impact": {
-        "title": "Impact",
-        "tooltip": "Wat verandert er als de visie wordt behaald? Welke gebruikers of organisaties zullen een andere realiteit bemerken, in goede of slechte zin?"
-      },
-      "vision": {
-        "title": "Visie",
-        "tooltip": "Hoe wordt succes gedefinieerd? Hoe weet je dat je het hebt bereikt?"
-      },
-      "who": {
-        "title": "Wie",
-        "tooltip": "Welke organisaties of gebruikers zouden moeten bijdragen? Waarom zouden zij willen meedoen?"
       }
     },
     "visualSegment": {
@@ -946,14 +1046,8 @@
         "placeholder": "Zoek met termen naar Challenges op Alkemio..."
       },
       "my": {
-        "title": "Mijn Challenges ({{count}})",
-        "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. ",
-        "help-text": "Een kaart per Challenge-lidmaatschap, inclusief de rol die je in elke Challenge hebt."
-      },
-      "hubs": {
-        "title": "Challenges beheerd door '{{name}}' Hub ({{count}})",
-        "subtitle": "Deze sectie toont je de Challenges die worden beheerd in de {{name}} Hub waarvan je lid bent.",
-        "help-text": "Een Challenge Hub beheert een of meer Challenges. Je bent lid van onderstaande Hub."
+        "title": "Mijn Challenges",
+        "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. "
       }
     },
     "lead-organization": {
@@ -980,7 +1074,7 @@
             "header": "Bestaande gebruiker?",
             "subheader": "Welkom terug! Ga verder waar je gebleven was en ontdek nieuwe Challenges.",
             "more-info": "Meer over Alkemio",
-            "more-info-url": "https://alkemio.foundation/about"
+            "more-info-url": "https://alkemio.foundation/manifesto"
           },
           "new-to-alkemio": {
             "header": "Nieuw bij Alkemio?",

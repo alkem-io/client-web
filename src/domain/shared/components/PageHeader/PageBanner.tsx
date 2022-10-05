@@ -1,5 +1,5 @@
 import { Box, Skeleton, styled, Typography } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 import hexToRGBA from '../../../../common/utils/hexToRGBA';
 import useAutomaticTooltip from '../../utils/useAutomaticTooltip';
 import BreadcrumbsView from './BreadcrumbsView';
@@ -71,12 +71,27 @@ const Image = styled('img')(() => ({
   height: '100%',
 }));
 
+const PageNotice = styled('div')(({ theme }) => ({
+  position: 'absolute',
+  top: 0,
+  width: '100%',
+  zIndex: 30,
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  '& a': {
+    color: theme.palette.primary.contrastText,
+  },
+  textAlign: 'center',
+  padding: theme.spacing(0.5, 0),
+}));
+
 export interface PageBannerProps {
   title?: string;
   tagline?: string;
   bannerUrl?: string;
   showBreadcrumbs?: boolean;
   loading?: boolean;
+  pageNotice?: ReactNode;
 }
 
 /**
@@ -88,6 +103,7 @@ const PageBanner: FC<PageBannerProps> = ({
   tagline,
   bannerUrl,
   showBreadcrumbs,
+  pageNotice = undefined,
   loading: dataLoading = false,
 }) => {
   const { containerReference, addAutomaticTooltip } = useAutomaticTooltip();
@@ -104,6 +120,7 @@ const PageBanner: FC<PageBannerProps> = ({
       {imageLoading && <Skeleton variant="rectangular" animation="wave" sx={{ height: '100%' }} />}
       {!dataLoading && (
         <>
+          {pageNotice ? <PageNotice>{pageNotice}</PageNotice> : undefined}
           {showBreadcrumbs && <BreadcrumbsView />}
           <ImageWrapper>
             <Image

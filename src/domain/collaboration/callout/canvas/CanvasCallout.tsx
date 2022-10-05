@@ -5,11 +5,12 @@ import { WbIncandescentOutlined } from '@mui/icons-material';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
 import CardsLayout from '../../../shared/layout/CardsLayout/CardsLayout';
 import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
-import CanvasCreateDialog from '../../../../common/components/composite/dialogs/CanvasDialog/CanvasCreateDialog';
+import CanvasCreateDialog from '../../canvas/CanvasDialog/CanvasCreateDialog';
 import { CanvasProvider } from '../../../../containers/canvas/CanvasProvider';
 import CanvasActionsContainer from '../../../../containers/canvas/CanvasActionsContainer';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CanvasFragmentWithCallout } from '../useCallouts';
+import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
 export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
@@ -43,34 +44,35 @@ const CanvasCallout = ({
     <>
       <CalloutLayout
         callout={callout}
-        maxHeight={18}
         onVisibilityChange={onVisibilityChange}
         onCalloutEdit={onCalloutEdit}
         onCalloutDelete={onCalloutDelete}
       >
-        <CardsLayout
-          items={loading ? [undefined, undefined] : callout.canvases}
-          deps={[hubNameId, challengeNameId, opportunityNameId]}
-          {...(canCreate
-            ? {
-                createButtonComponent: (
-                  <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-                    <SimpleCard to={''} />
-                  </CreateCalloutItemButton>
-                ),
-              }
-            : {})}
-        >
-          {canvas => (
-            <SimpleCard
-              key={canvas!.id}
-              {...buildCanvasUrl(canvas!.nameID, canvas!.calloutNameId)}
-              title={canvas!.displayName}
-              imageUrl={canvas!.preview?.uri}
-              iconComponent={WbIncandescentOutlined}
-            />
-          )}
-        </CardsLayout>
+        <CardsLayoutScroller maxHeight={176}>
+          <CardsLayout
+            items={loading ? [undefined, undefined] : callout.canvases}
+            deps={[hubNameId, challengeNameId, opportunityNameId]}
+            {...(canCreate
+              ? {
+                  createButtonComponent: (
+                    <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+                      <SimpleCard to={''} />
+                    </CreateCalloutItemButton>
+                  ),
+                }
+              : {})}
+          >
+            {canvas => (
+              <SimpleCard
+                key={canvas!.id}
+                {...buildCanvasUrl(canvas!.nameID, canvas!.calloutNameId)}
+                title={canvas!.displayName}
+                imageUrl={canvas!.preview?.uri}
+                iconComponent={WbIncandescentOutlined}
+              />
+            )}
+          </CardsLayout>
+        </CardsLayoutScroller>
       </CalloutLayout>
       <CanvasProvider>
         {(entities, state) => (
