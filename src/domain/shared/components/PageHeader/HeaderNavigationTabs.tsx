@@ -50,7 +50,9 @@ export interface NavigationTabsProps extends TabsProps {
   showSettings?: boolean;
   settingsUrl?: string;
 }
-
+const handleShare = () => {
+  alert('share');
+};
 const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
   value,
   'aria-label': ariaLabel,
@@ -68,7 +70,12 @@ const HeaderNavigationTabs: FC<NavigationTabsProps> = ({
         allowScrollButtonsMobile
       >
         {children}
-        <HeaderNavigationButton className="share-button" icon={<ShareOutlined />} value={'share'} />
+        <HeaderNavigationButton
+          className="share-button"
+          icon={<ShareOutlined />}
+          value={'share'}
+          onClick={handleShare}
+        />
         {showSettings && (
           <HeaderNavigationTab
             className="settings-button"

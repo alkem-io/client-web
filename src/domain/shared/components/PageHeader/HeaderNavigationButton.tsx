@@ -11,7 +11,7 @@ const ButtonizedTab = styled(Tab)(({ theme }) => ({
 }));
 
 const HeaderNavigationButton = forwardRef<HTMLDivElement, HeaderNavigationButtonProps>(
-  ({ value, icon, label, disabled, className }, ref) => {
+  ({ value, icon, label, disabled, className, onClick }, ref) => {
     return (
       <ButtonizedTab
         ref={ref}
@@ -21,6 +21,7 @@ const HeaderNavigationButton = forwardRef<HTMLDivElement, HeaderNavigationButton
         label={label}
         disabled={disabled}
         className={className}
+        onClick={onClick}
       />
     );
   }
