@@ -2,10 +2,7 @@ import { Button, Grid } from '@mui/material';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { updateContextInput } from '../../../../../../common/utils/buildContext';
-import EditLifecycle from '../../../templates/InnovationTemplates/EditLifecycle';
 import { ContextForm, ContextFormValues } from '../../../../../context/ContextForm';
-import { Loading } from '../../../../../../common/components/core';
-import OpportunityLifecycleContainer from '../../../../../../containers/opportunity/OpportunityLifecycleContainer';
 import { useNotification, useApolloErrorHandler, useUrlParams } from '../../../../../../hooks';
 import {
   useUpdateOpportunityMutation,
@@ -66,15 +63,6 @@ const OpportunityContextView: FC = () => {
           {t(`buttons.${isUpdating ? 'processing' : 'save'}` as const)}
         </Button>
       </Grid>
-      <OpportunityLifecycleContainer hubNameId={hubNameId} opportunityNameId={opportunityNameId}>
-        {({ loading, ...provided }) => {
-          if (loading || !opportunityId) {
-            return <Loading text="Loading" />;
-          }
-
-          return <EditLifecycle id={opportunityId} {...provided} />;
-        }}
-      </OpportunityLifecycleContainer>
     </Grid>
   );
 };

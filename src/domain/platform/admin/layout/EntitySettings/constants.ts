@@ -21,6 +21,7 @@ export enum SettingsSection {
   Organizations = 'organizations',
   Notifications = 'notifications',
   Credentials = 'credentials',
+  InnovationFlow = 'innovation-flow',
 }
 
 export const CommonTabs: TabDefinition<SettingsSection>[] = [

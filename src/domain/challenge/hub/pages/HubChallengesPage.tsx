@@ -1,5 +1,6 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import { useHub, useUpdateNavigation } from '../../../../hooks';
@@ -8,24 +9,51 @@ import HubChallengesView from '../views/HubChallengesView';
 import ChallengesCardContainer from '../../../../containers/hub/ChallengesCardContainer';
 import { EntityPageSection } from '../../../shared/layout/EntityPageSection';
 import HubPageLayout from '../layout/HubPageLayout';
-import { RouterLink } from '../../../../common/components/core/RouterLink';
-import { buildAdminNewChallengeUrl } from '../../../../common/utils/urlBuilders';
+import { JourneyCreationDialog } from '../../../shared/components/JorneyCreationDialog';
+import { ChallengeIcon } from '../../../../common/icons/ChallengeIcon';
+import { CreateChallengeForm } from '../../challenge/forms/CreateChallengeForm';
+import { useJourneyCreation } from '../../../shared/utils/useJourneyCreation/useJourneyCreation';
+import { JourneyFormValues } from '../../../shared/components/JorneyCreationDialog/JourneyCreationForm';
+import { buildChallengeUrl } from '../../../../common/utils/urlBuilders';
 
 export interface HubChallengesPageProps extends PageProps {}
 
 const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { hubNameId, permissions } = useHub();
   const currentPaths = useMemo(() => [...paths, { value: '', name: 'challenges', real: false }], [paths]);
   useUpdateNavigation({ currentPaths });
 
-  const newChallengeUrl = useMemo(() => buildAdminNewChallengeUrl(hubNameId), [hubNameId]);
+  const [open, setOpen] = useState(false);
+
+  const { createChallenge } = useJourneyCreation();
+
+  const handleCreate = useCallback(
+    async (value: JourneyFormValues) => {
+      const result = await createChallenge({
+        hubID: hubNameId,
+        displayName: value.displayName,
+        tagline: value.tagline,
+        background: value.background ?? '',
+        vision: value.vision,
+        tags: value.tags,
+      });
+
+      if (!result) {
+        return;
+      }
+
+      navigate(buildChallengeUrl(hubNameId, result.nameID));
+    },
+    [navigate, createChallenge, hubNameId]
+  );
 
   return (
     <HubPageLayout currentSection={EntityPageSection.Challenges}>
       {permissions.canCreateChallenges && (
         <Box sx={{ display: 'flex', justifyContent: 'end', marginBottom: theme => theme.spacing(1) }}>
-          <Button startIcon={<AddOutlinedIcon />} variant="contained" component={RouterLink} to={newChallengeUrl}>
+          <Button startIcon={<AddOutlinedIcon />} variant="contained" onClick={() => setOpen(true)}>
             {t('buttons.create')}
           </Button>
         </Box>
@@ -46,6 +74,14 @@ const HubChallengesPage: FC<HubChallengesPageProps> = ({ paths }) => {
           />
         )}
       </ChallengesCardContainer>
+      <JourneyCreationDialog
+        open={open}
+        icon={<ChallengeIcon />}
+        journeyName={t('common.challenge')}
+        onClose={() => setOpen(false)}
+        OnCreate={handleCreate}
+        formComponent={CreateChallengeForm}
+      />
     </HubPageLayout>
   );
 };
