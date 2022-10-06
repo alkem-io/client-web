@@ -2,7 +2,6 @@ import { exportToBlob, serializeAsJSON } from '@excalidraw/excalidraw';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { ArrowDropDown, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
@@ -11,7 +10,6 @@ import {
   ButtonGroup,
   ClickAwayListener,
   Grow,
-  IconButton,
   List,
   ListItem,
   ListItemIcon,
@@ -40,6 +38,7 @@ import { ShareDialog } from '../../../shared/components/ShareDialog';
 import { useUrlParams } from '../../../../hooks';
 import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
 import UrlParams from '../../../../core/routing/url-params';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 interface CanvasDialogProps {
   entities: {
@@ -346,16 +345,13 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                         </Grow>
                       )}
                     </Popper>
-                    <IconButton
-                      id="canvas-share-button"
-                      aria-haspopup="true"
-                      aria-controls={shareDialogOpen ? 'canvas-share-dialog' : undefined}
-                      aria-expanded={shareDialogOpen ? 'true' : undefined}
-                      onClick={() => setShareDialogOpen(true)}
+                    <ShareButton
+                      dialogOpen={shareDialogOpen}
+                      setDialogOpen={setShareDialogOpen}
+                      enabled={canvas?.checkout?.status === CanvasCheckoutStateEnum.Available}
+                      tooltipIfDisabled={t('share-dialog.canvas-checkedout')}
                       sx={{ marginLeft: theme => theme.spacing(2) }}
-                    >
-                      <ShareOutlinedIcon />
-                    </IconButton>
+                    />
                   </>
                 )}
               </ListItemSecondaryAction>

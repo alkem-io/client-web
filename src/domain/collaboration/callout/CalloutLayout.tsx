@@ -1,7 +1,6 @@
 import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import { Box, Card, IconButton, Menu, MenuItem, styled } from '@mui/material';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import {
@@ -18,6 +17,7 @@ import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/Callo
 import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from './edit/CalloutEditType';
 import { ShareDialog } from '../../shared/components/ShareDialog';
+import ShareButton from '../../shared/components/ShareDialog/ShareButton';
 
 export interface CalloutLayoutEvents {
   onVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
@@ -117,15 +117,7 @@ const CalloutLayout = ({
                 <SettingsOutlinedIcon />
               </IconButton>
             )}
-            <IconButton
-              id="callout-share-button"
-              aria-haspopup="true"
-              aria-controls={shareDialogOpen ? 'callout-share-dialog' : undefined}
-              aria-expanded={shareDialogOpen ? 'true' : undefined}
-              onClick={() => setShareDialogOpen(true)}
-            >
-              <ShareOutlinedIcon />
-            </IconButton>
+            <ShareButton dialogOpen={shareDialogOpen} setDialogOpen={setShareDialogOpen} />
           </CalloutActionsBar>
           <Heading sx={{ display: 'flex', gap: 2.5 }}>
             <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}

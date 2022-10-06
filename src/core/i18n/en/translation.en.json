@@ -323,7 +323,8 @@
       "card": "Card",
       "user": "User",
       "organization": "Organization"
-    }
+    },
+    "canvas-checkedout": "Please click 'Save & Stop Editing' first"
   },
   "context": {
     "hub": {
