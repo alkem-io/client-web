@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton, Skeleton, styled, TextField, Tooltip, Typography } from '@mui/material';
 import CopyIcon from '@mui/icons-material/ContentCopy';
@@ -18,19 +18,14 @@ const ShareForm = styled(Box)(({ theme }) => ({
 
 export const ShareComponent: FC<Pick<ShareComponentProps, 'url' | 'loading'>> = ({ url, loading }) => {
   const { t } = useTranslation();
-  const textField = useRef<HTMLInputElement>(null);
   const [copied, setAlreadyCopied] = useState(false);
   const fullUrl = window.location.protocol + '//' + window.location.host + url;
 
   const copy = () => {
-    if (textField.current && typeof textField.current?.select === 'function') {
-      textField.current.select();
-    }
     if (url) {
       navigator.clipboard.writeText(fullUrl);
 
       setAlreadyCopied(true);
-      window.setTimeout(() => setAlreadyCopied(false), 2000);
     }
   };
 
@@ -47,7 +42,6 @@ export const ShareComponent: FC<Pick<ShareComponentProps, 'url' | 'loading'>> = 
       ) : (
         <ShareForm>
           <TextField
-            inputRef={textField}
             InputProps={{
               readOnly: true,
               onClick: handleClick,
@@ -57,7 +51,11 @@ export const ShareComponent: FC<Pick<ShareComponentProps, 'url' | 'loading'>> = 
             value={fullUrl}
             sx={{ flexGrow: 1, width: theme => theme.spacing(FIELD_WIDTH) }}
           />
-          <Tooltip title={copied ? t('share-dialog.copied') : t('share-dialog.copy')} arrow>
+          <Tooltip
+            title={copied ? t('share-dialog.copied') : t('share-dialog.copy')}
+            arrow
+            onClose={() => setAlreadyCopied(false)}
+          >
             <IconButton color="primary" onClick={() => copy()}>
               <CopyIcon />
             </IconButton>

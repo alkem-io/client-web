@@ -56,7 +56,6 @@ const EntityPageTabs: FC<EntityPageTabsProps> = ({
         />
         {shareUrl && (
           <HeaderNavigationButton
-            className="share-button"
             icon={<ShareOutlinedIcon />}
             value={'share'}
             onClick={() => setShareDialogOpen(true)}

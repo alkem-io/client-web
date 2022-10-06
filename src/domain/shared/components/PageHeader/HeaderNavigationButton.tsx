@@ -1,26 +1,18 @@
-import { styled, Tab, TabProps } from '@mui/material';
+import { Tab, TabProps } from '@mui/material';
 import React, { forwardRef } from 'react';
 
 interface HeaderNavigationButtonProps extends TabProps {}
-const ButtonizedTab = styled(Tab)(({ theme }) => ({
-  flex: 'none !important',
-  minWidth: 24,
-  marginRight: theme.spacing(2),
-  marginLeft: theme.spacing(2),
-  top: '-1px !important',
-}));
-
+// Special Tab with the class button-tab which makes it small an aligned to the end on the tabs bar
 const HeaderNavigationButton = forwardRef<HTMLDivElement, HeaderNavigationButtonProps>(
-  ({ value, icon, label, disabled, className, onClick }, ref) => {
+  ({ value, icon, disabled, onClick }, ref) => {
     return (
-      <ButtonizedTab
+      <Tab
         ref={ref}
         iconPosition="start"
         value={value}
         icon={icon}
-        label={label}
         disabled={disabled}
-        className={className}
+        className={'button-tab'}
         onClick={onClick}
       />
     );
