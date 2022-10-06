@@ -314,7 +314,16 @@
     "url": "URL",
     "copy": "Copy",
     "copied": "Copied!",
-    "entities": {}
+    "entities": {
+      "hub": "Hub",
+      "challenge": "Challenge",
+      "opportunity": "Opportunity",
+      "callout": "Callout",
+      "canvas": "Canvas",
+      "card": "Card",
+      "user": "User",
+      "organization": "Organization"
+    }
   },
   "context": {
     "hub": {
