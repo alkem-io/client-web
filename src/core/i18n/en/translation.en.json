@@ -309,6 +309,13 @@
   "journey-creation": {
     "dialog-title": "Create a new {{entity}}"
   },
+  "share-dialog": {
+    "title": "Copy the link below to share this {{entity}}",
+    "url": "URL",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "entities": {}
+  },
   "context": {
     "hub": {
       "tagline": {

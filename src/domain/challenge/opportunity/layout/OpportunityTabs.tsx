@@ -23,6 +23,7 @@ const OpportunityTabs: FC<OpportunityTabsProps> = props => {
       showSettings={permissions.viewerCanUpdate}
       settingsUrl={settingsUrl}
       rootUrl={rootUrl}
+      shareUrl={rootUrl}
       subEntityTab={
         <HeaderNavigationTab
           label={t('common.agreements')}
