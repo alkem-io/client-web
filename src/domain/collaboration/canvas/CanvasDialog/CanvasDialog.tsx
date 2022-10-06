@@ -2,6 +2,7 @@ import { exportToBlob, serializeAsJSON } from '@excalidraw/excalidraw';
 import { ExcalidrawAPIRefValue } from '@excalidraw/excalidraw/types/types';
 import { ArrowDropDown, Save } from '@mui/icons-material';
 import LockClockIcon from '@mui/icons-material/LockClock';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
@@ -10,6 +11,7 @@ import {
   ButtonGroup,
   ClickAwayListener,
   Grow,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
@@ -34,6 +36,10 @@ import CanvasWhiteboard from '../../../../common/components/composite/entities/C
 import CanvasListItemState from '../CanvasList/CanvasListItemState';
 import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
+import { ShareDialog } from '../../../shared/components/ShareDialog';
+import { useUrlParams } from '../../../../hooks';
+import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import UrlParams from '../../../../core/routing/url-params';
 
 interface CanvasDialogProps {
   entities: {
@@ -129,16 +135,30 @@ const findMostSuitableOption = (canvas?: CanvasWithoutValue, hasChanged?: boolea
   return 'save-and-checkin';
 };
 
+const getCanvasShareUrl = (urlParams: UrlParams) => {
+  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
+  return buildCanvasUrl({
+    hubNameId: urlParams.hubNameId!,
+    challengeNameId: urlParams.challengeNameId,
+    opportunityNameId: urlParams.opportunityNameId,
+    calloutNameId: urlParams.calloutNameId!,
+    canvasNameId: urlParams.canvasNameId!,
+  });
+};
+
 const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state }) => {
   const { t } = useTranslation();
   const { canvas } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+  const urlParams = useUrlParams();
+  const canvasUrl = getCanvasShareUrl(urlParams);
 
   // ui
   const styles = useStyles();
   const [selectedOption, setSelectedOption] = useState<CanvasOptionTypes>(findMostSuitableOption(canvas, true));
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [optionPopperOpen, setOptionPopperOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   useEffect(() => {
     setSelectedOption(findMostSuitableOption(canvas, true));
@@ -238,124 +258,142 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
   };
 
   return (
-    <Dialog
-      open={options.show}
-      aria-labelledby="canvas-dialog"
-      maxWidth={false}
-      fullWidth
-      classes={{
-        paper: styles.dialogRoot,
-      }}
-      onClose={onClose}
-    >
-      <DialogTitle
-        id="canvas-dialog-title"
-        onClose={onClose}
+    <>
+      <Dialog
+        open={options.show}
+        aria-labelledby="canvas-dialog"
+        maxWidth={false}
+        fullWidth
         classes={{
-          root: styles.dialogTitle,
+          paper: styles.dialogRoot,
         }}
+        onClose={onClose}
       >
-        <List disablePadding>
-          <ListItem>
-            <ListItemIcon sx={{ justifyContent: 'center' }}>
-              <CanvasListItemState checkoutStatus={canvas?.checkout?.status} />
-            </ListItemIcon>
-            <ListItemText primary={canvas?.displayName} secondary={canvas?.checkout?.status.toUpperCase()} />
-            <ListItemSecondaryAction sx={{ display: 'flex' }}>
-              <Box p={0.5} display="inline-flex" />
-              {(options.canCheckout || options.canEdit) && (
-                <>
-                  <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
-                    <LoadingButton
-                      startIcon={canvasOptions[selectedOption].icon}
-                      onClick={() => actionMap[selectedOption](canvas)}
-                      loadingPosition="start"
-                      variant="contained"
-                      loading={state?.changingCanvasLockState || state?.updatingCanvas}
-                    >
-                      {t(canvasOptions[selectedOption].titleId)}
-                    </LoadingButton>
-                    <Button
-                      size="small"
-                      aria-controls={optionPopperOpen ? 'split-button-menu' : undefined}
-                      aria-expanded={optionPopperOpen ? 'true' : undefined}
-                      aria-label="select merge strategy"
-                      aria-haspopup="menu"
-                      onClick={() => {
-                        setOptionPopperOpen(x => !x);
-                      }}
-                    >
-                      <ArrowDropDown />
-                    </Button>
-                  </ButtonGroup>
-                  <Popper
-                    open={optionPopperOpen}
-                    anchorEl={anchorRef.current}
-                    role={undefined}
-                    transition
-                    disablePortal
-                  >
-                    {({ TransitionProps, placement }) => (
-                      <Grow
-                        {...TransitionProps}
-                        style={{
-                          transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+        <DialogTitle
+          id="canvas-dialog-title"
+          onClose={onClose}
+          classes={{
+            root: styles.dialogTitle,
+          }}
+        >
+          <List disablePadding>
+            <ListItem>
+              <ListItemIcon sx={{ justifyContent: 'center' }}>
+                <CanvasListItemState checkoutStatus={canvas?.checkout?.status} />
+              </ListItemIcon>
+              <ListItemText primary={canvas?.displayName} secondary={canvas?.checkout?.status.toUpperCase()} />
+              <ListItemSecondaryAction sx={{ display: 'flex' }}>
+                <Box p={0.5} display="inline-flex" />
+                {(options.canCheckout || options.canEdit) && (
+                  <>
+                    <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button">
+                      <LoadingButton
+                        startIcon={canvasOptions[selectedOption].icon}
+                        onClick={() => actionMap[selectedOption](canvas)}
+                        loadingPosition="start"
+                        variant="contained"
+                        loading={state?.changingCanvasLockState || state?.updatingCanvas}
+                      >
+                        {t(canvasOptions[selectedOption].titleId)}
+                      </LoadingButton>
+                      <Button
+                        size="small"
+                        aria-controls={optionPopperOpen ? 'split-button-menu' : undefined}
+                        aria-expanded={optionPopperOpen ? 'true' : undefined}
+                        aria-label="select merge strategy"
+                        aria-haspopup="menu"
+                        onClick={() => {
+                          setOptionPopperOpen(x => !x);
                         }}
                       >
-                        <Paper>
-                          <ClickAwayListener onClickAway={handlePopperClose}>
-                            <MenuList id="split-button-menu">
-                              {Object.keys(canvasOptions).map((optionKey: string) => (
-                                <MenuItem
-                                  key={canvasOptions[optionKey].titleId}
-                                  disabled={!canvasOptions[optionKey].enabledWhen(canvas, true)}
-                                  selected={optionKey === selectedOption}
-                                  onClick={_ => {
-                                    setSelectedOption(optionKey as CanvasOptionTypes);
-                                    setOptionPopperOpen(false);
-                                  }}
-                                >
-                                  <ListItemIcon>{canvasOptions[optionKey].icon}</ListItemIcon>
-                                  <ListItemText>{t(canvasOptions[optionKey].titleId)}</ListItemText>
-                                </MenuItem>
-                              ))}
-                            </MenuList>
-                          </ClickAwayListener>
-                        </Paper>
-                      </Grow>
-                    )}
-                  </Popper>
-                </>
-              )}
-            </ListItemSecondaryAction>
-          </ListItem>
-        </List>
-      </DialogTitle>
-      <DialogContent classes={{ root: styles.dialogContent }}>
-        {!state?.loadingCanvasValue && canvas && (
-          <CanvasWhiteboard
-            entities={{ canvas }}
-            ref={excalidrawApiRef}
-            options={{
-              viewModeEnabled: !options.canEdit,
-              UIOptions: options.canEdit
-                ? undefined
-                : {
-                    canvasActions: {
-                      export: false,
+                        <ArrowDropDown />
+                      </Button>
+                    </ButtonGroup>
+                    <Popper
+                      open={optionPopperOpen}
+                      anchorEl={anchorRef.current}
+                      role={undefined}
+                      transition
+                      disablePortal
+                    >
+                      {({ TransitionProps, placement }) => (
+                        <Grow
+                          {...TransitionProps}
+                          style={{
+                            transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+                          }}
+                        >
+                          <Paper>
+                            <ClickAwayListener onClickAway={handlePopperClose}>
+                              <MenuList id="split-button-menu">
+                                {Object.keys(canvasOptions).map((optionKey: string) => (
+                                  <MenuItem
+                                    key={canvasOptions[optionKey].titleId}
+                                    disabled={!canvasOptions[optionKey].enabledWhen(canvas, true)}
+                                    selected={optionKey === selectedOption}
+                                    onClick={_ => {
+                                      setSelectedOption(optionKey as CanvasOptionTypes);
+                                      setOptionPopperOpen(false);
+                                    }}
+                                  >
+                                    <ListItemIcon>{canvasOptions[optionKey].icon}</ListItemIcon>
+                                    <ListItemText>{t(canvasOptions[optionKey].titleId)}</ListItemText>
+                                  </MenuItem>
+                                ))}
+                              </MenuList>
+                            </ClickAwayListener>
+                          </Paper>
+                        </Grow>
+                      )}
+                    </Popper>
+                    <IconButton
+                      id="canvas-share-button"
+                      aria-haspopup="true"
+                      aria-controls={shareDialogOpen ? 'canvas-share-dialog' : undefined}
+                      aria-expanded={shareDialogOpen ? 'true' : undefined}
+                      onClick={() => setShareDialogOpen(true)}
+                      sx={{ marginLeft: theme => theme.spacing(2) }}
+                    >
+                      <ShareOutlinedIcon />
+                    </IconButton>
+                  </>
+                )}
+              </ListItemSecondaryAction>
+            </ListItem>
+          </List>
+        </DialogTitle>
+        <DialogContent classes={{ root: styles.dialogContent }}>
+          {!state?.loadingCanvasValue && canvas && (
+            <CanvasWhiteboard
+              entities={{ canvas }}
+              ref={excalidrawApiRef}
+              options={{
+                viewModeEnabled: !options.canEdit,
+                UIOptions: options.canEdit
+                  ? undefined
+                  : {
+                      canvasActions: {
+                        export: false,
+                      },
                     },
-                  },
-            }}
-            actions={{
-              onUpdate: state => {
-                handleUpdate(canvas, state);
-              },
-            }}
-          />
-        )}
-        {state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
-      </DialogContent>
-    </Dialog>
+              }}
+              actions={{
+                onUpdate: state => {
+                  handleUpdate(canvas, state);
+                },
+              }}
+            />
+          )}
+          {state?.loadingCanvasValue && <Loading text="Loading canvas..." />}
+        </DialogContent>
+      </Dialog>
+      <ShareDialog
+        open={shareDialogOpen}
+        onClose={() => setShareDialogOpen(false)}
+        url={canvasUrl}
+        entityTypeName="canvas"
+      />
+    </>
   );
 };
 
