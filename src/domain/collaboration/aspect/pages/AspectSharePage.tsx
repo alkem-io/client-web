@@ -2,8 +2,8 @@ import React, { FC } from 'react';
 import { useUrlParams } from '../../../../hooks';
 import { AspectLayout } from '../views/AspectLayoutWithOutlet';
 import { AspectDialogSection } from '../views/AspectDialogSection';
-import { ShareComponent, ShareComponentTitle } from '../../../shared/components/ShareDialog/ShareComponent';
-import { buildAspectUrl } from '../../../../common/utils/urlBuilders';
+import AspectDashboardContainer from '../../../../containers/aspect/AspectDashboardContainer/AspectDashboardContainer';
+import AspectDashboardView from '../views/AspectDashboardView';
 
 export interface AspectSharePageProps {
   onClose: () => void;
@@ -14,10 +14,28 @@ const AspectSharePage: FC<AspectSharePageProps> = ({ onClose }) => {
 
   return (
     <AspectLayout currentSection={AspectDialogSection.Share} onClose={onClose}>
-      <ShareComponentTitle entityTypeName="card" />
-      <ShareComponent
-        url={buildAspectUrl({ hubNameId, challengeNameId, opportunityNameId, calloutNameId, aspectNameId })}
-      />
+      <AspectDashboardContainer
+        hubNameId={hubNameId}
+        aspectNameId={aspectNameId}
+        challengeNameId={challengeNameId}
+        opportunityNameId={opportunityNameId}
+        calloutNameId={calloutNameId}
+      >
+        {({ aspect, messages, commentsId, ...rest }) => (
+          <AspectDashboardView
+            mode="share"
+            banner={aspect?.banner?.uri}
+            displayName={aspect?.displayName}
+            description={aspect?.description}
+            type={aspect?.type}
+            tags={aspect?.tagset?.tags}
+            references={aspect?.references}
+            messages={messages}
+            commentId={commentsId}
+            {...rest}
+          />
+        )}
+      </AspectDashboardContainer>
     </AspectLayout>
   );
 };
