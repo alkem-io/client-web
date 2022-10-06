@@ -1,7 +1,8 @@
 import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Box, Card, IconButton, Menu, MenuItem } from '@mui/material';
+import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined';
+import { Box, Card, IconButton, Menu, MenuItem, styled } from '@mui/material';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import {
   Authorization,
@@ -16,6 +17,7 @@ import { CalloutSummary } from './CalloutSummary';
 import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
 import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from './edit/CalloutEditType';
+import { ShareDialog } from '../../shared/components/ShareDialog';
 
 export interface CalloutLayoutEvents {
   onVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
@@ -32,8 +34,17 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;
+    url: string;
   };
 }
+
+const CalloutActionsBar = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  right: theme.spacing(-1.5),
+  top: theme.spacing(-1.5),
+  display: 'flex',
+  flexFlow: 'row-reverse',
+}));
 
 const CalloutLayout = ({
   callout,
@@ -48,6 +59,8 @@ const CalloutLayout = ({
   const settingsOpened = Boolean(settingsAnchorEl);
   const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
   const handleSettingsClose = () => setSettingsAnchorEl(null);
+
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   const [visDialogOpen, setVisDialogOpen] = useState(false);
   const handleVisDialogOpen = () => {
@@ -92,18 +105,28 @@ const CalloutLayout = ({
           </Box>
         )}
         <Box m={3} position="relative">
-          {callout.editable && (
+          <CalloutActionsBar>
+            {callout.editable && (
+              <IconButton
+                id="callout-settings-button"
+                aria-haspopup="true"
+                aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
+                aria-expanded={settingsOpened ? 'true' : undefined}
+                onClick={handleSettingsOpened}
+              >
+                <SettingsOutlinedIcon />
+              </IconButton>
+            )}
             <IconButton
-              id="callout-settings-button"
+              id="callout-share-button"
               aria-haspopup="true"
-              aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
-              aria-expanded={settingsOpened ? 'true' : undefined}
-              onClick={handleSettingsOpened}
-              sx={theme => ({ position: 'absolute', right: theme.spacing(-1.5), top: theme.spacing(-1.5) })}
+              aria-controls={shareDialogOpen ? 'callout-share-dialog' : undefined}
+              aria-expanded={shareDialogOpen ? 'true' : undefined}
+              onClick={() => setShareDialogOpen(true)}
             >
-              <SettingsOutlinedIcon />
+              <ShareOutlinedIcon />
             </IconButton>
-          )}
+          </CalloutActionsBar>
           <Heading sx={{ display: 'flex', gap: 2.5 }}>
             <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
           </Heading>
@@ -148,6 +171,12 @@ const CalloutLayout = ({
         title={`${t('buttons.edit')} ${t('common.callout')}`}
         onCalloutEdit={handleCalloutEdit}
         onDelete={onCalloutDelete}
+      />
+      <ShareDialog
+        open={shareDialogOpen}
+        onClose={() => setShareDialogOpen(false)}
+        url={callout.url}
+        entityTypeName="callout"
       />
     </>
   );
