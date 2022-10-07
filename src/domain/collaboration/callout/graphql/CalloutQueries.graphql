@@ -1,6 +1,7 @@
 query HubCallouts($hubNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
+    nameID
     collaboration {
       id
       authorization {
@@ -17,8 +18,10 @@ query HubCallouts($hubNameId: UUID_NAMEID!) {
 query ChallengeCallouts($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
+    nameID
     challenge(ID: $challengeNameId) {
       id
+      nameID
       collaboration {
         id
         authorization {
@@ -36,8 +39,10 @@ query ChallengeCallouts($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!
 query OpportunityCallouts($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
   hub(ID: $hubNameId) {
     id
+    nameID
     opportunity(ID: $opportunityNameId) {
       id
+      nameID
       collaboration {
         id
         authorization {

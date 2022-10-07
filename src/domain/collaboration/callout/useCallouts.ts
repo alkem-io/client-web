@@ -14,6 +14,7 @@ import {
   CommentsWithMessagesFragment,
 } from '../../../models/graphql-schema';
 import useSubscribeOnCommentCallouts from './useSubscribeOnCommentCallouts';
+import { buildCalloutUrl } from '../../../common/utils/urlBuilders';
 
 interface CalloutChildTypePropName {
   [CalloutType.Card]: 'aspects';
@@ -48,6 +49,7 @@ type TypedCallout = Pick<Callout, 'id' | 'displayName' | 'nameID' | 'description
     draft: boolean;
     editable: boolean;
     isSubscribedToComments: boolean;
+    url: string;
   };
 
 const useCallouts = (params: OptionalCoreEntityIds) => {
@@ -93,6 +95,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
       draft,
       editable,
       isSubscribedToComments,
+      url: buildCalloutUrl(callout.nameID, params.hubNameId ?? '', params.challengeNameId, params.opportunityNameId),
     } as TypedCallout;
   });
 

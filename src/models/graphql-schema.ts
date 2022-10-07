@@ -10390,6 +10390,7 @@ export type HubCalloutsQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    nameID: string;
     collaboration?:
       | {
           __typename?: 'Collaboration';
@@ -10519,9 +10520,11 @@ export type ChallengeCalloutsQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    nameID: string;
     challenge: {
       __typename?: 'Challenge';
       id: string;
+      nameID: string;
       collaboration?:
         | {
             __typename?: 'Collaboration';
@@ -10656,9 +10659,11 @@ export type OpportunityCalloutsQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    nameID: string;
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
+      nameID: string;
       collaboration?:
         | {
             __typename?: 'Collaboration';

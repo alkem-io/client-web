@@ -23,6 +23,7 @@ const ChallengeTabs: FC<ChallengeTabsProps> = props => {
       showSettings={permissions.canUpdate}
       settingsUrl={settingsUrl}
       rootUrl={rootUrl}
+      shareUrl={rootUrl}
       subEntityTab={
         <HeaderNavigationTab
           label={t('common.opportunities')}

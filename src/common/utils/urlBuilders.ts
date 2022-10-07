@@ -67,6 +67,24 @@ export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
 };
 
+export const buildCalloutUrl = (
+  calloutNameId: string,
+  hubNameId: string,
+  challengeNameId?: string,
+  opportunityNameId?: string
+) => {
+  const calloutUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}`;
+  if (challengeNameId) {
+    if (opportunityNameId) {
+      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${calloutUrl}`;
+    } else {
+      return `${buildChallengeUrl(hubNameId, challengeNameId)}${calloutUrl}`;
+    }
+  } else {
+    return `${buildHubUrl(hubNameId)}${calloutUrl}`;
+  }
+};
+
 interface buildAspectUrlParams {
   hubNameId: string;
   challengeNameId?: string;
