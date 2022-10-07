@@ -32,6 +32,7 @@ import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import { useUserContext } from '../../../community/contributor/user';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { ActivityLogSection } from '../../../shared/components/ActivityLog';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
@@ -167,6 +168,12 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               memberOrganizationsCount={entities.memberOrganizationsCount}
             />
           )}
+          <ShareButton
+            title={t('share-dialog.share-this', { entity: t('common.opportunity') })}
+            sx={{ marginTop: theme => theme.spacing(2) }}
+            url={buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID)}
+            entityTypeName="opportunity"
+          />
         </DashboardColumn>
         <DashboardColumn>
           <ActivityLogSection activities={activities} />

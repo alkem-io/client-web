@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Box, Card, IconButton, Menu, MenuItem, styled } from '@mui/material';
@@ -16,7 +16,6 @@ import { CalloutSummary } from './CalloutSummary';
 import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
 import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from './edit/CalloutEditType';
-import { ShareDialog } from '../../shared/components/ShareDialog';
 import ShareButton from '../../shared/components/ShareDialog/ShareButton';
 
 export interface CalloutLayoutEvents {
@@ -59,8 +58,6 @@ const CalloutLayout = ({
   const settingsOpened = Boolean(settingsAnchorEl);
   const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
   const handleSettingsClose = () => setSettingsAnchorEl(null);
-
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
   const [visDialogOpen, setVisDialogOpen] = useState(false);
   const handleVisDialogOpen = () => {
@@ -117,7 +114,7 @@ const CalloutLayout = ({
                 <SettingsOutlinedIcon />
               </IconButton>
             )}
-            <ShareButton dialogOpen={shareDialogOpen} setDialogOpen={setShareDialogOpen} />
+            <ShareButton url={callout.url} entityTypeName="callout" />
           </CalloutActionsBar>
           <Heading sx={{ display: 'flex', gap: 2.5 }}>
             <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
@@ -163,12 +160,6 @@ const CalloutLayout = ({
         title={`${t('buttons.edit')} ${t('common.callout')}`}
         onCalloutEdit={handleCalloutEdit}
         onDelete={onCalloutDelete}
-      />
-      <ShareDialog
-        open={shareDialogOpen}
-        onClose={() => setShareDialogOpen(false)}
-        url={callout.url}
-        entityTypeName="callout"
       />
     </>
   );

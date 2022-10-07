@@ -69,12 +69,10 @@ export const buildNewOrganizationUrl = () => {
 
 export const buildCalloutUrl = (
   calloutNameId: string,
-  hubNameId: string | undefined,
+  hubNameId: string,
   challengeNameId?: string,
   opportunityNameId?: string
 ) => {
-  if (!hubNameId) return '';
-
   const calloutUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}`;
   if (challengeNameId) {
     if (opportunityNameId) {

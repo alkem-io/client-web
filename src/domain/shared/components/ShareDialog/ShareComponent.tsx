@@ -56,7 +56,7 @@ export const ShareComponent: FC<Pick<ShareComponentProps, 'url' | 'loading'>> = 
             arrow
             onClose={() => setAlreadyCopied(false)}
           >
-            <IconButton color="primary" onClick={() => copy()}>
+            <IconButton color="primary" onClick={() => copy()} sx={{ marginLeft: theme => theme.spacing(1) }}>
               <CopyIcon />
             </IconButton>
           </Tooltip>
@@ -70,8 +70,6 @@ export const ShareComponentTitle: FC<Pick<ShareComponentProps, 'entityTypeName'>
   const { t } = useTranslation();
 
   return (
-    <Typography variant="h5">
-      {t('share-dialog.title', { entity: t(`share-dialog.entities.${entityTypeName}` as const) })}
-    </Typography>
+    <Typography variant="h5">{t('share-dialog.title', { entity: t(`common.${entityTypeName}` as const) })}</Typography>
   );
 };

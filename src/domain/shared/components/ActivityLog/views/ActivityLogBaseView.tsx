@@ -27,7 +27,17 @@ export const ActivityLogBaseView: FC<ActivityLogBaseViewProps> = ({
   const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
 
   const title = useMemo(
-    () => `${formattedTime} ${author?.displayName ?? t('common.user')} ${action}`,
+    () => (
+      <>
+        {formattedTime}{' '}
+        {author?.url ? (
+          <a href={author.url}>{author?.displayName ?? t('common.user')}</a>
+        ) : (
+          author?.displayName ?? t('common.user')
+        )}{' '}
+        {action}
+      </>
+    ),
     [formattedTime, author?.displayName, action]
   );
 

@@ -10,7 +10,7 @@ interface ShareDialogProps extends ShareComponentProps {
 
 export const ShareDialog: FC<ShareDialogProps> = ({ open, onClose, ...props }) => {
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onClose={onClose}>
       <DialogTitle onClose={onClose}>
         <ShareComponentTitle {...props} />
       </DialogTitle>

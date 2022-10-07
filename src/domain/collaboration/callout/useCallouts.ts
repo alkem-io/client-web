@@ -95,7 +95,7 @@ const useCallouts = (params: OptionalCoreEntityIds) => {
       draft,
       editable,
       isSubscribedToComments,
-      url: buildCalloutUrl(callout.nameID, params.hubNameId, params.challengeNameId, params.opportunityNameId),
+      url: buildCalloutUrl(callout.nameID, params.hubNameId ?? '', params.challengeNameId, params.opportunityNameId),
     } as TypedCallout;
   });
 

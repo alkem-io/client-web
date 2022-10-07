@@ -311,19 +311,10 @@
   },
   "share-dialog": {
     "title": "Copy the link below to share this {{entity}}",
+    "share-this": "Share this {{entity}}",
     "url": "URL",
     "copy": "Copy",
     "copied": "Copied!",
-    "entities": {
-      "hub": "Hub",
-      "challenge": "Challenge",
-      "opportunity": "Opportunity",
-      "callout": "Callout",
-      "canvas": "Canvas",
-      "card": "Card",
-      "user": "User",
-      "organization": "Organization"
-    },
     "canvas-checkedout": "Please click 'Save & Stop Editing' first"
   },
   "context": {
