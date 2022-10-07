@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import AspectDashboardPage from '../pages/AspectDashboardPage';
 import AspectSettingsPage from '../pages/AspectSettingsPage';
 import AspectSharePage from '../pages/AspectSharePage';
@@ -10,10 +11,9 @@ export interface AspectRouteProps {
   parentPagePath: string;
 }
 
-const AspectRoute: FC<AspectRouteProps> = () => {
-  const navigate = useNavigate();
-  // todo: do the back nagivation properly
-  const onClose = () => navigate(-1); //useBackToParentPage(parentPagePath, { keepScroll: true });
+const AspectRoute: FC<AspectRouteProps> = ({ parentPagePath }) => {
+  const [backToExplore] = useBackToParentPage(parentPagePath, { keepScroll: true });
+  const onClose = () => backToExplore();
 
   return (
     <Routes>
