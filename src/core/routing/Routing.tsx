@@ -22,6 +22,10 @@ import { ChallengeExplorerPage } from '../../domain/challenge/challenge/pages/Ch
 import { IdentityRoute } from '../auth/authentication/routing';
 import { HELP_ROUTE, INSPIRATION_ROUTE } from '../../models/constants';
 import InspirationPage from '../help/pages/InspirationPage';
+import { WithApmTransaction } from '../../domain/shared/utils';
+import { withTransaction } from '@elastic/apm-rum-react';
+
+const as = withTransaction('/', 'route-change')(App);
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -30,7 +34,8 @@ export const Routing: FC = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<App />}>
+      {/*<Route path="/" element={withApmTransaction('/', App)}>*/}
+      <Route path="/" element={as}>
         <Route index element={<HomePage />} />
         <Route
           path={`:${nameOfUrl.hubNameId}/*`}

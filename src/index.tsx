@@ -9,10 +9,12 @@ initApm({
   // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
   serviceName: 'alkemio-client-web',
   // Set custom APM Server URL (default: http://localhost:8200)
-  serverUrl: 'https://acc-apm.alkem.io/',
+  serverUrl: 'https://acc-apm.alkem.io',
   // Set service version (required for sourcemap feature)
   serviceVersion: require('../package.json').version,
   logLevel: 'debug',
+  environment: process.env.NODE_ENV ?? 'dev',
+  active: true,
 });
 
 ReactDOM.render(<Root />, document.getElementById('root'));
