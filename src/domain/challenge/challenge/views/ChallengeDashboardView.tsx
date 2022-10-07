@@ -33,6 +33,7 @@ import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import { useChallenge } from '../hooks/useChallenge';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { ActivityLogSection } from '../../../shared/components/ActivityLog';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 const CHALLENGES_NUMBER_IN_SECTION = 2;
 const SPACING = 2;
@@ -121,6 +122,12 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               memberOrganizationsCount={entities.memberOrganizationsCount}
             />
           )}
+          <ShareButton
+            title={t('share-dialog.share-this', { entity: t('common.challenge') })}
+            sx={{ marginTop: theme => theme.spacing(2) }}
+            url={buildChallengeUrl(hubNameId, challengeNameId)}
+            entityTypeName="challenge"
+          />
         </DashboardColumn>
         <DashboardColumn>
           <ActivityLogSection activities={activities} />

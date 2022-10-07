@@ -12285,6 +12285,7 @@ export const HubCalloutsDocument = gql`
   query HubCallouts($hubNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
+      nameID
       collaboration {
         id
         authorization {
@@ -12347,8 +12348,10 @@ export const ChallengeCalloutsDocument = gql`
   query ChallengeCallouts($hubNameId: UUID_NAMEID!, $challengeNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
+      nameID
       challenge(ID: $challengeNameId) {
         id
+        nameID
         collaboration {
           id
           authorization {
@@ -12416,8 +12419,10 @@ export const OpportunityCalloutsDocument = gql`
   query OpportunityCallouts($hubNameId: UUID_NAMEID!, $opportunityNameId: UUID_NAMEID!) {
     hub(ID: $hubNameId) {
       id
+      nameID
       opportunity(ID: $opportunityNameId) {
         id
+        nameID
         collaboration {
           id
           authorization {

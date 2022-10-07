@@ -19,11 +19,13 @@ import { mapWithSeparator } from '../../../shared/utils/joinNodes';
 import { animateScroll as scroller } from 'react-scroll';
 import { useResizeDetector } from 'react-resize-detector';
 import { MID_TEXT_LENGTH } from '../../../../models/constants/field-length.constants';
+import { ShareComponent, ShareComponentTitle } from '../../../shared/components/ShareDialog/ShareComponent';
 
 const COMMENTS_CONTAINER_HEIGHT = 400;
 const SCROLL_BOTTOM_MISTAKE_TOLERANCE = 10;
 
 export interface AspectDashboardViewProps {
+  mode: 'messages' | 'share';
   canReadComments: boolean;
   canPostComments: boolean;
   canDeleteComment: (messageId: string) => boolean;
@@ -40,6 +42,7 @@ export interface AspectDashboardViewProps {
   createdDate?: string;
   handlePostComment: (commentId: string, message: string) => Promise<FetchResult<unknown>> | void;
   handleDeleteComment: (commentId: string, messageId: string) => void;
+  aspectUrl: string;
   loading: boolean;
   loadingCreator: boolean;
   error?: ApolloError;
@@ -62,7 +65,7 @@ const isScrolledToBottom = ({
 
 const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
   const { t } = useTranslation();
-  const { loading, loadingCreator } = props;
+  const { loading, loadingCreator, mode } = props;
 
   const commentsContainerRef = useRef<HTMLElement>(null);
   const prevScrollTopRef = useRef<ScrollState>({ scrollTop: 0, scrollHeight: 0 });
@@ -146,7 +149,7 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
           </DashboardGenericSection>
         )}
       </DashboardColumn>
-      {canReadComments && (
+      {mode === 'messages' && canReadComments && (
         <DashboardColumn>
           <DashboardGenericSection headerText={`${t('common.comments')} (${messages.length})`}>
             <Box
@@ -179,6 +182,14 @@ const AspectDashboardView: FC<AspectDashboardViewProps> = props => {
               )}
             </Box>
             <SectionSpacer />
+          </DashboardGenericSection>
+        </DashboardColumn>
+      )}
+      {mode === 'share' && (
+        <DashboardColumn>
+          <DashboardGenericSection>
+            <ShareComponentTitle entityTypeName="card" />
+            <ShareComponent url={props.aspectUrl} />
           </DashboardGenericSection>
         </DashboardColumn>
       )}
