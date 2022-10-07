@@ -5,12 +5,6 @@ import HeaderNavigationTab from './HeaderNavigationTab';
 
 const Root = styled(Box)(({ theme }) => ({
   position: 'relative',
-  '& .MuiTab-root.settings-tab': {
-    flex: 'none',
-    minWidth: 24,
-    marginRight: theme.spacing(2),
-    marginLeft: theme.spacing(2),
-  },
   // ButtonTabs are small tabs-like buttons at the end of the Tabs component, like Share button
   '& .MuiTab-root.button-tab': {
     flex: 'none',
