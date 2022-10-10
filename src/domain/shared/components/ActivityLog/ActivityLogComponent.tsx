@@ -40,15 +40,15 @@ export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activities
     }
 
     return (
-      <Root>
+      <>
         {activities.map(activity => (
           <ActivityViewChooser key={activity.id} type={activity.type} {...getActivityViewModel(activity)} />
         ))}
-      </Root>
+      </>
     );
   }, [activities, getActivityViewModel]);
 
-  return <Box sx={{}}>{display ?? <ActivityLogLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Box>;
+  return <Root>{display ?? <ActivityLogLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Root>;
 };
 
 interface ActivityViewChooserProps extends ActivityLogViewProps {
