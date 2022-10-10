@@ -51,7 +51,7 @@ function flatMapAllCallouts(
   return callouts;
 }
 
-function getUrlByActivityType(activityLog: Activity, authors: Author[], callouts: CalloutData[]): string {
+function getUrlByActivityType(activityLog: Activity, authors: Author[], callouts: CalloutData[]): string | undefined {
   switch (activityLog.type) {
     case ActivityEventType.CanvasCreated:
       return EntityPageSection.Explore;
@@ -60,18 +60,18 @@ function getUrlByActivityType(activityLog: Activity, authors: Author[], callouts
     case ActivityEventType.CardCreated:
       return EntityPageSection.Explore;
     case ActivityEventType.MemberJoined:
-      return authors.find(author => author.id === activityLog.triggeredBy)?.url || '';
+      return authors.find(author => author.id === activityLog.triggeredBy)?.url;
     case ActivityEventType.CalloutPublished: {
       const callout = callouts.find(c => c.id === activityLog.resourceID);
       return callout
         ? buildCalloutUrl(callout.nameID, callout.hubNameId, callout.challengeNameId, callout.opportunityNameId)
-        : '';
+        : undefined;
     }
     case ActivityEventType.DiscussionComment: {
       const callout = callouts.find(c => c.id === activityLog.resourceID);
       return callout
         ? buildCalloutUrl(callout.nameID, callout.hubNameId, callout.challengeNameId, callout.opportunityNameId)
-        : '';
+        : undefined;
     }
   }
 }
@@ -82,7 +82,7 @@ interface ActivityToViewModelReturnType {
   loading: boolean;
 }
 
-export const useActivityToViewModel = (activities?: Activity[]): ActivityToViewModelReturnType => {
+export const useActivityToViewModel = (activities: Activity[]): ActivityToViewModelReturnType => {
   const urlParams = useUrlParams();
   const handleError = useApolloErrorHandler();
 

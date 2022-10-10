@@ -3,6 +3,7 @@ query calloutsNamesFromHub($hubID: UUID_NAMEID!, $calloutIds: [UUID_NAMEID!]!) {
     id
     nameID
     collaboration {
+      id
       callouts (IDs: $calloutIds) {
         id
         nameID
@@ -19,6 +20,7 @@ query calloutsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID
       id
       nameID
       collaboration {
+        id
         callouts (IDs: $calloutIds) {
           id
           nameID
@@ -37,6 +39,7 @@ query calloutsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NA
       nameID
       parentNameID
       collaboration {
+        id
         callouts (IDs: $calloutIds) {
           id
           nameID

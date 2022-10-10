@@ -15163,6 +15163,7 @@ export type CalloutsNamesFromHubQuery = {
     collaboration?:
       | {
           __typename?: 'Collaboration';
+          id: string;
           callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
         }
       | undefined;
@@ -15188,6 +15189,7 @@ export type CalloutsNamesFromChallengeQuery = {
       collaboration?:
         | {
             __typename?: 'Collaboration';
+            id: string;
             callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
           }
         | undefined;
@@ -15215,6 +15217,7 @@ export type CalloutsNamesFromOpportunityQuery = {
       collaboration?:
         | {
             __typename?: 'Collaboration';
+            id: string;
             callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
           }
         | undefined;

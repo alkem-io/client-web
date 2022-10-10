@@ -18508,6 +18508,7 @@ export const CalloutsNamesFromHubDocument = gql`
       id
       nameID
       collaboration {
+        id
         callouts(IDs: $calloutIds) {
           id
           nameID
@@ -18576,6 +18577,7 @@ export const CalloutsNamesFromChallengeDocument = gql`
         id
         nameID
         collaboration {
+          id
           callouts(IDs: $calloutIds) {
             id
             nameID
@@ -18649,6 +18651,7 @@ export const CalloutsNamesFromOpportunityDocument = gql`
         nameID
         parentNameID
         collaboration {
+          id
           callouts(IDs: $calloutIds) {
             id
             nameID
