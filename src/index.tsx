@@ -6,15 +6,11 @@ import Root from './root';
 import './common/styles/index.scss';
 
 initApm({
-  // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
   serviceName: 'alkemio-client-web',
-  // Set custom APM Server URL (default: http://localhost:8200)
-  serverUrl: 'https://acc-apm.alkem.io',
-  // Set service version (required for sourcemap feature)
+  serverUrl: 'https://acc-apm.alkem.io', // todo https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/alkem-io/server/2222
   serviceVersion: require('../package.json').version,
-  logLevel: 'debug',
   environment: process.env.NODE_ENV ?? 'dev',
-  active: true,
+  active: process.env.NODE_ENV === 'production',
 });
 
 ReactDOM.render(<Root />, document.getElementById('root'));
