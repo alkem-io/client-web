@@ -38,17 +38,20 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
           } else {
             notify(t('apollo.errors.bad-user-input'), severity);
           }
+
           logError(error);
           break;
         }
       }
     });
   };
+
   const handleClientErrors = (error: ApolloError) => {
     if (error.clientErrors && error.clientErrors.length > 0) {
       notify(error.message, severity);
     }
   };
+
   return (error: ApolloError) => {
     handleNetworkErrors(error);
     handleGraphQLErrors(error);
