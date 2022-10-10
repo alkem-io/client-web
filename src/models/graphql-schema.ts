@@ -15149,11 +15149,14 @@ export type DeleteInnovationTemplateMutation = {
   deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
 };
 
-export type CalloutsNameIdsByIdsQueryVariables = Exact<{ [key: string]: never }>;
+export type CalloutsNamesFromHubQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
 
-export type CalloutsNameIdsByIdsQuery = {
+export type CalloutsNamesFromHubQuery = {
   __typename?: 'Query';
-  hubs: Array<{
+  hub: {
     __typename?: 'Hub';
     id: string;
     nameID: string;
@@ -15163,31 +15166,60 @@ export type CalloutsNameIdsByIdsQuery = {
           callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
         }
       | undefined;
-    challenges?:
-      | Array<{
-          __typename?: 'Challenge';
-          id: string;
-          nameID: string;
-          collaboration?:
-            | {
-                __typename?: 'Collaboration';
-                callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
-              }
-            | undefined;
-          opportunities?:
-            | Array<{
-                __typename?: 'Opportunity';
-                collaboration?:
-                  | {
-                      __typename?: 'Collaboration';
-                      callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
-                    }
-                  | undefined;
-              }>
-            | undefined;
-        }>
-      | undefined;
-  }>;
+  };
+};
+
+export type CalloutsNamesFromChallengeQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CalloutsNamesFromChallengeQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      nameID: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CalloutsNamesFromOpportunityQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  calloutIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CalloutsNamesFromOpportunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      parentNameID?: string | undefined;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+          }
+        | undefined;
+    };
+  };
 };
 
 export type CommentsWithMessagesFragment = {

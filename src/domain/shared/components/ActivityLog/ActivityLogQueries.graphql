@@ -1,28 +1,45 @@
-query calloutsNameIdsByIds { # ($ids: [UUID_NAMEID!]!) {
-  hubs {
+query calloutsNamesFromHub($hubID: UUID_NAMEID!, $calloutIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
     id
     nameID
     collaboration {
-      callouts { # (IDs: $ids) {
+      callouts (IDs: $calloutIds) {
         id
         nameID
       }
     }
-    challenges {
+  }
+}
+
+query calloutsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    challenge(ID: $challengeId) {
       id
       nameID
       collaboration {
-        callouts { # (IDs: $ids) {
+        callouts (IDs: $calloutIds) {
           id
           nameID
         }
       }
-      opportunities {
-        collaboration {
-          callouts { #(IDs: $ids) {
-            id
-            nameID
-          }
+    }
+  }
+}
+
+query calloutsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    opportunity (ID: $opportunityId) {
+      id
+      nameID
+      parentNameID
+      collaboration {
+        callouts (IDs: $calloutIds) {
+          id
+          nameID
         }
       }
     }
