@@ -53,20 +53,15 @@ function getUrlByActivityType(
 }
 
 export const useActivityToViewModel = (activities: Activity[]): ActivityToViewModelReturnType => {
-  // Authors information
   const authorIds = activities?.map(x => x.triggeredBy);
   const { authors = [], loading: loadingAuthors } = useAuthorsDetails(authorIds ?? []);
 
-  // Callouts:
   const { calloutActivityData, loading: loadingCallouts } = useCalloutsActivityData(activities);
 
-  // Cards:
   const { cardsActivityData, loading: loadingCards } = useCardsActivityData(activities);
 
-  // Canvases:
   const { canvasesActivityData, loading: loadingCanvases } = useCanvasesActivityData(activities);
 
-  // Prepare the result of this hook
   const loading = loadingAuthors || loadingCallouts || loadingCards || loadingCanvases;
 
   const getActivityViewModel = useCallback(
