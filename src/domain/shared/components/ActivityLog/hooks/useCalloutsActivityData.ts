@@ -13,6 +13,7 @@ import {
   useCalloutsNamesFromOpportunityQuery,
 } from '../../../../../hooks/generated/graphql';
 import { isChallengeId, isHubId, isOpportunityId } from '../../../types/CoreEntityIds';
+import { uniq } from 'lodash';
 
 export type CalloutActivityData = {
   id: string;
@@ -51,10 +52,11 @@ export const useCalloutsActivityData = (activities: Activity[]) => {
   const handleError = useApolloErrorHandler();
 
   // Get the Ids of the Callouts that have an Activity entry
-  const calloutsIds =
+  const calloutsIds = uniq(
     activities
       ?.filter(a => a.type === ActivityEventType.CalloutPublished || a.type === ActivityEventType.DiscussionComment)
-      .map(a => a.resourceID) || [];
+      .map(a => a.resourceID) || []
+  );
 
   // Retrieve the relevant information to print these activity entries about callouts
   const { data: hubCalloutsData, loading: hubCalloutsLoading } = useCalloutsNamesFromHubQuery({

@@ -13,6 +13,7 @@ import {
   useCardsNamesFromOpportunityQuery,
 } from '../../../../../hooks/generated/graphql';
 import { isChallengeId, isHubId, isOpportunityId } from '../../../types/CoreEntityIds';
+import { uniq } from 'lodash';
 
 export type CardActivityData = {
   id: string;
@@ -74,15 +75,23 @@ export const useCardsActivityData = (activities: Activity[]) => {
   const handleError = useApolloErrorHandler();
 
   // Get the Ids of the Cards that have an Activity entry
-  const cardsIds =
+  const cardsIds = uniq(
     activities
       ?.filter(a => a.type === ActivityEventType.CardCreated || a.type === ActivityEventType.CardComment)
-      .map(a => a.resourceID) || [];
+      .map(a => a.resourceID) || []
+  );
+  const calloutsIds = uniq(
+    activities
+      ?.filter(a => a.type === ActivityEventType.CardCreated || a.type === ActivityEventType.CardComment)
+      .map(a => a.parentID)
+      .filter(c => !!c)
+      .map(c => c!) || []
+  );
 
   // Retrieve the relevant information to print these activity entries about cards
   const { data: hubCardsData, loading: hubCardsLoading } = useCardsNamesFromHubQuery({
     onError: handleError,
-    variables: isHubId(urlParams) ? { hubID: urlParams.hubNameId, cardsIds } : undefined,
+    variables: isHubId(urlParams) ? { hubID: urlParams.hubNameId, calloutsIds, cardsIds } : undefined,
     skip: !isHubId(urlParams) || cardsIds.length === 0,
     errorPolicy: 'all',
   });
@@ -90,7 +99,7 @@ export const useCardsActivityData = (activities: Activity[]) => {
   const { data: challengeCardsData, loading: challengeCardsLoading } = useCardsNamesFromChallengeQuery({
     onError: handleError,
     variables: isChallengeId(urlParams)
-      ? { hubID: urlParams.hubNameId, challengeId: urlParams.challengeNameId, cardsIds }
+      ? { hubID: urlParams.hubNameId, challengeId: urlParams.challengeNameId, calloutsIds, cardsIds }
       : undefined,
     skip: !isChallengeId(urlParams) || cardsIds.length === 0,
     errorPolicy: 'all',
@@ -99,7 +108,7 @@ export const useCardsActivityData = (activities: Activity[]) => {
   const { data: opportunityCardsData, loading: opportunityCardsLoading } = useCardsNamesFromOpportunityQuery({
     onError: handleError,
     variables: isOpportunityId(urlParams)
-      ? { hubID: urlParams.hubNameId, opportunityId: urlParams.opportunityNameId, cardsIds }
+      ? { hubID: urlParams.hubNameId, opportunityId: urlParams.opportunityNameId, calloutsIds, cardsIds }
       : undefined,
     skip: !isOpportunityId(urlParams) || cardsIds.length === 0,
     errorPolicy: 'all',

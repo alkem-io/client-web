@@ -13,6 +13,7 @@ import {
   useCanvasesNamesFromOpportunityQuery,
 } from '../../../../../hooks/generated/graphql';
 import { isChallengeId, isHubId, isOpportunityId } from '../../../types/CoreEntityIds';
+import { uniq } from 'lodash';
 
 export type CanvasActivityData = {
   id: string;
@@ -74,12 +75,21 @@ export const useCanvasesActivityData = (activities: Activity[]) => {
   const handleError = useApolloErrorHandler();
 
   // Get the Ids of the Canvases that have an Activity entry
-  const canvasesIds = activities?.filter(a => a.type === ActivityEventType.CanvasCreated).map(a => a.resourceID) || [];
+  const canvasesIds = uniq(
+    activities?.filter(a => a.type === ActivityEventType.CanvasCreated).map(a => a.resourceID) || []
+  );
+  const calloutsIds = uniq(
+    activities
+      ?.filter(a => a.type === ActivityEventType.CardCreated || a.type === ActivityEventType.CardComment)
+      .map(a => a.parentID)
+      .filter(c => !!c)
+      .map(c => c!) || []
+  );
 
   // Retrieve the relevant information to print these activity entries about canvases
   const { data: hubCanvasesData, loading: hubCanvasesLoading } = useCanvasesNamesFromHubQuery({
     onError: handleError,
-    variables: isHubId(urlParams) ? { hubID: urlParams.hubNameId, canvasesIds } : undefined,
+    variables: isHubId(urlParams) ? { hubID: urlParams.hubNameId, calloutsIds, canvasesIds } : undefined,
     skip: !isHubId(urlParams) || canvasesIds.length === 0,
     errorPolicy: 'all',
   });
@@ -87,7 +97,7 @@ export const useCanvasesActivityData = (activities: Activity[]) => {
   const { data: challengeCanvasesData, loading: challengeCanvasesLoading } = useCanvasesNamesFromChallengeQuery({
     onError: handleError,
     variables: isChallengeId(urlParams)
-      ? { hubID: urlParams.hubNameId, challengeId: urlParams.challengeNameId, canvasesIds }
+      ? { hubID: urlParams.hubNameId, challengeId: urlParams.challengeNameId, calloutsIds, canvasesIds }
       : undefined,
     skip: !isChallengeId(urlParams) || canvasesIds.length === 0,
     errorPolicy: 'all',
@@ -96,7 +106,7 @@ export const useCanvasesActivityData = (activities: Activity[]) => {
   const { data: opportunityCanvasesData, loading: opportunityCanvasesLoading } = useCanvasesNamesFromOpportunityQuery({
     onError: handleError,
     variables: isOpportunityId(urlParams)
-      ? { hubID: urlParams.hubNameId, opportunityId: urlParams.opportunityNameId, canvasesIds }
+      ? { hubID: urlParams.hubNameId, opportunityId: urlParams.opportunityNameId, calloutsIds, canvasesIds }
       : undefined,
     skip: !isOpportunityId(urlParams) || canvasesIds.length === 0,
     errorPolicy: 'all',
