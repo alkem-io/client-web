@@ -22,10 +22,7 @@ import { ChallengeExplorerPage } from '../../domain/challenge/challenge/pages/Ch
 import { IdentityRoute } from '../auth/authentication/routing';
 import { HELP_ROUTE, INSPIRATION_ROUTE } from '../../models/constants';
 import InspirationPage from '../help/pages/InspirationPage';
-import { WithApmTransaction } from '../../domain/shared/utils';
-import { withTransaction } from '@elastic/apm-rum-react';
-
-const as = withTransaction('/', 'route-change')(App);
+import { WithApmTransaction } from '../../domain/shared/components';
 
 export const Routing: FC = () => {
   const { t } = useTranslation();
@@ -34,56 +31,154 @@ export const Routing: FC = () => {
 
   return (
     <Routes>
-      {/*<Route path="/" element={withApmTransaction('/', App)}>*/}
-      <Route path="/" element={as}>
-        <Route index element={<HomePage />} />
+      <Route
+        path="/"
+        element={
+          <WithApmTransaction path="/">
+            <App />
+          </WithApmTransaction>
+        }
+      >
+        <Route
+          index
+          element={
+            <WithApmTransaction path="/">
+              <HomePage />
+            </WithApmTransaction>
+          }
+        />
         <Route
           path={`:${nameOfUrl.hubNameId}/*`}
           element={
-            <HubContextProvider>
-              <CommunityContextProvider>
-                <HubRoute paths={paths} />
-              </CommunityContextProvider>
-            </HubContextProvider>
+            <WithApmTransaction path={`:${nameOfUrl.hubNameId}/*`}>
+              <HubContextProvider>
+                <CommunityContextProvider>
+                  <HubRoute paths={paths} />
+                </CommunityContextProvider>
+              </HubContextProvider>
+            </WithApmTransaction>
           }
         />
-        <Route path="/admin/*" element={<AdminRoute />} />
-        <Route path="/search" element={<SearchRoute />} />
-        <Route path="/identity/*" element={<IdentityRoute />} />
+        <Route
+          path="/admin/*"
+          element={
+            <WithApmTransaction path="/admin/*">
+              <AdminRoute />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <WithApmTransaction path="/search">
+              <SearchRoute />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="/identity/*"
+          element={
+            <WithApmTransaction path="/identify/*">
+              <IdentityRoute />
+            </WithApmTransaction>
+          }
+        />
         <Route
           path={`/user/:${nameOfUrl.userNameId}/*`}
           element={
-            <RestrictedRoute>
-              <UserRoute />
-            </RestrictedRoute>
+            <WithApmTransaction path={`:${nameOfUrl.userNameId}/*`}>
+              <RestrictedRoute>
+                <UserRoute />
+              </RestrictedRoute>
+            </WithApmTransaction>
           }
         />
-        <Route path="/challenges" element={<ChallengeExplorerPage />} />
-        <Route path="/contributors" element={<ContributorsPage />} />
+        <Route
+          path="/challenges"
+          element={
+            <WithApmTransaction path="/challenges">
+              <ChallengeExplorerPage />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="/contributors"
+          element={
+            <WithApmTransaction path="/contributors">
+              <ContributorsPage />
+            </WithApmTransaction>
+          }
+        />
 
         <Route
           path={`/organization/:${nameOfUrl.organizationNameId}/*`}
           element={
-            <OrganizationProvider>
-              <OrganizationRoute paths={[]} />
-            </OrganizationProvider>
+            <WithApmTransaction path={`/organization/:${nameOfUrl.organizationNameId}/*`}>
+              <OrganizationProvider>
+                <OrganizationRoute paths={[]} />
+              </OrganizationProvider>
+            </WithApmTransaction>
           }
         />
         <Route
           path="/messages"
           element={
-            <RestrictedRoute>
-              <MessagesRoute />
-            </RestrictedRoute>
+            <WithApmTransaction path="/messages">
+              <RestrictedRoute>
+                <MessagesRoute />
+              </RestrictedRoute>
+            </WithApmTransaction>
           }
         />
 
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/profile" element={<ProfileRoute />} />
-        <Route path="/restricted" element={<Restricted />} />
-        <Route path={HELP_ROUTE} element={<HelpPage />} />
-        <Route path={INSPIRATION_ROUTE} element={<InspirationPage />} />
-        <Route path="*" element={<Error404 />} />
+        <Route
+          path="/about"
+          element={
+            <WithApmTransaction path="/about">
+              <AboutPage />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <WithApmTransaction path="/profile">
+              <ProfileRoute />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="/restricted"
+          element={
+            <WithApmTransaction path="/restricted">
+              <Restricted />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path={HELP_ROUTE}
+          element={
+            <WithApmTransaction path={HELP_ROUTE}>
+              <HelpPage />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path={INSPIRATION_ROUTE}
+          element={
+            <WithApmTransaction path={INSPIRATION_ROUTE}>
+              <InspirationPage />
+            </WithApmTransaction>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <WithApmTransaction path="*">
+              <Error404 />
+            </WithApmTransaction>
+          }
+        />
       </Route>
     </Routes>
   );
