@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ActivityLogBaseView } from './ActivityLogBaseView';
 import { ActivityLogViewProps } from './ActivityLogViewProps';
+import { useTranslation } from 'react-i18next';
 
 export interface ActivityLogDiscussionCommentCreatedViewProps extends ActivityLogViewProps {}
 
