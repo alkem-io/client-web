@@ -3,10 +3,10 @@ import { useAuthorsDetails } from '../../../../communication/communication/useAu
 import { Activity, ActivityEventType } from '../../../../../models/graphql-schema';
 import { Author } from '../../AuthorAvatar/models/author';
 import { useCallback, useMemo } from 'react';
-import { EntityPageSection } from '../../../layout/EntityPageSection';
-import { buildAspectUrl, buildCalloutUrl } from '../../../../../common/utils/urlBuilders';
+import { buildAspectUrl, buildCalloutUrl, buildCanvasUrl } from '../../../../../common/utils/urlBuilders';
 import { CalloutActivityData, useCalloutsActivityData } from './useCalloutsActivityData';
-import { CardActivityData, useCardsActivityData } from './useCardsActivityInformation';
+import { CardActivityData, useCardsActivityData } from './useCardsActivityData';
+import { CanvasActivityData, useCanvasesActivityData } from './useCanvasesActivityData';
 
 interface ActivityToViewModelReturnType {
   activityViewModel: ActivityLogViewProps[] | undefined;
@@ -18,11 +18,13 @@ function getUrlByActivityType(
   activityLog: Activity,
   authors: Author[],
   callouts: CalloutActivityData[],
-  cards: CardActivityData[]
+  cards: CardActivityData[],
+  canvases: CardActivityData[]
 ): string | undefined {
   switch (activityLog.type) {
     case ActivityEventType.CanvasCreated: {
-      return EntityPageSection.Explore;
+      const canvas = canvases.find(c => c.id === activityLog.resourceID);
+      return canvas ? buildCanvasUrl({ ...canvas, canvasNameId: canvas.nameID }) : undefined;
     }
     case ActivityEventType.CardComment: {
       const card = cards.find(c => c.id === activityLog.resourceID);
@@ -61,19 +63,24 @@ export const useActivityToViewModel = (activities: Activity[]): ActivityToViewMo
   // Cards:
   const { cardsActivityData, loading: loadingCards } = useCardsActivityData(activities);
 
-  const loading = loadingAuthors || loadingCallouts || loadingCards;
+  // Canvases:
+  const { canvasesActivityData, loading: loadingCanvases } = useCanvasesActivityData(activities);
+
   // Prepare the result of this hook
+  const loading = loadingAuthors || loadingCallouts || loadingCards || loadingCanvases;
+
   const getActivityViewModel = useCallback(
-    (activityLog: Activity) => toActivityViewModel(activityLog, authors, calloutActivityData, cardsActivityData),
-    [loading, authors, calloutActivityData, cardsActivityData]
+    (activityLog: Activity) =>
+      toActivityViewModel(activityLog, authors, calloutActivityData, cardsActivityData, canvasesActivityData),
+    [loading, authors, calloutActivityData, cardsActivityData, canvasesActivityData]
   );
 
   const activityViewModel = useMemo(
     () =>
       activities?.map<ActivityLogViewProps>(activity =>
-        toActivityViewModel(activity, authors, calloutActivityData, cardsActivityData)
+        toActivityViewModel(activity, authors, calloutActivityData, cardsActivityData, canvasesActivityData)
       ),
-    [loading, activities, authors, calloutActivityData, cardsActivityData]
+    [loading, activities, authors, calloutActivityData, cardsActivityData, canvasesActivityData]
   );
 
   return {
@@ -87,10 +94,11 @@ const toActivityViewModel = (
   activityLog: Activity,
   authors: Author[],
   callouts: CalloutActivityData[],
-  cards: CardActivityData[]
+  cards: CardActivityData[],
+  canvases: CanvasActivityData[]
 ) => ({
   author: authors.find(author => author.id === activityLog.triggeredBy),
   createdDate: activityLog.createdDate,
-  url: getUrlByActivityType(activityLog, authors, callouts, cards),
+  url: getUrlByActivityType(activityLog, authors, callouts, cards, canvases),
   description: activityLog.description,
 });

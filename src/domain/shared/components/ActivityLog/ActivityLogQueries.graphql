@@ -111,3 +111,66 @@ query cardsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEI
     }
   }
 }
+
+query canvasesNamesFromHub($hubID: UUID_NAMEID!, $canvasesIds: [UUID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    collaboration {
+      id
+      callouts {
+        id
+        nameID
+        canvases (IDs: $canvasesIds) {
+          id
+          nameID
+        }
+      }
+    }
+  }
+}
+
+query canvasesNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $canvasesIds: [UUID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    challenge(ID: $challengeId) {
+      id
+      nameID
+      collaboration {
+        id
+        callouts {
+          id
+          nameID
+          canvases (IDs: $canvasesIds) {
+            id
+            nameID
+          }
+        }
+      }
+    }
+  }
+}
+
+query canvasesNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $canvasesIds: [UUID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    opportunity (ID: $opportunityId) {
+      id
+      nameID
+      parentNameID
+      collaboration {
+        id
+        callouts {
+          id
+          nameID
+          canvases (IDs: $canvasesIds) {
+            id
+            nameID
+          }
+        }
+      }
+    }
+  }
+}

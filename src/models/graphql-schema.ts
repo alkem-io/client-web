@@ -15322,6 +15322,103 @@ export type CardsNamesFromOpportunityQuery = {
   };
 };
 
+export type CanvasesNamesFromHubQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  canvasesIds: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type CanvasesNamesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                nameID: string;
+                canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CanvasesNamesFromChallengeQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  canvasesIds: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type CanvasesNamesFromChallengeQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      nameID: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CanvasesNamesFromOpportunityQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  canvasesIds: Array<Scalars['UUID']> | Scalars['UUID'];
+}>;
+
+export type CanvasesNamesFromOpportunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      parentNameID?: string | undefined;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type CommentsWithMessagesFragment = {
   __typename?: 'Comments';
   id: string;
