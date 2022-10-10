@@ -9,5 +9,5 @@ export const ActivityLogMemberJoinedView: FC<ActivityLogmemberJoinedViewProps> =
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.member-joined');
 
-  return <ActivityLogBaseView action={action} {...props} />;
+  return <ActivityLogBaseView action={action} {...props} url={props.author?.url || ''} />;
 };

@@ -32,6 +32,7 @@ export const useActivityToViewModel = (activity?: Activity[]): ActivityToViewMod
 };
 
 const toActivityViewModel = (activityLog: Activity, authors: Author[]) => ({
+  resourceId: activityLog.resourceID,
   author: authors.find(author => author.id === activityLog.triggeredBy),
   createdDate: activityLog.createdDate,
   description: activityLog.description,

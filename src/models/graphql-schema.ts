@@ -15149,6 +15149,47 @@ export type DeleteInnovationTemplateMutation = {
   deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
 };
 
+export type CalloutsNameIdsByIdsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CalloutsNameIdsByIdsQuery = {
+  __typename?: 'Query';
+  hubs: Array<{
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+        }
+      | undefined;
+    challenges?:
+      | Array<{
+          __typename?: 'Challenge';
+          id: string;
+          nameID: string;
+          collaboration?:
+            | {
+                __typename?: 'Collaboration';
+                callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+              }
+            | undefined;
+          opportunities?:
+            | Array<{
+                __typename?: 'Opportunity';
+                collaboration?:
+                  | {
+                      __typename?: 'Collaboration';
+                      callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
+        }>
+      | undefined;
+  }>;
+};
+
 export type CommentsWithMessagesFragment = {
   __typename?: 'Comments';
   id: string;

@@ -1,5 +1,5 @@
 import React, { ComponentType, FC, useMemo } from 'react';
-import { Box } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { Activity, ActivityEventType } from '../../../../models/graphql-schema';
 import { LATEST_ACTIVITIES_COUNT } from '../../../../models/constants';
 import {
@@ -14,6 +14,19 @@ import {
 } from './views';
 import { useActivityToViewModel } from './hooks';
 
+const Root = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+  '& a': {
+    textDecoration: 'none',
+    color: 'inherit',
+  },
+  '& a:hover': {
+    textDecoration: 'underline',
+  },
+}));
+
 export interface ActivityLogComponentProps {
   activities: Activity[] | undefined;
 }
@@ -27,19 +40,15 @@ export const ActivityLogComponent: FC<ActivityLogComponentProps> = ({ activities
     }
 
     return (
-      <>
+      <Root>
         {activities.map(activity => (
           <ActivityViewChooser key={activity.id} type={activity.type} {...getActivityViewModel(activity)} />
         ))}
-      </>
+      </Root>
     );
   }, [activities, getActivityViewModel]);
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: theme => theme.spacing(2) }}>
-      {display ?? <ActivityLogLoadingView rows={LATEST_ACTIVITIES_COUNT} />}
-    </Box>
-  );
+  return <Box sx={{}}>{display ?? <ActivityLogLoadingView rows={LATEST_ACTIVITIES_COUNT} />}</Box>;
 };
 
 interface ActivityViewChooserProps extends ActivityLogViewProps {

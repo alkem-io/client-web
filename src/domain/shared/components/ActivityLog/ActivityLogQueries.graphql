@@ -1,0 +1,30 @@
+query calloutsNameIdsByIds { # ($ids: [UUID_NAMEID!]!) {
+  hubs {
+    id
+    nameID
+    collaboration {
+      callouts { # (IDs: $ids) {
+        id
+        nameID
+      }
+    }
+    challenges {
+      id
+      nameID
+      collaboration {
+        callouts { # (IDs: $ids) {
+          id
+          nameID
+        }
+      }
+      opportunities {
+        collaboration {
+          callouts { #(IDs: $ids) {
+            id
+            nameID
+          }
+        }
+      }
+    }
+  }
+}

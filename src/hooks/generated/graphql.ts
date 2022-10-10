@@ -18502,6 +18502,87 @@ export type DeleteInnovationTemplateMutationOptions = Apollo.BaseMutationOptions
   SchemaTypes.DeleteInnovationTemplateMutation,
   SchemaTypes.DeleteInnovationTemplateMutationVariables
 >;
+export const CalloutsNameIdsByIdsDocument = gql`
+  query calloutsNameIdsByIds {
+    hubs {
+      id
+      nameID
+      collaboration {
+        callouts {
+          id
+          nameID
+        }
+      }
+      challenges {
+        id
+        nameID
+        collaboration {
+          callouts {
+            id
+            nameID
+          }
+        }
+        opportunities {
+          collaboration {
+            callouts {
+              id
+              nameID
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useCalloutsNameIdsByIdsQuery__
+ *
+ * To run a query within a React component, call `useCalloutsNameIdsByIdsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutsNameIdsByIdsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutsNameIdsByIdsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCalloutsNameIdsByIdsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutsNameIdsByIdsQuery,
+    SchemaTypes.CalloutsNameIdsByIdsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutsNameIdsByIdsQuery, SchemaTypes.CalloutsNameIdsByIdsQueryVariables>(
+    CalloutsNameIdsByIdsDocument,
+    options
+  );
+}
+export function useCalloutsNameIdsByIdsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutsNameIdsByIdsQuery,
+    SchemaTypes.CalloutsNameIdsByIdsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutsNameIdsByIdsQuery, SchemaTypes.CalloutsNameIdsByIdsQueryVariables>(
+    CalloutsNameIdsByIdsDocument,
+    options
+  );
+}
+export type CalloutsNameIdsByIdsQueryHookResult = ReturnType<typeof useCalloutsNameIdsByIdsQuery>;
+export type CalloutsNameIdsByIdsLazyQueryHookResult = ReturnType<typeof useCalloutsNameIdsByIdsLazyQuery>;
+export type CalloutsNameIdsByIdsQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutsNameIdsByIdsQuery,
+  SchemaTypes.CalloutsNameIdsByIdsQueryVariables
+>;
+export function refetchCalloutsNameIdsByIdsQuery(variables?: SchemaTypes.CalloutsNameIdsByIdsQueryVariables) {
+  return { query: CalloutsNameIdsByIdsDocument, variables: variables };
+}
 export const ActivityLogOnCollaborationDocument = gql`
   query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     activityLogOnCollaboration(queryData: $queryData) {
