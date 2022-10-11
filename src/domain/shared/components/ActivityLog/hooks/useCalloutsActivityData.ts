@@ -18,6 +18,7 @@ import { uniq } from 'lodash';
 export type CalloutActivityData = {
   id: string;
   nameID: string;
+  displayName: string;
   hubNameId: string;
   challengeNameId?: string;
   opportunityNameId?: string;

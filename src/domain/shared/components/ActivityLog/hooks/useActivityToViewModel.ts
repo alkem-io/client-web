@@ -52,6 +52,39 @@ function getUrlByActivityType(
   }
 }
 
+function getParentDisplayNameByActivityType(
+  activityLog: Activity,
+  authors: Author[],
+  callouts: CalloutActivityData[],
+  cards: CardActivityData[],
+  canvases: CardActivityData[]
+): string | undefined {
+  switch (activityLog.type) {
+    case ActivityEventType.CanvasCreated: {
+      const canvas = canvases.find(c => c.id === activityLog.resourceID);
+      return canvas ? canvas.calloutDisplayName : undefined;
+    }
+    case ActivityEventType.CardComment: {
+      const card = cards.find(c => c.id === activityLog.resourceID);
+      return card ? card.calloutDisplayName : undefined;
+    }
+    case ActivityEventType.CardCreated: {
+      const card = cards.find(c => c.id === activityLog.resourceID);
+      return card ? card.calloutDisplayName : undefined;
+    }
+    case ActivityEventType.MemberJoined: {
+      return undefined;
+    }
+    case ActivityEventType.CalloutPublished: {
+      return undefined;
+    }
+    case ActivityEventType.DiscussionComment: {
+      const callout = callouts.find(c => c.id === activityLog.resourceID);
+      return callout ? callout.displayName : undefined;
+    }
+  }
+}
+
 export const useActivityToViewModel = (activities: Activity[]): ActivityToViewModelReturnType => {
   const authorIds = activities?.map(x => x.triggeredBy);
   const { authors = [], loading: loadingAuthors } = useAuthorsDetails(authorIds ?? []);
@@ -96,4 +129,5 @@ const toActivityViewModel = (
   createdDate: activityLog.createdDate,
   url: getUrlByActivityType(activityLog, authors, callouts, cards, canvases),
   description: activityLog.description,
+  parentDisplayName: getParentDisplayNameByActivityType(activityLog, authors, callouts, cards, canvases),
 });
