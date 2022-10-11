@@ -324,13 +324,13 @@
         "placeholder": ""
       },
       "vision": {
-        "title": "Visie",
+        "title": "Waar gaat deze community over?",
         "tooltip": "Hoe wordt succes gedefinieerd? Hoe weet je dat je het hebt bereikt?",
         "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Wie",
+        "title": "Wie moeten erbij betrokken worden?",
         "tooltip": "Welke organisaties of gebruikers zouden moeten bijdragen? Waarom zouden zij willen meedoen?",
         "description": "",
         "placeholder": ""
@@ -339,61 +339,61 @@
     "challenge": {
       "displayName": {
         "title": "Titel",
-        "description": "Probeer het kort, beschrijvend en interessant te houden",
+        "description": "Probeer het kort, beschrijvend en aandacht trekkend te houden",
         "placeholder": "Titel"
       },
       "tagline": {
         "title": "Challenge Statement",
         "tooltip": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with How might we...",
-        "description": "Explain in one sentence what this challenge is about. It is also possible to frame it as a question, starting with How might we...",
+        "description": "Omschrijf in één zin waar deze Challenge over gaat. Het is ook ook mogelijk om er een vraag van te maken, beginnend met 'Hoe kunnen we...?'",
         "placeholder": "Challenge Statement"
       },
       "background": {
-        "title": "Current Reality",
+        "title": "Huidige realiteit",
         "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?",
-        "description": "Give a brief impression of the current state of the challenge. Think of the what, where, when and who.",
+        "description": "Schets een beeld van de huidige status van deze Challenge. Denk aan de 'wat, waar, wanneer en wie'.",
         "placeholder": "Current Reality"
       },
       "impact": {
-        "title": "Impact",
+        "title": "Extra context",
         "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?",
         "description": "",
         "placeholder": ""
       },
       "vision": {
-        "title": "Future Vision",
+        "title": "Toekomstvisie",
         "tooltip": "What does success look like? How will you know when you have achieved it?",
-        "description": "What does success look like? What should a solution to this Challenge comprise?",
+        "description": "Hoe ziet een succesvolle toekomst eruit? Waaruit moet de oplossing van deze Challenge bestaan?",
         "placeholder": "Future Vision"
       },
       "who": {
-        "title": "Who",
+        "title": "Wie kunnen een bijdrage leveren?",
         "tooltip": "What organisations or users should contribute? Why should they want to engage?",
         "description": "",
         "placeholder": ""
       },
       "tags": {
         "title": "Tags",
-        "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
+        "description": "Vul de meest belangrijke tags in die ervoor zorgen dat de Challenge opvalt en makkelijk te vinden is.",
         "placeholder": "Tags"
       }
     },
     "opportunity": {
       "displayName": {
-        "title": "Title",
-        "description": "Try to keep it short, descriptive and engaging",
+        "title": "Titel",
+        "description": "Probeer het kort, beschrijvend en aandacht trekkend te houden",
         "placeholder": "Title"
       },
       "tagline": {
         "title": "Tagline",
         "tooltip": "Explain in one sentence...",
-        "description": "In one sentence, explain what this opportunity is about. Think of what and what for. ",
+        "description": "Leg in één zin uit waar deze Opportunity over gaat.",
         "placeholder": "Tagline"
       },
       "background": {
-        "title": "Description",
+        "title": "Achtergrond",
         "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?",
-        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
+        "description": "Geef een korte omschrijving van hoe de Opportunity is ontstaan en hoe het pas in het grotere plaatje.",
         "placeholder": "Description"
       },
       "impact": {
@@ -403,20 +403,20 @@
         "placeholder": ""
       },
       "vision": {
-        "title": "Vision",
+        "title": "Omschrijving",
         "tooltip": "What does success look like? How will you know when you have achieved it?",
         "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "Who",
+        "title": "Wie is erbij betrokken?",
         "tooltip": "What organisations or users should contribute? Why should they want to engage?",
         "description": "",
         "placeholder": ""
       },
       "tags": {
         "title": "Tags",
-        "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
+        "description": "Vul de meest belangrijke tags in die ervoor zorgen dat de Challenge opvalt en makkelijk te vinden is.",
         "placeholder": "Tags"
       }
     }
