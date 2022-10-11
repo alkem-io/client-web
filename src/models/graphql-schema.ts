@@ -15228,7 +15228,6 @@ export type CalloutsNamesFromOpportunityQuery = {
 export type CardsNamesFromHubQueryVariables = Exact<{
   hubID: Scalars['UUID_NAMEID'];
   calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-  cardsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
 }>;
 
 export type CardsNamesFromHubQuery = {
@@ -15258,7 +15257,6 @@ export type CardsNamesFromChallengeQueryVariables = Exact<{
   hubID: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
   calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-  cardsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
 }>;
 
 export type CardsNamesFromChallengeQuery = {
@@ -15293,7 +15291,6 @@ export type CardsNamesFromOpportunityQueryVariables = Exact<{
   hubID: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
   calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-  cardsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
 }>;
 
 export type CardsNamesFromOpportunityQuery = {
@@ -15328,7 +15325,6 @@ export type CardsNamesFromOpportunityQuery = {
 export type CanvasesNamesFromHubQueryVariables = Exact<{
   hubID: Scalars['UUID_NAMEID'];
   calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-  canvasesIds: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type CanvasesNamesFromHubQuery = {
@@ -15358,7 +15354,6 @@ export type CanvasesNamesFromChallengeQueryVariables = Exact<{
   hubID: Scalars['UUID_NAMEID'];
   challengeId: Scalars['UUID_NAMEID'];
   calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-  canvasesIds: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type CanvasesNamesFromChallengeQuery = {
@@ -15393,7 +15388,6 @@ export type CanvasesNamesFromOpportunityQueryVariables = Exact<{
   hubID: Scalars['UUID_NAMEID'];
   opportunityId: Scalars['UUID_NAMEID'];
   calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
-  canvasesIds: Array<Scalars['UUID']> | Scalars['UUID'];
 }>;
 
 export type CanvasesNamesFromOpportunityQuery = {
@@ -15458,6 +15452,7 @@ export type ActivityLogOnCollaborationQuery = {
     createdDate: Date;
     description: string;
     triggeredBy: string;
+    parentID?: string | undefined;
   }>;
 };
 

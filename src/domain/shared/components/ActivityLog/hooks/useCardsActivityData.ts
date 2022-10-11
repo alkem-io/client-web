@@ -91,7 +91,12 @@ export const useCardsActivityData = (activities: Activity[]) => {
   // Retrieve the relevant information to print these activity entries about cards
   const { data: hubCardsData, loading: hubCardsLoading } = useCardsNamesFromHubQuery({
     onError: handleError,
-    variables: isHubId(urlParams) ? { hubID: urlParams.hubNameId, calloutsIds, cardsIds } : undefined,
+    variables: isHubId(urlParams)
+      ? {
+          hubID: urlParams.hubNameId,
+          calloutsIds /* cardsIds: TODO: Filter by cardsIds when server doesn't return an error */,
+        }
+      : undefined,
     skip: !isHubId(urlParams) || cardsIds.length === 0,
     errorPolicy: 'all',
   });
@@ -99,7 +104,11 @@ export const useCardsActivityData = (activities: Activity[]) => {
   const { data: challengeCardsData, loading: challengeCardsLoading } = useCardsNamesFromChallengeQuery({
     onError: handleError,
     variables: isChallengeId(urlParams)
-      ? { hubID: urlParams.hubNameId, challengeId: urlParams.challengeNameId, calloutsIds, cardsIds }
+      ? {
+          hubID: urlParams.hubNameId,
+          challengeId: urlParams.challengeNameId,
+          calloutsIds /* cardsIds: TODO: Filter by cardsIds when server doesn't return an error */,
+        }
       : undefined,
     skip: !isChallengeId(urlParams) || cardsIds.length === 0,
     errorPolicy: 'all',
@@ -108,7 +117,11 @@ export const useCardsActivityData = (activities: Activity[]) => {
   const { data: opportunityCardsData, loading: opportunityCardsLoading } = useCardsNamesFromOpportunityQuery({
     onError: handleError,
     variables: isOpportunityId(urlParams)
-      ? { hubID: urlParams.hubNameId, opportunityId: urlParams.opportunityNameId, calloutsIds, cardsIds }
+      ? {
+          hubID: urlParams.hubNameId,
+          opportunityId: urlParams.opportunityNameId,
+          calloutsIds /* cardsIds: TODO: Filter by cardsIds when server doesn't return an error */,
+        }
       : undefined,
     skip: !isOpportunityId(urlParams) || cardsIds.length === 0,
     errorPolicy: 'all',

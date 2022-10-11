@@ -80,7 +80,7 @@ export const useCanvasesActivityData = (activities: Activity[]) => {
   );
   const calloutsIds = uniq(
     activities
-      ?.filter(a => a.type === ActivityEventType.CardCreated || a.type === ActivityEventType.CardComment)
+      ?.filter(a => a.type === ActivityEventType.CanvasCreated)
       .map(a => a.parentID)
       .filter(c => !!c)
       .map(c => c!) || []
@@ -89,7 +89,12 @@ export const useCanvasesActivityData = (activities: Activity[]) => {
   // Retrieve the relevant information to print these activity entries about canvases
   const { data: hubCanvasesData, loading: hubCanvasesLoading } = useCanvasesNamesFromHubQuery({
     onError: handleError,
-    variables: isHubId(urlParams) ? { hubID: urlParams.hubNameId, calloutsIds, canvasesIds } : undefined,
+    variables: isHubId(urlParams)
+      ? {
+          hubID: urlParams.hubNameId,
+          calloutsIds /* canvasesIds: TODO: Filter by canvases when server doesn't return an error */,
+        }
+      : undefined,
     skip: !isHubId(urlParams) || canvasesIds.length === 0,
     errorPolicy: 'all',
   });
@@ -97,7 +102,11 @@ export const useCanvasesActivityData = (activities: Activity[]) => {
   const { data: challengeCanvasesData, loading: challengeCanvasesLoading } = useCanvasesNamesFromChallengeQuery({
     onError: handleError,
     variables: isChallengeId(urlParams)
-      ? { hubID: urlParams.hubNameId, challengeId: urlParams.challengeNameId, calloutsIds, canvasesIds }
+      ? {
+          hubID: urlParams.hubNameId,
+          challengeId: urlParams.challengeNameId,
+          calloutsIds /* canvasesIds: TODO: Filter by canvases when server doesn't return an error */,
+        }
       : undefined,
     skip: !isChallengeId(urlParams) || canvasesIds.length === 0,
     errorPolicy: 'all',
@@ -106,7 +115,11 @@ export const useCanvasesActivityData = (activities: Activity[]) => {
   const { data: opportunityCanvasesData, loading: opportunityCanvasesLoading } = useCanvasesNamesFromOpportunityQuery({
     onError: handleError,
     variables: isOpportunityId(urlParams)
-      ? { hubID: urlParams.hubNameId, opportunityId: urlParams.opportunityNameId, calloutsIds, canvasesIds }
+      ? {
+          hubID: urlParams.hubNameId,
+          opportunityId: urlParams.opportunityNameId,
+          calloutsIds /* canvasesIds: TODO: Filter by canvases when server doesn't return an error */,
+        }
       : undefined,
     skip: !isOpportunityId(urlParams) || canvasesIds.length === 0,
     errorPolicy: 'all',

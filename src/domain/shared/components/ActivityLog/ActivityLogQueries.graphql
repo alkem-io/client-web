@@ -49,7 +49,7 @@ query calloutsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NA
   }
 }
 
-query cardsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $cardsIds: [UUID_NAMEID!]!) {
+query cardsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
   hub(ID: $hubID) {
     id
     nameID
@@ -58,7 +58,7 @@ query cardsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $ca
       callouts (IDs: $calloutsIds)  {
         id
         nameID
-        aspects (IDs: $cardsIds) {
+        aspects {
           id
           nameID
         }
@@ -67,7 +67,7 @@ query cardsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $ca
   }
 }
 
-query cardsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $cardsIds: [UUID_NAMEID!]!) {
+query cardsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
   hub(ID: $hubID) {
     id
     nameID
@@ -79,7 +79,7 @@ query cardsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, 
         callouts (IDs: $calloutsIds)  {
           id
           nameID
-          aspects (IDs: $cardsIds) {
+          aspects {
             id
             nameID
           }
@@ -89,7 +89,7 @@ query cardsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, 
   }
 }
 
-query cardsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $cardsIds: [UUID_NAMEID!]!) {
+query cardsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
   hub(ID: $hubID) {
     id
     nameID
@@ -102,7 +102,7 @@ query cardsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEI
         callouts (IDs: $calloutsIds)  {
           id
           nameID
-          aspects (IDs: $cardsIds) {
+          aspects {
             id
             nameID
           }
@@ -112,7 +112,7 @@ query cardsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEI
   }
 }
 
-query canvasesNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $canvasesIds: [UUID!]!) {
+query canvasesNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
   hub(ID: $hubID) {
     id
     nameID
@@ -121,7 +121,7 @@ query canvasesNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, 
       callouts (IDs: $calloutsIds)  {
         id
         nameID
-        canvases (IDs: $canvasesIds) {
+        canvases {
           id
           nameID
         }
@@ -130,7 +130,7 @@ query canvasesNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, 
   }
 }
 
-query canvasesNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $canvasesIds: [UUID!]!) {
+query canvasesNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
   hub(ID: $hubID) {
     id
     nameID
@@ -142,7 +142,7 @@ query canvasesNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID
         callouts (IDs: $calloutsIds)  {
           id
           nameID
-          canvases (IDs: $canvasesIds) {
+          canvases {
             id
             nameID
           }
@@ -152,7 +152,7 @@ query canvasesNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID
   }
 }
 
-query canvasesNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $canvasesIds: [UUID!]!) {
+query canvasesNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
   hub(ID: $hubID) {
     id
     nameID
@@ -165,7 +165,7 @@ query canvasesNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NA
         callouts (IDs: $calloutsIds)  {
           id
           nameID
-          canvases (IDs: $canvasesIds) {
+          canvases {
             id
             nameID
           }

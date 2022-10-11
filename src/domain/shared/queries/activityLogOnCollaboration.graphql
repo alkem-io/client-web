@@ -7,5 +7,6 @@ query activityLogOnCollaboration($queryData: ActivityLogInput!) {
     createdDate
     description
     triggeredBy
+    parentID
   }
 }

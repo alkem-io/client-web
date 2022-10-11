@@ -18722,7 +18722,7 @@ export function refetchCalloutsNamesFromOpportunityQuery(
   return { query: CalloutsNamesFromOpportunityDocument, variables: variables };
 }
 export const CardsNamesFromHubDocument = gql`
-  query cardsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $cardsIds: [UUID_NAMEID!]!) {
+  query cardsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
     hub(ID: $hubID) {
       id
       nameID
@@ -18731,7 +18731,7 @@ export const CardsNamesFromHubDocument = gql`
         callouts(IDs: $calloutsIds) {
           id
           nameID
-          aspects(IDs: $cardsIds) {
+          aspects {
             id
             nameID
           }
@@ -18755,7 +18755,6 @@ export const CardsNamesFromHubDocument = gql`
  *   variables: {
  *      hubID: // value for 'hubID'
  *      calloutsIds: // value for 'calloutsIds'
- *      cardsIds: // value for 'cardsIds'
  *   },
  * });
  */
@@ -18790,12 +18789,7 @@ export function refetchCardsNamesFromHubQuery(variables: SchemaTypes.CardsNamesF
   return { query: CardsNamesFromHubDocument, variables: variables };
 }
 export const CardsNamesFromChallengeDocument = gql`
-  query cardsNamesFromChallenge(
-    $hubID: UUID_NAMEID!
-    $challengeId: UUID_NAMEID!
-    $calloutsIds: [UUID_NAMEID!]!
-    $cardsIds: [UUID_NAMEID!]!
-  ) {
+  query cardsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
     hub(ID: $hubID) {
       id
       nameID
@@ -18807,7 +18801,7 @@ export const CardsNamesFromChallengeDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
-            aspects(IDs: $cardsIds) {
+            aspects {
               id
               nameID
             }
@@ -18833,7 +18827,6 @@ export const CardsNamesFromChallengeDocument = gql`
  *      hubID: // value for 'hubID'
  *      challengeId: // value for 'challengeId'
  *      calloutsIds: // value for 'calloutsIds'
- *      cardsIds: // value for 'cardsIds'
  *   },
  * });
  */
@@ -18871,12 +18864,7 @@ export function refetchCardsNamesFromChallengeQuery(variables: SchemaTypes.Cards
   return { query: CardsNamesFromChallengeDocument, variables: variables };
 }
 export const CardsNamesFromOpportunityDocument = gql`
-  query cardsNamesFromOpportunity(
-    $hubID: UUID_NAMEID!
-    $opportunityId: UUID_NAMEID!
-    $calloutsIds: [UUID_NAMEID!]!
-    $cardsIds: [UUID_NAMEID!]!
-  ) {
+  query cardsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
     hub(ID: $hubID) {
       id
       nameID
@@ -18889,7 +18877,7 @@ export const CardsNamesFromOpportunityDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
-            aspects(IDs: $cardsIds) {
+            aspects {
               id
               nameID
             }
@@ -18915,7 +18903,6 @@ export const CardsNamesFromOpportunityDocument = gql`
  *      hubID: // value for 'hubID'
  *      opportunityId: // value for 'opportunityId'
  *      calloutsIds: // value for 'calloutsIds'
- *      cardsIds: // value for 'cardsIds'
  *   },
  * });
  */
@@ -18953,7 +18940,7 @@ export function refetchCardsNamesFromOpportunityQuery(variables: SchemaTypes.Car
   return { query: CardsNamesFromOpportunityDocument, variables: variables };
 }
 export const CanvasesNamesFromHubDocument = gql`
-  query canvasesNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!, $canvasesIds: [UUID!]!) {
+  query canvasesNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
     hub(ID: $hubID) {
       id
       nameID
@@ -18962,7 +18949,7 @@ export const CanvasesNamesFromHubDocument = gql`
         callouts(IDs: $calloutsIds) {
           id
           nameID
-          canvases(IDs: $canvasesIds) {
+          canvases {
             id
             nameID
           }
@@ -18986,7 +18973,6 @@ export const CanvasesNamesFromHubDocument = gql`
  *   variables: {
  *      hubID: // value for 'hubID'
  *      calloutsIds: // value for 'calloutsIds'
- *      canvasesIds: // value for 'canvasesIds'
  *   },
  * });
  */
@@ -19024,12 +19010,7 @@ export function refetchCanvasesNamesFromHubQuery(variables: SchemaTypes.Canvases
   return { query: CanvasesNamesFromHubDocument, variables: variables };
 }
 export const CanvasesNamesFromChallengeDocument = gql`
-  query canvasesNamesFromChallenge(
-    $hubID: UUID_NAMEID!
-    $challengeId: UUID_NAMEID!
-    $calloutsIds: [UUID_NAMEID!]!
-    $canvasesIds: [UUID!]!
-  ) {
+  query canvasesNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
     hub(ID: $hubID) {
       id
       nameID
@@ -19041,7 +19022,7 @@ export const CanvasesNamesFromChallengeDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
-            canvases(IDs: $canvasesIds) {
+            canvases {
               id
               nameID
             }
@@ -19067,7 +19048,6 @@ export const CanvasesNamesFromChallengeDocument = gql`
  *      hubID: // value for 'hubID'
  *      challengeId: // value for 'challengeId'
  *      calloutsIds: // value for 'calloutsIds'
- *      canvasesIds: // value for 'canvasesIds'
  *   },
  * });
  */
@@ -19111,7 +19091,6 @@ export const CanvasesNamesFromOpportunityDocument = gql`
     $hubID: UUID_NAMEID!
     $opportunityId: UUID_NAMEID!
     $calloutsIds: [UUID_NAMEID!]!
-    $canvasesIds: [UUID!]!
   ) {
     hub(ID: $hubID) {
       id
@@ -19125,7 +19104,7 @@ export const CanvasesNamesFromOpportunityDocument = gql`
           callouts(IDs: $calloutsIds) {
             id
             nameID
-            canvases(IDs: $canvasesIds) {
+            canvases {
               id
               nameID
             }
@@ -19151,7 +19130,6 @@ export const CanvasesNamesFromOpportunityDocument = gql`
  *      hubID: // value for 'hubID'
  *      opportunityId: // value for 'opportunityId'
  *      calloutsIds: // value for 'calloutsIds'
- *      canvasesIds: // value for 'canvasesIds'
  *   },
  * });
  */
@@ -19202,6 +19180,7 @@ export const ActivityLogOnCollaborationDocument = gql`
       createdDate
       description
       triggeredBy
+      parentID
     }
   }
 `;
