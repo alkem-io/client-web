@@ -1,7 +1,7 @@
-import React, { PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import React, { PropsWithChildren, useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Box, Card, IconButton, Menu, MenuItem } from '@mui/material';
+import { Box, Card, IconButton, Menu, MenuItem, styled } from '@mui/material';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
 import {
   Authorization,
@@ -12,10 +12,11 @@ import {
 } from '../../../models/graphql-schema';
 import WrapperMarkdown from '../../../common/components/core/WrapperMarkdown';
 import Heading from '../../shared/components/Heading';
-import { CalloutSummary } from './creation-dialog/steps/CalloutSummaryStep/CalloutSummaryStep';
+import { CalloutSummary } from './CalloutSummary';
 import CalloutVisibilityChangeDialog from './edit/visibility-change-dialog/CalloutVisibilityChangeDialog';
 import CalloutEditDialog from './edit/edit-dialog/CalloutEditDialog';
 import { CalloutEditType } from './edit/CalloutEditType';
+import ShareButton from '../../shared/components/ShareDialog/ShareButton';
 
 export interface CalloutLayoutEvents {
   onVisibilityChange: (calloutId: Callout['id'], visibility: CalloutVisibility) => Promise<void>;
@@ -32,14 +33,21 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;
+    url: string;
   };
-  maxHeight?: number;
 }
+
+const CalloutActionsBar = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  right: theme.spacing(-1.5),
+  top: theme.spacing(-1.5),
+  display: 'flex',
+  flexFlow: 'row-reverse',
+}));
 
 const CalloutLayout = ({
   callout,
   children,
-  maxHeight,
   onVisibilityChange,
   onCalloutEdit,
   onCalloutDelete,
@@ -50,7 +58,7 @@ const CalloutLayout = ({
   const settingsOpened = Boolean(settingsAnchorEl);
   const handleSettingsOpened = (event: React.MouseEvent<HTMLElement>) => setSettingsAnchorEl(event.currentTarget);
   const handleSettingsClose = () => setSettingsAnchorEl(null);
-  //
+
   const [visDialogOpen, setVisDialogOpen] = useState(false);
   const handleVisDialogOpen = () => {
     setVisDialogOpen(true);
@@ -94,33 +102,26 @@ const CalloutLayout = ({
           </Box>
         )}
         <Box m={3} position="relative">
-          {callout.editable && (
-            <IconButton
-              id="callout-settings-button"
-              aria-haspopup="true"
-              aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
-              aria-expanded={settingsOpened ? 'true' : undefined}
-              onClick={handleSettingsOpened}
-              sx={theme => ({ position: 'absolute', right: theme.spacing(-1.5), top: theme.spacing(-1.5) })}
-            >
-              <SettingsOutlinedIcon />
-            </IconButton>
-          )}
+          <CalloutActionsBar>
+            {callout.editable && (
+              <IconButton
+                id="callout-settings-button"
+                aria-haspopup="true"
+                aria-controls={settingsOpened ? 'callout-settings-menu' : undefined}
+                aria-expanded={settingsOpened ? 'true' : undefined}
+                onClick={handleSettingsOpened}
+              >
+                <SettingsOutlinedIcon />
+              </IconButton>
+            )}
+            <ShareButton url={callout.url} entityTypeName="callout" />
+          </CalloutActionsBar>
           <Heading sx={{ display: 'flex', gap: 2.5 }}>
             <CampaignOutlinedIcon sx={{ fontSize: theme => theme.spacing(3) }} /> {callout.displayName}
           </Heading>
           <WrapperMarkdown>{callout.description || ''}</WrapperMarkdown>
-          {/* Paddings are set to prevent cutting Paper shadow by overflow: scroll.
-              Margins are compensating the visual shift. Except for the left margin, we want a bit of left shifting */}
-          <Box
-            maxHeight={maxHeight && (theme => theme.spacing(maxHeight + 4))}
-            overflow={typeof maxHeight === 'undefined' ? undefined : 'auto'}
-            padding={2}
-            margin={-2}
-            marginLeft={0}
-          >
-            {children}
-          </Box>
+
+          {children}
         </Box>
       </Card>
       <Menu

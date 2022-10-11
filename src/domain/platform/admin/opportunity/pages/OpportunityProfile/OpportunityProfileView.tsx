@@ -101,6 +101,7 @@ const OpportunityProfileView: FC<Props> = ({ mode }) => {
         isEdit={mode === FormMode.update}
         name={opportunity?.displayName}
         nameID={opportunity?.nameID}
+        journeyType="opportunity"
         tagset={opportunity?.tagset}
         context={opportunity?.context as Context}
         onSubmit={onSubmit}

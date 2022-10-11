@@ -1,4 +1,4 @@
-import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH, COMMUNITY_ROUTE } from '../../models/constants';
+import { AUTH_REQUIRED_PATH, AUTH_LOGIN_PATH } from '../../models/constants';
 import { EntityPageSection } from '../../domain/shared/layout/EntityPageSection';
 
 export const buildHubUrl = (hubNameId: string) => `/${hubNameId}`;
@@ -16,16 +16,15 @@ export const buildAdminHubUrl = (hubNameId: string) => `/admin/hubs/${hubNameId}
 export const buildAdminChallengeUrl = (hubNameId: string, challengeNameId: string) =>
   buildAdminHubUrl(hubNameId).concat(`/challenges/${challengeNameId}`);
 
+export const buildAdminNewChallengeUrl = (hubNameId: string) => buildAdminHubUrl(hubNameId).concat('/challenges/new');
+
 export const buildAdminOpportunityUrl = (hubNameId: string, challengeNameId: string, opportunityNameId: string) =>
   buildAdminChallengeUrl(hubNameId, challengeNameId).concat(`/opportunities/${opportunityNameId}`);
 
-export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
+export const buildAdminNewOpportunityUrl = (hubNameId: string, challengeNameId: string) =>
+  buildAdminChallengeUrl(hubNameId, challengeNameId).concat('/opportunities/new');
 
-export const buildHubCommunityUrl = (hubNameId: string) => buildHubUrl(hubNameId).concat(COMMUNITY_ROUTE);
-export const buildChallengeCommunityUrl = (hubNameId: string, challengeNameId: string) =>
-  buildChallengeUrl(hubNameId, challengeNameId).concat(COMMUNITY_ROUTE);
-export const buildOpportunityCommunityUrl = (hubNameId: string, challengeNameId: string, opportunityNameId: string) =>
-  buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId).concat(COMMUNITY_ROUTE);
+export const buildAdminOrganizationUrl = (organizationNameId: string) => `/admin/organizations/${organizationNameId}`;
 
 export const buildUserProfileUrl = (userNameId: string) => `/user/${userNameId}`;
 export const buildUserProfileSettingsUrl = (userNameId: string) =>
@@ -66,6 +65,24 @@ export const buildNewDiscussionUrl = (url: string) => {
 
 export const buildNewOrganizationUrl = () => {
   return '/admin/organizations/new';
+};
+
+export const buildCalloutUrl = (
+  calloutNameId: string,
+  hubNameId: string,
+  challengeNameId?: string,
+  opportunityNameId?: string
+) => {
+  const calloutUrl = `/${EntityPageSection.Explore}/callouts/${calloutNameId}`;
+  if (challengeNameId) {
+    if (opportunityNameId) {
+      return `${buildOpportunityUrl(hubNameId, challengeNameId, opportunityNameId)}${calloutUrl}`;
+    } else {
+      return `${buildChallengeUrl(hubNameId, challengeNameId)}${calloutUrl}`;
+    }
+  } else {
+    return `${buildHubUrl(hubNameId)}${calloutUrl}`;
+  }
 };
 
 interface buildAspectUrlParams {

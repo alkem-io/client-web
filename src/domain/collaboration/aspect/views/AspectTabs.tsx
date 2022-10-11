@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box, IconButton, Tabs } from '@mui/material';
-import { DashboardOutlined, SettingsOutlined } from '@mui/icons-material';
+import { DashboardOutlined, SettingsOutlined, ShareOutlined } from '@mui/icons-material';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import NavigationTab from '../../../../common/components/core/NavigationTab/NavigationTab';
 import { useAspect } from '../context/AspectProvider';
@@ -31,6 +31,12 @@ const AspectTabs: FC<AspectTabsProps> = ({ currentTab, onClose }) => {
         icon={<DashboardOutlined />}
         value={AspectDialogSection.Dashboard}
         to={AspectDialogSection.Dashboard}
+        state={{ keepScroll: true }}
+      />
+      <NavigationTab
+        icon={<ShareOutlined />}
+        value={AspectDialogSection.Share}
+        to={AspectDialogSection.Share}
         state={{ keepScroll: true }}
       />
       {permissions.canUpdate && (

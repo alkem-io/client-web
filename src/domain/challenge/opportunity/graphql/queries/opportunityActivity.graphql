@@ -3,7 +3,7 @@ query opportunityActivity($hubId: UUID_NAMEID!, $opportunityId: UUID_NAMEID!) {
     id
     opportunity(ID: $opportunityId) {
       id
-      activity {
+      metrics {
         name
         value
       }

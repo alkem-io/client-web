@@ -24,7 +24,7 @@ interface HubAuthorizationPageProps extends SettingsPageProps {
 }
 
 const authorizationCredential = AuthorizationCredential.HubAdmin;
-const selectedGroups = ['Authorization'];
+const selectedGroups = ['Authorization', 'Privileges'];
 
 const querySelector = (query: HubPreferencesQuery) => query.hub.preferences;
 

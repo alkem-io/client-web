@@ -2,7 +2,7 @@ import { ComponentType, useMemo } from 'react';
 import { useUrlParams } from '.';
 import { buildChallengeUrl, buildHubUrl, buildOpportunityUrl } from '../common/utils/urlBuilders';
 import { useChallengeNameQuery, useHubNameQuery, useOpportunityNameQuery } from './generated/graphql';
-import { HubOutlined } from '@mui/icons-material';
+import { HubIcon } from '../common/icons/HubIcon';
 import { ChallengeIcon } from '../common/icons/ChallengeIcon';
 
 export interface BreadcrumbsItem {
@@ -49,7 +49,7 @@ export const useBreadcrumbs = () => {
       if (hubNameId && (challengeNameId || aspectNameId)) {
         items.push({
           title: _hub?.hub.displayName || '',
-          icon: HubOutlined,
+          icon: HubIcon,
           url: buildHubUrl(hubNameId),
         });
       }

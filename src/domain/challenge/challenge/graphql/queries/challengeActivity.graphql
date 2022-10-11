@@ -3,7 +3,7 @@ query challengeActivity($hubId: UUID_NAMEID!, $challengeId: UUID_NAMEID!) {
     id
     challenge(ID: $challengeId) {
       id
-      activity {
+      metrics {
         name
         value
       }

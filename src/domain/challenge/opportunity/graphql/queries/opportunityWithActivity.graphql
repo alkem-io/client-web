@@ -5,7 +5,7 @@ query opportunityWithActivity($hubId: UUID_NAMEID!) {
       id
       displayName
       nameID
-      activity {
+      metrics {
         name
         value
       }

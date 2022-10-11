@@ -11,7 +11,7 @@ import { AspectSettingsFragment, Visual } from '../../../../models/graphql-schem
 import EditVisualsView from '../../../common/visual/views/EditVisualsView';
 import SectionSpacer from '../../../shared/components/Section/SectionSpacer';
 import { AspectDialogSection } from '../views/AspectDialogSection';
-import AspectLayout from '../views/AspectLayout';
+import { AspectLayout } from '../views/AspectLayoutWithOutlet';
 
 export interface AspectSettingsPageProps {
   onClose: () => void;

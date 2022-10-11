@@ -8,6 +8,7 @@ import OpportunityContextPage from '../pages/OpportunityContext/OpportunityConte
 import OpportunityProfilePage from '../pages/OpportunityProfile/OpportunityProfilePage';
 import OpportunityAuthorizationRoute from './OpportunityAuthorizationRoute';
 import CommunityGroupsRoute from '../../community/routes/CommunityGroupsAdminRoutes';
+import OpportunityInnovationFlowPage from '../pages/InnovationFlow/OpportunityInnovationFlowPage';
 
 interface Props extends PageProps {}
 
@@ -48,6 +49,7 @@ export const OpportunityRoute: FC<Props> = ({ paths }) => {
         }
       />
       <Route path="authorization/*" element={<OpportunityAuthorizationRoute paths={currentPaths} />} />
+      <Route path={'innovation-flow/*'} element={<OpportunityInnovationFlowPage paths={currentPaths} />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
   );

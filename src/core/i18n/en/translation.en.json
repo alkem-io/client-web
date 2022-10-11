@@ -54,7 +54,10 @@
     "view-profile": "View Profile",
     "edit-photo": "Edit Photo",
     "accept-all-cookies": "Accept All Cookies",
-    "confirm-choice": "Confirm Choice"
+    "confirm-choice": "Confirm Choice",
+    "confirm": "Confirm",
+    "change-template": "Change template",
+    "change": "Change"
   },
   "tooltips": {
     "click-more-info": "Click for more information",
@@ -73,7 +76,9 @@
     }
   },
   "common": {
+    "error-generic": "Error occurred while loading",
     "avatar": "Avatar",
+    "inspiration": "Inspiration",
     "name": "Name",
     "username": "Username",
     "tags": "Tags",
@@ -95,6 +100,7 @@
     "explore": "Explore",
     "edit-entity": "Edit {{entity}}",
     "filter": "Filter",
+    "filterby": "Filter by...",
     "email": "Email",
     "state": "State",
     "aspect": "Card",
@@ -164,7 +170,9 @@
     "warning": "Warning",
     "preview": "Preview",
     "help": "Help",
+    "loading": "Loading...",
     "language": "Language",
+    "innovation-flow": "Innovation flow",
     "genders": {
       "notSpecified": "not specified",
       "male": "male",
@@ -297,6 +305,135 @@
     "draftNotice": "DRAFT - This Callout is only visible for admins.",
     "delete-confirm-title": "Delete Callout?",
     "delete-confirm-text": "All aspects, canvases and messages under the Callout will also be deleted."
+  },
+  "journey-creation": {
+    "dialog-title": "Create a new {{entity}}"
+  },
+  "share-dialog": {
+    "title": "Copy the link below to share this {{entity}}",
+    "share-this": "Share this {{entity}}",
+    "url": "URL",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "canvas-checkedout": "Please click 'Save & Stop Editing' first"
+  },
+  "context": {
+    "hub": {
+      "tagline": {
+        "title": "Tagline",
+        "tooltip": "",
+        "description": "Explain in one sentence what this Hub is about.",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Background",
+        "tooltip": "",
+        "description": "Give a brief overview of the need for this Hub and how it came about.",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "",
+        "description": "What will this Hub change? How will people and organizations be affected?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "What is this community about?",
+        "tooltip": "",
+        "description": "What is the frame of reference for this Hub?",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Who should be involved?",
+        "tooltip": "",
+        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "placeholder": ""
+      }
+    },
+    "challenge": {
+      "displayName": {
+        "title": "Title",
+        "description": "Try to keep it short, descriptive and engaging",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Challenge Statement",
+        "tooltip": "",
+        "description": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with 'How might we...'",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Current Reality",
+        "tooltip": "",
+        "description": "Give a brief impression of the current state of the Challenge. Think of the 'What, where, when and who'.",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Additional context",
+        "tooltip": "",
+        "description": "Give a brief overview of how this Challenge is embedded in the wider picture. What is its impact? Why is it here?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "Future Vision",
+        "tooltip": "",
+        "description": "What does success look like? What should a solution to this Challenge comprise?",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Who should contribute",
+        "tooltip": "",
+        "description": "Think of individuals, organizations, public bodies, research institutes, etc.",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
+        "placeholder": ""
+      }
+    },
+    "opportunity": {
+      "displayName": {
+        "title": "Title",
+        "description": "Try to keep it short, descriptive and engaging",
+        "placeholder": ""
+      },
+      "tagline": {
+        "title": "Tagline",
+        "tooltip": "",
+        "description": "In one sentence, explain what this Opportunity is about.",
+        "placeholder": ""
+      },
+      "background": {
+        "title": "Background",
+        "tooltip": "",
+        "description": "Give a brief overview of how this Opportunity was identified and how it is embedded in the wider picture.",
+        "placeholder": ""
+      },
+      "impact": {
+        "title": "Impact",
+        "tooltip": "",
+        "description": "What will this Opportunity change? How will people and organizations be affected, for good or bad?",
+        "placeholder": ""
+      },
+      "vision": {
+        "title": "Description",
+        "tooltip": "",
+        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
+        "placeholder": ""
+      },
+      "who": {
+        "title": "Who is involved?",
+        "tooltip": "",
+        "description": "Describe the people and organizations who are currently working on this Opportunity.",
+        "placeholder": ""
+      },
+      "tags": {
+        "title": "Tags",
+        "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
+        "placeholder": ""
+      }
+    }
   },
   "forms": {
     "validations": {
@@ -503,25 +640,6 @@
         "placeholder": "Unique textual identifier, used for URL paths. Note: cannot be modified after creation."
       }
     },
-    "contextSegment": {
-      "tagline": "Tagline",
-      "background": {
-        "title": "Background",
-        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?"
-      },
-      "impact": {
-        "title": "Impact",
-        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?"
-      },
-      "vision": {
-        "title": "Vision",
-        "tooltip": "What does success look like? How will you know when you have achieved it?"
-      },
-      "who": {
-        "title": "Who",
-        "tooltip": "What organisations or users should contribute? Why should they want to engage?"
-      }
-    },
     "visualSegment": {
       "title": "Visual",
       "avatar": "Avatar",
@@ -723,6 +841,24 @@
         "no-data-join": "No discussions. Please join the community to create a discussion",
         "explore": "Explore discussions"
       }
+    },
+    "update-innovation-flow": {
+      "template-label": {
+        "title": "Template"
+      }
+    },
+    "select-innovation-flow": {
+      "title": "Change Innovation Flow"
+    },
+    "innovation-flow-template-segment": {
+      "help-text": {
+        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
+      }
+    },
+    "confirm-innovation-flow": {
+      "description": {
+        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
+      }
     }
   },
   "navigation": {
@@ -845,6 +981,9 @@
         "sections": {
           "opportunities": {
             "description": "Here you can edit opportunities for this challenge."
+          },
+          "innovation-flow": {
+            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
           }
         },
         "notifications": {
@@ -880,6 +1019,11 @@
           "opportunity-created": "Opportunity created successfully.",
           "opportunity-removed": "Opportunity removed successfully.",
           "opportunity-updated": "Opportunity updated successfully."
+        },
+        "sections": {
+          "innovation-flow": {
+            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
+          }
         }
       },
       "users": {
@@ -944,19 +1088,28 @@
     },
     "challenge-explorer": {
       "search": {
-        "title": "Explore Challenges",
-        "subtitle": "This section allows you to search through all the Challenges hosted on Alkemio that are visible to you.",
-        "placeholder": "Search by terms for challenges in Alkemio..."
+        "title": "Explore Public Challenges",
+        "subtitle": "Enter your search terms (e.g. 'innovation') below to find matching challenges. Please note that on Alkemio, there are both public and private challenge hubs. Here you can find all challenges from the public hubs. Challenges from private hubs are visible when you are signed in and a member of that particular hub.",
+        "placeholder": "Search...",
+        "default-search-term": "Innovation",
+        "no-results": "No results matched your search terms."
+      },
+      "side-note": {
+        "title": "The Alkemio Structure",
+        "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
+      },
+      "my-search": {
+        "title": "Explore other Challenges accessible to you",
+        "subtitle": "On Alkemio, there are both public and private hubs. Here you’ll find all challenges from public Hubs and private Hubs that you are a member of. Enter your search terms (e.g. ‘innovation’) below to find matching challenges. "
       },
       "my": {
-        "title": "My challenges ({{count}})",
-        "subtitle": "This section shows you the challenges you are contributing to. ",
-        "help-text": "One card per Challenge membership, including the role you have in each."
+        "title": "My challenges",
+        "subtitle": "Here you'll find the challenges that you are contributing to."
       },
-      "hubs": {
-        "title": "Challenges hosted by '{{name}}' Hub ({{count}})",
-        "subtitle": "This section shows you the Challenges hosted in the {{name}} hub, where you are a member.",
-        "help-text": "A Challenge Hub hosts one or more Challenges. You are member of the Hub below."
+      "other": {
+        "title": "Challenges within My Hubs",
+        "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of.",
+        "filter-by-hub": "Filter by My Hub"
       }
     },
     "lead-organization": {
@@ -983,7 +1136,7 @@
             "header": "Existing user? Jump back in!",
             "subheader": "Welcome back! Continue where you left off and start exploring new challenges.",
             "more-info": "More about Alkemio",
-            "more-info-url": "https://alkemio.foundation/about"
+            "more-info-url": "https://alkemio.foundation/manifesto"
           },
           "new-to-alkemio": {
             "header": "New to Alkemio?",
@@ -1027,6 +1180,8 @@
     "hub": {
       "title": "Hub",
       "about-this-hub": "About this Hub",
+      "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
+      "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
         "title": "Application to join {{entity}} \"{{name}}\"",
         "subheader": "Please fill out the questions below, which together with your profile will be sent to the relevant party.",

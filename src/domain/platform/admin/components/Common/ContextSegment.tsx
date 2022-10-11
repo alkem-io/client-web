@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as yup from 'yup';
 import { LONG_TEXT_LENGTH } from '../../../../../models/constants/field-length.constants';
+import { JourneyType } from '../../../../challenge/JourneyType';
 import MarkdownInput from './MarkdownInput';
 
 export const contextSegmentSchema = yup.object().shape({
@@ -12,41 +13,45 @@ export const contextSegmentSchema = yup.object().shape({
   who: yup.string(),
 });
 
-interface ContextSegmentProps {}
+export interface ContextSegmentProps {}
 
-export const ContextSegment: FC<ContextSegmentProps> = () => {
+export const ContextSegment: FC<ContextSegmentProps & { contextType: JourneyType }> = ({ contextType }) => {
   const { t } = useTranslation();
 
   return (
     <>
       <MarkdownInput
         name="vision"
-        label={t('components.contextSegment.vision.title')}
-        tooltipLabel={t('components.contextSegment.vision.tooltip')}
+        label={t(`context.${contextType}.vision.title` as const)}
+        tooltipLabel={t(`context.${contextType}.vision.tooltip` as const)}
+        helperText={t(`context.${contextType}.vision.description` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="background"
-        label={t('components.contextSegment.background.title')}
-        tooltipLabel={t('components.contextSegment.background.tooltip')}
+        label={t(`context.${contextType}.background.title` as const)}
+        tooltipLabel={t(`context.${contextType}.background.tooltip` as const)}
+        helperText={t(`context.${contextType}.background.description` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="impact"
-        label={t('components.contextSegment.impact.title')}
-        tooltipLabel={t('components.contextSegment.impact.tooltip')}
+        label={t(`context.${contextType}.impact.title` as const)}
+        tooltipLabel={t(`context.${contextType}.impact.tooltip` as const)}
+        helperText={t(`context.${contextType}.impact.description` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
       />
       <MarkdownInput
         name="who"
-        label={t('components.contextSegment.who.title')}
-        tooltipLabel={t('components.contextSegment.who.tooltip')}
+        label={t(`context.${contextType}.who.title` as const)}
+        tooltipLabel={t(`context.${contextType}.who.tooltip` as const)}
+        helperText={t(`context.${contextType}.who.description` as const)}
         rows={10}
         maxLength={LONG_TEXT_LENGTH}
         withCounter
