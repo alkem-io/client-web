@@ -14005,6 +14005,80 @@ export function refetchOpportunityCommunityContributorsQuery(
 ) {
   return { query: OpportunityCommunityContributorsDocument, variables: variables };
 }
+export const ContributingUsersDocument = gql`
+  query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+    users(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
+      id
+      nameID
+      displayName
+      profile {
+        id
+        location {
+          id
+          city
+          country
+        }
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
+      }
+    }
+  }
+`;
+
+/**
+ * __useContributingUsersQuery__
+ *
+ * To run a query within a React component, call `useContributingUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributingUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributingUsersQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      shuffle: // value for 'shuffle'
+ *      filterCredentials: // value for 'filterCredentials'
+ *   },
+ * });
+ */
+export function useContributingUsersQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>(
+    ContributingUsersDocument,
+    options
+  );
+}
+export function useContributingUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributingUsersQuery,
+    SchemaTypes.ContributingUsersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>(
+    ContributingUsersDocument,
+    options
+  );
+}
+export type ContributingUsersQueryHookResult = ReturnType<typeof useContributingUsersQuery>;
+export type ContributingUsersLazyQueryHookResult = ReturnType<typeof useContributingUsersLazyQuery>;
+export type ContributingUsersQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributingUsersQuery,
+  SchemaTypes.ContributingUsersQueryVariables
+>;
+export function refetchContributingUsersQuery(variables?: SchemaTypes.ContributingUsersQueryVariables) {
+  return { query: ContributingUsersDocument, variables: variables };
+}
 export const ContributingOrganizationsDocument = gql`
   query contributingOrganizations($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
     organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
@@ -14072,79 +14146,6 @@ export type ContributingOrganizationsQueryResult = Apollo.QueryResult<
 >;
 export function refetchContributingOrganizationsQuery(variables?: SchemaTypes.ContributingOrganizationsQueryVariables) {
   return { query: ContributingOrganizationsDocument, variables: variables };
-}
-export const ContributingUsersDocument = gql`
-  query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
-    users(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
-      id
-      nameID
-      displayName
-      profile {
-        id
-        location {
-          city
-          country
-        }
-        avatar {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
-      }
-    }
-  }
-`;
-
-/**
- * __useContributingUsersQuery__
- *
- * To run a query within a React component, call `useContributingUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useContributingUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useContributingUsersQuery({
- *   variables: {
- *      limit: // value for 'limit'
- *      shuffle: // value for 'shuffle'
- *      filterCredentials: // value for 'filterCredentials'
- *   },
- * });
- */
-export function useContributingUsersQuery(
-  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>(
-    ContributingUsersDocument,
-    options
-  );
-}
-export function useContributingUsersLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ContributingUsersQuery,
-    SchemaTypes.ContributingUsersQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.ContributingUsersQuery, SchemaTypes.ContributingUsersQueryVariables>(
-    ContributingUsersDocument,
-    options
-  );
-}
-export type ContributingUsersQueryHookResult = ReturnType<typeof useContributingUsersQuery>;
-export type ContributingUsersLazyQueryHookResult = ReturnType<typeof useContributingUsersLazyQuery>;
-export type ContributingUsersQueryResult = Apollo.QueryResult<
-  SchemaTypes.ContributingUsersQuery,
-  SchemaTypes.ContributingUsersQueryVariables
->;
-export function refetchContributingUsersQuery(variables?: SchemaTypes.ContributingUsersQueryVariables) {
-  return { query: ContributingUsersDocument, variables: variables };
 }
 export const CreateGroupOnCommunityDocument = gql`
   mutation createGroupOnCommunity($input: CreateUserGroupInput!) {

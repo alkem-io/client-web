@@ -6,6 +6,7 @@ query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [A
     profile {
       id
       location {
+        id
         city
         country
       }
