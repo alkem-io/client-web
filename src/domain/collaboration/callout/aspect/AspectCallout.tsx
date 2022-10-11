@@ -6,7 +6,7 @@ import { OptionalCoreEntityIds } from '../../../shared/types/CoreEntityIds';
 import AspectCreationDialog from '../../aspect/AspectCreationDialog/AspectCreationDialog';
 import { AspectCardFragmentDoc, useCreateAspectFromContributeTabMutation } from '../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useAspectCreatedOnCalloutSubscription } from '../../../../hooks';
-import { CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
+import { CalloutState, CreateAspectOnCalloutInput } from '../../../../models/graphql-schema';
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
 
@@ -123,6 +123,15 @@ const AspectCallout = ({
   };
 
   const aspectNames = useMemo(() => callout.aspects.map(x => x.displayName), [callout.aspects]);
+  const createButtonComponent = useMemo(
+    () =>
+      callout.state !== CalloutState.Closed ? (
+        <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+          <AspectCard />
+        </CreateCalloutItemButton>
+      ) : undefined,
+    [callout.state]
+  );
 
   return (
     <>
@@ -136,15 +145,7 @@ const AspectCallout = ({
           <CardsLayout
             items={loading ? [undefined, undefined] : callout.aspects}
             deps={[hubNameId, challengeNameId, opportunityNameId]}
-            {...(canCreate
-              ? {
-                  createButtonComponent: (
-                    <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-                      <AspectCard />
-                    </CreateCalloutItemButton>
-                  ),
-                }
-              : {})}
+            {...(canCreate ? { createButtonComponent } : {})}
           >
             {aspect => (
               <AspectCard
