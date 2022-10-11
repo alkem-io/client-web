@@ -1,8 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { init as initApm } from '@elastic/apm-rum';
 import reportWebVitals from './reportWebVitals';
 import Root from './root';
 import './common/styles/index.scss';
+
+initApm({
+  serviceName: 'alkemio-client-web',
+  serverUrl: 'https://acc-apm.alkem.io', // todo https://app.zenhub.com/workspaces/alkemio-development-5ecb98b262ebd9f4aec4194c/issues/alkem-io/server/2222
+  serviceVersion: require('../package.json').version,
+  environment: process.env.NODE_ENV ?? 'dev',
+  active: process.env.NODE_ENV === 'production',
+});
 
 ReactDOM.render(<Root />, document.getElementById('root'));
 
