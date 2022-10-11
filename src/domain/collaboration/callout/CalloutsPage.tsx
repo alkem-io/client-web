@@ -63,6 +63,8 @@ const CalloutsPage = ({ entityTypeName, rootUrl, scrollToCallout = false }: Call
           <Button
             variant="text"
             startIcon={<TipsAndUpdatesOutlinedIcon />}
+            target="_blank"
+            rel="noopener noreferrer"
             component={RouterLink}
             to={INSPIRATION_ROUTE}
           >
