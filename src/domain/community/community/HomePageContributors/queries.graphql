@@ -1,28 +1,37 @@
-query contributingUsers {
-  usersPaginated(first: 25) {
-    users {
+query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+  users(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials}) {
+    id
+    nameID
+    displayName
+    profile {
       id
-      displayName
-      nameID
-      profile {
+      location {
         id
-        location {
-          city
-          country
-        }
-        avatar {
-          id
-          uri
-        }
-        tagsets {
-          id
-          tags
-        }
+        city
+        country
+      }
+      avatar {
+        id
+        uri
+      }
+      tagsets {
+        id
+        tags
       }
     }
-    pageInfo {
-      endCursor
-      hasNextPage
+  }
+}
+
+query contributingOrganizations($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+  organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials}) {
+    id
+    nameID
+    displayName
+    profile {
+      id
+      avatar {
+        ...VisualUri
+      }
     }
   }
 }

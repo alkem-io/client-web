@@ -12369,29 +12369,50 @@ export type DashboardLeadUserFragment = {
     | undefined;
 };
 
-export type ContributingUsersQueryVariables = Exact<{ [key: string]: never }>;
+export type ContributingUsersQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
+}>;
 
 export type ContributingUsersQuery = {
   __typename?: 'Query';
-  usersPaginated: {
-    __typename?: 'PaginatedUsers';
-    users: Array<{
-      __typename?: 'User';
+  users: Array<{
+    __typename?: 'User';
+    id: string;
+    nameID: string;
+    displayName: string;
+    profile?:
+      | {
+          __typename?: 'Profile';
+          id: string;
+          location?: { __typename?: 'Location'; id: string; city: string; country: string } | undefined;
+          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
+        }
+      | undefined;
+  }>;
+};
+
+export type ContributingOrganizationsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']>;
+  shuffle?: InputMaybe<Scalars['Boolean']>;
+  filterCredentials?: InputMaybe<Array<AuthorizationCredential> | AuthorizationCredential>;
+}>;
+
+export type ContributingOrganizationsQuery = {
+  __typename?: 'Query';
+  organizations: Array<{
+    __typename?: 'Organization';
+    id: string;
+    nameID: string;
+    displayName: string;
+    profile: {
+      __typename?: 'Profile';
       id: string;
-      displayName: string;
-      nameID: string;
-      profile?:
-        | {
-            __typename?: 'Profile';
-            id: string;
-            location?: { __typename?: 'Location'; city: string; country: string } | undefined;
-            avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
-            tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
-          }
-        | undefined;
-    }>;
-    pageInfo: { __typename?: 'PageInfo'; endCursor?: string | undefined; hasNextPage: boolean };
-  };
+      avatar?: { __typename?: 'Visual'; id: string; uri: string; name: string } | undefined;
+    };
+  }>;
 };
 
 export type CommunityMessagesFragment = {
