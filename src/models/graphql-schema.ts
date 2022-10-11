@@ -10390,6 +10390,7 @@ export type HubCalloutsQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    nameID: string;
     collaboration?:
       | {
           __typename?: 'Collaboration';
@@ -10519,9 +10520,11 @@ export type ChallengeCalloutsQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    nameID: string;
     challenge: {
       __typename?: 'Challenge';
       id: string;
+      nameID: string;
       collaboration?:
         | {
             __typename?: 'Collaboration';
@@ -10656,9 +10659,11 @@ export type OpportunityCalloutsQuery = {
   hub: {
     __typename?: 'Hub';
     id: string;
+    nameID: string;
     opportunity: {
       __typename?: 'Opportunity';
       id: string;
+      nameID: string;
       collaboration?:
         | {
             __typename?: 'Collaboration';
@@ -15144,6 +15149,276 @@ export type DeleteInnovationTemplateMutation = {
   deleteLifecycleTemplate: { __typename?: 'LifecycleTemplate'; id: string };
 };
 
+export type CalloutsNamesFromHubQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CalloutsNamesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutsNamesFromChallengeQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CalloutsNamesFromChallengeQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      nameID: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CalloutsNamesFromOpportunityQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CalloutsNamesFromOpportunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      parentNameID?: string | undefined;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?: Array<{ __typename?: 'Callout'; id: string; nameID: string }> | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CardsNamesFromHubQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CardsNamesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                nameID: string;
+                aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CardsNamesFromChallengeQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CardsNamesFromChallengeQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      nameID: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CardsNamesFromOpportunityQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CardsNamesFromOpportunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      parentNameID?: string | undefined;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  aspects?: Array<{ __typename?: 'Aspect'; id: string; nameID: string }> | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CanvasesNamesFromHubQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasesNamesFromHubQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    collaboration?:
+      | {
+          __typename?: 'Collaboration';
+          id: string;
+          callouts?:
+            | Array<{
+                __typename?: 'Callout';
+                id: string;
+                nameID: string;
+                canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
+              }>
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CanvasesNamesFromChallengeQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  challengeId: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasesNamesFromChallengeQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    challenge: {
+      __typename?: 'Challenge';
+      id: string;
+      nameID: string;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
+export type CanvasesNamesFromOpportunityQueryVariables = Exact<{
+  hubID: Scalars['UUID_NAMEID'];
+  opportunityId: Scalars['UUID_NAMEID'];
+  calloutsIds: Array<Scalars['UUID_NAMEID']> | Scalars['UUID_NAMEID'];
+}>;
+
+export type CanvasesNamesFromOpportunityQuery = {
+  __typename?: 'Query';
+  hub: {
+    __typename?: 'Hub';
+    id: string;
+    nameID: string;
+    opportunity: {
+      __typename?: 'Opportunity';
+      id: string;
+      nameID: string;
+      parentNameID?: string | undefined;
+      collaboration?:
+        | {
+            __typename?: 'Collaboration';
+            id: string;
+            callouts?:
+              | Array<{
+                  __typename?: 'Callout';
+                  id: string;
+                  nameID: string;
+                  canvases?: Array<{ __typename?: 'Canvas'; id: string; nameID: string }> | undefined;
+                }>
+              | undefined;
+          }
+        | undefined;
+    };
+  };
+};
+
 export type CommentsWithMessagesFragment = {
   __typename?: 'Comments';
   id: string;
@@ -15177,6 +15452,7 @@ export type ActivityLogOnCollaborationQuery = {
     createdDate: Date;
     description: string;
     triggeredBy: string;
+    parentID?: string | undefined;
   }>;
 };
 

@@ -20,7 +20,7 @@
     "load-count-more": "Laad {{count}} meer",
     "apply": "Schrijf in",
     "explore": "Verken",
-    "ok": "Ok",
+    "ok": "Oké",
     "create": "Maak aan",
     "publish": "Publiceer",
     "unpublish": "Depubliceer",
@@ -54,7 +54,10 @@
     "view-profile": "Bekijk Profiel",
     "edit-photo": "Pas foto aan",
     "accept-all-cookies": "Accepteer Alle Cookies",
-    "confirm-choice": "Bevestig keuze"
+    "confirm-choice": "Bevestig keuze",
+    "confirm": "Confirm",
+    "change-template": "Change template",
+    "change": "Change"
   },
   "tooltips": {
     "click-more-info": "Klik voor meer informatie",
@@ -65,15 +68,17 @@
     "sign-up": "Schrijf in",
     "sign-out": "Log uit",
     "log-out": "Log uit",
-    "log-in": "Log in",
-    "login": "Login",
+    "log-in": "Inloggen",
+    "login": "Inloggen",
     "register": "Registreer",
     "validation": {
       "fill-fields": "Vul alsjeblieft de vereiste velden in!"
     }
   },
   "common": {
-    "avatar": "Avatar",
+    "error-generic": "Fout bij het laden",
+    "avatar": "Profielfoto",
+    "inspiration": "Inspiratie",
     "name": "Naam",
     "username": "Gebruikersnaam",
     "tags": "Labels",
@@ -95,6 +100,7 @@
     "explore": "Explore",
     "edit-entity": "Pas {{entity}} aan",
     "filter": "Filter",
+    "filterby": "Filter op...",
     "email": "Email",
     "state": "Staat",
     "aspect": "Kaart",
@@ -162,9 +168,11 @@
     "show-all": "Toon alles",
     "title": "Titel",
     "warning": "Waarschuwing",
-    "preview": "Preview",
+    "preview": "Voorbeeld",
     "help": "Help",
+    "loading": "Laden...",
     "language": "Taal",
+    "innovation-flow": "Innovation flow",
     "genders": {
       "notSpecified": "niet gespecificeerd",
       "male": "man",
@@ -202,7 +210,7 @@
           "hidden": false
         },
         "HUB_HOST": {
-          "name": "Hub Host",
+          "name": "Hub host",
           "order": 4,
           "hidden": true
         },
@@ -298,6 +306,17 @@
     "delete-confirm-title": "Callout verwijderen?",
     "delete-confirm-text": "Alle Kaarten, Canvasen en discussies onder deze Callout worden ook verwijderd."
   },
+  "journey-creation": {
+    "dialog-title": "Maak nieuwe {{entity}} aan"
+  },
+  "share-dialog": {
+    "title": "Copy the link below to share this {{entity}}",
+    "share-this": "Share this {{entity}}",
+    "url": "URL",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "canvas-checkedout": "Please click 'Save & Stop Editing' first"
+  },
   "context": {
     "hub": {
       "tagline": {
@@ -356,7 +375,7 @@
         "placeholder": ""
       },
       "vision": {
-        "title": "Toekomstige visie",
+        "title": "Toekomstvisie",
         "tooltip": "",
         "description": "Hoe ziet een succesvolle toekomst eruit? Waaruit moet de oplossing van deze Challenge bestaan?",
         "placeholder": ""
@@ -409,7 +428,6 @@
         "description": "Omschrijf de mensen en organisaties die op dit moment werken aan deze Opportunity.",
         "placeholder": ""
       },
-
       "tags": {
         "title": "Tags",
         "description": "Vul de meest belangrijke tags in die ervoor zorgen dat de Challenge opvalt en makkelijk te vinden is.",
@@ -445,6 +463,9 @@
     }
   },
   "components": {
+    "search-cards": {
+      "matched-terms": "Matched Terms"
+    },
     "activity-log-section": {
       "title": "Laatste activiteiten"
     },
@@ -820,6 +841,24 @@
         "no-data-join": "Geen discussies. Neem deel aan de community om een discussie aan te maken.",
         "explore": "Verken discussies"
       }
+    },
+    "update-innovation-flow": {
+      "template-label": {
+        "title": "Template"
+      }
+    },
+    "select-innovation-flow": {
+      "title": "Change Innovation Flow"
+    },
+    "innovation-flow-template-segment": {
+      "help-text": {
+        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
+      }
+    },
+    "confirm-innovation-flow": {
+      "description": {
+        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
+      }
     }
   },
   "navigation": {
@@ -942,6 +981,9 @@
         "sections": {
           "opportunities": {
             "description": "Hier kan je de Opportunities voor deze Hub aanpassen."
+          },
+          "innovation-flow": {
+            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
           }
         },
         "notifications": {
@@ -977,6 +1019,11 @@
           "opportunity-created": "Opportunity succesvol aangemaakt.",
           "opportunity-removed": "Opportunity succesvol verwijderd.",
           "opportunity-updated": "Opportunity succesvol geupdate."
+        },
+        "sections": {
+          "innovation-flow": {
+            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
+          }
         }
       },
       "users": {
@@ -1043,11 +1090,26 @@
       "search": {
         "title": "Verken Challenges",
         "subtitle": "In deze sectie kan je alle door Challenges op Alkemio zoeken die voor jou zichtbaar zijn.",
-        "placeholder": "Zoek met termen naar Challenges op Alkemio..."
+        "placeholder": "Zoek met termen naar Challenges op Alkemio...",
+        "default-search-term": "Innovation",
+        "no-results": "No results matched your search terms."
+      },
+      "side-note": {
+        "title": "The Alkemio Structure",
+        "description": "At Alkemio, all Challenges are part of a Hub. Each Hub has it's specific frame of reference, in which Challenges are used to understand the issues at hand."
+      },
+      "my-search": {
+        "title": "Explore other Challenges accessible to you",
+        "subtitle": "On Alkemio, there are both public and private hubs. Here you’ll find all challenges from public Hubs and private Hubs that you are a member of. Enter your search terms (e.g. ‘innovation’) below to find matching challenges. "
       },
       "my": {
         "title": "Mijn Challenges",
         "subtitle": "Deze sectie toont de Challenges waar je aan bijdraagt. "
+      },
+      "other": {
+        "title": "Challenges within My Hubs",
+        "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of.",
+        "filter-by-hub": "Filter by My Hub"
       }
     },
     "lead-organization": {
@@ -1118,6 +1180,8 @@
     "hub": {
       "title": "Hub",
       "about-this-hub": "Over deze Hub",
+      "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
+      "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
         "title": "Aanmelding om deel te nemen aan {{entity}} \"{{name}}\"",
         "subheader": "Vul de onderstaande vragen in, welke samen met uw profiel naar de betreffende partij worden gestuurd.",
@@ -1186,30 +1250,30 @@
             "help-text": "Projecten gerelateerd aan deze mogelijkeid"
           }
         },
+        "community": {
+          "description": "Here you can explore the Community. See the Users that are contributing, as well as updates that have been shared."
+        },
         "apply": "Geïnteresseerd in samenwerking?",
+        "agreements": {
+          "description": "Agreements are the formation of concrete next steps to be taken. This new functionality will be available soon.\n\nIdeas, suggestions? Please reach out!"
+        },
         "projects": {
-          "header": {
-            "text": "Projecten",
-            "tag": "Binnenkort beschikbaar"
-          },
-          "subheader": "Project voor Project impact maken op de wereld",
-          "body": "Beheer uw Projecten en stel nieuwe Projecten voor aan uw belanghebbenden.",
           "more-projects": "MEER PROJECTEN STARTEN BINNENKORT",
           "new-project": {
-            "header": "Nieuw Project",
-            "subheader": "Dit zou het Project kunnen zijn dat het verschil maakt",
-            "body": "Een nieuw Project beginnen is makkelijk. In slechts een paar stappen is het Project klaar voor gebruik. Stel een doel, wijs resources toe, pik uw helden uit en laat belanghebbenden stemmen op uw voorstel. Als iedereen heeft getekend kan de pret beginnen. Aan de slag!"
+            "header": "Nieuw Project"
           }
         }
       }
     },
     "community": {
       "title": "{{name}} community-pagina",
-      "subtitle": "",
       "leading-organizations": {
         "title": "Leidende organisaties ({{count}})",
         "help-text": "Laat verschillende organisaties zien, inclusief de rol die je hebt",
         "no-data": "Er is op dit moment geen leidende organisatie"
+      },
+      "member-organizations": {
+        "no-data": "No organization is contributing at this time"
       },
       "hub-host": {
         "title": "Beherende organisatie",
@@ -1451,6 +1515,7 @@
     "no-data": "Geen {{name, lowercase}} beschikbaar"
   },
   "dashboard-contributors-section": {
+    "dialog-title": "Contributors",
     "more": "...plus {{count}} meer"
   },
   "associates-view": {

@@ -20,6 +20,7 @@ import {
 } from '../../../common/utils/containers/ComponentOrChildrenFn';
 import useAspectCommentsMessageReceivedSubscription from '../../../domain/collaboration/aspect/comments/useAspectCommentsMessageReceivedSubscription';
 import { getCardCallout } from '../getAspectCallout';
+import { buildAspectUrl } from '../../../common/utils/urlBuilders';
 
 interface EntityIds {
   aspectNameId: Scalars['UUID_NAMEID'];
@@ -46,6 +47,7 @@ interface Provided {
   error?: ApolloError;
   deletingComment?: boolean;
   postingComment?: boolean;
+  aspectUrl: string;
 }
 export type AspectDashboardContainerProps = ContainerPropsWithProvided<EntityIds, Provided>;
 
@@ -240,6 +242,8 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
       },
     });
 
+  const aspectUrl = buildAspectUrl({ hubNameId, challengeNameId, opportunityNameId, calloutNameId, aspectNameId });
+
   return renderComponentOrChildrenFn(rendered, {
     canReadComments,
     canPostComments,
@@ -257,6 +261,7 @@ const AspectDashboardContainer: FC<AspectDashboardContainerProps> = ({
     error,
     deletingComment,
     postingComment,
+    aspectUrl,
   });
 };
 export default AspectDashboardContainer;

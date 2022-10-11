@@ -32,6 +32,7 @@ import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import { useUserContext } from '../../../community/contributor/user';
 import { useOpportunity } from '../hooks/useOpportunity';
 import { ActivityLogSection } from '../../../shared/components/ActivityLog';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 // TODO flat props
 export interface OpportunityDashboardViewEntities {
@@ -143,6 +144,11 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           >
             <WrapperMarkdown children={opportunity?.context?.vision || ''} />
           </DashboardGenericSection>
+          <ShareButton
+            title={t('share-dialog.share-this', { entity: t('common.opportunity') })}
+            url={buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID)}
+            entityTypeName="opportunity"
+          />
           {communityReadAccess && (
             <EntityDashboardLeadsSection
               usersHeader={t('community.leads')}

@@ -21,6 +21,7 @@ const HubTabs = (props: EntityTabsProps) => {
       showSettings={permissions.viewerCanUpdate}
       settingsUrl={settingsUrl}
       rootUrl={rootUrl}
+      shareUrl={rootUrl}
       subEntityTab={
         <HeaderNavigationTab
           disabled={!permissions.canReadChallenges}

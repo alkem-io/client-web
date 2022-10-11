@@ -7,12 +7,14 @@ import { formatTimeElapsed } from '../../../utils/formatTimeElapsed';
 import AuthorAvatar from '../../AuthorAvatar/AuthorAvatar';
 import { Author } from '../../AuthorAvatar/models/author';
 import { ClampedTypography } from '../../ClampedTypography';
+import { Link } from 'react-router-dom';
 
 export interface ActivityLogBaseViewProps {
   author: Author | undefined;
   createdDate: Date | string;
   action: string;
   description: string;
+  url?: string;
   loading?: boolean;
 }
 
@@ -21,13 +23,24 @@ export const ActivityLogBaseView: FC<ActivityLogBaseViewProps> = ({
   createdDate,
   action,
   description,
+  url,
   loading,
 }) => {
   const { t } = useTranslation();
   const formattedTime = useMemo(() => formatTimeElapsed(createdDate), [createdDate]);
 
   const title = useMemo(
-    () => `${formattedTime} ${author?.displayName ?? t('common.user')} ${action}`,
+    () => (
+      <>
+        {formattedTime}{' '}
+        {author?.url ? (
+          <a href={author.url}>{author?.displayName ?? t('common.user')}</a>
+        ) : (
+          author?.displayName ?? t('common.user')
+        )}{' '}
+        {action}
+      </>
+    ),
     [formattedTime, author?.displayName, action]
   );
 
@@ -42,7 +55,9 @@ export const ActivityLogBaseView: FC<ActivityLogBaseViewProps> = ({
       )}
       <Box sx={theme => ({ marginLeft: theme.spacing(2), flexGrow: 1 })}>
         <Typography variant="caption">{loading ? <Skeleton width="60%" /> : title}</Typography>
-        <ClampedTypography clamp={2}>{loading ? <Skeleton /> : description}</ClampedTypography>
+        <ClampedTypography clamp={2}>
+          {loading ? <Skeleton /> : url ? <Link to={url}>{description}</Link> : description}
+        </ClampedTypography>
       </Box>
     </Box>
   );

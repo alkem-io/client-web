@@ -39,6 +39,7 @@ import withOptionalCount from '../../../shared/utils/withOptionalCount';
 import EntityDashboardLeadsSection from '../../../community/community/EntityDashboardLeadsSection/EntityDashboardLeadsSection';
 import { Discussion } from '../../../communication/discussion/models/discussion';
 import { ActivityLogSection } from '../../../shared/components/ActivityLog';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 export interface HubDashboardView2Props extends EntityDashboardContributors {
   vision?: string;
@@ -124,6 +125,11 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           >
             <WrapperMarkdown children={vision} />
           </DashboardGenericSection>
+          <ShareButton
+            title={t('share-dialog.share-this', { entity: t('common.hub') })}
+            url={buildHubUrl(hubNameId)}
+            entityTypeName="hub"
+          />
           {communityReadAccess && (
             <EntityDashboardLeadsSection
               organizationsHeader={t('pages.hub.sections.dashboard.organization')}
