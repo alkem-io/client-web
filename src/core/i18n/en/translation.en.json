@@ -1159,6 +1159,9 @@
           "header": "Organizations",
           "subheader": "The entities that want to bring innnovation."
         },
+        "contributors-section": {
+          "title": "See who is driving Challenges on Alkemio"
+        },
         "footer": {
           "headline": "More about Alkemio? Visit our website, contact us or take a look at our Github repository",
           "links": {
@@ -1500,10 +1503,7 @@
     "edit": "Edit Innovation flow"
   },
   "contributors-section": {
-    "title": "Contributors",
-    "subheader": "Making progress on Challenges needs many types of contributions, from users and organizations. Explore to see who is contributing where!",
-    "users-title": "Users",
-    "organizations-title": "Organizations"
+    "title": "Contributors"
   },
   "contributions-view": {
     "no-data": "No {{name, lowercase}} available"
