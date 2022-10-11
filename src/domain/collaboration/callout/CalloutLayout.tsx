@@ -7,6 +7,7 @@ import {
   Authorization,
   AuthorizationPrivilege,
   Callout,
+  CalloutState,
   CalloutType,
   CalloutVisibility,
 } from '../../../models/graphql-schema';
@@ -30,6 +31,7 @@ export interface CalloutLayoutProps extends CalloutLayoutEvents {
     displayName: string;
     description: string;
     type: CalloutType;
+    state: CalloutState;
     draft: boolean;
     editable?: boolean;
     authorization?: Authorization;

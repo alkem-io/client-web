@@ -37,6 +37,7 @@ export const useCalloutEdit = (): UseCalloutEditReturnType => {
             ID: callout.id,
             description: callout.description,
             displayName: callout.displayName,
+            state: callout.state,
           },
         },
       });
