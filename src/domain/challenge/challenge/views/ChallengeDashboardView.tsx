@@ -97,6 +97,11 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
           >
             <WrapperMarkdown children={challenge?.context?.vision || ''} />
           </DashboardGenericSection>
+          <ShareButton
+            title={t('share-dialog.share-this', { entity: t('common.challenge') })}
+            url={buildChallengeUrl(hubNameId, challengeNameId)}
+            entityTypeName="challenge"
+          />
           {communityReadAccess && (
             <EntityDashboardLeadsSection
               usersHeader={t('community.leads')}
@@ -122,12 +127,6 @@ export const ChallengeDashboardView: FC<ChallengeDashboardViewProps> = ({ entiti
               memberOrganizationsCount={entities.memberOrganizationsCount}
             />
           )}
-          <ShareButton
-            title={t('share-dialog.share-this', { entity: t('common.challenge') })}
-            sx={{ marginTop: theme => theme.spacing(2) }}
-            url={buildChallengeUrl(hubNameId, challengeNameId)}
-            entityTypeName="challenge"
-          />
         </DashboardColumn>
         <DashboardColumn>
           <ActivityLogSection activities={activities} />
