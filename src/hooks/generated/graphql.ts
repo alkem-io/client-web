@@ -14005,32 +14005,94 @@ export function refetchOpportunityCommunityContributorsQuery(
 ) {
   return { query: OpportunityCommunityContributorsDocument, variables: variables };
 }
-export const ContributingUsersDocument = gql`
-  query contributingUsers {
-    usersPaginated(first: 25) {
-      users {
+export const ContributingOrganizationsDocument = gql`
+  query contributingOrganizations($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+    organizations(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
+      id
+      nameID
+      displayName
+      profile {
         id
-        displayName
-        nameID
-        profile {
-          id
-          location {
-            city
-            country
-          }
-          avatar {
-            id
-            uri
-          }
-          tagsets {
-            id
-            tags
-          }
+        avatar {
+          ...VisualUri
         }
       }
-      pageInfo {
-        endCursor
-        hasNextPage
+    }
+  }
+  ${VisualUriFragmentDoc}
+`;
+
+/**
+ * __useContributingOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useContributingOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributingOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributingOrganizationsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      shuffle: // value for 'shuffle'
+ *      filterCredentials: // value for 'filterCredentials'
+ *   },
+ * });
+ */
+export function useContributingOrganizationsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ContributingOrganizationsQuery,
+    SchemaTypes.ContributingOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ContributingOrganizationsQuery,
+    SchemaTypes.ContributingOrganizationsQueryVariables
+  >(ContributingOrganizationsDocument, options);
+}
+export function useContributingOrganizationsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributingOrganizationsQuery,
+    SchemaTypes.ContributingOrganizationsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ContributingOrganizationsQuery,
+    SchemaTypes.ContributingOrganizationsQueryVariables
+  >(ContributingOrganizationsDocument, options);
+}
+export type ContributingOrganizationsQueryHookResult = ReturnType<typeof useContributingOrganizationsQuery>;
+export type ContributingOrganizationsLazyQueryHookResult = ReturnType<typeof useContributingOrganizationsLazyQuery>;
+export type ContributingOrganizationsQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributingOrganizationsQuery,
+  SchemaTypes.ContributingOrganizationsQueryVariables
+>;
+export function refetchContributingOrganizationsQuery(variables?: SchemaTypes.ContributingOrganizationsQueryVariables) {
+  return { query: ContributingOrganizationsDocument, variables: variables };
+}
+export const ContributingUsersDocument = gql`
+  query contributingUsers($limit: Float, $shuffle: Boolean, $filterCredentials: [AuthorizationCredential!]) {
+    users(limit: $limit, shuffle: $shuffle, filter: { credentials: $filterCredentials }) {
+      id
+      nameID
+      displayName
+      profile {
+        id
+        location {
+          city
+          country
+        }
+        avatar {
+          id
+          uri
+        }
+        tagsets {
+          id
+          tags
+        }
       }
     }
   }
@@ -14048,6 +14110,9 @@ export const ContributingUsersDocument = gql`
  * @example
  * const { data, loading, error } = useContributingUsersQuery({
  *   variables: {
+ *      limit: // value for 'limit'
+ *      shuffle: // value for 'shuffle'
+ *      filterCredentials: // value for 'filterCredentials'
  *   },
  * });
  */
