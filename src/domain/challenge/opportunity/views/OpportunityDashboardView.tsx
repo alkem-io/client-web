@@ -144,6 +144,11 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
           >
             <WrapperMarkdown children={opportunity?.context?.vision || ''} />
           </DashboardGenericSection>
+          <ShareButton
+            title={t('share-dialog.share-this', { entity: t('common.opportunity') })}
+            url={buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID)}
+            entityTypeName="opportunity"
+          />
           {communityReadAccess && (
             <EntityDashboardLeadsSection
               usersHeader={t('community.leads')}
@@ -168,12 +173,6 @@ const OpportunityDashboardView: FC<OpportunityDashboardViewProps> = ({ entities,
               memberOrganizationsCount={entities.memberOrganizationsCount}
             />
           )}
-          <ShareButton
-            title={t('share-dialog.share-this', { entity: t('common.opportunity') })}
-            sx={{ marginTop: theme => theme.spacing(2) }}
-            url={buildOpportunityUrl(hubNameId, challengeNameId, entities.opportunity.nameID)}
-            entityTypeName="opportunity"
-          />
         </DashboardColumn>
         <DashboardColumn>
           <ActivityLogSection activities={activities} />
