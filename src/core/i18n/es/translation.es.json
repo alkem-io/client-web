@@ -309,6 +309,14 @@
   "journey-creation": {
     "dialog-title": "Crear {{entity}}"
   },
+  "share-dialog": {
+    "title": "Copy the link below to share this {{entity}}",
+    "share-this": "Share this {{entity}}",
+    "url": "URL",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "canvas-checkedout": "Please click 'Save & Stop Editing' first"
+  },
   "context": {
     "hub": {
       "tagline": {
@@ -834,8 +842,23 @@
         "explore": "Explorar debates"
       }
     },
+    "update-innovation-flow": {
+      "template-label": {
+        "title": "Template"
+      }
+    },
     "select-innovation-flow": {
       "title": "Cambiar flujo de innovación"
+    },
+    "innovation-flow-template-segment": {
+      "help-text": {
+        "title": "Be careful! By updating the Innovation Flow, the current state will be (re)set to the first state of the selected flow."
+      }
+    },
+    "confirm-innovation-flow": {
+      "description": {
+        "title": "Are you sure you want to change the innovation flow? This may change the set of states for this challenge/opportunity and will (re)set the state to the first state of the selected Innovation Flow."
+      }
     }
   },
   "navigation": {
@@ -958,6 +981,9 @@
         "sections": {
           "opportunities": {
             "description": "Aquí puedes gestionar las Oportunidades de este desafío."
+          },
+          "innovation-flow": {
+            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
           }
         },
         "notifications": {
@@ -993,6 +1019,11 @@
           "opportunity-created": "Oportunidad creada con éxito.",
           "opportunity-removed": "Oportunidad eliminada con éxito.",
           "opportunity-updated": "Oportunidad actualizada con éxito."
+        },
+        "sections": {
+          "innovation-flow": {
+            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
+          }
         }
       },
       "users": {
@@ -1149,6 +1180,8 @@
     "hub": {
       "title": "Hub",
       "about-this-hub": "Acerca de este Hub",
+      "archived-hub-notice": "This Hub is currently archived. Interested in bringing it back to life? <contact>Click here to contact Alkemio</contact>.",
+      "demo-hub-notice": "This is a Demo Hub. <alkemio>Click here to collaborate in active Hubs</alkemio>.",
       "application": {
         "title": "Formulario para unirse al {{entity}} \"{{name}}\"",
         "subheader": "Por favor contesta a estas preguntas, que se enviarán a la persona correspondiente de validar tu solicitud.",
