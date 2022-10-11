@@ -1,0 +1,176 @@
+query calloutsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    collaboration {
+      id
+      callouts (IDs: $calloutsIds) {
+        id
+        nameID
+      }
+    }
+  }
+}
+
+query calloutsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    challenge(ID: $challengeId) {
+      id
+      nameID
+      collaboration {
+        id
+        callouts (IDs: $calloutsIds) {
+          id
+          nameID
+        }
+      }
+    }
+  }
+}
+
+query calloutsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    opportunity (ID: $opportunityId) {
+      id
+      nameID
+      parentNameID
+      collaboration {
+        id
+        callouts (IDs: $calloutsIds) {
+          id
+          nameID
+        }
+      }
+    }
+  }
+}
+
+query cardsNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    collaboration {
+      id
+      callouts (IDs: $calloutsIds)  {
+        id
+        nameID
+        aspects {
+          id
+          nameID
+        }
+      }
+    }
+  }
+}
+
+query cardsNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    challenge(ID: $challengeId) {
+      id
+      nameID
+      collaboration {
+        id
+        callouts (IDs: $calloutsIds)  {
+          id
+          nameID
+          aspects {
+            id
+            nameID
+          }
+        }
+      }
+    }
+  }
+}
+
+query cardsNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    opportunity (ID: $opportunityId) {
+      id
+      nameID
+      parentNameID
+      collaboration {
+        id
+        callouts (IDs: $calloutsIds)  {
+          id
+          nameID
+          aspects {
+            id
+            nameID
+          }
+        }
+      }
+    }
+  }
+}
+
+query canvasesNamesFromHub($hubID: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    collaboration {
+      id
+      callouts (IDs: $calloutsIds)  {
+        id
+        nameID
+        canvases {
+          id
+          nameID
+        }
+      }
+    }
+  }
+}
+
+query canvasesNamesFromChallenge($hubID: UUID_NAMEID!, $challengeId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    challenge(ID: $challengeId) {
+      id
+      nameID
+      collaboration {
+        id
+        callouts (IDs: $calloutsIds)  {
+          id
+          nameID
+          canvases {
+            id
+            nameID
+          }
+        }
+      }
+    }
+  }
+}
+
+query canvasesNamesFromOpportunity($hubID: UUID_NAMEID!, $opportunityId: UUID_NAMEID!, $calloutsIds: [UUID_NAMEID!]!) {
+  hub(ID: $hubID) {
+    id
+    nameID
+    opportunity (ID: $opportunityId) {
+      id
+      nameID
+      parentNameID
+      collaboration {
+        id
+        callouts (IDs: $calloutsIds)  {
+          id
+          nameID
+          canvases {
+            id
+            nameID
+          }
+        }
+      }
+    }
+  }
+}
