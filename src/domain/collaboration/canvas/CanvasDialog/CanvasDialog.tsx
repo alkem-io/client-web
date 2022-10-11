@@ -34,6 +34,10 @@ import CanvasWhiteboard from '../../../../common/components/composite/entities/C
 import CanvasListItemState from '../CanvasList/CanvasListItemState';
 import { ExportedDataState } from '@excalidraw/excalidraw/types/data/types';
 import getCanvasBannerCardDimensions from '../utils/getCanvasBannerCardDimensions';
+import { useUrlParams } from '../../../../hooks';
+import { buildCanvasUrl } from '../../../../common/utils/urlBuilders';
+import UrlParams from '../../../../core/routing/url-params';
+import ShareButton from '../../../shared/components/ShareDialog/ShareButton';
 
 interface CanvasDialogProps {
   entities: {
@@ -129,10 +133,23 @@ const findMostSuitableOption = (canvas?: CanvasWithoutValue, hasChanged?: boolea
   return 'save-and-checkin';
 };
 
+const getCanvasShareUrl = (urlParams: UrlParams) => {
+  if (!urlParams.hubNameId || !urlParams.calloutNameId || !urlParams.canvasNameId) return;
+  return buildCanvasUrl({
+    hubNameId: urlParams.hubNameId!,
+    challengeNameId: urlParams.challengeNameId,
+    opportunityNameId: urlParams.opportunityNameId,
+    calloutNameId: urlParams.calloutNameId!,
+    canvasNameId: urlParams.canvasNameId!,
+  });
+};
+
 const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state }) => {
   const { t } = useTranslation();
   const { canvas } = entities;
   const excalidrawApiRef = useRef<ExcalidrawAPIRefValue>(null);
+  const urlParams = useUrlParams();
+  const canvasUrl = getCanvasShareUrl(urlParams);
 
   // ui
   const styles = useStyles();
@@ -325,6 +342,13 @@ const CanvasDialog: FC<CanvasDialogProps> = ({ entities, actions, options, state
                       </Grow>
                     )}
                   </Popper>
+                  <ShareButton
+                    url={canvasUrl}
+                    entityTypeName="canvas"
+                    disabled={canvas?.checkout?.status !== CanvasCheckoutStateEnum.Available}
+                    tooltipIfDisabled={t('share-dialog.canvas-checkedout')}
+                    sx={{ marginLeft: theme => theme.spacing(2) }}
+                  />
                 </>
               )}
             </ListItemSecondaryAction>

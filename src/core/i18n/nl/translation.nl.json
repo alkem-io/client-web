@@ -298,6 +298,9 @@
     "delete-confirm-title": "Callout verwijderen?",
     "delete-confirm-text": "Alle Kaarten, Canvasen en discussies onder deze Callout worden ook verwijderd."
   },
+  "journey-creation": {
+    "dialog-title": "Maak nieuwe {{entity}} aan"
+  },
   "context": {
     "hub": {
       "tagline": {
@@ -356,7 +359,7 @@
         "placeholder": ""
       },
       "vision": {
-        "title": "Toekomstige visie",
+        "title": "Toekomstvisie",
         "tooltip": "",
         "description": "Hoe ziet een succesvolle toekomst eruit? Waaruit moet de oplossing van deze Challenge bestaan?",
         "placeholder": ""

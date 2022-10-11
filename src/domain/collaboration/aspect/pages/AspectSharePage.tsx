@@ -1,19 +1,19 @@
 import React, { FC } from 'react';
 import { useUrlParams } from '../../../../hooks';
-import AspectDashboardView from '../views/AspectDashboardView';
-import AspectDashboardContainer from '../../../../containers/aspect/AspectDashboardContainer/AspectDashboardContainer';
 import { AspectLayout } from '../views/AspectLayoutWithOutlet';
 import { AspectDialogSection } from '../views/AspectDialogSection';
+import AspectDashboardContainer from '../../../../containers/aspect/AspectDashboardContainer/AspectDashboardContainer';
+import AspectDashboardView from '../views/AspectDashboardView';
 
-export interface AspectDashboardPageProps {
+export interface AspectSharePageProps {
   onClose: () => void;
 }
 
-const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
+const AspectSharePage: FC<AspectSharePageProps> = ({ onClose }) => {
   const { hubNameId = '', challengeNameId, opportunityNameId, aspectNameId = '', calloutNameId = '' } = useUrlParams();
 
   return (
-    <AspectLayout currentSection={AspectDialogSection.Dashboard} onClose={onClose}>
+    <AspectLayout currentSection={AspectDialogSection.Share} onClose={onClose}>
       <AspectDashboardContainer
         hubNameId={hubNameId}
         aspectNameId={aspectNameId}
@@ -23,7 +23,7 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
       >
         {({ aspect, messages, commentsId, ...rest }) => (
           <AspectDashboardView
-            mode="messages"
+            mode="share"
             banner={aspect?.banner?.uri}
             displayName={aspect?.displayName}
             description={aspect?.description}
@@ -39,4 +39,4 @@ const AspectDashboardPage: FC<AspectDashboardPageProps> = ({ onClose }) => {
     </AspectLayout>
   );
 };
-export default AspectDashboardPage;
+export default AspectSharePage;
