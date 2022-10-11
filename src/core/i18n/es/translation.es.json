@@ -54,10 +54,7 @@
     "view-profile": "Ver de perfil",
     "edit-photo": "Editar foto",
     "accept-all-cookies": "Aceptar todas las cookies",
-    "confirm-choice": "Confirmar opciones",
-    "confirm": "Confirmar",
-    "change-template": "Cambiar Plantilla",
-    "change": "Cambiar"
+    "confirm-choice": "Confirmar opciones"
   },
   "tooltips": {
     "click-more-info": "Click para más información",
@@ -76,9 +73,9 @@
     }
   },
   "common": {
-    "error-generic": "Ocurrió un error mientras cargaba la información",
+    "error-generic": "Error occurred while loading",
     "avatar": "Avatar",
-    "inspiration": "Inspiración",
+    "inspiration": "Inspiration",
     "name": "Nombre",
     "username": "Nombre de usuario",
     "tags": "Etiquetas",
@@ -99,8 +96,8 @@
     "about": "Acerca de",
     "explore": "Explorar",
     "edit-entity": "Editar {{entity}}",
-    "filter": "Filtrar",
-    "filterby": "Filtrar por...",
+    "filter": "Filter",
+    "filterby": "Filter by...",
     "email": "Email",
     "state": "Estado",
     "aspect": "Tarjeta",
@@ -170,9 +167,9 @@
     "warning": "Advertencia",
     "preview": "Vista previa",
     "help": "Ayuda",
-    "loading": "Cargando...",
+    "loading": "Loading...",
     "language": "Idioma",
-    "innovation-flow": "Flujo de innovación",
+    "innovation-flow": "Innovation flow",
     "genders": {
       "notSpecified": "no especificado",
       "male": "hombre",
@@ -306,124 +303,121 @@
     "delete-confirm-title": "¿Borrar Callout?",
     "delete-confirm-text": "Todos los aspectos, pizarras y mensajes de este Callout serán borrados."
   },
-  "journey-creation": {
-    "dialog-title": "Crear {{entity}}"
-  },
   "context": {
     "hub": {
       "tagline": {
-        "title": "En una línea",
-        "tooltip": "",
-        "description": "Explica en una línea de qué trata este Hub",
+        "title": "Tagline",
+        "tooltip": "Explain in one sentence...",
+        "description": "",
         "placeholder": ""
       },
       "background": {
-        "title": "Historia",
-        "tooltip": "",
-        "description": "¿Cuál es la situación actual? ¿Qué se ha hecho para progresar? ¿Qué resultados se han logrado?",
+        "title": "Background",
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?",
+        "description": "",
         "placeholder": ""
       },
       "impact": {
-        "title": "Impacto",
-        "tooltip": "",
-        "description": "¿Qué cambiaría si se logra la visión? ¿Qué usuarios u organizaciones experimentarán una realidad diferente, para bien o para mal?",
+        "title": "Impact",
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?",
+        "description": "",
         "placeholder": ""
       },
       "vision": {
-        "title": "¿De qué trata esta comunidad?",
-        "tooltip": "",
-        "description": "¿Cual es el marco de referencia para este Hub?",
+        "title": "Vision",
+        "tooltip": "What does success look like? How will you know when you have achieved it?",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "¿Quién está involucrado?",
-        "tooltip": "",
-        "description": "Piensa en personas, organizaciones, organismos públicos, insituciones de investigación, etc...",
+        "title": "Who",
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?",
+        "description": "",
         "placeholder": ""
       }
     },
     "challenge": {
       "displayName": {
-        "title": "Título",
-        "description": "Intenta mantenerlo corto, interesante y atractivo.",
-        "placeholder": ""
+        "title": "Title",
+        "description": "Try to keep it short, descriptive and engaging",
+        "placeholder": "Title"
       },
       "tagline": {
-        "title": "En una línea",
-        "tooltip": "",
-        "description": "Explica en una frase de qué se trata este Desafío. También es posible enmarcarlo como una pregunta, comenzando con '¿Cómo podríamos...?'",
-        "placeholder": ""
+        "title": "Challenge Statement",
+        "tooltip": "Explain in one sentence what this Challenge is about. It is also possible to frame it as a question, starting with How might we...",
+        "description": "Explain in one sentence what this challenge is about. It is also possible to frame it as a question, starting with How might we...",
+        "placeholder": "Challenge Statement"
       },
       "background": {
-        "title": "Realidad Actual",
-        "tooltip": "",
-        "description": "Una breve impresión del estado actual del desafío. Piensa en el qué, dónde, cuándo y quién.",
-        "placeholder": ""
+        "title": "Current Reality",
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?",
+        "description": "Give a brief impression of the current state of the challenge. Think of the what, where, when and who.",
+        "placeholder": "Current Reality"
       },
       "impact": {
-        "title": "Contexto Adicional",
-        "tooltip": "",
-        "description": "Da un pequeño resumen de cómo este Desafío puede enmarcarse en una foto aún mas amplia. ¿Cual es su impacto? ¿Por qué está ahí?",
+        "title": "Impact",
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?",
+        "description": "",
         "placeholder": ""
       },
       "vision": {
-        "title": "Visión a Futuro",
-        "tooltip": "",
-        "description": "¿Cómo se ve el éxito? ¿En qué consistiría una solución a este Desafío?",
-        "placeholder": ""
+        "title": "Future Vision",
+        "tooltip": "What does success look like? How will you know when you have achieved it?",
+        "description": "What does success look like? What should a solution to this Challenge comprise?",
+        "placeholder": "Future Vision"
       },
       "who": {
-        "title": "¿Quién debería contribuir?",
-        "tooltip": "",
-        "description": "Piensa en individuos, organizaciones, organismos públicos, centros de investigación, etc.",
+        "title": "Who",
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
-        "title": "Etiquetas",
-        "description": "Palabras que sean clave para el Desafío para que sea más fácil de encontrar.",
-        "placeholder": ""
+        "title": "Tags",
+        "description": "Enter words that are key to the Challenge to make it stand out and easier to find.",
+        "placeholder": "Tags"
       }
     },
     "opportunity": {
       "displayName": {
-        "title": "Título",
-        "description": "Intenta mantenerlo corto, interesante y atractivo.",
-        "placeholder": ""
+        "title": "Title",
+        "description": "Try to keep it short, descriptive and engaging",
+        "placeholder": "Title"
       },
       "tagline": {
-        "title": "En una línea",
-        "tooltip": "",
-        "description": "Explica en una frase de qué trata esta Oportunidad",
-        "placeholder": ""
+        "title": "Tagline",
+        "tooltip": "Explain in one sentence...",
+        "description": "In one sentence, explain what this opportunity is about. Think of what and what for. ",
+        "placeholder": "Tagline"
       },
       "background": {
-        "title": "Antecedentes",
-        "tooltip": "",
-        "description": "Da un breve resumen de cómo esta Oportunidad fue identificada y cómo se enmarca en una foto mas amplia.",
-        "placeholder": ""
+        "title": "Description",
+        "tooltip": "What is the current situation? What has already been done to make progress? What results have been achieved?",
+        "description": "Describe the idea and the impact it will have on the Challenge. Please note that this is a living document, it can be updated any time.",
+        "placeholder": "Description"
       },
       "impact": {
-        "title": "Impacto",
-        "tooltip": "",
-        "description": "¿Qué cambiaría esta oportunidad? ¿Cómo las personas u organizaciones se verían afectadas, para bien o para mal?",
+        "title": "Impact",
+        "tooltip": "What is changed if the vision is achieved? What users or organisations will experience a different reality, for good or bad?",
+        "description": "",
         "placeholder": ""
       },
       "vision": {
-        "title": "Descripción",
-        "tooltip": "",
-        "description": "Describe la idea y el impacto que tendrá sobre el Desafío. Piensa que esto es un documento 'vivo', puede ser actualizado.",
+        "title": "Vision",
+        "tooltip": "What does success look like? How will you know when you have achieved it?",
+        "description": "",
         "placeholder": ""
       },
       "who": {
-        "title": "¿Quién está involucrado?",
-        "tooltip": "",
-        "description": "Describe las personas u organizaciones que están trabajando en esta oportunidad",
+        "title": "Who",
+        "tooltip": "What organisations or users should contribute? Why should they want to engage?",
+        "description": "",
         "placeholder": ""
       },
       "tags": {
-        "title": "Etiquetas",
-        "description": "Palabras que sean clave para la Oportunidad para que sea más fácil de encontrar.",
-        "placeholder": ""
+        "title": "Tags",
+        "description": "Enter words that are key to your Opportunity to make it stand out and easier to find.",
+        "placeholder": "Tags"
       }
     }
   },
@@ -456,7 +450,7 @@
   },
   "components": {
     "search-cards": {
-      "matched-terms": "Términos coincidentes"
+      "matched-terms": "Matched Terms"
     },
     "activity-log-section": {
       "title": "Novedades"
@@ -833,9 +827,6 @@
         "no-data-join": "No hay debates. Por favor únase a la comunidad para crear un debate",
         "explore": "Explorar debates"
       }
-    },
-    "select-innovation-flow": {
-      "title": "Cambiar flujo de innovación"
     }
   },
   "navigation": {
@@ -958,6 +949,9 @@
         "sections": {
           "opportunities": {
             "description": "Aquí puedes gestionar las Oportunidades de este desafío."
+          },
+          "innovation-flow": {
+            "description": "Here you change the status of this Challenge or choose a different Flow Template to follow."
           }
         },
         "notifications": {
@@ -993,6 +987,11 @@
           "opportunity-created": "Oportunidad creada con éxito.",
           "opportunity-removed": "Oportunidad eliminada con éxito.",
           "opportunity-updated": "Oportunidad actualizada con éxito."
+        },
+        "sections": {
+          "innovation-flow": {
+            "description": "Here you change the status of this Opportunity or choose a different Flow Template to follow."
+          }
         }
       },
       "users": {
@@ -1061,24 +1060,24 @@
         "subtitle": "Introduce tus términos de búsqueda, (por ejemplo 'innovación') a continuación y encuentra Desafíos relacionados. Por favor, ten en cuenta que en Alkemio hay ambos, hubs públicos y privados. Aquí puedes encontrar los desafíos de los hubs públicos. Los desafíos de los hubs privados son visibles solo si has iniciado sesión y eres miembro de estos hubs.",
         "placeholder": "Buscar...",
         "default-search-term": "Innovation",
-        "no-results": "No se encontraron resultados para tus términos de búsqueda."
+        "no-results": "No results matched your search terms."
       },
       "side-note": {
         "title": "La estructura de Alkemio",
         "description": "En Alkemio, los Desafíos se organizan dentro de un Hub. Cada Hub tiene su pripio marco de referencia específico en el cual los Desafíos se usan para entender los problemas que se están tratando."
       },
       "my-search": {
-        "title": "Explore otros desafíos a los que tienes acceso",
-        "subtitle": "En Alkemio hay ambos, Hubs públicos y privados. Aquí encontrarás los Desafíos de los Hubs públicos y privados de los que eres miembro. Introduce términos de búsqueda (por ejemplo: 'Innovación') para encontrar Desafíos coincidentes."
+        "title": "Explore other Challenges accessible to you",
+        "subtitle": "On Alkemio, there are both public and private hubs. Here you’ll find all challenges from public Hubs and private Hubs that you are a member of. Enter your search terms (e.g. ‘innovation’) below to find matching challenges. "
       },
       "my": {
         "title": "Mis Desafíos",
         "subtitle": "Aquí encontrarás los desafíos en los que estás contribuyendo."
       },
       "other": {
-        "title": "Desafíos en mis Hubs",
-        "subtitle": "Aquí encontrarás otros desafíos hospedadas en los Hubs de los que eres miembro.",
-        "filter-by-hub": "Filtrar por Hub"
+        "title": "Challenges within My Hubs",
+        "subtitle": "Here you'll find the other challenges hosted by the hubs that you are member of.",
+        "filter-by-hub": "Filter by My Hub"
       }
     },
     "lead-organization": {
