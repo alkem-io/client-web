@@ -125,6 +125,11 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
           >
             <WrapperMarkdown children={vision} />
           </DashboardGenericSection>
+          <ShareButton
+            title={t('share-dialog.share-this', { entity: t('common.hub') })}
+            url={buildHubUrl(hubNameId)}
+            entityTypeName="hub"
+          />
           {communityReadAccess && (
             <EntityDashboardLeadsSection
               organizationsHeader={t('pages.hub.sections.dashboard.organization')}
@@ -150,12 +155,6 @@ const HubDashboardView: FC<HubDashboardView2Props> = ({
               memberOrganizationsCount={memberOrganizationsCount}
             />
           )}
-          <ShareButton
-            title={t('share-dialog.share-this', { entity: t('common.hub') })}
-            sx={{ marginTop: theme => theme.spacing(2) }}
-            url={buildHubUrl(hubNameId)}
-            entityTypeName="hub"
-          />
         </DashboardColumn>
         <DashboardColumn>
           {showActivity && <ActivityLogSection activities={activities} />}
