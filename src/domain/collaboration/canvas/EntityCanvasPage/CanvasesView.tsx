@@ -1,5 +1,4 @@
 import React, { FC, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CanvasesManagementViewWrapper from '../CanvasesManagement/CanvasesManagementViewWrapper';
 import useBackToParentPage from '../../../shared/utils/useBackToParentPage';
 import { EntityTypeName } from '../../../shared/layout/PageLayout/SimplePageLayout';
@@ -14,9 +13,8 @@ export interface CanvasesPageProps {
 
 const CanvasesView: FC<CanvasesPageProps> = ({ canvasNameId, entityTypeName, parentUrl }) => {
   const [, buildLinkToCanvasRaw] = useBackToParentPage(parentUrl);
-  // todo: do the back nagivation properly
-  const navigate = useNavigate();
-  const backToCanvases = () => navigate(-1);
+  const [backToExplore] = useBackToParentPage(parentUrl, { keepScroll: true });
+  const backToCanvases = () => backToExplore();
 
   const buildLinkToCanvas = useMemo(
     () => (url: string) => buildLinkToCanvasRaw(`${parentUrl}/${url}`),
