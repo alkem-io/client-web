@@ -7,13 +7,14 @@ import {
   useOpportunityCollaborationIdQuery,
 } from '../../../../../hooks/generated/graphql';
 import { useApolloErrorHandler, useUrlParams } from '../../../../../hooks';
-import { CalloutType } from '../../../../../models/graphql-schema';
+import { CalloutState, CalloutType } from '../../../../../models/graphql-schema';
 
 export type CalloutCreationType = {
   description: string;
   displayName: string;
   templateId: string;
   type: CalloutType;
+  state: CalloutState;
 };
 
 interface CalloutCreationUtils {
@@ -108,6 +109,7 @@ export const useCalloutCreation = (initialOpened = false): CalloutCreationUtils 
             description: callout.description,
             displayName: callout.displayName,
             type: callout.type,
+            state: callout.state,
           },
         },
       });

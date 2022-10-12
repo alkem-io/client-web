@@ -11,7 +11,7 @@ import {
 } from '../../../../hooks/generated/graphql';
 import { useAuthorsDetails } from '../../../communication/communication/useAuthorsDetails';
 import { Message } from '../../../shared/components/Comments/models/message';
-import { AuthorizationPrivilege } from '../../../../models/graphql-schema';
+import { AuthorizationPrivilege, CalloutState } from '../../../../models/graphql-schema';
 import { evictFromCache } from '../../../shared/utils/apollo-cache/removeFromCache';
 
 type NeededFields = 'id' | 'authorization' | 'messages' | 'calloutNameId';
@@ -63,7 +63,8 @@ const CommentsCallout = ({
   );
 
   const canReadMessages = commentsPrivileges.includes(AuthorizationPrivilege.Read);
-  const canPostMessages = commentsPrivileges.includes(AuthorizationPrivilege.CreateComment);
+  const canPostMessages =
+    commentsPrivileges.includes(AuthorizationPrivilege.CreateComment) && callout.state !== CalloutState.Closed;
 
   const [deleteMessage, { loading: deletingMessage }] = useRemoveCommentFromCalloutMutation({
     onError: handleError,
