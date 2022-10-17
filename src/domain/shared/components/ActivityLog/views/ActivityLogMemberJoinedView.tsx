@@ -7,7 +7,7 @@ export interface ActivityLogmemberJoinedViewProps extends ActivityLogViewProps {
 
 export const ActivityLogMemberJoinedView: FC<ActivityLogmemberJoinedViewProps> = props => {
   const { t } = useTranslation();
-  const action = t('components.activity-log-view.actions.member-joined', { communityType: 'communityType' });
+  const action = t('components.activity-log-view.actions.member-joined');
 
   return <ActivityLogBaseView action={action} {...props} />;
 };

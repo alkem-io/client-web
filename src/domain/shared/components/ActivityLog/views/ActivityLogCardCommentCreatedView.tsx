@@ -8,7 +8,7 @@ export interface ActivityLogCardCommentCreatedViewProps extends ActivityLogViewP
 export const ActivityCardCommentCreatedView: FC<ActivityLogCardCommentCreatedViewProps> = props => {
   const { t } = useTranslation();
   const action = t('components.activity-log-view.actions.card-comment-created', {
-    parentdisplayName: 'cardDisplayName',
+    parentdisplayName: props.parentDisplayName,
   });
 
   return <ActivityLogBaseView action={action} {...props} />;

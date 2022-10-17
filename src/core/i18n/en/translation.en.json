@@ -478,7 +478,7 @@
         "canvas-created": "added a Canvas to '{{parentDisplayName}}'",
         "card-comment-created": "commented on Card '{{parentDisplayName}}'",
         "card-created": "added a Card to '{{parentDisplayName}}'",
-        "discussion-comment-created": "commented on '{{parentDisplayName}}'",
+        "discussion-comment-created": "commented",
         "member-joined": "joined"
       }
     },

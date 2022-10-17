@@ -19,7 +19,7 @@ function getUrlByActivityType(
   authors: Author[],
   callouts: CalloutActivityData[],
   cards: CardActivityData[],
-  canvases: CardActivityData[]
+  canvases: CanvasActivityData[]
 ): string | undefined {
   switch (activityLog.type) {
     case ActivityEventType.CanvasCreated: {
@@ -54,10 +54,9 @@ function getUrlByActivityType(
 
 function getParentDisplayNameByActivityType(
   activityLog: Activity,
-  authors: Author[],
   callouts: CalloutActivityData[],
   cards: CardActivityData[],
-  canvases: CardActivityData[]
+  canvases: CanvasActivityData[]
 ): string | undefined {
   switch (activityLog.type) {
     case ActivityEventType.CanvasCreated: {
@@ -129,5 +128,5 @@ const toActivityViewModel = (
   createdDate: activityLog.createdDate,
   url: getUrlByActivityType(activityLog, authors, callouts, cards, canvases),
   description: activityLog.description,
-  parentDisplayName: getParentDisplayNameByActivityType(activityLog, authors, callouts, cards, canvases),
+  parentDisplayName: getParentDisplayNameByActivityType(activityLog, callouts, cards, canvases),
 });
