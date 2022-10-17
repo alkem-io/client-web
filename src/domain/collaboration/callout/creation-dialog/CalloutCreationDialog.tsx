@@ -1,19 +1,20 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog/Dialog';
-import { CalloutType } from '../../../../models/graphql-schema';
+import { CalloutState, CalloutType } from '../../../../models/graphql-schema';
 import { CalloutCreationType } from './useCalloutCreation/useCalloutCreation';
 import { Box, Button } from '@mui/material';
 import { DialogActions, DialogContent, DialogTitle } from '../../../../common/components/core/dialog';
 import { LoadingButton } from '@mui/lab';
 import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
-import CalloutForm from '../CalloutForm';
+import CalloutForm, { CalloutFormOutput } from '../CalloutForm';
 
 export type CalloutCreationDialogFields = {
   description?: string;
   displayName?: string;
   templateId?: string;
   type?: CalloutType;
+  state?: CalloutState;
 };
 
 export interface CalloutCreationDialogProps {
@@ -30,7 +31,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
   const [isValid, setIsValid] = useState(false);
 
   const handleValueChange = useCallback(
-    calloutValues => {
+    (calloutValues: CalloutFormOutput) => {
       setCallout({ ...callout, ...calloutValues });
     },
     [callout]
@@ -43,6 +44,7 @@ const CalloutCreationDialog: FC<CalloutCreationDialogProps> = ({ open, onClose, 
       description: callout.description!,
       templateId: callout.templateId!,
       type: callout.type!,
+      state: callout.state!,
     };
 
     const result = await onSaveAsDraft(newCallout);

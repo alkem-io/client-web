@@ -1,5 +1,5 @@
 import CalloutLayout, { CalloutLayoutEvents, CalloutLayoutProps } from '../CalloutLayout';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SimpleCard from '../../../shared/components/SimpleCard';
 import { WbIncandescentOutlined } from '@mui/icons-material';
 import { LinkWithState } from '../../../shared/types/LinkWithState';
@@ -11,6 +11,7 @@ import CanvasActionsContainer from '../../../../containers/canvas/CanvasActionsC
 import CreateCalloutItemButton from '../CreateCalloutItemButton';
 import { CanvasFragmentWithCallout } from '../useCallouts';
 import CardsLayoutScroller from '../../../shared/layout/CardsLayout/CardsLayoutScroller';
+import { CalloutState } from '../../../../models/graphql-schema';
 
 type NeededFields = 'id' | 'nameID' | 'displayName' | 'preview' | 'calloutNameId';
 export type CanvasCard = Pick<CanvasFragmentWithCallout, NeededFields>;
@@ -39,6 +40,15 @@ const CanvasCallout = ({
   const [showCreateCanvasDialog, setShowCreateCanvasDialog] = useState(false);
   const handleCreateDialogOpened = () => setShowCreateCanvasDialog(true);
   const handleCreateDialogClosed = () => setShowCreateCanvasDialog(false);
+  const createButtonComponent = useMemo(
+    () =>
+      callout.state !== CalloutState.Closed ? (
+        <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
+          <SimpleCard to={''} />
+        </CreateCalloutItemButton>
+      ) : undefined,
+    [callout.state]
+  );
 
   return (
     <>
@@ -52,15 +62,7 @@ const CanvasCallout = ({
           <CardsLayout
             items={loading ? [undefined, undefined] : callout.canvases}
             deps={[hubNameId, challengeNameId, opportunityNameId]}
-            {...(canCreate
-              ? {
-                  createButtonComponent: (
-                    <CreateCalloutItemButton onClick={handleCreateDialogOpened}>
-                      <SimpleCard to={''} />
-                    </CreateCalloutItemButton>
-                  ),
-                }
-              : {})}
+            {...(canCreate ? { createButtonComponent } : {})}
           >
             {canvas => (
               <SimpleCard
